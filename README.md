@@ -1,29 +1,26 @@
-# build-tools-for-vmware-aria
-
-## Overview
-
-## Try it out
-
-### Prerequisites
-
-* Prereq 1
-* Prereq 2
-* Prereq 3
-
-### Build & Run
-
-1. Step 1
-2. Step 2
-3. Step 3
+# IaC for vRealize - Toolchain
+This repository contains the source code for the whole toolchain supporting Infrastructure-as-Code for vRealize (Orchestrator and Automation).
 
 ## Documentation
+- [Solution Design Document](https://confluence.pscoe.vmware.com/pages/viewpage.action?pageId=16878722)
+- [Installation and Operations Documents](./doc/markdown)
+- [Build and Debug the VS Code Extension](./vscode)
+- [PSCoE Development Process](https://confluence.pscoe.vmware.com/display/KB/Development+Process)
 
-## Contributing
+## How to build
+```shell
+mvn clean install -f maven/npmlib/pom.xml 
+mvn clean install -f pom.xml 
+mvn clean install -f maven/base-package/pom.xml
+mvn clean install -f packages/pom.xml
+mvn clean install -f maven/typescript-project-all/pom.xml
+mvn clean install -f maven/repository/pom.xml
+```
 
-The build-tools-for-vmware-aria project team welcomes contributions from the community. Before you start working with build-tools-for-vmware-aria, please
-read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be
-signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on
-as an open-source patch. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
+## Package dependencies
 
-## License
+### Ubuntu
 
+```bash
+    sudo apt install libxml2-utils
+```
