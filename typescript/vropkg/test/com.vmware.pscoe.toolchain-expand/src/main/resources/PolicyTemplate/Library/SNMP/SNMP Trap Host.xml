@@ -1,0 +1,1 @@
+<dunes-policy name="SNMP Trap Host" type="0" api-version="6.0.0" id="fbd8a8b4-53a4-436a-8162-5c9c8c64a3e5" version="1.0.0" allowed-operations="vef"><item tag="host" type="0" sdkType="SNMP:TrapHost"><event type="OnTrapAll" kind="trigger" active="false"/></item></dunes-policy>

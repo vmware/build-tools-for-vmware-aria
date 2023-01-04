@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.VCAC.Icons</entry>
+  <entry key="mimetype">image/png</entry>
+  <entry key="name">icon_warning.png</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="description">Imported from : '/Users/christophe/Desktop/Images/icon_warning.png' on server vCO51Mac:8230</entry>
+  <entry key="id">b2cf64e6-dd09-47be-914a-14f5494d2873</entry>
+</properties>

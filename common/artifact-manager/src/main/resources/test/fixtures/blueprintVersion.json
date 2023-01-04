@@ -1,0 +1,19 @@
+{
+	"id": "1",
+	"createdAt": "2022-05-26T08:37:27.620441Z",
+	"createdBy": "admin",
+	"updatedAt": "2022-05-26T08:37:27.620441Z",
+	"updatedBy": "admin",
+	"orgId": "orgId",
+	"projectId": "projectId",
+	"projectName": "Project",
+	"selfLink": "/blueprint/api/blueprints/blueprintId/versions/3",
+	"blueprintId": "blueprintId",
+	"name": "Test",
+	"description": "",
+	"version": "1",
+	"status": "RELEASED",
+	"versionDescription": "",
+	"versionChangeLog": "",
+	"valid": true
+}

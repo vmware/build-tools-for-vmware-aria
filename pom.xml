@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.vmware.pscoe</groupId>
+	<artifactId>iac</artifactId>
+	<packaging>pom</packaging>
+	<version>2.27.1-SNAPSHOT</version>
+
+	<modules>
+		<module>common/o11n/project</module>
+		<module>common/artifact-manager</module>
+		<module>maven/archetypes</module>
+		<module>maven/plugins</module>
+		<module>maven/npmconv</module>
+		<module>maven/npmlib</module>
+		<module>maven/assembly</module>
+		<module>maven/polyglot</module>
+		<module>vro-types</module>
+		<module>typescript</module>
+		<module>package-installer</module>
+	</modules>
+
+	<licenses>
+		<license>
+			<name>Technical Preview License</name>
+			<url>https://flings.vmware.com/vrealize-build-tools/license</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.1</version>
+			</plugin>
+		</plugins>
+	</build>
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>artifactory-c-01a-releases</name>
+			<url>${releaseRepositoryUrl}</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>artifactory-c-01a-snapshots</name>
+			<url>${snapshotRepositoryUrl}</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="categoryPath">Library.View</entry>
+  <entry key="name">viewPodConfiguration</entry>
+  <entry key="type">ConfigurationElement</entry>
+  <entry key="id">779d2d6c-34b5-4bde-9a63-a22f00bc5128</entry>
+</properties>

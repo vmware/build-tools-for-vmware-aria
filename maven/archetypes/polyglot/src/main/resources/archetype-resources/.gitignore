@@ -1,0 +1,39 @@
+# macOS
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Maven
+target/
+
+# Node
+node_modules/
+
+# VSCode
+.vscode/
+
+# IntelliJ IDEA
+out/
+dist/
+.idea/
+*.iml
+
+# Eclipse
+.settings/
+.project
+.classpath
+
+# Sonar
+.sonarlint/
+
+# vRO local hint info and logs
+.o11n/
+
+# Ignore release script output files
+release.properties
+*xml.releaseBackup
+
+# Temporary files
+tmp/

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>
+    <![CDATA[{
+  "comment": "{\n  \"comment\": \"Exported from PSCoE o11n-convert\",\n  \"returnType\": {\n    \"name\": null,\n    \"type\": \"vCACCAFE:WorkItem\",\n    \"description\": \"\"\n  },\n  \"javadoc\": null,\n  \"crc\": \"4359f692\"\n}",
+  "returnType": {
+    "name": null,
+    "type": "vCACCAFE:WorkItem",
+    "description": ""
+  },
+  "javadoc": null,
+  "crc": "2a88e6c0"
+}]]>
+  </comment>
+  <entry key="categoryPath">com.vmware.pscoe.toolchain</entry>
+  <entry key="name">important_action</entry>
+  <entry key="type">ScriptModule</entry>
+  <entry key="id">e2646744-c639-44d9-90a2-551539e3b554</entry>
+</properties>

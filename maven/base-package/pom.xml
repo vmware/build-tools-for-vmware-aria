@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.vmware.pscoe.o11n</groupId>
+    <artifactId>base-package</artifactId>
+    <version>2.27.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>xml-package</module>
+        <module>actions-package</module>
+        <module>vra-package</module>
+        <module>vra-ng-package</module>
+        <module>vrli-package</module>
+        <module>typescript-project</module>
+        <module>vcd-ng-package</module>
+        <module>vrops-package</module>
+        <module>serverless</module>
+        <module>bsc-package</module>
+        <module>cs-package</module>
+    </modules>
+    <licenses>
+        <license>
+            <name>Technical Preview License</name>
+            <url>https://flings.vmware.com/vrealize-build-tools/license</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <properties>
+        <build.number>local</build.number>
+        <assembly.skipAssembly>true</assembly.skipAssembly>
+        <iac.version>2.27.1-SNAPSHOT</iac.version>
+        <license.licenseName>_license</license.licenseName>
+        <license.encoding>UTF-8</license.encoding>
+        <license.licenseResolver>${project.baseUri}license_data</license.licenseResolver>
+        <license.licenceFile>${basedir}/LICENSE</license.licenceFile>
+        <license.thirdPartyFilename>THIRD-PARTY</license.thirdPartyFilename>
+        <license.useMissingFile>true</license.useMissingFile>
+        <license.organizationName>VMWARE</license.organizationName>
+        <license.excludedScopes>test</license.excludedScopes>
+        <license.excludeTransitiveDependencies>true</license.excludeTransitiveDependencies>
+        <license.canUpdateCopyright>true</license.canUpdateCopyright>
+        <license.canUpdateDescription>true</license.canUpdateDescription>
+        <license.includes>**/*.js,**/*.ts</license.includes>
+    </properties>
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>artifactory-c-01a-releases</name>
+            <url>${releaseRepositoryUrl}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>artifactory-c-01a-snapshots</name>
+            <url>${snapshotRepositoryUrl}</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>licenses-management</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>license_data/licenses.properties</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.12</version>
+                        <executions>
+                            <execution>
+                                <id>timestamp-property</id>
+                                <goals>
+                                    <goal>timestamp-property</goal>
+                                </goals>
+                                <phase>validate</phase>
+                                <configuration>
+                                    <name>current.year</name>
+                                    <pattern>yyyy</pattern>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>1.20</version>
+                        <configuration>
+                            <inceptionYear>${current.year}</inceptionYear>
+                            <extraExtensions>
+                                <ts>java</ts>
+                                <yaml>properties</yaml>
+                                <ps1>properties</ps1>
+                                <psd>properties</psd>
+                                <psm>properties</psm>
+                            </extraExtensions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>manage-licenses</id>
+                                <goals>
+                                    <goal>update-file-header</goal>
+                                    <goal>update-project-license</goal>
+                                    <goal>add-third-party</goal>
+                                </goals>
+                                <phase>process-sources</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>unpack-keystore</id>
+            <activation>
+                <property>
+                    <name>keystoreArtifactId</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-keystore</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>target</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${keystoreGroupId}</groupId>
+                                            <artifactId>${keystoreArtifactId}</artifactId>
+                                            <version>${keystoreVersion}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>bundle</id>
+            <properties>
+                <assembly.skipAssembly>false</assembly.skipAssembly>
+            </properties>
+        </profile>
+        <profile>
+            <id>bundle-with-installer</id>
+            <properties>
+                <assembly.skipAssembly>false</assembly.skipAssembly>
+                <installerGroupId>com.vmware.pscoe.iac</installerGroupId>
+                <installerArtifactId>installer</installerArtifactId>
+                <installerVersion>${iac.version}</installerVersion>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-installer</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>target/installer-zip/${installerArtifactId}-${installerVersion}</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${installerGroupId}</groupId>
+                                            <artifactId>${installerArtifactId}</artifactId>
+                                            <version>${installerVersion}</version>
+                                            <overWrite>true</overWrite>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <executable.path>node_modules/.bin/polyglotpkg.cmd</executable.path>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.vmware.pscoe.maven.plugins</groupId>
+                <artifactId>vrealize-package-maven-plugin</artifactId>
+                <version>${iac.version}</version>
+                <configuration>
+                    <vro>
+                        <host>${vro.host}</host>
+                        <port>${vro.port}</port>
+                        <username>${vro.username}</username>
+                        <password>${vro.password}</password>
+                        <serverId>${vro.serverId}</serverId>
+                        <auth>${vro.auth}</auth>
+                        <authHost>${vro.authHost}</authHost>
+                        <authPort>${vro.authPort}</authPort>
+                        <proxy>${vro.proxy}</proxy>
+                        <tenant>${vro.tenant}</tenant>
+                        <refresh.token>${vro.refresh.token}</refresh.token>                       
+                        <packageImportConfigurationAttributeValues>${vro.packageImportConfigurationAttributeValues}</packageImportConfigurationAttributeValues>
+                        <packageImportConfigSecureStringAttributeValues>${vro.packageImportConfigSecureStringAttributeValues}</packageImportConfigSecureStringAttributeValues>
+                    </vro>
+                    <vra>
+                        <host>${vra.host}</host>
+                        <port>${vra.port}</port>
+                        <username>${vra.username}</username>
+                        <password>${vra.password}</password>
+                        <tenant>${vra.tenant}</tenant>
+                        <serverId>${vra.serverId}</serverId>
+                    </vra>
+                    <vrang>
+                        <host>${vrang.host}</host>
+                        <csp.host>${vrang.csp.host}</csp.host>
+                        <port>${vrang.port}</port>
+                        <username>${vrang.username}</username>
+                        <password>${vrang.password}</password>
+                        <serverId>${vrang.serverId}</serverId>                        
+                        <project.id>${vrang.project.id}</project.id>
+                        <project.name>${vrang.project.name}</project.name>
+                        <org.id>${vrang.org.id}</org.id>
+                        <org.name>${vrang.org.name}</org.name>
+                        <refresh.token>${vrang.refresh.token}</refresh.token>
+                        <bp.release>${vrang.bp.release}</bp.release>
+                        <import.timeout>${vrang.import.timeout}</import.timeout>
+                        <vro.integration>${vrang.vro.integration}</vro.integration>
+                        <data.collection.delay.seconds>${vrang.data.collection.delay.seconds}</data.collection.delay.seconds>
+                        <proxy>${vrang.proxy}</proxy>
+                        <cloud.proxy.name>${vrang.cloud.proxy.name}</cloud.proxy.name>
+                    </vrang>
+                    <vcd>
+                        <host>${vcd.host}</host>
+                        <port>${vcd.port}</port>
+                        <username>${vcd.username}</username>
+                        <password>${vcd.password}</password>
+                        <serverId>${vcd.serverId}</serverId>
+                    </vcd>
+                    <vrops>
+                        <host>${vrops.host}</host>
+                        <sshHost>${vrops.sshHost}</sshHost>
+                        <port>${vrops.port}</port>
+                        <sshPort>${vrops.sshPort}</sshPort>
+                        <dashboardUser>${vrops.dashboardUser}</dashboardUser>
+                        <username>${vrops.username}</username>
+                        <password>${vrops.password}</password>
+                        <serverId>${vrops.serverId}</serverId>
+                        <httpPort>${vrops.httpPort}</httpPort>
+                        <restUser>${vrops.restUser}</restUser>
+                        <restPassword>${vrops.restPassword}</restPassword>
+                        <restAuthSource>${vrops.restAuthSource}</restAuthSource>
+                        <restAuthProvider>${vrops.restAuthProvider}</restAuthProvider>
+                    </vrops>
+                    <vrli>
+                        <host>${vrli.host}</host>
+                        <port>${vrli.port}</port>
+                        <username>${vrli.username}</username>
+                        <password>${vrli.password}</password>
+                        <serverId>${vrli.serverId}</serverId>
+                        <provider>${vrli.provider}</provider>
+                        <vropsHost>${vrli.vropsHost}</vropsHost>
+                        <vropsPort>${vrli.vropsPort}</vropsPort>
+                        <vropsUser>${vrli.vropsUser}</vropsUser>
+                        <vropsPassword>${vrli.vropsPassword}</vropsPassword>
+                        <vropsAuthSource>${vrli.vropsAuthSource}</vropsAuthSource>
+                    </vrli>
+                    <ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
+                    <ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
+                    <connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+                    <socketTimeout>${vrealize.socket.timeout}</socketTimeout>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.vmware.pscoe.maven.plugins</groupId>
+                <artifactId>ssh-maven-plugin</artifactId>
+                <version>${iac.version}</version>
+                <configuration>
+                    <ssh>
+                        <host>${ssh.host}</host>
+                        <port>${ssh.port}</port>
+                        <username>${ssh.username}</username>
+                        <password>${ssh.password}</password>
+                        <serverId>${ssh.serverId}</serverId>
+                        <directory>${ssh.directory}</directory>
+                    </ssh>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.vmware.pscoe.maven</groupId>
+                        <artifactId>iac-assembly</artifactId>
+                        <version>${iac.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>
+                                ${project.groupId}.${project.artifactId}-${project.version}-${build.number}
+                            </finalName>
+                            <descriptorRefs>
+                                <descriptorRef>iac-assembly</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-vro-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/vro</outputDirectory>
+                            <includeTypes>package</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-vra-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/vra</outputDirectory>
+                            <includeTypes>vra</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-vcd-ng-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/vcd-ng</outputDirectory>
+                            <includeTypes>vcd-ng</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-vra-ng-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/vra-ng</outputDirectory>
+                            <includeTypes>vra-ng</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-vrops-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/vrops</outputDirectory>
+                            <includeTypes>vrops</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-vrli-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/vrli</outputDirectory>
+                            <includeTypes>vrli</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-bsc-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/bsc</outputDirectory>
+                            <includeTypes>bsc</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-cs-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/cs</outputDirectory>
+                            <includeTypes>cs</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-abx-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependency/abx</outputDirectory>
+                            <includeTypes>abx</includeTypes>
+                            <prependGroupId>true</prependGroupId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.13.0</version>
+                <executions>
+                    <execution>
+                        <id>calculate-checksums</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scripts>
+                        <script><![CDATA[
+import java.io.File;
+import java.util.regex.Pattern;
+import java.security.MessageDigest;
+
+def shaSum(final file) {
+   MessageDigest digest = MessageDigest.getInstance("SHA1")
+   file.withInputStream(){is->
+   byte[] buffer = new byte[8192]
+   int read = 0
+      while( (read = is.read(buffer)) > 0) {
+             digest.update(buffer, 0, read);
+         }
+     }
+   byte[] md5sum = digest.digest()
+   BigInteger bigInt = new BigInteger(1, md5sum)
+   bigInt.toString(16).padLeft(40, '0')
+}
+
+def checksumFiles(inDir, glob, excludes, appendTo) {
+    // find all files in target directory:
+    if (excludes && excludes.size() > 0) {
+        excludes = excludes.collect { !"".equals(it) ? Pattern.compile(it) : null }; // convert to regex pattern
+    }
+
+    def appendToFile = new File(appendTo);
+    def parentDir = appendToFile.getParentFile();
+
+    if (!parentDir.exists()) {
+        parentDir.mkdirs();
+    }
+
+    File targetDir = new File(inDir);
+    if (!targetDir.isDirectory()) {
+        return -1;
+    }
+
+    def patternRegex = glob.replace('*', ".*").replace('?', '.') + '$';
+    appendToFile.withWriter('utf-8') {
+        writer -> {
+            targetDir.traverse(type: groovy.io.FileType.FILES, nameFilter: ~/${patternRegex}/) { it ->
+                def excluded = false;
+                for (Pattern exclude: excludes) {
+                    if (exclude != null && exclude.matcher(it.getAbsolutePath().trim()).find()) {
+                        excluded = true;
+                        break;
+                    }
+                }
+
+                if (!excluded) {
+                    def shasum = shaSum(it);
+                    def relative = targetDir.toURI().relativize(it.toURI()).getPath();
+                    def text = shasum + " " + relative + "\n";
+                    writer.write (text)
+                }
+            }
+        }
+    }
+}
+
+def runChecksumFor(definition) {
+    def enabled = project.properties["checksum." + definition + "Enabled"];
+    if (enabled == "true" || enabled == "1") {
+        def findFilesIn = project.properties["checksum."+ definition + "Dir"] ?: "src";
+        def globFilter = project.properties["checksum."+ definition + "Glob"] ?: "*";
+
+        // split by ',' to get filtered strings
+        def excludeStrings = (project.properties["checksum."+ definition + "Excludes"] ?: "").split(',');
+
+        checksumFiles(findFilesIn, globFilter, excludeStrings, "target/"+ definition + ".sha1");
+    }
+}
+
+def checksumDefs = project.properties["checksum.definitions"] ?: "";
+for (String definition : checksumDefs.split(',')) {
+    runChecksumFor(definition);
+}
+]]>
+                        </script>
+                    </scripts>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy</artifactId>
+                        <version>3.0.9</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>

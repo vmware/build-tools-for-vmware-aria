@@ -1,0 +1,14 @@
+---
+# This file contains a list of files / directories 
+# that will be managed by the SSH archetype
+#
+# Example alerts to be managed (exported / imported):
+#
+# content:
+#   - state1.sls
+#   - state2.sls
+#   - states/mssql/state3.sls
+#   - states/oracle/*
+
+content:
+...

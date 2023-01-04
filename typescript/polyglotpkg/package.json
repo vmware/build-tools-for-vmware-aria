@@ -1,0 +1,87 @@
+{
+  "name": "@vmware-pscoe/polyglotpkg",
+  "version": "2.27.1-SNAPSHOT",
+  "description": "Create a vRO Polyglot or serverless package",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "polyglotpkg": "bin/polyglotpkg"
+  },
+  "scripts": {
+    "start": "./bin/polyglotpkg",
+    "build": "tsc",
+    "clean": "run-script-os",
+    "clean:win32": "rmdir /S /Q dist || echo Nothing to clean",
+    "clean:default": "rm -Rf out dist",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "mocha -r ts-node/register test/unit/**/*.test.ts",
+    "test:e2e": "npm run build && mocha -r ts-node/register test/e2e/*.test.ts --timeout 120000"
+  },
+  "keywords": [
+    "vRealize Orchestrator",
+    "vRealize Automation",
+    "abx",
+    "polyglot",
+    "nodejs",
+    "python",
+    "powershell",
+    "package"
+  ],
+  "engines": {
+    "node": ">=16.15.1",
+    "npm": ">=6.14.0"
+  },
+  "author": "VMware WWCoE",
+  "license": "VMware Confidential",
+  "files": [
+    "dist/**/*.*",
+    "bin/**/*.*",
+    "Usage.txt"
+  ],
+  "dependencies": {
+    "adm-zip": "^0.4.14",
+    "command-line-args": "^5.1.1",
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1",
+    "lodash": "^4.17.15",
+    "typescript": "^3.9.5",
+    "uuid": "^8.1.0",
+    "which": "^2.0.2",
+    "winston": "^3.2.1",
+    "xmlbuilder2": "^2.1.3"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.4.33",
+    "@types/command-line-args": "^5.0.0",
+    "@types/fs-extra": "^9.0.1",
+    "@types/lodash": "4.14.182",
+    "@types/node": "^14.0.13",
+    "@types/uuid": "^8.0.0",
+    "@types/which": "^1.3.2",
+    "run-script-os": "^1.1.6",
+    "ts-node": "^8.10.2"
+  },
+  "optionalDependencies": {
+    "fsevents": "~2.3.1"
+  },
+  "platform": {
+    "runtime": "nodejs",
+    "action": "nodeAction",
+    "entrypoint": "handler.handler",
+    "tags": []
+  },
+  "vro": {
+    "module": "com.vmware.pscoe.borathon",
+    "inputs": {
+      "limit": "number",
+      "vraEndpoint": "CompositeType(host:string,base:string):VraEndpointType"
+    },
+    "outputType": "Array/string"
+  },
+  "abx": {
+    "inputs": {
+      "limit": "",
+      "vraEndpoint": ""
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@types/o11n-plugin-rest",
+  "version": "2.27.1-SNAPSHOT",
+  "author": "VMware PSCoE",
+  "license": "ISC",
+  "private": true
+}

@@ -1,0 +1,8 @@
+.o11n/
+.vscode/
+.settings/
+node_modules/
+/build/
+/lib/
+**/.DS_Store
+**/*.tgz

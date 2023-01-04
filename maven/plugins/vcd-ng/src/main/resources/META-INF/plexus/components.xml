@@ -1,0 +1,46 @@
+<component-set>
+    <components>
+        <component>
+            <role>org.apache.maven.lifecycle.mapping.LifecycleMapping
+            </role>
+            <role-hint>vcd-ng</role-hint>
+            <implementation>
+                org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+            </implementation>
+            <configuration>
+                <lifecycles>
+                    <lifecycle>
+                        <id>default</id>
+                        <phases>
+                        	<initialize>
+                                <!-- org.apache.maven.plugins:maven-dependency-plugin:go-offline,  -->
+                                com.vmware.pscoe.maven.plugins:vcd-ng-package-maven-plugin:${project.version}:install-node-deps
+                            </initialize>
+                            <package>
+                                com.vmware.pscoe.maven.plugins:vcd-ng-package-maven-plugin:${project.version}:package
+                            </package>
+                            <install>
+                                org.apache.maven.plugins:maven-install-plugin:install
+                            </install>
+                            <deploy>
+                                org.apache.maven.plugins:maven-deploy-plugin:deploy
+                            </deploy>
+                        </phases>
+                    </lifecycle>
+                </lifecycles>
+            </configuration>
+        </component>
+        <component>
+            <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+            <role-hint>vcd-ng</role-hint>
+            <implementation>
+                org.apache.maven.artifact.handler.DefaultArtifactHandler
+            </implementation>
+            <configuration>
+                <extension>vcd-ng</extension>
+                <type>vcd-ng</type>
+                <packaging>vcd-ng</packaging>
+            </configuration>
+        </component>
+    </components>
+</component-set>

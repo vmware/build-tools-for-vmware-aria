@@ -1,0 +1,103 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"inputs": [
+		{
+			"id": "vrotsc-tc",
+			"type": "pickString",
+			"description": "Select a TC to run",
+			"options": [
+				"all-content",
+				"bug-VT-53",
+				"bug-VT-54",
+				"class-constructor",
+				"class-inherit",
+				"class-properties",
+				"config",
+				"decorators",
+				"define-es6",
+				"es6-shims",
+				"export-assignment",
+				"export-enum",
+				"export-interfaces",
+				"export-module",
+				"export-module-nested",
+				"export-module-ifaces",
+				"export-named",
+				"export-redirect",
+				"function-closure",
+				"import-cyclic",
+				"import-dashed",
+				"import-func",
+				"import-func-redeclare",
+				"import-global",
+				"import-interfaces",
+				"import-local",
+				"import-unused",
+				"import-vars",
+				"import-star",
+				"index-action",
+				"node_modules",
+				"private-vars-constructor",
+				"promise-await",
+				"promise-settle",
+				"resolution-scope",
+				"resource",
+				"spread-operator",
+				"test",
+				"workflow",
+				"workflow-xml"
+			]
+		}
+	],
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "java",
+			"name": "Launch Java Program",
+			"request": "launch",
+			"mainClass": "main"
+		},
+		{
+			"type": "java",
+			"name": "Attach to Remote Program",
+			"request": "attach",
+			"hostName": "localhost",
+			"port": "8000"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"env": {
+				"CHILD_PROC_LOGS": "1"
+			},
+			"name": "Launch TC",
+			"program": "${workspaceFolder}/typescript/vrotsc/src/vrotsc.ts",
+			"cwd": "${workspaceFolder}/typescript/vrotsc/e2e/cases",
+			"outFiles": ["${workspaceFolder}/typescript/vrotsc/build/**/*.js"],
+			"preLaunchTask": "npm: build-dev - typescript/vrotsc",
+			"sourceMaps": true,
+			"stopOnEntry": false,
+			"args": [
+				"${input:vrotsc-tc}",
+				"--actionsNamespace",
+				"com.vmware.pscoe.vrotsc",
+				"--typesOut",
+				"__out/types",
+				"--testsOut",
+				"__out/tests",
+				"--actionsOut",
+				"__out/actions",
+				"--workflowsOut",
+				"__out/workflows",
+				"--policiesOut",
+				"__out/policies",
+				"--resourcesOut",
+				"__out/resources",
+				"--configsOut",
+				"__out/configs"
+			]
+		}
+	]
+}

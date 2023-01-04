@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"@target": "es5",
+		"@module": "esnext",
+		"-types": 0,
+		"-typeRoots": 0,
+
+		"lib": [
+			"es5",
+			"es2015"
+		],
+		"sourceMap": false,
+		"removeComments": false,
+		"noImplicitAny": false
+	},
+
+	"-files":0
+}

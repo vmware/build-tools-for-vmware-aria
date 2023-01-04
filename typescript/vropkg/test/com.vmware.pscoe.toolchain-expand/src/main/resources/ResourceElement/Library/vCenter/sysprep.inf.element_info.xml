@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.vCenter</entry>
+  <entry key="mimetype">application/octet-stream</entry>
+  <entry key="name">sysprep.inf</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="description">Template answer file for sysprep.</entry>
+  <entry key="id">918080808080808080808080808080804A8080800120523434428525559a3425f</entry>
+</properties>

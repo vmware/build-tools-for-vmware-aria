@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>base-maven-plugin</artifactId>
+        <groupId>com.vmware.pscoe.maven.plugins</groupId>
+        <version>2.27.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>o11n-polyglot-package-maven-plugin</artifactId>
+    <packaging>maven-plugin</packaging>
+    <properties>
+        <goal.prefix>vro</goal.prefix>
+    </properties>
+
+    <!--
+    TODO: Clean up these dependencies
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>com.vmware.pscoe.o11n</groupId>
+            <artifactId>o11n-project</artifactId>
+            <version>2.27.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.iac</groupId>
+            <artifactId>artifact-manager</artifactId>
+            <version>2.27.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.maven.plugins</groupId>
+            <artifactId>common</artifactId>
+            <version>2.27.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+</project>

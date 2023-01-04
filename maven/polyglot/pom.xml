@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.vmware.pscoe.polyglot</groupId>
+    <artifactId>polyglot-project</artifactId>
+    <version>2.27.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <licenses>
+        <license>
+            <name>Technical Preview License</name>
+            <url>https://flings.vmware.com/vrealize-build-tools/license</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>artifactory-c-01a-releases</name>
+            <url>${releaseRepositoryUrl}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>artifactory-c-01a-snapshots</name>
+            <url>${snapshotRepositoryUrl}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>unpack-keystore</id>
+            <activation>
+                <property>
+                    <name>keystoreArtifactId</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-keystore</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>target</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${keystoreGroupId}</groupId>
+                                            <artifactId>${keystoreArtifactId}</artifactId>
+                                            <version>${keystoreVersion}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.vmware.pscoe.maven.plugins</groupId>
+            <artifactId>o11n-polyglot-package-maven-plugin</artifactId>
+            <version>${iac.version}</version>
+        </dependency>
+        <!--
+        TODO: Do we need this for polyglot packaging?
+        -->
+        <dependency>
+            <groupId>com.vmware.pscoe.maven.plugins</groupId>
+            <artifactId>o11n-actions-package-maven-plugin</artifactId>
+            <version>${iac.version}</version>
+        </dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vropkg</artifactId>
+			<type>tgz</type>
+			<version>2.27.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>polyglotpkg</artifactId>
+			<type>tgz</type>
+			<version>2.27.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+
+                <!--
+                Execute commands on maven lifecycle phases using exec maven plugin
+                -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                    <executions>
+                        <!--
+                        Validate: validate the project is correct and all necessary information is available.
+                        -->
+                        <!-- Keep versions in sync -->
+                        <execution>
+                            <id>npm version - validate</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>validate</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>version</argument>
+                                    <argument>--allow-same-version</argument>
+                                    <argument>--no-git-tag-version</argument>
+                                    <argument>--force</argument>
+                                    <argument>${project.version}</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!-- Perform 'npm install' -->
+                        <execution>
+                            <id>npm install - validate</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>validate</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>install</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!--
+                        Compile: compile the source code of the project.
+                        Perform 'npm run build'
+                        -->
+                        <execution>
+                            <id>npm run build - compile</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>compile</phase>
+                            <configuration>
+<!--                                 <executable>${basedir}/${executable.path}</executable>-->
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>run</argument>
+                                    <argument>build</argument>
+                                    <argument>--compile</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!--
+                        Clean: remove all files generated by the previous build.
+                        Perform 'npm run clean'
+                        -->
+                        <execution>
+                            <id>npm install - clean</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>clean</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>install</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>npm run clean - clean</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>clean</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>run</argument>
+                                    <argument>clean</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                TODO: Do we need this for polyglot packaging?
+                -->
+                <!--
+                <plugin>
+                    <groupId>com.vmware.pscoe.maven.plugins</groupId>
+                    <artifactId>o11n-actions-package-maven-plugin</artifactId>
+                    <version>${iac.version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+                -->
+
+                <!--
+                Control polyglot packaging in a vRO-compatible package
+                -->
+                <plugin>
+                    <groupId>com.vmware.pscoe.maven.plugins</groupId>
+                    <artifactId>o11n-polyglot-package-maven-plugin</artifactId>
+                    <version>${iac.version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+
+                <!--
+                Control project release using maven release plugin
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <preparationGoals>clean compile scm:checkin</preparationGoals>
+                        <completionGoals>clean compile scm:checkin</completionGoals>
+                    </configuration>
+                </plugin>
+
+                <!--
+                Commit additional files during project release using maven scm plugin
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>1.11.2</version>
+                    <configuration>
+                        <message>(release) updated package.json to v${project.version}</message>
+                        <includes>package.json,package-lock.json</includes>
+                        <pushChanges>false</pushChanges>
+                    </configuration>
+                </plugin>
+				<plugin>
+					<groupId>com.vmware.pscoe.maven.plugins</groupId>
+					<artifactId>vrealize-package-maven-plugin</artifactId>
+					<version>${iac.version}</version>
+					<configuration>
+						<vro>
+							<host>${vro.host}</host>
+							<port>${vro.port}</port>
+							<username>${vro.username}</username>
+							<password>${vro.password}</password>
+							<serverId>${vro.serverId}</serverId>
+							<auth>${vro.auth}</auth>
+							<authHost>${vro.authHost}</authHost>
+							<authPort>${vro.authPort}</authPort>
+							<proxy>${vro.proxy}</proxy>
+							<tenant>${vro.tenant}</tenant>
+							<refresh.token>${vro.refresh.token}</refresh.token>
+							<packageImportConfigurationAttributeValues>${vro.packageImportConfigurationAttributeValues}</packageImportConfigurationAttributeValues>
+							<packageImportConfigSecureStringAttributeValues>${vro.packageImportConfigSecureStringAttributeValues}</packageImportConfigSecureStringAttributeValues>
+						</vro>
+						<vrang>
+							<host>${vrang.host}</host>
+							<csp.host>${vrang.csp.host}</csp.host>
+							<port>${vrang.port}</port>
+							<username>${vrang.username}</username>
+							<password>${vrang.password}</password>
+							<serverId>${vrang.serverId}</serverId>
+							<project.id>${vrang.project.id}</project.id>
+							<project.name>${vrang.project.name}</project.name>
+							<org.id>${vrang.org.id}</org.id>
+							<org.name>${vrang.org.name}</org.name>
+							<refresh.token>${vrang.refresh.token}</refresh.token>
+							<bp.release>${vrang.bp.release}</bp.release>
+							<import.timeout>${vrang.import.timeout}</import.timeout>
+							<vro.integration>${vrang.vro.integration}</vro.integration>
+							<data.collection.delay.seconds>${vrang.data.collection.delay.seconds}</data.collection.delay.seconds>
+							<proxy>${vrang.proxy}</proxy>
+							<cloud.proxy.name>${vrang.cloud.proxy.name}</cloud.proxy.name>
+						</vrang>
+						<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
+						<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
+						<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+						<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
+					</configuration>
+				</plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <properties>
+        <iac.version>2.27.1-SNAPSHOT</iac.version>
+        <sonar.sources>src</sonar.sources>
+        <sonar.language>ts</sonar.language>
+        <sonar.javascript.lcov.reportPaths>./target/lcov.info</sonar.javascript.lcov.reportPaths>
+        <executable.path>node_modules/.bin/polyglotpkg</executable.path>
+    </properties>
+
+</project>

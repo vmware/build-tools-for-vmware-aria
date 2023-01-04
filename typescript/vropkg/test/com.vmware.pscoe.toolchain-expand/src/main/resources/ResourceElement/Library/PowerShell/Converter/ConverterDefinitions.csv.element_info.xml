@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.PowerShell.Converter</entry>
+  <entry key="mimetype">application/octet-stream</entry>
+  <entry key="name">ConverterDefinitions.csv</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="description">Imported from : 'C:\Documents and Settings\ppanicherski\Desktop\ConverterDefinitions.csv' on server localhost:8230</entry>
+  <entry key="id">3D818080808080808080808080808080C380808001270557368849c62c352aa82</entry>
+</properties>

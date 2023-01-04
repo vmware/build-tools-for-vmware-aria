@@ -1,0 +1,20 @@
+# This file contains lists of the Code Stream assets that will be managed by this project.
+# Please specify a list of assets to the corresponding category that you want to be managed by this project.
+#
+# Example:
+#  pipeline:
+#    - Test
+
+---
+pipeline:
+  - pipe1
+variable:
+  - var1
+endpoint:
+  - endpoint1
+custom-integration:
+  - integration1
+git-webhook:
+docker-webhook:
+gerrit-listener:
+gerrit-trigger:

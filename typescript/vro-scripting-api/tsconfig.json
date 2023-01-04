@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+    "moduleResolution": "Node",
+    "target": "ES2018",
+		"outFile": "build/vro-runtime.js",
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"declaration": false,
+		"declarationMap": false,
+		"strict": false,
+    "newLine": "lf"
+	},
+	"include": [
+		"src"
+	],
+	"exclude": [
+		"../node_modules"
+	]
+}
