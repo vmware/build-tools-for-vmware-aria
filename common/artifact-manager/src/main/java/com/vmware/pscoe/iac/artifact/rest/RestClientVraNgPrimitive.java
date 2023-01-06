@@ -1269,8 +1269,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Flavor mappings reconciliation.
 	 * Added some extra checks if the getFlavorProfileById returns unexpected
-	 * response due to:
-	 * https://jira.pscoe.vmware.com/browse/IAC-458
+	 * response due to NullPointerException (IAC-458)
 	 *
 	 * @param flavorProfileId profile id
 	 * @param flavorMappings  list of flavor mappings

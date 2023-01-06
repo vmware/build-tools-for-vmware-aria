@@ -24,7 +24,7 @@ npm run clean
 Configure the npm repository (one time only):
 
 ```
-npm config set @vmware-pscoe:registry http://artifactory.pscoe.vmware.com/artifactory/api/npm/npm-local/
+npm config set @vmware-pscoe:registry http://artifactory-fqdn/path
 ```
 
 Install vrotsc command globally:

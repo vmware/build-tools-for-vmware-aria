@@ -823,7 +823,7 @@
 ## v1.3.6 - 03 Oct 2018
 
 ### Fixes
-* New project functionality works only from the context of existing IaC project. Now projects can be created from an empty VSCode window.
+* New project functionality works only from the context of existing Build Tools for VMware Aria project. Now projects can be created from an empty VSCode window.
 
 ### Known Issues
 * Cannot build project generated with groupId or artifactId that contain special characters.
@@ -843,7 +843,7 @@
 * Cannot build project generated with groupId or artifactId that contain special characters.
   * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
   * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
-* New project functionality works only from the context of existing IaC project.
+* New project functionality works only from the context of existing Build Tools for VMware Aria project.
 
 ## v1.3.3 - 21 Sep 2018
 
@@ -854,7 +854,7 @@
 * Cannot build project generated with groupId or artifactId that contain special characters.
   * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
   * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
-* New project functionality works only from the context of existing IaC project.
+* New project functionality works only from the context of existing Build Tools for VMware Aria project.
 
 ## v1.3.2 - 19 Sep 2018
 

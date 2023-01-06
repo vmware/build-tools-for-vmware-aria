@@ -1,11 +1,9 @@
-# IaC for vRealize - Toolchain
+# Build Tools for VMware Aria
 This repository contains the source code for the whole toolchain supporting Infrastructure-as-Code for vRealize (Orchestrator and Automation).
 
 ## Documentation
-- [Solution Design Document](https://confluence.pscoe.vmware.com/pages/viewpage.action?pageId=16878722)
 - [Installation and Operations Documents](./doc/markdown)
 - [Build and Debug the VS Code Extension](./vscode)
-- [PSCoE Development Process](https://confluence.pscoe.vmware.com/display/KB/Development+Process)
 
 ## How to build
 ```shell

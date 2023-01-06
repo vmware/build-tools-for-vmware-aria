@@ -283,7 +283,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Attempts to store an icon to the file system under {{catalog_item_dir}}/icons
 	 * The correct file extension will be fetched from the content-type header.
 	 *
-	 * @NOTE	Due to: https://jira.pscoe.vmware.com/browse/IAC-482 for now, we are not going to save svgs
+	 * @NOTE	Due to issue when GET .../icon/api/icons/iconId for vRA 8.4 (IAC-482), we are not going to save svgs
 	 * 			Also this will result in the iconId to be stored in the file, but the check in:
 	 * 			com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem#hasIcon() is iconExtension dependent,
 	 * 			so logic should hold fine.
@@ -385,7 +385,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 
 	/**
 	 * Import all catalog items
-	 * @NOTE	This will skip svg icon upload due to issue described in: https://jira.pscoe.vmware.com/browse/IAC-482
+	 * @NOTE	This will skip svg icon upload due to issue described in IAC-482
 	 */
 	public void importContent( File sourceDirectory ) {
 		logger.info( "Importing files from the '{}' directory", DIR_CATALOG_ITEMS );

@@ -1,6 +1,6 @@
-# IaC for vRealize Platform
+# Build Tools for VMware Aria
 
-**IaC for vRealize Platform** provides set of infrastructure components supporting source control, artifact managment, build system and wiki to the vRrealize engineers.
+**Build Tools for VMware Aria** provides set of infrastructure components supporting source control, artifact managment, build system and wiki to the vRrealize engineers.
 
 ## Table of Contents
 1. [Photon](#Photon)
@@ -38,7 +38,7 @@
     - Could be developer laptop, desktop or jumphost
     - Firewall
         - Outbound
-            - IaC for vRealize Platform Server:[80, 443]
+            - Build Tools for VMware Aria Server:[80, 443]
             - vRSCLM:[443:80]
             - vRA:[443:80]
             - vRO:[443:80]
@@ -244,4 +244,4 @@ Artifactory:
 * /data/artifactory
 
 # Next step
-- Configure developer **[IaC for vRealize Workstation](./setup-workstation.md)**
+- Configure developer **[Build Tools for VMware Aria Workstation](./setup-workstation.md)**

@@ -527,4 +527,4 @@ mvn -U <rest of the command>
 ```
 
 ## Known issues:
-* There is an issue with svg icons, they will not be downloaded/uploaded. Check: https://jira.pscoe.vmware.com/browse/IAC-482
+* There is an issue with svg icons, they will not be downloaded/uploaded (IAC-482).

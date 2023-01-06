@@ -1,5 +1,5 @@
 # Setup development environment
-https://confluence.pscoe.vmware.com/display/KB/vRDT+-+workstation+setup
+./doc/markdown/setup-workstation.md
 
 # Starting work on a task
 Whatever is done should have a corresponding JIRA task with proper description and release version. All the changes and progress on a task has to be tracked under the corresponding JIRA ticket.
@@ -45,13 +45,4 @@ Start maven in debug mode, e.g.
 *mvndebug vra-ng:pu;; -P{profileName} --offline*
 *mvndebug vrealize:push -P{profileName} --offline*
 
-# How to release
-Read How to release - https://stash.pscoe.vmware.com/projects/IFV/repos/toolchain/browse/How-To-Release.md for detailed explanation.
-When opening a PR there is a checklist that has to be fulfilled:
 
-***My changes have been rebased and squashed to the minimal number of relevant commits***
-***I have tested against live environment, if applicable***
-***I have added necessary documentation***
-***I have added relevant error handling and logging messages to help troubleshooting***
-***Dependencies in pom.xml are up-to-date***
-***I have added tests that prove my fix is effective or that my feature works***

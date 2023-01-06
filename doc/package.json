@@ -1,7 +1,7 @@
 {
       "name": "iac-documentation",
       "version": "1.0.0-SNAPSHOT",
-      "description": "IaC for vRealize documentation bundle",
+      "description": "Build Tools for VMware Aria documentation bundle",
       "dependencies": {
             "pack": "^2.1.0",
             "showdown": ">= 1.8.6"

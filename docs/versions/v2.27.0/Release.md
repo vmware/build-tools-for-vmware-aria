@@ -108,8 +108,8 @@ Possible values for property **Faas provider** are: "aws", "azure", "on-prem". F
 	"license": "VMware Confidential",
 	"devDependencies": {
 		"@types/node": "^14.0.13",
-		"@vmware-pscoe/polyglotpkg": "https://artifactory.pscoe.vmware.com/artifactory/pscoe/com/vmware/pscoe/iac/polyglotpkg/2.18.1/polyglotpkg-2.18.1.tgz",
-		"@vmware-pscoe/vropkg": "https://artifactory.pscoe.vmware.com/artifactory/pscoe/com/vmware/pscoe/iac/vropkg/2.18.1/vropkg-2.18.1.tgz",
+		"@vmware-pscoe/polyglotpkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/polyglotpkg/2.18.1/polyglotpkg-2.18.1.tgz",
+		"@vmware-pscoe/vropkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/vropkg/2.18.1/vropkg-2.18.1.tgz",
 		"run-script-os": "^1.1.6",
 		"sinon": "^11.1.2",
 		"ts-node": "^8.10.2",

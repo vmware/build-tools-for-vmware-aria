@@ -67,8 +67,8 @@ An example settings.xml file is shown below:
                 </pluginRepository>
             </pluginRepositories>
             <properties>
-                <snapshotRepositoryUrl>http://artifactory.pscoe.vmware.com/artifactory/pscoe</snapshotRepositoryUrl>
-                <releaseRepositoryUrl>http://artifactory.pscoe.vmware.com/artifactory/pscoe</releaseRepositoryUrl>
+                <snapshotRepositoryUrl>http://artifactory-fqdn</snapshotRepositoryUrl>
+                <releaseRepositoryUrl>http://artifactory-fqdn</releaseRepositoryUrl>
             </properties>
             <id>artifactory</id>
         </profile>

@@ -50,7 +50,7 @@
         </snapshotRepository>
     </distributionManagement>
     <scm>
-        <developerConnection>scm:git:ssh://git@stash.pscoe.vmware.com:7999/ifv/toolchain.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com:vmware/build-tools-for-vmware-aria.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 </project>
