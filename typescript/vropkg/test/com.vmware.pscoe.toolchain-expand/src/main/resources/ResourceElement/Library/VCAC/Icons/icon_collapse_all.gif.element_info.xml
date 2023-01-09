@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.VCAC.Icons</entry>
+  <entry key="mimetype">image/gif</entry>
+  <entry key="name">icon_collapse_all.gif</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="description">Imported from : '/Users/christophe/Desktop/Images/icon_collapse_all.gif' on server vCO51Mac:8230</entry>
+  <entry key="id">6310c7a1-d1cb-4221-858a-ecbff28bcf99</entry>
+</properties>

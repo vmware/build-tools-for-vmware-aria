@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+
+  <category name="com.jayway.jsonpath.internal.path.CompiledPath">
+    <priority value="OFF" />
+  </category>
+  
+  <Loggers>
+  	<Logger name="com.jayway.jsonpath.internal.path.CompiledPath" level="ERROR">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Root level="debug">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>

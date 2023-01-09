@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.vmware.pscoe.npm</groupId>
+    <artifactId>base-package</artifactId>
+    <version>${project.version}</version>
+  </parent>
+
+  <groupId>\${groupId}</groupId>
+  <artifactId>\${artifactId}</artifactId>
+  <version>\${version}</version>
+  <packaging>pom</packaging>
+  <scm>
+    <developerConnection>${scmDeveloperConnection}</developerConnection>
+  </scm>
+  #if (${licenseTechnicalPreview} == 'true' || ${licenseTechnicalPreview} == 'yes' || ${licenseTechnicalPreview} == 'y')
+  #set( $licenseName = 'Technical Preview License' )
+  #set( $licenseUrl = 'https://flings.vmware.com/vrealize-build-tools/license' )
+  #else
+  #set( $licenseName = 'TODO: Enter License name' )
+  #if(!${licenseUrl} || ${licenseUrl} == '')
+  #set( $licenseUrl = 'https://todo.put.url.to.my.licence/license' )
+  #end
+  #end
+
+  <description>
+    This package is licensed under ${licenseUrl}
+  </description>
+  <licenses>
+    <license>
+      <name>\${licenseName}</name>
+      <url>\${licenseUrl}</url>
+      <distribution>pom</distribution>
+    </license>
+  </licenses>
+  <properties>
+    <npmconvTsConfigArgs>-t conf/tsconfig.merge.json</npmconvTsConfigArgs>
+    #if (!${licenseTechnicalPreview} || ${licenseTechnicalPreview} == 'false')<license.organizationName>TODO: Enter Organization name</license.organizationName>#end
+
+    <license.includes>**/*.js,**/*.ts</license.includes>
+    <license.excludes></license.excludes>
+  </properties>
+  <dependencies>
+    <!-- standard maven dependenciees required at runtime -->
+    <!--dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>class</artifactId>
+      <type>package</type>
+      <version>2.4.3</version>
+      <scope>runtime</scope>
+    </dependency -->
+
+    <!-- compile time dependencies in vRO pom -->
+    <!--dependency>
+      <groupId>com.vmware.pscoe.iac</groupId>
+      <artifactId>artifact-manager</artifactId>
+      <version>2.0.4-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency-->
+
+    <!-- npm to vRO maven mapping scope is the npm package/version -->
+    <!--dependency>
+      <groupId>com.vmware.pscoe.iac</groupId>
+      <artifactId>vrotsc</artifactId>
+      <type>tgz</type>
+      <version>2.0.4-SNAPSHOT</version>
+      <scope>npm/rhino@1.7.5</scope>
+    </dependency -->
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.alexecollins.maven.plugin</groupId>
+        <artifactId>script-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

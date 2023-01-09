@@ -1,0 +1,20 @@
+id: 3669e-e7ea-4486-8b91-e1e36ae7ce9
+name : Test Sagas Rollback Current Saga
+path: sagas/saga-test-rollback-current-saga
+imports: 
+  - sagas.saga-test.tasks
+tasks:
+  Print First Saga:
+    execute: firstSaga
+    rollback: rollbackFirstSaga
+    rollbackCurrentTask: false
+  Print Second Saga:
+    execute: secondSaga
+    rollback: rollbackSecondSaga
+    rollbackCurrentTask: false
+  Print Third Saga:
+    execute: thirdSaga
+    rollback: rollbackThirdSaga
+    rollbackCurrentTask: false
+omitOutput: false
+rollbackCurrentTask: true

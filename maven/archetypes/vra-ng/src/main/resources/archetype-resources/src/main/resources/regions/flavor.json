@@ -1,0 +1,23 @@
+{
+    "flavorMappings": {
+      "mapping": {
+        "flavor-mapping-1-name": {
+          "cpuCount": 2,
+          "memoryInMB": 1024
+        },
+        "flavor-mapping-2-name": {
+          "cpuCount": 2,
+          "memoryInMB": 2048
+        }
+      }
+    },
+    "name": "flavor-profile-name",
+    "description": "flavor-profile-description",
+    "orgId": "org-id",
+    "_links": {
+      "region": {
+        "href": "region-href"
+      }
+    }
+  }
+  

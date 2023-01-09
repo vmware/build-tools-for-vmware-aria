@@ -1,0 +1,67 @@
+{
+    "layout": {
+      "pages": [
+        {
+          "id": "page_ftr9080h",
+          "sections": [
+            {
+              "id": "section_m29eidg4",
+              "fields": [
+                {
+                  "id": "foo",
+                  "display": "textField",
+                  "signpostPosition": "right-middle",
+                  "state": {
+                    "visible": true,
+                    "read-only": false
+                  }
+                }
+              ]
+            },
+            {
+              "id": "section_3wv6e91j",
+              "fields": [
+                {
+                  "id": "bar",
+                  "display": "textField",
+                  "signpostPosition": "right-middle",
+                  "state": {
+                    "visible": true,
+                    "read-only": false
+                  }
+                }
+              ]
+            }
+          ],
+          "title": "General",
+          "state": {}
+        }
+      ]
+    },
+    "schema": {
+      "foo": {
+        "id": "foo",
+        "type": {
+          "dataType": "string"
+        },
+        "label": "foo",
+        "constraints": {
+          "required": false
+        }
+      },
+      "bar": {
+        "id": "bar",
+        "type": {
+          "dataType": "string"
+        },
+        "label": "bar",
+        "constraints": {
+          "required": false
+        }
+      }
+    },
+    "options": {
+      "externalValidations": []
+    },
+    "itemId": ""
+  }

@@ -1,0 +1,14 @@
+name: CompositeConfigYaml
+path: MyOrg/MyProject
+id: b3345b2d-6a36-37c6-8410-7234c2e0a0f6
+attributes:
+  field1:
+    type: CompositeType(field1:number,field2:boolean,field3:string,field4:Array/string):ITest
+    value:
+      field1: 1
+      field2: true
+      field3: Test
+      field4:
+        - test1
+        - test2
+        - test3

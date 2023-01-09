@@ -1,4 +1,45 @@
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
+# macOS
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Maven
+target/
+
+# Dependency directories
+node_modules/
+
+# Output of 'npm pack'
+*.tgz
+
+# IntelliJ IDEA
+out/
+dist/
+.idea/
+*.iml
+*.eml
+
+# Eclipse
+.settings/
+.project
+.classpath
+
+# Sonar
+.sonarlint/
+
+# vRO local hint info
+.o11n/
+
+# auto generated
+hint/plugin/o11nplugin-hint/src/main/dar/VSO-INF/vso.xml
+
+.m2/repository/
+.factorypath
+typescript/vrotsc/e2e/cases/__out/
+typescript/vrotsc-annotations/package-lock.json
+/.metadata/

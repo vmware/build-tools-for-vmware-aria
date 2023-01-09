@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>
+    <![CDATA[{
+  "comment": "{\n  \"comment\": \"Exported from PSCoE o11n-convert\",\n  \"returnType\": {\n    \"name\": null,\n    \"type\": \"void\",\n    \"description\": \"\"\n  },\n  \"crc\": \"2484b1fd\"\n}",
+  "returnType": {
+    "name": null,
+    "type": "void",
+    "description": ""
+  },
+  "crc": "14e19b17"
+}]]>
+  </comment>
+  <entry key="categoryPath">com.vmware.pscoe.toolchain</entry>
+  <entry key="name">importantaction2</entry>
+  <entry key="type">ScriptModule</entry>
+  <entry key="id">a0231ca3-59ab-4010-be05-beaf82bf43c2</entry>
+</properties>

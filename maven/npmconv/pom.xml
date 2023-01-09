@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.vmware.pscoe.npm</groupId>
+    <artifactId>base-package</artifactId>
+    <version>2.27.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <licenses>
+        <license>
+            <name>Technical Preview License</name>
+            <url>https://flings.vmware.com/vrealize-build-tools/license</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <iac.version>2.27.1-SNAPSHOT</iac.version>
+        <npmPackageVersion>${project.version}</npmPackageVersion>
+        <npmconvSrcArgs>-s src/**/*</npmconvSrcArgs>
+        <npmconvAuxIncludeArgs>--auxInclude src/*.ts:src</npmconvAuxIncludeArgs>
+        <npmconvTsConfigArgs></npmconvTsConfigArgs>
+        <npmconvAnyOtherArgs>--vv --toolchainVersion ${iac.version}</npmconvAnyOtherArgs>
+        <npmconvArgs>${project.artifactId}@${npmPackageVersion} -c ${project.groupId} -o target/vro-prj ${npmconvSrcArgs} ${npmconvTsConfigArgs} ${npmconvArtifactDepsMapArgs} ${nmpconvCompileMvnDepsArgs} ${npmconvAuxMvnDepsArgs} ${npmconvAuxIncludeArgs} ${npmconvAnyOtherArgs}</npmconvArgs>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>artifactory-c-01a-releases</name>
+            <url>${releaseRepositoryUrl}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>artifactory-c-01a-snapshots</name>
+            <url>${snapshotRepositoryUrl}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.alexecollins.maven.plugin</groupId>
+                    <artifactId>script-maven-plugin</artifactId>
+                    <version>1.0.0</version>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <configuration>
+                                <language>javascript</language>
+                                <script>
+                    var depsMaps = [];
+                    var compileDeps = [];
+                    var auxDeps = [];
+
+                    for (var i = 0; i &lt; project.getDependencies().size(); i++) {
+                        var dep = project.getDependencies().get(i);
+                        var mvnGroupId = dep.getGroupId();
+                        var mvnArtifactId = dep.getArtifactId();
+                        var mvnVersion = dep.getVersion();
+                        var mvnType = dep.getType();
+                        var scope = dep.getScope();
+
+                        if ("compile".equals(scope)) {
+                            compileDeps.push("--compileMvnDeps " + mvnGroupId + ":" + mvnArtifactId + ":" + mvnVersion + ":" + (mvnType || "package"));
+                        } else if (scope &amp;&amp; scope.indexOf("npm^") === 0) {
+                            var npmPackage = scope.substring(4);
+                            depsMaps.push("-d " + npmPackage + "^" + mvnGroupId + ":" + mvnArtifactId + ":" + mvnVersion + ":" + (mvnType || "package"));
+                        } else {
+                            auxDeps.push("--auxMvnDeps " + mvnGroupId + ":" + mvnArtifactId + ":" + mvnVersion + ":" + (mvnType || "package"));
+                        }
+                    }
+
+                    project.getProperties().put("npmconvArtifactDepsMapArgs", depsMaps.join(" "));
+                    project.getProperties().put("nmpconvCompileMvnDepsArgs", compileDeps.join(" "));
+                    project.getProperties().put("npmconvAuxMvnDepsArgs", auxDeps.join(" "));
+                                </script>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.mozilla</groupId>
+                            <artifactId>rhino</artifactId>
+                            <version>1.7R5</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <executions>
+                        <execution>
+                            <id>copy-vro-dependencies</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>target/npmconv</outputDirectory>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>com.vmware.pscoe.iac</groupId>
+                                        <artifactId>npmconv</artifactId>
+                                        <version>${iac.version}</version>
+                                        <type>tgz</type>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.3.2</version>
+                    <executions>
+                        <execution>
+                            <id>npm install</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>compile</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>install</argument>
+                                    <argument>target/npmconv/package</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>npmconv execute</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>compile</phase>
+                            <configuration>
+                                <executable>target/npmconv/package/bin/npmconv</executable>
+                                <commandlineArgs>${npmconvArgs}</commandlineArgs>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>vro build</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>compile</phase>
+                            <configuration>
+                                <workingDirectory>target/vro-prj/${project.artifactId}</workingDirectory>
+                                <executable>mvn</executable>
+                                <arguments>
+                                    <argument>clean</argument>
+                                    <argument>package</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>1.7</version>
+                    <extensions>true</extensions>
+                    <executions>
+                        <execution>
+                            <id>attach-artifacts</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>attach-artifact</goal>
+                            </goals>
+                            <configuration>
+                                <artifacts>
+                                    <artifact>
+                                        <file>target/vro-prj/${project.artifactId}/target/${project.groupId}.${project.artifactId}-${npmPackageVersion}.package</file>
+                                        <type>package</type>
+                                    </artifact>
+                                    <artifact>
+                                        <file>target/vro-prj/${project.artifactId}/target/vro-types/types-${project.groupId}.${project.artifactId}-${npmPackageVersion}.tgz</file>
+                                        <type>tgz</type>
+                                    </artifact>
+                                </artifacts>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

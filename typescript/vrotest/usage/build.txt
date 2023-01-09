@@ -1,0 +1,34 @@
+Usage: vrotest build [options]
+
+Options:
+  --actions                     Path to the vRO JavaScript folder.
+  --testHelpers                 Path to the vRO JavaScript test helpers folder.
+  --tests                       Path to the folder containing all tests.
+  --maps                        Path to the folder containing source maps when using TypeScript.
+  --resources                   Path to the folder containing vRO resources.
+  --configurations              Path to the folder containing vRO configurations.
+  --dependencies                Path to the folder containing dependent vRO packages.
+  --helpers                     Path to the folder containing vRO scripting API.
+  --ts-src                      Path to the original TypeScript code.
+  --ts-namespace                Namespace for the TypeScript project e.g. com.example.myproject
+  --output                      Folder where testbed will be created.
+  --coverage-thresholds         Defines the threshold (in %) for the test coverage. Tests will fail if coverage is below the threshold.
+                                Format: <error>:<warn>:<type>
+                                Types:
+                                  * all
+                                  * branches
+                                  * lines
+                                  * functions
+                                  * statements
+  --coverage-reports            Specify test coverage reports to use.
+                                Availale values:
+                                  * text
+                                  * html
+                                  * json
+                                  * clover
+                                  * cobertura
+                                  * lcov
+                                  * lcovonly
+  --per-file                    Code coverage per file bases. Set custom --coverage-thresholds, if any file in the project drops below those thresholds, the build will fail
+Examples:
+$ vrotest build --actions src --testHelpers src --tests test --output target/vro-test --coverage-thresholds 50:60:all,65:70:statements --coverage-reports text,html,lcovonly

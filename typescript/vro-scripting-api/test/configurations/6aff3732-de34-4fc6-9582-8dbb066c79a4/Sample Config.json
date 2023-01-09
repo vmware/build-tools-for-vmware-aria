@@ -1,0 +1,43 @@
+[
+  {
+    "name": "stringAttr",
+    "type": "string",
+    "value": "String value",
+    "readOnly": "false"
+  },
+  {
+    "name": "numberAttr",
+    "type": "number",
+    "value": 1.0,
+    "readOnly": "false"
+  },
+  {
+    "name": "booleanAttr",
+    "type": "boolean",
+    "value": true,
+    "readOnly": "true"
+  },
+  {
+    "name": "restHost",
+    "type": "__NULL__",
+    "readOnly": "true"
+  },
+  {
+    "name": "strArray",
+    "type": "Array/string",
+    "value": "#{#string#str1#;#string#str 2#;#string#str #3#}#",
+    "readOnly": "false"
+  },
+  {
+    "name": "boolArray",
+    "type": "Array/boolean",
+    "value": "#{#boolean#true#;#boolean#false#;#boolean#true#}#",
+    "readOnly": "false"
+  },
+  {
+    "name": "numArray",
+    "type": "Array/number",
+    "value": "#{#number#1.0#;#number#2.0#;#number#3.0#}#",
+    "readOnly": "false"
+  }
+]

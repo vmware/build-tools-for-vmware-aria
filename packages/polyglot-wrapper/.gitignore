@@ -1,0 +1,42 @@
+# macOS
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Node
+node_modules/
+package-lock.json
+package.json
+
+# Maven
+target/
+actions/target/
+workflows/target/
+
+# Generated javascript files
+src/**/*.js
+src/**/*.d.ts
+
+# VSCode
+.vscode/
+**/.vscode
+
+# IntelliJ IDEA
+out/
+dist/
+.idea/
+*.iml
+
+# Eclipse
+.settings/
+.project
+.classpath
+
+# Sonar
+.sonarlint/
+
+# vRO local hint info and logs
+.o11n/
+actions/.o11n/

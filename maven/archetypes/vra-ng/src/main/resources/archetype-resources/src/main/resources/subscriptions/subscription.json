@@ -1,0 +1,11 @@
+{
+	"id": "sub_uuid",
+    "type": "RUNNABLE",
+    "name": "subscription",
+    "eventTopicId": "compute.allocation.pre",
+    "runnableType": "extensibility.abx",
+    "runnableId": "runnableId",
+    "constraints": {
+    	"projectId": ["projectId"]
+    }
+}

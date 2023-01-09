@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.Horizon.Configuration.Workflow Delegation.Remove Users From Desktop Pool</entry>
+  <entry key="mimetype">text/plain</entry>
+  <entry key="name">zh_MO.properties</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="description">Upgrade version</entry>
+  <entry key="id">70f2bcba-eba9-11e3-9095-0050568dce28</entry>
+</properties>

@@ -1,0 +1,21 @@
+{
+	"java.configuration.updateBuildConfiguration": "disabled",
+	"editor.rulers": [
+		120
+	],
+	"editor.wordWrapColumn": 120,
+	"workbench.colorCustomizations": {
+		"commandCenter.border": "#e7e7e799",
+		"sash.hoverBorder": "#a27cab",
+		"statusBar.background": "#8b5f95",
+		"statusBar.foreground": "#e7e7e7",
+		"statusBarItem.hoverBackground": "#a27cab",
+		"statusBarItem.remoteBackground": "#8b5f95",
+		"statusBarItem.remoteForeground": "#e7e7e7",
+		"titleBar.activeBackground": "#8b5f95",
+		"titleBar.activeForeground": "#e7e7e7",
+		"titleBar.inactiveBackground": "#8b5f9599",
+		"titleBar.inactiveForeground": "#e7e7e799"
+	},
+	"peacock.color": "#8b5f95"
+}
