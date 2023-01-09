@@ -39,6 +39,7 @@ dist/
 hint/plugin/o11nplugin-hint/src/main/dar/VSO-INF/vso.xml
 
 .m2/repository/
+.m2/settings.xml
 .factorypath
 typescript/vrotsc/e2e/cases/__out/
 typescript/vrotsc-annotations/package-lock.json
