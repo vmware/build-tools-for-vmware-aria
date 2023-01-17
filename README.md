@@ -1,9 +1,16 @@
 # Build Tools for VMware Aria
-This repository contains the source code for the whole toolchain supporting Infrastructure-as-Code for vRealize (Orchestrator and Automation).
+This repository contains the source code for the Build Tools for VMware Aria, formally knows as vRealize Build Tools.
+Build Tools for VMware Aria provides tools to develop, manage and deploy content for the following VMware products: 
+- VMware Aria Automation
+- VMware Aria Automation Orchestrator
+- VMware Aria Operations
+- VMware Aria Suite Lifecycle
+- VMware Cloud Director
+
 
 ## Documentation
-- [Installation and Operations Documents](./doc/markdown)
-- [Build and Debug the VS Code Extension](./vscode)
+- [Installation and Operations Documents](docs/archive/doc/markdown)
+- [Workstation Setup Guide](docs/archive/doc/markdown/setup-workstation.md)
 
 ## How to build
 ```shell
@@ -16,9 +23,6 @@ mvn clean install -f maven/repository/pom.xml
 ```
 
 ## Package dependencies
-
-### Ubuntu
-
-```bash
-    sudo apt install libxml2-utils
-```
+- npm: 6.14.13
+- node: 16.x.x
+- maven: 3.6.3
