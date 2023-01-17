@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<endpoint nativeId="ce935570-1cef-4f30-b587-649b98ce1f12" pluginVersion="6.5.0">
+    <properties>
+        <property type="password" name="administratorPassword">vcoencrypted:xrqpDYHAjzCArmoqYaCg5g==</property>
+        <property type="bool" name="sharedLoginMode">true</property>
+        <property type="string" name="administratorUsername">administrator@vsphere.local</property>
+        <property type="bool" name="enabled">true</property>
+        <property type="string" name="url">https://vc-l-01a.corp.local:443/sdk</property>
+    </properties>
+</endpoint>

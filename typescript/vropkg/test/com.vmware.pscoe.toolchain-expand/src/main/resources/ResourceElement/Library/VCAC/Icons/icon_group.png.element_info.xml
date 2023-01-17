@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.VCAC.Icons</entry>
+  <entry key="mimetype">image/png</entry>
+  <entry key="name">icon_group.png</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="description">Imported from : '/Users/christophe/Desktop/Images/icon_group.png' on server vCO51Mac:8230</entry>
+  <entry key="id">3ceb9d4e-7760-4594-96ec-29d1c457d6c9</entry>
+</properties>

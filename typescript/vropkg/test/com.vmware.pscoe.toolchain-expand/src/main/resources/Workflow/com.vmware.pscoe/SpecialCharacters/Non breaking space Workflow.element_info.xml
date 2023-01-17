@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="categoryPath">com/.vmware/.pscoe.SpecialCharacters</entry>
+  <entry key="name">Non breaking space Workflow</entry>
+  <entry key="type">Workflow</entry>
+  <entry key="id">fda681a7-d9eb-4436-afbe-cda3755e1ea5</entry>
+</properties>

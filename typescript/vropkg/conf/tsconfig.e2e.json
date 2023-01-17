@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "sourceMap": true,
+      "strict": false,
+      "strictNullChecks": false,
+      "strictFunctionTypes": false,
+      "strictPropertyInitialization": false,
+      "noImplicitAny": false
+    },
+    "include": [
+      "../e2e/src/**/*.ts"
+    ],
+    "exclude": [
+      "../node_modules"
+    ]
+  }

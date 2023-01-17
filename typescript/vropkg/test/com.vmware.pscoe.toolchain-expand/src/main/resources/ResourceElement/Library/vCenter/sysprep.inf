@@ -1,0 +1,83 @@
+[Unattended]
+    OemSkipEula=Yes
+    InstallFilesPath=C:\sysprep\i386
+    TargetPath=\WINDOWS
+
+[GuiUnattended]
+    AdminPassword=$localAdminPwd$
+    EncryptedAdminPassword=NO
+    OEMSkipRegional=1
+    TimeZone=$TimeZoneCode$
+    OemSkipWelcome=1
+    AutoLogon=Yes
+    AutoLogonCount=1
+
+[UserData]
+    ProductKey=*****-*****-*****-*****-*****
+    FullName="Employee"
+    OrgName="City of Winchester"
+    ComputerName=*
+
+[TapiLocation]
+    CountryCode=1
+    AreaCode=540
+
+[Identification]
+    JoinDomain=$joinDomain$
+    DomainAdmin=$DomainAdmin$
+    DomainAdminPassword=$DomainAdminPassword$
+
+[Networking]
+    InstallDefaultComponents=Yes
+
+[Data]
+    AutoPartition=1
+    MsDosInitiated=0
+    UnattendedInstall=Yes
+
+[RegionalSettings]
+    LanguageGroup=1
+    Language=00000409
+
+[Branding]
+    BrandIEUsingUnattended=Yes
+
+[Proxy]
+    Proxy_Enable=0
+    Use_Same_Proxy=0
+
+[Networking]
+    InstallDefaultComponents=No
+
+[NetAdapters]
+    Adapter1=params.Adapter1
+
+[params.Adapter1]
+    INFID=*
+
+[NetClients]
+    MS_MSClient=params.MS_MSClient
+
+[NetServices]
+    MS_SERVER=params.MS_SERVER
+
+[NetProtocols]
+    MS_TCPIP=params.MS_TCPIP
+
+[params.MS_TCPIP]
+    DNS=No
+    UseDomainNameDevolution=No
+    EnableLMHosts=Yes
+    AdapterSections=params.MS_TCPIP.Adapter1
+
+[params.MS_TCPIP.Adapter1]
+    SpecificTo=Adapter1
+    DHCP=No
+    IPAddress=$IpAddress$
+    SubnetMask=$SubnetMask$
+    DefaultGateway=$DefaultGateway$
+    DNSServerSearchOrder=$DnsServerLists$
+    WINS=No
+    NetBIOSOptions=0
+
+

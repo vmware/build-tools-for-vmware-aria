@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!-- ================================= -->
+    <!-- Server log                        -->
+    <!-- ================================= -->
+    <appender class="org.apache.log4j.RollingFileAppender" name="FILE">
+        <param name="File" value="./target/logs/server.log"/>
+        <param name="Append" value="true"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <!-- Rollover at 5MB and allow 4 rollover files -->
+        <param name="MaxFileSize" value="5MB"/>
+        <param name="MaxBackupIndex" value="4"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} [%t] %-5p {%X{full}} [%c{1}] %m%n"/>
+        </layout>
+    </appender>
+    <!-- ================================= -->
+    <!-- Server log   used by Log Insight Agent  -->
+    <!-- ================================= -->
+    <appender class="org.apache.log4j.RollingFileAppender" name="FILE_INTEGRATION">
+        <param name="File" value="./target/logs/integration-server.log"/>
+        <param name="Append" value="true"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <!-- Rollover at 5MB -->
+        <param name="MaxFileSize" value="5MB"/>
+        <param name="MaxBackupIndex" value="1"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} vco: [component=&quot;%c{1}&quot; priority=&quot;%p&quot; thread=&quot;%t&quot; user=&quot;%X{user}&quot; context=&quot;%X{context}&quot; token=&quot;%X{token}&quot; wfid=&quot;%X{workflow}&quot; wfname=&quot;%X{workflowName}&quot; anctoken=&quot;%X{anctoken}&quot; wfstack=&quot;%X{workflowStack}&quot; instanceid=&quot;${com.vmware.o11n.server.instanceid}&quot;] %m%n"/>
+        </layout>
+    </appender>
+    <!-- ================================= -->
+    <!-- Metrics log   used by Log Insight Agent and Control Center -->
+    <!-- ================================= -->
+    <appender class="org.apache.log4j.RollingFileAppender" name="METRICS">
+        <param name="File" value="./target/logs/metrics.log"/>
+        <param name="Append" value="true"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <!-- Rollover at 5MB and allow 4 rollover files -->
+        <param name="MaxFileSize" value="5120KB"/>
+        <param name="MaxBackupIndex" value="4"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} %m%n"/>
+        </layout>
+    </appender>
+    <appender class="org.apache.log4j.RollingFileAppender" name="VC-METRICS">
+        <param name="File" value="./target/logs/vc-metrics.log"/>
+        <param name="Append" value="true"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <!-- Rollover at 5MB and allow 4 rollover files -->
+        <param name="MaxFileSize" value="5120KB"/>
+        <param name="MaxBackupIndex" value="4"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} %m%n"/>
+        </layout>
+    </appender>
+    <!-- ================================= -->
+    <!-- Warning log                       -->
+    <!-- ================================= -->
+    <appender class="org.apache.log4j.RollingFileAppender" name="WARNING_LOGS">
+        <param name="File" value="./target/logs/warning.log"/>
+        <param name="Append" value="true"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <!-- Rollover at 5MB and allow 4 rollover files -->
+        <param name="MaxFileSize" value="5120KB"/>
+        <param name="MaxBackupIndex" value="4"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} [%t] %-5p {%X{full}} [%c{1}] %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- ================================= -->
+    <!-- Scripting log                     -->
+    <!-- ================================= -->
+    <appender class="org.apache.log4j.RollingFileAppender" name="SCRIPT_LOGS">
+        <param name="File" value="./target/logs/scripting.log"/>
+        <param name="Append" value="false"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <!-- Rollover at 20MB and allow 5 rollover files -->
+        <param name="MaxFileSize" value="20480KB"/>
+        <param name="MaxBackupIndex" value="5"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} %-5p {%X{username}:%X{token}%X{tokenctx}} [%c{1}] %m%n"/>
+        </layout>
+    </appender>
+    <!-- ================================= -->
+    <!-- Scripting log   used by Log Insight Agent  -->
+    <!-- ================================= -->
+    <appender class="org.apache.log4j.RollingFileAppender" name="SCRIPT_INTEGRATION">
+        <param name="File" value="./target/logs/integration-scripting.log"/>
+        <param name="Append" value="true"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <!-- Rollover at 10MB -->
+        <param name="MaxFileSize" value="10240KB"/>
+        <param name="MaxBackupIndex" value="1"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} vco: [component=&quot;%c{1}&quot; priority=&quot;%p&quot; thread=&quot;%t&quot; user=&quot;%X{user}&quot; context=&quot;%X{context}&quot; token=&quot;%X{token}&quot; wfid=&quot;%X{workflow}&quot; wfname=&quot;%X{workflowName}&quot; anctoken=&quot;%X{anctoken}&quot; wfstack=&quot;%X{workflowStack}&quot; instanceid=&quot;${com.vmware.o11n.server.instanceid}&quot;] %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- ============================== -->
+    <!-- Append messages to the console -->
+    <!-- ============================== -->
+    <appender class="org.apache.log4j.ConsoleAppender" name="CONSOLE">
+        <param name="Target" value="System.out"/>
+        <param name="Encoding" value="UTF-8"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSSZ} [%t] %-5p {%X{full}} [%c{1}] %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- ============================== -->
+    <!-- Append messages to the syslogd -->
+    <!-- ============================== -->
+    <!--
+    <appender name="SYSLOG" class="org.apache.log4j.net.SyslogAppender">
+        <param name="Facility" value="<<FACILITY>>"/>
+        <param name="SyslogHost" value="<<HOST>>"/>
+        <param name="FacilityPrinting" value="true"/>
+        <param name="maxMessageLength" value="128000"/>
+        <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="vCO:${com.vmware.o11n.server.instanceid} prio:%-5p thread:%t token:%X{token} wf:%X{workflowName} wfid:%X{workflow} user: %X{username} cat:%c{1} msg:%m%n"/>
+        </layout>
+    </appender>
+    -->
+
+    <!-- ============================== -->
+    <!-- Append messages to the Windows Event Log -->
+    <!-- ============================== -->
+    <!--
+    <appender name="EVENT_LOG" class="org.apache.log4j.nt.NTEventLogAppender">
+        <param name="Source" value="vCO"/>
+        <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="[%t] {%X{full}} [%c{1}] %m%n"/>
+        </layout>
+    </appender>
+    -->
+
+    <!-- Control Center log stream -->
+    <appender class="org.apache.log4j.net.SocketAppender" name="SOCKET">
+        <param name="Port" value="8238"/>
+        <param name="RemoteHost" value="localhost"/>
+        <param name="ReconnectionDelay" value="5000"/>
+        <param name="LocationInfo" value="false"/>
+    </appender>
+
+    <!-- vRO warning log -->
+    <category additivity="false" name="IGNORED_EXCEPTION">
+        <priority value="WARN"/>
+        <appender-ref ref="WARNING_LOGS"/>
+    </category>
+
+    <!-- vRO  metrics log -->
+    <category additivity="false" name="metrics">
+        <priority value="INFO"/>
+        <appender-ref ref="METRICS"/>
+    </category>
+    <!-- vCenter plugin Metrics log -->
+    <category additivity="false" name="vc-metrics">
+        <priority value="INFO"/>
+        <appender-ref ref="VC-METRICS"/>
+    </category>
+
+    <!-- vRO  logs -->
+    <category additivity="true" name="ch.dunes">
+        <priority value="DEBUG"/>
+    </category>
+    <category additivity="true" name="com.vmware.o11n">
+        <priority value="DEBUG"/>
+    </category>
+    <category additivity="true" name="Execution">
+        <priority value="DEBUG"/>
+    </category>
+
+    <category additivity="true" name="com.vmware.vim.sso.client">
+        <priority value="ERROR"/>
+    </category>
+    <category additivity="true" name="com.vmware.vim.vmomi.core.types">
+        <priority value="ERROR"/>
+    </category>
+
+    <!-- VMware Infrastructure plugins -->
+    <category additivity="true" name="com.vmware.vmo.plugin.vi35">
+        <priority value="INFO"/>
+    </category>
+    <category additivity="true" name="com.vmware.vmo.plugin.vi4">
+        <priority value="INFO"/>
+    </category>
+
+    <category additivity="true" name="org.springframework">
+        <priority value="INFO"/>
+    </category>
+    <!-- Remove the 'Bound to JNDI name' log info -->
+    <category additivity="true" name="org.hornetq">
+        <priority value="INFO"/>
+    </category>
+    <!-- Limit the org.hibernate category to WARN as its INFO is verbose -->
+    <category additivity="true" name="org.hibernate">
+        <priority value="WARN"/>
+    </category>
+    <category additivity="true" name="org.hibernate.cfg.SettingsFactory">
+        <priority value="ERROR"/>
+    </category>
+    <category additivity="true" name="org.apache.http">
+        <priority value="INFO"/>
+    </category>
+    <category additivity="true" name="org.apache.directory">
+        <priority value="FATAL"/>
+    </category>
+    <category additivity="true" name="net.sf.ehcache">
+        <priority value="INFO"/>
+    </category>
+    <category additivity="false" name="org.apache.tomcat.jdbc.pool.ConnectionPool">
+        <priority value=""/>
+    </category>
+
+    <!-- Scripting log -->
+    <category additivity="false" name="SCRIPTING_LOG">
+        <priority value="DEBUG"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE_INTEGRATION"/>
+        <appender-ref ref="SCRIPT_LOGS"/>
+        <appender-ref ref="SCRIPT_INTEGRATION"/>
+        <!-- <appender-ref ref="SOCKET"/> -->
+
+        <!--
+        <appender-ref ref="SYSLOG" />
+        -->
+        <!--
+        <appender-ref ref="EVENT_LOG" />
+        -->
+    </category>
+
+    <!-- Default root category -->
+    <root>
+        <priority value="DEBUG"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE_INTEGRATION"/>
+        <!-- <appender-ref ref="SOCKET"/> -->
+        <!--
+        <appender-ref ref="SYSLOG" />
+        -->
+        <!--
+        <appender-ref ref="EVENT_LOG" />
+        -->
+    </root>
+</log4j:configuration>

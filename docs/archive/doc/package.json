@@ -1,0 +1,16 @@
+{
+      "name": "iac-documentation",
+      "version": "1.0.0-SNAPSHOT",
+      "description": "Build Tools for VMware Aria documentation bundle",
+      "dependencies": {
+            "pack": "^2.1.0",
+            "showdown": ">= 1.8.6"
+      },
+      "scripts": {
+            "install": "node html-generator.js && cp -r markdown/assets html",
+            "clean": "rm -rf html"
+      },
+      "files": [
+            "html/"
+      ]
+}

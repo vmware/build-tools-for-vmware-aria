@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.vmware.pscoe.o11n</groupId>
+        <artifactId>base-package</artifactId>
+        <version>2.27.1-SNAPSHOT</version>
+    </parent>
+    <groupId>com.vmware.pscoe.bsc</groupId>
+    <artifactId>bsc-package</artifactId>
+    <packaging>pom</packaging>
+	<licenses>
+		<license>
+			<name>BSD-2 License</name>
+			<url>https://github.com/vmware/build-tools-for-vmware-aria/licenses/bsd2_license</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.vmware.pscoe.maven.plugins</groupId>
+                <artifactId>bsc-package-maven-plugin</artifactId>
+                <version>${iac.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.vmware.pscoe.maven.plugins</groupId>
+                <artifactId>ssh-maven-plugin</artifactId>
+                <version>${iac.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <ssh>
+                        <host>${ssh.host}</host>
+                        <port>${ssh.port}</port>
+                        <username>${ssh.username}</username>
+                        <password>${ssh.password}</password>
+                        <serverId>${ssh.serverId}</serverId>
+                        <directory>${ssh.directory}</directory>
+                    </ssh>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <!-- checksum calculation properties -->
+        <checksum.definitions>content,packages</checksum.definitions>
+
+        <checksum.contentEnabled>true</checksum.contentEnabled>
+        <checksum.contentDir>src</checksum.contentDir>
+        <checksum.contentGlob>*</checksum.contentGlob>
+        <!-- <checksum.contentExcludes>\.js$,.element_info\.xml</checksum.contentExcludes> -->
+
+        <checksum.packagesEnabled>true</checksum.packagesEnabled>
+        <checksum.packagesDir>target</checksum.packagesDir>
+        <checksum.packagesGlob>*.bsc</checksum.packagesGlob>
+    </properties>
+</project>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.vmware.pscoe.npm</groupId>
+    <artifactId>lib</artifactId>
+    <version>2.27.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+	<licenses>
+		<license>
+			<name>BSD-2 License</name>
+			<url>https://github.com/vmware/build-tools-for-vmware-aria/licenses/bsd2_license</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>artifactory-c-01a-releases</name>
+            <url>${releaseRepositoryUrl}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>artifactory-c-01a-snapshots</name>
+            <url>${snapshotRepositoryUrl}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+
+                <!--
+                Execute commands on maven lifecycle phases using exec maven plugin
+                -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                    <executions>
+                        <!--
+                        Validate: validate the project is correct and all necessary information is available.
+                        -->
+                        <!-- Keep versions in sync -->
+                        <execution>
+                            <id>npm version - validate</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>validate</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>version</argument>
+                                    <argument>--allow-same-version</argument>
+                                    <argument>--no-git-tag-version</argument>
+                                    <argument>--force</argument>
+                                    <argument>${project.version}</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!-- Perform 'npm install' -->
+                        <execution>
+                            <id>npm install - validate</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>validate</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>install</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!--
+                        Compile: compile the source code of the project.
+                        Perform 'npm run build'
+                        -->
+                        <execution>
+                            <id>npm run build - compile</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>compile</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>run</argument>
+                                    <argument>build</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!--
+                        Package: take the compiled code and package it in its distributable format.
+                        Perform 'npm run build'
+                        -->
+                        <execution>
+                            <id>npm pack - package</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>package</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>pack</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!--
+                        Clean: remove all files generated by the previous build.
+                        Perform 'npm run clean'
+                        -->
+                        <execution>
+                            <id>npm install - clean</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>clean</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>install</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>npm run clean - clean</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>clean</phase>
+                            <configuration>
+                                <executable>npm</executable>
+                                <arguments>
+                                    <argument>run</argument>
+                                    <argument>clean</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                Add additional artifacts to project using the build helper maven plugin
+                -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <extensions>true</extensions>
+                    <executions>
+                        <execution>
+                            <id>attach-artifacts</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>attach-artifact</goal>
+                            </goals>
+                            <configuration>
+                                <artifacts>
+                                    <artifact>
+                                        <file>${attachFileName}</file>
+                                        <type>tgz</type>
+                                    </artifact>
+                                </artifacts>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                Control project release using maven release plugin
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <preparationGoals>clean compile scm:checkin</preparationGoals>
+                        <completionGoals>clean compile scm:checkin</completionGoals>
+                    </configuration>
+                </plugin>
+
+                <!--
+                Commit additional files during project release using maven scm plugin
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>1.11.2</version>
+                    <configuration>
+                        <message>(release) updated package.json to v${project.version}</message>
+                        <includes>package.json,package-lock.json</includes>
+                        <pushChanges>false</pushChanges>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <properties>
+        <sonar.sources>src</sonar.sources>
+        <sonar.language>ts</sonar.language>
+        <sonar.javascript.lcov.reportPaths>./target/lcov.info</sonar.javascript.lcov.reportPaths>
+    </properties>
+
+</project>

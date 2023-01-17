@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.Horizon.CoreModules.Business logic.remove-machine-bl</entry>
+  <entry key="mimetype">text/plain</entry>
+  <entry key="name">ko_KR.properties</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="id">7c253c61-eb46-11e3-b130-005056c00008</entry>
+</properties>

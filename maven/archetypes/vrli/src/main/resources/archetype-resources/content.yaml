@@ -1,0 +1,22 @@
+---
+# This file contains a list of alerts / content packs 
+# that will be managed by the VRLI archetype
+#
+# Example alerts to be managed (exported / imported):
+#
+# alerts:
+#   - alert 1
+#   - alert 2
+#   - alert 3
+# Example content packs to be managed (exported / imported)
+#
+# content-packs:
+#   - com.vmware.loginsight.general
+#   - com.vmware.vsphere
+#
+# Example describes import of:
+#   All alerts in src/alerts
+
+alerts:
+content-packs:
+...

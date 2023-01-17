@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="package-xml-archetype"
+    xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd">
+    <requiredProperties>
+        <requiredProperty key="workflowsPath">
+        </requiredProperty>
+        <requiredProperty key="version">
+            <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="package">
+            <defaultValue>${groupId}.${artifactId}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="licenseTechnicalPreview">
+            <defaultValue>false</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="licenseUrl">
+            <defaultValue>null</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="licenseHeader">
+            <defaultValue>null</defaultValue>
+        </requiredProperty>
+    </requiredProperties>
+    <fileSets>
+        <fileSet filtered="false" encoding="UTF-8">
+            <directory>.o11n/</directory>
+        </fileSet>
+        <fileSet filtered="false" packaged="false" encoding="UTF-8">
+            <directory/>
+            <includes>
+                <include>release.sh</include>
+                <include>.gitignore</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory/>
+            <includes>
+                <include>pom.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/main</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>license_data</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>        
+    </fileSets>
+</archetype-descriptor>

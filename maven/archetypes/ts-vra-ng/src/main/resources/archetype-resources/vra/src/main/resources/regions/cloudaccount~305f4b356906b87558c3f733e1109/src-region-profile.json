@@ -1,0 +1,8 @@
+{
+  "cloudAccountId": "cloud-account-id",
+  "regionId": "region-id",
+  "regionType": "vsphere",
+  "tags": [
+    "env:test"
+  ]
+}

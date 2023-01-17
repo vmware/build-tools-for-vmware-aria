@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.VCAC.Icons</entry>
+  <entry key="mimetype">image/png</entry>
+  <entry key="name">icon_host_cluster_new.png</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="description">Imported from : '/Users/christophe/Desktop/Images/icon_host_cluster_new.png' on server vCO51Mac:8230</entry>
+  <entry key="id">c1dd8a95-0c4c-4280-8ee3-4619d4910af1</entry>
+</properties>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<endpoint pluginVersion="7.4.0">
+    <properties>
+        <property type="password" name="password">vcoencrypted:xrqpDYHAjzCArmoqYaCg5g==</property>
+        <property type="integer" name="operationTimeout">60</property>
+        <property type="string" name="name">vsphere.local[configurationadmin@vsphere.local]-vra-l-01a.corp.local</property>
+        <property type="string" name="connectionId">9a6a3261-f93d-410a-8b62-4961eb13b738</property>
+        <property type="integer" name="pageSize">100</property>
+        <property type="string" name="sessionMode">Shared Session</property>
+        <property type="integer" name="connectionTimeout">30</property>
+        <property type="string" name="url">https://vra-l-01a.corp.local</property>
+        <property type="string" name="tenant">vsphere.local</property>
+        <property type="string" name="username">configurationadmin@vsphere.local</property>
+    </properties>
+</endpoint>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>basic</artifactId>
+    <version>1.0.0</version>
+    <packaging>package</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.vmware.pscoe.library</groupId>
+            <artifactId>vra.dispatcher.objects</artifactId>
+            <version>2.4.3</version>
+            <type>package</type>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>@project.groupId@</groupId>
+                <artifactId>@project.artifactId@</artifactId>
+                <version>@project.version@</version>
+<!--                 
+				<configuration>
+                	<vro>
+                		<host>${vroHostname}</host>
+                		<port>${vroPort}</port>
+                		<username>${vroUsername}</username>
+                		<password>${vroPassword}</password>
+                	</vro>
+                </configuration>
+ -->
+            </plugin>
+            <plugin>
+                <groupId>com.vmware.pscoe.maven.plugins</groupId>
+                <artifactId>o11n-actions-package-maven-plugin</artifactId>
+                <version>@project.version@</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>unpack-keystore</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target</outputDirectory>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${keystoreGroupId}</groupId>
+                                    <artifactId>${keystoreArtifactId}</artifactId>
+                                    <version>${keystoreVersion}</version>
+                                    <type>zip</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <properties>
+        <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
+        <keystoreArtifactId>archetype.keystore</keystoreArtifactId>
+        <keystoreVersion>2.0.0</keystoreVersion>
+        <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
+		<vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
+		<vroKeyPass>VMware1!</vroKeyPass>
+        <assembly.skipAssembly>true</assembly.skipAssembly>
+    </properties>
+</project>

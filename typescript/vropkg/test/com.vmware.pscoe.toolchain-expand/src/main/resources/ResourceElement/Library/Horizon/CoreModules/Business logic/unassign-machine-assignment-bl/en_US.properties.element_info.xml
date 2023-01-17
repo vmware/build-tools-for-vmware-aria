@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.Horizon.CoreModules.Business logic.unassign-machine-assignment-bl</entry>
+  <entry key="mimetype">text/plain</entry>
+  <entry key="name">en_US.properties</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="id">bda4d6d2-3d99-4eda-a1b3-bf4e54338295</entry>
+</properties>

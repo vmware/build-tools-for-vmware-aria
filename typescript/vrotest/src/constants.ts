@@ -1,0 +1,16 @@
+export const SOURCE_PATH = "src";
+export const TEST_PATH = "test";
+export const CONFIGS_PATH = "configurations";
+export const RESOURCES_PATH = "resources";
+export const DEPENDENCIES_PATH = "dependencies";
+export const HELPERS_PATH = "helpers";
+export const TEST_RESULTS_PATH = "test-results";
+export const LOGS_PATH = "logs";
+export const METADATA_MODULES_FILE = "vro-modules.json";
+export const METADATA_CONFIGS_FILE = "vro-configurations.json";
+export const METADATA_RESOURCES_FILE = "vro-resources.json";
+export const NODE_PROJECT_CONFIG_FILE = "package.json";
+export const JASMINE_CONFIG_FILE = "jasmine.json";
+export const COVERAGE_CONFIG_FILE = ".nycrc";
+export const SOURCE_TEST_SUFFIXES = ["test.js", "tests.js"];
+export const TARGET_TEST_SUFFIX = ".test.js";

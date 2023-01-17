@@ -1,0 +1,18 @@
+{
+	"Ubuntu 20": {
+		"constraints": [],
+		"cloudConfig": "",
+		"osFamily": "LINUX",
+		"externalRegionId": "Datacenter:datacenter-661",
+		"isPrivate": false,
+		"externalId": "501d4fd7-e7ae-e421-efbf-9fdc5f8cee32",
+		"name": "Ubuntu Template",
+		"description": "Ubuntu Template",
+		"id": "b3636ad735196dff70fc4ebf0150f19b3037a4ec",
+		"_links": {
+			"region": {
+				"href": "/iaas/api/regions/aac63a71-0cc0-4f44-9818-f9f9e8c05712"
+			}
+		}
+	}
+}

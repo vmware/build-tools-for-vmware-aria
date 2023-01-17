@@ -1,0 +1,17 @@
+---
+# Example describing for export Composite blueprints by their names
+# 
+# composite-blueprint:
+#   - SQL 2016 Managed
+#   - Kubernates 1.9.0
+
+property-group:
+property-definition:
+software-component:
+composite-blueprint:
+xaas-blueprint:
+xaas-resource-action:
+xaas-resource-type:
+xaas-resource-mapping:
+workflow-subscription:
+...

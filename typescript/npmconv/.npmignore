@@ -1,0 +1,14 @@
+.o11n/
+.vscode/
+Gulpfile.ts
+tsconfig.json
+src/
+build/
+e2e/
+**/.DS_Store
+package-lock.json
+**/*.tgz
+node_modules/
+target/
+conf/
+sample/

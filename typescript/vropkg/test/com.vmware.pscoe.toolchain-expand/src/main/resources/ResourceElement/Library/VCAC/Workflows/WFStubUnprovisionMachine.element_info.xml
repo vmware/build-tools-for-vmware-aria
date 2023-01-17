@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="version">1.0.0</entry>
+  <entry key="categoryPath">Library.VCAC.Workflows</entry>
+  <entry key="mimetype">text/xml</entry>
+  <entry key="name">WFStubUnprovisionMachine</entry>
+  <entry key="type">ResourceElement</entry>
+  <entry key="id">ea9e5eaa-3df3-444e-b879-0ec26ee97d58</entry>
+</properties>

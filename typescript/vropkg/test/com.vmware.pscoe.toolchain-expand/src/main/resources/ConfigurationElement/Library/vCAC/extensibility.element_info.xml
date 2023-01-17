@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Exported from PSCoE o11n-convert</comment>
+  <entry key="categoryPath">Library.vCAC</entry>
+  <entry key="name">extensibility</entry>
+  <entry key="type">ConfigurationElement</entry>
+  <entry key="id">411887ad-1081-40e4-aed8-d0e2612aa6d2</entry>
+</properties>

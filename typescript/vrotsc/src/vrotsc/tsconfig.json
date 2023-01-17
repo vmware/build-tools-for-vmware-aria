@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig-noncomposite-base",
+  "compilerOptions": {
+    "outFile": "../../build/vrotsc.js"
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "references": [
+    {
+      "path": "../compiler",
+      "prepend": true
+    }
+  ]
+}
