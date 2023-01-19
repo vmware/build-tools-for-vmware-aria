@@ -14,7 +14,7 @@
   	<Logger name="com.jayway.jsonpath.internal.path.CompiledPath" level="ERROR">
       <AppenderRef ref="Console"/>
     </Logger>
-    <Root level="debug">
+    <Root level="INFO">
       <AppenderRef ref="Console"/>
     </Root>
   </Loggers>

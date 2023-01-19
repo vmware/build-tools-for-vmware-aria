@@ -32,11 +32,6 @@
             <version>2.27.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>23.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.vmware.pscoe.maven.plugins</groupId>
             <artifactId>common</artifactId>
             <version>2.27.1-SNAPSHOT</version>
