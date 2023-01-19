@@ -11,7 +11,7 @@ node_modules/
 dist/
 package-lock.json
 **/package-lock.json
-test/target*
+test/target*/
 test/tmp
 test/*.pem
 test/*.package
