@@ -11,6 +11,10 @@
                     <lifecycle>
                         <id>default</id>
                         <phases>
+							<initialize>
+								<!-- org.apache.maven.plugins:maven-dependency-plugin:go-offline, -->
+								com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:${project.version}:install-node-deps
+							</initialize>
                             <package>
                                 com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:${project.version}:package
                             </package>

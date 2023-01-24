@@ -4,35 +4,40 @@ import globby from 'globby';
 
 import { Logger } from "winston";
 import { BaseStrategy } from "./base";
-import { getActionManifest, run } from "../lib/utils";
-import { PackagerOptions, PlatformDefintion, Events } from "../lib/model";
+import { run } from "../lib/utils";
+import { ActionOptions, PlatformDefinition, Events } from "../lib/model";
 
 export class PowershellStrategy extends BaseStrategy {
 
-    constructor(logger: Logger, options: PackagerOptions, phaseCb: Function) { super(logger, options, phaseCb) }
+    constructor(logger: Logger, options: ActionOptions, phaseCb: Function) { super(logger, options, phaseCb) }
 
     /**
      * package project into bundle
      */
     async packageProject() {
 
-        const packageJson = await getActionManifest(this.options.workspace) as PlatformDefintion;
+        const polyglotJson = await fs.readJSONSync(this.options.polyglotJson) as PlatformDefinition;
         this.phaseCb(Events.COMPILE_START);
-        await this.compile(path.join(this.options.workspace, 'src'), this.options.out);
+        await this.compile(this.options.src, this.options.out);
         this.phaseCb(Events.COMPILE_END);
         this.phaseCb(Events.DEPENDENCIES_START);
-        await this.installDependencies();
+        await this.installDependencies(polyglotJson);
         this.phaseCb(Events.DEPENDENCIES_END);
         this.phaseCb(Events.BUNDLE_START);
-        await this.createBundle(this.options.workspace, packageJson);
+        await this.createBundle(polyglotJson);
         this.phaseCb(Events.BUNDLE_END);
     }
 
-    private async createBundle(workspaceFolderPath: string, packageJson: PlatformDefintion): Promise<void> {
+    private async createBundle(polyglotJson: PlatformDefinition): Promise<void> {
+        const workspaceFolderPath = this.options.workspace;
         const patterns = ['package.json'];
 
-        if (Array.isArray(packageJson.files) && packageJson.files.length > 0) {
-            patterns.push(...packageJson.files);
+        if (Array.isArray(polyglotJson.files) && polyglotJson.files.length > 0) {
+            patterns.push(...polyglotJson.files);
+            // Replace %src and %out placeholders with the actual paths from action options
+            for (var i = 0; i < patterns.length; i++) {
+                patterns[i] = patterns[i].replace('%src',this.options.src).replace('%out',this.options.out).replace(/\\/g,'/');
+            }
         } else {
             patterns.push('!.*', '*.ps1');
             const outDir = path.relative(workspaceFolderPath, this.options.out);
@@ -43,12 +48,17 @@ export class PowershellStrategy extends BaseStrategy {
             cwd: workspaceFolderPath,
             absolute: true
         });
+        const modulesToBundle = await globby(['Modules'], {
+            cwd: this.options.outBase, // use action specific out subfolder
+            absolute: true,
+        });
 
         this.logger.info(`Packaging ${filesToBundle.length} files into bundle ${this.options.bundle}...`);
-        const actionBase = packageJson.platform.base ? path.resolve(packageJson.platform.base) : workspaceFolderPath;
+        const actionBase = polyglotJson.platform.base ? path.resolve(polyglotJson.platform.base) : this.options.outBase;
         this.logger.info(`Action base: ${actionBase}`);
         await this.zipFiles([
-            { files: filesToBundle, baseDir: actionBase }
+            { files: filesToBundle, baseDir: actionBase },
+            { files: modulesToBundle, baseDir: actionBase }
         ]);
     }
 
@@ -58,13 +68,12 @@ export class PowershellStrategy extends BaseStrategy {
         this.logger.info(`Compilation complete`);
     }
 
-    private async installDependencies() {
+    private async installDependencies(polyglotJson: PlatformDefinition) {
 
-        const packageJson = await getActionManifest(this.options.workspace) as PlatformDefintion;
-        const psScriptName: string = packageJson.platform.entrypoint.split("/")[1].split(".")[0];
-        const depsManifest: string = path.join(this.options.workspace, `src/${psScriptName}.ps1`);
+        const psScriptName: string = polyglotJson.platform.entrypoint.split("/")[1].split(".")[0];
+        const depsManifest: string = path.join(this.options.src, `${psScriptName}.ps1`);
         const deps: string = fs.readFileSync(depsManifest, "utf-8");
-        const modulesPath: string = path.join(this.options.out, "Modules");
+        const modulesPath: string = path.resolve(path.join(this.options.outBase, "Modules"));
         const modules: string[] = [];
 
         deps.split(/\r?\n/).forEach(line => {
@@ -77,6 +86,7 @@ export class PowershellStrategy extends BaseStrategy {
         this.logger.info(`Powershell modules included: ${modules}`);
 
         if (modules.length > 0) {
+            fs.ensureDirSync(modulesPath);
             this.logger.info(`Downloading and saving dependencies in "${modulesPath}..."`);
             await run("pwsh", ["-c", "Save-Module", "-Name", `"${modules.toString()}"`, "-Path", `"${modulesPath}"`, "-Repository PSGallery"]);
         } else {

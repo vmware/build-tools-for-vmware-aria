@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.vmware.pscoe.o11n</groupId>
     <artifactId>base-package</artifactId>
-    <version>2.27.1-SNAPSHOT</version>
+    <version>2.28.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>xml-package</module>
@@ -29,7 +29,7 @@
     <properties>
         <build.number>local</build.number>
         <assembly.skipAssembly>true</assembly.skipAssembly>
-        <iac.version>2.27.1-SNAPSHOT</iac.version>
+        <iac.version>2.28.1-SNAPSHOT</iac.version>
         <license.licenseName>_license</license.licenseName>
         <license.encoding>UTF-8</license.encoding>
         <license.licenseResolver>${project.baseUri}license_data</license.licenseResolver>

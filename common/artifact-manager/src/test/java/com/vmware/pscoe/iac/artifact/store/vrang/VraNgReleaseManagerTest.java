@@ -1,4 +1,4 @@
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 /*
  * #%L
@@ -36,10 +36,10 @@ public class VraNgReleaseManagerTest {
 		restClientVrang = Mockito.mock(RestClientVraNg.class);
         vraNgReleaseManager = new VraNgReleaseManager(restClientVrang);
         bp = new VraNgBlueprint(
-            "blueprint_id_1", 
-            "blueprint_name_1", 
-            "blueprint_content_1", 
-            "blueprint_desc_1", 
+            "blueprint_id_1",
+            "blueprint_name_1",
+            "blueprint_content_1",
+            "blueprint_desc_1",
             false
         );
 	}

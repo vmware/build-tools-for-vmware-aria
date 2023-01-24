@@ -8,12 +8,12 @@ actions, policy templates, native content, types, etc.
 It allows you to write unit tests and has embedded code coverage
 
 ## Navigation:
-1. [Getting Started](General/Getting Started.md) - 
-2. [Core Concepts](General/Core Concepts.md)
+1. [Getting Started](General/Getting%20Started.md) - 
+2. [Core Concepts](General/Core%20Concepts.md)
 3. Operations
    * [Building](Operations/Building.md)
    * [Pushing](Operations/Pushing.md)
 4. Components
    * [Config](Components/Config.md)
 5. Testing
-   * [Code Coverage](General/Testing/Code Coverage.md)
+   * [Code Coverage](General/Testing/Code%20Coverage.md)

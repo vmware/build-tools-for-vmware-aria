@@ -10,7 +10,6 @@ import java.nio.file.Paths
 Path projectPath = Paths.get(request.outputDirectory, request.artifactId)
 // the properties available to the archetype
 Properties properties = request.properties
-String runtime = properties.get("runtime")
 
 String licenseTechnicalPreview = request.properties.get("licenseTechnicalPreview")
 String licenseUrl = request.properties.get("licenseUrl")
@@ -39,32 +38,3 @@ if (licenseTechnicalPreview == "true" || licenseTechnicalPreview == "yes" || lic
     header.write(headerText == 'null' ? "TODO: Define header text" : headerText)
     license.write(licenseText ?: "TODO: Define license text")
 }
-
-// gather all directories in src
-def files = FileUtils.listFilesAndDirs(
-        projectPath.resolve("src").toFile(),
-        new NotFileFilter(TrueFileFilter.INSTANCE),
-        DirectoryFileFilter.DIRECTORY)
-
-// delete everything in src except the runtime directory
-for (f in files) {
-    if (f.name != "src" && f.name != runtime) {
-        FileUtils.deleteDirectory(f)
-    }
-}
-
-// keep node wrapper only for nodejs runtime
-if (runtime != "nodejs") {
-    FileUtils.deleteQuietly(projectPath.resolve("tsconfig.json").toFile())
-}
-
-// keep python dependency manifest for python runtime
-if (runtime != "python") {
-    FileUtils.deleteQuietly(projectPath.resolve("requirements.txt").toFile())
-}
-
-// copy everything from the runtime directory into src
-FileUtils.copyDirectory(projectPath.resolve("src/" + runtime).toFile(), projectPath.resolve("src").toFile())
-
-// delete the runtime directory
-FileUtils.deleteDirectory(projectPath.resolve("src/" + runtime).toFile())

@@ -5,7 +5,6 @@ mvn archetype:generate \
     -DarchetypeArtifactId=package-polyglot-archetype \
     -DgroupId=local.corp.devops.common \
     -DartifactId=example \
-    -Druntime=nodejs \
     -Dtype=vro \
     -DlicenseUrl= \
     -DlicenseHeader= \

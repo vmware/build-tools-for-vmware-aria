@@ -5,53 +5,62 @@ import globby from 'globby';
 
 import { Logger } from "winston";
 import { BaseStrategy } from "./base";
-import { notUndefined, getActionManifest, run } from "../lib/utils";
-import { PackagerOptions, PlatformDefintion, Events } from "../lib/model";
+import { getActionManifest, notUndefined, run } from "../lib/utils";
+import { ActionOptions, PackageDefinition, PlatformDefinition, Events } from "../lib/model";
 
 export class NodejsStrategy extends BaseStrategy {
 
-    constructor(logger: Logger, options: PackagerOptions, phaseCb: Function) { super(logger, options, phaseCb) }
+    constructor(logger: Logger, options: ActionOptions, phaseCb: Function) { super(logger, options, phaseCb) }
 
     /**
      * package project into bundle
      */
     async packageProject() {
 
-        const tsconfigPath = path.join(this.options.workspace, "tsconfig.json");
+        const polyglotJson = await fs.readJSONSync(this.options.polyglotJson) as PlatformDefinition;
+        const tsconfigPath = path.join(this.options.actionBase, "tsconfig.json");
+        const tmpTsconfigPath = this.options.mixed? path.join(this.options.actionBase, "tsconfig.tmp.json"): tsconfigPath;
         if (!fs.existsSync(tsconfigPath)) {
-            throw new Error('Could not find tsconfig.json in the project root');
+            throw new Error('Could not find tsconfig.json in the action root');
         }
 
         this.phaseCb(Events.COMPILE_START);
-        const tsconfig = this.readConfigFile(tsconfigPath);
-        this.compile(tsconfigPath, tsconfig);
+        const tsconfig = this.readConfigFile(tsconfigPath, tmpTsconfigPath);
+        this.compile(tsconfigPath, tmpTsconfigPath, tsconfig);
         this.phaseCb(Events.COMPILE_END);
         this.phaseCb(Events.DEPENDENCIES_START);
-        const packageJson = (await getActionManifest(this.options.workspace)) as PlatformDefintion;
-        await this.installDependencies(packageJson, this.DEPENDENCY_TEMP_DIR);
+        await this.installDependencies(polyglotJson);
         this.phaseCb(Events.DEPENDENCIES_END);
         this.phaseCb(Events.BUNDLE_START);
-        await this.createBundle(this.options.workspace, tsconfig);
+        await this.createBundle(polyglotJson, tsconfig);
         this.phaseCb(Events.BUNDLE_END);
+        // Delete the temporary created tsconfig.json
+        if (this.options.mixed) {
+            await fs.removeSync(tmpTsconfigPath);
+        }
     }
 
-    private async createBundle(workspaceFolderPath: string, tsconfig: ts.ParsedCommandLine): Promise<void> {
+    private async createBundle(polyglotJson: PlatformDefinition, tsconfig: ts.ParsedCommandLine): Promise<void> {
+        const workspaceFolderPath = this.options.workspace;
         const baseDir = tsconfig.options.baseUrl || workspaceFolderPath;
-        const packageJson = await getActionManifest(workspaceFolderPath) as PlatformDefintion;
         const patterns = ['package.json'];
 
-        if (Array.isArray(packageJson.files) && packageJson.files.length > 0) {
-            patterns.push(...packageJson.files);
+        if (Array.isArray(polyglotJson.files) && polyglotJson.files.length > 0) {
+            patterns.push(...polyglotJson.files);
+            // Replace %src and %out placeholders with the actual paths from action options
+            for (var i = 0; i < patterns.length; i++) {
+                patterns[i] = patterns[i].replace('%src',this.options.src).replace('%out',this.options.out).replace(/\\/g,'/');
+            }
         } else {
             patterns.push('!.*', '*.js');
 
             if (tsconfig.options.outDir) {
-                const outDir = path.relative(baseDir, tsconfig.options.outDir);
+                const outDir = path.relative(workspaceFolderPath, path.join(baseDir, tsconfig.options.outDir));
                 patterns.push(`${outDir}/**`);
             }
 
             if (tsconfig.options.rootDir) {
-                const rootDir = path.relative(baseDir, tsconfig.options.rootDir);
+                const rootDir = path.relative(workspaceFolderPath, path.join(baseDir, tsconfig.options.rootDir));
                 patterns.push(`${rootDir}/**`);
             }
         }
@@ -67,7 +76,7 @@ export class NodejsStrategy extends BaseStrategy {
         });
 
         this.logger.info(`Packaging ${filesToBundle.length + depsToBundle.length} files into bundle ${this.options.bundle}...`);
-        const actionBase = packageJson.platform.base ? path.resolve(packageJson.platform.base) : baseDir;
+        const actionBase = polyglotJson.platform.base ? path.resolve(polyglotJson.platform.base) : this.options.outBase;
         this.logger.info(`Action base: ${actionBase}`);
         await this.zipFiles([
             { files: filesToBundle, baseDir: actionBase },
@@ -76,12 +85,8 @@ export class NodejsStrategy extends BaseStrategy {
     }
 
 
-    private compile(tsconfigPath: string, config?: ts.ParsedCommandLine): void {
+    private compile(tsconfigPath: string, tmpTsconfigPath: string, config: ts.ParsedCommandLine): void {
         this.logger.info(`Compiling project ${tsconfigPath}...`);
-
-        if (!config) {
-            config = this.readConfigFile(tsconfigPath);
-        }
 
         const diagnostics: ts.Diagnostic[] = [];
         const buildHost = ts.createSolutionBuilderHost(
@@ -96,7 +101,7 @@ export class NodejsStrategy extends BaseStrategy {
                 diagnostics.push(diagnostic)
             }
         );
-        const builder = ts.createSolutionBuilder(buildHost, [tsconfigPath], {
+        const builder = ts.createSolutionBuilder(buildHost, [tmpTsconfigPath], {
             verbose: true,
         });
         const exitStatus = builder.build();
@@ -108,20 +113,29 @@ export class NodejsStrategy extends BaseStrategy {
         }
     }
 
-    private readConfigFile(tsconfigPath: string): ts.ParsedCommandLine {
-        const configFileText = fs.readFileSync(tsconfigPath).toString();
-        const result = ts.parseConfigFileTextToJson(tsconfigPath, configFileText);
+    private readConfigFile(srcTsconfigPath: string, newTsconfigPath: string): ts.ParsedCommandLine {
+        let configFileText = fs.readFileSync(srcTsconfigPath).toString();
+        if (this.options.mixed) {
+            // The source directory of each action contain tsconfig.json
+            // It contains a %out placeholder to be replaced with a reference to action-specific out dir
+            // A temporary copy of tsconfig.tmp.json is created with resolved %out and deleted after the compilation
+            // The %out path is relative to the location and must be formatted as posix path
+            const newOut = path.relative(this.options.actionBase,path.join(path.resolve(this.options.workspace),this.options.out)).replace(/\\/g,'/');
+            configFileText = configFileText.replace(/%out/g,newOut);
+            fs.writeFileSync(newTsconfigPath,configFileText);
+        }
+        const result = ts.parseConfigFileTextToJson(newTsconfigPath, configFileText);
         const configObject = result.config;
         if (!configObject) {
             this.reportDiagnostics([result.error]);
-            throw new Error(`Could not parse ${tsconfigPath}`);
+            throw new Error(`Could not parse ${newTsconfigPath}`);
         }
 
-        const configParseResult = ts.parseJsonConfigFileContent(configObject, ts.sys, path.dirname(tsconfigPath));
+        const configParseResult = ts.parseJsonConfigFileContent(configObject, ts.sys, this.options.workspace);
         const numberOfErrors = configParseResult.errors.length;
         if (numberOfErrors > 0) {
             this.reportDiagnostics(configParseResult.errors);
-            throw new Error(`Found ${numberOfErrors} errors in ${tsconfigPath}`);
+            throw new Error(`Found ${numberOfErrors} errors in ${newTsconfigPath}`);
         }
         this.logger.info(`TS compiler options: ${JSON.stringify(configParseResult.options, null, 2)}`);
         return configParseResult;
@@ -145,36 +159,32 @@ export class NodejsStrategy extends BaseStrategy {
         });
     }
 
-    private async installDependencies(packageJson: PlatformDefintion, depsCacheDir: string) {
+    private async installDependencies(polyglotJson: PlatformDefinition) {
+        const depsCacheDir = this.DEPENDENCY_TEMP_DIR;
         await fs.ensureDir(depsCacheDir);
+        const projectPkg = await getActionManifest(this.options.workspace) as PackageDefinition;
+        const depPkg = await getActionManifest(this.options.actionBase) as PackageDefinition;
+        const packageJson = { ...projectPkg, ...depPkg, ...polyglotJson };
 
         for (const [key, value] of Object.entries(packageJson.dependencies as {[key:string]:string})) {
             if (value.startsWith("file:")) {
-                const localLibPath = path.join(path.resolve(this.options.workspace), value.replace("file:", ""));
-                const localLibPackageJson = (await getActionManifest(localLibPath)) as PlatformDefintion;
-                const localLibDistPath = path.join(localLibPath, "polyglot-cache")
-                await this.installDependencies(localLibPackageJson, localLibDistPath)
-                packageJson.dependencies[key] = path.relative(depsCacheDir, localLibDistPath);
-                const filesToBundle = await globby(localLibPackageJson.files || ["out"], {
-                    cwd: localLibPath,
-                    absolute: true,
-                });
-                await this.copyFiles(
-                    [{
-                        files: filesToBundle,
-                        baseDir: localLibPath,
-                    }],
-                    localLibDistPath
-                );
+                // There was some code that was recursively resolving dependencies
+                // It was not working and causing failure and was removed
+                const localLibPath = path.join(this.options.actionBase, value.replace("file:", ""));
+                packageJson.dependencies[key] = path.relative(depsCacheDir, localLibPath);
             }
-        };
+            // Remove dependencies to the toolchain
+            if (key.startsWith("@vmware-pscoe")) {
+                delete packageJson.dependencies[key];
+            }
+        }
 
         const deps = JSON.stringify(packageJson.dependencies);
         const hash = this.getHash(deps);
         const existingHash = await this.readDepsHash(depsCacheDir);
         if (existingHash !== hash) {
             this.logger.info(`Installing dependencies at ${depsCacheDir}`);
-            await fs.writeJSON(path.join(depsCacheDir, 'package.json'), packageJson);
+            await fs.writeJsonSync(path.join(depsCacheDir, 'package.json'), packageJson);
             await run("npm", ["install", "--production"], depsCacheDir);
             await this.writeDepsHash(deps);
         } else {

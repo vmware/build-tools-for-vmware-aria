@@ -2,8 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { v5 as uuidv5 } from 'uuid';
 import { Logger } from "winston";
-import { PackagerOptions, VroActionDefinition, ActionType } from "./lib/model";
-import { getActionManifest, determineRuntime } from "./lib/utils";
+import { ActionOptions, VroActionDefinition } from "./lib/model";
 import { create as createXML } from 'xmlbuilder2';
 
 /**
@@ -11,20 +10,25 @@ import { create as createXML } from 'xmlbuilder2';
  */
 export class VroTree {
 
+    private readonly actionDirectory: string;
     private readonly treeDir: string;
     private readonly scriptModuleDir: string
     private readonly DEFAULT_VERSION = '1.0.0';
     private readonly DEFAULT_MEMORY_LIMIT_MB = 64;
     private readonly DEFAULT_TIMEOUT_SEC = 180;
 
-    constructor(private readonly logger: Logger, private readonly options: PackagerOptions) {
+    constructor(private readonly logger: Logger, private readonly options: ActionOptions) {
+        this.actionDirectory = path.basename(options.actionBase);
         this.treeDir = options.vro;
         this.scriptModuleDir = path.join(this.options.vro, 'src', 'main', 'resources', 'ScriptModule');
     }
 
     async createTree() {
         this.logger.info('Creating vRO tree structure...');
-        const actionDefintion = await getActionManifest(this.options.workspace) as VroActionDefinition;
+        let actionDefintion = await fs.readJSONSync(this.options.polyglotJson) as VroActionDefinition;
+        if (actionDefintion.platform.action === 'auto') {
+            actionDefintion.platform.action = this.actionDirectory;
+        }
 
         // create structure
         await fs.ensureDir(this.scriptModuleDir);
@@ -62,7 +66,7 @@ export class VroTree {
 
     private async generateAction(actionDefintion: VroActionDefinition) {
 
-        const runtime = await determineRuntime(this.options.workspace, <ActionType>this.options.env);
+        const runtime = this.options.actionRuntime;
 
         const content = {
             'dunes-script-module': {

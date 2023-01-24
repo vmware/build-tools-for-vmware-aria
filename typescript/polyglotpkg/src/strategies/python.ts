@@ -5,12 +5,12 @@ import Zip from 'adm-zip';
 
 import { Logger } from "winston";
 import { BaseStrategy } from "./base";
-import { getActionManifest, run } from "../lib/utils";
-import { PackagerOptions, PlatformDefintion, Events, BundleFileset } from "../lib/model";
+import { run } from "../lib/utils";
+import { ActionOptions, PlatformDefinition, Events, BundleFileset } from "../lib/model";
 
 export class PythonStrategy extends BaseStrategy {
 
-    constructor(logger: Logger, options: PackagerOptions, phaseCb: Function) { super(logger, options, phaseCb) }
+    constructor(logger: Logger, options: ActionOptions, phaseCb: Function) { super(logger, options, phaseCb) }
 
     /**
      * Create a zip bundle with source files (from src directory) and dependencies (generated based on the
@@ -69,23 +69,28 @@ export class PythonStrategy extends BaseStrategy {
      * package project into bundle
      */
     async packageProject() {
-        const packageJson = await getActionManifest(this.options.workspace) as PlatformDefintion;
+        const polyglotJson = await fs.readJSONSync(this.options.polyglotJson) as PlatformDefinition;
         this.phaseCb(Events.COMPILE_START);
-        await this.compile(path.join(this.options.workspace, 'src'), this.options.out);
+        await this.compile(this.options.src, this.options.out);
         this.phaseCb(Events.COMPILE_END);
         this.phaseCb(Events.DEPENDENCIES_START);
         await this.installDependencies();
         this.phaseCb(Events.DEPENDENCIES_END);
         this.phaseCb(Events.BUNDLE_START);
-        await this.createBundle(this.options.workspace, packageJson);
+        await this.createBundle(polyglotJson);
         this.phaseCb(Events.BUNDLE_END);
     }
 
-    private async createBundle(workspaceFolderPath: string, packageJson: PlatformDefintion): Promise<void> {
+    private async createBundle(polyglotJson: PlatformDefinition): Promise<void> {
+        const workspaceFolderPath = this.options.workspace;
         const patterns = ['package.json'];
 
-        if (Array.isArray(packageJson.files) && packageJson.files.length > 0) {
-            patterns.push(...packageJson.files);
+        if (Array.isArray(polyglotJson.files) && polyglotJson.files.length > 0) {
+            patterns.push(...polyglotJson.files);
+            // Replace %src and %out placeholders with the actual paths from action options
+            for (var i = 0; i < patterns.length; i++) {
+                patterns[i] = patterns[i].replace('%src',this.options.src).replace('%out',this.options.out).replace(/\\/g,'/');
+            }
         } else {
             patterns.push('!.*', '*.py');
             const outDir = path.relative(workspaceFolderPath, this.options.out);
@@ -103,7 +108,7 @@ export class PythonStrategy extends BaseStrategy {
         });
 
         this.logger.info(`Packaging ${filesToBundle.length + depsToBundle.length} files into bundle ${this.options.bundle}...`);
-        const actionBase = packageJson.platform.base ? path.resolve(path.join(workspaceFolderPath, packageJson.platform.base)) : workspaceFolderPath;
+        const actionBase = path.resolve(path.join(this.options.outBase, polyglotJson.platform.base ? polyglotJson.platform.base: 'out'));
         this.logger.info(`Action base: ${actionBase}`);
         await this.zipFilesAndDependencies(
             [{ files: filesToBundle, baseDir: actionBase }],
@@ -118,7 +123,7 @@ export class PythonStrategy extends BaseStrategy {
     }
 
     private async installDependencies() {
-        const depsManifest = path.join(this.options.workspace, 'requirements.txt');
+        const depsManifest = path.join(this.options.actionBase, 'requirements.txt');
         const deps = await fs.readFile(depsManifest);
         const hash = this.getHash(deps.toString());
         const existingHash = await this.readDepsHash(this.DEPENDENCY_TEMP_DIR);

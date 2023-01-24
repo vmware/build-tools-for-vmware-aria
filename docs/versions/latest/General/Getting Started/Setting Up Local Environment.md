@@ -1,31 +1,41 @@
-[//]: # (TODO: Modernize)
+[//]: # (TODO: Modernize - validate or adapt content)
+[//]: # (TODO: Update link in line 214 after the file is moved [Build Tools for VMware Aria - Bundle Installer](use-bundle-installer.md))
+[//]: # (TODO: Replace all references of the setup-workstation-maven.md to point to Setting Up Local Environment.md)
+
 # Setting Up Local Environment
-Here you will learn all the needed steps on how to configure your environment
+Here you will learn the needed steps on how to configure your environment
 
 ## Overview
 **Build Tools for VMware Aria** are built on top of the Maven build automation ecosystem. vRealize Automation and vRealize
 Orchestrator content are described as Maven Project Object Models which enable huge amount of options like automated build
 going through phases like validate, compile, test, package, verify, install and deploy; dependency management, versioning, etc.
 
-[//]: # (Internal navigation)
-[//]: # (Navigational links may have a short description after them separated by a `-`)
 ## Table Of Contents:
-1. [Section](#section)
+1. [Installation](#installation)
+2. [Configuration](#configuration)
+    1. [Java Keystore](#java-keystore)
+    2. [Global Configuration](#global-configuration-(*settings.xml*)) 
+    3. [Signing](#signing)
+    4. [Bundling](#bundling)
+    5. [Security](#security)
+    6. [Timeouts](#timeouts)
+    7. [Delays](#delays)
+    8. [Checksums](#checksums)
 
-## Installation
+### Installation
 
-### Prerequisites
+#### Prerequisites
 - Build Tools for VMware Aria Platform
-    - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
+    - [Build Tools for VMware Aria Platform](Setting%20Up%20Artifactory.md) ready to use
     - Workstation can access Build Tools for VMware Aria Platform services
 - Java 8+ ([official installation guide](https://www.java.com/en/download/help/download_options.xml))
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 
-## Configuration
+### Configuration
 
-There are several things that need to be in place before you can use the toolchain to work with vRO content.
+There are several things that need to be in place before you can use the Build Tools for VMware Aria to work with vRO content.
 
-### Java Keystore
+#### Java Keystore
 
 Java keystore used for signing packages build time.
 ```
@@ -54,7 +64,7 @@ keytool -exportcert -alias _dunesrsa_alias_ -keystore package.jks -storepass 'VM
 
 `Note:` JKS is a propriatary format specific to the particular JVM provider. When running above commands, ensure the keytool used is the one under the JVM that Maven would use (check with `mvn -v`).
 
-### Global Configuration (*settings.xml*)
+#### Global Configuration (*settings.xml*)
 Firstly, you will need to configure Maven.
 
 There are a number of properties that must be set through profiles in the settings.xml file, as they are environment specific:
@@ -178,14 +188,14 @@ to the maven invocation.
 
 `Note:` {vro_username} is usually taking the form of `username`@`domain`. For vRO8 embedded in vRA8 with BASIC for {vro_auth} it will be required that only `username` part is specified for successful authentication.
 
-### Signing
+#### Signing
 vRO packages are signed. In order to be able to use the toolchain, you have to have a keystore and
 configure it in the settings.xml file both for the developers and the CI.
 
-#### Keystore located on the building machine
+##### Keystore located on the building machine
 You must have the keystore file accessible on the machine and set the **keystoreLocation** and **keystorePassword** properties through the settings.xml.
 
-### Bundling
+#### Bundling
 There is a built-in bundling capabilities that are described in a Maven profile. You can decide to not only package a vRO/vRA project, but also to create a ```*-bundle.zip``` with all its dependencies. This will create an archive with the following structure:
 
 ```sh
@@ -204,7 +214,7 @@ $ mvn clean deploy -Pbundle-with-installer
 To learn more about the bundle installer, check [Build Tools for VMware Aria - Bundle Installer](use-bundle-installer.md) for more information.
 
 
-### Security
+#### Security
 All API calls from the toolchain (i.e. the client) verify the SSL certificate
 returned by vRO/vRA (i.e. the server). If you are using self-signed or third-party signed certificates, you may need to
 add those certificates or their CA certificates to the default JAVA keystore, i.e. ```JAVA_HOME/lib/security/cacerts```. __This is the recommended approach.__
@@ -212,13 +222,13 @@ add those certificates or their CA certificates to the default JAVA keystore, i.
 
 The other option, __applicable ONLY for development environments__, is to ignore certificate checks by passing a flag.
 
-### Timeouts
+#### Timeouts
 Controlling timeouts is done through the following System Properties:
 * the Connection Timeout ("vrealize.connection.timeout") – the time to establish the connection with the remote host (Defaults to 360 seconds (6 minutes))
 * the Socket Timeout ("vrealize.socket.timeout") – the time waiting for data – after establishing the connection maximum time of inactivity between two data packets (Defaults to 360 seconds(6 minutes))
 * the vra 8.x content import timeout ("vrang.import.timeout") – (in miliseconds) the time out waiting for import of custom forms / content sources to complete (Defaults to 6 seconds)
 
-### Delays
+#### Delays
 * the vra 8.x data collection delay ("vrang.data.collection.delay.seconds") – (in seconds) the amount of time to way before running the import job.
   The vRA data collection usually takes around 10 minutes ( 600 seconds ) to complete. Defaults to no delay.
 
@@ -229,7 +239,7 @@ http_connection_timeout - for the connection timeout (in seconds), default is 36
 http_socket_timeout - for the socket timeout (in seconds), default is 360 seconds (6 minutes)
 vrang_import_timeout - for the vra 8.x content import timeout (custom forms, content sources).
 
-### Checksums
+#### Checksums
 Checksums are supported for the following project types - vRO JS, TS, XML and vRA 7/8. By defaults the target folder will also contain .sha1 checksums for the different file types, e.g. js.sha1, ts.sha1, xml.sha1, content.sha1 and packages.sha1. These are specified per project type in the base pom.xml using following definition:
 ```xml
 <properties>
@@ -259,4 +269,5 @@ With the "docs" prefix you can now specify if the phase is enabled, readmes loca
     ...
 </properties>
 ```
+## Previous: [Setting Up Artifactory](./Setting%20Up%20Artifactory.md)
 

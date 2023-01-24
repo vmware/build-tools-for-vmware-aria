@@ -2,7 +2,7 @@ Name: abx-package-maven-plugin
 Description: (no description available)
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: abx-package-maven-plugin
-Version: 2.26.5-SNAPSHOT
+Version: 2.27.1-SNAPSHOT
 Goal Prefix: abx
 
 This plugin has 2 goals:

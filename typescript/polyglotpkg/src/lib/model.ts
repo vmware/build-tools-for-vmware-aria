@@ -24,7 +24,7 @@ export type PackageDefinition = {
     files?: Array<string>,
 };
 
-export type PlatformDefintion = PackageDefinition & {
+export type PlatformDefinition = PackageDefinition & {
     platform: {
         action: string,
         entrypoint: string,
@@ -36,7 +36,7 @@ export type PlatformDefintion = PackageDefinition & {
     }
 }
 
-export type VroActionDefinition = PlatformDefintion & {
+export type VroActionDefinition = PlatformDefinition & {
     vro: {
         module: string
         id?: string,
@@ -47,7 +47,7 @@ export type VroActionDefinition = PlatformDefintion & {
     }
 };
 
-export type AbxActionDefinition = PlatformDefintion & {
+export type AbxActionDefinition = PlatformDefinition & {
     abx: {
         inputs?: {
             [key: string]: string
@@ -81,3 +81,18 @@ export enum Events {
     BUNDLE_END = 'bundleEnd',
     BUNDLE_ERROR = 'bundleError'
 }
+
+export type ActionOptions = PackagerOptions & {
+    // workspace: string,      Inherited: Project root directory
+    // bundle: string,         Inherited: bundle file name
+    mixed: boolean,         // true if multiple actions may exist
+    polyglotJson: string,   // Full path to the file containing platform options for the current action
+    actionBase: string,     // Directory where polyglot.json, tsconfig.json, requirements.txt are located
+    outBase: string,        // Directory under which the out files and dependencies are to be copied to
+    src: string,            // Relative path from workspace to the action source directory
+    // out: string,            Inherited: Relative path from workspace to the out directory
+    actionType: string,     // The type of action to be compiled. Either `vro` or `abx`
+    actionRuntime: string   // One of: `nodejs`, `python`, `powershell`
+}
+
+export type ProjectActions = Array<ActionOptions>

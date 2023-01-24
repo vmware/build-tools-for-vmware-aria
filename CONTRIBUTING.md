@@ -37,8 +37,27 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
 -   [Maven](https://maven.apache.org/), `~3.8.6`
 -   [JDK](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html), `1.8.0_xxx`
 
+
 ### Guides
--   [Setting up workstation](docs/archive/doc/markdown/setup-workstation-maven.md)
+1. [Setting up local environment](docs/versions/latest/General/Getting%20Started/Setting%20Up%20Local%20Environment.md)
+2. [Setting up workstation](docs/archive/doc/markdown/setup-workstation.md)
+   - Publicly available: https://github.com/vmware/vrealize-developer-tools/wiki/Setup-Developer-Workstation
+3. Adding new functionalities - here are few guidelines that could be followed to ease the development process:
+   - Read the ticket description to understand which is the mvn plugin that needs to be updated. All plugin executions (`mvn package`, `pull` and `push`) start from a `Mojo` class under the plugin's directory `/maven/plugins/PLUGIN-XXX/src/main/java/com/vmware/pscoe/maven/plugins/`.
+     - Example: `PullMojo.java` under `/maven/plugins/vra-ng` will be executed when you do the `mvn pull` command in VMware Aria Automation 8 (vRA 8\) context.
+   - The Mojo class will create and work with an instance of one of the Package Store classes located under `/common/artifact-manager/src/main/java/com/vmware/pscoe/iac/artifact/`.
+     - Example: The VMware Aria Automation 8 Package Store class is `VraNgPackageStore.java`.
+   - Most of the Package Store classes will use a REST client for communication. REST clients are located in `/common/artifact-manager/src/main/java/com/vmware/pscoe/iac/artifact/rest/`.
+     - Example: `VraNgPackageStore.java` uses `RestClientVraNg.java`, which itself uses `RestClientVraNgPrimitive.java`.
+4. Testing guide - follow the steps bellow to do a local test of a new functionality or a bugfix.
+   - Create or reuse an existing project with the type of archetype that you need.
+     - Example: For VMware Aria Automation 8 you will need a `vra-ng` project archetype.
+   - Bump the test project's Aria Build Tools version to the latest **SNAPSHOT** version. The version number is located in the `pom.xml` file/s between the `<parent>` tags. Each project can have multiple `pom.xml` files. If that's the case, change all of them.
+   - Run `mvn clean package` from the main test project directory so you can download the latest Aria Build Tools artifacts.
+   - After you make the proper changes under your local Aria Build Tools source, you will need to install the modified artifacts (locally), so you can test them. This is done by running the `mvn clean install` command from a *particular modified* Aria Build Tools directory (this will save you time, so you will not need to install all artifacts locally).
+     - Example: If you have modified the `VraNgPackageStore.java` or the `RestClientVraNg.java` class, you can run the `mvn clean install` command from the `/common/artifact-manager` directory.
+     - Example: If you have modified a `PullMojo.java` class, you can run the `mvn clean install` command from the `/maven/plugins/` directory.
+   - Now test the modifications by executing `mvn clean package/pull/push` command from the test project.
 
 ### Documentation
 Please navigate to [the following page](./docs/versions/latest/) for the latest version of Build Tools for VMware Aria documentation.

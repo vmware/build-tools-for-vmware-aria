@@ -10,4 +10,4 @@
 [//]: # (External navigation)
 [//]: # (Navigational links may have a short description after them separated by a `-`)
 ## Navigation:
-1. [vRA 8.X](Components/vRA 8.x)
+1. [vRA 8.X](Components/vRA%208.x)

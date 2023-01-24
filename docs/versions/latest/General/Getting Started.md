@@ -8,8 +8,8 @@ but possibly not desirable ). Here you will find instructions on how to setup su
 Build Tools for VMware Aria also has some local dependencies that need to be configured and we will talk about them as well.
 
 ## Table Of Contents:
-- [Prerequisites](./Getting Started/Prerequisites.md)
-- [Setting Up Artifactory](./Getting Started/Setting Up Artifactory.md)
-- [Setting Up Local Environment](./Getting Started/Setting Up Local Environment.md)
+- [Prerequisites](./Getting%20Started/Prerequisites.md)
+- [Setting Up Artifactory](./Getting%20Started/Setting%20Up%20Artifactory.md)
+- [Setting Up Local Environment](./Getting%20Started/Setting%20Up%20Local%20Environment.md)
 
 ## Next: [Prerequisites](./Getting Started/Prerequisites.md)

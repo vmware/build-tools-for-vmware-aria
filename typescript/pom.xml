@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.vmware.pscoe</groupId>
         <artifactId>iac</artifactId>
-        <version>2.27.1-SNAPSHOT</version>
+        <version>2.28.1-SNAPSHOT</version>
     </parent>
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>typescript</artifactId>
-    <version>2.27.1-SNAPSHOT</version>
+    <version>2.28.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 	<properties>

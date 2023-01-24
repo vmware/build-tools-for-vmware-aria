@@ -4,15 +4,15 @@ Build Tools for VMware Aria is a tool that helps enterprises adhere to Infrastru
 of VMware tools.
 
 ## Navigation:
-* [Core Concepts](./General/Core Concepts.md)
-* [Getting Started](./General/Getting Started.md)
+* [Core Concepts](./General/Core%20Concepts.md)
+* [Getting Started](./General/Getting%20Started.md)
 * [Installation](./General/Installation.md)
-* [Use Cases](./General/Use Cases)
+* [Use Cases](./General/Use%20Cases)
 * What's next
     * [Examples](./General/Examples)
     * [Cheatsheets](./General/Cheatsheets)
     * [Guides](./General/Guides)
-    * [Known Issues](./General/Known Issues)
+    * [Known Issues](./General/Known%20Issues)
 * [Components](./Components)
 * [FAQ](./General/FAQ.md)
 

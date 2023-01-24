@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import crypto from 'crypto';
 import { Logger } from "winston";
-import { PackagerOptions, BundleFileset } from "../lib/model";
+import { ActionOptions, BundleFileset } from "../lib/model";
 
 export interface IStrategy {
     packageProject(): Promise<void>
@@ -13,8 +13,8 @@ export abstract class BaseStrategy implements IStrategy {
 
     protected readonly DEPENDENCY_TEMP_DIR: string;
 
-    constructor(protected readonly logger: Logger, protected readonly options: PackagerOptions, protected readonly phaseCb: Function) {
-        this.DEPENDENCY_TEMP_DIR = path.join(path.resolve(options.workspace), 'polyglot-cache');
+    constructor(protected readonly logger: Logger, protected readonly options: ActionOptions, protected readonly phaseCb: Function) {
+        this.DEPENDENCY_TEMP_DIR = path.join(path.resolve(options.outBase), 'polyglot-cache');
     }
 
     protected async zipFiles(filesets: Array<BundleFileset>) {
