@@ -1,3 +1,7 @@
+### Fixes
+* [artifact-manager] IAC-708 / Updated commons-text version to 1.10.0
+* [maven-plugins-vrli] IAC-711 / Pulling LogInsight content packs fails
+
 ## v2.28.0 - 23 Jan 2023
 
 ### Enhancements
