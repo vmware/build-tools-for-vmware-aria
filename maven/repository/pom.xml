@@ -304,12 +304,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.vmware.pscoe.library</groupId>
-			<artifactId>class</artifactId>
-			<type>package</type>
-			<version>2.4.3</version>
-		</dependency>
-		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>vropkg</artifactId>
 			<version>${project.version}</version>
