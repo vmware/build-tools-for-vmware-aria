@@ -215,8 +215,11 @@ else
 
     cd ../../vro-types
     mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
     cd ../
+
+		cd packages/polyglot-wrapper
+		mvn versions:use-latest-versions -DallowSnapshots=false -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
+		cd ../../
 
 		
 
@@ -286,8 +289,11 @@ else
 
     cd ../../vro-types
     mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
     cd ../
+
+		cd packages/polyglot-wrapper
+		mvn versions:use-latest-versions -DallowSnapshots=true -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
+		cd ../../
 
     git add .
     git commit -m "(release) start development iteration v$next_version"
