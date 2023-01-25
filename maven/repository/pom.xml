@@ -9,7 +9,7 @@
 	<licenses>
 		<license>
 			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/licenses/bsd2_license</url>
+			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
