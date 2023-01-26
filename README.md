@@ -29,7 +29,7 @@ Build Tools for VMware Aria provides tools to develop, manage and deploy content
     </profile>
 </profiles>
 <activeProfiles>
-	<activeProfile>packaging</activeProfile>
+    <activeProfile>packaging</activeProfile>
 </activeProfiles>
 ```
 2. Execute:
@@ -47,4 +47,4 @@ mvn clean install -f maven/repository/pom.xml
 - npm: 6.14.13
 - node: 16.x.x
 - maven: 3.6.3
-- JDK: 8
+- jdk: 8
