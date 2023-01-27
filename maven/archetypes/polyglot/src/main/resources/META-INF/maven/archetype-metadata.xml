@@ -7,9 +7,6 @@
         <requiredProperty key="version">
             <defaultValue>1.0.0-SNAPSHOT</defaultValue>
         </requiredProperty>
-        <requiredProperty key="runtime">
-            <defaultValue>nodejs</defaultValue>
-        </requiredProperty>
         <requiredProperty key="type">
             <defaultValue>vro</defaultValue>
         </requiredProperty>
@@ -29,9 +26,7 @@
             <directory/>
             <includes>
                 <include>release.sh</include>
-                <include>tsconfig.json</include>
                 <include>.gitignore</include>
-                <include>requirements.txt</include>
                 <include>handler.debug.yaml</include>
             </includes>
         </fileSet>
@@ -43,7 +38,7 @@
                 <include>README.md</include>
             </includes>
         </fileSet>
-        <fileSet filtered="false" packaged="false" encoding="UTF-8">
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
             <directory>src</directory>
             <includes>
                 <include>**/*</include>
@@ -54,6 +49,6 @@
             <includes>
                 <include>**/*</include>
             </includes>
-        </fileSet>        
+        </fileSet>
     </fileSets>
 </archetype-descriptor>

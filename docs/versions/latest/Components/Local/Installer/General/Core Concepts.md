@@ -10,4 +10,4 @@ All other types except mentioned bellow will be send as parameter of type `strin
 
 ## Navigation:
 1. Components
-- [Example of using Install workflow](../Components/Install Workflow.md)
+- [Example of using Install workflow](../Components/Install%20Workflow.md)

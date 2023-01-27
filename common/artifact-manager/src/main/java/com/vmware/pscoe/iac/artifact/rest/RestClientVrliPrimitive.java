@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import com.vmware.pscoe.iac.artifact.model.Version;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,7 @@ public class RestClientVrliPrimitive extends RestClient {
     protected List<ContentPackDTO> getAllContentPacksPrimitive() {
         String version = this.getVersion();
         URI url;
-        if (!StringUtils.isEmpty(version) && version.startsWith(VRLI_88_VERSION)) {
+        if (!StringUtils.isEmpty(version) && Version.compareSemanticVersions(version, VRLI_88_VERSION) > -1) {
             url = getURI(getURIBuilder().setPath(CONTENT_PACKS_API));
         } else {
             url = getURI(getURIBuilder().setPath(CONTENT_PACKS_LIST_API));

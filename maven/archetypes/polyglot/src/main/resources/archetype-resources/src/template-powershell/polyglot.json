@@ -1,0 +1,26 @@
+{
+  "platform": {
+    "runtime": "powershell",
+    "action": "auto",
+    "tags": [],
+    "entrypoint": "out/handler.handler"
+  },
+#if ( $type == "vro" )
+  "vro": {
+    "module": "${groupId}",
+    "inputs": {
+      "limit": "number",
+      "vraEndpoint": "CompositeType(host:string,base:string):VraEndpointType"
+    },
+    "outputType": "Array/string"
+  },
+#elseif ( $type == "abx" )
+  "abx": {
+    "inputs": {
+      "limit": "",
+      "vraEndpoint": ""
+    }
+  },
+#end
+  "files": ["%out", "!**/package.json", "!**/polyglot.json"]
+}

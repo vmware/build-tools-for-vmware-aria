@@ -1,23 +1,30 @@
+### Fixes
+* [artifact-manager] IAC-708 / Updated commons-text version to 1.10.0
+* [maven-plugins-vrli] IAC-711 / Pulling LogInsight content packs fails
+
+## v2.28.0 - 23 Jan 2023
+
 ### Enhancements
 * [artifact-manager] IAC-671 / vRBT to support sending UTF-8 content in regards to vRA-NG projects.
 * [artifact-manager] IAC-671 / vRA-NG content (Content Sources, Custom Forms, Catalog Items .. ) now support "." in their names.
+* [polyglot] IAC-626 / The Polyglot archetype now works with multiple packages instead of just one.
+
 ### Fixes
 * [artifact-manager] IAC-553 / Fixed importing of property groups with different project scope.
 * [vrotest] IAC-696 / Fixed Error massage while executing vro unit tests
-* [release] IAC-682 / Removed unused bamboospec.java file, enable batch mode during release, update pom.xml structure to match the filesystem relative paths
+* [release] IAC-682 / Removed unused bamboospec.java file, enable batch mode during release, update pom.xml structure to match the filesystem relative paths, update project dependencies.
 * [vRA-NG] IAC-692 / vra-ng:pull throws NullPointerException for missing properties in the vra/content.yaml
 * [vrotest] IAC-705 / Add implementation for System.sleep and System.waitUntil
+* [MVN] IAC-686 / Add implementation for polyglot packages to be published in JFrog when deploy command is executed.
 
 ## v2.27.0 - 15 Dec 2022
 
 ### Enhancements
 * [build-tools-for-aria] IAC-666 / Update documentation to use approved project name `Build Tools for VMware Aria`
 * [build-tools-for-aria] IAC-622 / Added the ability to skip install-node-deps and cleaning node_modules during mvn clean lifecycle step by passing the flag skipInstallNodeDeps. If node_modules folder doesn't exist, then this flag is ineffective. This is done, to make sure that build shouldn't fail, because of this flag in any case.
-
-* [artifact-manager] IAC-644 / Add support for the following ABX properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant).
 * [ts-autogen] IAC-618 Removed the ts-autogen archtype, as this is causing the issue to make the toolchain opensource/public
 * [documentation] IAC-675/ Added documentation for unit testing
-
+* [artifact-manager] IAC-644 / Add support for the following ABX properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant).
 
 ### Fixes
 * [installer] IAC-437 / Fixed Installer Skips Steps Under Mac OS

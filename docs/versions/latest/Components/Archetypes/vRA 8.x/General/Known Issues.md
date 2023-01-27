@@ -2,7 +2,7 @@
 A list of known vRA 8.x archetype issues
 
 ## Table Of Contents:
-1. [Custom Resources Known Issues](../Components/Custom Resources.md#known-issues)
+1. [Custom Resources Known Issues](../Components/Custom%20Resources.md#known-issues)
 2. [Blueprints Known Issues](../Components/Blueprints.md#known-issues)
 3. [All Local Data Is Pushed](#all-local-data-is-pushed-to-vra)
 

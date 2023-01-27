@@ -37,3 +37,4 @@ release.properties
 
 # Temporary files
 tmp/
+tsconfig.tmp.json

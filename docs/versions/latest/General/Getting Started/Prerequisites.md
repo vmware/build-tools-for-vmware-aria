@@ -1,7 +1,15 @@
+[//]: # (TODO: Update the links in the Use section after the files are moved)
+[//]: # (TODO: More in Installation section?)
+[//]: # (TODO: Replace all references of the setup-workstation.md to point to Prerequisites.md)
+
 # Prerequisites
+
+## Overview
+Prerequisites for installation of Build Tools for VMware Aria.
 
 ## Table Of Contents:
 1. [Prerequisites](#prerequisites)
+2. [Installation and Configuration](#installation-and-configuration)
 
 ### Prerequisites
 - [vRealize Developer Tools](https://github.com/vmware/vrealize-developer-tools) (Optional)
@@ -19,5 +27,17 @@
     - MacOS: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos
     - Linux: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux
 
-## Next: [Setting Up Artifactory](./Setting Up Artifactory.md)
+### Installation and Configuration
+
+#### Configuration
+- [Build Tools for VMware Aria Build System](Setting%20Up%20Artifactory.md)
+
+### Use
+- [vRO Projects](use-workstation-vro-project.md)
+- [vRA Projects](use-workstation-vra-project.md)
+- [vRA NG Projects](use-workstation-vra-ng-project.md)
+- [ABX Projects](use-workstation-abx-project.md)
+- [vROps Projects](use-workstation-vrops-project.md)
+
+## Next: [Setting Up Artifactory](./Setting%20Up%20Artifactory.md)
 

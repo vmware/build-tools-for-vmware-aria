@@ -10,4 +10,4 @@ resource elements, native, declarations, policy templates and tests
 ## Navigation:
 1. [Usage](General/Usage.md) - how to use vrotsc
 2. Components
-   * [Test Helpers](Components/Test Helpers.md) - Information on test Helpers
+   * [Test Helpers](Components/Test%20Helpers.md) - Information on test Helpers
