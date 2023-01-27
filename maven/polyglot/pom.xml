@@ -5,7 +5,7 @@
 
     <groupId>com.vmware.pscoe.polyglot</groupId>
     <artifactId>polyglot-project</artifactId>
-    <version>2.29.0</version>
+    <version>2.29.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 	<licenses>
@@ -87,14 +87,14 @@
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>vropkg</artifactId>
 			<type>tgz</type>
-			<version>2.29.0</version>
+			<version>2.29.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>polyglotpkg</artifactId>
 			<type>tgz</type>
-			<version>2.29.0</version>
+			<version>2.29.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
     </dependencies>
@@ -300,7 +300,7 @@
     </build>
 
     <properties>
-        <iac.version>2.29.0</iac.version>
+        <iac.version>2.29.1-SNAPSHOT</iac.version>
         <sonar.sources>src</sonar.sources>
         <sonar.language>ts</sonar.language>
         <sonar.javascript.lcov.reportPaths>./target/lcov.info</sonar.javascript.lcov.reportPaths>

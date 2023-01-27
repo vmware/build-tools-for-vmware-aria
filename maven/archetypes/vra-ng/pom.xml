@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.vmware.pscoe.archetypes</groupId>
         <artifactId>base-archetype</artifactId>
-        <version>2.29.0</version>
+        <version>2.29.1-SNAPSHOT</version>
     </parent>
     <groupId>com.vmware.pscoe.vra-ng.archetypes</groupId>
     <artifactId>package-vra-ng-archetype</artifactId>
