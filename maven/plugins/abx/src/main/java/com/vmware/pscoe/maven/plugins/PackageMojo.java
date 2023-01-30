@@ -101,7 +101,14 @@ public class PackageMojo extends AbstractMojo {
 				PackageManager mgr = new PackageManager(pkg);
 
 				// add everything from the dist dir
-				mgr.pack(new File(newBaseDir, "dist"));
+				File distFile = new File(newBaseDir, "dist");
+				if(distFile.exists()){
+					// multi artifact ABX project
+					mgr.pack(distFile);
+				} else {
+					// single artifact ABX project
+					mgr.pack(new File(newBaseDir, "."));
+				}
 
 				// add package.json
 				File packageJsonFile = new File(newBaseDir, "package.json");

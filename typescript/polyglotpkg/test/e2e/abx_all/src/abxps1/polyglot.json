@@ -1,0 +1,15 @@
+{
+  "platform": {
+    "runtime": "powershell",
+    "action": "auto",
+    "tags": [],
+    "entrypoint": "out/handler.handler"
+  },
+  "abx": {
+    "inputs": {
+      "limit": "",
+      "vraEndpoint": ""
+    }
+  },
+  "files": ["%out", "!**/package.json", "!**/polyglot.json"]
+}
