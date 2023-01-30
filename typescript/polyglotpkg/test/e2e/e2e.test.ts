@@ -4,20 +4,23 @@ import { run } from "../../src/lib/utils";
 
 describe('E2E Tests', () => {
 
-    ['nodejs', 'python', 'powershell']
+    ['abxpython', 'abx_all','nodejs', 'python', 'powershell', "node:12", "node:14", "powercli:12-powershell-7.1", "powercli:11-powershell-6.2"]
+    .map(runtime => runtime.replace(/[:\-.]/g, "_"))
     .filter(runtime => fs.existsSync(path.join('test', 'e2e', runtime)))
     .forEach(runtime => {
         describe(`Packaging ${runtime}`, () => {
+            const processCwd = process.cwd();
 
             beforeEach(`Cleaning up ${runtime}`, async () => {
+                process.chdir(processCwd);
                 await run('npm', ['run', 'clean'], path.join('test', 'e2e', runtime))
             })
 
             it(`Packaging ${runtime}`, async () => {
-                const projectDir = path.join('test', 'e2e', runtime);
-                const outDir = path.join('test', 'e2e', runtime, 'out');
-                const bundleName = path.join('test', 'e2e', runtime, 'dist', 'bundle.zip');
-                await run('./bin/polyglotpkg', ['-p', projectDir, '-o', outDir, '-b', bundleName]);
+                const projectDir = path.resolve('test', 'e2e', runtime);
+                process.chdir(projectDir);
+                const environment = ["abxpython", "abx_all", "nodejs", "python", "powershell"].indexOf(runtime) != -1 ? "abx": "vro";
+                await run('../../../bin/polyglotpkg', ['-e', environment]);
             })
 
         })

@@ -1,6 +1,6 @@
 import { Logger } from 'winston';
 
-import { PackagerOptions, ActionType, ActionRuntime, Events, PackageDefinition, AbxActionDefinition } from "./lib/model";
+import { PackagerOptions, ActionType, ActionRuntime, Events } from "./lib/model";
 import { createPackageJsonForABX, getProjectActions } from './lib/utils';
 import { IStrategy } from './strategies/base';
 import { NodejsStrategy } from './strategies/nodejs';
@@ -25,7 +25,7 @@ export class Packager extends EventEmitter {
         const projectActions = await getProjectActions(this.options, <ActionType>this.options.env);
 
         // Loop all actions found and execute the packager for each of them
-        for (var i=0; i < projectActions.length; i++) {
+        for (var i = 0; i < projectActions.length; i++) {
             const actionType = projectActions[i].actionType;
             const actionRuntime = projectActions[i].actionRuntime;
 
@@ -40,6 +40,7 @@ export class Packager extends EventEmitter {
             switch (actionRuntime) {
                 case ActionRuntime.ABX_NODEJS:
                 case ActionRuntime.VRO_NODEJS_12:
+                case ActionRuntime.VRO_NODEJS_14:
                     strategy = new NodejsStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
                     await strategy.packageProject();
                     break;
@@ -50,6 +51,7 @@ export class Packager extends EventEmitter {
                     break;
                 case ActionRuntime.ABX_POWERSHELL:
                 case ActionRuntime.VRO_POWERCLI_11_PS_62:
+                case ActionRuntime.VRO_POWERCLI_12_PS_71:
                     strategy = new PowershellStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
                     await strategy.packageProject();
                     break;
@@ -64,8 +66,8 @@ export class Packager extends EventEmitter {
             }
 
             // Prepare input files for ABX packaging
-            if (projectActions[i].mixed && actionType === ActionType.ABX) {
-                await createPackageJsonForABX(projectActions[i]);
+            if (actionType === ActionType.ABX) {
+                await createPackageJsonForABX(projectActions[i], projectActions[i].mixed);
             }
 
         }

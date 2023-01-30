@@ -31,13 +31,8 @@
     "tags": [],
     "entrypoint": "out/handler.handler"
   },
-  "vro": {
-    "module": "com.vmware.pscoe.polyglot",
-    "inputs": {
-      "limit": "number",
-      "vraEndpoint": "CompositeType(host:string,base:string):VraEndpointType"
-    },
-    "outputType": "Array/string"
-  },
+	"abx": {
+		"inputs": {}
+	},
   "files": ["out"]
 }
