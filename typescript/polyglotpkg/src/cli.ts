@@ -53,6 +53,9 @@ const logger = createLogger(input.verbose);
 
 async function run(): Promise<void> {
 
+    logger.debug(`Change current dir to ${input.projectDir}`);
+    process.chdir(input.projectDir);
+
     logger.debug(`Parsed Inputs: ${util.inspect(input)}`);
 
     if (input._unknown) {

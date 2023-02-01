@@ -71,7 +71,7 @@ export class PowershellStrategy extends BaseStrategy {
     private async installDependencies(polyglotJson: PlatformDefinition) {
 
         const psScriptName: string = polyglotJson.platform.entrypoint.split("/")[1].split(".")[0];
-        const depsManifest: string = path.join(this.options.src, `${psScriptName}.ps1`);
+        const depsManifest: string = path.join(this.options.out, `${psScriptName}.ps1`);
         const deps: string = fs.readFileSync(depsManifest, "utf-8");
         const modulesPath: string = path.resolve(path.join(this.options.outBase, "Modules"));
         const modules: string[] = [];

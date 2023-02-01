@@ -1,3 +1,7 @@
+### Fixes
+* [polyglotpkg] IAC-712 / Enabled unit testing phase for npm lib projects, fix abx and polyglot pkg to be backward compatible
+* [polyglotpkg] IAC-712 / Updated project dependencies to not trigger build errors when combined with typescript-project-all projects.
+
 ## v2.29.0 - 27 Jan 2023
 
 ### Fixes

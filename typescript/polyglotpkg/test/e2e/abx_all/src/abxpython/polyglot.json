@@ -1,0 +1,16 @@
+{
+  "platform": {
+    "runtime": "python",
+    "action": "auto",
+    "tags": [],
+    "entrypoint": "handler.handler",
+    "base": "out"
+  },
+  "abx": {
+    "inputs": {
+      "limit": "",
+      "vraEndpoint": ""
+    }
+  },
+  "files": ["%out", "!**/package.json", "!**/polyglot.json", "!**/requirements.txt"]
+}

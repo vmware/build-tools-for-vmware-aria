@@ -17,10 +17,16 @@ export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionTyp
 
     if (actionType) {
         switch (pkg.platform.runtime) {
+            case "node:12":
             case 'nodejs':
                 return actionType === ActionType.ABX ? ActionRuntime.ABX_NODEJS : ActionRuntime.VRO_NODEJS_12;
+            case 'node:14':
+                return actionType === ActionType.ABX ? ActionRuntime.ABX_NODEJS : ActionRuntime.VRO_NODEJS_14;
+            case "powercli:11-powershell-6.2":
             case "powershell":
                 return actionType === ActionType.ABX ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_11_PS_62;
+            case "powercli:12-powershell-7.1":
+                return actionType === ActionType.ABX ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_12_PS_71;
             case "python":
                 return actionType === ActionType.ABX ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_37;
             default:
@@ -29,8 +35,14 @@ export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionTyp
     }
 
     switch (pkg.platform.runtime) {
+        case "powercli:12-powershell-7.1":
+            return pkg.vro ? ActionRuntime.VRO_POWERCLI_12_PS_71 : ActionRuntime.ABX_POWERSHELL;
+        case "node:14":
+            return pkg.vro ? ActionRuntime.VRO_NODEJS_14 : ActionRuntime.ABX_NODEJS;
+        case "node:12":
         case "nodejs":
             return pkg.vro ? ActionRuntime.VRO_NODEJS_12 : ActionRuntime.ABX_NODEJS;
+        case "powercli:11-powershell-6.2":
         case 'powershell':
             return pkg.vro ? ActionRuntime.VRO_POWERCLI_11_PS_62 : ActionRuntime.ABX_POWERSHELL;
         case 'python':
@@ -111,7 +123,7 @@ export function determineActionType(pkg: PlatformDefinition, actionType?: Action
  *     target/
  *
  */
- export async function getProjectActions(options: PackagerOptions, actionType?: ActionType): Promise<ProjectActions> {
+export async function getProjectActions(options: PackagerOptions, actionType?: ActionType): Promise<ProjectActions> {
 
     // Search for all polyglot.json files located in subfolders of src
     const plg = await globby(['src/**/polyglot.json', '!**/node_modules/**'], {
@@ -134,17 +146,17 @@ export function determineActionType(pkg: PlatformDefinition, actionType?: Action
 
         // Set options for a legacy project
         let projectAction: ActionOptions =
-            {
-                ...options,
-                mixed: false,
-                polyglotJson: pkg[0],          // platform options are located in project_root/package.json
-                actionBase: options.workspace, // where to search for tsconfig.json and requirements.txt
-                outBase: options.workspace,    // create out and polyglot-cache subfolders in project_root
-                src: 'src',
-                out: 'out',
-                actionRuntime: await determineRuntime(pkgObj, actionType),
-                actionType: await determineActionType(pkgObj, actionType)
-            }
+        {
+            ...options,
+            mixed: false,
+            polyglotJson: pkg[0],          // platform options are located in project_root/package.json
+            actionBase: options.workspace, // where to search for tsconfig.json and requirements.txt
+            outBase: options.workspace,    // create out and polyglot-cache subfolders in project_root
+            src: 'src',
+            out: 'out',
+            actionRuntime: await determineRuntime(pkgObj, actionType),
+            actionType: await determineActionType(pkgObj, actionType)
+        }
         return [projectAction]
     }
 
@@ -158,9 +170,9 @@ export function determineActionType(pkg: PlatformDefinition, actionType?: Action
             continue;
         }
 
-        const actionFolder: string = path.relative(path.join(projectBasePath,'src'), actionBasePath);
+        const actionFolder: string = path.relative(path.join(projectBasePath, 'src'), actionBasePath);
         // To separate out files of multiple actions out and polyglot-cache are created under project_root/out/action_name
-        const outBasePath: string = path.join(options.workspace,'out',actionFolder)
+        const outBasePath: string = path.join(options.workspace, 'out', actionFolder)
         // To separate bundle.zip files of multiple actions they are created under project_root/dist/action_name/dist
         const bundleZipPath: string = path.resolve('.', 'dist', actionFolder, 'dist', 'bundle.zip');
         const plgObj = await fs.readJSONSync(plg[i]);
@@ -185,14 +197,14 @@ export function determineActionType(pkg: PlatformDefinition, actionType?: Action
 /**
  * Create a package.json file for ABX action dist.
  */
-export async function createPackageJsonForABX(options: ActionOptions) {
+export async function createPackageJsonForABX(options: ActionOptions, isMixed: boolean) {
     const projectPkg = await getActionManifest(options.workspace) as PackageDefinition;
-    const polyglotPkg = await fs.readJSONSync(options.polyglotJson) as AbxActionDefinition;
-    if (polyglotPkg.platform.action === "auto") {
+    const polyglotPkg = isMixed && await fs.readJSONSync(options.polyglotJson) as AbxActionDefinition;
+    if (polyglotPkg && polyglotPkg.platform.action === "auto") {
         polyglotPkg.platform.action = path.basename(options.actionBase);
     }
-    const bundlePkg = { ...projectPkg, ...polyglotPkg }
-    const actionDistPkgPath = path.join(options.workspace, 'dist', path.basename(options.actionBase), 'package.json');
+    const bundlePkg = isMixed ? { ...projectPkg, ...polyglotPkg } : projectPkg;
+    const actionDistPkgPath = path.join(options.workspace, 'dist', isMixed ? path.basename(options.actionBase) : "", 'package.json');
     await fs.writeJsonSync(actionDistPkgPath, bundlePkg);
 }
 
@@ -228,7 +240,7 @@ export function notUndefined<T>(x: T | undefined): x is T {
  */
 export function run(cmd: string, args: Array<string> = [], cwd: string = process.cwd()): Promise<number> {
     return new Promise((resolve, reject) => {
-        which(cmd, {all: true}, (err: Error | null, commandPath: string[] | undefined) => {
+        which(cmd, { all: true }, (err: Error | null, commandPath: string[] | undefined) => {
             if (err || !commandPath) {
                 return reject(new Error(`Cannot find "${cmd}"`));
             }
