@@ -737,4 +737,19 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(e);
 		}
 	}
+
+	// =================================================
+	// POLICIES
+	// =================================================
+
+	public List<VraNgContentSharingPolicy> getContentSharingPolicies() {
+		try {
+			return this.getAllContentSharingPolicies();
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+	
+
 }

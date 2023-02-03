@@ -45,6 +45,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
     private List<String> customResource;
     private List<String> resourceAction;
     private List<String> contentSource;
+	private List<String> contentSharingPolicy;
 
 	public List<String> getPropertyGroup() {
 		return this.propertyGroup;
@@ -116,6 +117,10 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
     public void setCatalogEntitlement(List<String> catalogEntitlement) {
         this.catalogEntitlement = catalogEntitlement;
+    }
+
+	public List<String> getContentSharingPolicy() {
+        return contentSharingPolicy;
     }
 
     public List<String> getCustomResource() {

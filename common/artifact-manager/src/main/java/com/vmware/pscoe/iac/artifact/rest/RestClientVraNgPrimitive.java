@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -2344,5 +2345,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	private boolean isVraCloud(URI url) {
 		return VRA_CLOUD_HOSTS.stream().filter(host -> url.getHost().contains(host)).count() > 0;
+	}
+
+	/**
+	 * Retrieve all content sharing policies for the project.
+	 *
+	 * @return list of VraNgCatalogEntitlement objects that are shared for all of
+	 *         the configured projects.
+	 * @see VraNgCatalogEntitlement
+	 */
+	protected List<VraNgContentSharingPolicy> getAllContentSharingPolicies() {
+		//TO DO
+		List<VraNgContentSharingPolicy> mylist = Collections.<VraNgContentSharingPolicy>emptyList();
+		return mylist;
 	}
 }
