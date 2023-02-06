@@ -744,7 +744,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	public List<VraNgContentSharingPolicy> getContentSharingPolicies() {
 		try {
-			return this.getAllContentSharingPolicies();
+			return this.getAllContentSharingPoliciesPrimitive();
 		} catch (Exception e) {
 			logger.error("Error fetching content sharing policies", e.getMessage());
 			throw new RuntimeException(e);

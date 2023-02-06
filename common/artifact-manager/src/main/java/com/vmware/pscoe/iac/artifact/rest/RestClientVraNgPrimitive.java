@@ -40,6 +40,7 @@ import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,12 +99,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private static final String SERVICE_POST_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_PUT_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_SECRET = "/platform/api/secrets";
+	private static final String SERVICE_GET_POLICIES = "/policy/api/policies";
 	private static final int VRA_VERSION_MAJOR = 8;
 	private static final int VRA_VERSION_MINOR = 1;
 	private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com",
 			"api.mgmt.cloud.vmware.com");
 	private static final String VRA_CLOUD_VERSION = "cloud";
 	private static final String CUSTOM_FORM_DEFAULT_FORMAT = "JSON";
+	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
 
 	private final ConfigurationVraNg configuration;
 	private final RestTemplate restTemplate;
@@ -2348,15 +2351,39 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Retrieve all content sharing policies for the project.
+	 * Retrieve all content sharing policies for the projects.
 	 *
-	 * @return list of VraNgCatalogEntitlement objects that are shared for all of
+	 * @return list of VraNgContentSharingPolicy objects that are shared for all of
 	 *         the configured projects.
-	 * @see VraNgCatalogEntitlement
+	 * @see VraNgContentSharingPolicy
 	 */
-	protected List<VraNgContentSharingPolicy> getAllContentSharingPolicies() {
-		//TO DO
-		List<VraNgContentSharingPolicy> mylist = Collections.<VraNgContentSharingPolicy>emptyList();
-		return mylist;
+	protected List<VraNgContentSharingPolicy> getAllContentSharingPoliciesPrimitive() {
+		List<VraNgContentSharingPolicy> policies = new ArrayList<>();
+		List<JsonObject> results = this.getPagedContent(SERVICE_GET_POLICIES, new HashMap<>());
+
+		logger.debug("Policies found on server: {}", results.size());
+		results.forEach(o -> {
+			JsonObject ob = o.getAsJsonObject();
+			String typeId = ob.get("typeId").getAsString();
+			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE)) {
+				VraNgContentSharingPolicy policy = new VraNgContentSharingPolicy();
+				String Id = ob.get("id").getAsString();
+				String name = ob.get("name").getAsString();
+				String enforcementType = ob.get("enforcementType").getAsString();
+				String orgId = ob.get("orgId").getAsString();
+				String projectId = ob.get("projectId").getAsString();
+				logger.info("Print get typeID: {}", typeId);
+				policy.setId(Id);
+				policy.setName(name);
+				policy.setEnforcementType(enforcementType);
+				policy.setOrgId(orgId);
+				policy.setProjectId(projectId);
+				policy.setTypeId(typeId);
+				policies.add(policy);
+			}
+		});
+		logger.info("Total Content Sharing Policies: {}", policies.size());
+
+		return policies;
 	}
 }
