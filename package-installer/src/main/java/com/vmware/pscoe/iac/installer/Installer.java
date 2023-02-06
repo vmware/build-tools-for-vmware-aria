@@ -764,8 +764,8 @@ public class Installer {
             userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
           
         }
-    
-		if (input.anyTrue(Option.CS_IMPORT)) {
+
+        if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT)) {
             input.put(Option.VRO_EMBEDDED, Boolean.TRUE);
             readVrangProperties(input);
         }
