@@ -72,3 +72,4 @@ jfrog rt u --recursive true --flat false ./* vro-local
 
 # Next step
 - Configure developer **[Build Tools for VMware Aria Workstation](setup-workstation.md)**
+
