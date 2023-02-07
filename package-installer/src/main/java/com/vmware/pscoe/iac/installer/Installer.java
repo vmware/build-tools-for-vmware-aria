@@ -779,8 +779,7 @@ public class Installer {
         //  +-------------------------------------
         //  |  vRealize Orchestrator
         //  +-------------------------------------
-		
-        if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
+		if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
                 if(hasVraNgPackages){
