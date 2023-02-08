@@ -766,7 +766,6 @@ public class Installer {
         }
 
         if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT)) {
-            input.put(Option.VRO_EMBEDDED, Boolean.TRUE);
             readVrangProperties(input);
         }
         if (input.anyTrue(Option.VRANG_IMPORT)){
