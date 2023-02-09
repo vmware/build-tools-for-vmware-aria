@@ -81,6 +81,19 @@ If you build project with polyglot + typescript-project-all the build will succe
 
 None
 
+### Installer v 2.27.0 Doesn't Ask for All Required Information about importing vRА
+Installer script doesn't show a prompt to ask for additional information for importing vRA - project name and ID and Organization name and ID
+
+#### Previous Behavior
+The entire section with questions regarding vRA was missing
+
+#### New Behavior
+The questions for vRA are present
+
+#### Relevant Documentation
+**NONE**
+
+
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
 
