@@ -1,5 +1,7 @@
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
+import java.util.ArrayList;
+
 /*
  * #%L
  * artifact-manager
@@ -25,16 +27,8 @@ public class VraNgContentSharingPolicy {
 	private String enforcementType;
 	private String orgId;
 	private String projectId;
-
-	public VraNgContentSharingPolicy(String id, String name, String typeId, String sourceName, String enforcementType,
-			String orgId, String projectId) {
-		this.id = id;
-		this.name = name;
-		this.typeId = typeId;
-		this.enforcementType = enforcementType;
-		this.orgId = orgId;
-		this.projectId = projectId;
-	}
+	private String description;
+	private VraNgDefinition definition;
 
 	public VraNgContentSharingPolicy() {
 	}
@@ -151,5 +145,43 @@ public class VraNgContentSharingPolicy {
 	 */
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
+	}
+
+	/**
+	 * Get the description of the content sharing policy.
+	 * 
+	 * @return content sharing policy description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Set the description of the content sharing policy.
+	 * 
+	 * @param description - description of the content sharing policy
+	 * @return void
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Get the definition of the content sharing policy.
+	 * 
+	 * @return content sharing policy definition
+	 */
+	public VraNgDefinition getDefinition() {
+		return definition;
+	}
+
+	/**
+	 * Set the definition of the content sharing policy.
+	 * 
+	 * @param definition - definition of the content sharing policy
+	 * @return void
+	 */
+	public void setDefinition(VraNgDefinition definition) {
+		this.definition = definition;
 	}
 }

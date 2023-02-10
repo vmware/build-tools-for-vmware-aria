@@ -36,7 +36,8 @@ public class VraNgTypeStoreFactory {
 		SUBSCRIPTION,
 		REGION_MAPPING,
 		CATALOG_ENTITLEMENT,
-		CATALOG_ITEM
+		CATALOG_ITEM,
+		CONTENT_SHARING_POLICY
 	};
 
 	public static VraNgPackageContent.ContentType[] EXPORT_ORDER = {

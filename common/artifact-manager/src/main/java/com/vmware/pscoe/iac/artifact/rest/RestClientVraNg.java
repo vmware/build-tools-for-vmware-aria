@@ -742,14 +742,29 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	// POLICIES
 	// =================================================
 
-	public List<VraNgContentSharingPolicy> getContentSharingPolicies() {
+	public List<String> getContentSharingPolicyIds() {
 		try {
-			return this.getAllContentSharingPoliciesPrimitive();
+			return this.getAllContentSharingPolicyIdsPrimitive();
 		} catch (Exception e) {
-			logger.error("Error fetching content sharing policies", e.getMessage());
+			logger.error("Error fetching content sharing policy Ids", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
-	
 
+	public String createContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+		return null;
+	}
+
+	public String updateContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+		return null;
+	}
+
+	public VraNgContentSharingPolicy getContentSharingPolicy(String policyId) {
+		try {
+			return this.getContentSharingPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policy", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
 }

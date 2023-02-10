@@ -2351,39 +2351,54 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Retrieve all content sharing policies for the projects.
+	 * Retrieve all content sharing policy Ids.
 	 *
-	 * @return list of VraNgContentSharingPolicy objects that are shared for all of
-	 *         the configured projects.
+	 * @return list of sharing policy Ids that are available.
+	 * 
 	 * @see VraNgContentSharingPolicy
 	 */
-	protected List<VraNgContentSharingPolicy> getAllContentSharingPoliciesPrimitive() {
-		List<VraNgContentSharingPolicy> policies = new ArrayList<>();
+	protected List<String> getAllContentSharingPolicyIdsPrimitive() {
+		List<String> policyIds = new ArrayList<>();
 		List<JsonObject> results = this.getPagedContent(SERVICE_GET_POLICIES, new HashMap<>());
-
-		logger.debug("Policies found on server: {}", results.size());
+		logger.debug("Policy Ids found on server: {}", results.size());
 		results.forEach(o -> {
 			JsonObject ob = o.getAsJsonObject();
 			String typeId = ob.get("typeId").getAsString();
 			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE)) {
-				VraNgContentSharingPolicy policy = new VraNgContentSharingPolicy();
-				String Id = ob.get("id").getAsString();
-				String name = ob.get("name").getAsString();
-				String enforcementType = ob.get("enforcementType").getAsString();
-				String orgId = ob.get("orgId").getAsString();
-				String projectId = ob.get("projectId").getAsString();
-				logger.info("Print get typeID: {}", typeId);
-				policy.setId(Id);
-				policy.setName(name);
-				policy.setEnforcementType(enforcementType);
-				policy.setOrgId(orgId);
-				policy.setProjectId(projectId);
-				policy.setTypeId(typeId);
-				policies.add(policy);
+				String policyId = ob.get("id").getAsString();
+				policyIds.add(policyId);
 			}
 		});
-		logger.info("Total Content Sharing Policies: {}", policies.size());
+		return policyIds;
+	}
 
-		return policies;
+	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(String policyId) {
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
+		URI url = getURI(getURIBuilder().setPath(SERVICE_GET_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		JsonElement root = JsonParser.parseString(response.getBody());
+		if (!root.isJsonObject()) {
+			return null;
+		}
+		JsonObject result = root.getAsJsonObject();
+		String Id = result.get("id").getAsString();
+		String name = result.get("name").getAsString();
+		String description= result.has("description") ? result.get("description").getAsString(): "";
+		logger.info("Description Value: {}",description);
+		//String description = result.get("description").isJsonNull()== true ? "": result.get("description").getAsString();
+		String typeId = result.get("typeId").getAsString();
+		String enforcementType = result.get("enforcementType").getAsString();
+		String orgId = result.get("orgId").getAsString();
+		String projectId = result.get("projectId").getAsString();
+		csPolicy.setDefinition(new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class));
+		csPolicy.setId(Id);
+		csPolicy.setName(name);
+		csPolicy.setEnforcementType(enforcementType);
+		csPolicy.setDescription(description);
+		csPolicy.setTypeId(typeId);
+		csPolicy.setOrgId(orgId);
+		csPolicy.setProjectId(projectId);
+		return csPolicy;
 	}
 }
