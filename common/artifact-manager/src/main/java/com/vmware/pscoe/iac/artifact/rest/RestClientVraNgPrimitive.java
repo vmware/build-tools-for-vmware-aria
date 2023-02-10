@@ -2386,7 +2386,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String name = result.get("name").getAsString();
 		String description= result.has("description") ? result.get("description").getAsString(): "";
 		logger.info("Description Value: {}",description);
-		//String description = result.get("description").isJsonNull()== true ? "": result.get("description").getAsString();
 		String typeId = result.get("typeId").getAsString();
 		String enforcementType = result.get("enforcementType").getAsString();
 		String orgId = result.get("orgId").getAsString();
