@@ -23,6 +23,7 @@
 
 	<properties>
 		<main.basedir>${project.basedir}</main.basedir>
+		<iac.version>2.29.1-SNAPSHOT</iac.version>
 	</properties>
 
 	<licenses>

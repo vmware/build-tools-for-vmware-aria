@@ -8,6 +8,7 @@
         <groupId>com.vmware.pscoe.npm</groupId>
         <artifactId>lib</artifactId>
         <version>2.29.1-SNAPSHOT</version>
+        <relativePath>../../maven/npmlib</relativePath>
     </parent>
 
     <groupId>com.vmware.pscoe.iac</groupId>
@@ -17,6 +18,7 @@
 
     <properties>
 		<attachFileName>vmware-pscoe-${project.artifactId}-${project.version}.tgz</attachFileName>
+        <main.basedir>${project.parent.parent.basedir}</main.basedir>
 	</properties>
 
     <build>
