@@ -22,6 +22,7 @@
 </licenses>
 
   <properties>
+    <main.basedir>${project.parent.parent.parent.basedir}</main.basedir>
     <test.coverage.enabled>true</test.coverage.enabled>
     <test.coverage.reports>text,html,clover,cobertura,lcovonly</test.coverage.reports>
   </properties>

@@ -3,9 +3,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+		<artifactId>iac</artifactId>
+		<groupId>com.vmware.pscoe</groupId>
+		<version>2.29.1-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
     <groupId>com.vmware.pscoe.npm</groupId>
     <artifactId>base-package</artifactId>
-    <version>2.29.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 	<licenses>
@@ -18,6 +24,7 @@
 
     <properties>
         <iac.version>2.29.1-SNAPSHOT</iac.version>
+        <main.basedir>${project.parent.basedir}</main.basedir>
         <npmPackageVersion>${project.version}</npmPackageVersion>
         <npmconvSrcArgs>-s src/**/*</npmconvSrcArgs>
         <npmconvAuxIncludeArgs>--auxInclude src/*.ts:src</npmconvAuxIncludeArgs>

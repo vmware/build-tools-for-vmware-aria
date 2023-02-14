@@ -84,6 +84,7 @@
 		</plugins>
 	</build>
 	<properties>
+        <main.basedir>${project.parent.parent.basedir}</main.basedir>
 		<sonar.sources>src/main</sonar.sources>
 		<sonar.language>js</sonar.language>
 		<sonar.javascript.globals>${vro.javascript.globals}</sonar.javascript.globals>

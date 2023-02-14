@@ -12,6 +12,7 @@
 		<module>common/artifact-manager</module>
 		<module>maven/archetypes</module>
 		<module>maven/plugins</module>
+		<module>maven/base-package</module>
 		<module>maven/npmconv</module>
 		<module>maven/npmlib</module>
 		<module>maven/assembly</module>
@@ -19,6 +20,7 @@
 		<module>vro-types</module>
 		<module>typescript</module>
 		<module>package-installer</module>
+		<module>packages</module>
 	</modules>
 
 	<properties>
@@ -50,7 +52,7 @@
 						<configuration>
 							<encoding>UTF-8</encoding>
 							<licenseName>bsd2_license</licenseName>
-							<licenseResolver>file:${main.basedir}/licenses</licenseResolver>
+							<licenseResolver>https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/licenses/</licenseResolver>
 							<aggregate>true</aggregate>
 							<inceptionYear>2023</inceptionYear>
 							<organizationName>VMware</organizationName>
@@ -69,7 +71,7 @@
 								<goals>
 									<goal>update-file-header</goal>
 									<!-- <goal>update-project-license</goal> -->
-									<!-- <goal>download-licenses</goal> -->
+									<goal>download-licenses</goal>
 								</goals>
 								<phase>process-sources</phase>
 							</execution>

@@ -86,6 +86,7 @@
     </build>
 
 	<properties>
+        <main.basedir>${project.parent.parent.basedir}</main.basedir>
 		<!-- checksum calculation properties -->
 		<checksum.definitions>xml,packages</checksum.definitions>
 

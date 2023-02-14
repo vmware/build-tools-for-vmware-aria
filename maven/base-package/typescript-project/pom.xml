@@ -6,6 +6,11 @@
 		<artifactId>base-package</artifactId>
 		<version>2.29.1-SNAPSHOT</version>
 	</parent>
+
+	<modules>
+		<module>../../typescript-project-all</module>
+	</modules>
+
 	<artifactId>typescript-project</artifactId>
 	<packaging>pom</packaging>
 	<licenses>
@@ -126,6 +131,7 @@
 		</plugins>
 	</build>
 	<properties>
+        <main.basedir>${project.parent.parent.basedir}</main.basedir>
 		<sonar.sources>src</sonar.sources>
 		<sonar.language>ts</sonar.language>
 		<sonar.javascript.globals>${vro.javascript.globals}</sonar.javascript.globals>

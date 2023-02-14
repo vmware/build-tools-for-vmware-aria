@@ -41,6 +41,7 @@
     </plugins>
   </build>
   <properties>
+    <main.basedir>${project.parent.parent.basedir}</main.basedir>
     <sonar.sources>src</sonar.sources>
     <sonar.language>ts</sonar.language>
 

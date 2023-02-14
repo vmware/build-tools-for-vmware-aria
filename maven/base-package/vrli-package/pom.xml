@@ -46,4 +46,8 @@
             </plugin>
         </plugins>
     </build>
+
+    <properties>
+        <main.basedir>${project.parent.parent.basedir}</main.basedir>
+    </properties>
 </project>
