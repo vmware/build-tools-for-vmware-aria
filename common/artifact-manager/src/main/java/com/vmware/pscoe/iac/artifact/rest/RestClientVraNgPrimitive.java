@@ -99,7 +99,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private static final String SERVICE_POST_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_PUT_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_SECRET = "/platform/api/secrets";
-	private static final String SERVICE_GET_POLICIES = "/policy/api/policies";
+	private static final String SERVICE_POLICIES = "/policy/api/policies";
 	private static final int VRA_VERSION_MAJOR = 8;
 	private static final int VRA_VERSION_MINOR = 1;
 	private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com",
@@ -2359,7 +2359,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected List<String> getAllContentSharingPolicyIdsPrimitive() {
 		List<String> policyIds = new ArrayList<>();
-		List<JsonObject> results = this.getPagedContent(SERVICE_GET_POLICIES, new HashMap<>());
+		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
 		logger.debug("Policy Ids found on server: {}", results.size());
 		results.forEach(o -> {
 			JsonObject ob = o.getAsJsonObject();
@@ -2374,7 +2374,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(String policyId) {
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
-		URI url = getURI(getURIBuilder().setPath(SERVICE_GET_POLICIES + "/" + policyId));
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
@@ -2400,4 +2400,29 @@ public class RestClientVraNgPrimitive extends RestClient {
 		csPolicy.setProjectId(projectId);
 		return csPolicy;
 	}
+
+	public String createContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
+		if (!csPolicy.getId().isEmpty()) {
+			throw new RuntimeException("Content sharing policy's ID should not be present while creating it");
+		}
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(csPolicy);
+		logger.info("Cspolicy Json: {}",jsonBody);
+		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		logger.info("return ID: {}",new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId());
+		return new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId();
+	}
+
+	public void updateContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
+		if (csPolicy.getId().isEmpty()) {
+			throw new RuntimeException("Content sharing policy ID is missing");
+		}
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(csPolicy);
+		logger.info("Cspolicy Json: {}",jsonBody);
+		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		logger.info("return ID: {}",new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId());
+		//return new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId();
+	}
+
 }

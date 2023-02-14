@@ -752,11 +752,19 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	public String createContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
-		return null;
+		try {
+			return createContentSharingPolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+		}
 	}
 
-	public String updateContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
-		return null;
+	public void updateContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+		try {
+			updateContentSharingPolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not update Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+		}
 	}
 
 	public VraNgContentSharingPolicy getContentSharingPolicy(String policyId) {
