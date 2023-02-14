@@ -83,6 +83,8 @@ None
 
 ### Installer v 2.27.0 Doesn't Ask for All Required Information about importing vRА
 Installer script doesn't show a prompt to ask for additional information for importing vRA - project name and ID and Organization name and ID
+There was condition which let only Code Stream to prompt for vRA questions. The prevous condition was modified to be able to ask questions according to presense of vRA project.
+Unnecessary suppression of questions regarding embedded vRO had been removed.
 
 #### Previous Behavior
 The entire section with questions regarding vRA was missing
