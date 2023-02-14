@@ -18,7 +18,8 @@
   "author": "VMware WWCoE",
   "license": "VMware Confidential",
   "devDependencies": {
-		"run-script-os": "^1.1.6"
+		"run-script-os": "^1.1.6",
+		"@types/node": "^14.0.13"
   },
   "dependencies": {
   }
