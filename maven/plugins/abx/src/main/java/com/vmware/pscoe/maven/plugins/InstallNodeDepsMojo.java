@@ -65,6 +65,8 @@ public class InstallNodeDepsMojo extends AbstractInstallNodeDepsMojo {
 			deps.add("--silent");
 		}
 
+		// Use --no-save argument to install the dependencies without saving them to the dependency section
+		// of package.json of the ABX projects
 		deps.add("--no-save");
 
 		if (!allTgzLibsResolved) {

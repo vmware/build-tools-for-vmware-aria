@@ -64,6 +64,9 @@ public class InstallNodeDepsMojo extends AbstractInstallNodeDepsMojo {
 		if (!getLog().isDebugEnabled()) {
 			deps.add("--silent");
 		}
+
+		// Use --no-save argument to install the dependencies without saving them to the dependency section
+		// of package.json of the Polyglot projects
 		deps.add("--no-save");
 
 		if (!allTgzLibsResolved) {
