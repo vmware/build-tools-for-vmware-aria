@@ -1,3 +1,5 @@
+## v2.29.1 - 15 Feb 2023
+
 ### Fixes
 * [package-installer] IAC-713 / Installer doesn't ask for all required information about importing vRА
 * [polyglotpkg] IAC-712 / Enabled unit testing phase for npm lib projects, fix abx and polyglot pkg to be backward compatible
