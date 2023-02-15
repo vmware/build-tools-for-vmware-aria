@@ -152,6 +152,18 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 	@Override
 	protected void exportStoreContent(List<String> itemNames) {
+		logger.info("itemNames '{}'", itemNames);
+		List<String> contentSharingPoliciesId = this.restClient.getContentSharingPolicyIds();
+		
+		contentSharingPoliciesId.forEach(
+				policyId ->  { 
+					VraNgContentSharingPolicy csPolicy= this.restClient.getContentSharingPolicy(policyId);
+					if(itemNames.contains(csPolicy.getName()))
+					{
+						logger.info("exporting '{}'", csPolicy.getName());
+						storeContentSharingPolicyOnFilesystem(vraNgPackage, csPolicy);
+					}
+				});
 	}
 
 	/**
