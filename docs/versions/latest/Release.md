@@ -39,47 +39,7 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### Enabled Unit testing for npm lib based projects
 
-#### Previous Behavior
-
-npm test was not part of maven lifecycle for npm based projects
-
-#### New Behavior
-
-npm test is now triggered during maven package goal for npm based projects
-
-#### Relevant Documentation
-
-None
-
-### Fix polyglotpkg/abx backward compatibility
-
-#### Previous Behavior
-
-If you upgrade to latest Build Tools for VMware Aria version the previously created ABX and polyglot actions will stop working
-
-#### New Behavior
-
-With small adjustments, the old ABX and polyglot actions should be upgradable
-
-#### Relevant Documentation
-
-None
-
-### Fix polyglotpkg dependencies
-
-#### Previous Behavior
-
-If you build project with polyglot + typescript-project-all the build will fail with dependency resolution error
-
-#### New Behavior
-
-If you build project with polyglot + typescript-project-all the build will succeed
-
-#### Relevant Documentation
-
-None
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
