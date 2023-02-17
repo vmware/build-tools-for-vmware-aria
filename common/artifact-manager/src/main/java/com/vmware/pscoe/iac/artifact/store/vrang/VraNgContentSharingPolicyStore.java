@@ -58,7 +58,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		File contentSharingPolicyFolder = Paths
 				.get(sourceDirectory.getPath(), DIR_CONTENT_SHARING_POLICIES, CONTENT_SHARING_POLICY).toFile();
 		if (!contentSharingPolicyFolder.exists()) {
-			logger.info("Content Sharing Policy Folder Directory not found.");
+			logger.info("Content sharing policy directory not found.");
 			return;
 		}
 
@@ -118,32 +118,6 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	protected List<String> getItemListFromDescriptor() {
 		return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
 	}
-
-	// protected List<String> getItemListFromYaml(File sourceDirectory) {
-	// 	try {
-	// 		Yaml yaml = new Yaml();
-	// 		File content = Paths.get(sourceDirectory.getPath() + File.separator + "content.yaml").toFile();
-	// 		Map<String, Object> yamlContent = yaml.load(new FileInputStream(content));
-	// 		// get policy
-	// 		if (!yamlContent.containsKey("policy") || yamlContent.get("policy") == null) {
-	// 			logger.info("content.yaml does not contain 'policy' entry. Skipping import of policy...");
-	// 			return Collections.emptyList();
-	// 		}
-	// 		Map<String, Object> policy = (Map<String, Object>) yamlContent.get("policy");
-	// 		logger.debug("Policy: {}", policy);
-
-	// 		// get content sharing policies
-	// 		if (!policy.containsKey("content-sharing") || policy.get("content-sharing") == null) {
-	// 			logger.warn("policy entry does not contain 'content-sharing policies");
-	// 			return Collections.emptyList();
-	// 		}
-	// 		List<String> csPolicies = (ArrayList<String>) policy.get("content-sharing");
-	// 		return csPolicies;
-	// 	} catch (FileNotFoundException ex) {
-	// 		logger.error("Error occured on getting the content.yaml file");
-	// 		throw new RuntimeException("Unable to read file.", ex);
-	// 	}
-	// }
 
 	/**
 	 * Converts a json catalog item file to VraNgContentSharingPolicy
