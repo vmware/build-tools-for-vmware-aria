@@ -27,7 +27,8 @@ public enum VraNgPackageMemberType {
     RESOURCE_ACTION("resource-action"),
 	PROPERTY_GROUP("property-group"),
     CONTENT_SOURCE("content-source"),
-    CATALOG_ITEM("catalog-item");
+    CATALOG_ITEM("catalog-item"),
+	POLICY("policy");
 
     private final String name;
     private final boolean isNativeContent;

@@ -2382,47 +2382,40 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return null;
 		}
 		JsonObject result = root.getAsJsonObject();
-		String Id = result.get("id").getAsString();
+		String id = result.get("id").getAsString();
 		String name = result.get("name").getAsString();
 		String description= result.has("description") ? result.get("description").getAsString(): "";
-		logger.info("Description Value: {}",description);
 		String typeId = result.get("typeId").getAsString();
 		String enforcementType = result.get("enforcementType").getAsString();
 		String orgId = result.get("orgId").getAsString();
-		String projectId = result.get("projectId").getAsString();
+		String projectID = result.get("projectId").getAsString();
 		csPolicy.setDefinition(new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class));
-		csPolicy.setId(Id);
+		csPolicy.setId(id);
 		csPolicy.setName(name);
 		csPolicy.setEnforcementType(enforcementType);
 		csPolicy.setDescription(description);
 		csPolicy.setTypeId(typeId);
 		csPolicy.setOrgId(orgId);
-		csPolicy.setProjectId(projectId);
+		csPolicy.setProjectId(projectID);
 		return csPolicy;
 	}
 
 	public String createContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
 		if (!csPolicy.getId().isEmpty()) {
-			throw new RuntimeException("Content sharing policy's ID should not be present while creating it");
+			throw new RuntimeException("Content sharing policy's ID should not be present while it is being nelwy created");
 		}
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
-		logger.info("Cspolicy Json: {}",jsonBody);
 		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-		logger.info("return ID: {}",new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId());
 		return new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId();
 	}
 
 	public void updateContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
 		if (csPolicy.getId().isEmpty()) {
-			throw new RuntimeException("Content sharing policy ID is missing");
+			throw new RuntimeException("Content sharing policy ID is missing while updating");
 		}
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
-		logger.info("Cspolicy Json: {}",jsonBody);
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-		logger.info("return ID: {}",new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId());
-		//return new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId();
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 	}
-
 }

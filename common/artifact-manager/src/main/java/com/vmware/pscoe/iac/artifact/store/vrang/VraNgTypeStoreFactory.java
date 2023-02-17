@@ -37,7 +37,7 @@ public class VraNgTypeStoreFactory {
 		REGION_MAPPING,
 		CATALOG_ENTITLEMENT,
 		CATALOG_ITEM,
-		CONTENT_SHARING_POLICY
+		POLICY
 	};
 
 	public static VraNgPackageContent.ContentType[] EXPORT_ORDER = {
@@ -50,7 +50,7 @@ public class VraNgTypeStoreFactory {
 		REGION_MAPPING,
 		CATALOG_ENTITLEMENT,
 		CATALOG_ITEM,
-		CONTENT_SHARING_POLICY
+		POLICY
 	};
 
     protected final RestClientVraNg restClient;
@@ -99,7 +99,7 @@ public class VraNgTypeStoreFactory {
                 return new VraNgCustomResourceStore();
             case RESOURCE_ACTION:
                 return new VraNgResourceActionStore();
-			case CONTENT_SHARING_POLICY:
+			case POLICY:
                 return new VraNgContentSharingPolicyStore();
             default:
                 throw new RuntimeException("unknown type: " + type);
