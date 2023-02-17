@@ -28,12 +28,12 @@
         <dependency>
             <groupId>com.vmware.pscoe.iac</groupId>
             <artifactId>artifact-manager</artifactId>
-            <version>2.29.2-SNAPSHOT</version>
+            <version>${iac.version}</version>
         </dependency>
         <dependency>
             <groupId>com.vmware.pscoe.maven.plugins</groupId>
             <artifactId>common</artifactId>
-            <version>2.29.2-SNAPSHOT</version>
+            <version>${iac.version}</version>
         </dependency>
     </dependencies>
 </project>

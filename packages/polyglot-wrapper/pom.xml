@@ -26,21 +26,21 @@
       <groupId>com.vmware.pscoe.iac</groupId>
       <artifactId>vrotsc</artifactId>
       <type>tgz</type>
-      <version>2.29.2-SNAPSHOT</version>
+      <version>${iac.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vmware.pscoe.iac</groupId>
       <artifactId>vropkg</artifactId>
       <type>tgz</type>
-      <version>2.29.2-SNAPSHOT</version>
+      <version>${iac.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
 		<groupId>com.vmware.pscoe.ts.types</groupId>
 		<artifactId>o11n-core</artifactId>
 		<type>tgz</type>
-		<version>2.29.2-SNAPSHOT</version>
+		<version>${iac.version}</version>
 		<scope>compile</scope>
 	  </dependency>
 

@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>vro</artifactId>
-			<version>2.29.2-SNAPSHOT</version>
+			<version>${iac.version}</version>
 			<type>pom</type>
 			<scope>compile</scope>
 		</dependency>
@@ -29,7 +29,7 @@
 			<groupId>com.vmware.pscoe.library</groupId>
 			<artifactId>ecmascript</artifactId>
 			<type>package</type>
-			<version>2.29.2-SNAPSHOT</version>
+			<version>${iac.version}</version>
 		</dependency>
 	</dependencies>
 	<properties>

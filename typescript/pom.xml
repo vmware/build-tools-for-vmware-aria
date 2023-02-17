@@ -11,7 +11,6 @@
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>typescript</artifactId>
-    <version>2.29.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 	<properties>

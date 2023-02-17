@@ -36,7 +36,6 @@
     <properties>
         <build.number>local</build.number>
         <assembly.skipAssembly>true</assembly.skipAssembly>
-        <iac.version>2.29.2-SNAPSHOT</iac.version>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <license.licenseName>_license</license.licenseName>
         <license.encoding>UTF-8</license.encoding>
