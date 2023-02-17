@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe.iac</groupId>
 	<artifactId>repository</artifactId>
-	<version>2.29.1-SNAPSHOT</version>
+	<version>2.29.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<licenses>
