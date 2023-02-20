@@ -12,13 +12,6 @@
     <groupId>com.vmware.pscoe.vra</groupId>
     <artifactId>vra-package</artifactId>
     <packaging>pom</packaging>
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
     <build>
         <plugins>
             <plugin>

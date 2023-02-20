@@ -12,14 +12,6 @@
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>npmconv</artifactId>
 
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
 	<properties>
 		<attachFileName>vmware-pscoe-${project.artifactId}-${project.version}.tgz</attachFileName>
 		<main.basedir>${project.parent.parent.basedir}</main.basedir>

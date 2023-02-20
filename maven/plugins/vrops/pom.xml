@@ -11,14 +11,6 @@
     <artifactId>vrops-package-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
     <properties>
         <goal.prefix>vrops</goal.prefix>
 		<main.basedir>${project.parent.parent.basedir}</main.basedir>
