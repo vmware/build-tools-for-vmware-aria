@@ -43,18 +43,6 @@
         <license.canUpdateDescription>true</license.canUpdateDescription>
         <license.includes>**/*.js,**/*.ts</license.includes>
     </properties>
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
     <profiles>
         <profile>
             <id>licenses-management</id>

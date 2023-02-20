@@ -24,19 +24,6 @@
         <npmconvArgs>${project.artifactId}@${npmPackageVersion} -c ${project.groupId} -o target/vro-prj ${npmconvSrcArgs} ${npmconvTsConfigArgs} ${npmconvArtifactDepsMapArgs} ${nmpconvCompileMvnDepsArgs} ${npmconvAuxMvnDepsArgs} ${npmconvAuxIncludeArgs} ${npmconvAnyOtherArgs}</npmconvArgs>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <build>
         <pluginManagement>
             <plugins>

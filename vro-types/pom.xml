@@ -50,20 +50,6 @@
 		<main.basedir>${project.parent.basedir}</main.basedir>
 	</properties>
 
-
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 	<build>
 		<pluginManagement>
 			<plugins>
