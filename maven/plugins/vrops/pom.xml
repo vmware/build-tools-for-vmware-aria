@@ -3,7 +3,7 @@
     <parent>
         <artifactId>base-maven-plugin</artifactId>
         <groupId>com.vmware.pscoe.maven.plugins</groupId>
-        <version>20.29.2-SNAPSHOT</version>
+        <version>2.29.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

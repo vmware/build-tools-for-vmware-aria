@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.vmware.pscoe</groupId>
 		<artifactId>iac</artifactId>
-		<version>20.29.2-SNAPSHOT</version>
+		<version>2.29.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
