@@ -5,7 +5,7 @@
 	<groupId>com.vmware.pscoe</groupId>
 	<artifactId>iac</artifactId>
 	<packaging>pom</packaging>
-	<version>2.29.2-SNAPSHOT</version>
+	<version>20.29.2-SNAPSHOT</version>
 
 	<modules>
 		<module>common/o11n/project</module>
@@ -25,7 +25,7 @@
 
 	<properties>
 		<main.basedir>${project.basedir}</main.basedir>
-		<iac.version>2.29.2-SNAPSHOT</iac.version>
+		<iac.version>20.29.2-SNAPSHOT</iac.version>
 	</properties>
 
 	<licenses>
