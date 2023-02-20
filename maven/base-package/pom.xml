@@ -37,13 +37,13 @@
         <build.number>local</build.number>
         <assembly.skipAssembly>true</assembly.skipAssembly>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <license.organizationName>VMWARE</license.organizationName>
         <license.licenseName>_license</license.licenseName>
         <license.encoding>UTF-8</license.encoding>
         <license.licenseResolver>${project.baseUri}license_data</license.licenseResolver>
         <license.licenceFile>${basedir}/LICENSE</license.licenceFile>
         <license.thirdPartyFilename>THIRD-PARTY</license.thirdPartyFilename>
         <license.useMissingFile>true</license.useMissingFile>
-        <license.organizationName>VMWARE</license.organizationName>
         <license.excludedScopes>test</license.excludedScopes>
         <license.excludeTransitiveDependencies>true</license.excludeTransitiveDependencies>
         <license.canUpdateCopyright>true</license.canUpdateCopyright>
@@ -94,17 +94,32 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                        <version>1.20</version>
+                        <version>2.0.0</version>
                         <configuration>
                             <inceptionYear>${current.year}</inceptionYear>
-                            <extraExtensions>
+							<organizationName>${license.organizationName}</organizationName>
+							<licenseName>${license.licenseName}</licenseName>
+							<encoding>${license.encoding}</encoding>
+							<licenseResolver>${license.licenseResolver}</licenseResolver>
+                            <licenceFile>${license.licenceFile}</licenceFile>
+                            <thirdPartyFilename>${license.thirdPartyFilename}</thirdPartyFilename>
+                            <useMissingFile>${license.useMissingFile}</useMissingFile>
+							<excludedScopes>${license.excludedScopes}</excludedScopes>
+							<excludeTransitiveDependencies>${license.excludeTransitiveDependencies}</excludeTransitiveDependencies>
+                            <canUpdateCopyright>${license.canUpdateCopyright}</canUpdateCopyright>
+                            <canUpdateDescription>${license.canUpdateDescription}</canUpdateDescription>
+                            <includes>${license.includes}</includes>
+							<aggregate>true</aggregate>
+							<excludedArtifacts>maven-surefire-plugin</excludedArtifacts>
+							<extraExtensions>
                                 <ts>java</ts>
                                 <yaml>properties</yaml>
                                 <ps1>properties</ps1>
                                 <psd>properties</psd>
                                 <psm>properties</psm>
-                            </extraExtensions>
-                        </configuration>
+							</extraExtensions>
+							<excludes>**/*.json,**/*.ftl,**/resources/**/*.*,**/archetype-resources/**/*.*</excludes>
+						</configuration>
                         <executions>
                             <execution>
                                 <id>manage-licenses</id>
