@@ -33,6 +33,18 @@ public class VraNgContentSharingPolicy {
 	public VraNgContentSharingPolicy() {
 	}
 
+	public VraNgContentSharingPolicy(String id, String name, String typeId, String enforcementType, String orgId,
+	String projectId,String description, VraNgDefinition definition ) {
+		this.id= id;
+		this.name= name;
+		this.typeId= typeId;
+		this.enforcementType= enforcementType;
+		this.orgId= orgId;
+		this.projectId= projectId;
+		this.description= description;
+		this.definition= definition;
+	}
+
 	/**
 	 * Get the id of the content sharing policy.
 	 * 
