@@ -368,9 +368,6 @@ enum Option {
     VRO_DELETE_LAST_VERSION(
             "vro_delete_last_version",
             StringUtils.EMPTY),
-    VRO_DELETE_INCLUDE_DEPENDENCIES(
-            "vro_delete_include_dependencies",
-            StringUtils.EMPTY),
     VCD_DELETE_OLD_VERSIONS(
             "vcd_delete_old_versions",
             StringUtils.EMPTY),
@@ -592,9 +589,6 @@ public class Installer {
                 packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
             }
             packageStore.deleteAllPackages(getFilesystemPackages(PackageType.VRO), true, false, false);
-            if (input.allTrue(Option.VRO_DELETE_INCLUDE_DEPENDENCIES)) {                
-                packageStore.deleteAllPackages(getDependentPackages(PackageType.VRO), true, false, false);
-            }
         }
 
         if (input.allTrue(Option.VRO_DELETE_OLD_VERSIONS)) {
@@ -606,9 +600,6 @@ public class Installer {
                 packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
             }
             packageStore.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
-            if (input.allTrue(Option.VRO_DELETE_INCLUDE_DEPENDENCIES)) {
-                packageStore.deleteAllPackages(getDependentPackages(PackageType.VRO), false, true, false);
-            }
         }
 
         if (input.allTrue(Option.VRA_DELETE_LAST_VERSION)) {
@@ -626,13 +617,13 @@ public class Installer {
         if (input.anyTrue(Option.VRA_DELETE_LAST_VERSION, Option.VRA_DELETE_INCLUDE_DEPENDENCIES)) {
             String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
             PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-                    .deleteAllPackages(getDependentPackages(PackageType.VRO), true, false, false);
+                    .deleteAllPackages(getFilesystemPackages(PackageType.VRO), true, false, false);
         }
 
         if (input.anyTrue(Option.VRA_DELETE_OLD_VERSIONS, Option.VRA_DELETE_INCLUDE_DEPENDENCIES)) {
             String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
             PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-                    .deleteAllPackages(getDependentPackages(PackageType.VRO), false, true, false);
+                    .deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
         }
 
         if (input.allTrue(Option.VROPS_IMPORT)) {
@@ -794,7 +785,6 @@ public class Installer {
                 userInput(input, Option.VRO_DELETE_LAST_VERSION, "Clean up last vRO package version?", true);
             }
             userInput(input, Option.VRO_DELETE_OLD_VERSIONS, "Clean up old vRO package versions?", true);
-            userInput(input, Option.VRO_DELETE_INCLUDE_DEPENDENCIES, "Clean up vRO dependent packages as well?", true);
         }
         userInput(input, Option.VRO_RUN_WORKFLOW, "Run vRO workflow?", true);
         if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
@@ -1080,26 +1070,6 @@ public class Installer {
 
         List<File> packages = new ArrayList<>();
         packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtention() }, true));
-
-        return packages.stream().map(file -> PackageFactory.getInstance(type, file)).collect(Collectors.toList());
-    }
-
-    private static List<Package> getDependentPackages(PackageType type) {
-		// We use app.repo instead of user.dir as result it returns the correct path to application directory
-		// even in the case when we run the installer outside the application directory
-		// https://www.mojohaus.org/appassembler/appassembler-maven-plugin/usage-script.html
-		File repoDir = new File(System.getProperty("app.repo"));
-		File workingDir = repoDir.getParentFile();
-        if (workingDir.getName().equals("bin")) {
-            workingDir = workingDir.getParentFile();
-        }
-
-        File containerDir = new File(workingDir, type.getPackageContainer());
-        if (!containerDir.exists() || !containerDir.isDirectory()) {
-            return new ArrayList<>();
-        }
-        List<File> packages = new ArrayList<>();
-        packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtention() }, false));
 
         return packages.stream().map(file -> PackageFactory.getInstance(type, file)).collect(Collectors.toList());
     }
