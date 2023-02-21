@@ -92,6 +92,13 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 	}
 
+	/**
+	 * Handles logic to update or create a content sharing policy
+	 *
+	 * @param contentSharingPolicyFile
+	 * 
+	 * @param csPolicyOnServerByName
+	*/
 	private void handleContentSharingPolicyImport(File contentSharingPolicyFile,
 			Map<String, VraNgContentSharingPolicy> csPolicyOnServerByName) {
 		String csPolicyNameWithExt = contentSharingPolicyFile.getName();

@@ -1,8 +1,10 @@
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +23,7 @@ import org.mockito.Mockito;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -98,8 +101,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87", "cs",
 				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
 
-		VraNgContentSharingPolicy csPolicy2 = new VraNgContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c",
-				"testing",
+		VraNgContentSharingPolicy csPolicy2 = new VraNgContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c", "testing",
 				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
 
 		List<String> Ids = Arrays.asList(
@@ -141,5 +143,76 @@ public class VraNgContentSharingPolicyStoreTest {
 
 		// VERIFY
 		assertEquals(1, contentSharingPolicyFolder.listFiles().length);
+	}
+
+	@Test
+	void testImportContentWithUpdateLogic() {
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"));
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c", "cs",
+				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+
+		List<String> Ids = Arrays.asList(
+					"679daee9-d63d-4ce2-9ee1-d4336861fe87");
+		
+		// GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(csPolicy);
+
+		File contentSharingPolicyFolder = Paths.get(fsMocks.getTempFolderProjectPath().getPath(), CONTENT_SHARING_POLICY).toFile();
+
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[]{"cs.json"});
+		
+		when(restClient.getContentSharingPolicyIds()).thenReturn(Ids);
+		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicy);
+
+		// START TEST
+		store.importContent(tempFolder.getRoot());
+
+		// VERIFY
+		verify(restClient, times(1)).updateContentSharingPolicy(any());
+	}
+
+	@Test
+	void testImportContentWithCreateLogic() {
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"));
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("", "test",
+				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+
+		VraNgContentSharingPolicy csPolicyFromServer = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87", "cs",
+				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+
+		List<String> Ids = Arrays.asList("679daee9-d63d-4ce2-9ee1-d4336861fe87");
+		
+		// GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(csPolicy);
+
+		File contentSharingPolicyFolder = Paths.get(fsMocks.getTempFolderProjectPath().getPath(), CONTENT_SHARING_POLICY).toFile();
+
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[]{"test.json"});
+		
+		when(restClient.getContentSharingPolicyIds()).thenReturn(Ids);
+		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicyFromServer);
+
+		// START TEST
+		store.importContent(tempFolder.getRoot());
+
+		// VERIFY
+		verify(restClient, times(1)).createContentSharingPolicy(any());
+	}
+
+	@Test
+	void testImportContentWithNoFile() {
+		// START TEST
+		store.importContent(tempFolder.getRoot());
+
+		// VERIFY
+		verify(vraNgPackageDescriptor, never()).getPolicy();
+		verify(restClient, never()).getContentSharingPolicyIds();
+		verify(restClient, never()).getContentSharingPolicy(anyString());
+		verify(restClient, never()).createContentSharingPolicy(any());
+		verify(restClient, never()).updateContentSharingPolicy(any());
 	}
 }
