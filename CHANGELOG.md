@@ -1,3 +1,7 @@
+### Enhancements
+* [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
+### Fixes
+
 ## v2.29.1 - 15 Feb 2023
 
 ### Fixes
