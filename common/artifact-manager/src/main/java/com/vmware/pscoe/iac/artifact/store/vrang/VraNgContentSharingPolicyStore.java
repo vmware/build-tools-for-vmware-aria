@@ -123,7 +123,11 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 	@Override
 	protected List<String> getItemListFromDescriptor() {
-		return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
+		if (this.vraNgPackageDescriptor.getPolicy() == null) {
+			return null;
+		} else {
+			return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
+		}
 	}
 
 	/**
