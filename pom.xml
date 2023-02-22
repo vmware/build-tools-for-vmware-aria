@@ -20,7 +20,6 @@
 		<module>vro-types</module>
 		<module>typescript</module>
 		<module>package-installer</module>
-		<module>packages</module>
 	</modules>
 
 	<properties>
