@@ -2,7 +2,7 @@ Name: vra-package-maven-plugin
 Description: (no description available)
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vra-package-maven-plugin
-Version: 2.28.1-SNAPSHOT
+Version: 2.29.1-SNAPSHOT
 Goal Prefix: vra
 
 This plugin has 2 goals:

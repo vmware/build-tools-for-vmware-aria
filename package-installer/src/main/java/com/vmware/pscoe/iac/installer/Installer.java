@@ -764,9 +764,8 @@ public class Installer {
             userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
           
         }
-    
-		if (input.anyTrue(Option.CS_IMPORT)) {
-            input.put(Option.VRO_EMBEDDED, Boolean.TRUE);
+
+        if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT)) {
             readVrangProperties(input);
         }
         if (input.anyTrue(Option.VRANG_IMPORT)){
@@ -779,8 +778,7 @@ public class Installer {
         //  +-------------------------------------
         //  |  vRealize Orchestrator
         //  +-------------------------------------
-		
-        if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
+		if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
                 if(hasVraNgPackages){
