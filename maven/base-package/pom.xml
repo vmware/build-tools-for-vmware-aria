@@ -6,7 +6,7 @@
     <parent>
 		<artifactId>iac</artifactId>
 		<groupId>com.vmware.pscoe</groupId>
-        <version>2.29.2-SNAPSHOT</version>
+        <version>${revision}</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
@@ -165,7 +165,7 @@
                 <assembly.skipAssembly>false</assembly.skipAssembly>
                 <installerGroupId>com.vmware.pscoe.iac</installerGroupId>
                 <installerArtifactId>installer</installerArtifactId>
-                <installerVersion>${iac.version}</installerVersion>
+                <installerVersion>${revision}</installerVersion>
             </properties>
             <build>
                 <plugins>
@@ -216,7 +216,7 @@
             <plugin>
                 <groupId>com.vmware.pscoe.maven.plugins</groupId>
                 <artifactId>vrealize-package-maven-plugin</artifactId>
-                <version>${iac.version}</version>
+                <version>${revision}</version>
                 <configuration>
                     <vro>
                         <host>${vro.host}</host>
@@ -304,7 +304,7 @@
             <plugin>
                 <groupId>com.vmware.pscoe.maven.plugins</groupId>
                 <artifactId>ssh-maven-plugin</artifactId>
-                <version>${iac.version}</version>
+                <version>${revision}</version>
                 <configuration>
                     <ssh>
                         <host>${ssh.host}</host>
@@ -324,7 +324,7 @@
                     <dependency>
                         <groupId>com.vmware.pscoe.maven</groupId>
                         <artifactId>iac-assembly</artifactId>
-                        <version>${iac.version}</version>
+                        <version>${revision}</version>
                     </dependency>
                 </dependencies>
                 <executions>

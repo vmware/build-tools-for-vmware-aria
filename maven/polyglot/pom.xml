@@ -6,7 +6,7 @@
     <parent>
 		<artifactId>iac</artifactId>
 		<groupId>com.vmware.pscoe</groupId>
-		<version>2.29.2-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>com.vmware.pscoe.maven.plugins</groupId>
             <artifactId>o11n-polyglot-package-maven-plugin</artifactId>
-            <version>${iac.version}</version>
+            <version>${revision}</version>
         </dependency>
         <!--
         TODO: Do we need this for polyglot packaging?
@@ -66,20 +66,20 @@
         <dependency>
             <groupId>com.vmware.pscoe.maven.plugins</groupId>
             <artifactId>o11n-actions-package-maven-plugin</artifactId>
-            <version>${iac.version}</version>
+            <version>${revision}</version>
         </dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>vropkg</artifactId>
 			<type>tgz</type>
-			<version>${iac.version}</version>
+			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>polyglotpkg</artifactId>
 			<type>tgz</type>
-			<version>${iac.version}</version>
+			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
     </dependencies>
@@ -192,7 +192,7 @@
                 <plugin>
                     <groupId>com.vmware.pscoe.maven.plugins</groupId>
                     <artifactId>o11n-actions-package-maven-plugin</artifactId>
-                    <version>${iac.version}</version>
+                    <version>${revision}</version>
                     <extensions>true</extensions>
                 </plugin>
                 -->
@@ -203,7 +203,7 @@
                 <plugin>
                     <groupId>com.vmware.pscoe.maven.plugins</groupId>
                     <artifactId>o11n-polyglot-package-maven-plugin</artifactId>
-                    <version>${iac.version}</version>
+                    <version>${revision}</version>
                     <extensions>true</extensions>
                 </plugin>
 
@@ -238,7 +238,7 @@
 				<plugin>
 					<groupId>com.vmware.pscoe.maven.plugins</groupId>
 					<artifactId>vrealize-package-maven-plugin</artifactId>
-					<version>${iac.version}</version>
+					<version>${revision}</version>
 					<configuration>
 						<vro>
 							<host>${vro.host}</host>

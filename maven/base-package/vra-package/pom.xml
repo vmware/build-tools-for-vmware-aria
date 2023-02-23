@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.vmware.pscoe.o11n</groupId>
         <artifactId>base-package</artifactId>
-        <version>2.29.2-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <groupId>com.vmware.pscoe.vra</groupId>
     <artifactId>vra-package</artifactId>
@@ -17,7 +17,7 @@
             <plugin>
                 <groupId>com.vmware.pscoe.maven.plugins</groupId>
                 <artifactId>vra-package-maven-plugin</artifactId>
-                <version>${iac.version}</version>
+                <version>${revision}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <vra>

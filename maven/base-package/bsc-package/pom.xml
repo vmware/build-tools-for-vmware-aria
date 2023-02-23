@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.vmware.pscoe.o11n</groupId>
         <artifactId>base-package</artifactId>
-        <version>2.29.2-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <groupId>com.vmware.pscoe.bsc</groupId>
     <artifactId>bsc-package</artifactId>
@@ -15,7 +15,7 @@
             <plugin>
                 <groupId>com.vmware.pscoe.maven.plugins</groupId>
                 <artifactId>bsc-package-maven-plugin</artifactId>
-                <version>${iac.version}</version>
+                <version>${revision}</version>
                 <extensions>true</extensions>
                 <configuration>
                 </configuration>
@@ -23,7 +23,7 @@
             <plugin>
                 <groupId>com.vmware.pscoe.maven.plugins</groupId>
                 <artifactId>ssh-maven-plugin</artifactId>
-                <version>${iac.version}</version>
+                <version>${revision}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <ssh>

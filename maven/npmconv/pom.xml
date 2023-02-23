@@ -6,7 +6,7 @@
     <parent>
 		<artifactId>iac</artifactId>
 		<groupId>com.vmware.pscoe</groupId>
-		<version>2.29.2-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
@@ -20,7 +20,7 @@
         <npmconvSrcArgs>-s src/**/*</npmconvSrcArgs>
         <npmconvAuxIncludeArgs>--auxInclude src/*.ts:src</npmconvAuxIncludeArgs>
         <npmconvTsConfigArgs></npmconvTsConfigArgs>
-        <npmconvAnyOtherArgs>--vv --toolchainVersion ${iac.version}</npmconvAnyOtherArgs>
+        <npmconvAnyOtherArgs>--vv --toolchainVersion ${revision}</npmconvAnyOtherArgs>
         <npmconvArgs>${project.artifactId}@${npmPackageVersion} -c ${project.groupId} -o target/vro-prj ${npmconvSrcArgs} ${npmconvTsConfigArgs} ${npmconvArtifactDepsMapArgs} ${nmpconvCompileMvnDepsArgs} ${npmconvAuxMvnDepsArgs} ${npmconvAuxIncludeArgs} ${npmconvAnyOtherArgs}</npmconvArgs>
     </properties>
 
@@ -94,7 +94,7 @@
                                     <artifactItem>
                                         <groupId>com.vmware.pscoe.iac</groupId>
                                         <artifactId>npmconv</artifactId>
-                                        <version>${iac.version}</version>
+                                        <version>${revision}</version>
                                         <type>tgz</type>
                                     </artifactItem>
                                 </artifactItems>

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.vmware.pscoe.o11n</groupId>
 		<artifactId>base-package</artifactId>
-		<version>2.29.2-SNAPSHOT</version>
+		<version>${revision}</version>
 	</parent>
 	<artifactId>actions-package</artifactId>
 	<packaging>pom</packaging>
@@ -13,21 +13,21 @@
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>vropkg</artifactId>
 			<type>tgz</type>
-			<version>${iac.version}</version>
+			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>vrotest</artifactId>
 			<type>tgz</type>
-			<version>${iac.version}</version>
+			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>vro-scripting-api</artifactId>
 			<type>tgz</type>
-			<version>${iac.version}</version>
+			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -36,7 +36,7 @@
 			<plugin>
 				<groupId>com.vmware.pscoe.maven.plugins</groupId>
 				<artifactId>o11n-actions-package-maven-plugin</artifactId>
-				<version>${iac.version}</version>
+				<version>${revision}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<vro>

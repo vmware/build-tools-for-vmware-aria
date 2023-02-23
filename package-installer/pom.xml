@@ -6,7 +6,7 @@
     <parent>
         <artifactId>iac</artifactId>
         <groupId>com.vmware.pscoe</groupId>
-        <version>2.29.2-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <groupId>com.vmware.pscoe.iac</groupId>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.vmware.pscoe.iac</groupId>
             <artifactId>artifact-manager</artifactId>
-            <version>${iac.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.beryx</groupId>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.vmware.pscoe.iac</groupId>
             <artifactId>artifact-manager</artifactId>
-            <version>${iac.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
