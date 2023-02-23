@@ -7,6 +7,7 @@
         <groupId>com.vmware.pscoe.o11n</groupId>
         <artifactId>base-package</artifactId>
         <version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.vmware.pscoe.serverless</groupId>
