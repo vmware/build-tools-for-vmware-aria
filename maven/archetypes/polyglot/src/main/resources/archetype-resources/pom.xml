@@ -70,6 +70,9 @@
         <artifactId>o11n-polyglot-package-maven-plugin</artifactId>
         <version>${project.version}</version>
         <extensions>true</extensions>
+		  <configuration>
+			  <noSave>true</noSave>
+		  </configuration>
       </plugin>
       <!-- If not explicitly defined, the vrealize package plugin is not found by its prefix -->
       <plugin>
@@ -85,6 +88,9 @@
         <artifactId>abx-package-maven-plugin</artifactId>
         <version>${project.version}</version>
         <extensions>true</extensions>
+		  <configuration>
+			  <noSave>true</noSave>
+		  </configuration>
       </plugin>
 #end
     </plugins>

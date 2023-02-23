@@ -33,6 +33,9 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 	@Parameter(property = "skipInstallNodeDeps", defaultValue = "false")
 	protected boolean skipInstallNodeDeps;
 
+	@Parameter(property = "noSave", defaultValue = "false")
+	protected boolean noSave;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         boolean allTgzLibsResolved = true;
@@ -70,6 +73,10 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
         if (!getLog().isDebugEnabled()) {
             deps.add("--silent");
         }
+
+		if (noSave){
+			deps.add("--no-save");
+		}
 
         if (!allTgzLibsResolved) {
             getLog().debug("Not All .tgz plugins resolved. Executing 'mvn dependency:go-offline' first");
