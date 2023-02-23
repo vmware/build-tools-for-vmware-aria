@@ -15,15 +15,7 @@ package com.vmware.pscoe.maven.plugins;
  * #L%
  */
 
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 @Mojo(name = "install-node-deps", defaultPhase = LifecyclePhase.INITIALIZE, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class InstallNodeDepsMojo extends AbstractInstallNodeDepsMojo {
