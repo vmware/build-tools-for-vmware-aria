@@ -13,6 +13,10 @@
   <artifactId>exec</artifactId>
   <packaging>package</packaging>
 
+  <properties>
+    <main.basedir>${project.parent.parent.parent.basedir}</main.basedir>
+  </properties>
+
   <scm>
     <developerConnection>${scmDeveloperConnection}</developerConnection>
   </scm>

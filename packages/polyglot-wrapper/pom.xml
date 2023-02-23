@@ -12,8 +12,11 @@
   <artifactId>polyglot-wrapper</artifactId>
   <packaging>package</packaging>
 
-  <dependencies>
+  <properties>
+    <main.basedir>${project.parent.parent.parent.basedir}</main.basedir>
+  </properties>
 
+  <dependencies>
     <dependency>
       <groupId>com.vmware.pscoe.iac</groupId>
       <artifactId>vrotsc</artifactId>

@@ -50,7 +50,7 @@
 						<configuration>
 							<encoding>UTF-8</encoding>
 							<licenseName>bsd2_license</licenseName>
-							<licenseResolver>https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/licenses/</licenseResolver>
+							<licenseResolver>file:${main.basedir}/licenses</licenseResolver>
 							<aggregate>true</aggregate>
 							<inceptionYear>2023</inceptionYear>
 							<organizationName>VMware</organizationName>
@@ -69,7 +69,7 @@
 								<goals>
 									<goal>update-file-header</goal>
 									<!-- <goal>update-project-license</goal> -->
-									<goal>download-licenses</goal>
+									<!-- <goal>download-licenses</goal> -->
 								</goals>
 								<phase>process-sources</phase>
 							</execution>
