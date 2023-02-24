@@ -94,6 +94,10 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 		return super.getAllFlavorMappingsByRegionPrimitive();
 	}
 
+	public VraNgContentSharingPolicy getContentSharingPolicyPrimitive(String policyId) {
+		return super.getContentSharingPolicyPrimitive(policyId);
+	}
+
 	public void importCustomResourcePrimitive( String customResourceJson ) throws URISyntaxException {
 		super.importCustomResourcePrimitive( customResourceJson );
 	}

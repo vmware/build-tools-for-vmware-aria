@@ -123,6 +123,10 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
         return this.policy;
     }
 
+	public void setPolicy(VraNgPolicy policy) {
+        this.policy= policy;
+    }
+
     public List<String> getCustomResource() {
         return this.customResource;
     }

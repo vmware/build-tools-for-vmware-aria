@@ -15,12 +15,16 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * #L%
  */
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class VraNgDefinition {
-		public ArrayList<VraNgEntitledUser> entitledUsers;
+	public List<VraNgEntitledUser> entitledUsers;
+
+	public VraNgDefinition() {
+
+	}
+
+	public VraNgDefinition(List<VraNgEntitledUser> entitledUsers) {
+		this.entitledUsers = entitledUsers;
+	}
 }
-
-
-
-

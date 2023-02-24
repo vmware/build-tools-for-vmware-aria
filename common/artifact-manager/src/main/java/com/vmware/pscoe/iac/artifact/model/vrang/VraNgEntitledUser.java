@@ -21,4 +21,13 @@ import java.util.ArrayList;
     public ArrayList<VraNgItem> items;
     public String userType;
     public ArrayList<VraNgPrincipal> principals;
+
+	public VraNgEntitledUser() {
+		super();
+	}
+	public VraNgEntitledUser(ArrayList<VraNgItem> items,String userType,ArrayList<VraNgPrincipal> principals) {
+		this.items= items;
+		this.userType= userType;
+		this.principals= principals;
+	}
 }

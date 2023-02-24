@@ -14,8 +14,17 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
- 
- public class VraNgPrincipal{
-    public String type;
-    public String referenceId;
+
+public class VraNgPrincipal {
+	public String type;
+	public String referenceId;
+
+	public VraNgPrincipal() {
+
+	}
+
+	public VraNgPrincipal(String type, String referenceId) {
+		this.type = type;
+		this.referenceId = referenceId;
+	}
 }
