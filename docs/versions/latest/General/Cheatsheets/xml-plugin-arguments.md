@@ -2,7 +2,7 @@ Name: o11n-xml-package-maven-plugin
 Description: (no description available)
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: o11n-xml-package-maven-plugin
-Version: 2.29.1-SNAPSHOT
+Version: 2.29.2-SNAPSHOT
 Goal Prefix: vro
 
 This plugin has 5 goals:
