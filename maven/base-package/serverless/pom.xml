@@ -28,6 +28,13 @@
 			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vropkg</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

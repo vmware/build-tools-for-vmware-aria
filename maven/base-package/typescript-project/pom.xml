@@ -10,10 +10,6 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<modules>
-		<module>../../typescript-project-all</module>
-	</modules>
-
 	<artifactId>typescript-project</artifactId>
 	<packaging>pom</packaging>
 	<dependencies>
