@@ -1,3 +1,5 @@
+### Enhancements
+* [maven-plugins-vrli] IAC-741 / Use new v2 API when working with vRLI 8.8+ content. The feature is marked as experimental because v2 API is Technical Preview.
 ## v2.29.1 - 15 Feb 2023
 
 ### Fixes

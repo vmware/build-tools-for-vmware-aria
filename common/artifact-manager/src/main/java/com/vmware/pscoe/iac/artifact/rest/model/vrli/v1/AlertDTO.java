@@ -1,5 +1,5 @@
 
-package com.vmware.pscoe.iac.artifact.rest.model.vrli;
+package com.vmware.pscoe.iac.artifact.rest.model.vrli.v1;
 
 /*
  * #%L
