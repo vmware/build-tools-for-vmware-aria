@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.vmware.pscoe.o11n</groupId>
@@ -35,6 +37,11 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+			<plugin>
 				<groupId>com.vmware.pscoe.maven.plugins</groupId>
 				<artifactId>o11n-actions-package-maven-plugin</artifactId>
 				<version>${revision}</version>
@@ -58,14 +65,19 @@
 						<coverage.reports>${test.coverage.reports}</coverage.reports>
 						<coverage.thresholds.error>${test.coverage.thresholds.error}</coverage.thresholds.error>
 						<coverage.thresholds.warn>${test.coverage.thresholds.warn}</coverage.thresholds.warn>
-						<coverage.thresholds.branches.error>${test.coverage.thresholds.branches.error}</coverage.thresholds.branches.error>
+						<coverage.thresholds.branches.error>
+							${test.coverage.thresholds.branches.error}</coverage.thresholds.branches.error>
 						<coverage.thresholds.branches.warn>${test.coverage.thresholds.branches.warn}</coverage.thresholds.branches.warn>
 						<coverage.thresholds.lines.error>${test.coverage.thresholds.lines.error}</coverage.thresholds.lines.error>
 						<coverage.thresholds.lines.warn>${test.coverage.thresholds.lines.warn}</coverage.thresholds.lines.warn>
-						<coverage.thresholds.functions.error>${test.coverage.thresholds.functions.error}</coverage.thresholds.functions.error>
-						<coverage.thresholds.functions.warn>${test.coverage.thresholds.functions.warn}</coverage.thresholds.functions.warn>
-						<coverage.thresholds.statements.error>${test.coverage.thresholds.statements.error}</coverage.thresholds.statements.error>
-						<coverage.thresholds.statements.warn>${test.coverage.thresholds.statements.warn}</coverage.thresholds.statements.warn>
+						<coverage.thresholds.functions.error>
+							${test.coverage.thresholds.functions.error}</coverage.thresholds.functions.error>
+						<coverage.thresholds.functions.warn>
+							${test.coverage.thresholds.functions.warn}</coverage.thresholds.functions.warn>
+						<coverage.thresholds.statements.error>
+							${test.coverage.thresholds.statements.error}</coverage.thresholds.statements.error>
+						<coverage.thresholds.statements.warn>
+							${test.coverage.thresholds.statements.warn}</coverage.thresholds.statements.warn>
 						<coverage.perfile>${test.coverage.perfile}</coverage.perfile>
 					</test>
 					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
@@ -78,7 +90,7 @@
 		</plugins>
 	</build>
 	<properties>
-        <main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.parent.parent.basedir}</main.basedir>
 		<sonar.sources>src/main</sonar.sources>
 		<sonar.language>js</sonar.language>
 		<sonar.javascript.globals>${vro.javascript.globals}</sonar.javascript.globals>

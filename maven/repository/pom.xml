@@ -287,12 +287,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.vmware.pscoe.o11n</groupId>
-			<artifactId>exec</artifactId>
-			<type>package</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>vropkg</artifactId>
 			<version>${project.version}</version>

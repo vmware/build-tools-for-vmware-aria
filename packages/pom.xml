@@ -15,7 +15,6 @@
 
     <modules>
         <module>ecmascript</module>
-        <module>exec</module>
         <module>polyglot-wrapper</module>
     </modules>
 

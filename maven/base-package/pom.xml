@@ -44,6 +44,24 @@
         <license.includes>**/*.js,**/*.ts</license.includes>
     </properties>
     <profiles>
+		<profile>
+            <id>no-licenses-management</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <file>
+                    <missing>license_data/licenses.properties</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <inherited>false</inherited>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>licenses-management</id>
             <activation>
