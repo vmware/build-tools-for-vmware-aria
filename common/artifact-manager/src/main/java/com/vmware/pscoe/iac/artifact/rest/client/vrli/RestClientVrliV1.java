@@ -1,4 +1,4 @@
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.rest.client.vrli;
 
 /*
  * #%L
@@ -21,10 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
+import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.rest.client.messages.Errors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,145 +35,39 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.jayway.jsonpath.JsonPath;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
-import com.vmware.pscoe.iac.artifact.rest.model.vrli.AlertDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrli.ContentPackDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrli.ContentPackMetadataListDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.AlertDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackMetadataListDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
 
-public class RestClientVrliPrimitive extends RestClient {
-    private static final Logger logger = LoggerFactory.getLogger(RestClientVrliPrimitive.class);
-    private static final String API_PREFIX = "/api/v1";
-    private static final String VRLI_VERSION = API_PREFIX + "/version";
-    private static final String ALERTS_API = API_PREFIX + "/alerts";
-    private static final String CONTENT_PACKS_API = API_PREFIX + "/content/contentpack";
-    private static final String CONTENT_PACKS_LIST_API = API_PREFIX + "/content/contentpack/list";
-
-    private static final String MAP_ALERT_DATA_ERROR = "Unable to map alert data";
-    private static final String PROCESS_ALERT_DATA_ERROR = "Unable to process alert data";
-    private static final String MAP_CONTENT_PACK_DATA_ERROR = "Unable to map content pack data";
-    private static final String PROCESS_CONTENT_PACK_DATA_ERROR = "Unable to process content pack data";
-
-    private static final String VRLI_RESOURCE_KEY_TYPE = "LogInsight Server";
-    private static final String VRLI_88_VERSION = "8.8";
-
-    private ConfigurationVrli configuration;
-    private RestTemplate restTemplate;
-    private String vrliVersion;
-    private RestClientVrops vropsRestClient;
-
-    protected RestClientVrliPrimitive(ConfigurationVrli configuration, RestTemplate restTemplate) {
-        this.configuration = configuration;
-        this.restTemplate = restTemplate;
-        this.vropsRestClient = getVropsRestClient();
+public class RestClientVrliV1 extends AbstractRestClientVrli {
+    public RestClientVrliV1(ConfigurationVrli configuration, RestTemplate restTemplate) {
+		super("/api/v1", configuration, restTemplate);
+		logger = LoggerFactory.getLogger(RestClientVrliV1.class);
     }
 
-    @Override
-    protected Configuration getConfiguration() {
-        return this.configuration;
-    }
-
-    @Override
-    public String getVersion() {
-        if (this.vrliVersion != null && !this.vrliVersion.isEmpty()) {
-            return this.vrliVersion;
-        }
-
-        URI url = getURI(getURIBuilder().setPath(VRLI_VERSION));
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
-        this.vrliVersion = JsonPath.parse(response.getBody()).read("$.version");
-
-        return this.vrliVersion;
-    }
-
-    protected String getContentPackPrimitive(String contentPackNamespace) {
-        String uriPattern = CONTENT_PACKS_API + "/%s";
-        String contentPackUriString = String.format(uriPattern, contentPackNamespace);
-        URI url = getURI(getURIBuilder().setPath(contentPackUriString));
-        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
-        try {
-            response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
-        } catch (HttpClientErrorException e) {
-            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
-                throw new RuntimeException(String.format("Content pack '%s' does not exist: %s", contentPackNamespace, e.getMessage()));
-            }
-            throw new RuntimeException(String.format("Error fetching content pack data for content pack '%s': %s", contentPackNamespace, e.getMessage()));
-        }
-
-        // reformat the output JSON to be readable
-        JsonObject jsonObject;
-        try {
-            jsonObject = JsonParser.parseString(response.getBody()).getAsJsonObject();
-        } catch (JsonSyntaxException e) {
-            throw new RuntimeException(String.format("Error verifying data of content pack '%s': %s", contentPackNamespace, e.getMessage()));
-        } catch (JsonIOException e) {
-            throw new RuntimeException(String.format("Error reading and verifying data of content pack '%s': %s", contentPackNamespace, e.getMessage()));
-        }
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().serializeNulls().create();
-
-        return gson.toJson(jsonObject);
-    }
-
-    protected void importContentPackPrimitive(String contentPackName, String contentPackJson) {
-        URI url = getURI(getURIBuilder().setPath(CONTENT_PACKS_API));
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        HttpEntity<String> entity = new HttpEntity<>(contentPackJson, headers);
-        try {
-            restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-        } catch (HttpClientErrorException e) {
-            if (HttpStatus.CONFLICT.equals(e.getStatusCode())) {
-                logger.warn("The content pack '{}' already exists on the target system, please uninstall it before importing again.", contentPackName);
-                return;
-            }
-            if (HttpStatus.BAD_REQUEST.equals(e.getStatusCode())) {
-                throw new RuntimeException(String.format("Data validation error of the content pack '%s' to VRLI: %s", contentPackName, e.getMessage()));
-            }
-            throw new RuntimeException(String.format("Error importing content pack '%s' to VRLI: %s", contentPackName, e.getMessage()));
-        } catch (RestClientException e) {
-            throw new RuntimeException(String.format("REST client error during import of content pack '%s' to VRLI: %s", contentPackName, e.getMessage()));
-        }
-    }
-
-    protected List<AlertDTO> getAllAlertsPrimitive() {
-        URI url = getURI(getURIBuilder().setPath(ALERTS_API));
+	public List<AlertDTO> getAllAlerts() {
+        URI url = getURI(getURIBuilder().setPath(this.apiPrefix + ALERTS_API));
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
         return deserializeAlerts(response.getBody());
     }
 
-    protected List<ContentPackDTO> getAllContentPacksPrimitive() {
-        String version = this.getVersion();
-        URI url;
-        if (!StringUtils.isEmpty(version) && Version.compareSemanticVersions(version, VRLI_88_VERSION) > -1) {
-            url = getURI(getURIBuilder().setPath(CONTENT_PACKS_API));
-        } else {
-            url = getURI(getURIBuilder().setPath(CONTENT_PACKS_LIST_API));
-        }
+	public List<ContentPackDTO> getAllContentPacks() {
+        URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_LIST_API));
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
         return deserializeContentPacks(response.getBody());
     }
 
-    protected void updateAlert(AlertDTO alertToUpdate, String existingAlertId) {
+	public void updateAlert(AlertDTO alertToUpdate, String existingAlertId) {
         if (alertToUpdate == null || StringUtils.isEmpty(existingAlertId)) {
             return;
         }
@@ -182,7 +77,7 @@ public class RestClientVrliPrimitive extends RestClient {
         insertAlert(serializeAlert(alertToUpdate));
     }
 
-    protected void importAlertPrimitive(String alertJson) {
+	public void importAlert(String alertJson) {
         if (StringUtils.isEmpty(alertJson)) {
             return;
         }
@@ -200,7 +95,7 @@ public class RestClientVrliPrimitive extends RestClient {
         insertAlert(alertJson);
     }
 
-    private void deleteAlert(String alertId) {
+	public void deleteAlert(String alertId) {
         if (StringUtils.isEmpty(alertId)) {
             return;
         }
@@ -208,7 +103,7 @@ public class RestClientVrliPrimitive extends RestClient {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response;
-        String deleteAlertUri = String.format(ALERTS_API + "/%s", alertId);
+        String deleteAlertUri = String.format(this.apiPrefix + ALERTS_API + "/%s", alertId);
         logger.info("Deleting existing alert {}", alertId);
         try {
             URI url = getURIBuilder().setPath(deleteAlertUri).build();
@@ -227,7 +122,7 @@ public class RestClientVrliPrimitive extends RestClient {
         }
     }
 
-    private void insertAlert(String alertJson) {
+	public void insertAlert(String alertJson) {
         if (StringUtils.isEmpty(alertJson)) {
             return;
         }
@@ -243,7 +138,7 @@ public class RestClientVrliPrimitive extends RestClient {
         HttpEntity<String> entity = new HttpEntity<>(alertJson, headers);
         ResponseEntity<String> response;
         try {
-            URI url = getURIBuilder().setPath(ALERTS_API).build();
+            URI url = getURIBuilder().setPath(this.apiPrefix + ALERTS_API).build();
             response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
         } catch (RestClientException e) {
             throw new RuntimeException(String.format("Unable to insert/update alert, error: %s", e.getMessage()), e);
@@ -313,37 +208,8 @@ public class RestClientVrliPrimitive extends RestClient {
         alert.setVcopsResourceName(resourceName);
         alert.setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
     }
-
-    private RestClientVrops getVropsRestClient() {
-        if (this.vropsRestClient != null) {
-            return this.vropsRestClient;
-        }
-
-        ConfigurationVrops vropsConfiguration;
-        Properties vropsConfigProperties = new Properties();
-        vropsConfigProperties.put(Configuration.HOST, configuration.getIntegrationVropsAuthHost());
-        vropsConfigProperties.put(Configuration.PORT, configuration.getIntegrationVropsAuthPort());
-        vropsConfigProperties.put(Configuration.USERNAME, configuration.getIntegrationVropsAuthUser());
-        vropsConfigProperties.put(Configuration.PASSWORD, configuration.getIntegrationVropsAuthPassword());
-        vropsConfigProperties.put(ConfigurationVrli.INTEGRATION_VROPS_AUTH_SOURCE, configuration.getIntegrationVropsAuthSource());
-        vropsConfigProperties.put(ConfigurationVrops.VROPS_DASHBOARD_USER, "admin");
-        vropsConfigProperties.put(ConfigurationVrops.VROPS_REST_USER, configuration.getIntegrationVropsAuthUser());
-        vropsConfigProperties.put(ConfigurationVrops.VROPS_REST_PASSWORD, configuration.getIntegrationVropsAuthPassword());
-        vropsConfigProperties.put(ConfigurationVrops.VROPS_REST_AUTH_SOURCE, configuration.getIntegrationVropsAuthSource());
-        vropsConfigProperties.put(ConfigurationVrops.SSH_PORT, "22");
-
-        try {
-            vropsConfiguration = ConfigurationVrops.fromProperties(vropsConfigProperties);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(
-                    String.format("Unable to update vCOPs integration for alert, vROPs integration configuration failed with message: %s", e.getMessage()));
-        }
-
-        return new RestClientVrops(vropsConfiguration, restTemplate);
-    }
-
     private AlertDTO findAlertByName(String alertName) {
-        List<AlertDTO> alerts = getAllAlertsPrimitive();
+        List<AlertDTO> alerts = getAllAlerts();
         if (alerts == null || alerts.isEmpty()) {
             return null;
         }
@@ -364,9 +230,9 @@ public class RestClientVrliPrimitive extends RestClient {
         try {
             return mapper.readValue(alertJson, AlertDTO.class);
         } catch (JsonMappingException e) {
-            throw new RuntimeException(MAP_ALERT_DATA_ERROR, e);
+            throw new RuntimeException(Errors.MAP_ALERT_DATA_ERROR, e);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(PROCESS_ALERT_DATA_ERROR, e);
+            throw new RuntimeException(Errors.PROCESS_ALERT_DATA_ERROR, e);
         }
     }
 
@@ -375,9 +241,9 @@ public class RestClientVrliPrimitive extends RestClient {
         try {
             return Arrays.asList(mapper.readValue(alertsJson, AlertDTO[].class));
         } catch (JsonMappingException e) {
-            throw new RuntimeException(MAP_ALERT_DATA_ERROR, e);
+            throw new RuntimeException(Errors.MAP_ALERT_DATA_ERROR, e);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(PROCESS_ALERT_DATA_ERROR, e);
+            throw new RuntimeException(Errors.PROCESS_ALERT_DATA_ERROR, e);
         }
     }
 
@@ -387,9 +253,9 @@ public class RestClientVrliPrimitive extends RestClient {
             ContentPackMetadataListDTO contentPackMetadata = mapper.readValue(contentPacksJson, ContentPackMetadataListDTO.class);
             return contentPackMetadata.getContentPackMetadataList();
         } catch (JsonMappingException e) {
-            throw new RuntimeException(MAP_CONTENT_PACK_DATA_ERROR, e);
+            throw new RuntimeException(Errors.MAP_CONTENT_PACK_DATA_ERROR, e);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(PROCESS_CONTENT_PACK_DATA_ERROR, e);
+            throw new RuntimeException(Errors.PROCESS_CONTENT_PACK_DATA_ERROR, e);
         }
     }
 
@@ -398,9 +264,9 @@ public class RestClientVrliPrimitive extends RestClient {
         try {
             return mapper.writeValueAsString(alert);
         } catch (JsonMappingException e) {
-            throw new RuntimeException(MAP_ALERT_DATA_ERROR, e);
+            throw new RuntimeException(Errors.MAP_ALERT_DATA_ERROR, e);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(PROCESS_ALERT_DATA_ERROR, e);
+            throw new RuntimeException(Errors.PROCESS_ALERT_DATA_ERROR, e);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.rest.client.vrli;
 
 /*
  * #%L
@@ -23,6 +23,7 @@ import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class RestClientVrliAuthInterceptor extends RestClientRequestInterceptor<
     private LocalDateTime vrliTokenExpirationTime;
     private LocalDateTime vropsTokenExpirationTime;
 
-	protected RestClientVrliAuthInterceptor(ConfigurationVrli configuration, RestTemplate restTemplate) {
+	public RestClientVrliAuthInterceptor(ConfigurationVrli configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 	}
 
