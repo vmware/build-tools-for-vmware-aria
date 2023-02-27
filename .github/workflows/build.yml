@@ -59,17 +59,17 @@ jobs:
           ' ~/.m2/settings.xml 
           
       - name: Build 'keystore-example'
-        run: mvn clean install -f common/keystore-example/pom.xml
+        run: mvn -T 1C clean install -f common/keystore-example/pom.xml
       - name: Build 'npmlib'
-        run: mvn clean install -f maven/npmlib/pom.xml 
+        run: mvn -T 1C clean install -f maven/npmlib/pom.xml 
       - name: Build 'iac'
-        run: mvn clean install -f pom.xml 
+        run: mvn -T 1C clean install -f pom.xml 
       - name: Build 'base-package'
-        run: mvn clean install -f maven/base-package/pom.xml
+        run: mvn -T 1C clean install -f maven/base-package/pom.xml
       - name: Build 'packages'
-        run: mvn clean install -f packages/pom.xml 
+        run: mvn -T 1C clean install -f packages/pom.xml 
       - name: Build 'typescript-project-all'
-        run: mvn clean install -f maven/typescript-project-all/pom.xml 
+        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml 
       - name: Build 'repository'
-        run: mvn clean install -f maven/repository/pom.xml 
+        run: mvn -T 1C clean install -f maven/repository/pom.xml 
       
