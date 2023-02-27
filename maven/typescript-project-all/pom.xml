@@ -4,24 +4,17 @@
 	<parent>
 		<groupId>com.vmware.pscoe.o11n</groupId>
 		<artifactId>typescript-project</artifactId>
-		<version>2.29.3-SNAPSHOT</version>
-		<relativePath>../../maven/base-package/typescript-project/pom.xml</relativePath>
+		<version>${revision}</version>
+		<relativePath>../base-package/typescript-project/pom.xml</relativePath>
 	</parent>
 	<artifactId>typescript-project-all</artifactId>
 	<groupId>com.vmware.pscoe.o11n</groupId>
 	<packaging>pom</packaging>
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>vro</artifactId>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 			<type>pom</type>
 			<scope>compile</scope>
 		</dependency>
@@ -29,7 +22,19 @@
 			<groupId>com.vmware.pscoe.library</groupId>
 			<artifactId>ecmascript</artifactId>
 			<type>package</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 	</dependencies>
+	<properties>
+		<main.basedir>${project.parent.parent.parent.basedir}</main.basedir>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+		</plugins>
+	</build>
 </project>

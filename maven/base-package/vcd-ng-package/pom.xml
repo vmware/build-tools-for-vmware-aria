@@ -1,71 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.vmware.pscoe.o11n</groupId>
-    <artifactId>base-package</artifactId>
-    <version>2.29.3-SNAPSHOT</version>
-  </parent>
-  <groupId>com.vmware.pscoe.vcd</groupId>
-  <artifactId>vcd-ng-package</artifactId>
-  <packaging>pom</packaging>
-  <licenses>
-	<license>
-		<name>BSD-2 License</name>
-		<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-		<distribution>repo</distribution>
-	</license>
-</licenses>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.vmware.pscoe.maven.plugins</groupId>
-        <artifactId>vcd-ng-package-maven-plugin</artifactId>
-        <version>${iac.version}</version>
-        <extensions>true</extensions>
-        <configuration>
-            <vcd>
-                <host>${vcd.host}</host>
-                <port>${vcd.port}</port>
-                <username>${vcd.username}</username>
-                <password>${vcd.password}</password>
-                <serverId>${vcd.serverId}</serverId>
-            </vcd>
-            <ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
-            <ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
-            <socketTimeout>${vrealize.socket.timeout}</socketTimeout>
-            <connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <properties>
-    <sonar.sources>src</sonar.sources>
-    <sonar.language>ts</sonar.language>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vmware.pscoe.o11n</groupId>
+		<artifactId>base-package</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<groupId>com.vmware.pscoe.vcd</groupId>
+	<artifactId>vcd-ng-package</artifactId>
+	<packaging>pom</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+			<plugin>
+				<groupId>com.vmware.pscoe.maven.plugins</groupId>
+				<artifactId>vcd-ng-package-maven-plugin</artifactId>
+				<version>${revision}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<vcd>
+						<host>${vcd.host}</host>
+						<port>${vcd.port}</port>
+						<username>${vcd.username}</username>
+						<password>${vcd.password}</password>
+						<serverId>${vcd.serverId}</serverId>
+					</vcd>
+					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
+					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
+					<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
+					<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<sonar.sources>src</sonar.sources>
+		<sonar.language>ts</sonar.language>
 
-    <!-- exclude transitive project dependencies on dependency:go-offile goal -->
-    <excludeTransitive>true</excludeTransitive>
+		<!-- exclude transitive project dependencies on dependency:go-offile goal -->
+		<excludeTransitive>true</excludeTransitive>
 
-    <!-- checksum calculation properties -->
-    <checksum.definitions>ts,js,xml,packages</checksum.definitions>
+		<!-- checksum calculation properties -->
+		<checksum.definitions>ts,js,xml,packages</checksum.definitions>
 
-    <checksum.tsEnabled>true</checksum.tsEnabled>
-    <checksum.tsDir>src</checksum.tsDir>
-    <checksum.tsGlob>*.ts</checksum.tsGlob>
-    <checksum.tsExcludes>\.test\.ts$</checksum.tsExcludes>
+		<checksum.tsEnabled>true</checksum.tsEnabled>
+		<checksum.tsDir>src</checksum.tsDir>
+		<checksum.tsGlob>*.ts</checksum.tsGlob>
+		<checksum.tsExcludes>\.test\.ts$</checksum.tsExcludes>
 
-    <checksum.jsEnabled>true</checksum.jsEnabled>
-    <checksum.jsDir>target/vro-sources/src/main</checksum.jsDir>
-    <checksum.jsGlob>*.js</checksum.jsGlob>
+		<checksum.jsEnabled>true</checksum.jsEnabled>
+		<checksum.jsDir>target/vro-sources/src/main</checksum.jsDir>
+		<checksum.jsGlob>*.js</checksum.jsGlob>
 
-    <checksum.xmlEnabled>true</checksum.xmlEnabled>
-    <checksum.xmlDir>target/vro-sources/src/main</checksum.xmlDir>
-    <checksum.xmlGlob>*.js</checksum.xmlGlob>
-    <checksum.xmlExcludes>\.js$,.element_info\.xml</checksum.xmlExcludes>
+		<checksum.xmlEnabled>true</checksum.xmlEnabled>
+		<checksum.xmlDir>target/vro-sources/src/main</checksum.xmlDir>
+		<checksum.xmlGlob>*.js</checksum.xmlGlob>
+		<checksum.xmlExcludes>\.js$,.element_info\.xml</checksum.xmlExcludes>
 
-    <checksum.packagesEnabled>true</checksum.packagesEnabled>
-    <checksum.packagesDir>target</checksum.packagesDir>
-    <checksum.packagesGlob>*.package</checksum.packagesGlob>
-  </properties>
+		<checksum.packagesEnabled>true</checksum.packagesEnabled>
+		<checksum.packagesDir>target</checksum.packagesDir>
+		<checksum.packagesGlob>*.package</checksum.packagesGlob>
+	</properties>
 </project>

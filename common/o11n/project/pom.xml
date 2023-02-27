@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>iac</artifactId>
 		<groupId>com.vmware.pscoe</groupId>
-		<version>2.29.3-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../../../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -15,13 +15,6 @@
 	<properties>
 		<main.basedir>${project.parent.basedir}</main.basedir>
 	</properties>
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 
 	<build>
 		<plugins>

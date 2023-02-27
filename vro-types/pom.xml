@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.vmware.pscoe</groupId>
 		<artifactId>iac</artifactId>
-		<version>2.29.3-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -49,20 +49,6 @@
 		<attachFileName>types-${project.artifactId}-${project.version}.tgz</attachFileName>
 		<main.basedir>${project.parent.basedir}</main.basedir>
 	</properties>
-
-
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 	<build>
 		<pluginManagement>

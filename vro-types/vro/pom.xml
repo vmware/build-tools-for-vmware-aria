@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.vmware.pscoe.ts.types</groupId>
 		<artifactId>base-type</artifactId>
-		<version>2.29.3-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -22,169 +22,169 @@
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>node</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>jasmine</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>ecmascript</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>tslib</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>vrotsc-annotations</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-core</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-activedirectory</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-amqp</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-apic</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-azure</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-dynamictypes</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-mail</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-mqtt</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-net</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-nsx</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-powershell</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-rest</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-snmp</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-soap</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-sql</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-ssh</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-vapi</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-vc</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-vcac</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-vcaccafe</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-vcloud</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-vco</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-xml</artifactId>
 			<type>tgz</type>
-			<version>2.29.3-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 	</dependencies>
 
