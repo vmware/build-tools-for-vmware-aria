@@ -93,6 +93,13 @@ ver=${version:-$maven_version}
 ver=$(echo $ver | sed -e "s/-SNAPSHOT$//g")
 workingDir=$(pwd)
 
+# Parse the current version from the pom.xml file
+CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+# Get version without snapshot
+RELEASE_VERSION=$(echo $CURRENT_VERSION | awk -F '.' '{print $1"."$2"."$3+0}')
+# Increment the build version by 1
+NEW_VERSION=$(echo $CURRENT_VERSION | awk -F '.' '{print $1"."$2"."$3+1"-SNAPSHOT"}')
+
 # impersonate
 if [[ $impersonate ]]; then
   original_user_email=$(git config --get user.email)
@@ -157,146 +164,42 @@ else
     # Handle Documentation and CHANGELOG.md
     documentation
 
+    mvn versions:set-property -Dproperty=revision -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
+    mvn initialize -f vro-types
+    mvn initialize -f typescript
 
-    # npmlib is a dependency of vropkg and polyglotpkg and it needs to be handled separately
-    cd maven/npmlib
-    mvn versions:set -DnewVersion=$ver  -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn versions:set-property -Dproperty=iac.version -DnewVersion=$ver  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    cd ../../
+    mvn clean install -f common/keystore-example --batch-mode
+    mvn clean install -f maven/npmlib --batch-mode
+    mvn clean install --batch-mode
+    mvn clean install -f maven/base-package --batch-mode
+    mvn clean install -f packages --batch-mode
+    mvn clean install -f maven/typescript-project-all --batch-mode
+    mvn clean install -f maven/repository --batch-mode
 
-    mvn versions:set -DnewVersion=$ver -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd maven/base-package
-    mvn versions:set -DnewVersion=$ver  -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn versions:update-property -Dproperty=iac.version -DnewVersion=$ver  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../npmconv
-    mvn versions:set -DnewVersion=$ver  -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn versions:set-property -Dproperty=iac.version -DnewVersion=$ver  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../polyglot
-    mvn versions:set-property -Dproperty=iac.version -DnewVersion=$ver  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../../package-installer
-    mvn versions:set-property -Dproperty=iac.version -DnewVersion=$ver  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-
-		cd ../packages/ecmascript
-		mvn versions:use-latest-versions -DallowSnapshots=false -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../
-    mvn versions:set -DnewVersion=$ver  -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn versions:update-parent -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn versions:use-latest-versions -DallowSnapshots=false -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.iac:vrotsc" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../maven/typescript-project-all
-    mvn versions:update-parent -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn versions:use-latest-versions -DallowSnapshots=false -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../repository
-    mvn versions:set -DnewVersion=$ver  -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-
-		cd ../../typescript/vropkg
-		mvn versions:update-parent -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd test/com.vmware.pscoe.toolchain-expand
-    mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    cd ../../
-
-		cd ../polyglotpkg
-		mvn versions:update-parent -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../../vro-types
-    mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    cd ../
-
-		cd packages/polyglot-wrapper
-		mvn versions:use-latest-versions -DallowSnapshots=false -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-		cd ../../
-
-		
 
     git add .
-    git commit -m "(release) v$ver"
+    git commit -m "(release) v$RELEASE_VERSION"
     git tag v$ver
     git push --tags
     git push
 
 
     # NEXT DEV ITERATION
-    # npmlib is a dependency of vropkg and polyglotpkg and it needs to be handled separately
-    cd maven/npmlib
-    mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    # get next snapshot version after it is generated by -DnextSnapshot=true
-		next_version=$(mvn -q \
-        -Dexec.executable="echo" \
-        -Dexec.args='${project.version}' \
-        --non-recursive \
-        --batch-mode \
-        org.codehaus.mojo:exec-maven-plugin:1.6.0:exec)
-		mvn versions:set-property -Dproperty=iac.version -DnewVersion=$next_version  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DallowSnapshots=true --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    cd ../../
+    
+    mvn versions:set-property -Dproperty=revision -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
+    mvn initialize -f vro-types
+    mvn initialize -f typescript
 
-    mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd maven/base-package
-    mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn versions:update-property -Dproperty=iac.version -DnewVersion=$next_version  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DallowSnapshots=true --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../npmconv
-    mvn versions:set-property -Dproperty=iac.version -DnewVersion=$next_version  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DallowSnapshots=true --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../polyglot
-    mvn versions:set-property -Dproperty=iac.version -DnewVersion=$next_version  -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DallowSnapshots=true --batch-mode
-
-		cd ../../packages/ecmascript
-		mvn versions:use-latest-versions -DallowSnapshots=true -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../
-    mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-    mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn versions:use-latest-versions -DallowSnapshots=true -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.iac:vrotsc" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../maven/typescript-project-all
-    mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn versions:use-latest-versions -DallowSnapshots=true -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    mvn install -DskipTests -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../repository
-    mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false -DprocessAllModules=true -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml -DoldVersion='*' --batch-mode
-
-		cd ../../typescript/vropkg
-		mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd test/com.vmware.pscoe.toolchain-expand
-    mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    cd ../../
-
-		cd ../polyglotpkg
-		mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-
-    cd ../../vro-types
-    mvn versions:update-parent -DallowSnapshots=true -DgenerateBackupPoms=false -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-    cd ../
-
-		cd packages/polyglot-wrapper
-		mvn versions:use-latest-versions -DallowSnapshots=true -DgenerateBackupPoms=false -Dincludes="com.vmware.pscoe.*" -Dmaven.repo.local=$workingDir/.m2/repository -s $workingDir/.m2/settings.xml --batch-mode
-		cd ../../
+    mvn clean install -f common/keystore-example --batch-mode
+    mvn clean install -f maven/npmlib --batch-mode
+    mvn clean install --batch-mode
+    mvn clean install -f maven/base-package --batch-mode
+    mvn clean install -f packages --batch-mode
+    mvn clean install -f maven/typescript-project-all --batch-mode
+    mvn clean install -f maven/repository --batch-mode
 
     git add .
-    git commit -m "(release) start development iteration v$next_version"
+    git commit -m "(release) start development iteration v$NEW_VERSION"
     git push
 fi
 
