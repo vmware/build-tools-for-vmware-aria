@@ -190,9 +190,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Downloads the given icon.
 	 * The byte array returned by the response must be consumed and saved on the fs
 	 *
-	 * @param iconId
+	 * @param iconId iconId
 	 *
-	 * @return ResponseEntity<byte[]>
+	 * @return entities
 	 */
 	protected ResponseEntity<byte[]> downloadIconPrimitive(String iconId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_DOWNLOAD + "/" + iconId));
@@ -204,9 +204,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Uploads a File.
 	 * Service Broker has a limit of 100KB that is NOT enforced here.
 	 *
-	 * @param iconFile
+	 * @param iconFile iconFile
 	 *
-	 * @return ResponseEntity<String>
+	 * @return list of responses
 	 */
 	protected ResponseEntity<String> uploadIconPrimitive(File iconFile) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_UPLOAD));
@@ -226,10 +226,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * used for
 	 * patching limits, it could be extended in the future
 	 *
-	 * @param catalogItem
-	 * @param iconId
+	 * @param catalogItem catalogItem
+	 * @param iconId iconId
 	 *
-	 * @return ResponseEntity<String>
+	 * @return list of response entities
 	 */
 	protected ResponseEntity<String> patchCatalogItemIconPrimitive(VraNgCatalogItem catalogItem, String iconId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ITEM_ICON_UPDATE + "/" + catalogItem.getId()));
@@ -326,7 +326,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Returns the raw string content of a blueprint version details API call
 	 *
-	 * @param String blueprintId
+	 * @param blueprintId blueprintId
 	 * @return String
 	 */
 	public String getBlueprintVersionsContent(String blueprintId) {
@@ -379,8 +379,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Consuming the vRA REST API endpoint to create a blueprint version with the
 	 * provided details
 	 *
-	 * @param String blueprintId
-	 * @param Map    versionDetails
+	 * @param blueprintId blueprintId
+	 * @param versionDetails    versionDetails
 	 * @throws URISyntaxException exception
 	 */
 	public void createBlueprintVersionPrimitive(String blueprintId, Map<String, Object> versionDetails)
@@ -498,6 +498,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve all content sources available for the configured project.
 	 *
+	 * @param project project
 	 * @return list of VraNgContentSource objects.
 	 * @see VraNgContentSource
 	 */
@@ -533,6 +534,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve all catalog items available for the configured project.
 	 *
+	 * @param project project
 	 * @return list of VraNgCatalogItem objects.
 	 * @see VraNgCatalogItem
 	 */
@@ -972,7 +974,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param entitlement - the entitlement definition to be created.
 	 * @param project     - project id of where to share the entitlement definition.
-	 * @return void
 	 * @throws URISyntaxException exception, RuntimeException
 	 */
 	protected void createCatalogEntitlementPrimitive(VraNgCatalogEntitlement entitlement, String project)
@@ -1629,6 +1630,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param profile storage profile
 	 * @throws URISyntaxException exception exception
+	 * @return profile
 	 *
 	 */
 	protected String createStorageProfilePrimitive(VraNgStorageProfile profile) throws URISyntaxException {
