@@ -50,7 +50,7 @@ public class CsGerritListenerStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
-	 * @param File sourceDirectory
+	 * @param sourceDirectory sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
 		File triggersFolder = Paths.get(sourceDirectory.getPath(), DIR_TRIGGERS).toFile();
