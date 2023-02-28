@@ -58,6 +58,12 @@ jobs:
           </activeProfiles>\
           ' ~/.m2/settings.xml 
           
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@v1
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          
       - name: Build 'keystore-example'
         run: mvn -T 1C clean install -f common/keystore-example/pom.xml
       - name: Build 'npmlib'
