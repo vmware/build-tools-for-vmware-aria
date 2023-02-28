@@ -1629,6 +1629,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param profile storage profile
 	 * @throws URISyntaxException exception exception
+	 *
 	 */
 	protected String createStorageProfilePrimitive(VraNgStorageProfile profile) throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
