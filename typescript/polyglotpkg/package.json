@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/polyglotpkg",
-  "version": "2.29.2-SNAPSHOT",
+  "version": "2.29.3-SNAPSHOT",
   "description": "Create a vRO Polyglot or serverless package",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

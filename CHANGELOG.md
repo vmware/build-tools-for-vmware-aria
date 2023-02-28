@@ -1,7 +1,12 @@
 ### Enhancements
-* [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
-### Fixes
+* [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
 
+* [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
+
+## v2.29.2 - 24 Feb 2023
+
+### Enhancements
+* [maven-plugins-vrli] IAC-741 / Use new v2 API when working with vRLI 8.8+ content. The feature is marked as experimental because v2 API is Technical Preview.
 ## v2.29.1 - 15 Feb 2023
 
 ### Fixes

@@ -21,6 +21,5 @@
     "run-script-os": "^1.1.6"
   },
   "dependencies": {
-    "@vmware-pscoe/polyglotpkg": "file:../../../../home/ikotev/.m2/repository/com/vmware/pscoe/iac/polyglotpkg/2.29.1-SNAPSHOT/polyglotpkg-2.29.1-SNAPSHOT.tgz"
   }
 }

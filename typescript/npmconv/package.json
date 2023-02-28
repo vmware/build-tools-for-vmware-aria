@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/npmconv",
-  "version": "2.29.2-SNAPSHOT",
+  "version": "2.29.3-SNAPSHOT",
   "description": "Used for converting pure-typescript npm package to vRO project",
   "author": "VMware PSCoE",
   "license": "VMware Confidential",
