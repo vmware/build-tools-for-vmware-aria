@@ -751,9 +751,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
-	public String createContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+	public void createContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
 		try {
-			return createContentSharingPolicyPrimitive(csPolicy);
+			createContentSharingPolicyPrimitive(csPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
 		}

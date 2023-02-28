@@ -113,11 +113,11 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testExportContentWithAllContentSharingPolicies() {
 
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87", "cs",
-				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("cs",
+				"com.vmware.policy.catalog.entitlement", "HARD", "TEST", new VraNgDefinition());
 
-		VraNgContentSharingPolicy csPolicy2 = new VraNgContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c", "testing",
-				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy csPolicy2 = new VraNgContentSharingPolicy("testing",
+				"com.vmware.policy.catalog.entitlement", "HARD","TEST", new VraNgDefinition());
 
 		List<String> Ids = Arrays.asList(
 				"679daee9-d63d-4ce2-9ee1-d4336861fe87", "94824034-ef7b-4728-a6c2-fb440aff590c");
@@ -140,8 +140,8 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testExportContentWithSpecificContentSharingPolicies() {
 
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c", "cs",
-				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("cs",
+				"com.vmware.policy.catalog.entitlement", "HARD", "TEST", new VraNgDefinition());
 
 		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"));
 
@@ -163,8 +163,8 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithUpdateLogic() {
 		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"));
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c", "cs",
-				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("cs",
+				"com.vmware.policy.catalog.entitlement", "HARD", "TEST", new VraNgDefinition());
 
 		List<String> Ids = Arrays.asList(
 					"679daee9-d63d-4ce2-9ee1-d4336861fe87");
@@ -191,11 +191,11 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithCreateLogic() {
 		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"));
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("", "test",
-				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("test",
+				"com.vmware.policy.catalog.entitlement", "HARD","TEST", new VraNgDefinition());
 
-		VraNgContentSharingPolicy csPolicyFromServer = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87", "cs",
-				"com.vmware.policy.catalog.entitlement", "HARD", "", "", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy csPolicyFromServer = new VraNgContentSharingPolicy("cs",
+				"com.vmware.policy.catalog.entitlement", "HARD", "TEST", new VraNgDefinition());
 
 		List<String> Ids = Arrays.asList("679daee9-d63d-4ce2-9ee1-d4336861fe87");
 		

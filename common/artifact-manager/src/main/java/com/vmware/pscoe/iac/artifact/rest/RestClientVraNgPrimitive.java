@@ -2372,6 +2372,30 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return policyIds;
 	}
 
+	/**
+	 * Retrieve content sharing policy Id based on name.
+	 *
+	 * @return content sharing policy Id.
+	 * 
+	 * @see VraNgContentSharingPolicy
+	 */
+	protected String getContentSharingPolicyIdByName(String name) {
+		String policyId= "";
+		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
+		logger.debug("Policies found on server: {}", results.size());
+		for(JsonObject o : results)
+		{  
+			JsonObject ob = o.getAsJsonObject();
+			String typeId = ob.get("typeId").getAsString();
+			String policyName = ob.get("name").getAsString();
+			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE) && policyName.equals(name) ) {
+				policyId= ob.get("id").getAsString();
+				return policyId;
+			}  
+		}
+		return policyId;
+	}
+
 	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(String policyId) {
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
 		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
@@ -2382,40 +2406,36 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return null;
 		}
 		JsonObject result = root.getAsJsonObject();
-		String id = result.get("id").getAsString();
 		String name = result.get("name").getAsString();
 		String description= result.has("description") ? result.get("description").getAsString(): "";
 		String typeId = result.get("typeId").getAsString();
 		String enforcementType = result.get("enforcementType").getAsString();
-		String orgId = result.get("orgId").getAsString();
-		String projectID = result.get("projectId").getAsString();
 		csPolicy.setDefinition(new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class));
-		csPolicy.setId(id);
 		csPolicy.setName(name);
 		csPolicy.setEnforcementType(enforcementType);
 		csPolicy.setDescription(description);
 		csPolicy.setTypeId(typeId);
-		csPolicy.setOrgId(orgId);
-		csPolicy.setProjectId(projectID);
 		return csPolicy;
 	}
 
-	public String createContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
-		if (!csPolicy.getId().isEmpty()) {
-			throw new RuntimeException("Content sharing policy's ID should not be present while it is being nelwy created");
-		}
+	public void createContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-		return new Gson().fromJson(response.getBody(), VraNgContentSharingPolicy.class).getId();
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
+		jsonObject.addProperty("orgId", organizationId);
+		jsonObject.addProperty("projectId", getProjectId());
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 
 	public void updateContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
-		if (csPolicy.getId().isEmpty()) {
-			throw new RuntimeException("Content sharing policy ID is missing while updating");
-		}
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
-		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
+		jsonObject.addProperty("id", getContentSharingPolicyIdByName(csPolicy.getName()));
+		jsonObject.addProperty("orgId", organizationId);
+		jsonObject.addProperty("projectId", getProjectId());
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 }

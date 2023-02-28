@@ -1,5 +1,20 @@
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
+/*-
+ * #%L
+ * artifact-manager
+ * %%
+ * Copyright (C) 2023 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
@@ -18,11 +33,8 @@ public class ContentSharingPolicyMockBuilder {
 		entitledUsers.add(new VraNgEntitledUser(items,"USER", principals));
 		VraNgDefinition definition = new VraNgDefinition(entitledUsers);
 
-		result.setId("679daee9-d63d-4ce2-9ee1-d4336861fe87");
 		result.setName("CsPolicy");
 		result.setDescription("Testing");
-		result.setProjectId("c3f029f9-a97c-4df6-bdc4-c0e4b91aa18e");
-		result.setOrgId("27aaf31d-d9af-4c48-9736-eb9c9faa4ae8");
 		result.setEnforcementType("HARD");
 		result.setTypeId("com.vmware.policy.catalog.entitlement");
 		result.setDefinition(definition);

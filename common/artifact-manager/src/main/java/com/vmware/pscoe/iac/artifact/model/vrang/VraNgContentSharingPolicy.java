@@ -1,7 +1,5 @@
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-import java.util.ArrayList;
-
 /*
  * #%L
  * artifact-manager
@@ -21,47 +19,21 @@ import java.util.ArrayList;
 
 */
 public class VraNgContentSharingPolicy {
-	private String id;
 	private String name;
 	private String typeId;
 	private String enforcementType;
-	private String orgId;
-	private String projectId;
 	private String description;
 	private VraNgDefinition definition;
 
 	public VraNgContentSharingPolicy() {
 	}
 
-	public VraNgContentSharingPolicy(String id, String name, String typeId, String enforcementType, String orgId,
-	String projectId,String description, VraNgDefinition definition ) {
-		this.id= id;
+	public VraNgContentSharingPolicy(String name, String typeId, String enforcementType,String description, VraNgDefinition definition ) {
 		this.name= name;
 		this.typeId= typeId;
 		this.enforcementType= enforcementType;
-		this.orgId= orgId;
-		this.projectId= projectId;
 		this.description= description;
 		this.definition= definition;
-	}
-
-	/**
-	 * Get the id of the content sharing policy.
-	 * 
-	 * @return content sharing policy entitlement id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Set the id of the content sharing policy.
-	 * 
-	 * @param id - id of the content sharing policy
-	 * @return void
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -119,44 +91,6 @@ public class VraNgContentSharingPolicy {
 	 */
 	public void setEnforcementType(String enforcementType) {
 		this.enforcementType = enforcementType;
-	}
-
-	/**
-	 * Get the orgId of the content sharing policy.
-	 * 
-	 * @return content sharing policy orgId
-	 */
-	public String getOrgId() {
-		return orgId;
-	}
-
-	/**
-	 * Set the orgId of the content sharing policy.
-	 * 
-	 * @param orgId - orgId of the content sharing policy
-	 * @return void
-	 */
-	public void setOrgId(String orgId) {
-		this.orgId = orgId;
-	}
-
-	/**
-	 * Get the projectId of the content sharing policy.
-	 * 
-	 * @return content sharing policy projectId
-	 */
-	public String getProjectId() {
-		return projectId;
-	}
-
-	/**
-	 * Set the projectId of the content sharing policy.
-	 * 
-	 * @param projectId - projectId of the content sharing policy
-	 * @return void
-	 */
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
 	}
 
 	/**

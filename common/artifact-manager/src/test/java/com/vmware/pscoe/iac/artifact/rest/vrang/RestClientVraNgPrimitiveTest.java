@@ -646,7 +646,7 @@ class RestClientVraNgPrimitiveTest {
 	}
 
 	@Test
-	void testGetContentSharingPolicy() {
+	void testGetContentSharingPolicyJSON() {
 		URI uri = restClient.getURI(restClient.getURIBuilder()
 				.setPath("/policy/api/policies" + "/" + "679daee9-d63d-4ce2-9ee1-d4336861fe87"));
 		when(

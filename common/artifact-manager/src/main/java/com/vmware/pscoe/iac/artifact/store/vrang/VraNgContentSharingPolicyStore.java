@@ -89,7 +89,6 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		for (File contentSharingPolicyFile : contentSharingPolicyFiles) {
 			this.handleContentSharingPolicyImport(contentSharingPolicyFile, csPolicyOnServerByName);
 		}
-
 	}
 
 	/**
@@ -103,21 +102,17 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 			Map<String, VraNgContentSharingPolicy> csPolicyOnServerByName) {
 		String csPolicyNameWithExt = contentSharingPolicyFile.getName();
 		String csPolicyName = FilenameUtils.removeExtension(csPolicyNameWithExt);
-		logger.debug("Attempting to import cs policy '{}'", csPolicyName);
+		logger.info("Attempting to import content sharing policy '{}'", csPolicyName);
 		VraNgContentSharingPolicy csPolicy = jsonFileToVraNgContentSharingPolicy(contentSharingPolicyFile);
-		String csPolicyID;
-		// Check if the cs policy exists
+		// Check if the content sharing policy exists
 		VraNgContentSharingPolicy existingRecord = null;
 		if (csPolicyOnServerByName.containsKey(csPolicyName)) {
 			existingRecord = csPolicyOnServerByName.get(csPolicyName);
 		}
 		if (existingRecord != null) {
-			csPolicyID = existingRecord.getId();
-			csPolicy.setId(csPolicyID);
 			restClient.updateContentSharingPolicy(csPolicy);
 		} else {
-			csPolicyID = restClient.createContentSharingPolicy(csPolicy);
-			csPolicy.setId(csPolicyID);
+			restClient.createContentSharingPolicy(csPolicy);
 		}
 	}
 
