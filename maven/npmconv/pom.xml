@@ -3,41 +3,26 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+		<artifactId>iac</artifactId>
+		<groupId>com.vmware.pscoe</groupId>
+		<version>${revision}</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
     <groupId>com.vmware.pscoe.npm</groupId>
     <artifactId>base-package</artifactId>
-    <version>2.29.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
     <properties>
-        <iac.version>2.29.3-SNAPSHOT</iac.version>
+        <main.basedir>${project.parent.basedir}</main.basedir>
         <npmPackageVersion>${project.version}</npmPackageVersion>
         <npmconvSrcArgs>-s src/**/*</npmconvSrcArgs>
         <npmconvAuxIncludeArgs>--auxInclude src/*.ts:src</npmconvAuxIncludeArgs>
         <npmconvTsConfigArgs></npmconvTsConfigArgs>
-        <npmconvAnyOtherArgs>--vv --toolchainVersion ${iac.version}</npmconvAnyOtherArgs>
+        <npmconvAnyOtherArgs>--vv --toolchainVersion ${revision}</npmconvAnyOtherArgs>
         <npmconvArgs>${project.artifactId}@${npmPackageVersion} -c ${project.groupId} -o target/vro-prj ${npmconvSrcArgs} ${npmconvTsConfigArgs} ${npmconvArtifactDepsMapArgs} ${nmpconvCompileMvnDepsArgs} ${npmconvAuxMvnDepsArgs} ${npmconvAuxIncludeArgs} ${npmconvAnyOtherArgs}</npmconvArgs>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <build>
         <pluginManagement>
@@ -109,7 +94,7 @@
                                     <artifactItem>
                                         <groupId>com.vmware.pscoe.iac</groupId>
                                         <artifactId>npmconv</artifactId>
-                                        <version>${iac.version}</version>
+                                        <version>${revision}</version>
                                         <type>tgz</type>
                                     </artifactItem>
                                 </artifactItems>

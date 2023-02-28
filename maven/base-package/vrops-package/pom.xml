@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.vmware.pscoe.o11n</groupId>
-        <artifactId>base-package</artifactId>
-        <version>2.29.3-SNAPSHOT</version>
-    </parent>
-    <groupId>com.vmware.pscoe.vrops</groupId>
-    <artifactId>vrops-package</artifactId>
-    <packaging>pom</packaging>
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-    <build>
-        <pluginManagement>
-            <!--
-                Plugins defined under pluginManagement section simply define plugin definitions to be visible and reusable by all child
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vmware.pscoe.o11n</groupId>
+		<artifactId>base-package</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<groupId>com.vmware.pscoe.vrops</groupId>
+	<artifactId>vrops-package</artifactId>
+	<packaging>pom</packaging>
+	<build>
+		<pluginManagement>
+			<!--
+                Plugins defined under pluginManagement section simply define plugin definitions to be visible and
+			reusable by all child
                 projects.
 
-                In order to reuse a plugin into a child project however, you need to explicitely reference it (you could skip the
+                In order to reuse a plugin into a child project however, you need to explicitely reference it (you
+			could skip the
                 configuration section partially or completely though).
 
                 Main benefint is that you do not need to repeat the same configuration in every child project.
             -->
-            <plugins>
-                <plugin>
-                    <!--
+			<plugins>
+				<plugin>
+					<!--
                         This plugin is responsible for pulling and pushing views and dashboards from and to an instance of
                         vRealize Operations.
                         To be able to do that, it would need a number of settings like vrops.host, vrops.port,
@@ -47,33 +44,44 @@
                             </properties>
                         ```
                     -->
-                    <groupId>com.vmware.pscoe.maven.plugins</groupId>
-                    <artifactId>vrops-package-maven-plugin</artifactId>
-                    <version>${iac.version}</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <vrops>
-                            <host>${vrops.host}</host>
-                            <sshHost>${vrops.sshHost}</sshHost>
-                            <port>${vrops.port}</port>
-                            <sshPort>${vrops.sshPort}</sshPort>
-                            <dashboardUser>${vrops.dashboardUser}</dashboardUser>
-                            <username>${vrops.username}</username>
-                            <password>${vrops.password}</password>
-                            <serverId>${vrops.serverId}</serverId>
-                            <httpPort>${vrops.httpPort}</httpPort>
-                            <restUser>${vrops.restUser}</restUser>
-                            <restPassword>${vrops.restPassword}</restPassword>
-                            <restAuthSource>${vrops.restAuthSource}</restAuthSource>
-                            <restAuthProvider>${vrops.restAuthProvider}</restAuthProvider>
-                        </vrops>
-                        <ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
-                        <ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
-                        <socketTimeout>${vrealize.socket.timeout}</socketTimeout>
-                        <connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+					<groupId>com.vmware.pscoe.maven.plugins</groupId>
+					<artifactId>vrops-package-maven-plugin</artifactId>
+					<version>${revision}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<vrops>
+							<host>${vrops.host}</host>
+							<sshHost>${vrops.sshHost}</sshHost>
+							<port>${vrops.port}</port>
+							<sshPort>${vrops.sshPort}</sshPort>
+							<dashboardUser>${vrops.dashboardUser}</dashboardUser>
+							<username>${vrops.username}</username>
+							<password>${vrops.password}</password>
+							<serverId>${vrops.serverId}</serverId>
+							<httpPort>${vrops.httpPort}</httpPort>
+							<restUser>${vrops.restUser}</restUser>
+							<restPassword>${vrops.restPassword}</restPassword>
+							<restAuthSource>${vrops.restAuthSource}</restAuthSource>
+							<restAuthProvider>${vrops.restAuthProvider}</restAuthProvider>
+						</vrops>
+						<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
+						<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
+						<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
+						<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+		</plugins>
+	</build>
+
+	<properties>
+		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+	</properties>
 </project>

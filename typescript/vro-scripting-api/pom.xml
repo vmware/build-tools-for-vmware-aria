@@ -5,20 +5,12 @@
     <parent>
         <artifactId>typescript</artifactId>
         <groupId>com.vmware.pscoe.iac</groupId>
-        <version>2.29.3-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>vro-scripting-api</artifactId>
-    <version>2.29.3-SNAPSHOT</version>
-
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 
     <properties>
         <attachFileName>vmware-pscoe-${project.artifactId}-${project.version}.tgz</attachFileName>

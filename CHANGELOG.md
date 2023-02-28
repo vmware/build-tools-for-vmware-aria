@@ -1,3 +1,5 @@
+### Enhancements
+* [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
 ## v2.29.2 - 24 Feb 2023
 
 ### Enhancements

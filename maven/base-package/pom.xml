@@ -2,9 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+		<artifactId>iac</artifactId>
+		<groupId>com.vmware.pscoe</groupId>
+        <version>${revision}</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
     <groupId>com.vmware.pscoe.o11n</groupId>
     <artifactId>base-package</artifactId>
-    <version>2.29.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>xml-package</module>
@@ -19,43 +26,42 @@
         <module>bsc-package</module>
         <module>cs-package</module>
     </modules>
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
     <properties>
         <build.number>local</build.number>
         <assembly.skipAssembly>true</assembly.skipAssembly>
-        <iac.version>2.29.3-SNAPSHOT</iac.version>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+        <license.organizationName>VMWARE</license.organizationName>
         <license.licenseName>_license</license.licenseName>
         <license.encoding>UTF-8</license.encoding>
         <license.licenseResolver>${project.baseUri}license_data</license.licenseResolver>
         <license.licenceFile>${basedir}/LICENSE</license.licenceFile>
         <license.thirdPartyFilename>THIRD-PARTY</license.thirdPartyFilename>
         <license.useMissingFile>true</license.useMissingFile>
-        <license.organizationName>VMWARE</license.organizationName>
         <license.excludedScopes>test</license.excludedScopes>
         <license.excludeTransitiveDependencies>true</license.excludeTransitiveDependencies>
         <license.canUpdateCopyright>true</license.canUpdateCopyright>
         <license.canUpdateDescription>true</license.canUpdateDescription>
         <license.includes>**/*.js,**/*.ts</license.includes>
     </properties>
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
     <profiles>
+		<profile>
+            <id>no-licenses-management</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <file>
+                    <missing>license_data/licenses.properties</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <inherited>false</inherited>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>licenses-management</id>
             <activation>
@@ -87,17 +93,32 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                        <version>1.20</version>
+                        <version>2.0.0</version>
                         <configuration>
                             <inceptionYear>${current.year}</inceptionYear>
-                            <extraExtensions>
+							<organizationName>${license.organizationName}</organizationName>
+							<licenseName>${license.licenseName}</licenseName>
+							<encoding>${license.encoding}</encoding>
+							<licenseResolver>${license.licenseResolver}</licenseResolver>
+                            <licenceFile>${license.licenceFile}</licenceFile>
+                            <thirdPartyFilename>${license.thirdPartyFilename}</thirdPartyFilename>
+                            <useMissingFile>${license.useMissingFile}</useMissingFile>
+							<excludedScopes>${license.excludedScopes}</excludedScopes>
+							<excludeTransitiveDependencies>${license.excludeTransitiveDependencies}</excludeTransitiveDependencies>
+                            <canUpdateCopyright>${license.canUpdateCopyright}</canUpdateCopyright>
+                            <canUpdateDescription>${license.canUpdateDescription}</canUpdateDescription>
+                            <includes>${license.includes}</includes>
+							<aggregate>true</aggregate>
+							<excludedArtifacts>maven-surefire-plugin</excludedArtifacts>
+							<extraExtensions>
                                 <ts>java</ts>
                                 <yaml>properties</yaml>
                                 <ps1>properties</ps1>
                                 <psd>properties</psd>
                                 <psm>properties</psm>
-                            </extraExtensions>
-                        </configuration>
+							</extraExtensions>
+							<excludes>**/*.json,**/*.ftl,**/resources/**/*.*,**/archetype-resources/**/*.*</excludes>
+						</configuration>
                         <executions>
                             <execution>
                                 <id>manage-licenses</id>
@@ -162,7 +183,7 @@
                 <assembly.skipAssembly>false</assembly.skipAssembly>
                 <installerGroupId>com.vmware.pscoe.iac</installerGroupId>
                 <installerArtifactId>installer</installerArtifactId>
-                <installerVersion>${iac.version}</installerVersion>
+                <installerVersion>${revision}</installerVersion>
             </properties>
             <build>
                 <plugins>
@@ -213,7 +234,7 @@
             <plugin>
                 <groupId>com.vmware.pscoe.maven.plugins</groupId>
                 <artifactId>vrealize-package-maven-plugin</artifactId>
-                <version>${iac.version}</version>
+                <version>${revision}</version>
                 <configuration>
                     <vro>
                         <host>${vro.host}</host>
@@ -301,7 +322,7 @@
             <plugin>
                 <groupId>com.vmware.pscoe.maven.plugins</groupId>
                 <artifactId>ssh-maven-plugin</artifactId>
-                <version>${iac.version}</version>
+                <version>${revision}</version>
                 <configuration>
                     <ssh>
                         <host>${ssh.host}</host>
@@ -321,7 +342,7 @@
                     <dependency>
                         <groupId>com.vmware.pscoe.maven</groupId>
                         <artifactId>iac-assembly</artifactId>
-                        <version>${iac.version}</version>
+                        <version>${revision}</version>
                     </dependency>
                 </dependencies>
                 <executions>

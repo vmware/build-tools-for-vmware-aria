@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.vmware.pscoe.o11n</groupId>
-        <artifactId>base-package</artifactId>
-        <version>2.29.3-SNAPSHOT</version>
-    </parent>
-    <groupId>com.vmware.pscoe.vra</groupId>
-    <artifactId>vra-package</artifactId>
-    <packaging>pom</packaging>
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.vmware.pscoe.maven.plugins</groupId>
-                <artifactId>vra-package-maven-plugin</artifactId>
-                <version>${iac.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <vra>
-                        <host>${vra.host}</host>
-                        <port>${vra.port}</port>
-                        <username>${vra.username}</username>
-                        <password>${vra.password}</password>
-                        <tenant>${vra.tenant}</tenant>
-                        <serverId>${vra.serverId}</serverId>
-                    </vra>
-                    <ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
-                    <ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
-                    <socketTimeout>${vrealize.socket.timeout}</socketTimeout>
-                    <connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vmware.pscoe.o11n</groupId>
+		<artifactId>base-package</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<groupId>com.vmware.pscoe.vra</groupId>
+	<artifactId>vra-package</artifactId>
+	<packaging>pom</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+			<plugin>
+				<groupId>com.vmware.pscoe.maven.plugins</groupId>
+				<artifactId>vra-package-maven-plugin</artifactId>
+				<version>${revision}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<vra>
+						<host>${vra.host}</host>
+						<port>${vra.port}</port>
+						<username>${vra.username}</username>
+						<password>${vra.password}</password>
+						<tenant>${vra.tenant}</tenant>
+						<serverId>${vra.serverId}</serverId>
+					</vra>
+					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
+					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
+					<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
+					<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <properties>
-        <!-- checksum calculation properties -->
-        <checksum.definitions>content,packages</checksum.definitions>
+	<properties>
+		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<!-- checksum calculation properties -->
+		<checksum.definitions>content,packages</checksum.definitions>
 
-        <checksum.contentEnabled>true</checksum.contentEnabled>
-        <checksum.contentDir>src/main/resources</checksum.contentDir>
-        <checksum.contentGlob>*</checksum.contentGlob>
-        <!-- <checksum.contentExcludes>\.js$,.element_info\.xml</checksum.contentExcludes> -->
+		<checksum.contentEnabled>true</checksum.contentEnabled>
+		<checksum.contentDir>src/main/resources</checksum.contentDir>
+		<checksum.contentGlob>*</checksum.contentGlob>
+		<!-- <checksum.contentExcludes>\.js$,.element_info\.xml</checksum.contentExcludes> -->
 
-        <checksum.packagesEnabled>true</checksum.packagesEnabled>
-        <checksum.packagesDir>target</checksum.packagesDir>
-        <checksum.packagesGlob>*.vra</checksum.packagesGlob>
-    </properties>
+		<checksum.packagesEnabled>true</checksum.packagesEnabled>
+		<checksum.packagesDir>target</checksum.packagesDir>
+		<checksum.packagesGlob>*.vra</checksum.packagesGlob>
+	</properties>
 </project>

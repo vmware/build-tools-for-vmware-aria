@@ -1,103 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.vmware.pscoe.o11n</groupId>
-        <artifactId>base-package</artifactId>
-        <version>2.29.3-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>com.vmware.pscoe.o11n</groupId>
+		<artifactId>base-package</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-    <groupId>com.vmware.pscoe.serverless</groupId>
-    <artifactId>serverless-project</artifactId>
-    <version>2.29.3-SNAPSHOT</version>
-    <packaging>pom</packaging>
-
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<groupId>com.vmware.pscoe.serverless</groupId>
+	<artifactId>serverless-project</artifactId>
+	<packaging>pom</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.vmware.pscoe.maven.plugins</groupId>
 			<artifactId>abx-package-maven-plugin</artifactId>
-			<version>${iac.version}</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>polyglotpkg</artifactId>
 			<type>tgz</type>
-			<version>${iac.version}</version>
+			<version>${revision}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vropkg</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-
-                <!--
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!--
                 Execute commands on maven lifecycle phases using exec maven plugin
                 -->
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <version>1.6.0</version>
-                    <executions>
-                        <!--
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.6.0</version>
+					<executions>
+						<!--
                         Validate: validate the project is correct and all necessary information is available.
                         -->
-                        <!-- Keep versions in sync -->
-                        <execution>
-                            <id>npm version - validate</id>
-                            <goals>
-                                <goal>exec</goal>
-                            </goals>
-                            <phase>validate</phase>
-                            <configuration>
-                                <executable>npm</executable>
-                                <arguments>
-                                    <argument>version</argument>
-                                    <argument>--allow-same-version</argument>
-                                    <argument>--no-git-tag-version</argument>
-                                    <argument>--force</argument>
-                                    <argument>${project.version}</argument>
-                                </arguments>
-                            </configuration>
-                        </execution>
-                        <!-- Perform 'npm install' -->
-                        <execution>
-                            <id>npm install - validate</id>
-                            <goals>
-                                <goal>exec</goal>
-                            </goals>
-                            <phase>validate</phase>
-                            <configuration>
-                                <executable>npm</executable>
-                                <arguments>
-                                    <argument>install</argument>
-                                </arguments>
-                            </configuration>
-                        </execution>
-                        <!--
+						<!-- Keep versions in sync -->
+						<execution>
+							<id>npm version - validate</id>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<phase>validate</phase>
+							<configuration>
+								<executable>npm</executable>
+								<arguments>
+									<argument>version</argument>
+									<argument>--allow-same-version</argument>
+									<argument>--no-git-tag-version</argument>
+									<argument>--force</argument>
+									<argument>${project.version}</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<!-- Perform 'npm install' -->
+						<execution>
+							<id>npm install - validate</id>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<phase>validate</phase>
+							<configuration>
+								<executable>npm</executable>
+								<arguments>
+									<argument>install</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<!--
                         Compile: compile the source code of the project.
                         Perform 'npm run build'
                         -->
@@ -128,41 +114,42 @@
 								</arguments>
 							</configuration>
 						</execution>
-                        <!--
+						<!--
                         Package: take the compiled code and package it in its distributable format.
                         Perform 'npm run build'
                         -->
-                        <execution>
-                            <id>npm pack - package</id>
-                            <goals>
-                                <goal>exec</goal>
-                            </goals>
-                            <phase>package</phase>
-                            <configuration>
-                                <executable>npm</executable>
-                                <arguments>
-                                    <argument>pack</argument>
-                                </arguments>
-                            </configuration>
-                        </execution>
-                        <!--
-                        Install: install the package into the local repository, for use as a dependency in other projects locally.
+						<execution>
+							<id>npm pack - package</id>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<phase>package</phase>
+							<configuration>
+								<executable>npm</executable>
+								<arguments>
+									<argument>pack</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<!--
+                        Install: install the package into the local repository, for use as a dependency in other projects
+						locally.
                         Perform 'npm link'
                         -->
-                        <execution>
-                            <id>npm link - install</id>
-                            <goals>
-                                <goal>exec</goal>
-                            </goals>
-                            <phase>install</phase>
-                            <configuration>
-                                <executable>npm</executable>
-                                <arguments>
-                                    <argument>link</argument>
-                                </arguments>
-                            </configuration>
-                        </execution>
-                        <!--
+						<execution>
+							<id>npm link - install</id>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<phase>install</phase>
+							<configuration>
+								<executable>npm</executable>
+								<arguments>
+									<argument>link</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<!--
                         Clean: remove all files generated by the previous build.
                         Perform 'npm run clean'
                         -->
@@ -193,74 +180,82 @@
 								</arguments>
 							</configuration>
 						</execution>
-                    </executions>
-                </plugin>
+					</executions>
+				</plugin>
 
-                <!--
+				<!--
                 Control project release using maven release plugin
                 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
-                    <configuration>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <tagNameFormat>v@{project.version}</tagNameFormat>
-                        <preparationGoals>clean compile scm:checkin</preparationGoals>
-                        <completionGoals>clean compile scm:checkin</completionGoals>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<tagNameFormat>v@{project.version}</tagNameFormat>
+						<preparationGoals>clean compile scm:checkin</preparationGoals>
+						<completionGoals>clean compile scm:checkin</completionGoals>
+					</configuration>
+				</plugin>
 
-                <!--
+				<!--
                 Commit additional files during project release using maven scm plugin
                 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-scm-plugin</artifactId>
-                    <version>1.11.2</version>
-                    <configuration>
-                        <message>(release) updated package.json to v${project.version}</message>
-                        <includes>package.json,package-lock.json</includes>
-                        <pushChanges>false</pushChanges>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-scm-plugin</artifactId>
+					<version>1.11.2</version>
+					<configuration>
+						<message>(release) updated package.json to v${project.version}</message>
+						<includes>package.json,package-lock.json</includes>
+						<pushChanges>false</pushChanges>
+					</configuration>
+				</plugin>
 
-                <!-- vRDT binding for ABX interaction -->
-                <plugin>
-                    <groupId>com.vmware.pscoe.maven.plugins</groupId>
-                    <artifactId>abx-package-maven-plugin</artifactId>
-                    <version>${iac.version}</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <vrang>
-                            <host>${vrang.host}</host>
-                            <csp.host>${vrang.csp.host}</csp.host>
-                            <port>${vrang.port}</port>
-                            <username>${vrang.username}</username>
-                            <password>${vrang.password}</password>
-                            <serverId>${vrang.serverId}</serverId>
-                            <project.name>${vrang.project.name}</project.name>
-                            <project.id>${vrang.project.id}</project.id>
-                            <org.id>${vrang.org.id}</org.id>
-                            <org.name>${vrang.org.name}</org.name>
-                            <refresh.token>${vrang.refresh.token}</refresh.token>
-                            <proxy>${vrang.proxy}</proxy>
-                            <cloud.proxy.name>${vrang.cloud.proxy.name}</cloud.proxy.name>
-                        </vrang>
-                        <ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
-                        <ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
-                        <socketTimeout>${vrealize.socket.timeout}</socketTimeout>
-                        <connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+				<!-- vRDT binding for ABX interaction -->
+				<plugin>
+					<groupId>com.vmware.pscoe.maven.plugins</groupId>
+					<artifactId>abx-package-maven-plugin</artifactId>
+					<version>${revision}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<vrang>
+							<host>${vrang.host}</host>
+							<csp.host>${vrang.csp.host}</csp.host>
+							<port>${vrang.port}</port>
+							<username>${vrang.username}</username>
+							<password>${vrang.password}</password>
+							<serverId>${vrang.serverId}</serverId>
+							<project.name>${vrang.project.name}</project.name>
+							<project.id>${vrang.project.id}</project.id>
+							<org.id>${vrang.org.id}</org.id>
+							<org.name>${vrang.org.name}</org.name>
+							<refresh.token>${vrang.refresh.token}</refresh.token>
+							<proxy>${vrang.proxy}</proxy>
+							<cloud.proxy.name>${vrang.cloud.proxy.name}</cloud.proxy.name>
+						</vrang>
+						<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
+						<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
+						<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
+						<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+		</plugins>
+	</build>
 
-    <properties>
-        <sonar.sources>src</sonar.sources>
-        <sonar.language>ts</sonar.language>
-        <sonar.javascript.lcov.reportPaths>./target/lcov.info</sonar.javascript.lcov.reportPaths>
-    </properties>
+	<properties>
+		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<sonar.sources>src</sonar.sources>
+		<sonar.language>ts</sonar.language>
+		<sonar.javascript.lcov.reportPaths>./target/lcov.info</sonar.javascript.lcov.reportPaths>
+	</properties>
 
 </project>
