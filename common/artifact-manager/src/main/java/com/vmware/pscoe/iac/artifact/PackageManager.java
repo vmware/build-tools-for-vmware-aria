@@ -59,7 +59,7 @@ public class PackageManager {
 	/**
 	 * Take the package represented by the {@link Package} parameter (in the constructor and unpack it into a
 	 * directory structure.
-	 * The {@link Package@getFilesystemPath} method in the {@link Package} parameter should be pointing to an
+	 * The {@link Package#getFilesystemPath} method in the {@link Package} parameter should be pointing to an
 	 * actual package file on the file system. The only archive format of the package that is currently supported
 	 * is zip, so all package files are also zip archives.
 	 * @param outputLocation The directory where the package file will be expanded to a set of files and folders.
