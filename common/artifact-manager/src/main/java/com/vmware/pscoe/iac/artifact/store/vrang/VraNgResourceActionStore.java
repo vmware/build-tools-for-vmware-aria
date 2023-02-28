@@ -61,7 +61,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return List<String>
+	 * @return list of resource actions
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {

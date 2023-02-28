@@ -97,17 +97,20 @@ public abstract class AbstractVraNgRegionalStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return List<String>
+	 * @return list of items
 	 */
 	protected abstract List<String> getItemListFromDescriptor();
 
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * @param cloudAccounts list of cloud accounts
 	 */
 	protected abstract void exportStoreContent( List<VraNgCloudAccount> cloudAccounts );
 
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * @param cloudAccounts list of cloud accounts
+	 * @param itemNames list of names
 	 */
 	protected abstract void exportStoreContent( List<VraNgCloudAccount> cloudAccounts, List<String> itemNames );
 }
