@@ -61,8 +61,8 @@ jobs:
       - name: Import GPG Key
         uses: crazy-max/ghaction-import-gpg@v5
         env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
           
       - name: Build 'keystore-example'
         run: mvn -T 1C clean install -f common/keystore-example/pom.xml
