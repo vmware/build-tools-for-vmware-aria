@@ -198,10 +198,10 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 
     /**
      * Implement the pull usecase, so pull all of the packages described in the {@code vropsPackageDescriptor} (constructed from content.yaml).
-     * @param vropsPackage
-     * @param vropsPackageDescriptor
-     * @param dryrun
-     * @return
+     * @param vropsPackage vropsPackage
+     * @param vropsPackageDescriptor vropsPackageDescriptor
+     * @param dryrun dryrun
+     * @return package
      */
     @Override
     public Package exportPackage(Package vropsPackage, VropsPackageDescriptor vropsPackageDescriptor, boolean dryrun) {

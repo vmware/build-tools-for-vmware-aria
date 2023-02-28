@@ -145,8 +145,8 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
      *
      * @param vraNgPackage vRA package
      * @param vraNgPackageDescriptor vRA package descriptor
-     * @param dryrun
-     * @return
+     * @param dryrun dryrun
+     * @return package
      */
     @Override
     public Package exportPackage(Package vraNgPackage, VraNgPackageDescriptor vraNgPackageDescriptor, boolean dryrun) {
@@ -180,8 +180,8 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
      * 7. Import Resource Actions
      *
      * @param vraNgPackage vRA package
-     * @param dryrun
-     * @return
+     * @param dryrun dryrun
+     * @return package
      */
     @Override
     public Package importPackage(Package vraNgPackage, boolean dryrun, boolean mergePackages) {
