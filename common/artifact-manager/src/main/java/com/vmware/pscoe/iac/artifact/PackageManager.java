@@ -150,7 +150,7 @@ public class PackageManager {
 	 *
 	 * @param directoryToZip
 	 * @param fileList
-	 * @throws IOException
+	 * @throws IOException exception
 	 */
 	private void writeZipFile(File directoryToZip, List<File> fileList) throws IOException {
 		File zipFile = new File(pkg.getFilesystemPath());
@@ -189,7 +189,7 @@ public class PackageManager {
 	 * Add a single file to existing ZIP
 	 * @param file the file to add
 	 * @param zipDirectory parent directory for the file
-	 * @throws IOException
+	 * @throws IOException exception
 	 */
 	public void addTextFileToExistingZip(File file, Path zipDirectory) throws IOException {
 		File zipFile = new File(pkg.getFilesystemPath());

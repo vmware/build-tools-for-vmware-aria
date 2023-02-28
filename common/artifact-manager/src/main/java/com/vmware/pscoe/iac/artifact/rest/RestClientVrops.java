@@ -153,6 +153,7 @@ public class RestClientVrops extends RestClient {
      *                         policy will be assigned to.
      * @param force      true to overwrite the existing policies, false to
      *                         skip importing when there is a conflict
+	 * @throws Exception exception
      */
     public void importPolicyFromZip(String policyName, File file, Boolean force) throws Exception {
         URI uri;
