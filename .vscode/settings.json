@@ -1,17 +1,17 @@
 {
     "workbench.colorCustomizations": {
-		"commandCenter.border": "#15202b99",
-		"sash.hoverBorder": "#a7b195",
-		"statusBar.background": "#8e9b78",
-		"statusBar.foreground": "#15202b",
-		"statusBarItem.hoverBackground": "#74815f",
-		"statusBarItem.remoteBackground": "#8e9b78",
-		"statusBarItem.remoteForeground": "#15202b",
-		"titleBar.activeBackground": "#8e9b78",
-		"titleBar.activeForeground": "#15202b",
-		"titleBar.inactiveBackground": "#8e9b7899",
-		"titleBar.inactiveForeground": "#15202b99"
-	},
+			"commandCenter.border": "#15202b99",
+			"sash.hoverBorder": "#a7b195",
+			"statusBar.background": "#8e9b78",
+			"statusBar.foreground": "#15202b",
+			"statusBarItem.hoverBackground": "#74815f",
+			"statusBarItem.remoteBackground": "#8e9b78",
+			"statusBarItem.remoteForeground": "#15202b",
+			"titleBar.activeBackground": "#8e9b78",
+			"titleBar.activeForeground": "#15202b",
+			"titleBar.inactiveBackground": "#8e9b7899",
+			"titleBar.inactiveForeground": "#15202b99"
+		},
     "peacock.color": "#8e9b78",
     "git.alwaysSignOff": true
 }

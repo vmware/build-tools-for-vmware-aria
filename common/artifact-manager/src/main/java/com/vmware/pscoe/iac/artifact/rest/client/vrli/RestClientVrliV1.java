@@ -23,11 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.rest.client.messages.Errors;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -48,26 +46,28 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackMetadataListD
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
 
 public class RestClientVrliV1 extends AbstractRestClientVrli {
+    private static final String API_PREFIX = "/api/v1";
+
     public RestClientVrliV1(ConfigurationVrli configuration, RestTemplate restTemplate) {
-		super("/api/v1", configuration, restTemplate);
-		logger = LoggerFactory.getLogger(RestClientVrliV1.class);
+        super(API_PREFIX, configuration, restTemplate);
+        logger = LoggerFactory.getLogger(RestClientVrliV1.class);
     }
 
-	public List<AlertDTO> getAllAlerts() {
+    public List<AlertDTO> getAllAlerts() {
         URI url = getURI(getURIBuilder().setPath(this.apiPrefix + ALERTS_API));
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
         return deserializeAlerts(response.getBody());
     }
 
-	public List<ContentPackDTO> getAllContentPacks() {
+    public List<ContentPackDTO> getAllContentPacks() {
         URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_LIST_API));
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
         return deserializeContentPacks(response.getBody());
     }
 
-	public void updateAlert(AlertDTO alertToUpdate, String existingAlertId) {
+    public void updateAlert(AlertDTO alertToUpdate, String existingAlertId) {
         if (alertToUpdate == null || StringUtils.isEmpty(existingAlertId)) {
             return;
         }
@@ -77,7 +77,7 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         insertAlert(serializeAlert(alertToUpdate));
     }
 
-	public void importAlert(String alertJson) {
+    public void importAlert(String alertJson) {
         if (StringUtils.isEmpty(alertJson)) {
             return;
         }
@@ -95,7 +95,7 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         insertAlert(alertJson);
     }
 
-	public void deleteAlert(String alertId) {
+    public void deleteAlert(String alertId) {
         if (StringUtils.isEmpty(alertId)) {
             return;
         }
@@ -122,7 +122,7 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         }
     }
 
-	public void insertAlert(String alertJson) {
+    public void insertAlert(String alertJson) {
         if (StringUtils.isEmpty(alertJson)) {
             return;
         }
@@ -208,6 +208,7 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         alert.setVcopsResourceName(resourceName);
         alert.setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
     }
+
     private AlertDTO findAlertByName(String alertName) {
         List<AlertDTO> alerts = getAllAlerts();
         if (alerts == null || alerts.isEmpty()) {

@@ -65,7 +65,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	/**
 	 * Importing content into vRA target environment
 	 *
-	 * @param sourceDirectory target path
+	 * @param sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
 		// Collect available blueprint definitions
@@ -99,7 +99,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return list of bps
+	 * @return List<String>
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -121,7 +121,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	/**
 	 * Fetches filtered blueprints and stores them on the filesystem
 	 *
-	 * @param blueprintNames list of bp names
+	 * @param blueprintNames
 	 */
 	@Override
 	protected void exportStoreContent(List<String> blueprintNames) {
@@ -353,7 +353,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 * A helper method that will order the versions JsonArray returned by id, so when importing they are imported in the correct order
 	 * and when importing or creating a new version no errors are thrown.
 	 *
-	 * @param versionsArray versions
+	 * @param versionsArray
 	 * @return orderedVersions
 	 */
 	protected JsonArray getVersionsInCorrectOrder(JsonArray versionsArray) {

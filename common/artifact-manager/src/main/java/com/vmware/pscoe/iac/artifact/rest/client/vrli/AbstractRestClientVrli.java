@@ -43,8 +43,9 @@ public abstract class AbstractRestClientVrli extends RestClient {
 	protected static final String CONTENT_PACKS_LIST_API = "/content/contentpack/list";
 	protected static final String ALERTS_API = "/alerts";
 	protected static final String VRLI_RESOURCE_KEY_TYPE = "LogInsightLogServer";
+	private static final String OVERWRITE_MODE = "OVERWRITE";
 
-	protected AbstractRestClientVrli (String apiPrefix, ConfigurationVrli configuration, RestTemplate restTemplate) {
+	protected AbstractRestClientVrli(String apiPrefix, ConfigurationVrli configuration, RestTemplate restTemplate) {
 		this.apiPrefix = apiPrefix;
 		this.restTemplate = restTemplate;
 		this.configuration = configuration;
@@ -63,10 +64,12 @@ public abstract class AbstractRestClientVrli extends RestClient {
 
 		return this.vrliVersion;
 	}
+
 	@Override
 	protected Configuration getConfiguration() {
 		return this.configuration;
 	}
+
 	public String getContentPack(String contentPackNamespace) {
 		String uriPattern = this.apiPrefix + CONTENT_PACKS_API + "/%s";
 		String contentPackUriString = String.format(uriPattern, contentPackNamespace);
@@ -96,7 +99,9 @@ public abstract class AbstractRestClientVrli extends RestClient {
 	}
 
 	public void importContentPack(String contentPackName, String contentPackJson) {
-		URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_API));
+		Boolean overwrite = configuration.getPackageImportOverwriteMode().equals(Boolean.TRUE.toString())
+				|| configuration.getPackageImportOverwriteMode().contains(OVERWRITE_MODE);
+		URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_API).addParameter("overwrite", overwrite.toString()));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -105,7 +110,8 @@ public abstract class AbstractRestClientVrli extends RestClient {
 			restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 		} catch (HttpClientErrorException e) {
 			if (HttpStatus.CONFLICT.equals(e.getStatusCode())) {
-				logger.warn("The content pack '{}' already exists on the target system, please uninstall it before importing again.", contentPackName);
+				logger.warn("The content pack '{}' already exists on the target system and the overwite mode is set to '{}', skipping import.", contentPackName,
+						configuration.getPackageImportOverwriteMode());
 				return;
 			}
 			if (HttpStatus.BAD_REQUEST.equals(e.getStatusCode())) {
@@ -116,6 +122,7 @@ public abstract class AbstractRestClientVrli extends RestClient {
 			throw new RuntimeException(String.format("REST client error during import of content pack '%s' to VRLI: %s", contentPackName, e.getMessage()));
 		}
 	}
+
 	protected RestClientVrops getVropsRestClient() {
 		if (this.vropsRestClient != null) {
 			return this.vropsRestClient;
@@ -138,7 +145,7 @@ public abstract class AbstractRestClientVrli extends RestClient {
 			vropsConfiguration = ConfigurationVrops.fromProperties(vropsConfigProperties);
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(
-				String.format("Unable to update vCOPs integration for alert, vROPs integration configuration failed with message: %s", e.getMessage()));
+					String.format("Unable to update vCOPs integration for alert, vROPs integration configuration failed with message: %s", e.getMessage()));
 		}
 
 		return new RestClientVrops(vropsConfiguration, restTemplate);

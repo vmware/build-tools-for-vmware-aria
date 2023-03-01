@@ -78,7 +78,7 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return list of content sources
+	 * @return List<String>
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -100,7 +100,7 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	 * If the content source is a VRO_WORKFLOW then it is checked if it has unique
 	 * workflow names.sssss
 	 *
-	 * @param contentSourceNames list of names
+	 * @param contentSourceNames
 	 */
 	@Override
 	protected void exportStoreContent(List<String> contentSourceNames) {

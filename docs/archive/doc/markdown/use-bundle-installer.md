@@ -121,6 +121,7 @@ vrli_vrops_server_port
 vrli_vrops_server_user
 vrli_vrops_server_password
 vrli_vrops_server_auth_source
+vrli_package_import_overwrite_mode
 
 ### VCD connection properties ###
 vcd_server

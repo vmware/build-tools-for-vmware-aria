@@ -115,8 +115,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	/**
 	 * Fetching the version details for a blueprint using the vRA REST API
-	 * @param blueprintId blueprintId
-	 * @return version
+	 * @param String blueprintId
+	 * @return String
 	 */
 	public String getBlueprintVersions(String blueprintId) {
 		try {
@@ -153,8 +153,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	/**
 	 * Import missing versions into vRA for a specified blueprint
-	 * @param blueprintId blueprintId
-	 * @param version version
+	 * @param String blueprintId
+	 * @param JsonObject version
 	 */
 	public void importBlueprintVersion(String blueprintId, JsonObject version) {
 		try {
@@ -399,7 +399,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * NOTE: Blueprint name is always going to be the catalog item name, method name seems misleading
 	 *
-	 * @param	blueprintName bp name
+	 * @param	blueprintName
 	 *
 	 * @return	VraNgCatalogItem
 	 */

@@ -63,7 +63,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return a list of subscriptions
+	 * @return List<String>
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {

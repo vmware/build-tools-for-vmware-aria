@@ -60,7 +60,7 @@ public class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	 * Imports all content in content.yaml.
 	 * WIll do nothing if property group dir does not exist
 	 *
-	 * @param	sourceDirectory path of source directory
+	 * @param	sourceDirectory
 	 */
 	@Override
 	public void importContent( File sourceDirectory ) {
@@ -123,7 +123,7 @@ public class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return list of property groups
+	 * @return List<String>
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -142,7 +142,7 @@ public class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	/**
 	 * Export specific propertyGroupNames
 	 *
-	 * @param	propertyGroupNames list of group names
+	 * @param	propertyGroupNames
 	 */
 	protected void exportStoreContent( List<String> propertyGroupNames ) {
 		logger.info( "Filtering Property Groups" );

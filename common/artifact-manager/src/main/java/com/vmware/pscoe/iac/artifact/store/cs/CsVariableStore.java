@@ -50,7 +50,7 @@ public class CsVariableStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
-	 * @param sourceDirectory sourceDirectory
+	 * @param File sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
 		File varFolder = Paths.get(sourceDirectory.getPath(), DIR_VAR).toFile();

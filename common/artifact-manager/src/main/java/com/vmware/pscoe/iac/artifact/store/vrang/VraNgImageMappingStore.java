@@ -47,7 +47,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return list of image mappings
+	 * @return List<String>
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -57,7 +57,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is empty
 	 *
-	 * @param cloudAccounts list of cloud accounts
+	 * @param cloudAccounts
 	 */
 	@Override
 	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts) {
@@ -96,8 +96,8 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
 	 *
-	 * @param cloudAccounts list of cloud accounts
-	 * @param imageMappingsToExport list of image mappings
+	 * @param cloudAccounts
+	 * @param imageMappingsToExport
 	 */
 	@Override
 	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts, List<String> imageMappingsToExport) {
@@ -181,7 +181,6 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
     /**
      * Import all image profiles from a package.
      * @param sourceDirectory temporary directory containing the files
-	 * @param importTags list of tags
      */
     public void importContent(File sourceDirectory, List<String> importTags) {
         File regionsFolder = Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();

@@ -36,11 +36,7 @@ jobs:
         run: node --version
       - name: Print mvn version
         run: mvn --version
-
-      - name: Get version
-        id: get-version
-        run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_OUTPUT
-
+        
       - name: Add packaging profile
         run: |
           sed -i '/<\/settings>/i \
@@ -50,7 +46,7 @@ jobs:
                 <properties>\
                   <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>\
                   <keystoreArtifactId>keystore.example</keystoreArtifactId>\
-                  <keystoreVersion>${{ steps.get-version.outputs.IAC_VERSION }}</keystoreVersion>\
+                  <keystoreVersion>1.0.0</keystoreVersion>\
                   <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>\
                   <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>\
                   <vroKeyPass>VMware1!</vroKeyPass>\
@@ -61,25 +57,19 @@ jobs:
             <activeProfile>packaging</activeProfile>\
           </activeProfiles>\
           ' ~/.m2/settings.xml 
-
-      - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
           
       - name: Build 'keystore-example'
-        run: mvn -T 1C clean install -f common/keystore-example/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f common/keystore-example/pom.xml
       - name: Build 'npmlib'
-        run: mvn -T 1C clean install -f maven/npmlib/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f maven/npmlib/pom.xml 
       - name: Build 'iac'
-        run: mvn -T 1C clean install -f pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f pom.xml 
       - name: Build 'base-package'
-        run: mvn -T 1C clean install -f maven/base-package/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f maven/base-package/pom.xml
       - name: Build 'packages'
-        run: mvn -T 1C clean install -f packages/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f packages/pom.xml 
       - name: Build 'typescript-project-all'
-        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml 
       - name: Build 'repository'
-        run: mvn -T 1C clean install -f maven/repository/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f maven/repository/pom.xml 
       

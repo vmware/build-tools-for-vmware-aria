@@ -131,8 +131,8 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
      * Main handler for exporting abx package based on package.json file
      * @param pkg abx package
      * @param packageDescriptor abx package descriptor file
-     * @param dryrun dryrun flag
-     * @return package
+     * @param dryrun
+     * @return
      */
     @Override
     public Package exportPackage(Package pkg, AbxPackageDescriptor packageDescriptor, boolean dryrun) {
@@ -147,8 +147,8 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	/**
 	 * Main handler for importing abx package.
 	 * @param abxPackage ABX package
-	 * @param dryrun dryrun flag
-	 * @return package
+	 * @param dryrun
+	 * @return
 	 */
 	@Override
 	public Package importPackage(Package abxPackage, boolean dryrun, boolean mergePackages) {

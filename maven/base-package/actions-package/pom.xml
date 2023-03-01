@@ -42,11 +42,6 @@
 				<inherited>false</inherited>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<inherited>false</inherited>
-			</plugin>
-			<plugin>
 				<groupId>com.vmware.pscoe.maven.plugins</groupId>
 				<artifactId>o11n-actions-package-maven-plugin</artifactId>
 				<version>${revision}</version>

@@ -34,29 +34,6 @@
 		</license>
 	</licenses>
 
-	<scm>
-		<connection>scm:git:https://github.com/vmware/build-tools-for-vmware-aria.git</connection>
-		<developerConnection>scm:git:https://github.com/vmware/build-tools-for-vmware-aria.git</developerConnection>
-		<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main</url>
-	</scm>
-
-	<name>Build Tools for VMware Aria</name>
-	<description>
-		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions
-		based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and 
-		Automation Developers to use standard DevOps practices for managing and deploying content.
-	</description>
-	<url>https://github.com/vmware/build-tools-for-vmware-aria</url>
-	<developers>
-		<developer>
-			<name>VMware World Wide Center of Engineering</name>
-			<email>svc.wwcoe.ci-admin@vmware.com</email>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-	</developers>
-
 	<!-- Some build plugins dosn't need no to be inherited in the customer projects poms. 
 		Search for <inherited>false</inherited> to identify the parent poms of the customer project poms-->
 	<build>
@@ -121,26 +98,9 @@
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.5.0</version>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
@@ -163,64 +123,13 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.1</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<prePhase>install</prePhase>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<!-- Enable maven-gpg-plugin and maven-source-plugin with -Dgpg.passphrase=XXX -->
-			<id>release-sign-source</id>
-			<activation>
-				<property>
-					<name>gpg.passphrase</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.0.1</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>3.2.1</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<distributionManagement>
 		<repository>
 			<id>central</id>
-			<name>ossgh</name>
+			<name>artifactory-c-01a-releases</name>
 			<url>${releaseRepositoryUrl}</url>
 		</repository>
 		<snapshotRepository>

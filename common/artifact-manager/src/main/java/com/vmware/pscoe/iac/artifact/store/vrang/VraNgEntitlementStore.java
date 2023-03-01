@@ -69,7 +69,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return list of entitlements
+	 * @return List<String>
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -79,6 +79,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
     /**
      * Export all catalog entitlements from a server and store them in YAML files.
      *
+     * @param vraNgPackage vra package
      */
 	protected void exportStoreContent() {
         List<VraNgCatalogEntitlement> entitlements = this.restClient.getAllCatalogEntitlements();
@@ -89,6 +90,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
      * Export catalog entitlements from a list of entitlement names and store them
      * in YAML files.
      *
+     * @param vraNgPackage            vra package
      * @param catalogEntitlementNames list of entitlement names to export
      */
     protected void exportStoreContent( List<String> catalogEntitlementNames ) {

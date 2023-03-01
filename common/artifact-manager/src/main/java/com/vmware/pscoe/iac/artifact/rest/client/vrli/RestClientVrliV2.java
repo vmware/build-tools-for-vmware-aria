@@ -26,7 +26,6 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackMetadataListDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
@@ -38,29 +37,31 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RestClientVrliV2 extends AbstractRestClientVrli {
+    private static final String API_PREFIX = "/api/v2";
+
     public RestClientVrliV2(ConfigurationVrli configuration, RestTemplate restTemplate) {
-		super("/api/v2", configuration, restTemplate);
-		logger = LoggerFactory.getLogger(RestClientVrliV2.class);
+        super(API_PREFIX, configuration, restTemplate);
+        logger = LoggerFactory.getLogger(RestClientVrliV2.class);
     }
 
-	public List<AlertDTO> getAllAlerts() {
+    public List<AlertDTO> getAllAlerts() {
         URI url = getURI(getURIBuilder().setPath(this.apiPrefix + ALERTS_API));
-		logger.info("Getting all alerts URL: {}", url);
+        logger.info("Getting all alerts URL: {}", url);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
         return deserializeAlerts(response.getBody());
     }
 
-	public List<ContentPackDTO> getAllContentPacks() {
+    public List<ContentPackDTO> getAllContentPacks() {
         URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_API));
-		logger.info("Getting all content packs URL: {}", url);
+        logger.info("Getting all content packs URL: {}", url);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
-		logger.debug("Content Packs: {}", response.getBody());
+        logger.debug("Content Packs: {}", response.getBody());
         return deserializeContentPacks(response.getBody());
     }
 
-	public void updateAlert(AlertDTO alertToUpdate, String existingAlertId) {
+    public void updateAlert(AlertDTO alertToUpdate, String existingAlertId) {
         if (alertToUpdate == null || StringUtils.isEmpty(existingAlertId)) {
             return;
         }
@@ -70,7 +71,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
         insertAlert(serializeAlert(alertToUpdate));
     }
 
-	public void importAlert(String alertJson) {
+    public void importAlert(String alertJson) {
         if (StringUtils.isEmpty(alertJson)) {
             return;
         }
@@ -88,7 +89,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
         insertAlert(alertJson);
     }
 
-	public void deleteAlert(String alertId) {
+    public void deleteAlert(String alertId) {
         if (StringUtils.isEmpty(alertId)) {
             return;
         }
@@ -100,7 +101,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
         logger.info("Deleting existing alert {}", alertId);
         try {
             URI url = getURIBuilder().setPath(deleteAlertUri).build();
-			logger.info("Deleting alert URL: {}", url);
+            logger.info("Deleting alert URL: {}", url);
             response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
         } catch (RestClientException e) {
             throw new RuntimeException(String.format("Unable to delete alert, error: %s", e.getMessage()), e);
@@ -116,7 +117,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
         }
     }
 
-	public void insertAlert(String alertJson) {
+    public void insertAlert(String alertJson) {
         if (StringUtils.isEmpty(alertJson)) {
             return;
         }
@@ -133,7 +134,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
         ResponseEntity<String> response;
         try {
             URI url = getURIBuilder().setPath(this.apiPrefix + ALERTS_API).build();
-			logger.info("Inserting alert URL: {}", url);
+            logger.info("Inserting alert URL: {}", url);
             response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
         } catch (RestClientException e) {
             throw new RuntimeException(String.format("Unable to insert/update alert, error: %s", e.getMessage()), e);
@@ -150,20 +151,17 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
         if (alert == null) {
             return;
         }
-		if (alert.getRecipients().getVrops().getVcopsResourceKindKey() == null) {
-			return;
-		}
+        if (alert.getRecipients().getVrops().getVcopsResourceKindKey() == null) {
+            return;
+        }
         RestClientVrops restClientVrops = getVropsRestClient();
         ResourcesDTO resourceDto;
         try {
             resourceDto = restClientVrops.getResources();
-			logger.info(resourceDto.getResourceList().toString());
+            logger.info(resourceDto.getResourceList().toString());
         } catch (Exception e) {
             throw new RuntimeException(
                     String.format("Unable to update vCOPs integration for alert '%s', unable to fetch vROPs resources: %s", alert.getName(), e.getMessage()));
-        }
-        if (resourceDto == null) {
-            return;
         }
 
         Optional<ResourcesDTO.ResourceList> vrliResource = resourceDto.getResourceList().stream()
@@ -198,7 +196,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 
         logger.info("Rewriting the vCopsResourceKindKey for alert '{}', using resource name '{}'", alert.getName(), resourceName);
         alert.getRecipients().getVrops().setVcopsResourceName(resourceName);
-		alert.getRecipients().getVrops().setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
+        alert.getRecipients().getVrops().setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
     }
 
     private AlertDTO findAlertByName(String alertName) {

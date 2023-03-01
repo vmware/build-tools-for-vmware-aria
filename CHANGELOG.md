@@ -1,10 +1,11 @@
 ### Enhancements
 * [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
-* [core] IAC-719 / Prepare for maven central. Add needed plugins: maven-javadoc-plugin, maven-gpg-plugin, and maven-source-plugin
+* [maven-plugins-vrli] IAC-733 / Add support for overwriting of already existing vRLI content packs.
 ## v2.29.2 - 24 Feb 2023
 
 ### Enhancements
 * [maven-plugins-vrli] IAC-741 / Use new v2 API when working with vRLI 8.8+ content. The feature is marked as experimental because v2 API is Technical Preview.
+
 ## v2.29.1 - 15 Feb 2023
 
 ### Fixes

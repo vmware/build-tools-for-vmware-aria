@@ -95,7 +95,7 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return list of items
+	 * @return List<String>
 	 */
 	protected abstract List<String> getItemListFromDescriptor();
 
@@ -106,7 +106,6 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
-	 * @param itemNames list of names
 	 */
 	protected abstract void exportStoreContent( List<String> itemNames );
 
