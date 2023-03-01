@@ -36,7 +36,14 @@ jobs:
         run: node --version
       - name: Print mvn version
         run: mvn --version
-        
+
+      - name: Get version
+        id: get-version
+        run: mvn help:evaluate -Dexpression=revision -q -DforceStdout
+        shell: bash
+        env:
+          iac-version: ${{ steps.get-version.outputs.stdout }}
+
       - name: Add packaging profile
         run: |
           sed -i '/<\/settings>/i \
@@ -46,7 +53,7 @@ jobs:
                 <properties>\
                   <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>\
                   <keystoreArtifactId>keystore.example</keystoreArtifactId>\
-                  <keystoreVersion>1.0.0</keystoreVersion>\
+                  <keystoreVersion>${{ env.iac-version }}</keystoreVersion>\
                   <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>\
                   <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>\
                   <vroKeyPass>VMware1!</vroKeyPass>\

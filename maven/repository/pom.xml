@@ -298,6 +298,12 @@
 			<version>${project.version}</version>
 			<type>tgz</type>
 		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.build</groupId>
+			<artifactId>keystore.example</artifactId>
+			<version>${project.version}</version>
+			<type>tgz</type>
+		</dependency>
 
 	</dependencies>
 	<build>
