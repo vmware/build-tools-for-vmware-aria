@@ -221,7 +221,7 @@
 		<repository>
 			<id>central</id>
 			<name>ossgh</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>${releaseRepositoryUrl}</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
