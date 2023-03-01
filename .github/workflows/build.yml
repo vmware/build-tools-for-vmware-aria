@@ -42,7 +42,7 @@ jobs:
         run: mvn help:evaluate -Dexpression=revision -q -DforceStdout
         shell: bash
         env:
-          iac-version: ${{ steps.get-version.outputs.stdout }}
+          iac-version: ${{ steps.get-version.outputs.stdout | trim-newlines }}
 
       - name: Add packaging profile
         run: |
