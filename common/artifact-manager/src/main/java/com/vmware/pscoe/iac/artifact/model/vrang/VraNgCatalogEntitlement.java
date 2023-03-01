@@ -100,7 +100,6 @@ public class VraNgCatalogEntitlement {
      * Set the id of the entitlement.
      * 
      * @param id - id of the entitlement
-     * @return void
      */
     public void setId(String id) {
         this.id = id;
@@ -119,7 +118,6 @@ public class VraNgCatalogEntitlement {
      * Set the id of the entitlement.
      * 
      * @param iconId - iconId of the entitlement
-     * @return void
      */
     public void setIconId(String iconId) {
         this.iconId = iconId;
@@ -138,8 +136,7 @@ public class VraNgCatalogEntitlement {
     /**
      * Set the name of the entitlement.
      * 
-     * @param String - name of the entitlement
-     * @return void
+     * @param name name of the entitlement
      */
     public void setName(String name) {
         this.name = name;
@@ -159,8 +156,7 @@ public class VraNgCatalogEntitlement {
      * Set the type of the entitlement. This represents the type of the catalog item
      * behind the entitlement.
      * 
-     * @param VraNgCatalogEntitlementType - type of the entitlement
-     * @return void
+     * @param type - type of the entitlement
      */
     public void setType(VraNgCatalogEntitlementType type) {
         this.type = type;
@@ -204,7 +200,7 @@ public class VraNgCatalogEntitlement {
      * Get the project of the entitlement. This correlates to the projects that it
      * has to be shared with.
      * 
-     * @return List<String> projects - the projects associated with the entitlement.
+     * @return projects - the projects associated with the entitlement.
      */
     public List<String> getProjects() {
         return projects;
@@ -214,8 +210,7 @@ public class VraNgCatalogEntitlement {
      * Sets the project of the entitlement. This correlates to the projects that it
      * has to be shared with.
      * 
-     * @param: String List<String> - projects to be set
-     * @return void
+     * @param projects projects to be set
      */
     public void setProjects(List<String> projects) {
         this.projects = projects;

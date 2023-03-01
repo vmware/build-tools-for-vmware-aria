@@ -43,7 +43,7 @@ public class VraNgPropertyGroup {
 	/**
 	 * Modifies the rawData by setting the projectId identifier
 	 *
-	 * @param projectId
+	 * @param projectId projectId
 	 */
 	public void setProjectIdInRawData(String projectId) {
 		this.modifyRawData("projectId", projectId);
