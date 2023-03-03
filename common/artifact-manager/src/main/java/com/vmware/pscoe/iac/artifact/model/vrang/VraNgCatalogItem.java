@@ -41,7 +41,7 @@ public class VraNgCatalogItem {
 	/**
 	 * Catalog Item id gets updated when we need to fetch the correct id from the server to do operations like
 	 * patching an iconID
-	 * @param	id
+	 * @param	id is
 	 */
 	public void setId( String id ) {
 		this.id	= id;

@@ -59,7 +59,7 @@ public class PackageManager {
 	/**
 	 * Take the package represented by the {@link Package} parameter (in the constructor and unpack it into a
 	 * directory structure.
-	 * The {@link Package@getFilesystemPath} method in the {@link Package} parameter should be pointing to an
+	 * The {@link Package#getFilesystemPath} method in the {@link Package} parameter should be pointing to an
 	 * actual package file on the file system. The only archive format of the package that is currently supported
 	 * is zip, so all package files are also zip archives.
 	 * @param outputLocation The directory where the package file will be expanded to a set of files and folders.
@@ -114,7 +114,7 @@ public class PackageManager {
 	/**
 	 * Get a list of all entries from the package file (specified as {@link Package} parameter in the constructor).
 	 * As currently the only archive format for packages is zip, this would interpret the package file returned by
-	 * {@link Package@getFilesystemPath} as zip archive and will list all of the entries in the that zip.
+	 * {@link Package#getFilesystemPath} as zip archive and will list all of the entries in the that zip.
 	 * Each entry will be represented by just the path to that entry based on the zip root.
 	 * @return A list of all of the entries packed in the package (provided in the constructor).
 	 * @throws IOException If there is an Input/Output error.
@@ -129,10 +129,10 @@ public class PackageManager {
 	}
 
 	/**
-	 * Utility method that recursively adds all files (and folders) in the given directory {@link dir} to the specified
+	 * Utility method that recursively adds all files (and folders) in the given directory to the specified
 	 * list.
 	 * @param dir The directory to traverse for files and folders including any level deep.
-	 * @param fileList Ouptut parameter where the result from the traversal would be stored.
+	 * @param fileList Output parameter where the result from the traversal would be stored.
 	 *                 Should be a non-null list, but may be an empty list.
 	 */
 	public void getAllFiles(File dir, List<File> fileList) {
@@ -150,7 +150,7 @@ public class PackageManager {
 	 *
 	 * @param directoryToZip
 	 * @param fileList
-	 * @throws IOException
+	 * @throws IOException exception
 	 */
 	private void writeZipFile(File directoryToZip, List<File> fileList) throws IOException {
 		File zipFile = new File(pkg.getFilesystemPath());
@@ -189,7 +189,7 @@ public class PackageManager {
 	 * Add a single file to existing ZIP
 	 * @param file the file to add
 	 * @param zipDirectory parent directory for the file
-	 * @throws IOException
+	 * @throws IOException exception
 	 */
 	public void addTextFileToExistingZip(File file, Path zipDirectory) throws IOException {
 		File zipFile = new File(pkg.getFilesystemPath());

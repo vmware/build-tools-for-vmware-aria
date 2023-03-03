@@ -194,9 +194,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Downloads the given icon.
 	 * The byte array returned by the response must be consumed and saved on the fs
 	 *
-	 * @param iconId
+	 * @param iconId iconId
 	 *
-	 * @return ResponseEntity<byte[]>
+	 * @return entities
 	 */
 	protected ResponseEntity<byte[]> downloadIconPrimitive(String iconId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_DOWNLOAD + "/" + iconId));
@@ -208,9 +208,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Uploads a File.
 	 * Service Broker has a limit of 100KB that is NOT enforced here.
 	 *
-	 * @param iconFile
+	 * @param iconFile iconFile
 	 *
-	 * @return ResponseEntity<String>
+	 * @return list of responses
 	 */
 	protected ResponseEntity<String> uploadIconPrimitive(File iconFile) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_UPLOAD));
@@ -230,10 +230,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * used for
 	 * patching limits, it could be extended in the future
 	 *
-	 * @param catalogItem
-	 * @param iconId
+	 * @param catalogItem catalogItem
+	 * @param iconId iconId
 	 *
-	 * @return ResponseEntity<String>
+	 * @return list of response entities
 	 */
 	protected ResponseEntity<String> patchCatalogItemIconPrimitive(VraNgCatalogItem catalogItem, String iconId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ITEM_ICON_UPDATE + "/" + catalogItem.getId()));
@@ -330,7 +330,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Returns the raw string content of a blueprint version details API call
 	 *
-	 * @param String blueprintId
+	 * @param blueprintId blueprintId
 	 * @return String
 	 */
 	public String getBlueprintVersionsContent(String blueprintId) {
@@ -383,9 +383,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Consuming the vRA REST API endpoint to create a blueprint version with the
 	 * provided details
 	 *
-	 * @param String blueprintId
-	 * @param Map    versionDetails
-	 * @throws URISyntaxException
+	 * @param blueprintId blueprintId
+	 * @param versionDetails    versionDetails
+	 * @throws URISyntaxException exception
 	 */
 	public void createBlueprintVersionPrimitive(String blueprintId, Map<String, Object> versionDetails)
 			throws URISyntaxException {
@@ -502,6 +502,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve all content sources available for the configured project.
 	 *
+	 * @param project project
 	 * @return list of VraNgContentSource objects.
 	 * @see VraNgContentSource
 	 */
@@ -537,6 +538,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve all catalog items available for the configured project.
 	 *
+	 * @param project project
 	 * @return list of VraNgCatalogItem objects.
 	 * @see VraNgCatalogItem
 	 */
@@ -976,8 +978,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param entitlement - the entitlement definition to be created.
 	 * @param project     - project id of where to share the entitlement definition.
-	 * @return void
-	 * @throws URISyntaxException, RuntimeException
+	 * @throws URISyntaxException exception, RuntimeException
 	 */
 	protected void createCatalogEntitlementPrimitive(VraNgCatalogEntitlement entitlement, String project)
 			throws URISyntaxException {
@@ -1119,7 +1120,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param id profile id
 	 * @return REST response payload
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getFlavorProfileById(String id) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + id)
@@ -1231,7 +1232,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param regionId          region id
 	 * @param flavorProfileName profile name
 	 * @param flavorMappings    list of flavor mappings
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected void createFlavorPrimitive(String regionId, String flavorProfileName,
 			List<VraNgFlavorMapping> flavorMappings) throws URISyntaxException {
@@ -1257,8 +1258,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param flavorProfileId profile id
 	 * @param flavorMappings  list of flavor mappings
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	protected void updateFlavorPrimitive(String flavorProfileId, List<VraNgFlavorMapping> flavorMappings)
 			throws URISyntaxException, UnexpectedException {
@@ -1293,9 +1294,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param flavorProfileId profile id
 	 * @param flavorMappings  list of flavor mappings
 	 * @return list of flavor mappings
-	 * @throws JsonSyntaxException
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws JsonSyntaxException exception
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	private List<VraNgFlavorMapping> getFlavorMappingsToImport(String flavorProfileId,
 			List<VraNgFlavorMapping> flavorMappings) throws JsonSyntaxException,
@@ -1340,7 +1341,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param id profile id
 	 * @return REST response payload
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getImageProfileById(String id) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + id)
@@ -1463,7 +1464,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param regionId         region id
 	 * @param imageProfileName profile name
 	 * @param imageMappings    list of image mappings
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected void createImageProfilePrimitive(String regionId, String imageProfileName,
 			List<VraNgImageMapping> imageMappings) throws URISyntaxException {
@@ -1489,8 +1490,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param imageProfileId profile id
 	 * @param imageMappings  list of image mappings
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	protected void updateImageProfilePrimitive(String imageProfileId, List<VraNgImageMapping> imageMappings)
 			throws URISyntaxException, UnexpectedException {
@@ -1523,9 +1524,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param imageProfileId profile id
 	 * @param imageMappings  list of image mappings
 	 * @return list of image mappings
-	 * @throws JsonSyntaxException
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws JsonSyntaxException exception
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	private List<VraNgImageMapping> getImageMappingsToImport(String imageProfileId,
 			List<VraNgImageMapping> imageMappings)
@@ -1620,7 +1621,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param profileId profile id
 	 * @param profile   storage profile
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected void updateStorageProfilePrimitive(String profileId, VraNgStorageProfile profile)
 			throws URISyntaxException {
@@ -1632,7 +1633,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Create a new storage profile returning its id
 	 *
 	 * @param profile storage profile
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception exception
+	 * @return profile
+	 *
 	 */
 	protected String createStorageProfilePrimitive(VraNgStorageProfile profile) throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
@@ -1666,9 +1669,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Alias to getAllPropertyGroupsPrimitive( String nameFilter ) without any
-	 * filter specifid
+	 * filter specified
 	 *
-	 * @return List<VraNgPropertyGroup>
+	 * @return list of property groups
 	 */
 	protected List<VraNgPropertyGroup> getAllPropertyGroupsPrimitive() {
 		return this.getAllPropertyGroupsPrimitive(null);
@@ -1688,7 +1691,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * returned with surrounded '"',
 	 * so it is trimmed
 	 *
-	 * @return List<VraNgPropertyGroup>
+	 * @return list of property groups
+	 * @param nameFilter filter
 	 */
 	protected List<VraNgPropertyGroup> getAllPropertyGroupsPrimitive(String nameFilter) {
 		boolean hasMore = true;
@@ -1754,6 +1758,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param patchTarget patch target
 	 * @param profileId   profile id
 	 * @param profile     storage profile
+	 * @throws URISyntaxException exception
 	 */
 	protected void updateSpecificProfilePrimitive(String patchTarget, String profileId, VraNgStorageProfile profile)
 			throws URISyntaxException {
@@ -1765,8 +1770,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retrieve fabric entity name. This method calls a requested URL
 	 * and returns the name property of the response.
 	 *
-	 * @param fabricUrl
-	 * @return
+	 * @param fabricUrl url
+	 * @return fabric entity name
 	 */
 	protected String getFabricEntityNamePrimitive(String fabricUrl) {
 		URI url = getURI(getURIBuilder().setPath(fabricUrl));
@@ -1991,7 +1996,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param customResourceJson String containing the raw json content of the custom resource
 	 *
-	 * @throws URISyntaxException in case of incorrect URI
+	 * @throws URISyntaxException exception in case of incorrect URI
 	 */
 	protected void importCustomResourcePrimitive(String customResourceJson) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_CUSTOM_RESOURCES).build();
