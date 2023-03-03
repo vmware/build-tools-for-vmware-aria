@@ -49,7 +49,6 @@ public class VraNgContentSharingPolicy {
 	 * Set the name of the content sharing policy.
 	 * 
 	 * @param name - name of the content sharing policy
-	 * @return void
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -68,7 +67,6 @@ public class VraNgContentSharingPolicy {
 	 * Set the typeId of the content sharing policy.
 	 * 
 	 * @param typeId - typeId of the content sharing policy
-	 * @return void
 	 */
 	public void setTypeId(String typeId) {
 		this.typeId = typeId;
@@ -87,7 +85,6 @@ public class VraNgContentSharingPolicy {
 	 * Set the enforcementType of the content sharing policy.
 	 * 
 	 * @param enforcementType - enforcementType of the content sharing policy
-	 * @return void
 	 */
 	public void setEnforcementType(String enforcementType) {
 		this.enforcementType = enforcementType;
@@ -106,7 +103,6 @@ public class VraNgContentSharingPolicy {
 	 * Set the description of the content sharing policy.
 	 * 
 	 * @param description - description of the content sharing policy
-	 * @return void
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -125,7 +121,6 @@ public class VraNgContentSharingPolicy {
 	 * Set the definition of the content sharing policy.
 	 * 
 	 * @param definition - definition of the content sharing policy
-	 * @return void
 	 */
 	public void setDefinition(VraNgDefinition definition) {
 		this.definition = definition;

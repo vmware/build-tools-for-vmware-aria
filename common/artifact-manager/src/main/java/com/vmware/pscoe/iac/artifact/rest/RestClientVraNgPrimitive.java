@@ -2360,7 +2360,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @return list of sharing policy Ids that are available.
 	 * 
-	 * @see VraNgContentSharingPolicy
 	 */
 	protected List<String> getAllContentSharingPolicyIdsPrimitive() {
 		List<String> policyIds = new ArrayList<>();
@@ -2380,9 +2379,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve content sharing policy Id based on name.
 	 *
+	 * @param name name of the policy
 	 * @return content sharing policy Id.
 	 * 
-	 * @see VraNgContentSharingPolicy
 	 */
 	protected String getContentSharingPolicyIdByName(String name) {
 		String policyId= "";
