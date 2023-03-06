@@ -122,22 +122,22 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
     @Override
     public List<Package> getPackages() {
-        throw new RuntimeException("VRLI does not support packages");
+        throw new UnsupportedOperationException("Getting packages is not supported");
     }
 
     @Override
     protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
-        throw new RuntimeException("Deleting packages is not supported");
+        throw new UnsupportedOperationException("Deleting packages is not supported");
     }
 
     @Override
     protected PackageContent getPackageContent(Package pkg) {
-        throw new RuntimeException("Parsing package content is not supported");
+        throw new UnsupportedOperationException("Parsing package content is not supported");
     }
 
     @Override
     protected void deleteContent(Content content, boolean dryrun) {
-        throw new RuntimeException("Delete content is not supported");
+        throw new UnsupportedOperationException("Delete content is not supported");
     }
 
     private void exportFiles(Package sshPackage, List<String> files) {
