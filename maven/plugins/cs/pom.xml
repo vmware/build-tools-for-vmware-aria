@@ -3,7 +3,7 @@
     <parent>
         <artifactId>base-maven-plugin</artifactId>
         <groupId>com.vmware.pscoe.maven.plugins</groupId>
-        <version>2.29.3-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -19,12 +19,12 @@
         <dependency>
             <groupId>com.vmware.pscoe.iac</groupId>
             <artifactId>artifact-manager</artifactId>
-            <version>2.29.3-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.vmware.pscoe.maven.plugins</groupId>
             <artifactId>common</artifactId>
-            <version>2.29.3-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 </project>

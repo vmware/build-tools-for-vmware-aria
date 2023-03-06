@@ -3,21 +3,13 @@
     <parent>
         <artifactId>base-maven-plugin</artifactId>
         <groupId>com.vmware.pscoe.maven.plugins</groupId>
-        <version>2.29.3-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ssh-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 
     <properties>
         <goal.prefix>ssh</goal.prefix>
@@ -28,12 +20,12 @@
         <dependency>
             <groupId>com.vmware.pscoe.iac</groupId>
             <artifactId>artifact-manager</artifactId>
-            <version>2.29.3-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.vmware.pscoe.maven.plugins</groupId>
             <artifactId>common</artifactId>
-            <version>2.29.3-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 </project>

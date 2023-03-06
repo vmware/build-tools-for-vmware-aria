@@ -1,21 +1,22 @@
-name: Build Project
+name: "CodeQL Java"
 
 on:
   push:
-    branches:
-      - '**' # trigger the workflow on any branch push event
-    paths:
-      - '**' # trigger the workflow on any file change
+  pull_request:
+    branches: ["main"]
 
 jobs:
-  build:
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Use Node.js 14.17.1
         uses: actions/setup-node@v3
@@ -24,18 +25,11 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
-          distribution: 'corretto'
-          java-version: '8'
-          
+          distribution: "corretto"
+          java-version: "8"
+
       - name: Install npm 6.14.13
         run: sudo npm install -g npm@6.14.13
-          
-      - name: Print npm version
-        run: npm --version
-      - name: Print node version
-        run: node --version
-      - name: Print mvn version
-        run: mvn --version
 
       - name: Get version
         id: get-version
@@ -60,26 +54,26 @@ jobs:
           <activeProfiles>\
             <activeProfile>packaging</activeProfile>\
           </activeProfiles>\
-          ' ~/.m2/settings.xml 
+          ' ~/.m2/settings.xml
 
-      - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@v5
+        # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
         with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          
+          languages: java
+
       - name: Build 'keystore-example'
-        run: mvn -T 1C clean install -f common/keystore-example/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f common/keystore-example/pom.xml -DskipTests
       - name: Build 'npmlib'
-        run: mvn -T 1C clean install -f maven/npmlib/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f maven/npmlib/pom.xml -DskipTests
       - name: Build 'iac'
-        run: mvn -T 1C clean install -f pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f pom.xml -DskipTests
       - name: Build 'base-package'
-        run: mvn -T 1C clean install -f maven/base-package/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f maven/base-package/pom.xml -DskipTests
       - name: Build 'packages'
-        run: mvn -T 1C clean install -f packages/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -T 1C clean install -f packages/pom.xml -DskipTests
       - name: Build 'typescript-project-all'
-        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
-      - name: Build 'repository'
-        run: mvn -T 1C clean install -f maven/repository/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
-      
+        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -DskipTests
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2

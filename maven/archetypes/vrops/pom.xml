@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.vmware.pscoe.archetypes</groupId>
         <artifactId>base-archetype</artifactId>
-        <version>2.29.3-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <groupId>com.vmware.pscoe.vrops.archetypes</groupId>
     <artifactId>package-vrops-archetype</artifactId>

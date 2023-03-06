@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>iac</artifactId>
 		<groupId>com.vmware.pscoe</groupId>
-		<version>2.29.3-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -28,14 +28,6 @@
 	<groupId>com.vmware.pscoe.maven.plugins</groupId>
 	<artifactId>base-maven-plugin</artifactId>
 	<packaging>pom</packaging>
-
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
