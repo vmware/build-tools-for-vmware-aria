@@ -149,10 +149,11 @@ public class RestClientVrops extends RestClient {
      * Import policies from a zip file
      * 
      * @param file             policy zip file as byte[]
-     * @param customGroupNames List of strings that represent the custom groups
+     * @param policyName List of strings that represent the custom groups
      *                         policy will be assigned to.
-     * @param forceImport      true to overwrite the existing policies, false to
+     * @param force      true to overwrite the existing policies, false to
      *                         skip importing when there is a conflict
+	 * @throws Exception exception
      */
     public void importPolicyFromZip(String policyName, File file, Boolean force) throws Exception {
         URI uri;
@@ -182,7 +183,7 @@ public class RestClientVrops extends RestClient {
     /**
      * Export a zip file per policies, filtered by name
      * 
-     * @param policyNames Names of the policies to be exported
+     * @param policyEntries Names of the policies to be exported
      * @return a list of policies containing a zip file as byte[], name and id of
      *         the policy
      */
@@ -354,6 +355,8 @@ public class RestClientVrops extends RestClient {
      * @param definitionType - the VropsPackageMemberType type of the definition
      *                       (currently ALERT_DEFINITION, SYMPTOM_DEFINITION and
      *                       RECOMMENDATION are supported only).
+	 * @param definitions - definitions
+	 * @param dependentDefinitionsMap - dependentDefinitionsMap
      */
     public void importDefinitionsInVrops(Map<String, Object> definitions, VropsPackageMemberType definitionType, Map<String, Object> dependentDefinitionsMap) {
         if (definitions.isEmpty()) {
@@ -375,6 +378,7 @@ public class RestClientVrops extends RestClient {
      * 
      * @param customGroupName    - the custom group name.
      * @param customGroupPayload - the payload of the custom group as json.
+	 * @param policyIdMap - the policy mappings.
      */
     public void importCustomGroupInVrops(String customGroupName, String customGroupPayload, Map<String, String> policyIdMap) {
         if (StringUtils.isEmpty(customGroupPayload)) {

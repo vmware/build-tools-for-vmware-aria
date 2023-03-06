@@ -73,6 +73,7 @@ public abstract class AbstractVraNgRegionalStore {
 	 * When nothing (null) is given, all items from the store within the given region are exported
 	 * 
 	 * In Sub-classes the abstract methods getItemListFromDescriptor, exportStoreContent should be overwritten
+	 * @param cloudAccounts list of cloud accounts
 	 */
 	public void exportContent( List<VraNgCloudAccount> cloudAccounts ) {
 		List<String> itemNames	= this.getItemListFromDescriptor();
@@ -97,17 +98,20 @@ public abstract class AbstractVraNgRegionalStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return List<String>
+	 * @return list of items
 	 */
 	protected abstract List<String> getItemListFromDescriptor();
 
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * @param cloudAccounts list of cloud accounts
 	 */
 	protected abstract void exportStoreContent( List<VraNgCloudAccount> cloudAccounts );
 
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * @param cloudAccounts list of cloud accounts
+	 * @param itemNames list of names
 	 */
 	protected abstract void exportStoreContent( List<VraNgCloudAccount> cloudAccounts, List<String> itemNames );
 }
