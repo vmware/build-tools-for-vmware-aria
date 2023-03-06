@@ -34,6 +34,7 @@
 		"@types/fs-extra": "9.0.13",
 		"@types/gulp": "4.0.9",
 		"@types/jasmine": "3.10.3",
+		"@types/jszip": "3.4.1",
 		"@types/minimist": "1.2.2",
 		"@types/rollup": "0.54.0",
 		"ansi-colors": "4.1.1",

@@ -45,3 +45,5 @@ typescript/vrotsc/e2e/cases/__out/
 typescript/vrotsc-annotations/package-lock.json
 /.metadata/
 .vscode/
+
+.flattened-pom.xml

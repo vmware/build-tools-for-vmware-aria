@@ -2,26 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+		<artifactId>iac</artifactId>
+		<groupId>com.vmware.pscoe</groupId>
+		<version>${revision}</version>
+	</parent>
+
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>packages</artifactId>
-    <version>2.29.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>ecmascript</module>
-        <module>exec</module>
         <module>polyglot-wrapper</module>
     </modules>
 
-	<licenses>
-		<license>
-			<name>BSD-2 License</name>
-			<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main/licenses/bsd2_license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
     <properties>
+        <main.basedir>${project.parent.basedir}</main.basedir>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
     <build>
@@ -37,18 +35,6 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>artifactory-c-01a-releases</name>
-            <url>${releaseRepositoryUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-c-01a-snapshots</name>
-            <url>${snapshotRepositoryUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
     <scm>
         <developerConnection>scm:git:ssh://git@github.com:vmware/build-tools-for-vmware-aria.git</developerConnection>
         <tag>HEAD</tag>
