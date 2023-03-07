@@ -1,9 +1,0 @@
-<dunes-policy name="SNMP Trap" type="0" api-version="6.0.0" id="2E808080808080808080808080808080B980808001297259131125b940b51f82d" version="1.0.0" allowed-operations="vef"><item tag="device" type="0" sdkType="SNMP:SnmpDevice"><event type="OnTrap" kind="trigger" active="false"><script encoded="false"><![CDATA[System.log("SNMP Trap Received");
-System.log("Agent: " + event.getValue("agent"));
-var key = event.getValue("key");
-var snmpResult = SnmpService.retrievePolicyData(key);
-// Get data as Array of Properties
-var data = System.getModule("com.vmware.library.snmp").processSnmpResult(snmpResult);
-System.log("Enterprise: " + snmpResult.enterprise);
-// Log data
-System.getModule("com.vmware.library.snmp").logResult(data);]]></script></event></item></dunes-policy>

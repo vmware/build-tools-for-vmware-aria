@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<config-element id="3aedecf0-d1a9-36aa-8442-99acca50abb3" version="1.0.0">
-    <display-name><![CDATA[TestConfig]]></display-name>
-    <atts>
-        <att name="field1" type="string" read-only="false"/>
-        <att name="field2" type="number" read-only="false"/>
-        <att name="field3" type="Any" read-only="false"/>
-    </atts>
-</config-element>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<comment>Exported from PSCoE o11n-convert</comment>
-<entry key="categoryPath">org.test.advanced</entry>
-<entry key="name">echo</entry>
-<entry key="type">ScriptModule</entry>
-<entry key="id">0fef108e-eb57-4312-960e-1981744b7ae1</entry>
-</properties>

@@ -1,7 +1,0 @@
-Usage: vrotest run [testbed path] [options]
-
-Options:
-  --instrument                        Instrument code and generate code coverage reports.
-
-Examples:
-$ vrotest run target/vro-test --instrument

@@ -1,7 +1,0 @@
-<dunes-policy name="Subscription" type="0" api-version="6.0.0" id="94818080808080808080808080808080DD808080012995053491651398b094fa1" version="1.0.0" allowed-operations="vef"><description><![CDATA[AMQP message subscription policy template]]></description><item tag="subscription" type="0" sdkType="AMQP:Subscription"><event type="OnMessage" kind="trigger" active="false"><script encoded="false"><![CDATA[//use only the message body
-
-var msg = self.retrieveMessage(event);
-// use AMQPMessage here
-System.log(msg.bodyAsText);
-
-//process message here]]></script></event></item></dunes-policy>

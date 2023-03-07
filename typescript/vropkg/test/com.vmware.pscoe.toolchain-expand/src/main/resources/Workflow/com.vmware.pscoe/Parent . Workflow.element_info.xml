@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-  <comment>Exported from PSCoE o11n-convert</comment>
-  <entry key="categoryPath">com/.vmware/.pscoe</entry>
-  <entry key="name">Parent . Workflow</entry>
-  <entry key="type">Workflow</entry>
-  <entry key="id">4d6e3bb9-2b9c-46f5-a0b3-0466c4e203e7</entry>
-</properties>

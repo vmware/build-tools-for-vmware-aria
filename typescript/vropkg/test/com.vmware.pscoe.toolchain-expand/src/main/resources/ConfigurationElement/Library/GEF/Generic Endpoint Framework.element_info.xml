@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-  <comment>Exported from PSCoE o11n-convert</comment>
-  <entry key="categoryPath">Library.GEF</entry>
-  <entry key="name">Generic Endpoint Framework</entry>
-  <entry key="type">ConfigurationElement</entry>
-  <entry key="id">b36d5d3a-f591-4fe5-bd6a-c3e010bfc5f6</entry>
-</properties>

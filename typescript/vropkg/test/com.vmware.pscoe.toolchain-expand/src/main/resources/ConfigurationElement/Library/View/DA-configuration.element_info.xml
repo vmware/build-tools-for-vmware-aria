@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-  <comment>Exported from PSCoE o11n-convert</comment>
-  <entry key="categoryPath">Library.View</entry>
-  <entry key="name">DA-configuration</entry>
-  <entry key="type">ConfigurationElement</entry>
-  <entry key="id">40396c39-cb02-4669-b6f2-e88a291d771d</entry>
-</properties>
