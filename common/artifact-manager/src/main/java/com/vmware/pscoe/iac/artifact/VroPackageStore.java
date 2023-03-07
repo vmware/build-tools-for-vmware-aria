@@ -160,7 +160,7 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 
     @Override
     public Package exportPackage(Package vroPackage, File vroPackageDescriptor, boolean dryrun) {
-        throw new RuntimeException("Not supported operation in vRO");
+        throw new UnsupportedOperationException("Not supported operation in vRO");
     }
 
     @Override

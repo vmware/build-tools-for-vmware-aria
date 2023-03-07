@@ -18,6 +18,7 @@ package com.vmware.pscoe.maven.plugins;
 import java.io.File;
 import java.util.Optional;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -57,16 +58,18 @@ public class CleanMojo extends AbstractIacMojo {
             getLog().info("Package: " + artifactFile);
             getLog().info("Package type: " + pkgType.toString());
             com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(pkgType, new File(artifactFile));
-            try {
-                PackageStore store = getConfigurationForType(PackageType.fromExtension(a.getType()))
-                        .flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
-                        .orElseThrow(() -> new ConfigurationException("Unable to find PackageStore based on configuration. "
-                                + "Make sure there is configuration for type: " + pkgType.name()));
-                store.deletePackage(pkg, cleanUpLastVersion, cleanUpOldVersions, dryrun);
-            } catch (ConfigurationException e) {
-                getLog().error(e);
-                throw new MojoExecutionException(e, "Error processing configuration", "Error processing configuration");
-            }
+			try {
+				PackageStore store = getConfigurationForType(PackageType.fromExtension(a.getType()))
+					.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
+					.orElseThrow(() -> new ConfigurationException("Unable to find PackageStore based on configuration. "
+						+ "Make sure there is configuration for type: " + pkgType.name()));
+				store.deletePackage(pkg, cleanUpLastVersion, cleanUpOldVersions, dryrun);
+			} catch (UnsupportedOperationException e) { // This also catches NotImplementedException since it's a child
+				getLog().warn(String.format("Tried to clean up package of type %s, but that type does not support deletion", pkgType), e);
+			} catch (ConfigurationException e) {
+				getLog().error(e);
+				throw new MojoExecutionException(e, "Error processing configuration", "Error processing configuration");
+			}
         }
     }
 
