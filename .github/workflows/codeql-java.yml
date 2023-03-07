@@ -2,8 +2,8 @@ name: "CodeQL Java"
 
 on:
   push:
-  pull_request:
-    branches: ["main"]
+  # pull_request:
+  #   branches: ["main"]
 
 jobs:
   analyze:
@@ -63,17 +63,17 @@ jobs:
           languages: java
 
       - name: Build 'keystore-example'
-        run: mvn -T 1C clean install -f common/keystore-example/pom.xml -DskipTests
+        run: mvn -T 1C clean install -f common/keystore-example/pom.xml
       - name: Build 'npmlib'
-        run: mvn -T 1C clean install -f maven/npmlib/pom.xml -DskipTests
+        run: mvn -T 1C clean install -f maven/npmlib/pom.xml
       - name: Build 'iac'
-        run: mvn -T 1C clean install -f pom.xml -DskipTests
+        run: mvn -T 1C clean install -f pom.xml
       - name: Build 'base-package'
-        run: mvn -T 1C clean install -f maven/base-package/pom.xml -DskipTests
+        run: mvn -T 1C clean install -f maven/base-package/pom.xml
       - name: Build 'packages'
-        run: mvn -T 1C clean install -f packages/pom.xml -DskipTests
+        run: mvn -T 1C clean install -f packages/pom.xml
       - name: Build 'typescript-project-all'
-        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -DskipTests
+        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
