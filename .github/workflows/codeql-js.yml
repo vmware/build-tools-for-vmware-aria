@@ -24,5 +24,6 @@ jobs:
         with:
           languages: javascript
 
+      # Perform the CodeQL Analysis.
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
