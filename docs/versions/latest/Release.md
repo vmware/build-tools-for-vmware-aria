@@ -39,7 +39,17 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Ability to deploy base package to artifactory*
+It's expected that you can deploy all Build Tools for VMware Aria projects to artifactory and to local maven repository
 
+#### Previous Behavior
+When you trigger `mvn clean package install deploy` against base package, the build will fail
+
+#### New Behavior
+When you trigger `mvn clean package install deploy` against base package, the build will succeed and will deploy the package to artifactory server and to local maven repository.
+
+#### Relevant Documentation:
+None
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
