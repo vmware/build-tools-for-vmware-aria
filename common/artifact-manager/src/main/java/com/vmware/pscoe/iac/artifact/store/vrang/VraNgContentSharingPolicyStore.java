@@ -197,13 +197,15 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			JsonObject csPolicyJsonObject = gson.fromJson(new Gson().toJson(contentSharingPolicy), JsonObject.class);
 			JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
-			JsonArray euArr=  definition.getAsJsonArray("entitledUsers");
-			for (JsonElement eu : euArr) {
-				JsonObject entitledUserObj = eu.getAsJsonObject();
-				JsonArray itemsArr     = entitledUserObj.getAsJsonArray("items");
-				for (JsonElement item : itemsArr) {
-					JsonObject itemObj = item.getAsJsonObject();
-					itemObj.remove("id");
+			JsonArray euArr = definition.getAsJsonArray("entitledUsers");
+			if (euArr != null) {
+				for (JsonElement eu : euArr) {
+					JsonObject entitledUserObj = eu.getAsJsonObject();
+					JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
+					for (JsonElement item : itemsArr) {
+						JsonObject itemObj = item.getAsJsonObject();
+						itemObj.remove("id");
+					}
 				}
 			}
 			definition.add("entitledUsers", euArr);
@@ -216,7 +218,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 			logger.error("Unable to create content sharing {}", contentSharingPolicyFile.getAbsolutePath());
 			throw new RuntimeException(
 					String.format(
-							"Unable to store custom form to file %s.", contentSharingPolicyFile.getAbsolutePath()),e);
+							"Unable to store content sharing to file %s.", contentSharingPolicyFile.getAbsolutePath()),e);
 		}
 
 	}

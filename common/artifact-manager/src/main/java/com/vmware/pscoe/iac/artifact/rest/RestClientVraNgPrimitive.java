@@ -2415,13 +2415,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String typeId = result.get("typeId").getAsString();
 		String enforcementType = result.get("enforcementType").getAsString();
 		VraNgDefinition definition =  new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class);
-		definition.entitledUsers.forEach(user -> {
-				user.items.forEach(item -> {
-				VraNgContentSourceBase contentSource=  this.getContentSourcePrimitive(item.id); 
-				item.name= contentSource.getName();
-				}
-			);
-		});
+		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
+			VraNgContentSourceBase contentSource = this.getContentSourcePrimitive(item.id);
+			item.name = (contentSource != null) ? contentSource.getName() : "";
+		}));
 		csPolicy.setDefinition(definition);
 		csPolicy.setName(name);
 		csPolicy.setEnforcementType(enforcementType);
@@ -2464,12 +2461,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonArray itemsArr     = entitledUserObj.getAsJsonArray("items");
 			for (JsonElement item : itemsArr) {
 				JsonObject itemObj = item.getAsJsonObject();
-				String contentSourceName= itemObj.get("name").getAsString();
-				List<VraNgContentSourceBase> contentSources=  this.getContentSources();
-				VraNgContentSourceBase contentSource = contentSources.stream().filter(cs -> cs.getName().equals(contentSourceName))
-				.findFirst()
-				.orElse(null);
-				itemObj.addProperty("id", contentSource != null ? contentSource.getId() : "");
+				String contentSourceName = itemObj.get("name").getAsString();
+				List<VraNgContentSourceBase> contentSources = this.getContentSources();
+				VraNgContentSourceBase contentSource = contentSources.stream()
+						.filter(cs -> cs.getName().equals(contentSourceName))
+						.findFirst()
+						.orElse(null);
+				if (contentSource == null) {
+					throw new RuntimeException(
+							String.format("Content Source with name  '%s' could not be found on target system",
+									contentSourceName));
+				}
+				itemObj.addProperty("id", contentSource.getId());
 				itemObj.remove("name");
 			}
 		}
