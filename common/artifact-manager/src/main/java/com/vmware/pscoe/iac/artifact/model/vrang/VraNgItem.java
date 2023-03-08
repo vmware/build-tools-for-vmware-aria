@@ -17,14 +17,16 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 public class VraNgItem {
 	public String id;
+	public String name;
 	public String type;
 
 	public VraNgItem() {
 
 	}
 
-	public VraNgItem(String id, String type) {
+	public VraNgItem(String id,String name, String type) {
 		this.id = id;
+		this.name = name;
 		this.type = type;
 	}
 }

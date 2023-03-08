@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
@@ -192,10 +195,23 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			JsonObject csPolicyJsonObject = gson.fromJson(new Gson().toJson(contentSharingPolicy), JsonObject.class);
+			JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
+			JsonArray euArr=  definition.getAsJsonArray("entitledUsers");
+			for (JsonElement eu : euArr) {
+				JsonObject entitledUserObj = eu.getAsJsonObject();
+				JsonArray itemsArr     = entitledUserObj.getAsJsonArray("items");
+				for (JsonElement item : itemsArr) {
+					JsonObject itemObj = item.getAsJsonObject();
+					itemObj.remove("id");
+				}
+			}
+			definition.add("entitledUsers", euArr);
+			csPolicyJsonObject.add("definition", definition);
 			// write content sharing file
 			logger.info("Created content sharing file {}",
 					Files.write(Paths.get(contentSharingPolicyFile.getPath()),
-							gson.toJson(contentSharingPolicy).getBytes(), StandardOpenOption.CREATE));
+							gson.toJson(csPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to create content sharing {}", contentSharingPolicyFile.getAbsolutePath());
 			throw new RuntimeException(

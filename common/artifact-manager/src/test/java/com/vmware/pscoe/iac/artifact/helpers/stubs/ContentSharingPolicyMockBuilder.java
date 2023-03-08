@@ -26,7 +26,7 @@ public class ContentSharingPolicyMockBuilder {
 	public static VraNgContentSharingPolicy buildContentSharingPolicy() {
 		VraNgContentSharingPolicy result = new VraNgContentSharingPolicy();
 		ArrayList<VraNgItem> items= new ArrayList<>();
-		items.add(new VraNgItem("d0624893-4932-46a7-8e25-fab1e4109c2e", "CATALOG_SOURCE_IDENTIFIER"));
+		items.add(new VraNgItem("d0624893-4932-46a7-8e25-fab1e4109c2e","cs", "CATALOG_SOURCE_IDENTIFIER"));
 		ArrayList<VraNgPrincipal> principals= new ArrayList<>();
 		principals.add(new VraNgPrincipal("PROJECT", ""));
 		ArrayList<VraNgEntitledUser> entitledUsers= new ArrayList<>();

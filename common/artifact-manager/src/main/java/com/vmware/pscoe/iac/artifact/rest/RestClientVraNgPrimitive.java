@@ -2414,7 +2414,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String description= result.has("description") ? result.get("description").getAsString(): "";
 		String typeId = result.get("typeId").getAsString();
 		String enforcementType = result.get("enforcementType").getAsString();
-		csPolicy.setDefinition(new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class));
+		VraNgDefinition definition =  new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class);
+		definition.entitledUsers.forEach(user -> {
+				user.items.forEach(item -> {
+				VraNgContentSourceBase contentSource=  this.getContentSourcePrimitive(item.id); 
+				item.name= contentSource.getName();
+				}
+			);
+		});
+		csPolicy.setDefinition(definition);
 		csPolicy.setName(name);
 		csPolicy.setEnforcementType(enforcementType);
 		csPolicy.setDescription(description);
@@ -2429,6 +2437,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
 		jsonObject.addProperty("orgId", organizationId);
 		jsonObject.addProperty("projectId", getProjectId());
+		handleItemsProperty(jsonObject);
+		logger.info("Create csPolicyJsonObject Final: {}", jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 
@@ -2440,6 +2450,30 @@ public class RestClientVraNgPrimitive extends RestClient {
 		jsonObject.addProperty("id", getContentSharingPolicyIdByName(csPolicy.getName()));
 		jsonObject.addProperty("orgId", organizationId);
 		jsonObject.addProperty("projectId", getProjectId());
+		handleItemsProperty(jsonObject);
+		logger.info("Update csPolicyJsonObject Final: {}", jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	public void handleItemsProperty(JsonObject csPolicyJsonObject)
+	{
+		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
+		JsonArray euArr=  definition.getAsJsonArray("entitledUsers");
+		for (JsonElement eu : euArr) {
+			JsonObject entitledUserObj = eu.getAsJsonObject();
+			JsonArray itemsArr     = entitledUserObj.getAsJsonArray("items");
+			for (JsonElement item : itemsArr) {
+				JsonObject itemObj = item.getAsJsonObject();
+				String contentSourceName= itemObj.get("name").getAsString();
+				List<VraNgContentSourceBase> contentSources=  this.getContentSources();
+				VraNgContentSourceBase contentSource = contentSources.stream().filter(cs -> cs.getName().equals(contentSourceName))
+				.findFirst()
+				.orElse(null);
+				itemObj.addProperty("id", contentSource != null ? contentSource.getId() : "");
+				itemObj.remove("name");
+			}
+		}
+		definition.add("entitledUsers", euArr);
+		csPolicyJsonObject.add("definition", definition);
 	}
 }
