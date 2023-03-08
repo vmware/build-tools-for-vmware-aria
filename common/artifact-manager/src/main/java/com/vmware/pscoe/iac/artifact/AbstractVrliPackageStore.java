@@ -143,22 +143,22 @@ public abstract class AbstractVrliPackageStore extends GenericPackageStore<VrliP
 
 	@Override
 	public List<Package> getPackages() {
-		throw new RuntimeException("VRLI does not support packages");
+		throw new UnsupportedOperationException("getPackages: vRLI does not provide native package support.");
 	}
 
 	@Override
 	protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
-		throw new RuntimeException("Deleting packages is not supported");
+		throw new UnsupportedOperationException("deletePackage: vRLI does not provide native package support.");
 	}
 
 	@Override
 	protected PackageContent getPackageContent(Package pkg) {
-		throw new RuntimeException("Parsing package content is not supported");
+		throw new UnsupportedOperationException("getPackageContent: vRLI does not provide native package support.");
 	}
 
 	@Override
 	protected void deleteContent(PackageContent.Content content, boolean dryrun) {
-		throw new RuntimeException("Delete content is not supported");
+		throw new UnsupportedOperationException("deleteContent: vRLI does not provide native package support.");
 	}
 
 	protected File exportContentPack(Package vrliPakage, String contentPackName, String contentPackData) {

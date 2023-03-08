@@ -53,24 +53,22 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 
     @Override
     protected AbxPackageContent getPackageContent(Package pkg) {
-        throw new UnsupportedOperationException(
-                "Cloud Automation Services does not provide native support for packages.");
-    }
+		throw new NotImplementedException("Not implemented");
+	}
 
     @Override
     public List<Package> getPackages() {
-        throw new UnsupportedOperationException(
-                "Cloud Automation Services does not provide native support for packages.");
-    }
+		throw new NotImplementedException("Not implemented");
+	}
 
     @Override
     protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
-        throw new NotImplementedException("Delete package is not implemented.");
+        throw new NotImplementedException("Not implemented");
     }
 
     @Override
     protected void deleteContent(Content content, boolean dryrun) {
-        throw new NotImplementedException("Delete content is not implemented.");
+        throw new NotImplementedException("Not implemented");
     }
 
 	@Override

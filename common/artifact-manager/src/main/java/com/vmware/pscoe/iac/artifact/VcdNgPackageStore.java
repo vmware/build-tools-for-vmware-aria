@@ -71,7 +71,7 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 	@Override
 	public List<Package> importAllPackages(List<Package> pkgs, boolean dryrun, boolean mergePackages) {
 		if(dryrun) {
-			throw new RuntimeException("dryrun option not supported");
+			throw new UnsupportedOperationException("dryrun option not supported");
 		}
 
 		List<Package> sourceEndpointPackages = pkgs;
@@ -94,17 +94,17 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	@Override
 	public Package exportPackage(Package pkg, boolean dryrun) {
-		throw new RuntimeException("Package export is not supported");
+		throw new UnsupportedOperationException("Package export is not supported");
 	}
 
 	@Override
 	public Package exportPackage(Package pkg, File exportDescriptor, boolean dryrun) {
-		throw new RuntimeException("Package export is not supported");
+		throw new UnsupportedOperationException("Package export is not supported");
 	}
 
 	@Override
 	public Package exportPackage(Package pkg, VcdPackageDescriptor vraPackageDescriptor, boolean dryrun) {
-		throw new RuntimeException("Package export is not supported");
+		throw new UnsupportedOperationException("Package export is not supported");
 	}
 
 	@Override
@@ -130,12 +130,12 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	@Override
 	protected PackageContent getPackageContent(Package pkg) {
-		throw new RuntimeException("Parsing package content is not supported");
+		throw new UnsupportedOperationException("Parsing package content is not supported");
 	}
 
 	@Override
 	protected void deleteContent(Content content, boolean dryrun) {
-		throw new RuntimeException("Parsing package content is not supported");
+		throw new UnsupportedOperationException("Parsing package content is not supported");
 	}
 
 
