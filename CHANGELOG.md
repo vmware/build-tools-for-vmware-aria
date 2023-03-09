@@ -1,4 +1,7 @@
+
 ### Enhancements
+* [polyglot] IAC-604 / vRBT to support downloading powershell modules through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13' .
+* [polyglot] IAC-604 / Using Import-Module must always be in the format of Import-Module <module name> without -Name and ; at the end of the line to avoid confusion .
 * [base-package] IAC-746 / Make base packages (ssh project) deployable to artifactory server and local maven repository
 * [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
 * [core] IAC-719 / Prepare for maven central. Add needed plugins: maven-javadoc-plugin, maven-gpg-plugin, and maven-source-plugin

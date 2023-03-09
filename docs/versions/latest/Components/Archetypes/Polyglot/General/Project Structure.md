@@ -13,6 +13,7 @@ The polyglot archetype supports multiple actions in the src folder. Each has it'
 ### General
 - `polyglot.json` - marks a folder as a polyglot package. Contains information about the package.
     - If the `platform.action` is set to `auto` the name of the folder will be used as the package name.
+    - If the `platform.protocolType` is set to one of possible values `'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13'` all external modules(Added through Import-Module in the code) will be downloaded using the selected encryption protcol, otherwise the system default is used.
 
 ### Templates
 There are three templates:
