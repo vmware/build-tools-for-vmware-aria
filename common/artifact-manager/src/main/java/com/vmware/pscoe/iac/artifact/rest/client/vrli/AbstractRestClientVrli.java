@@ -42,7 +42,7 @@ public abstract class AbstractRestClientVrli extends RestClient {
 	protected static final String CONTENT_PACKS_API = "/content/contentpack";
 	protected static final String CONTENT_PACKS_LIST_API = "/content/contentpack/list";
 	protected static final String ALERTS_API = "/alerts";
-	protected static final String VRLI_RESOURCE_KEY_TYPE = "LogInsightLogServer";
+	private static final String OVERWRITE_MODE = "OVERWRITE";
 
 	protected AbstractRestClientVrli (String apiPrefix, ConfigurationVrli configuration, RestTemplate restTemplate) {
 		this.apiPrefix = apiPrefix;
@@ -63,10 +63,12 @@ public abstract class AbstractRestClientVrli extends RestClient {
 
 		return this.vrliVersion;
 	}
+
 	@Override
 	protected Configuration getConfiguration() {
 		return this.configuration;
 	}
+
 	public String getContentPack(String contentPackNamespace) {
 		String uriPattern = this.apiPrefix + CONTENT_PACKS_API + "/%s";
 		String contentPackUriString = String.format(uriPattern, contentPackNamespace);
@@ -96,7 +98,9 @@ public abstract class AbstractRestClientVrli extends RestClient {
 	}
 
 	public void importContentPack(String contentPackName, String contentPackJson) {
-		URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_API));
+		Boolean overwrite = configuration.getPackageImportOverwriteMode().equals(Boolean.TRUE.toString())
+				|| configuration.getPackageImportOverwriteMode().contains(OVERWRITE_MODE);
+		URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_API).addParameter("overwrite", overwrite.toString()));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -116,6 +120,7 @@ public abstract class AbstractRestClientVrli extends RestClient {
 			throw new RuntimeException(String.format("REST client error during import of content pack '%s' to VRLI: %s", contentPackName, e.getMessage()));
 		}
 	}
+
 	protected RestClientVrops getVropsRestClient() {
 		if (this.vropsRestClient != null) {
 			return this.vropsRestClient;

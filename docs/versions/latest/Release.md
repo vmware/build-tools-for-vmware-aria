@@ -45,7 +45,28 @@ The process is allowed to continue.
 
 * [Vrealize Clean](./Components/Archetypes/General/Goals/Vrealize%20Clean.md)
 
+### Support varios types of vROPs fallback objects withing vRLI alerts
+When we perform `mvn clean package vrealize:push -PPROFILE_NAME` and there are vRLI alerts that have vROPs integration their fallback object 
+is set to a supported vROPs fallback objects (retrieved dynamically from vROPs)
 
+#### Previous Behavior
+When importing a vRLI a vROPs enabled alert the fallback object was set always to "Log Insight Server"
+
+#### New Behavior
+When importing a vRLI a vROPs enabled alert the fallback object is set to be based on the type used when exporting the alerts (dynamically retrieved from vROPs)
+
+### Support overwrite of existing vRLI content packs if they exsist on the target vRLI
+
+#### Previous Behavior
+When importing a vRLI content pack on a target system where the content pack already exists the vRBT returned
+a warning message stating that the content pack already exists and has to be manually uninstalled.
+
+#### New Behavior
+When importing a vRLI content pack on a target system where the content pack already exists and the
+packageImportOverwriteMode (installer setting: vrli_package_import_overwrite_mode) is set to true or OVERWRITE
+then the content pack is forcedly upgraded regardless whether it exsits on the target system.
+If the flag is set to false or SKIP then a warning message is displayed stating that the content pack already
+exsits and the flag is not set to true / OVERWRITE.
 
 ### *Ability to deploy base package to artifactory*
 It's expected that you can deploy all Build Tools for VMware Aria projects to artifactory and to local maven repository
