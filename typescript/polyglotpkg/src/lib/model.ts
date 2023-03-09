@@ -53,7 +53,8 @@ export type PlatformDefinition = PackageDefinition & {
         base?: string,
         tags?: Array<string>
         memoryLimitMb?: number,
-        timeoutSec?: number
+        timeoutSec?: number,
+        protocolType?: 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13'
     }
 }
 
