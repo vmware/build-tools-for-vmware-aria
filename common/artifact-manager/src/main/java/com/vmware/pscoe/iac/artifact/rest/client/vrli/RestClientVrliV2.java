@@ -26,7 +26,6 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackMetadataListDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
@@ -38,8 +37,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RestClientVrliV2 extends AbstractRestClientVrli {
+	private static final String API_PREFIX = "/api/v2";
+
     public RestClientVrliV2(ConfigurationVrli configuration, RestTemplate restTemplate) {
-		super("/api/v2", configuration, restTemplate);
+		super(API_PREFIX, configuration, restTemplate);
 		logger = LoggerFactory.getLogger(RestClientVrliV2.class);
     }
 
@@ -157,13 +158,9 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
         ResourcesDTO resourceDto;
         try {
             resourceDto = restClientVrops.getResources();
-			logger.info(resourceDto.getResourceList().toString());
         } catch (Exception e) {
             throw new RuntimeException(
                     String.format("Unable to update vCOPs integration for alert '%s', unable to fetch vROPs resources: %s", alert.getName(), e.getMessage()));
-        }
-        if (resourceDto == null) {
-            return;
         }
 
         Optional<ResourcesDTO.ResourceList> vrliResource = resourceDto.getResourceList().stream()

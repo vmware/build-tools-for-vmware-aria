@@ -2,6 +2,7 @@
 * [base-package] IAC-746 / Make base packages (ssh project) deployable to artifactory server and local maven repository
 * [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
 * [core] IAC-719 / Prepare for maven central. Add needed plugins: maven-javadoc-plugin, maven-gpg-plugin, and maven-source-plugin
+* [artifact-manager] IAC-733 / Add an Option for Overwriting Existing vRLI Content Packs.
 * [artifact-manager] IAC-741 / mvn vrealize:clean now will not fail if not supported
 
 ## v2.29.2 - 24 Feb 2023

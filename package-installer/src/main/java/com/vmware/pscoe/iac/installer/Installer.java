@@ -170,6 +170,9 @@ enum Option {
     VRLI_PASSWORD(
             "vrli_password",
             Configuration.PASSWORD),
+    VRLI_PACKAGE_IMPORT_OVERWRITE_MODE(
+            "vrli_package_import_overwrite_mode",
+            ConfigurationVrli.PACKAGE_IMPORT_OVERWRITE_MODE),
     VRLI_VROPS_INTEGRATION_HOST(
             "vrli_vrops_server",
             ConfigurationVrli.INTEGRATION_VROPS_HOST),
@@ -1042,6 +1045,7 @@ public class Installer {
         userInput(input, Option.VRLI_USERNAME, "  vRLI Username");
         passInput(input, Option.VRLI_PASSWORD, "  vRLI Password");
         userInput(input, Option.VRLI_PROVIDER, "  vRLI Provider", "Local");
+        userInput(input, Option.VRLI_PACKAGE_IMPORT_OVERWRITE_MODE, "  vRLI Package Overwrite Mode", "OVERWRITE");
 
         // vROps integration for vRLI settings
         userInput(input, Option.VRLI_VROPS_INTEGRATION_HOST, "  vROps integration FQDN");
