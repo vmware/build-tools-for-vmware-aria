@@ -179,11 +179,14 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		Optional<String> resourceTypes = keysSplit.stream().filter(item -> item.contains(RESOURCE_KIND_KEY)).findFirst();
 
 		if (!resourceTypes.isPresent()) {
-			throw new RuntimeException(String.format("Unable to find resource type '%s' for vROPs enabled alert: '%s' on the target vROPs system", RESOURCE_KIND_KEY, alert.getName()));
+			throw new RuntimeException(String.format("Unable to find resource type '%s' for vROPs enabled alert: '%s' on the target vROPs system",
+					RESOURCE_KIND_KEY, alert.getName()));
 		}
 		List<String> types = Arrays.asList(resourceTypes.get().split(RESOURCE_KIND_KEY_SPLIT_KEY));
+		if (types.isEmpty()) {
+			throw new RuntimeException(String.format("Unable to to extract vROPs resource kind type for alert '%s'", alert.getName()));			
+		}
 		String targetResourceType = types.get(types.size() - 1);
-
 		Optional<ResourcesDTO.ResourceList> targetResource = resourceDto.getResourceList().stream()
 				.filter(item -> item.getResourceKey().getResourceKindKey().equalsIgnoreCase(targetResourceType)).findFirst();
 		if (!targetResource.isPresent()) {

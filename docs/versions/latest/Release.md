@@ -45,9 +45,10 @@ The process is allowed to continue.
 
 * [Vrealize Clean](./Components/Archetypes/General/Goals/Vrealize%20Clean.md)
 
+
 ### Support varios types of vROPs fallback objects withing vRLI alerts
 When we perform `mvn clean package vrealize:push -PPROFILE_NAME` and there are vRLI alerts that have vROPs integration their fallback object 
-is set to a supported vROPs fallback objects (retrieved dynamically from vROPs)
+is set to a supported vROPs fallback objects (retrieved dynamically from vROPs by their vROPs resource type).
 
 #### Previous Behavior
 When importing a vRLI a vROPs enabled alert the fallback object was set always to "Log Insight Server"
