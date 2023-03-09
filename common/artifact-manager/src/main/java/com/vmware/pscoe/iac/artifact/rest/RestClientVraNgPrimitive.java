@@ -2435,7 +2435,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		jsonObject.addProperty("orgId", organizationId);
 		jsonObject.addProperty("projectId", getProjectId());
 		handleItemsProperty(jsonObject);
-		logger.info("Create csPolicyJsonObject Final: {}", jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 
@@ -2448,7 +2447,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		jsonObject.addProperty("orgId", organizationId);
 		jsonObject.addProperty("projectId", getProjectId());
 		handleItemsProperty(jsonObject);
-		logger.info("Update csPolicyJsonObject Final: {}", jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 
