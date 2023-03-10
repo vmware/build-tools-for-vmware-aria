@@ -1,3 +1,5 @@
+## v2.30.0 - 10 Mar 2023
+
 ### Fixes
 * [vropkg] vropkg-not-working-offline / vropkg had a missing dependency that was not bundled
 ### Enhancements

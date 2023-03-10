@@ -1,8 +1,12 @@
 Name: cs-package-maven-plugin
-Description: (no description available)
+Description: Build Tools for VMware Aria provides development and release
+  management tools for implementing automation solutions based on the VMware
+  Aria Suite and VMware Cloud Director. The solution enables Virtual
+  Infrastructure Administrators and Automation Developers to use standard
+  DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: cs-package-maven-plugin
-Version: 2.29.2-SNAPSHOT
+Version: 2.29.3-SNAPSHOT
 Goal Prefix: cs
 
 This plugin has 2 goals:
