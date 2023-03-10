@@ -391,7 +391,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
-		String defaultProjectId = this.config.getProjectId();
+		String defaultProjectId = this.restClient.getProjectId();
 		if (defaultProjectId != null) {
 			if (customResourceJsonElement.get("projectId") != null
 				&& !customResourceJsonElement.get("projectId").getAsString().equals("")) {

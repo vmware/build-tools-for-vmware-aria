@@ -135,7 +135,7 @@ public class VraNgCustomResourceStoreTest {
 		mockBuilder = new CustomResourceMockBuilder();
 		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
 
-		when( config.getProjectId() ).thenReturn(PROJECT_ID);
+		when( restClient.getProjectId() ).thenReturn(PROJECT_ID);
 		when( restClient.getVraWorkflowIntegration( any()) ).thenReturn( vro );
 		when( restClient.getAllCustomResources() ).thenReturn( new HashMap<String, VraNgCustomResource>() );
 		doNothing().when( restClient ).importCustomResource( anyString(), anyString() );
@@ -147,7 +147,7 @@ public class VraNgCustomResourceStoreTest {
 		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
 
 		// VERIFY
-		verify( config, times( 3 ) ).getProjectId();
+		verify( restClient, times( 3 ) ).getProjectId();
 		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
 		verify( restClient, times( 1 ) ).getAllCustomResources();
 		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
@@ -179,7 +179,7 @@ public class VraNgCustomResourceStoreTest {
 		mockBuilder	= new CustomResourceMockBuilder();
 		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
 
-		when( config.getProjectId() ).thenReturn( PROJECT_ID );
+		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
 		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
 		when( restClient.getAllCustomResources() ).thenReturn( new HashMap<String, VraNgCustomResource>() );
 		doNothing().when( restClient ).importCustomResource( anyString(), anyString() );
@@ -191,7 +191,7 @@ public class VraNgCustomResourceStoreTest {
 		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
 
 		// VERIFY
-		verify( config, times( 3 ) ).getProjectId();
+		verify( restClient, times( 3 ) ).getProjectId();
 		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
 		verify( restClient, times( 1 ) ).getAllCustomResources();
 		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
@@ -241,7 +241,7 @@ public class VraNgCustomResourceStoreTest {
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
 
-		when( config.getProjectId() ).thenReturn( PROJECT_ID );
+		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
 		when( config.getOrgId() ).thenReturn( ORG_ID );
 		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
 		when( restClient.getAllCustomResources() ).thenReturn( map );
@@ -287,7 +287,7 @@ public class VraNgCustomResourceStoreTest {
 		mockBuilder = new CustomResourceMockBuilder();
 		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson();
 
-		when( config.getProjectId() ).thenReturn( PROJECT_ID );
+		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
 		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
 		when( restClient.getAllCustomResources() ).thenReturn( map );
 		doNothing().when( restClient ).importCustomResource( any(), anyString() );
@@ -299,7 +299,7 @@ public class VraNgCustomResourceStoreTest {
 		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
 
 		// VERIFY
-		verify( config, times( 3 ) ).getProjectId();
+		verify( restClient, times( 3 ) ).getProjectId();
 		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
 		verify( restClient, times( 1 ) ).getAllCustomResources();
 		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
@@ -341,7 +341,7 @@ public class VraNgCustomResourceStoreTest {
 		mockBuilder = new CustomResourceMockBuilder();
 		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
 
-		when( config.getProjectId() ).thenReturn( PROJECT_ID );
+		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
 		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
 		when( restClient.getAllCustomResources() ).thenReturn( map );
 		doNothing().when( restClient ).importCustomResource( any(), anyString() );
@@ -352,7 +352,7 @@ public class VraNgCustomResourceStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify( config, times( 3 ) ).getProjectId();
+		verify( restClient, times( 3 ) ).getProjectId();
 		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
 		verify( restClient, times( 1 ) ).getAllCustomResources();
 		verify( restClient, times(1) ).importCustomResource( any(), anyString() );
@@ -395,7 +395,7 @@ public class VraNgCustomResourceStoreTest {
 		mockBuilder = new CustomResourceMockBuilder();
 		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
 
-		when( config.getProjectId() ).thenReturn(PROJECT_ID);
+		when( restClient.getProjectId() ).thenReturn(PROJECT_ID);
 		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn(vro);
 		when( restClient.getAllCustomResources() ).thenReturn(map);
 		doNothing().when( restClient ).importCustomResource( any(), anyString());
@@ -407,7 +407,7 @@ public class VraNgCustomResourceStoreTest {
 		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
 
 		// VERIFY
-		verify( config, times( 3 ) ).getProjectId();
+		verify( restClient, times( 3 ) ).getProjectId();
 		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
 		verify( restClient, times( 1 ) ).getAllCustomResources();
 		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
@@ -451,7 +451,7 @@ public class VraNgCustomResourceStoreTest {
 		mockBuilder = new CustomResourceMockBuilder();
 		String comparator = mockBuilder.setOrgId( ORG_ID ).removeFormDefinitionIds().withoutIdInRawData().build().getJson().toString();
 
-		when( config.getProjectId() ).thenReturn(PROJECT_ID);
+		when( restClient.getProjectId() ).thenReturn(PROJECT_ID);
 		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn(vro);
 		when( restClient.getAllCustomResources() ).thenReturn(map);
 		doNothing().when( restClient ).importCustomResource( any(), anyString());
