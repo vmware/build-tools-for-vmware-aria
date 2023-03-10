@@ -87,6 +87,7 @@
 		"xmlbuilder",
 		"xmlbuilder2",
 		"xmldoc",
-		"charset-detector"
+		"charset-detector",
+		"logform"
 	]
 }

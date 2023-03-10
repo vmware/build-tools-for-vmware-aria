@@ -312,6 +312,7 @@
                         <vropsUser>${vrli.vropsUser}</vropsUser>
                         <vropsPassword>${vrli.vropsPassword}</vropsPassword>
                         <vropsAuthSource>${vrli.vropsAuthSource}</vropsAuthSource>
+                        <packageImportOverwriteMode>${vrli.packageImportOverwriteMode}</packageImportOverwriteMode>
                     </vrli>
                     <ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
                     <ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>

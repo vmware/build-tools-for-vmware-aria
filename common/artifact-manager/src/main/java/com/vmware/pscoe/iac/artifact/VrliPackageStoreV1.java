@@ -36,7 +36,8 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackDTO;
 
 public class VrliPackageStoreV1 extends AbstractVrliPackageStore {
     private final RestClientVrliV1 restClient;
-    protected VrliPackageStoreV1(RestClientVrliV1 restClient) {
+
+    public VrliPackageStoreV1(RestClientVrliV1 restClient) {
 		this.restClient = restClient;
 		logger = LoggerFactory.getLogger(VrliPackageStoreV1.class);
     }
@@ -55,6 +56,7 @@ public class VrliPackageStoreV1 extends AbstractVrliPackageStore {
             }
         }
     }
+
     protected void exportContentPacks(Package vrliPakage, List<String> contentPackNames) {
         if (contentPackNames == null || contentPackNames.isEmpty()) {
 			logger.warn("No content packs defined for export.");
@@ -78,6 +80,7 @@ public class VrliPackageStoreV1 extends AbstractVrliPackageStore {
 			}
         }
     }
+
 	@Override
     protected void importAlert(File alertFile) {
         try {
@@ -87,6 +90,7 @@ public class VrliPackageStoreV1 extends AbstractVrliPackageStore {
             throw new RuntimeException("Error reading from file: " + alertFile.getPath(), e);
         }
     }
+
 	@Override
     protected void importContentPack(File contentPackFile) {
         try {

@@ -23,11 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.rest.client.messages.Errors;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -48,8 +46,10 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackMetadataListD
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
 
 public class RestClientVrliV1 extends AbstractRestClientVrli {
-    public RestClientVrliV1(ConfigurationVrli configuration, RestTemplate restTemplate) {
-		super("/api/v1", configuration, restTemplate);
+	private static final String API_PREFIX = "/api/v1";
+
+	public RestClientVrliV1(ConfigurationVrli configuration, RestTemplate restTemplate) {
+		super(API_PREFIX, configuration, restTemplate);
 		logger = LoggerFactory.getLogger(RestClientVrliV1.class);
     }
 

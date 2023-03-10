@@ -35,7 +35,8 @@ import java.util.List;
 
 public class VrliPackageStoreV2 extends AbstractVrliPackageStore {
 	private final RestClientVrliV2 restClient;
-    protected VrliPackageStoreV2(RestClientVrliV2 restClient) {
+
+    public VrliPackageStoreV2(RestClientVrliV2 restClient) {
 		this.restClient = restClient;
 		logger = LoggerFactory.getLogger(VrliPackageStoreV2.class);
     }
@@ -88,6 +89,7 @@ public class VrliPackageStoreV2 extends AbstractVrliPackageStore {
             throw new RuntimeException("Error reading from file: " + alertFile.getPath(), e);
         }
     }
+
 	@Override
     protected void importContentPack(File contentPackFile) {
         try {

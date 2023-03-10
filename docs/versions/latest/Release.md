@@ -23,6 +23,13 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+### *Enforce TLS 1.2 when Downloading PowerShell Modules*
+Added support for downloading modules in powershell polyglot project handlers through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13'
+
+#### Previous Behavior
+Using Import-Module inside powershell polyglot projects downloads modules with system default encryption
+#### New Behavior
+Using Import-Module inside powershell polyglot projects downloads modules through SSL/TLS
 
 ### Implemented Push/Pull logic for new Content Sharing Policy from vRA 8.8.2
 
@@ -35,9 +42,16 @@ When there is content sharing policy present, the toolchain can able to push/pul
 #### Relevant Documentation:
 **NONE**
 
-
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
+
+### *Allow only one format of using the Import-Module inside powershell* 
+#### Previous Behavior
+Using Import-Module -Name <example_module_name> will result in error since current code is considering only lines with Import-Module <example_module_name>
+meaning that -Name parameter is not considered. Same for ';' - if added at the end of the line it will throw error currently
+#### New Behavior
+Using Import-Module -Name <example_module_name> will translate to Import-Module <example_module_name> and current behaviour error will be suppressed.
+Same for ';' - if added at the end of the line it will not throw error currently, but it will be removed before downloading the modules
 
 ### *vrealize:clean will not fail if store does not support it* 
 When we perform `mvn vrealize:clean -DincludeDependencies=true -DcleanUpOldVersions=true -DcleanUpLastVersion=false -PPROFILE_NAME`
@@ -55,7 +69,18 @@ The process is allowed to continue.
 
 * [Vrealize Clean](./Components/Archetypes/General/Goals/Vrealize%20Clean.md)
 
+### Support overwrite of existing vRLI content packs if they exsist on the target vRLI
 
+#### Previous Behavior
+When importing a vRLI content pack on a target system where the content pack already exists the vRBT returned
+a warning message stating that the content pack already exists and has to be manually uninstalled.
+
+#### New Behavior
+When importing a vRLI content pack on a target system where the content pack already exists and the
+packageImportOverwriteMode (installer setting: vrli_package_import_overwrite_mode) is set to true or OVERWRITE
+then the content pack is forcedly upgraded regardless whether it exsits on the target system.
+If the flag is set to false or SKIP then a warning message is displayed stating that the content pack already
+exsits and the flag is not set to true / OVERWRITE.
 
 ### *Ability to deploy base package to artifactory*
 It's expected that you can deploy all Build Tools for VMware Aria projects to artifactory and to local maven repository
