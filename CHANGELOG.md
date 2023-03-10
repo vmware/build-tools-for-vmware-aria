@@ -1,3 +1,5 @@
+## v2.30.0 - 10 Mar 2023
+
 ### Fixes
 * [vropkg] vropkg-not-working-offline / vropkg had a missing dependency that was not bundled
 ### Enhancements
@@ -8,6 +10,7 @@
 * [core] IAC-719 / Prepare for maven central. Add needed plugins: maven-javadoc-plugin, maven-gpg-plugin, and maven-source-plugin
 * [artifact-manager] IAC-733 / Add an Option for Overwriting Existing vRLI Content Packs.
 * [artifact-manager] IAC-741 / mvn vrealize:clean now will not fail if not supported
+* [artifact-manager] IAC-745 / VRLI Alerts Fallback Object Set to LogInsight Only During Push
 * [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
 
 ## v2.29.2 - 24 Feb 2023

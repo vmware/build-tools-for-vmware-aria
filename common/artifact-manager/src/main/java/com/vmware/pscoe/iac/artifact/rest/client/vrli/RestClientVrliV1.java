@@ -47,6 +47,9 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
 
 public class RestClientVrliV1 extends AbstractRestClientVrli {
 	private static final String API_PREFIX = "/api/v1";
+	private static final String RESOURCE_KIND_KEY = "resourceKindKey";
+	private static final String RESOURCE_KIND_KEYS_SPLIT_KEY = "&";
+	private static final String RESOURCE_KIND_KEY_SPLIT_KEY = "=";
 
 	public RestClientVrliV1(ConfigurationVrli configuration, RestTemplate restTemplate) {
 		super(API_PREFIX, configuration, restTemplate);
@@ -151,6 +154,15 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         }
     }
 
+	/**
+	 * Rewrite the vROPs integration data for vROPs enabled vRLI alerts so that the
+	 * target vROPs integration matches the one defined by vROPs during push. The
+	 * vROPs integration data is retrieved dynamically from vROPs based on the
+	 * configured vROPs integration in the settings.xml (<vrli.vrops*> settings)
+	 *
+	 * @param AlertDTO alert DTO object
+	 * @throws Runtime exception
+	 */
     private void rewriteVcopsIntegrationInfo(AlertDTO alert) {
         if (alert == null) {
             return;
@@ -174,17 +186,29 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
             return;
         }
 
-        Optional<ResourcesDTO.ResourceList> vrliResource = resourceDto.getResourceList().stream()
-                .filter(item -> item.getResourceKey().getResourceKindKey().equalsIgnoreCase(VRLI_RESOURCE_KEY_TYPE)).findFirst();
-        if (!vrliResource.isPresent()) {
-            throw new RuntimeException(String.format(
-                    "Unable to find resource type '%s' on the target vROPs server for alert: '%s', please check VROPS content pack configuration in VRLI",
-                    VRLI_RESOURCE_KEY_TYPE, alert.getName()));
-        }
+		String targetResourceKindKeys = alert.getVcopsResourceKindKey();
+		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(RESOURCE_KIND_KEYS_SPLIT_KEY));
+		Optional<String> resourceTypes = keysSplit.stream().filter(item -> item.contains(RESOURCE_KIND_KEY)).findFirst();
 
-        String resourceName = vrliResource.get().getResourceKey().getName();
-        String adapterKindKey = vrliResource.get().getResourceKey().getAdapterKindKey();
-        String resourceKindKey = vrliResource.get().getResourceKey().getResourceKindKey();
+		if (!resourceTypes.isPresent()) {
+			throw new RuntimeException(String.format("Unable to find resource type '%s' for vROPs enabled alert: '%s' on the target vROPs system", RESOURCE_KIND_KEY, alert.getName()));
+		}
+		List<String> types = Arrays.asList(resourceTypes.get().split(RESOURCE_KIND_KEY_SPLIT_KEY));
+		if (types.isEmpty()) {
+			throw new RuntimeException(String.format("Unable to to extract vROPs resource kind type for alert '%s'", alert.getName()));			
+		}		
+		String targetResourceType = types.get(types.size() - 1);
+		Optional<ResourcesDTO.ResourceList> targetResource = resourceDto.getResourceList().stream()
+				.filter(item -> item.getResourceKey().getResourceKindKey().equalsIgnoreCase(targetResourceType)).findFirst();
+		if (!targetResource.isPresent()) {
+			throw new RuntimeException(String.format(
+					"Unable to find resource type '%s' on the target vROPs server for alert: '%s', please check VROPS content pack configuration in VRLI or VROPS configuration",
+					targetResourceType, alert.getName()));
+		}
+
+        String resourceName = targetResource.get().getResourceKey().getName();
+        String adapterKindKey = targetResource.get().getResourceKey().getAdapterKindKey();
+        String resourceKindKey = targetResource.get().getResourceKey().getResourceKindKey();
 
         List<String> baseResourceKindKeys = new ArrayList<>();
         baseResourceKindKeys.add("resourceName=" + resourceName);
@@ -192,7 +216,7 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         baseResourceKindKeys.add("resourceKindKey=" + resourceKindKey);
 
         // create resource identifiers list
-        List<String> identifiersList = vrliResource.get().getResourceKey().getResourceIdentifiers().stream().map(identifier -> {
+        List<String> identifiersList = targetResource.get().getResourceKey().getResourceIdentifiers().stream().map(identifier -> {
             String name = identifier.getIdentifierType().getName();
             String value = identifier.getValue();
 
@@ -208,6 +232,7 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         alert.setVcopsResourceName(resourceName);
         alert.setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
     }
+
     private AlertDTO findAlertByName(String alertName) {
         List<AlertDTO> alerts = getAllAlerts();
         if (alerts == null || alerts.isEmpty()) {

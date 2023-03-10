@@ -42,7 +42,6 @@ public abstract class AbstractRestClientVrli extends RestClient {
 	protected static final String CONTENT_PACKS_API = "/content/contentpack";
 	protected static final String CONTENT_PACKS_LIST_API = "/content/contentpack/list";
 	protected static final String ALERTS_API = "/alerts";
-	protected static final String VRLI_RESOURCE_KEY_TYPE = "LogInsightLogServer";
 	private static final String OVERWRITE_MODE = "OVERWRITE";
 
 	protected AbstractRestClientVrli (String apiPrefix, ConfigurationVrli configuration, RestTemplate restTemplate) {

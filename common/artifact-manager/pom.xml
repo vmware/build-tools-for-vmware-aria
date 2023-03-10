@@ -153,11 +153,12 @@
 			<version>3.5.15</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+		<!-- snakeyaml is included in  jackson-dataformat-yaml artifact-->
+		<!-- <dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<version>1.33</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
