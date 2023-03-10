@@ -11,9 +11,10 @@
 	</parent>
 
     <groupId>com.vmware.pscoe.o11n</groupId>
-    <artifactId>base-package</artifactId>
+    <artifactId>base-packages-parent</artifactId>
     <packaging>pom</packaging>
     <modules>
+		<module>base-package</module>
         <module>xml-package</module>
         <module>actions-package</module>
         <module>vra-package</module>
