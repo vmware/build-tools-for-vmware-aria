@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.vmware.pscoe.o11n</groupId>
-		<artifactId>base-package</artifactId>
+		<artifactId>base-packages-parent</artifactId>
 		<version>${revision}</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
