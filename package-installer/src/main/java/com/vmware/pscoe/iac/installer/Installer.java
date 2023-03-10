@@ -97,10 +97,6 @@ enum Option {
     SKIP_VRA_IMPORT_OLD_VERSIONS(
             "skip_vra_import_old_versions",
             StringUtils.EMPTY),
-    VRA_IMPORT_OVERWRITE_MODE(
-            "vra_import_overwrite_mode",
-            ConfigurationVra.PACKAGE_IMPORT_OVERWRITE_MODE),
-
     VRANG_SERVER(
             "vrang_host",
             Configuration.HOST),
@@ -143,9 +139,6 @@ enum Option {
     VRANG_PASSWORD(
             "vrang_password",
             Configuration.PASSWORD),
-    VRANG_IMPORT_OVERWRITE_MODE(
-            "vrang_import_overwrite_mode",
-            ConfigurationVraNg.PACKAGE_IMPORT_OVERWRITE_MODE),
     VRANG_IMPORT_TIMEOUT(
             "vrang_import_timeout",
             ConfigurationVraNg.IMPORT_TIMEOUT),
@@ -999,12 +992,10 @@ public class Installer {
         input.getText().getTextTerminal().println("vRealize Automation Import Configuration:");
         userInput(input, Option.SKIP_VRA_IMPORT_OLD_VERSIONS, "  Skip Old Package Versions?", true);
         input.put(Option.VRA_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VRA_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
-        userInput(input, Option.VRA_IMPORT_OVERWRITE_MODE, "  Import Mode", "SKIP,OVERWRITE");
     }
 
     private static void readVrangImportProperties(Input input) {
         input.getText().getTextTerminal().println("vRealize Automation 8 Import Configuration:");
-        userInput(input, Option.VRANG_IMPORT_OVERWRITE_MODE, "  vRA8 Import Mode", "SKIP,OVERWRITE");
         userInput(input, Option.VRANG_VRO_INTEGRATION_NAME, "  vRA8 integration name", "embedded-VRO");
         userInput(input, Option.VRANG_IMPORT_TIMEOUT, "  vRA8 Import timeout", ConfigurationVraNg.DEFAULT_IMPORT_TIMEOUT);
         userInput(input, Option.VRANG_DATA_COLLECTION_DELAY_SECONDS, "  vRA's vRO Data Collection delay in seconds.", 600);
