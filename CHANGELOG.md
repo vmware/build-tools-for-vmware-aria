@@ -2,6 +2,9 @@
 * [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
 * [artifact-manager] 108 / Pushing and pulling from/to vRA 8.12 fails with buildtools 2.32.0
 
+### Enhancements
+* [maven] IAC-751 / Created an extra package that contains all the necessary dependencies to work in offline mode.
+
 ## v2.33.0 - 02 Jun 2023
 
 ### Fixes

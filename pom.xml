@@ -42,10 +42,10 @@
 
 	<name>Build Tools for VMware Aria</name>
 	<description>
-		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions
-		based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and 
-		Automation Developers to use standard DevOps practices for managing and deploying content.
+		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and Automation Developers to use standard DevOps practices for managing and deploying content.
 	</description>
+
+	
 	<url>https://github.com/vmware/build-tools-for-vmware-aria</url>
 	<developers>
 		<developer>

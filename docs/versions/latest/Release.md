@@ -23,6 +23,10 @@
 [//]: # (#### Relevant Documentation:)
 
 
+### Created an extra package that contains all the necessary dependencies to work in offline mode
+The packaging phase now creates a new package which is a zip that contains all dependencies so developers can use the vRBT tool in offline environment. The package is generated under the repository project (``maven/repository/pom.xml``) and the package is generated in the path ``maven\repository\target\iac-maven-repository-full.zip``.
+
+
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 [//]: # (### *Improvement Name* )
