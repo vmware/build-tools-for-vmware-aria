@@ -782,16 +782,16 @@ public class Installer {
         //  |  vRealize Orchestrator
         //  +-------------------------------------
 		if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
+            if(hasVraNgPackages){
+                userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
+            }
+            if (input.anyTrue(Option.VRO_EMBEDDED)) {
+                readVroEmbeddedInVrangProperties(input, false);
+            } else {
+                readVroProperties(input, hasVraNgPackages);
+            }
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
-                if(hasVraNgPackages){
-                    userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
-                }
-                if (input.anyTrue(Option.VRO_EMBEDDED)) {
-                    readVroEmbeddedInVrangProperties(input, false);
-                } else {
-                    readVroProperties(input, hasVraNgPackages);
-                }
                 readVroImportProperties(input);
             } else {
                 userInput(input, Option.VRO_DELETE_LAST_VERSION, "Clean up last vRO package version?", true);
