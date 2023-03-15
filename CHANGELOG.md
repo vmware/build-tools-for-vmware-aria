@@ -1,6 +1,7 @@
 ## v2.30.0 - 10 Mar 2023
 
 ### Fixes
+* [package-installer] IAC-729 / Remove vrang_import_overwrite_mode / vRA8 Import Mode [SKIP,OVERWRITE]
 * [vropkg] vropkg-not-working-offline / vropkg had a missing dependency that was not bundled
 ### Enhancements
 * [polyglot] IAC-604 / vRBT to support downloading powershell modules through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13' .

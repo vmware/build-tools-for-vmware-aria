@@ -46,3 +46,15 @@
 
 [//]: # (## Changelog:)
 [//]: # (Pull request links)
+
+### Remove vrang_import_overwrite_mode prompt: vRA8 Import Mode [SKIP,OVERWRITE]
+Installer script prompts for unnecessary vRA question regarding Import Mode [SKIP,OVERWRITE] 
+
+#### Previous Behavior
+There was vRA question for Import Mode [SKIP,OVERWRITE]
+
+#### New Behavior
+Unnecessary question regarding Import Mode [SKIP,OVERWRITE] for vRA had been removed
+
+#### Relevant Documentation
+**NONE**
