@@ -1,5 +1,7 @@
 package com.vmware.pscoe.iac.artifact.rest.vrang;
 
+import com.google.gson.Gson;
+
 /*
  * #%L
  * artifact-manager
@@ -20,11 +22,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.AbxActionMockBuilder;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.ContentSharingPolicyMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.PropertyGroupMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestDouble;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestResponseProvider;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
@@ -639,5 +643,39 @@ class RestClientVraNgPrimitiveTest {
 		);
 
 		assertTrue(exception.getMessage().contains("Faas provider name is not correct"));
+	}
+
+	@Test
+	void testGetContentSharingPolicyJSON() {
+		URI uri = restClient.getURI(restClient.getURIBuilder()
+				.setPath("/policy/api/policies" + "/" + "679daee9-d63d-4ce2-9ee1-d4336861fe87"));
+
+		URI uri2 = restClient.getURI(restClient.getURIBuilder()
+				.setPath("/catalog/api/admin/sources" + "/" + "d0624893-4932-46a7-8e25-fab1e4109c2e"));
+
+		when(
+				this.restTemplate.exchange(uri, HttpMethod.GET,
+						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(), String.class))
+				.thenReturn(
+						new ResponseEntity<>(
+								"{\"id\":\"679daee9-d63d-4ce2-9ee1-d4336861fe87\",\"name\":\"CsPolicy\",\"description\":\"Testing\",\"typeId\":\"com.vmware.policy.catalog.entitlement\",\"enforcementType\":\"HARD\",\"orgId\":\"27aaf31d-d9af-4c48-9736-eb9c9faa4ae8\",\"projectId\":\"c3f029f9-a97c-4df6-bdc4-c0e4b91aa18e\",\"definition\":{\"entitledUsers\":[{\"items\":[{\"id\":\"d0624893-4932-46a7-8e25-fab1e4109c2e\",\"type\":\"CATALOG_SOURCE_IDENTIFIER\"}],\"userType\":\"USER\",\"principals\":[{\"type\":\"PROJECT\",\"referenceId\":\"\"}]}]},\"createdAt\":\"2023-02-14T13:58:53.964473Z\",\"createdBy\":\"configurationadmin\",\"lastUpdatedAt\":\"2023-02-23T11:34:17.898581Z\",\"lastUpdatedBy\":\"configurationadmin\"}",
+								HttpStatus.OK));
+
+		when(
+				this.restTemplate.exchange(uri2, HttpMethod.GET,
+						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(), String.class))
+				.thenReturn(
+						new ResponseEntity<>(
+								"{\"id\":\"d0624893-4932-46a7-8e25-fab1e4109c2e\",\"name\":\"Contentsource\",\"description\":\"Testing\",\"typeId\":\"com.vmw.vro.workflow\"}",
+								HttpStatus.OK));
+
+		// START TEST
+		VraNgContentSharingPolicy csPolicy = restClient
+				.getContentSharingPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
+		VraNgContentSharingPolicy expectedResult = ContentSharingPolicyMockBuilder.buildContentSharingPolicy();
+		assertEquals(new Gson().toJson(expectedResult), new Gson().toJson(csPolicy));
+		Assertions.assertDoesNotThrow(() -> {
+			this.restClient.getContentSharingPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
+		});
 	}
 }

@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,12 +99,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private static final String SERVICE_POST_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_PUT_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_SECRET = "/platform/api/secrets";
+	private static final String SERVICE_POLICIES = "/policy/api/policies";
 	private static final int VRA_VERSION_MAJOR = 8;
 	private static final int VRA_VERSION_MINOR = 1;
 	private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com",
 			"api.mgmt.cloud.vmware.com");
 	private static final String VRA_CLOUD_VERSION = "cloud";
 	private static final String CUSTOM_FORM_DEFAULT_FORMAT = "JSON";
+	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
 
 	private final ConfigurationVraNg configuration;
 	private final RestTemplate restTemplate;
@@ -2349,5 +2353,128 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	private boolean isVraCloud(URI url) {
 		return VRA_CLOUD_HOSTS.stream().filter(host -> url.getHost().contains(host)).count() > 0;
+	}
+
+	/**
+	 * Retrieve all content sharing policy Ids.
+	 *
+	 * @return list of sharing policy Ids that are available.
+	 * 
+	 */
+	protected List<String> getAllContentSharingPolicyIdsPrimitive() {
+		List<String> policyIds = new ArrayList<>();
+		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
+		logger.debug("Policy Ids found on server: {}", results.size());
+		results.forEach(o -> {
+			JsonObject ob = o.getAsJsonObject();
+			String typeId = ob.get("typeId").getAsString();
+			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE)) {
+				String policyId = ob.get("id").getAsString();
+				policyIds.add(policyId);
+			}
+		});
+		return policyIds;
+	}
+
+	/**
+	 * Retrieve content sharing policy Id based on name.
+	 *
+	 * @param name name of the policy
+	 * @return content sharing policy Id.
+	 * 
+	 */
+	protected String getContentSharingPolicyIdByName(String name) {
+		String policyId= "";
+		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
+		logger.debug("Policies found on server: {}", results.size());
+		for(JsonObject o : results)
+		{  
+			JsonObject ob = o.getAsJsonObject();
+			String typeId = ob.get("typeId").getAsString();
+			String policyName = ob.get("name").getAsString();
+			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE) && policyName.equals(name) ) {
+				policyId= ob.get("id").getAsString();
+				return policyId;
+			}  
+		}
+		return policyId;
+	}
+
+	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(String policyId) {
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		JsonElement root = JsonParser.parseString(response.getBody());
+		if (!root.isJsonObject()) {
+			return null;
+		}
+		JsonObject result = root.getAsJsonObject();
+		String name = result.get("name").getAsString();
+		String description= result.has("description") ? result.get("description").getAsString(): "";
+		String typeId = result.get("typeId").getAsString();
+		String enforcementType = result.get("enforcementType").getAsString();
+		VraNgDefinition definition =  new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class);
+		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
+			VraNgContentSourceBase contentSource = this.getContentSourcePrimitive(item.id);
+			item.name = (contentSource != null) ? contentSource.getName() : "";
+		}));
+		csPolicy.setDefinition(definition);
+		csPolicy.setName(name);
+		csPolicy.setEnforcementType(enforcementType);
+		csPolicy.setDescription(description);
+		csPolicy.setTypeId(typeId);
+		return csPolicy;
+	}
+
+	public void createContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(csPolicy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
+		jsonObject.addProperty("orgId", organizationId);
+		jsonObject.addProperty("projectId", getProjectId());
+		handleItemsProperty(jsonObject);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	public void updateContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(csPolicy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
+		jsonObject.addProperty("id", getContentSharingPolicyIdByName(csPolicy.getName()));
+		jsonObject.addProperty("orgId", organizationId);
+		jsonObject.addProperty("projectId", getProjectId());
+		handleItemsProperty(jsonObject);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	public void handleItemsProperty(JsonObject csPolicyJsonObject)
+	{
+		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
+		JsonArray euArr=  definition.getAsJsonArray("entitledUsers");
+		for (JsonElement eu : euArr) {
+			JsonObject entitledUserObj = eu.getAsJsonObject();
+			JsonArray itemsArr     = entitledUserObj.getAsJsonArray("items");
+			for (JsonElement item : itemsArr) {
+				JsonObject itemObj = item.getAsJsonObject();
+				String contentSourceName = itemObj.get("name").getAsString();
+				List<VraNgContentSourceBase> contentSources = this.getContentSources();
+				VraNgContentSourceBase contentSource = contentSources.stream()
+						.filter(cs -> cs.getName().equals(contentSourceName))
+						.findFirst()
+						.orElse(null);
+				if (contentSource == null) {
+					throw new RuntimeException(
+							String.format("Content Source with name  '%s' could not be found on target system",
+									contentSourceName));
+				}
+				itemObj.addProperty("id", contentSource.getId());
+				itemObj.remove("name");
+			}
+		}
+		definition.add("entitledUsers", euArr);
+		csPolicyJsonObject.add("definition", definition);
 	}
 }

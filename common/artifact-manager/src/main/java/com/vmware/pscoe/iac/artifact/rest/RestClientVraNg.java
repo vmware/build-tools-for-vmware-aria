@@ -737,4 +737,42 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(e);
 		}
 	}
+
+	// =================================================
+	// POLICIES
+	// =================================================
+
+	public List<String> getContentSharingPolicyIds() {
+		try {
+			return this.getAllContentSharingPolicyIdsPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policy Ids", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void createContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+		try {
+			createContentSharingPolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+		}
+	}
+
+	public void updateContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+		try {
+			updateContentSharingPolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not update Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+		}
+	}
+
+	public VraNgContentSharingPolicy getContentSharingPolicy(String policyId) {
+		try {
+			return this.getContentSharingPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policy", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
 }
