@@ -2,6 +2,8 @@
 
 ### Fixes
 * [vropkg] vropkg-not-working-offline / vropkg had a missing dependency that was not bundled
+* [artifact-manager] IAC-748 / Change project id between organizations to use restClient instead of config.
+
 ### Enhancements
 * [polyglot] IAC-604 / vRBT to support downloading powershell modules through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13' .
 * [polyglot] IAC-604 / Using Import-Module must always be in the format of Import-Module <module name> without -Name and ; at the end of the line to avoid confusion .
