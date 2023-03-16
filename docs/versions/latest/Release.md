@@ -26,6 +26,17 @@
 
 
 
+### Implemented Push/Pull logic for new Content Sharing Policy from vRA 8.8.2
+
+#### Previous Behavior
+When there is content sharing policy present, the toolchain couldn't push/pull the changes to the VRA.
+
+#### New Behavior
+When there is content sharing policy present, the toolchain can able to push/pull the changes to the VRA.
+
+#### Relevant Documentation:
+**NONE**
+
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 [//]: # (### *Improvement Name* )
