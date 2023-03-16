@@ -79,16 +79,5 @@ When you trigger `mvn clean package install deploy` against base package, the bu
 #### Relevant Documentation:
 None
 
-### *Ability to cover cases when project.id is not set, but project.name is set when pushing Custom Resources*
-
-#### Previous Behavior
-Project.Id is fetch from configuration.
-
-#### New Behavior
-Project.Id is fetch from restClient. 
-
-#### Relevant Documentation:
-None
-
 ## Upgrade procedure:
 

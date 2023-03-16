@@ -28,14 +28,18 @@
 
 ### Implemented Push/Pull logic for new Content Sharing Policy from vRA 8.8.2
 
-#### Previous Behavior
-When there is content sharing policy present, the toolchain couldn't push/pull the changes to the VRA.
+Content Sharing Policies can now be fetched for newer versions of vRA.
 
-#### New Behavior
-When there is content sharing policy present, the toolchain can able to push/pull the changes to the VRA.
+It can be done by adding:
 
-#### Relevant Documentation:
-**NONE**
+```yaml
+# ...
+policy:
+  content-sharing:
+```
+
+to your `content.yaml` file
+
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
@@ -50,7 +54,16 @@ When there is content sharing policy present, the toolchain can able to push/pul
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Ability to cover cases when project.id is not set, but project.name is set when pushing Custom Resources*
 
+#### Previous Behavior
+Project id was being fetched from the configuration, which means in cases where the project id was not set, but project name was, there would be an error.
+
+#### New Behavior
+The project id is now fetched from the restClient, which checks if we have project id or name set and tries to find the correct id if the name is the only thing that is set
+
+#### Relevant Documentation:
+None
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
