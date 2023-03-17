@@ -793,7 +793,8 @@ public class Installer {
             }
             userInput(input, Option.VRO_DELETE_OLD_VERSIONS, "Clean up old vRO package versions?", true);
             userInput(input, Option.VRO_DELETE_INCLUDE_DEPENDENCIES, "Clean up vRO dependent packages as well?", true);
-            if (input.anyTrue(Option.VRO_IMPORT, Option.VRO_DELETE_LAST_VERSION, Option.VRO_DELETE_LAST_VERSION, Option.VRO_DELETE_OLD_VERSIONS, Option.VRO_DELETE_INCLUDE_DEPENDENCIES)) {
+            userInput(input, Option.VRO_RUN_WORKFLOW, "Run vRO workflow?", true);
+            if (input.anyTrue(Option.VRO_IMPORT, Option.VRO_DELETE_LAST_VERSION, Option.VRO_DELETE_LAST_VERSION, Option.VRO_DELETE_OLD_VERSIONS, Option.VRO_DELETE_INCLUDE_DEPENDENCIES, Option.VRO_RUN_WORKFLOW)) {
                 if (input.anyTrue(Option.VRO_EMBEDDED)) {
                     readVroEmbeddedInVrangProperties(input, false);
                 } else {
@@ -801,16 +802,6 @@ public class Installer {
                 }
             }
         }
-        userInput(input, Option.VRO_RUN_WORKFLOW, "Run vRO workflow?", true);
-        if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
-            if (input.anyTrue(Option.VRO_EMBEDDED)) {
-                readVroEmbeddedInVrangProperties(input, false);
-            } else {
-                readVroProperties(input, hasVraNgPackages);
-            }
-            readVroWorkflowProperties(input);
-        }
-
         //  +-------------------------------------
         //  |  vCloud Director (New Generation)
         //  +-------------------------------------
