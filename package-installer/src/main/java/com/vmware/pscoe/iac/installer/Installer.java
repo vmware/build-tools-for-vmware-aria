@@ -781,14 +781,9 @@ public class Installer {
         //  +-------------------------------------
         //  |  vRealize Orchestrator
         //  +-------------------------------------
-		if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
+        if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
             if(hasVraNgPackages){
                 userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
-            }
-            if (input.anyTrue(Option.VRO_EMBEDDED)) {
-                readVroEmbeddedInVrangProperties(input, false);
-            } else {
-                readVroProperties(input, hasVraNgPackages);
             }
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
@@ -798,6 +793,13 @@ public class Installer {
             }
             userInput(input, Option.VRO_DELETE_OLD_VERSIONS, "Clean up old vRO package versions?", true);
             userInput(input, Option.VRO_DELETE_INCLUDE_DEPENDENCIES, "Clean up vRO dependent packages as well?", true);
+            if (input.anyTrue(Option.VRO_IMPORT, Option.VRO_DELETE_LAST_VERSION, Option.VRO_DELETE_LAST_VERSION, Option.VRO_DELETE_OLD_VERSIONS, Option.VRO_DELETE_INCLUDE_DEPENDENCIES)) {
+                if (input.anyTrue(Option.VRO_EMBEDDED)) {
+                    readVroEmbeddedInVrangProperties(input, false);
+                } else {
+                    readVroProperties(input, hasVraNgPackages);
+                }
+            }
         }
         userInput(input, Option.VRO_RUN_WORKFLOW, "Run vRO workflow?", true);
         if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
