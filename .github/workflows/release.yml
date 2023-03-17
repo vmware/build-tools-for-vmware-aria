@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Enter the version number"
+        required: true
+        regex: '^\d+\.\d+\.\d+$'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set configs
+        run: |
+          git config user.name "Release Butler"
+          git config user.email "svc.wwcoe.ci-admin@vmware.com"
+
+      - name: Run release script
+        run: echo "Running script for version ${{ inputs.version }}"
