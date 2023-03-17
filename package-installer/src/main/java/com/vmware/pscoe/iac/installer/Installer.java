@@ -801,6 +801,9 @@ public class Installer {
                     readVroProperties(input, hasVraNgPackages);
                 }
             }
+            if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
+                readVroWorkflowProperties(input);
+            }
         }
         //  +-------------------------------------
         //  |  vCloud Director (New Generation)
