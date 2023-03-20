@@ -82,7 +82,6 @@ jobs:
       - name: Build 'repository'
         run: mvn clean package -f maven/repository/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
 
-
       - name: Set artifact file name
         if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
         run: echo "ARTIFACT_FILE_NAME=build-tools-for-vmware-aria-${{ env.IAC_VERSION }}-${{ github.run_number }}" >> $GITHUB_ENV
