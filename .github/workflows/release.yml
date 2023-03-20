@@ -53,5 +53,20 @@ jobs:
           git config user.name "Release Butler"
           git config user.email "svc.wwcoe.ci-admin@vmware.com"
 
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.7.0
+        with:
+          java-version: "8"
+          java-distribution: "corretto"
+          maven-version: "3.8.7"
+
+      - name: Install xmllint
+        run: sudo apt-get install libxml2-utils
+        
+      - name: Use Node.js '14.17.1'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.17.1'
+
       - name: Run release script
         run: ./release.sh -v ${{ inputs.version }}
