@@ -10,11 +10,11 @@ on:
 jobs:
   build:
     strategy:
-        matrix:
-          java: ['8']
-          maven: ['3.8.7']
-          node: ['14.17.1']
-          os: ['ubuntu-latest']
+      matrix:
+        java: ["8"]
+        maven: ["3.8.7"]
+        node: ["14.17.1"]
+        os: ["ubuntu-latest"]
 
     runs-on: ${{ matrix.os }}
 
@@ -33,11 +33,11 @@ jobs:
         uses: s4u/setup-maven-action@v1.7.0
         with:
           java-version: ${{ matrix.java }}
-          java-distribution: 'corretto' 
+          java-distribution: "corretto"
           maven-version: ${{ matrix.maven }}
 
       - name: Print versions
-        run: | 
+        run: |
           npm --version
           node --version
           mvn --version
@@ -98,3 +98,16 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_FILE_NAME }}
           path: ${{ env.ARTIFACT_FILE_NAME }}.zip
+
+  results:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    name: Build Results
+    needs: [build]
+    steps:
+      - run: exit 1
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+          }}
