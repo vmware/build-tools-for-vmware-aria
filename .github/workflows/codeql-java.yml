@@ -7,8 +7,15 @@ on:
 
 jobs:
   analyze:
+    strategy:
+        matrix:
+          java: ['8']
+          maven: ['3.8.7']
+          node: ['14.17.1']
+          os: ['ubuntu-latest']
+
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     permissions:
       actions: read
       contents: read
@@ -18,43 +25,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Use Node.js 14.17.1
+      - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
-          node-version: 14.17.1
+          node-version: ${{ matrix.node }}
 
-      - uses: actions/setup-java@v3
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.7.0
         with:
-          distribution: "corretto"
-          java-version: "8"
-
-      - name: Install npm 6.14.13
-        run: sudo npm install -g npm@6.14.13
+          java-version: ${{ matrix.java }}
+          java-distribution: 'corretto' 
+          maven-version: ${{ matrix.maven }}
 
       - name: Get version
-        id: get-version
-        run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_OUTPUT
+        run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_ENV
 
-      - name: Add packaging profile
+      - name: Replace variables in settings.xml
         run: |
-          sed -i '/<\/settings>/i \
-          	<profiles>\
-              <profile>\
-                <id>packaging</id>\
-                <properties>\
-                  <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>\
-                  <keystoreArtifactId>keystore.example</keystoreArtifactId>\
-                  <keystoreVersion>${{ steps.get-version.outputs.IAC_VERSION }}</keystoreVersion>\
-                  <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>\
-                  <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>\
-                  <vroKeyPass>VMware1!</vroKeyPass>\
-                </properties>\
-              </profile>\
-            </profiles>\
-          <activeProfiles>\
-            <activeProfile>packaging</activeProfile>\
-          </activeProfiles>\
-          ' ~/.m2/settings.xml
+          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_VERSION }}/g" .m2/settings.xml
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
@@ -63,17 +51,17 @@ jobs:
           languages: java
 
       - name: Build 'keystore-example'
-        run: mvn -T 1C clean install -f common/keystore-example/pom.xml
+        run: mvn -T 1C clean install -f common/keystore-example/pom.xml -s $PWD/.m2/settings.xml
       - name: Build 'npmlib'
-        run: mvn -T 1C clean install -f maven/npmlib/pom.xml
+        run: mvn -T 1C clean install -f maven/npmlib/pom.xml -s $PWD/.m2/settings.xml
       - name: Build 'iac'
-        run: mvn -T 1C clean install -f pom.xml
+        run: mvn -T 1C clean install -f pom.xml -s $PWD/.m2/settings.xml
       - name: Build 'base-package'
-        run: mvn -T 1C clean install -f maven/base-package/pom.xml
+        run: mvn -T 1C clean install -f maven/base-package/pom.xml -s $PWD/.m2/settings.xml
       - name: Build 'packages'
-        run: mvn -T 1C clean install -f packages/pom.xml
+        run: mvn -T 1C clean install -f packages/pom.xml -s $PWD/.m2/settings.xml
       - name: Build 'typescript-project-all'
-        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml
+        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -s $PWD/.m2/settings.xml
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

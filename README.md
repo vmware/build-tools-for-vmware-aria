@@ -40,6 +40,6 @@ mvn clean install -f maven/repository/pom.xml
 
 ## Package dependencies
 - npm: 6.14.13
-- node: 16.x.x
-- maven: 3.6.3
+- node: 14.17.1
+- maven: 3.8.7
 - jdk: 8
