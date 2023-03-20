@@ -40,6 +40,14 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: java
+          
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: Build 'keystore-example'
         run: mvn -T 1C clean install -f common/keystore-example/pom.xml -s $PWD/.m2/settings.xml
