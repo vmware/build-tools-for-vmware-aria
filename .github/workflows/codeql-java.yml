@@ -2,20 +2,11 @@ name: "CodeQL Java"
 
 on:
   push:
-  # pull_request:
-  #   branches: ["main"]
 
 jobs:
   analyze:
-    strategy:
-        matrix:
-          java: ['8']
-          maven: ['3.8.7']
-          node: ['14.17.1']
-          os: ['ubuntu-latest']
-
     name: Analyze
-    runs-on: ${{ matrix.os }}
+    runs-on: 'ubuntu-latest'
     permissions:
       actions: read
       contents: read
@@ -25,17 +16,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node }}
+      - name: Use Node.js '14.17.1'
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: '14.17.1'
 
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.7.0
         with:
-          java-version: ${{ matrix.java }}
+          java-version: '8'
           java-distribution: 'corretto' 
-          maven-version: ${{ matrix.maven }}
+          maven-version: '3.8.7'
 
       - name: Get version
         run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_ENV
