@@ -4,15 +4,47 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Enter the version number"
+        description: "Enter the version number [x.y.z]:"
         required: true
-        regex: '^\d+\.\d+\.\d+$'
 
 jobs:
-  create-release:
+  release:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
     steps:
+
+      - name: Validate actor permissions
+        run: |
+          URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
+          OUTPUT=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $URL )
+          echo $OUTPUT
+          if ! [[ $(echo $OUTPUT | jq -r '.state') == "active" ]]; then
+            echo "You are not an active user of 'build-tools-for-vmware-aria-maintainers' team!"
+            exit 1
+          fi
+          if ! [[ $(echo $OUTPUT | jq -r '.role') == "maintainer" ]]; then
+            echo "You are not a maintainer user of 'build-tools-for-vmware-aria-maintainers' team!"
+            exit 1
+          fi
+          
+      - name: Validate version input
+        run: |
+          if ! [[ "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version number: ${{ inputs.version }}"
+            exit 2
+          fi
+
+      # - name: Validate branch
+      #   run: |
+      #     if ! [[ "${{ github.ref }}" = "refs/heads/main" ]]; then
+      #       echo "Releases can be created only from 'main' branch!"
+      #       exit 3
+      #     fi
+
       - name: Checkout Code
         uses: actions/checkout@v2
 
@@ -22,4 +54,4 @@ jobs:
           git config user.email "svc.wwcoe.ci-admin@vmware.com"
 
       - name: Run release script
-        run: echo "Running script for version ${{ inputs.version }}"
+        run: ./release.sh -v ${{ inputs.version }}

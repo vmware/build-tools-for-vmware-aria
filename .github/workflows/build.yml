@@ -3,13 +3,20 @@ name: Build Project
 on:
   push:
     branches:
-      - '**' # trigger the workflow on any branch push event
+      - "**" # trigger the workflow on any branch push event
     paths:
-      - '**' # trigger the workflow on any file change
+      - "**" # trigger the workflow on any file change
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: ["8"]
+        maven: ["3.8.7"]
+        node: ["14.17.1"]
+        os: ["ubuntu-latest"]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
@@ -17,69 +24,98 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Use Node.js 14.17.1
+      - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
-          node-version: 14.17.1
+          node-version: ${{ matrix.node }}
 
-      - uses: actions/setup-java@v3
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.7.0
         with:
-          distribution: 'corretto'
-          java-version: '8'
-          
-      - name: Install npm 6.14.13
-        run: sudo npm install -g npm@6.14.13
-          
-      - name: Print npm version
-        run: npm --version
-      - name: Print node version
-        run: node --version
-      - name: Print mvn version
-        run: mvn --version
+          java-version: ${{ matrix.java }}
+          java-distribution: "corretto"
+          maven-version: ${{ matrix.maven }}
 
-      - name: Get version
-        id: get-version
-        run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_OUTPUT
-
-      - name: Add packaging profile
+      - name: Print versions
         run: |
-          sed -i '/<\/settings>/i \
-          	<profiles>\
-              <profile>\
-                <id>packaging</id>\
-                <properties>\
-                  <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>\
-                  <keystoreArtifactId>keystore.example</keystoreArtifactId>\
-                  <keystoreVersion>${{ steps.get-version.outputs.IAC_VERSION }}</keystoreVersion>\
-                  <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>\
-                  <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>\
-                  <vroKeyPass>VMware1!</vroKeyPass>\
-                </properties>\
-              </profile>\
-            </profiles>\
-          <activeProfiles>\
-            <activeProfile>packaging</activeProfile>\
-          </activeProfiles>\
-          ' ~/.m2/settings.xml 
+          npm --version
+          node --version
+          mvn --version
+
+      - name: Get IAC version
+        run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_ENV
+
+      - name: Replace variables in settings.xml
+        run: |
+          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_VERSION }}/g" .m2/settings.xml
+          sed -i "s/{{ OSSRH_USERNAME }}/${{ secrets.OSSRH_USERNAME }}/g" .m2/settings.xml
+          sed -i "s/{{ OSSRH_PASSWORD }}/${{ secrets.OSSRH_PASSWORD }}/g" .m2/settings.xml
 
       - name: Import GPG Key
         uses: crazy-max/ghaction-import-gpg@v5
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          
+
+      - name: Set MVN_BUILD_COMMAND
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            MVN_BUILD_COMMAND=deploy
+          else
+            MVN_BUILD_COMMAND=install
+          fi
+          echo "MVN_BUILD_COMMAND is $MVN_BUILD_COMMAND"
+          echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
       - name: Build 'keystore-example'
-        run: mvn -T 1C clean install -f common/keystore-example/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'npmlib'
-        run: mvn -T 1C clean install -f maven/npmlib/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'iac'
-        run: mvn -T 1C clean install -f pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'base-package'
-        run: mvn -T 1C clean install -f maven/base-package/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/base-package/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'packages'
-        run: mvn -T 1C clean install -f packages/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f packages/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'typescript-project-all'
-        run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/typescript-project-all/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'repository'
-        run: mvn -T 1C clean install -f maven/repository/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
-      
+        run: mvn clean package -f maven/repository/pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+
+      - name: Set artifact file name
+        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
+        run: echo "ARTIFACT_FILE_NAME=build-tools-for-vmware-aria-${{ env.IAC_VERSION }}-${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Package all artifacts
+        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
+        run: |
+          cp maven/repository/target/iac-maven-repository.zip .
+          tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt" CHANGELOG.md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
+        with:
+          name: ${{ env.ARTIFACT_FILE_NAME }}
+          path: ${{ env.ARTIFACT_FILE_NAME }}.zip
+
+  results:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    name: Build Results
+    needs: [build]
+    steps:
+      - run: exit 1
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+          }}
