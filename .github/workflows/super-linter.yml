@@ -23,13 +23,7 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_JAVA: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_MARKDOWN: true
-
-      - name: Upload Super Linter Output
-        uses: actions/upload-artifact@v2
-        with:
-          name: Super Linter Output
-          path: /tmp/lint-results.xml
