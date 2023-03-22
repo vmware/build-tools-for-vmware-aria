@@ -11,11 +11,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.7.0
         with:
-          java-version: '8'
-          distribution: 'corretto'
+          java-version: "8"
+          java-distribution: "corretto"
+          maven-version: "3.8.7"
 
       - name: Super-Linter
         uses: github/super-linter@v4.10.1
