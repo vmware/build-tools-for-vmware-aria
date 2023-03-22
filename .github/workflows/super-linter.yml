@@ -26,6 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           VALIDATE_JAVA: true
           VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_MARKDOWN: true
 
       - name: Upload Super Linter Output
         uses: actions/upload-artifact@v2
