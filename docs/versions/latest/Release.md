@@ -65,6 +65,20 @@ The project id is now fetched from the restClient, which checks if we have proje
 #### Relevant Documentation:
 None
 
+### *.helper.[tj]s files will now be excluded from code coverage reports*
+Helper files are meant to contain fixture or other helper methods and they are not supposed to be part of the code coverage report.
+
+#### Previous Behavior
+The `.nycrc` configuration that controls the code coverage did not contain an exclude for the helpers
+
+#### New Behavior
+`"**/*.helper.[tj]s"` was added to the configuration to facilitate exclusion of helpers
+
+#### Relevant Documentation:
+* None
+
+
+
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
 
