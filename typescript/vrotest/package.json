@@ -57,6 +57,6 @@
 		"iconv-lite",
 		"jasmine",
 		"nyc",
-    "browserslist"
+		"browserslist"
 	]
 }
