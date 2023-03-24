@@ -4,5 +4,5 @@
  * @returns {any} - describe the return type as well
  */
 (function (arg) {
-    return arg;
-});
+  return arg
+})

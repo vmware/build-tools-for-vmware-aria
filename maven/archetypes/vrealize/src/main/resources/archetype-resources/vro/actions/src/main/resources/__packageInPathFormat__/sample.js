@@ -5,5 +5,5 @@
  * @returns {number} - describe the return type as well
  */
 (function (x, y) {
-    return x + y;
-});
+  return x + y
+})

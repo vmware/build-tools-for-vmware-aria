@@ -1,30 +1,30 @@
 (function () {
-	var PAYLOAD_SERVER_PATH = "/payload";
-	var PAYLOAD_PATH = "payload/";
+  const PAYLOAD_SERVER_PATH = '/payload'
+  const PAYLOAD_PATH = 'payload/'
 
-	$(document).ready(function () {
-		getFilesFromServer(PAYLOAD_SERVER_PATH);
-	});
+  $(document).ready(function () {
+    getFilesFromServer(PAYLOAD_SERVER_PATH)
+  })
 
-	function getFilesFromServer(path) {
-		$.get(path, function (data, status) {
-			if (status == "success") {
-				parseFilesFromWebPage(data);
-			} else {
-				console.log();
-			}
-		});
-	}
+  function getFilesFromServer (path) {
+    $.get(path, function (data, status) {
+      if (status == 'success') {
+        parseFilesFromWebPage(data)
+      } else {
+        console.log()
+      }
+    })
+  }
 
-	function parseFilesFromWebPage(html) {
-		var document = $(html);
+  function parseFilesFromWebPage (html) {
+    const document = $(html)
 
-		// find all links ending with .dar
-		document.find("a[href$='.dar']").each(function () {
-			var url = $(this).attr('href');
-			var downloadUrl = PAYLOAD_PATH + url;
+    // find all links ending with .dar
+    document.find("a[href$='.dar']").each(function () {
+      const url = $(this).attr('href')
+      const downloadUrl = PAYLOAD_PATH + url
 
-			$("#vroFile").attr("href", downloadUrl);
-		});
-	}
-})();
+      $('#vroFile').attr('href', downloadUrl)
+    })
+  }
+})()

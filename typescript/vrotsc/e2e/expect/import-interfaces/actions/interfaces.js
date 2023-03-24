@@ -2,6 +2,6 @@
  * @return {Any}
  */
 (function () {
-    var exports = {};
-    return exports;
-});
+  const exports = {}
+  return exports
+})

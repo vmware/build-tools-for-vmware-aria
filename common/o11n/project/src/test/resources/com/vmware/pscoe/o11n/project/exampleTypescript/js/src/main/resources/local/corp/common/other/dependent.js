@@ -3,8 +3,8 @@
  * @returns {any}
  */
 (function () {
-    var Class = System.getModule("com.vmware.pscoe.library.class").Class();
-    return Class.define(function my() {
+  const Class = System.getModule('com.vmware.pscoe.library.class').Class()
+  return Class.define(function my () {
 
-    });
-});
+  })
+})

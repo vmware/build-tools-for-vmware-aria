@@ -4,6 +4,6 @@
  * @returns {*}
  */
 (function (object) {
-    System.log(object);
-    return object;
-});
+  System.log(object)
+  return object
+})

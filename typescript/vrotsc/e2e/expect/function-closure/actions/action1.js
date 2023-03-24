@@ -1,3 +1,3 @@
 (function () {
-    console.log("action1");
-});
+  console.log('action1')
+})

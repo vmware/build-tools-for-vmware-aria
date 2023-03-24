@@ -2,9 +2,9 @@
  * @return {Any}
  */
 (function () {
-    var __global = System.getContext() || (function () {
-        return this;
-    }).call(null);
-    var exports = {};
-    return exports;
-});
+  const __global = System.getContext() || (function () {
+    return this
+  }.call(null))
+  const exports = {}
+  return exports
+})

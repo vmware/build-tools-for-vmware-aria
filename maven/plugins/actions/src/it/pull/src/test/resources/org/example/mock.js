@@ -4,6 +4,6 @@
  * @returns {*}
  */
 (function (object) {
-    //Mock object
-    return object;
-});
+  // Mock object
+  return object
+})

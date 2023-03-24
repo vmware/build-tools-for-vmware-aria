@@ -2,7 +2,7 @@
  * @return {Any}
  */
 (function () {
-    var exports = {};
-    exports.default = true;
-    return exports;
-});
+  const exports = {}
+  exports.default = true
+  return exports
+})

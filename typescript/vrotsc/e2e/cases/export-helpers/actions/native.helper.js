@@ -1,3 +1,3 @@
-(function (){
-    return 1+2;
+(function () {
+  return 1 + 2
 })

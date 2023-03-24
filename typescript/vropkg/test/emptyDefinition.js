@@ -1,7 +1,7 @@
 /**
  * @return {Any}
  */
- (function () {
-    var exports = {};
-    return exports;
-});
+(function () {
+  const exports = {}
+  return exports
+})

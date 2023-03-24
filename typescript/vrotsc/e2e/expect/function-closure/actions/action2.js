@@ -4,5 +4,5 @@
  * @param {number} p2
  */
 (function (p1, p2) {
-    console.log("action2");
-});
+  console.log('action2')
+})

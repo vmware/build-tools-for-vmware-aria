@@ -2,8 +2,8 @@
  * @return {Any}
  */
 (function () {
-    var exports = {};
-    exports.TestVar = 10;
-    var TestVar = exports.TestVar;
-    return exports;
-});
+  const exports = {}
+  exports.TestVar = 10
+  const TestVar = exports.TestVar
+  return exports
+})
