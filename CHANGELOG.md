@@ -1,5 +1,6 @@
 ### Fixes
 * [vrotest] IAC-742 / *.helper.[tj]s files will now be excluded from code coverage reports
+* [package-installer] IAC-732 / Installer Should Ask if vRO is Embedded
 
 ### Enhancements
 * [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
