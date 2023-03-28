@@ -48,6 +48,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with: 
+          username: 'svc-wwcoe-ci-admin'
           token: $ {{ secrets.GH_TOKEN }}
 
       - name: Setup Maven Action
