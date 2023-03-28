@@ -48,10 +48,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set configs
-        run: |
-          git config user.name "Release Butler"
-          git config user.email "svc.wwcoe.ci-admin@vmware.com"
+      - uses: oleksiyrudenko/gha-git-credentials@v2-latest
+        with:
+          token: '${{ secrets.GH_TOKEN }}'
+          global: true
+          email: 'svc.wwcoe.ci-admin@vmware.com'
+          name: 'Release Butler'
 
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.7.0
