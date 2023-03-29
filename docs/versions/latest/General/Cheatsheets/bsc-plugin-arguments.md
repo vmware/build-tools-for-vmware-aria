@@ -1,25 +1,11 @@
-Name: bsc-package-maven-plugin
-Description: Build Tools for VMware Aria provides development and release
-  management tools for implementing automation solutions based on the VMware
-  Aria Suite and VMware Cloud Director. The solution enables Virtual
-  Infrastructure Administrators and Automation Developers to use standard
-  DevOps practices for managing and deploying content.
-Group Id: com.vmware.pscoe.maven.plugins
-Artifact Id: bsc-package-maven-plugin
-Version: 2.29.3-SNAPSHOT
-Goal Prefix: bsc
-
-This plugin has 1 goal:
-
-bsc:package
-  Description: (no description available)
-  Implementation: com.vmware.pscoe.maven.plugins.BasicPackageMojo
-  Language: java
-  Bound to phase: package
-
-  Available parameters:
-
-    project (Default: ${project})
-      (no description available)
-
-
+[ERROR] 
+[ERROR] groupId: 'com.vmware.pscoe.maven.plugins'
+[ERROR] artifactId: 'bsc-package-maven-plugin'
+[ERROR] version: '2.30.1-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:bsc-package-maven-plugin:2.30.1-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact com.vmware.pscoe.maven.plugins:bsc-package-maven-plugin:jar:2.30.1-SNAPSHOT
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
