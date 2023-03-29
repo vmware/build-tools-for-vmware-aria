@@ -167,8 +167,8 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
 	@Override
-	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun) {
-		return this.importAllPackages(pkg, dryrun, false);
+	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun, boolean enableBackup) {
+		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
      * the file system.
      */
     @Override
-    public List<Package> importAllPackages(List<Package> packages, boolean dryrun, boolean mergePackages) {
+    public List<Package> importAllPackages(List<Package> packages, boolean dryrun, boolean mergePackages, boolean enableBackup) {
         validateFilesystem(packages);
         List<Package> sourceEndpointPackages = packages;
 
@@ -198,10 +198,10 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 
     /**
      * Implement the pull usecase, so pull all of the packages described in the {@code vropsPackageDescriptor} (constructed from content.yaml).
-     * @param vropsPackage
-     * @param vropsPackageDescriptor
-     * @param dryrun
-     * @return
+     * @param vropsPackage vropsPackage
+     * @param vropsPackageDescriptor vropsPackageDescriptor
+     * @param dryrun dryrun
+     * @return package
      */
     @Override
     public Package exportPackage(Package vropsPackage, VropsPackageDescriptor vropsPackageDescriptor, boolean dryrun) {

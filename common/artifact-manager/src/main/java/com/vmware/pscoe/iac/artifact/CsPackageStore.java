@@ -45,7 +45,7 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 
 	@Override
 	public List<Package> getPackages() {
-		throw new UnsupportedOperationException("Code Stream Services does not provide native support for packages.");
+		throw new UnsupportedOperationException("getPackages: Code Stream Services does not provide native support for packages.");
 	}
 
 	@Override
@@ -69,12 +69,12 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 	}
 
 	@Override
-	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun) {
-		return this.importAllPackages(pkg,dryrun,false);
+	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun, boolean enableBackup) {
+		return this.importAllPackages(pkg,dryrun,false, enableBackup);
 	}
 
 	@Override
-	public List<Package> importAllPackages(List<Package> csPackages, boolean dryrun, boolean mergePackages) {
+	public List<Package> importAllPackages(List<Package> csPackages, boolean dryrun, boolean mergePackages, boolean enableBackup) {
 		this.validateFilesystem(csPackages);
 
 		List<Package> sourceEndpointPackages = csPackages;
@@ -138,16 +138,16 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 
 	@Override
 	protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
-		throw new UnsupportedOperationException("Code Stream Services does not provide native support for packages.");
+		throw new UnsupportedOperationException("deletePackage: Code Stream Services does not provide native support for packages.");
 	}
 
 	@Override
 	protected CsPackageContent getPackageContent(Package pkg) {
-		throw new UnsupportedOperationException("Code Stream Services does not provide native support for packages.");
+		throw new UnsupportedOperationException("getPackageContent: Code Stream Services does not provide native support for packages.");
 	}
 
 	@Override
 	protected void deleteContent(Content content, boolean dryrun) {
-		throw new UnsupportedOperationException("Code Stream Services does not provide native support for packages.");
+		throw new UnsupportedOperationException("deleteContent: Code Stream Services does not provide native support for packages.");
 	}
 }

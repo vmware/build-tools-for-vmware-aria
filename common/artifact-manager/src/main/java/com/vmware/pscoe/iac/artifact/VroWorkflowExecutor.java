@@ -54,7 +54,7 @@ public class VroWorkflowExecutor {
      * @param params     - Properties containing the input parameters of the workflow
      * @param timeout    - Timeout (in seconds) to wait for the workflow to finish
      * @return Properties containing all string output parameters of the workflow
-     * @throws WorkflowExecutionException
+     * @throws WorkflowExecutionException exception
      */
     public WorkflowExecution executeWorkflow(String workflowId, Properties params, int timeout) throws WorkflowExecutionException {
         // check whether workflow exists prior execution

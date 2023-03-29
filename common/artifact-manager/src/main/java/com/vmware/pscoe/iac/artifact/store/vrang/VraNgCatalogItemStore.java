@@ -90,7 +90,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return List<String>
+	 * @return list of catalog items
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -111,7 +111,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Export specific catalogItemIds
 	 * Note: maybe add a configuration to skip misnamed Catalog items
 	 *
-	 * @param catalogItemNames
+	 * @param catalogItemNames list of item names
 	 */
 	@Override
 	protected void exportStoreContent( List<String> catalogItemNames ) {
@@ -400,7 +400,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 
 	/**
 	 * Import all catalog items
-	 * @NOTE	This will skip svg icon upload due to issue described in IAC-482
+	 * !NOTE	This will skip svg icon upload due to issue described in IAC-482
+	 * @param sourceDirectory target path
 	 */
 	public void importContent( File sourceDirectory ) {
 		logger.info( "Importing files from the '{}' directory", DIR_CATALOG_ITEMS );

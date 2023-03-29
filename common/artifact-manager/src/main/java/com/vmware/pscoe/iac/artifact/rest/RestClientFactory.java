@@ -23,6 +23,9 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.SSLContext;
 
+import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliAuthInterceptor;
+import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV1;
+import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
@@ -241,14 +244,23 @@ public class RestClientFactory {
 		return new RestClientVcd(configuration, restTemplate);
 	}
 
-	public static RestClientVrli getClientVrli(ConfigurationVrli configuration) {
+	public static RestClientVrliV1 getClientVrliV1(ConfigurationVrli configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
         RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
-		return new RestClientVrli(configuration, restTemplate);
+		return new RestClientVrliV1(configuration, restTemplate);
 	}
+	public static RestClientVrliV2 getClientVrliV2(ConfigurationVrli configuration) {
+		RestTemplate restTemplate = getInsecureRestTemplate();
+
+		RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration, restTemplate);
+		restTemplate.getInterceptors().add(interceptor);
+
+		return new RestClientVrliV2(configuration, restTemplate);
+	}
+
 
     private enum TimeoutType {
         CONNECTION, SOCKET

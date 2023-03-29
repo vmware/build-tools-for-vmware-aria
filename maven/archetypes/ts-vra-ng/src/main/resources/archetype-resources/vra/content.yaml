@@ -21,6 +21,10 @@
 # Example Property Groups:
 # property-group:
 #  - property-group-1
+# policy:
+#   content-sharing: 
+#     - policy name 1
+#     - policy name 2
 
 blueprint:
 subscription:
@@ -39,3 +43,5 @@ resource-action:
 catalog-entitlement:
 content-source:
 property-group:
+policy:
+  content-sharing:

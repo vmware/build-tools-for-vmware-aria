@@ -17,6 +17,21 @@ export class PowershellStrategy extends BaseStrategy {
     async packageProject() {
 
         const polyglotJson = await fs.readJSONSync(this.options.polyglotJson) as PlatformDefinition;
+
+/*-
+ * #%L
+ * polyglotpkg
+ * %%
+ * Copyright (C) 2023 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
         this.phaseCb(Events.COMPILE_START);
         await this.compile(this.options.src, this.options.out);
         this.phaseCb(Events.COMPILE_END);
@@ -78,17 +93,22 @@ export class PowershellStrategy extends BaseStrategy {
 
         deps.split(/\r?\n/).forEach(line => {
             if (line.indexOf("Import-Module") !== -1 && line.indexOf("#@ignore") === -1 && !line.startsWith("#")) {
-                const module: string = line.replace("Import-Module", "").trim();
+                const module: string = line.replace("Import-Module", "").replace("-Name", "").replace(";", "").trim();
                 modules.push(module);
             }
         });
 
         this.logger.info(`Powershell modules included: ${modules}`);
 
+        const moduleNames = modules.join(",");
+        const securityProtocolArg = polyglotJson.platform.protocolType ? `[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::${polyglotJson.platform.protocolType};` : "";
+        const command = `${securityProtocolArg} Save-Module -Name ${moduleNames} -Path '${modulesPath}' -Repository PSGallery`;
+        
+        const args = polyglotJson.platform.protocolType ? [`-c "${command}"`] : [command];
         if (modules.length > 0) {
             fs.ensureDirSync(modulesPath);
             this.logger.info(`Downloading and saving dependencies in "${modulesPath}..."`);
-            await run("pwsh", ["-c", "Save-Module", "-Name", `"${modules.toString()}"`, "-Path", `"${modulesPath}"`, "-Repository PSGallery"]);
+            await run("pwsh", args);
         } else {
             this.logger.info("No change in dependencies. Skipping installation...");
         }

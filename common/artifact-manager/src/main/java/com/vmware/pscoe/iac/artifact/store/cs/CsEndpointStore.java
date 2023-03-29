@@ -50,7 +50,7 @@ public class CsEndpointStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
-	 * @param File sourceDirectory
+	 * @param sourceDirectory sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
 		File endpointsFolder = Paths.get(sourceDirectory.getPath(), DIR_ENDPOINTS).toFile();

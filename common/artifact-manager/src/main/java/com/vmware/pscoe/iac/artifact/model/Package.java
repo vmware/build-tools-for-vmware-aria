@@ -21,7 +21,7 @@ public final class Package implements Comparable<Package> {
     private final String id;
     private final String name;
     private final String version;
-    private final String filesystemPath;
+    private String filesystemPath;
 
     protected Package(PackageType type, String id, String name, String version, String filesystemPath) {
         this.type = type;
@@ -50,6 +50,10 @@ public final class Package implements Comparable<Package> {
     public String getFilesystemPath() {
         return filesystemPath;
     }
+
+	public void setFilesystemPath(String filesystemPath) {
+		this.filesystemPath = filesystemPath;
+	}
 
     public boolean hasVersionQualifier() {
         return this.version != null && this.version.length() > 0;

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<comment>Exported from PSCoE o11n-convert</comment>
-<entry key="categoryPath">PSCoE.Library.vRO.Exec</entry>
-<entry key="name">Run Script</entry>
-<entry key="type">Workflow</entry>
-<entry key="id">98568979-76ed-4a4a-854b-1e730e2ef4f1</entry>
-</properties>

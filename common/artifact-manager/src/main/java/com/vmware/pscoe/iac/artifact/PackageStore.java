@@ -45,9 +45,9 @@ public interface PackageStore<T extends PackageDescriptor> {
 
     List<Package> exportAllPackages(List<Package> pkg, boolean dryrun);
 
-	List<Package> importAllPackages(List<Package> pkg, boolean dryrun);
+	List<Package> importAllPackages(List<Package> pkg, boolean dryrun, boolean enableBackup);
 
-	List<Package> importAllPackages(List<Package> pkg, boolean dryrun, boolean mergePackages);
+	List<Package> importAllPackages(List<Package> pkg, boolean dryrun, boolean mergePackages, boolean enableBackup);
     
     List<Package> deletePackage(Package pkg, boolean lastVersion, boolean oldVersions,  boolean dryrun);
     

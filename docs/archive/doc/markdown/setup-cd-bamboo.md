@@ -68,6 +68,7 @@ vrang_host=vra-l-01a.corp.local
 vro_import_configuration_attribute_values=false
 vrang_csp_host=vra-l-01a.corp.local
 vro_import_packages=true
+vro_enable_backup=true
 ignore_ssl_certificate_verification=true
 vrang_org_name=vidm-l-01a
 vro_import_old_versions=false

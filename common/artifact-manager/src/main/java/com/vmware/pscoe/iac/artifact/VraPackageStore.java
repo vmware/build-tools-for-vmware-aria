@@ -89,12 +89,12 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 	}
 
 	@Override
-	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun) {
-		return this.importAllPackages(pkg,dryrun,false);
+	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun, boolean enableBackup) {
+		return this.importAllPackages(pkg,dryrun,false, enableBackup);
 	}
 
 	@Override
-	public List<Package> importAllPackages(List<Package> vraPackages, boolean dryrun, boolean mergePackages) {
+	public List<Package> importAllPackages(List<Package> vraPackages, boolean dryrun, boolean mergePackages, boolean enableBackup) {
 		this.validateFilesystem(vraPackages);
 
 		List<Package> sourceEndpointPackages = vraPackages;

@@ -170,6 +170,9 @@ enum Option {
     VRLI_PASSWORD(
             "vrli_password",
             Configuration.PASSWORD),
+    VRLI_PACKAGE_IMPORT_OVERWRITE_MODE(
+            "vrli_package_import_overwrite_mode",
+            ConfigurationVrli.PACKAGE_IMPORT_OVERWRITE_MODE),
     VRLI_VROPS_INTEGRATION_HOST(
             "vrli_vrops_server",
             ConfigurationVrli.INTEGRATION_VROPS_HOST),
@@ -308,7 +311,12 @@ enum Option {
             StringUtils.EMPTY),
     VRO_IMPORT(
             "vro_import_packages",
-            StringUtils.EMPTY),
+			StringUtils.EMPTY),
+	
+	VRO_ENABLE_BACKUP(
+		"vro_enable_backup",
+		StringUtils.EMPTY),
+		
     VCD_IMPORT(
             "vcd_import_packages",
             StringUtils.EMPTY),
@@ -552,35 +560,38 @@ public class Installer {
         if (input.allTrue(Option.VRO_IMPORT, Option.VRO_EMBEDDED)) {
             String[] arr = { ConfigurationPrefix.VRO.getValue(), ConfigurationPrefix.VRANG.getValue() };
             PackageStoreFactory.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(arr)))
-                    .importAllPackages(getFilesystemPackages(PackageType.VRO), false);
-        } else if (input.allTrue(Option.VRO_IMPORT)){
+                    .importAllPackages(getFilesystemPackages(PackageType.VRO), false, input.allTrue(Option.VRO_ENABLE_BACKUP));
+        } else if (input.allTrue(Option.VRO_IMPORT)){ 
+			
             PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.VRO), false);
-        }
+                    .importAllPackages(getFilesystemPackages(PackageType.VRO), false, input.allTrue(Option.VRO_ENABLE_BACKUP));
+		}
+		
+		boolean vroEnableBackup = false; //the backup will be possible only for vRO packages
 
         if (input.allTrue(Option.VRA_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(ConfigurationPrefix.VRA.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.VRA), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.VRA), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.CS_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationCs.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.CS), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.CS), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.ABX_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationAbx.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.ABX), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.ABX), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.VRANG_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.VRANG), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.VRANG), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.VCD_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationVcd.fromProperties(input.getMappings(ConfigurationPrefix.VCD.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.VCDNG), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.VCDNG), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.VRO_DELETE_LAST_VERSION)) {
@@ -637,12 +648,12 @@ public class Installer {
 
         if (input.allTrue(Option.VROPS_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationVrops.fromProperties(input.getMappings(ConfigurationPrefix.VROPS.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.VROPS), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.VROPS), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.VRLI_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationVrli.fromProperties(input.getMappings(ConfigurationPrefix.VRLI.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.VRLI), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.VRLI), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.VCD_DELETE_OLD_VERSIONS)) {
@@ -652,7 +663,7 @@ public class Installer {
 
         if (input.allTrue(Option.SSH_IMPORT)) {
             PackageStoreFactory.getInstance(ConfigurationSsh.fromProperties(input.getMappings(ConfigurationPrefix.SSH.getValue())))
-                    .importAllPackages(getFilesystemPackages(PackageType.BASIC), false);
+                    .importAllPackages(getFilesystemPackages(PackageType.BASIC), false, vroEnableBackup);
         }
 
         if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
@@ -1042,6 +1053,7 @@ public class Installer {
         userInput(input, Option.VRLI_USERNAME, "  vRLI Username");
         passInput(input, Option.VRLI_PASSWORD, "  vRLI Password");
         userInput(input, Option.VRLI_PROVIDER, "  vRLI Provider", "Local");
+        userInput(input, Option.VRLI_PACKAGE_IMPORT_OVERWRITE_MODE, "  vRLI Package Overwrite Mode", "OVERWRITE");
 
         // vROps integration for vRLI settings
         userInput(input, Option.VRLI_VROPS_INTEGRATION_HOST, "  vROps integration FQDN");

@@ -17,6 +17,7 @@ package com.vmware.pscoe.iac.artifact.helpers;
 
 import com.vmware.pscoe.iac.artifact.helpers.filesystem.BlueprintFsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.filesystem.CatalogItemFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.ContentSharingPolicyFsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.filesystem.CustomResourceFsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.filesystem.EntitlementFsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.filesystem.PropertyGroupFsMocks;
@@ -31,6 +32,7 @@ import java.io.File;
 public class FsMocks {
 	private final File tempDir;
 	private BlueprintFsMocks blueprintFsMocks;
+	private ContentSharingPolicyFsMocks contentSharingPolicyFsMocks;
 	private PropertyGroupFsMocks propertyGroupFsMocks;
 	private CatalogItemFsMocks catalogItemFsMocks;
 	private CustomResourceFsMocks customResourceFsMocks;
@@ -48,6 +50,14 @@ public class FsMocks {
 		}
 
 		return this.blueprintFsMocks;
+	}
+
+	public ContentSharingPolicyFsMocks contentSharingFsMocks() {
+		if (this.contentSharingPolicyFsMocks == null) {
+			this.contentSharingPolicyFsMocks = new ContentSharingPolicyFsMocks(this.tempDir);
+		}
+
+		return this.contentSharingPolicyFsMocks;
 	}
 
 	public SubscriptionFsMocks subscriptionFsMocks() {

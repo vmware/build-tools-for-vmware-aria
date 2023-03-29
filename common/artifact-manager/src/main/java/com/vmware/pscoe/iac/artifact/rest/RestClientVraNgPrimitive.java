@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,12 +99,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private static final String SERVICE_POST_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_PUT_PROPERTY_GROUP = "/properties/api/property-groups";
 	private static final String SERVICE_SECRET = "/platform/api/secrets";
+	private static final String SERVICE_POLICIES = "/policy/api/policies";
 	private static final int VRA_VERSION_MAJOR = 8;
 	private static final int VRA_VERSION_MINOR = 1;
 	private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com",
 			"api.mgmt.cloud.vmware.com");
 	private static final String VRA_CLOUD_VERSION = "cloud";
 	private static final String CUSTOM_FORM_DEFAULT_FORMAT = "JSON";
+	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
 
 	private final ConfigurationVraNg configuration;
 	private final RestTemplate restTemplate;
@@ -190,9 +194,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Downloads the given icon.
 	 * The byte array returned by the response must be consumed and saved on the fs
 	 *
-	 * @param iconId
+	 * @param iconId iconId
 	 *
-	 * @return ResponseEntity<byte[]>
+	 * @return entities
 	 */
 	protected ResponseEntity<byte[]> downloadIconPrimitive(String iconId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_DOWNLOAD + "/" + iconId));
@@ -204,9 +208,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Uploads a File.
 	 * Service Broker has a limit of 100KB that is NOT enforced here.
 	 *
-	 * @param iconFile
+	 * @param iconFile iconFile
 	 *
-	 * @return ResponseEntity<String>
+	 * @return list of responses
 	 */
 	protected ResponseEntity<String> uploadIconPrimitive(File iconFile) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_UPLOAD));
@@ -226,10 +230,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * used for
 	 * patching limits, it could be extended in the future
 	 *
-	 * @param catalogItem
-	 * @param iconId
+	 * @param catalogItem catalogItem
+	 * @param iconId iconId
 	 *
-	 * @return ResponseEntity<String>
+	 * @return list of response entities
 	 */
 	protected ResponseEntity<String> patchCatalogItemIconPrimitive(VraNgCatalogItem catalogItem, String iconId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ITEM_ICON_UPDATE + "/" + catalogItem.getId()));
@@ -326,7 +330,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Returns the raw string content of a blueprint version details API call
 	 *
-	 * @param String blueprintId
+	 * @param blueprintId blueprintId
 	 * @return String
 	 */
 	public String getBlueprintVersionsContent(String blueprintId) {
@@ -379,9 +383,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Consuming the vRA REST API endpoint to create a blueprint version with the
 	 * provided details
 	 *
-	 * @param String blueprintId
-	 * @param Map    versionDetails
-	 * @throws URISyntaxException
+	 * @param blueprintId blueprintId
+	 * @param versionDetails    versionDetails
+	 * @throws URISyntaxException exception
 	 */
 	public void createBlueprintVersionPrimitive(String blueprintId, Map<String, Object> versionDetails)
 			throws URISyntaxException {
@@ -498,6 +502,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve all content sources available for the configured project.
 	 *
+	 * @param project project
 	 * @return list of VraNgContentSource objects.
 	 * @see VraNgContentSource
 	 */
@@ -533,6 +538,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve all catalog items available for the configured project.
 	 *
+	 * @param project project
 	 * @return list of VraNgCatalogItem objects.
 	 * @see VraNgCatalogItem
 	 */
@@ -972,8 +978,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param entitlement - the entitlement definition to be created.
 	 * @param project     - project id of where to share the entitlement definition.
-	 * @return void
-	 * @throws URISyntaxException, RuntimeException
+	 * @throws URISyntaxException exception, RuntimeException
 	 */
 	protected void createCatalogEntitlementPrimitive(VraNgCatalogEntitlement entitlement, String project)
 			throws URISyntaxException {
@@ -1115,7 +1120,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param id profile id
 	 * @return REST response payload
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getFlavorProfileById(String id) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + id)
@@ -1227,7 +1232,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param regionId          region id
 	 * @param flavorProfileName profile name
 	 * @param flavorMappings    list of flavor mappings
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected void createFlavorPrimitive(String regionId, String flavorProfileName,
 			List<VraNgFlavorMapping> flavorMappings) throws URISyntaxException {
@@ -1253,8 +1258,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param flavorProfileId profile id
 	 * @param flavorMappings  list of flavor mappings
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	protected void updateFlavorPrimitive(String flavorProfileId, List<VraNgFlavorMapping> flavorMappings)
 			throws URISyntaxException, UnexpectedException {
@@ -1289,9 +1294,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param flavorProfileId profile id
 	 * @param flavorMappings  list of flavor mappings
 	 * @return list of flavor mappings
-	 * @throws JsonSyntaxException
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws JsonSyntaxException exception
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	private List<VraNgFlavorMapping> getFlavorMappingsToImport(String flavorProfileId,
 			List<VraNgFlavorMapping> flavorMappings) throws JsonSyntaxException,
@@ -1336,7 +1341,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param id profile id
 	 * @return REST response payload
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getImageProfileById(String id) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + id)
@@ -1459,7 +1464,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param regionId         region id
 	 * @param imageProfileName profile name
 	 * @param imageMappings    list of image mappings
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected void createImageProfilePrimitive(String regionId, String imageProfileName,
 			List<VraNgImageMapping> imageMappings) throws URISyntaxException {
@@ -1485,8 +1490,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param imageProfileId profile id
 	 * @param imageMappings  list of image mappings
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	protected void updateImageProfilePrimitive(String imageProfileId, List<VraNgImageMapping> imageMappings)
 			throws URISyntaxException, UnexpectedException {
@@ -1519,9 +1524,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param imageProfileId profile id
 	 * @param imageMappings  list of image mappings
 	 * @return list of image mappings
-	 * @throws JsonSyntaxException
-	 * @throws URISyntaxException
-	 * @throws UnexpectedException
+	 * @throws JsonSyntaxException exception
+	 * @throws URISyntaxException exception
+	 * @throws UnexpectedException exception
 	 */
 	private List<VraNgImageMapping> getImageMappingsToImport(String imageProfileId,
 			List<VraNgImageMapping> imageMappings)
@@ -1616,7 +1621,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param profileId profile id
 	 * @param profile   storage profile
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception
 	 */
 	protected void updateStorageProfilePrimitive(String profileId, VraNgStorageProfile profile)
 			throws URISyntaxException {
@@ -1628,7 +1633,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Create a new storage profile returning its id
 	 *
 	 * @param profile storage profile
-	 * @throws URISyntaxException
+	 * @throws URISyntaxException exception exception
+	 * @return profile
+	 *
 	 */
 	protected String createStorageProfilePrimitive(VraNgStorageProfile profile) throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
@@ -1662,9 +1669,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Alias to getAllPropertyGroupsPrimitive( String nameFilter ) without any
-	 * filter specifid
+	 * filter specified
 	 *
-	 * @return List<VraNgPropertyGroup>
+	 * @return list of property groups
 	 */
 	protected List<VraNgPropertyGroup> getAllPropertyGroupsPrimitive() {
 		return this.getAllPropertyGroupsPrimitive(null);
@@ -1684,7 +1691,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * returned with surrounded '"',
 	 * so it is trimmed
 	 *
-	 * @return List<VraNgPropertyGroup>
+	 * @return list of property groups
+	 * @param nameFilter filter
 	 */
 	protected List<VraNgPropertyGroup> getAllPropertyGroupsPrimitive(String nameFilter) {
 		boolean hasMore = true;
@@ -1750,6 +1758,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param patchTarget patch target
 	 * @param profileId   profile id
 	 * @param profile     storage profile
+	 * @throws URISyntaxException exception
 	 */
 	protected void updateSpecificProfilePrimitive(String patchTarget, String profileId, VraNgStorageProfile profile)
 			throws URISyntaxException {
@@ -1761,8 +1770,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retrieve fabric entity name. This method calls a requested URL
 	 * and returns the name property of the response.
 	 *
-	 * @param fabricUrl
-	 * @return
+	 * @param fabricUrl url
+	 * @return fabric entity name
 	 */
 	protected String getFabricEntityNamePrimitive(String fabricUrl) {
 		URI url = getURI(getURIBuilder().setPath(fabricUrl));
@@ -1987,7 +1996,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param customResourceJson String containing the raw json content of the custom resource
 	 *
-	 * @throws URISyntaxException in case of incorrect URI
+	 * @throws URISyntaxException exception in case of incorrect URI
 	 */
 	protected void importCustomResourcePrimitive(String customResourceJson) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_CUSTOM_RESOURCES).build();
@@ -2344,5 +2353,128 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	private boolean isVraCloud(URI url) {
 		return VRA_CLOUD_HOSTS.stream().filter(host -> url.getHost().contains(host)).count() > 0;
+	}
+
+	/**
+	 * Retrieve all content sharing policy Ids.
+	 *
+	 * @return list of sharing policy Ids that are available.
+	 * 
+	 */
+	protected List<String> getAllContentSharingPolicyIdsPrimitive() {
+		List<String> policyIds = new ArrayList<>();
+		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
+		logger.debug("Policy Ids found on server: {}", results.size());
+		results.forEach(o -> {
+			JsonObject ob = o.getAsJsonObject();
+			String typeId = ob.get("typeId").getAsString();
+			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE)) {
+				String policyId = ob.get("id").getAsString();
+				policyIds.add(policyId);
+			}
+		});
+		return policyIds;
+	}
+
+	/**
+	 * Retrieve content sharing policy Id based on name.
+	 *
+	 * @param name name of the policy
+	 * @return content sharing policy Id.
+	 * 
+	 */
+	protected String getContentSharingPolicyIdByName(String name) {
+		String policyId= "";
+		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
+		logger.debug("Policies found on server: {}", results.size());
+		for(JsonObject o : results)
+		{  
+			JsonObject ob = o.getAsJsonObject();
+			String typeId = ob.get("typeId").getAsString();
+			String policyName = ob.get("name").getAsString();
+			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE) && policyName.equals(name) ) {
+				policyId= ob.get("id").getAsString();
+				return policyId;
+			}  
+		}
+		return policyId;
+	}
+
+	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(String policyId) {
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		JsonElement root = JsonParser.parseString(response.getBody());
+		if (!root.isJsonObject()) {
+			return null;
+		}
+		JsonObject result = root.getAsJsonObject();
+		String name = result.get("name").getAsString();
+		String description= result.has("description") ? result.get("description").getAsString(): "";
+		String typeId = result.get("typeId").getAsString();
+		String enforcementType = result.get("enforcementType").getAsString();
+		VraNgDefinition definition =  new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgDefinition.class);
+		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
+			VraNgContentSourceBase contentSource = this.getContentSourcePrimitive(item.id);
+			item.name = (contentSource != null) ? contentSource.getName() : "";
+		}));
+		csPolicy.setDefinition(definition);
+		csPolicy.setName(name);
+		csPolicy.setEnforcementType(enforcementType);
+		csPolicy.setDescription(description);
+		csPolicy.setTypeId(typeId);
+		return csPolicy;
+	}
+
+	public void createContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(csPolicy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
+		jsonObject.addProperty("orgId", organizationId);
+		jsonObject.addProperty("projectId", getProjectId());
+		handleItemsProperty(jsonObject);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	public void updateContentSharingPolicyPrimitive(VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(csPolicy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
+		jsonObject.addProperty("id", getContentSharingPolicyIdByName(csPolicy.getName()));
+		jsonObject.addProperty("orgId", organizationId);
+		jsonObject.addProperty("projectId", getProjectId());
+		handleItemsProperty(jsonObject);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	public void handleItemsProperty(JsonObject csPolicyJsonObject)
+	{
+		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
+		JsonArray euArr=  definition.getAsJsonArray("entitledUsers");
+		for (JsonElement eu : euArr) {
+			JsonObject entitledUserObj = eu.getAsJsonObject();
+			JsonArray itemsArr     = entitledUserObj.getAsJsonArray("items");
+			for (JsonElement item : itemsArr) {
+				JsonObject itemObj = item.getAsJsonObject();
+				String contentSourceName = itemObj.get("name").getAsString();
+				List<VraNgContentSourceBase> contentSources = this.getContentSources();
+				VraNgContentSourceBase contentSource = contentSources.stream()
+						.filter(cs -> cs.getName().equals(contentSourceName))
+						.findFirst()
+						.orElse(null);
+				if (contentSource == null) {
+					throw new RuntimeException(
+							String.format("Content Source with name  '%s' could not be found on target system",
+									contentSourceName));
+				}
+				itemObj.addProperty("id", contentSource.getId());
+				itemObj.remove("name");
+			}
+		}
+		definition.add("entitledUsers", euArr);
+		csPolicyJsonObject.add("definition", definition);
 	}
 }
