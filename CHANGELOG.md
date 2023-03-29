@@ -1,9 +1,6 @@
 ### Fixes
 * [package-installer] IAC-732 / Installer Should Ask if vRO is Embedded
 
-### Enhancements
-* [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
-
 ## v2.31.0 - 29 Mar 2023
 
 ### Fixes
