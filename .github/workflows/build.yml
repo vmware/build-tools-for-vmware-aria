@@ -9,6 +9,9 @@ on:
 
 jobs:
   build:
+    concurrency:
+      group: ${{ github.ref }}
+
     strategy:
       matrix:
         java: ["8"]
