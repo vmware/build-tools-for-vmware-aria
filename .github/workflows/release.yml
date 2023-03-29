@@ -47,7 +47,7 @@ jobs:
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
 
-      - name: Release documentation
+      - name: Generate documentation
         run: |
           echo "Generating Documentation..."
           DOC_VERSION="v${{ inputs.version }}"
@@ -68,12 +68,12 @@ jobs:
           cp -rf $LATEST_VERSION_FOLDER/* $NEW_VERSION_FOLDER
 
           #	Insert the latest version in Release.md and README.md for the new release
-          ssed -i "/$VERSION_PLACEHOLDER_TEXT/c\\# $DOC_VERSION" $NEW_VERSION_RELEASE_MD
+          sed -i "/$VERSION_PLACEHOLDER_TEXT/c\\# $DOC_VERSION" $NEW_VERSION_RELEASE_MD
 
-          ssed -i "/$VERSION_PLACEHOLDER_TEXT/c\\# $DOC_VERSION" $NEW_VERSION_README_MD
+          sed -i "/$VERSION_PLACEHOLDER_TEXT/c\\# $DOC_VERSION" $NEW_VERSION_README_MD
 
           #	Remove comments from the Release file ( potential future improvements remove all comments recursively in all files )
-          ssed -i '/^\[\/\/\]:\s#/d' $NEW_VERSION_RELEASE_MD
+          sed -i '/^\[\/\/\]:\s#/d' $NEW_VERSION_RELEASE_MD
 
           #	Delete latest Release.md and replace it with a blank one
           rm -rf $LATEST_VERSION_RELEASE_MD
@@ -83,9 +83,8 @@ jobs:
 
           echo "Done Generating Documentation." 
 
-      - name: Release plugin arguments
+      - name: Generate plugin arguments
         run: |          
-          IFS=$'\n'
           for POM_PATH in $(find maven/plugins -mindepth 2 -maxdepth 2 -name pom.xml -type f -not -path "maven/plugins/common/*"); do # Not recommended, will break on whitespace
             echo "Processing $POM_PATH..."
             GROUP_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="parent"]/*[local-name()="groupId"]/text()' $POM_PATH) 
@@ -102,4 +101,29 @@ jobs:
             echo "Plugin Folder: $PLUGIN_FOLDER"
 
             mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH | awk '!/INFO/ && !/WARNING/{ print $0 }' | tail -n +2 > docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md
-          done         
+          done
+
+      - name: Release v${{ inputs.version }}
+        run: |
+          mvn versions:set-property -Dproperty=revision -DnewVersion=${{ inputs.version }} -DgenerateBackupPoms=false --non-recursive
+          mvn initialize -f vro-types
+          mvn initialize -f typescript
+
+          git add .
+          git commit -m "(release) v${{ inputs.version }}"
+          git tag v${{ inputs.version }}
+          git push --tags
+          git push   
+
+      - name: Prepare next development iteration
+        run: |   
+          # Increment the build version by 1 and add SNAPSHOT
+          SNAPSHOT_VERSION=$(echo ${{ inputs.version }} | awk -F '.' '{print $1"."$2"."$3+1"-SNAPSHOT"}')
+
+          mvn versions:set-property -Dproperty=revision -DnewVersion=$SNAPSHOT_VERSION -DgenerateBackupPoms=false --non-recursive
+          mvn initialize -f vro-types
+          mvn initialize -f typescript
+
+          git add .
+          git commit -m "(release) start development iteration v$SNAPSHOT_VERSION"
+          git push
