@@ -1,3 +1,11 @@
+## v2.31.0 - 29 Mar 2023
+
+### Fixes
+* [vrotest] IAC-742 / *.helper.[tj]s files will now be excluded from code coverage reports
+
+### Enhancements
+* [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
+
 ## v2.30.0 - 10 Mar 2023
 
 ### Fixes
@@ -13,7 +21,6 @@
 * [artifact-manager] IAC-733 / Add an Option for Overwriting Existing vRLI Content Packs.
 * [artifact-manager] IAC-741 / mvn vrealize:clean now will not fail if not supported
 * [artifact-manager] IAC-745 / VRLI Alerts Fallback Object Set to LogInsight Only During Push
-* [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
 
 ## v2.29.2 - 24 Feb 2023
 
