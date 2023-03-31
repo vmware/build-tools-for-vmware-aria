@@ -1,3 +1,6 @@
+### Fixes
+* [package-installer] IAC-732 / Installer Should Ask if vRO is Embedded
+
 ## v2.31.0 - 29 Mar 2023
 
 ### Fixes
