@@ -1,5 +1,6 @@
 ### Fixes
 * [package-installer] IAC-732 / Installer Should Ask if vRO is Embedded
+* [vrotsc] IAC-755 / *.helper.ts files will now be excluded from type definitions
 
 ## v2.31.0 - 29 Mar 2023
 
