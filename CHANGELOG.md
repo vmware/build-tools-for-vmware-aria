@@ -11,6 +11,7 @@
 ### Fixes
 * [vropkg] vropkg-not-working-offline / vropkg had a missing dependency that was not bundled
 * [artifact-manager] IAC-748 / Change project id between organizations to use restClient instead of config.
+* [package-installer] IAC-728 / Remove vro_delete_include_dependencies completely - this includes the prompt and the logic behind.
 
 ### Enhancements
 * [polyglot] IAC-604 / vRBT to support downloading powershell modules through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13' .

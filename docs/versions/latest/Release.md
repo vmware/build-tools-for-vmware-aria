@@ -39,7 +39,17 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Installer asks question about "dependent packages" and does nothing regardless of the answer
+Installer script shows a prompt "Clean up vRO dependent packages as well?"
 
+#### Previous Behavior
+There was prompt for vRO question regarding dependent packages
+
+#### New Behavior
+Unnecessary question regarding dependent packages into vRO project had been removed
+
+#### Relevant Documentation
+**NONE**
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
