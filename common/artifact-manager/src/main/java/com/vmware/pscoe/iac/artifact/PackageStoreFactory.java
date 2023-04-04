@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vmware.pscoe.iac.artifact.configuration.*;
+import com.vmware.pscoe.iac.artifact.rest.*;
+import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV1;
+import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV2;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +38,6 @@ import com.vmware.pscoe.iac.artifact.extentions.VraSubscriptionPackageStoreExten
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.vra.VraPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vro.VroPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVcd;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVra;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVrli;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
-import com.vmware.pscoe.iac.artifact.rest.RestClientCs;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
 
@@ -151,11 +147,21 @@ public class PackageStoreFactory {
         if (configuration instanceof ConfigurationVrli) {
 			logger.info("Detected ConfigurationVrli");
             ConfigurationVrli config = (ConfigurationVrli) configuration;
-            RestClientVrli restClient = RestClientFactory.getClientVrli(config);
-            version = restClient.getVersion();
-            logger.info("Detected VRLI Server version '{}'.", version);
+            RestClientVrliV1 restClientV1 = RestClientFactory.getClientVrliV1(config);
+			RestClientVrliV2 restClientV2 = RestClientFactory.getClientVrliV2(config);
 
-            return new VrliPackageStore(restClient);
+			try {
+				version = restClientV1.getVersion();
+			} catch (Exception e) {
+				version = restClientV2.getVersion();
+			}
+			logger.info("Detected vRLI version " + version);
+			if (!StringUtils.isEmpty(version) && Version.compareSemanticVersions(version, "8.8") > -1) {
+				logger.info("Instantiate REST Client v2.");
+				return new VrliPackageStoreV2(restClientV2);
+			}
+			logger.info("Instantiate REST Client v1.");
+			return new VrliPackageStoreV1(restClientV1);
         }
 
         if (configuration instanceof ConfigurationSsh) {

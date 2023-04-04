@@ -5,7 +5,7 @@
 	<groupId>com.vmware.pscoe</groupId>
 	<artifactId>iac</artifactId>
 	<packaging>pom</packaging>
-	<version>2.29.2-SNAPSHOT</version>
+	<version>${revision}</version>
 
 	<modules>
 		<module>common/o11n/project</module>
@@ -23,6 +23,7 @@
 
 	<properties>
 		<main.basedir>${project.basedir}</main.basedir>
+		<revision>2.31.1-SNAPSHOT</revision>
 	</properties>
 
 	<licenses>
@@ -32,55 +33,122 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<profiles>
-		<profile>
-			<id>licenses-management</id>
-			<activation>
-				<property>
-					<name>!nolicenses</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>license-maven-plugin</artifactId>
-						<version>2.0.0</version>
-						<configuration>
-							<encoding>UTF-8</encoding>
-							<licenseName>bsd2_license</licenseName>
-							<licenseResolver>file:${main.basedir}/licenses</licenseResolver>
-							<aggregate>true</aggregate>
-							<inceptionYear>2023</inceptionYear>
-							<organizationName>VMware</organizationName>
-							<excludedScopes>test</excludedScopes>
-							<excludedArtifacts>maven-surefire-plugin</excludedArtifacts>
-							<excludeTransitiveDependencies>true</excludeTransitiveDependencies>
-							<extraExtensions>
-								<ts>java</ts>
-								<yaml>properties</yaml>
-							</extraExtensions>
-							<excludes>**/*.json,**/*.ftl,**/resources/**/*.*,**/archetype-resources/**/*.*</excludes>
-						</configuration>
-						<executions>
-							<execution>
-								<id>manage-licenses</id>
-								<goals>
-									<goal>update-file-header</goal>
-									<!-- <goal>update-project-license</goal> -->
-									<!-- <goal>download-licenses</goal> -->
-								</goals>
-								<phase>process-sources</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
+	<scm>
+		<connection>scm:git:https://github.com/vmware/build-tools-for-vmware-aria.git</connection>
+		<developerConnection>scm:git:https://github.com/vmware/build-tools-for-vmware-aria.git</developerConnection>
+		<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main</url>
+	</scm>
+
+	<name>Build Tools for VMware Aria</name>
+	<description>
+		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions
+		based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and 
+		Automation Developers to use standard DevOps practices for managing and deploying content.
+	</description>
+	<url>https://github.com/vmware/build-tools-for-vmware-aria</url>
+	<developers>
+		<developer>
+			<name>VMware World Wide Center of Engineering</name>
+			<email>svc.wwcoe.ci-admin@vmware.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<!-- Some build plugins dosn't need no to be inherited in the customer projects poms. 
+		Search for <inherited>false</inherited> to identify the parent poms of the customer project poms-->
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>flatten-maven-plugin</artifactId>
+					<version>1.3.0</version>
+					<inherited>true</inherited>
+					<configuration>
+						<updatePomFile>true</updatePomFile>
+						<flattenMode>resolveCiFriendliesOnly</flattenMode>
+					</configuration>
+					<executions>
+						<execution>
+							<id>flatten</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>flatten</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>flatten.clean</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>2.0.0</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+						<licenseName>bsd2_license</licenseName>
+						<licenseResolver>file:${main.basedir}/licenses</licenseResolver>
+						<aggregate>true</aggregate>
+						<inceptionYear>2023</inceptionYear>
+						<organizationName>VMware</organizationName>
+						<excludedScopes>test</excludedScopes>
+						<excludedArtifacts>maven-surefire-plugin</excludedArtifacts>
+						<excludeTransitiveDependencies>true</excludeTransitiveDependencies>
+						<extraExtensions>
+							<ts>java</ts>
+							<yaml>properties</yaml>
+						</extraExtensions>
+						<excludes>
+							**/*.json,**/*.ftl,**/resources/**/*.*,**/archetype-resources/**/*.*</excludes>
+					</configuration>
+					<executions>
+						<execution>
+							<id>manage-licenses</id>
+							<goals>
+								<goal>update-file-header</goal>
+								<!-- <goal>update-project-license</goal> -->
+								<!-- <goal>download-licenses</goal> -->
+							</goals>
+							<phase>process-sources</phase>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.5.0</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -95,12 +163,64 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.1</version>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<prePhase>install</prePhase>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<!-- Enable maven-gpg-plugin and maven-source-plugin with -Dgpg.passphrase=XXX -->
+			<id>release-sign-source</id>
+			<activation>
+				<property>
+					<name>gpg.passphrase</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<distributionManagement>
 		<repository>
 			<id>central</id>
-			<name>artifactory-c-01a-releases</name>
+			<name>ossgh</name>
 			<url>${releaseRepositoryUrl}</url>
 		</repository>
 		<snapshotRepository>

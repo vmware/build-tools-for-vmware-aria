@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
@@ -29,7 +30,6 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.vrang.VraNgTypeStoreFactory;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
     @Override
     public List<Package> getPackages() {
         throw new UnsupportedOperationException(
-                "Cloud Automation Services does not provide native support for packages.");
+                "getPackages: Cloud Automation Services does not provide native support for packages.");
     }
 
     @Override
@@ -145,8 +145,8 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
      *
      * @param vraNgPackage vRA package
      * @param vraNgPackageDescriptor vRA package descriptor
-     * @param dryrun
-     * @return
+     * @param dryrun dryrun
+     * @return package
      */
     @Override
     public Package exportPackage(Package vraNgPackage, VraNgPackageDescriptor vraNgPackageDescriptor, boolean dryrun) {
@@ -180,8 +180,8 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
      * 7. Import Resource Actions
      *
      * @param vraNgPackage vRA package
-     * @param dryrun
-     * @return
+     * @param dryrun dryrun
+     * @return package
      */
     @Override
     public Package importPackage(Package vraNgPackage, boolean dryrun, boolean mergePackages) {
@@ -207,16 +207,24 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 
     @Override
     protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
-        throw new NotImplementedException("Delete package is not implemented.");
+		throw new UnsupportedOperationException(
+			"deletePackage: Cloud Automation Services does not provide native support for packages.");
+    }
+
+    @Override
+	public List<Package> deletePackage(Package pkg, boolean lastVersion, boolean oldVersions, boolean dryrun) {
+		throw new UnsupportedOperationException(
+			"deletePackage(List): Cloud Automation Services does not provide native support for packages.");
     }
 
     @Override
     protected VraNgPackageContent getPackageContent(Package pkg) {
-        throw new UnsupportedOperationException( "Cloud Automation Services does not provide native support for packages.");
+        throw new UnsupportedOperationException("Cloud Automation Services does not provide native support for packages.");
     }
 
     @Override
     protected void deleteContent(Content content, boolean dryrun) {
-        throw new NotImplementedException("Delete content is not implemented.");
+		throw new UnsupportedOperationException(
+			"deleteContent: Cloud Automation Services does not provide native support for packages.");
     }
 }

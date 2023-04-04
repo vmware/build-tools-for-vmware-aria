@@ -33,7 +33,8 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
         RESOURCE_ACTION("resource-action"),
         PROPERTY_GROUP("property-group"),
         CONTENT_SOURCE("content-source"),
-        CATALOG_ITEM("catalog-item");
+        CATALOG_ITEM("catalog-item"),
+		POLICY("policy");
         private final String type;
         
         private ContentType(String type) {

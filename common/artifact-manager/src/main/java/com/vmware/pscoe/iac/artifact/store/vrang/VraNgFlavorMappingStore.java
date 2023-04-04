@@ -54,7 +54,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return List<String>
+	 * @return list of flavor mappings
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -97,7 +97,8 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
 	 *
-	 * @param	flavorMappingsToExport
+	 * @param	cloudAccounts list of cloud accounts
+	 * @param	flavorMappingsToExport list of flavor mappings
 	 */
 	@Override
 	protected void exportStoreContent( List<VraNgCloudAccount> cloudAccounts, List<String> flavorMappingsToExport ) {
@@ -160,6 +161,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
     /**
      * Import all flavor profiles from a package.
      * @param sourceDirectory temporary directory containing the files
+	 * @param importTags list of tags
      */
     public void importContent(File sourceDirectory, List<String> importTags) {
         File regionsFolder = Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();

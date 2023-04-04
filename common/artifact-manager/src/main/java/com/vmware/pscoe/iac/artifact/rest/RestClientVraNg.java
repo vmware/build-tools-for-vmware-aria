@@ -115,8 +115,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	/**
 	 * Fetching the version details for a blueprint using the vRA REST API
-	 * @param String blueprintId
-	 * @return String
+	 * @param blueprintId blueprintId
+	 * @return version
 	 */
 	public String getBlueprintVersions(String blueprintId) {
 		try {
@@ -153,8 +153,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	/**
 	 * Import missing versions into vRA for a specified blueprint
-	 * @param String blueprintId
-	 * @param JsonObject version
+	 * @param blueprintId blueprintId
+	 * @param version version
 	 */
 	public void importBlueprintVersion(String blueprintId, JsonObject version) {
 		try {
@@ -399,7 +399,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * NOTE: Blueprint name is always going to be the catalog item name, method name seems misleading
 	 *
-	 * @param	blueprintName
+	 * @param	blueprintName bp name
 	 *
 	 * @return	VraNgCatalogItem
 	 */
@@ -734,6 +734,44 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return getAbxConstantPrimitive(name);
 		} catch (Exception e) {
 			logger.error("Error fetching abx constant.", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	// =================================================
+	// POLICIES
+	// =================================================
+
+	public List<String> getContentSharingPolicyIds() {
+		try {
+			return this.getAllContentSharingPolicyIdsPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policy Ids", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void createContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+		try {
+			createContentSharingPolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+		}
+	}
+
+	public void updateContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
+		try {
+			updateContentSharingPolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not update Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+		}
+	}
+
+	public VraNgContentSharingPolicy getContentSharingPolicy(String policyId) {
+		try {
+			return this.getContentSharingPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policy", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

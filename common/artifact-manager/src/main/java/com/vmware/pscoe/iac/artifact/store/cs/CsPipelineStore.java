@@ -60,7 +60,7 @@ public class CsPipelineStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
-	 * @param File sourceDirectory
+	 * @param sourceDirectory sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
 		File pipelinesFolder = Paths.get(sourceDirectory.getPath(), DIR_PIPELINES).toFile();

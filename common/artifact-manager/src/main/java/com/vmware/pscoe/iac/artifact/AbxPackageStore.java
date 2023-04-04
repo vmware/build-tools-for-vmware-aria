@@ -53,24 +53,22 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 
     @Override
     protected AbxPackageContent getPackageContent(Package pkg) {
-        throw new UnsupportedOperationException(
-                "Cloud Automation Services does not provide native support for packages.");
-    }
+		throw new NotImplementedException("Not implemented");
+	}
 
     @Override
     public List<Package> getPackages() {
-        throw new UnsupportedOperationException(
-                "Cloud Automation Services does not provide native support for packages.");
-    }
+		throw new NotImplementedException("Not implemented");
+	}
 
     @Override
     protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
-        throw new NotImplementedException("Delete package is not implemented.");
+        throw new NotImplementedException("Not implemented");
     }
 
     @Override
     protected void deleteContent(Content content, boolean dryrun) {
-        throw new NotImplementedException("Delete content is not implemented.");
+        throw new NotImplementedException("Not implemented");
     }
 
 	@Override
@@ -131,8 +129,8 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
      * Main handler for exporting abx package based on package.json file
      * @param pkg abx package
      * @param packageDescriptor abx package descriptor file
-     * @param dryrun
-     * @return
+     * @param dryrun dryrun flag
+     * @return package
      */
     @Override
     public Package exportPackage(Package pkg, AbxPackageDescriptor packageDescriptor, boolean dryrun) {
@@ -147,8 +145,8 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	/**
 	 * Main handler for importing abx package.
 	 * @param abxPackage ABX package
-	 * @param dryrun
-	 * @return
+	 * @param dryrun dryrun flag
+	 * @return package
 	 */
 	@Override
 	public Package importPackage(Package abxPackage, boolean dryrun, boolean mergePackages) {

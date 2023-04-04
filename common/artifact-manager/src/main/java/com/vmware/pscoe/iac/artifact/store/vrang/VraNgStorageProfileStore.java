@@ -49,7 +49,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return List<String>
+	 * @return list of storage profiles
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -59,7 +59,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is empty
 	 *
-	 * @param cloudAccounts
+	 * @param cloudAccounts list of cloud accounts
 	 */
 	@Override
 	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts) {
@@ -96,8 +96,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
 	 *
-	 * @param	cloudAccounts
-	 * @param	storageProfilesToExport
+	 * @param	cloudAccounts list of cloud accounts
+	 * @param	storageProfilesToExport list of storage profiles
 	 */
 	@Override
 	protected void exportStoreContent( List<VraNgCloudAccount> cloudAccounts, List<String> storageProfilesToExport ) {
@@ -240,6 +240,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
     /**
      * Import all storage profiles from a package
      * @param sourceDirectory temporary directory containing the files
+	 * @param importTags list of tags
      */
     public void importContent(File sourceDirectory, List<String> importTags) {
         File regionsFolder = Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();

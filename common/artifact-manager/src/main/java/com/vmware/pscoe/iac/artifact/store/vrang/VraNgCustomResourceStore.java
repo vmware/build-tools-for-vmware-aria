@@ -65,7 +65,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	/**
 	 * Used to fetch the store's data from the package descriptor
 	 *
-	 * @return List<String>
+	 * @return list of custom resources
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -91,7 +91,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
 	 *
-	 * @param customResourcesToExport
+	 * @param customResourcesToExport list of custom resources
 	 */
 	@Override
 	protected void exportStoreContent(List<String> customResourcesToExport) {
@@ -391,7 +391,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
-		String defaultProjectId = this.config.getProjectId();
+		String defaultProjectId = this.restClient.getProjectId();
 		if (defaultProjectId != null) {
 			if (customResourceJsonElement.get("projectId") != null
 				&& !customResourceJsonElement.get("projectId").getAsString().equals("")) {

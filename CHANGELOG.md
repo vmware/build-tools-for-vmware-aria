@@ -1,3 +1,31 @@
+## v2.31.0 - 29 Mar 2023
+
+### Fixes
+* [vrotest] IAC-742 / *.helper.[tj]s files will now be excluded from code coverage reports
+
+### Enhancements
+* [artifact-manager] IAC-693 / vRBT to support new content sharing policies.
+
+## v2.30.0 - 10 Mar 2023
+
+### Fixes
+* [vropkg] vropkg-not-working-offline / vropkg had a missing dependency that was not bundled
+* [artifact-manager] IAC-748 / Change project id between organizations to use restClient instead of config.
+
+### Enhancements
+* [polyglot] IAC-604 / vRBT to support downloading powershell modules through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13' .
+* [polyglot] IAC-604 / Using Import-Module must always be in the format of Import-Module <module name> without -Name and ; at the end of the line to avoid confusion .
+* [base-package] IAC-746 / Make base packages (ssh project) deployable to artifactory server and local maven repository
+* [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
+* [core] IAC-719 / Prepare for maven central. Add needed plugins: maven-javadoc-plugin, maven-gpg-plugin, and maven-source-plugin
+* [artifact-manager] IAC-733 / Add an Option for Overwriting Existing vRLI Content Packs.
+* [artifact-manager] IAC-741 / mvn vrealize:clean now will not fail if not supported
+* [artifact-manager] IAC-745 / VRLI Alerts Fallback Object Set to LogInsight Only During Push
+
+## v2.29.2 - 24 Feb 2023
+
+### Enhancements
+* [maven-plugins-vrli] IAC-741 / Use new v2 API when working with vRLI 8.8+ content. The feature is marked as experimental because v2 API is Technical Preview.
 ## v2.29.1 - 15 Feb 2023
 
 ### Fixes
