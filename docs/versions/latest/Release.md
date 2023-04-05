@@ -39,14 +39,14 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### Installer asks question about "dependent packages" and does nothing regardless of the answer
-Installer script shows a prompt "Clean up vRO dependent packages as well?"
+### Remove prompt and property for vro_delete_include_dependencies
+The `installer` script shows a prompt "Clean up vRO dependent packages as well?" about deleting "dependent packages" and stores the answer in the `vro_delete_include_depenedencies` property but does nothing regardless of the answer.
 
 #### Previous Behavior
-There was prompt for vRO question regarding dependent packages
+There was prompt in interactive mode for vRO regarding the deletion of dependent packages.
 
 #### New Behavior
-Unnecessary question regarding dependent packages into vRO project had been removed
+The unnecessary question regarding dependent packages in vRO projects is removed.
 
 #### Relevant Documentation
 **NONE**
