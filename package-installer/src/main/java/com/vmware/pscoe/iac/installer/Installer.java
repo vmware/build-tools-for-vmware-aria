@@ -784,9 +784,7 @@ public class Installer {
 		if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
-                if(hasVraNgPackages){
-                    userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
-                }
+                userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
                 if (input.anyTrue(Option.VRO_EMBEDDED)) {
                     readVroEmbeddedInVrangProperties(input, false);
                 } else {

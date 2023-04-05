@@ -44,7 +44,16 @@ The helper.ts are now being correctly filtered out by vrtosc, by excluding files
 #### Relevant Documentation:
 * None
 
+### *Installer Should Ask if vRO is Embedded*
 
+#### Previous Behavior
+Installer won't ask if "vRO is embedded" if it does not contain VRA NG Packages.
+
+#### New Behavior
+Installer will ask if "vRO is embedded" in all the cases. This would potentially help us for easier support to deploy to extensibility proxies without vRA content deployment in the bundle.
+
+#### Relevant Documentation:
+None
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
