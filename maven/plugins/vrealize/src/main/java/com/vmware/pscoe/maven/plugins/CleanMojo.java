@@ -73,6 +73,7 @@ public class CleanMojo extends AbstractIacMojo {
         }
     }
 
+	
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         super.execute();
