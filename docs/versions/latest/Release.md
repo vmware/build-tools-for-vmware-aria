@@ -19,27 +19,15 @@
 
 [//]: # (Features -> New Functionality)
 ## Features
-[//]: # (### *Feature Name*)
+~~[//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+[//]: # (#### Relevant Documentation:)~~
 
 
+### Implemented vRO backup during packages import
 
-### Implemented Push/Pull logic for new Content Sharing Policy from vRA 8.8.2
-
-Content Sharing Policies can now be fetched for newer versions of vRA.
-
-It can be done by adding:
-
-```yaml
-# ...
-policy:
-  content-sharing:
-```
-
-to your `content.yaml` file
-
+vRO packages that will be imported can be backed up using the property vro_enable_backup that can be set in the properties file
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
