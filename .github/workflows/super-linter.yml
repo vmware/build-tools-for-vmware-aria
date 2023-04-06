@@ -1,0 +1,34 @@
+name: Super-Linter
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  super-linter:
+    name: Lint all code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper
+          # list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Setup Java Action
+        uses: actions/setup-java@v3
+        with:
+          java-version: "8"
+          distribution: "corretto"
+
+      - name: Super-Linter
+        uses: github/super-linter@v4.10.1
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JAVA: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_STANDARD: true
+          VALIDATE_MARKDOWN: true
