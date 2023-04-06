@@ -1,3 +1,6 @@
+### Fixes
+* [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported
+
 ## v2.31.1 - 05 Apr 2023
 
 ### Fixes

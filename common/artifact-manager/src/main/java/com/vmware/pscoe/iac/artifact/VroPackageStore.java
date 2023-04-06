@@ -231,29 +231,6 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
         restClient.deleteContent(content, dryrun);
     }
 
-/*
-	private List<Package> getPackagesToBackup(List<Package> sourceEndpointPackages, List<Package> destinationEndpointPackages) {
-		ArrayList<String> crossSection = new ArrayList<>();
-		sourceEndpointPackages.forEach(sourcePackage -> {
-			crossSection.add(sourcePackage.getName());
-		});
-
-		List<Package> destinationPackagesToBackup = new ArrayList<>();
-		destinationEndpointPackages.forEach(destPackage -> {
-			if (crossSection.contains(destPackage.getName())) {
-				destinationPackagesToBackup.add(destPackage);
-			}
-		});
-
-		List<Package> destinationPackagesHighestVer = new ArrayList<>();
-		for (Strategy strategy : this.strategies) {
-			destinationPackagesHighestVer = strategy.getImportPackages(destinationPackagesToBackup, sourceEndpointPackages); //filtered packages on file system
-		}
-	
-		return destinationPackagesHighestVer;
-	}
-*/
-
 	private String createBackupFileDirectory(Package pkg, String currentDateTimeString) {
 		Path pkgFullPath = Paths.get(pkg.getFilesystemPath());
 		logger.debug("pkgFullPath: " + pkgFullPath.toString());
