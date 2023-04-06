@@ -1,0 +1,7 @@
+MD041:
+  exclude:
+    - "CHANGELOG.md"
+
+MD024:
+  exclude:
+    - "CHANGELOG.md"
