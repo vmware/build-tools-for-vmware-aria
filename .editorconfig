@@ -13,9 +13,6 @@ insert_final_newline = true
 [*.{java,ts,js,py}]
 indent_style = tab
 indent_size = 4
-preferred_line_length = 180
-max_line_length = 180
-soft_wrap = false
 
 # Styling for YAML files
 [*.{yaml,yml}]
