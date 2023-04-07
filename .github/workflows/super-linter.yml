@@ -32,3 +32,4 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_JAVASCRIPT_STANDARD: true
           VALIDATE_MARKDOWN: true
+          EDITORCONFIG_FILE_NAME: .editorconfig
