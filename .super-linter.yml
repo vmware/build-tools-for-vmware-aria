@@ -1,2 +1,5 @@
 editor:
   enabled: true
+overrides:
+  java:
+    LineLength: false
