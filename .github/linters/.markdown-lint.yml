@@ -1,0 +1,27 @@
+# defaults at https://github.com/DavidAnson/markdownlint/blob/main/schema/.markdownlint.yaml
+
+# Default state for all rules
+default: true
+
+# MD012/no-multiple-blanks - Multiple consecutive blank lines
+MD012:
+  # Consecutive blank lines
+  maximum: 2
+
+# MD013/line-length - Line length
+MD013: false
+
+# MD022/blanks-around-headings/blanks-around-headers - Headings should be surrounded by blank lines
+MD022: false
+
+# MD024/no-duplicate-heading/no-duplicate-header - Multiple headings with the same content
+MD024: false
+
+# MD032/blanks-around-lists - Lists should be surrounded by blank lines
+MD032: false
+
+# MD031/blanks-around-fences - Fenced code blocks should be surrounded by blank lines
+MD031: false
+
+# MD041/first-line-heading/first-line-h1 - First line in a file should be a top-level heading
+MD041: false

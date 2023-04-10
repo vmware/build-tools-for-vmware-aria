@@ -21,7 +21,7 @@
 
 ### Enhancements
 * [polyglot] IAC-604 / vRBT to support downloading powershell modules through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13' .
-* [polyglot] IAC-604 / Using Import-Module must always be in the format of Import-Module <module name> without -Name and ; at the end of the line to avoid confusion .
+* [polyglot] IAC-604 / Using Import-Module must always be in the format of Import-Module ```<module name>``` without -Name and ; at the end of the line to avoid confusion .
 * [base-package] IAC-746 / Make base packages (ssh project) deployable to artifactory server and local maven repository
 * [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
 * [core] IAC-719 / Prepare for maven central. Add needed plugins: maven-javadoc-plugin, maven-gpg-plugin, and maven-source-plugin
@@ -746,7 +746,7 @@
 ## v1.5.6 - 27 Mar 2019
 
 ### Enhancements
-* __BREAKING__ All certificates are now verified as part of API calls from the toolchain to vRA/vRO:
+* **BREAKING** All certificates are now verified as part of API calls from the toolchain to vRA/vRO:
   * Verify hostname - the hostname if the vRO/vRA server should match the CN of the SSL certificate. *For development environments, this can be skipped by a flag described in documentation.*
   * Verify certificate - the SSL certificate used by vRO/vRA is verified against the Java default keystore, i.e. ```cacerts```. Self-signed or third-party certificates have to either be addded to the trusted store (or their CA) or the check can be ignored for development environments by a flag described in documentation.
 
