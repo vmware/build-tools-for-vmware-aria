@@ -20,94 +20,120 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 public class VraNgResourceAction {
 
-    /**
-     * Resource Action ID.
-     */
-    private final String id;
-    /**
-     * Resource Action Name.
-     */
-    private final String name;
-    /**
-     * Resource Action JSON.
-     */
-    private final String json;
-    /**
-     * Resource Action Resource Type.
-     */
+	/**
+	 * Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
+	/**
+	 * Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
+	/**
+	 * Resource Action ID.
+	 */
+	private final String id;
+	/**
+	 * Resource Action Name.
+	 */
+	private final String name;
+	/**
+	 * Resource Action JSON.
+	 */
+	private final String json;
+	/**
+	 * Resource Action Resource Type.
+	 */
 	private final String resourceType;
 
-    /**
-     * Creates a new Resource Action.
-     * @param id Resource Action id
-     * @param name Resource Action name
-     * @param json Resrouce Action json
-     */
-    public VraNgResourceAction(final String id, final String name, final String json) {
-        this.id = id;
-        this.name = name;
-        this.json = json;
+	/**
+	 * Creates a new Resource Action.
+	 * 
+	 * @param identifier   Resource Action id
+	 * @param recourseName Resource Action name
+	 * @param jsonString   Resrouce Action json
+	 */
+	public VraNgResourceAction(final String identifier, final String recourseName, final String jsonString) {
+		this.id = identifier;
+		this.name = recourseName;
+		this.json = jsonString;
 		this.resourceType = null;
-    }
+	}
 
-    /**
-     * Creates a new Resource Action.
-     * @param id Resource Action id
-     * @param name Resource Action name
-     * @param json Resrouce Action json
-     * @param resourceType Resource Action Resource Type
-     */
-	public VraNgResourceAction(final String id, final String name, final String json, final String resourceType) {
-        this.id = id;
-        this.name = name;
-        this.json = json;
-		this.resourceType = resourceType;
-    }
+	/**
+	 * Creates a new Resource Action.
+	 * 
+	 * @param identifier           Resource Action id
+	 * @param actionName         Resource Action name
+	 * @param jsonString         Resource Action json
+	 * @param actionResourceType Resource Action Resource Type
+	 */
+	public VraNgResourceAction(final String identifier, final String actionName, final String jsonString, final String actionResourceType) {
+		this.id = identifier;
+		this.name = actionName;
+		this.json = jsonString;
+		this.resourceType = actionResourceType;
+	}
 
-    /**
-     * Gets the id of the Resource Action.
-     * @return Resource Action ID
-     */
-    public String getId() {
-        return this.id;
-    }
+	/**
+	 * Gets the id of the Resource Action.
+	 * 
+	 * @return Resource Action ID
+	 */
+	public String getId() {
+		return this.id;
+	}
 
-    /**
-     * Gets the Name of the Resource Action.
-     * @return Resource Action Name
-     */
-    public String getName() {
-        return this.name;
-    }
+	/**
+	 * Gets the Name of the Resource Action.
+	 * 
+	 * @return Resource Action Name
+	 */
+	public String getName() {
+		return this.name;
+	}
 
-    /**
-     * Gets the JSON String of the Resource Action.
-     * @return Resource Action JSON String
-     */
-    public String getJson() {
-        return this.json;
-    }
+	/**
+	 * Gets the JSON String of the Resource Action.
+	 * 
+	 * @return Resource Action JSON String
+	 */
+	public String getJson() {
+		return this.json;
+	}
 
-    /**
-     * Gets the Resource Type of the Resource Action.
-     * @return Resource Action Resource Type
-     */
+	/**
+	 * Gets the Resource Type of the Resource Action.
+	 * 
+	 * @return Resource Action Resource Type
+	 */
 	public String getResourceType() {
 		return this.resourceType;
 	}
 
-    /**
-     * Equals Implementation.
-     * @return true if equal else false
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+	/**
+	 * Equals Implementation.
+	 * 
+	 * @return true if equal else false
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
 
-        VraNgResourceAction other = (VraNgResourceAction) obj;
-        return this.id.equals(other.getId());
-    }
+		VraNgResourceAction other = (VraNgResourceAction) obj;
+		return this.id.equals(other.getId());
+	}
+
+	/**
+	 * Hash Implementation.
+	 * 
+	 * @return object hash
+	 */
+	@Override
+	public int hashCode() {
+		int result = PRIME_NUMBER_17;
+		return PRIME_NUMBER_31 * result + this.id.hashCode();
+	}
 
 }
