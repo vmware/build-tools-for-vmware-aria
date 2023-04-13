@@ -1,3 +1,6 @@
+/* 
+ * Package
+ */
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
 /*
@@ -21,40 +24,72 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
 
 import org.apache.commons.io.IOUtils;
 
 public class ResourceActionMockBuilder {
+	/**
+	 * Resource Action Id.
+	 */
 	private String	id;
+	/**
+	 * Resource Action Name.
+	 */
 	private String	name;
+	/**
+	 * Resource Action mockData.
+	 */
 	private JsonElement mockData;
+	/**
+	 * Resource Action resourceType.
+	 */
+	private String	resourceType;
 
-	public ResourceActionMockBuilder() throws IOException{
+	/**
+	 * Create ResourceActionMockBuilder.
+	 * @throws IOException exception
+	 */
+	public ResourceActionMockBuilder() throws IOException {
 		ClassLoader cl = getClass().getClassLoader();
 		try {
-			String read = IOUtils.toString( cl.getResourceAsStream("test/fixtures/resourceAction.json"), StandardCharsets.UTF_8 );
+			String read = IOUtils.toString(cl.getResourceAsStream("test/fixtures/resourceAction.json"), StandardCharsets.UTF_8);
 			this.mockData = JsonParser.parseString(read);
-		}
-		catch (IOException ex) {
+			this.resourceType = this.mockData.getAsJsonObject().get("resourceType").getAsString();
+		} catch (IOException ex) {
 			throw ex;
 		}
 	}
 
-	public ResourceActionMockBuilder setName(String name) {
-		this.name = name;
+	/**
+	 * Set name for Resource Action.
+	 * @param actionName name
+	 * @return ResourceActionMockBuilder
+	 */
+	public ResourceActionMockBuilder setName(final String actionName) {
+		this.name = actionName;
 		return this;
 	}
 
-	public ResourceActionMockBuilder setId(String id) {
-		this.id = id;
+	/**
+	 * Set ID for Resource Action.
+	 * @param identifier Id
+	 * @return ResourceActionMockBuilder
+	 */
+	public ResourceActionMockBuilder setId(final String identifier) {
+		this.id = identifier;
 		return this;
 	}
 
-	public ResourceActionMockBuilder setPropertyInRawData(String key, String value) {
+	/**
+	 * Set JSON property to VraNgResourceAction.
+	 * @param key key
+	 * @param value value
+	 * @return ResourceActionMockBuilder
+	 */
+	public ResourceActionMockBuilder setPropertyInRawData(final String key, final String value) {
 		JsonObject customResource = this.mockData.getAsJsonObject();
-		if(customResource.has(key)) {
+		if (customResource.has(key)) {
 			customResource.remove(key);
 			customResource.addProperty(key, value);
 		}
@@ -62,8 +97,11 @@ public class ResourceActionMockBuilder {
 		return this;
 	}
 
-
+	/**
+	 * Build VraNgResourceAction.
+	 * @return VraNgResourceAction
+	 */
 	public VraNgResourceAction build() {
-		return new VraNgResourceAction(this.id, this.name, this.mockData.toString());
+		return new VraNgResourceAction(this.id, this.name, this.mockData.toString(), this.resourceType);
 	}
 }

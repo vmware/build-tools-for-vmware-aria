@@ -1,3 +1,6 @@
+### Fixes
+* [vRA-NG] IAC-743 / Can't pull resource actions of different resource type with same name
+
 ## v2.31.1 - 05 Apr 2023
 
 ### Fixes
