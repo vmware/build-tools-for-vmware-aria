@@ -557,10 +557,6 @@ public class Installer {
         // set common properties (i.e. ssl certificate check, timeouts, etc)
         setCommonProperties(input);
 
-		if (input.anyTrue(Option.VRO_ENABLE_BACKUP)) {
-			throw new Error("Backup successfully set to true by user input!");
-		}
-
         if (input.allTrue(Option.VRO_IMPORT, Option.VRO_EMBEDDED)) {
             String[] arr = { ConfigurationPrefix.VRO.getValue(), ConfigurationPrefix.VRANG.getValue() };
             PackageStoreFactory.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(arr)))
