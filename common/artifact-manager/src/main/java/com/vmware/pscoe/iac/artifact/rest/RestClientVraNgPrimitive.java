@@ -1505,7 +1505,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retrieve all flavor profile IDs grouped by region.
 	 *
 	 * @return map with key=region, value=list of flavor profile IDs.
-	 * @see VraNgFlavorProfile
 	 */
 	protected Map<String, List<String>> getAllFlavorProfilesByRegionPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE));
@@ -1739,7 +1738,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retrieve all image profile IDs grouped by region.
 	 *
 	 * @return map with key=region, value=list of image profile IDs.
-	 * @see VraNgImageProfile
 	 */
 	protected Map<String, List<String>> getAllImageProfilesByRegionPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IMAGE_PROFILE));
