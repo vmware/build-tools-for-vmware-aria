@@ -23,7 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
+import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_RESOURCE_ACTIONS;
 
 public class VraNgResourceActionStore extends AbstractVraNgStore {
 		
@@ -166,7 +166,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
      * @param resourceActionJson source resource action json
      * @return Resoruce Action File
      */
-    private File storeResourceActionOnFilesystem(final Package pkg, final String resourceActionName, String resourceActionJson) {
+    private File storeResourceActionOnFilesystem(final Package pkg, final String resourceActionName, final String resourceActionJson) {
         File store = new File(pkg.getFilesystemPath());
         File resourceAction = Paths.get(store.getPath(), DIR_RESOURCE_ACTIONS, resourceActionName + ".json").toFile();
         resourceAction.getParentFile().mkdirs();
@@ -177,9 +177,9 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
             this.sanitizeResourceActionJsonElement(resourceActionJsonElement);
 
-            resourceActionJson = gson.toJson(resourceActionJsonElement);
+            String resourceActionJSON = gson.toJson(resourceActionJsonElement);
             logger.info("Created file {}", Files.write(Paths.get(resourceAction.getPath()),
-                    resourceActionJson.getBytes(), StandardOpenOption.CREATE));
+                    resourceActionJSON.getBytes(), StandardOpenOption.CREATE));
         } catch (IOException e) {
             logger.error("Unable to store resource action {} {}", resourceActionName, resourceAction.getPath());
             throw new RuntimeException("Unable to store resource action.", e);

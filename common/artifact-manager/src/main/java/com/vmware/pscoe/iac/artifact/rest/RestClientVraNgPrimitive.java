@@ -53,9 +53,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganizations;
@@ -73,7 +71,12 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -96,7 +99,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * logger.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(RestClientVraNgPrimitive.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVraNgPrimitive.class);
 	/**
 	 * SERVICE_IAAS_BASE.
 	 */
@@ -282,15 +285,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * productVersion.
 	 */
 	private Version productVersion;
+	/**
+	 * productVersion.
+	*/
+	private static final int PAGE_SIZE = 500;
 
 	/**
 	 * RestClientVraNgPrimitive.
-	 * @param configuration configuration
-	 * @param restTemplate restTemplate
+	 * @param config configuration
+	 * @param restTemp restTemplate
 	 */
-	protected RestClientVraNgPrimitive(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
-		this.configuration = configuration;
-		this.restTemplate = restTemplate;
+	protected RestClientVraNgPrimitive(final ConfigurationVraNg config, final RestTemplate restTemp) {
+		this.configuration = config;
+		this.restTemplate = restTemp;
 		this.productVersion = this.getProductVersion();
 	}
 
@@ -317,7 +324,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 		this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
-		logger.info("Detected API Version {}", this.apiVersion);
+		LOGGER.info("Detected API Version {}", this.apiVersion);
 
 		return this.apiVersion;
 	}
@@ -354,7 +361,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 
 		if (StringUtils.isNotEmpty(configuration.getProjectId())) {
-			logger.debug("Using project id defined in configuration: {}", configuration.getProjectId());
+			LOGGER.debug("Using project id defined in configuration: {}", configuration.getProjectId());
 			this.projectId = this.getProjectIdPrimitive(configuration.getProjectId());
 			if (this.projectId == null) {
 				throw new RuntimeException(String.format("Project id '%s' could not be found on target system",
@@ -373,7 +380,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system",
 					configuration.getProjectName()));
 		}
-		logger.info("Using project name defined in the configuration '{}', project id: '{}'", projectName,
+		LOGGER.info("Using project name defined in the configuration '{}', project id: '{}'", projectName,
 				this.projectId);
 
 		return projectId;
@@ -496,7 +503,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		List<VraNgBlueprint> blueprints = new ArrayList<>();
 		List<JsonObject> results = this.getPagedContent(SERVICE_BLUEPRINT, new HashMap<>());
 
-		logger.debug("Blueprints found on server: {}", results.size());
+		LOGGER.debug("Blueprints found on server: {}", results.size());
 		results.forEach(o -> {
 			JsonObject ob = o.getAsJsonObject();
 			String prjId = ob.get("projectId").getAsString();
@@ -505,7 +512,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			}
 		});
 
-		logger.debug("Blueprints in target project: {}", blueprints.size());
+		LOGGER.debug("Blueprints in target project: {}", blueprints.size());
 
 		return blueprints;
 	}
@@ -703,11 +710,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public boolean isBlueprintReleasedPrimitive(final String blueprintId) {
 
-		final String STATUS_RELEASED = "RELEASED";
+		final String statusReleased = "RELEASED";
 
 		URI url = getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
-				.addParameter("status", STATUS_RELEASED));
+				.addParameter("status", statusReleased));
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -763,14 +770,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 		Gson gson = new Gson();
 
 		Map<String, String> params = new HashMap<>();
-		String projectId = getProjectId();
-		params.put("projectId", projectId);
+		String projectIdentifier = getProjectId();
+		params.put("projectId", projectIdentifier);
 		return this.getPagedContent(SERVICE_CONTENT_SOURCE, params)
 				.stream()
 				.filter(jsonOb -> VraNgContentSourceType.BLUEPRINT.toString()
 						.equals(jsonOb.get("typeId").getAsString()))
 				.map(jsonOb -> gson.fromJson(jsonOb, VraNgContentSource.class))
-				.filter(contentSource -> contentSource.getProjectId().equals(projectId))
+				.filter(contentSource -> contentSource.getProjectId().equals(projectIdentifier))
 				.findFirst()
 				.orElse(null);
 	}
@@ -900,14 +907,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Subscriptions.
 	 */
 	public Map<String, VraNgSubscription> getAllSubscriptionsPrimitive(final String filter) {
-		logger.debug("Getting all subscriptions with filter: {}", filter);
+		LOGGER.debug("Getting all subscriptions with filter: {}", filter);
 
 		Map<String, String> params = new HashMap<>();
 		params.put("$filter", filter);
 		List<JsonObject> allResults = this.getPagedContent(SERVICE_SUBSCRIPTION, params);
 
 		Map<String, VraNgSubscription> subscriptions = new HashMap<>();
-		String projectId = getProjectId();
+		String projectIdentifier = getProjectId();
 
 		allResults.forEach(ob -> {
 			Set<String> projectIds = new HashSet<>();
@@ -923,7 +930,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonElement id = ob.get("id");
 			JsonElement name = ob.get("name");
 
-			if (projectIds.isEmpty() || (projectIds.contains(projectId) && id != null && name != null)) {
+			if (projectIds.isEmpty() || (projectIds.contains(projectIdentifier) && id != null && name != null)) {
 				String json = ob.toString();
 				subscriptions.put(id.getAsString(),
 						new VraNgSubscription(id.getAsString(), name.getAsString(), json));
@@ -1150,7 +1157,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return combined results
 	 */
 	private List<JsonObject> getTotalElements(final String path, final Map<String, String> paramsMap) {
-		int PAGE_SIZE = 500;
+		
 		URIBuilder uriBuilder = getURIBuilder()
 				.setPath(String.format(path))
 				.setParameter("$top", String.valueOf(PAGE_SIZE))
@@ -1175,7 +1182,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			totalElements = root.getAsJsonObject().get("totalElements").getAsInt();
 			numberOfElements = root.getAsJsonObject().get("numberOfElements").getAsInt();
-			this.logger.debug(String.format("Page %d number of elements: %d", page, numberOfElements));
+			this.LOGGER.debug(String.format("Page %d number of elements: %d", page, numberOfElements));
 			JsonArray content = root.getAsJsonObject().get("content").getAsJsonArray();
 
 			for (int i = 0; i < content.size(); i++) {
@@ -1185,7 +1192,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			page += 1;
 		} while ((page * PAGE_SIZE) < totalElements);
 
-		this.logger.debug(String.format("Total pages: %d, Total elements: %d", page, totalElements));
+		this.LOGGER.debug(String.format("Total pages: %d, Total elements: %d", page, totalElements));
 		return allResults;
 	}
 
@@ -1238,7 +1245,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgCatalogEntitlement
 	 */
 	private VraNgCatalogEntitlementDto[] getCatalogEntitlementsPerProject(final String project) {
-		logger.debug("Fetching catalog entitlement for project '{}'", project);
+		LOGGER.debug("Fetching catalog entitlement for project '{}'", project);
 
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).addParameter("projectId", project));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
@@ -1257,7 +1264,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgCatalogEntitlement
 	 */
 	protected List<VraNgCatalogEntitlement> getAllCatalogEntitlementsPrimitive() {
-		logger.debug("Fetching all available catalog entitlements");
+		LOGGER.debug("Fetching all available catalog entitlements");
 		List<VraNgProject> allProjects = this.getProjectsPrimitive();
 		if (allProjects == null || allProjects.isEmpty()) {
 			return new ArrayList<>();
@@ -1285,8 +1292,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 							projectIds,
 							VraNgCatalogEntitlementType.fromString(modelEntitlement.getDefinition().get("type")),
 							VraNgContentSourceType.fromString(modelEntitlement.getDefinition().get("sourceType")));
-					String iconId = null;
-					if ((iconId = modelEntitlement.getDefinition().get("iconId")) != null) {
+					String iconId = modelEntitlement.getDefinition().get("iconId");
+					if (iconId != null) {
 						entitlement.setIconId(iconId);
 					}
 					return entitlement;
@@ -1345,10 +1352,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Custom Form.
 	 */
 	protected VraNgCustomForm getCustomFormByTypeAndSourcePrimitive(final String sourceType, final String sourceId) {
-		final String FORM_TYPE = "requestForm";
+		final String formType = "requestForm";
 		URI url = getURI(getURIBuilder()
 				.setPath(SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE)
-				.setParameter("formType", FORM_TYPE)
+				.setParameter("formType", formType)
 				.setParameter("sourceId", sourceId)
 				.setParameter("sourceType", sourceType));
 
@@ -1390,10 +1397,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 					formFormat = ob.get("formFormat").getAsString();
 				}
 
-				return new VraNgCustomForm(id, name, form, styles, sourceType, FORM_TYPE, status, formFormat);
+				return new VraNgCustomForm(id, name, form, styles, sourceType, formType, status, formFormat);
 			}
 		} catch (RestClientException e) {
-			logger.info("No custom form found for source id '{}' and source type '{}'", sourceId, sourceType);
+			LOGGER.info("No custom form found for source id '{}' and source type '{}'", sourceId, sourceType);
 		}
 
 		return null;
@@ -1475,7 +1482,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
 				JsonObject ob = o.getAsJsonObject();
-				logger.debug("Obtaining data from getAllFlavorMappingsByRegionPrimitive");
+				LOGGER.debug("Obtaining data from getAllFlavorMappingsByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
 					String regionId = this.getLinkRegionId(ob);
 					if (!flavorMappingsByRegion.containsKey(regionId)) {
@@ -1486,7 +1493,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 					List<VraNgFlavorMapping> mappings = this.getFlavorMappings(mappingsJson);
 					flavorMappingsByRegion.get(regionId).addAll(mappings);
 				} else {
-					logger.warn("Obtaining data from getAllFlavorMappingsByRegionPrimitive returns empty objects.");
+					LOGGER.warn("Obtaining data from getAllFlavorMappingsByRegionPrimitive returns empty objects.");
 				}
 			});
 		}
@@ -1513,7 +1520,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
 				JsonObject ob = o.getAsJsonObject();
-				logger.debug("Obtaining data from getAllFlavorProfilesByRegionPrimitive");
+				LOGGER.debug("Obtaining data from getAllFlavorProfilesByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
 					String regionId = this.getLinkRegionId(ob);
 					String flavorProfileId = ob.get("id").getAsString();
@@ -1524,7 +1531,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 					flavorProfileIdsByRegion.get(regionId).add(flavorProfileId);
 				} else {
-					logger.warn("Obtaining data from getAllFlavorProfilesByRegionPrimitive returns empty objects");
+					LOGGER.warn("Obtaining data from getAllFlavorProfilesByRegionPrimitive returns empty objects");
 				}
 			});
 		}
@@ -1694,7 +1701,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
 				JsonObject ob = o.getAsJsonObject();
-				logger.debug("Obtaining data from getAllImageMappingsByRegionPrimitive");
+				LOGGER.debug("Obtaining data from getAllImageMappingsByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
 					String regionId = this.getLinkRegionId(ob);
 					if (!imageMappingsByRegion.containsKey(regionId)) {
@@ -1705,7 +1712,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 					List<VraNgImageMapping> mappings = this.getImageMappings(mappingsJson);
 					imageMappingsByRegion.get(regionId).addAll(mappings);
 				} else {
-					logger.warn("Skipped empty data from getAllImageMappingsByRegion. Some items are empty");
+					LOGGER.warn("Skipped empty data from getAllImageMappingsByRegion. Some items are empty");
 				}
 			});
 		}
@@ -1724,7 +1731,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			&& ob.get("mapping").getAsJsonObject().keySet().isEmpty()
 			&& ob.get("_links").getAsJsonObject().keySet().isEmpty();
 
-		logger.debug(String.format("JSON object is valid: %s", jsonObjectValid));
+		LOGGER.debug(String.format("JSON object is valid: %s", jsonObjectValid));
 		return jsonObjectValid;
 	}
 
@@ -1748,7 +1755,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
 				JsonObject ob = o.getAsJsonObject();
 
-				logger.debug("Obtaining data from getAllImageProfilesByRegionPrimitive");
+				LOGGER.debug("Obtaining data from getAllImageProfilesByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
 					String regionId = this.getLinkRegionId(ob);
 					String imageProfileId = ob.get("id").getAsString();
@@ -1759,7 +1766,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 					imageProfileIdsByRegion.get(regionId).add(imageProfileId);
 				} else {
-					logger.warn("Obtaining data from getAllImageProfilesByRegionPrimitive returns empty objects");
+					LOGGER.warn("Obtaining data from getAllImageProfilesByRegionPrimitive returns empty objects");
 				}
 			});
 		}
@@ -1913,7 +1920,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
 				JsonObject ob = o.getAsJsonObject();
-				logger.debug("Obtaining data from getAllStorageProfilesByRegionPrimitive");
+				LOGGER.debug("Obtaining data from getAllStorageProfilesByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
 					String regionId = this.getLinkRegionId(ob);
 					if (!storageProfilesByRegion.containsKey(regionId)) {
@@ -1925,15 +1932,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 						String json = ob.toString();
 						storageProfilesByRegion.get(regionId).add(new VraNgStorageProfile(name, json));
 					} else {
-						logger.warn("Storage Profile has been skipped because don't contains a name definition");
+						LOGGER.warn("Storage Profile has been skipped because don't contains a name definition");
 						if (ob.has("id")) {
-							logger.warn(String.format("Id of the storage profile: %s", ob.get("id").getAsString()));
+							LOGGER.warn(String.format("Id of the storage profile: %s", ob.get("id").getAsString()));
 						} else {
-							logger.warn("Storage Profile don't have a valid id. Unable to track this object.");
+							LOGGER.warn("Storage Profile don't have a valid id. Unable to track this object.");
 						}
 					}
 				} else {
-					logger.info("Obtaining data from getAllStorageProfilesByRegionPrimitive returns empty objects");
+					LOGGER.info("Obtaining data from getAllStorageProfilesByRegionPrimitive returns empty objects");
 				}
 			});
 		}
@@ -2202,7 +2209,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			org = gson.fromJson(response.getBody(), VraNgOrganization.class);
 
-			logger.debug("Found organization: {}", gson.toJson(org));
+			LOGGER.debug("Found organization: {}", gson.toJson(org));
 		} catch (Exception error) {
 			throw new Error("Organization not found by the provided ID. Error message: " + error.getMessage(), error);
 		}
@@ -2458,7 +2465,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		List<AbxAction> actions = new ArrayList<>();
 		List<JsonObject> results = this.getPagedContent(SERVICE_ABX_ACTIONS, new HashMap<>());
 
-		logger.debug("ABX Actions found on server: {}", results.size());
+		LOGGER.debug("ABX Actions found on server: {}", results.size());
 		results.forEach(o -> {
 			JsonObject ob = o.getAsJsonObject();
 			String prjId = ob.get("projectId").getAsString();
@@ -2469,7 +2476,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				actions.add(action);
 			}
 		});
-		logger.debug("Actions in target project: {}", actions.size());
+		LOGGER.debug("Actions in target project: {}", actions.size());
 
 		return actions;
 	}
@@ -2619,7 +2626,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private String getLinkRegionId(final JsonObject ob) {
 
-		logger.debug("Extracting data: {}", ob);
+		LOGGER.debug("Extracting data: {}", ob);
 
 		String regionHref = ob.get("_links").getAsJsonObject()
 				.get("region").getAsJsonObject()
@@ -2796,7 +2803,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected List<String> getAllContentSharingPolicyIdsPrimitive() {
 		List<String> policyIds = new ArrayList<>();
 		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
-		logger.debug("Policy Ids found on server: {}", results.size());
+		LOGGER.debug("Policy Ids found on server: {}", results.size());
 		results.forEach(o -> {
 			JsonObject ob = o.getAsJsonObject();
 			String typeId = ob.get("typeId").getAsString();
@@ -2818,7 +2825,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected String getContentSharingPolicyIdByName(final String name) {
 		String policyId = "";
 		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
-		logger.debug("Policies found on server: {}", results.size());
+		LOGGER.debug("Policies found on server: {}", results.size());
 		for (JsonObject o : results) {  
 			JsonObject ob = o.getAsJsonObject();
 			String typeId = ob.get("typeId").getAsString();

@@ -22,7 +22,8 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.ResourceActionMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 import org.junit.Rule;
@@ -38,8 +39,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.ArgumentMatchers.any;
 
 public class VraNgResourceActionStoreTest {
 
@@ -52,27 +59,27 @@ public class VraNgResourceActionStoreTest {
 	/**
 	 * VraNgResourceActionStore.
 	 */
-	protected VraNgResourceActionStore 	store;
+	private VraNgResourceActionStore 	store;
 	/**
 	 * RestClientVraNg.
 	 */
-	protected RestClientVraNg 			restClient;
+	private RestClientVraNg 			restClient;
 	/**
 	 * Package.
 	 */
-	protected Package 					pkg;
+	private Package 					pkg;
 	/**
 	 * ConfigurationVraNg.
 	 */
-	protected ConfigurationVraNg 		config;
+	private ConfigurationVraNg 		config;
 	/**
 	 * vraNgPackageDescriptor.
 	 */
-	protected VraNgPackageDescriptor 	vraNgPackageDescriptor;
+	private VraNgPackageDescriptor 	vraNgPackageDescriptor;
 	/**
 	 * FsMocks.
 	 */
-	protected FsMocks 					fsMocks;
+	private FsMocks 					fsMocks;
 
 	/**
  	* init.

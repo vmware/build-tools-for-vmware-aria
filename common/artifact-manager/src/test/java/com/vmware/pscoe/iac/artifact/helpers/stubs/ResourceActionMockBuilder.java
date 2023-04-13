@@ -63,21 +63,21 @@ public class ResourceActionMockBuilder {
 
 	/**
 	 * Set name for Resource Action.
-	 * @param name name
+	 * @param actionName name
 	 * @return ResourceActionMockBuilder
 	 */
-	public ResourceActionMockBuilder setName(final String name) {
-		this.name = name;
+	public ResourceActionMockBuilder setName(final String actionName) {
+		this.name = actionName;
 		return this;
 	}
 
 	/**
 	 * Set ID for Resource Action.
-	 * @param id Id
+	 * @param identifier Id
 	 * @return ResourceActionMockBuilder
 	 */
-	public ResourceActionMockBuilder setId(final String id) {
-		this.id = id;
+	public ResourceActionMockBuilder setId(final String identifier) {
+		this.id = identifier;
 		return this;
 	}
 
