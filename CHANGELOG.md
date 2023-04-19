@@ -2,6 +2,7 @@
 * [artifact-manager] IAC-758 / Migrate build to JDK 17
 ### Fixes
 * [vRA-NG] IAC-743 / Can't pull resource actions of different resource type with same name
+* [artifact-manager] IAC-766 / Fix push fatal error: net.minidev.json.parser.ParseException: Malicious payload ...
 
 ## v2.31.1 - 05 Apr 2023
 
