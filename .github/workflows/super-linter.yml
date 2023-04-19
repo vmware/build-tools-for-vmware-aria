@@ -19,7 +19,7 @@ jobs:
       - name: Setup Java Action
         uses: actions/setup-java@v3
         with:
-          java-version: "8"
+          java-version: "17"
           distribution: "corretto"
 
       - name: Super-Linter
