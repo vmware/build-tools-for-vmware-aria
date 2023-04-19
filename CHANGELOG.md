@@ -1,3 +1,5 @@
+### Enhancements
+* [artifact-manager] IAC-758 / Migrate build to JDK 17
 ### Fixes
 * [vRA-NG] IAC-743 / Can't pull resource actions of different resource type with same name
 
