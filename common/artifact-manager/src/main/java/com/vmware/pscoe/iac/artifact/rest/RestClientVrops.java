@@ -62,6 +62,8 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.AlertDefinitionDTO.AlertDe
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.AlertDefinitionDTO.AlertDefinition.SymptomSet;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthGroupDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthGroupsDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUsersDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupTypeDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyDTO;
@@ -95,6 +97,7 @@ public class RestClientVrops extends RestClient {
     private static final String VIEW_DEFINITIONS_LIST_API = INTERNAL_API_PREFIX + "viewdefinitions";
     private static final String INTERNAL_API_HEADER_NAME = "X-vRealizeOps-API-use-unsupported";
     private static final String AUTH_GROUPS_API = PUBLIC_API_PREFIX + "/auth/usergroups";
+    private static final String AUTH_USERS_API = PUBLIC_API_PREFIX + "/auth/users";
     private static final int DEFAULT_PAGE_SIZE = 10000;
     private static final int VROPS_MAJOR_VERSION = 8;
     private static final int VROPS_MINOR_VERSION = 2;
@@ -637,17 +640,59 @@ public class RestClientVrops extends RestClient {
         }
     }
 
+    public List<AuthUserDTO> findAllAuthUsers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response;
+        List<AuthUserDTO> retVal = new ArrayList<>();
+        try {
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(AUTH_USERS_API).toString()));
+            uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
+            URI restUri = uriBuilder.build().toUri();
+            response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                return retVal;
+            }
+            throw new RuntimeException(String.format("Error occurred when trying to fetch auth users. Message: %s", e.getMessage()));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(String.format("Error occurred when trying to build REST URI to auth users. Message: %s", e.getMessage()));
+        }
+        try {
+        	AuthUsersDTO authUsersDto = mapper.readValue(response.getBody(), AuthUsersDTO.class);
+            return authUsersDto == null ? retVal : authUsersDto.getUsers();
+
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(String.format("JSON mapping error while parsing the auth users response. Message: %s", e.getMessage()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(String.format("JSON processing error while parsing the auth users response. Message: %s", e.getMessage()));
+        }
+    }
+    
+    public AuthUserDTO findAllAuthUserByName(String name) {
+        List<AuthUserDTO> allAuthUsers = this.findAllAuthUsers();
+
+        return allAuthUsers.stream().filter(item -> name.equals(item.getUsername())).findAny().orElse(null);
+    }
+    
     public AuthGroupDTO findAuthGroupByName(String name) {
         List<AuthGroupDTO> allAuthGroups = this.findAllAuthGroups();
 
-        return allAuthGroups.stream().filter(item -> name.equals(item.getName())).findAny().orElse(null);
+        return allAuthGroups.stream().filter(item -> name.equals(item.getDisplayName())).findAny().orElse(null);
     }
 
     public List<AuthGroupDTO> findAuthGroupsByNames(List<String> names) {
         List<AuthGroupDTO> allAuthGroups = this.findAllAuthGroups();
 
-        return allAuthGroups.stream().filter(item -> names.contains(item.getName())).collect(Collectors.toList());
+        return allAuthGroups.stream().filter(item -> names.contains(item.getDisplayName())).collect(Collectors.toList());
     }
+    
+    public List<AuthUserDTO> findAuthUsersByNames(List<String> names) {
+    	List<AuthUserDTO> allAuthUsers = this.findAllAuthUsers();
+
+        return allAuthUsers.stream().filter(item -> names.contains(item.getUsername())).collect(Collectors.toList());
+    }    
 
     private Version getProductVersion() {
         if (this.productVersion == null) {
