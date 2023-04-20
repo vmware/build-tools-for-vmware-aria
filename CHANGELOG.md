@@ -1,3 +1,5 @@
+## v2.31.2 - 20 Apr 2023
+
 ### Enhancements
 * [artifact-manager] IAC-758 / Migrate build to JDK 17
 ### Fixes
