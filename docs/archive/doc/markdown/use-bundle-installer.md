@@ -27,6 +27,7 @@ ignore_ssl_certificate_verification=true
 ignore_ssl_host_verification=true
 
 vro_import_packages=true
+vro_enable_backup=true
 vro_server=vra-l-01a.corp.local
 vro_port=443
 vro_auth=basic
@@ -168,6 +169,7 @@ ssh_directory
 vra_import_packages
 vra_ng_import_packages
 vro_import_packages
+vro_enable_backup
 vcd_import_packages
 vrops_import_packages
 vrli_import_packages

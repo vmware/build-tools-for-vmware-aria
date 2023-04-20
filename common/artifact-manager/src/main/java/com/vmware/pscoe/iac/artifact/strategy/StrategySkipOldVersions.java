@@ -40,7 +40,6 @@ public class StrategySkipOldVersions implements Strategy {
             }
         });
 
-
         logger.info("STRATEGY| PASS | Source.Version > Destination.Version");
         List<Package> sourceEndpointPackagesHigerVersion = sourceEndpointPackages.stream().filter(sourcePackage -> {
             Package latest = latestPackages.get(sourcePackage.getName());

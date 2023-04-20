@@ -1,3 +1,6 @@
+/**
+ * Package.
+ */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
 /*
@@ -17,36 +20,120 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 public class VraNgResourceAction {
 
-    private final String id;
-    private final String name;
-    private final String json;
+	/**
+	 * Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
+	/**
+	 * Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
+	/**
+	 * Resource Action ID.
+	 */
+	private final String id;
+	/**
+	 * Resource Action Name.
+	 */
+	private final String name;
+	/**
+	 * Resource Action JSON.
+	 */
+	private final String json;
+	/**
+	 * Resource Action Resource Type.
+	 */
+	private final String resourceType;
 
-    public VraNgResourceAction(String id, String name, String json) {
-        this.id = id;
-        this.name = name;
-        this.json = json;
-    }
+	/**
+	 * Creates a new Resource Action.
+	 * 
+	 * @param identifier   Resource Action id
+	 * @param recourseName Resource Action name
+	 * @param jsonString   Resrouce Action json
+	 */
+	public VraNgResourceAction(final String identifier, final String recourseName, final String jsonString) {
+		this.id = identifier;
+		this.name = recourseName;
+		this.json = jsonString;
+		this.resourceType = null;
+	}
 
-    public String getId() {
-        return this.id;
-    }
+	/**
+	 * Creates a new Resource Action.
+	 * 
+	 * @param identifier           Resource Action id
+	 * @param actionName         Resource Action name
+	 * @param jsonString         Resource Action json
+	 * @param actionResourceType Resource Action Resource Type
+	 */
+	public VraNgResourceAction(final String identifier, final String actionName, final String jsonString, final String actionResourceType) {
+		this.id = identifier;
+		this.name = actionName;
+		this.json = jsonString;
+		this.resourceType = actionResourceType;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	/**
+	 * Gets the id of the Resource Action.
+	 * 
+	 * @return Resource Action ID
+	 */
+	public String getId() {
+		return this.id;
+	}
 
-    public String getJson() {
-        return this.json;
-    }
+	/**
+	 * Gets the Name of the Resource Action.
+	 * 
+	 * @return Resource Action Name
+	 */
+	public String getName() {
+		return this.name;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+	/**
+	 * Gets the JSON String of the Resource Action.
+	 * 
+	 * @return Resource Action JSON String
+	 */
+	public String getJson() {
+		return this.json;
+	}
 
-        VraNgResourceAction other = (VraNgResourceAction) obj;
-        return this.id.equals(other.getId());
-    }
+	/**
+	 * Gets the Resource Type of the Resource Action.
+	 * 
+	 * @return Resource Action Resource Type
+	 */
+	public String getResourceType() {
+		return this.resourceType;
+	}
+
+	/**
+	 * Equals Implementation.
+	 * 
+	 * @return true if equal else false
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
+
+		VraNgResourceAction other = (VraNgResourceAction) obj;
+		return this.id.equals(other.getId());
+	}
+
+	/**
+	 * Hash Implementation.
+	 * 
+	 * @return object hash
+	 */
+	@Override
+	public int hashCode() {
+		int result = PRIME_NUMBER_17;
+		return PRIME_NUMBER_31 * result + this.id.hashCode();
+	}
 
 }

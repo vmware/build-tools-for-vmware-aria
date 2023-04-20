@@ -16,21 +16,51 @@ package com.vmware.pscoe.iac.artifact.model;
  */
 
 public final class Package implements Comparable<Package> {
-
+	/**
+	 * The package type.
+	 */
     private final PackageType type;
-    private final String id;
-    private final String name;
-    private final String version;
-    private final String filesystemPath;
 
-    protected Package(PackageType type, String id, String name, String version, String filesystemPath) {
-        this.type = type;
-        this.id = id;
-        this.name = name;
-        this.version = version;
-        this.filesystemPath = filesystemPath;
+	/**
+	 * The package id.
+	 */
+    private final String id;
+
+	/**
+	 * The package name.
+	 */
+    private final String name;
+
+	/**
+	 * The package version.
+	 */
+    private final String version;
+
+	/**
+	 * The package file system path.
+	 */
+    private String filesystemPath;
+
+	/**
+	 *
+	 * @param packageType The package type
+	 * @param packageId The package id
+	 * @param packageName The package name
+	 * @param packageVersion The package version
+	 * @param packageFilesystemPath The package file system path
+	 */
+    protected Package(final PackageType packageType, final String packageId, final String packageName, final String packageVersion, final String packageFilesystemPath) {
+        this.type = packageType;
+        this.id = packageId;
+        this.name = packageName;
+        this.version = packageVersion;
+        this.filesystemPath = packageFilesystemPath;
     }
 
+	/**
+	 *
+	 * @return returns the package type
+	 */
     public PackageType getType() {
         return type;
     }
@@ -50,6 +80,10 @@ public final class Package implements Comparable<Package> {
     public String getFilesystemPath() {
         return filesystemPath;
     }
+
+	public void setFilesystemPath(String filesystemPath) {
+		this.filesystemPath = filesystemPath;
+	}
 
     public boolean hasVersionQualifier() {
         return this.version != null && this.version.length() > 0;

@@ -23,26 +23,22 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+[//]: # (### Implemented vRO backup during packages import)
 
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
-
-
-
-### **.helper.ts files will now be excluded from type definitions* 
-Currently the *.helper.ts files are being transpiled, and definitions are being generated. This shouldn't be happening, 
-as there is no reason to have helper files as part of the definitions, since they are test related only.
-
-#### Previous Behavior
-The helper.ts files had type definitions generated for them since vrotsc did not detect them correctly.
-
-#### New Behavior
-The helper.ts are now being correctly filtered out by vrtosc, by excluding files that end with: `.helper.ts`.
-
-#### Relevant Documentation:
-* None
+[//]: # (### *Improvement Name* )
+[//]: # (Talk ONLY regarding the improvement)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### Previous Behavior)
+[//]: # (Explain how it used to behave, regarding to the change)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### New Behavior)
+[//]: # (Explain how it behaves now, regarding to the change)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
 
 

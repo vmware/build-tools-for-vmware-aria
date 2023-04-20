@@ -39,18 +39,44 @@ import com.vmware.pscoe.iac.artifact.model.basic.BasicPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.ssh.SshClient;
 
 public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor> {
+	/**
+	 * The content directory.
+	 */
     private static final String DIR_CONTENT = "content";
-    private static final Logger logger = LoggerFactory.getLogger(SshPackageStore.class);
 
+	/**
+	 * Variable for logging.
+	 */
+    private final Logger logger = LoggerFactory.getLogger(SshPackageStore.class);
+
+	/**
+	 * The SSH configuration.
+	 */
     private final ConfigurationSsh config;
+
+	/**
+	 * The session variable.
+	 */
     private Session session;
 
-    protected SshPackageStore(ConfigurationSsh config) {
-        this.config = config;
+	/**
+	 *
+	 * @param sshConfig the ssh configuration
+	 */
+    protected SshPackageStore(final ConfigurationSsh sshConfig) {
+        this.config = sshConfig;
     }
 
+	/**
+	 * Imports all packages.
+	 * @param pkgs the packages to import
+	 * @param dryrun whether it should be dry run
+	 * @param mergePackages whether to merge the packages
+	 * @param enableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
     @Override
-    public List<Package> importAllPackages(List<Package> pkgs, boolean dryrun, boolean mergePackages) {
+    public final List<Package> importAllPackages(final List<Package> pkgs, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
         this.validateFilesystem(pkgs);
 
         List<Package> sourceEndpointPackages = pkgs;
@@ -65,18 +91,38 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
         return importedPackages;
     }
 
+	/**
+	 * Exports all packages.
+	 * @param pkgs the packages to export
+	 * @param dryrun whether it should be dry run
+	 * @return the exported packages
+	 */
     @Override
-    public List<Package> exportAllPackages(List<Package> pkgs, boolean dryrun) {
+    public final List<Package> exportAllPackages(final List<Package> pkgs, final boolean dryrun) {
     	throw new RuntimeException("Not implemented!");
     }
 
+	/**
+	 * Imports all packages.
+	 * @param pkg the packages to import
+	 * @param dryrun whether it should be dry run
+	 * @param enableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
 	@Override
-	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun) {
-		return this.importAllPackages(pkg,dryrun, false);
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
+	/**
+	 * Imports a package.
+	 * @param pkg the package to import
+	 * @param dryrun whether it should be dry run
+	 * @param mergePackages whether to merge the packages
+	 * @return the imported package
+	 */
 	@Override
-    public Package importPackage(Package pkg, boolean dryrun, boolean mergePackages) {
+    public final Package importPackage(final Package pkg, final boolean dryrun, final boolean mergePackages) {
         logger.info(String.format(PackageStore.PACKAGE_IMPORT, pkg));
 
         File tmp;
@@ -94,19 +140,40 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
         return pkg;
     }
 
+	/**
+	 * Exports a package.
+	 * @param pkg the package to export
+	 * @param dryrun whether it should be a dry run
+	 * @return the exported package
+	 */
     @Override
-    public Package exportPackage(Package pkg, boolean dryrun) {
+    public final Package exportPackage(final Package pkg, final boolean dryrun) {
         throw new RuntimeException("Not implemented!");
     }
 
+	/**
+	 * Exports a package.
+	 * @param pkg the package to export
+	 * @param exportDescriptor the descriptor of the package to export
+	 * @param dryrun whether it should be dry run
+	 * @return the exported package
+	 */
     @Override
-    public Package exportPackage(Package pkg, File exportDescriptor, boolean dryrun) {
+    public final Package exportPackage(final Package pkg, final File exportDescriptor, final boolean dryrun) {
         BasicPackageDescriptor descriptor = BasicPackageDescriptor.getInstance(exportDescriptor);
+
         return this.exportPackage(pkg, descriptor, dryrun);
     }
 
+	/**
+	 * Exports a package.
+	 * @param pkg the package to export
+	 * @param sshPackageDescriptor the package descriptor
+	 * @param dryrun whether it should be dry run
+	 * @return the exported package
+	 */
     @Override
-    public Package exportPackage(Package pkg, BasicPackageDescriptor sshPackageDescriptor, boolean dryrun) {
+    public final Package exportPackage(final Package pkg, final BasicPackageDescriptor sshPackageDescriptor, final boolean dryrun) {
         logger.info(String.format(PackageStore.PACKAGE_EXPORT, pkg));
         String rootDirectory = this.config.getSshDirectory().endsWith(File.separator) ? this.config.getSshDirectory() : this.config.getSshDirectory() + File.separator;
         List<String> files = sshPackageDescriptor.getContent().stream().map(file -> (rootDirectory + file)).collect(Collectors.toList());
@@ -120,27 +187,53 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
         return pkg;
     }
 
+	/**
+	 * Gets the packages.
+	 * @return the packages
+	 */
     @Override
-    public List<Package> getPackages() {
+    public final List<Package> getPackages() {
         throw new UnsupportedOperationException("Getting packages is not supported");
     }
 
-    @Override
-    protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
+	/**
+	 * Deletes a package.
+	 * @param pkg the package to delete
+	 * @param withContent whether to delete the package with the content
+	 * @param dryrun whether it should be dry run
+	 * @return the deleted package
+	 */
+	@Override
+    protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
         throw new UnsupportedOperationException("Deleting packages is not supported");
     }
 
-    @Override
-    protected PackageContent getPackageContent(Package pkg) {
+	/**
+	 * Gets package content.
+	 * @param pkg the package which content to get
+	 * @return the package content
+	 */
+	@Override
+    protected final PackageContent getPackageContent(final Package pkg) {
         throw new UnsupportedOperationException("Parsing package content is not supported");
     }
 
-    @Override
-    protected void deleteContent(Content content, boolean dryrun) {
+	/**
+	 * Deletes content.
+	 * @param content the content to be deleted
+	 * @param dryrun whether it should be dry run
+	 */
+	@Override
+    protected final void deleteContent(final Content content, final boolean dryrun) {
         throw new UnsupportedOperationException("Delete content is not supported");
     }
 
-    private void exportFiles(Package sshPackage, List<String> files) {
+	/**
+	 * Exports files from ssh package.
+	 * @param sshPackage the ssh package from which to export the files
+	 * @param files the exported files
+	 */
+    private void exportFiles(final Package sshPackage, final List<String> files) {
         if (files == null || files.isEmpty()) {
             return;
         }
@@ -167,7 +260,12 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
         }
     }
 
-    private void importFiles(Package sshPackage, File tmp) {
+	/**
+	 * Imports files.
+	 * @param sshPackage the ssh package to import files from
+	 * @param tmp the temporary file
+	 */
+    private void importFiles(final Package sshPackage, final File tmp) {
         File contentDirectory = Paths.get(tmp.getPath()).toFile();
 
         if (contentDirectory.exists()) {
@@ -191,6 +289,10 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
         }
     }
 
+	/**
+	 * Connects.
+	 * @throws JSchException
+	 */
     private void connect() throws JSchException {
         session = SshClient.createSession(config.getUsername(), config.getPassword(), config.getHost(),
                 config.getPort());
@@ -198,6 +300,10 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
         logger.info("SSH Session opened");
     }
 
+	/**
+	 * Reconnects.
+	 * @throws JSchException
+	 */
     private void reconnect() throws JSchException {
         if (session != null && session.isConnected()) {
             return;
@@ -206,6 +312,9 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
         connect();
     }
 
+	/**
+	 * Closes.
+	 */
     private void close() {
         if (session != null) {
             session.disconnect();

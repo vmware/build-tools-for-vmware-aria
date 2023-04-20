@@ -1,6 +1,7 @@
 name: Super-Linter
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -15,12 +16,11 @@ jobs:
           # list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.7.0
+      - name: Setup Java Action
+        uses: actions/setup-java@v3
         with:
-          java-version: "8"
-          java-distribution: "corretto"
-          maven-version: "3.8.7"
+          java-version: "17"
+          distribution: "corretto"
 
       - name: Super-Linter
         uses: github/super-linter@v4.10.1

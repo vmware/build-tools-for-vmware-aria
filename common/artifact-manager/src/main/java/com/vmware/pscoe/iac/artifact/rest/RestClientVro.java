@@ -154,8 +154,14 @@ public class RestClientVro extends RestClient {
         }).collect(Collectors.toList());
     }
 
-    public List<Package> exportAllPackages(List<Package> vroPackages, boolean dryrun) {
-        return vroPackages.stream().map(vroPackage -> exportPackage(vroPackage, dryrun)).collect(Collectors.toList());
+	public List<Package> exportAllPackages(List<Package> vroPackages, 
+										   boolean dryrun, 
+										   boolean exportConfigAttributeValues, 
+										   boolean exportConfigSecureStringValues) {
+		return vroPackages.stream().map(vroPackage -> this.exportPackage(vroPackage,
+																		 dryrun,
+																		 exportConfigAttributeValues,
+																		 exportConfigSecureStringValues)).collect(Collectors.toList());
     }
 
     public File downloadResource(String id, Path destination) {
@@ -179,7 +185,10 @@ public class RestClientVro extends RestClient {
         return destination.toFile();
     }
 
-    public Package exportPackage(Package pkg, boolean dryrun) {
+	public Package exportPackage(Package pkg, 
+								 boolean dryrun, 
+								 boolean exportConfigAttributeValues, 
+								 boolean exportConfigSecureStringValues) {
         RequestCallback requestCallback = new RequestCallback() {
             @Override
             public void doWithRequest(ClientHttpRequest request) throws IOException {
@@ -191,8 +200,14 @@ public class RestClientVro extends RestClient {
             @Override
             public Void extractData(ClientHttpResponse response) throws IOException {
                 if (!dryrun) {
-                    Path path = Paths.get(pkg.getFilesystemPath());
+					Path path = Paths.get(pkg.getFilesystemPath());
+
+					System.out.println("About to copy the file");
+					System.out.println(path.toString());
+					
                     Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
+
+					System.out.print("File copied.");
                 }
                 return null;
             }
@@ -200,14 +215,27 @@ public class RestClientVro extends RestClient {
 
         URI url;
         try {
-            url = getURIBuilder().setPath("/vco/api/packages/" + pkg.getFQName() + "/")
-                    .setParameter("exportConfigurationAttributeValues", String.valueOf(configuration.isPackageExportConfigurationAttributeValues()))
+			logger.debug("exportConfigurationAttributeValues: " + String.valueOf(configuration.isPackageExportConfigurationAttributeValues()));
+			logger.debug("exportConfigSecureStringAttributeValues: " + String.valueOf(configuration.isPackageExportConfigSecureStringAttributeValues()));
+
+			//if set to true in the properties this value will be taken with priority
+			boolean packageExportConfigurationValuesFinal = configuration.isPackageExportConfigurationAttributeValues();
+			if (exportConfigAttributeValues) {
+				packageExportConfigurationValuesFinal = true;
+			}
+			//if set to true in the properties this value will be taken with priority
+			boolean exportConfigurationSecureStringValuesFinal = configuration.isPackageExportConfigSecureStringAttributeValues();
+			if (exportConfigSecureStringValues) {
+				exportConfigurationSecureStringValuesFinal = true;
+			}
+
+			url = getURIBuilder().setPath("/vco/api/packages/" + pkg.getFQName() + "/")
+					.setParameter("exportConfigurationAttributeValues", String.valueOf(packageExportConfigurationValuesFinal))
                     .setParameter("exportGlobalTags", String.valueOf(configuration.isPackageExportGlobalTags()))
                     .setParameter("exportVersionHistory", String.valueOf(configuration.isPackageExportVersionHistory()))
                     .setParameter("exportAsZip", String.valueOf(configuration.isPackgeExportAsZip()))
-                    .setParameter("exportGlobalTags", String.valueOf(Boolean.TRUE))
-                    .setParameter("exportConfigSecureStringAttributeValues",
-                            String.valueOf(configuration.isPackageExportConfigSecureStringAttributeValues()))
+					.setParameter("exportGlobalTags", String.valueOf(Boolean.TRUE))
+					.setParameter("exportConfigSecureStringAttributeValues", String.valueOf(exportConfigurationSecureStringValuesFinal))
                     .build();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
