@@ -24,7 +24,41 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+## Add Support for Activating / Deactivating of vROPs Dashboards for Users / Groups
+If there is a metadata file for activating / deactivating of vROPs dashboards it will be used for activation / deactivation of the imported dashboards for certain users / groups.
 
+#### Previous Behavior
+There was no support for activating / deactivating of vROPs dashboards for specific users / groups.
+
+#### New Behavior
+There is support for activating / deactivating of vROPs dashboards for specific users / groups.
+
+#### Relevant Documentation
+In order activating of vROPs dashboards for specific users / groups the following files should be present in the dashboards/metadata directory:
+* dashboards/metadata/dashboardUserActivationMetadata.vrops  - activate / deactivate dashboards for specific users 
+* dashboards/metadata/dashboardGroupActivationMetadata.vrops - activate / deactivate dashboards for specific groups
+With the following content:
+* dashboards/metadata/dashboardUserActivationMetadata.vrops - activation for specific users
+{
+	"activate": {
+		"dashboard name": ["user1", "user2" ]
+	},
+	"deactivate": {
+		"dashboard name": ["user3, user4" ]
+	}
+}
+
+* dashboards/metadata/dashboardGroupActivationMetadata.vrops - activation for specific groups
+{
+	"activate": {
+		"dashboard name": ["group1", "group2" ]
+	},
+	"deactivate": {
+		"dashboard name": ["group3, group4" ]
+	}
+}
+The users / groups must exist on the target system, otherwise an error will be thrown stating that the users / groups do not exist on the target vROPs system.
+For convenience during pulling of dashboard from a vROPs system a set of activation metadata files will be generated with list of dashboards and an empty array of users / groups.
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
