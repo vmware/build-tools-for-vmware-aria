@@ -141,6 +141,10 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
         }
         payload.put("username", getConfiguration().getUsername());
         payload.put("password", getConfiguration().getPassword());
+
+		System.out.println("AUTHENTICATING WITH:");
+		System.out.println(payload);
+
         final String requestJson = new ObjectMapper().writeValueAsString(payload);
         final HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 

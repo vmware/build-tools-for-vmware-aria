@@ -24,13 +24,8 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-## Add Support for Activating / Deactivating of vROPs Dashboards for Users / Groups
+### Add Support for Activating / Deactivating of vROPs Dashboards for Users / Groups
 If there is a metadata file for activating / deactivating of vROPs dashboards it will be used for activation / deactivation of the imported dashboards for certain users / groups.
-
-#### Previous Behavior
-There was no support for activating / deactivating of vROPs dashboards for specific users / groups.
-
-#### New Behavior
 There is support for activating / deactivating of vROPs dashboards for specific users / groups.
 
 #### Relevant Documentation
@@ -73,7 +68,30 @@ For convenience during pulling of dashboard from a vROPs system a set of activat
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Domain Detection in configuration* 
+When attempting authentication, we take the domain name from the `username`
 
+Example:
+```xml
+<server>
+	<id>vro</id>
+	<username>configurationadmin@test@System Domain</username>
+	<password>{5a593XJmccIHejrppq19g1VIqtn3I34KFryPXJ7mhaw=}</password>
+</server>
+```
+Will detect `configurationadmin` as username and `System Domain` as domain.
+
+#### Previous Behavior
+When parsing the username, we used to remove everything after the first `@` sign, which lead to usernames with more than 
+one `@` to be mishandled. Same issue was detected in the domain fetching logic.
+
+#### New Behavior
+Now the detection happens from the **LAST** `@` sign.
+
+Exception to this is that in case of BASIC auth in Aria Automation Orchestrator, we take the username **AS IS**.
+
+#### Relevant Documentation:
+* None
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
