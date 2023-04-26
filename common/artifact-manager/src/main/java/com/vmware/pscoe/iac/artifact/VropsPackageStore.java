@@ -222,7 +222,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 */
 	@Override
 	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
-		return this.importAllPackages(pkg, dryrun, false);
+		return this.importAllPackages(pkg, dryrun, false,  enableBackup);
 	}
 
 	/**
