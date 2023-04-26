@@ -104,6 +104,11 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     private final Logger logger = LoggerFactory.getLogger(VropsPackageStore.class);
 
 	/**
+	 * The vRO rest client.
+	 */
+	private RestClientVrops restClient;
+
+	/**
 	 * Constant for policy metadata file name.
 	 */
     private static final String POLICY_METADATA_FILENAME = "policiesMetadata.vrops.json";
@@ -155,18 +160,18 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     
     public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops) {
         this(cliManager);
-        this.restClientVrops = restClientVrops;
+        this.restClient = restClientVrops;
     }
     
     public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final Version productVersion) {
         this(cliManager);
-        this.restClientVrops = restClientVrops;
+        this.restClient = restClientVrops;
         super.setProductVersion(productVersion);
     }    
 
     public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final File tempDir) {
         this.cliManager = cliManager;
-        this.restClientVrops = restClientVrops;
+        this.restClient = restClientVrops;
         this.tempDir = tempDir;
         tempVropsExportDir = new File(this.tempDir, "vrops-export");
         tempVropsImportDir = new File(this.tempDir, "vrops-import");
@@ -216,7 +221,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * @return the imported package
 	 */
 	@Override
-	public List<Package> importAllPackages(final List<Package> pkg, boolean dryrun) {
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
 		return this.importAllPackages(pkg, dryrun, false);
 	}
 
@@ -225,11 +230,13 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
      * effectively import it into vROps.
      * @param packages Locally available packages.
      * @param dryrun   Just test the whole process without actually import the packages in vROps.
+	 * @param mergePackages Whether to merge the packages
+	 * @param enableBackup Whether to enable backup
      * @return The list of pushed packages. The actual package objects may be different, for example the file content they are associated with may be different file on
      * the file system.
      */
     @Override
-    public List<Package> importAllPackages(final List<Package> packages, boolean dryrun, boolean mergePackages) {
+    public final List<Package> importAllPackages(final List<Package> packages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
         validateFilesystem(packages);
         List<Package> sourceEndpointPackages = packages;
 
@@ -351,7 +358,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     private void exportViews(final Package vropsPackage, final List<String> viewNames) {
-        ViewDefinitionDTO allViewDefinitions = restClientVrops.getAllViewDefinitions();
+        ViewDefinitionDTO allViewDefinitions = restClient.getAllViewDefinitions();
         if (allViewDefinitions.getViewDefinitions().isEmpty()) {
             throw new RuntimeException("No views are available on vROPS server");
         }
@@ -379,7 +386,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     private void exportSuperMetrics(final Package vropsPackage, final List<String> superMetricNames) {
-        SupermetricDTO allSupermetrics = restClientVrops.getAllSupermetrics();
+        SupermetricDTO allSupermetrics = restClient.getAllSupermetrics();
         if (allSupermetrics.getSuperMetrics().isEmpty()) {
             throw new RuntimeException("No supermetrics are available on vROPS server");
         }
@@ -522,7 +529,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     private void exportReports(final Package vropsPackage, final List<String> reportNames) {
-        ReportDefinitionDTO allReportDefinitions = restClientVrops.getAllReportDefinitions();
+        ReportDefinitionDTO allReportDefinitions = restClient.getAllReportDefinitions();
         if (allReportDefinitions.getReportDefinitions().isEmpty()) {
             throw new RuntimeException("No reports are available on vROPS server");
         }
@@ -572,7 +579,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         symptomDefinitionsMap.keySet().stream().forEach(item -> {
             dependentDefinitionsMap.put(item, symptomDefinitionsMap.get(item));
         });
-        restClientVrops.importDefinitionsInVrops(symptomDefinitionsMap, VropsPackageMemberType.SYMPTOM_DEFINITION, dependentDefinitionsMap);
+		restClient.importDefinitionsInVrops(symptomDefinitionsMap, VropsPackageMemberType.SYMPTOM_DEFINITION, dependentDefinitionsMap);
 
         List<File> recommendationFiles = addDefinitionsToImportList(tmpDir, VropsPackageMemberType.RECOMMENDATION);
         Map<String, Object> recommendationsMap = new HashMap<>();
@@ -591,7 +598,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         recommendationsMap.keySet().stream().forEach(item -> {
             dependentDefinitionsMap.put(item, recommendationsMap.get(item));
         });
-        restClientVrops.importDefinitionsInVrops(recommendationsMap, VropsPackageMemberType.RECOMMENDATION, dependentDefinitionsMap);
+		restClient.importDefinitionsInVrops(recommendationsMap, VropsPackageMemberType.RECOMMENDATION, dependentDefinitionsMap);
 
         List<File> alertDefinitionFiles = addDefinitionsToImportList(tmpDir, VropsPackageMemberType.ALERT_DEFINITION);
         Map<String, Object> alertDefinitionsMap = new HashMap<>();
@@ -610,7 +617,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         alertDefinitionsMap.keySet().stream().forEach(item -> {
             dependentDefinitionsMap.put(item, alertDefinitionsMap.get(item));
         });
-        restClientVrops.importDefinitionsInVrops(alertDefinitionsMap, VropsPackageMemberType.ALERT_DEFINITION, dependentDefinitionsMap);
+		restClient.importDefinitionsInVrops(alertDefinitionsMap, VropsPackageMemberType.ALERT_DEFINITION, dependentDefinitionsMap);
 
         if (messages.length() > 0) {
             throw new IOException(messages.toString());
@@ -701,7 +708,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     private List<String> getMissingGroups(final List<String> groups) {
-        List<AuthGroupDTO> foundGroups = this.restClientVrops.findAuthGroupsByNames(groups);
+        List<AuthGroupDTO> foundGroups = this.restClient.findAuthGroupsByNames(groups);
         if (foundGroups == null || foundGroups.isEmpty()) {
             return groups;
         }
@@ -710,7 +717,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     private List<String> getMissingUsers(final List<String> users) {
-        List<AuthUserDTO> foundUsers = this.restClientVrops.findAuthUsersByNames(users);
+        List<AuthUserDTO> foundUsers = this.restClient.findAuthUsersByNames(users);
         if (foundUsers == null || foundUsers.isEmpty()) {
             return users;
         }
@@ -904,7 +911,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
             try {
                 logger.info("Importing custom group: '{}'", customGroup);
                 String customGroupPayload = readCustomGroupFile(customGroupFile);
-                restClientVrops.importCustomGroupInVrops(customGroup, customGroupPayload, policyMetadataMap);
+				restClient.importCustomGroupInVrops(customGroup, customGroupPayload, policyMetadataMap);
                 logger.info("Imported custom group: '{}'", customGroup);
             } catch (Exception e) {
                 messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup, e.getMessage()));
@@ -935,7 +942,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
             String policyName = FilenameUtils.removeExtension(policy.getName());
             try {
                 logger.info("Importing policy: '{}'", policyName);
-                restClientVrops.importPolicyFromZip(policyName, policy, Boolean.TRUE);
+				restClient.importPolicyFromZip(policyName, policy, Boolean.TRUE);
                 logger.info("Imported policy: '{}'", policyName);
             } catch (Exception e) {
                 String message = String.format("The policy '%s' could not be imported : '%s'", policyName, e.getMessage());
@@ -972,7 +979,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         definitionsDir.mkdir();
         logger.info("Created directory '{}' for storing '{}'", definitionsDir.getAbsolutePath(), definitionType);
 
-        Object allDefinitions = restClientVrops.exportDefinitionsFromVrops(definitionType);
+        Object allDefinitions = restClient.exportDefinitionsFromVrops(definitionType);
         logger.info("Extracted definitions of type '{}' to '{}'", definitionType, definitionsDir.getAbsolutePath());
         Map<String, String> definitionsJsonMap = this.generateDefinitionsJsonMap(allDefinitions, definitions, definitionType);
 
@@ -1037,7 +1044,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
             customGroupTargetDir.mkdir();
         }
 
-        List<CustomGroupDTO.Group> customGroups = restClientVrops.getAllCustomGroups();
+        List<CustomGroupDTO.Group> customGroups = restClient.getAllCustomGroups();
         if (customGroups == null || customGroups.isEmpty()) {
             logger.error("No custom groups found in vROPs");
             return;
@@ -1069,7 +1076,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         policyDir.mkdir();
         logger.info("Created temp dir for storing policies {}", policyDir.getAbsolutePath());
 
-        List<PolicyDTO.Policy> policies = restClientVrops.getAllPolicies();
+        List<PolicyDTO.Policy> policies = restClient.getAllPolicies();
         Map<String, String> policyIdNameMap = new HashMap<>();
         StringBuilder messages = new StringBuilder();
         for (PolicyDTO.Policy policy : policies) {
@@ -1078,7 +1085,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
                 File policyZipFile = new File(policyDir, policy.getName() + ".zip");
                 try {
                     logger.info("Exporting policy '{}'", policy.getName());
-                    PolicyDTO.Policy policyContent = restClientVrops.getPolicyContent(policy);
+                    PolicyDTO.Policy policyContent = restClient.getPolicyContent(policy);
                     Files.write(policyZipFile.toPath(), policyContent.getZipFile(), StandardOpenOption.CREATE_NEW);
                     logger.info("Exported policy '{}'", policy.getName());
                 } catch (IOException e) {
