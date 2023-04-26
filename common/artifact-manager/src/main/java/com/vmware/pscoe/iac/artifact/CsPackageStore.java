@@ -31,25 +31,48 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
-
+	/**
+	 * Variable for logging.
+	 */
 	private final Logger logger = LoggerFactory.getLogger(CsPackageStore.class);
 
+	/**
+	 * The CSA rest client.
+	 */
 	private final RestClientCs restClient;
 
+	/**
+	 * The CS configuration.
+	 */
 	private final ConfigurationCs config;
 
-	protected CsPackageStore(RestClientCs restClient, ConfigurationCs config) {
-		this.restClient = restClient;
-		this.config = config;
+	/**
+	 *
+	 * @param csRestClient
+	 * @param csConfig
+	 */
+	protected CsPackageStore(final RestClientCs csRestClient, final ConfigurationCs csConfig) {
+		this.restClient = csRestClient;
+		this.config = csConfig;
 	}
 
+	/**
+	 * Returns the packages.
+	 * @return the list of packages to return
+	 */
 	@Override
-	public List<Package> getPackages() {
+	public final List<Package> getPackages() {
 		throw new UnsupportedOperationException("getPackages: Code Stream Services does not provide native support for packages.");
 	}
 
+	/**
+	 * Exports all the packages.
+	 * @param csPackages the cs packages to export
+	 * @param dryrun whether it should be dry run
+	 * @return the exported packages
+	 */
 	@Override
-	public List<Package> exportAllPackages(List<Package> csPackages, boolean dryrun) {
+	public final List<Package> exportAllPackages(final List<Package> csPackages, final boolean dryrun) {
 		this.vlidateServer(csPackages);
 
 		List<Package> sourceEndpointPackages = csPackages;
@@ -68,13 +91,28 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 		return exportedPackages;
 	}
 
+	/**
+	 * Imports all packages.
+	 * @param pkg the packages to import
+	 * @param dryrun whether it should be dry run
+	 * @param enableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
 	@Override
-	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun) {
-		return this.importAllPackages(pkg,dryrun,false);
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
+	/**
+	 * Imports all packages.
+	 * @param csPackages the packages to import
+	 * @param dryrun whether it should be a dry dun
+	 * @param mergePackages whether the packages should be merged
+	 * @param enableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
 	@Override
-	public List<Package> importAllPackages(List<Package> csPackages, boolean dryrun, boolean mergePackages) {
+	public final List<Package> importAllPackages(final List<Package> csPackages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
 		this.validateFilesystem(csPackages);
 
 		List<Package> sourceEndpointPackages = csPackages;
@@ -84,32 +122,53 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 
 		List<Package> importedPackages = new ArrayList<>();
 		for (Package pkg : sourceEndpointPackages) {
-			importedPackages.add(this.importPackage(pkg, dryrun,mergePackages));
+			importedPackages.add(this.importPackage(pkg, dryrun, mergePackages));
 		}
 
 		return importedPackages;
 	}
 
+	/**
+	 * Export a cs package.
+	 * @param csPackage the package to export
+	 * @param dryrun whether it should be a dry run
+	 * @return the exported package
+	 */
 	@Override
-	public Package exportPackage(Package csPackage, boolean dryrun) {
+	public final Package exportPackage(final Package csPackage, final boolean dryrun) {
 		CsPackageDescriptor csPackageDescriptor = CsPackageDescriptor
 				.getInstance(new File(csPackage.getFilesystemPath()));
 		return this.exportPackage(csPackage, csPackageDescriptor, dryrun);
 	}
 
+	/**
+	 * Exports a cs package.
+	 * @param csPackage the package to export
+	 * @param csPackageDescriptor the package descriptor of the package to be exported
+	 * @param dryrun whether it should be dry run
+	 * @return the exported package
+	 */
 	@Override
-	public Package exportPackage(Package csPackage, CsPackageDescriptor csPackageDescriptor, boolean dryrun) {
+	public final Package exportPackage(final Package csPackage, final CsPackageDescriptor csPackageDescriptor, final boolean dryrun) {
 		logger.info(String.format(PackageStore.PACKAGE_EXPORT, csPackage));
 		CsTypeStoreFactory storeFactory = CsTypeStoreFactory.withConfig(restClient, csPackage, config, csPackageDescriptor);
 		for (CsPackageContent.ContentType type : CsTypeStoreFactory.EXPORT_ORDER) {
 			logger.info("EXPORTING: {}", type.getTypeValue());
 			storeFactory.getStoreForType(type).exportContent();
 		}
+
 		return csPackage;
 	}
 
+	/**
+	 * Imports a cs package.
+	 * @param csPackage the cs package to import
+	 * @param dryrun whether it should be dry run
+	 * @param mergePackages whether it should merge the packages
+	 * @return the package to be imported
+	 */
 	@Override
-	public Package importPackage(Package csPackage, boolean dryrun, boolean mergePackages) {
+	public final Package importPackage(final Package csPackage, final boolean dryrun, final boolean mergePackages) {
 		logger.info(String.format(PackageStore.PACKAGE_IMPORT, csPackage));
 
 		File tmp;
@@ -127,27 +186,53 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 			logger.info("IMPORTING : {}", type.getTypeValue());
 			storeFactory.getStoreForType(type).importContent(tmp);
 		}
+
 		return csPackage;
 	}
 
+	/**
+	 * Exports a package.
+	 * @param csPackage the cs package to import
+	 * @param csPackageDescriptorFile the descriptor file of the package to be exported
+	 * @param dryrun whether it should be dry run
+	 * @return the package to be exported
+	 */
 	@Override
-	public Package exportPackage(Package csPackage, File csPackageDescriptorFile, boolean dryrun) {
+	public final Package exportPackage(final Package csPackage, final File csPackageDescriptorFile, final boolean dryrun) {
 		CsPackageDescriptor csPackageDescriptor = CsPackageDescriptor.getInstance(csPackageDescriptorFile);
+
 		return this.exportPackage(csPackage, csPackageDescriptor, dryrun);
 	}
 
+	/**
+	 * Deletes a package.
+	 * @param pkg the package to be deleted
+	 * @param withContent whether it should delete the packate without the content
+	 * @param dryrun whether it should be dry run
+	 * @return the package to be deleted
+	 */
 	@Override
-	protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
+	protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
 		throw new UnsupportedOperationException("deletePackage: Code Stream Services does not provide native support for packages.");
 	}
 
+	/**
+	 * Gets package content.
+	 * @param pkg the package to get the content from
+	 * @return the cs package content
+	 */
 	@Override
-	protected CsPackageContent getPackageContent(Package pkg) {
+	protected final CsPackageContent getPackageContent(final Package pkg) {
 		throw new UnsupportedOperationException("getPackageContent: Code Stream Services does not provide native support for packages.");
 	}
 
+	/**
+	 * Deleted content.
+	 * @param content the content to be deleted
+	 * @param dryrun whether it should be dry run
+	 */
 	@Override
-	protected void deleteContent(Content content, boolean dryrun) {
+	protected final void deleteContent(final Content content, final boolean dryrun) {
 		throw new UnsupportedOperationException("deleteContent: Code Stream Services does not provide native support for packages.");
 	}
 }

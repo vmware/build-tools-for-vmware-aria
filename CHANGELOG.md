@@ -1,3 +1,6 @@
+### Enhancements
+* [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported
+
 ## v2.31.2 - 20 Apr 2023
 
 ### Enhancements

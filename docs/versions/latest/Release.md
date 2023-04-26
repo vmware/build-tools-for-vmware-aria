@@ -24,6 +24,11 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Backup of vRO Packages During Import*
+A new option has been added to back up the vRO packages during a package import.
+The backup is triggered when the import is launched before the actual import is executed.
+It currently backs up only the packages that are about to be imported.
+It is controlled by setting the variable vro_enable_backup to true in the properties file or in the prompt window.
 ## Add Support for Activating / Deactivating of vROPs Dashboards for Users / Groups
 If there is a metadata file for activating / deactivating of vROPs dashboards it will be used for activation / deactivation of the imported dashboards for certain users / groups.
 
