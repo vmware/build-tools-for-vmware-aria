@@ -47,7 +47,10 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractMojo {
     private static final String POLICY_METADATA_FILE_NAME = "policiesMetadata.vrops.json";
-    private static final String DASHBOARD_SHARE_METADATA_FILENAME = "dashboardSharingMetadata.vrops.json";
+    private static final String DASHBOARD_SHARE_METADATA_FILENAME = "metadata/dashboardSharingMetadata.vrops.json";
+    private static final String DASHBOARD_USER_ACTIVATE_METADATA_FILENAME = "metadata/dashboardUserActivationMetadata.vrops.json";
+    private static final String DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME = "metadata/dashboardGroupActivationMetadata.vrops.json";
+    
     private static final String ZIP_FILE_TYPE = "zip";
     private static final String XML_FILE_TYPE = "xml";
     private static final String JSON_FILE_TYPE = "json";
@@ -86,7 +89,7 @@ public class PackageMojo extends AbstractMojo {
         }
     }
 
-    private File filterSourcesByContentYaml(File sources, VropsPackageDescriptor contentYaml, File filteredDir) throws IOException {
+    private File filterSourcesByContentYaml(final File sources, final VropsPackageDescriptor contentYaml, final File filteredDir) throws IOException {
         if (filteredDir.exists()) {
             FileUtils.deleteDirectory(filteredDir);
         }
@@ -94,26 +97,26 @@ public class PackageMojo extends AbstractMojo {
             throw new IOException("Cannot create directory \"" + filteredDir + "\" or some of its parents. Please check file system permisions.");
         }
 
-        File srcDashboardsDir = new File(sources, "dashboards");
-        File destDashboardsDir = new File(filteredDir, "dashboards");
-        File srcViewsDir = new File(sources, "views");
-        File destViewsDir = new File(filteredDir, "views");
-        File srcReportsDir = new File(sources, "reports");
-        File destReportsDir = new File(filteredDir, "reports");
-        File srcAlertDefsDir = new File(sources, "alert_definitions");
-        File destAlertDefsDir = new File(filteredDir, "alert_definitions");
-        File srcSymptomDefsDir = new File(sources, "symptom_definitions");
-        File destSymptomDefsDir = new File(filteredDir, "symptom_definitions");
-        File srcPoliciesDir = new File(sources, "policies");
-        File destPoliciesDir = new File(filteredDir, "policies");
-        File srcSuperMetricsDir = new File(sources, "supermetrics");
-        File destSuperMetricsDir = new File(filteredDir, "supermetrics");
-        File srcRecommendationsDir = new File(sources, "recommendations");
-        File destRecommendationsDir = new File(filteredDir, "recommendations");
-        File srcMetricConfigsDir = new File(sources, "metricconfigs");
-        File destMetricConfigsDir = new File(filteredDir, "metricconfigs");
-        File srcCustomGroupDir = new File(sources, "custom_groups");
-        File destCustomGroupDir = new File(filteredDir, "custom_groups");
+        final File srcDashboardsDir = new File(sources, "dashboards");
+        final File destDashboardsDir = new File(filteredDir, "dashboards");
+        final File srcViewsDir = new File(sources, "views");
+        final File destViewsDir = new File(filteredDir, "views");
+        final File srcReportsDir = new File(sources, "reports");
+        final File destReportsDir = new File(filteredDir, "reports");
+        final File srcAlertDefsDir = new File(sources, "alert_definitions");
+        final File destAlertDefsDir = new File(filteredDir, "alert_definitions");
+        final File srcSymptomDefsDir = new File(sources, "symptom_definitions");
+        final File destSymptomDefsDir = new File(filteredDir, "symptom_definitions");
+        final File srcPoliciesDir = new File(sources, "policies");
+        final File destPoliciesDir = new File(filteredDir, "policies");
+        final File srcSuperMetricsDir = new File(sources, "supermetrics");
+        final File destSuperMetricsDir = new File(filteredDir, "supermetrics");
+        final File srcRecommendationsDir = new File(sources, "recommendations");
+        final File destRecommendationsDir = new File(filteredDir, "recommendations");
+        final File srcMetricConfigsDir = new File(sources, "metricconfigs");
+        final File destMetricConfigsDir = new File(filteredDir, "metricconfigs");
+        final File srcCustomGroupDir = new File(sources, "custom_groups");
+        final File destCustomGroupDir = new File(filteredDir, "custom_groups");
 
         destDashboardsDir.mkdirs();
         destViewsDir.mkdirs();
@@ -124,16 +127,16 @@ public class PackageMojo extends AbstractMojo {
         destMetricConfigsDir.mkdirs();
         destCustomGroupDir.mkdirs();
 
-        List<String> dashboardsToPackage = contentYaml.getDashboard() == null ? Collections.emptyList() : contentYaml.getDashboard();
-        List<String> viewsToPackage = contentYaml.getView() == null ? Collections.emptyList() : contentYaml.getView();
-        List<String> reportsToPackage = contentYaml.getReport() == null ? Collections.emptyList() : contentYaml.getReport();
-        List<String> policiesToPackage = contentYaml.getPolicy() == null ? Collections.emptyList() : contentYaml.getPolicy();
-        List<String> alertDefinitionsToPackage = contentYaml.getAlertDefinition() == null ? Collections.emptyList() : contentYaml.getAlertDefinition();
-        List<String> symptomDefinitionsToPackage = contentYaml.getSymptomDefinition() == null ? Collections.emptyList() : contentYaml.getSymptomDefinition();
-        List<String> recommendationsToPackage = contentYaml.getRecommendation() == null ? Collections.emptyList() : contentYaml.getRecommendation();
-        List<String> superMetricsToPackage = contentYaml.getSuperMetric() == null ? Collections.emptyList() : contentYaml.getSuperMetric();
-        List<String> metricConfigsToPackage = contentYaml.getMetricConfig() == null ? Collections.emptyList() : contentYaml.getMetricConfig();
-        List<String> customGroupsToPackage = contentYaml.getCustomGroup() == null ? Collections.emptyList() : contentYaml.getCustomGroup();
+        final List<String> dashboardsToPackage = contentYaml.getDashboard() == null ? Collections.emptyList() : contentYaml.getDashboard();
+        final List<String> viewsToPackage = contentYaml.getView() == null ? Collections.emptyList() : contentYaml.getView();
+        final List<String> reportsToPackage = contentYaml.getReport() == null ? Collections.emptyList() : contentYaml.getReport();
+        final List<String> policiesToPackage = contentYaml.getPolicy() == null ? Collections.emptyList() : contentYaml.getPolicy();
+        final List<String> alertDefinitionsToPackage = contentYaml.getAlertDefinition() == null ? Collections.emptyList() : contentYaml.getAlertDefinition();
+        final List<String> symptomDefinitionsToPackage = contentYaml.getSymptomDefinition() == null ? Collections.emptyList() : contentYaml.getSymptomDefinition();
+        final List<String> recommendationsToPackage = contentYaml.getRecommendation() == null ? Collections.emptyList() : contentYaml.getRecommendation();
+        final List<String> superMetricsToPackage = contentYaml.getSuperMetric() == null ? Collections.emptyList() : contentYaml.getSuperMetric();
+        final List<String> metricConfigsToPackage = contentYaml.getMetricConfig() == null ? Collections.emptyList() : contentYaml.getMetricConfig();
+        final List<String> customGroupsToPackage = contentYaml.getCustomGroup() == null ? Collections.emptyList() : contentYaml.getCustomGroup();
 
         filterDashboards(srcDashboardsDir, destDashboardsDir, dashboardsToPackage);
         filterViews(srcViewsDir, destViewsDir, viewsToPackage);
@@ -149,7 +152,7 @@ public class PackageMojo extends AbstractMojo {
         return filteredDir;
     }
 
-    private void filterDashboards(File srcDashboardsDir, File destDashboardsDir, List<String> dashboardsToPackage) throws IOException {
+    private void filterDashboards(final File srcDashboardsDir, final File destDashboardsDir, final List<String> dashboardsToPackage) throws IOException {
         if (dashboardsToPackage == null || dashboardsToPackage.isEmpty()) {
             return;
         }
@@ -174,13 +177,19 @@ public class PackageMojo extends AbstractMojo {
             File metadataFile = new File(srcDashboardsDir, DASHBOARD_SHARE_METADATA_FILENAME);
             messages.append(String.format("Unable to copy dashboard sharing metadata file '%s' : '%s'", metadataFile.getName(), e.getMessage()));
         }
+        // copy dashboard activation metadata files for the dashboards (for users and groups)
+        try {
+            this.copyDashboardActivationMetadataFiles(srcDashboardsDir, destDashboardsDir);
+        } catch (IOException e) {
+            messages.append(String.format("Unable to copy dashboard activation metadata files: %s",  e.getMessage()));
+        }
 
         if (messages.length() > 0) {
             throw new IOException(messages.toString());
         }
     }
 
-    private void filterSuperMetrics(File srcSuperMetricsDir, File destSuperMetricsDir, List<String> superMetricsToPackage) throws IOException {
+    private void filterSuperMetrics(final File srcSuperMetricsDir, final File destSuperMetricsDir, final List<String> superMetricsToPackage) throws IOException {
         if (superMetricsToPackage == null || superMetricsToPackage.isEmpty()) {
             return;
         }
@@ -457,5 +466,18 @@ public class PackageMojo extends AbstractMojo {
         if (dashboardSharingMetadataFile.exists()) {
             FileUtils.copyFile(dashboardSharingMetadataFile, new File(destDashboardDir, DASHBOARD_SHARE_METADATA_FILENAME));
         }
+    }
+    
+    private void copyDashboardActivationMetadataFiles(File srcDashboardDir, File destDashboardDir) throws IOException {
+        // users activation metadata file
+    	File dashboardUserActivateFile = new File(srcDashboardDir, DASHBOARD_USER_ACTIVATE_METADATA_FILENAME);
+        if (dashboardUserActivateFile.exists()) {
+            FileUtils.copyFile(dashboardUserActivateFile, new File(destDashboardDir, DASHBOARD_USER_ACTIVATE_METADATA_FILENAME));
+        }
+        // groups activation metadata file
+        File dashboardGroupActivateFile = new File(srcDashboardDir, DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME);
+        if (dashboardGroupActivateFile.exists()) {
+            FileUtils.copyFile(dashboardGroupActivateFile, new File(destDashboardDir, DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME));
+        }        
     }
 }

@@ -18,7 +18,9 @@ package com.vmware.pscoe.iac.artifact.cli;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.UUID;import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,16 +41,19 @@ public class CliManagerVrops implements AutoCloseable {
     private static final String IMPORT = "import";
     private static final String SHARE = "share";
     private static final String UNSHARE = "unshare";
+    private static final String ACTIVATE = "show";
+    private static final String DEACTIVATE = "hide";
+
     private static final String SHARING_DEFAULT_USER= "admin";
 
     private static final String FORCE = "--force";
     private static final String ALL_POLICIES = "--policies all";
     private static final String CHECK_FALSE = "--check false";
 
-
     private static final String OPSCLI_PATH = "/usr/lib/vmware-vcops/tools/opscli/ops-cli.py";
     private static final String UNIX_PATH_SEPARATOR = "/";
     private static final String VROPS_SSH_COMMAND_INFO = "Executing vROps SSH command: {} ";
+    private static final String VROPS_SSH_COMMAND_0 = "$VMWARE_PYTHON_3_BIN %s %s %s %s";
     private static final String VROPS_SSH_COMMAND_1 = "$VMWARE_PYTHON_3_BIN %s %s %s %s %s";
     private static final String VROPS_SSH_COMMAND_2 = "$VMWARE_PYTHON_3_BIN %s %s %s %s %s %s";
     private static final String VROPS_SSH_COMMAND_3 = "$VMWARE_PYTHON_3_BIN %s %s %s %s %s %s %s";
@@ -158,6 +163,55 @@ public class CliManagerVrops implements AutoCloseable {
         try {
             logger.info("Unsharing dashboards using command:\n{}", command);
             List<String> output = SshClient.execute(session, command);
+            output.stream().forEach(logger::info);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void activateDashboard(String dashboard, List<String> resources, boolean isGroupResource) {
+    	List<String> commands = new ArrayList<String>();
+    	for (String resource : resources) {
+        	if (isGroupResource) {
+                commands.add(String.format(VROPS_SSH_COMMAND_1,
+                        escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
+                        escapeShellCharacters(ACTIVATE), "group:"+escapeShellCharacters(resource),
+                        escapeShellCharacters(dashboard)));
+        	} else {
+                commands.add(String.format(VROPS_SSH_COMMAND_1,
+                        escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
+                        escapeShellCharacters(ACTIVATE), escapeShellCharacters(resource),
+                        escapeShellCharacters(dashboard)));
+        	}
+    	}
+    	try {
+            logger.info("Activating dashboards using command(s):\n{}", String.join(";\n", commands));
+            List<String> output = SshClient.execute(session, String.join(";", commands));
+            output.stream().forEach(logger::info);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deactivateDashboard(String dashboard, List<String> resources, boolean isGroupResource) {
+    	List<String> commands = new ArrayList<String>();
+    	for (String resource : resources) {
+        	if (isGroupResource) {
+                commands.add(String.format(VROPS_SSH_COMMAND_1,
+                        escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
+                        escapeShellCharacters(DEACTIVATE), "group:"+escapeShellCharacters(resource),
+                        escapeShellCharacters(dashboard)));
+        	} else {
+                commands.add(String.format(VROPS_SSH_COMMAND_1,
+                        escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
+                        escapeShellCharacters(DEACTIVATE), escapeShellCharacters(resource),
+                        escapeShellCharacters(dashboard)));
+        	}
+    	}
+
+    	try {
+            logger.info("Deactivating dashboards using command(s):\n{}", String.join(";\n", commands));
+            List<String> output = SshClient.execute(session, String.join(";", commands));
             output.stream().forEach(logger::info);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -353,4 +407,5 @@ public class CliManagerVrops implements AutoCloseable {
 
         return buffer.toString();
     }
+
 }

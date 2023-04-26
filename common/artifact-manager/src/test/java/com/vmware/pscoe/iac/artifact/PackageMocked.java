@@ -55,6 +55,9 @@ public class PackageMocked {
 		String dashResourceProp = dashboardName + "=" + dashboardName + "\n" + dashboardName + ".Something=Somevalue";
 
 		String alertDefsJson = "{\"id\": \"1\"}";
+		String shareMetadata = "{ \"share\": {\""+dashboardName+"\" : [\"group1\"]}, \"unshare\" : {} }";
+		String activateUserMetadata = "{ \"activate\": {\""+dashboardName+"\" : [\"user1\"]}, \"deactivate\" : {} }";
+		String activateGroupMetadata = "{ \"activate\": {\""+dashboardName+"\" : [\"group1\"]}, \"deactivate\" : {} }";
 
 		File tempZip = new File(dir, UUID.randomUUID() + ".zip");
 		FileOutputStream fos = new FileOutputStream(tempZip);
@@ -68,9 +71,21 @@ public class PackageMocked {
 		zipOut.putNextEntry(resourcePropZipEntry);
 		zipOut.write(resourceProp.getBytes(StandardCharsets.UTF_8));
 
-		ZipEntry dashbaordZipEntry = new ZipEntry("/dashboards/" + dashboardName + ".xml");
-		zipOut.putNextEntry(dashbaordZipEntry);
+		ZipEntry dashboardZipEntry = new ZipEntry("/dashboards/" + dashboardName + ".xml");
+		zipOut.putNextEntry(dashboardZipEntry);
 		zipOut.write(dashboardsJson.getBytes(StandardCharsets.UTF_8));
+
+		ZipEntry dashboardShareMetadataZipEntry = new ZipEntry("/dashboards/metadata/dashboardSharingMetadata.vrops.json");
+		zipOut.putNextEntry(dashboardShareMetadataZipEntry);
+		zipOut.write(shareMetadata.getBytes(StandardCharsets.UTF_8));
+
+		ZipEntry dashboardUserActivateMetadataZipEntry = new ZipEntry("/dashboards/metadata/dashboardUserActivationMetadata.vrops.json");
+		zipOut.putNextEntry(dashboardUserActivateMetadataZipEntry);
+		zipOut.write(activateUserMetadata.getBytes(StandardCharsets.UTF_8));
+
+		ZipEntry dashboardGroupActivateMetadataZipEntry = new ZipEntry("/dashboards/metadata/dashboardGroupActivationMetadata.vrops.json");
+		zipOut.putNextEntry(dashboardGroupActivateMetadataZipEntry);
+		zipOut.write(activateGroupMetadata.getBytes(StandardCharsets.UTF_8));
 
 		resourcePropZipEntry = new ZipEntry("/dashboards/resources/resources.properties");
 		zipOut.putNextEntry(resourcePropZipEntry);
