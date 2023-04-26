@@ -792,7 +792,7 @@ public class Installer {
 		if(!getFilesystemPackages(PackageType.VRO).isEmpty()){
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
-				userInput(input, Option.VRO_ENABLE_BACKUP, "Enable vRO backup?", true);
+				userInput(input, Option.VRO_ENABLE_BACKUP, "Backup existing vRO packages?", true);
 
                 userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
                 if (input.anyTrue(Option.VRO_EMBEDDED)) {
