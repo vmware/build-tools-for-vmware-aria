@@ -24,6 +24,9 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *npm installation will now throw in case of a failure*
+Added .throwIfError to the Node installation process to exit the maven build
+
 ### *Backup of vRO Packages During Import*
 A new option has been added to back up the vRO packages during a package import.
 The backup is triggered when the import is launched before the actual import is executed.
