@@ -38,41 +38,80 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
-
+	/**
+	 * Variable for logging.
+	 */
 	private final Logger logger = LoggerFactory.getLogger(AbxPackageStore.class);
 
-	private final String CUSTOM_FORM_SUFFIX = "_form.json";
-
+	/**
+	 * The vRA rest client.
+	 */
 	private final RestClientVraNg restClient;
+
+	/**
+	 * The abx configuration.
+	 */
 	private final ConfigurationAbx config;
 
-	protected AbxPackageStore(RestClientVraNg restClient, ConfigurationAbx config) {
-		this.restClient = restClient;
-		this.config = config;
+	/**
+	 *
+	 * @param restClientVraNg vRA Rest Client
+	 * @param abxConfig abx configuration
+	 */
+	protected AbxPackageStore(final RestClientVraNg restClientVraNg, final ConfigurationAbx abxConfig) {
+		this.restClient = restClientVraNg;
+		this.config = abxConfig;
 	}
 
-    @Override
-    protected AbxPackageContent getPackageContent(Package pkg) {
-		throw new NotImplementedException("Not implemented");
-	}
-
-    @Override
-    public List<Package> getPackages() {
-		throw new NotImplementedException("Not implemented");
-	}
-
-    @Override
-    protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
-        throw new NotImplementedException("Not implemented");
-    }
-
-    @Override
-    protected void deleteContent(Content content, boolean dryrun) {
-        throw new NotImplementedException("Not implemented");
-    }
-
+	/**
+	 *
+	 * @param pkg package to get content from
+	 * @return abx package content to return
+	 */
 	@Override
-	public List<Package> exportAllPackages(List<Package> abxPackages, boolean dryrun) {
+    protected final AbxPackageContent getPackageContent(final Package pkg) {
+		throw new NotImplementedException("Not implemented");
+	}
+
+	/**
+	 *
+	 * @return received packages
+	 */
+    @Override
+    public final List<Package> getPackages() {
+		throw new NotImplementedException("Not implemented");
+	}
+
+	/**
+	 *
+	 * @param pkg package to delete
+	 * @param withContent whether to delete it with content
+	 * @param dryrun whether it should be dry run
+	 * @return the deleted package
+	 */
+	@Override
+    protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
+        throw new NotImplementedException("Not implemented");
+    }
+
+	/**
+	 *
+	 * @param content the content to delete
+	 * @param dryrun whether it should be dry run
+	 */
+	@Override
+    protected final void deleteContent(final Content content, final boolean dryrun) {
+        throw new NotImplementedException("Not implemented");
+    }
+
+	/**
+	 *
+	 * @param abxPackages the axb packages to export
+	 * @param dryrun whether it should be dry run
+	 * @return the exported packages
+	 */
+	@Override
+	public final List<Package> exportAllPackages(final List<Package> abxPackages, final boolean dryrun) {
 		this.vlidateServer(abxPackages);
 
 		List<Package> sourceEndpointPackages = abxPackages;
@@ -91,13 +130,28 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 		return exportedPackages;
 	}
 
+	/**
+	 *
+	 * @param pkg the packages to import
+	 * @param dryrun whether it should be dry run
+	 * @param enableBackup whether to enable backup of package import
+	 * @return the imported packages
+	 */
 	@Override
-	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun) {
-		return this.importAllPackages(pkg,dryrun,false);
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
+	/**
+	 *
+	 * @param abxPackages the abx packages to import
+	 * @param dryrun whether it should be dry run
+	 * @param mergePackages whether to merge the packages
+	 * @param enableBackup whether to enable backup of package import
+	 * @return the imported packages
+	 */
 	@Override
-	public List<Package> importAllPackages(List<Package> abxPackages, boolean dryrun, boolean mergePackages) {
+	public final List<Package> importAllPackages(final List<Package> abxPackages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
 		this.validateFilesystem(abxPackages);
 
 		List<Package> sourceEndpointPackages = abxPackages;
@@ -113,30 +167,42 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 		return importedPackages;
 	}
 
-    @Override
-	public Package exportPackage(Package abxPackage, boolean dryrun) {
+	/**
+	 *
+	 * @param abxPackage the abx package to export
+	 * @param dryrun whether it should be dry run
+	 * @return the exported package
+	 */
+	@Override
+	public final Package exportPackage(final Package abxPackage, final boolean dryrun) {
 	    File abxPackageFile = new File(abxPackage.getFilesystemPath());
 		return this.exportPackage(abxPackage, abxPackageFile, dryrun);
 	}
 
-    @Override
-	public Package exportPackage(Package abxPackage, File abxPackageDescriptorParent, boolean dryrun) {
+	/**
+	 *
+	 * @param abxPackage the abx package to export
+	 * @param abxPackageDescriptorParent the parent of the abx package descriptor
+	 * @param dryrun whether it should be dry run
+	 * @return the exported package
+	 */
+	@Override
+	public final Package exportPackage(final Package abxPackage, final File abxPackageDescriptorParent, final boolean dryrun) {
 		AbxPackageDescriptor abxPackageDescriptor = AbxPackageDescriptor.getInstance(abxPackageDescriptorParent);
         return exportPackage(abxPackage, abxPackageDescriptor, dryrun);
 	}
 
     /**
-     * Main handler for exporting abx package based on package.json file
+     * Main handler for exporting abx package based on package.json file.
      * @param pkg abx package
      * @param packageDescriptor abx package descriptor file
-     * @param dryrun dryrun flag
+     * @param dryrun whether it should be dry run
      * @return package
      */
     @Override
-    public Package exportPackage(Package pkg, AbxPackageDescriptor packageDescriptor, boolean dryrun) {
+    public final Package exportPackage(final Package pkg, final AbxPackageDescriptor packageDescriptor, final boolean dryrun) {
         logger.info(String.format(PackageStore.PACKAGE_EXPORT, pkg));
 
-        // TODO: export ABX action
 		logger.warn("ABX content pull is not supported yet");
 
         return pkg;
@@ -149,7 +215,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	 * @return package
 	 */
 	@Override
-	public Package importPackage(Package abxPackage, boolean dryrun, boolean mergePackages) {
+	public final Package importPackage(final Package abxPackage, final boolean dryrun, final boolean mergePackages) {
 		logger.info(String.format(PackageStore.PACKAGE_IMPORT, abxPackage));
 
 		File tmp;
@@ -170,15 +236,15 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	}
 
 	/**
-	 * Add ABX action constants to the payload
+	 * Add ABX action constants to the payload.
 	 * @param actionToImport ABX action to import
 	 */
-	protected void addActionConstantsToPayload(AbxAction actionToImport) {
-		if(actionToImport.abx.inputConstants != null && actionToImport.abx.inputConstants.length > 0) {
+	protected final void addActionConstantsToPayload(final AbxAction actionToImport) {
+		if (actionToImport.abx.inputConstants != null && actionToImport.abx.inputConstants.length > 0) {
 			logger.debug("Number of definied constants: " + actionToImport.abx.inputConstants.length);
 			for (String name : actionToImport.abx.inputConstants) {
 				AbxConstant abxConstant = this.restClient.getAbxConstant(name);
-				if(abxConstant == null) {
+				if (abxConstant == null) {
 					throw new RuntimeException("Unable to find action constant with name: " + name);
 				}
 				actionToImport.abx.inputs.put(String.format("secret:%s", abxConstant.id), "");
@@ -187,15 +253,15 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	}
 
 	/**
-	 * Add secrets to the payload
+	 * Add secrets to the payload.
 	 * @param actionToImport ABX action to import
 	 */
-	protected void addSecretsToPayload(AbxAction actionToImport) {
-		if(actionToImport.abx.inputSecrets != null && actionToImport.abx.inputSecrets.length > 0) {
+	protected final void addSecretsToPayload(final AbxAction actionToImport) {
+		if (actionToImport.abx.inputSecrets != null && actionToImport.abx.inputSecrets.length > 0) {
 			logger.debug("Number of definied secrets: " + actionToImport.abx.inputSecrets.length);
 			for (String name : actionToImport.abx.inputSecrets) {
 				VraNgSecret secret = this.restClient.getSecret(name);
-				if(secret == null) {
+				if (secret == null) {
 					throw new RuntimeException("Unable to find secret with name: " + name);
 				}
 				actionToImport.abx.inputs.put(String.format("psecret:%s", secret.id), "");
@@ -203,7 +269,12 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 		}
 	}
 
-	private void importAction(AbxPackageDescriptor pkgDescriptor, boolean dryrun) {
+	/**
+	 *
+	 * @param pkgDescriptor the abx package descriptor
+	 * @param dryrun whether it should be dry run
+	 */
+	private void importAction(final AbxPackageDescriptor pkgDescriptor, final boolean dryrun) {
 
 		// Get existing actions from server
 		List<AbxAction> abxActionsOnServer = this.restClient.getAllAbxActions();
@@ -213,9 +284,9 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 		// Build payload
 		AbxAction actionToImport = pkgDescriptor.getAction();
 
-		if(actionToImport.abx.inputs == null) {
+		if (actionToImport.abx.inputs == null) {
 			actionToImport.abx.inputs = new HashMap<>();
-		};
+		}
 
 		addSecretsToPayload(actionToImport);
 		addActionConstantsToPayload(actionToImport);

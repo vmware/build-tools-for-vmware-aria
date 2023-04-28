@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
@@ -34,25 +33,49 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescriptor> {
-
+	/**
+	 * Variable for logging.
+	 */
     private final Logger logger = LoggerFactory.getLogger(VraNgPackageStore.class);
 
+	/**
+	 * The vRA rest client.
+	 */
     private final RestClientVraNg restClient;
+
+	/**
+	 * The vRA configuration.
+	 */
     private final ConfigurationVraNg config;
 
-    protected VraNgPackageStore(RestClientVraNg restClient, ConfigurationVraNg config) {
-        this.restClient = restClient;
-        this.config = config;
+	/**
+	 *
+	 * @param vraRestClient the vRA rest client
+	 * @param vraConfig the vRA config
+	 */
+    protected VraNgPackageStore(final RestClientVraNg vraRestClient, final ConfigurationVraNg vraConfig) {
+        this.restClient = vraRestClient;
+        this.config = vraConfig;
     }
 
+	/**
+	 * Gets the vRA packages.
+	 * @return the extracted vRA packages
+	 */
     @Override
-    public List<Package> getPackages() {
+    public final List<Package> getPackages() {
         throw new UnsupportedOperationException(
                 "getPackages: Cloud Automation Services does not provide native support for packages.");
     }
 
+	/**
+	 * Exports all packages.
+	 * @param vraPackages the packages to export
+	 * @param dryrun whether it should be dry run
+	 * @return the exported packages
+	 */
     @Override
-    public List<Package> exportAllPackages(List<Package> vraPackages, boolean dryrun) {
+    public final List<Package> exportAllPackages(final List<Package> vraPackages, final boolean dryrun) {
         this.vlidateServer(vraPackages);
 
         List<Package> sourceEndpointPackages = vraPackages;
@@ -70,13 +93,28 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
         return exportedPackages;
     }
 
+	/**
+	 * Imports all packages.
+	 * @param pkg the packages to import
+	 * @param dryrun whether it should be dry run
+	 * @param enableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
 	@Override
-	public List<Package> importAllPackages(List<Package> pkg, boolean dryrun) {
-		return this.importAllPackages(pkg, dryrun, false);
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
+	/**
+	 * Imports all packages.
+	 * @param vraNgPackages the packages to import
+	 * @param dryrun whether it should be dry run
+	 * @param mergePackages whether to merge the packages
+	 * @param enableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
 	@Override
-    public List<Package> importAllPackages(List<Package> vraNgPackages, boolean dryrun, boolean mergePackages) {
+    public List<Package> importAllPackages(final List<Package> vraNgPackages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
         this.validateFilesystem(vraNgPackages);
 		this.waitForDataCollectionDelay();
 
@@ -87,14 +125,20 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 
         List<Package> importedPackages = new ArrayList<>();
         for (Package pkg : sourceEndpointPackages) {
-            importedPackages.add(this.importPackage(pkg, dryrun,mergePackages));
+            importedPackages.add(this.importPackage(pkg, dryrun, mergePackages));
         }
 
         return importedPackages;
     }
 
+	/**
+	 * Exports a package.
+	 * @param vraNgPackage the package to export
+	 * @param dryrun whether it should be a dry run
+	 * @return the exported package
+	 */
     @Override
-    public Package exportPackage(Package vraNgPackage, boolean dryrun) {
+    public final Package exportPackage(final Package vraNgPackage, final boolean dryrun) {
         VraNgPackageDescriptor vraNgPackageDescriptor = VraNgPackageDescriptor.getInstance(new File(vraNgPackage.getFilesystemPath()));
 
         return this.exportPackage(vraNgPackage, vraNgPackageDescriptor, dryrun);
@@ -107,29 +151,28 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 	 * Note: Should we introduce a default one if nothing is passed?
 	 */
 	private void waitForDataCollectionDelay() {
-		String collectionDelayRaw	= this.config.getDataCollectionDelaySeconds();
+		String collectionDelayRaw = this.config.getDataCollectionDelaySeconds();
 
-		if ( collectionDelayRaw == null ) {
+		if (collectionDelayRaw == null) {
 			return;
 		}
 
 		try {
-			int collectionDelay	= Integer.parseInt( collectionDelayRaw );
-			if ( collectionDelay > 0 ) {
+			int collectionDelay	= Integer.parseInt(collectionDelayRaw);
+			if (collectionDelay > 0) {
 				logger.warn(
 					"Waiting {} seconds for the vRO data collection. This is configurable with vrang.data.collection.delay.seconds property",
 					collectionDelay
 				);
 
-				long delayInMs	= collectionDelay * 1000L;
-				Thread.sleep( delayInMs );
+				final long collectionDelayMultiplier = 1000L;
+				long delayInMs = collectionDelay * collectionDelayMultiplier;
+				Thread.sleep(delayInMs);
 			}
-		}
-		catch ( InterruptedException e ) {
-			throw new RuntimeException( "Interrupted waiting for data collection", e );
-		}
-		catch ( NumberFormatException e ) {
-			logger.warn( "vrang.data.collection.delay.seconds passed with invalid value {}", collectionDelayRaw );
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Interrupted waiting for data collection", e);
+		} catch (NumberFormatException e) {
+			logger.warn("vrang.data.collection.delay.seconds passed with invalid value {}", collectionDelayRaw);
 		}
 	}
 
@@ -149,7 +192,7 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
      * @return package
      */
     @Override
-    public Package exportPackage(Package vraNgPackage, VraNgPackageDescriptor vraNgPackageDescriptor, boolean dryrun) {
+    public final Package exportPackage(final Package vraNgPackage, final VraNgPackageDescriptor vraNgPackageDescriptor, final boolean dryrun) {
         logger.info(String.format(PackageStore.PACKAGE_EXPORT, vraNgPackage));
         VraNgTypeStoreFactory storeFactory = VraNgTypeStoreFactory.withConfig(restClient, vraNgPackage, config, vraNgPackageDescriptor);
         for (VraNgPackageContent.ContentType type : VraNgTypeStoreFactory.EXPORT_ORDER) {
@@ -159,8 +202,15 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
         return vraNgPackage;
     }
 
+	/**
+	 * Exports a package.
+	 * @param vraPackage the package to export
+	 * @param vraNgPackageDescriptorFile the descriptor of the package to export
+	 * @param dryrun whether it should be dry run
+	 * @return the exported package
+	 */
     @Override
-    public Package exportPackage(Package vraPackage, File vraNgPackageDescriptorFile, boolean dryrun) {
+    public final Package exportPackage(final Package vraPackage, final File vraNgPackageDescriptorFile, final boolean dryrun) {
         VraNgPackageDescriptor vraNgPackageDescriptor = VraNgPackageDescriptor.getInstance(vraNgPackageDescriptorFile);
 
         return this.exportPackage(vraPackage, vraNgPackageDescriptor, dryrun);
@@ -184,7 +234,7 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
      * @return package
      */
     @Override
-    public Package importPackage(Package vraNgPackage, boolean dryrun, boolean mergePackages) {
+    public final Package importPackage(final Package vraNgPackage, final boolean dryrun, final boolean mergePackages) {
         logger.info(String.format(PackageStore.PACKAGE_IMPORT, vraNgPackage));
 
         File tmp;
@@ -197,33 +247,58 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
             throw new RuntimeException("Unable to extract pacakge.", e);
         }
 		VraNgPackageDescriptor vraPackageDescriptor = VraNgPackageDescriptor.getInstance(new File(tmp.toPath().toString() + "/content.yaml"));
-        VraNgTypeStoreFactory storeFactory = VraNgTypeStoreFactory.withConfig(restClient,vraNgPackage, config, vraPackageDescriptor);
+        VraNgTypeStoreFactory storeFactory = VraNgTypeStoreFactory.withConfig(restClient, vraNgPackage, config, vraPackageDescriptor);
         for (VraNgPackageContent.ContentType type : VraNgTypeStoreFactory.IMPORT_ORDER) {
-			logger.info( "Currently importing: {}", type.getTypeValue() );
+			logger.info("Currently importing: {}", type.getTypeValue());
             storeFactory.getStoreForType(type).importContent(tmp);
         }
         return vraNgPackage;
     }
 
-    @Override
-    protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
+	/**
+	 * Deletes a package.
+	 * @param pkg the package to delete
+	 * @param withContent whether to delete the package with its content
+	 * @param dryrun whether it should be dry run
+	 * @return the deleted package
+	 */
+	@Override
+    protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
 		throw new UnsupportedOperationException(
 			"deletePackage: Cloud Automation Services does not provide native support for packages.");
     }
 
+	/**
+	 * Deletes a package.
+	 * @param pkg the package to delete
+	 * @param lastVersion whether it should delete the last version
+	 * @param oldVersions whether it should delete the old versions
+	 * @param dryrun whether it should be dry run
+	 * @return the deleted package
+	 */
     @Override
-	public List<Package> deletePackage(Package pkg, boolean lastVersion, boolean oldVersions, boolean dryrun) {
+	public final List<Package> deletePackage(final Package pkg, final boolean lastVersion, final boolean oldVersions, final boolean dryrun) {
 		throw new UnsupportedOperationException(
 			"deletePackage(List): Cloud Automation Services does not provide native support for packages.");
     }
 
-    @Override
-    protected VraNgPackageContent getPackageContent(Package pkg) {
+	/**
+	 *
+	 * @param pkg the package which content to get
+	 * @return the content of the package
+	 */
+	@Override
+    protected final VraNgPackageContent getPackageContent(final Package pkg) {
         throw new UnsupportedOperationException("Cloud Automation Services does not provide native support for packages.");
     }
 
-    @Override
-    protected void deleteContent(Content content, boolean dryrun) {
+	/**
+	 * Deletes content.
+	 * @param content the content to delete
+	 * @param dryrun whether it should be dry dun
+	 */
+	@Override
+    protected final void deleteContent(final Content content, final boolean dryrun) {
 		throw new UnsupportedOperationException(
 			"deleteContent: Cloud Automation Services does not provide native support for packages.");
     }

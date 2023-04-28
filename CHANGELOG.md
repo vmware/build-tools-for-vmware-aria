@@ -1,6 +1,8 @@
 ### Fixes
 * [artifact-manager] 72 / Fixed domain detection to start from the last `@`, rather than the first.
 
+### Enhancements
+* [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported
 
 ## v2.31.2 - 20 Apr 2023
 
