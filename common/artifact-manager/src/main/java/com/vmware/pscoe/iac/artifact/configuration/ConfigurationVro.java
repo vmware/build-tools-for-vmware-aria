@@ -99,8 +99,7 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 
     @Override
     public String getUsername() {
-        String username = this.properties.getProperty(USERNAME);
-        return this.getAuth() == AuthProvider.VRA ? username.replaceAll("@.*", "") :  username;
+        return this.getAuth() == AuthProvider.VRA ? super.getUsername() : this.properties.getProperty(USERNAME);
     }
 
     public AuthProvider getAuth() {
