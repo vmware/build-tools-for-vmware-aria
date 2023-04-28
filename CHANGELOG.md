@@ -3,6 +3,7 @@
 
 ### Enhancements
 * [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported
+* [maven] 87 / npm installation will now throw in case of a failure
 
 ## v2.31.2 - 20 Apr 2023
 
