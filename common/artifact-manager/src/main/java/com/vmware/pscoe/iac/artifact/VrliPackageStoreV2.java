@@ -99,6 +99,7 @@ public class VrliPackageStoreV2 extends AbstractVrliPackageStore {
         } catch (IOException e) {
             throw new RuntimeException("Error reading from file: " + contentPackFile.getPath(), e);
         }
+		// Test
     }
 
 	protected File exportAlert(Package vrliPakage, AlertDTO alert) {
