@@ -10,11 +10,9 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
 
 
 [//]: # (Features -> New Functionality)
@@ -39,27 +37,27 @@ There is support for activating / deactivating of vROPs dashboards for specific 
 
 #### Relevant Documentation
 In order activating of vROPs dashboards for specific users / groups the following files should be present in the dashboards/metadata directory:
-* dashboards/metadata/dashboardUserActivationMetadata.vrops  - activate / deactivate dashboards for specific users 
+* dashboards/metadata/dashboardUserActivationMetadata.vrops  - activate / deactivate dashboards for specific users
 * dashboards/metadata/dashboardGroupActivationMetadata.vrops - activate / deactivate dashboards for specific groups
 With the following content:
 * dashboards/metadata/dashboardUserActivationMetadata.vrops - activation for specific users
 {
-	"activate": {
-		"dashboard name": ["user1", "user2" ]
-	},
-	"deactivate": {
-		"dashboard name": ["user3, user4" ]
-	}
+    "activate": {
+        "dashboard name": ["user1", "user2" ]
+    },
+    "deactivate": {
+        "dashboard name": ["user3, user4" ]
+    }
 }
 
 * dashboards/metadata/dashboardGroupActivationMetadata.vrops - activation for specific groups
 {
-	"activate": {
-		"dashboard name": ["group1", "group2" ]
-	},
-	"deactivate": {
-		"dashboard name": ["group3, group4" ]
-	}
+    "activate": {
+        "dashboard name": ["group1", "group2" ]
+    },
+    "deactivate": {
+        "dashboard name": ["group3, group4" ]
+    }
 }
 The users / groups must exist on the target system, otherwise an error will be thrown stating that the users / groups do not exist on the target vROPs system.
 For convenience during pulling of dashboard from a vROPs system a set of activation metadata files will be generated with list of dashboards and an empty array of users / groups.
@@ -77,21 +75,21 @@ For convenience during pulling of dashboard from a vROPs system a set of activat
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Domain Detection in configuration* 
+### *Domain Detection in configuration*
 When attempting authentication, we take the domain name from the `username`
 
 Example:
 ```xml
 <server>
-	<id>vro</id>
-	<username>configurationadmin@test@System Domain</username>
-	<password>{5a593XJmccIHejrppq19g1VIqtn3I34KFryPXJ7mhaw=}</password>
+    <id>vro</id>
+    <username>configurationadmin@test@System Domain</username>
+    <password>{5a593XJmccIHejrppq19g1VIqtn3I34KFryPXJ7mhaw=}</password>
 </server>
 ```
 Will detect `configurationadmin` as username and `System Domain` as domain.
 
 #### Previous Behavior
-When parsing the username, we used to remove everything after the first `@` sign, which lead to usernames with more than 
+When parsing the username, we used to remove everything after the first `@` sign, which lead to usernames with more than
 one `@` to be mishandled. Same issue was detected in the domain fetching logic.
 
 #### New Behavior
@@ -99,7 +97,7 @@ Now the detection happens from the **LAST** `@` sign.
 
 Exception to this is that in case of BASIC auth in Aria Automation Orchestrator, we take the username **AS IS**.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 * None
 
 ### Remove prompt and property for vro_delete_include_dependencies
@@ -112,9 +110,9 @@ There was prompt in interactive mode for vRO regarding the deletion of dependent
 The unnecessary question regarding dependent packages in vRO projects is removed.
 
 #### Relevant Documentation
-**NONE**
+* NONE
 
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)
