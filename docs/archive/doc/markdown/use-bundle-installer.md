@@ -185,6 +185,7 @@ vro_import_configuration_attribute_values
 vro_import_configuration_secure_attribute_values
 vro_delete_old_versions
 vro_delete_last_version
+@Deprecated
 vro_delete_include_dependencies
 
 #### vRA import configurations ####
