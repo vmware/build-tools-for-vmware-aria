@@ -33,7 +33,7 @@ taken into consideration.
 
 ### ID handling
 
-Relying on ids exported by Build Tools for VMware Aria should not happen. Build Tools for VMware Aria will remove where needed such ids or in some cases data 
+Relying on ids exported by Build Tools for VMware Aria should not happen. Build Tools for VMware Aria will remove where needed such ids or in some cases data
 will be fetched from the remote server, modified in flight and pushed to the server ( in cases where an import is needed ).
 
 ### Single Project And Single Organization
@@ -60,6 +60,14 @@ version of the blueprint. The following version formats are supported with their
 | 1.0            | 1.1                 | Major and minor version - increment the minor              |
 | 1.0.0          | 1.0.1               | Major, minor and patch version - incrementing the patch    |
 | 1.0.0-alpha    | 2020-05-27-10-10-43 | Arbitrary version - generate a new date-time based version |
+
+### Catalog Items Custom Forms
+
+The catalog items in the vRA Service Broker consists of different type of content sources - Blueprint, Extensibility Actions, Pipelines, Workflows and AWS CloudFormation Template.
+As with the 8.12 release, the catalog items custom forms can be versioned.
+For all types, the same concepts replies - *only current versions for custom forms are de-serializing/serializing.*
+
+Blueprint type catalog items have different versions that corelate to the released versions of the Blueprints. Only the current version of the latest blueprint version is targeted.
 
 ### Regional Content
 

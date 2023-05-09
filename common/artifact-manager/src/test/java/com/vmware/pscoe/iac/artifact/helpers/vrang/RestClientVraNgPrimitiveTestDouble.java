@@ -20,7 +20,6 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,79 +29,170 @@ import java.util.Map;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 
 public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive {
 
-	public RestClientVraNgPrimitiveTestDouble(ConfigurationVraNg configuration, RestTemplate restTemplate) {
+	/**
+	 * RestClientVraNgPrimitiveTestDouble.
+	 *
+	 * @param configuration
+	 * @param restTemplate
+	 */
+	public RestClientVraNgPrimitiveTestDouble(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 	}
+
+	/**
+	 * testGetProjectsPrimitive.
+	 *
+	 * @return project
+	 */
 	public List<VraNgProject> testGetProjectsPrimitive() {
 		return super.getProjectsPrimitive();
 	}
 
-	@Override 
+	/**
+	 * getProjectId.
+	 *
+	 * @return projectId String
+	 */
+	@Override
 	public String getProjectId() {
 		return "";
 	}
 
+	/**
+	 * getProductVersion.
+	 *
+	 * @return version Version
+	 */
 	@Override
 	public Version getProductVersion() {
-		return new Version("");
+		return new Version("8.11");
 	}
 
+	/**
+	 * jsonObjectValid.
+	 *
+	 * @param ob JsonObject
+	 * @return isValid boolean
+	 */
 	@Override
-	public boolean jsonObjectValid(JsonObject ob){
+	public boolean jsonObjectValid(final JsonObject ob) {
 		return super.jsonObjectValid(ob);
 	}
 
+	/**
+	 * getAllImageMappingsByRegionPrimitive.
+	 *
+	 * @return imageMappingsByRegionPrimitive Map<String, List<VraNgImageMapping>>
+	 */
 	@Override
 	public Map<String, List<VraNgImageMapping>> getAllImageMappingsByRegionPrimitive() {
 		return super.getAllImageMappingsByRegionPrimitive();
 	}
 
+	/**
+	 * getURIBuilder.
+	 *
+	 * @return urlBuilder URIBuilder
+	 */
 	@Override
-	public URIBuilder getURIBuilder(){
+	public URIBuilder getURIBuilder() {
 		return super.getURIBuilder();
 	}
 
+	/**
+	 * getURI.
+	 *
+	 * @param builder
+	 * @return url URI
+	 */
 	@Override
-	public URI getURI(URIBuilder builder){
+	public URI getURI(final URIBuilder builder) {
 		return super.getURI(builder);
 	}
 
+	/**
+	 * getAllFlavorProfilesByRegionPrimitive.
+	 *
+	 * @return flavorProfilesByRegionPrimitive Map<String, List<String>>
+	 */
 	@Override
 	public Map<String, List<String>> getAllFlavorProfilesByRegionPrimitive() {
 		return super.getAllFlavorProfilesByRegionPrimitive();
 	}
 
+	/**
+	 * getAllStorageProfilesByRegionPrimitive.
+	 *
+	 * @return storageProfilesByRegionPrimitive Map<String, List<VraNgStorageProfile>>
+	 */
 	@Override
 	public Map<String, List<VraNgStorageProfile>> getAllStorageProfilesByRegionPrimitive() {
 		return super.getAllStorageProfilesByRegionPrimitive();
 	}
 
+	/**
+	 * getAllImageProfilesByRegionPrimitive.
+	 *
+	 * @return imageProfilesByRegionPrimitive Map<String, List<String>>
+	 */
 	@Override
 	public Map<String, List<String>> getAllImageProfilesByRegionPrimitive() {
 		return super.getAllImageProfilesByRegionPrimitive();
 	}
-	
+
+	/**
+	 * createAbxActionMap.
+	 *
+	 * @param action AbxAction
+	 * @return abxAction Map<String, Object>
+	 */
 	@Override
-	public Map<String, Object> createAbxActionMap(AbxAction action) throws IOException {
+	public Map<String, Object> createAbxActionMap(final AbxAction action) throws IOException {
 		return super.createAbxActionMap(action);
 	}
 
+	/**
+	 * getAllFlavorMappingsByRegionPrimitive.
+	 *
+	 * @return mappingsByRegionPrimitive Map<String, List<VraNgFlavorMapping>>
+	 */
 	public Map<String, List<VraNgFlavorMapping>> getAllFlavorMappingsByRegionPrimitive() {
 		return super.getAllFlavorMappingsByRegionPrimitive();
 	}
 
-	public VraNgContentSharingPolicy getContentSharingPolicyPrimitive(String policyId) {
+	/**
+	 * getContentSharingPolicyPrimitive.
+	 *
+	 * @param policyId String
+	 * @return policy VraNgContentSharingPolicy
+	 */
+	public VraNgContentSharingPolicy getContentSharingPolicyPrimitive(final String policyId) {
 		return super.getContentSharingPolicyPrimitive(policyId);
 	}
 
-	public void importCustomResourcePrimitive( String customResourceJson ) throws URISyntaxException {
-		super.importCustomResourcePrimitive( customResourceJson );
+	/** 
+	 * importCustomResourcePrimitive.
+	 *
+	 * @param customResourceJson String
+	 */
+	public void importCustomResourcePrimitive(final String customResourceJson) throws URISyntaxException {
+		super.importCustomResourcePrimitive(customResourceJson);
 	}
 
-	public static HttpEntity<String> getDefaultHttpEntity(){
+	/**
+	 * getDefaultHttpEntity.
+	 *
+	 * @return entity HttpEntity<String>
+	 */
+	public static HttpEntity<String> getDefaultHttpEntity() {
 		return RestClientVraNgPrimitive.getDefaultHttpEntity();
 	}
 }
