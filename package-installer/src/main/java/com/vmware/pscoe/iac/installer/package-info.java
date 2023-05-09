@@ -1,5 +1,5 @@
 /**
- * Package that represents IAC Artifact.
+ * Package that represents Package Installer.
  *
  */
 
