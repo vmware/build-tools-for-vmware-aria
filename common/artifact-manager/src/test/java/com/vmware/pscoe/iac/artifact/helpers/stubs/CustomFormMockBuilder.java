@@ -18,36 +18,43 @@ package com.vmware.pscoe.iac.artifact.helpers.stubs;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 
 public class CustomFormMockBuilder {
+	/**
+	 * id.
+	*/
 	private String id = "formId";
+	
+	/**
+	 * name.
+	 */
 	private String name;
 
+	/**
+	 * Returns a Custom form mock with form id set to "formId" and the given name.
+	 *
+	 * @param nameIn
+	 */
+	public CustomFormMockBuilder(final String nameIn) {
+		this.name = nameIn;
+	}
 
 	/**
-	 * Returns a Custom form mock with form id set to "formId" and the given name
+	 * setId.
 	 *
-	 * @param	name
-	 *
-	 * @return	CustomFormMockBuilder
+	 * @param idIn
+	 * @return CustomFormMockBuilder
 	 */
-	public CustomFormMockBuilder(String name){
-		this.name	= name;
-	}
-
-	public CustomFormMockBuilder setId(String id){
-		this.id = id;
+	public CustomFormMockBuilder setId(final String idIn) {
+		this.id = idIn;
 		return this;
 	}
-  
 
 	/**
 	 * Returns a Custom form mock.
 	 *
-	 * @param	name
-	 *
-	 * @return	VraNgCustomForm
+	 * @return VraNgCustomForm
 	 */
 	public VraNgCustomForm build() {
-		return new VraNgCustomForm( this.id, this.name, "{}", null, "workflow", null, null, null );
+		return new VraNgCustomForm(this.id, this.name, "{}", null, "workflow", null, null, null, null);
 	}
 
 }

@@ -16,59 +16,140 @@ package com.vmware.pscoe.iac.artifact.helpers.stubs;
  */
 
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItemType;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
 
 public class CatalogItemMockBuilder {
-	String id			= "mockedItemId";
-	String name;
-	String sourceId 	= "mockedSourceId";
-	String sourceName;
-	String iconId;
-	String iconExt;
-	String customFormId;
+	/**
+	 * id.
+	 */
+	private String id = "mockedItemId";
+	/**
+	 * name.
+	*/
+	private String name;
+	/**
+	 * sourceId.
+	 */
+	private String sourceId = "mockedSourceId";
+	/**
+	 * sourceName.
+	 */
+	private String sourceName;
+	/**
+	 * iconId.
+	 */
+	private String iconId;
+	/**
+	 * iconExt.
+	 */
+	private String iconExt;
+	/**
+	 * customFormId.
+	 */
+	private String customFormId;
+	/**
+	 * type.
+	 */
+	private VraNgCatalogItemType type;
 
-	public CatalogItemMockBuilder(String name, String sourceName){
-		this.name = name;
-		this.sourceName = sourceName;
+	/**
+	 * CatalogItemMockBuilder.
+	 *
+	 * @param nameIn
+	 * @param sourceNameIn
+	 */
+	public CatalogItemMockBuilder(final String nameIn, final String sourceNameIn) {
+		this.name = nameIn;
+		this.sourceName = sourceNameIn;
+		this.type = new VraNgCatalogItemType(VraNgContentSourceType.VRO_WORKFLOW, "mockedName", "mockedLink");
 	}
 
-	public CatalogItemMockBuilder setId(String id){
-		this.id = id;
+	/**
+	 * setId.
+	 *
+	 * @param idIn
+	 * @return this CatalogItemMockBuilder
+	 */
+	public CatalogItemMockBuilder setId(final String idIn) {
+		this.id = idIn;
 		return this;
 	}
 
-	public CatalogItemMockBuilder setSourceId(String sourceId){
-		this.sourceId = sourceId;
+	/**
+	 * setSourceId.
+	 *
+	 * @param sourceIdIn
+	 * @return this CatalogItemMockBuilder
+	 */
+	public CatalogItemMockBuilder setSourceId(final String sourceIdIn) {
+		this.sourceId = sourceIdIn;
 		return this;
 	}
 
-	public CatalogItemMockBuilder setIconId(String iconId){
-		this.iconId = iconId;
+	/**
+	 * setIconId.
+	 *
+	 * @param iconIdIn
+	 * @return this CatalogItemMockBuilder
+	 */
+	public CatalogItemMockBuilder setIconId(final String iconIdIn) {
+		this.iconId = iconIdIn;
 		return this;
 	}
 
-	public CatalogItemMockBuilder setIconExt(String iconExt){
-		this.iconExt = iconExt;
+	/**
+	 * setIconExt.
+	 *
+	 * @param iconExtIn
+	 * @return this CatalogItemMockBuilder
+	 */
+	public CatalogItemMockBuilder setIconExt(final String iconExtIn) {
+		this.iconExt = iconExtIn;
 		return this;
 	}
 
-	public CatalogItemMockBuilder setCustomFormId(String customFormId){
-		this.customFormId = customFormId;
+	/**
+	 * setCustomFormId.
+	 *
+	 * @param customFormIdIn
+	 * @return this CatalogItemMockBuilder
+	 */
+	public CatalogItemMockBuilder setCustomFormId(final String customFormIdIn) {
+		this.customFormId = customFormIdIn;
 		return this;
 	}
 
-	public VraNgCatalogItem build(){
-		VraNgCatalogItem catalogItem = new VraNgCatalogItem(this.id, this.sourceId, this.name, this.sourceName);
+	/**
+	 * setType.
+	 *
+	 * @param typeIn
+	 * @return this CatalogItemMockBuilder
+	 */
+	public CatalogItemMockBuilder setType(final VraNgCatalogItemType typeIn) {
+		this.type = typeIn;
+		return this;
+	}
 
-		if( this.iconExt != null ) {
-			catalogItem.setIconExtension( iconExt );
+	/**
+	 * build.
+	 *
+	 * @return catalogItem VraNgCatalogItem
+	 */
+	public VraNgCatalogItem build() {
+		VraNgCatalogItem catalogItem = new VraNgCatalogItem(this.id, this.sourceId, this.name, this.sourceName,
+				this.type);
+
+		if (this.iconExt != null) {
+			catalogItem.setIconExtension(iconExt);
 		}
 
-		if( this.iconId != null ) {
-			catalogItem.setIconId( iconId );
+		if (this.iconId != null) {
+			catalogItem.setIconId(iconId);
 		}
 
-		if( this.customFormId != null ) {
-			catalogItem.setFormId( customFormId );
+		if (this.customFormId != null) {
+			catalogItem.setFormId(customFormId);
 		}
 
 		return catalogItem;
