@@ -168,7 +168,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="HiddenField" />
 		<module name="IllegalInstantiation" />
 		<module name="InnerAssignment" />
-		<!-- <module name="MagicNumber" /> -->
+		<module name="MagicNumber" />
 		<module name="MissingSwitchDefault" />
 		<module name="MultipleVariableDeclarations" />
 		<module name="SimplifyBooleanExpression" />
