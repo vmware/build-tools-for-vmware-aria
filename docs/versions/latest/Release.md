@@ -129,6 +129,7 @@ Exception to this is that in case of BASIC auth in Aria Automation Orchestrator,
 
 * None
 
+
 ### Remove prompt and property for vro_delete_include_dependencies
 The `installer` script shows a prompt "Clean up vRO dependent packages as well?" about deleting "dependent packages" and stores the answer in the `vro_delete_include_depenedencies` property but does nothing regardless of the answer.
 

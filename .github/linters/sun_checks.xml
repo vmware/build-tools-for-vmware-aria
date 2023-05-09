@@ -140,6 +140,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="EmptyForIteratorPad" />
 		<module name="GenericWhitespace" />
 		<module name="MethodParamPad" />
+
 		<!-- Ignore '{' is followed by whitespace. [NoWhitespaceAfter] -->
 		<!-- <module name="NoWhitespaceAfter"/> -->
 		<module name="NoWhitespaceBefore" />
