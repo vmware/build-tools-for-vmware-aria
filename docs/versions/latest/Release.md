@@ -38,6 +38,15 @@ Catalog Item Custom Forms, including these of blueprint type, will be serialized
 Data structure is not changed on the file system in order to be backwards compatible.
 Blueprint catalog item version custom form will be serialized/de-serialized to support, as well, latest versions of the custom forms.
 
+#### Upgrade steps
+
+The new version of Build Tools for Aria can process old or new content.
+If the content of the custom form does not have previous changes it can be pushed straight away to the 8.12 or cloud instance.
+If there is a change on the current version of the custom form of the blueprint version - then a pull needs to be performed
+and then pushed to the respective env.
+
+Configurations in the content.yaml *do not* change.
+
 ### *npm installation will now throw in case of a failure*
 
 Added .throwIfError to the Node installation process to exit the maven build
@@ -129,17 +138,20 @@ Exception to this is that in case of BASIC auth in Aria Automation Orchestrator,
 
 * None
 
-
 ### Remove prompt and property for vro_delete_include_dependencies
+
 The `installer` script shows a prompt "Clean up vRO dependent packages as well?" about deleting "dependent packages" and stores the answer in the `vro_delete_include_depenedencies` property but does nothing regardless of the answer.
 
 #### Previous Behavior
+
 There was prompt in interactive mode for vRO regarding the deletion of dependent packages.
 
 #### New Behavior
+
 The unnecessary question regarding dependent packages in vRO projects is removed.
 
 #### Relevant Documentation
+
 * None
 
 ## Upgrade procedure
