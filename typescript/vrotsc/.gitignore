@@ -9,4 +9,3 @@ node_modules/
 **/*.tgz
 yarn.lock
 built
-package-lock.json

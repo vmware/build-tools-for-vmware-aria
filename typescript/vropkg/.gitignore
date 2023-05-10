@@ -9,8 +9,6 @@ node_modules/
 /e2e/out/
 **/.DS_Store
 dist/
-package-lock.json
-**/package-lock.json
 test/target*/
 test/tmp
 test/*.pem

@@ -6,5 +6,4 @@ node_modules/
 /lib
 /e2e/out/
 **/.DS_Store
-package-lock.json
 dist/
