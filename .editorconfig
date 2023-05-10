@@ -15,7 +15,7 @@ indent_style = tab
 indent_size = 4
 
 # Styling for YAML files
-[*.{yaml,yml}]
+[*.{yaml,yml,md}]
 indent_style = space
 indent_size = 2
 
