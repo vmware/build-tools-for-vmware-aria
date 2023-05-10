@@ -8,4 +8,3 @@ node_modules/
 /e2e/build/
 **/.DS_Store
 **/*.tgz
-package-lock.json
