@@ -1,3 +1,5 @@
+## v2.32.0 - 11 May 2023
+
 ### Fixes
 
 * [artifact-manager] 72 / Fixed domain detection to start from the last `@`, rather than the first.

@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-mqtt",
-  "version": "2.31.3-SNAPSHOT",
+  "version": "2.32.0",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
