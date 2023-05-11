@@ -6,6 +6,7 @@
 
 ### Enhancements
 
+* [package-installer] IAC-728 / Deprecate ```vro_delete_include_dependencies``` flag  
 * [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported
 * [maven] 87 / npm installation will now throw in case of a failure
 * [artifact-manager] IAC-765 / Add Support for Blueprint Custom Form Serialization/Deserialization
