@@ -27,7 +27,55 @@
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
+
 ## Improvements
+
+### fix XMLManager definition
+
+XMLManager is a class with static methods
+
+#### Previous Behaviour
+
+XMLManager was defined as an interface
+
+#### New Behaviour
+
+XMLManager is defined as a class with static methods
+
+#### Relevant documentation
+
+https://<vro>/orchestration-ui/#/explorer?section=p&type=o&name=XMLManager&plugin=XML
+
+### fix RESTHost definition
+
+RESTHost is a class that can be initiated (`const host = new RESTHost(name)`)
+
+#### Previous Behaviour
+
+RESTHost was defined as an interface
+
+#### New Behaviour
+
+RESTHost is defined as a class that can be constructed with new RESTHost(name)
+
+#### Relevant documentation
+
+https://<vro>/orchestration-ui/#/explorer?section=p&type=o&name=RESTHost&plugin=REST
+
+### fix HTTPBasicAuthentication definition
+
+#### Previous Behaviour
+
+HTTPBasicAuthentication was defined as an interface
+
+#### New Behaviour
+
+HTTPBasicAuthentication is defined as a class with static methods
+
+#### Relevant documentation
+
+https://<vro>/orchestration-ui/#/explorer?section=p&type=o&name=HTTPBasicAuthentication&plugin=REST
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
@@ -38,7 +86,6 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
 
 
 ## Upgrade procedure:
