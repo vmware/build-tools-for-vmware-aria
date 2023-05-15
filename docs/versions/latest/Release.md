@@ -20,7 +20,7 @@ XMLManager is defined as a class with static methods
 
 #### Relevant documentation XMLManager
 
-[vro](https://<vro>/orchestration-ui/#/explorer?section=p&type=o&name=XMLManager&plugin=XML)
+[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=XMLManager&plugin=XML)
 
 ### fix RESTHost definition
 
@@ -36,7 +36,7 @@ RESTHost is defined as a class that can be constructed with new RESTHost(name)
 
 #### Relevant documentation RESTHost
 
-[vro](https://<vro>/orchestration-ui/#/explorer?section=p&type=o&name=RESTHost&plugin=REST)
+[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=RESTHost&plugin=REST)
 
 ### fix HTTPBasicAuthentication definition
 
@@ -50,6 +50,6 @@ HTTPBasicAuthentication is defined as a class with static methods
 
 #### Relevant documentation HTTPBasicAuthentication
 
-[vro](https://<vro>/orchestration-ui/#/explorer?section=p&type=o&name=HTTPBasicAuthentication&plugin=REST)
+[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=HTTPBasicAuthentication&plugin=REST)
 
 ## Upgrade procedure
