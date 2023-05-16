@@ -4,9 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - "**" # trigger the workflow on any branch push event
-    paths:
-      - "**" # trigger the workflow on any file change
+      - "main" # trigger only for the main branch on push. This is needed to deploy snapshots/releases
   workflow_dispatch:
 
 jobs:
