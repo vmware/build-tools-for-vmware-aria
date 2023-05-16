@@ -2,6 +2,8 @@ name: "CodeQL Java"
 
 on:
   push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   analyze:

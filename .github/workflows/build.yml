@@ -1,6 +1,7 @@
 name: Build Project
 
 on:
+  pull_request:
   push:
     branches:
       - "**" # trigger the workflow on any branch push event
