@@ -82,19 +82,19 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build 'keystore-example'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode ${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml    
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml    
       - name: Build 'npmlib'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode ${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
       - name: Build 'iac'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml --batch-mode ${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml --batch-mode${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
       - name: Build 'base-package'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/base-package/pom.xml --batch-mode ${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/base-package/pom.xml --batch-mode${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
       - name: Build 'packages'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f packages/pom.xml --batch-mode ${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f packages/pom.xml --batch-mode${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
       - name: Build 'typescript-project-all'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/typescript-project-all/pom.xml --batch-mode ${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/typescript-project-all/pom.xml --batch-mode${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
       - name: Build 'repository'
-        run: mvn clean package -f maven/repository/pom.xml --batch-mode ${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
+        run: mvn clean package -f maven/repository/pom.xml --batch-mode${{ github.ref == 'refs/heads/main' && ' -Dgpg.passphrase=' + secrets.GPG_PASSPHRASE || '' }} -s $PWD/.m2/settings.xml
 
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
         uses: actions/checkout@v3
