@@ -57,6 +57,7 @@ jobs:
           sed -i "s/{{ OSSRH_PASSWORD }}/${{ secrets.OSSRH_PASSWORD }}/g" .m2/settings.xml
 
       - name: Import GPG Key
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: crazy-max/ghaction-import-gpg@v5
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -102,7 +103,7 @@ jobs:
           ref: main
           path: build-tools-for-vmware-aria-samples
       - name: Build vmware-samples/build-tools-for-vmware-aria-samples project repository
-        run: | 
+        run: |
           pushd build-tools-for-vmware-aria-samples/
           ./switch_parent_version.sh ${{ env.IAC_VERSION }}
           mvn clean package install -Pbundle-with-installer --batch-mode -s ../.m2/settings.xml
