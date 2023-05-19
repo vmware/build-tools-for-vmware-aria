@@ -1,3 +1,8 @@
+
+### Fixes
+
+* [vro-types] Fixed definitions of RESTHost, XMLManager and HTTPBasicAuthentication to align with actual Orchestrator behaviour
+
 ## v2.32.0 - 11 May 2023
 
 ### Fixes

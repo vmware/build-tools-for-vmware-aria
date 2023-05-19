@@ -1,29 +1,29 @@
 /**
  * Main class to create xml document parser
  */
-declare interface XMLManager {
+declare class XMLManager {
 	/**
 	 * Create a new Empty XML document
 	 */
-	newDocument(): XMLDocument;
+	static newDocument(): XMLDocument;
 	/**
 	 * Get the document for a given path using the default character encoding
 	 * @param path 
 	 * @param validate 
 	 */
-	loadDocument(path: string, validate: boolean): XMLDocument;
+	static loadDocument(path: string, validate: boolean): XMLDocument;
 	/**
 	 * Get the document for a given path using the specified character encoding
 	 * @param path 
 	 * @param encoding 
 	 * @param validate 
 	 */
-	loadDocumentWithEncoding(path: string, encoding: string, validate: boolean): XMLDocument;
+	static loadDocumentWithEncoding(path: string, encoding: string, validate: boolean): XMLDocument;
 	/**
 	 * Get the document for a given string content
 	 * @param stringContext 
 	 */
-	fromString(stringContext: string): XMLDocument;
+	static fromString(stringContext: string): XMLDocument;
 	/**
 	 * Save the document to a given path using the default character encoding
 	 * @param document 
@@ -31,7 +31,7 @@ declare interface XMLManager {
 	 * @param systemDtD 
 	 * @param publicDtD 
 	 */
-	saveDocument(document: XMLDocument, path: string, systemDtD: string, publicDtD: string): void;
+	static saveDocument(document: XMLDocument, path: string, systemDtD: string, publicDtD: string): any;
 	/**
 	 * Save the document to a given path using the default character encoding
 	 * @param document 
@@ -40,19 +40,19 @@ declare interface XMLManager {
 	 * @param systemDtD 
 	 * @param publicDtD 
 	 */
-	saveDocumentWithEncoding(document: XMLDocument, path: string, encoding: string, systemDtD: string, publicDtD: string): void;
+	static saveDocumentWithEncoding(document: XMLDocument, path: string, encoding: string, systemDtD: string, publicDtD: string): any;
 	/**
 	 * Validate a document without saving it
 	 * @param document 
 	 * @param systemDtD 
 	 * @param publicDtD 
 	 */
-	validateDocument(document: XMLDocument, systemDtD: string, publicDtD: string): void;
+	static validateDocument(document: XMLDocument, systemDtD: string, publicDtD: string): any;
 	/**
 	 * Get the document as string
 	 * @param document 
 	 */
-	getDocumentContent(document: XMLDocument): void;
+	static getDocumentContent(document: XMLDocument): string;
 }
 
 /**

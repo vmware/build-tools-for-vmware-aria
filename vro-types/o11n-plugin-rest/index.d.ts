@@ -172,7 +172,7 @@ declare interface AuthorizationValue {
 /**
  * REST plug-in host object
  */
-declare interface RESTHost {
+declare class RESTHost {
 	readonly id: string;
 	name: string;
 	url: string;
@@ -184,6 +184,12 @@ declare interface RESTHost {
 	proxyHost: string;
 	proxyPort: number;
 	privateKeyId: string;
+
+  /**
+   * constructor
+   * @param name
+   */
+  constructor(name: string);
 	/**
 	 * Creates a copy of the REST host.
 	 */
@@ -283,7 +289,7 @@ declare interface RESTAuthentication {
 /**
  * Contains server authentication properties.
  */
-declare interface HTTPBasicAuthentication {
+declare class HTTPBasicAuthentication {
 	type: string;
 	rawAuthProperties: string[];
 	/**
@@ -296,7 +302,7 @@ declare interface HTTPBasicAuthentication {
 	 * @param username 
 	 * @param password 
 	 */
-	getBasicAuthHeaderValue(username: string, password: string): string;
+	static getBasicAuthHeaderValue(username: string, password: string): string;
 }
 
 /**
