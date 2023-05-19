@@ -44,6 +44,6 @@ hint/plugin/o11nplugin-hint/src/main/dar/VSO-INF/vso.xml
 typescript/vrotsc/e2e/cases/__out/
 typescript/vrotsc-annotations/package-lock.json
 /.metadata/
-.vscode/
+.vscode/*
 
 .flattened-pom.xml
