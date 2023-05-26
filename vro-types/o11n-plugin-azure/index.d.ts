@@ -3638,7 +3638,7 @@ declare interface AzureStorageUsageOperations {
 }
 
 /**
- * Response for GetLocalNetworkgateway Api servive call.
+ * Response for GetLocalNetworkgateway Api Service call.
  */
 declare class AzureLocalNetworkGatewayGetResponse {
 	requestId: string;
@@ -3649,7 +3649,7 @@ declare class AzureLocalNetworkGatewayGetResponse {
 }
 
 /**
- * Response for PutNetworkInterface Api servive call
+ * Response for PutNetworkInterface Api Service call
  */
 declare class AzureNetworkInterfacePutResponse {
 	azureAsyncOperation: string;
@@ -3748,7 +3748,7 @@ declare class AzureAzureAsyncOperationResponse {
 }
 
 /**
- * Response for PUT NetworkSecurityGroups Api servive call
+ * Response for PUT NetworkSecurityGroups Api Service call
  */
 declare class AzureNetworkSecurityGroupPutResponse {
 	azureAsyncOperation: string;
@@ -3790,7 +3790,7 @@ declare class AzureRoute {
 }
 
 /**
- * Response for ListVirtualNetworks Api servive call
+ * Response for ListVirtualNetworks Api Service call
  */
 declare class AzureVirtualNetworkListResponse {
 	requestId: string;
@@ -3820,7 +3820,7 @@ declare class AzureLocalNetworkGatewayListResponse {
 }
 
 /**
- * Response for PutVirtualNetworkGatewayConnectionResetSharedKey Api servive call
+ * Response for PutVirtualNetworkGatewayConnectionResetSharedKey Api Service call
  */
 declare class AzureConnectionResetSharedKeyPutResponse {
 	azureAsyncOperation: string;
@@ -3933,7 +3933,7 @@ declare class AzureLocalNetworkGateway {
 }
 
 /**
- * Response for PutLocalNetworkGateway Api servive call
+ * Response for PutLocalNetworkGateway Api Service call
  */
 declare class AzureLocalNetworkGatewayPutResponse {
 	azureAsyncOperation: string;
@@ -4015,7 +4015,7 @@ declare class AzurePublicIpAddress {
 }
 
 /**
- * Response for PutVirtualNetworkGateway Api servive call
+ * Response for PutVirtualNetworkGateway Api Service call
  */
 declare class AzureVirtualNetworkGatewayPutResponse {
 	azureAsyncOperation: string;
@@ -4058,7 +4058,7 @@ declare class AzureVirtualNetworkGateway {
 }
 
 /**
- * Response for PUT Routes Api servive call
+ * Response for PUT Routes Api Service call
  */
 declare class AzureRoutePutResponse {
 	azureAsyncOperation: string;
@@ -4242,7 +4242,7 @@ declare class AzureSubnetListResponse {
 }
 
 /**
- * Response for CheckDnsNameAvailability Api servive call
+ * Response for CheckDnsNameAvailability Api Service call
  */
 declare class AzureDnsNameAvailabilityResponse {
 	dnsNameAvailability: boolean;
@@ -4397,7 +4397,7 @@ declare class AzurePublicIpAddressListResponse {
 }
 
 /**
- * Response for GetPublicIpAddress Api servive call
+ * Response for GetPublicIpAddress Api Service call
  */
 declare class AzurePublicIpAddressGetResponse {
 	publicIpAddress: AzurePublicIpAddress;
@@ -4563,7 +4563,7 @@ declare class AzureUsagesListResponse {
 }
 
 /**
- * Response for ListRouteTable Api servive call
+ * Response for ListRouteTable Api Service call
  */
 declare class AzureRouteTableListResponse {
 	requestId: string;
@@ -4578,7 +4578,7 @@ declare class AzureRouteTableListResponse {
 }
 
 /**
- * Response for CreateOrUpdateVirtualNetworkGatewayConnection Api servive call
+ * Response for CreateOrUpdateVirtualNetworkGatewayConnection Api Service call
  */
 declare class AzureVirtualNetworkGatewayConnectionPutResponse {
 	azureAsyncOperation: string;
@@ -4639,7 +4639,7 @@ declare class AzureVirtualNetworkGatewayConnectionListResponse {
 }
 
 /**
- * Response for ListNetworkSecurityGroups Api servive call
+ * Response for ListNetworkSecurityGroups Api Service call
  */
 declare class AzureNetworkSecurityGroupListResponse {
 	requestId: string;
@@ -4669,7 +4669,7 @@ declare class AzureApplicationGatewayBackendHttpSettings {
 }
 
 /**
- * Response for PutVirtualNetworkGatewayConnectionSharedKey Api servive call
+ * Response for PutVirtualNetworkGatewayConnectionSharedKey Api Service call
  */
 declare class AzureConnectionSharedKeyPutResponse {
 	azureAsyncOperation: string;
@@ -4683,7 +4683,7 @@ declare class AzureConnectionSharedKeyPutResponse {
 }
 
 /**
- * Response for GetVitualNetworkgateway Api servive call.
+ * Response for GetVitualNetworkgateway Api Service call.
  */
 declare class AzureVirtualNetworkGatewayGetResponse {
 	requestId: string;
@@ -4931,7 +4931,7 @@ declare class AzureProbe {
 }
 
 /**
- * Response for ListRoute Api servive call
+ * Response for ListRoute Api Service call
  */
 declare class AzureRouteListResponse {
 	routes: any[];
@@ -5037,7 +5037,7 @@ declare class AzureBackendAddressPool {
 }
 
 /**
- * Response for CheckConnectionSharedKey Api servive call
+ * Response for CheckConnectionSharedKey Api Service call
  */
 declare class AzureConnectionSharedKeyResponse {
 	requestId: string;
@@ -5091,7 +5091,7 @@ declare class AzureLoadBalancer {
 }
 
 /**
- * Response for PutPublicIpAddress Api servive call
+ * Response for PutPublicIpAddress Api Service call
  */
 declare class AzurePublicIpAddressPutResponse {
 	azureAsyncOperation: string;
@@ -5151,7 +5151,7 @@ declare class AzureRouteTableGetResponse {
 }
 
 /**
- * Response for PUT RouteTables Api servive call
+ * Response for PUT RouteTables Api Service call
  */
 declare class AzureRouteTablePutResponse {
 	azureAsyncOperation: string;
@@ -5165,7 +5165,7 @@ declare class AzureRouteTablePutResponse {
 }
 
 /**
- * Response for GetConnectionSharedKey Api servive call
+ * Response for GetConnectionSharedKey Api Service call
  */
 declare class AzureConnectionSharedKey {
 	value: string;
@@ -5199,7 +5199,7 @@ declare class AzureLoadBalancerPutResponse {
 }
 
 /**
- * Response for GetVitualNetworkGatewayConnection Api servive call.
+ * Response for GetVitualNetworkGatewayConnection Api Service call.
  */
 declare class AzureVirtualNetworkGatewayConnectionGetResponse {
 	requestId: string;
