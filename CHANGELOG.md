@@ -1,8 +1,3 @@
-
-### Fixes
-
-* [vro-types] Fixed definitions of RESTHost, XMLManager and HTTPBasicAuthentication to align with actual Orchestrator behaviour
-
 ## v2.32.0 - 11 May 2023
 
 ### Fixes
@@ -64,6 +59,7 @@
 * [package-installer] IAC-713 / Installer doesn't ask for all required information about importing vRА
 * [polyglotpkg] IAC-712 / Enabled unit testing phase for npm lib projects, fix abx and polyglot pkg to be backward compatible
 * [polyglotpkg] IAC-712 / Updated project dependencies to not trigger build errors when combined with typescript-project-all projects.
+* [maven-plugins] IAC-706 / Package Build Failing - Typescript transpilation failed since Command line is too long
 
 ## v2.29.0 - 27 Jan 2023
 

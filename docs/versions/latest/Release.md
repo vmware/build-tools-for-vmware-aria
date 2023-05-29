@@ -1,55 +1,58 @@
+[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
+[//]: # (Used when working on a new release. Placed together with the Version.md)
+[//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
+[//]: # (Do not fill the version, it will be done automatically)
+[//]: # (Quick Intro to what is the focus of this release)
+
 ## Breaking Changes
+[//]: # (### *Breaking Change*)
+[//]: # (Describe the breaking change AND explain how to resolve it)
+[//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
+
 
 ## Deprecations
+[//]: # (### *Deprecation*)
+[//]: # (Explain what is deprecated and suggest alternatives)
 
+
+[//]: # (Features -> New Functionality)
 ## Features
+[//]: # (### *Feature Name*)
+[//]: # (Describe the feature)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
+
+[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
+[//]: # (### *Improvement Name* )
+[//]: # (Talk ONLY regarding the improvement)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### Previous Behavior)
+[//]: # (Explain how it used to behave, regarding to the change)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### New Behavior)
+[//]: # (Explain how it behaves now, regarding to the change)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
-### fix XMLManager definition
 
-XMLManager is a class with static methods
+### Fix error Command line is too long
 
-#### Previous Behaviour XMLManager
+#### Previous Behavior
 
-XMLManager was defined as an interface
+If you build the project with lot of dependencies which exceeds the command line text limitation of 8191 the build will fail with Command line is too long error
 
-#### New Behaviour XMLManager
+#### New Behavior
 
-XMLManager is defined as a class with static methods
+If you build project with a large number of dependencies, the build will succeed since we are splitting the command in separate commands. Each command can have up to 7000 characters which is below the 8191 limitation.
 
-#### Relevant documentation XMLManager
+#### Relevant Documentation
 
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=XMLManager&plugin=XML)
+None
 
-### fix RESTHost definition
+## Upgrade procedure:
+[//]: # (Explain in details if something needs to be done)
 
-RESTHost is a class that can be initiated (`const host = new RESTHost(name)`)
-
-#### Previous Behaviour RESTHost
-
-RESTHost was defined as an interface
-
-#### New Behaviour RESTHost
-
-RESTHost is defined as a class that can be constructed with new RESTHost(name)
-
-#### Relevant documentation RESTHost
-
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=RESTHost&plugin=REST)
-
-### fix HTTPBasicAuthentication definition
-
-#### Previous Behaviour HTTPBasicAuthentication
-
-HTTPBasicAuthentication was defined as an interface
-
-#### New Behaviour HTTPBasicAuthentication
-
-HTTPBasicAuthentication is defined as a class with static methods
-
-#### Relevant documentation HTTPBasicAuthentication
-
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=HTTPBasicAuthentication&plugin=REST)
-
-## Upgrade procedure
+[//]: # (## Changelog:)
+[//]: # (Pull request links)
