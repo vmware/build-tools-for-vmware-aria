@@ -1,14 +1,13 @@
 ### Fixes
 
 * [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
+* [maven-plugins] IAC-706 / Package Build Failing - Typescript transpilation failed since Command line is too long
 ## v2.32.0 - 11 May 2023
 
 ### Fixes
-
 * [artifact-manager] 72 / Fixed domain detection to start from the last `@`, rather than the first.
 
 ### Enhancements
-
 * [package-installer] IAC-728 / Deprecate ```vro_delete_include_dependencies``` flag  
 * [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported
 * [maven] 87 / npm installation will now throw in case of a failure
@@ -62,7 +61,6 @@
 * [package-installer] IAC-713 / Installer doesn't ask for all required information about importing vRА
 * [polyglotpkg] IAC-712 / Enabled unit testing phase for npm lib projects, fix abx and polyglot pkg to be backward compatible
 * [polyglotpkg] IAC-712 / Updated project dependencies to not trigger build errors when combined with typescript-project-all projects.
-* [maven-plugins] IAC-706 / Package Build Failing - Typescript transpilation failed since Command line is too long
 
 ## v2.29.0 - 27 Jan 2023
 
