@@ -1,65 +1,66 @@
+[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
+[//]: # (Used when working on a new release. Placed together with the Version.md)
+[//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
+[//]: # (Do not fill the version, it will be done automatically)
+[//]: # (Quick Intro to what is the focus of this release)
+
 ## Breaking Changes
+[//]: # (### *Breaking Change*)
+[//]: # (Describe the breaking change AND explain how to resolve it)
+[//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
+
 
 ## Deprecations
+[//]: # (### *Deprecation*)
+[//]: # (Explain what is deprecated and suggest alternatives)
 
+
+[//]: # (Features -> New Functionality)
 ## Features
+[//]: # (### *Feature Name*)
+[//]: # (Describe the feature)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
+
+[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
-
+[//]: # (### *Improvement Name* )
+[//]: # (Talk ONLY regarding the improvement)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### Previous Behavior)
+[//]: # (Explain how it used to behave, regarding to the change)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### New Behavior)
+[//]: # (Explain how it behaves now, regarding to the change)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 ### Fixed pulling of vROps dashboards as managed content
-#### Previous Behaviour XMLManager
+#### Previous Behaviour
 
 When pulling a list of vROps dashboards defined in the content.yaml, the automation was failing with a hidden error message.
 The underlying cause was that the directory in which the data is exported didn't exist and wasn't created by the automation.
 
-#### New Behaviour XMLManager
+#### New Behaviour
 
 When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
 their metadata files.
-### fix XMLManager definition
+### Fix error Command line is too long
 
-XMLManager is a class with static methods
+#### Previous Behavior
 
-#### Previous Behaviour XMLManager
+If you build the project with lot of dependencies which exceeds the command line text limitation of 8191 the build will fail with Command line is too long error
 
-XMLManager was defined as an interface
+#### New Behavior
 
-#### New Behaviour XMLManager
+If you build project with a large number of dependencies, the build will succeed since we are splitting the command in separate commands. Each command can have up to 7000 characters which is below the 8191 limitation.
 
-XMLManager is defined as a class with static methods
+#### Relevant Documentation
 
-#### Relevant documentation XMLManager
+None
 
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=XMLManager&plugin=XML)
+## Upgrade procedure:
+[//]: # (Explain in details if something needs to be done)
 
-### fix RESTHost definition
-
-RESTHost is a class that can be initiated (`const host = new RESTHost(name)`)
-
-#### Previous Behaviour RESTHost
-
-RESTHost was defined as an interface
-
-#### New Behaviour RESTHost
-
-RESTHost is defined as a class that can be constructed with new RESTHost(name)
-
-#### Relevant documentation RESTHost
-
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=RESTHost&plugin=REST)
-
-### fix HTTPBasicAuthentication definition
-
-#### Previous Behaviour HTTPBasicAuthentication
-
-HTTPBasicAuthentication was defined as an interface
-
-#### New Behaviour HTTPBasicAuthentication
-
-HTTPBasicAuthentication is defined as a class with static methods
-
-#### Relevant documentation HTTPBasicAuthentication
-
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=HTTPBasicAuthentication&plugin=REST)
-
-## Upgrade procedure
+[//]: # (## Changelog:)
+[//]: # (Pull request links)
