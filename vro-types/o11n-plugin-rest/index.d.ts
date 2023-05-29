@@ -185,11 +185,11 @@ declare class RESTHost {
 	proxyPort: number;
 	privateKeyId: string;
 
-/**
- * constructor
- * @param name
- */
-constructor(name: string);
+  /**
+   * constructor
+   * @param name
+   */
+  constructor(name: string);
 	/**
 	 * Creates a copy of the REST host.
 	 */
