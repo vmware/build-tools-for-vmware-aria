@@ -51,7 +51,7 @@ If you build project with a large number of dependencies, the build will succeed
 
 None
 
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)
