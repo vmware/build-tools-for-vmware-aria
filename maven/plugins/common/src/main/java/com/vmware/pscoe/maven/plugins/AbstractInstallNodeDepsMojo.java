@@ -23,7 +23,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -113,14 +112,16 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 
 		String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
 
-		for(List<String> dependency: dependencies) {
-            getLog().debug("Dependency size 1: ");
-			System.out.print(dependency.size());
+		for (List<String> dependency: dependencies) {
+            getLog().debug("Dependency size: " + dependency.size());
 			dependency.add(0, npmExec);
 			dependency.add(1, "install");
 			if (!getLog().isDebugEnabled()) {
 				dependency.add(2, "--silent");
 			}
+
+			String depString = String.join(",", dependency);
+            getLog().debug("Dependency as string: " + depString);
 
 			executeProcess(dependency, "Dependency Installation");
 		}
