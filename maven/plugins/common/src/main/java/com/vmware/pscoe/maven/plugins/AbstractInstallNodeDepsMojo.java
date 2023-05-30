@@ -23,6 +23,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 	 */
 	private static final int MAX_NUMBER_OF_CMD_DEPS = 7000;
 
+
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
         boolean allTgzLibsResolved = true;
@@ -69,50 +71,58 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
         }
 		
         List<String> deps = new LinkedList<>();
-		List<String> depsCmdMax7000 = new LinkedList<>();
 
-        String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
-        deps.add(npmExec);
-        deps.add("install");
         for (Object o : project.getArtifacts()) {
             Artifact a = (Artifact) o;
             if ("tgz".equals(a.getType())) {
+				
                 deps.add(a.getFile().getAbsolutePath());
                 allTgzLibsResolved = allTgzLibsResolved && a.isResolved();
             }
         }
 
-        if (!getLog().isDebugEnabled()) {
-            deps.add("--silent");
-        }
-
         if (!allTgzLibsResolved) {
             getLog().debug("Not All .tgz plugins resolved. Executing 'mvn dependency:go-offline' first");
-            new ProcessExecutor()
-				.name("Going Offline")
-				.directory(project.getBasedir())
-				.throwOnError(true)
-				.command("mvn dependency:go-offline")
-				.execute(getLog());
+			List<String> goOfflineCmds = new LinkedList<>();
+
+			goOfflineCmds.add("mvn");
+			goOfflineCmds.add("dependency:go-offline");
+			executeProcess(goOfflineCmds, "Going Offline");
         }
 
         getLog().debug("Dependencies length:  " + deps.stream().mapToInt(String::length).sum());
 
-		for (String path : deps) {
-			commandLength = commandLength + path.length();
-			if (commandLength <= this.MAX_NUMBER_OF_CMD_DEPS) {
-				depsCmdMax7000.add(path);
-			} else {
-				executeProcess(depsCmdMax7000, "Dependency installation - Command Length is greater than 7000");
-				depsCmdMax7000 = new LinkedList<>();
-				depsCmdMax7000.add(npmExec);
-				depsCmdMax7000.add("install");
-				depsCmdMax7000.add(path);
-				commandLength = path.length();					
+		List<List<String>> dependencies = new LinkedList<List<String>>();
+		int size = 0;
+		int pointer = 0;
+		dependencies.add(pointer, new LinkedList<String>());
+
+		for (String dep : deps) {
+			size += dep.length();
+			if (size > AbstractInstallNodeDepsMojo.MAX_NUMBER_OF_CMD_DEPS) {
+				size = dep.length();
+				pointer++;
 			}
+
+			if (dependencies.size() - 1 < pointer) {
+				dependencies.add(pointer, new LinkedList<String>());				
+			}
+
+			dependencies.get(pointer).add(dep);
 		}
-		if (commandLength > 0) {
-			executeProcess(depsCmdMax7000, "Dependency installation - Last Batch");
+
+		String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
+
+		for(List<String> dependency: dependencies) {
+            getLog().debug("Dependency size 1: ");
+			System.out.print(dependency.size());
+			dependency.add(0, npmExec);
+			dependency.add(1, "install");
+			if (!getLog().isDebugEnabled()) {
+				dependency.add(2, "--silent");
+			}
+
+			executeProcess(dependency, "Dependency Installation");
 		}
     }
 
