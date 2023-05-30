@@ -48,7 +48,7 @@ public abstract class Configuration {
 
     protected Properties properties;
 
-	protected final Logger logger = LoggerFactory.getLogger(Configuration.class);;
+	protected final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     protected Configuration(PackageType type, Properties props) {
         this.type = type;
@@ -71,17 +71,16 @@ public abstract class Configuration {
         }
     }
 
-	public String getUsername() {
-		String username = this.properties.getProperty(USERNAME);
-		return StringUtils.isEmpty(username) ? username
-			: (username.indexOf("@") > 0 ?  username.substring(0, username.lastIndexOf("@")) : username);
-	}
+    public String getUsername() {
+        String username = this.properties.getProperty(USERNAME);
+        return StringUtils.isEmpty(username) ? username : username.replaceAll("@.*", "");
+    }
 
-	public String getDomain() {
-		String username = this.properties.getProperty(USERNAME);
-		return StringUtils.isEmpty(username) ? username
-			: (username.indexOf("@") > 0 ? username.substring(username.lastIndexOf("@") + 1) : null);
-	}
+    public String getDomain() {
+        String username = this.properties.getProperty(USERNAME);
+        return StringUtils.isEmpty(username) ? username
+                : (username.indexOf("@") > 0 ? username.substring(username.indexOf("@") + 1) : null);
+    }
 
     public String getPassword() {
         return this.properties.getProperty(PASSWORD);

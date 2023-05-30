@@ -43,7 +43,8 @@ import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
 
 public class PackageStoreFactory {
 
-    private PackageStoreFactory() {}
+    private PackageStoreFactory() {
+    }
 
     private final static Logger logger = LoggerFactory.getLogger(VraPackageStore.class);
 
@@ -57,7 +58,7 @@ public class PackageStoreFactory {
         }
 
         if (configuration instanceof ConfigurationVroNg) {
-			logger.info("Detected ConfigurationVroNg");
+            logger.info("Detected ConfigurationVroNg");
             ConfigurationVroNg config = (ConfigurationVroNg) configuration;
             RestClientVro restClient = RestClientFactory.getClientVroNg(config);
             version = restClient.getVersion();
@@ -69,7 +70,7 @@ public class PackageStoreFactory {
         }
 
         if (configuration instanceof ConfigurationVro) {
-			logger.info("Detected ConfigurationVro");
+            logger.info("Detected ConfigurationVro");
             ConfigurationVro config = (ConfigurationVro) configuration;
             RestClientVro restClient = RestClientFactory.getClientVro(config);
             version = restClient.getVersion();
@@ -80,10 +81,8 @@ public class PackageStoreFactory {
             return new VroPackageStore(restClient, strategies, extentions, new Version(version));
         }
 
-       
-
         if (configuration instanceof ConfigurationVra) {
-			logger.info("Detected ConfigurationVra");
+            logger.info("Detected ConfigurationVra");
             ConfigurationVra config = (ConfigurationVra) configuration;
             RestClientVra restClient = RestClientFactory.getClientVra(config);
             version = restClient.getVersion();
@@ -95,7 +94,7 @@ public class PackageStoreFactory {
         }
 
         if (configuration instanceof ConfigurationAbx) {
-			logger.info("Detected ConfigurationAbx");
+            logger.info("Detected ConfigurationAbx");
             logger.info("Creating configuration for ABX");
             ConfigurationAbx config = (ConfigurationAbx) configuration;
 
@@ -106,7 +105,7 @@ public class PackageStoreFactory {
             return new AbxPackageStore(restClient, config);
         }
         if (configuration instanceof ConfigurationCs) {
-			logger.info("Detected ConfigurationCs");
+            logger.info("Detected ConfigurationCs");
             ConfigurationCs config = (ConfigurationCs) configuration;
             RestClientCs restClient = RestClientFactory.getClientCs(config);
             logger.info("Creating configuration for Code Stream");
@@ -114,7 +113,7 @@ public class PackageStoreFactory {
         }
 
         if (configuration instanceof ConfigurationVraNg) {
-			logger.info("Detected ConfigurationVraNg");
+            logger.info("Detected ConfigurationVraNg");
             ConfigurationVraNg config = (ConfigurationVraNg) configuration;
             RestClientVraNg restClient = RestClientFactory.getClientVraNg(config);
             logger.info("Creating configuration for VRA NG");
@@ -123,7 +122,7 @@ public class PackageStoreFactory {
         }
 
         if (configuration instanceof ConfigurationVcd) {
-			logger.info("Detected ConfigurationVcd");
+            logger.info("Detected ConfigurationVcd");
             ConfigurationVcd config = (ConfigurationVcd) configuration;
             RestClientVcd restClient = RestClientFactory.getClientVcd(config);
             version = restClient.getVersion();
@@ -133,7 +132,7 @@ public class PackageStoreFactory {
         }
 
         if (configuration instanceof ConfigurationVrops) {
-			logger.info("Detected ConfigurationVrops");
+            logger.info("Detected ConfigurationVrops");
             ConfigurationVrops config = (ConfigurationVrops) configuration;
 
             CliManagerVrops cliManager = CliManagerFactory.getVropsCliManager(config);
@@ -145,37 +144,43 @@ public class PackageStoreFactory {
         }
 
         if (configuration instanceof ConfigurationVrli) {
-			logger.info("Detected ConfigurationVrli");
+            logger.info("Detected ConfigurationVrli");
             ConfigurationVrli config = (ConfigurationVrli) configuration;
             RestClientVrliV1 restClientV1 = RestClientFactory.getClientVrliV1(config);
-			RestClientVrliV2 restClientV2 = RestClientFactory.getClientVrliV2(config);
+            RestClientVrliV2 restClientV2 = RestClientFactory.getClientVrliV2(config);
 
-			try {
-				version = restClientV1.getVersion();
-			} catch (Exception e) {
-				version = restClientV2.getVersion();
-			}
-			logger.info("Detected vRLI version " + version);
-			if (!StringUtils.isEmpty(version) && Version.compareSemanticVersions(version, "8.8") > -1) {
-				logger.info("Instantiate REST Client v2.");
-				return new VrliPackageStoreV2(restClientV2);
-			}
-			logger.info("Instantiate REST Client v1.");
-			return new VrliPackageStoreV1(restClientV1);
+            try {
+                version = restClientV1.getVersion();
+            } catch (Exception e) {
+                version = restClientV2.getVersion();
+            }
+            logger.info("Detected vRLI version " + version);
+            if (!StringUtils.isEmpty(version) && Version.compareSemanticVersions(version, "8.8") > -1) {
+                logger.info("Instantiate REST Client v2.");
+                return new VrliPackageStoreV2(restClientV2);
+            }
+            logger.info("Instantiate REST Client v1.");
+            return new VrliPackageStoreV1(restClientV1);
+        }
+
+        if (configuration instanceof ConfigurationIdem) {
+            logger.info("Detected ConfigurationIdem");
+            ConfigurationIdem config = (ConfigurationIdem) configuration;
+            return new IdemPackageStore(config);
         }
 
         if (configuration instanceof ConfigurationSsh) {
-			logger.info("Detected ConfigurationSsh");
+            logger.info("Detected ConfigurationSsh");
             ConfigurationSsh config = (ConfigurationSsh) configuration;
             return new SshPackageStore(config);
         }
 
-
-
-        throw new RuntimeException("There is no PackageStore defined for Configuration Type " + configuration.getClass().getSimpleName());
+        throw new RuntimeException(
+                "There is no PackageStore defined for Configuration Type " + configuration.getClass().getSimpleName());
     }
 
-    private static List<PackageStoreExtention<VraPackageDescriptor>> loadVraExtensions(String vraVersion, ConfigurationVra config, RestClientVra client) {
+    private static List<PackageStoreExtention<VraPackageDescriptor>> loadVraExtensions(String vraVersion,
+            ConfigurationVra config, RestClientVra client) {
         List<PackageStoreExtention<VraPackageDescriptor>> extentions = new ArrayList<>();
 
         if (new Version(vraVersion).compareTo(new Version("7.4-SNAPSHOT")) >= 0) {
@@ -190,7 +195,8 @@ public class PackageStoreFactory {
         return extentions;
     }
 
-    private static List<PackageStoreExtention<VroPackageDescriptor>> loadVroExtensions(String vroVersion, ConfigurationNg config, RestClientVro client) {
+    private static List<PackageStoreExtention<VroPackageDescriptor>> loadVroExtensions(String vroVersion,
+            ConfigurationNg config, RestClientVro client) {
         // No vRO extensions for now
         return new ArrayList<>();
     }

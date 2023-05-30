@@ -16,196 +16,78 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  */
 
 /**
- * Service Broker catalog item.
+ * Service Broker catalog item
  */
 public class VraNgCatalogItem {
-	/**
-	 * sourceId.
-	 */
-	private String sourceId;
-	/**
-	 * sourceName.
-	 */
-	private String sourceName;
-	/**
-	 * name.
-	 */
-	private String name;
-	/**
-	 * id.
-	 */
+	private final String sourceId;
+	private final String sourceName;
+	private final String name;
 	private String id;
-	/**
-	 * iconId.
-	 */
 	private String iconId;
-	/**
-	 * iconExtension.
-	 */
 	private String iconExtension;
-	/**
-	 * formId.
-	 */
 	private String formId;
-	/**
-	 * type.
-	 */
-	private final VraNgCatalogItemType type;
 
-	/**
-	 * Constructor function.
-	 * 
-	 * @param idIn
-	 * @param sourceIdIn
-	 * @param nameIn
-	 * @param sourceNameIn
-	 * @param typeIn
-	 */
-	public VraNgCatalogItem(
-			final String idIn,
-			final String sourceIdIn,
-			final String nameIn,
-			final String sourceNameIn,
-			final VraNgCatalogItemType typeIn) {
-		this.id = idIn;
-		this.sourceId = sourceIdIn;
-		this.name = nameIn;
-		this.sourceName = sourceNameIn;
-		this.type = typeIn;
+	public VraNgCatalogItem( String id, String sourceId, String name, String sourceName ) {
+		this.id = id;
+		this.sourceId = sourceId;
+		this.name = name;
+		this.sourceName = sourceName;
 	}
 
-	/**
-	 * Getter for id.
-	 * 
-	 * @return String id
-	 */
 	public String getId() {
 		return this.id;
 	}
 
 	/**
-	 * Catalog Item id gets updated when we need to fetch the correct id from the
-	 * server to do operations like.
+	 * Catalog Item id gets updated when we need to fetch the correct id from the server to do operations like
 	 * patching an iconID
-	 * 
-	 * @param idIn is
+	 * @param	id is
 	 */
-	public void setId(final String idIn) {
-		this.id = idIn;
+	public void setId( String id ) {
+		this.id	= id;
 	}
 
-	/**
-	 * Getter for sourceId.
-	 * 
-	 * @return String
-	 */
 	public String getSourceId() {
 		return this.sourceId;
 	}
 
-	/**
-	 * Getter for sourceName.
-	 * 
-	 * @return String
-	 */
 	public String getSourceName() {
 		return this.sourceName;
 	}
 
-	/**
-	 * Getter for name.
-	 * 
-	 * @return String
-	 */
 	public String getName() {
 		return this.name;
 	}
 
-	/**
-	 * setName.
-	 *
-	 * @param nameIn
-	 */
-	public void setName(final String nameIn) {
-		this.name = nameIn;
-	}
-
-	/**
-	 * Getter for iconId.
-	 * 
-	 * @return String
-	 */
 	public String getIconId() {
 		return this.iconId;
 	}
 
-	/**
-	 * Setter for iconId.
-	 * @param iconIdIn
-	 */
-	public void setIconId(final String iconIdIn) {
-		this.iconId = iconIdIn;
+	public void setIconId( String iconId ) {
+		this.iconId	= iconId;
 	}
 
-	/**
-	 * Is there a icon associated with this catalog item.
-	 * 
-	 * @return boolean
-	 */
 	public boolean hasIcon() {
 		return this.iconId != null && this.iconExtension != null;
 	}
 
-	/**
-	 * Setter for icon extension.
-	 * @param iconExtensionIn
-	 */
-	public void setIconExtension(final String iconExtensionIn) {
-		this.iconExtension = iconExtensionIn;
+	public void setIconExtension( String iconExtension ) {
+		this.iconExtension	= iconExtension;
 	}
 
-	/**
-	 * Getter for getIconExtension.
-	 * 
-	 * @return String
-	 */
 	public String getIconExtension() {
 		return this.iconExtension;
 	}
 
-	/**
-	 * Getter for formId.
-	 * 
-	 * @return String
-	 */
 	public String getFormId() {
 		return this.formId;
 	}
 
-	/**
-	 * Setter for formId.
-	 * @param formIdIn String
-	 */
-	public void setFormId(final String formIdIn) {
-		this.formId = formIdIn;
+	public void setFormId( String formId ) {
+		this.formId	= formId;
 	}
 
-	/**
-	 * Is there a form associated with this catalog item.
-	 * 
-	 * @return boolean
-	 */
 	public boolean hasForm() {
 		return this.formId != null;
-	}
-
-	/**
-	 * Decision based on the type needs to performed to see which call we need to
-	 * perform in 812.
-	 * 
-	 * @return VraNgContentSourceType
-	 */
-	public VraNgContentSourceType getType() {
-		return this.type.getId();
 	}
 }

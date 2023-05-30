@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-public final class ConfigurationSsh extends Configuration {
+public class ConfigurationSsh extends Configuration {
     // Important - when modify properties refer to comments in @Configuration
     public static final String SSH_DIRECTORY = "directory";
 
@@ -35,8 +35,12 @@ public final class ConfigurationSsh extends Configuration {
     public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
     public static final String MSSING_PROPERTY_EXCEPTION = "Configuration validation failed. Empty SSH property. Please make sure you have defined the SSH property '%s'. You may define that in maven 'settings.xml'.";
 
-    private ConfigurationSsh(Properties props) {
-        super(PackageType.BASIC, props);
+    protected ConfigurationSsh(Properties props) {
+        this(PackageType.BASIC, props);
+    }
+
+    protected ConfigurationSsh(PackageType t, Properties props) {
+        super(t, props);
     }
 
     public String getPackageImportOverwriteMode() {
@@ -81,7 +85,9 @@ public final class ConfigurationSsh extends Configuration {
             InetAddress.getByName(host);
         } catch (UnknownHostException uhe) {
             throw new ConfigurationException(
-                    String.format("Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s", HOST, host, uhe.getMessage()));
+                    String.format(
+                            "Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s",
+                            HOST, host, uhe.getMessage()));
         }
     }
 

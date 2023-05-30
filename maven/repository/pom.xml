@@ -153,6 +153,11 @@
 			<artifactId>ssh-maven-plugin</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.maven.plugins</groupId>
+			<artifactId>idem-maven-plugin</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- Packages -->
 		<dependency>
@@ -217,6 +222,12 @@
 		<dependency>
 			<groupId>com.vmware.pscoe.vrli</groupId>
 			<artifactId>vrli-package</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.idem</groupId>
+			<artifactId>idem-package</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>

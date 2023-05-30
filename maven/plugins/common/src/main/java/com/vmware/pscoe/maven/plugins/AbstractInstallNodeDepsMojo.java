@@ -76,7 +76,6 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
             new ProcessExecutor()
 				.name("Going Offline")
 				.directory(project.getBasedir())
-				.throwOnError(true)
 				.command("mvn dependency:go-offline")
 				.execute(getLog());
         }
@@ -84,7 +83,6 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
         new ProcessExecutor()
 			.name("Dependency installation")
 			.directory(project.getBasedir())
-			.throwOnError(true)
 			.command(deps)
 			.execute(getLog());
     }

@@ -1,55 +1,53 @@
+[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
+[//]: # (Used when working on a new release. Placed together with the Version.md)
+[//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
+[//]: # (Do not fill the version, it will be done automatically)
+[//]: # (Quick Intro to what is the focus of this release)
+
 ## Breaking Changes
+[//]: # (### *Breaking Change*)
+[//]: # (Describe the breaking change AND explain how to resolve it)
+[//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
+
+
 
 ## Deprecations
+[//]: # (### *Deprecation*)
+[//]: # (Explain what is deprecated and suggest alternatives)
 
+
+
+[//]: # (Features -> New Functionality)
 ## Features
+[//]: # (### *Feature Name*)
+[//]: # (Describe the feature)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
+
+
+[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
-### fix XMLManager definition
 
-XMLManager is a class with static methods
 
-#### Previous Behaviour XMLManager
+### **.helper.ts files will now be excluded from type definitions* 
+Currently the *.helper.ts files are being transpiled, and definitions are being generated. This shouldn't be happening, 
+as there is no reason to have helper files as part of the definitions, since they are test related only.
 
-XMLManager was defined as an interface
+#### Previous Behavior
+The helper.ts files had type definitions generated for them since vrotsc did not detect them correctly.
 
-#### New Behaviour XMLManager
+#### New Behavior
+The helper.ts are now being correctly filtered out by vrtosc, by excluding files that end with: `.helper.ts`.
 
-XMLManager is defined as a class with static methods
+#### Relevant Documentation:
+* None
 
-#### Relevant documentation XMLManager
 
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=XMLManager&plugin=XML)
 
-### fix RESTHost definition
+## Upgrade procedure:
+[//]: # (Explain in details if something needs to be done)
 
-RESTHost is a class that can be initiated (`const host = new RESTHost(name)`)
-
-#### Previous Behaviour RESTHost
-
-RESTHost was defined as an interface
-
-#### New Behaviour RESTHost
-
-RESTHost is defined as a class that can be constructed with new RESTHost(name)
-
-#### Relevant documentation RESTHost
-
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=RESTHost&plugin=REST)
-
-### fix HTTPBasicAuthentication definition
-
-#### Previous Behaviour HTTPBasicAuthentication
-
-HTTPBasicAuthentication was defined as an interface
-
-#### New Behaviour HTTPBasicAuthentication
-
-HTTPBasicAuthentication is defined as a class with static methods
-
-#### Relevant documentation HTTPBasicAuthentication
-
-[vro](https://vro/orchestration-ui/#/explorer?section=p&type=o&name=HTTPBasicAuthentication&plugin=REST)
-
-## Upgrade procedure
+[//]: # (## Changelog:)
+[//]: # (Pull request links)

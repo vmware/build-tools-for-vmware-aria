@@ -62,7 +62,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
     @Parameter(required = false, property = "ssh", defaultValue = "${ssh.*}")
     private Map<String, String> ssh;
-    
+
+    @Parameter(required = false, property = "idem", defaultValue = "${idem.*}")
+    private Map<String, String> idem;
 
     @Parameter(required = true, property = "ignoreSslCertificate", defaultValue = "false")
     private boolean ignoreSslCertificate;
@@ -70,14 +72,15 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
     @Parameter(required = true, property = "ignoreSslHostname", defaultValue = "false")
     private boolean ignoreSslHostname;
 
-    @Parameter(required = false, property = "connectionTimeout",  defaultValue = "${vrealize.connection.timeout}")
+    @Parameter(required = false, property = "connectionTimeout", defaultValue = "${vrealize.connection.timeout}")
     private int connectionTimeout;
 
     @Parameter(required = false, property = "socketTimeout", defaultValue = "${vrealize.socket.timeout}")
     private int socketTimeout;
 
     protected void processSslSystemProperties() {
-        System.setProperty(RestClientFactory.IGNORE_SSL_CERTIFICATE_VERIFICATION, Boolean.toString(ignoreSslCertificate));
+        System.setProperty(RestClientFactory.IGNORE_SSL_CERTIFICATE_VERIFICATION,
+                Boolean.toString(ignoreSslCertificate));
         System.setProperty(RestClientFactory.IGNORE_SSL_HOSTNAME_VERIFICATION, Boolean.toString(ignoreSslHostname));
     }
 
@@ -123,8 +126,10 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
     }
 
     /**
-     * Retrieve ABX configuration for ABX interaction. The configuration structure is
+     * Retrieve ABX configuration for ABX interaction. The configuration structure
+     * is
      * defined in the Artifact Manager project.
+     * 
      * @return ABX configuration
      * @throws ConfigurationException
      */
@@ -166,13 +171,15 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
     protected ConfigurationSsh getConfigurationForSsh() throws ConfigurationException {
         Optional<Configuration> configuration = Optional
-                .ofNullable(ConfigurationSsh.fromProperties(getConfigurationProperties(PackageType.BASIC, ssh, "ssh.")));
+                .ofNullable(
+                        ConfigurationSsh.fromProperties(getConfigurationProperties(PackageType.BASIC, ssh, "ssh.")));
         if (configuration.isPresent()) {
             return (ConfigurationSsh) configuration.get();
         } else {
             throw new ConfigurationException("Invalid or incomplete SSH configuration.");
         }
     }
+
     protected ConfigurationCs getConfigurationForCs() throws ConfigurationException {
         Optional<Configuration> configuration = getConfigurationForType(PackageType.CS);
         if (configuration.isPresent()) {
@@ -200,14 +207,19 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
             return Optional
                     .ofNullable(ConfigurationVraNg.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
         } else if (PackageType.ABX == type) {
-            // Intentionally parse vrang.* configuration properties for ABX as they are common with regular vRA configurations.
+            // Intentionally parse vrang.* configuration properties for ABX as they are
+            // common with regular vRA configurations.
             return Optional
                     .ofNullable(ConfigurationAbx.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
         } else if (PackageType.VRLI == type) {
             return Optional
                     .ofNullable(ConfigurationVrli.fromProperties(getConfigurationProperties(type, vrli, "vrli.")));
         } else if (PackageType.CS == type) {
-            return Optional.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
+            return Optional
+                    .ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
+        } else if (PackageType.IDEM == type) {
+            return Optional
+                    .ofNullable(ConfigurationIdem.fromProperties(getConfigurationProperties(type, idem, "idem.")));
         } else {
             return Optional.empty();
         }

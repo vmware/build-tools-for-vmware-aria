@@ -18,8 +18,6 @@ package com.vmware.pscoe.maven.plugins;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
@@ -67,7 +65,8 @@ public class SshPushMojo extends AbstractIacMojo {
 					.collect(Collectors.toList());
 			PackageStore store = PackageStoreFactory.getInstance(getConfigurationForSsh());
 
-			boolean mergePackages = filesChanged.size() != 0; // it means that only a few files was selected to create the package
+			boolean mergePackages = filesChanged.size() != 0; // it means that only a few files was selected to create
+																// the package
 			store.importAllPackages(packages, dryrun, mergePackages);
 		} catch (ConfigurationException e) {
 			getLog().error(e);
@@ -83,7 +82,8 @@ public class SshPushMojo extends AbstractIacMojo {
 		final String artifactType = project.getArtifact().getType();
 		final PackageType packageType = PackageType.fromExtension(artifactType);
 		if (packageType == null || !packageType.equals(PackageType.BASIC)) {
-			getLog().warn(String.format("Skipping push because of unsupported artifact type '%s'", artifactType));
+			getLog().warn(String.format("%s: Skipping push because of unsupported artifact type '%s'",
+					this.getClass().getName(), artifactType));
 			return;
 		}
 		if (project.getArtifact().getFile() == null) {

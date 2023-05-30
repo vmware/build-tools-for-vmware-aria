@@ -27,6 +27,7 @@
         <module>npmconv</module>
         <module>polyglot</module>
         <module>cs</module>
+        <module>vra-idem</module>
     </modules>
 	<properties>
 		<main.basedir>${project.parent.basedir}</main.basedir>

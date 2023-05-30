@@ -4,7 +4,7 @@ Before you continue with this section validate that all of the prerequisites are
 ## Prerequisites
 - Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
 
-## Use
+# Use
 
 When you package a vRO/vRA project with the ```-Pbundle-with-installer``` Maven profile, you will get an additional artifact ```***-bundle.zip``` that contains your project, all its dependencies (both vRA and vRO) plus the bundle installer CLI.
 
@@ -27,7 +27,6 @@ ignore_ssl_certificate_verification=true
 ignore_ssl_host_verification=true
 
 vro_import_packages=true
-vro_enable_backup=true
 vro_server=vra-l-01a.corp.local
 vro_port=443
 vro_auth=basic
@@ -63,7 +62,7 @@ vra_delete_old_versions=false
 To re-use the ```environment.properties``` file, you can pass its location as the only argument to the CLI command for running the ```installer``` script:
 
 ```bash
-./bin/installer ./bin/environment.properties
+$ ./bin/installer ./bin/environment.properties
 ```
 ## List of Properties
 
@@ -169,13 +168,12 @@ ssh_directory
 vra_import_packages
 vra_ng_import_packages
 vro_import_packages
-vro_enable_backup
 vcd_import_packages
 vrops_import_packages
 vrli_import_packages
 ssh_import_packages
 cs_import_packages
-#When importing ABX content, we unpack /target/${export}.zip in a temporary folder and unpack all the abx modules then they are iteratively imported.  IAC-512
+#When importing ABX content, we unpack /target/${export}.zip in a temporary folder and unpack all the abx modules then they are iteratively imported.	IAC-512
 abx_import_packages
 
 #### vRO import configurations ####
@@ -185,7 +183,6 @@ vro_import_configuration_attribute_values
 vro_import_configuration_secure_attribute_values
 vro_delete_old_versions
 vro_delete_last_version
-@Deprecated
 vro_delete_include_dependencies
 
 #### vRA import configurations ####
