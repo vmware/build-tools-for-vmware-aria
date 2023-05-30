@@ -855,7 +855,9 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 
             dashboardShareMetadataContent = this.serializeObject(metadata);
             dashboardShareMetadataContent = dashboardShareMetadataContent == null ? "" : dashboardShareMetadataContent;
-            logger.info("Generating dashboard sharing metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
+			logger.debug("Creating parent folders...");
+			dashboardShareMetadataFile.getParentFile().mkdirs();
+			logger.info("Generating dashboard sharing metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
             Files.write(dashboardShareMetadataFile.toPath(), dashboardShareMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
         } catch (JsonProcessingException e) {
             String message = String.format("Error generating dashboard sharing metadata file '%s' : %s", DASHBOARD_SHARE_METADATA_FILENAME, e.getMessage());
@@ -886,14 +888,16 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 
             dashboardActivationMetadataContent = this.serializeObject(metadata);
             dashboardActivationMetadataContent = dashboardActivationMetadataContent == null ? "" : dashboardActivationMetadataContent;
-            logger.info("Generating dashboard activation metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
+			logger.debug("Creating parent folders...");
+			dashboardActivationMetadataFile.getParentFile().mkdirs();
+			logger.info("Generating dashboard activation metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
             Files.write(dashboardActivationMetadataFile.toPath(), dashboardActivationMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
         } catch (JsonProcessingException e) {
             String message = String.format("Error generating dashboard activation metadata file '%s' for resource of type %s: %s", fileName, resourceType, e.getMessage());
-            logger.warn(message);
+            logger.warn(message, e);
         } catch (IOException e) {
             String message = String.format("Error exporting dashboard activation metadata file '%s' for resource of type %s : %s", fileName, resourceType, e.getMessage());
-            logger.warn(message);
+            logger.warn(message, e);
         }
     }
 
