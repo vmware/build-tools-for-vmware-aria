@@ -1,6 +1,7 @@
 
 ### Fixes
 
+* [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
 * [vro-types] Fixed definitions of RESTHost, XMLManager and HTTPBasicAuthentication to align with actual Orchestrator behaviour
 
 ## v2.32.0 - 11 May 2023
