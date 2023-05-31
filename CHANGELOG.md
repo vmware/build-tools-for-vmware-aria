@@ -1,3 +1,6 @@
+### Fixes
+* [vrotest] IAC-777 / Package Build Failing - vropkg build error due to missing source-map
+
 * [maven-plugins] IAC-706 / Package Build Failing - Typescript transpilation failed since Command line is too long
 
 ## v2.32.0 - 11 May 2023

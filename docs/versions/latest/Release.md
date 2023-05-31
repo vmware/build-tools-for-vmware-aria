@@ -6,6 +6,16 @@
 
 ## Improvements
 
+### Fix vropkg build error due to missing source-map
+
+#### Previous Behavior
+
+Building the project is not successful due to changed dependency (terser in the vropkg devDependencies).
+
+#### New Behavior
+
+The build is successful due to updated devDependencies in the vropkg.
+
 ### Fix error Command line is too long
 
 #### Previous Behavior
