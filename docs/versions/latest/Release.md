@@ -6,6 +6,8 @@
 
 ## Improvements
 
+### Fixed pulling of vROps dashboards as managed content
+
 ### fix XMLManager definition
 
 XMLManager is a class with static methods
