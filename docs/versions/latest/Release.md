@@ -6,6 +6,16 @@
 
 ## Improvements
 
+### Fix vropkg build error due to missing source-map
+
+#### Previous Behavior
+
+Building the project is not successful due to forcing of newer version of the terser devDependency (in the typescript folder).
+
+#### New Behavior
+
+The build is successful due to updated devDependencies in the typescript folder.
+
 ### Fix error Command line is too long
 
 #### Previous Behavior
