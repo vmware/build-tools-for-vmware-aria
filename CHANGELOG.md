@@ -1,5 +1,5 @@
 ### Fixes
-* [vrotest] IAC-777 / Package Build Failing - vropkg build error due to missing source-map
+* [vrotest] IAC-777 / Package Build Failing - typescript folder build error due to forcing of newer version of the terser devDependency
 
 * [maven-plugins] IAC-706 / Package Build Failing - Typescript transpilation failed since Command line is too long
 
