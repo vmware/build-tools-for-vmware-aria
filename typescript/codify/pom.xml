@@ -21,6 +21,15 @@
 
     <build>
         <plugins>
+            <!-- Skip Install -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
             <!-- Replace Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -37,7 +46,8 @@
                             <target>
                                 <replace file="${project.basedir}/package.json" token="-SNAPSHOT"
                                     value="-beta" />
-                                <replace file="${project.basedir}/package-lock.json" token="-SNAPSHOT"
+                                <replace file="${project.basedir}/package-lock.json"
+                                    token="-SNAPSHOT"
                                     value="-beta" />
                             </target>
                         </configuration>
