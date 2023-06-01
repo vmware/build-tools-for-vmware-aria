@@ -2,6 +2,7 @@
 ### Fixes
 
 * [vro-types] Fixed definitions of RESTHost, XMLManager and HTTPBasicAuthentication to align with actual Orchestrator behaviour
+* [vRA-NG] IAC-772 / When pushing Resource Actions (RAs), the ones that are scoped to a single project, should have their projectId modified
 
 ## v2.32.0 - 11 May 2023
 
