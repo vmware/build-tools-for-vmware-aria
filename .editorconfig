@@ -10,9 +10,13 @@ insert_final_newline = true
 
 
 # Styling for JS, TS, Java, Python files
-[*.{java,ts,js,py}]
+[*.{java}]
 indent_style = tab
 indent_size = 4
+
+[*.{ts,js,py}]
+indent_style = space
+indent_size = 2
 
 # Styling for YAML files
 [*.{yaml,yml,md}]

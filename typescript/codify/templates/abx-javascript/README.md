@@ -6,9 +6,9 @@
 
 This project comes with preconfigured rules for the following tools:
 
--   [EditorConfig](https://editorconfig.org/)
--   [ESLint](https://eslint.org/)
--   [Prettier](https://prettier.io/)
+- [EditorConfig](https://editorconfig.org/)
+- [ESLint](https://eslint.org/)
+- [Prettier](https://prettier.io/)
 
 When developing, they ensure consistency and static code analyis where applicable.
 
@@ -17,14 +17,14 @@ When developing, they ensure consistency and static code analyis where applicabl
 The project also comes with a `.vscode` set of rules for [VSCode](https://code.visualstudio.com/) integration.
 You can install the following extensions in your VSCode for handy integration:
 
--   [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
--   [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
--   [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 ## Development prerequisites
 
--   NodeJS 14+
--   Docker
+- NodeJS 14+
+- Docker
 
 ## Set up
 

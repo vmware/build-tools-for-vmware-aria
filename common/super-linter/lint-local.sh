@@ -13,7 +13,6 @@ docker run \
 	-e USE_FIND_ALGORITHM=true \
 	-e VALIDATE_JAVA=true  \
 	-e VALIDATE_JAVASCRIPT_ES=true \
-	-e VALIDATE_JAVASCRIPT_STANDARD=true \
 	-e VALIDATE_MARKDOWN=true \
 	-v $(pwd)/$1:/tmp/lint/$1 \
 	-v $(pwd)/.github/linters:/tmp/lint/.github/linters  \

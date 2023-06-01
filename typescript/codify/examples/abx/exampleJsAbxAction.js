@@ -1,5 +1,3 @@
-
-
 /**
  * Example NodeJS-based ABX action
  * @abx_type         abx
@@ -11,8 +9,8 @@
  * @abx_input        {string} customFlag
  */
 async function handler(context, inputs) {
-    console.log(inputs);
-    return ['foo', 'bar'];
+  console.log(inputs);
+  return ['foo', 'bar'];
 }
 
 exports.handler = handler;

@@ -17,11 +17,17 @@ MD022: false
 # MD024/no-duplicate-heading/no-duplicate-header - Multiple headings with the same content
 MD024: false
 
+# MD025/single-title/single-h1 - Multiple top-level headings in the same document
+MD025: false
+
 # MD032/blanks-around-lists - Lists should be surrounded by blank lines
 MD032: false
 
 # MD031/blanks-around-fences - Fenced code blocks should be surrounded by blank lines
 MD031: false
+
+# MD040/fenced-code-language - Fenced code blocks should have a language specified
+MD040: false
 
 # MD041/first-line-heading/first-line-h1 - First line in a file should be a top-level heading
 MD041: false

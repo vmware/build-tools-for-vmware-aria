@@ -12,16 +12,16 @@ The following procedure can serve as a guide for setting up a local development 
 The project also comes with a `.vscode` set of rules for [VSCode](https://code.visualstudio.com/) integration.
 You can install the following extensions in your VSCode for handy integration:
 
--   [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
--   [PowerShell](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell)
+- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- [PowerShell](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell)
 
 It also comes with preconfigured debug settings located in `.vscode/launch.json`.
 
 ## Development prerequisites
 
--   PowerShell Core 7+
--   Python 3.7+
--   Docker
+- PowerShell Core 7+
+- Python 3.7+
+- Docker
 
 ## Local development
 

@@ -10,26 +10,26 @@ Read our [Changelog](./CHANGELOG.md).
 
 The following points serve as motivation for developing this toolset.
 
--   A team-wide way to develop and share content across different projects.
--   Mechanism to distribute and share content between environments.
--   Allow adopting of modern development practices into vRealize development in
+- A team-wide way to develop and share content across different projects.
+- Mechanism to distribute and share content between environments.
+- Allow adopting of modern development practices into vRealize development in
     a consistent manner.
 
 ## Main Objectives
 
--   Enable content sharing among team members
--   Persistence, version control, and ability to review implementations
--   Code/configuration transferrability across environments
--   Extensible framework for adding additional content types
--   Static analysis enablement
--   Human/developer-readable content and configuration
+- Enable content sharing among team members
+- Persistence, version control, and ability to review implementations
+- Code/configuration transferrability across environments
+- Extensible framework for adding additional content types
+- Static analysis enablement
+- Human/developer-readable content and configuration
 
 ## Tool Requirements
 
--   Support for content and configurations of the stack the ACoE team works with - initially vRO and vRA
--   Support for the various execution runtimes of vRO and vRA - JavaScript (Rhino), NodeJS, Python, PowerShell
--   Decouple IDEs from implementation
--   Extensibility - add new modules for various target systems, e.g. vRO, vRA, SaltStack, LCM, vROps, vRLI, vRNI, etc.
+- Support for content and configurations of the stack the ACoE team works with - initially vRO and vRA
+- Support for the various execution runtimes of vRO and vRA - JavaScript (Rhino), NodeJS, Python, PowerShell
+- Decouple IDEs from implementation
+- Extensibility - add new modules for various target systems, e.g. vRO, vRA, SaltStack, LCM, vROps, vRLI, vRNI, etc.
 
 # Installation
 
@@ -37,14 +37,14 @@ The following points serve as motivation for developing this toolset.
 
 **Required:**
 
--   Node.js 14+
+- Node.js 14+
 
 **Optional but recommended:**
 
 The following prerequisites are needed for ABX bundle development (Python and PowerShell), testing and packaging.
 
--   Python 3+
--   Docker
+- Python 3+
+- Docker
 
 ## Installation procedure
 
@@ -97,7 +97,7 @@ The CLI will guide you through a series of questions for your content and will g
 
 In your **Codify** project create a **.env** file or export the following environment variables.
 
--   The typical configuration for _on-prem vRA_ with _embedded_ vRO is:
+- The typical configuration for _on-prem vRA_ with _embedded_ vRO is:
 
     ```sh
     # .env
@@ -109,7 +109,7 @@ In your **Codify** project create a **.env** file or export the following enviro
     VRA_PASS=<password>
     ```
 
--   If you are using a _standalone_ vRO with vRA-based authentication, you can specify a `VRO_AUTH_HOST` variable:
+- If you are using a _standalone_ vRO with vRA-based authentication, you can specify a `VRO_AUTH_HOST` variable:
 
     ```sh
     # .env
@@ -119,7 +119,7 @@ In your **Codify** project create a **.env** file or export the following enviro
     VRO_PASS=<password>
     ```
 
--   Instead of using username and password you can authenticate using a _refresh token_:
+- Instead of using username and password you can authenticate using a _refresh token_:
 
     ```sh
     # .env
@@ -129,7 +129,7 @@ In your **Codify** project create a **.env** file or export the following enviro
     VRO_TOKEN=<refresh-token>
     ```
 
--   For _vRA Cloud_ you need to specify the vRA Cloud API host and pass an API TokenМ
+- For _vRA Cloud_ you need to specify the vRA Cloud API host and pass an API TokenМ
 
     ```sh
     # .env
@@ -184,18 +184,17 @@ codify run --action "com.vmware.acoe.demo/myAction" --input=foo:bar --input baz:
 codify bom
 
 # To assemble a vRO package from source content. You can specify multiple sources by
-# addding a --source option for every source. The source can be a single object or a directory.
+# adding a --source option for every source. The source can be a single object or a directory.
 codify assemble --source src/actions --package com.vmware.acoe.mypackage --description "My package description"
 ```
 
-Although Codify does not enforce a specific respository structure, it is a good practice to organize
+Although Codify does not enforce a specific repository structure, it is a good practice to organize
 the content in logical categories which would allow for anyone looking at the project source code
 to easily find their way.
 
 ## Additional CLI options
 
 The following options are available for the `upload` and `download` commands:
-
 ```
 --sequential      - Perform sequential download or upload to avoid race conditions.
                     By default download and upload are parallel operations.
@@ -230,48 +229,48 @@ The following options are available for the `upload` and `download` commands:
 | \*.form.yaml | vRA Custom Form                      | [ ]     | [ ]               | [ ]    | [ ]      |
 | \*.package   | vRO Package                          | [ ]     | [x]               | [ ]    | [x]      |
 
--   (\*) Polyglot and ABX action bundles are developed and produced externally
--   YAML files can have either `.yaml` or `.yml` extension
--   Limited JS format for workflows allows expression of uni-branch sequence of steps
+- (\*) Polyglot and ABX action bundles are developed and produced externally
+- YAML files can have either `.yaml` or `.yml` extension
+- Limited JS format for workflows allows expression of uni-branch sequence of steps
 
 ## Supported JSDoc annotations
 
 The following annotations are applicable to any vRO action type, regardless of the runtime.
 
--   **@vro_type** - _(required)_ `polyglot` or `action`
--   **@vro_id** - _(optional)_ vRO object ID, defaulting to a UUIDv5 hash from the unique identifier of the object
--   **@vro_name** - _(optional)_ vRO object name, defaulting to the file name
--   **@vro_module** - _(optional)_ module for the action, defaulting to `com.vmware.acoe.temp`
--   **@vro_version** - _(optional)_ object version, defaulting to `1.0.0`
--   **@vro_input** - _(optional)_ input parameter in the format of `{type} name [description]`
--   **@vro_output** - _(optional)_ output paramter in the format of `{type} [name] [description]`
--   **@vro_entrypoint** - _(optional)_ Polyglot action entrypoint, defaulting to `handler.handler`
--   **@vro_timeout** - _(optional)_ Polyglot action timeout (in seconds), defaulting to `600`
--   **@vro_memory** - _(optional)_ Polyglot action memory limit (in bytes), defaulting to `256000000`
+- **@vro_type** - _(required)_ `polyglot` or `action`
+- **@vro_id** - _(optional)_ vRO object ID, defaulting to a UUIDv5 hash from the unique identifier of the object
+- **@vro_name** - _(optional)_ vRO object name, defaulting to the file name
+- **@vro_module** - _(optional)_ module for the action, defaulting to `com.vmware.acoe.temp`
+- **@vro_version** - _(optional)_ object version, defaulting to `1.0.0`
+- **@vro_input** - _(optional)_ input parameter in the format of `{type} name [description]`
+- **@vro_output** - _(optional)_ output paramter in the format of `{type} [name] [description]`
+- **@vro_entrypoint** - _(optional)_ Polyglot action entrypoint, defaulting to `handler.handler`
+- **@vro_timeout** - _(optional)_ Polyglot action timeout (in seconds), defaulting to `600`
+- **@vro_memory** - _(optional)_ Polyglot action memory limit (in bytes), defaulting to `256000000`
 
 The following annotations are applicable to any ABX action type, regardless of the runtime.
 
--   **@abx_type** - _(required)_ `abx`
--   **@abx_id** - _(optional)_ ABX object ID, defaulting to a UUIDv5 hash from the unique identifier of the object
--   **@abx_name** - _(optional)_ ABX object name, defaulting to the file name
--   **@abx_project** - _(optional)_ project for the action, defaulting to the existing action's project
--   **@abx_input** - _(optional)_ input parameter in the format of `{string|constant|encryptedConstant} name [value]`
--   **@abx_entrypoint** - _(optional)_ action entrypoint, defaulting to `handler.handler`
--   **@abx_timeout** - _(optional)_ action timeout (in seconds), defaulting to `600`
--   **@abx_memory** - _(optional)_ action memory limit (in bytes), defaulting to `256000000`
--   **@abx_dependencies** - _(optional)_ action dependencies in native runtime format, defaulting to empty string
--   **@abx_shared** - _(optional)_ shared action accress projects, `false` if not specified
--   **@abx_provider** - _(optional)_ `on-prem`, `aws` or `azure`, defaulting to 'Auto Select' (blank value)
--   **@abx_configuration** - _(optional)_ provider-specific configuration in JSON format, defaulting to `{}`
+- **@abx_type** - _(required)_ `abx`
+- **@abx_id** - _(optional)_ ABX object ID, defaulting to a UUIDv5 hash from the unique identifier of the object
+- **@abx_name** - _(optional)_ ABX object name, defaulting to the file name
+- **@abx_project** - _(optional)_ project for the action, defaulting to the existing action's project
+- **@abx_input** - _(optional)_ input parameter in the format of `{string|constant|encryptedConstant} name [value]`
+- **@abx_entrypoint** - _(optional)_ action entrypoint, defaulting to `handler.handler`
+- **@abx_timeout** - _(optional)_ action timeout (in seconds), defaulting to `600`
+- **@abx_memory** - _(optional)_ action memory limit (in bytes), defaulting to `256000000`
+- **@abx_dependencies** - _(optional)_ action dependencies in native runtime format, defaulting to empty string
+- **@abx_shared** - _(optional)_ shared action accress projects, `false` if not specified
+- **@abx_provider** - _(optional)_ `on-prem`, `aws` or `azure`, defaulting to 'Auto Select' (blank value)
+- **@abx_configuration** - _(optional)_ provider-specific configuration in JSON format, defaulting to `{}`
 
 # Roadmap
 
 The following areas will be worked on when developing new functionality for Codify:
 
--   ABX/Polyglot runner using Codify (`codify run`)
--   Complete support for all vRA objects
--   Support for Poylglot and ABX bundles
--   SalStack content
+- ABX/Polyglot runner using Codify (`codify run`)
+- Complete support for all vRA objects
+- Support for Poylglot and ABX bundles
+- SalStack content
 
 # How to contribute
 

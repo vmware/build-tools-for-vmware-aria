@@ -2,15 +2,15 @@
 
 **Required:**
 
--   [Node.js 14+](https://nodejs.org/en/download/)
--   A running vRA instance for uploading and downloading content
+- [Node.js 14+](https://nodejs.org/en/download/)
+- A running vRA instance for uploading and downloading content
 
 **Optional but recommended:**
 
 The following prerequisites are needed for ABX bundle development (Python and PowerShell), testing and packaging.
 
--   [Python 3+](https://www.python.org/downloads/)
--   [Docker](https://www.docker.com/get-started/)
+- [Python 3+](https://www.python.org/downloads/)
+- [Docker](https://www.docker.com/get-started/)
 
 # Tutorial: Installation
 
@@ -117,12 +117,12 @@ We will be using extensively the [PokeAPI](https://pokeapi.co/docs/v2#pokemon-se
 
 As content, we will create:
 
--   An external Pokemon name generator action in vRO
--   A set of ABX actions for the Pokemon CRUD operations
--   A custom resource that will use the CRUD ABX actions
--   A cloud template which will define our Pokemon deployment structure
--   An ABX action which will register the Pokemon to a mock CMDB
--   A vRA subscription which will invoke the CMDB ABX action
+- An external Pokemon name generator action in vRO
+- A set of ABX actions for the Pokemon CRUD operations
+- A custom resource that will use the CRUD ABX actions
+- A cloud template which will define our Pokemon deployment structure
+- An ABX action which will register the Pokemon to a mock CMDB
+- A vRA subscription which will invoke the CMDB ABX action
 
 Let's get started!
 
@@ -157,8 +157,8 @@ VRA_PASS=VMware1!
 
 We need to create two actions which will produce a new name for our Pokemon:
 
--   a utility TransientRestHost action which will create a new transient REST host for our name generation action.
--   a name generation action which will use the transient REST host to make a request to the PokeAPI for retrieving a list of Pokemons and randomly selecting one of them.
+- a utility TransientRestHost action which will create a new transient REST host for our name generation action.
+- a name generation action which will use the transient REST host to make a request to the PokeAPI for retrieving a list of Pokemons and randomly selecting one of them.
 
 Create a new **TransientRestHost** action:
 
@@ -496,9 +496,9 @@ npm run build
 
 This will produce 3 ZIP archives for our ABX actions in the **dist** directory:
 
--   pokemon-abx/dist/Create Pokemon.abx.zip
--   pokemon-abx/dist/Read Pokemon.abx.zip
--   pokemon-abx/dist/Remove Pokemon.abx.zip
+- pokemon-abx/dist/Create Pokemon.abx.zip
+- pokemon-abx/dist/Read Pokemon.abx.zip
+- pokemon-abx/dist/Remove Pokemon.abx.zip
 
 The archives are directly importable into vRA using the import functionality in ABX. They contain the action
 definitions along with the action bundles containing the implementation.

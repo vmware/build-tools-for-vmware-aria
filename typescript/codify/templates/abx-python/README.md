@@ -12,16 +12,16 @@ The following procedure can serve as a guide for setting up a local development 
 The project also comes with a `.vscode` set of rules for [VSCode](https://code.visualstudio.com/) integration.
 You can install the following extensions in your VSCode for handy integration:
 
--   [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
--   [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
--   [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
+- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+- [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
 
 It also comes with preconfigured debug settings located in `.vscode/launch.json`.
 
 ## Development prerequisites
 
--   Python 3.10
--   Docker
+- Python 3.10
+- Docker
 
 ## Set up
 
