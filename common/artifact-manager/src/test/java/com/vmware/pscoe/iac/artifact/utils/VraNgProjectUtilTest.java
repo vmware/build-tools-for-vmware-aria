@@ -70,6 +70,29 @@ public class VraNgProjectUtilTest {
 	}
 
 	@Test
+	void testImportResourceActionWithEmptyProjectId() throws IOException {
+		//GIVEN
+		final String CONFIGURATION_PROJECT_ID = "configuration-file-project-id";
+		final String RESOURCE_ACTION_PROJECT_ID = "";
+
+		when(restClient.getProjectId()).thenReturn(CONFIGURATION_PROJECT_ID);
+
+		ResourceActionMockBuilder resourceActionMockBuilder = new ResourceActionMockBuilder();
+		resourceActionMockBuilder.setName("testResourceAction");
+		resourceActionMockBuilder.setPropertyInRawData("projectId", RESOURCE_ACTION_PROJECT_ID);
+		VraNgResourceAction resourceAction = resourceActionMockBuilder.build();
+
+		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+		final JsonObject resourceActionJsonElement = gson.fromJson(resourceAction.getJson(), JsonObject.class);
+
+		//TEST
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement);
+
+		//VERIFY
+		assertEquals(null, resourceActionJsonElement.get("projectId"));
+	}
+
+	@Test
 	void testImportResourceActionWithoutProjectId() throws IOException {
 		//GIVEN
 		final String CONFIGURATION_PROJECT_ID = "configuration-file-project-id";
@@ -82,6 +105,7 @@ public class VraNgProjectUtilTest {
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		final JsonObject resourceActionJsonElement = gson.fromJson(resourceAction.getJson(), JsonObject.class);
+		resourceActionJsonElement.remove("projectId");
 
 		//TEST
 		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement);
