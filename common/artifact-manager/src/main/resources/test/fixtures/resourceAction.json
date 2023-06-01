@@ -1,5 +1,6 @@
 {
 	"id": "Cloud.vSphere.Machine.custom.resourceAction",
+	"projectId": "",
 	"name": "resourceAction",
 	"displayName": "resourceAction",
 	"providerName": "vro-workflow",
@@ -7,4 +8,4 @@
 	"status": "RELEASED",
 	"runnableItem": {},
 	"formDefinition": {}
-  }
+}

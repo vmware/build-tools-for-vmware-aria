@@ -25,6 +25,7 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.utils.VraNgProjectUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -207,6 +208,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
             this.populateVroEndpoint(resourceActionJsonElement);
 
+            this.changeProjectIdBetweenOrganizations(resourceActionJsonElement);
+
             // Get resource action id property and use it to try to delete existing one
             // resource action
             String resourceActionId = resourceActionJsonElement.get("id").getAsString();
@@ -267,4 +270,11 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
         resultJsonObject.add("formDefinition", sourceForm);
         return resultJsonObject;
     }
+
+    /**
+	 * Fixes the project id in the given object with the one set in the configuration
+	 */
+	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement);
+	}
 }

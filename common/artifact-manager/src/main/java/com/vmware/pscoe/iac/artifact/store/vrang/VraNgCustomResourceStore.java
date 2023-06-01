@@ -24,6 +24,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.utils.VraNgProjectUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -357,7 +358,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		// Remove the organization from the general json object
 		this.fixOrgId(customResourceJsonElement, "orgId");
 
-		changeProjectIdBetweenOrganizations(customResourceJsonElement);
+		this.changeProjectIdBetweenOrganizations(customResourceJsonElement);
 
 		// Remove foreach additional action the organization id and the
 		// formDefinition.id property
@@ -374,11 +375,12 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 					this.fixOrgId(formDefinition, "tenant");
 
-					changeProjectIdBetweenOrganizations(formDefinition);
+					this.changeProjectIdBetweenOrganizations(formDefinition);
 				}
 			}
 		});
 	}
+
 	/**
 	 * Fixes the organization id / tenant id in the given object with the one set in the configuration
 	 */
@@ -390,16 +392,11 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		jsonObject.addProperty(key, this.currentOrganizationId);
 	}
 
+	/**
+	 * Fixes the project id in the given object with the one set in the configuration
+	 */
 	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
-		String defaultProjectId = this.restClient.getProjectId();
-		if (defaultProjectId != null) {
-			if (customResourceJsonElement.get("projectId") != null
-				&& !customResourceJsonElement.get("projectId").getAsString().equals("")) {
-				customResourceJsonElement.remove("projectId");
-				customResourceJsonElement.add("projectId", new JsonPrimitive(defaultProjectId));
-			}
-		} else
-			customResourceJsonElement.remove("projectId");
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement);
 	}
 
 	private void populateVroEndpoints(final JsonObject customResourceJsonElement) throws ConfigurationException {
