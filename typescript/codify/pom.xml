@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.vmware.pscoe.npm</groupId>
+        <artifactId>lib</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../maven/npmlib/pom.xml</relativePath>
+    </parent>
+
+    <groupId>com.vmware.pscoe.iac</groupId>
+    <artifactId>codify</artifactId>
+
+    <properties>
+        <attachFileName>vmware-pscoe-${project.artifactId}-${project.version}.tgz</attachFileName>
+        <main.basedir>${project.parent.parent.basedir}</main.basedir>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Replace Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>replace-snapshot-with-beta</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <replace file="${project.basedir}/package.json" token="-SNAPSHOT"
+                                    value="-beta" />
+                                <replace file="${project.basedir}/package-lock.json" token="-SNAPSHOT"
+                                    value="-beta" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant</artifactId>
+                        <version>1.10.11</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,19 @@
+objectType: ConfigurationElement
+id: 300ffbd7-092d-47d7-a409-dbf8b174b272
+name: Sample Configuration
+description: Sample Codify Configuration
+version: 1.0.0
+folder: ACoE/Codify
+attributes:
+  foo:
+    type: string
+    description: Foo description
+  bar:
+    type: SecureString
+    description: Bar description
+  baz:
+    type: number
+    description: ""
+  host:
+    type: REST:RESTHost
+    description: "sample REST host"

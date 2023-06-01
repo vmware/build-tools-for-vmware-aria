@@ -1,0 +1,12 @@
+---
+name: 'Create Resource'
+description: 'Create a new resource using ABX'
+entrypoint: 'create_resource.handler'
+timeoutSeconds: 600
+deploymentTimeoutSeconds: 900
+inputs:
+  name: 'My Resource'
+  description: 'My resource description'
+configuration:
+  const_azure-system_managed_identity: false
+memoryInMB: 300

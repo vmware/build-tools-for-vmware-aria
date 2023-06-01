@@ -1,0 +1,33 @@
+{
+    "root": true,
+    "parserOptions": {
+        "ecmaVersion": 2019,
+        "sourceType": "module"
+    },
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:jest/recommended",
+        "eslint:recommended",
+        "prettier"
+    ],
+    "plugins": [
+        "jest",
+        "prettier",
+        "@typescript-eslint",
+        "header"
+    ],
+    "env": {
+        "jest/globals": true,
+        "node": true,
+        "es6": true
+    },
+    "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/prefer-to-have-length": "warn",
+        "jest/valid-expect": "error"
+    }
+}

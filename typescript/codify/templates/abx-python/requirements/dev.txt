@@ -1,0 +1,12 @@
+# Specifies only dev-specific requirements
+# But imports the common ones too
+
+-r base.txt
+
+pytest==7.1.1
+pytest-cov==3.0.0
+coverage==6.3.2
+python-dotenv==0.20.0
+autopep8==1.6.0
+pyyaml==6.0
+setuptools

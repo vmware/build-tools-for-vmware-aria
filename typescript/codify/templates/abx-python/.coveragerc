@@ -1,0 +1,8 @@
+[tool:pytest]
+addopts = --cov=src --cov-report html --cov-report=term
+
+[html]
+directory = coverage
+
+[run]
+omit = **/test_*.py

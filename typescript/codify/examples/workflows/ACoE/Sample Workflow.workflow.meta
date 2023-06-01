@@ -1,0 +1,42 @@
+{
+  "id": "afca7da4-eb84-41fb-bbe5-a27b8d96587f",
+  "name": "Sample Workflow",
+  "version": "1.0.0",
+  "folder": "ACoE",
+  "content": {
+    "display-name": "Sample Workflow",
+    "position": {
+      "y": 50,
+      "x": 100
+    },
+    "attrib": [],
+    "workflow-item": [
+      {
+        "in-binding": {},
+        "position": {
+          "y": 50,
+          "x": 240
+        },
+        "name": "item0",
+        "type": "end",
+        "end-mode": "0",
+        "comparator": 0
+      }
+    ],
+    "presentation": {},
+    "root-name": "item0",
+    "object-name": "workflow:name=generic",
+    "id": "afca7da4-eb84-41fb-bbe5-a27b8d96587f",
+    "version": "1.0.0",
+    "api-version": "6.0.0",
+    "restartMode": 1,
+    "resumeFromFailedMode": 0,
+    "editor-version": "2.0"
+  },
+  "presentation": {
+    "layout": {
+      "pages": []
+    },
+    "schema": {}
+  }
+}

@@ -1,0 +1,54 @@
+objectType: VMwareCloudTemplate
+name: Example Template
+description: Example Codify cloud template.
+requestScopeOrg: true
+project: ref:name:Development
+content:
+  formatVersion: 1
+  inputs:
+    vmCount:
+      type: integer
+      title: VM Count
+      default: 1
+      minimum: 1
+      maximum: 5
+    dns:
+      type: array
+      title: DNS Servers
+      items:
+        type: string
+      default:
+        - 8.8.8.8
+    domain:
+      type: string
+      title: Domain
+      default: corp.local
+  resources:
+    natvm2:
+      type: Cloud.vSphere.Machine
+      metadata:
+        layoutPosition:
+          - 0
+          - 1
+      properties:
+        image: Photon
+        count: ${input.vmCount}
+        cpuCount: 1
+        totalMemoryMB: 1024
+        networks:
+          - network: ${resource.Cloud_NSX_Network_1.id}
+            assignment: static
+            domain: ${input.domain}
+            dns: ${input.dns}
+            nat.enabled: true
+            nat.range: My_Pool
+    Cloud_NSX_Network_1:
+      type: Cloud.NSX.Network
+      metadata:
+        layoutPosition:
+          - 1
+          - 0
+      properties:
+        networkType: routed
+        constraints:
+          - tag: net:ondemand

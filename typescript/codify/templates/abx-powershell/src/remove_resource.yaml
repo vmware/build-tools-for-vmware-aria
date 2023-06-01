@@ -1,0 +1,12 @@
+---
+name: 'Remove Resource'
+description: 'Remove existing resource using ABX'
+entrypoint: 'remove_resource.handler'
+timeoutSeconds: 600
+deploymentTimeoutSeconds: 900
+inputs:
+  name: 'My Resource'
+  description: 'My resource description'
+configuration:
+  const_azure-system_managed_identity: false
+memoryInMB: 300

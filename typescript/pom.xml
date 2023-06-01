@@ -25,6 +25,7 @@
         <module>polyglotpkg</module>
 		<module>vrotest</module>
 		<module>vro-scripting-api</module>
+		<module>codify</module>
     </modules>
 
     <build>

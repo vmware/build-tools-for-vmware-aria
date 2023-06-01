@@ -1,0 +1,21 @@
+{
+    "root": true,
+    "parserOptions": {
+        "ecmaVersion": 2019
+    },
+    "extends": [
+        "eslint:recommended",
+        "prettier"
+    ],
+    "plugins": [
+        "prettier",
+        "header",
+        "jest"
+    ],
+    "env": {
+        "node": true,
+        "es6": true,
+        "jest/globals": true
+    },
+    "globals": {}
+}

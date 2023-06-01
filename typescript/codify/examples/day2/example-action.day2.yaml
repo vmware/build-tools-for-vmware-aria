@@ -1,0 +1,62 @@
+objectType: ResourceAction
+project: null
+id: Cloud.vSphere.Machine.custom.example-action
+name: example-action
+displayName: Example Action
+description: Test
+providerName: vro-workflow
+resourceType: Cloud.vSphere.Machine
+status: DRAFT
+runnableItem:
+  id: 8B81808080808080808080808080808080808080012995053491651398b094fa1
+  name: Add a broker
+  description: Adds an AMQP broker.
+  type: vro.workflow
+  inputParameters:
+    - type: string
+      name: host
+      description: Broker's host address
+    - type: number
+      name: port
+      description: Broker's port
+    - type: string
+      name: username
+      description: Broker's username
+    - type: SecureString
+      name: password
+      description: Broker's password
+    - type: string
+      name: virtualHost
+      description: Broker's virtual host
+    - type: string
+      name: name
+      description: Broker's user friendly name
+    - type: boolean
+      name: useSSL
+      description: Access broker through a secure connection
+    - type: boolean
+      name: acceptAllCertificates
+      description: Do not check broker's cerfiticate
+  outputParameters:
+    - type: AMQP:Broker
+      name: broker
+      description: AMQP broker created by the workflow
+  endpointLink: /resources/endpoints/96519c84-5c4f-40b7-8d6e-00ca6b43d8b8
+formDefinition:
+  id: 62db9438-ee3c-4f70-a6f7-b43c6bdc5d56
+  name: example-action
+  form: >-
+    {"layout":{"pages":[{"id":"page_1","title":"AMQP broker
+    properties","sections":[{"id":"section_1","fields":[{"id":"name","display":"textField"}]}]},{"id":"page_2","title":"AMQP
+    connection
+    properties","sections":[{"id":"section_3","fields":[{"id":"host","display":"textField"}]},{"id":"section_4","fields":[{"id":"port","display":"decimalField"}]},{"id":"section_5","fields":[{"id":"virtualHost","display":"textField"}]},{"id":"section_6","fields":[{"id":"useSSL","display":"checkbox"}]},{"id":"section_7","fields":[{"id":"acceptAllCertificates","display":"checkbox","state":{"visible":{"id":"com.vmware.o11n.forms/evalOGNL","type":"scriptAction","parameters":[{"ognl":"`#useSSL`"},{"useSSL":"useSSL"},{"useSSL__type_":"`boolean`"},{"return":"`boolean`"}]}}}]},{"id":"section_8","fields":[{"id":"username","display":"textField"}]},{"id":"section_9","fields":[{"id":"password","display":"passwordField"}]}]}]},"schema":{"host":{"label":"Host","type":{"dataType":"string","isMultiple":false},"constraints":{"required":true}},"name":{"label":"Name","type":{"dataType":"string","isMultiple":false},"constraints":{}},"port":{"label":"Port","type":{"dataType":"decimal","isMultiple":false},"default":5672.0,"constraints":{"required":true,"max-value":32767.0,"min-value":0.0}},"useSSL":{"label":"Use
+    SSL","type":{"dataType":"boolean","isMultiple":false},"default":false,"constraints":{}},"password":{"label":"Password","type":{"dataType":"secureString","isMultiple":false},"constraints":{"required":true}},"username":{"label":"User
+    name","type":{"dataType":"string","isMultiple":false},"constraints":{"required":true}},"virtualHost":{"label":"Virtual
+    host","type":{"dataType":"string","isMultiple":false},"default":"/","constraints":{"required":true}},"acceptAllCertificates":{"label":"Accept
+    all
+    certificates","type":{"dataType":"boolean","isMultiple":false},"default":false,"constraints":{}}}}
+  sourceType: resource.action
+  sourceId: Cloud.vSphere.Machine.custom.example-action
+  type: requestForm
+  status: 'ON'
+  formFormat: JSON
