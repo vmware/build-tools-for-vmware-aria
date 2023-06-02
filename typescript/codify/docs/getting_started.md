@@ -17,11 +17,8 @@ The following prerequisites are needed for ABX bundle development (Python and Po
 In this tutorial we will install Codify from Artifactory and validate that it properly set up.
 
 ```sh
-# Configure namespaced NPM registry
-npm config set @acoe:registry "@TODO"
-
 # Install Codify
-npm install -g @acoe/codify
+npm install -g @build-tools-for-vmware-aria/codify
 
 # Verify that Codify is installed
 codify --version

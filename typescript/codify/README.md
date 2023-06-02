@@ -1,14 +1,11 @@
 # Codify
 
-**Codify** is a CLI-based toolset for interacting with vRealize content expressed as source code.
+**Codify** is a CLI-based tool-set for interacting with vRealize content expressed as source code.
 
-## What's new
-
-Read our [Changelog](./CHANGELOG.md).
 
 ## Motivation
 
-The following points serve as motivation for developing this toolset.
+The following points serve as motivation for developing this tool-set.
 
 - A team-wide way to develop and share content across different projects.
 - Mechanism to distribute and share content between environments.
@@ -19,7 +16,7 @@ The following points serve as motivation for developing this toolset.
 
 - Enable content sharing among team members
 - Persistence, version control, and ability to review implementations
-- Code/configuration transferrability across environments
+- Code/configuration transferability across environments
 - Extensible framework for adding additional content types
 - Static analysis enablement
 - Human/developer-readable content and configuration
@@ -27,7 +24,7 @@ The following points serve as motivation for developing this toolset.
 ## Tool Requirements
 
 - Support for content and configurations of the stack the ACoE team works with - initially vRO and vRA
-- Support for the various execution runtimes of vRO and vRA - JavaScript (Rhino), NodeJS, Python, PowerShell
+- Support for the various execution run-times of vRO and vRA - JavaScript (Rhino), NodeJS, Python, PowerShell
 - Decouple IDEs from implementation
 - Extensibility - add new modules for various target systems, e.g. vRO, vRA, SaltStack, LCM, vROps, vRLI, vRNI, etc.
 
@@ -49,11 +46,8 @@ The following prerequisites are needed for ABX bundle development (Python and Po
 ## Installation procedure
 
 ```sh
-# Configure namespaced NPM registry
-npm config set @acoe:registry "@TODO"
-
 # Install Codify globally
-npm install -g @acoe/codify
+npm install -g @build-tools-for-vmware-aria/codify
 
 # Verify Codify is installed
 codify --version
@@ -198,11 +192,11 @@ The following options are available for the `upload` and `download` commands:
 ```
 --sequential      - Perform sequential download or upload to avoid race conditions.
                     By default download and upload are parallel operations.
---dryrun          - Do not upload or download objects, rather just perform persing
+--dryrun          - Do not upload or download objects, rather just perform parsing
                     or remote resolution.
 --debug           - Print debug logs. Useful when troubleshooting.
---reauthenticate  - Ignore credentials cache and perform reauthentication.
-                    The access token will still be cached after the reauthentication.
+--reauthenticate  - Ignore credentials cache and perform re-authentication.
+                    The access token will still be cached after the re-authentication.
 ```
 
 # Content Support
@@ -263,15 +257,6 @@ The following annotations are applicable to any ABX action type, regardless of t
 - **@abx_provider** - _(optional)_ `on-prem`, `aws` or `azure`, defaulting to 'Auto Select' (blank value)
 - **@abx_configuration** - _(optional)_ provider-specific configuration in JSON format, defaulting to `{}`
 
-# Roadmap
-
-The following areas will be worked on when developing new functionality for Codify:
-
-- ABX/Polyglot runner using Codify (`codify run`)
-- Complete support for all vRA objects
-- Support for Poylglot and ABX bundles
-- SalStack content
-
 # How to contribute
 
-Read our [Contributing](./CONTRIBUTING.md) guideline.
+Read our [Contributing](./docs/contributing.md) guideline.
