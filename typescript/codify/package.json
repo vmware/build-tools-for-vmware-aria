@@ -1,97 +1,104 @@
 {
-  "name": "@acoe/codify",
-  "version": "2.32.1-beta",
-  "description": "This is an experimental project for codifying vRealize content defined in source files.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "codify": "bin/codify"
-  },
-  "scripts": {
-    "start": "./bin/polyglotpkg",
-    "build": "tsc",
-    "clean": "rimraf dist coverage *.tsbuildinfo",
-    "format:check": "prettier --check .",
-    "format:write": "prettier --write .",
-    "lint:check": "eslint . --ignore-pattern .gitignore",
-    "lint:fix": "eslint --fix . --ignore-pattern .gitignore",
-    "cli:dev": "ts-node src/cli.ts",
-    "test": "jest --coverage"
-  },
-  "pre-commit": [
-    "lint:check",
-    "test"
-  ],
-  "keywords": [
-    "vro",
-    "workflows",
-    "actions",
-    "javascript",
-    "typescript",
-    "python",
-    "powershell"
-  ],
-  "author": "Petar Vorotnikov",
-  "license": "ISC",
-  "dependencies": {
-    "adm-zip": "^0.5.10",
-    "axios": "^0.24.0",
-    "chalk": "^4.1.2",
-    "doctrine": "^3.0.0",
-    "dotenv": "^10.0.0",
-    "fast-xml-parser": "^4.0.15",
-    "form-data": "^4.0.0",
-    "fs-extra": "^10.0.0",
-    "globby": "^11.0.4",
-    "js-yaml": "^4.1.0",
-    "lodash": "^4.17.21",
-    "minimist": "^1.2.5",
-    "moment": "^2.29.1",
-    "nconf": "^0.11.3",
-    "prompts": "^2.4.2",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "@types/adm-zip": "^0.5.0",
-    "@types/doctrine": "^0.0.5",
-    "@types/fs-extra": "^9.0.13",
-    "@types/jest": "^27.0.3",
-    "@types/js-yaml": "^4.0.5",
-    "@types/lodash": "^4.14.181",
-    "@types/minimist": "^1.2.2",
-    "@types/nconf": "^0.10.1",
-    "@types/node": "^16.11.11",
-    "@types/prompts": "^2.0.14",
-    "@types/uuid": "^8.3.3",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "eslint": "^8.3.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-jest": "^25.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.4.3",
-    "pre-commit": "^1.2.2",
-    "prettier": "^2.4.1",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^27.0.7",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.2"
-  },
-  "files": [
-    "bin",
-    "dist",
-    "templates"
-  ],
-  "jest": {
-    "silent": true,
-    "verbose": true,
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "modulePathIgnorePatterns": [
-      "dist"
-    ]
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  }
+	"name": "@build-tools-for-vmware-aria/codify",
+	"version": "2.32.1-SNAPSHOT",
+	"description": "This is an experimental project for codifying vRealize content defined in source files.",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"bin": {
+		"codify": "bin/codify"
+	},
+	"scripts": {
+		"start": "./bin/polyglotpkg",
+		"build": "tsc",
+		"clean": "rimraf dist coverage *.tsbuildinfo",
+		"format:check": "prettier --check .",
+		"format:write": "prettier --write .",
+		"lint:check": "eslint . --ignore-pattern .gitignore",
+		"lint:fix": "eslint --fix . --ignore-pattern .gitignore",
+		"cli:dev": "ts-node src/cli.ts",
+		"test": "jest --coverage"
+	},
+	"pre-commit": [
+		"lint:check",
+		"test"
+	],
+	"keywords": [
+		"vro",
+		"workflows",
+		"actions",
+		"javascript",
+		"typescript",
+		"python",
+		"powershell"
+	],
+	"author": "Petar Vorotnikov",
+	"license": "BSD-2",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vmware/build-tools-for-vmware-aria.git"
+	},
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org"
+	},
+	"dependencies": {
+		"adm-zip": "^0.5.10",
+		"axios": "^0.24.0",
+		"chalk": "^4.1.2",
+		"doctrine": "^3.0.0",
+		"dotenv": "^10.0.0",
+		"fast-xml-parser": "^4.0.15",
+		"form-data": "^4.0.0",
+		"fs-extra": "^10.0.0",
+		"globby": "^11.0.4",
+		"js-yaml": "^4.1.0",
+		"lodash": "^4.17.21",
+		"minimist": "^1.2.5",
+		"moment": "^2.29.1",
+		"nconf": "^0.11.3",
+		"prompts": "^2.4.2",
+		"uuid": "^8.3.2"
+	},
+	"devDependencies": {
+		"@types/adm-zip": "^0.5.0",
+		"@types/doctrine": "^0.0.5",
+		"@types/fs-extra": "^9.0.13",
+		"@types/jest": "^27.0.3",
+		"@types/js-yaml": "^4.0.5",
+		"@types/lodash": "^4.14.181",
+		"@types/minimist": "^1.2.2",
+		"@types/nconf": "^0.10.1",
+		"@types/node": "^16.11.11",
+		"@types/prompts": "^2.0.14",
+		"@types/uuid": "^8.3.3",
+		"@typescript-eslint/eslint-plugin": "^5.5.0",
+		"eslint": "^8.3.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-header": "^3.1.1",
+		"eslint-plugin-jest": "^25.3.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"jest": "^27.4.3",
+		"pre-commit": "^1.2.2",
+		"prettier": "^2.4.1",
+		"rimraf": "^3.0.2",
+		"ts-jest": "^27.0.7",
+		"ts-node": "^10.4.0",
+		"typescript": "^4.5.2"
+	},
+	"files": [
+		"bin",
+		"dist",
+		"templates"
+	],
+	"jest": {
+		"silent": true,
+		"verbose": true,
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"modulePathIgnorePatterns": [
+			"dist"
+		]
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	}
 }

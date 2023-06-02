@@ -15,52 +15,12 @@
     <artifactId>codify</artifactId>
 
     <properties>
-        <attachFileName>vmware-pscoe-${project.artifactId}-${project.version}.tgz</attachFileName>
+        <attachFileName>build-tools-for-vmware-aria-codify-${project.version}.tgz</attachFileName>
         <main.basedir>${project.parent.parent.basedir}</main.basedir>
     </properties>
 
     <build>
         <plugins>
-            <!-- Skip Install -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.1.1</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <!-- Replace Plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>replace-snapshot-with-beta</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <replace file="${project.basedir}/package.json" token="-SNAPSHOT"
-                                    value="-beta" />
-                                <replace file="${project.basedir}/package-lock.json"
-                                    token="-SNAPSHOT"
-                                    value="-beta" />
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant</artifactId>
-                        <version>1.10.11</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

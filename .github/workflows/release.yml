@@ -113,7 +113,14 @@ jobs:
           git commit -m "(release) v${{ inputs.version }}"
           git tag v${{ inputs.version }}
           git push --tags
-          git push   
+          git push
+
+      - name: Release Codify to NpmJS Repo
+        run: |
+          echo -n "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > ~/.npmrc
+          cd typescript/codify
+          npm publish --access public
+          cd ../../
 
       - name: Prepare next development iteration
         run: |   
