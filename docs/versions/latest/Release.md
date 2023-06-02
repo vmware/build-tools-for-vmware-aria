@@ -39,6 +39,20 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Content Sharing Policy supports Catalog Items and Content Source Items*
+
+Content Sharing Policy supports both Catalog Item and Content Source Items association.
+
+#### Previous Behavior
+
+As of initial implementation, the Content Source Policy supported only Content
+Source assignments.
+
+#### Upgrade steps
+
+As usual, the content for Content Sharing Policy needs to be pulled from the env.
+Pull first, push the updated content.
+
 
 
 ## Upgrade procedure:
