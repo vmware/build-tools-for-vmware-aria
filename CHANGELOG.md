@@ -1,3 +1,5 @@
+## v2.33.0 - 02 Jun 2023
+
 ### Fixes
 * [vrotest] IAC-777 / Package Build Failing - typescript folder build error due to forcing of newer version of the terser devDependency
 
