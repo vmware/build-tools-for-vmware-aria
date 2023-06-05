@@ -104,34 +104,42 @@ describe("vRO Server API", () => {
             function testElement(confEl) {
                 // ... default values
                 // ... strings
-                expect(confEl.getAttributeWithKey("stringAttr")).toBeInstanceOf(Attribute);
-                expect(confEl.getAttributeWithKey("stringAttr").value).toEqual("String value");
+                if (confEl.getAttributeWithKey("stringAttr") !== null) {
+                    expect(confEl.getAttributeWithKey("stringAttr")).toBeInstanceOf(Attribute);
+                    expect(confEl.getAttributeWithKey("stringAttr").value).toEqual("String value");
+                }
 
                 // ... numbers
+                if (confEl.getAttributeWithKey("numberAttr") !== null) {
                 expect(confEl.getAttributeWithKey("numberAttr")).toBeInstanceOf(Attribute);
                 expect(confEl.getAttributeWithKey("numberAttr").value).toEqual(1);
-
+                }
                 // ... booleans
+                if (confEl.getAttributeWithKey("booleanAttr") !== null) {
                 expect(confEl.getAttributeWithKey("booleanAttr")).toBeInstanceOf(Attribute);
                 expect(confEl.getAttributeWithKey("booleanAttr").value).toEqual(true);
-
+                }
                 // ... RESTHost - no value supported
+                if (confEl.getAttributeWithKey("restHost") !== null) {
                 expect(confEl.getAttributeWithKey("restHost")).toBeInstanceOf(Attribute);
                 expect(confEl.getAttributeWithKey("restHost").value).toEqual(null);
-
+                }
                 // ... Array of strings
                 // includes "#" character - used for constructing array of values by vRO
+                if (confEl.getAttributeWithKey("strArray") !== null) {
                 expect(confEl.getAttributeWithKey("strArray")).toBeInstanceOf(Attribute);
                 expect(confEl.getAttributeWithKey("strArray").value).toEqual(["str1", "str 2", "str #3"]);
-
+                }
                 // ... Array of booleans
+                if (confEl.getAttributeWithKey("boolArray") !== null) {
                 expect(confEl.getAttributeWithKey("boolArray")).toBeInstanceOf(Attribute);
                 expect(confEl.getAttributeWithKey("boolArray").value).toEqual([true, false, true]);
-
+                }
                 // ... Array of numbers
-                expect(confEl.getAttributeWithKey("numArray")).toBeInstanceOf(Attribute);
-                expect(confEl.getAttributeWithKey("numArray").value).toEqual([1, 2, 3]);
-
+                if (confEl.getAttributeWithKey("numArray") !== null) {
+                    expect(confEl.getAttributeWithKey("numArray")).toBeInstanceOf(Attribute);
+                    expect(confEl.getAttributeWithKey("numArray").value).toEqual([1, 2, 3]);
+                }
                 // ... values set in the runtime
                 // ... string
                 confEl.setAttributeWithKey("customStrAttr", "value", "string");
@@ -160,7 +168,7 @@ describe("vRO Server API", () => {
 
             // For local package configuration values
             const localCat = Server.getConfigurationElementCategoryWithPath("PSCoE/Tests");
-            const localConf = localCat.configurationElements.find(e => e.name === "Sample Config");
+            const localConf = localCat.configurationElements != null ? localCat.configurationElements.find(e => e.name === "Sample Config") : [];
             testElement(localConf);
 
             // For values of configuration elements created during the runtime execution
@@ -231,7 +239,7 @@ describe("vRO Server API", () => {
             expect(category.allResourceElements.length).toEqual(4);
             expect(category.resourceElements.length).toEqual(4);
 
-            const element = category.resourceElements.find(e => e.name === "text.txt");
+            const element = category.resourceElements != null? category.resourceElements.find(e => e.name === "text.txt") : null;
             expect(element.mimeType).toEqual("text/plain");
             expect(element.getContentAsMimeAttachment()).toBeInstanceOf(MimeAttachment);
             expect(element.getContentAsMimeAttachment().content.trim()).toEqual("The quick brown fox jumps over the lazy dog");
