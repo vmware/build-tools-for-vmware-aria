@@ -210,23 +210,6 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 			logger.error("Unable to store blueprint content file {} {}", bpName, contentFileName);
 			throw new RuntimeException("Unable to store blueprint.", e);
 		}
-
-		if (!config.getIgnoreBlueprintVersions()) {
-			// Storing blueprint versions
-			String versionsFileName = bpFolderPath + "/" + BP_VERSIONS_FILE_NAME;
-			String versionsJSON = this.restClient.getBlueprintVersions(blueprint.getId());
-
-			JsonArray versionsArray = gson.fromJson(versionsJSON, JsonArray.class);
-			JsonArray orderedVersions = getVersionsInCorrectOrder(versionsArray);
-
-			byte[] versionsContent = gson.toJson(orderedVersions).getBytes();
-			logger.debug("Creating content file " + contentFileName);
-			try {
-				logger.debug("Created file: {}", Files.write(Paths.get(versionsFileName), versionsContent, StandardOpenOption.CREATE));
-			} catch (Exception e) {
-				System.out.println(e);
-			}
-		}
 	}
 
 	/* ==============
@@ -262,38 +245,14 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		}
 
 		// Importing blueprint versions
-		File versionsFile = new File(Paths.get(bpDir.getPath(), BP_VERSIONS_FILE_NAME).toString());
-		// In case the client decides not to keep versions of the blueprints (IAC-567)
-		if (versionsFile.exists()) {
-			String bpVersions = readFileToString(versionsFile);
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			JsonArray versionsJson = gson.fromJson(bpVersions, JsonArray.class).getAsJsonArray();
-			versionsJson = this.getVersionsInCorrectOrder(versionsJson);
-			for (int i = 0; i < versionsJson.size(); i++) {
-				restClient.importBlueprintVersion(bpID, versionsJson.get(i).getAsJsonObject());
-				// Sleep so versions can be ordered correctly. Milliseconds parsing in JAVA is not very good, so we are
-				// forcing a one second difference between versions
-				try {
-					TimeUnit.SECONDS.sleep(1L);
-				} catch (InterruptedException ignored) {}
-			}
-
-			if (existingRecord != null) {
-				// If the blueprint has already been released at least once a next release
-				// version will be attempted to be created.
-				// ReleaseManager performs a diff check against the latest released version and
-				// will prevent the release if there are no differences in the content.
-				if (config.getBlueprintRelease() && this.restClient.isBlueprintReleased(bpID)) {
-					logger.info("Blueprint {} has already been released. Attempting to release a new version...", bpName);
-					VraNgReleaseManager releaseManager = new VraNgReleaseManager(this.restClient);
-					releaseManager.releaseNextVersion(bp);
-				}
-			}
-		} else {
-			// Since there is no versions file we just release the blueprint.
-			VraNgReleaseManager releaseManager = new VraNgReleaseManager(this.restClient);
-			releaseManager.releaseNextVersion(bp);
-		}
+		VraNgReleaseManager releaseManager = new VraNgReleaseManager(this.restClient);
+		releaseManager.releaseNextVersion(bp);
+		// Sleep so versions can be ordered correctly. Milliseconds parsing in JAVA is not very good, so we are
+		// forcing a one second difference between versions
+		try {
+			TimeUnit.SECONDS.sleep(1L);
+		} catch (InterruptedException ignored) {}
+		this.unreleaseOldVersions(bp);
 	}
 
 	/* ==============
@@ -350,13 +309,41 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	}
 
 	/**
+	 * A helper method that will unrelease all versions of the blueprint outside of the latest one.
+	 *
+	 * @param blueprint blueprint to unrelease all versions from
+	 * @return orderedVersions
+	 */
+	private void unreleaseOldVersions(VraNgBlueprint blueprint) {
+		String versionsJSON = this.restClient.getBlueprintVersions(blueprint.getId());
+
+		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+		JsonArray versionsArray = gson.fromJson(versionsJSON, JsonArray.class);
+
+		// Order the array, since id may be not in order... (due to previous Aria versions, use createdAt as a source of order)
+		versionsArray = this.getVersionsInCorrectOrder(versionsArray);
+
+		// Remove the latest one, we don't want to unrelease that one
+		versionsArray.remove(versionsArray.size() - 1);
+
+		try {
+			versionsArray.forEach(version -> {
+				logger.debug("Unreleasing version: %s", version.getAsJsonObject().get("id").getAsString());
+				this.restClient.unreleaseBlueprintVersion(blueprint.getId(), version.getAsJsonObject().get("id").getAsString());
+			});
+		} catch (NullPointerException npe) {
+			logger.error("There was an error while processingv versions: %s", npe);
+		}
+	}
+
+	/**
 	 * A helper method that will order the versions JsonArray returned by id, so when importing they are imported in the correct order
 	 * and when importing or creating a new version no errors are thrown.
 	 *
 	 * @param versionsArray versions
 	 * @return orderedVersions
 	 */
-	protected JsonArray getVersionsInCorrectOrder(JsonArray versionsArray) {
+	private JsonArray getVersionsInCorrectOrder(JsonArray versionsArray) {
 		// Create an ArrayList from the JsonArray, so we can compare the elements via Collections
 		ArrayList<JsonElement> newList = new ArrayList<>();
 		JsonArray orderedVersions = new JsonArray();

@@ -252,7 +252,22 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			this.releaseBlueprintVersionPrimitive(blueprintId, version);
 		} catch (URISyntaxException e) {
-			logger.error("Could not release blueprint {}", blueprintId);
+			logger.error("Could not release blueprint version {}", blueprintId);
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * releaseBlueprintVersion.
+	 *
+	 * @param blueprintId
+	 * @param version
+	 */
+	public void unreleaseBlueprintVersion(final String blueprintId, final String versionId) {
+		try {
+			this.unreleaseBlueprintVersionPrimitive(blueprintId, versionId);
+		} catch (URISyntaxException e) {
+			logger.error("Could not unrelease blueprint version {}:{}", blueprintId, versionId);
 			throw new RuntimeException(e);
 		}
 	}

@@ -122,6 +122,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private static final String SERVICE_BLUEPRINT_VERSIONS = "/versions";
 	/**
+	 * SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION.
+	 */
+	private static final String SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION = "/actions/unrelease";
+	/**
 	 * SERVICE_SUBSCRIPTION.
 	 */
 	private static final String SERVICE_SUBSCRIPTION = "/event-broker/api/subscriptions";
@@ -593,13 +597,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Returns the raw string content of a blueprint version details API call.
 	 *
+	 * !!!This will fail if there are more than 1000 blueprints.!!!
+	 * 
 	 * @param blueprintId blueprintId
 	 * @return String
 	 */
 	public String getBlueprintVersionsContent(final String blueprintId) {
 		URI url = getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
-				.addParameter("$top", "1000"));
+				.addParameter("$top", "1000")
+				.addParameter("orderBy", "createdAt DESC"));
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -654,6 +661,25 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		String jsonBody = this.getJsonString(map);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+	}
+
+	/**
+	 * Unrelease Blueprint Version.
+	 *
+	 * @param blueprintId Blueprint ID
+	 * @param version     Blueprint versionId
+	 */
+	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId)
+			throws URISyntaxException {
+		URI url = getURI(getURIBuilder()
+				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + versionId + "/" +SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
+	
+		try {
+			this.postJsonPrimitive(url, HttpMethod.POST, "");
+		} catch (HttpClientErrorException e) {
+			throw new RuntimeException(
+					String.format("Error ocurred during when unreleasing version %s for blueprint %s. Message: %s", versionId, blueprintId, e.getMessage()));
+		}
 	}
 
 	/**
