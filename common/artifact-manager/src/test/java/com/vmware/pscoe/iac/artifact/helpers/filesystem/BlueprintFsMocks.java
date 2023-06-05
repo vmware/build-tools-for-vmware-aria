@@ -36,24 +36,16 @@ public class BlueprintFsMocks extends VraNgFsMock {
 		return Paths.get(this.tempDir.getPath(), WORKDIR).toFile();
 	}
 
-	/**
-	 * @param blueprint
-	 * @see BlueprintFsMocks#addBlueprint(VraNgBlueprint, String)
-	 */
-	public void addBlueprint(VraNgBlueprint blueprint) {
-		this.addBlueprint(blueprint, null);
-	}
 
 	/**
 	 * JSON encodes a blueprint and adds it to the blueprints directory.
 	 * This will also create the content.yaml based on the blueprint and alternatively accepts a versions' data containing
 	 * information about the versions.
 	 *
-	 * @see    com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintVersionsMockBuilder
 	 * @param    blueprint - The blueprint to store
 	 * @param    versionsData - A string containing the versioning data
 	 */
-	public void addBlueprint(VraNgBlueprint blueprint, String versionsData) {
+	public void addBlueprint(VraNgBlueprint blueprint) {
 		File blueprintFolder = Paths.get(this.getWorkdir().getAbsolutePath(),
 			blueprint.getName()).toFile();
 
@@ -73,11 +65,6 @@ public class BlueprintFsMocks extends VraNgFsMock {
 			"details.json"
 		).toFile();
 
-		File blueprintVersions = Paths.get(
-			blueprintFolder.getAbsolutePath(),
-			"versions.json"
-		).toFile();
-
 		JsonObject bpDetails = new JsonObject();
 		bpDetails.add("id", new JsonPrimitive(blueprint.getId()));
 		bpDetails.add("name", new JsonPrimitive(blueprint.getName()));
@@ -94,12 +81,5 @@ public class BlueprintFsMocks extends VraNgFsMock {
 			Paths.get(blueprintDetails.getPath()),
 			gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class)).getBytes()
 		);
-
-		if ( versionsData != null ){
-			writeFileToPath(
-				Paths.get(blueprintVersions.getPath()),
-				versionsData.getBytes()
-			);
-		}
 	}
 }

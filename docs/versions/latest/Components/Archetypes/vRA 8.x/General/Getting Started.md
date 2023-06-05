@@ -105,21 +105,14 @@ The following need to be added to the profile that you intend to use:
     <vrang.org.id>{organization+id}</vrang.org.id>
     <vrang.org.name>{org+name}</vrang.org.name>
     <vrang.refresh.token>{refresh+token}</vrang.refresh.token>
-    <vrang.bp.ignore.versions>true|false</bp.ignore.versions>
-    <vrang.bp.release>true|false</vrang.bp.release>
+    <vrang.bp.unrelease.versions>true|false</vrang.bp.unrelease.versions>
     <vrang.vro.integration>{vro+integration+name}</vrang.vro.integration>
 </profile>
 ```
 * `vrang.refresh.token` - will use the given refresh token instead of credentials. **Note:** this will take precedence over
 credentials.
 
-* `vrang.bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section
-  below). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true`
-  in order to avoid unnecessary blueprint versions.
-
-* `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section
-  below). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
-  in order to avoid unnecessary blueprint versions.
+* `vrang.bp.unrelease.versions` - Defaults to `true`. Controls whether old versions of a blueprint sould be unreleased.
 
 * `vrang.data.collection.delay.seconds` - Delay in seconds to wait for vRA data collection to pass before importing data. Can also be passed
   as an interactive parameter `-Dvrang.data.collection.delay.seconds=600`. useful when Dynamic types and custom resources are used in the projects and vRO content is imported,

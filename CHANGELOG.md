@@ -1,3 +1,7 @@
+### Enhancements
+* [artifact-manager] 104 / Deprecated Cloud Template Versioning
+
+
 ## v2.33.0 - 02 Jun 2023
 
 ### Fixes

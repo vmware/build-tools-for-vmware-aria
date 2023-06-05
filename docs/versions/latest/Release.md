@@ -12,9 +12,10 @@
 
 
 ## Deprecations
-[//]: # (### *Deprecation*)
-[//]: # (Explain what is deprecated and suggest alternatives)
 
+### *Cloud Template Versioning*
+
+Cloud template no longer supports versioning. There are no alternatives.
 
 
 [//]: # (Features -> New Functionality)
@@ -28,21 +29,34 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
 
+
+### *Deprecated Cloud Template Versioning* 
+Cloud templates used to have versioning information attached to them but it served little purpose, as it was metadata and they were not real versions.
+
+#### Previous Behavior
+- Cloud Templates would be released only if there was a change
+	- this was configurable with a flag, whether we should always realese or not
+- Versions were being saved locally
+- Version metadata was pushed when the blueprint was released.
+
+#### New Behavior
+- Cloud Templates would be released only if there was a change
+	- Not configurable
+- Versions are not stored locally
+- Older versions of the cloud template are unreleased
+	- Configurable with a new flag "vrang.bp.unrelease.versions" (Defaults to true)
+
+#### Relevant Documentation:
+
+- [Getting Started](./Components/Archetypes/vRA%208.x/General/Getting%20Started.md)
 
 
 ## Upgrade procedure:
-[//]: # (Explain in details if something needs to be done)
+
+### Deprecated Cloud Template Versioning
+
+1. Remove flags if used "vrang.bp.release", "vrang.bp.ignore.versions"
 
 [//]: # (## Changelog:)
 [//]: # (Pull request links)

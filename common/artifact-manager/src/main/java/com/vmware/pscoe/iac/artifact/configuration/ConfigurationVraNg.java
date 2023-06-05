@@ -19,6 +19,8 @@ import java.util.Properties;
 
 import org.apache.http.HttpHost;
 import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
@@ -32,13 +34,12 @@ public class ConfigurationVraNg extends Configuration {
     public static final String ORGANIZATION_ID = "org.id";
     public static final String ORGANIZATION_NAME = "org.name";
     public static final String REFRESH_TOKEN = "refresh.token";
-    public static final String BLUEPRINT_RELEASE = "bp.release";
     public static final String IMPORT_TIMEOUT = "import.timeout"; // in miliseconds
     public static final String VRO_INTEGRATION = "vro.integration";
     public static final String PROXY = "proxy";
     public static final String PROXY_REQUIRED = "proxy.required";
     public static final String CLOUD_PROXY_NAME = "cloud.proxy.name";
-    public static final String IGNORE_BLUEPRINT_VERSIONS = "bp.ignore.versions";
+    public static final String UNRELEASE_BLUEPRINT_VERSIONS = "bp.unrelease.versions";
 
     public static final Integer DEFAULT_IMPORT_TIMEOUT = 6000; // in miliseconds
 
@@ -46,9 +47,11 @@ public class ConfigurationVraNg extends Configuration {
      * vRA Package Import content conflict resolution mode
      */
     public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
+	protected Logger logger;
 
     protected ConfigurationVraNg(Properties props) {
         super(PackageType.VRANG, props);
+		this.logger = LoggerFactory.getLogger(this.getClass());
     }
 
     protected ConfigurationVraNg(PackageType pkgType, Properties props) {
@@ -119,12 +122,8 @@ public class ConfigurationVraNg extends Configuration {
         return HttpHost.create(proxy);
     }
 
-    public boolean getBlueprintRelease() {
-        return Boolean.parseBoolean(this.properties.getProperty(BLUEPRINT_RELEASE, "true"));
-    }
-
-    public boolean getIgnoreBlueprintVersions() {
-        return Boolean.parseBoolean(this.properties.getProperty(IGNORE_BLUEPRINT_VERSIONS, "false"));
+    public boolean getUnreleaseBlueprintVersions() {
+        return Boolean.parseBoolean(this.properties.getProperty(UNRELEASE_BLUEPRINT_VERSIONS, "true"));
     }
 
     @Override
@@ -155,14 +154,21 @@ public class ConfigurationVraNg extends Configuration {
             message.append("Refresh token or Username ");
         }
 
-        if(StringUtils.isEmpty(getIgnoreBlueprintVersions())) {
-            message.append("Should blueprint versioning be ignored ");
-        }
-
         if (message.length() != 0) {
             throw new ConfigurationException("Configuration validation failed: Empty " + message);
         }
     }
+
+	public void deprecationWarnings() {
+		String[] deprecatedFlags = new String[]{
+			"bp.ignore.versions",
+			"details.json"
+		};
+
+		for (String flag: deprecatedFlags) {
+			this.logger.warn("%s has been deprecated, it is ignored. Consult the releases %s for more information", flag, "https://github.com/vmware/build-tools-for-vmware-aria/releases");
+		}
+	}
 
     public static ConfigurationVraNg fromProperties(Properties props) throws ConfigurationException {
         ConfigurationVraNg config = new ConfigurationVraNg(props);

@@ -247,12 +247,15 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		// Importing blueprint versions
 		VraNgReleaseManager releaseManager = new VraNgReleaseManager(this.restClient);
 		releaseManager.releaseNextVersion(bp);
-		// Sleep so versions can be ordered correctly. Milliseconds parsing in JAVA is not very good, so we are
-		// forcing a one second difference between versions
-		try {
-			TimeUnit.SECONDS.sleep(1L);
-		} catch (InterruptedException ignored) {}
-		this.unreleaseOldVersions(bp);
+		if(this.config.getUnreleaseBlueprintVersions()){
+			// Sleep so versions can be ordered correctly. Milliseconds parsing in JAVA is not very good, so we are
+			// forcing a one second difference between versions
+			try {
+				TimeUnit.SECONDS.sleep(1L);
+			} catch (InterruptedException ignored) {}
+
+			this.unreleaseOldVersions(bp);
+		}
 	}
 
 	/* ==============
