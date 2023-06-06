@@ -38,6 +38,7 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+[//]: # (declared a new type cVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo) 
 
 
 
@@ -45,8 +46,3 @@
 [//]: # (Explain in details if something needs to be done)
 [//]: # (## Changelog:)
 [//]: # (Pull request links)
-
-
-
-## Improvements
-[//]: # (declared a new type cVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo) 
