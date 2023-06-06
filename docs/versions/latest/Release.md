@@ -46,7 +46,7 @@ The underlying cause was that the directory in which the data is exported didn't
 When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
 their metadata files.
 
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog)
