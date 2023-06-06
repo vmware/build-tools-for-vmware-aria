@@ -7,7 +7,15 @@
 ## Improvements
 
 ### Fixed pulling of vROps dashboards as managed content
+#### Previous Behaviour XMLManager
 
+When pulling a list of vROps dashboards defined in the content.yaml, the automation was failing with a hidden error message.
+The underlying cause was that the directory in which the data is exported didn't exist and wasn't created by the automation.
+
+#### New Behaviour XMLManager
+
+When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
+their metadata files.
 ### fix XMLManager definition
 
 XMLManager is a class with static methods
