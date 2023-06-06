@@ -13,6 +13,5 @@
 		"titleBar.inactiveForeground": "#15202b99"
 	},
     "peacock.color": "#8e9b78",
-	"git.alwaysSignOff": true,
-	"vrdev.maven.profile": "qcri"
+	"git.alwaysSignOff": true
 }
