@@ -46,3 +46,8 @@
 
 [//]: # (## Changelog:)
 [//]: # (Pull request links)
+
+
+
+## Improvements
+[//]: # (declared a new type cVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo) 
