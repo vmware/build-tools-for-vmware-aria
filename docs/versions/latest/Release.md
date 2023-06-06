@@ -39,7 +39,15 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Fixed pulling of vROps dashboards as managed content
+#### Previous Behaviour
 
+When pulling a list of vROps dashboards defined in the content.yaml, the automation was failing with a hidden error message.
+The underlying cause was that the directory in which the data is exported didn't exist and wasn't created by the automation.
+#### New Behaviour
+
+When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
+their metadata files.
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
