@@ -1,0 +1,15 @@
+# Structure
+
+    Usage -  no tooling setup [@NV]
+        General landing page - maven archetype 
+        segregated by Product
+            available configs in settings.xml. Ex: <vro.host>vra-l-01a.corp.local</vro.host>
+            available configs for the package installer
+            new project creation - the mvn command
+                rearrange/optimize the properties of the mvn command - static and user inputs
+            project structure and file specifics - polyglot, content.yml, vRA, vROps
+            Usage - pull, push, clean?
+            No testing info
+            Content parameters - TS WF params and etc.
+        How to create create multi-module project
+        Installer - general
