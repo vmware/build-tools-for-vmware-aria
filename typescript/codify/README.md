@@ -47,7 +47,7 @@ The following prerequisites are needed for ABX bundle development (Python and Po
 
 ```sh
 # Install Codify globally
-npm install -g @build-tools-for-vmware-aria/codify
+npm install -g @vmw/build-tools-for-vmware-aria-codify
 
 # Verify Codify is installed
 codify --version

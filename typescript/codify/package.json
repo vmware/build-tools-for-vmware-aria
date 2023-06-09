@@ -1,5 +1,5 @@
 {
-	"name": "@build-tools-for-vmware-aria/codify",
+	"name": "@vmw/build-tools-for-vmware-aria-codify",
 	"version": "2.32.1-SNAPSHOT",
 	"description": "This is an experimental project for codifying vRealize content defined in source files.",
 	"main": "dist/index.js",

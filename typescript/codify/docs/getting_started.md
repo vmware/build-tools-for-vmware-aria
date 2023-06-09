@@ -18,7 +18,7 @@ In this tutorial we will install Codify from Artifactory and validate that it pr
 
 ```sh
 # Install Codify
-npm install -g @build-tools-for-vmware-aria/codify
+npm install -g @vmw/build-tools-for-vmware-aria-codify
 
 # Verify that Codify is installed
 codify --version
