@@ -51,7 +51,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 * Static properties
 	 ============================ */
 
-	/**
+	/*
 	 * Files representing the blueprint definition and it's versions details.
 	 */
 	private static final String BP_DETAILS_FILE_NAME = "details.json";

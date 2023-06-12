@@ -72,7 +72,7 @@ public class RestClientVraPrimitive extends RestClient {
 	private final Logger logger = LoggerFactory.getLogger(RestClientVraPrimitive.class);
 
 	/*
-	 * Declare constants.
+	 * Declare service definition constants.
 	 */
 	private final String SERVICE_CONTENT = "/content-management-service/api/contents";
 	private final String SERVICE_PACKAGE = "/content-management-service/api/packages";
@@ -88,6 +88,9 @@ public class RestClientVraPrimitive extends RestClient {
 	private final String CATALOG_SERVICE = "/catalog-service/api/services";
 	private final String CATALOG_ICON = "/catalog-service/api/icons";
 
+	/*
+	 * private fields.
+	 */
 	private ConfigurationVra configuration;
 	private RestTemplate restTemplate;
 
@@ -303,7 +306,7 @@ public class RestClientVraPrimitive extends RestClient {
 	}
 
 	/**
-	 * get Catalog Service By Name Primitive
+	 * get Catalog Service By Name Primitive.
 	 * @param serviceName service name
 	 * @return services
 	 */
@@ -403,7 +406,7 @@ public class RestClientVraPrimitive extends RestClient {
 		return null;
 	}
 
-	protected void importGlobalPropertyDefinitionPrimitive(String propertyDefinitionName, String jsonBody) throws URISyntaxException {
+	protected void importGlobalPropertyDefinitionPrimitive(final String propertyDefinitionName, String jsonBody) throws URISyntaxException {
 		logger.debug(String.format("Updating Global Property Definition with name '%s'.", propertyDefinitionName));
 
 		Map<String, Object> propertyDefinition = getGlobalPropertyDefinitionByNamePrimitive(propertyDefinitionName);
@@ -441,7 +444,7 @@ public class RestClientVraPrimitive extends RestClient {
 		return result.stream().filter(pg -> pg.get("tenantId") == null).collect(Collectors.toList());
 	}
 
-	protected Map<String, Object> getGlobalPropertyGroupByNamePrimitive(String propertyGroupName) {
+	protected Map<String, Object> getGlobalPropertyGroupByNamePrimitive(final String propertyGroupName) {
 		URIBuilder uriBuilder = getURIBuilder()
 			.setPath(SERVICE_PROPERTY_GROUP)
 			.setParameter("$filter", "label eq '" + propertyGroupName + "'");
