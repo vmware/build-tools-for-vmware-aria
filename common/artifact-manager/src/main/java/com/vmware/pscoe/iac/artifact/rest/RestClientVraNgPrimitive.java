@@ -493,8 +493,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of projects
 	 */
 	protected List<VraNgProject> getProjectsPrimitive() {
-		//URI url = getURI(getURIBuilder().setPath(SERVICE_CLOUD_PROJECT));
-
 		Gson gson = new Gson();
 		List<VraNgProject> projects = this.getTotalElements(SERVICE_CLOUD_PROJECT, new HashMap<>())
 				.stream()
@@ -1059,7 +1057,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			String cloudAccountId = ob.get("id").getAsString();
 			String name = ob.get("name").getAsString();
-			//String orgId = ob.get("orgId").getAsString();
 			String type = ob.get("cloudAccountType").getAsString();
 			JsonElement tagsElement = ob.get("tags");
 			JsonElement linkElement = ob.get("_links");

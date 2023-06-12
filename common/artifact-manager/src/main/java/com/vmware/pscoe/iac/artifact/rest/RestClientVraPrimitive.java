@@ -604,7 +604,7 @@ public class RestClientVraPrimitive extends RestClient {
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
         
-        JsonElement root = JsonParser.parseString(response.getBody());//new JsonParser().parse(response.getBody());
+        JsonElement root = JsonParser.parseString(response.getBody());
         
         List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
 
@@ -624,7 +624,7 @@ public class RestClientVraPrimitive extends RestClient {
     }
     
     private VraPackageContent getPackageContentPrimitive(String packageImportedResponse) {
-        JsonElement root = JsonParser.parseString(packageImportedResponse);//new JsonParser().parse(packageImportedResponse);
+        JsonElement root = JsonParser.parseString(packageImportedResponse);
         
         List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
 

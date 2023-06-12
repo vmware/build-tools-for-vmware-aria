@@ -15,7 +15,6 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 
-//import com.google.gson.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -27,9 +26,7 @@ import com.vmware.pscoe.iac.artifact.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFolderFilter;
-
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
@@ -37,15 +34,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-// import java.text.ParseException;
-// import java.text.SimpleDateFormat;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-//import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
