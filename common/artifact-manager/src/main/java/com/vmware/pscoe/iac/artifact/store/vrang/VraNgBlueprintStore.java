@@ -24,9 +24,9 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFolderFilter;
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
+import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_BLUEPRINTS;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
@@ -56,14 +56,13 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 */
 	private static final String BP_DETAILS_FILE_NAME = "details.json";
 	private static final String BP_CONTENT_FILE_NAME = "content.yaml";
-	//private static final String BP_VERSIONS_FILE_NAME = "versions.json";
 
 	/* ============================
 	 * Publicly available interface
 	 ============================ */
 
 	/**
-	 * Importing content into vRA target environment
+	 * Importing content into vRA target environment.
 	 *
 	 * @param sourceDirectory target path
 	 */
