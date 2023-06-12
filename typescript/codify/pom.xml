@@ -15,7 +15,7 @@
     <artifactId>codify</artifactId>
 
     <properties>
-        <attachFileName>build-tools-for-vmware-aria-codify-${project.version}.tgz</attachFileName>
+        <attachFileName>vmw-build-tools-for-vmware-aria-codify-${project.version}.tgz</attachFileName>
         <main.basedir>${project.parent.parent.basedir}</main.basedir>
     </properties>
 
