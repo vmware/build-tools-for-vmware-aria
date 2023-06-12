@@ -1,4 +1,12 @@
 ### Fixes
+
+* [actions-package] github issue# 73 is addressed. Solution is to replace line breaks in description by space character
+
+* [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
+
+## v2.33.0 - 02 Jun 2023
+
+### Fixes
 * [vrotest] IAC-777 / Package Build Failing - typescript folder build error due to forcing of newer version of the terser devDependency
 
 * [maven-plugins] IAC-706 / Package Build Failing - Typescript transpilation failed since Command line is too long

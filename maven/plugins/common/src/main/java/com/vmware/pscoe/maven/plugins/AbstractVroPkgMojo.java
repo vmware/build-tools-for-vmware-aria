@@ -1,20 +1,5 @@
 package com.vmware.pscoe.maven.plugins;
 
-/*
- * #%L
- * common
- * %%
- * Copyright (C) 2023 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
-
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -25,20 +10,50 @@ import org.apache.maven.project.MavenProject;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/**
+ * #%L
+ * common.
+ * %%
+ * Copyright (C) 2023 VMware.
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ *
+ *  This class is responsible for calling vropkgcmd.
+ */
 public abstract class AbstractVroPkgMojo extends AbstractMojo {
-
+	/**
+	 * Keeps a handle to the pom.xml.
+	 */
 	@Parameter(defaultValue = "${project}")
 	protected MavenProject project;
 
+	/**
+	* private key to keystore.
+	*/
 	@Parameter(property = "vroPrivateKeyPem", defaultValue = "")
 	private String privateKeyPem;
 
+	/**
+	* Certificate of keystore.
+	*/
 	@Parameter(property = "vroCertificatePem", defaultValue = "")
 	private String keystoreCert;
 
+	/**
+	 *  password to keystore.
+	 */
 	@Parameter(property = "vroKeyPass", defaultValue = "")
 	private String keystorePassword;
 
+	/**
+	 * Description provided in pom.xml.
+	 */
 	private String description;
 
 	private void validateVroPkgParams() {
@@ -52,11 +67,11 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 			throw new IllegalArgumentException("keystorePassword must be provided.");
 		}
 
-		if (project.getDescription() == null) {
-			this.description = "";
-		} else {
-			this.description = project.getDescription();
+		String descStr = "";
+		if (project.getDescription() != null) {
+			descStr = project.getDescription();
 		}
+		this.description = descStr.replaceAll("\\R", " ");
 
 		if (project.getVersion() == null || project.getVersion() == "" || project.getVersion().trim() == "") {
 			throw new IllegalArgumentException("Project version is missing.");
@@ -75,7 +90,14 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 		}
 	}
 
-	protected void runVroPkg(String srcType, String srcPath, String destType, String destPath)
+	/**
+	 * Responsible for creating a virtual vroPkg cmd file and executing it.
+	 * @param srcType The type of source
+	 * @param srcPath The path to source
+	 * @param destType The type of destination
+	 * @param destPath The path to destination
+	 */
+	protected void runVroPkg(final String srcType, final String srcPath, final String destType, final String destPath)
 			throws MojoExecutionException, MojoFailureException {
 
 		this.validateVroPkgParams();
