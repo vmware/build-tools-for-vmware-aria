@@ -26,7 +26,9 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationVraNg extends Configuration {
 
-    // Important - when modify properties refer to comments in @Configuration
+    /*
+	* Important - when modify properties refer to comments in @Configuration.
+	*/
     public static final String CSP_HOST = "csp.host";
     public static final String PROJECT_ID = "project.id";
     public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
@@ -44,7 +46,7 @@ public class ConfigurationVraNg extends Configuration {
     public static final Integer DEFAULT_IMPORT_TIMEOUT = 6000; // in miliseconds
 
     /**
-     * vRA Package Import content conflict resolution mode
+     * vRA Package Import content conflict resolution mode.
      */
     public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
 	protected Logger logger;

@@ -241,7 +241,7 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 	 * @param vraPackage the package to export
 	 * @param vraPackageDescriptorFile the descriptor of the package to export
 	 * @param dryrun whether it should be dry run
-	 * @return
+	 * @return exported package
 	 */
 	@Override
 	public final Package exportPackage(final Package vraPackage, final File vraPackageDescriptorFile, final boolean dryrun) {

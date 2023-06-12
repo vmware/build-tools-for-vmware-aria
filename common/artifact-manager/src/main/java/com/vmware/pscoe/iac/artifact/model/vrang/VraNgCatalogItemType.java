@@ -24,24 +24,24 @@ public class VraNgCatalogItemType {
 	/**
 	 * link.
 	 */
-	private String link;
+	//private String link;
 
 	/**
 	 * name.
 	 */
-	private String name;
+	//private String name;
 
 	/**
 	 * VraNgCatalogItemType constructor.
 	 * 
-	 * @param idIn
-	 * @param linkIn
-	 * @param nameIn
+	 * @param idIn vra-ng content source type id value
+	 * @param linkIn link value
+	 * @param nameIn name value
 	 */
 	public VraNgCatalogItemType(final VraNgContentSourceType idIn, final String linkIn, final String nameIn) {
 		this.id = idIn;
-		this.link = linkIn;
-		this.name = nameIn;
+		//this.link = linkIn;
+		//this.name = nameIn;
 	}
 
 	/**

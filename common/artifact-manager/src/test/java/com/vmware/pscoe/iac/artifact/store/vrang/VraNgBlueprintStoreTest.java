@@ -15,45 +15,53 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintMockBuilder;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
-
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
+ import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+ import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+ import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintMockBuilder;
+ import com.vmware.pscoe.iac.artifact.model.Package;
+ import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+ import com.vmware.pscoe.iac.artifact.model.PackageType;
+ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+ import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+ 
+ import org.junit.Rule;
+ import org.junit.jupiter.api.AfterEach;
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+ import org.junit.rules.TemporaryFolder;
+ import org.mockito.Mockito;
+ 
+ import java.io.IOException;
+ import java.text.ParseException;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+ import static org.junit.Assert.assertEquals;
+ import static org.junit.Assert.assertThrows;
+ 
+ import static org.mockito.Mockito.when;
+ import static org.mockito.Mockito.never;
+ import static org.mockito.Mockito.verify;
+ import static org.mockito.Mockito.times;
+ import static org.mockito.Mockito.any;
+ import static org.mockito.Mockito.anyString;
 
 /**
  * NOTE: This does not test duplicate names from one content source, since the Store is not responsible for that kind of logic.
  */
 public class VraNgBlueprintStoreTest {
 
+	/*
+	 * Intialize TemporaryFolder class.
+	 */
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
+	/*
+	 * Define variables
+	 */
 	protected VraNgBlueprintStore store;
 	protected RestClientVraNg restClient;
 	protected Package pkg;
@@ -122,7 +130,7 @@ public class VraNgBlueprintStoreTest {
 		store.exportContent();
 
 		String[] expectedBlueprints = {"ngnix"};
-		String[] expectedBlueprintFiles = {"content.yaml","details.json"};
+		String[] expectedBlueprintFiles = {"content.yaml", "details.json"};
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedBlueprints);
@@ -149,7 +157,7 @@ public class VraNgBlueprintStoreTest {
 		store.exportContent();
 
 		String[] expectedBlueprints = {"ngnix"};
-		String[] expectedBlueprintFiles = {"content.yaml","details.json"};
+		String[] expectedBlueprintFiles = {"content.yaml", "details.json"};
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedBlueprints);

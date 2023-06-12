@@ -25,8 +25,14 @@ import java.io.File;
 import java.nio.file.Paths;
 
 public class BlueprintFsMocks extends VraNgFsMock {
+	/*
+	 * WORKDIR is defined with value- blueprints
+	 */
 	private final static String WORKDIR = "blueprints";
 
+	/*
+	 * Contructor to initialize base class
+	 */
 	public BlueprintFsMocks(File tempDir) {
 		super(tempDir);
 	}
@@ -43,9 +49,8 @@ public class BlueprintFsMocks extends VraNgFsMock {
 	 * information about the versions.
 	 *
 	 * @param    blueprint - The blueprint to store
-	 * @param    versionsData - A string containing the versioning data
 	 */
-	public void addBlueprint(VraNgBlueprint blueprint) {
+	public void addBlueprint(final VraNgBlueprint blueprint) {
 		File blueprintFolder = Paths.get(this.getWorkdir().getAbsolutePath(),
 			blueprint.getName()).toFile();
 

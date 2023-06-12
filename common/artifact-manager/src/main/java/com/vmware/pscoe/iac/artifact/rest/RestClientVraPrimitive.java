@@ -70,7 +70,6 @@ public class RestClientVraPrimitive extends RestClient {
 
 	private final String SERVICE_CONTENT = "/content-management-service/api/contents";
 	private final String SERVICE_PACKAGE = "/content-management-service/api/packages";
-	// TODO rename it
 	private final String BLUEPRINT_PACKAGE = "/composition-service/api/blueprints";
 	
 	private final String SERVICE_PROPERETY_DEFINITION = "/properties-service/api/propertydefinitions";
@@ -605,7 +604,7 @@ public class RestClientVraPrimitive extends RestClient {
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
         
-        JsonElement root = new JsonParser().parse(response.getBody());
+        JsonElement root = JsonParser.parseString(response.getBody());//new JsonParser().parse(response.getBody());
         
         List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
 
@@ -625,7 +624,7 @@ public class RestClientVraPrimitive extends RestClient {
     }
     
     private VraPackageContent getPackageContentPrimitive(String packageImportedResponse) {
-        JsonElement root = new JsonParser().parse(packageImportedResponse);
+        JsonElement root = JsonParser.parseString(packageImportedResponse);//new JsonParser().parse(packageImportedResponse);
         
         List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
 
