@@ -1420,7 +1420,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * getCatalogItemVersionsPrimitive.
 	 *
-	 * @param sourceId
+	 * @param sourceId source id
 	 * @return catalogItemVersions JsonArray
 	 */
 	protected JsonArray getCatalogItemVersionsPrimitive(final String sourceId) {
@@ -1443,9 +1443,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * fetchRequestFormPrimitive.
 	 *
-	 * @param sourceType
-	 * @param sourceId
-	 * @param formId
+	 * @param sourceType source type
+	 * @param sourceId source id
+	 * @param formId form id
 	 * @return customForm VraNgCustomForm
 	 */
 	protected VraNgCustomForm fetchRequestFormPrimitive(final String sourceType, final String sourceId,
@@ -2915,7 +2915,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * isVraAbove.
 	 *
-	 * @param target
+	 * @param target target version
 	 * @return isIt boolean
 	 */
 	public boolean isVraAbove(final Version target) {
@@ -2974,7 +2974,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve content sharing policy based on Id.
 	 * 
-	 * @param policyId
+	 * @param policyId policy id
 	 * @return Created VraNg Content Sharing Policy
 	 */
 	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(final String policyId) {
@@ -3043,7 +3043,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * handleItemsProperty.
 	 * 
-	 * @param csPolicyJsonObject
+	 * @param csPolicyJsonObject cs policy json
 	 */
 	public void handleItemsProperty(final JsonObject csPolicyJsonObject) {
 		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");

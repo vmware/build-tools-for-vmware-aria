@@ -65,8 +65,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * Constructor for RestClientVraNg.
 	 * 
-	 * @param configuration
-	 * @param restTemplate
+	 * @param configuration configuration vra
+	 * @param restTemplate rest template
 	 */
 	protected RestClientVraNg(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
 		super(configuration, restTemplate);
