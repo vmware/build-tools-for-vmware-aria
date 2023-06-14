@@ -1,5 +1,5 @@
 /**
- * Package that Configurations of vRealize Suite
+ * Package that Configurations of vRealize Suite.
  *
  */
 package com.vmware.pscoe.iac.artifact.configuration;

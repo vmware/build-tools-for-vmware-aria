@@ -66,7 +66,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class RestClientVraPrimitive extends RestClient {
 
-	/*
+	/**
 	 * Initialize logger.
 	 * 
 	 * @param logger

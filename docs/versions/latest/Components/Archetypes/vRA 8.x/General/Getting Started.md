@@ -89,7 +89,7 @@ Content Descriptor is implemented by content.yaml file with the following defaul
 ### Configuring ~/.m2/settings.xml to work with vRA-NG
 
 The following need to be added to the profile that you intend to use:
-```xml
+~~~xml
  <!--            VRA-NG    -->
 <profile>
 <!--    ..... OTHER DIRECTIVES .....  -->
@@ -108,7 +108,7 @@ The following need to be added to the profile that you intend to use:
     <vrang.bp.unrelease.versions>true|false</vrang.bp.unrelease.versions>
     <vrang.vro.integration>{vro+integration+name}</vrang.vro.integration>
 </profile>
-```
+~~~
 - `vrang.refresh.token` - will use the given refresh token instead of credentials. **Note:** this will take precedence over
 credentials.
 

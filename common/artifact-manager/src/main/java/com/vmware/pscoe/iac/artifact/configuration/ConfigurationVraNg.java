@@ -24,11 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
- /*
+/**
 * Important - when modify properties refer to comments in @Configuration.
 */
 public class ConfigurationVraNg extends Configuration {
-
 
 	/**
 	 * @param CSP_HOST
@@ -97,7 +96,7 @@ public class ConfigurationVraNg extends Configuration {
 	/**
 	 * @param logger
 	 */
-	protected Logger logger;
+	private final Logger logger;
 
     protected ConfigurationVraNg(Properties props) {
         super(PackageType.VRANG, props);
@@ -106,6 +105,7 @@ public class ConfigurationVraNg extends Configuration {
 
     protected ConfigurationVraNg(PackageType pkgType, Properties props) {
         super(pkgType, props);
+		this.logger = LoggerFactory.getLogger(this.getClass());
     }
 
     
@@ -266,10 +266,13 @@ public class ConfigurationVraNg extends Configuration {
         }
     }
 
+	/**
+	 * Shows deprecation warnings for different flags
+	 */
 	public void deprecationWarnings() {
 		String[] deprecatedFlags = new String[]{
 			"bp.ignore.versions",
-			"details.json"
+			"bp.release"
 		};
 
 		for (String flag: deprecatedFlags) {
