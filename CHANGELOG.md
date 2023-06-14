@@ -1,6 +1,8 @@
 ### Enhancements
 * [artifact-manager] 104 / Deprecated Cloud Template Versioning
 
+### Fixes
+* [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
 
 ## v2.33.0 - 02 Jun 2023
 

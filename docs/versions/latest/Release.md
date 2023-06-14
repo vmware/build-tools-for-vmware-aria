@@ -10,13 +10,11 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
-
 ## Deprecations
 
 ### *Cloud Template Versioning*
 
 Cloud template no longer supports versioning. There are no alternatives.
-
 
 [//]: # (Features -> New Functionality)
 ## Features
@@ -26,21 +24,34 @@ Cloud template no longer supports versioning. There are no alternatives.
 [//]: # (#### Relevant Documentation:)
 
 
-
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Fixed pulling of vROps dashboards as managed content
+
+#### Previous Behaviour
+
+When pulling a list of vROps dashboards defined in the content.yaml, the automation was failing with a hidden error message.
+The underlying cause was that the directory in which the data is exported didn't exist and wasn't created by the automation.
+
+#### New Behaviour
+
+When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
+their metadata files.
 
 ### *Deprecated Cloud Template Versioning* 
+
 Cloud templates used to have versioning information attached to them but it served little purpose, as it was metadata and they were not real versions.
 
 #### Previous Behavior
+
 - Cloud Templates would be released only if there was a change
 	- this was configurable with a flag, whether we should always realese or not
 - Versions were being saved locally
 - Version metadata was pushed when the blueprint was released.
 
 #### New Behavior
+
 - Cloud Templates would be released only if there was a change
 	- Not configurable
 - Versions are not stored locally
@@ -58,5 +69,5 @@ Cloud templates used to have versioning information attached to them but it serv
 
 1. Remove flags if used "vrang.bp.release", "vrang.bp.ignore.versions"
 
-[//]: # (## Changelog:)
+[//]: # (## Changelog)
 [//]: # (Pull request links)
