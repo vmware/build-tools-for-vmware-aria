@@ -28,7 +28,7 @@ public class BlueprintFsMocks extends VraNgFsMock {
 	/*
 	 * WORKDIR is defined with value- blueprints
 	 */
-	private final static String WORKDIR = "blueprints";
+	private static final String WORKDIR = "blueprints";
 
 	/*
 	 * Contructor to initialize base class
@@ -37,6 +37,10 @@ public class BlueprintFsMocks extends VraNgFsMock {
 		super(tempDir);
 	}
 
+	
+	/** 
+	 * @return File
+	 */
 	@Override
 	public File getWorkdir() {
 		return Paths.get(this.tempDir.getPath(), WORKDIR).toFile();

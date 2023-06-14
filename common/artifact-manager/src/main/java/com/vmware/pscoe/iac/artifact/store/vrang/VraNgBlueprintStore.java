@@ -53,12 +53,12 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 
 
 	/**
-	 * The file name where all the details for the BP will be stored
+	 * The file name where all the details for the BP will be stored.
 	 */
 	private static final String BP_DETAILS_FILE_NAME = "details.json";
 
 	/**
-	 * The file name where the raw content of the BP will be stored
+	 * The file name where the raw content of the BP will be stored.
 	 */
 	private static final String BP_CONTENT_FILE_NAME = "content.yaml";
 

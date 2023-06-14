@@ -39,31 +39,31 @@ The underlying cause was that the directory in which the data is exported didn't
 When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
 their metadata files.
 
-### *Deprecated Cloud Template Versioning* 
+### *Deprecated Cloud Template Versioning*
 
 Cloud templates used to have versioning information attached to them but it served little purpose, as it was metadata and they were not real versions.
 
 #### Previous Behavior
 
 - Cloud Templates would be released only if there was a change
-	- this was configurable with a flag, whether we should always realese or not
+  - this was configurable with a flag, whether we should always realese or not
 - Versions were being saved locally
 - Version metadata was pushed when the blueprint was released.
 
 #### New Behavior
 
 - Cloud Templates would be released only if there was a change
-	- Not configurable
+  - Not configurable
 - Versions are not stored locally
 - Older versions of the cloud template are unreleased
-	- Configurable with a new flag "vrang.bp.unrelease.versions" (Defaults to true)
+  - Configurable with a new flag "vrang.bp.unrelease.versions" (Defaults to true)
 
-#### Relevant Documentation:
+#### Relevant Documentation
 
 - [Getting Started](./Components/Archetypes/vRA%208.x/General/Getting%20Started.md)
 
 
-## Upgrade procedure:
+## Upgrade procedure
 
 ### Deprecated Cloud Template Versioning
 

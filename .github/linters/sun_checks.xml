@@ -49,6 +49,12 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<property name="fileNamePattern" value="module\-info\.java$" />
 	</module>
 
+	<!-- Excludes all 'Test.java' files              -->
+	<!-- See https://checkstyle.org/config_filefilters.html -->
+	<module name="BeforeExecutionExclusionFileFilter">
+		<property name="fileNamePattern" value="*Test.java$" />
+	</module>
+
 	<!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
 	<module name="SuppressionFilter">
 		<property name="file" value="${org.checkstyle.sun.suppressionfilter.config}"
@@ -112,7 +118,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="LocalFinalVariableName" />
 		<module name="LocalVariableName" />
 		<module name="MemberName">
-			<property name="format" value="^[a-z][a-zA-Z0-9_]*$"/>
+			<property name="format" value="^[a-zA-Z0-9_]*$"/>
 		</module>
 				
 		<module name="MethodName" />

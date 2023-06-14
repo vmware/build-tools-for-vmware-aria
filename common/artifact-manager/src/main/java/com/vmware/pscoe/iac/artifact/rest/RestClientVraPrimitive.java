@@ -68,6 +68,8 @@ public class RestClientVraPrimitive extends RestClient {
 
 	/*
 	 * Initialize logger.
+	 * 
+	 * @param logger
 	 */
 	private final Logger logger = LoggerFactory.getLogger(RestClientVraPrimitive.class);
 

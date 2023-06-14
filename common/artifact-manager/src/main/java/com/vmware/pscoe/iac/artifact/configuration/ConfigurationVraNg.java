@@ -24,31 +24,79 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
+ /*
+* Important - when modify properties refer to comments in @Configuration.
+*/
 public class ConfigurationVraNg extends Configuration {
 
-    /*
-	* Important - when modify properties refer to comments in @Configuration.
-	*/
-    public static final String CSP_HOST = "csp.host";
-    public static final String PROJECT_ID = "project.id";
-    public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
-    public static final String PROJECT_NAME = "project.name";
-    public static final String ORGANIZATION_ID = "org.id";
-    public static final String ORGANIZATION_NAME = "org.name";
-    public static final String REFRESH_TOKEN = "refresh.token";
-    public static final String IMPORT_TIMEOUT = "import.timeout"; // in miliseconds
-    public static final String VRO_INTEGRATION = "vro.integration";
-    public static final String PROXY = "proxy";
-    public static final String PROXY_REQUIRED = "proxy.required";
-    public static final String CLOUD_PROXY_NAME = "cloud.proxy.name";
-    public static final String UNRELEASE_BLUEPRINT_VERSIONS = "bp.unrelease.versions";
 
-    public static final Integer DEFAULT_IMPORT_TIMEOUT = 6000; // in miliseconds
+	/**
+	 * @param CSP_HOST
+	 */
+    public static final String CSP_HOST = "csp.host";
+	/**
+	 * @param PROJECT_ID
+	 */
+    public static final String PROJECT_ID = "project.id";
+	/**
+	 * @param DATA_COLLECTION_DELAY_SECONDS
+	 */
+    public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
+	/**
+	 * @param PROJECT_NAME
+	 */
+    public static final String PROJECT_NAME = "project.name";
+	/**
+	 * @param ORGANIZATION_ID
+	 */
+    public static final String ORGANIZATION_ID = "org.id";
+	/**
+	 * @param ORGANIZATION_NAME
+	 */
+    public static final String ORGANIZATION_NAME = "org.name";
+	/**
+	 * @param REFRESH_TOKEN
+	 */
+    public static final String REFRESH_TOKEN = "refresh.token";
+	/**
+	 * @param IMPORT_TIMEOUT
+	 */
+    public static final String IMPORT_TIMEOUT = "import.timeout";
+	/**
+	 * @param VRO_INTEGRATION
+	 */
+    public static final String VRO_INTEGRATION = "vro.integration";
+	/**
+	 * @param PROXY
+	 */
+    public static final String PROXY = "proxy";
+	/**
+	 * @param PROXY_REQUIRED
+	 */
+    public static final String PROXY_REQUIRED = "proxy.required";
+	/**
+	 * @param CLOUD_PROXY_NAME
+	 */
+    public static final String CLOUD_PROXY_NAME = "cloud.proxy.name";
+	/**
+	 * @param UNRELEASE_BLUEPRINT_VERSIONS
+	 */
+    public static final String UNRELEASE_BLUEPRINT_VERSIONS = "bp.unrelease.versions";
+	/**
+	 * @param DEFAULT_IMPORT_TIMEOUT
+	 */
+    public static final Integer DEFAULT_IMPORT_TIMEOUT = 6000;
 
     /**
      * vRA Package Import content conflict resolution mode.
+	 * 
+	 * @param PACKAGE_IMPORT_OVERWRITE_MODE
      */
     public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
+
+	/**
+	 * @param logger
+	 */
 	protected Logger logger;
 
     protected ConfigurationVraNg(Properties props) {
@@ -60,11 +108,19 @@ public class ConfigurationVraNg extends Configuration {
         super(pkgType, props);
     }
 
-    public String getPackageImportOverwriteMode() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getPackageImportOverwriteMode() {
         return this.properties.getProperty(PACKAGE_IMPORT_OVERWRITE_MODE, "SKIP,OVERWRITE");
     }
 
-    public String getAuthHost() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getAuthHost() {
         if (this.properties.getProperty(CSP_HOST) == null || this.properties.getProperty(CSP_HOST).isEmpty()) {
             return this.properties.getProperty(HOST);
         } else {
@@ -72,39 +128,75 @@ public class ConfigurationVraNg extends Configuration {
         }
     }
 
-    public String getProjectId() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getProjectId() {
         return this.properties.getProperty(PROJECT_ID);
     }
 
-    public String getDataCollectionDelaySeconds() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getDataCollectionDelaySeconds() {
         return this.properties.getProperty(DATA_COLLECTION_DELAY_SECONDS);
     }
 
-    public String getProjectName() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getProjectName() {
         return this.properties.getProperty(PROJECT_NAME);
     }
 
-    public String getOrgId() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getOrgId() {
         return this.properties.getProperty(ORGANIZATION_ID);
     }
 
-    public String getOrgName() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getOrgName() {
         return this.properties.getProperty(ORGANIZATION_NAME);
     }
 
-    public String getVroIntegration() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getVroIntegration() {
         return this.properties.getProperty(VRO_INTEGRATION);
     }
 
-    public String getRefreshToken() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getRefreshToken() {
         return this.properties.getProperty(REFRESH_TOKEN);
     }
 
-    public String getCloudProxyName() {
+    
+	/** 
+	 * @return String
+	 */
+	public String getCloudProxyName() {
         return this.properties.getProperty(CLOUD_PROXY_NAME);
     }
 
-    public Integer getImportTimeout() {
+    
+	/** 
+	 * @return Integer
+	 */
+	public Integer getImportTimeout() {
         if (StringUtils.isEmpty(this.properties.getProperty(IMPORT_TIMEOUT))) {
             return DEFAULT_IMPORT_TIMEOUT;
         }
@@ -115,7 +207,11 @@ public class ConfigurationVraNg extends Configuration {
         }
     }
 
-    public HttpHost getProxy() {
+    
+	/** 
+	 * @return HttpHost
+	 */
+	public HttpHost getProxy() {
         String proxy = this.properties.getProperty(PROXY);
         if (StringUtils.isEmpty(proxy)) {
             return null;
@@ -124,11 +220,20 @@ public class ConfigurationVraNg extends Configuration {
         return HttpHost.create(proxy);
     }
 
-    public boolean getUnreleaseBlueprintVersions() {
+    
+	/** 
+	 * @return boolean
+	 */
+	public boolean getUnreleaseBlueprintVersions() {
         return Boolean.parseBoolean(this.properties.getProperty(UNRELEASE_BLUEPRINT_VERSIONS, "true"));
     }
 
-    @Override
+    
+	/** 
+	 * @param domainOptional
+	 * @throws ConfigurationException
+	 */
+	@Override
     public void validate(boolean domainOptional) throws ConfigurationException {
         StringBuilder message = new StringBuilder();
 
@@ -172,7 +277,13 @@ public class ConfigurationVraNg extends Configuration {
 		}
 	}
 
-    public static ConfigurationVraNg fromProperties(Properties props) throws ConfigurationException {
+    
+	/** 
+	 * @param props
+	 * @return ConfigurationVraNg
+	 * @throws ConfigurationException
+	 */
+	public static ConfigurationVraNg fromProperties(Properties props) throws ConfigurationException {
         ConfigurationVraNg config = new ConfigurationVraNg(props);
 
         config.validate(false);
