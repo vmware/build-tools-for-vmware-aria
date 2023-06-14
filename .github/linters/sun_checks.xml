@@ -111,7 +111,10 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="ConstantName" />
 		<module name="LocalFinalVariableName" />
 		<module name="LocalVariableName" />
-		<module name="MemberName" />
+		<module name="MemberName">
+			<property name="format" value="^[a-z][a-zA-Z0-9_]*$"/>
+		</module>
+				
 		<module name="MethodName" />
 		<module name="PackageName" />
 		<module name="ParameterName" />
@@ -167,7 +170,10 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<!-- See https://checkstyle.org/config_coding.html -->
 		<module name="EmptyStatement" />
 		<module name="EqualsHashCode" />
-		<module name="HiddenField" />
+		<module name="HiddenField" >
+			<property name="ignoreSetter" value="true" />
+			<property name="ignoreConstructorParameter" value="true" />
+		</module>
 		<module name="IllegalInstantiation" />
 		<module name="InnerAssignment" />
 		<module name="MagicNumber" />
@@ -187,7 +193,8 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<!-- Miscellaneous other checks.                   -->
 		<!-- See https://checkstyle.org/config_misc.html -->
 		<module name="ArrayTypeStyle" />
-		<module name="FinalParameters" />
+		<!-- FinalParameters reports False positives -->
+		<!-- <module name="FinalParameters" /> -->
 		<module name="TodoComment" />
 		<module name="UpperEll" />
 

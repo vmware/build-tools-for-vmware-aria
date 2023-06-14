@@ -71,46 +71,99 @@ public class RestClientVraPrimitive extends RestClient {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(RestClientVraPrimitive.class);
 
-	/*
-	 * Declare service definition constants.
+	/**
+	 * @param SERVICE_CONTENT
 	 */
 	private final String SERVICE_CONTENT = "/content-management-service/api/contents";
+	/**
+	 * @param SERVICE_PACKAGE
+	 */
 	private final String SERVICE_PACKAGE = "/content-management-service/api/packages";
+	/**
+	 * @param SERVICE_CONTENT
+	 */
 	private final String BLUEPRINT_PACKAGE = "/composition-service/api/blueprints";
+	/**
+	 * @param SERVICE_CONTENT
+	 */
 	private final String SERVICE_PROPERETY_DEFINITION = "/properties-service/api/propertydefinitions";
+	/**
+	 * @param SERVICE_PROPERTY_GROUP
+	 */
     private final String SERVICE_PROPERTY_GROUP = "/properties-service/api/propertygroups";
+	/**
+	 * @param SERVICE_XAAS_OPERATION
+	 */
     private final String SERVICE_XAAS_OPERATION = "/advanced-designer-service/api/resourceOperations";
+	/**
+	 * @param SERVICE_XAAS_BLUEPRINT
+	 */
     private final String SERVICE_XAAS_BLUEPRINT = "/advanced-designer-service/api/tenants/%s/blueprints";
+	/**
+	 * @param SERVICE_XAAS_TYPE
+	 */
     private final String SERVICE_XAAS_TYPE = "/advanced-designer-service/api/tenants/%s/types";
+	/**
+	 * @param SERVICE_CONTENT
+	 */
 	private final String SERVICE_SOFTWARE = "/software-service/api/softwarecomponenttypes";
+	/**
+	 * @param SERVICE_WORKFLOW_SUBSCRIPTION
+	 */
 	private final String SERVICE_WORKFLOW_SUBSCRIPTION = "/advanced-designer-service/api/tenants/%s/event-broker/subscriptions";
+	/**
+	 * @param CATALOG_ITEM
+	 */
 	private final String CATALOG_ITEM = "/catalog-service/api/catalogItems";
+	/**
+	 * @param CATALOG_SERVICE
+	 */
 	private final String CATALOG_SERVICE = "/catalog-service/api/services";
+	/**
+	 * @param CATALOG_ICON
+	 */
 	private final String CATALOG_ICON = "/catalog-service/api/icons";
 
-	/*
-	 * private fields.
+	/**
+	 * @param configuration
 	 */
 	private ConfigurationVra configuration;
+
+	/**
+	 * @param restTemplate
+	 */
 	private RestTemplate restTemplate;
 
 	protected RestClientVraPrimitive(final ConfigurationVra configuration, final RestTemplate restTemplate) {
 		this.configuration = configuration;
 		this.restTemplate = restTemplate;
 	}
-	
-    @Override
+    
+	/** 
+	 * @return Configuration
+	 */
+	@Override
     protected Configuration getConfiguration() {
         return this.configuration;
     }
     
-    @Override
+    
+	/** 
+	 * @return String
+	 */
+	@Override
     public String getVersion() {
         URI url = getURI(getURIBuilder().setPath("identity/api/about"));
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
         return JsonPath.parse(response.getBody()).read("$.productVersion");
     }
 
+	
+	/** 
+	 * @param url
+	 * @param filter
+	 * @return List<Map<String, String>>
+	 */
 	private List<Map<String, String>> getContentTypePrimitive(final String url, final StringJoiner filter) {
 
 		URIBuilder uriBuilder = getURIBuilder().setPath(url).setParameter("page", "1").setParameter("limit", "100");
@@ -133,6 +186,13 @@ public class RestClientVraPrimitive extends RestClient {
 		return result;
 	}
 
+	
+	/** 
+	 * @param urlString
+	 * @param jsonBody
+	 * @return ResponseEntity<String>
+	 * @throws URISyntaxException
+	 */
 	private ResponseEntity<String> postJsonPrimitive(final String urlString, final String jsonBody) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(urlString).build();
 		HttpHeaders headers = new HttpHeaders();
@@ -141,6 +201,13 @@ public class RestClientVraPrimitive extends RestClient {
 		return restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 	}
 
+	
+	/** 
+	 * @param urlString
+	 * @param jsonBody
+	 * @return ResponseEntity<String>
+	 * @throws URISyntaxException
+	 */
 	private ResponseEntity<String> putJsonPrimitive(final String urlString, final String jsonBody) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(urlString).build();
 		HttpHeaders headers = new HttpHeaders();
@@ -149,6 +216,13 @@ public class RestClientVraPrimitive extends RestClient {
 		return restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 	}
 
+	
+	/** 
+	 * @param contentTypeId
+	 * @param name
+	 * @return List<Map<String, String>>
+	 * @throws URISyntaxException
+	 */
 	protected List<Map<String, String>> getContentPrimitive(final String contentTypeId, final String name)
 			throws URISyntaxException {
 		StringJoiner filter = new StringJoiner(" and ");
@@ -163,15 +237,29 @@ public class RestClientVraPrimitive extends RestClient {
 		return getContentTypePrimitive(SERVICE_CONTENT, filter);
 	}
 
+	
+	/** 
+	 * @return List<Map<String, String>>
+	 * @throws URISyntaxException
+	 */
 	protected List<Map<String, String>> getPackagesPrimitive() throws URISyntaxException {
 		return getContentTypePrimitive(SERVICE_PACKAGE, new StringJoiner(""));
 	}
 
+	
+	/** 
+	 * @param pkgId
+	 * @return List<Map<String, String>>
+	 */
 	protected List<Map<String, String>> getPackageContentsPrimitive(final String pkgId) {
 		String url = SERVICE_PACKAGE + "/" + pkgId + "/contents";
 		return getContentTypePrimitive(url, new StringJoiner(""));
 	}
 
+	
+	/** 
+	 * @return List<Map<String, Object>>
+	 */
 	protected List<Map<String, Object>> getWorkflowSubscriptionsPrimitive() {
 		URIBuilder uriBuilder = getURIBuilder()
 			.setPath(String.format(SERVICE_WORKFLOW_SUBSCRIPTION, configuration.getTenant()))
@@ -195,6 +283,11 @@ public class RestClientVraPrimitive extends RestClient {
 		return result;
 	}
 
+	
+	/** 
+	 * @param subscriptionName
+	 * @return Map<String, Object>
+	 */
 	protected Map<String, Object> getWorkflowSubscriptionByNamePrimitive(final String subscriptionName) {
 		URIBuilder uriBuilder = getURIBuilder()
 		.setPath(String.format(SERVICE_WORKFLOW_SUBSCRIPTION, configuration.getTenant()))
@@ -217,6 +310,12 @@ public class RestClientVraPrimitive extends RestClient {
 		return null;
 	}
 
+	
+	/** 
+	 * @param subscriptionName
+	 * @param jsonBody
+	 * @throws URISyntaxException
+	 */
 	protected void importSubscriptionPrimitive(final String subscriptionName, String jsonBody) throws URISyntaxException {
 		logger.info(String.format("Updating Workflow Subscription with name '%s'.", subscriptionName));
 		// If subscription with such name already exists use it's ID to update it. Otherwise just remove the ID to create a new subscription
@@ -240,6 +339,11 @@ public class RestClientVraPrimitive extends RestClient {
 		postJsonPrimitive(String.format(SERVICE_WORKFLOW_SUBSCRIPTION, configuration.getTenant()), jsonBody);
 	}
 
+	
+	/** 
+	 * @param bpId
+	 * @return String
+	 */
 	protected String getBlueprintCustomFormPrimitive(final String bpId) {
 		URI url = getURI(getURIBuilder().setPath(BLUEPRINT_PACKAGE + "/" + bpId + "/forms/requestform"));
 
@@ -263,6 +367,11 @@ public class RestClientVraPrimitive extends RestClient {
 
 	}
 
+	
+	/** 
+	 * @param bpId
+	 * @throws URISyntaxException
+	 */
 	protected void activateBlueprintCustomFormPrimitive(final String bpId) throws URISyntaxException {
 		URIBuilder uriBuilder = getURIBuilder().setPath(BLUEPRINT_PACKAGE + "/" + bpId + "/forms/requestform/enable");
 
@@ -273,10 +382,21 @@ public class RestClientVraPrimitive extends RestClient {
 		restTemplate.exchange(uriBuilder.build(), HttpMethod.GET, entity, String.class);
 	}
 
+	
+	/** 
+	 * @param bpId
+	 * @param jsonBody
+	 * @throws URISyntaxException
+	 */
 	protected void setBlueprintCustomFormPrimitive(final String bpId, final String jsonBody) throws URISyntaxException {
 		postJsonPrimitive(BLUEPRINT_PACKAGE + "/" + bpId + "/forms/requestform", jsonBody);
 	}
 
+	
+	/** 
+	 * @param catalogItemName
+	 * @return Map<String, Object>
+	 */
 	protected Map<String, Object> getCatalogItemByNamePrimitive(final String catalogItemName) {
 		URIBuilder uriBuilder = getURIBuilder()
 			.setPath(CATALOG_ITEM)
@@ -299,6 +419,11 @@ public class RestClientVraPrimitive extends RestClient {
 		return null;
 	}
 
+	
+	/** 
+	 * @param catalogItem
+	 * @throws URISyntaxException
+	 */
 	protected void setCatalogItemPrimitive(final Map<String, Object> catalogItem) throws URISyntaxException {
 		String catalogItemJson = JsonHelper.toJson(catalogItem);
 		String catalogItemId = (String) catalogItem.get("id");
@@ -332,6 +457,11 @@ public class RestClientVraPrimitive extends RestClient {
 		return null;
 	}
 
+	
+	/** 
+	 * @param iconId
+	 * @return Map<String, Object>
+	 */
 	protected Map<String, Object> getIconPrimitive(final String iconId) {
 		URIBuilder uriBuilder = getURIBuilder().setPath(CATALOG_ICON + "/" + iconId);
 		URI url = getURI(uriBuilder);
@@ -352,11 +482,20 @@ public class RestClientVraPrimitive extends RestClient {
 		return icon;
 	}
 
+	
+	/** 
+	 * @param icon
+	 * @throws URISyntaxException
+	 */
 	protected void setIconPrimitive(final Map<String, Object> icon) throws URISyntaxException {
 		String iconJson = JsonHelper.toJson(icon);
 		postJsonPrimitive(CATALOG_ICON, iconJson);
 	}
 
+	
+	/** 
+	 * @return List<Map<String, Object>>
+	 */
 	protected List<Map<String, Object>> getGlobalPropertyDefinitionsPrimitive() {
 		URIBuilder uriBuilder = getURIBuilder().setPath(SERVICE_PROPERETY_DEFINITION).setParameter("page", "1").setParameter("limit", "100");
 		URI url = getURI(uriBuilder);
@@ -377,6 +516,11 @@ public class RestClientVraPrimitive extends RestClient {
 		return result.stream().filter(pg -> pg.get("tenantId") == null).collect(Collectors.toList());
 	}
 
+	
+	/** 
+	 * @param propertyDefinitionName
+	 * @return Map<String, Object>
+	 */
 	protected Map<String, Object> getGlobalPropertyDefinitionByNamePrimitive(final String propertyDefinitionName) {
 		URIBuilder uriBuilder = getURIBuilder().setPath(SERVICE_PROPERETY_DEFINITION + "/" + propertyDefinitionName);
 		URI url = getURI(uriBuilder);
@@ -406,6 +550,12 @@ public class RestClientVraPrimitive extends RestClient {
 		return null;
 	}
 
+	
+	/** 
+	 * @param propertyDefinitionName
+	 * @param jsonBody
+	 * @throws URISyntaxException
+	 */
 	protected void importGlobalPropertyDefinitionPrimitive(final String propertyDefinitionName, String jsonBody) throws URISyntaxException {
 		logger.debug(String.format("Updating Global Property Definition with name '%s'.", propertyDefinitionName));
 
@@ -424,6 +574,10 @@ public class RestClientVraPrimitive extends RestClient {
 		}
 	}
 
+	
+	/** 
+	 * @return List<Map<String, Object>>
+	 */
 	protected List<Map<String, Object>> getGlobalPropertyGroupsPrimitive() {
 		URIBuilder uriBuilder = getURIBuilder().setPath(SERVICE_PROPERTY_GROUP).setParameter("page", "1").setParameter("limit", "100");
 		URI url = getURI(uriBuilder);
@@ -444,6 +598,11 @@ public class RestClientVraPrimitive extends RestClient {
 		return result.stream().filter(pg -> pg.get("tenantId") == null).collect(Collectors.toList());
 	}
 
+	
+	/** 
+	 * @param propertyGroupName
+	 * @return Map<String, Object>
+	 */
 	protected Map<String, Object> getGlobalPropertyGroupByNamePrimitive(final String propertyGroupName) {
 		URIBuilder uriBuilder = getURIBuilder()
 			.setPath(SERVICE_PROPERTY_GROUP)
@@ -466,6 +625,12 @@ public class RestClientVraPrimitive extends RestClient {
 		return null;
 	}
 
+	
+	/** 
+	 * @param propertyGroupName
+	 * @param jsonBody
+	 * @throws URISyntaxException
+	 */
 	protected void importGlobalPropertyGroupPrimitive(final String propertyGroupName, String jsonBody) throws URISyntaxException {
 		logger.debug(String.format("Updating Global Property Group with name '%s'.", propertyGroupName));
 
@@ -487,6 +652,13 @@ public class RestClientVraPrimitive extends RestClient {
 		}
 	}
 
+	
+	/** 
+	 * @param vraPackage
+	 * @param contentIds
+	 * @return String
+	 * @throws URISyntaxException
+	 */
 	protected String createPackagePrimitive(final Package vraPackage, final List<String> contentIds) throws URISyntaxException {
 		String requestJson = new Gson().toJson(new VraPackageDTO(vraPackage.getFQName(), contentIds));
 		ResponseEntity<String> response;
@@ -508,6 +680,10 @@ public class RestClientVraPrimitive extends RestClient {
 		return packageId;
 	}
 
+	
+	/** 
+	 * @param vraPackage
+	 */
 	protected void deletePackagePrimitive(final Package vraPackage) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_PACKAGE + "/" + vraPackage.getId()));
 
@@ -519,6 +695,13 @@ public class RestClientVraPrimitive extends RestClient {
 		restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
 	}
 
+	
+	/** 
+	 * @param vraPackage
+	 * @param validate
+	 * @throws NumberFormatException
+	 * @throws URISyntaxException
+	 */
 	protected void exportPackagePrimitive(final Package vraPackage, final boolean validate)
 			throws NumberFormatException, URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_PACKAGE + "/" + vraPackage.getId() + (validate ? "/validate" : ""))
@@ -558,6 +741,13 @@ public class RestClientVraPrimitive extends RestClient {
 		}
 	}
 
+	
+	/** 
+	 * @param vraPackage
+	 * @param dryrun
+	 * @return VraPackageContent
+	 * @throws URISyntaxException
+	 */
 	protected VraPackageContent importPackagePrimitive(final Package vraPackage, final boolean dryrun) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_PACKAGE + (dryrun ? "/validate" : ""))
 				// Ex: /validate?resolution mode=SKIP,OVERWRITE
@@ -588,7 +778,12 @@ public class RestClientVraPrimitive extends RestClient {
 		return this.getPackageContentPrimitive(response.getBody());
 	}
     
-    protected void deleteContentPrimitive(final Content<VraPackageContent.ContentType> content, final boolean dryrun) {
+    
+	/** 
+	 * @param content
+	 * @param dryrun
+	 */
+	protected void deleteContentPrimitive(final Content<VraPackageContent.ContentType> content, final boolean dryrun) {
         String deletePath = null;
         
         switch (content.getType()) {
@@ -603,6 +798,7 @@ public class RestClientVraPrimitive extends RestClient {
 			case WORKFLOW_SUBSCRIPTION: deletePath = String.format(SERVICE_WORKFLOW_SUBSCRIPTION, configuration.getTenant()); break;
 			case GLOBAL_PROPERTY_DEFINITION: deletePath = SERVICE_PROPERETY_DEFINITION; break;
 			case GLOBAL_PROPERTY_GROUP: deletePath = SERVICE_PROPERTY_GROUP; break;
+			default: break;
         }
         
         URI url = getURI(getURIBuilder().setPath(String.format("%s/%s", deletePath, content.getId())));
@@ -612,7 +808,12 @@ public class RestClientVraPrimitive extends RestClient {
         }
     }
     
-    protected VraPackageContent getPackageContentPrimitive(final Package pkg) {
+    
+	/** 
+	 * @param pkg
+	 * @return VraPackageContent
+	 */
+	protected VraPackageContent getPackageContentPrimitive(final Package pkg) {
         URI url = getURI(getURIBuilder().setPath(String.format("%s/%s/contents", SERVICE_PACKAGE, pkg.getId())));
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
@@ -636,7 +837,12 @@ public class RestClientVraPrimitive extends RestClient {
         return new VraPackageContent(content);
     }
     
-    private VraPackageContent getPackageContentPrimitive(final String packageImportedResponse) {
+    
+	/** 
+	 * @param packageImportedResponse
+	 * @return VraPackageContent
+	 */
+	private VraPackageContent getPackageContentPrimitive(final String packageImportedResponse) {
         JsonElement root = JsonParser.parseString(packageImportedResponse);
         
         List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
