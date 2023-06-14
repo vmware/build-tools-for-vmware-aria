@@ -52,7 +52,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 	<!-- Excludes all 'Test.java' files              -->
 	<!-- See https://checkstyle.org/config_filefilters.html -->
 	<module name="BeforeExecutionExclusionFileFilter">
-		<property name="fileNamePattern" value="*Test.java$" />
+		<property name="fileNamePattern" value="Test.java$" />
 	</module>
 
 	<!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
