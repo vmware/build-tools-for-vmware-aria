@@ -25,14 +25,14 @@ import java.io.File;
 import java.nio.file.Paths;
 
 public class BlueprintFsMocks extends VraNgFsMock {
-	/*
+	/**
 	 * WORKDIR is defined with value- blueprints
 	 * 
 	 * @param WORKDIR
 	 */
 	private static final String WORKDIR = "blueprints";
 
-	/*
+	/**
 	 * Contructor to initialize base class
 	 * 
 	 * @param tempDir

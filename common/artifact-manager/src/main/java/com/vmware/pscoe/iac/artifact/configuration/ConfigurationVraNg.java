@@ -267,7 +267,7 @@ public class ConfigurationVraNg extends Configuration {
     }
 
 	/**
-	 * Shows deprecation warnings for different flags
+	 * Shows deprecation warnings for different flags.
 	 */
 	public void deprecationWarnings() {
 		String[] deprecatedFlags = new String[]{
