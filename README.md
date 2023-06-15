@@ -43,3 +43,7 @@ Build Tools for VMware Aria provides development and release management tools fo
 - node: 14.17.1
 - maven: 3.8.7
 - jdk: 17
+
+## Support
+
+You can find detailed support statement [here](./SUPPORT.md)
