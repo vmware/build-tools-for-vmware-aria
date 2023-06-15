@@ -1544,7 +1544,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @param propFile Properties file
 	 * @param prefix Properties prefix
 	 * @param out Output stream
-	 * @throws IOException
+	 * @throws IOException throws IO exception if input stream not available
 	 */
     public static void fileCopyFiltering(final File propFile, final String prefix, final OutputStream out) throws IOException {
         Properties filtered  = new Properties();
@@ -1565,8 +1565,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 *
 	 * @param view View file
 	 * @return Returns View ID
-	 * @throws ConfigurationException
-	 * @throws IOException
+	 * @throws ConfigurationException throws configuration exception incase of parsing error
+	 * @throws IOException throws IO exception if input stream not available
 	 */
     public static String getViewId(final File view) throws ConfigurationException, IOException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

@@ -30,66 +30,66 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 public class ConfigurationVraNg extends Configuration {
 
 	/**
-	 * @param CSP_HOST
+	 * param CSP_HOST
 	 */
     public static final String CSP_HOST = "csp.host";
 	/**
-	 * @param PROJECT_ID
+	 * param PROJECT_ID
 	 */
     public static final String PROJECT_ID = "project.id";
 	/**
-	 * @param DATA_COLLECTION_DELAY_SECONDS
+	 * param DATA_COLLECTION_DELAY_SECONDS
 	 */
     public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
 	/**
-	 * @param PROJECT_NAME
+	 * param PROJECT_NAME
 	 */
     public static final String PROJECT_NAME = "project.name";
 	/**
-	 * @param ORGANIZATION_ID
+	 * param ORGANIZATION_ID
 	 */
     public static final String ORGANIZATION_ID = "org.id";
 	/**
-	 * @param ORGANIZATION_NAME
+	 * param ORGANIZATION_NAME
 	 */
     public static final String ORGANIZATION_NAME = "org.name";
 	/**
-	 * @param REFRESH_TOKEN
+	 * param REFRESH_TOKEN
 	 */
     public static final String REFRESH_TOKEN = "refresh.token";
 	/**
-	 * @param IMPORT_TIMEOUT
+	 * param IMPORT_TIMEOUT
 	 */
     public static final String IMPORT_TIMEOUT = "import.timeout";
 	/**
-	 * @param VRO_INTEGRATION
+	 * param VRO_INTEGRATION
 	 */
     public static final String VRO_INTEGRATION = "vro.integration";
 	/**
-	 * @param PROXY
+	 * param PROXY
 	 */
     public static final String PROXY = "proxy";
 	/**
-	 * @param PROXY_REQUIRED
+	 * param PROXY_REQUIRED
 	 */
     public static final String PROXY_REQUIRED = "proxy.required";
 	/**
-	 * @param CLOUD_PROXY_NAME
+	 * param CLOUD_PROXY_NAME
 	 */
     public static final String CLOUD_PROXY_NAME = "cloud.proxy.name";
 	/**
-	 * @param UNRELEASE_BLUEPRINT_VERSIONS
+	 * param UNRELEASE_BLUEPRINT_VERSIONS
 	 */
     public static final String UNRELEASE_BLUEPRINT_VERSIONS = "bp.unrelease.versions";
 	/**
-	 * @param DEFAULT_IMPORT_TIMEOUT
+	 * param DEFAULT_IMPORT_TIMEOUT
 	 */
     public static final Integer DEFAULT_IMPORT_TIMEOUT = 6000;
 
     /**
      * vRA Package Import content conflict resolution mode.
 	 * 
-	 * @param PACKAGE_IMPORT_OVERWRITE_MODE
+	 * param PACKAGE_IMPORT_OVERWRITE_MODE
      */
     public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
 
@@ -230,8 +230,8 @@ public class ConfigurationVraNg extends Configuration {
 
     
 	/** 
-	 * @param domainOptional
-	 * @throws ConfigurationException
+	 * @param domainOptional is doamin optional indicator
+	 * @throws ConfigurationException throws configuration exception if validation fails
 	 */
 	@Override
     public void validate(boolean domainOptional) throws ConfigurationException {
@@ -282,9 +282,9 @@ public class ConfigurationVraNg extends Configuration {
 
     
 	/** 
-	 * @param props
+	 * @param props form properties
 	 * @return ConfigurationVraNg
-	 * @throws ConfigurationException
+	 * @throws ConfigurationException throws configuration exception if validation fails
 	 */
 	public static ConfigurationVraNg fromProperties(Properties props) throws ConfigurationException {
         ConfigurationVraNg config = new ConfigurationVraNg(props);

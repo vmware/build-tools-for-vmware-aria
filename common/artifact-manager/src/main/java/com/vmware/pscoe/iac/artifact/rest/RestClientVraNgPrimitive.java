@@ -647,6 +647,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprintId Blueprint ID
 	 * @param version     Blueprint Version
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public void releaseBlueprintVersionPrimitive(final String blueprintId, final String version)
 			throws URISyntaxException {
@@ -666,6 +667,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprintId Blueprint ID
 	 * @param versionId     Blueprint versionId
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId)
 			throws URISyntaxException {
@@ -714,6 +716,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprint Blueprint Object
 	 * @return Blueprint ID.
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public String updateBlueprintPrimitive(final VraNgBlueprint blueprint)
 			throws URISyntaxException {
@@ -923,6 +926,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param customForm VraNg Custom Form
 	 * @param sourceId   Srouce ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public void importCustomFormPrimitive(final VraNgCustomForm customForm, final String sourceId)
 			throws URISyntaxException {
@@ -954,6 +958,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param subscriptionName subscription name
 	 * @param subscriptionJson subscription json
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected void importSubscriptionPrimitive(final String subscriptionName, final String subscriptionJson)
 			throws URISyntaxException {
@@ -1006,6 +1011,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retrieve All Cloud Accounts.
 	 * 
 	 * @return List of Cloud accounts.
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected List<VraNgCloudAccount> getAllCloudAccounts() throws URISyntaxException {
 		List<VraNgCloudAccount> retVal = new ArrayList<>();
@@ -2490,6 +2496,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Delete Custom Resource.
 	 * 
 	 * @param customResourceId Resource Action JSON
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected void deleteCustomResourcePrimitive(final String customResourceId) throws URISyntaxException {
 		String deleteURL = String.format(SERVICE_CUSTOM_RESOURCES + "/%s", customResourceId);
@@ -2533,6 +2540,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param resourceActionJson Resource Action JSON
 	 * @return Resource Action
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected String importResourceActionPrimitive(final String resourceActionJson) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_RESOURCE_ACTIONS).build();
@@ -2619,6 +2627,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param action Abx Action
 	 * @return Abx Action ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws IOException throws IO exception incase of invalid json response
 	 */
 	public String createAbxActionPrimitive(final AbxAction action) throws URISyntaxException, IOException {
 		URI url = getURIBuilder().setPath(SERVICE_ABX_ACTIONS).build();
@@ -2636,6 +2646,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param id     ID
 	 * @param action Abx Action
 	 * @return Abx Action ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws IOException throws IO exception incase of invalid json response
 	 */
 	public String updateAbxActionPrimitive(final String id, final AbxAction action)
 			throws URISyntaxException, IOException {
@@ -2775,6 +2787,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param action Abx Action.
 	 * @return Object
+	 * @throws IOException throws IO exception incase Faas provider name is not correct
 	 */
 	protected Map<String, Object> createAbxActionMap(final AbxAction action) throws IOException {
 		Map<String, Object> map = new LinkedHashMap<>();
@@ -3006,6 +3019,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Creates Content Sharing Policy.
 	 * 
 	 * @param csPolicy policy data to create
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
@@ -3023,6 +3037,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Update Content Sharing Policy.
 	 * 
 	 * @param csPolicy policy data to update
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public void updateContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
