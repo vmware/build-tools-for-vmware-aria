@@ -1,10 +1,6 @@
 ## v2.33.0 - 14 Jun 2023
-
 ### Enhancements
 * [vro-types] Declared new type cVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo
-
-## v2.33.0 - 14 Jun 2023
-### Enhancements
 
 ### Fixes
 * [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
