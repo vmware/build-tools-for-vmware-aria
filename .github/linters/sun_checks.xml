@@ -157,7 +157,9 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 
 		<!-- Checks for blocks. You know, those {}'s         -->
 		<!-- See https://checkstyle.org/config_blocks.html -->
-		<module name="AvoidNestedBlocks" />
+		<module name="AvoidNestedBlocks">
+			<property name="allowInSwitchCase" value="true"/>
+		</module>
 		<module name="EmptyBlock" />
 		<module name="LeftCurly" />
 		<module name="NeedBraces" />
@@ -167,7 +169,9 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<!-- See https://checkstyle.org/config_coding.html -->
 		<module name="EmptyStatement" />
 		<module name="EqualsHashCode" />
-		<module name="HiddenField" />
+		<module name="HiddenField">
+			<property name="ignoreConstructorParameter" value="true"/>
+		</module>
 		<module name="IllegalInstantiation" />
 		<module name="InnerAssignment" />
 		<module name="MagicNumber" />

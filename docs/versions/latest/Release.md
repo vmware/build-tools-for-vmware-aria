@@ -1,4 +1,3 @@
-## Breaking Changes
 GitHub issue 
 111 typescript vcvirtualpcipassthrough backing doesnt support vcvirtualpcipassthroughvmiopbackinginfo #124
 
@@ -7,5 +6,3 @@ When trying to create / attache new PCI device (vGPU), the VcVirtualPCIPassthrou
 
 ## Improvements
 declared a new type cVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo
-
-this way the class "VcVirtualPCIPassthrough" supports vgpu
