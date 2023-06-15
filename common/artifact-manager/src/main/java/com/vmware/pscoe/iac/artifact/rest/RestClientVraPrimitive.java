@@ -74,65 +74,65 @@ public class RestClientVraPrimitive extends RestClient {
 	private final Logger logger = LoggerFactory.getLogger(RestClientVraPrimitive.class);
 
 	/**
-	 * param SERVICE_CONTENT
+	 * param SERVICE_CONTENT.
 	 */
 	private final String SERVICE_CONTENT = "/content-management-service/api/contents";
 	/**
-	 * param SERVICE_PACKAGE
+	 * param SERVICE_PACKAGE.
 	 */
 	private final String SERVICE_PACKAGE = "/content-management-service/api/packages";
 	/**
-	 * param SERVICE_CONTENT
+	 * param SERVICE_CONTENT.
 	 */
 	private final String BLUEPRINT_PACKAGE = "/composition-service/api/blueprints";
 	/**
-	 * param SERVICE_CONTENT
+	 * param SERVICE_CONTENT.
 	 */
 	private final String SERVICE_PROPERETY_DEFINITION = "/properties-service/api/propertydefinitions";
 	/**
-	 * param SERVICE_PROPERTY_GROUP
+	 * param SERVICE_PROPERTY_GROUP.
 	 */
     private final String SERVICE_PROPERTY_GROUP = "/properties-service/api/propertygroups";
 	/**
-	 * param SERVICE_XAAS_OPERATION
+	 * param SERVICE_XAAS_OPERATION.
 	 */
     private final String SERVICE_XAAS_OPERATION = "/advanced-designer-service/api/resourceOperations";
 	/**
-	 * param SERVICE_XAAS_BLUEPRINT
+	 * param SERVICE_XAAS_BLUEPRINT.
 	 */
     private final String SERVICE_XAAS_BLUEPRINT = "/advanced-designer-service/api/tenants/%s/blueprints";
 	/**
-	 * param SERVICE_XAAS_TYPE
+	 * param SERVICE_XAAS_TYPE.
 	 */
     private final String SERVICE_XAAS_TYPE = "/advanced-designer-service/api/tenants/%s/types";
 	/**
-	 * param SERVICE_CONTENT
+	 * param SERVICE_CONTENT.
 	 */
 	private final String SERVICE_SOFTWARE = "/software-service/api/softwarecomponenttypes";
 	/**
-	 * param SERVICE_WORKFLOW_SUBSCRIPTION
+	 * param SERVICE_WORKFLOW_SUBSCRIPTION.
 	 */
 	private final String SERVICE_WORKFLOW_SUBSCRIPTION = "/advanced-designer-service/api/tenants/%s/event-broker/subscriptions";
 	/**
-	 * param CATALOG_ITEM
+	 * param CATALOG_ITEM.
 	 */
 	private final String CATALOG_ITEM = "/catalog-service/api/catalogItems";
 	/**
-	 * param CATALOG_SERVICE
+	 * param CATALOG_SERVICE.
 	 */
 	private final String CATALOG_SERVICE = "/catalog-service/api/services";
 	/**
-	 * param CATALOG_ICON
+	 * param CATALOG_ICON.
 	 */
 	private final String CATALOG_ICON = "/catalog-service/api/icons";
 
 	/**
-	 * param configuration
+	 * param configuration.
 	 */
 	private ConfigurationVra configuration;
 
 	/**
-	 * param restTemplate
+	 * param restTemplate.
 	 */
 	private RestTemplate restTemplate;
 
