@@ -3012,7 +3012,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Creates Content Sharing Policy.
 	 * 
-	 * @param csPolicy policy data to create
+	 * @param id policy data to create
+	 * 
+	 * @return the user enitlement item name
 	 */
 	private String getUserEntitlementItemName(final String id) {
 		try {
@@ -3040,7 +3042,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Update Content Sharing Policy.
 	 * 
-	 * @param csPolicy policy data to update
+	 * @param name policy data to update
+	 * 
+	 * @return the user entitoment id
 	 */
 	private String getUserEntitlementItemId(final String name) {
 		try {
