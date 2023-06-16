@@ -63,11 +63,25 @@ Cloud templates used to have versioning information attached to them but it serv
 - [Getting Started](./Components/Archetypes/vRA%208.x/General/Getting%20Started.md)
 
 
+### *Content Sharing Policy supports Catalog Items and Content Source Items*
+
+Content Sharing Policy supports both Catalog Item and Content Source Items association.
+
+#### Previous Behavior
+
+As of initial implementation, the Content Source Policy supported only Content
+Source assignments.
+
 ## Upgrade procedure
 
 ### Deprecated Cloud Template Versioning
 
 1. Remove flags if used "vrang.bp.release", "vrang.bp.ignore.versions"
+
+## Content Shareing Policy Supports Catalog Items and Content Source Items
+
+As usual, the content for Content Sharing Policy needs to be pulled from the env.
+Pull first, push the updated content.
 
 [//]: # (## Changelog)
 [//]: # (Pull request links)
