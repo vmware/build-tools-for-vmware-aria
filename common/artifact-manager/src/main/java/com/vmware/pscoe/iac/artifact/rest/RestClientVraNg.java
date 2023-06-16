@@ -1289,20 +1289,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * updateContentSharingPolicy.
-	 * 
-	 * @param csPolicy content sharing policy
-	 */
-	public void updateContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
-		try {
-			updateContentSharingPolicyPrimitive(csPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not update Content Sharing policy with name '%s'.", csPolicy.getName()), e);
-		}
-	}
-
-	/**
 	 * getContentSharingPolicy.
 	 * 
 	 * @param policyId content sharing policy id
