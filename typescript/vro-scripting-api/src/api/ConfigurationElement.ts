@@ -52,6 +52,7 @@ namespace vroapi {
          */
         setAttributeWithKey(key: string, value: any, typeHint?: any): void {
             let attr = this.getAttributeWithKey(key);
+            this._attributes = this._attributes === null ? [] : this._attributes
             if (!attr) {
                 attr = new Attribute();
                 attr.name = key;
