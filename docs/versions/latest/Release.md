@@ -67,3 +67,7 @@ Pull first, push the updated content.
 
 [//]: # (## Changelog)
 [//]: # (Pull request links)
+
+#### Fixes
+
+Fixed create configuration element. It now returns null instead of an empty array
