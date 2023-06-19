@@ -1,4 +1,3 @@
-## v2.33.0 - 14 Jun 2023
 ### Enhancements
 * [vro-types] Declared new type cVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo
 
