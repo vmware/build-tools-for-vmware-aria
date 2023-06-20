@@ -67,6 +67,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -2756,7 +2757,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected Map<String, Object> createAbxActionMap(final AbxAction action) throws IOException {
 		Map<String, Object> map = new LinkedHashMap<>();
 
-		String[] providers = {"aws", "azure", "on-prem"};
+		String[] providers = { "aws", "azure", "on-prem" };
 
 		map.put("actionType", "SCRIPT");
 		map.put("name", action.getName());
@@ -2809,27 +2810,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	private List<VraNgContentSourceBase> getContentSources() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-				String.class);
+		Map<String, String> params = new HashMap<>();
+		params.put("projectId", this.getProjectId());
 
-		List<VraNgContentSourceBase> retVal = new ArrayList<>();
-		JsonElement root = JsonParser.parseString(response.getBody());
-		if (root.isJsonObject()) {
-			root.getAsJsonObject().getAsJsonArray("content").forEach(item -> {
-				JsonObject contentSource = item.getAsJsonObject();
-				if (contentSource != null) {
-					String id = contentSource.get("id").getAsString();
-					if (!StringUtils.isEmpty(id)) {
-						VraNgContentSourceType type = VraNgContentSourceType
-								.fromString(contentSource.get("typeId").getAsString());
-						retVal.add(new Gson().fromJson(contentSource, type.getTypeClass()));
-					}
-				}
-			});
-		}
-
-		return retVal;
+		return this.getPagedContent(SERVICE_CONTENT_SOURCE, params)
+				.stream()
+				.map(contentSource -> {
+					VraNgContentSourceType type = VraNgContentSourceType
+							.fromString(contentSource.get("typeId").getAsString());
+					return new Gson().fromJson(contentSource, type.getTypeClass());
+				})
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -2907,19 +2898,20 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of sharing policy Ids that are available.
 	 * 
 	 */
-	protected List<String> getAllContentSharingPolicyIdsPrimitive() {
-		List<String> policyIds = new ArrayList<>();
-		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
-		LOGGER.debug("Policy Ids found on server: {}", results.size());
-		results.forEach(o -> {
-			JsonObject ob = o.getAsJsonObject();
-			String typeId = ob.get("typeId").getAsString();
-			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE)) {
-				String policyId = ob.get("id").getAsString();
-				policyIds.add(policyId);
-			}
-		});
-		return policyIds;
+	protected List<VraNgContentSharingPolicy> getAllContentSharingPoliciesPrimitive() {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+
+		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+				.stream()
+				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
+				.filter(policy -> policy.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
+				.filter(policy -> policy.getProjectId().equals(this.getProjectId()))
+				.collect(Collectors.toList());
+
+		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+		return results;
 	}
 
 	/**
@@ -2929,20 +2921,23 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return content sharing policy Id.
 	 * 
 	 */
-	protected String getContentSharingPolicyIdByName(final String name) {
-		String policyId = "";
-		List<JsonObject> results = this.getPagedContent(SERVICE_POLICIES, new HashMap<>());
-		LOGGER.debug("Policies found on server: {}", results.size());
-		for (JsonObject o : results) {
-			JsonObject ob = o.getAsJsonObject();
-			String typeId = ob.get("typeId").getAsString();
-			String policyName = ob.get("name").getAsString();
-			if (typeId.equals(CONTENT_SHARING_POLICY_TYPE) && policyName.equals(name)) {
-				policyId = ob.get("id").getAsString();
-				return policyId;
-			}
+	public String getContentSharingPolicyIdByName(final String name) {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+
+		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
+				.stream()
+				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
+				.filter(p -> p.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
+				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
+				.findFirst()
+				.orElse(null);
+		if (policy == null) {
+			throw new Error("Cannot find Content Sharing Policy by name" + name);
+		} else {
+			return policy.getId();
 		}
-		return policyId;
 	}
 
 	/**
@@ -2968,8 +2963,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		VraNgDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
 				VraNgDefinition.class);
 		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
-			VraNgContentSourceBase contentSource = this.getContentSourcePrimitive(item.id);
-			item.name = (contentSource != null) ? contentSource.getName() : "";
+			item.name = this.getUserEntitlementItemName(item.id);
 		}));
 		csPolicy.setDefinition(definition);
 		csPolicy.setName(name);
@@ -2977,6 +2971,62 @@ public class RestClientVraNgPrimitive extends RestClient {
 		csPolicy.setDescription(description);
 		csPolicy.setTypeId(typeId);
 		return csPolicy;
+	}
+
+	/**
+	 * Gets the name of the content sharing policy item.
+	 *
+	 * @param id It of the CATALOG_SOURCE_IDENTIFIER
+	 * @return name String
+	 */
+	private String getUserEntitlementItemName(final String id) {
+		try {
+			VraNgContentSourceBase contentSource = this.getContentSourcePrimitive(id);
+			return contentSource.getName();
+		} catch (RestClientException hre) {
+			String message = hre.getMessage();
+			if (message != null && message.contains("404")) {
+				VraNgCatalogItem catalogItem = this.getCatalogItemsForProjectPrimitive(this.getProjectId())
+						.stream()
+						.filter(catItem -> catItem.getId().equals(id))
+						.findFirst()
+						.orElse(null);
+				if (catalogItem == null) {
+					throw new Error("Cannot find name of CATALOG_SOURCE_IDENTIFIER with id {}" + id);
+				}
+				return catalogItem.getName();
+			} else {
+				// re-throw
+				throw hre;
+			}
+		}
+	}
+
+	/**
+	 * Gets item for content sharing policy item.
+	 *
+	 * @param name name of the CATALOG_SOURCE_IDENTIFIER
+	 * @return id
+	 */
+	private String getUserEntitlementItemId(final String name) {
+		try {
+			VraNgContentSourceBase contentSource = this.getContentSources().stream()
+					.filter(cs -> cs.getName().equals(name)).findFirst().orElse(null);
+			if (contentSource == null) {
+				throw new RuntimeException(String.format(
+						"Content Source with name  '%s' could not be found on target system",
+						name));
+			}
+			return contentSource.getId();
+		} catch (RuntimeException re) {
+			VraNgCatalogItem catalogItem = this.getCatalogItemsForProjectPrimitive(this.getProjectId())
+					.stream().filter(catItem -> catItem.getName().equals(name))
+					.findFirst().orElse(null);
+			if (catalogItem == null) {
+				throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with name %s", name));
+			}
+			return catalogItem.getId();
+		}
 	}
 
 	/**
@@ -2989,27 +3039,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
 		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
-		jsonObject.addProperty("orgId", organizationId);
-		jsonObject.addProperty("projectId", getProjectId());
-		handleItemsProperty(jsonObject);
-		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-	}
-
-	/**
-	 * Update Content Sharing Policy.
-	 * 
-	 * @param csPolicy policy data to update
-	 */
-	public void updateContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
-			throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-		String jsonBody = new Gson().toJson(csPolicy);
-		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
-		jsonObject.addProperty("id", getContentSharingPolicyIdByName(csPolicy.getName()));
-		jsonObject.addProperty("orgId", organizationId);
-		jsonObject.addProperty("projectId", getProjectId());
 		handleItemsProperty(jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
@@ -3028,17 +3057,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			for (JsonElement item : itemsArr) {
 				JsonObject itemObj = item.getAsJsonObject();
 				String contentSourceName = itemObj.get("name").getAsString();
-				List<VraNgContentSourceBase> contentSources = this.getContentSources();
-				VraNgContentSourceBase contentSource = contentSources.stream()
-						.filter(cs -> cs.getName().equals(contentSourceName))
-						.findFirst()
-						.orElse(null);
-				if (contentSource == null) {
-					throw new RuntimeException(
-							String.format("Content Source with name  '%s' could not be found on target system",
-									contentSourceName));
-				}
-				itemObj.addProperty("id", contentSource.getId());
+				itemObj.addProperty("id", this.getUserEntitlementItemId(contentSourceName));
 				itemObj.remove("name");
 			}
 		}

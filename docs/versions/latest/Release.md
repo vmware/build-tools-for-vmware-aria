@@ -36,15 +36,41 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Fixed vro push requests from vscode having multiline or no description in pom.xml
+#### Previous Behaviour
+
+When no description is specified description is taken from Aria Build Tools' pom.xml files.
+Whenever description contained line breaks, the vrocmd command created got corrupted.
+
+#### New Behaviour
+
+when description contained linebreaks, line breaks are replaced with space
+
 ### Fixed pulling of vROps dashboards as managed content
+
 #### Previous Behaviour
 
 When pulling a list of vROps dashboards defined in the content.yaml, the automation was failing with a hidden error message.
 The underlying cause was that the directory in which the data is exported didn't exist and wasn't created by the automation.
+
 #### New Behaviour
 
 When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
 their metadata files.
+
+### *Content Sharing Policy supports Catalog Items and Content Source Items*
+
+Content Sharing Policy supports both Catalog Item and Content Source Items association.
+
+#### Previous Behavior
+
+As of initial implementation, the Content Source Policy supported only Content
+Source assignments.
+
+#### Upgrade steps
+
+As usual, the content for Content Sharing Policy needs to be pulled from the env.
+Pull first, push the updated content.
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
