@@ -1,3 +1,6 @@
+### Enhancements
+* [vro-types] Declared new type VcVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo
+
 ### Fixes
 * [vro-scripting-api] 110 / Mocking for configuration elements is incorrect
 * [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created

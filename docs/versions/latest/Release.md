@@ -77,3 +77,13 @@ The mocking for configuration elements is incorrect. When there are no attribute
 #### New Behaviour
 
 When there are no attributes in a config element it now returns null.
+
+### Added new type VcVirtualPCIPassthroughBackingInfo
+
+#### Previous Behaviour
+
+When trying to create / attache new PCI device (vGPU), the VcVirtualPCIPassthrough class doesn't support for VcVirtualPCIPassthroughVmiopBackingInfo.vgpu.
+
+#### New Behaviour
+
+Added support to class VcVirtualPCIPassthrough for VcVirtualPCIPassthroughVmiopBackingInfo.vgpu.
