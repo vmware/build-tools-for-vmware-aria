@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -146,21 +146,26 @@ namespace vroapi {
     function getElementAttributes(categoryPath: string, elementName: string): Attribute[] {
         const categoryDescriptor = findDescriptorByPath(categoryPath);
         if (!categoryDescriptor) {
-            return [];
+          return null;
         }
         const elementDescriptor = categoryDescriptor.elements[elementName];
         if (!elementDescriptor || !elementDescriptor.path) {
-            return [];
+          return null;
         }
-        return parseJsonFile<AttributeDescriptor[]>(elementDescriptor.path).map(attrInfo => {
-            const attr = new Attribute();
-            attr.name = attrInfo.name;
-            attr.description = attrInfo.description;
-            attr.type = attrInfo.type;
-            attr.value = attrInfo.value != null ? convertAttrValue(attrInfo.type, attrInfo.value) : null;
-            return attr;
+        const attributeDescriptors = parseJsonFile<AttributeDescriptor[]>(elementDescriptor.path);
+        if (attributeDescriptors.length === 0) {
+          return null;
+        }
+        return attributeDescriptors.map(attrInfo => {
+          const attr = new Attribute();
+          attr.name = attrInfo.name;
+          attr.description = attrInfo.description;
+          attr.type = attrInfo.type;
+          attr.value = attrInfo.value != null ? convertAttrValue(attrInfo.type, attrInfo.value) : null;
+          return attr;
         });
-    }
+      }
+
 
     function findDescriptorByPath(categoryPath: string): CategoryDescriptor {
         return categoryPath.split("/").reduce((parent, name) => parent ? parent.children[name] : null, getRoot());

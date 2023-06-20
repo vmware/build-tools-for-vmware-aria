@@ -67,3 +67,13 @@ Pull first, push the updated content.
 
 [//]: # (## Changelog)
 [//]: # (Pull request links)
+
+### Fixed create configuration element
+
+#### Previous Behaviour
+
+The mocking for configuration elements is incorrect. When there are no attributes in a config element vRO returns null when the attributes of a config element is accessed.
+
+#### New Behaviour
+
+When there are no attributes in a config element it now returns null.
