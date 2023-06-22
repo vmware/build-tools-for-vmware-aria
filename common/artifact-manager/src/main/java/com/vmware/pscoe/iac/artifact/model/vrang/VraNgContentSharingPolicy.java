@@ -19,21 +19,87 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 */
 public class VraNgContentSharingPolicy {
+	/**
+	 * Id of the Content Sharing Policy.
+	 */
+	private String id;
+	/**
+	 * Name of the Content Sharing Policy.
+	 */
 	private String name;
+	/**
+	 * TypeId of the Content Sharing Policy.
+	 */
 	private String typeId;
+	/**
+	 * ProjectId of the Content Sharing Policy.
+	 */
+	private String projectId;
+	/**
+	 * OrgId of the Content Sharing Policy.
+	 */
+	private String orgId;
+	/**
+	 * EnforcementType of the Content Sharing Policy.
+	 */
 	private String enforcementType;
+	/**
+	 * Description of the Content Sharing Policy.
+	 */
 	private String description;
+	/**
+	 * Definition of the Content Sharing Policy.
+	 */
 	private VraNgDefinition definition;
 
+	/**
+	 * Constructor VraNgContentSharingPolicy.
+	 */
 	public VraNgContentSharingPolicy() {
 	}
 
-	public VraNgContentSharingPolicy(String name, String typeId, String enforcementType,String description, VraNgDefinition definition ) {
-		this.name= name;
-		this.typeId= typeId;
-		this.enforcementType= enforcementType;
-		this.description= description;
-		this.definition= definition;
+	/**
+	 * Constructor.
+	 * 
+	 * @param idIn              Id
+	 * @param nameIn            Name
+	 * @param typeIdIn          Typeid
+	 * @param projectIdIn       ProjectId
+	 * @param orgIdIn           OrgId
+	 * @param enforcementTypeIn enforcementType
+	 * @param descriptionIn     description
+	 * @param definitionIn      definition
+	 */
+	public VraNgContentSharingPolicy(final String idIn, final String nameIn, final String typeIdIn,
+			final String projectIdIn, final String orgIdIn,
+			final String enforcementTypeIn, final String descriptionIn,
+			final VraNgDefinition definitionIn) {
+		this.id = idIn;
+		this.name = nameIn;
+		this.typeId = typeIdIn;
+		this.projectId = projectIdIn;
+		this.orgId = orgIdIn;
+		this.enforcementType = enforcementTypeIn;
+		this.description = descriptionIn;
+		this.definition = definitionIn;
+	}
+
+	/**
+	 * Get the name of the content sharing policy.
+	 * 
+	 * @return content sharing policy id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Set the id of the content sharing policy.
+	 * 
+	 * @param idIn - id of the content sharing policy
+	 */
+	public void setId(final String idIn) {
+		this.id = idIn;
 	}
 
 	/**
@@ -48,10 +114,46 @@ public class VraNgContentSharingPolicy {
 	/**
 	 * Set the name of the content sharing policy.
 	 * 
-	 * @param name - name of the content sharing policy
+	 * @param nameIn - name of the content sharing policy
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setName(final String nameIn) {
+		this.name = nameIn;
+	}
+
+	/**
+	 * Get the name of the content sharing policy.
+	 * 
+	 * @return content sharing policy name
+	 */
+	public String getProjectId() {
+		return this.projectId;
+	}
+
+	/**
+	 * Set the projectId of the content sharing policy.
+	 * 
+	 * @param projectIdIn - project id of the content sharing policy
+	 */
+	public void setProjectId(final String projectIdIn) {
+		this.projectId = projectIdIn;
+	}
+
+	/**
+	 * Get the id of the content sharing policy org.
+	 * 
+	 * @return content sharing policy org id
+	 */
+	public String getOrgId() {
+		return this.orgId;
+	}
+
+	/**
+	 * Set the orgId of the content sharing policy.
+	 * 
+	 * @param orgIdIn - Org id of the content sharing policy
+	 */
+	public void setOrgId(final String orgIdIn) {
+		this.orgId = orgIdIn;
 	}
 
 	/**
@@ -66,10 +168,10 @@ public class VraNgContentSharingPolicy {
 	/**
 	 * Set the typeId of the content sharing policy.
 	 * 
-	 * @param typeId - typeId of the content sharing policy
+	 * @param typeIdIn - typeId of the content sharing policy
 	 */
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
+	public void setTypeId(final String typeIdIn) {
+		this.typeId = typeIdIn;
 	}
 
 	/**
@@ -84,10 +186,10 @@ public class VraNgContentSharingPolicy {
 	/**
 	 * Set the enforcementType of the content sharing policy.
 	 * 
-	 * @param enforcementType - enforcementType of the content sharing policy
+	 * @param enforcementTypeIn - enforcementType of the content sharing policy
 	 */
-	public void setEnforcementType(String enforcementType) {
-		this.enforcementType = enforcementType;
+	public void setEnforcementType(final String enforcementTypeIn) {
+		this.enforcementType = enforcementTypeIn;
 	}
 
 	/**
@@ -102,10 +204,10 @@ public class VraNgContentSharingPolicy {
 	/**
 	 * Set the description of the content sharing policy.
 	 * 
-	 * @param description - description of the content sharing policy
+	 * @param descriptionIn - description of the content sharing policy
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(final String descriptionIn) {
+		this.description = descriptionIn;
 	}
 
 	/**
@@ -120,9 +222,9 @@ public class VraNgContentSharingPolicy {
 	/**
 	 * Set the definition of the content sharing policy.
 	 * 
-	 * @param definition - definition of the content sharing policy
+	 * @param definitionIn - definition of the content sharing policy
 	 */
-	public void setDefinition(VraNgDefinition definition) {
-		this.definition = definition;
+	public void setDefinition(final VraNgDefinition definitionIn) {
+		this.definition = definitionIn;
 	}
 }
