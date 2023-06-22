@@ -36,6 +36,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Fixed vro push requests from vscode having multiline or no description in pom.xml
+#### Previous Behaviour
+
+When no description is specified description is taken from Aria Build Tools' pom.xml files.
+Whenever description contained line breaks, the vrocmd command created got corrupted.
+
+#### New Behaviour
+
+when description contained linebreaks, line breaks are replaced with space
+
 ### Fixed pulling of vROps dashboards as managed content
 
 #### Previous Behaviour
@@ -67,23 +77,3 @@ Pull first, push the updated content.
 
 [//]: # (## Changelog)
 [//]: # (Pull request links)
-
-### Fixed create configuration element
-
-#### Previous Behaviour
-
-The mocking for configuration elements is incorrect. When there are no attributes in a config element vRO returns null when the attributes of a config element is accessed.
-
-#### New Behaviour
-
-When there are no attributes in a config element it now returns null.
-
-### Added new type VcVirtualPCIPassthroughBackingInfo
-
-#### Previous Behaviour
-
-When trying to create / attache new PCI device (vGPU), the VcVirtualPCIPassthrough class doesn't support for VcVirtualPCIPassthroughVmiopBackingInfo.vgpu.
-
-#### New Behaviour
-
-Added support to class VcVirtualPCIPassthrough for VcVirtualPCIPassthroughVmiopBackingInfo.vgpu.
