@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -38,7 +38,9 @@ namespace vroapi {
         * @param key
         */
         getAttributeWithKey(key: string): Attribute {
-            const attribute = this.attributes.find(a => a.name === key);
+            // const attribute = this.attributes.find(a => a.name === key);
+            const attribute: any = this.attributes != null ? this.attributes.find(a => a.name === key) : [];
+
 
             return typeof attribute === 'undefined' ? null : attribute;
         }
@@ -50,6 +52,7 @@ namespace vroapi {
          */
         setAttributeWithKey(key: string, value: any, typeHint?: any): void {
             let attr = this.getAttributeWithKey(key);
+            this._attributes = this._attributes === null ? [] : this._attributes
             if (!attr) {
                 attr = new Attribute();
                 attr.name = key;
