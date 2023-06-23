@@ -311,6 +311,12 @@ enum Option {
             "vrli_vrops_server_auth_source",
             ConfigurationVrli.INTEGRATION_VROPS_AUTH_SOURCE),
 	/**
+	 * VRLI use old api flag.
+	 */
+    VRLI_USE_OLD_ALERTS_API(
+            "vrli_use_old_alerts_api",
+            ConfigurationVrli.VRLI_USE_OLD_ALERTS_API),    
+	/**
 	 * VCD server.
 	 */
     VCD_SERVER(
@@ -1416,6 +1422,7 @@ public final class Installer {
         userInput(input, Option.VRLI_VROPS_INTEGRATION_USER, "  vROps integration username");
         passInput(input, Option.VRLI_VROPS_INTEGRATION_PASSWORD, "  vROps integration password");
         userInput(input, Option.VRLI_VROPS_INTEGRATION_AUTH_SOURCE, "  vROps integration auth source", "local");
+        userInput(input, Option.VRLI_USE_OLD_ALERTS_API, "  Use old vRLI Alerts API", Boolean.FALSE);
     }
 
     private static void readSshImportProperties(final Input input) {

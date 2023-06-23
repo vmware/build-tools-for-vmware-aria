@@ -36,6 +36,17 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Added vRLI alert API fallback optional
+
+#### Previous Behaviour
+
+When pushing vROPs enabled vRLI alerts to vRLI 8.8 and later it uses always the v2 alerts API, that causes some vROPs enabled vRLI alerts not to be pushed
+despite the pushing would work fine with the v1 alerts API.
+
+#### New Behaviour
+An option flag has been added (useOldAlertsApi / vrli_use_old_alerts_api) so that customer is able to control which alerts API to be used. By default the flag
+is set to false (thus v2 alert API is used by default)
+
 ### Fixed pulling of vROps dashboards as managed content
 
 #### Previous Behaviour

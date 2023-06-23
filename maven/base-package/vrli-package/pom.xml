@@ -42,6 +42,7 @@
 						<vropsUser>${vrli.vropsUser}</vropsUser>
 						<vropsPassword>${vrli.vropsPassword}</vropsPassword>
 						<vropsAuthSource>${vrli.vropsAuthSource}</vropsAuthSource>
+						<useOldAlertsApi>${vrli.useOldAlertsApi}</useOldAlertsApi>
 						<packageImportOverwriteMode>${vrli.packageImportOverwriteMode}</packageImportOverwriteMode>
 					</vrli>
 					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>

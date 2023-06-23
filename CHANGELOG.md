@@ -19,6 +19,7 @@
 * [artifact-manager] 72 / Fixed domain detection to start from the last `@`, rather than the first.
 
 ### Enhancements
+* [package-installer] IAC-780 / Add support for flag vrli_use_old_alerts_api for importing vROPs enabled vRLI alerts.
 * [package-installer] IAC-728 / Deprecate ```vro_delete_include_dependencies``` flag  
 * [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported
 * [maven] 87 / npm installation will now throw in case of a failure
