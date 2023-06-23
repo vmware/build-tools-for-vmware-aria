@@ -11,9 +11,10 @@
 
 
 ## Deprecations
-[//]: # (### *Deprecation*)
-[//]: # (Explain what is deprecated and suggest alternatives)
 
+### *Cloud Template Versioning*
+
+Cloud template no longer supports versioning. There are no alternatives.
 
 [//]: # (Features -> New Functionality)
 ## Features
@@ -25,16 +26,6 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
 
 ### Fixed pulling of vROps dashboards as managed content
 
@@ -48,6 +39,30 @@ The underlying cause was that the directory in which the data is exported didn't
 When pulling a list of vROps dashboards defined in the content.yaml, the automation exports the content successfully along with
 their metadata files.
 
+### *Deprecated Cloud Template Versioning*
+
+Cloud templates used to have versioning information attached to them but it served little purpose, as it was metadata and they were not real versions.
+
+#### Previous Behavior
+
+- Cloud Templates would be released only if there was a change
+  - this was configurable with a flag, whether we should always realese or not
+- Versions were being saved locally
+- Version metadata was pushed when the blueprint was released.
+
+#### New Behavior
+
+- Cloud Templates would be released only if there was a change
+  - Not configurable
+- Versions are not stored locally
+- Older versions of the cloud template are unreleased
+  - Configurable with a new flag "vrang.bp.unrelease.versions" (Defaults to true)
+
+#### Relevant Documentation
+
+- [Getting Started](./Components/Archetypes/vRA%208.x/General/Getting%20Started.md)
+
+
 ### *Content Sharing Policy supports Catalog Items and Content Source Items*
 
 Content Sharing Policy supports both Catalog Item and Content Source Items association.
@@ -57,13 +72,16 @@ Content Sharing Policy supports both Catalog Item and Content Source Items assoc
 As of initial implementation, the Content Source Policy supported only Content
 Source assignments.
 
-#### Upgrade steps
+## Upgrade procedure
+
+### Deprecated Cloud Template Versioning
+
+1. Remove flags if used "vrang.bp.release", "vrang.bp.ignore.versions"
+
+## Content Shareing Policy Supports Catalog Items and Content Source Items
 
 As usual, the content for Content Sharing Policy needs to be pulled from the env.
 Pull first, push the updated content.
-
-## Upgrade procedure
-[//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog)
 [//]: # (Pull request links)

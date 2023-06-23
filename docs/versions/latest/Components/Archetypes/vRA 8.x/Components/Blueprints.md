@@ -1,11 +1,8 @@
 # Blueprints
-Blueprint ( aka `Cloud Templates` ) architects build Software components, machine blueprints, and custom XaaS 
+Blueprint ( aka `Cloud Templates` ) architects build Software components, machine blueprints, and custom XaaS
 blueprints and assemble those components into the blueprints that define the items users request from the catalog.
 
-## Overview
-**Finish**
-
-## Table Of Contents:
+## Table Of Contents
 1. [Structure](#structure) - how are blueprints exported and what does each file mean?
 2. Operations
    1. [Importing](#importing) blueprints to vRA
@@ -22,7 +19,7 @@ blueprint:
 ```
 
 Structure
-```
+```ascii
 src/
 ├─ main/
 │  ├─ resources/
@@ -42,18 +39,20 @@ Each blueprint will be placed in a different folder.
 When importing a blueprint, it is matched by its `name`. If there is a blueprint with the same name on the server,
 an update will be performed. Otherwise, the blueprint will be created instead.
 
-Also when importing an already existing blueprint, we will check for any differences between local copy and server copy. 
-If there are differences, a new version will be released. New version is determined by the already existing versions. If 
-a patter of MAJOR.MINOR.PATCH is detected, vRBT will try to continue the numbering, otherwise a date formatted version is 
+Also when importing an already existing blueprint, we will check for any differences between local copy and server copy.
+If there are differences, a new version will be released. New version is determined by the already existing versions. If
+a patter of MAJOR.MINOR.PATCH is detected, vRBT will try to continue the numbering, otherwise a date formatted version is
 released.
 
-### Ignoring versions
-Due to [this](#version-history-gets-lost) issue, you may want to not have versions altogether in blueprints. To achieve this
-you have to add 
+### Version Management
+
+By default all versions that are not the latest one will be unreleased.
+
+To control this behavior you can set:
+
 ```xml
-<vrang.bp.ignore.versions>true</bp.ignore.versions>
+<bp.unrelease.versions>false</bp.unrelease.versions>
 ```
-to your profile. In case you choose to not use versions altogether after the first push to the environment the blueprint is being released with the default format for version of `YYYY-MM-dd HH:mm:SS`. 
 
 ### Known Issues
 

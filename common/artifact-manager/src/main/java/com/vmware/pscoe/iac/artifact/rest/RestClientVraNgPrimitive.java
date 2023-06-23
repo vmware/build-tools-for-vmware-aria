@@ -123,6 +123,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private static final String SERVICE_BLUEPRINT_VERSIONS = "/versions";
 	/**
+	 * SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION.
+	 */
+	private static final String SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION = "/actions/unrelease";
+	/**
 	 * SERVICE_SUBSCRIPTION.
 	 */
 	private static final String SERVICE_SUBSCRIPTION = "/event-broker/api/subscriptions";
@@ -490,8 +494,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of projects
 	 */
 	protected List<VraNgProject> getProjectsPrimitive() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CLOUD_PROJECT));
-
 		Gson gson = new Gson();
 		List<VraNgProject> projects = this.getTotalElements(SERVICE_CLOUD_PROJECT, new HashMap<>())
 				.stream()
@@ -594,13 +596,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Returns the raw string content of a blueprint version details API call.
 	 *
+	 * !!!This will fail if there are more than 1000 blueprints.!!!
+	 * 
 	 * @param blueprintId blueprintId
 	 * @return String
 	 */
 	public String getBlueprintVersionsContent(final String blueprintId) {
 		URI url = getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
-				.addParameter("$top", "1000"));
+				.addParameter("$top", "1000")
+				.addParameter("orderBy", "createdAt DESC"));
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -643,6 +648,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprintId Blueprint ID
 	 * @param version     Blueprint Version
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public void releaseBlueprintVersionPrimitive(final String blueprintId, final String version)
 			throws URISyntaxException {
@@ -655,6 +661,26 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		String jsonBody = this.getJsonString(map);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+	}
+
+	/**
+	 * Unrelease Blueprint Version.
+	 *
+	 * @param blueprintId Blueprint ID
+	 * @param versionId     Blueprint versionId
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 */
+	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId)
+			throws URISyntaxException {
+		URI url = getURI(getURIBuilder()
+				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + versionId + "/" + SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
+	
+		try {
+			this.postJsonPrimitive(url, HttpMethod.POST, "");
+		} catch (HttpClientErrorException e) {
+			throw new RuntimeException(
+					String.format("Error ocurred during when unreleasing version %s for blueprint %s. Message: %s", versionId, blueprintId, e.getMessage()));
+		}
 	}
 
 	/**
@@ -691,6 +717,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprint Blueprint Object
 	 * @return Blueprint ID.
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public String updateBlueprintPrimitive(final VraNgBlueprint blueprint)
 			throws URISyntaxException {
@@ -900,6 +927,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param customForm VraNg Custom Form
 	 * @param sourceId   Srouce ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	public void importCustomFormPrimitive(final VraNgCustomForm customForm, final String sourceId)
 			throws URISyntaxException {
@@ -931,6 +959,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param subscriptionName subscription name
 	 * @param subscriptionJson subscription json
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected void importSubscriptionPrimitive(final String subscriptionName, final String subscriptionJson)
 			throws URISyntaxException {
@@ -983,6 +1012,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retrieve All Cloud Accounts.
 	 * 
 	 * @return List of Cloud accounts.
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected List<VraNgCloudAccount> getAllCloudAccounts() throws URISyntaxException {
 		List<VraNgCloudAccount> retVal = new ArrayList<>();
@@ -1034,7 +1064,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			String cloudAccountId = ob.get("id").getAsString();
 			String name = ob.get("name").getAsString();
-			String orgId = ob.get("orgId").getAsString();
 			String type = ob.get("cloudAccountType").getAsString();
 			JsonElement tagsElement = ob.get("tags");
 			JsonElement linkElement = ob.get("_links");
@@ -1395,7 +1424,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * getCatalogItemVersionsPrimitive.
 	 *
-	 * @param sourceId
+	 * @param sourceId source id
 	 * @return catalogItemVersions JsonArray
 	 */
 	protected JsonArray getCatalogItemVersionsPrimitive(final String sourceId) {
@@ -1418,9 +1447,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * fetchRequestFormPrimitive.
 	 *
-	 * @param sourceType
-	 * @param sourceId
-	 * @param formId
+	 * @param sourceType source type
+	 * @param sourceId source id
+	 * @param formId form id
 	 * @return customForm VraNgCustomForm
 	 */
 	protected VraNgCustomForm fetchRequestFormPrimitive(final String sourceType, final String sourceId,
@@ -2468,6 +2497,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Delete Custom Resource.
 	 * 
 	 * @param customResourceId Resource Action JSON
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected void deleteCustomResourcePrimitive(final String customResourceId) throws URISyntaxException {
 		String deleteURL = String.format(SERVICE_CUSTOM_RESOURCES + "/%s", customResourceId);
@@ -2511,6 +2541,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param resourceActionJson Resource Action JSON
 	 * @return Resource Action
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected String importResourceActionPrimitive(final String resourceActionJson) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_RESOURCE_ACTIONS).build();
@@ -2597,6 +2628,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param action Abx Action
 	 * @return Abx Action ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws IOException throws IO exception incase of invalid json response
 	 */
 	public String createAbxActionPrimitive(final AbxAction action) throws URISyntaxException, IOException {
 		URI url = getURIBuilder().setPath(SERVICE_ABX_ACTIONS).build();
@@ -2614,6 +2647,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param id     ID
 	 * @param action Abx Action
 	 * @return Abx Action ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws IOException throws IO exception incase of invalid json response
 	 */
 	public String updateAbxActionPrimitive(final String id, final AbxAction action)
 			throws URISyntaxException, IOException {
@@ -2753,6 +2788,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param action Abx Action.
 	 * @return Object
+	 * @throws IOException throws IO exception incase Faas provider name is not correct
 	 */
 	protected Map<String, Object> createAbxActionMap(final AbxAction action) throws IOException {
 		Map<String, Object> map = new LinkedHashMap<>();
@@ -2880,7 +2916,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * isVraAbove.
 	 *
-	 * @param target
+	 * @param target target version
 	 * @return isIt boolean
 	 */
 	public boolean isVraAbove(final Version target) {
@@ -2943,7 +2979,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve content sharing policy based on Id.
 	 * 
-	 * @param policyId
+	 * @param policyId policy id
 	 * @return Created VraNg Content Sharing Policy
 	 */
 	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(final String policyId) {
@@ -2974,10 +3010,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Gets the name of the content sharing policy item.
-	 *
-	 * @param id It of the CATALOG_SOURCE_IDENTIFIER
-	 * @return name String
+	 * Creates Content Sharing Policy.
+	 * 
+	 * @param id policy data to create
+	 * 
+	 * @return the user enitlement item name
 	 */
 	private String getUserEntitlementItemName(final String id) {
 		try {
@@ -3003,10 +3040,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Gets item for content sharing policy item.
-	 *
-	 * @param name name of the CATALOG_SOURCE_IDENTIFIER
-	 * @return id
+	 * Update Content Sharing Policy.
+	 * 
+	 * @param name policy data to update
+	 * 
+	 * @return the user entitoment id
 	 */
 	private String getUserEntitlementItemId(final String name) {
 		try {
@@ -3046,7 +3084,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * handleItemsProperty.
 	 * 
-	 * @param csPolicyJsonObject
+	 * @param csPolicyJsonObject cs policy json
 	 */
 	public void handleItemsProperty(final JsonObject csPolicyJsonObject) {
 		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
