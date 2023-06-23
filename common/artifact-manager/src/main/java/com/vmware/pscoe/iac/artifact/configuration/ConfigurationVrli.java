@@ -57,7 +57,7 @@ public class ConfigurationVrli extends Configuration {
 	 */
 	public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
 
-	protected ConfigurationVrli(Properties props) {
+	protected ConfigurationVrli(final Properties props) {
 		super(PackageType.VRLI, props);
 	}
 
@@ -167,6 +167,7 @@ public class ConfigurationVrli extends Configuration {
 	 * Read configuration data from properties.
 	 * 
 	 * @param props structure where to read file from.
+	 * @return instance of the ConfigurationVrli object.
 	 * @throws ConfigurationException if the configuration is wrong.
 	 */
 	public static ConfigurationVrli fromProperties(final Properties props) throws ConfigurationException {

@@ -59,7 +59,7 @@ import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
 
 public final class PackageStoreFactory {
-	private static final Logger logger = LoggerFactory.getLogger(VraPackageStore.class);
+	private static Logger logger = LoggerFactory.getLogger(VraPackageStore.class);
 
 	/**
 	 * Empty constructor.
@@ -71,7 +71,7 @@ public final class PackageStoreFactory {
 	/**
 	 * Returns the package store instance based on the configuration type.
 	 * 
-	 * @param configuration instance of an configuration type.
+	 * @param <T> configuration instance of an configuration type.
 	 * @return packageStore instance based on the configuration.
 	 * @throws RuntimeException if the configuration type is wrong.
 	 */
