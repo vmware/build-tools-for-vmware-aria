@@ -1,7 +1,9 @@
 ### Enhancements
 * [artifact-manager] 104 / Deprecated Cloud Template Versioning
+* [vro-types] Declared new type VcVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo
 
 ### Fixes
+* [vro-scripting-api] 110 / Mocking for configuration elements is incorrect
 * [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
 * [artifact-manager] 108 / Pushing and pulling from/to vRA 8.12 fails with buildtools 2.32.0
 
