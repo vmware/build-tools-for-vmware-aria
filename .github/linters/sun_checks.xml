@@ -103,6 +103,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="JavadocType" />
 		<module name="JavadocVariable" />
 		<module name="JavadocStyle" />
+        <module name="MissingJavadocMethod" />
 
 		<!-- Checks for Naming Conventions.                  -->
 		<!-- See https://checkstyle.org/config_naming.html -->
