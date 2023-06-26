@@ -1,6 +1,6 @@
 # Getting Started
 
-### Overview
+## Overview
 vRA 8.x projects are called vRA NG (New Generation) projects in **Build Tools for VMware Aria**.
 The new Maven Archetype that supports vRA 8.x content is *com.vmware.pscoe.vra-ng.archetypes*.
 It is a representation of vRA 8.x content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
@@ -8,8 +8,8 @@ It is a representation of vRA 8.x content into human friendly YAML and/or JSON f
 - *Content Descriptor* defines what part vRA 8.x content will be part of this project - `content.yaml`
 - *Content Container* holds the actual content representation -`./src` folder
 
-## Table Of Contents:
-1. [Maven Archetype](#Maven-Archetype)
+## Table Of Contents
+1. [Maven Archetype](#maven-archetype)
 2. [Configuring settings xml](#configuring-m2settingsxml-to-work-with-vra-ng)
 
 ### Maven Archetype
@@ -33,7 +33,7 @@ mvn archetype:generate \
 #### Content Structure
 The result of this command will produce the following project file structure:
 
-~~~
+~~~ascii
 catalog
 ├── README.md
 ├── content.yaml
@@ -52,9 +52,9 @@ catalog
         └── catalog-items
             └── forms
                 └── source name__workflow one name with custom form.json
-				└── source name__workflow one name with custom form__FormData.json
+                └── source name__workflow one name with custom form__FormData.json
                 └── source name__workflow three name with custom icon and form.json
-				└── source name__workflow three name with custom icon and form__FormData.json
+                └── source name__workflow three name with custom icon and form__FormData.json
             └── icons
                 └── source name__workflow two name with custom icon.png
                 └── source name__workflow three name with custom icon and form.png
@@ -86,10 +86,10 @@ Content Descriptor is implemented by content.yaml file with the following defaul
 
 **Note**: *vRA NG Project supports only content types outlined into content descriptor.*
 
-### Configuring `~/.m2/settings.xml` to work with vRA-NG
+### Configuring ~/.m2/settings.xml to work with vRA-NG
 
 The following need to be added to the profile that you intend to use:
-```xml
+~~~xml
  <!--            VRA-NG    -->
 <profile>
 <!--    ..... OTHER DIRECTIVES .....  -->
@@ -105,23 +105,16 @@ The following need to be added to the profile that you intend to use:
     <vrang.org.id>{organization+id}</vrang.org.id>
     <vrang.org.name>{org+name}</vrang.org.name>
     <vrang.refresh.token>{refresh+token}</vrang.refresh.token>
-    <vrang.bp.ignore.versions>true|false</bp.ignore.versions>
-    <vrang.bp.release>true|false</vrang.bp.release>
+    <vrang.bp.unrelease.versions>true|false</vrang.bp.unrelease.versions>
     <vrang.vro.integration>{vro+integration+name}</vrang.vro.integration>
 </profile>
-```
-* `vrang.refresh.token` - will use the given refresh token instead of credentials. **Note:** this will take precedence over
+~~~
+- `vrang.refresh.token` - will use the given refresh token instead of credentials. **Note:** this will take precedence over
 credentials.
 
-* `vrang.bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section
-  below). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true`
-  in order to avoid unnecessary blueprint versions.
+- `vrang.bp.unrelease.versions` - Defaults to `true`. Controls whether old versions of a blueprint sould be unreleased.
 
-* `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section
-  below). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
-  in order to avoid unnecessary blueprint versions.
-
-* `vrang.data.collection.delay.seconds` - Delay in seconds to wait for vRA data collection to pass before importing data. Can also be passed
+- `vrang.data.collection.delay.seconds` - Delay in seconds to wait for vRA data collection to pass before importing data. Can also be passed
   as an interactive parameter `-Dvrang.data.collection.delay.seconds=600`. useful when Dynamic types and custom resources are used in the projects and vRO content is imported,
   however vRA needs to then retrieve it in order to be able to create the custom Resource and use the Create/Delete Workflows.
   This only happens after a short delay and the vRA data collector scrapes vRO. Defaults to no delay.

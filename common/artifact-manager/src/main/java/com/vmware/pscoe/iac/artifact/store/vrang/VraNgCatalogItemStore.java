@@ -243,8 +243,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * The Form is returned, so we can set it's id in the catalog item
 	 * Stores the forms under {{catalog_item_dir}}/forms
 	 *
-	 * @param serverPackage
-	 * @param catalogItem
+	 * @param serverPackage server package
+	 * @param catalogItem catalog item
 	 *
 	 * @return VraNgCustomForm
 	 */
@@ -538,8 +538,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Import a custom form given the catalog item.
 	 * ( form Id is extracted from the item and the fs is queried )
 	 *
-	 * @param catalogItem
-	 * @param catalogItemFolder
+	 * @param catalogItem catalog item
+	 * @param catalogItemFolder catalog item folder
 	 */
 	protected void importCustomForm(final VraNgCatalogItem catalogItem, final File catalogItemFolder) {
 		String formName = getName(catalogItem) + CUSTOM_RESOURCE_SUFFIX;
@@ -582,7 +582,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Waits a variable amount of time for the catalog item to appear.
 	 * Returns a boolean if at the end it has appeared or not
 	 *
-	 * @param customFormName
+	 * @param customFormName custom form name
 	 *
 	 * @return boolean
 	 */
@@ -667,7 +667,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Returns custom catalog item resource name that can be used for catalog items,
 	 * forms and icons.
 	 *
-	 * @param catalogItem
+	 * @param catalogItem catalog item
 	 *
 	 * @return String
 	 */
