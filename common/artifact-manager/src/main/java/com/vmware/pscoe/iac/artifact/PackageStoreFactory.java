@@ -59,6 +59,9 @@ import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
 
 public final class PackageStoreFactory {
+	/**
+	 * Logger instance.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(VraPackageStore.class);
 
 	/**
