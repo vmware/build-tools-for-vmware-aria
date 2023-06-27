@@ -54,7 +54,7 @@ maven_version=$(mvn -q \
     -Dexec.executable="echo" \
     -Dexec.args='${project.version}' \
     --non-recursive \
-    org.codehaus.mojo:exec-maven-plugin:1.6.0:exec)
+    org.codehaus.mojo:exec-maven-plugin:3.1.0:exec)
 
 ver=${version:-$maven_version}
 ver=$(echo $ver | sed -e "s/-SNAPSHOT$//g")

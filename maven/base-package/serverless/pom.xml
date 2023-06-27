@@ -46,7 +46,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.6.0</version>
+					<version>3.1.0</version>
 					<executions>
 						<!--
                         Validate: validate the project is correct and all necessary information is available.
