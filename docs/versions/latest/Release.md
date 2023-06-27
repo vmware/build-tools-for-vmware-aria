@@ -27,6 +27,16 @@ Cloud template no longer supports versioning. There are no alternatives.
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Fixed vro push requests from vscode having multiline or no description in pom.xml
+#### Previous Behaviour
+
+When no description is specified description is taken from Aria Build Tools' pom.xml files.
+Whenever description contained line breaks, the vrocmd command created got corrupted.
+
+#### New Behaviour
+
+when description contained linebreaks, line breaks are replaced with space
+
 ### Fixed pulling of vROps dashboards as managed content
 
 #### Previous Behaviour
