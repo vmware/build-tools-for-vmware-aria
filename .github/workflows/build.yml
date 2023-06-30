@@ -88,18 +88,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Fix parent.version of 'keystore-example' pom.xml and com.vmware.pscoe.iac project version in master pom.xml
+      - name: Fix com.vmware.pscoe.iac project version in master pom.xml
+        run: sed -i "s/<version>\${revision}/<version>${{ env.IAC_VERSION }}/" pom.xml
+
+      - name: Build 'keystore-example'
         run: |
           sed -i "s/<version>\${revision}/<version>${{ env.IAC_VERSION }}/" common/keystore-example/pom.xml
-          sed -i "s/<version>\${revision}/<version>${{ env.IAC_VERSION }}/" pom.xml
-      - name: Build 'keystore-example'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml    
-      - name: Fix parent.version of 'keystore-example' pom.xml and com.vmware.pscoe.iac project version in master pom.xml
-        run: |
+          mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
           sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\${revision}/" common/keystore-example/pom.xml
-          sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\${revision}/" pom.xml
       - name: Build 'npmlib'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: |
+          sed -i "s/<version>\${revision}/<version>${{ env.IAC_VERSION }}/" maven/npmlib/pom.xml
+          mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+          sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\${revision}/" maven/npmlib/pom.xml
       - name: Build 'iac'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'base-package'
@@ -110,6 +111,9 @@ jobs:
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/typescript-project-all/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'repository'
         run: mvn clean package -f maven/repository/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+
+      - name: Fix com.vmware.pscoe.iac project version in master pom.xml
+        run: sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\${revision}/" pom.xml
 
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
         uses: actions/checkout@v3
