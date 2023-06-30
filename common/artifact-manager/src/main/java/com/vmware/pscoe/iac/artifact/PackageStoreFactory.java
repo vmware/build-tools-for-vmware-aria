@@ -148,7 +148,7 @@ public class PackageStoreFactory {
 			logger.info("Detected ConfigurationVrli");
             ConfigurationVrli config = (ConfigurationVrli) configuration;
             RestClientVrliV1 restClientV1 = RestClientFactory.getClientVrliV1(config);
-			RestClientVrliV2 restClientV2 = RestClientFactory.getClientVrliV2(config);
+            RestClientVrliV2 restClientV2 = RestClientFactory.getClientVrliV2(config);
 
 			try {
 				version = restClientV1.getVersion();
@@ -161,6 +161,7 @@ public class PackageStoreFactory {
 				return new VrliPackageStoreV2(restClientV2);
 			}
 			logger.info("Instantiate REST Client v1.");
+
 			return new VrliPackageStoreV1(restClientV1);
         }
 

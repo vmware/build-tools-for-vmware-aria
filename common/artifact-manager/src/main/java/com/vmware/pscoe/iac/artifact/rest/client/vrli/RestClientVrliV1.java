@@ -48,8 +48,9 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
 public class RestClientVrliV1 extends AbstractRestClientVrli {
 	private static final String API_PREFIX = "/api/v1";
 	private static final String RESOURCE_KIND_KEY = "resourceKindKey";
-	private static final String RESOURCE_KIND_KEYS_SPLIT_KEY = "&";
-	private static final String RESOURCE_KIND_KEY_SPLIT_KEY = "=";
+	private static final String ADAPTER_KIND_KEY = "adapterKindKey";
+	private static final String KEYS_SPLIT_KEY = "&";
+	private static final String KEY_SPLIT_KEY = "=";
 
 	public RestClientVrliV1(ConfigurationVrli configuration, RestTemplate restTemplate) {
 		super(API_PREFIX, configuration, restTemplate);
@@ -172,44 +173,32 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         }
         if (StringUtils.isEmpty(alert.getVcopsResourceName()) || StringUtils.isEmpty(alert.getVcopsResourceKindKey())) {
             return;
-        }
-
+        }        
+		// fetch the adapter type for alert
+		String alertAdapterType = this.getAdapterTypeForAlert(alert);
+		// fetch the resource type for alert
+		String alertResourceType = this.getResourceTypeForAlert(alert);        
         RestClientVrops restClientVrops = getVropsRestClient();
         ResourcesDTO resourceDto = new ResourcesDTO();
         try {
-            resourceDto = restClientVrops.getResources();
+            resourceDto = restClientVrops.getResourcesPerAdapterType(alertAdapterType);
         } catch (Exception e) {
             throw new RuntimeException(
-                    String.format("Unable to update vCOPs integration for alert '%s', unable to fetch vROPs resources: %s", alert.getName(), e.getMessage()));
+                    String.format("Unable to update vCOPs integration for alert '%s', unable to fetch vROPs resources for adapter type '%s': %s", alert.getName(), alertAdapterType, e.getMessage()));
         }
         if (resourceDto == null) {
             return;
         }
-
-		String targetResourceKindKeys = alert.getVcopsResourceKindKey();
-		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(RESOURCE_KIND_KEYS_SPLIT_KEY));
-		Optional<String> resourceTypes = keysSplit.stream().filter(item -> item.contains(RESOURCE_KIND_KEY)).findFirst();
-
-		if (!resourceTypes.isPresent()) {
-			throw new RuntimeException(String.format("Unable to find resource type '%s' for vROPs enabled alert: '%s' on the target vROPs system", RESOURCE_KIND_KEY, alert.getName()));
-		}
-		List<String> types = Arrays.asList(resourceTypes.get().split(RESOURCE_KIND_KEY_SPLIT_KEY));
-		if (types.isEmpty()) {
-			throw new RuntimeException(String.format("Unable to to extract vROPs resource kind type for alert '%s'", alert.getName()));			
-		}		
-		String targetResourceType = types.get(types.size() - 1);
 		Optional<ResourcesDTO.ResourceList> targetResource = resourceDto.getResourceList().stream()
-				.filter(item -> item.getResourceKey().getResourceKindKey().equalsIgnoreCase(targetResourceType)).findFirst();
+				.filter(item -> item.getResourceKey().getResourceKindKey().equalsIgnoreCase(alertResourceType)).findFirst();
 		if (!targetResource.isPresent()) {
 			throw new RuntimeException(String.format(
 					"Unable to find resource type '%s' on the target vROPs server for alert: '%s', please check VROPS content pack configuration in VRLI or VROPS configuration",
-					targetResourceType, alert.getName()));
+					alertResourceType, alert.getName()));
 		}
-
         String resourceName = targetResource.get().getResourceKey().getName();
         String adapterKindKey = targetResource.get().getResourceKey().getAdapterKindKey();
         String resourceKindKey = targetResource.get().getResourceKey().getResourceKindKey();
-
         List<String> baseResourceKindKeys = new ArrayList<>();
         baseResourceKindKeys.add("resourceName=" + resourceName);
         baseResourceKindKeys.add("adapterKindKey=" + adapterKindKey);
@@ -222,7 +211,6 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
 
             return name + "::" + value;
         }).collect(Collectors.toList());
-
         if (!identifiersList.isEmpty()) {
             String identifiers = identifiersList.stream().collect(Collectors.joining("$$"));
             baseResourceKindKeys.add("identifiers=" + identifiers);
@@ -233,6 +221,39 @@ public class RestClientVrliV1 extends AbstractRestClientVrli {
         alert.setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
     }
 
+	private String getAdapterTypeForAlert(AlertDTO alert) {
+		String targetResourceKindKeys = alert.getVcopsResourceKindKey();		
+		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(KEYS_SPLIT_KEY));
+		Optional<String> adapterTypeKeys = keysSplit.stream().filter(item -> item.contains(ADAPTER_KIND_KEY)).findFirst();
+
+		if (!adapterTypeKeys.isPresent()) {
+			throw new RuntimeException(String.format("Unable to find adapter type '%s' for vROPs enabled alert: '%s' on the target vROPs system",
+					ADAPTER_KIND_KEY, alert.getName()));
+		}
+		List<String> adapterTypes = Arrays.asList(adapterTypeKeys.get().split(KEY_SPLIT_KEY));
+		if (adapterTypes.isEmpty()) {
+			throw new RuntimeException(String.format("Unable to to extract vROPs adapter kind type for vROPs enabled alert '%s'", alert.getName()));
+		}
+
+		return adapterTypes.get(adapterTypes.size() - 1);
+	}
+
+	private String getResourceTypeForAlert(AlertDTO alert) {
+		String targetResourceKindKeys = alert.getVcopsResourceKindKey();
+		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(KEYS_SPLIT_KEY));
+		Optional<String> resourceTypes = keysSplit.stream().filter(item -> item.contains(RESOURCE_KIND_KEY)).findFirst();
+		if (!resourceTypes.isPresent()) {
+			throw new RuntimeException(String.format("Unable to find resource type '%s' for vROPs enabled alert: '%s' on the target vROPs system",
+					RESOURCE_KIND_KEY, alert.getName()));
+		}
+		List<String> types = Arrays.asList(resourceTypes.get().split(KEY_SPLIT_KEY));
+		if (types.isEmpty()) {
+			throw new RuntimeException(String.format("Unable to to extract vROPs resource kind type for vROPs enabled alert '%s'", alert.getName()));
+		}
+
+		return types.get(types.size() - 1);
+	}
+	
     private AlertDTO findAlertByName(String alertName) {
         List<AlertDTO> alerts = getAllAlerts();
         if (alerts == null || alerts.isEmpty()) {

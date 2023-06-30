@@ -27,7 +27,20 @@ Cloud template no longer supports versioning. There are no alternatives.
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Fixed pushing vROPs enabled vRLI alerts on large scale environments
+
+#### Previous Behaviour
+
+When pushing vROPs enabled vRLI alerts on large scale environments with more than 100000 the target vROPs integration data could 
+not be found due to page limits in the vROPs resources (fetched only the first 10000 resources on the vROPs level).
+
+#### New Behaviour
+
+When pushing vROPs enabled vRLI alerts on large scale environments all vROPs resources pages are fetched and for each of the pages
+the target resources is searched, thus finding the correct one in order the alert to be pushed successfully.
+
 ### Fixed vro push requests from vscode having multiline or no description in pom.xml
+
 #### Previous Behaviour
 
 When no description is specified description is taken from Aria Build Tools' pom.xml files.
