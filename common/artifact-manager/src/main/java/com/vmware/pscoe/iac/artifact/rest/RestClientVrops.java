@@ -486,7 +486,7 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
-	public ResourcesDTO getResourcesPerAdapterType(String adapterType) {
+	public ResourcesDTO getResourcesPerAdapterType(final String adapterType) {
 		ResourcesDTO.PageInfo pageInfo = this.getResourcePerAdapterKindPageInfo(adapterType);
 
 		ResourcesDTO resource = new ResourcesDTO();
@@ -510,7 +510,7 @@ public class RestClientVrops extends RestClient {
 		return resource;
 	}
 
-	public ResourcesDTO getResourcesPerAdapterType(String adapterKind, Long page) {
+	public ResourcesDTO getResourcesPerAdapterType(final String adapterKind, final Long page) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -567,7 +567,7 @@ public class RestClientVrops extends RestClient {
 		return resource;
 	}
 
-	public ResourcesDTO getResources(Long page) {
+	public ResourcesDTO getResources(final Long page) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);

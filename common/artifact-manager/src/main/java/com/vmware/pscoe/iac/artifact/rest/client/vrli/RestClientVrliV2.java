@@ -65,7 +65,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return deserializeContentPacks(response.getBody());
 	}
 
-	public void updateAlert(AlertDTO alertToUpdate, String existingAlertId) {
+	public void updateAlert(final AlertDTO alertToUpdate, final String existingAlertId) {
 		if (alertToUpdate == null || StringUtils.isEmpty(existingAlertId)) {
 			return;
 		}
@@ -75,7 +75,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		insertAlert(serializeAlert(alertToUpdate));
 	}
 
-	public void importAlert(String alertJson) {
+	public void importAlert(final String alertJson) {
 		if (StringUtils.isEmpty(alertJson)) {
 			return;
 		}
@@ -93,7 +93,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		insertAlert(alertJson);
 	}
 
-	public void deleteAlert(String alertId) {
+	public void deleteAlert(final String alertId) {
 		if (StringUtils.isEmpty(alertId)) {
 			return;
 		}
@@ -160,7 +160,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 	 * @param AlertDTO alert DTO object
 	 * @throws Runtime exception
 	 */
-	private void rewriteVcopsIntegrationInfo(AlertDTO alert) {
+	private void rewriteVcopsIntegrationInfo(final AlertDTO alert) {
 		if (alert == null) {
 			return;
 		}
@@ -212,7 +212,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		alert.getRecipients().getVrops().setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
 	}
 
-	private String getAdapterTypeForAlert(AlertDTO alert) {
+	private String getAdapterTypeForAlert(final AlertDTO alert) {
 		String targetResourceKindKeys = alert.getRecipients().getVrops().getVcopsResourceKindKey();
 		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(KEYS_SPLIT_KEY));
 		Optional<String> adapterTypeKeys = keysSplit.stream().filter(item -> item.contains(ADAPTER_KIND_KEY)).findFirst();
@@ -229,7 +229,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return adapterTypes.get(adapterTypes.size() - 1);
 	}
 
-	private String getResourceTypeForAlert(AlertDTO alert) {
+	private String getResourceTypeForAlert(final AlertDTO alert) {
 		String targetResourceKindKeys = alert.getRecipients().getVrops().getVcopsResourceKindKey();
 		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(KEYS_SPLIT_KEY));
 		Optional<String> resourceTypes = keysSplit.stream().filter(item -> item.contains(RESOURCE_KIND_KEY)).findFirst();
@@ -245,7 +245,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return types.get(types.size() - 1);
 	}
 
-	private AlertDTO findAlertByName(String alertName) {
+	private AlertDTO findAlertByName(final String alertName) {
 		List<AlertDTO> alerts = getAllAlerts();
 		if (alerts == null || alerts.isEmpty()) {
 			return null;
@@ -262,7 +262,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return null;
 	}
 
-	private AlertDTO deserializeAlert(String alertJson) {
+	private AlertDTO deserializeAlert(final String alertJson) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.readValue(alertJson, AlertDTO.class);
@@ -273,7 +273,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		}
 	}
 
-	private List<AlertDTO> deserializeAlerts(String alertsJson) {
+	private List<AlertDTO> deserializeAlerts(final String alertsJson) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return Arrays.asList(mapper.readValue(alertsJson, AlertDTO[].class));
@@ -284,7 +284,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		}
 	}
 
-	private List<ContentPackDTO> deserializeContentPacks(String contentPacksJson) {
+	private List<ContentPackDTO> deserializeContentPacks(final String contentPacksJson) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			ContentPackMetadataListDTO contentPackMetadata = mapper.readValue(contentPacksJson, ContentPackMetadataListDTO.class);
@@ -296,7 +296,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		}
 	}
 
-	private String serializeAlert(AlertDTO alert) {
+	private String serializeAlert(final AlertDTO alert) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(alert);

@@ -84,12 +84,12 @@ public class ResourcesDTO implements Serializable {
 	}
 
 	@JsonAnySetter
-	public void setAdditionalProperties(String name, Object value) {
-		this.additionalProperties.put(name, value);
+	public void setAdditionalProperties(String key, Object value) {
+		this.additionalProperties.put(key, value);
 	}
 
 	@JsonPropertyOrder({ "totalCount", "page", "pageSize" })
-	public static class PageInfo {
+	public static final class PageInfo {
 		@JsonProperty("totalCount")
 		private Long totalCount;
 		
@@ -145,7 +145,7 @@ public class ResourcesDTO implements Serializable {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonPropertyOrder({ "href", "rel", "name" })
-	public static class Link {		
+	public static final class Link {		
 		@JsonProperty("href")
 		private String href;
 		
@@ -203,7 +203,7 @@ public class ResourcesDTO implements Serializable {
 	@JsonPropertyOrder({ "creationTime", "resourceKey", "resourceStatusStates", "resourceHealth", "resourceHealthValue", "dtEnabled", "monitoringInterval",
 			"badges", "relatedResources", "links", "identifier" })
 	@JsonIgnoreProperties({ "links" })
-	public static class ResourceList implements Serializable {
+	public static final class ResourceList implements Serializable {
 		private static final long serialVersionUID = -7272621081244854723L;
 
 		@JsonProperty("creationTime")
@@ -367,14 +367,14 @@ public class ResourcesDTO implements Serializable {
 		}
 
 		@JsonAnySetter
-		public void setAdditionalProperties(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperties(String key, Object value) {
+			this.additionalProperties.put(key, value);
 		}
 	}
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonPropertyOrder({ "adapterInstanceId", "resourceStatus", "resourceState", "statusMessage" })
-	public static class ResourceStatusState implements Serializable {
+	public static final class ResourceStatusState implements Serializable {
 		private static final long serialVersionUID = -787582647822155817L;
 
 		@JsonProperty("adapterInstanceId")
@@ -438,14 +438,14 @@ public class ResourcesDTO implements Serializable {
 		}
 
 		@JsonAnySetter
-		public void setAdditionalProperties(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperties(String key, Object value) {
+			this.additionalProperties.put(key, value);
 		}
 	}
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonPropertyOrder({ "name", "adapterKindKey", "resourceKindKey", "resourceIdentifiers" })
-	public static class ResourceKey implements Serializable {
+	public static final class ResourceKey implements Serializable {
 		private static final long serialVersionUID = -7173935404365000209L;
 
 		@JsonProperty("name")
@@ -509,14 +509,14 @@ public class ResourcesDTO implements Serializable {
 		}
 
 		@JsonAnySetter
-		public void setAdditionalProperties(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperties(String key, Object value) {
+			this.additionalProperties.put(key, value);
 		}
 	}
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonPropertyOrder({ "identifierType", "value" })
-	public static class ResourceIdentifier implements Serializable {
+	public static final class ResourceIdentifier implements Serializable {
 		private static final long serialVersionUID = -4631445128052519908L;
 
 		@JsonProperty("identifierType")
@@ -554,14 +554,14 @@ public class ResourcesDTO implements Serializable {
 		}
 
 		@JsonAnySetter
-		public void setAdditionalProperties(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperties(String key, Object value) {
+			this.additionalProperties.put(key, value);
 		}
 	}
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonPropertyOrder({ "name", "dataType", "isPartOfUniqueness" })
-	public static class IdentifierType implements Serializable {
+	public static final class IdentifierType implements Serializable {
 		private static final long serialVersionUID = -1370467208132974903L;
 
 		@JsonProperty("name")
@@ -612,8 +612,8 @@ public class ResourcesDTO implements Serializable {
 		}
 
 		@JsonAnySetter
-		public void setAdditionalProperties(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperties(String key, Object value) {
+			this.additionalProperties.put(key, value);
 		}
 	}
 }
