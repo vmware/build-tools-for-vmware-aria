@@ -88,8 +88,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Fix parent.version of 'keystore-example' pom.xml
+        run: |
+          sed -i "s/<version>\\${revision}/<version>${{ env.IAC_VERSION }}/" common/keystore-example/pom.xml
       - name: Build 'keystore-example'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml    
+      - name: Fix parent.version of 'keystore-example' pom.xml
+        run: |
+          sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\\${revision}/" common/keystore-example/pom.xml
       - name: Build 'npmlib'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'iac'
