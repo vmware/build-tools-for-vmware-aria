@@ -77,58 +77,196 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.ViewDefinitionDTO;
 
 @SuppressWarnings("deprecation")
 public class RestClientVrops extends RestClient {
+	/**
+	 * logger.
+	 */
 	private final Logger logger = LoggerFactory.getLogger(RestClientVrops.class);
 
+	/**
+	 * PUBLIC_API_PREFIX.
+	 */
 	private static final String PUBLIC_API_PREFIX = "/suite-api/api/";
+
+	/**
+	 * INTERNAL_API_PREFIX.
+	 */
 	private static final String INTERNAL_API_PREFIX = "/suite-api/internal/";
+
+	/**
+	 * ALERT_DEFS_API.
+	 */
 	private static final String ALERT_DEFS_API = PUBLIC_API_PREFIX + "alertdefinitions/";
+
+	/**
+	 * SYMPTOM_DEFS_API.
+	 */
 	private static final String SYMPTOM_DEFS_API = PUBLIC_API_PREFIX + "symptomdefinitions/";
+
+	/**
+	 * POLICIES_API.
+	 */
 	private static final String POLICIES_API = INTERNAL_API_PREFIX + "policies/";
+
+	/**
+	 * RECOMMENDATIONS_API.
+	 */
 	private static final String RECOMMENDATIONS_API = PUBLIC_API_PREFIX + "recommendations/";
+
+	/**
+	 * RESOURCES_API.
+	 */
 	private static final String RESOURCES_API = PUBLIC_API_PREFIX + "resources/";
+
+	/**
+	 * CUSTOM_GROUPS_FETCH_API.
+	 */
 	private static final String CUSTOM_GROUPS_FETCH_API = RESOURCES_API + "groups";
+
+	/**
+	 * CUSTOM_GROUPS_UPDATE_API.
+	 */
 	private static final String CUSTOM_GROUPS_UPDATE_API = PUBLIC_API_PREFIX + "resources/groups";
+
+	/**
+	 * CUSTOM_GROUP_TYPES_API.
+	 */
 	private static final String CUSTOM_GROUP_TYPES_API = PUBLIC_API_PREFIX + "resources/groups/types";
+
+	/**
+	 * RESOURCES_LIST_API.
+	 */
 	private static final String RESOURCES_LIST_API = PUBLIC_API_PREFIX + "resources";
+
+	/**
+	 * ADAPTER_KINDS_API.
+	 */
 	private static final String ADAPTER_KINDS_API = PUBLIC_API_PREFIX + "adapterkinds";
+
+	/**
+	 * RESOURCE_KINDS_API.
+	 */
 	private static final String RESOURCE_KINDS_API = PUBLIC_API_PREFIX + "adapterkinds/%s/resourcekinds";
+
+	/**
+	 * RESOURCES_LIST_PER_ADAPTER_KIND.
+	 */
 	private static final String RESOURCES_LIST_PER_ADAPTER_KIND = PUBLIC_API_PREFIX + "adapterkinds/%s/resources";
+
+	/**
+	 * SUPERMETRICS_LIST_API.
+	 */
 	private static final String SUPERMETRICS_LIST_API = PUBLIC_API_PREFIX + "supermetrics";
+
+	/**
+	 * REPORT_DEFINITIONS_LIST_API.
+	 */
 	private static final String REPORT_DEFINITIONS_LIST_API = PUBLIC_API_PREFIX + "reportdefinitions";
+
+	/**
+	 * VIEW_DEFINITIONS_LIST_API.
+	 */
 	private static final String VIEW_DEFINITIONS_LIST_API = INTERNAL_API_PREFIX + "viewdefinitions";
+
+	/**
+	 * INTERNAL_API_HEADER_NAME.
+	 */
 	private static final String INTERNAL_API_HEADER_NAME = "X-vRealizeOps-API-use-unsupported";
+
+	/**
+	 * AUTH_GROUPS_API.
+	 */
 	private static final String AUTH_GROUPS_API = PUBLIC_API_PREFIX + "/auth/usergroups";
+
+	/**
+	 * AUTH_USERS_API.
+	 */
 	private static final String AUTH_USERS_API = PUBLIC_API_PREFIX + "/auth/users";
+
+	/**
+	 * DEFAULT_PAGE_SIZE.
+	 */
 	private static final int DEFAULT_PAGE_SIZE = 10000;
+
+	/**
+	 * VROPS_MAJOR_VERSION.
+	 */
 	private static final int VROPS_MAJOR_VERSION = 8;
+
+	/**
+	 * VROPS_MINOR_VERSION.
+	 */
 	private static final int VROPS_MINOR_VERSION = 2;
+
+	/**
+	 * VROPS_KIND_ALL.
+	 */
 	private static final String VROPS_KIND_ALL = "ALL";
 
+	/**
+	 * configuration.
+	 */
 	private ConfigurationVrops configuration;
+
+	/**
+	 * restTemplate.
+	 */
 	private RestTemplate restTemplate;
+	
+	/**
+	 * mapper.
+	 */
 	private ObjectMapper mapper = new ObjectMapper();
+	
+	/**
+	 * productVersion.
+	 */
 	private Version productVersion = null;
 
+	/**
+	 * RestClientVrops.
+	 * @param configuration
+	 * @param restTemplate
+	 */	
 	public RestClientVrops(ConfigurationVrops configuration, RestTemplate restTemplate) {
 		this.configuration = configuration;
 		this.restTemplate = restTemplate;
 	}
 
+	/**
+	 * getRestTemplate.
+	 * 
+	 * @return restTemplate
+	 */
 	public RestTemplate getRestTemplate() {
 		return restTemplate;
 	}
 
+	/**
+	 * getConfiguration.
+	 * 
+	 * @return configuration
+	 */
 	@Override
 	protected Configuration getConfiguration() {
 		return configuration;
 	}
 
+	/**
+	 * getURIBuilder.
+	 * 
+	 * @return URIBuilder
+	 */
 	@Override
 	protected URIBuilder getURIBuilder() {
 		ConfigurationVrops config = (ConfigurationVrops) getConfiguration();
 		return new URIBuilder().setScheme("https").setHost(config.getHost()).setPort(config.getHttpPort());
 	}
 
+	/**
+	 * getVersion.
+	 * 
+	 * @return version
+	 */
 	@Override
 	public String getVersion() {
 		URI url = getURI(getURIBuilder().setPath(PUBLIC_API_PREFIX + "versions/current"));
@@ -150,7 +288,7 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
-	 * Import policies from a zip file
+	 * Import policies from a zip file.
 	 * 
 	 * @param file       policy zip file as byte[]
 	 * @param policyName List of strings that represent the custom groups policy
@@ -185,7 +323,7 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
-	 * Export a zip file per policies, filtered by name
+	 * Export a zip file per policies, filtered by name.
 	 * 
 	 * @param policyEntries Names of the policies to be exported
 	 * @return a list of policies containing a zip file as byte[], name and id of
@@ -211,6 +349,11 @@ public class RestClientVrops extends RestClient {
 		return policies;
 	}
 
+	/**
+	 * Returns all policies.
+	 * 
+	 * @return a list of policies
+	 */
 	public List<PolicyDTO.Policy> getAllPolicies() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -237,6 +380,13 @@ public class RestClientVrops extends RestClient {
 		return policyDto == null ? Collections.emptyList() : policyDto.getPolicies();
 	}
 
+	/**
+	 * Returns the content for certain policy.
+	 * 
+	 * @param policy
+	 * 
+	 * @return policy
+	 */
 	public PolicyDTO.Policy getPolicyContent(PolicyDTO.Policy policy) {
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_API + "export")));
 		uriBuilder.queryParam("id", policy.getId());
@@ -442,6 +592,11 @@ public class RestClientVrops extends RestClient {
 		updateCustomGroupPolicy(customGroupPayload, policyIdMap);
 	}
 
+	/**
+	 * Create the missing group types in vROPs.
+	 * 
+	 * @param customGroup - custom group DTO
+	 */	
 	public void createMissingGroupTypes(CustomGroupDTO.Group customGroup) {
 		String customGroupResourceKind = customGroup.getResourceKey().getResourceKindKey();
 		if (!this.resourceKindExists(customGroupResourceKind, customGroup.getResourceKey().getAdapterKindKey())) {
@@ -457,6 +612,11 @@ public class RestClientVrops extends RestClient {
 		});
 	}
 
+	/**
+	 * Create the custom group type in vROPs.
+	 * 
+	 * @param customGroupType - custom group type.
+	 */		
 	public void createCustomGroupType(String customGroupType) {
 		logger.info(String.format("Custom group type doesn't exist. Creating custom group type '%s'", customGroupType));
 		HttpHeaders headers = new HttpHeaders();
@@ -486,6 +646,12 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * Get resources per vROPs adapter type.
+	 * 
+	 * @param adapterType - adapter type
+	 * @return resource DTO.
+	 */		
 	public ResourcesDTO getResourcesPerAdapterType(final String adapterType) {
 		ResourcesDTO.PageInfo pageInfo = this.getResourcePerAdapterKindPageInfo(adapterType);
 
@@ -510,12 +676,19 @@ public class RestClientVrops extends RestClient {
 		return resource;
 	}
 
-	public ResourcesDTO getResourcesPerAdapterType(final String adapterKind, final Long page) {
+	/**
+	 * Get resources per vROPs adapter type and page.
+	 * 
+	 * @param adapterType - adapter type.
+	 * @param page - page to retrieve from.
+	 * @return resource DTO.
+	 */		
+	public ResourcesDTO getResourcesPerAdapterType(final String adapterType, final Long page) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
-		String endpointName = String.format(RESOURCES_LIST_PER_ADAPTER_KIND, adapterKind);
+		String endpointName = String.format(RESOURCES_LIST_PER_ADAPTER_KIND, adapterType);
 		try {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(endpointName).toString()));
 			uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
@@ -544,6 +717,10 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * Get all vROPs resources.
+	 * @return resource DTO.
+	 */		
 	public ResourcesDTO getResources() {
 		ResourcesDTO.PageInfo pageInfo = this.getResourcePageInfo();
 
@@ -567,6 +744,12 @@ public class RestClientVrops extends RestClient {
 		return resource;
 	}
 
+	/**
+	 * Get all vROPs resources for page.
+	 * 
+	 * @param page - page to retrieve from.
+	 * @return resource DTO.
+	 */		
 	public ResourcesDTO getResources(final Long page) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -597,6 +780,11 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * Get all vROPs super metrics.
+	 * 
+	 * @return supermetric DTO.
+	 */			
 	public SupermetricDTO getAllSupermetrics() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -630,6 +818,11 @@ public class RestClientVrops extends RestClient {
 		return retVal;
 	}
 
+	/**
+	 * Get all vROPs view definitions.
+	 * 
+	 * @return ViewDefinitionDTO
+	 */			
 	public ViewDefinitionDTO getAllViewDefinitions() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -664,6 +857,11 @@ public class RestClientVrops extends RestClient {
 		return retVal;
 	}
 
+	/**
+	 * Get all vROPs report definitions.
+	 * 
+	 * @return ReportDefinitionDTO
+	 */	
 	public ReportDefinitionDTO getAllReportDefinitions() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -697,6 +895,11 @@ public class RestClientVrops extends RestClient {
 		return retVal;
 	}
 
+	/**
+	 * Get all vROPs auth groups.
+	 * 
+	 * @return list of AuthGroupDTO
+	 */		
 	public List<AuthGroupDTO> findAllAuthGroups() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -727,6 +930,11 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * Get all vROPs auth users.
+	 * 
+	 * @return list of AuthUserDTO
+	 */		
 	public List<AuthUserDTO> findAllAuthUsers() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -757,30 +965,59 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * Get vROPs auth user by name.
+	 * @param name
+	 * 
+	 * @return AuthUserDTO
+	 */			
 	public AuthUserDTO findAllAuthUserByName(String name) {
 		List<AuthUserDTO> allAuthUsers = this.findAllAuthUsers();
 
 		return allAuthUsers.stream().filter(item -> name.equals(item.getUsername())).findAny().orElse(null);
 	}
 
+	/**
+	 * Get vROPs auth group by name.
+	 * @param name
+	 * 
+	 * @return AuthGroupDTO
+	 */		
 	public AuthGroupDTO findAuthGroupByName(String name) {
 		List<AuthGroupDTO> allAuthGroups = this.findAllAuthGroups();
 
 		return allAuthGroups.stream().filter(item -> name.equals(item.getDisplayName())).findAny().orElse(null);
 	}
 
+	/**
+	 * Get all vROPs auth groups by name.
+	 * @param names
+	 * 
+	 * @return list of AuthGroupDTO
+	 */		
 	public List<AuthGroupDTO> findAuthGroupsByNames(List<String> names) {
 		List<AuthGroupDTO> allAuthGroups = this.findAllAuthGroups();
 
 		return allAuthGroups.stream().filter(item -> names.contains(item.getDisplayName())).collect(Collectors.toList());
 	}
 
+	/**
+	 * Get all vROPs auth users by name.
+	 * @param names
+	 * 
+	 * @return list of AuthUserDTO
+	 */		
 	public List<AuthUserDTO> findAuthUsersByNames(List<String> names) {
 		List<AuthUserDTO> allAuthUsers = this.findAllAuthUsers();
 
 		return allAuthUsers.stream().filter(item -> names.contains(item.getUsername())).collect(Collectors.toList());
 	}
 
+	/**
+	 * Get vROPs product version.
+	 * 
+	 * @return version info
+	 */		
 	private Version getProductVersion() {
 		if (this.productVersion == null) {
 			this.productVersion = new Version(getVersion());
@@ -789,6 +1026,11 @@ public class RestClientVrops extends RestClient {
 		return this.productVersion;
 	}
 
+	/**
+	 * Checks whether the vROPs is version 8.2 or later.
+	 * 
+	 * @return true if vROPs is 8.2 or later otherwise false
+	 */			
 	private boolean isVrops82OrLater() {
 		Integer major = this.getProductVersion().getMajorVersion();
 		Integer minor = this.getProductVersion().getMinorVersion();
@@ -796,6 +1038,12 @@ public class RestClientVrops extends RestClient {
 		return (major != null && major >= VROPS_MAJOR_VERSION) && (minor != null && minor >= VROPS_MINOR_VERSION);
 	}
 
+	/**
+	 * Searches for vROPs policy by name.
+	 * @param policyName
+	 * 
+	 * @return PolicyDTO.Policy object
+	 */			
 	private PolicyDTO.Policy findPolicyByName(String policyName) {
 		// get all available policies in the target system
 		List<PolicyDTO.Policy> policies = getAllPolicies();
@@ -811,6 +1059,12 @@ public class RestClientVrops extends RestClient {
 		return foundPolicy.get();
 	}
 
+	/**
+	 * Filter policies by set of names.
+	 * @param policyEntries
+	 * 
+	 * @return a list of PolicyDTO.Policy object
+	 */			
 	private List<PolicyDTO.Policy> filterPoliciesByName(List<String> policyEntries) {
 		List<PolicyDTO.Policy> policies = getAllPolicies();
 		if (policies == null || policies.isEmpty()) {
@@ -821,6 +1075,11 @@ public class RestClientVrops extends RestClient {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Update policy for custom group.
+	 * @param customGroupPayload
+	 * @param policyIdMap
+	 */	
 	private void updateCustomGroupPolicy(String customGroupPayload, Map<String, String> policyIdMap) {
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
 		if (customGroup == null) {
@@ -874,6 +1133,11 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * Set the customer group id to null (required by vROPs API).
+	 * @param customGroupPayload
+     * @return JSON string of custom group
+	 */		
 	private String setCustomGroupIdToNull(final String customGroupPayload) {
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
 		if (customGroup == null) {
@@ -885,6 +1149,12 @@ public class RestClientVrops extends RestClient {
 		return deserializeCustomGroup(customGroup);
 	}
 
+	/**
+	 * Update the customer group id (required by vROPs API).
+	 * @param customGroup
+	 * @param customGroupPayload
+     * @return JSON string of custom group
+	 */		
 	private String updateCustomGroupId(CustomGroupDTO.Group customGroup, String customGroupPayload) {
 		CustomGroupDTO.Group serializedCustomGroup = serializeCustomGroup(customGroupPayload);
 		if (customGroup == null || serializedCustomGroup == null) {
@@ -914,6 +1184,11 @@ public class RestClientVrops extends RestClient {
 		return deserializeCustomGroup(serializedCustomGroup);
 	}
 
+	/**
+	 * serializeCustomGroup.
+	 * @param customGroupPayload
+     * @return JSON string of custom group
+	 */		
 	private CustomGroupDTO.Group serializeCustomGroup(String customGroupPayload) {
 		try {
 			return mapper.readValue(customGroupPayload, CustomGroupDTO.Group.class);
@@ -926,6 +1201,11 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * deserializeCustomGroup.
+	 * @param customGroup
+     * @return JSON string of custom group
+	 */		
 	private String deserializeCustomGroup(CustomGroupDTO.Group customGroup) {
 		try {
 			return mapper.writeValueAsString(customGroup);
@@ -938,6 +1218,11 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * deserializeCustomGroupType.
+	 * @param customGroupType
+     * @return JSON string of custom group
+	 */		
 	private String deserializeCustomGroupType(CustomGroupTypeDTO customGroupType) {
 		try {
 			return mapper.writeValueAsString(customGroupType);
@@ -950,6 +1235,11 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	/**
+	 * customGroupExists.
+	 * @param customGroupPayload
+     * @return true if exists
+	 */		
 	private boolean customGroupExists(String customGroupPayload) {
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
 		if (customGroup == null) {
@@ -962,8 +1252,8 @@ public class RestClientVrops extends RestClient {
 	/**
 	 * Find vROPS custom group by name.
 	 * 
-	 * @param List<String> - names of the custom groups.
-	 * @return List<CustomGroupDTO.CustomGroup> - list of the found custom groups.
+	 * @param customGroupNames names of the custom groups
+	 * @return List<CustomGroupDTO.CustomGroup> - list of the found custom groups
 	 */
 	private List<CustomGroupDTO.Group> findCustomGroupsByNames(List<String> customGroupNames) {
 		List<CustomGroupDTO.Group> retVal = new ArrayList<>();

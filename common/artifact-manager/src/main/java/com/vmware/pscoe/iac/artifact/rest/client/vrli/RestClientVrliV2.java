@@ -1,5 +1,24 @@
 package com.vmware.pscoe.iac.artifact.rest.client.vrli;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
 /*
  * #%L
  * artifact-manager
@@ -25,29 +44,45 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.AlertDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackMetadataListDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class RestClientVrliV2 extends AbstractRestClientVrli {
+	/**
+	 * API_PREFIX.
+	 */
 	private static final String API_PREFIX = "/api/v2";
+	/**
+	 * RESOURCE_KIND_KEY.
+	 */
 	private static final String RESOURCE_KIND_KEY = "resourceKindKey";
+	/**
+	 * ADAPTER_KIND_KEY.
+	 */
 	private static final String ADAPTER_KIND_KEY = "adapterKindKey";
+	/**
+	 * KEYS_SPLIT_KEY.
+	 */
 	private static final String KEYS_SPLIT_KEY = "&";
+	/**
+	 * KEY_SPLIT_KEY.
+	 */
 	private static final String KEY_SPLIT_KEY = "=";
 
+	/**
+	 * RestClientVrliV2.
+	 * 
+	 * @param configuration
+	 * @param restTemplate
+	 */
 	public RestClientVrliV2(ConfigurationVrli configuration, RestTemplate restTemplate) {
 		super(API_PREFIX, configuration, restTemplate);
 		logger = LoggerFactory.getLogger(RestClientVrliV2.class);
 	}
 
+	/**
+	 * Returns all alerts in vRLI.
+	 * 
+	 * @return list of AlertDTO
+	 */
 	public List<AlertDTO> getAllAlerts() {
 		URI url = getURI(getURIBuilder().setPath(this.apiPrefix + ALERTS_API));
 		logger.info("Getting all alerts URL: {}", url);
@@ -56,6 +91,11 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return deserializeAlerts(response.getBody());
 	}
 
+	/**
+	 * Returns all content packs in vRLI.
+	 * 
+	 * @return list of ContentPackDTO
+	 */
 	public List<ContentPackDTO> getAllContentPacks() {
 		URI url = getURI(getURIBuilder().setPath(this.apiPrefix + CONTENT_PACKS_API));
 		logger.info("Getting all content packs URL: {}", url);
@@ -65,6 +105,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return deserializeContentPacks(response.getBody());
 	}
 
+	/**
+	 * Update vRLI alert.
+	 * 
+	 * @param alertToUpdate
+	 * @param existingAlertId
+	 */
 	public void updateAlert(final AlertDTO alertToUpdate, final String existingAlertId) {
 		if (alertToUpdate == null || StringUtils.isEmpty(existingAlertId)) {
 			return;
@@ -75,6 +121,11 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		insertAlert(serializeAlert(alertToUpdate));
 	}
 
+	/**
+	 * Import a vRLI alert.
+	 * 
+	 * @param alertJson
+	 */
 	public void importAlert(final String alertJson) {
 		if (StringUtils.isEmpty(alertJson)) {
 			return;
@@ -93,6 +144,11 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		insertAlert(alertJson);
 	}
 
+	/**
+	 * Delete a vRLI alert.
+	 * 
+	 * @param alertId
+	 */	
 	public void deleteAlert(final String alertId) {
 		if (StringUtils.isEmpty(alertId)) {
 			return;
@@ -121,6 +177,11 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		}
 	}
 
+	/**
+	 * Insert a vRLI alert.
+	 * 
+	 * @param alertJson
+	 */	
 	public void insertAlert(String alertJson) {
 		if (StringUtils.isEmpty(alertJson)) {
 			return;
@@ -157,7 +218,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 	 * vROPs integration data is retrieved dynamically from vROPs based on the
 	 * configured vROPs integration in the settings.xml (<vrli.vrops*> settings)
 	 *
-	 * @param AlertDTO alert DTO object
+	 * @param alert DTO object
 	 * @throws Runtime exception
 	 */
 	private void rewriteVcopsIntegrationInfo(final AlertDTO alert) {
@@ -178,7 +239,8 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 			resourceDto = restClientVrops.getResourcesPerAdapterType(alertAdapterType);
 		} catch (Exception e) {
 			throw new RuntimeException(
-					String.format("Unable to update vCOPs integration for alert '%s', unable to fetch vROPs resources for adapter type '%s': %s", alert.getName(), alertAdapterType, e.getMessage()));
+					String.format("Unable to update vCOPs integration for alert '%s', unable to fetch vROPs resources for adapter type '%s': %s",
+							alert.getName(), alertAdapterType, e.getMessage()));
 		}
 		Optional<ResourcesDTO.ResourceList> targetResource = resourceDto.getResourceList().stream()
 				.filter(item -> item.getResourceKey().getResourceKindKey().equalsIgnoreCase(alertResourceType)).findFirst();
@@ -212,6 +274,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		alert.getRecipients().getVrops().setVcopsResourceKindKey(baseResourceKindKeys.stream().collect(Collectors.joining("&")));
 	}
 
+	/**
+	 * Return the vROPs adapter type for an alert.
+	 * 
+	 * @param alert
+	 * @return adapterType
+	 */	
 	private String getAdapterTypeForAlert(final AlertDTO alert) {
 		String targetResourceKindKeys = alert.getRecipients().getVrops().getVcopsResourceKindKey();
 		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(KEYS_SPLIT_KEY));
@@ -229,6 +297,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return adapterTypes.get(adapterTypes.size() - 1);
 	}
 
+	/**
+	 * Return the vROPs resource type for an alert.
+	 * 
+	 * @param alert
+	 * @return resource type
+	 */	
 	private String getResourceTypeForAlert(final AlertDTO alert) {
 		String targetResourceKindKeys = alert.getRecipients().getVrops().getVcopsResourceKindKey();
 		List<String> keysSplit = Arrays.asList(targetResourceKindKeys.split(KEYS_SPLIT_KEY));
@@ -245,6 +319,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return types.get(types.size() - 1);
 	}
 
+	/**
+	 * Finds alert by name.
+	 * 
+	 * @param alertName
+	 * @return AlertDTO
+	 */	
 	private AlertDTO findAlertByName(final String alertName) {
 		List<AlertDTO> alerts = getAllAlerts();
 		if (alerts == null || alerts.isEmpty()) {
@@ -262,6 +342,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		return null;
 	}
 
+	/**
+	 * Deserialize alert.
+	 * 
+	 * @param alertJson
+	 * @return AlertDTO
+	 */	
 	private AlertDTO deserializeAlert(final String alertJson) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -273,6 +359,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		}
 	}
 
+	/**
+	 * Deserialize alerts.
+	 * 
+	 * @param alertsJson
+	 * @return list of AlertDTO
+	 */	
 	private List<AlertDTO> deserializeAlerts(final String alertsJson) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -284,6 +376,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		}
 	}
 
+	/**
+	 * Deserialize content packs.
+	 * 
+	 * @param contentPacksJson
+	 * @return list of ContentPackDTO
+	 */	
 	private List<ContentPackDTO> deserializeContentPacks(final String contentPacksJson) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -296,6 +394,12 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 		}
 	}
 
+	/**
+	 * Serialize alert.
+	 * 
+	 * @param alert
+	 * @return JSON string
+	 */	
 	private String serializeAlert(final AlertDTO alert) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
