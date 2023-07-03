@@ -80,31 +80,18 @@ jobs:
           echo "MVN_BUILD_COMMAND is $MVN_BUILD_COMMAND"
           echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Fix com.vmware.pscoe.iac project version in master pom.xml
-        run: sed -i "s/<version>\${revision}/<version>${{ env.IAC_VERSION }}/" pom.xml
+      # - name: Cache Maven dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.m2/repository
+      #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-
 
       - name: Build 'keystore-example'
-        run: |
-          sed -i "s/<version>\${revision}/<version>${{ env.IAC_VERSION }}/" common/keystore-example/pom.xml
-          mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-          sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\${revision}/" common/keystore-example/pom.xml
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml    
       - name: Build 'npmlib'
-        run: |
-          sed -i "s/<version>\${revision}/<version>${{ env.IAC_VERSION }}/" maven/npmlib/pom.xml
-          mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-          sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\${revision}/" maven/npmlib/pom.xml
-
-      - name: Fix com.vmware.pscoe.iac project version in master pom.xml
-        run: sed -i "s/<version>${{ env.IAC_VERSION }}/<version>\${revision}/" pom.xml
-
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'iac'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'base-package'
