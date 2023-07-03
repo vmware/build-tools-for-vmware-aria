@@ -125,6 +125,16 @@
                         </execution>
                     </executions>
                 </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<!--
+						If we increase the version to latest, mvn install / deploy is gonig to 
+						fail with "You have to use a classifier to attach supplemental artifacts to the 
+						project instead of replacing them." 
+					-->
+					<version>2.4</version>
+				</plugin>
             </plugins>
         </pluginManagement>
     </build>
