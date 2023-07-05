@@ -1,3 +1,5 @@
+## v2.34.0 - 05 Jul 2023
+
 ### Enhancements
 * [artifact-manager] 104 / Deprecated Cloud Template Versioning
 * [vro-types] Declared new type VcVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo
