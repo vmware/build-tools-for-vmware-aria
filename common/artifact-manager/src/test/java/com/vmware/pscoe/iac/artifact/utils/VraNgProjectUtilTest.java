@@ -28,7 +28,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class VraNgProjectUtilTest {
 
@@ -37,6 +37,9 @@ public class VraNgProjectUtilTest {
 	 */
 	private RestClientVraNg restClient;
 
+	/**
+	 * Init before each test.
+	 */
 	@BeforeEach
 	void init() {
 		restClient = Mockito.mock(RestClientVraNg.class);
@@ -49,14 +52,14 @@ public class VraNgProjectUtilTest {
 	@Test
 	void testImportResourceActionWithProjectId() throws IOException {
 		//GIVEN
-		final String CONFIGURATION_PROJECT_ID = "configuration-file-project-id";
-		final String RESOURCE_ACTION_PROJECT_ID = "resource-action-file-project-id";
+		final String configurationProjectId = "configuration-file-project-id";
+		final String resourceActionProjectId = "resource-action-file-project-id";
 
-		when(restClient.getProjectId()).thenReturn(CONFIGURATION_PROJECT_ID);
+		when(restClient.getProjectId()).thenReturn(configurationProjectId);
 
 		ResourceActionMockBuilder resourceActionMockBuilder = new ResourceActionMockBuilder();
 		resourceActionMockBuilder.setName("testResourceAction");
-		resourceActionMockBuilder.setPropertyInRawData("projectId", RESOURCE_ACTION_PROJECT_ID);
+		resourceActionMockBuilder.setPropertyInRawData("projectId", resourceActionProjectId);
 		VraNgResourceAction resourceAction = resourceActionMockBuilder.build();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
@@ -66,20 +69,20 @@ public class VraNgProjectUtilTest {
 		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement);
 
 		//VERIFY
-		assertEquals(CONFIGURATION_PROJECT_ID, resourceActionJsonElement.get("projectId").getAsString());
+		assertEquals(configurationProjectId, resourceActionJsonElement.get("projectId").getAsString());
 	}
 
 	@Test
 	void testImportResourceActionWithEmptyProjectId() throws IOException {
 		//GIVEN
-		final String CONFIGURATION_PROJECT_ID = "configuration-file-project-id";
-		final String RESOURCE_ACTION_PROJECT_ID = "";
+		final String configurationProjectId = "configuration-file-project-id";
+		final String resourceActionProjectId = "";
 
-		when(restClient.getProjectId()).thenReturn(CONFIGURATION_PROJECT_ID);
+		when(restClient.getProjectId()).thenReturn(configurationProjectId);
 
 		ResourceActionMockBuilder resourceActionMockBuilder = new ResourceActionMockBuilder();
 		resourceActionMockBuilder.setName("testResourceAction");
-		resourceActionMockBuilder.setPropertyInRawData("projectId", RESOURCE_ACTION_PROJECT_ID);
+		resourceActionMockBuilder.setPropertyInRawData("projectId", resourceActionProjectId);
 		VraNgResourceAction resourceAction = resourceActionMockBuilder.build();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
@@ -95,9 +98,9 @@ public class VraNgProjectUtilTest {
 	@Test
 	void testImportResourceActionWithoutProjectId() throws IOException {
 		//GIVEN
-		final String CONFIGURATION_PROJECT_ID = "configuration-file-project-id";
+		final String configurationProjectId = "configuration-file-project-id";
 
-		when(restClient.getProjectId()).thenReturn(CONFIGURATION_PROJECT_ID);
+		when(restClient.getProjectId()).thenReturn(configurationProjectId);
 
 		ResourceActionMockBuilder resourceActionMockBuilder = new ResourceActionMockBuilder();
 		resourceActionMockBuilder.setName("testResourceAction");
