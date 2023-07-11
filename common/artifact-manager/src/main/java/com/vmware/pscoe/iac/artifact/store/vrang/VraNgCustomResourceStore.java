@@ -15,7 +15,12 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
@@ -47,6 +52,10 @@ import java.util.stream.Collectors;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CUSTOM_RESOURCES;
 
 public class VraNgCustomResourceStore extends AbstractVraNgStore {
+
+	/**
+	 * Current Organization Id
+	 */
 	private String currentOrganizationId;
 
 	@Override
