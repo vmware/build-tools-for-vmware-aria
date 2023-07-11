@@ -1,6 +1,6 @@
 {
 	"name": "@vmware-pscoe/vrotest",
-	"version": "2.32.1-SNAPSHOT",
+	"version": "2.34.1-SNAPSHOT",
 	"author": "VMware PSCoE",
 	"license": "VMware Confidential",
 	"description": "vRO Test Suite for NodeJS",
@@ -39,7 +39,7 @@
 		"@types/rollup": "0.54.0",
 		"ansi-colors": "4.1.1",
 		"charset-detector": "0.0.2",
-		"fast-xml-parser": "4.0.3",
+		"fast-xml-parser": "4.2.5",
 		"fs-extra": "10.0.0",
 		"gulp": "4.0.2",
 		"gulp-typescript": "6.0.0-alpha.1",
@@ -51,7 +51,8 @@
 		"rollup": "2.67.2",
 		"rollup-plugin-terser": "7.0.2",
 		"ts-node": "10.5.0",
-		"typescript": "4.5.5"
+		"typescript": "4.5.5",
+		"source-map": "^0.8.0-beta.0"
 	},
 	"bundledDependencies": [
 		"iconv-lite",

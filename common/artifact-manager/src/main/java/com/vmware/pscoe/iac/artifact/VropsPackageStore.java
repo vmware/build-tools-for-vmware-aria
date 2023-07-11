@@ -97,7 +97,7 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
  * @see #exportAllPackages(List, boolean)
  * @see #exportPackage(Package, File, boolean)
  */
-public class VropsPackageStore extends GenericPackageStore<VropsPackageDescriptor> {
+public final class VropsPackageStore extends GenericPackageStore<VropsPackageDescriptor> {
 	/**
 	 * Variable for logging.
 	 */
@@ -112,20 +112,38 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * Constant for policy metadata file name.
 	 */
     private static final String POLICY_METADATA_FILENAME = "policiesMetadata.vrops.json";
-    private static final String DASHBOARD_SHARE_METADATA_FILENAME = "metadata/dashboardSharingMetadata.vrops.json";
-    private static final String DASHBOARD_USER_ACTIVATE_METADATA_FILENAME = "metadata/dashboardUserActivationMetadata.vrops.json";
-    private static final String DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME = "metadata/dashboardGroupActivationMetadata.vrops.json";
-
+	/**
+	 * Sharing Dashboards file name.
+	 */
+	private static final String DASHBOARD_SHARE_METADATA_FILENAME = "metadata/dashboardSharingMetadata.vrops.json";
+	/**
+	 * Activating Dashboards using users file name.
+	 */
+	private static final String DASHBOARD_USER_ACTIVATE_METADATA_FILENAME = "metadata/dashboardUserActivationMetadata.vrops.json";
+	/**
+	 * Activating Dashboards using groups file name.
+	 */
+	private static final String DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME = "metadata/dashboardGroupActivationMetadata.vrops.json";
+	/**
+	 * Action constant.
+	 */
     private static final String ACTION_SHARE = "share";
 
 	/**
 	 * Constant for action unshare.
 	 */
     private static final String ACTION_UNSHARE = "unshare";
-
+	/**
+	 * Constant for action activate.
+	 */
     private static final String ACTION_ACTIVATE = "activate";
-    private static final String ACTION_DEACTIVATE= "deactivate";
-
+	/**
+	 * Constant for action deactivate.
+	 */
+	private static final String ACTION_DEACTIVATE = "deactivate";
+	/**
+	 * CLI Manager.
+	 */
     private CliManagerVrops cliManager;
 
 	/**
@@ -153,22 +171,43 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         tempVropsExportDir = new File(this.tempDir, "vrops-export");
         tempVropsImportDir = new File(this.tempDir, "vrops-import");
     }
-    
-    public VropsPackageStore(final CliManagerVrops cliManager) {
+
+	/**
+	 * Constructor.
+	 * @param cliManager CLI Manager
+	 */
+	public VropsPackageStore(final CliManagerVrops cliManager) {
         this(cliManager, createTempDirectory());
     }
-    
-    public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops) {
+
+	/**
+	 * Constructor.
+	 * @param cliManager CLI Manager
+	 * @param restClientVrops vROPs REST client
+	 */
+	public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops) {
         this(cliManager);
         this.restClient = restClientVrops;
     }
-    
-    public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final Version productVersion) {
+
+	/**
+	 * Constructor.
+	 * @param cliManager CLI Manager
+	 * @param restClientVrops REST Client for vROPs
+	 * @param productVersion Product version
+	 */
+	public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final Version productVersion) {
         this(cliManager);
         this.restClient = restClientVrops;
         super.setProductVersion(productVersion);
-    }    
+    }
 
+	/**
+	 * Constructor.
+	 * @param cliManager CLI Manager
+	 * @param restClientVrops REST Client for vROPs
+	 * @param tempDir Temp DIR
+	 */
     public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final File tempDir) {
         this.cliManager = cliManager;
         this.restClient = restClientVrops;
@@ -190,7 +229,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * @return the extracted packages
 	 */
     @Override
-    public final List<Package> getPackages() {
+    public List<Package> getPackages() {
 		throw new NotImplementedException("Not implemented");
     }
 
@@ -201,7 +240,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * @return the exported packages
 	 */
     @Override
-    public List<Package> exportAllPackages(final List<Package> packages, boolean dryrun) {
+    public List<Package> exportAllPackages(final List<Package> packages, final boolean dryrun) {
         if (packages == null) {
             return Collections.emptyList();
         }
@@ -221,7 +260,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * @return the imported package
 	 */
 	@Override
-	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+	public List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
 		return this.importAllPackages(pkg, dryrun, false,  enableBackup);
 	}
 
@@ -236,7 +275,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
      * the file system.
      */
     @Override
-    public final List<Package> importAllPackages(final List<Package> packages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
+    public List<Package> importAllPackages(final List<Package> packages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
         validateFilesystem(packages);
         List<Package> sourceEndpointPackages = packages;
 
@@ -260,7 +299,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
      * @return package
      */
     @Override
-    public Package exportPackage(final Package vropsPackage, final VropsPackageDescriptor vropsPackageDescriptor, boolean dryrun) {
+    public Package exportPackage(final Package vropsPackage, final VropsPackageDescriptor vropsPackageDescriptor, final boolean dryrun) {
         logger.info(String.format(PackageStore.PACKAGE_EXPORT, vropsPackage));
 
         if (!Files.exists(tempVropsExportDir.toPath())) {
@@ -624,7 +663,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         }
     }
 
-	private void manageDashboardActivation(final File rootDir, boolean isGroupActivation) {
+	private void manageDashboardActivation(final File rootDir, final boolean isGroupActivation) {
 		Map<String, Map<String, List<String>>> activationMetadata = this.getDashboardActivationMetadata(rootDir, isGroupActivation);
 		if (activationMetadata.isEmpty()) {
 			return;
@@ -790,7 +829,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Map<String, List<String>>> getDashboardActivationMetadata(final File rootDir, boolean isGroupActivation) {
+    private Map<String, Map<String, List<String>>> getDashboardActivationMetadata(final File rootDir, final boolean isGroupActivation) {
         // get dashboard activation metadata
         File dashboardsDir = new File(rootDir.getPath(), "dashboards");
         if (!dashboardsDir.exists()) {
@@ -800,7 +839,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         String fileName = isGroupActivation ? DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME : DASHBOARD_USER_ACTIVATE_METADATA_FILENAME;
         String resourceType = isGroupActivation ? "group" : "user";
         try {
-            File dashboardActivationMetadataFile = new File(dashboardsDir,fileName);
+            File dashboardActivationMetadataFile = new File(dashboardsDir, fileName);
             if (!dashboardActivationMetadataFile.exists()) {
                 return Collections.emptyMap();
             }
@@ -816,7 +855,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         }
     }
 
-    private void storePolicyMetadata(File rootDir, Map<String, String> policyMetadata) {
+    private void storePolicyMetadata(final File rootDir, final Map<String, String> policyMetadata) {
         // generate policy metadata file
         File policyMetadataFile = new File(rootDir, POLICY_METADATA_FILENAME);
         String policyMetadataContent = "";
@@ -855,7 +894,9 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 
             dashboardShareMetadataContent = this.serializeObject(metadata);
             dashboardShareMetadataContent = dashboardShareMetadataContent == null ? "" : dashboardShareMetadataContent;
-            logger.info("Generating dashboard sharing metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
+			logger.debug("Creating parent folders...");
+			dashboardShareMetadataFile.getParentFile().mkdirs();
+			logger.info("Generating dashboard sharing metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
             Files.write(dashboardShareMetadataFile.toPath(), dashboardShareMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
         } catch (JsonProcessingException e) {
             String message = String.format("Error generating dashboard sharing metadata file '%s' : %s", DASHBOARD_SHARE_METADATA_FILENAME, e.getMessage());
@@ -866,7 +907,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         }
     }
 
-    private void storeDashboardActivationMetadata(final File rootDir, final List<String> dashboards, boolean isGroupActivation) {
+    private void storeDashboardActivationMetadata(final File rootDir, final List<String> dashboards, final boolean isGroupActivation) {
         // generate dashboard activation metadata file
         String fileName = isGroupActivation ? DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME : DASHBOARD_USER_ACTIVATE_METADATA_FILENAME;
         File dashboardActivationMetadataFile = new File(rootDir, fileName);
@@ -886,14 +927,16 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 
             dashboardActivationMetadataContent = this.serializeObject(metadata);
             dashboardActivationMetadataContent = dashboardActivationMetadataContent == null ? "" : dashboardActivationMetadataContent;
-            logger.info("Generating dashboard activation metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
+			logger.debug("Creating parent folders...");
+			dashboardActivationMetadataFile.getParentFile().mkdirs();
+			logger.info("Generating dashboard activation metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
             Files.write(dashboardActivationMetadataFile.toPath(), dashboardActivationMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
         } catch (JsonProcessingException e) {
             String message = String.format("Error generating dashboard activation metadata file '%s' for resource of type %s: %s", fileName, resourceType, e.getMessage());
-            logger.warn(message);
+            logger.warn(message, e);
         } catch (IOException e) {
             String message = String.format("Error exporting dashboard activation metadata file '%s' for resource of type %s : %s", fileName, resourceType, e.getMessage());
-            logger.warn(message);
+            logger.warn(message, e);
         }
     }
 
@@ -1161,7 +1204,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * @return the exported package
 	 */
     @Override
-    public Package exportPackage(final Package pkg, boolean dryrun) {
+    public Package exportPackage(final Package pkg, final boolean dryrun) {
         throw new NotImplementedException("Not implemented");
     }
 
@@ -1173,7 +1216,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * @return the exported package
 	 */
     @Override
-    public Package exportPackage(final Package pkg, final File exportDescriptor, boolean dryrun) {
+    public Package exportPackage(final Package pkg, final File exportDescriptor, final boolean dryrun) {
         VropsPackageDescriptor vropsPackageDescriptor = VropsPackageDescriptor.getInstance(exportDescriptor);
 
         return this.exportPackage(pkg, vropsPackageDescriptor, dryrun);
@@ -1187,7 +1230,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
 	 * @return the imported package
 	 */
     @Override
-    public Package importPackage(final Package pkg, boolean dryrun, boolean mergePackages) {
+    public Package importPackage(final Package pkg, final boolean dryrun, final boolean mergePackages) {
         logger.info(String.format(PackageStore.PACKAGE_IMPORT, pkg));
 
         if (!Files.exists(tempVropsImportDir.toPath())) {
@@ -1246,7 +1289,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     @Override
-    protected Package deletePackage(final Package pkg, boolean withContent, boolean dryrun) {
+    protected Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
         throw new NotImplementedException("Not implemented");
     }
 
@@ -1256,7 +1299,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
     }
 
     @Override
-    protected void deleteContent(final Content content, boolean dryrun) {
+    protected void deleteContent(final Content content, final boolean dryrun) {
         throw new NotImplementedException("Not implemented");
     }
 
@@ -1478,7 +1521,7 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         return reportZip;
     }
 
-    private static int fileCopyAndCloseInput(final File in, final OutputStream out) throws IOException{
+    private static int fileCopyAndCloseInput(final File in, final OutputStream out) throws IOException {
         try (FileInputStream is = new FileInputStream(in)) {
             return IOUtils.copy(is, out);
         }
@@ -1496,6 +1539,13 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         return null;
     }
 
+	/**
+	 *
+	 * @param propFile Properties file
+	 * @param prefix Properties prefix
+	 * @param out Output stream
+	 * @throws IOException throws IO exception if input stream not available
+	 */
     public static void fileCopyFiltering(final File propFile, final String prefix, final OutputStream out) throws IOException {
         Properties filtered  = new Properties();
         Properties props = new Properties();
@@ -1511,6 +1561,13 @@ public class VropsPackageStore extends GenericPackageStore<VropsPackageDescripto
         filtered.store(out, null);
     }
 
+	/**
+	 *
+	 * @param view View file
+	 * @return Returns View ID
+	 * @throws ConfigurationException throws configuration exception incase of parsing error
+	 * @throws IOException throws IO exception if input stream not available
+	 */
     public static String getViewId(final File view) throws ConfigurationException, IOException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;

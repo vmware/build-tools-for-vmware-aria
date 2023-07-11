@@ -1,8 +1,22 @@
+## v2.34.0 - 05 Jul 2023
+
+### Enhancements
+* [artifact-manager] 104 / Deprecated Cloud Template Versioning
+* [vro-types] Declared new type VcVirtualPCIPassthroughBackingInfo = VcVirtualDeviceBackingInfo & VcVirtualPCIPassthroughDeviceBackingInfo
 
 ### Fixes
-
-* [vro-types] Fixed definitions of RESTHost, XMLManager and HTTPBasicAuthentication to align with actual Orchestrator behaviour
+* [artifact-manager] IAC-780 / VRLI Alerts Push Fails for vROPs Enabled Alerts on Large Scale Environments
+* [vro-scripting-api] 110 / Mocking for configuration elements is incorrect
+* [actions-package] github issue# 73 is addressed. Solution is to replace line breaks in description by space
+* [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
+* [artifact-manager] 108 / Pushing and pulling from/to vRA 8.12 fails with buildtools 2.32.0
 * [vRA-NG] IAC-772 / When pushing Resource Actions (RAs), the ones that are scoped to a single project, should have their projectId modified to correspond to the one in configuration
+
+## v2.33.0 - 02 Jun 2023
+
+### Fixes
+* [vrotest] IAC-777 / Package Build Failing - typescript folder build error due to forcing of newer version of the terser devDependency
+* [vro-types] Fixed definitions of RESTHost, XMLManager and HTTPBasicAuthentication to align with actual Orchestrator behaviour
 * [maven-plugins] IAC-706 / Package Build Failing - Typescript transpilation failed since Command line is too long
 
 ## v2.32.0 - 11 May 2023
