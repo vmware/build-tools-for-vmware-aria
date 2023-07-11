@@ -272,7 +272,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
     }
 
     /**
-	 * Fixes the project id in the given object with the one set in the configuration
+	 * Fixes the project id in the given object with the one set in the configuration.
+     * @param customResourceJsonElement
 	 */
 	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
 		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement);
