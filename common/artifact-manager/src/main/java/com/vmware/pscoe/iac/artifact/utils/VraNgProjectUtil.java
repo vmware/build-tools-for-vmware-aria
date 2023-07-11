@@ -15,20 +15,18 @@ package com.vmware.pscoe.iac.artifact.utils;
  * #L%
  */
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
-import org.apache.commons.lang3.StringUtils;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-public class VraNgProjectUtil {
+public final class VraNgProjectUtil {
 
-    private VraNgProjectUtil() {}
+    private VraNgProjectUtil() { }
 
 	/**
-	 * Fixes the project id in the given object with the one set in the configuration
+	 * Fixes the project id in the given object with the one set in the configuration.
+	 * @param restClient
+	 * @param customResourceJsonElement
 	 */
 	public static void changeProjectIdBetweenOrganizations(final RestClientVraNg restClient, final JsonObject customResourceJsonElement) {
 		String defaultProjectId = restClient.getProjectId();

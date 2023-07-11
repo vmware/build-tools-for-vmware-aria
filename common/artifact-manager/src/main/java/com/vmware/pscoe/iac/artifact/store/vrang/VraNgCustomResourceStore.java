@@ -54,26 +54,39 @@ import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CUSTOM_RES
 public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 	/**
-	 * Current Organization Id
+	 * Current Organization Id.
 	 */
 	private String currentOrganizationId;
 
+	/**
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param config
+	 * @param vraNgPackageDescriptor
+	 */
 	@Override
-	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
-					 VraNgPackageDescriptor vraNgPackageDescriptor) {
+	public void init(final RestClientVraNg restClient, final Package vraNgPackage, final ConfigurationVraNg config,
+					final VraNgPackageDescriptor vraNgPackageDescriptor) {
 		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 		this.currentOrganizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 	}
 
+	/**
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param config
+	 * @param vraNgPackageDescriptor
+	 * @param logger
+	 */
 	@Override
-	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
-					 VraNgPackageDescriptor vraNgPackageDescriptor, Logger logger) {
+	public void init(final RestClientVraNg restClient, final Package vraNgPackage, final ConfigurationVraNg config,
+					 final VraNgPackageDescriptor vraNgPackageDescriptor, final Logger logger) {
 		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor, logger);
 		this.currentOrganizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of custom resources
 	 */
@@ -83,7 +96,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 */
 	@Override
 	protected void exportStoreContent() {
@@ -99,12 +112,12 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 *
 	 * @param customResourcesToExport list of custom resources
 	 */
 	@Override
-	protected void exportStoreContent(List<String> customResourcesToExport) {
+	protected void exportStoreContent(final List<String> customResourcesToExport) {
 		Map<String, VraNgCustomResource> customResourcesOnServer = this.restClient.getAllCustomResources();
 		Set<VraNgCustomResource> serverCustomResources =
 			customResourcesOnServer.values().stream().collect(Collectors.toSet());
@@ -126,7 +139,10 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		});
 	}
 
-	public void importContent(File sourceDirectory) {
+	/**
+	 * @param sourceDirectory
+	 */
+	public void importContent(final File sourceDirectory) {
 		File customResourcesFolder = Paths.get(sourceDirectory.getPath(), DIR_CUSTOM_RESOURCES).toFile();
 		if (!customResourcesFolder.exists()) {
 			logger.info("Custom Resource folder is missing '{}' ", VraNgDirs.DIR_CONTENT_SOURCES);
@@ -152,9 +168,10 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	 * @param vraNgPackage       source package
 	 * @param customResourceName source custom resource name
 	 * @param customResourceJson source custom resource json
+	 * @return custom resource file
 	 */
-	private File storeCustomResourceOnFilesystem(Package vraNgPackage, String customResourceName,
-												 String customResourceJson) {
+	private File storeCustomResourceOnFilesystem(final Package vraNgPackage, final String customResourceName,
+												 final String customResourceJson) {
 		File store = new File(vraNgPackage.getFilesystemPath());
 		File customResource = Paths.get(store.getPath(), DIR_CUSTOM_RESOURCES, customResourceName + ".json").toFile();
 		customResource.getParentFile().mkdirs();
@@ -171,9 +188,9 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 				+ "prevent unintentional deletitions in multi-tenant environments. "
 				+ "ID is a unique identifier for the entire vRA, not dependant on the tenant.");
 
-			customResourceJson = gson.toJson(customResourceJsonElement);
+			final String customResourceJsonString = gson.toJson(customResourceJsonElement);
 			logger.info("Created file {}", Files.write(Paths.get(customResource.getPath()),
-				customResourceJson.getBytes(), StandardOpenOption.CREATE));
+				customResourceJsonString.getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store custom resource {} {}", customResourceName, customResource.getPath());
 			throw new RuntimeException("Unable to store custom resource.", e);
@@ -190,7 +207,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	 *
 	 * @param jsonFile file of the resource action
 	 */
-	private void importCustomResource(File jsonFile) {
+	private void importCustomResource(final File jsonFile) {
 		String customResourceName = FilenameUtils.removeExtension(jsonFile.getName());
 		String resourceType = "[UNKNOWN]";
 		String existingObjectId = null;
@@ -244,7 +261,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 			// Adds the Pre-Fetched ID of the Custom Resource
 			// in case if the initial CR deletion failed.
-			if(existingObjectId != null && couldNotDeleteCustomResource) {
+			if (existingObjectId != null && couldNotDeleteCustomResource) {
 				customResourceJsonElement.add("id", new JsonPrimitive(existingObjectId));
 			}
 
@@ -279,7 +296,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Custom Resource Second Day action name validation
+	 * Custom Resource Second Day action name validation.
 	 *
 	 * @param customResourceJsonElement - The CR to validate
 	 */
@@ -293,10 +310,12 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
         		Matcher matcher = pattern.matcher(name);
 
 				if (
-					matcher.find() || 
-					name.startsWith("_") || name.endsWith("_") || 
-					name.startsWith(".") || name.endsWith(".") ||
-					name.contains(" ")
+					matcher.find()
+						|| name.startsWith("_")
+						|| name.endsWith("_")
+						|| name.startsWith(".")
+						|| name.endsWith(".")
+						|| name.contains(" ")
 				) {
 					throw new RuntimeException(String.format("Action's name: '%s' must not contain special symbols except . : -" 
 						+ "_and must not start or end with a dot or '_' and must not contain spaces.", name)
@@ -306,7 +325,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		});
 	}
 
-	private boolean tryDeleteCustomResource(String customResourceName, String existingObjectId,
+	private boolean tryDeleteCustomResource(final String customResourceName, final String existingObjectId,
 											final JsonObject customResourceJsonElement) {
 		try {
 			restClient.deleteCustomResource(customResourceName, existingObjectId);
@@ -325,7 +344,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		return true;
 	}
 
-	private String getIdOfCustomResourceOfType(String type) {
+	private String getIdOfCustomResourceOfType(final String type) {
 		if (type == null) {
 			return null;
 		}
@@ -344,14 +363,14 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		return null;
 	}
 
-	private static boolean isCustomResourceExistingInDifferentOrganization(HttpClientErrorException clientException) {
+	private static boolean isCustomResourceExistingInDifferentOrganization(final HttpClientErrorException clientException) {
 		HttpStatus status = clientException.getStatusCode();
 		final String magicMessage = "Custom resource with the same resource type already exists! Use a different resource type name!";
 		String message = clientException.getMessage();
 		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
 	}
 
-	private static boolean isCustomResourceActiveAttached(HttpClientErrorException clientException) {
+	private static boolean isCustomResourceActiveAttached(final HttpClientErrorException clientException) {
 		HttpStatus status = clientException.getStatusCode();
 		final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
 		String message = clientException.getMessage();
@@ -391,9 +410,11 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Fixes the organization id / tenant id in the given object with the one set in the configuration
+	 * Fixes the organization id / tenant id in the given object with the one set in the configuration.
+	 * @param jsonObject
+	 * @param key
 	 */
-	private void fixOrgId(final JsonObject jsonObject, String key) {
+	private void fixOrgId(final JsonObject jsonObject, final String key) {
 		if (jsonObject.has(key)) {
 			jsonObject.remove(key);
 		}
@@ -402,7 +423,8 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Fixes the project id in the given object with the one set in the configuration
+	 * Fixes the project id in the given object with the one set in the configuration.
+	 * @param customResourceJsonElement
 	 */
 	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
 		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement);
