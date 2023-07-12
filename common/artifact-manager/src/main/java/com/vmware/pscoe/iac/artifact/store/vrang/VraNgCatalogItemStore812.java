@@ -53,8 +53,8 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	 * The Form is returned, so we can set it's id in the catalog item
 	 * Stores the forms under {{catalog_item_dir}}/forms
 	 *
-	 * @param serverPackage
-	 * @param catalogItem
+	 * @param serverPackage server package
+	 * @param catalogItem catalog item
 	 *
 	 * @return VraNgCustomForm
 	 */
@@ -143,7 +143,7 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	 * Sorts the versions of the catalog items blueprints and returns the latest one
 	 * sorted by date.
 	 *
-	 * @param catalogItem
+	 * @param catalogItem catalog item
 	 * @return JsonElement
 	 */
 	private JsonElement getCatalogItemLatestVersion(final VraNgCatalogItem catalogItem) {
@@ -178,8 +178,8 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	 * Import a custom form given the catalog item. 
 	 * ( form Id is extracted from the item and the fs is queried )
 	 *
-	 * @param catalogItem
-	 * @param catalogItemFolder
+	 * @param catalogItem catalog item
+	 * @param catalogItemFolder catalog item folder
 	 */
 	@Override
 	protected void importCustomForm(final VraNgCatalogItem catalogItem, final File catalogItemFolder) {

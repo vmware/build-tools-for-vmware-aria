@@ -55,11 +55,11 @@ public class VraNgCatalogItem {
 	/**
 	 * Constructor function.
 	 * 
-	 * @param idIn
-	 * @param sourceIdIn
-	 * @param nameIn
-	 * @param sourceNameIn
-	 * @param typeIn
+	 * @param idIn Id input variable
+	 * @param sourceIdIn source input variable
+	 * @param nameIn name input variable
+	 * @param sourceNameIn source name input variable
+	 * @param typeIn type input variable
 	 */
 	public VraNgCatalogItem(
 			final String idIn,
@@ -124,7 +124,7 @@ public class VraNgCatalogItem {
 	/**
 	 * setName.
 	 *
-	 * @param nameIn
+	 * @param nameIn nane value
 	 */
 	public void setName(final String nameIn) {
 		this.name = nameIn;
@@ -141,7 +141,7 @@ public class VraNgCatalogItem {
 
 	/**
 	 * Setter for iconId.
-	 * @param iconIdIn
+	 * @param iconIdIn icon id value
 	 */
 	public void setIconId(final String iconIdIn) {
 		this.iconId = iconIdIn;
@@ -158,7 +158,7 @@ public class VraNgCatalogItem {
 
 	/**
 	 * Setter for icon extension.
-	 * @param iconExtensionIn
+	 * @param iconExtensionIn icon extension value
 	 */
 	public void setIconExtension(final String iconExtensionIn) {
 		this.iconExtension = iconExtensionIn;

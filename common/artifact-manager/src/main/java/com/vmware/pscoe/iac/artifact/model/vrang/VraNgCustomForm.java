@@ -66,15 +66,15 @@ public class VraNgCustomForm {
 
 	/**
 	 * Constructor function for VraNgCustomForm.
-	 * @param idIn
-	 * @param nameIn
-	 * @param formIn
-	 * @param stylesIn
-	 * @param sourceIdIn
-	 * @param sourceTypeIn
-	 * @param typeIn
-	 * @param statusIn
-	 * @param formFormatIn
+	 * @param idIn Id value
+	 * @param nameIn name value
+	 * @param formIn form value
+	 * @param stylesIn form styles
+	 * @param sourceIdIn form source id value
+	 * @param sourceTypeIn form source type value
+	 * @param typeIn form type value
+	 * @param statusIn form status
+	 * @param formFormatIn form format
 	 */
 	public VraNgCustomForm(final String idIn, final String nameIn, final String formIn, final String stylesIn, final String sourceIdIn, final String sourceTypeIn,
 			final String typeIn, final String statusIn, final String formFormatIn) {
@@ -164,7 +164,7 @@ public class VraNgCustomForm {
 	/**
 	 * sourceType.
 	 *
-	 * @param sourceTypeIn
+	 * @param sourceTypeIn source type
 	 */
 	public void setSourceType(final String sourceTypeIn) {
 		this.sourceType = sourceTypeIn;
