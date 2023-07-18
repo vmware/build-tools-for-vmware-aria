@@ -153,6 +153,12 @@
 			<version>3.5.15</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<version>5.2.0</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- snakeyaml is included in  jackson-dataformat-yaml artifact-->
 		<!-- <dependency>
 			<groupId>org.yaml</groupId>
