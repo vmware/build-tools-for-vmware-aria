@@ -4,7 +4,6 @@ import { Routes, RouterModule } from "@angular/router";
 import { HttpModule } from "@angular/http";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
-import { ClarityModule } from "clarity-angular";
 import { Store } from "@ngrx/store";
 import { EXTENSION_ROUTE, ExtensionNavRegistration } from "@vcd/sdk/common";
 import { VcdApiClient, VcdSdkModule } from "@vcd/sdk";
@@ -22,7 +21,6 @@ const ROUTES: Routes = [
 
 @NgModule({
     imports: [
-        ClarityModule,
         CommonModule,
         HttpModule,
         FormsModule,
