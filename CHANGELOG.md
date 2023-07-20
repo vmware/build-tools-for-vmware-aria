@@ -1,3 +1,6 @@
+### Fixes
+* [artifact-manager] 148 / vra-ng:pull command failure when import/export tags contains underscore
+
 ## v2.34.0 - 05 Jul 2023
 
 ### Enhancements
