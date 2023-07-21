@@ -116,10 +116,10 @@ public class VraNgTypeStoreFactory {
 	/**
 	 * Constructor function.
 	 *
-	 * @param restClientNg
-	 * @param vraPackageNg
-	 * @param configNg
-	 * @param descriptorNg
+	 * @param restClientNg rest client 
+	 * @param vraPackageNg vra package
+	 * @param configNg vra config
+	 * @param descriptorNg vra descriptor
 	 */
 	protected VraNgTypeStoreFactory(
 			final RestClientVraNg restClientNg,
@@ -135,10 +135,10 @@ public class VraNgTypeStoreFactory {
 	/**
 	 * Factory method to create.
 	 *
-	 * @param restClient
-	 * @param vraNgPackage
-	 * @param config
-	 * @param descriptor
+	 * @param restClient rest client
+	 * @param vraNgPackage vra package
+	 * @param config config vra
+	 * @param descriptor package descriptor
 	 * @return VraNgTypeStoreFactory
 	 */
 	public static VraNgTypeStoreFactory withConfig(

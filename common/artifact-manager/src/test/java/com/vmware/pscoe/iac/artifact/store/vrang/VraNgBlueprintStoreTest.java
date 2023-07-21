@@ -15,48 +15,53 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintMockBuilder;
-import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintVersionsMockBuilder;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
-
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
+ import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+ import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+ import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintMockBuilder;
+ import com.vmware.pscoe.iac.artifact.model.Package;
+ import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+ import com.vmware.pscoe.iac.artifact.model.PackageType;
+ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+ import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+ 
+ import org.junit.Rule;
+ import org.junit.jupiter.api.AfterEach;
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+ import org.junit.rules.TemporaryFolder;
+ import org.mockito.Mockito;
+ 
+ import java.io.IOException;
+ import java.text.ParseException;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+ import static org.junit.Assert.assertEquals;
+ import static org.junit.Assert.assertThrows;
+ 
+ import static org.mockito.Mockito.when;
+ import static org.mockito.Mockito.never;
+ import static org.mockito.Mockito.verify;
+ import static org.mockito.Mockito.times;
+ import static org.mockito.Mockito.any;
+ import static org.mockito.Mockito.anyString;
 
 /**
  * NOTE: This does not test duplicate names from one content source, since the Store is not responsible for that kind of logic.
- *
- * @TODO ADD assertions for versions when exporting
  */
 public class VraNgBlueprintStoreTest {
 
+	/*
+	 * Intialize TemporaryFolder class.
+	 */
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
+	/*
+	 * Define variables
+	 */
 	protected VraNgBlueprintStore store;
 	protected RestClientVraNg restClient;
 	protected Package pkg;
@@ -125,9 +130,7 @@ public class VraNgBlueprintStoreTest {
 		store.exportContent();
 
 		String[] expectedBlueprints = {"ngnix"};
-		String[] expectedBlueprintFiles = {"content.yaml",
-			"details.json",
-			"versions.json"};
+		String[] expectedBlueprintFiles = {"content.yaml", "details.json"};
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedBlueprints);
@@ -154,9 +157,7 @@ public class VraNgBlueprintStoreTest {
 		store.exportContent();
 
 		String[] expectedBlueprints = {"ngnix"};
-		String[] expectedBlueprintFiles = {"content.yaml",
-			"details.json",
-			"versions.json"};
+		String[] expectedBlueprintFiles = {"content.yaml", "details.json"};
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedBlueprints);
@@ -211,53 +212,7 @@ public class VraNgBlueprintStoreTest {
 	}
 
 	@Test
-	void testImportContentFlipsVersions() throws IOException, ParseException {
-		// GIVEN
-		List<String> blueprintNames = new ArrayList<>();
-		blueprintNames.add("nginx");
-
-		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
-
-		BlueprintMockBuilder builder = new BlueprintMockBuilder("nginx");
-		VraNgBlueprint blueprint = builder.build();
-		BlueprintVersionsMockBuilder versionsMockBuilder = new BlueprintVersionsMockBuilder(blueprint);
-		versionsMockBuilder.setVersions(3);
-		JsonArray versionsArray = versionsMockBuilder.build();
-
-		fsMocks.blueprintFsMocks().addBlueprint(blueprint, versionsArray.toString());
-
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json", "versions.json"});
-
-		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
-
-		when(restClient.getAllBlueprints()).thenReturn(bluePrintsOnServer);
-
-		// START TEST
-		store.importContent(tempFolder.getRoot());
-
-		// VERIFY
-		verify(restClient, times(1)).createBlueprint(any());
-
-		ArgumentCaptor<String> bpIdCaptor = ArgumentCaptor.forClass(String.class);
-		ArgumentCaptor<JsonObject> jsonObjectCaptor = ArgumentCaptor.forClass(JsonObject.class);
-
-		verify(restClient, times(3)).importBlueprintVersion(
-			bpIdCaptor.capture(),
-			jsonObjectCaptor.capture()
-		);
-
-		Date first = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(0).get("createdAt"));
-		Date second = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(1).get("createdAt"));
-		Date third = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(2).get("createdAt"));
-
-		// Assert ordering
-		assertEquals(-1, first.compareTo(second));
-		assertEquals(-1, second.compareTo(third));
-	}
-
-	@Test
-	void testImportContentWithNoVersions() throws IOException, ParseException {
+	void testImportContent() throws IOException, ParseException {
 		// GIVEN
 		List<String> blueprintNames = new ArrayList<>();
 		blueprintNames.add("nginx");
@@ -286,79 +241,6 @@ public class VraNgBlueprintStoreTest {
 	}
 
 	@Test
-	void testImportContentFlipsVersionsWithDescending() throws IOException, ParseException {
-		// GIVEN
-		List<String> blueprintNames = new ArrayList<>();
-		blueprintNames.add("nginx");
-
-		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
-
-		BlueprintMockBuilder builder = new BlueprintMockBuilder("nginx");
-		VraNgBlueprint blueprint = builder.build();
-		BlueprintVersionsMockBuilder versionsMockBuilder = new BlueprintVersionsMockBuilder(blueprint);
-		versionsMockBuilder.setVersions(3);
-		JsonArray tempArray = versionsMockBuilder.build();
-		JsonArray versionsArray = new JsonArray();
-		versionsArray.add(tempArray.get(2));
-		versionsArray.add(tempArray.get(1));
-		versionsArray.add(tempArray.get(0));
-
-		fsMocks.blueprintFsMocks().addBlueprint(blueprint, versionsArray.toString());
-
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json", "versions.json"});
-
-		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
-
-		when(restClient.getAllBlueprints()).thenReturn(bluePrintsOnServer);
-
-		// START TEST
-		store.importContent(tempFolder.getRoot());
-
-		// VERIFY
-		verify(restClient, times(1)).createBlueprint(any());
-
-		ArgumentCaptor<String> bpIdCaptor = ArgumentCaptor.forClass(String.class);
-		ArgumentCaptor<JsonObject> jsonObjectCaptor = ArgumentCaptor.forClass(JsonObject.class);
-
-		verify(restClient, times(3)).importBlueprintVersion(
-			bpIdCaptor.capture(),
-			jsonObjectCaptor.capture()
-		);
-
-		// Assert ordering
-		Date first = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(0).get("createdAt"));
-		Date second = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(1).get("createdAt"));
-		Date third = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(2).get("createdAt"));
-
-		// Assert ordering
-		assertEquals(-1, first.compareTo(second));
-		assertEquals(-1, second.compareTo(third));
-	}
-
-	@Test
-	void testExportContentWithoutVersions() {
-		// GIVEN
-		List<VraNgBlueprint> blueprints = new ArrayList<>();
-		BlueprintMockBuilder mockBuilder = new BlueprintMockBuilder("ngnix");
-
-		blueprints.add(mockBuilder.setRequestScopeOrg(true).build());
-
-		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(null);
-		when(restClient.getAllBlueprints()).thenReturn(blueprints);
-		when(config.getIgnoreBlueprintVersions()).thenReturn(true);
-
-		// TEST
-		store.exportContent();
-
-		String[] expectedBlueprintFiles = {"content.yaml", "details.json"};
-
-		// VERIFY
-		AssertionsHelper.assertFolderContainsFiles(
-			fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "ngnix"), expectedBlueprintFiles);
-	}
-
-	@Test
 	void testImportContentForNonExistingBlueprintsInConfiguration() throws IOException, ParseException {
 		// GIVEN
 		List<String> blueprintNames = new ArrayList<>();
@@ -368,13 +250,11 @@ public class VraNgBlueprintStoreTest {
 
 		BlueprintMockBuilder builder = new BlueprintMockBuilder("nginx");
 		VraNgBlueprint blueprint = builder.build();
-		BlueprintVersionsMockBuilder versionsMockBuilder = new BlueprintVersionsMockBuilder(blueprint);
-		versionsMockBuilder.setVersions(3);
-		JsonArray versionsArray = versionsMockBuilder.build();
-		fsMocks.blueprintFsMocks().addBlueprint(blueprint, versionsArray.toString());
 
+		fsMocks.blueprintFsMocks().addBlueprint(blueprint);
+		
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json", "versions.json"});
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json"});
 
 		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
 
@@ -391,25 +271,5 @@ public class VraNgBlueprintStoreTest {
 
 		// VERIFY
 		verify(restClient, times(1)).createBlueprint(any());
-		ArgumentCaptor<String> bpIdCaptor = ArgumentCaptor.forClass(String.class);
-		ArgumentCaptor<JsonObject> jsonObjectCaptor = ArgumentCaptor.forClass(JsonObject.class);
-
-		verify(restClient, times(3)).importBlueprintVersion(
-			bpIdCaptor.capture(),
-			jsonObjectCaptor.capture()
-		);
-
-		Date first = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(0).get("createdAt"));
-		Date second = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(1).get("createdAt"));
-		Date third = this.getDateFromJsonElement(jsonObjectCaptor.getAllValues().get(2).get("createdAt"));
-
-		// Assert ordering
-		assertEquals(-1, first.compareTo(second));
-		assertEquals(-1, second.compareTo(third));
-	}
-
-	private Date getDateFromJsonElement(JsonElement jsonElement) throws ParseException {
-		return new SimpleDateFormat(BlueprintVersionsMockBuilder.DATE_FORMAT).parse(
-			jsonElement.getAsJsonPrimitive().toString().replaceAll("^\"|\"$", ""));
 	}
 }

@@ -65,8 +65,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * Constructor for RestClientVraNg.
 	 * 
-	 * @param configuration
-	 * @param restTemplate
+	 * @param configuration configuration vra
+	 * @param restTemplate rest template
 	 */
 	protected RestClientVraNg(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
 		super(configuration, restTemplate);
@@ -79,7 +79,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * downloadIcon.
 	 * 
-	 * @param iconId
+	 * @param iconId icon id
 	 * @return ResponseEntity
 	 */
 	public ResponseEntity<byte[]> downloadIcon(final String iconId) {
@@ -93,7 +93,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * Upload an Icon.
 	 * 
-	 * @param iconFile
+	 * @param iconFile icon file
 	 * @return ResponseEntity
 	 */
 	public ResponseEntity<String> uploadIcon(final File iconFile) {
@@ -108,8 +108,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * Patch a catalog item.
 	 * 
-	 * @param catalogItem
-	 * @param iconId
+	 * @param catalogItem catalog item
+	 * @param iconId icon id
 	 * @return ResponseEntity
 	 */
 	public ResponseEntity<String> patchCatalogItemIcon(final VraNgCatalogItem catalogItem, final String iconId) {
@@ -127,7 +127,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * Creates a blueprint.
 	 * 
-	 * @param blueprint
+	 * @param blueprint vra blueprint
 	 * @return id
 	 */
 	public String createBlueprint(final VraNgBlueprint blueprint) {
@@ -142,7 +142,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * Updates the blueprint.
 	 * 
-	 * @param blueprint
+	 * @param blueprint vra blueprint
 	 * @return id
 	 */
 	public String updateBlueprint(final VraNgBlueprint blueprint) {
@@ -170,7 +170,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getBlueprintLastUpdatedVersion.
 	 * 
-	 * @param blueprintId
+	 * @param blueprintId blueprint id
 	 * @return id
 	 */
 	public String getBlueprintLastUpdatedVersion(final String blueprintId) {
@@ -185,8 +185,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getBlueprintVersionContent.
 	 * 
-	 * @param blueprintId
-	 * @param version
+	 * @param blueprintId blueprint id
+	 * @param version version
 	 * @return content
 	 */
 	public String getBlueprintVersionContent(final String blueprintId, final String version) {
@@ -215,8 +215,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * isBlueprintVersionPresent.
 	 * 
-	 * @param blueprintId
-	 * @param version
+	 * @param blueprintId blueprint id
+	 * @param version version
 	 * @return boolean
 	 */
 	public Boolean isBlueprintVersionPresent(final String blueprintId, final String version) {
@@ -231,7 +231,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * isBlueprintReleased.
 	 * 
-	 * @param blueprintId
+	 * @param blueprintId blueprint id
 	 * @return boolean
 	 */
 	public boolean isBlueprintReleased(final String blueprintId) {
@@ -245,14 +245,29 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * releaseBlueprintVersion.
 	 *
-	 * @param blueprintId
-	 * @param version
+	 * @param blueprintId blueprint id
+	 * @param version version
 	 */
 	public void releaseBlueprintVersion(final String blueprintId, final String version) {
 		try {
 			this.releaseBlueprintVersionPrimitive(blueprintId, version);
 		} catch (URISyntaxException e) {
-			logger.error("Could not release blueprint {}", blueprintId);
+			logger.error("Could not release blueprint version {}", blueprintId);
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * releaseBlueprintVersion.
+	 *
+	 * @param blueprintId blueprint id
+	 * @param versionId version id
+	 */
+	public void unreleaseBlueprintVersion(final String blueprintId, final String versionId) {
+		try {
+			this.unreleaseBlueprintVersionPrimitive(blueprintId, versionId);
+		} catch (URISyntaxException e) {
+			logger.error("Could not unrelease blueprint version {}:{}", blueprintId, versionId);
 			throw new RuntimeException(e);
 		}
 	}
@@ -291,8 +306,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * importSubscription.
 	 *
-	 * @param subscriptionName
-	 * @param subscriptionJson
+	 * @param subscriptionName subscription name
+	 * @param subscriptionJson subscription json
 	 */
 	public void importSubscription(final String subscriptionName, final String subscriptionJson) {
 		try {
@@ -315,7 +330,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getSubscriptionsByName.
 	 *
-	 * @param name
+	 * @param name subscription name
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByName(final String name) {
@@ -325,7 +340,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getSubscriptionsByOrgId.
 	 *
-	 * @param orgId
+	 * @param orgId org id
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgId(final String orgId) {
@@ -335,8 +350,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getSubscriptionsByOrgIdAndName.
 	 *
-	 * @param orgId
-	 * @param name
+	 * @param orgId org id
+	 * @param name subscription name
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgIdAndName(final String orgId, final String name) {
@@ -364,7 +379,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCloudAccount.
 	 *
-	 * @param id
+	 * @param id cloud account id
 	 * @return cloudAccount
 	 */
 	public VraNgCloudAccount getCloudAccount(final String id) {
@@ -401,7 +416,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getRegion.
 	 *
-	 * @param id
+	 * @param id cloud region id
 	 * @return region
 	 */
 	public VraNgRegion getRegion(final String id) {
@@ -445,9 +460,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createFlavor.
 	 *
-	 * @param regionId
-	 * @param flavorProfileName
-	 * @param flavorMappings
+	 * @param regionId region id
+	 * @param flavorProfileName flavor name
+	 * @param flavorMappings flavor mappings
 	 */
 	public void createFlavor(final String regionId, final String flavorProfileName,
 			final List<VraNgFlavorMapping> flavorMappings) {
@@ -461,8 +476,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateFlavor.
 	 *
-	 * @param flavorId
-	 * @param flavorMappings
+	 * @param flavorId flavor id
+	 * @param flavorMappings flavor mappings
 	 */
 	public void updateFlavor(final String flavorId, final List<VraNgFlavorMapping> flavorMappings) {
 		try {
@@ -505,9 +520,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createImageProfile.
 	 *
-	 * @param regionId
-	 * @param profileName
-	 * @param imageMappings
+	 * @param regionId region id
+	 * @param profileName profile name
+	 * @param imageMappings image mappings
 	 */
 	public void createImageProfile(final String regionId, final String profileName,
 			final List<VraNgImageMapping> imageMappings) {
@@ -521,8 +536,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateImageProfile.
 	 *
-	 * @param profileId
-	 * @param imageMappings
+	 * @param profileId profile id
+	 * @param imageMappings image mappings
 	 */
 	public void updateImageProfile(final String profileId, final List<VraNgImageMapping> imageMappings) {
 		try {
@@ -552,8 +567,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateStorageProfile.
 	 *
-	 * @param profileId
-	 * @param profile
+	 * @param profileId profile id
+	 * @param profile vra storage profile 
 	 */
 	public void updateStorageProfile(final String profileId, final VraNgStorageProfile profile) {
 		try {
@@ -569,7 +584,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createStorageProfile.
 	 *
-	 * @param profile
+	 * @param profile vra storage file
 	 * @return storageProfile
 	 */
 	public String createStorageProfile(final VraNgStorageProfile profile) {
@@ -586,8 +601,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getSpecificStorageProfile.
 	 *
-	 * @param targetPool
-	 * @param profileId
+	 * @param targetPool target pool
+	 * @param profileId storage profile id
 	 * @return storageProfile
 	 */
 	public VraNgStorageProfile getSpecificStorageProfile(final String targetPool, final String profileId) {
@@ -602,9 +617,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateSpecificProfile.
 	 *
-	 * @param patchTarget
-	 * @param profileId
-	 * @param profile
+	 * @param patchTarget patch target
+	 * @param profileId storage profile id
+	 * @param profile storage profile
 	 */
 	public void updateSpecificProfile(final String patchTarget, final String profileId,
 			final VraNgStorageProfile profile) {
@@ -621,7 +636,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getFabricEntityName.
 	 *
-	 * @param fabricUrl
+	 * @param fabricUrl fabric url
 	 * @return name
 	 */
 	public String getFabricEntityName(final String fabricUrl) {
@@ -636,8 +651,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getFabricEntityId.
 	 *
-	 * @param fabricType
-	 * @param fabricName
+	 * @param fabricType fabric type
+	 * @param fabricName fabric name
 	 * @return id
 	 */
 	public String getFabricEntityId(final String fabricType, final String fabricName) {
@@ -673,7 +688,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCatalogItemsForProject.
 	 *
-	 * @param project
+	 * @param project project
 	 * @return catalogItem
 	 */
 	public List<VraNgCatalogItem> getCatalogItemsForProject(final String project) {
@@ -702,7 +717,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createPropertyGroup.
 	 *
-	 * @param propertyGroup
+	 * @param propertyGroup vra property group
 	 */
 	public void createPropertyGroup(final VraNgPropertyGroup propertyGroup) {
 		try {
@@ -717,7 +732,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updatePropertyGroup.
 	 *
-	 * @param propertyGroup
+	 * @param propertyGroup vra property group
 	 */
 	public void updatePropertyGroup(final VraNgPropertyGroup propertyGroup) {
 		try {
@@ -732,7 +747,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCatalogItemsForProjects.
 	 *
-	 * @param projects
+	 * @param projects list of projects
 	 * @return catalogItems
 	 */
 	public Map<String, List<VraNgCatalogItem>> getCatalogItemsForProjects(final List<String> projects) {
@@ -748,7 +763,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getContentSource.
 	 *
-	 * @param id
+	 * @param id content source id
 	 * @return contentSourceBase
 	 */
 	public VraNgContentSourceBase getContentSource(final String id) {
@@ -762,7 +777,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getVraWorkflowContentSource.
 	 *
-	 * @param id
+	 * @param id content source id
 	 * @return workflowContentSource
 	 */
 	public VraNgWorkflowContentSource getVraWorkflowContentSource(final String id) {
@@ -791,7 +806,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getContentSourcesForProject.
 	 *
-	 * @param project
+	 * @param project project
 	 * @return contentSourceBase
 	 */
 	public List<VraNgContentSourceBase> getContentSourcesForProject(final String project) {
@@ -806,7 +821,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getContentSourcesForProjects.
 	 *
-	 * @param projects
+	 * @param projects list of projects
 	 * @return contentSourceBase
 	 */
 	public Map<String, List<VraNgContentSourceBase>> getContentSourcesForProjects(final List<String> projects) {
@@ -822,8 +837,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCustomFormByTypeAndSource.
 	 *
-	 * @param type
-	 * @param sourceId
+	 * @param type source type
+	 * @param sourceId source id
 	 * @return customForm
 	 */
 	public VraNgCustomForm getCustomFormByTypeAndSource(final String type, final String sourceId) {
@@ -838,7 +853,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCatalogItemVersions.
 	 *
-	 * @param sourceId
+	 * @param sourceId source id
 	 * @return catalogItemVersion
 	 */
 	public JsonArray getCatalogItemVersions(final String sourceId) {
@@ -852,9 +867,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * fetchRequestForm.
 	 *
-	 * @param type
-	 * @param sourceId
-	 * @param formId
+	 * @param type source type
+	 * @param sourceId source id
+	 * @param formId form id
 	 * @return customForm
 	 */
 	public VraNgCustomForm fetchRequestForm(final String type, final String sourceId, final String formId) {
@@ -869,7 +884,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createOrUpdateContentSource.
 	 *
-	 * @param contentSource
+	 * @param contentSource vra content source
 	 * @return id
 	 */
 	public String createOrUpdateContentSource(final VraNgContentSourceBase contentSource) {
@@ -884,7 +899,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getVraWorkflowCustomForm.
 	 *
-	 * @param formName
+	 * @param formName form name
 	 * @return customForm
 	 */
 	public VraNgCustomForm getVraWorkflowCustomForm(final String formName) {
@@ -899,7 +914,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getVraWorkflowIntegration.
 	 *
-	 * @param name
+	 * @param name workflow name
 	 * @return integration
 	 */
 	public VraNgIntegration getVraWorkflowIntegration(final String name) {
@@ -928,8 +943,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * importCustomForm.
 	 *
-	 * @param customForm
-	 * @param sourceId
+	 * @param customForm vra custom form
+	 * @param sourceId source id
 	 */
 	public void importCustomForm(final VraNgCustomForm customForm, final String sourceId) {
 		try {
@@ -957,8 +972,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createCatalogEntitlement.
 	 *
-	 * @param entitlement
-	 * @param project
+	 * @param entitlement catalog entitlement
+	 * @param project project id
 	 */
 	public void createCatalogEntitlement(final VraNgCatalogEntitlement entitlement, final String project) {
 		try {
@@ -972,7 +987,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getProjectsByName.
 	 *
-	 * @param projectName
+	 * @param projectName project name
 	 * @return projects
 	 */
 	public List<VraNgProject> getProjectsByName(final String projectName) {
@@ -1001,7 +1016,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getProjectIdByName.
 	 *
-	 * @param projectName
+	 * @param projectName project name
 	 * @return id
 	 */
 	public String getProjectIdByName(final String projectName) {
@@ -1016,7 +1031,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getProjectNameById.
 	 *
-	 * @param projectId
+	 * @param projectId project id
 	 * @return id
 	 */
 	public String getProjectNameById(final String projectId) {
@@ -1049,8 +1064,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * importCustomResource.
 	 *
-	 * @param customResourceName
-	 * @param customResourceJson
+	 * @param customResourceName custom resource name
+	 * @param customResourceJson custom resource json
 	 */
 	public void importCustomResource(final String customResourceName, final String customResourceJson) {
 		try {
@@ -1066,8 +1081,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * deleteCustomResource.
 	 * 
-	 * @param customResourceName
-	 * @param customResourceId
+	 * @param customResourceName custom resource name
+	 * @param customResourceId custom resource id
 	 */
 	public void deleteCustomResource(final String customResourceName, final String customResourceId) {
 		try {
@@ -1101,8 +1116,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * importResourceAction.
 	 * 
-	 * @param resourceActionName
-	 * @param resourceActionJson
+	 * @param resourceActionName resource action name
+	 * @param resourceActionJson resource action json
 	 * @return id
 	 */
 	public String importResourceAction(final String resourceActionName, final String resourceActionJson) {
@@ -1118,8 +1133,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * deleteResourceAction.
 	 * 
-	 * @param resourceActionName
-	 * @param resourceActionId
+	 * @param resourceActionName resource action name
+	 * @param resourceActionId resource action id
 	 */
 	public void deleteResourceAction(final String resourceActionName, final String resourceActionId) {
 		try {
@@ -1137,7 +1152,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createAbxAction.
 	 * 
-	 * @param action
+	 * @param action abx action
 	 * @return id
 	 */
 	public String createAbxAction(final AbxAction action) {
@@ -1152,8 +1167,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateAbxAction.
 	 * 
-	 * @param actionId
-	 * @param action
+	 * @param actionId action id
+	 * @param action action
 	 * @return actionId
 	 */
 	public String updateAbxAction(final String actionId, final AbxAction action) {
@@ -1168,7 +1183,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getAbxLastUpdatedVersion.
 	 * 
-	 * @param action
+	 * @param action abx action
 	 * @return version
 	 */
 	public AbxActionVersion getAbxLastUpdatedVersion(final AbxAction action) {
@@ -1183,8 +1198,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createAbxVersion.
 	 * 
-	 * @param action
-	 * @param version
+	 * @param action abx action
+	 * @param version version
 	 * @return abxVersion
 	 */
 	public AbxActionVersion createAbxVersion(final AbxAction action, final String version) {
@@ -1199,8 +1214,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * releaseAbxVersion.
 	 * 
-	 * @param action
-	 * @param versionId
+	 * @param action action 
+	 * @param versionId version id
 	 * @return version
 	 */
 	public AbxActionVersion releaseAbxVersion(final AbxAction action, final String versionId) {
@@ -1248,13 +1263,13 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getContentSharingPolicyIds.
 	 * 
-	 * @return ids
+	 * @return policies
 	 */
-	public List<String> getContentSharingPolicyIds() {
+	public List<VraNgContentSharingPolicy> getContentSharingPolicies() {
 		try {
-			return this.getAllContentSharingPolicyIdsPrimitive();
+			return this.getAllContentSharingPoliciesPrimitive();
 		} catch (Exception e) {
-			logger.error("Error fetching content sharing policy Ids", e.getMessage());
+			logger.error("Error fetching content sharing policies", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -1262,7 +1277,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createContentSharingPolicy.
 	 * 
-	 * @param csPolicy
+	 * @param csPolicy content sharing policy
 	 */
 	public void createContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
 		try {
@@ -1274,30 +1289,16 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * updateContentSharingPolicy.
-	 * 
-	 * @param csPolicy
-	 */
-	public void updateContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
-		try {
-			updateContentSharingPolicyPrimitive(csPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not update Content Sharing policy with name '%s'.", csPolicy.getName()), e);
-		}
-	}
-
-	/**
 	 * getContentSharingPolicy.
 	 * 
-	 * @param policyId
+	 * @param policyId content sharing policy id
 	 * @return policy
 	 */
 	public VraNgContentSharingPolicy getContentSharingPolicy(final String policyId) {
 		try {
 			return this.getContentSharingPolicyPrimitive(policyId);
 		} catch (Exception e) {
-			logger.error("Error fetching content sharing policy", e.getMessage());
+			logger.error("Error fetching content sharing policy - {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

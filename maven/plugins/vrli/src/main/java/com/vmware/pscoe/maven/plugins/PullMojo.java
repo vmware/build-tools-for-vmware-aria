@@ -8,61 +8,86 @@ package com.vmware.pscoe.maven.plugins;
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-
+import com.vmware.pscoe.iac.artifact.PackageManager;
+import com.vmware.pscoe.iac.artifact.PackageStore;
+import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import com.google.common.io.Files;
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
 
 @Mojo(name = "pull")
 public class PullMojo extends AbstractIacMojo {
-
+	/**
+	 * The project that is built with the tools.
+	 */
 	@Parameter(defaultValue = "${project}")
 	private MavenProject project;
 
+	/**
+	 * Dry run or not. Default value is false.
+	 */
 	@Parameter(required = false, property = "dryrun", defaultValue = "false")
 	private boolean dryrun;
 
+	/**
+	 * Set the importOldVersions property.
+	 *
+	 * @param type  The package type.
+	 * @param props The properties.
+	 */
 	@Override
 	protected void overwriteConfigurationPropertiesForType(PackageType type, Properties props) {
 		props.setProperty(Configuration.IMPORT_OLD_VERSIONS, "true");
 	}
 
+	/**
+	 * Implement the pull operation for vrli.
+	 *
+	 * @throws MojoExecutionException If the maven plugin execution fails.
+	 * @throws MojoFailureException   If the Mojo (maven plugin) fails.
+	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
 
-		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-		File pkgFile = new File(Files.createTempDir(), pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtention());
-		com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(PackageType.VRLI, pkgFile);
+		Path tempDir;
 		try {
-            PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForVrli());
+			tempDir = Files.createTempDirectory("vrli-pull");
+		} catch (IOException e) {
+			throw new MojoExecutionException("Could not create a temp directory");
+		}
+
+		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
+		File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtention()).toFile();
+		Package pkg = PackageFactory.getInstance(PackageType.VRLI, pkgFile);
+		try {
+			PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForVrli());
 			store.exportPackage(pkg, new File(project.getBasedir(), "content.yaml"), dryrun);
-            PackageManager.copyContents(new File(pkg.getFilesystemPath()), new File(pkgInfoProvider.getSourceDirectory().getAbsolutePath()));
+			PackageManager.copyContents(new File(pkg.getFilesystemPath()), new File(pkgInfoProvider.getSourceDirectory().getAbsolutePath()));
 		} catch (ConfigurationException | IOException e) {
 			getLog().error(e);
-            String message = String.format("Error pulling VRLI package : %s", e.getMessage());
-            throw new MojoExecutionException(e, message, message);
+			String message = String.format("Error pulling VRLI package : %s", e.getMessage());
+			throw new MojoExecutionException(e, message, message);
 		}
 	}
 }

@@ -192,9 +192,9 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Deletes a package.
-	 * @param pkg
-	 * @param withContent
-	 * @param dryrun
+	 * @param pkg package to delete
+	 * @param withContent package contains content or not
+	 * @param dryrun dry run the functionality or not
 	 * @return the deleted package
 	 */
 	@Override
@@ -210,7 +210,7 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Gets package content.
-	 * @param pkg
+	 * @param pkg package to get the content
 	 * @return the packate content
 	 */
 	@Override
@@ -220,8 +220,8 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Deletes package content.
-	 * @param content
-	 * @param dryrun
+	 * @param content package content
+	 * @param dryrun dry run delete functionlity or not
 	 */
 	@Override
 	protected final void deleteContent(final Content content, final boolean dryrun) {

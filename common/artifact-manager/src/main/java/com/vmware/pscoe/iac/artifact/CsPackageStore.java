@@ -48,8 +48,8 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 
 	/**
 	 *
-	 * @param csRestClient
-	 * @param csConfig
+	 * @param csRestClient the cs rest client
+	 * @param csConfig the cs config details
 	 */
 	protected CsPackageStore(final RestClientCs csRestClient, final ConfigurationCs csConfig) {
 		this.restClient = csRestClient;
