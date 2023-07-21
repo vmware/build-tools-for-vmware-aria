@@ -1537,7 +1537,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (isJsonElementPresent(tagsElement)) {
 			tagsElement.getAsJsonArray().forEach(tag -> {
 				JsonObject tagObj = tag.getAsJsonObject();
-				tags.add(tagObj.get("key").getAsString() + ":" + tagObj.get("value").getAsString());
+				String key = tagObj.get("key").getAsString();
+				String value = tagObj.get("value").getAsString();
+				String result = key;
+				if (StringUtils.isNotEmpty(value)) {
+					result = result + ":" + value;
+				}
+
+				tags.add(result);
 			});
 		}
 

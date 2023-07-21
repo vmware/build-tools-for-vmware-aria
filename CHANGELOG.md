@@ -1,4 +1,5 @@
 ### Fixes
+* [artifact-manager] 148 / vra-ng:pull command failure when import/export tags contains underscore
 * [maven-plugins] 146 / Pull operations fail on Windows with release 2.34.0
 
 ## v2.34.0 - 05 Jul 2023
