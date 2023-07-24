@@ -386,7 +386,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		// Remove the organization from the general json object
 		this.fixOrgId(customResourceJsonElement, "orgId");
 
-		this.changeProjectIdBetweenOrganizations(customResourceJsonElement);
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement, "projectId");
 
 		// Remove foreach additional action the organization id and the
 		// formDefinition.id property
@@ -403,7 +403,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 					this.fixOrgId(formDefinition, "tenant");
 
-					this.changeProjectIdBetweenOrganizations(formDefinition);
+					VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, formDefinition, "projectId");
 				}
 			}
 		});
@@ -420,14 +420,6 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		}
 
 		jsonObject.addProperty(key, this.currentOrganizationId);
-	}
-
-	/**
-	 * Fixes the project id in the given object with the one set in the configuration.
-	 * @param customResourceJsonElement
-	 */
-	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
-		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement);
 	}
 
 	private void populateVroEndpoints(final JsonObject customResourceJsonElement) throws ConfigurationException {

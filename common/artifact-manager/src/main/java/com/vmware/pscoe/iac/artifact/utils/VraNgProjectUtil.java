@@ -28,15 +28,15 @@ public final class VraNgProjectUtil {
 	 * @param restClient
 	 * @param customResourceJsonElement
 	 */
-	public static void changeProjectIdBetweenOrganizations(final RestClientVraNg restClient, final JsonObject customResourceJsonElement) {
+	public static void changeProjectIdBetweenOrganizations(final RestClientVraNg restClient, final JsonObject customResourceJsonElement, final String projectIdKey) {
 		String defaultProjectId = restClient.getProjectId();
 		if (defaultProjectId != null
-			&& customResourceJsonElement.get("projectId") != null
-			&& !customResourceJsonElement.get("projectId").getAsString().equals("")) {
-			customResourceJsonElement.remove("projectId");
-			customResourceJsonElement.add("projectId", new JsonPrimitive(defaultProjectId));
+			&& customResourceJsonElement.get(projectIdKey) != null
+			&& !customResourceJsonElement.get(projectIdKey).getAsString().equals("")) {
+			customResourceJsonElement.remove(projectIdKey);
+			customResourceJsonElement.add(projectIdKey, new JsonPrimitive(defaultProjectId));
 		} else {
-			customResourceJsonElement.remove("projectId");
+			customResourceJsonElement.remove(projectIdKey);
         }
 	}
 }

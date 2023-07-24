@@ -208,7 +208,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
             this.populateVroEndpoint(resourceActionJsonElement);
 
-            this.changeProjectIdBetweenOrganizations(resourceActionJsonElement);
+		    VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, resourceActionJsonElement, "projectId");
 
             // Get resource action id property and use it to try to delete existing one
             // resource action
@@ -270,12 +270,4 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
         resultJsonObject.add("formDefinition", sourceForm);
         return resultJsonObject;
     }
-
-    /**
-	 * Fixes the project id in the given object with the one set in the configuration.
-     * @param customResourceJsonElement
-	 */
-	private void changeProjectIdBetweenOrganizations(final JsonObject customResourceJsonElement) {
-		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement);
-	}
 }

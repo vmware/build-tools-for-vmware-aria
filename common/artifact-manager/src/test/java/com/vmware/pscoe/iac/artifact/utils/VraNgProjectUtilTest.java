@@ -50,7 +50,7 @@ public class VraNgProjectUtilTest {
 	}
 
 	@Test
-	void testImportResourceActionWithProjectId() throws IOException {
+	void testShouldChangeProjectIdOnImportResourceActionThatAlreadyHasOne() throws IOException {
 		//GIVEN
 		final String configurationProjectId = "configuration-file-project-id";
 		final String resourceActionProjectId = "resource-action-file-project-id";
@@ -66,14 +66,14 @@ public class VraNgProjectUtilTest {
 		final JsonObject resourceActionJsonElement = gson.fromJson(resourceAction.getJson(), JsonObject.class);
 
 		//TEST
-		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement);
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement, "projectId");
 
 		//VERIFY
 		assertEquals(configurationProjectId, resourceActionJsonElement.get("projectId").getAsString());
 	}
 
 	@Test
-	void testImportResourceActionWithEmptyProjectId() throws IOException {
+	void testShouldNotChangeProjectIdOnImportResourceActionThatHasEmptyProjectId() throws IOException {
 		//GIVEN
 		final String configurationProjectId = "configuration-file-project-id";
 		final String resourceActionProjectId = "";
@@ -89,14 +89,14 @@ public class VraNgProjectUtilTest {
 		final JsonObject resourceActionJsonElement = gson.fromJson(resourceAction.getJson(), JsonObject.class);
 
 		//TEST
-		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement);
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement, "projectId");
 
 		//VERIFY
 		assertEquals(null, resourceActionJsonElement.get("projectId"));
 	}
 
 	@Test
-	void testImportResourceActionWithoutProjectId() throws IOException {
+	void testShouldNotChangeProjectIdOnImportResourceActionThatHasNullProjectId() throws IOException {
 		//GIVEN
 		final String configurationProjectId = "configuration-file-project-id";
 
@@ -111,7 +111,7 @@ public class VraNgProjectUtilTest {
 		resourceActionJsonElement.remove("projectId");
 
 		//TEST
-		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement);
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(restClient, resourceActionJsonElement, "projectId");
 
 		//VERIFY
 		assertEquals(null, resourceActionJsonElement.get("projectId"));
