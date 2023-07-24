@@ -27,6 +27,7 @@ public final class VraNgProjectUtil {
 	 * Fixes the project id in the given object with the one set in the configuration.
 	 * @param restClient
 	 * @param customResourceJsonElement
+	 * @param projectIdKey
 	 */
 	public static void changeProjectIdBetweenOrganizations(final RestClientVraNg restClient, final JsonObject customResourceJsonElement, final String projectIdKey) {
 		String defaultProjectId = restClient.getProjectId();
