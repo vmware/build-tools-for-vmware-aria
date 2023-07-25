@@ -1,3 +1,10 @@
+# Latest
+
+## Improvements:
+
+### *Fixed an issue when pushing regional content*
+When pushing regional content, the tags of the regions are now resolved correctly.
+
 # v2.24.0
 
 This version is a maintenance release that comes with various improvements to different components of the toolchain and 
