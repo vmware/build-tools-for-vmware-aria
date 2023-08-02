@@ -5,6 +5,9 @@
 ### *Fixed an issue when pushing regional content*
 When pushing regional content, the tags of the regions are now resolved correctly.
 
+### *Fixed an issue when pushing custom resources and resource actions*
+When pushing resource actions and custom resources, the ones that are scoped to a single project now have their projectId modified to be the same as the one in the configuration.
+
 ## v2.24.0
 
 This version is a maintenance release that comes with various improvements to different components of the toolchain and its archetypes.
