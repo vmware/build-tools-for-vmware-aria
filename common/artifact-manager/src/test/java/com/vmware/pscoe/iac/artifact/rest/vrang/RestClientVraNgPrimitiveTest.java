@@ -33,9 +33,16 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+import static com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil.getOrganization;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
+import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -64,6 +71,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyString;
+import org.mockito.MockedStatic;
 
 class RestClientVraNgPrimitiveTest {
 	/**
@@ -96,13 +105,32 @@ class RestClientVraNgPrimitiveTest {
 	 */
 	private RestClientVraNgPrimitiveTestDouble restClient;
 
+	/**
+	 * vraNgOrganizationUtil.
+	 */
+	private MockedStatic<VraNgOrganizationUtil> vraNgOrganizationUtil;
+
+	/**
+	 * vraNgOrganization.
+	 */
+	private VraNgOrganization vraNgOrganization;
+
 	@BeforeEach
 	void init() {
 		restTemplate = Mockito.mock(RestTemplate.class);
 		config = Mockito.mock(ConfigurationVraNg.class);
+		vraNgOrganizationUtil = Mockito.mockStatic(VraNgOrganizationUtil.class);
 		restClient = new RestClientVraNgPrimitiveTestDouble(config, restTemplate);
+		vraNgOrganization = Mockito.mock(VraNgOrganization.class);
 		when(config.getHost()).thenReturn("vra-l-01a.corp.local");
 		when(config.getPort()).thenReturn(HTTPS_PORT);
+		vraNgOrganizationUtil.when(() -> getOrganization(restClient, config)).thenReturn(vraNgOrganization);
+		when(vraNgOrganization.getId()).thenReturn("mockOrg");
+	}
+
+	@AfterEach
+	void close() {
+		vraNgOrganizationUtil.close();
 	}
 
 	@Test
@@ -708,5 +736,26 @@ class RestClientVraNgPrimitiveTest {
 		Assertions.assertDoesNotThrow(() -> {
 			this.restClient.getContentSharingPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
 		});
+	}
+
+	@Test
+	void testGetCloudAccountTags() throws URISyntaxException {
+		// GIVEN
+		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/iaas/api/cloud-accounts").setParameter("apiVersion", ""));
+
+		// WHEN
+		when(
+				this.restTemplate.exchange(uri, HttpMethod.GET,
+						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+						String.class))
+				.thenReturn(
+						new ResponseEntity<>("{\"content\":[{\"id\":\"\",\"name\":\"vc-l-01a\",\"cloudAccountType\":\"vsphere\",\"orgId\":\"mockOrg\",\"_links\":{},\"tags\":[{\"key\":\"env\",\"value\":\"dev\"},{\"key\":\"::::\",\"value\":\"\"},{\"key\":\"env_DEV::::\",\"value\":\"\"},{\"key\":\"env_DEV\",\"value\":\"\"}]}]}", HttpStatus.OK));
+
+		List<VraNgCloudAccount> cloudAccounts = this.restClient.getAllCloudAccounts();
+		String actual = cloudAccounts.stream().map(e -> e.getTags().toString()).reduce("", String::concat);
+		String expected = "[env:dev, ::::, env_DEV::::, env_DEV]";
+
+		// THEN
+		assertEquals(expected, actual);
 	}
 }

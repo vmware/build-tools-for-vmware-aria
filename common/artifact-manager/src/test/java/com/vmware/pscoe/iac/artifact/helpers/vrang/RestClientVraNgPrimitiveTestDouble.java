@@ -34,6 +34,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 
 public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive {
 
@@ -74,6 +75,16 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	@Override
 	public Version getProductVersion() {
 		return new Version("8.11");
+	}
+
+	/**
+	 * getVersion.
+	 *
+	 * @return version String
+	 */
+	@Override
+	public String getVersion() {
+		return "";
 	}
 
 	/**
@@ -194,5 +205,14 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	 */
 	public static HttpEntity<String> getDefaultHttpEntity() {
 		return RestClientVraNgPrimitive.getDefaultHttpEntity();
+	}
+
+	/**
+	 * getAllCloudAccounts.
+	 *
+	 * @return entity List<VraNgCloudAccount>
+	 */
+	public List<VraNgCloudAccount> getAllCloudAccounts() throws URISyntaxException {
+		return super.getAllCloudAccounts();
 	}
 }
