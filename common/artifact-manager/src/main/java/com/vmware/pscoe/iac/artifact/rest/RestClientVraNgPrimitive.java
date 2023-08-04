@@ -272,6 +272,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
 	/**
+	 * CONTENT_DAY_2_TYPE.
+	 */
+	private static final String CONTENT_DAY_2_TYPE = "com.vmware.policy.deployment.action";
+	/**
 	 * configuration.
 	 */
 	private final ConfigurationVraNg configuration;
@@ -2976,6 +2980,32 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
 				.findFirst()
 				.orElse(null);
+		if (policy == null) {
+			throw new Error("Cannot find Content Sharing Policy by name" + name);
+		} else {
+			return policy.getId();
+		}
+	}
+
+	/**
+	 * Retrieve day 2 policy Id based on name.
+	 *
+	 * @param name name of the policy
+	 * @return content sharing policy Id.
+	 *
+	 */
+	public String getDay2PolicyIdByName(final String name) {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+
+		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
+			.stream()
+			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
+			.filter(p -> p.getTypeId().equalsIgnoreCase(CONTENT_DAY_2_TYPE))
+			.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
+			.findFirst()
+			.orElse(null);
 		if (policy == null) {
 			throw new Error("Cannot find Content Sharing Policy by name" + name);
 		} else {
