@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         java: ["17"]
-        maven: ["3.9.2"]
+        maven: ["3.8.7"]
         node: ["14.17.1"]
         os: ["ubuntu-latest"]
 
