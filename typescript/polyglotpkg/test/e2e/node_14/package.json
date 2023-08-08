@@ -22,8 +22,6 @@
     "@types/node": "^14.0.13",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5",
-    "@vmware-pscoe/polyglotpkg": "latest",
-    "@vmware-pscoe/vropkg": "latest",
     "run-script-os": "^1.1.6"
   },
   "dependencies": {
