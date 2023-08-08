@@ -23,7 +23,7 @@
 
 	<properties>
 		<main.basedir>${project.basedir}</main.basedir>
-		<revision>2.34.1-SNAPSHOT</revision>
+		<revision>2.34.1</revision>
 	</properties>
 
 	<licenses>

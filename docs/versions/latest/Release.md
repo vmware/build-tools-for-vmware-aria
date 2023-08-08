@@ -10,9 +10,11 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
+
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
+
 
 
 [//]: # (Features -> New Functionality)
@@ -21,6 +23,7 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
@@ -36,21 +39,9 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### Fixed pull operations, which were failing on Windows
-#### Previous Behavior
 
-Pull operation was failing on Windows for abx, ssh, vra-ng, vra, vrli.
-Whenever a pull was initiated, it was failing with:
 
-pull failed: 'posix:permissions' not supported as initial attribute
-
-when trying to create a temporary directory.
-This is due to PosixPermissions which can be used only with POSIX compatible operating systems.
-
-#### New Behavior
-Using another library for temp dir creation which checks if POSIX is supported.
-
-## Upgrade procedure
+## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)
