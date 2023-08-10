@@ -18,24 +18,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Use Node.js '14.17.1'
+      - name: Use Node.js '16.20.2'
         uses: actions/setup-node@v3
         with:
-          node-version: '14.17.1'
+          node-version: '16.20.2'
 
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.7.0
         with:
           java-version: '17'
-          java-distribution: 'corretto' 
-          maven-version: '3.8.7'
-
+          java-distribution: 'temurin' 
+          maven-version: '3.9.2'
+  
+      - name: Get Prev Released IAC version
+        run: echo "IAC_PREV_VERSION=$(mvn -U --batch-mode -N -q -DforceStdout help:evaluate -Dexpression=project.version -Dartifact=com.vmware.pscoe:iac:RELEASE)" >> $GITHUB_ENV
+  
       - name: Get version
         run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_ENV
 
       - name: Replace variables in settings.xml
         run: |
-          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_VERSION }}/g" .m2/settings.xml
+          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_PREV_VERSION }}/g" .m2/settings.xml
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

@@ -18,7 +18,8 @@ jobs:
       matrix:
         java: ["17"]
         maven: ["3.9.2"]
-        node: ["14.17.1"]
+        node: ["16.20.2"]
+        node_vmware_samples: ["14.17.1"]
         os: ["ubuntu-latest"]
 
     runs-on: ${{ matrix.os }}
@@ -38,21 +39,44 @@ jobs:
         uses: s4u/setup-maven-action@v1.7.0
         with:
           java-version: ${{ matrix.java }}
-          java-distribution: "corretto"
+          java-distribution: "temurin"
           maven-version: ${{ matrix.maven }}
 
+      - name: Install xmllint
+        run: sudo apt-get install libxml2-utils
+        
+      - name: Install run-script-os@1.1.6
+        run: npm install -g run-script-os@1.1.6
+  
       - name: Print versions
         run: |
-          npm --version
-          node --version
+          echo "-------------------------------------------"
+          echo "-----------< TOOLS AND VERSIONS >----------"
+          git --version
+          java -version 2>&1
           mvn --version
-
+          echo "node version: $(node --version)"
+          echo "npm version: $(npm --version)"
+          pip3 --version
+          python --version
+          pwsh --version
+          gpg --version | head -n 1
+          openssl version
+          xmllint --version 2>&1 | head -n 1
+          echo "Installed global npm packages:"
+          npm list -g --depth=0
+          echo "-------------------------------------------"
+          echo "-------------------------------------------"
+                    
+      - name: Get Prev Released IAC version
+        run: echo "IAC_PREV_VERSION=$(mvn -U --batch-mode -N -q -DforceStdout help:evaluate -Dexpression=project.version -Dartifact=com.vmware.pscoe:iac:RELEASE)" >> $GITHUB_ENV
+  
       - name: Get IAC version
         run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_ENV
 
       - name: Replace variables in settings.xml
         run: |
-          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_VERSION }}/g" .m2/settings.xml
+          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_PREV_VERSION }}/g" .m2/settings.xml
           sed -i "s/{{ OSSRH_USERNAME }}/${{ secrets.OSSRH_USERNAME }}/g" .m2/settings.xml
           sed -i "s/{{ OSSRH_PASSWORD }}/${{ secrets.OSSRH_PASSWORD }}/g" .m2/settings.xml
 
@@ -79,7 +103,7 @@ jobs:
           fi
           echo "MVN_BUILD_COMMAND is $MVN_BUILD_COMMAND"
           echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
-
+ 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
@@ -87,7 +111,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
- 
+
       - name: Build 'keystore-example'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml   
       - name: Build 'npmlib'
@@ -109,6 +133,12 @@ jobs:
           repository: vmware-samples/build-tools-for-vmware-aria-samples
           ref: main
           path: build-tools-for-vmware-aria-samples
+
+      - name: Use Node.js ${{ matrix.node_vmware_samples }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node_vmware_samples }}
+
       - name: Build vmware-samples/build-tools-for-vmware-aria-samples project repository
         run: |
           pushd build-tools-for-vmware-aria-samples/
