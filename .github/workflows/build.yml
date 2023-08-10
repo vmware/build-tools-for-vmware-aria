@@ -67,16 +67,13 @@ jobs:
           npm list -g --depth=0
           echo "-------------------------------------------"
           echo "-------------------------------------------"
-                    
-      - name: Get Prev Released IAC version
-        run: echo "IAC_PREV_VERSION=$(mvn -U --batch-mode -N -q -DforceStdout help:evaluate -Dexpression=project.version -Dartifact=com.vmware.pscoe:iac:RELEASE)" >> $GITHUB_ENV
-  
+
       - name: Get IAC version
         run: echo "IAC_VERSION=$(mvn help:evaluate -Dexpression=revision -q -DforceStdout)" >> $GITHUB_ENV
 
       - name: Replace variables in settings.xml
         run: |
-          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_PREV_VERSION }}/g" .m2/settings.xml
+          sed -i "s/{{ IAC_VERSION }}/${{ env.IAC_VERSION }}/g" .m2/settings.xml
           sed -i "s/{{ OSSRH_USERNAME }}/${{ secrets.OSSRH_USERNAME }}/g" .m2/settings.xml
           sed -i "s/{{ OSSRH_PASSWORD }}/${{ secrets.OSSRH_PASSWORD }}/g" .m2/settings.xml
 
@@ -112,6 +109,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Build 'iac' - parent IAC project ONLY
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml -pl .
       - name: Build 'keystore-example'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml   
       - name: Build 'npmlib'
