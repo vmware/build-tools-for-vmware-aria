@@ -68,7 +68,7 @@ jobs:
           echo "-------------------------------------------"
           echo "-------------------------------------------"
                     
-      - name: Get PREV IAC version
+      - name: Get Prev Released IAC version
         run: echo "IAC_PREV_VERSION=$(mvn -U --batch-mode -N -q -DforceStdout help:evaluate -Dexpression=project.version -Dartifact=com.vmware.pscoe:iac:RELEASE)" >> $GITHUB_ENV
   
       - name: Get IAC version
