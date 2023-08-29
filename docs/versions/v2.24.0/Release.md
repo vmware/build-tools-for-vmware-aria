@@ -1,5 +1,7 @@
 ## Latest
 
+## v2.35.0
+
 ## Improvements
 
 ### *Fixed an issue when pushing regional content*
