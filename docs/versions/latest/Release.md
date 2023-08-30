@@ -28,16 +28,16 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+### Fixed the compiled SAGA workflow crashes when no imports are defined in saga yaml
+
+#### Previous Behaviour
+
+When no imports were defined in typescript SAGA workflow file format, the compiled vRO workflow failed when being executied in vRO on Initilize scriptable task
+with null object error.
+
+#### New Behaviour
+
+When no imports are defined in typescript SAGA workflow file format, the compiled vRO workflow runs successfully.
 
 
 
