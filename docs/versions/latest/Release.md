@@ -20,4 +20,4 @@ with null object error.
 
 When no imports are defined in typescript SAGA workflow file format, the compiled vRO workflow runs successfully.
 
-## Upgrade procedure:
+## Upgrade procedure
