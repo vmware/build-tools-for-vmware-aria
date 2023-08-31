@@ -1,3 +1,6 @@
+### Fixes
+* [typescript] 163 / The compiled SAGA workflow crashes when no imports are defined in saga yaml
+
 ## v2.35.0 - 11 Aug 2023
 
 ### Fixes
