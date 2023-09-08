@@ -1,4 +1,4 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
+package com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies;
 
 /*
  * #%L
@@ -15,22 +15,16 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * #L%
  */
 
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
+
 /**
 
 */
-public class VraNgContentSharingPolicy {
+public class VraNgContentSharingPolicy extends VraNgPolicyBase {
 	/**
 	 * Id of the Content Sharing Policy.
 	 */
 	private String id;
-	/**
-	 * Name of the Content Sharing Policy.
-	 */
-	private String name;
-	/**
-	 * TypeId of the Content Sharing Policy.
-	 */
-	private String typeId;
 	/**
 	 * ProjectId of the Content Sharing Policy.
 	 */
@@ -44,10 +38,6 @@ public class VraNgContentSharingPolicy {
 	 */
 	private String enforcementType;
 	/**
-	 * Description of the Content Sharing Policy.
-	 */
-	private String description;
-	/**
 	 * Definition of the Content Sharing Policy.
 	 */
 	private VraNgDefinition definition;
@@ -56,6 +46,7 @@ public class VraNgContentSharingPolicy {
 	 * Constructor VraNgContentSharingPolicy.
 	 */
 	public VraNgContentSharingPolicy() {
+		super();
 	}
 
 	/**
@@ -74,13 +65,12 @@ public class VraNgContentSharingPolicy {
 			final String projectIdIn, final String orgIdIn,
 			final String enforcementTypeIn, final String descriptionIn,
 			final VraNgDefinition definitionIn) {
+		super(typeIdIn, nameIn, descriptionIn);
+
 		this.id = idIn;
-		this.name = nameIn;
-		this.typeId = typeIdIn;
 		this.projectId = projectIdIn;
 		this.orgId = orgIdIn;
 		this.enforcementType = enforcementTypeIn;
-		this.description = descriptionIn;
 		this.definition = definitionIn;
 	}
 
@@ -100,24 +90,6 @@ public class VraNgContentSharingPolicy {
 	 */
 	public void setId(final String idIn) {
 		this.id = idIn;
-	}
-
-	/**
-	 * Get the name of the content sharing policy.
-	 * 
-	 * @return content sharing policy name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Set the name of the content sharing policy.
-	 * 
-	 * @param nameIn - name of the content sharing policy
-	 */
-	public void setName(final String nameIn) {
-		this.name = nameIn;
 	}
 
 	/**
@@ -157,24 +129,6 @@ public class VraNgContentSharingPolicy {
 	}
 
 	/**
-	 * Get the typeId of the content sharing policy.
-	 * 
-	 * @return content sharing policy typeId
-	 */
-	public String getTypeId() {
-		return typeId;
-	}
-
-	/**
-	 * Set the typeId of the content sharing policy.
-	 * 
-	 * @param typeIdIn - typeId of the content sharing policy
-	 */
-	public void setTypeId(final String typeIdIn) {
-		this.typeId = typeIdIn;
-	}
-
-	/**
 	 * Get the enforcementType of the content sharing policy.
 	 * 
 	 * @return content sharing policy enforcementType
@@ -190,24 +144,6 @@ public class VraNgContentSharingPolicy {
 	 */
 	public void setEnforcementType(final String enforcementTypeIn) {
 		this.enforcementType = enforcementTypeIn;
-	}
-
-	/**
-	 * Get the description of the content sharing policy.
-	 * 
-	 * @return content sharing policy description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * Set the description of the content sharing policy.
-	 * 
-	 * @param descriptionIn - description of the content sharing policy
-	 */
-	public void setDescription(final String descriptionIn) {
-		this.description = descriptionIn;
 	}
 
 	/**

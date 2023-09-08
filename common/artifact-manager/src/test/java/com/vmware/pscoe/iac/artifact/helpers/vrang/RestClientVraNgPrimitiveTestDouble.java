@@ -29,7 +29,7 @@ import java.util.Map;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;

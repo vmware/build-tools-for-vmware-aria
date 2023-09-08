@@ -20,7 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 

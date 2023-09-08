@@ -28,7 +28,7 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.PropertyGroupMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestDouble;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestResponseProvider;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
@@ -37,8 +37,6 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import static com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil.getOrganization;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,7 +69,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.anyString;
+
 import org.mockito.MockedStatic;
 
 class RestClientVraNgPrimitiveTest {

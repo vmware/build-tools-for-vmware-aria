@@ -46,7 +46,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementType;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItemType;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;

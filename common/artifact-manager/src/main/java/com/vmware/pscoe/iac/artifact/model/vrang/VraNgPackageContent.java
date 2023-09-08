@@ -35,6 +35,7 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
         CONTENT_SOURCE("content-source"),
         CATALOG_ITEM("catalog-item"),
 		POLICY("policy");
+		// TODO: Add the other policy types(currently only content-sharing policy is supported)
         private final String type;
         
         private ContentType(String type) {

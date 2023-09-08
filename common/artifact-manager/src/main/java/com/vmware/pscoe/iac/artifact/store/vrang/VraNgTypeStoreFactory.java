@@ -55,6 +55,7 @@ public class VraNgTypeStoreFactory {
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			POLICY
+		// TODO: Add the other policy types(currently only content-sharing policy is supported)
 	};
 
 	/**
@@ -81,6 +82,7 @@ public class VraNgTypeStoreFactory {
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			POLICY
+		// TODO: Add the other policy types(currently only content-sharing policy is supported)
 	};
 
 	/**
@@ -195,6 +197,7 @@ public class VraNgTypeStoreFactory {
 				return new VraNgResourceActionStore();
 			case POLICY:
 				return new VraNgContentSharingPolicyStore();
+				//TODO: Add the store cration of the other policy types
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}

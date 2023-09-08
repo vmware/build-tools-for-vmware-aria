@@ -43,7 +43,7 @@ import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;

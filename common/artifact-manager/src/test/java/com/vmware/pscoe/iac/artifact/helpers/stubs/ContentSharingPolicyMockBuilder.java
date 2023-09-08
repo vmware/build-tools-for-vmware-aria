@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.stubs;
  */
 
 import java.util.ArrayList;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgEntitledUser;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgItem;
