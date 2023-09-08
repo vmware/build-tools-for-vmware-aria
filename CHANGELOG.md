@@ -1,4 +1,14 @@
 ### Fixes
+* [typescript] 163 / The compiled SAGA workflow crashes when no imports are defined in saga yaml
+
+## v2.35.0 - 11 Aug 2023
+
+### Fixes
+* [vRA-NG] IAC-772 / When pushing Resource Actions (RAs), the ones that are scoped to a single project, should have their projectId modified to correspond to the one in configuration
+
+## v2.34.1 - 08 Aug 2023
+
+### Fixes
 * [artifact-manager] 148 / vra-ng:pull command failure when import/export tags contains underscore
 * [maven-plugins] 146 / Pull operations fail on Windows with release 2.34.0
 
@@ -14,7 +24,6 @@
 * [actions-package] github issue# 73 is addressed. Solution is to replace line breaks in description by space
 * [artifact-manager] Exporting vROps dashboards fails if metadata folder is not created
 * [artifact-manager] 108 / Pushing and pulling from/to vRA 8.12 fails with buildtools 2.32.0
-* [vRA-NG] IAC-772 / When pushing Resource Actions (RAs), the ones that are scoped to a single project, should have their projectId modified to correspond to the one in configuration
 
 ## v2.33.0 - 02 Jun 2023
 
