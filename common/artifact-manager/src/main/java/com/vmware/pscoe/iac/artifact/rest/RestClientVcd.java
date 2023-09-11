@@ -51,7 +51,7 @@ public class RestClientVcd extends RestClient {
 	/**
 	 * packageType.
 	 */
-	private static final PackageType packageType = PackageType.VCDNG;
+	private static final PackageType PACKAGE_TYPE = PackageType.VCDNG;
 
 	/**
 	 * logger.
@@ -213,8 +213,8 @@ public class RestClientVcd extends RestClient {
 		String pluginVersion = JsonPath.parse(response.getBody()).read("$.version");
 
 		logger.debug("UI extension for ID [" + id + "] retrieved.");
-		return PackageFactory.getInstance(packageType, pluginId,
-				new File(pluginName + "-" + pluginVersion + "." + packageType));
+		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId,
+				new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
 	}
 
 	/**
