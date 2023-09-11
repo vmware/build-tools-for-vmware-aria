@@ -66,6 +66,8 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgPolicyBase;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -272,9 +274,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
 	/**
-	 * CONTENT_DAY_2_TYPE.
+	 * CONTENT_DAY_2_ACTION_TYPE.
 	 */
-	private static final String CONTENT_DAY_2_TYPE = "com.vmware.policy.deployment.action";
+	private static final String CONTENT_DAY_2_ACTION_TYPE = "com.vmware.policy.deployment.action";
 	/**
 	 * configuration.
 	 */
@@ -2969,22 +2971,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 */
 	public String getContentSharingPolicyIdByName(final String name) {
-		Map<String, String> params = new HashMap<>();
-		params.put("expandDefinition", "true");
-		params.put("computeStats", "true");
-
-		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
-				.stream()
-				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(p -> p.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
-				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
-				.findFirst()
-				.orElse(null);
-		if (policy == null) {
-			throw new Error("Cannot find Content Sharing Policy by name" + name);
-		} else {
-			return policy.getId();
-		}
+		return this.getPolicyIdByName(VraNgContentSharingPolicy.class, name, CONTENT_SHARING_POLICY_TYPE);
 	}
 
 	/**
@@ -2995,14 +2982,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 */
 	public String getDay2PolicyIdByName(final String name) {
+		return this.getPolicyIdByName(VraNgDay2ActionsPolicy.class, name, CONTENT_DAY_2_ACTION_TYPE);
+	}
+
+	// private methods for different policy types(consider whether to extract in another service)
+	private <TPolicyType extends VraNgPolicyBase> String getPolicyIdByName(Class<TPolicyType> policyTypeClass, String name, String policyType) {
 		Map<String, String> params = new HashMap<>();
 		params.put("expandDefinition", "true");
 		params.put("computeStats", "true");
 
-		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
+		TPolicyType policy = this.getPagedContent(SERVICE_POLICIES, params)
 			.stream()
-			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-			.filter(p -> p.getTypeId().equalsIgnoreCase(CONTENT_DAY_2_TYPE))
+			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), policyTypeClass))
+			.filter(p -> p.getTypeId().equalsIgnoreCase(policyType))
 			.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
 			.findFirst()
 			.orElse(null);
@@ -3012,6 +3004,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return policy.getId();
 		}
 	}
+	// end private methods for different policy types(consider whether to extract in another service)
 
 	/**
 	 * Retrieve content sharing policy based on Id.

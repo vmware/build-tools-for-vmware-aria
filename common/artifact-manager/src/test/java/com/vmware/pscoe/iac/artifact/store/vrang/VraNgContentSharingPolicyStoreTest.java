@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vmware.pscoe.iac.artifact.store.vrang.policies.VraNgContentSharingPolicyStore;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

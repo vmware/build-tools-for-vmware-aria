@@ -1,4 +1,4 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.store.vrang.policies;
 
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vmware.pscoe.iac.artifact.store.vrang.AbstractVraNgStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,6 +104,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 * 
 	 * @param csPolicyOnServerByName
 	 */
+	// TODO: Maybe we need to handle import of all policies together via the base class?
 	private void handleContentSharingPolicyImport(final File contentSharingPolicyFile,
 			final Map<String, VraNgContentSharingPolicy> csPolicyOnServerByName) {
 		String csPolicyNameWithExt = contentSharingPolicyFile.getName();

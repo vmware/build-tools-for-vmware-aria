@@ -17,6 +17,10 @@ package com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies;
 
 public class VraNgPolicyBase {
 	/**
+	 * Id of the Content Sharing Policy.
+	 */
+	private String id;
+	/**
 	 * TypeId of the Content Sharing Policy.
 	 */
 	private String typeId;
@@ -25,6 +29,10 @@ public class VraNgPolicyBase {
 	 */
 	private String name;
 	/**
+	 * ProjectId of the Content Sharing Policy.
+	 */
+	private String projectId;
+	/**
 	 * Description of the Content Sharing Policy.
 	 */
 	private String description;
@@ -32,10 +40,30 @@ public class VraNgPolicyBase {
 	public VraNgPolicyBase() {
 	}
 
-	public VraNgPolicyBase(String typeId, String name, String description) {
+	public VraNgPolicyBase(String idIn, String typeId, String name, String projectIdIn, String description) {
+		this.id = idIn;
 		this.typeId = typeId;
 		this.name = name;
+		this.projectId = projectIdIn;
 		this.description = description;
+	}
+
+	/**
+	 * Get the name of the content sharing policy.
+	 *
+	 * @return content sharing policy id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Set the id of the content sharing policy.
+	 *
+	 * @param idIn - id of the content sharing policy
+	 */
+	public void setId(final String idIn) {
+		this.id = idIn;
 	}
 
 	/**
@@ -72,6 +100,24 @@ public class VraNgPolicyBase {
 	 */
 	public void setName(final String nameIn) {
 		this.name = nameIn;
+	}
+
+	/**
+	 * Get the name of the content sharing policy.
+	 *
+	 * @return content sharing policy name
+	 */
+	public String getProjectId() {
+		return this.projectId;
+	}
+
+	/**
+	 * Set the projectId of the content sharing policy.
+	 *
+	 * @param projectIdIn - project id of the content sharing policy
+	 */
+	public void setProjectId(final String projectIdIn) {
+		this.projectId = projectIdIn;
 	}
 
 	/**

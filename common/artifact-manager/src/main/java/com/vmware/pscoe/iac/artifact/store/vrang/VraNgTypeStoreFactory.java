@@ -24,6 +24,8 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.store.vrang.policies.VraNgContentSharingPolicyStore;
+
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.BLUEPRINT;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CATALOG_ITEM;
