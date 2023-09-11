@@ -181,7 +181,7 @@ public class RestClientVcd extends RestClient {
 	/**
 	 * getAllUiExtensions.
 	 * 
-	 * @return List<Package>
+	 * @return list of packages
 	 */
 	public List<Package> getAllUiExtensions() {
 		URI url = getURI(getURIBuilder().setPath(URL_UI_EXTENSION_BASE));
