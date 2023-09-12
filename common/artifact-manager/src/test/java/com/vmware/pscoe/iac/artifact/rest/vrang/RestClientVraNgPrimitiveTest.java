@@ -728,11 +728,11 @@ class RestClientVraNgPrimitiveTest {
 
 		// START TEST
 		VraNgContentSharingPolicy csPolicy = restClient
-				.getContentSharingPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
+				.getPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
 		VraNgContentSharingPolicy expectedResult = ContentSharingPolicyMockBuilder.buildContentSharingPolicy();
 		assertEquals(new Gson().toJson(expectedResult), new Gson().toJson(csPolicy));
 		Assertions.assertDoesNotThrow(() -> {
-			this.restClient.getContentSharingPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
+			this.restClient.getPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
 		});
 	}
 

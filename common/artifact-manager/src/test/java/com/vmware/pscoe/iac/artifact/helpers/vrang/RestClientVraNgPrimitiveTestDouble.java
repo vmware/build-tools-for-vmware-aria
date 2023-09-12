@@ -185,8 +185,8 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	 * @param policyId String
 	 * @return policy VraNgContentSharingPolicy
 	 */
-	public VraNgContentSharingPolicy getContentSharingPolicyPrimitive(final String policyId) {
-		return super.getContentSharingPolicyPrimitive(policyId);
+	public VraNgContentSharingPolicy getPolicyPrimitive(final String policyId) {
+		return super.getPolicyPrimitive(policyId);
 	}
 
 	/** 

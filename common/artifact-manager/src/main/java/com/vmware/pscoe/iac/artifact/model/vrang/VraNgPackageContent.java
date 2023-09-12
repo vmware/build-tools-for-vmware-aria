@@ -57,6 +57,25 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
         
     }
 
+	public enum PolicyType {
+		CONTENT_SHARING_POLICY_TYPE("com.vmware.policy.catalog.entitlement"),
+		RESOURCE_QUOTA_POLICY_TYPE("com.vmware.policy.resource.quota"),
+		LEASE_POLICY_TYPE("com.vmware.policy.deployment.lease"),
+		DAY_2_ACTION_POLICY_TYPE("com.vmware.policy.deployment.action"),
+		APPROVAL_POLICY_TYPE("com.vmware.policy.approval"),
+		DEPLOYMENT_LIMIT_POLICY_TYPE("com.vmware.policy.deployment.limit");
+
+		private final String typeValue;
+
+		private PolicyType(String typeValue) {
+			this.typeValue = typeValue;
+		}
+
+		public String getTypeValue(){
+			return this.typeValue;
+		}
+	}
+
     public VraNgPackageContent(List<Content<ContentType>> content) {
         super(content);
     }

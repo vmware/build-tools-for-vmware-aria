@@ -39,35 +39,8 @@ import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementDto;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItemType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganizations;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegion;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
-import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgDay2ActionsPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgPolicyBase;
+import com.vmware.pscoe.iac.artifact.model.vrang.*;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.*;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -98,6 +71,7 @@ import com.google.gson.JsonSyntaxException;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.*;
 
 public class RestClientVraNgPrimitive extends RestClient {
 	/**
@@ -269,14 +243,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * CUSTOM_FORM_DEFAULT_FORMAT.
 	 */
 	private static final String CUSTOM_FORM_DEFAULT_FORMAT = "JSON";
-	/**
-	 * CONTENT_SHARING_POLICY_TYPE.
-	 */
-	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
-	/**
-	 * CONTENT_DAY_2_ACTION_TYPE.
-	 */
-	private static final String CONTENT_DAY_2_ACTION_TYPE = "com.vmware.policy.deployment.action";
 	/**
 	 * configuration.
 	 */
@@ -2942,24 +2908,25 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Retrieve all content sharing policy Ids.
+	 * Retrieve all  policy Ids.
 	 *
 	 * @return list of sharing policy Ids that are available.
 	 * 
 	 */
-	protected List<VraNgContentSharingPolicy> getAllContentSharingPoliciesPrimitive() {
+	protected List<VraNgPolicyBase> getAllPoliciesPrimitive() {
 		Map<String, String> params = new HashMap<>();
 		params.put("expandDefinition", "true");
 		params.put("computeStats", "true");
 
-		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+		List<VraNgPolicyBase> results = this.getPagedContent(SERVICE_POLICIES, params)
 				.stream()
-				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
+				.map(jsonOb -> mapPolicy(jsonOb))
+				//.filter(policy -> policy.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
 				.filter(policy -> policy.getProjectId().equals(this.getProjectId()))
 				.collect(Collectors.toList());
 
 		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+
 		return results;
 	}
 
@@ -2971,7 +2938,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 */
 	public String getContentSharingPolicyIdByName(final String name) {
-		return this.getPolicyIdByName(VraNgContentSharingPolicy.class, name, CONTENT_SHARING_POLICY_TYPE);
+		return this.getPolicyIdByName(VraNgContentSharingPolicy.class, name, VraNgPackageContent.PoolicyType.CONTENT_SHARING_POLICY_TYPE.getTypeValue());
 	}
 
 	/**
@@ -2982,7 +2949,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 */
 	public String getDay2PolicyIdByName(final String name) {
-		return this.getPolicyIdByName(VraNgDay2ActionsPolicy.class, name, CONTENT_DAY_2_ACTION_TYPE);
+		return this.getPolicyIdByName(VraNgDay2ActionsPolicy.class, name, PolicyType.DAY_2_ACTION_POLICY_TYPE.getTypeValue());
 	}
 
 	// private methods for different policy types(consider whether to extract in another service)
@@ -3004,16 +2971,35 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return policy.getId();
 		}
 	}
+
+	private VraNgPolicyBase mapPolicy(JsonObject jsonOb) {
+		String policyTypeValue = jsonOb.get("typeId").getAsString();
+		if (policyTypeValue == PolicyType.CONTENT_SHARING_POLICY_TYPE.getTypeValue()) {
+				return new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class);
+		} else if (policyTypeValue == PolicyType.RESOURCE_QUOTA_POLICY_TYPE.getTypeValue()) {
+			return new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class);
+		} else if (policyTypeValue == PolicyType.LEASE_POLICY_TYPE.getTypeValue()) {
+			return new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class);
+		} else if (policyTypeValue == PolicyType.DAY_2_ACTION_POLICY_TYPE.getTypeValue()) {
+			return new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class);
+		} else if (policyTypeValue == PolicyType.APPROVAL_POLICY_TYPE.getTypeValue()) {
+			return new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class);
+		} else if (policyTypeValue == PolicyType.DEPLOYMENT_LIMIT_POLICY_TYPE.getTypeValue()) {
+			return new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class);
+		} else {
+			throw new IllegalArgumentException("Unsupported policy type: " + policyTypeValue);
+		}
+	}
 	// end private methods for different policy types(consider whether to extract in another service)
 
 	/**
 	 * Retrieve content sharing policy based on Id.
 	 * 
 	 * @param policyId policy id
-	 * @return Created VraNg Content Sharing Policy
+	 * @return Created VraNg Content Policy from all types
 	 */
-	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(final String policyId) {
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
+	protected VraNgPolicyBase getPolicyPrimitive(final String policyId) {
+		VraNgPolicyBase csPolicy = new VraNgPolicyBase();
 		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -3031,11 +3017,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
 			item.name = this.getUserEntitlementItemName(item.id);
 		}));
+
+		//TODO: map different policies types according to the type property from the JSON
 		csPolicy.setDefinition(definition);
 		csPolicy.setName(name);
 		csPolicy.setEnforcementType(enforcementType);
 		csPolicy.setDescription(description);
 		csPolicy.setTypeId(typeId);
+
 		return csPolicy;
 	}
 
@@ -3108,6 +3097,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String jsonBody = new Gson().toJson(csPolicy);
 		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
 		handleItemsProperty(jsonObject);
+
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 

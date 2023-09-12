@@ -33,6 +33,10 @@ public class VraNgPolicyBase {
 	 */
 	private String projectId;
 	/**
+	 * OrgId of the Content Sharing Policy.
+	 */
+	private String orgId;
+	/**
 	 * Description of the Content Sharing Policy.
 	 */
 	private String description;
@@ -40,10 +44,11 @@ public class VraNgPolicyBase {
 	public VraNgPolicyBase() {
 	}
 
-	public VraNgPolicyBase(String idIn, String typeId, String name, String projectIdIn, String description) {
+	public VraNgPolicyBase(String idIn, String typeId, String name, String orgIdIn, String projectIdIn, String description) {
 		this.id = idIn;
 		this.typeId = typeId;
 		this.name = name;
+		this.orgId = orgIdIn;
 		this.projectId = projectIdIn;
 		this.description = description;
 	}
@@ -100,6 +105,24 @@ public class VraNgPolicyBase {
 	 */
 	public void setName(final String nameIn) {
 		this.name = nameIn;
+	}
+
+	/**
+	 * Get the id of the content sharing policy org.
+	 *
+	 * @return content sharing policy org id
+	 */
+	public String getOrgId() {
+		return this.orgId;
+	}
+
+	/**
+	 * Set the orgId of the content sharing policy.
+	 *
+	 * @param orgIdIn - Org id of the content sharing policy
+	 */
+	public void setOrgId(final String orgIdIn) {
+		this.orgId = orgIdIn;
 	}
 
 	/**

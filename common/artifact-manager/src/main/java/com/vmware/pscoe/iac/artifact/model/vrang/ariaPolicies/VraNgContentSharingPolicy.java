@@ -22,10 +22,6 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
 */
 public class VraNgContentSharingPolicy extends VraNgPolicyBase {
 	/**
-	 * OrgId of the Content Sharing Policy.
-	 */
-	private String orgId;
-	/**
 	 * EnforcementType of the Content Sharing Policy.
 	 */
 	private String enforcementType;
@@ -57,28 +53,9 @@ public class VraNgContentSharingPolicy extends VraNgPolicyBase {
 			final String projectIdIn, final String orgIdIn,
 			final String enforcementTypeIn, final String descriptionIn,
 			final VraNgDefinition definitionIn) {
-		super(idIn, typeIdIn, nameIn, projectIdIn, descriptionIn);
-		this.orgId = orgIdIn;
+		super(idIn, typeIdIn, nameIn, orgIdIn, projectIdIn, descriptionIn);
 		this.enforcementType = enforcementTypeIn;
 		this.definition = definitionIn;
-	}
-
-	/**
-	 * Get the id of the content sharing policy org.
-	 * 
-	 * @return content sharing policy org id
-	 */
-	public String getOrgId() {
-		return this.orgId;
-	}
-
-	/**
-	 * Set the orgId of the content sharing policy.
-	 * 
-	 * @param orgIdIn - Org id of the content sharing policy
-	 */
-	public void setOrgId(final String orgIdIn) {
-		this.orgId = orgIdIn;
 	}
 
 	/**

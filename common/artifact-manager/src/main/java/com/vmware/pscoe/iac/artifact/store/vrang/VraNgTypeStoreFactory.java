@@ -24,7 +24,7 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.store.vrang.policies.VraNgContentSharingPolicyStore;
+import com.vmware.pscoe.iac.artifact.store.vrang.policies.VraNgPolicyStore;
 
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.BLUEPRINT;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
@@ -198,7 +198,7 @@ public class VraNgTypeStoreFactory {
 			case RESOURCE_ACTION:
 				return new VraNgResourceActionStore();
 			case POLICY:
-				return new VraNgContentSharingPolicyStore();
+				return new VraNgPolicyStore();
 				//TODO: Add the store cration of the other policy types
 			default:
 				throw new RuntimeException("unknown type: " + type);

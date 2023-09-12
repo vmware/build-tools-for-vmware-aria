@@ -48,6 +48,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
 
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgPolicyBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -1265,9 +1266,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * 
 	 * @return policies
 	 */
-	public List<VraNgContentSharingPolicy> getContentSharingPolicies() {
+	public List<VraNgPolicyBase> getVraPolicies() {
 		try {
-			return this.getAllContentSharingPoliciesPrimitive();
+			return this.getAllPoliciesPrimitive();
 		} catch (Exception e) {
 			logger.error("Error fetching content sharing policies", e.getMessage());
 			throw new RuntimeException(e);
@@ -1294,9 +1295,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @param policyId content sharing policy id
 	 * @return policy
 	 */
-	public VraNgContentSharingPolicy getContentSharingPolicy(final String policyId) {
+	public VraNgPolicyBase getPolicy(final String policyId) {
 		try {
-			return this.getContentSharingPolicyPrimitive(policyId);
+			return this.getPolicyPrimitive(policyId);
 		} catch (Exception e) {
 			logger.error("Error fetching content sharing policy - {}", e.getMessage());
 			throw new RuntimeException(e);
