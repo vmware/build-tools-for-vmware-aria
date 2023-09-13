@@ -15,7 +15,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies;
  * #L%
  */
 
-public class VraNgPolicyBase {
+public abstract class VraNgPolicyBase {
 	/**
 	 * Id of the Content Sharing Policy.
 	 */
@@ -90,27 +90,27 @@ public class VraNgPolicyBase {
 	}
 
 	/**
-	 * Get the name of the content sharing policy.
+	 * Get the name of the policy.
 	 *
-	 * @return content sharing policy name
+	 * @return policy name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Set the name of the content sharing policy.
+	 * Set the name of the policy.
 	 *
-	 * @param nameIn - name of the content sharing policy
+	 * @param nameIn - name of the policy
 	 */
 	public void setName(final String nameIn) {
 		this.name = nameIn;
 	}
 
 	/**
-	 * Get the id of the content sharing policy org.
+	 * Get the id of the policy org.
 	 *
-	 * @return content sharing policy org id
+	 * @return policy org id
 	 */
 	public String getOrgId() {
 		return this.orgId;

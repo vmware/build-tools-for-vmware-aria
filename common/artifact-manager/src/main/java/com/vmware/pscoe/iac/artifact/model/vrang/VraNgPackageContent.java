@@ -74,6 +74,16 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
 		public String getTypeValue(){
 			return this.typeValue;
 		}
+
+		public static PolicyType findMember(String value) {
+			for (PolicyType item : PolicyType.values()) {
+				if (item.getTypeValue().equals(value)) {
+					return item;
+				}
+			}
+
+			throw new IllegalArgumentException("No enum constant found for value: " + value);
+		}
 	}
 
     public VraNgPackageContent(List<Content<ContentType>> content) {

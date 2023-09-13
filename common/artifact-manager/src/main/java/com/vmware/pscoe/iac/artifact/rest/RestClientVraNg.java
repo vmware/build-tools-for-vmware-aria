@@ -31,7 +31,6 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
@@ -1278,14 +1277,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createContentSharingPolicy.
 	 * 
-	 * @param csPolicy content sharing policy
+	 * @param vraPolicy content sharing policy
 	 */
-	public void createContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
+	public void createVraNgPolicy(final VraNgPolicyBase vraPolicy) {
 		try {
-			createContentSharingPolicyPrimitive(csPolicy);
+			this.createVraNgPolicyPrimitive(vraPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(
-					String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+					String.format("Could not create vRA policy with name '%s'.", vraPolicy.getName()), e);
 		}
 	}
 

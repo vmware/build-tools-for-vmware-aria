@@ -1,6 +1,5 @@
 package com.vmware.pscoe.iac.artifact.store.vrang.policies;
 
-import java.awt.geom.IllegalPathStateException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -93,18 +92,171 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 
 		logger.info("Found Policies. Importing...");
 		// here need to get all policies
-		Map<String, VraNgPolicyBase> csPolicyOnServerByName = this.restClient.getVraPolicies()
+		Map<String, VraNgPolicyBase> policiesOnServerByName = this.restClient.getVraPolicies()
 				.stream()
-				.map(csp -> this.restClient.getPolicy(csp.getId()))
+				.map(policy -> this.restClient.getPolicy(policy.getId()))
 				.collect(Collectors.toMap(VraNgPolicyBase::getName, item -> item));
 
-		if (policyFiles == null) {
-			throw new IllegalPathStateException("No valid policies found in directory: " + sourcePath);
+		for (PolicyFile contentSharingPolicyFile : policyFiles) {
+			this.handlePolicyImport(contentSharingPolicyFile, policiesOnServerByName);
+		}
+	}
+
+	/**
+	 * .
+	 * Handles logic to update or create a content sharing policy.
+	 *
+	 * @param policyFile
+	 *
+	 * @param policiesOnServerByName
+	 */
+	private void handlePolicyImport(final PolicyFile policyFile,
+									final Map<String, VraNgPolicyBase> policiesOnServerByName) {
+		String policyNameWithExt = policyFile.file.getName();
+		String policyName = FilenameUtils.removeExtension(policyNameWithExt);
+		logger.info("Attempting to import content sharing policy '{}'", policyName);
+		VraNgPolicyBase policy = this.jsonFileToVraNgPolicy(policyFile.file, policyFile.policyType);
+		this.enrichPolicy(policy);
+		// Check if the content sharing policy exists
+		VraNgPolicyBase existingRecord = null;
+		if (policiesOnServerByName.containsKey(policyName)) {
+			existingRecord = policiesOnServerByName.get(policyName);
+		}
+		if (existingRecord != null) {
+			policy.setId(this.restClient.getPolicyIdByName(policy.getName()));
 		}
 
-		for (PolicyFile contentSharingPolicyFile : policyFiles) {
-			this.handlePolicyImport(contentSharingPolicyFile, csPolicyOnServerByName);
+		// create according to type
+		this.restClient.createVraNgPolicy(policy);
+	}
+
+	/**
+	 * Get List from descriptor.
+	 *
+	 * @return null or list of content sharing policies.
+	 */
+	@Override
+	protected List<String> getItemListFromDescriptor() {
+		throw new NotImplementedException("Not implemented!");
+	}
+
+	/**
+	 * Exports all the content for the given project.
+	 */
+	@Override
+	protected void exportStoreContent() {
+		List<VraNgPolicyBase> allPolicies = this.restClient.getVraPolicies();
+
+		allPolicies.forEach(
+				policy -> {
+					VraNgPolicyBase vraNgPolicy = this.restClient.getPolicy(policy.getId());
+
+					this.storePolicyOnFilesystem(vraNgPackage, vraNgPolicy);
+				});
+	}
+
+	/**
+	 * Exports all the content for the given project based on the names in content.yaml.
+	 *
+	 * @param policyNames Item names for export
+	 */
+	@Override
+	protected void exportStoreContent(final List<String> policyNames) {
+		List<VraNgPolicyBase> allPolicies = this.restClient.getVraPolicies();
+
+		allPolicies.forEach(
+				policy -> {
+					if (policyNames.contains(policy.getName())) {
+						VraNgPolicyBase csPolicy = this.restClient.getPolicy(policy.getId());
+						logger.info("exporting '{}'", csPolicy.getName());
+
+						this.storePolicyOnFilesystem(vraNgPackage, csPolicy);
+					}
+				});
+	}
+
+	/**
+	 * Store content sharing policy in JSON file.
+	 *
+	 * @param serverPackage        vra package
+	 * @param vraNgPolicy contentSharingPolicy representation
+	 */
+	private void storePolicyOnFilesystem(final Package serverPackage,
+										 final VraNgPolicyBase vraNgPolicy) {
+		logger.debug("Storing policy {}", vraNgPolicy.getName());
+		File store = new File(serverPackage.getFilesystemPath());
+		Map<PolicyType, String> policyTypesToSubDirs = VraNgDirs.getPolicySubDirs();
+		PolicyType policyType = PolicyType.findMember(vraNgPolicy.getTypeId());
+
+		File policyFile = Paths.get(
+				store.getPath(),
+				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
+				policyTypesToSubDirs.get(policyType),
+				vraNgPolicy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
+
+		if (!policyFile.getParentFile().isDirectory()
+				&& !policyFile.getParentFile().mkdirs()) {
+			logger.warn("Could not create folder: {}", policyFile.getParentFile().getAbsolutePath());
 		}
+
+		if (policyType == PolicyType.CONTENT_SHARING_POLICY_TYPE) {
+			this.storeContentSharingPolicy(vraNgPolicy, policyFile);
+		} else if (policyType == PolicyType.RESOURCE_QUOTA_POLICY_TYPE) {
+			this.storeResourceQuotaPolicy(vraNgPolicy, policyFile);
+		}
+	}
+
+	private void storeContentSharingPolicy(VraNgPolicyBase vraNgPolicy, File contentSharingPolicyFile) {
+		try {
+			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			JsonObject csPolicyJsonObject = gson.fromJson(new Gson().toJson(vraNgPolicy), JsonObject.class);
+			JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
+			JsonArray euArr = definition.getAsJsonArray("entitledUsers");
+			if (euArr != null) {
+				for (JsonElement eu : euArr) {
+					JsonObject entitledUserObj = eu.getAsJsonObject();
+					JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
+					for (JsonElement item : itemsArr) {
+						JsonObject itemObj = item.getAsJsonObject();
+						itemObj.remove("id");
+					}
+				}
+			}
+			definition.add("entitledUsers", euArr);
+			csPolicyJsonObject.add("definition", definition);
+			// write content sharing file
+			logger.info("Created content sharing file {}",
+				Files.write(Paths.get(contentSharingPolicyFile.getPath()),
+					gson.toJson(csPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
+		}
+		catch (IOException e) {
+			logger.error("Unable to create content sharing {}", contentSharingPolicyFile.getAbsolutePath());
+			throw new RuntimeException(
+				String.format(
+					"Unable to store content sharing to file %s.", contentSharingPolicyFile.getAbsolutePath()),
+				e);
+		 }
+	}
+
+	private void storeResourceQuotaPolicy(VraNgPolicyBase vraNgPolicy, File resourceQuotaPolicyFile) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private Map<PolicyType, List<String>> getPoliciesFromDescriptor() {
+		VraNgPolicy policy = this.vraNgPackageDescriptor.getPolicy();
+		if (policy == null) {
+			return null;
+		}
+
+		Map<PolicyType, List<String>> policiesMap = new HashMap<>();
+		policiesMap.put(PolicyType.CONTENT_SHARING_POLICY_TYPE, policy.getContentSharingPolicies());
+		policiesMap.put(PolicyType.RESOURCE_QUOTA_POLICY_TYPE, policy.getResourceQuotaPolicies());
+		policiesMap.put(PolicyType.LEASE_POLICY_TYPE, policy.getLeasePolicies());
+		policiesMap.put(PolicyType.DAY_2_ACTION_POLICY_TYPE, policy.getDay2ActionsPolicies());
+		policiesMap.put(PolicyType.APPROVAL_POLICY_TYPE, policy.getApprovalPolicies());
+		policiesMap.put(PolicyType.DEPLOYMENT_LIMIT_POLICY_TYPE, policy.getDeploymentLimitPolicies());
+
+		return policiesMap;
 	}
 
 	private List<PolicyFile> getPolicyFiles(Map<PolicyType, List<String>> policies, String sourcePath) {
@@ -140,61 +292,6 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * .
-	 * Handles logic to update or create a content sharing policy.
-	 *
-	 * @param policyFile
-	 *
-	 * @param policyOnServerByName
-	 */
-	private void handlePolicyImport(final PolicyFile policyFile,
-									final Map<String, VraNgPolicyBase> policyOnServerByName) {
-		String policyNameWithExt = policyFile.file.getName();
-		String policyName = FilenameUtils.removeExtension(policyNameWithExt);
-		logger.info("Attempting to import content sharing policy '{}'", policyName);
-		VraNgPolicyBase policy = this.jsonFileToVraNgPolicy(policyFile.file, policyFile.policyType);
-		this.enrichPolicy(policy);
-		// Check if the content sharing policy exists
-		VraNgPolicyBase existingRecord = null;
-		if (policyOnServerByName.containsKey(policyName)) {
-			existingRecord = policyOnServerByName.get(policyName);
-		}
-		if (existingRecord != null) {
-			policy.setId(this.restClient.getContentSharingPolicyIdByName(policy.getName()));
-		}
-
-		// create according to type
-		this.restClient.createContentSharingPolicy(policy);
-	}
-
-	/**
-	 * Get List from descriptor.
-	 *
-	 * @return null or list of content sharing policies.
-	 */
-	@Override
-	protected List<String> getItemListFromDescriptor() {
-		throw new NotImplementedException("Not implemented!");
-	}
-
-	private Map<PolicyType, List<String>> getPoliciesFromDescriptor() {
-		VraNgPolicy policy = this.vraNgPackageDescriptor.getPolicy();
-		if (policy == null) {
-			return null;
-		}
-
-		Map<PolicyType, List<String>> policiesMap = new HashMap<>();
-		policiesMap.put(PolicyType.CONTENT_SHARING_POLICY_TYPE, policy.getContentSharingPolicies());
-		policiesMap.put(PolicyType.RESOURCE_QUOTA_POLICY_TYPE, policy.getResourceQuotaPolicies());
-		policiesMap.put(PolicyType.LEASE_POLICY_TYPE, policy.getLeasePolicies());
-		policiesMap.put(PolicyType.DAY_2_ACTION_POLICY_TYPE, policy.getDay2ActionsPolicies());
-		policiesMap.put(PolicyType.APPROVAL_POLICY_TYPE, policy.getApprovalPolicies());
-		policiesMap.put(PolicyType.DEPLOYMENT_LIMIT_POLICY_TYPE, policy.getDeploymentLimitPolicies());
-
-		return policiesMap;
-	}
-
-	/**
 	 * Converts a json catalog item file to VraNgContentSharingPolicy.
 	 *
 	 * @param jsonFile
@@ -203,7 +300,7 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 	 */
 	private VraNgPolicyBase jsonFileToVraNgPolicy(final File jsonFile, PolicyType policyType) {
 		logger.debug("Converting content sharing policy file to VraNgContentSharingPolicies. Name: '{}'",
-				jsonFile.getName());
+			jsonFile.getName());
 
 		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
 			switch (policyType) {
@@ -230,97 +327,11 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Used while import to override the orgId and ProjectId for the receiving vRA instance.
 	 *
-	 * @param csPolicy
+	 * @param vraNgPolicy
 	 */
-	private void enrichPolicy(final VraNgPolicyBase csPolicy) {
+	private void enrichPolicy(final VraNgPolicyBase vraNgPolicy) {
 		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
-		csPolicy.setOrgId(organizationId);
-		csPolicy.setProjectId(this.restClient.getProjectId());
-	}
-
-	/**
-	 * Exports all the content for the given project.
-	 */
-	@Override
-	protected void exportStoreContent() {
-
-		List<VraNgPolicyBase> csPolicies = this.restClient.getVraPolicies();
-
-		csPolicies.forEach(
-				policy -> {
-					VraNgContentSharingPolicy csPolicy = this.restClient.getPolicy(policy.getId());
-					storeContentSharingPolicyOnFilesystem(vraNgPackage, csPolicy);
-				});
-	}
-
-	/**
-	 * Exports all the content for the given project based on the names in content.yaml.
-	 *
-	 * @param itemNames Item names for export
-	 */
-	@Override
-	protected void exportStoreContent(final List<String> itemNames) {
-		List<VraNgPolicyBase> csPolicies = this.restClient.getVraPolicies();
-
-		csPolicies.forEach(
-				policy -> {
-					if (itemNames.contains(policy.getName())) {
-						VraNgContentSharingPolicy csPolicy = this.restClient.getPolicy(policy.getId());
-						logger.info("exporting '{}'", csPolicy.getName());
-						storeContentSharingPolicyOnFilesystem(vraNgPackage, csPolicy);
-					}
-				});
-	}
-
-	/**
-	 * Store content sharing policy in JSON file.
-	 *
-	 * @param serverPackage        vra package
-	 * @param contentSharingPolicy contentSharingPolicy representation
-	 */
-	private void storeContentSharingPolicyOnFilesystem(final Package serverPackage,
-			final VraNgPolicyBase contentSharingPolicy) {
-		logger.debug("Storing contentSharingPolicy {}", contentSharingPolicy.getName());
-		File store = new File(serverPackage.getFilesystemPath());
-		File contentSharingPolicyFile = Paths.get(
-				store.getPath(),
-				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
-				CONTENT_SHARING_POLICY,
-				contentSharingPolicy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
-
-		if (!contentSharingPolicyFile.getParentFile().isDirectory()
-				&& !contentSharingPolicyFile.getParentFile().mkdirs()) {
-			logger.warn("Could not create folder: {}", contentSharingPolicyFile.getParentFile().getAbsolutePath());
-		}
-
-		try {
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			JsonObject csPolicyJsonObject = gson.fromJson(new Gson().toJson(contentSharingPolicy), JsonObject.class);
-			JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
-			JsonArray euArr = definition.getAsJsonArray("entitledUsers");
-			if (euArr != null) {
-				for (JsonElement eu : euArr) {
-					JsonObject entitledUserObj = eu.getAsJsonObject();
-					JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
-					for (JsonElement item : itemsArr) {
-						JsonObject itemObj = item.getAsJsonObject();
-						itemObj.remove("id");
-					}
-				}
-			}
-			definition.add("entitledUsers", euArr);
-			csPolicyJsonObject.add("definition", definition);
-			// write content sharing file
-			logger.info("Created content sharing file {}",
-					Files.write(Paths.get(contentSharingPolicyFile.getPath()),
-							gson.toJson(csPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
-		} catch (IOException e) {
-			logger.error("Unable to create content sharing {}", contentSharingPolicyFile.getAbsolutePath());
-			throw new RuntimeException(
-					String.format(
-							"Unable to store content sharing to file %s.", contentSharingPolicyFile.getAbsolutePath()),
-					e);
-		}
-
+		vraNgPolicy.setOrgId(organizationId);
+		vraNgPolicy.setProjectId(this.restClient.getProjectId());
 	}
 }
