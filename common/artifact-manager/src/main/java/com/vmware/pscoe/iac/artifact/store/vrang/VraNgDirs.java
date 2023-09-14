@@ -44,7 +44,6 @@ public class VraNgDirs {
 	/**
 	 * Sub folder path for resource quota policy.
 	 */
-
 	private static final String DIR_RESOURCE_QUOTA_POLICY = "resource-quota";
 	/**
 	 * Sub folder path for lease policy.

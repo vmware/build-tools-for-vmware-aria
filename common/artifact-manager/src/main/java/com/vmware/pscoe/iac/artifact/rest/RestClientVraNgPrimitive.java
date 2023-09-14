@@ -43,6 +43,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.*;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -2964,7 +2965,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Created VraNg Content Policy from all types
 	 */
 	protected VraNgPolicyBase getPolicyPrimitive(final String policyId) {
-		VraNgPolicyBase csPolicy = new VraNgPolicyBase();
 		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -2976,19 +2976,70 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String name = result.get("name").getAsString();
 		String description = result.has("description") ? result.get("description").getAsString() : "";
 		String typeId = result.get("typeId").getAsString();
-		String enforcementType = result.get("enforcementType").getAsString();
+
+		PolicyType policyType = PolicyType.findMember(typeId);
+		VraNgPolicyBase createdPolicy = null;
+		switch (policyType) {
+			case CONTENT_SHARING_POLICY_TYPE:
+				createdPolicy = this.getContentSharingPolicy(result);
+				break;
+			case RESOURCE_QUOTA_POLICY_TYPE:
+				createdPolicy = this.getResourceQuotaPolicy(result);
+				break;
+			case LEASE_POLICY_TYPE:
+				createdPolicy = this.getLeasePolicy(result);
+				break;
+			case DAY_2_ACTION_POLICY_TYPE:
+				createdPolicy = this.getDay2ActionPolicy(result);
+				break;
+			case APPROVAL_POLICY_TYPE:
+				createdPolicy = this.getApprovalPolicy(result);
+				break;
+			case DEPLOYMENT_LIMIT_POLICY_TYPE:
+				createdPolicy = this.getDeploymentLimitPolicy(result);
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported policy type: " + policyType.getTypeValue());
+		}
+
+		createdPolicy.setName(name);
+		createdPolicy.setTypeId(typeId);
+		createdPolicy.setDescription(description);
+
+		return createdPolicy;
+	}
+
+	private VraNgPolicyBase getResourceQuotaPolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgPolicyBase getLeasePolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgPolicyBase getDay2ActionPolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgPolicyBase getApprovalPolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgPolicyBase getDeploymentLimitPolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgContentSharingPolicy getContentSharingPolicy(JsonObject result) {
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
+
 		VraNgDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
-				VraNgDefinition.class);
+			VraNgDefinition.class);
 		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
 			item.name = this.getUserEntitlementItemName(item.id);
 		}));
-
-		//TODO: map different policies types according to the type property from the JSON
 		csPolicy.setDefinition(definition);
-		csPolicy.setName(name);
+		String enforcementType = result.get("enforcementType").getAsString();
 		csPolicy.setEnforcementType(enforcementType);
-		csPolicy.setDescription(description);
-		csPolicy.setTypeId(typeId);
 
 		return csPolicy;
 	}
@@ -3061,25 +3112,26 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(vraNgPolicy);
 		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-		String policyType = vraNgPolicy.getTypeId();
-		if (policyType == null) {
+		String policyTypeValue = vraNgPolicy.getTypeId();
+		if (policyTypeValue == null) {
 			throw new IllegalStateException("Incorrectly set policy type of policy with ID: " + vraNgPolicy.getId());
 		}
 
-		if (policyType.equals(PolicyType.CONTENT_SHARING_POLICY_TYPE.getTypeValue())) {
-			this.handleContentSharingItemsProperty(jsonObject);
-		} else if (policyType.equals(PolicyType.RESOURCE_QUOTA_POLICY_TYPE.getTypeValue())) {
-			// TODO: Implement custom handling
-		} else if (policyType.equals(PolicyType.LEASE_POLICY_TYPE.getTypeValue())) {
-			// TODO: Implement custom handling
-		} else if (policyType.equals(PolicyType.DAY_2_ACTION_POLICY_TYPE.getTypeValue())) {
-			// TODO: Implement custom handling
-		} else if (policyType.equals(PolicyType.APPROVAL_POLICY_TYPE.getTypeValue())) {
-			// TODO: Implement custom handling
-		} else if (policyType.equals(PolicyType.DEPLOYMENT_LIMIT_POLICY_TYPE.getTypeValue())) {
-			// TODO: Implement custom handling
-		} else {
-			throw new IllegalArgumentException("Unsupported policy type: " + policyType);
+		PolicyType policyType = PolicyType.findMember(policyTypeValue);
+
+		switch (policyType) {
+			case CONTENT_SHARING_POLICY_TYPE:
+				this.handleContentSharingItemsProperty(jsonObject);
+			case RESOURCE_QUOTA_POLICY_TYPE:
+				this.handleResourceQuota(jsonObject);
+			case LEASE_POLICY_TYPE:
+				this.handleLeasePolicy(jsonObject);
+			case DAY_2_ACTION_POLICY_TYPE:
+				this.handleDay2ActionPolicy(jsonObject);
+			case APPROVAL_POLICY_TYPE:
+				this.handleApprovalPolicy(jsonObject);
+			case DEPLOYMENT_LIMIT_POLICY_TYPE:
+				this.handleDeploymentLimitPolicy(jsonObject);
 		}
 
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
@@ -3107,22 +3159,45 @@ public class RestClientVraNgPrimitive extends RestClient {
 		policyJsonObject.add("definition", definition);
 	}
 
+	private void handleResourceQuota(JsonObject jsonObject) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private void handleLeasePolicy(JsonObject jsonObject) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private void handleDay2ActionPolicy(JsonObject jsonObject) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private void handleApprovalPolicy(JsonObject jsonObject) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private void handleDeploymentLimitPolicy(JsonObject jsonObject) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
 	private VraNgPolicyBase createSpecificPolicy(JsonObject jsonOb) {
 		String policyTypeValue = jsonOb.get("typeId").getAsString();
-		if (policyTypeValue.equals(PolicyType.CONTENT_SHARING_POLICY_TYPE.getTypeValue())) {
-			return new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class);
-		} else if (policyTypeValue.equals(PolicyType.RESOURCE_QUOTA_POLICY_TYPE.getTypeValue())) {
-			return new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class);
-		} else if (policyTypeValue.equals(PolicyType.LEASE_POLICY_TYPE.getTypeValue())) {
-			return new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class);
-		} else if (policyTypeValue.equals(PolicyType.DAY_2_ACTION_POLICY_TYPE.getTypeValue())) {
-			return new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class);
-		} else if (policyTypeValue.equals(PolicyType.APPROVAL_POLICY_TYPE.getTypeValue())) {
-			return new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class);
-		} else if (policyTypeValue.equals(PolicyType.DEPLOYMENT_LIMIT_POLICY_TYPE.getTypeValue())) {
-			return new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class);
-		} else {
-			throw new IllegalArgumentException("Unsupported policy type: " + policyTypeValue);
+		PolicyType policyType = PolicyType.findMember(policyTypeValue);
+
+		switch (policyType) {
+			case CONTENT_SHARING_POLICY_TYPE:
+				return new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class);
+			case RESOURCE_QUOTA_POLICY_TYPE:
+				return new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class);
+			case LEASE_POLICY_TYPE:
+				return new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class);
+			case DAY_2_ACTION_POLICY_TYPE:
+				return new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class);
+			case APPROVAL_POLICY_TYPE:
+				return new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class);
+			case DEPLOYMENT_LIMIT_POLICY_TYPE:
+				return new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class);
+			default:
+				throw new IllegalArgumentException("Unsupported policy type: " + policyTypeValue);
 		}
 	}
 }

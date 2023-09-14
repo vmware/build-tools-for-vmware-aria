@@ -15,6 +15,7 @@ package com.vmware.pscoe.iac.artifact.helpers.vrang;
  * #L%
  */
 import com.google.gson.JsonObject;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgPolicyBase;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import org.apache.http.client.utils.URIBuilder;
@@ -185,7 +186,7 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	 * @param policyId String
 	 * @return policy VraNgContentSharingPolicy
 	 */
-	public VraNgContentSharingPolicy getPolicyPrimitive(final String policyId) {
+	public VraNgPolicyBase getPolicyPrimitive(final String policyId) {
 		return super.getPolicyPrimitive(policyId);
 	}
 

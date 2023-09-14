@@ -83,7 +83,6 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 		}
 
 		List<PolicyFile> policyFiles = this.getPolicyFiles(policies, sourcePath);
-
 		if (policyFiles.size() == 0) {
 			logger.info("Could not find any Policies.");
 
@@ -97,8 +96,8 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 				.map(policy -> this.restClient.getPolicy(policy.getId()))
 				.collect(Collectors.toMap(VraNgPolicyBase::getName, item -> item));
 
-		for (PolicyFile contentSharingPolicyFile : policyFiles) {
-			this.handlePolicyImport(contentSharingPolicyFile, policiesOnServerByName);
+		for (PolicyFile policyFile : policyFiles) {
+			this.handlePolicyImport(policyFile, policiesOnServerByName);
 		}
 	}
 
@@ -199,46 +198,82 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 			logger.warn("Could not create folder: {}", policyFile.getParentFile().getAbsolutePath());
 		}
 
-		if (policyType == PolicyType.CONTENT_SHARING_POLICY_TYPE) {
-			this.storeContentSharingPolicy(vraNgPolicy, policyFile);
-		} else if (policyType == PolicyType.RESOURCE_QUOTA_POLICY_TYPE) {
-			this.storeResourceQuotaPolicy(vraNgPolicy, policyFile);
+		Gson gsonProcessor = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+		JsonObject jsonObject = null;
+		switch (policyType) {
+			case CONTENT_SHARING_POLICY_TYPE:
+				jsonObject = this.fillContentSharingPolicy(vraNgPolicy, policyFile, gsonProcessor);
+				break;
+			case RESOURCE_QUOTA_POLICY_TYPE:
+				jsonObject = this.fillResourceQuotaPolicy(vraNgPolicy, policyFile, gsonProcessor);
+				break;
+			case LEASE_POLICY_TYPE:
+				jsonObject = this.fillLeasePolicy(vraNgPolicy, policyFile, gsonProcessor);
+				break;
+			case DAY_2_ACTION_POLICY_TYPE:
+				jsonObject = this.fillDay2ActionsPolicy(vraNgPolicy, policyFile, gsonProcessor);
+				break;
+			case APPROVAL_POLICY_TYPE:
+				jsonObject = this.fillApprovalPolicy(vraNgPolicy, policyFile, gsonProcessor);
+				break;
+			case DEPLOYMENT_LIMIT_POLICY_TYPE:
+				jsonObject = this.fillDeploymentLimitPolicy(vraNgPolicy, policyFile, gsonProcessor);
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported policy type: " + policyType.getTypeValue());
 		}
-	}
 
-	private void storeContentSharingPolicy(VraNgPolicyBase vraNgPolicy, File contentSharingPolicyFile) {
 		try {
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			JsonObject csPolicyJsonObject = gson.fromJson(new Gson().toJson(vraNgPolicy), JsonObject.class);
-			JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
-			JsonArray euArr = definition.getAsJsonArray("entitledUsers");
-			if (euArr != null) {
-				for (JsonElement eu : euArr) {
-					JsonObject entitledUserObj = eu.getAsJsonObject();
-					JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
-					for (JsonElement item : itemsArr) {
-						JsonObject itemObj = item.getAsJsonObject();
-						itemObj.remove("id");
-					}
-				}
-			}
-			definition.add("entitledUsers", euArr);
-			csPolicyJsonObject.add("definition", definition);
-			// write content sharing file
 			logger.info("Created content sharing file {}",
-				Files.write(Paths.get(contentSharingPolicyFile.getPath()),
-					gson.toJson(csPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
+			Files.write(Paths.get(policyFile.getPath()),
+				gsonProcessor.toJson(jsonObject).getBytes(), StandardOpenOption.CREATE));
 		}
 		catch (IOException e) {
-			logger.error("Unable to create content sharing {}", contentSharingPolicyFile.getAbsolutePath());
+			logger.error("Unable to create content sharing {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(
 				String.format(
-					"Unable to store content sharing to file %s.", contentSharingPolicyFile.getAbsolutePath()),
+					"Unable to store content sharing to file %s.", policyFile.getAbsolutePath()),
 				e);
-		 }
+		}
 	}
 
-	private void storeResourceQuotaPolicy(VraNgPolicyBase vraNgPolicy, File resourceQuotaPolicyFile) {
+	private JsonObject fillContentSharingPolicy(VraNgPolicyBase vraNgPolicy, File contentSharingPolicyFile, Gson gsonProcessor) {
+		JsonObject csPolicyJsonObject = gsonProcessor.fromJson(new Gson().toJson(vraNgPolicy), JsonObject.class);
+		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
+		JsonArray euArr = definition.getAsJsonArray("entitledUsers");
+		if (euArr != null) {
+			for (JsonElement eu : euArr) {
+				JsonObject entitledUserObj = eu.getAsJsonObject();
+				JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
+				for (JsonElement item : itemsArr) {
+					JsonObject itemObj = item.getAsJsonObject();
+					itemObj.remove("id");
+				}
+			}
+		}
+		definition.add("entitledUsers", euArr);
+		csPolicyJsonObject.add("definition", definition);
+
+		return  csPolicyJsonObject;
+	}
+
+	private JsonObject fillResourceQuotaPolicy(VraNgPolicyBase vraNgPolicy, File resourceQuotaPolicyFile, Gson gsonProcessor) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private JsonObject fillLeasePolicy(VraNgPolicyBase vraNgPolicy, File policyFile, Gson gsonProcessor) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private JsonObject fillDay2ActionsPolicy(VraNgPolicyBase vraNgPolicy, File policyFile, Gson gsonProcessor) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private JsonObject fillApprovalPolicy(VraNgPolicyBase vraNgPolicy, File policyFile, Gson gsonProcessor) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private JsonObject fillDeploymentLimitPolicy(VraNgPolicyBase vraNgPolicy, File policyFile, Gson gsonProcessor) {
 		throw new NotImplementedException("The method is not yet implemented");
 	}
 
@@ -299,8 +334,8 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 	 * @return VraNgContentSharingPolicy
 	 */
 	private VraNgPolicyBase jsonFileToVraNgPolicy(final File jsonFile, PolicyType policyType) {
-		logger.debug("Converting content sharing policy file to VraNgContentSharingPolicies. Name: '{}'",
-			jsonFile.getName());
+		logger.debug("Converting content sharing policy file to VraNgPolicies. Name: '{}', Policy Type: '{}'",
+			jsonFile.getName(), policyType.getTypeValue());
 
 		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
 			switch (policyType) {
@@ -317,7 +352,7 @@ public class VraNgPolicyStore extends AbstractVraNgStore {
 				case DEPLOYMENT_LIMIT_POLICY_TYPE:
 					return new Gson().fromJson(reader, VraNgDeploymentLimitPolicy.class);
 				default:
-					throw new IllegalArgumentException("Invalid policy type: " + policyType.getTypeValue());
+					throw new IllegalArgumentException("Unsupported policy type: " + policyType.getTypeValue());
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);

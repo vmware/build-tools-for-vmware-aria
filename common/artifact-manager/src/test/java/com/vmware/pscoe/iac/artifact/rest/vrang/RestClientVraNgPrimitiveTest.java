@@ -34,6 +34,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgPolicyBase;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import static com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil.getOrganization;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
@@ -727,7 +728,7 @@ class RestClientVraNgPrimitiveTest {
 								HttpStatus.OK));
 
 		// START TEST
-		VraNgContentSharingPolicy csPolicy = restClient
+		VraNgPolicyBase csPolicy = restClient
 				.getPolicyPrimitive("679daee9-d63d-4ce2-9ee1-d4336861fe87");
 		VraNgContentSharingPolicy expectedResult = ContentSharingPolicyMockBuilder.buildContentSharingPolicy();
 		assertEquals(new Gson().toJson(expectedResult), new Gson().toJson(csPolicy));
