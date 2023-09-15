@@ -20,11 +20,46 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
 /**
 
 */
+
+//{
+//	"id": "91e1465d-6415-498f-bd55-2d4a45ba9f80",
+//	"name": "new-policy-test",
+//	"typeId": "com.vmware.policy.catalog.entitlement",
+//	"enforcementType": "HARD",
+//	"orgId": "80813752-da65-423d-8e84-92c4c472284d",
+//	"projectId": "61c1698f-b755-48fb-b026-7ea6f9b032a2",
+//
+//	"definition": {
+//	"entitledUsers": [
+//		{
+//			"items": [
+//				{
+//					"id": "2b21bfab-9d36-4ca0-9b5c-197995f865de",
+//					"type": "CATALOG_SOURCE_IDENTIFIER"
+//				},
+//				{
+//					"id": "924bb4b6-b3f6-4d4c-9560-146cba8eb03b",
+//					"type": "CATALOG_SOURCE_IDENTIFIER"
+//				},
+//			],
+//			"userType": "USER",
+//			"principals": [
+//				{
+//					"type": "PROJECT",
+//					"referenceId": ""
+//				}
+//			]
+//		}
+//	  ]
+//	},
+
+//	"createdAt": "2022-07-18T08:40:57.939782Z",
+//	"createdBy": "mtopchieva@vmware.com",
+//	"lastUpdatedAt": "2022-07-18T08:54:53.446772Z",
+//	"lastUpdatedBy": "mtopchieva@vmware.com"
+//}
+
 public class VraNgContentSharingPolicy extends VraNgPolicyBase {
-	/**
-	 * EnforcementType of the Content Sharing Policy.
-	 */
-	private String enforcementType;
 	/**
 	 * Definition of the Content Sharing Policy.
 	 */
@@ -53,27 +88,8 @@ public class VraNgContentSharingPolicy extends VraNgPolicyBase {
 			final String projectIdIn, final String orgIdIn,
 			final String enforcementTypeIn, final String descriptionIn,
 			final VraNgDefinition definitionIn) {
-		super(idIn, typeIdIn, nameIn, orgIdIn, projectIdIn, descriptionIn);
-		this.enforcementType = enforcementTypeIn;
+		super(idIn, typeIdIn, nameIn, enforcementTypeIn, orgIdIn, projectIdIn, descriptionIn);
 		this.definition = definitionIn;
-	}
-
-	/**
-	 * Get the enforcementType of the content sharing policy.
-	 * 
-	 * @return content sharing policy enforcementType
-	 */
-	public String getEnforcementType() {
-		return enforcementType;
-	}
-
-	/**
-	 * Set the enforcementType of the content sharing policy.
-	 * 
-	 * @param enforcementTypeIn - enforcementType of the content sharing policy
-	 */
-	public void setEnforcementType(final String enforcementTypeIn) {
-		this.enforcementType = enforcementTypeIn;
 	}
 
 	/**

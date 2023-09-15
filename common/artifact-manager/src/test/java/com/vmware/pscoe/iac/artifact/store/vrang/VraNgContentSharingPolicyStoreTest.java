@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.VraNgPolicyBase;
-import com.vmware.pscoe.iac.artifact.store.vrang.policies.VraNgPolicyStore;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

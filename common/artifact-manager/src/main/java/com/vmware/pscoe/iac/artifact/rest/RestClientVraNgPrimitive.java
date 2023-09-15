@@ -3004,44 +3004,55 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		createdPolicy.setName(name);
 		createdPolicy.setTypeId(typeId);
+		String enforcementType = result.get("enforcementType").getAsString();
+		createdPolicy.setEnforcementType(enforcementType);
 		createdPolicy.setDescription(description);
 
 		return createdPolicy;
-	}
-
-	private VraNgPolicyBase getResourceQuotaPolicy(JsonObject result) {
-		throw new NotImplementedException("The method is not yet implemented");
-	}
-
-	private VraNgPolicyBase getLeasePolicy(JsonObject result) {
-		throw new NotImplementedException("The method is not yet implemented");
-	}
-
-	private VraNgPolicyBase getDay2ActionPolicy(JsonObject result) {
-		throw new NotImplementedException("The method is not yet implemented");
-	}
-
-	private VraNgPolicyBase getApprovalPolicy(JsonObject result) {
-		throw new NotImplementedException("The method is not yet implemented");
-	}
-
-	private VraNgPolicyBase getDeploymentLimitPolicy(JsonObject result) {
-		throw new NotImplementedException("The method is not yet implemented");
 	}
 
 	private VraNgContentSharingPolicy getContentSharingPolicy(JsonObject result) {
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
 
 		VraNgDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
-			VraNgDefinition.class);
+														 VraNgDefinition.class);
 		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
 			item.name = this.getUserEntitlementItemName(item.id);
 		}));
 		csPolicy.setDefinition(definition);
-		String enforcementType = result.get("enforcementType").getAsString();
-		csPolicy.setEnforcementType(enforcementType);
 
 		return csPolicy;
+	}
+
+	private VraNgResourceQuotaPolicy getResourceQuotaPolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgLeasePolicy getLeasePolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgDay2ActionsPolicy getDay2ActionPolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
+	}
+
+	private VraNgApprovalPolicy getApprovalPolicy(JsonObject result) {
+		VraNgApprovalPolicy approvalPolicy = new VraNgApprovalPolicy();
+
+		ApprovalPolicyDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
+			ApprovalPolicyDefinition.class);
+		approvalPolicy.setDefinition(definition);
+
+		if (result.has("criteria") && !result.get("criteria").isJsonNull()) {
+			JsonElement criteria = result.get("dynamicPropName");
+			approvalPolicy.setCriteria(criteria);
+		}
+
+		return approvalPolicy;
+	}
+
+	private VraNgDeploymentLimitPolicy getDeploymentLimitPolicy(JsonObject result) {
+		throw new NotImplementedException("The method is not yet implemented");
 	}
 
 	/**
@@ -3142,7 +3153,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 * @param policyJsonObject cs policy json
 	 */
-	public void handleContentSharingItemsProperty(final JsonObject policyJsonObject) {
+	private void handleContentSharingItemsProperty(final JsonObject policyJsonObject) {
 		JsonObject definition = policyJsonObject.getAsJsonObject("definition");
 		JsonArray euArr = definition.getAsJsonArray("entitledUsers");
 		for (JsonElement eu : euArr) {

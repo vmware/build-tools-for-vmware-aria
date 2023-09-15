@@ -29,13 +29,17 @@ public abstract class VraNgPolicyBase {
 	 */
 	private String name;
 	/**
-	 * ProjectId of the Content Sharing Policy.
+	 * EnforcementType of the Content Sharing Policy.
 	 */
-	private String projectId;
+	private String enforcementType;
 	/**
 	 * OrgId of the Content Sharing Policy.
 	 */
 	private String orgId;
+	/**
+	 * ProjectId of the Content Sharing Policy.
+	 */
+	private String projectId;
 	/**
 	 * Description of the Content Sharing Policy.
 	 */
@@ -44,10 +48,17 @@ public abstract class VraNgPolicyBase {
 	public VraNgPolicyBase() {
 	}
 
-	public VraNgPolicyBase(String idIn, String typeId, String name, String orgIdIn, String projectIdIn, String description) {
+	public VraNgPolicyBase(String idIn,
+						   String typeId,
+						   String name,
+						   final String enforcementTypeIn,
+						   String orgIdIn,
+						   String projectIdIn,
+						   String description) {
 		this.id = idIn;
 		this.typeId = typeId;
 		this.name = name;
+		this.enforcementType = enforcementTypeIn;
 		this.orgId = orgIdIn;
 		this.projectId = projectIdIn;
 		this.description = description;
@@ -105,6 +116,24 @@ public abstract class VraNgPolicyBase {
 	 */
 	public void setName(final String nameIn) {
 		this.name = nameIn;
+	}
+
+	/**
+	 * Get the enforcementType of the content sharing policy.
+	 *
+	 * @return content sharing policy enforcementType
+	 */
+	public String getEnforcementType() {
+		return enforcementType;
+	}
+
+	/**
+	 * Set the enforcementType of the content sharing policy.
+	 *
+	 * @param enforcementTypeIn - enforcementType of the content sharing policy
+	 */
+	public void setEnforcementType(final String enforcementTypeIn) {
+		this.enforcementType = enforcementTypeIn;
 	}
 
 	/**

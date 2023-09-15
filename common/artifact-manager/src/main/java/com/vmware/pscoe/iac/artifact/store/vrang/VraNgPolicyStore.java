@@ -1,4 +1,4 @@
-package com.vmware.pscoe.iac.artifact.store.vrang.policies;
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import java.io.File;
 import java.io.FileReader;
@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.ariaPolicies.*;
-import com.vmware.pscoe.iac.artifact.store.vrang.AbstractVraNgStore;
-import com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
