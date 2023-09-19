@@ -46,7 +46,5 @@ catalog-entitlement: []
 property-group: []
 policy:
   content-sharing: []
-  lease: []
-  day2actions: []
 
 content-source: []
