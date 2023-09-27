@@ -33,6 +33,10 @@ public class CustomFolderFileFilter implements FilenameFilter {
 	 */
 	private final Logger logger;
 
+	/**
+	 * Constructor.
+	 * @param descriptionNames Items as they appear in the content.yaml file.
+	 */	
 	public CustomFolderFileFilter(List<String> descriptionNames) {
 		super();
 		// convert the descriptor content to lower case (in order search to be case insensitive).
