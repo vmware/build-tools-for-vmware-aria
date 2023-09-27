@@ -296,10 +296,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private Version productVersion;
 	/**
-	 * productVersion.
+	 * default page size.
 	 */
 	private static final int PAGE_SIZE = 500;
-
+	/**
+	 * vRA 8.12 version.
+	 */
+	private static final String VRA_8_12 = "8.12.0.21583018";
 	/**
 	 * isVraAbove812.
 	 */
@@ -315,7 +318,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		this.configuration = config;
 		this.restTemplate = restTemp;
 		this.productVersion = this.getProductVersion();
-		this.isVraAbove812 = this.isVraAbove(new Version("8.12.0.21583018"));
+		this.isVraAbove812 = this.isVraAbove(new Version(VRA_8_12));
 	}
 
 	/**
@@ -2063,7 +2066,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void updateStorageProfilePrimitive(final String profileId, final VraNgStorageProfile profile)
 			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE + "/" + profileId));
-		ResponseEntity<String> response = this.putJsonPrimitive(url, profile.getJson());
+		this.putJsonPrimitive(url, profile.getJson());
 	}
 
 	/**
@@ -2201,7 +2204,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			final VraNgStorageProfile profile)
 			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + patchTarget + "/" + profileId));
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.PATCH, profile.getJson());
+		this.postJsonPrimitive(url, HttpMethod.PATCH, profile.getJson());
 	}
 
 	/**

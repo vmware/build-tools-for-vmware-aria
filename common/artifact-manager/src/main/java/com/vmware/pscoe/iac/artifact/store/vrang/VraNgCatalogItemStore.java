@@ -477,8 +477,9 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		// Building a map of content sources (by ID) to catalog items that should be
 		// available for them
 		VrangContentSourceUtils utils = new VrangContentSourceUtils(restClient, vraNgPackage);
+		// fetch the unique content source names
 		List<String> contentSourceNames = catalogItems.stream().map(VraNgCatalogItem::getSourceName)
-				.collect(Collectors.toList());
+				.distinct().collect(Collectors.toList());
 		restClient.getContentSourcesForProject(restClient.getProjectId()).forEach(contentSource -> {
 			String contentSourceName = contentSource.getName();
 			if (contentSourceNames.contains(contentSourceName)) {
