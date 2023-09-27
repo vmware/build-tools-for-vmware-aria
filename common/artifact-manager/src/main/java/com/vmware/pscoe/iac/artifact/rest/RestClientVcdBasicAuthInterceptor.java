@@ -98,6 +98,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 			String apiVersion) {
 		super(configuration, restTemplate);
 		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)) {
+			logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38 + ". Switching to using API version " + API_VERSION_37);
 			apiVersion = API_VERSION_37;
 		}
 
