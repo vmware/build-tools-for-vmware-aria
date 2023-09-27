@@ -47,29 +47,86 @@ import com.vmware.pscoe.iac.artifact.rest.model.VcdPluginResourceDTO;
 import net.minidev.json.JSONArray;
 
 public class RestClientVcd extends RestClient {
-	private static final PackageType packageType = PackageType.VCDNG;
 
+	/**
+	 * packageType.
+	 */
+	private static final PackageType PACKAGE_TYPE = PackageType.VCDNG;
+
+	/**
+	 * logger.
+	 */
 	private final Logger logger = LoggerFactory.getLogger(RestClientVcd.class);
 
+	/**
+	 * configuration.
+	 */
 	private ConfigurationVcd configuration;
+
+	/**
+	 * restTemplate.
+	 */
 	private RestTemplate restTemplate;
+
+	/**
+	 * apiVersion.
+	 */
 	private String apiVersion;
 
+	/**
+	 * versions api path.
+	 */
 	private static final String URL_VERSIONS = "api/versions";
+
+	/**
+	 * extensions api path.
+	 */
 	private static final String URL_UI_EXTENSION_BASE = "cloudapi/extensions/ui";
+
+	/**
+	 * extension base.
+	 */
 	private static final String URL_UI_EXTENSION_BY_ID = URL_UI_EXTENSION_BASE + "/%s";
+
+	/**
+	 * plugin base.
+	 */
 	private static final String URL_UI_PLUGIN_BY_ID = URL_UI_EXTENSION_BASE + "/%s/plugin";
+
+	/**
+	 * publish all path.
+	 */
 	private static final String URL_UI_PLUGIN_PUBLISH_ALL = URL_UI_EXTENSION_BASE + "/%s/tenants/publishAll";
+
+	/**
+	 * api version that is supported.
+	 */
+	private static final String API_VERSION_37 = "37.0";
+
+	/**
+	 * api version that is not yet supported.
+	 */
+	private static final String API_VERSION_38 = "38.0";
 
 	protected RestClientVcd(ConfigurationVcd configuration, RestTemplate restTemplate) {
 		this.configuration = configuration;
 		this.restTemplate = restTemplate;
 	}
 
+	/**
+	 * getRestTemplate.
+	 * 
+	 * @return RestTemplate
+	 */
 	public RestTemplate getRestTemplate() {
 		return restTemplate;
 	}
 
+	/**
+	 * getConfiguration.
+	 * 
+	 * @return Configuration
+	 */
 	@Override
 	protected Configuration getConfiguration() {
 		return this.configuration;
@@ -92,6 +149,9 @@ public class RestClientVcd extends RestClient {
 		return headers;
 	}
 
+	/**
+	 * getVersion.
+	 */
 	@Override
 	public String getVersion() {
 		if (this.apiVersion == null) {
@@ -108,12 +168,22 @@ public class RestClientVcd extends RestClient {
 					new HttpEntity<String>(headers), String.class);
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
+			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)) {
+				logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38 + ". Switching to using API version " + API_VERSION_37);
+				this.apiVersion = API_VERSION_37;
+			}
+
 			logger.debug("API version is: " + this.apiVersion);
 		}
 
 		return this.apiVersion;
 	}
 
+	/**
+	 * getAllUiExtensions.
+	 * 
+	 * @return list of packages
+	 */
 	public List<Package> getAllUiExtensions() {
 		URI url = getURI(getURIBuilder().setPath(URL_UI_EXTENSION_BASE));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getVcdHttpEntity(), String.class);
@@ -127,6 +197,13 @@ public class RestClientVcd extends RestClient {
 		return extensions;
 	}
 	
+	/**
+	 * 
+	 * @param id extension id
+	 * @return Package
+	 * 
+	 * getUiExtension.
+	 */
 	public Package getUiExtension(String id) {
 		logger.debug("Getting UI extension for ID [" + id + "]...");
 		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_EXTENSION_BY_ID, id)));
@@ -137,10 +214,17 @@ public class RestClientVcd extends RestClient {
 		String pluginVersion = JsonPath.parse(response.getBody()).read("$.version");
 
 		logger.debug("UI extension for ID [" + id + "] retrieved.");
-		return PackageFactory.getInstance(packageType, pluginId,
-				new File(pluginName + "-" + pluginVersion + "." + packageType));
+		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId,
+				new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
 	}
 
+	/**
+	 * 
+	 * @param localPkg local package
+	 * @return Package
+	 * 
+	 * getUiExtension.
+	 */
 	public Package getUiExtension(Package localPkg) {
 		List<Package> extensions = getAllUiExtensions();
 		for (Package remotePkg : extensions) {
@@ -152,6 +236,13 @@ public class RestClientVcd extends RestClient {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param pkg package
+	 * @return Package
+	 * 
+	 * addUiExtension.
+	 */
 	public Package addUiExtension(Package pkg) {
 		logger.debug("Adding UI extension for [" + pkg + "]...");
 		VcdNgPackageManifest manifest = VcdNgPackageManifest.getInstance(pkg);
@@ -167,6 +258,12 @@ public class RestClientVcd extends RestClient {
 		return getUiExtension(pluginId);
 	}
 
+	/**
+	 * 
+	 * @param remotePkg remote package
+	 * 
+	 * removeUiExtension.
+	 */
 	public void removeUiExtension(Package remotePkg) {
 		logger.debug("Removing UI extension for [" + remotePkg + "]...");
 		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_EXTENSION_BY_ID, remotePkg.getId())));
@@ -174,6 +271,13 @@ public class RestClientVcd extends RestClient {
 		logger.debug("UI extension for [" + remotePkg + "] removed.");
 	}
 
+	/**
+	 * 
+	 * @param localPkg local package
+	 * @param remotePkg remote package
+	 * 
+	 * uploadUiPlugin.
+	 */
 	public void uploadUiPlugin(Package localPkg, Package remotePkg) {
 		logger.debug("Uploading plugin resource for [" + remotePkg + "].");
 		File pkgFile = new File(localPkg.getFilesystemPath());
@@ -206,6 +310,12 @@ public class RestClientVcd extends RestClient {
 		logger.debug("Plugin resource for [" + remotePkg + "] uploaded.");
 	}
 
+	/**
+	 * 
+	 * @param remotePkg remote package
+	 * 
+	 * deleteUiPlugin.
+	 */
 	public void deleteUiPlugin(Package remotePkg) {
 		logger.debug("Deleting plugin resource for [" + remotePkg + "]...");
 		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_PLUGIN_BY_ID, remotePkg.getId())));
@@ -213,6 +323,13 @@ public class RestClientVcd extends RestClient {
 		logger.debug("Plugin resource for [" + remotePkg + "] deleted.");
 	}
 	
+	/**
+	 * 
+	 * @param pkg package
+	 * @return Package
+	 * 
+	 * addOrReplaceUiPlugin.
+	 */
 	public Package addOrReplaceUiPlugin(Package pkg) {
 		Package remotePkg = this.getUiExtension(pkg);
 		if (remotePkg != null) {
@@ -227,6 +344,12 @@ public class RestClientVcd extends RestClient {
 		return remotePkg;
 	}
 	
+	/**
+	 * 
+	 * @param remotePkg remote package
+	 * 
+	 * publishUiPlugin.
+	 */
 	public void publishUiPlugin(Package remotePkg) {
 		logger.debug("Publishing UI extension [" + remotePkg + "] to all tenants...");
 		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_PLUGIN_PUBLISH_ALL, remotePkg.getId())));
