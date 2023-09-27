@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomFolderFileFilter implements FilenameFilter {
-	/*
+	/**
 	 * Descriptor names (content.yaml contents per asset).
 	 */
 	private final List<String> descriptionNames;
-	/*
+	/**
 	 * Logger instance.
 	 */
 	private final Logger logger;
