@@ -206,6 +206,9 @@ public class VraNgCatalogItem {
 	 * @return VraNgContentSourceType
 	 */
 	public VraNgContentSourceType getType() {
+		if (this.type == null) {
+			return VraNgContentSourceType.UNKNOWN;
+		}
 		return this.type.getId();
 	}
 }
