@@ -81,146 +81,118 @@ public class RestClientVrops extends RestClient {
 	 * logger.
 	 */
 	private final Logger logger = LoggerFactory.getLogger(RestClientVrops.class);
-
 	/**
 	 * PUBLIC_API_PREFIX.
 	 */
 	private static final String PUBLIC_API_PREFIX = "/suite-api/api/";
-
 	/**
 	 * INTERNAL_API_PREFIX.
 	 */
 	private static final String INTERNAL_API_PREFIX = "/suite-api/internal/";
-
 	/**
 	 * ALERT_DEFS_API.
 	 */
 	private static final String ALERT_DEFS_API = PUBLIC_API_PREFIX + "alertdefinitions/";
-
 	/**
 	 * SYMPTOM_DEFS_API.
 	 */
 	private static final String SYMPTOM_DEFS_API = PUBLIC_API_PREFIX + "symptomdefinitions/";
-
 	/**
 	 * POLICIES_API.
 	 */
 	private static final String POLICIES_API = INTERNAL_API_PREFIX + "policies/";
-
+	/**
+	 * DEFAULT_POLICY_API.
+	 */
+	private static final String DEFAULT_POLICY_API = PUBLIC_API_PREFIX + "policies/default";
 	/**
 	 * RECOMMENDATIONS_API.
 	 */
 	private static final String RECOMMENDATIONS_API = PUBLIC_API_PREFIX + "recommendations/";
-
 	/**
 	 * RESOURCES_API.
 	 */
 	private static final String RESOURCES_API = PUBLIC_API_PREFIX + "resources/";
-
 	/**
 	 * CUSTOM_GROUPS_FETCH_API.
 	 */
 	private static final String CUSTOM_GROUPS_FETCH_API = RESOURCES_API + "groups";
-
 	/**
 	 * CUSTOM_GROUPS_UPDATE_API.
 	 */
 	private static final String CUSTOM_GROUPS_UPDATE_API = PUBLIC_API_PREFIX + "resources/groups";
-
 	/**
 	 * CUSTOM_GROUP_TYPES_API.
 	 */
 	private static final String CUSTOM_GROUP_TYPES_API = PUBLIC_API_PREFIX + "resources/groups/types";
-
 	/**
 	 * RESOURCES_LIST_API.
 	 */
 	private static final String RESOURCES_LIST_API = PUBLIC_API_PREFIX + "resources";
-
 	/**
 	 * ADAPTER_KINDS_API.
 	 */
 	private static final String ADAPTER_KINDS_API = PUBLIC_API_PREFIX + "adapterkinds";
-
 	/**
 	 * RESOURCE_KINDS_API.
 	 */
 	private static final String RESOURCE_KINDS_API = PUBLIC_API_PREFIX + "adapterkinds/%s/resourcekinds";
-
 	/**
 	 * RESOURCES_LIST_PER_ADAPTER_KIND.
 	 */
 	private static final String RESOURCES_LIST_PER_ADAPTER_KIND = PUBLIC_API_PREFIX + "adapterkinds/%s/resources";
-
 	/**
 	 * SUPERMETRICS_LIST_API.
 	 */
 	private static final String SUPERMETRICS_LIST_API = PUBLIC_API_PREFIX + "supermetrics";
-
 	/**
 	 * REPORT_DEFINITIONS_LIST_API.
 	 */
 	private static final String REPORT_DEFINITIONS_LIST_API = PUBLIC_API_PREFIX + "reportdefinitions";
-
 	/**
 	 * VIEW_DEFINITIONS_LIST_API.
 	 */
 	private static final String VIEW_DEFINITIONS_LIST_API = INTERNAL_API_PREFIX + "viewdefinitions";
-
 	/**
 	 * INTERNAL_API_HEADER_NAME.
 	 */
 	private static final String INTERNAL_API_HEADER_NAME = "X-vRealizeOps-API-use-unsupported";
-
 	/**
 	 * AUTH_GROUPS_API.
 	 */
 	private static final String AUTH_GROUPS_API = PUBLIC_API_PREFIX + "/auth/usergroups";
-
 	/**
 	 * AUTH_USERS_API.
 	 */
 	private static final String AUTH_USERS_API = PUBLIC_API_PREFIX + "/auth/users";
-
 	/**
 	 * DEFAULT_PAGE_SIZE.
 	 */
 	private static final int DEFAULT_PAGE_SIZE = 10000;
-
 	/**
-	 * VROPS_MAJOR_VERSION.
+	 * VROPS_8_2 version.
 	 */
-	private static final int VROPS_MAJOR_VERSION = 8;
-
-	/**
-	 * VROPS_MINOR_VERSION.
-	 */
-	private static final int VROPS_MINOR_VERSION = 2;
-
+	private static final String VROPS_8_2 = "8.2";
 	/**
 	 * VROPS_KIND_ALL.
 	 */
 	private static final String VROPS_KIND_ALL = "ALL";
-
+	/**
+	 * vROPs 8.12 version.
+	 */
+	private static final String VROPS_8_12 = "8.12";
 	/**
 	 * configuration.
 	 */
 	private ConfigurationVrops configuration;
-
 	/**
 	 * restTemplate.
 	 */
 	private RestTemplate restTemplate;
-	
 	/**
 	 * mapper.
 	 */
 	private ObjectMapper mapper = new ObjectMapper();
-	
-	/**
-	 * productVersion.
-	 */
-	private Version productVersion = null;
 
 	/**
 	 * RestClientVrops.
@@ -288,6 +260,19 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
+	 * Checks whether vROPs version is above or equal to certain one.
+	 *
+	 * @param targetVersion  string with target version to compare with.
+	 * @return true if version is above or equal to the certain one otherwise false.
+	 */
+	public boolean isVersionAbove(final String targetVersion) {
+		Version version = new Version(this.getVersion());
+		int isGreater = version.compareTo(new Version(targetVersion));
+
+		return isGreater >= 0;
+	}
+
+	/**
 	 * Import policies from a zip file.
 	 * 
 	 * @param file       policy zip file as byte[]
@@ -320,6 +305,52 @@ public class RestClientVrops extends RestClient {
 		} catch (RestClientException e) {
 			throw new RuntimeException(String.format("The policy '%s' could not be imported : %s.", policyName, e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * Sets default policy in vROPs to given policy. Note that it applies to vROPs 8.12 and later only.
+	 *
+	 * @param policyName policy name to be set by default.
+	 * @throws Exception exception if the policy is not found or could not be set to default.
+	 */
+	public void setDefaultPolicy(final String policyName) throws Exception {
+		// default policy setting is available since vROPs 8.12 only
+		if (!this.isVersionAbove(VROPS_8_12)) {
+			logger.warn("Cannot set default policy to '{}' as vROPs version is older than '{}'", policyName, VROPS_8_12);
+			return;
+		}
+		List<PolicyDTO.Policy> allPolicies = this.getAllPolicies();
+		PolicyDTO.Policy policy = allPolicies.stream().filter(item -> item.getName().equalsIgnoreCase(policyName)).findFirst().orElse(null);
+		if (policy == null) {
+			throw new RuntimeException(String.format("The policy '%s' does not exist.", policyName));
+		}
+
+		logger.info("Setting default vROPs policy to '{}'", policyName);
+		try {
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(DEFAULT_POLICY_API).toString()));
+			uriBuilder.queryParam("id", policy.getId());
+			URI restUri = uriBuilder.build().toUri();
+			restTemplate.exchange(restUri, HttpMethod.PUT, null, String.class);
+		} catch (RestClientException e) {
+			throw new RuntimeException(String.format("Error setting default policy to '%s'. Message: %s", policyName, e.getMessage()));
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(String.format("Error building REST URI to set default policy. Message: %s", e.getMessage()));
+		}
+	}
+
+	/**
+	 * Gets the default policy for vROPs. Note that it applies to vROPs 8.12 and later only.
+	 *
+	 * @return PolicyDTO.Policy policy object, or null if the vROPs version is older than 8.12 or no default policy is set.
+	 * @throws Exception exception if the default policy cannot be fetched.
+	 */
+	public PolicyDTO.Policy getDefaultPolicy() throws Exception {
+		// default policy is available since vROPs 8.12 only
+		if (!this.isVersionAbove(VROPS_8_12)) {
+			return null;
+		}
+
+		return this.getAllPolicies().stream().filter(item -> item.getDefaultPolicy()).findFirst().orElse(null);
 	}
 
 	/**
@@ -392,7 +423,7 @@ public class RestClientVrops extends RestClient {
 		uriBuilder.queryParam("id", policy.getId());
 
 		HttpHeaders exportHeader = new HttpHeaders();
-		if (isVrops82OrLater()) {
+		if (this.isVersionAbove(VROPS_8_2)) {
 			// The API vROPs 8.2 or later expects accept to be MediaType.ALL
 			exportHeader.setAccept(Arrays.asList(MediaType.ALL));
 		} else {
@@ -1011,31 +1042,6 @@ public class RestClientVrops extends RestClient {
 		List<AuthUserDTO> allAuthUsers = this.findAllAuthUsers();
 
 		return allAuthUsers.stream().filter(item -> names.contains(item.getUsername())).collect(Collectors.toList());
-	}
-
-	/**
-	 * Get vROPs product version.
-	 * 
-	 * @return version info
-	 */		
-	private Version getProductVersion() {
-		if (this.productVersion == null) {
-			this.productVersion = new Version(getVersion());
-		}
-
-		return this.productVersion;
-	}
-
-	/**
-	 * Checks whether the vROPs is version 8.2 or later.
-	 * 
-	 * @return true if vROPs is 8.2 or later otherwise false
-	 */			
-	private boolean isVrops82OrLater() {
-		Integer major = this.getProductVersion().getMajorVersion();
-		Integer minor = this.getProductVersion().getMinorVersion();
-
-		return (major != null && major >= VROPS_MAJOR_VERSION) && (minor != null && minor >= VROPS_MINOR_VERSION);
 	}
 
 	/**

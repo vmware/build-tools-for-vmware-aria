@@ -37,6 +37,7 @@ dashboard:
 alert-definition:
 symptom-definition:
 policy:
+default-policy:
 recommendation:
 super-metric:
 metric-config:
