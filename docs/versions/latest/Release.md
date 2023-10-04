@@ -50,7 +50,7 @@ Then the 'Policy Name' will be set to the default policy in vROPs.
 [//]: # (#### Relevant Documentation)
 
 
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog)
