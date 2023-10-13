@@ -35,6 +35,7 @@ default-policy:
 ```
 
 Then the 'Policy Name' will be set to the default policy in vROPs.
+If more policies are specified in the default-policy tag, then only the first one is applied (as vROPs supports only one default policy).
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements

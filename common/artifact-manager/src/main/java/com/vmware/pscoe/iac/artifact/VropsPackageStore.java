@@ -1153,16 +1153,16 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @return VropsPackageDescriptor POJO with the populated values from the content.yaml file.
 	 * @throws RuntimeException if the content yaml cannot be parsed.
 	 */
-    @SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")
 	private VropsPackageDescriptor parseContentYamlFile(final File contentYamlFile) {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
-        try {
-            return mapper.readValue(contentYamlFile, VropsPackageDescriptor.class);
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("Unable to load vROps Package Descriptor ['%s'] : %s", contentYamlFile.getName(), e.getMessage()));
-        }
-    }
+		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		try {
+			return mapper.readValue(contentYamlFile, VropsPackageDescriptor.class);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Unable to load vROps Package Descriptor ['%s'] : %s", contentYamlFile.getName(), e.getMessage()));
+		}
+	}
 
 	/**
 	 * Updates the default policy in the content yaml file (if there is one set).
