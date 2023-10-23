@@ -70,7 +70,7 @@ public class VropsPackageDescriptor extends PackageDescriptor {
 	/**
 	 * defaultPolicy.
 	 */
-	private List<String> defaultPolicy;
+	private String defaultPolicy;
 
 	/**
 	 * getView().
@@ -183,18 +183,18 @@ public class VropsPackageDescriptor extends PackageDescriptor {
 	/**
 	 * getDefaultPolicy().
 	 * 
-	 * @return list of default policies.
+	 * @return string with default policy.
 	 */
-	public List<String> getDefaultPolicy() {
+	public String getDefaultPolicy() {
 		return defaultPolicy;
 	}
 
 	/**
 	 * setDefaultPolicy().
 	 * 
-	 * @param defaultPolicy list of default polices.
+	 * @param defaultPolicy default policy to be set.
 	 */
-	public void setDefaultPolicy(List<String> defaultPolicy) {
+	public void setDefaultPolicy(String defaultPolicy) {
 		this.defaultPolicy = defaultPolicy;
 	}
 
@@ -308,8 +308,6 @@ public class VropsPackageDescriptor extends PackageDescriptor {
 				return getSymptomDefinition();
 			case POLICY:
 				return getPolicy();
-			case DEFAULT_POLICY:
-				return getDefaultPolicy();
 			case RECOMMENDATION:
 				return getRecommendation();
 			case SUPERMETRIC:

@@ -192,10 +192,8 @@ public class VropsPackageStoreTest {
                 return list;
             }
             @Override
-            public List<String> getDefaultPolicy() {
-                 List<String> list = new ArrayList<String>();
-                 list.add(policyName);
-                 return list;
+            public String getDefaultPolicy() {
+                 return policyName;
             }
         };
         return mock;

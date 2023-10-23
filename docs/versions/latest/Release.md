@@ -30,12 +30,11 @@ Added option for setting default policy for vROPs version 8.12.x by setting it i
 If in the content.yaml file for a vROPs project the following section is present:
 
 ```yaml
-default-policy:
-  - Policy Name
+default-policy: Policy Name
 ```
 
 Then the 'Policy Name' will be set to the default policy in vROPs.
-If more policies are specified in the default-policy tag, then only the first one is applied (as vROPs supports only one default policy).
+
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements

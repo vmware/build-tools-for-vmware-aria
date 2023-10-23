@@ -26,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +56,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -383,7 +380,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
         try {
             if (!dryrun) {
                 File destDir = new File(vropsPackage.getFilesystemPath());
-                this.setDefaultPolicyInContentYaml(vropsPackageDescriptor, destDir.getParentFile().getParentFile().getParentFile());
                 PackageManager.copyContents(tempVropsExportDir, destDir);
             }
         } catch (IOException ioe) {
@@ -1133,15 +1129,14 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
         File contentYamlFile = new File(tmpDir, CONTENT_YAML_FILE_NAME);
         VropsPackageDescriptor descriptor = this.parseContentYamlFile(contentYamlFile);
 
-        if (descriptor.getDefaultPolicy() == null || descriptor.getDefaultPolicy().size() == 0) {
+        if (descriptor.getDefaultPolicy() == null || descriptor.getDefaultPolicy().isEmpty()) {
             return;
         }
-        String defaultPolicyName = descriptor.getDefaultPolicy().stream().findFirst().orElse(null);
-        if (StringUtils.isEmpty(defaultPolicyName)) {
+        if (StringUtils.isEmpty(descriptor.getDefaultPolicy())) {
             return;
         }
         try {
-            restClient.setDefaultPolicy(defaultPolicyName);
+            restClient.setDefaultPolicy(descriptor.getDefaultPolicy());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -1163,53 +1158,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			throw new RuntimeException(String.format("Unable to load vROps Package Descriptor ['%s'] : %s", contentYamlFile.getName(), e.getMessage()));
 		}
 	}
-
-	/**
-	 * Updates the default policy in the content yaml file (if there is one set).
-	 * @param packageDescriptor the package descriptor POJO that will be serialized to the content.yaml file.
-	 * @param destDir destination directory where the content.yaml file resides.
-	 */
-	private void setDefaultPolicyInContentYaml(final VropsPackageDescriptor packageDescriptor, final File destDir) {
-		// if there is already a default policy set in the package descriptor skip setting it
-		if (packageDescriptor.getDefaultPolicy() != null && !packageDescriptor.getDefaultPolicy().isEmpty()) {
-			return;
-		}
-		PolicyDTO.Policy defaultPolicy;
-		try {
-			defaultPolicy = restClient.getDefaultPolicy();
-			// if there is no default policy set in the vROPs then skip setting it
-			if (defaultPolicy == null) {
-				return;
-			}
-			packageDescriptor.setDefaultPolicy(Arrays.asList(new String[] { defaultPolicy.getName() }));
-			this.updateContentYamlFile(new File(String.format("%s/%s", destDir, CONTENT_YAML_FILE_NAME)), packageDescriptor);
-		} catch (Exception e) {
-			logger.warn("Unable to set default policy in the content.yaml file: {}", e.getMessage());
-		}
-	}
-
-    /**
-     * Updates the package descriptor value to the content.yaml file.
-	 * @param contentYamlFile content.yaml file handle.
-	 * @param packageDescriptor the package descriptor POJO that will be serialized to the content.yaml file.
-	 * @throws RuntimeException if the content yaml cannot be written.
-     */
-    @SuppressWarnings("deprecation")
-    private void updateContentYamlFile(final File contentYamlFile, final VropsPackageDescriptor packageDescriptor) {
-        String defaultPolicyName = packageDescriptor.getDefaultPolicy().stream().findFirst().orElse(null);
-        if (defaultPolicyName == null) {
-            return;
-        }
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
-        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-        try {
-            logger.info("Updating the default vROPs policy in file '{}' to '{}'", contentYamlFile.getName(), defaultPolicyName);
-            writer.writeValue(contentYamlFile, packageDescriptor);
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("Unable to write the vROps Package Descriptor to file '%s' : %s", contentYamlFile.getName(), e.getMessage()));
-        }
-    }
 
 	/**
 	 * Export definitions from vrops (alert definitions, symptom definitions definitions, recommendations).

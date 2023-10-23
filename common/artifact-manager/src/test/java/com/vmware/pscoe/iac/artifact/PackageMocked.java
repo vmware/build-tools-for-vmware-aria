@@ -75,7 +75,7 @@ public final class PackageMocked {
 	 */
 	public static File createSamplePackageZip(File dir, String viewName, String viewId, String dashboardName, String alertDefinitionName) throws IOException {
 		String contentXml = "<Content><Views><ViewDef id=\"" + viewId + "\"></ViewDef></Views></Content>";
-		String contentYaml = "---\npolicy:\n  - policy1\ndefault-policy:\n  - policy1\n";
+		String contentYaml = "---\npolicy:\n  - policy1\ndefault-policy: policy1\n";
 
 		String resourceProp = "view." + viewId + ".title: value\nview." + viewId + ".something: value2\n";
 
