@@ -44,6 +44,7 @@ import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageMemberType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthGroupDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ReportDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ViewDefinitionDTO;
@@ -54,7 +55,7 @@ public class VropsPackageStoreTest {
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
-    void exportPackageWhenPackageIsAvailable() throws IOException {
+    void exportPackageWhenPackageIsAvailable() throws Exception {
         // GIVEN
         tempFolder.create();
         String testViewName = "Test View";
@@ -84,13 +85,19 @@ public class VropsPackageStoreTest {
         viewDefs.add(viewDef);
         allViewDefs.setViewDefinitions(viewDefs);
 
+        PolicyDTO.Policy defaultPolicy = new PolicyDTO.Policy();
+        defaultPolicy.setName("default policy");
+        defaultPolicy.setId("1");
+        defaultPolicy.setZipFile(new byte[] {'1'});
+
         Mockito.doReturn(allReportDefs).when(restClientMock).getAllReportDefinitions();
         Mockito.doReturn(allSupermetrics).when(restClientMock).getAllSupermetrics();
         Mockito.doReturn(allViewDefs).when(restClientMock).getAllViewDefinitions();
+		Mockito.doReturn(defaultPolicy).when(restClientMock).getDefaultPolicy();
 
         VropsPackageStore store = new VropsPackageStore(cliMock, restClientMock);
         Package vropsPkg = PackageFactory.getInstance(PackageType.VROPS, packageDir);
-        VropsPackageDescriptor descriptor = getVropsPackageDescriptorMock(testViewName);
+        VropsPackageDescriptor descriptor = getVropsPackageDescriptorMock(testViewName, defaultPolicy.getName());
 
         // WHEN
         Package pkg = store.exportPackage(vropsPkg, descriptor, false);
@@ -111,6 +118,8 @@ public class VropsPackageStoreTest {
         String existingGroup = "group1";
         String existingUser = "user1";
         String existingDashboard = "DashboardName";
+        String defaultPolicy = "policy";
+        String contentYaml = "content.yaml";
 
         String[] shareGroups = new String[] { existingGroup };
         String[] unshareGroups = new String[] { existingGroup };
@@ -155,6 +164,7 @@ public class VropsPackageStoreTest {
         Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.SYMPTOM_DEFINITION, new HashMap<>());
         Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.RECOMMENDATION, new HashMap<>());
         Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload, new HashMap<>());
+        Mockito.doNothing().when(restClientMock).setDefaultPolicy(defaultPolicy);
 
         VropsPackageStore store = new VropsPackageStore(cliMock, restClientMock, tempFolder.newFolder());
 
@@ -173,13 +183,17 @@ public class VropsPackageStoreTest {
         Mockito.verify(cliMock, Mockito.times(packages.size())).importFilesToVrops();
     }
 
-    private static VropsPackageDescriptor getVropsPackageDescriptorMock(String viewName) {
+    private static VropsPackageDescriptor getVropsPackageDescriptorMock(String viewName, String policyName) {
         VropsPackageDescriptor mock = new VropsPackageDescriptor() {
             @Override
             public List<String> getView() {
                 List<String> list = new ArrayList<String>();
                 list.add(viewName);
                 return list;
+            }
+            @Override
+            public String getDefaultPolicy() {
+                 return policyName;
             }
         };
         return mock;

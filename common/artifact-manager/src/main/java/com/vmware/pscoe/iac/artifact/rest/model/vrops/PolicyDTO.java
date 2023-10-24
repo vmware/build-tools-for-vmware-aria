@@ -22,90 +22,204 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * PolicyDTO.
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PolicyDTO {
 
-    @JsonProperty("policy-summaries")
-    private List<Policy> policies;
+	/**
+	 * policies.
+	 */
+	@JsonProperty("policy-summaries")
+	private List<Policy> policies;
 
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+	/**
+	 * additionalProperties.
+	 */
+	@JsonIgnore
+	private Map<String, Object> additionalProperties = new HashMap<>();
 
-    @JsonProperty("policy-summaries")
-    public List<Policy> getPolicies() {
-        return this.policies;
-    }
+	/**
+	 * getPolicies().
+	 * 
+	 * @return list of policies.
+	 */
+	@JsonProperty("policy-summaries")
+	public List<Policy> getPolicies() {
+		return this.policies;
+	}
 
-    @JsonProperty("policy-summaries")
-    public void setPolicies(List<Policy> policies) {
-        this.policies = policies;
-    }
+	/**
+	 * setPolicies().
+	 * 
+	 * @param policies policies to be set.
+	 */
+	@JsonProperty("policy-summaries")
+	public void setPolicies(List<Policy> policies) {
+		this.policies = policies;
+	}
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
+	/**
+	 * getAdditionalProperties().
+	 * 
+	 * @return map of additional properties.
+	 */
+	@JsonAnyGetter
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
 
-    @JsonAnySetter
-    public void setAdditionalProperties(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+	/**
+	 * setAdditionalProperties().
+	 * 
+	 * @param propName name of the property.
+	 * @param value    value of the property.
+	 */
+	@JsonAnySetter
+	public void setAdditionalProperties(String propName, Object value) {
+		this.additionalProperties.put(propName, value);
+	}
 
-    @JsonPropertyOrder({ "id", "name" })
-    public static class Policy {
+	/**
+	 * Policy.
+	 */
+	@JsonPropertyOrder({ "id", "name", "defaultPolicy" })
+	public static class Policy {
 
-        @JsonProperty("id")
-        private String id;
+		/**
+		 * id.
+		 */
+		@JsonProperty("id")
+		private String id;
 
-        @JsonProperty("name")
-        private String name;
+		/**
+		 * name.
+		 */
+		@JsonProperty("name")
+		private String name;
 
-        @JsonIgnore
-        private byte[] zipFile;
+		/**
+		 * zipFile.
+		 */
+		@JsonIgnore
+		private byte[] zipFile;
 
-        @JsonIgnore
-        private Map<String, Object> additionalProperties = new HashMap<>();
+		/**
+		 * defaultPolicy.
+		 */
+		@JsonProperty("defaultPolicy")
+		private boolean defaultPolicy;
 
-        @JsonProperty("id")
-        public String getId() {
-            return id;
-        }
+		/**
+		 * additionalProperties.
+		 */
+		@JsonIgnore
+		private Map<String, Object> additionalProperties = new HashMap<>();
 
-        @JsonProperty("id")
-        public void setId(String id) {
-            this.id = id;
-        }
+		/**
+		 * getId().
+		 * 
+		 * @return string with id.
+		 */
+		@JsonProperty("id")
+		public String getId() {
+			return id;
+		}
 
-        @JsonProperty("name")
-        public String getName() {
-            return name;
-        }
+		/**
+		 * setId().
+		 * 
+		 * @param id id to be set.
+		 */
+		@JsonProperty("id")
+		public void setId(String id) {
+			this.id = id;
+		}
 
-        @JsonProperty("name")
-        public void setName(String name) {
-            this.name = name;
-        }
+		/**
+		 * getName().
+		 * 
+		 * @return string with name.
+		 */
+		@JsonProperty("name")
+		public String getName() {
+			return name;
+		}
 
-        @JsonIgnore
-        public void setZipFile(byte[] file) {
-            this.zipFile = file;
-        }
+		/**
+		 * setName().
+		 * 
+		 * @param name name of the policy.
+		 */
+		@JsonProperty("name")
+		public void setName(String name) {
+			this.name = name;
+		}
 
-        @JsonIgnore
-        public byte[] getZipFile() {
-            return this.zipFile;
-        }
+		/**
+		 * setZipFile().
+		 * 
+		 * @param file byte array of the file.
+		 */
+		@JsonIgnore
+		public void setZipFile(byte[] file) {
+			this.zipFile = file;
+		}
 
-        @JsonAnyGetter
-        public Map<String, Object> getAdditionalProperties() {
-            return this.additionalProperties;
-        }
+		/**
+		 * getZipFile().
+		 * 
+		 * @return byte array of the file.
+		 */
+		@JsonIgnore
+		public byte[] getZipFile() {
+			return this.zipFile;
+		}
 
-        @JsonAnySetter
-        public void setAdditionalProperties(String name, Object value) {
-            this.additionalProperties.put(name, value);
-        }
-    }
+		/**
+		 * getDefaultPolicy().
+		 * 
+		 * @return whether it is default policy.
+		 */
+		@JsonProperty("defaultPolicy")
+		public boolean getDefaultPolicy() {
+			return defaultPolicy;
+		}
+
+		/**
+		 * setDefaultPolicy().
+		 * 
+		 * @param defaultPolicy default policy flag.
+		 */
+		@JsonProperty("defaultPolicy")
+		public void setDefaultPolicy(boolean defaultPolicy) {
+			this.defaultPolicy = defaultPolicy;
+		}
+
+		/**
+		 * getAdditionalProperties().
+		 * 
+		 * @return map with additional properties.
+		 */
+		@JsonAnyGetter
+		public Map<String, Object> getAdditionalProperties() {
+			return this.additionalProperties;
+		}
+
+		/**
+		 * setAdditionalProperties().
+		 * 
+		 * @param propName name of the property.
+		 * @param value    value of the property.
+		 */
+		@JsonAnySetter
+		public void setAdditionalProperties(String propName, Object value) {
+			this.additionalProperties.put(propName, value);
+		}
+	}
 }

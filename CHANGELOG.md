@@ -1,6 +1,11 @@
+## v2.35.2
+### Enhancements
+* [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
+
 ## v2.35.1 - 29 Sep 2023
 
 ### Fixes
+* [artifact-manager] IAC-785 / vRA custom form import failure with vRA version 8.11.2 and above, made content-item search in content.yaml case insensitive againist the directory item names.
 * [typescript] 163 / The compiled SAGA workflow crashes when no imports are defined in saga yaml
 * [vCD-NG] 167 / When pushing extensibility plugins, if API version 38 or above is detected, the code will automatically switch to API version 37. Otherwise push doesn't work for vCD 10.5 and above.
 

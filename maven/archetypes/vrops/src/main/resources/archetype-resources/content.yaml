@@ -16,9 +16,10 @@
 #    - SymptomDefinition-VMWARE-HostTeamingMismatch
 #  policy:
 #    - Default Policy
-#      - vSphere World, vSAN Datastores
+#    - vSphere World, vSAN Datastores
 #    - Foundation Policy
-#      - vSphere World, vSAN Datastores
+#    - vSphere World, vSAN Datastores
+#  default-policy: vSphere World
 #  recommendation:
 #    - Recommendation-df-physicaldisks.physdiskcapacity
 #  super-metric:
@@ -31,12 +32,14 @@
 #    - AWS World
 #    - Agents Running Remote Checks
 #
+
 ---
 view:
 dashboard:
 alert-definition:
 symptom-definition:
 policy:
+default-policy:
 recommendation:
 super-metric:
 metric-config:

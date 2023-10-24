@@ -23,10 +23,25 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class PackageMocked {
+/**
+ * PackageMocked mock class for vrops packages.
+ */
+public final class PackageMocked {
 
+	/**
+	 * PackageMocked() private constructor.
+	 */
+	private PackageMocked() {
+	}
+
+	/**
+	 * createSampleViewsZip() create a zip file with views.
+	 * 
+	 * @param dir directory where to put file.
+	 * @return file handle to the generated file.
+	 * @throws IOException if creation fails.
+	 */
 	public static File createSampleViewsZip(File dir) throws IOException {
-
 		String contentXml = "<Content><Views><ViewDef id=\"123\"></ViewDef></Views></Content>";
 		String resourceProp = "view.123.title: value\nview.123.something: value2\n";
 
@@ -47,17 +62,30 @@ public class PackageMocked {
 		return tempZip;
 	}
 
+	/**
+	 * createSamplePackageZip() create a mocked package zip file.
+	 * 
+	 * @param dir                 directory where to put the package file.
+	 * @param viewName            name to be generated.
+	 * @param viewId              id to be generated.
+	 * @param dashboardName       name of the dashboard to be generated.
+	 * @param alertDefinitionName name of the alert definition to be generated.
+	 * @return file handle to the generated file.
+	 * @throws IOException if creation fails.
+	 */
 	public static File createSamplePackageZip(File dir, String viewName, String viewId, String dashboardName, String alertDefinitionName) throws IOException {
 		String contentXml = "<Content><Views><ViewDef id=\"" + viewId + "\"></ViewDef></Views></Content>";
-		String resourceProp = "view." + viewId + ".title: value\nview." + viewId +".something: value2\n";
+		String contentYaml = "---\npolicy:\n  - policy1\ndefault-policy: policy1\n";
+
+		String resourceProp = "view." + viewId + ".title: value\nview." + viewId + ".something: value2\n";
 
 		String dashboardsJson = "{\"dashboards\": [{\"autoswitchEnabled\": false}]}";
 		String dashResourceProp = dashboardName + "=" + dashboardName + "\n" + dashboardName + ".Something=Somevalue";
 
 		String alertDefsJson = "{\"id\": \"1\"}";
-		String shareMetadata = "{ \"share\": {\""+dashboardName+"\" : [\"group1\"]}, \"unshare\" : {} }";
-		String activateUserMetadata = "{ \"activate\": {\""+dashboardName+"\" : [\"user1\"]}, \"deactivate\" : {} }";
-		String activateGroupMetadata = "{ \"activate\": {\""+dashboardName+"\" : [\"group1\"]}, \"deactivate\" : {} }";
+		String shareMetadata = "{ \"share\": {\"" + dashboardName + "\" : [\"group1\"]}, \"unshare\" : {} }";
+		String activateUserMetadata = "{ \"activate\": {\"" + dashboardName + "\" : [\"user1\"]}, \"deactivate\" : {} }";
+		String activateGroupMetadata = "{ \"activate\": {\"" + dashboardName + "\" : [\"group1\"]}, \"deactivate\" : {} }";
 
 		File tempZip = new File(dir, UUID.randomUUID() + ".zip");
 		FileOutputStream fos = new FileOutputStream(tempZip);
@@ -66,6 +94,10 @@ public class PackageMocked {
 		ZipEntry contentZipEntry = new ZipEntry("/views/" + viewName + ".xml");
 		zipOut.putNextEntry(contentZipEntry);
 		zipOut.write(contentXml.getBytes(StandardCharsets.UTF_8));
+
+		ZipEntry contentYamlZipEntry = new ZipEntry("/content.yaml");
+		zipOut.putNextEntry(contentYamlZipEntry);
+		zipOut.write(contentYaml.getBytes(StandardCharsets.UTF_8));
 
 		ZipEntry resourcePropZipEntry = new ZipEntry("/views/resources/content.properties");
 		zipOut.putNextEntry(resourcePropZipEntry);

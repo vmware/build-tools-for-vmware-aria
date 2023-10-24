@@ -10,11 +10,9 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
 
 
 [//]: # (Features -> New Functionality)
@@ -22,8 +20,20 @@
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+[//]: # (#### Relevant Documentation)
 
+### Setting Default Policy for vROPs 8.12.x
+
+Added option for setting default policy for vROPs version 8.12.x by setting it in the default-policy configuration item in the content.yaml file.
+
+#### Relevant Documentation
+If in the content.yaml file for a vROPs project the following section is present:
+
+```yaml
+default-policy: Policy Name
+```
+
+Then the 'Policy Name' will be set to the default policy in vROPs.
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
@@ -37,12 +47,11 @@
 [//]: # (#### New Behavior)
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+[//]: # (#### Relevant Documentation)
 
 
-
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
-[//]: # (## Changelog:)
+[//]: # (## Changelog)
 [//]: # (Pull request links)
