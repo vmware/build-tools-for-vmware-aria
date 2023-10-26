@@ -168,7 +168,7 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 			logger.error("Provided versions array is null");
 		}
 
-		return newList.isEmpty() ? null: newList.get(newList.size() - 1);
+		return newList.isEmpty() ? null : newList.get(newList.size() - 1);
 	}
 
 	// =================================================

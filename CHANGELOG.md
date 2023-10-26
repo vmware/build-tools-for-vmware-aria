@@ -1105,7 +1105,9 @@
 * Support hint collection for dependencies present only on the local machine
 
 ### Fixes
-* Log4j2 logs an error that configuration is missing when building/testing packages
+* Log4j2 logs an error that configuration is missing when building/testing packages.
+* Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
+* Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
 
 ## v1.0.1 - 13 Mar 2018
 
