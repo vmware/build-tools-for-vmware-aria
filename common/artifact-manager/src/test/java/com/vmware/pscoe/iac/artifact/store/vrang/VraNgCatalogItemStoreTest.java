@@ -1,5 +1,7 @@
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
+import com.google.gson.JsonArray;
+
 /*
  * #%L
  * artifact-manager
@@ -49,21 +51,51 @@ import static org.mockito.Mockito.*;
  * NOTE: This does not test duplicate names from one content source, since the Store is not responsible for that kind of logic.
  */
 public class VraNgCatalogItemStoreTest {
-
+	/**
+	 * Temp Folder.
+	 */
 	@Rule
-	public TemporaryFolder tempFolder		= new TemporaryFolder();
-
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+	/**
+	 * store.
+	 */
 	protected VraNgCatalogItemStore store;
+	/**
+	 * restClient.
+	 */
 	protected RestClientVraNg restClient;
+	/**
+	 * pkg.
+	 */
 	protected Package pkg;
+	/**
+	 * config.
+	 */
 	protected ConfigurationVraNg config;
+	/**
+	 * vraNgPackageDescriptor.
+	 */
 	protected VraNgPackageDescriptor vraNgPackageDescriptor;
+	/**
+	 * fsMocks.
+	 */
 	protected FsMocks fsMocks;
+	/**
+	 * Example project id.
+	 */
+	protected static String PROJECT_ID = "projectId";
+	/**
+	 * Mocked source id.
+	 */
+	protected static String CONTENT_SOURCE_ID = "mockedSourceId";
+	/**
+	 * Mocked catalog item id.
+	 */
+	protected static String CATALOG_ITEM_ID	= "mockedItemId";
 
-	protected static String PROJECT_ID			= "projectId";
-	protected static String CONTENT_SOURCE_ID	= "mockedSourceId";
-	protected static String CATALOG_ITEM_ID		= "mockedItemId";
-
+	/**
+	 * Init method called before each test.
+	 */
 	@BeforeEach
 	void init() {
 		try {
@@ -86,6 +118,9 @@ public class VraNgCatalogItemStoreTest {
 		System.out.println( "==========================================================" );
 	}
 
+	/**
+	 * Cleanup method called after each test.
+	 */
 	@AfterEach
 	void tearDown() {
 		tempFolder.delete();
@@ -391,6 +426,7 @@ public class VraNgCatalogItemStoreTest {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void testExportContentWithAllCatalogItemsWhenItemsArePresentFromOneSourceWithFormAndIcon() {
 		// GIVEN
@@ -897,4 +933,82 @@ public class VraNgCatalogItemStoreTest {
         // VERIFY
         verify( restClient, times( 1 ) ).importCustomForm( any(), anyString() );
     }
+
+	@Test
+	void testImportContentWithAnIconAndFormsWithVraAbove812() {
+		// GIVEN
+		List<String> mockCatalogItemNames = new ArrayList<>();
+		mockCatalogItemNames.add("contentSourceNameOne__catalogItemOne");
+		when(vraNgPackageDescriptor.getCatalogItem()).thenReturn(mockCatalogItemNames);
+
+		String iconId = "iconId";
+		CatalogItemMockBuilder catalogBuilderOne = new CatalogItemMockBuilder("catalogItemOne", "contentSourceNameOne");
+		VraNgCatalogItemType bpCatalogItem = new VraNgCatalogItemType(VraNgContentSourceType.BLUEPRINT, null, null);
+		VraNgCatalogItem catalogItem = catalogBuilderOne.setIconId(iconId).setIconExt("png").setCustomFormId("formId").setType(bpCatalogItem).build();
+
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Location", "/some/path/iconId");
+		ResponseEntity<String> response = GeneralMocks.mockResponseEntity("", 201, headers);
+
+		List<VraNgCatalogItem> mockedCatalogItems = new ArrayList<>();
+		mockedCatalogItems.add(catalogItem);
+
+		fsMocks.catalogItemFsMocks().addCatalogItem(catalogItem);
+		fsMocks.catalogItemFsMocks().addCatalogItemIcon(catalogItem);
+		fsMocks.catalogItemFsMocks().addCatalogItemForm(catalogItem);
+		when(restClient.getCatalogItemByBlueprintName(anyString())).thenReturn(catalogItem);
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getCatalogItemsForProject(PROJECT_ID)).thenReturn(mockedCatalogItems);
+		when(restClient.uploadIcon(any())).thenReturn(response);
+		when(restClient.getIsVraAbove812()).thenReturn(true);
+		when(restClient.getCatalogItemVersions(catalogItem.getId())).thenReturn(new JsonArray());
+
+		doNothing().when(restClient).importCustomForm(any(), anyString());
+		VraNgCatalogItemStore vra812Store = (VraNgCatalogItemStore812) new VraNgTypeStoreFactory(restClient, pkg, config, vraNgPackageDescriptor)
+				.getStoreForType(VraNgPackageContent.ContentType.CATALOG_ITEM);
+
+		// START TEST
+		vra812Store.importContent(tempFolder.getRoot());
+
+		// VERIFY
+		verify(restClient, times(1)).importCustomForm(any(), anyString());
+		verify(restClient, times(1)).uploadIcon(any());
+	}
+
+	@Test
+	void testImportContentWithAnIconAndFormsWithVraBelow812() {
+		// GIVEN
+		List<String> mockCatalogItemNames = new ArrayList<>();
+		mockCatalogItemNames.add("contentSourceNameOne__catalogItemOne");
+		when(vraNgPackageDescriptor.getCatalogItem()).thenReturn(mockCatalogItemNames);
+
+		String iconId = "iconId";
+		CatalogItemMockBuilder catalogBuilderOne = new CatalogItemMockBuilder("catalogItemOne", "contentSourceNameOne");
+		VraNgCatalogItem catalogItem = catalogBuilderOne.setIconId(iconId).setIconExt("png").setCustomFormId("formId").build();
+
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Location", "/some/path/iconId");
+		ResponseEntity<String> response = GeneralMocks.mockResponseEntity("", 201, headers);
+
+		List<VraNgCatalogItem> mockedCatalogItems = new ArrayList<>();
+		mockedCatalogItems.add(catalogItem);
+
+		fsMocks.catalogItemFsMocks().addCatalogItem(catalogItem);
+		fsMocks.catalogItemFsMocks().addCatalogItemIcon(catalogItem);
+		fsMocks.catalogItemFsMocks().addCatalogItemForm(catalogItem);
+		when(restClient.getCatalogItemByBlueprintName(anyString())).thenReturn(catalogItem);
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getCatalogItemsForProject(PROJECT_ID)).thenReturn(mockedCatalogItems);
+		when(restClient.uploadIcon(any())).thenReturn(response);
+		when(restClient.getIsVraAbove812()).thenReturn(false);
+
+		doNothing().when(restClient).importCustomForm(any(), anyString());
+
+		// START TEST
+		store.importContent(tempFolder.getRoot());
+
+		// VERIFY
+		verify(restClient, times(1)).importCustomForm(any(), anyString());
+		verify(restClient, times(1)).uploadIcon(any());
+	}
 }

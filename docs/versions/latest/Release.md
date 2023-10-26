@@ -49,6 +49,21 @@ Then the 'Policy Name' will be set to the default policy in vROPs.
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation)
 
+### vRA Custom Form not Enabled with vRA Version 8.11.2
+
+#### Previous Behaviour
+When pushing vRA custom forms to vRA version 8.11.2 they are not get enabled by default, thus not visible in the blueprint section.
+
+#### Current Behaviour
+When pushing vRA custom forms to vRA version 8.11.2 they are get enabled by default and visible in the blueprint section.
+
+### Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x
+
+#### Previous Behaviour
+If the vRA returns an empty versions array when fetching of latest vRA blueprint version would throw a null pointer exception.
+
+#### Current Behaviour
+If the vRA returns an empty versions array when fetching of latest vRA blueprint version it would not throw null pointer exception and add an empty string in the blueprint version string.
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
