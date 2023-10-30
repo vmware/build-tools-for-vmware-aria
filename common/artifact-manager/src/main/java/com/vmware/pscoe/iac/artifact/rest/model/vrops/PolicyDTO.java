@@ -39,6 +39,12 @@ public class PolicyDTO {
 	private List<Policy> policies;
 
 	/**
+	 * policySummaries.
+	 */
+	@JsonProperty("policySummaries")
+	private List<Policy> policySummaries;
+
+	/**
 	 * additionalProperties.
 	 */
 	@JsonIgnore
@@ -55,6 +61,26 @@ public class PolicyDTO {
 	}
 
 	/**
+	 * setPolicySummaries().
+	 * 
+	 * @param policySummaries policies to be set.
+	 */
+	@JsonProperty("policySummaries")
+	public void setPolicySummaries(List<Policy> policySummaries) {
+		this.policySummaries = policySummaries;
+	}
+
+	/**
+	 * policySummaries().
+	 * 
+	 * @return list of policySummaries.
+	 */
+	@JsonProperty("policySummaries")
+	public List<Policy> getPolicySummaries() {
+		return this.policySummaries;
+	}
+
+	/**
 	 * setPolicies().
 	 * 
 	 * @param policies policies to be set.
@@ -62,7 +88,7 @@ public class PolicyDTO {
 	@JsonProperty("policy-summaries")
 	public void setPolicies(List<Policy> policies) {
 		this.policies = policies;
-	}
+	}	
 
 	/**
 	 * getAdditionalProperties().

@@ -66,6 +66,7 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUsersDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupTypeDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyCustomGroupAssignmentDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.RecommendationDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ReportDefinitionDTO;
@@ -100,7 +101,39 @@ public class RestClientVrops extends RestClient {
 	/**
 	 * POLICIES_API.
 	 */
-	private static final String POLICIES_API = INTERNAL_API_PREFIX + "policies/";
+	private static final String POLICIES_API = INTERNAL_API_PREFIX + "policies";
+	/**
+	 * POLICIES_IMPORT_INTERNAL_API.
+	 */
+	private static final String POLICIES_IMPORT_INTERNAL_API = POLICIES_API + "/import";
+	/**
+	 * POLICIES_IMPORT_PUBLIC_API.
+	 */
+	private static final String POLICIES_IMPORT_PUBLIC_API = PUBLIC_API_PREFIX + "policies/import";
+	/**
+	 * POLICIES_EXPORT_INTERNAL_API.
+	 */
+	private static final String POLICIES_EXPORT_INTERNAL_API = POLICIES_API + "/export";
+	/**
+	 * POLICIES_EXPORT_PUBLIC_API.
+	 */
+	private static final String POLICIES_EXPORT_PUBLIC_API = PUBLIC_API_PREFIX + "policies/export";
+	/**
+	 * POLICIES_APPLY_INTERNAL_API.
+	 */
+	private static final String POLICIES_APPLY_INTERNAL_API = POLICIES_API + "/apply";
+	/**
+	 * POLICIES_APPLY_PUBLIC_API.
+	 */
+	private static final String POLICIES_APPLY_PUBLIC_API = PUBLIC_API_PREFIX + "policies/apply";
+	/**
+	 * POLICIES_FETCH_INTERNAL_API.
+	 */
+	private static final String POLICIES_FETCH_INTERNAL_API = POLICIES_API;
+	/**
+	 * POLICIES_FETCH_PUBLIC_API.
+	 */
+	private static final String POLICIES_FETCH_PUBLIC_API = PUBLIC_API_PREFIX + "policies";
 	/**
 	 * DEFAULT_POLICY_API.
 	 */
@@ -170,10 +203,6 @@ public class RestClientVrops extends RestClient {
 	 */
 	private static final int DEFAULT_PAGE_SIZE = 10000;
 	/**
-	 * VROPS_8_2 version.
-	 */
-	private static final String VROPS_8_2 = "8.2";
-	/**
 	 * VROPS_KIND_ALL.
 	 */
 	private static final String VROPS_KIND_ALL = "ALL";
@@ -181,6 +210,10 @@ public class RestClientVrops extends RestClient {
 	 * vROPs 8.12 version.
 	 */
 	private static final String VROPS_8_12 = "8.12";
+	/**
+	 * VROPS_8_2 version.
+	 */
+	private static final String VROPS_8_2 = "8.2";	
 	/**
 	 * configuration.
 	 */
@@ -193,7 +226,15 @@ public class RestClientVrops extends RestClient {
 	 * mapper.
 	 */
 	private ObjectMapper mapper = new ObjectMapper();
-
+	/**
+	 * isAbove812 flag.
+	 */
+	private Boolean isAbove812 = null;	
+	/**
+	 * isAbove82 flag.
+	 */
+	private Boolean isAbove82 = null;
+	
 	/**
 	 * RestClientVrops.
 	 * @param configuration
@@ -273,6 +314,32 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
+	 * Checks whether vROPs version is above 8.12.
+	 *
+	 * @return true if version is above 8.12 otherwise false.
+	 */
+	public Boolean isVersionAbove812() {
+		if (this.isAbove812 == null) {
+			this.isAbove812 = this.isVersionAbove(VROPS_8_12);
+		}
+
+		return this.isAbove812;
+	}	
+
+	/**
+	 * Checks whether vROPs version is above 8.2.
+	 *
+	 * @return true if version is above 8.2 otherwise false.
+	 */
+	public Boolean isVersionAbove82() {
+		if (this.isAbove82 == null) {
+			this.isAbove82 = this.isVersionAbove(VROPS_8_2);
+		}
+
+		return this.isAbove82;
+	}	
+	
+	/**
 	 * Import policies from a zip file.
 	 * 
 	 * @param file       policy zip file as byte[]
@@ -285,16 +352,21 @@ public class RestClientVrops extends RestClient {
 	public void importPolicyFromZip(String policyName, File file, Boolean force) throws Exception {
 		URI uri;
 		try {
-			uri = getURI(getURIBuilder().setPath(POLICIES_API + "import"));
+			// for newer vROPs versions the policies API is no longer internal.
+			if (this.isVersionAbove812()) {
+				uri = getURI(getURIBuilder().setPath(POLICIES_IMPORT_PUBLIC_API));
+			} else {
+				uri = getURI(getURIBuilder().setPath(POLICIES_IMPORT_INTERNAL_API));
+			}
 		} catch (RuntimeException e) {
 			throw e;
 		}
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		// Required header for internal API
-		headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
-
+		// older vROPs versions use internal API, thus header must be set for it
+		if (!this.isVersionAbove812()) {
+			headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		}
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("policy", new FileSystemResource(file));
 		body.add("forceImport", force);
@@ -315,7 +387,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public void setDefaultPolicy(final String policyName) throws Exception {
 		// default policy setting is available since vROPs 8.12 only
-		if (!this.isVersionAbove(VROPS_8_12)) {
+		if (!this.isVersionAbove812()) {
 			logger.warn("Cannot set default policy to '{}' as vROPs version is older than '{}'", policyName, VROPS_8_12);
 			return;
 		}
@@ -346,7 +418,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public PolicyDTO.Policy getDefaultPolicy() throws Exception {
 		// default policy is available since vROPs 8.12 only
-		if (!this.isVersionAbove(VROPS_8_12)) {
+		if (!this.isVersionAbove812()) {
 			return null;
 		}
 
@@ -363,17 +435,25 @@ public class RestClientVrops extends RestClient {
 	public List<PolicyDTO.Policy> exportPoliciesFromVrops(List<String> policyEntries) {
 		List<PolicyDTO.Policy> policies = filterPoliciesByName(policyEntries);
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-		for (PolicyDTO.Policy policy : policies) {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_API + "export")));
-			uriBuilder.queryParam("id", policy.getId());
 
+		UriComponentsBuilder uriBuilder;
+		// for newer vROPs versions the policies API is no longer internal.
+		if (this.isVersionAbove812()) {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_PUBLIC_API)));
+		} else {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_INTERNAL_API)));
+		}
+
+		for (PolicyDTO.Policy policy : policies) {
+			uriBuilder.queryParam("id", policy.getId());
 			HttpHeaders exportHeader = new HttpHeaders();
 			exportHeader.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-			// internal header is needed for vROPs internal API
-			exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+			// older vROPs versions use internal API for policies export, thus internal header needs to be set.
+			if (!this.isVersionAbove812()) {
+				exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+			}
 			HttpEntity<String> exportEntity = new HttpEntity<>(exportHeader);
 			ResponseEntity<byte[]> exportResponse = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, exportEntity, byte[].class);
-
 			policy.setZipFile(exportResponse.getBody());
 		}
 
@@ -389,12 +469,21 @@ public class RestClientVrops extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-		// Required header for internal API
-		headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		// older vROPs versions use internal API for policies, thus internal header needs to be set.
+		if (!this.isVersionAbove812()) {
+			headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());			
+		}		
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
 		try {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(POLICIES_API).toString()));
+			UriComponentsBuilder uriBuilder;
+			// for newer vROPs versions the policies API is no longer internal.
+			if (this.isVersionAbove812()) {
+				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_FETCH_PUBLIC_API)));
+			} else {
+				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_FETCH_INTERNAL_API)));
+				
+			}			
 			uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
 			URI restUri = uriBuilder.build().toUri();
 			response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
@@ -402,13 +491,14 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return new ArrayList<>();
 			}
-			throw new RuntimeException(String.format("Error ocurred trying to fetching policies. Message: %s", e.getMessage()));
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(String.format("Error building REST URI to fetch policies. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("HTTP error ocurred trying to fetching policies. Message: %s", e.getMessage()));
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("General error building REST URI to fetch policies. Message: %s", e.getMessage()));
 		}
 		PolicyDTO policyDto = deserializePolicies(response.getBody());
 
-		return policyDto == null ? Collections.emptyList() : policyDto.getPolicies();
+		// in vROPs version 8.12 and above the DTO key is called 'policySummaries', however in older versions the key is called 'policy-summaries'
+		return policyDto == null ? Collections.emptyList() : policyDto.getPolicySummaries() != null ? policyDto.getPolicySummaries() : policyDto.getPolicies();
 	}
 
 	/**
@@ -419,19 +509,24 @@ public class RestClientVrops extends RestClient {
 	 * @return policy
 	 */
 	public PolicyDTO.Policy getPolicyContent(PolicyDTO.Policy policy) {
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_API + "export")));
-		uriBuilder.queryParam("id", policy.getId());
-
+		UriComponentsBuilder uriBuilder;
 		HttpHeaders exportHeader = new HttpHeaders();
-		if (this.isVersionAbove(VROPS_8_2)) {
-			// The API vROPs 8.2 or later expects accept to be MediaType.ALL
-			exportHeader.setAccept(Arrays.asList(MediaType.ALL));
-		} else {
-			exportHeader.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-		}
-		// internal header is needed for the internal API of vROPs
-		exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		exportHeader.setAccept(Arrays.asList(MediaType.ALL));
 
+		// The API vROPs 8.2 or later expects accept to be MediaType.ALL
+		if (this.isVersionAbove82()) {			
+			exportHeader.setAccept(Arrays.asList(MediaType.ALL));
+		}		
+		// for newer vROPs versions the policies API is no longer internal.
+		if (this.isVersionAbove812()) {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_PUBLIC_API)));
+		} else {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_INTERNAL_API)));
+			exportHeader.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+			// older vROPs versions use internal API for policies, thus internal header needs to be set.
+			exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		}
+		uriBuilder.queryParam("id", policy.getId());
 		HttpEntity<String> exportEntity = new HttpEntity<>(exportHeader);
 		ResponseEntity<byte[]> response;
 		try {
@@ -441,12 +536,59 @@ public class RestClientVrops extends RestClient {
 		}
 
 		if (!HttpStatus.OK.equals(response.getStatusCode())) {
-			throw new RuntimeException(
-					String.format("Error exporting all policy %s from vROPS : remote REST service returned: %s", policy.getName(), response.getStatusCode()));
+			throw new RuntimeException(String.format("Error exporting all policy %s from vROPS : remote REST service returned: %s", policy.getName(), response.getStatusCode()));
 		}
 		policy.setZipFile(response.getBody());
 
 		return policy;
+	}
+
+	/**
+	 * Applies policy to given custom groups.
+	 * 
+	 * @param policy policy DTO object.
+	 * @param groups list of custom group group DTO objects.
+	 *
+	 */
+	public void applyPolicyToCustomGroups(PolicyDTO.Policy policy, List<CustomGroupDTO.Group> groups) {
+		UriComponentsBuilder uriBuilder;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
+		// for newer vROPs versions the policies API is no longer internal.
+		if (this.isVersionAbove812()) {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_APPLY_PUBLIC_API)));
+		} else {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_APPLY_INTERNAL_API)));
+			// older vROPs versions use internal API for policies, thus internal header needs to be set.
+			headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		}
+		List<String> groupIds = groups.stream().filter(group -> !StringUtils.isEmpty(group.getId())).map(group -> (group.getId())).collect(Collectors.toList());
+
+		PolicyCustomGroupAssignmentDTO policyAssignmentDto = new PolicyCustomGroupAssignmentDTO();
+		policyAssignmentDto.setId(policy.getId());
+		policyAssignmentDto.setGroups(groupIds);
+		String policyAssignment = this.deserializePolicyCustomGroupAssignmentDto(policyAssignmentDto);
+
+		HttpEntity<String> entity = new HttpEntity<>(policyAssignment, headers);
+		ResponseEntity<String> responseEntity = new ResponseEntity<String>(HttpStatus.OK);
+		try {
+			responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, entity, String.class);
+		} catch (HttpClientErrorException e) {
+			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+				throw new RuntimeException(String.format("Unable to find resource while applying policy '%s' to custom groups: %s: ", policy.getName(), e.getStatusText()));
+			} else if (HttpStatus.BAD_REQUEST.equals(e.getStatusCode())) {
+				throw new RuntimeException(String.format("Validation error while applying policy '%s' to custom groups: %s: ", policy.getName(), e.getStatusText()));
+			} else {
+				throw new RuntimeException(String.format("Error while applying policy '%s' to custom groups: %s: ", policy.getName(), e.getStatusText()));
+			}
+		} catch (RestClientException e) {
+			throw new RuntimeException(String.format("Error applying policy '%s' to custom groups: %s: ", policy.getName(), e.getMessage()));
+		}
+		// For all other HTTP errors than HTTP status OK, throw an error with the message returned by the API.
+		if (!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+			throw new RuntimeException(String.format("Error applying policy '%s' to custom groups: %s: ", policy.getName(), responseEntity.getBody()));
+		}
 	}
 
 	/**
@@ -2051,4 +2193,13 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	private String deserializePolicyCustomGroupAssignmentDto(PolicyCustomGroupAssignmentDTO policyCustomGroupAssignmentDto) {
+		try {
+			return mapper.writeValueAsString(policyCustomGroupAssignmentDto);
+		} catch (JsonMappingException e) {
+			throw new RuntimeException(String.format("Failed to de-serialize policy assignment DTO, JSON mapping error: %s", e.getMessage()));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(String.format("Failed to de-serialize policy assignment DTO, JSON processing error: %s", e.getMessage()));
+		}
+	}
 }
