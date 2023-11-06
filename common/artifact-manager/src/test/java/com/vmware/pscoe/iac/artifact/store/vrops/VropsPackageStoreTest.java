@@ -18,6 +18,8 @@ package com.vmware.pscoe.iac.artifact.store.vrops;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +52,9 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ViewDefinitionDTO;
 
 public class VropsPackageStoreTest {
-
+	/**
+	 * Temp Folder.
+	 */
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -109,79 +113,90 @@ public class VropsPackageStoreTest {
     }
 
     @Test
-    void importPackageWhenPackageIsOK() throws Exception {
-        // GIVEN
-        tempFolder.create();
-        String testViewName = "Test View";
-        String testCustomGroupName = "Test custom group";
-        String testCustomGroupPayload = "{}";
-        String existingGroup = "group1";
-        String existingUser = "user1";
-        String existingDashboard = "DashboardName";
-        String defaultPolicy = "policy";
-        String contentYaml = "content.yaml";
-
-        String[] shareGroups = new String[] { existingGroup };
-        String[] unshareGroups = new String[] { existingGroup };
-        String[] activateGroups = new String[] { existingUser };
-        String[] activateUsers = new String[] { existingUser };
-
-        List<AuthGroupDTO> allGroups = new ArrayList<>();
-        AuthGroupDTO group1Dto = new AuthGroupDTO();
-        group1Dto.setDisplayName(existingGroup);
-        allGroups.add(group1Dto);
-
-        List<AuthUserDTO> allUsers = new ArrayList<>();
-        AuthUserDTO user1Dto = new AuthUserDTO();
-        user1Dto.setUsername(existingUser);
-        allUsers.add(user1Dto);
-
-        CliManagerVrops cliMock = Mockito.mock(CliManagerVrops.class);
-        Mockito.doNothing().when(cliMock).connect();
-        Mockito.doNothing().when(cliMock).importFilesToVrops();
-        Mockito.doNothing().when(cliMock).addDashboardToImportList(Mockito.isA(File.class));
-
-        Mockito.doNothing().when(cliMock).activateDashboard(existingDashboard, Arrays.asList(activateGroups), true);
-        Mockito.doNothing().when(cliMock).activateDashboard(existingDashboard, Arrays.asList(activateUsers), false);
-        Mockito.doNothing().when(cliMock).deactivateDashboard(existingDashboard, Arrays.asList(activateGroups), true);
-        Mockito.doNothing().when(cliMock).deactivateDashboard(existingDashboard, Arrays.asList(activateUsers), false);
-
-        Mockito.doNothing().when(cliMock).shareDashboard(existingDashboard, shareGroups);
-        Mockito.doNothing().when(cliMock).unshareDashboard(existingDashboard, unshareGroups);
-
-        Mockito.doNothing().when(cliMock).addViewToImportList(Mockito.isA(File.class));
-        Mockito.doNothing().when(cliMock).addReportToImportList(Mockito.isA(File.class));
-
-        Mockito.doReturn(true).when(cliMock).hasAnyCommands();
-
-        RestClientVrops restClientMock = Mockito.mock(RestClientVrops.class);
-        Mockito.doReturn(allGroups).when(restClientMock).findAllAuthGroups();
-        Mockito.doReturn(allUsers).when(restClientMock).findAllAuthUsers();
-        Mockito.doReturn(allGroups).when(restClientMock).findAuthGroupsByNames(Arrays.asList(new String[] {existingGroup}));
-        Mockito.doReturn(allUsers).when(restClientMock).findAuthUsersByNames(Arrays.asList(new String[] {existingUser}));
-
-        Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.ALERT_DEFINITION, new HashMap<>());
-        Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.SYMPTOM_DEFINITION, new HashMap<>());
-        Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.RECOMMENDATION, new HashMap<>());
-        Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload, new HashMap<>());
-        Mockito.doNothing().when(restClientMock).setDefaultPolicy(defaultPolicy);
-
-        VropsPackageStore store = new VropsPackageStore(cliMock, restClientMock, tempFolder.newFolder());
-
-        File packageZip = PackageMocked.createSamplePackageZip(tempFolder.newFolder(), "ViewName", "viewid123", existingDashboard, "AlertDefinitions");
-        Package vropsPkg = PackageFactory.getInstance(PackageType.VROPS, packageZip);
-        List<Package> packages = new ArrayList<>();
-        packages.add(vropsPkg);
-
-        // WHEN
-        List<Package> importedPackages = store.importAllPackages(packages, false, false);
-
-        // THEN
-        assertNotNull(importedPackages);
-        assertEquals(importedPackages.size(), packages.size());
-        Mockito.verify(cliMock, Mockito.times(packages.size())).connect();
-        Mockito.verify(cliMock, Mockito.times(packages.size())).importFilesToVrops();
+    void importPackageWhenPackageIsOkForVrops812andAbove() throws Exception {
+    	this.importVropsPackage(true);
     }
+    
+    @Test
+    void importPackageWhenPackageIsOkForVrops812andBelow() throws Exception {
+    	this.importVropsPackage(false);
+    }    
+
+	private void importVropsPackage(boolean isVropsAbove812) throws Exception {
+		// GIVEN
+		tempFolder.create();
+		String testViewName = "Test View";
+		String testCustomGroupName = "Test custom group";
+		String testCustomGroupPayload = "{}";
+		String existingGroup = "group1";
+		String existingUser = "user1";
+		String existingDashboard = "DashboardName";
+		String defaultPolicy = "policy";
+		String contentYaml = "content.yaml";
+
+		String[] shareGroups = new String[] { existingGroup };
+		String[] unshareGroups = new String[] { existingGroup };
+		String[] activateGroups = new String[] { existingUser };
+		String[] activateUsers = new String[] { existingUser };
+
+		List<AuthGroupDTO> allGroups = new ArrayList<>();
+		AuthGroupDTO group1Dto = new AuthGroupDTO();
+		group1Dto.setDisplayName(existingGroup);
+		allGroups.add(group1Dto);
+
+		List<AuthUserDTO> allUsers = new ArrayList<>();
+		AuthUserDTO user1Dto = new AuthUserDTO();
+		user1Dto.setUsername(existingUser);
+		allUsers.add(user1Dto);
+
+		CliManagerVrops cliMock = Mockito.mock(CliManagerVrops.class);
+		Mockito.doNothing().when(cliMock).connect();
+		Mockito.doNothing().when(cliMock).importFilesToVrops();
+		Mockito.doNothing().when(cliMock).addDashboardToImportList(Mockito.isA(File.class));
+
+		Mockito.doNothing().when(cliMock).activateDashboard(existingDashboard, Arrays.asList(activateGroups), true);
+		Mockito.doNothing().when(cliMock).activateDashboard(existingDashboard, Arrays.asList(activateUsers), false);
+		Mockito.doNothing().when(cliMock).deactivateDashboard(existingDashboard, Arrays.asList(activateGroups), true);
+		Mockito.doNothing().when(cliMock).deactivateDashboard(existingDashboard, Arrays.asList(activateUsers), false);
+
+		Mockito.doNothing().when(cliMock).shareDashboard(existingDashboard, shareGroups);
+		Mockito.doNothing().when(cliMock).unshareDashboard(existingDashboard, unshareGroups);
+
+		Mockito.doNothing().when(cliMock).addViewToImportList(Mockito.isA(File.class));
+		Mockito.doNothing().when(cliMock).addReportToImportList(Mockito.isA(File.class));
+
+		Mockito.doReturn(true).when(cliMock).hasAnyCommands();
+
+		RestClientVrops restClientMock = Mockito.mock(RestClientVrops.class);
+		Mockito.doReturn(isVropsAbove812).when(restClientMock).isVersionAbove812();
+		Mockito.doReturn(allGroups).when(restClientMock).findAllAuthGroups();
+		Mockito.doReturn(allUsers).when(restClientMock).findAllAuthUsers();
+		Mockito.doReturn(allGroups).when(restClientMock).findAuthGroupsByNames(Arrays.asList(new String[] { existingGroup }));
+		Mockito.doReturn(allUsers).when(restClientMock).findAuthUsersByNames(Arrays.asList(new String[] { existingUser }));
+
+		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.ALERT_DEFINITION, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.SYMPTOM_DEFINITION, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.RECOMMENDATION, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).setDefaultPolicy(defaultPolicy);
+		Mockito.doNothing().when(restClientMock).importPolicyFromZip(any(), Mockito.isA(File.class), anyBoolean());
+
+		VropsPackageStore store = new VropsPackageStore(cliMock, restClientMock, tempFolder.newFolder());
+
+		File packageZip = PackageMocked.createSamplePackageZip(tempFolder.newFolder(), "ViewName", "viewid123", existingDashboard, "AlertDefinitions");
+		Package vropsPkg = PackageFactory.getInstance(PackageType.VROPS, packageZip);
+		List<Package> packages = new ArrayList<>();
+		packages.add(vropsPkg);
+
+		// WHEN
+		List<Package> importedPackages = store.importAllPackages(packages, false, false);
+
+		// THEN
+		assertNotNull(importedPackages);
+		assertEquals(importedPackages.size(), packages.size());
+		Mockito.verify(cliMock, Mockito.times(packages.size())).connect();
+		Mockito.verify(cliMock, Mockito.times(packages.size())).importFilesToVrops();
+	}
 
     private static VropsPackageDescriptor getVropsPackageDescriptorMock(String viewName, String policyName) {
         VropsPackageDescriptor mock = new VropsPackageDescriptor() {
@@ -194,7 +209,7 @@ public class VropsPackageStoreTest {
             @Override
             public String getDefaultPolicy() {
                  return policyName;
-            }
+            }        
         };
         return mock;
     }

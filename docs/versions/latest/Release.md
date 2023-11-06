@@ -49,6 +49,13 @@ Then the 'Policy Name' will be set to the default policy in vROPs.
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation)
 
+### Update Deprecated Policy APIs for vROPs 8.12.x
+
+#### Previous Behaviour
+When pushing vROPs policies to vROPs 8.12.0 and above the deprecated internal policy API in vROPs is used.
+
+#### Current Behaviour
+When pushing vROPs policies to vROPs 8.12.0 and above the new public policy API in vROPs is used. The older versions of vROPs is also supported.
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)

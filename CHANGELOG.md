@@ -1107,6 +1107,9 @@
 ### Fixes
 * Log4j2 logs an error that configuration is missing when building/testing packages
 
+### improvements
+* Update usage of deprecated policy APIs for vROPs 8.12.x.
+
 ## v1.0.1 - 13 Mar 2018
 
 ### Fixes
