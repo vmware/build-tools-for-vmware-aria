@@ -65,6 +65,14 @@ If the vRA returns an empty versions array when fetching of latest vRA blueprint
 #### Current Behaviour
 If the vRA returns an empty versions array when fetching of latest vRA blueprint version it would not throw null pointer exception and add an empty string in the blueprint version string.
 
+### Update Deprecated Policy APIs for vROPs 8.12.x
+
+#### Previous Behaviour
+When pushing vROPs policies to vROPs 8.12.0 and above the deprecated internal policy API in vROPs is used.
+
+#### Current Behaviour
+When pushing vROPs policies to vROPs 8.12.0 and above the new public policy API in vROPs is used. The older versions of vROPs is also supported.
+
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
