@@ -853,14 +853,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCatalogItemVersions.
 	 *
-	 * @param sourceId source id
+	 * @param catalogItemId catalog item id.
 	 * @return catalogItemVersion
 	 */
-	public JsonArray getCatalogItemVersions(final String sourceId) {
+	public JsonArray getCatalogItemVersions(final String catalogItemId) {
 		try {
-			return this.getCatalogItemVersionsPrimitive(sourceId);
+			return this.getCatalogItemVersionsPrimitive(catalogItemId);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not get custom form by source '%s'.", sourceId, e));
+			throw new RuntimeException(String.format("Could not get custom form by id '%s'.", catalogItemId, e));
 		}
 	}
 

@@ -23,6 +23,7 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import org.apache.commons.io.FileUtils;
@@ -100,6 +101,21 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * are synced.
 	 */
 	private static final int CUSTOM_FORM_SYNC_WAIT_TIME = 500;
+
+	/**
+	 * Default custom form type.
+	 */
+	protected static final String DEFAULT_CUSTOM_FORM_TYPE = "com.vmw.blueprint";
+
+	/**
+	 * Workflow custom form type.
+	 */
+	protected static final String WORKFLOW_CUSTOM_FORM_TYPE = "com.vmw.vro.workflow";
+
+	/**
+	 * Blueprint version string.
+	 */
+	protected static final String BLUEPRINT_VERSION = "com.vmw.blueprint.version";
 
 	/**
 	 * Mapping catalog items to content sources.
@@ -544,24 +560,27 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 */
 	protected void importCustomForm(final VraNgCatalogItem catalogItem, final File catalogItemFolder) {
 		String formName = getName(catalogItem) + CUSTOM_RESOURCE_SUFFIX;
-		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX
-				+ CUSTOM_RESOURCE_SUFFIX;
+		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX + CUSTOM_RESOURCE_SUFFIX;
 		File customFormFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formName).toFile();
 		File customFormDataFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formDataName).toFile();
 
 		logger.info("Importing custom form: {}", customFormFile.getAbsolutePath());
-
 		VraNgCustomForm customForm = jsonFileToVraCustomForm(customFormFile, customFormDataFile);
-		// from 8.12 to < 8.12
-		if (customForm.getName() != null && customForm.getSourceType().equals("com.vmw.blueprint.version")) {
+		// from < 8.12 to 8.12
+		if (customForm.getName() != null && customForm.getSourceType().equals(BLUEPRINT_VERSION)) {
 			customForm.setName(catalogItem.getName());
 		}
-		// from 8.12 to < 8.12
+		// from < 8.12 to 8.12
 		if (customForm.getSourceId() != null) {
 			customForm.setSourceId(customForm.getSourceId().split(CATALOG_ITEM_BLUEPRINT_VERSION_SOURCE_ID_SEPARATOR, 2)[0]);
 		}
-		// from 8.12 to < 8.12
-		customForm.setSourceType("com.vmw.blueprint");
+		// from < 8.12 to 8.12
+		if (catalogItem.getType().equals(VraNgContentSourceType.BLUEPRINT)) {
+			// if the source type is not 'com.vmw.vro.workflow' then set default source type to 'com.vmw.blueprint'
+			if (customForm.getSourceType() == null || !customForm.getSourceType().equals(WORKFLOW_CUSTOM_FORM_TYPE)) {
+				customForm.setSourceType(DEFAULT_CUSTOM_FORM_TYPE);
+			}
+		}
 
 		logger.debug("Custom Form to import: {}", new Gson().toJson(customForm));
 		// wait 250 ms between each custom form import in order catalog item to be

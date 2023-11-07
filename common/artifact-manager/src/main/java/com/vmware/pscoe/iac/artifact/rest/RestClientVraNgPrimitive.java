@@ -304,6 +304,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private static final String VRA_8_12 = "8.12.0.21583018";
 	/**
+	 * The not found error (used when retrieving the entitlements).
+	 */
+	private static final String NOT_FOUND_ERROR = "404";
+	/**
 	 * isVraAbove812.
 	 */
 	private boolean isVraAbove812;
@@ -1427,23 +1431,22 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * getCatalogItemVersionsPrimitive.
 	 *
-	 * @param sourceId source id
+	 * @param catalogItemId catalog item id.
 	 * @return catalogItemVersions JsonArray
 	 */
-	protected JsonArray getCatalogItemVersionsPrimitive(final String sourceId) {
-		String path = SERVICE_CATALOG_ADMIN_ITEMS + "/" + sourceId + "/versions";
-		URI url = getURI(getURIBuilder()
-				.setPath(path));
+	protected JsonArray getCatalogItemVersionsPrimitive(final String catalogItemId) {
+		String path = SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId + "/versions";
+		URI url = getURI(getURIBuilder().setPath(path));
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-					String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 			JsonElement root = JsonParser.parseString(response.getBody());
 			if (root.isJsonObject()) {
 				return root.getAsJsonObject().getAsJsonArray("content");
 			}
 		} catch (RestClientException e) {
-			LOGGER.info("No Versions found for source id '{}'", sourceId);
+			LOGGER.info("No versions found for catalog item id '{}'", catalogItemId);
 		}
+
 		return null;
 	}
 
@@ -3032,14 +3035,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return contentSource.getName();
 		} catch (RestClientException hre) {
 			String message = hre.getMessage();
-			if (message != null && message.contains("404")) {
+			if (message != null && message.contains(NOT_FOUND_ERROR)) {
 				VraNgCatalogItem catalogItem = this.getCatalogItemsForProjectPrimitive(this.getProjectId())
 						.stream()
 						.filter(catItem -> catItem.getId().equals(id))
 						.findFirst()
 						.orElse(null);
 				if (catalogItem == null) {
-					throw new Error("Cannot find name of CATALOG_SOURCE_IDENTIFIER with id {}" + id);
+					throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with id '%s', please check vRA content sharing policies configuration.", id));
 				}
 				return catalogItem.getName();
 			} else {
