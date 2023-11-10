@@ -25,7 +25,7 @@
     "run-script-os": "^1.1.6"
   },
   "dependencies": {
-    "axios": "0.21.2"
+    "axios": "1.6.0"
   },
   "platform": {
     "runtime": "node:12",
