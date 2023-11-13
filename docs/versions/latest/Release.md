@@ -75,7 +75,7 @@ When pushing vROPs policies to vROPs 8.12.0 and above the new public policy API 
 
 ### Fix SSH Session exitCode type
 
- #### Previous Behaviour
+#### Previous Behaviour
 When using SSH with typescript, the `exitCode` method has the type `void`. But technically, it returns an integer. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable `exitCode` has type `Number`.
 
 #### Current Behaviour
