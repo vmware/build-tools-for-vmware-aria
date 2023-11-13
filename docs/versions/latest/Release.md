@@ -73,6 +73,17 @@ When pushing vROPs policies to vROPs 8.12.0 and above the deprecated internal po
 #### Current Behaviour
 When pushing vROPs policies to vROPs 8.12.0 and above the new public policy API in vROPs is used. The older versions of vROPs is also supported.
 
+### Fix SSH Session exitCode type
+
+ #### Previous Behaviour
+When using SSH with typescript, the `exitCode` method has the type `void`. But technically, it returns an integer. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable `exitCode` has type `Number`.
+
+#### Current Behaviour
+Method `.exitCode` should return type `Number` instead of type `void`
+
+#### Related issue
+https://github.com/vmware/build-tools-for-vmware-aria/issues/180
+
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
