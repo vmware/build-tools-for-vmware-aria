@@ -47,6 +47,3 @@ Thumbs.db
 
 # awesome-typescript-loader cache
 .awcache/
-
-# angular files
-.angular
