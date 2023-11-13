@@ -1,6 +1,10 @@
-## v2.35.2
+### Fixes
+* [artifact-manager] IAC-788 / Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
+* [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
+
 ### Enhancements
 * [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
+* [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
 
 ### Bugs
 * [o11n-plugin-ssh] session esxiCode returns type void() instead of number
@@ -1109,11 +1113,6 @@
 
 ### Fixes
 * Log4j2 logs an error that configuration is missing when building/testing packages.
-* Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
-* Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
-
-### improvements
-* Update usage of deprecated policy APIs for vROPs 8.12.x.
 
 ## v1.0.1 - 13 Mar 2018
 
