@@ -1,6 +1,10 @@
-## v2.35.2
+### Fixes
+* [artifact-manager] IAC-788 / Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
+* [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
+
 ### Enhancements
 * [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
+* [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
 
 ## v2.35.1 - 29 Sep 2023
 
