@@ -6,6 +6,9 @@
 * [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
 * [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
 
+### Bugs
+* [o11n-plugin-ssh] session esxiCode returns type void() instead of number
+
 ## v2.35.1 - 29 Sep 2023
 
 ### Fixes
