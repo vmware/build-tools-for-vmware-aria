@@ -14,6 +14,9 @@
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 
+### Deprecating SQLDatabaseManager.getDatabase() function
+
+SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automation 8 and above. The function uses name as parameter to retrieve a database. Use getDatabaseById() or getDatabases() and filter by name instead.
 
 [//]: # (Features -> New Functionality)
 ## Features
