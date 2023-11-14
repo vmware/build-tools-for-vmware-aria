@@ -43,6 +43,7 @@
 		<module>o11n-plugin-vcloud</module>
 		<module>o11n-plugin-vco</module>
 		<module>o11n-plugin-xml</module>
+		<module>o11n-plugin-aria</module>
 	</modules>
 
 	<properties>

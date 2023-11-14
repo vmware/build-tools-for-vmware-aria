@@ -1,0 +1,7 @@
+{
+  "name": "@types/o11n-plugin-aria",
+  "version": "2.35.2-SNAPSHOT",
+  "author": "VMware PSCoE",
+  "license": "ISC",
+  "private": true
+}

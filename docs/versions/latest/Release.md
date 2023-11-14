@@ -35,6 +35,21 @@ default-policy: Policy Name
 
 Then the 'Policy Name' will be set to the default policy in vROPs.
 
+### Adding Aria Automation 8.x vRO Plugin Types
+
+Developers can use on their TS projects the vRAHost type properties and functions
+
+#### Relevant Documentation
+NONE
+
+#### Example
+
+`example.ts`:
+```typescript
+export default function (vraHost:VraHost):VraGenericRestClient {
+    return vraHost.createRestClient();
+}
+```
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
