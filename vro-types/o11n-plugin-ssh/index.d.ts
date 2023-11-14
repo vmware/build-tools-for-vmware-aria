@@ -115,7 +115,7 @@ declare class SSHCommand {
  * SSH Session to username@host:port. This object replace the old 'SSHCommand' object.
  */
 declare class SSHSession {
-	exitCode: void;
+	exitCode: number;
 	cmd: void;
 	pty: void;
 	terminal: void;
