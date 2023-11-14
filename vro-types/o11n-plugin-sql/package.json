@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-sql",
-  "version": "2.35.1-SNAPSHOT",
+  "version": "2.35.2-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true

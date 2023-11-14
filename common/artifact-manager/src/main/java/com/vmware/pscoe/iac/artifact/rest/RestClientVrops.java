@@ -66,6 +66,7 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUsersDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupTypeDTO;
+import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyCustomGroupAssignmentDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.RecommendationDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrops.ReportDefinitionDTO;
@@ -81,147 +82,159 @@ public class RestClientVrops extends RestClient {
 	 * logger.
 	 */
 	private final Logger logger = LoggerFactory.getLogger(RestClientVrops.class);
-
 	/**
 	 * PUBLIC_API_PREFIX.
 	 */
 	private static final String PUBLIC_API_PREFIX = "/suite-api/api/";
-
 	/**
 	 * INTERNAL_API_PREFIX.
 	 */
 	private static final String INTERNAL_API_PREFIX = "/suite-api/internal/";
-
 	/**
 	 * ALERT_DEFS_API.
 	 */
 	private static final String ALERT_DEFS_API = PUBLIC_API_PREFIX + "alertdefinitions/";
-
 	/**
 	 * SYMPTOM_DEFS_API.
 	 */
 	private static final String SYMPTOM_DEFS_API = PUBLIC_API_PREFIX + "symptomdefinitions/";
-
 	/**
 	 * POLICIES_API.
 	 */
-	private static final String POLICIES_API = INTERNAL_API_PREFIX + "policies/";
-
+	private static final String POLICIES_API = INTERNAL_API_PREFIX + "policies";
+	/**
+	 * POLICIES_IMPORT_INTERNAL_API.
+	 */
+	private static final String POLICIES_IMPORT_INTERNAL_API = POLICIES_API + "/import";
+	/**
+	 * POLICIES_IMPORT_PUBLIC_API.
+	 */
+	private static final String POLICIES_IMPORT_PUBLIC_API = PUBLIC_API_PREFIX + "policies/import";
+	/**
+	 * POLICIES_EXPORT_INTERNAL_API.
+	 */
+	private static final String POLICIES_EXPORT_INTERNAL_API = POLICIES_API + "/export";
+	/**
+	 * POLICIES_EXPORT_PUBLIC_API.
+	 */
+	private static final String POLICIES_EXPORT_PUBLIC_API = PUBLIC_API_PREFIX + "policies/export";
+	/**
+	 * POLICIES_APPLY_INTERNAL_API.
+	 */
+	private static final String POLICIES_APPLY_INTERNAL_API = POLICIES_API + "/apply";
+	/**
+	 * POLICIES_APPLY_PUBLIC_API.
+	 */
+	private static final String POLICIES_APPLY_PUBLIC_API = PUBLIC_API_PREFIX + "policies/apply";
+	/**
+	 * POLICIES_FETCH_INTERNAL_API.
+	 */
+	private static final String POLICIES_FETCH_INTERNAL_API = POLICIES_API;
+	/**
+	 * POLICIES_FETCH_PUBLIC_API.
+	 */
+	private static final String POLICIES_FETCH_PUBLIC_API = PUBLIC_API_PREFIX + "policies";
+	/**
+	 * DEFAULT_POLICY_API.
+	 */
+	private static final String DEFAULT_POLICY_API = PUBLIC_API_PREFIX + "policies/default";
 	/**
 	 * RECOMMENDATIONS_API.
 	 */
 	private static final String RECOMMENDATIONS_API = PUBLIC_API_PREFIX + "recommendations/";
-
 	/**
 	 * RESOURCES_API.
 	 */
 	private static final String RESOURCES_API = PUBLIC_API_PREFIX + "resources/";
-
 	/**
 	 * CUSTOM_GROUPS_FETCH_API.
 	 */
 	private static final String CUSTOM_GROUPS_FETCH_API = RESOURCES_API + "groups";
-
 	/**
 	 * CUSTOM_GROUPS_UPDATE_API.
 	 */
 	private static final String CUSTOM_GROUPS_UPDATE_API = PUBLIC_API_PREFIX + "resources/groups";
-
 	/**
 	 * CUSTOM_GROUP_TYPES_API.
 	 */
 	private static final String CUSTOM_GROUP_TYPES_API = PUBLIC_API_PREFIX + "resources/groups/types";
-
 	/**
 	 * RESOURCES_LIST_API.
 	 */
 	private static final String RESOURCES_LIST_API = PUBLIC_API_PREFIX + "resources";
-
 	/**
 	 * ADAPTER_KINDS_API.
 	 */
 	private static final String ADAPTER_KINDS_API = PUBLIC_API_PREFIX + "adapterkinds";
-
 	/**
 	 * RESOURCE_KINDS_API.
 	 */
 	private static final String RESOURCE_KINDS_API = PUBLIC_API_PREFIX + "adapterkinds/%s/resourcekinds";
-
 	/**
 	 * RESOURCES_LIST_PER_ADAPTER_KIND.
 	 */
 	private static final String RESOURCES_LIST_PER_ADAPTER_KIND = PUBLIC_API_PREFIX + "adapterkinds/%s/resources";
-
 	/**
 	 * SUPERMETRICS_LIST_API.
 	 */
 	private static final String SUPERMETRICS_LIST_API = PUBLIC_API_PREFIX + "supermetrics";
-
 	/**
 	 * REPORT_DEFINITIONS_LIST_API.
 	 */
 	private static final String REPORT_DEFINITIONS_LIST_API = PUBLIC_API_PREFIX + "reportdefinitions";
-
 	/**
 	 * VIEW_DEFINITIONS_LIST_API.
 	 */
 	private static final String VIEW_DEFINITIONS_LIST_API = INTERNAL_API_PREFIX + "viewdefinitions";
-
 	/**
 	 * INTERNAL_API_HEADER_NAME.
 	 */
 	private static final String INTERNAL_API_HEADER_NAME = "X-vRealizeOps-API-use-unsupported";
-
 	/**
 	 * AUTH_GROUPS_API.
 	 */
 	private static final String AUTH_GROUPS_API = PUBLIC_API_PREFIX + "/auth/usergroups";
-
 	/**
 	 * AUTH_USERS_API.
 	 */
 	private static final String AUTH_USERS_API = PUBLIC_API_PREFIX + "/auth/users";
-
 	/**
 	 * DEFAULT_PAGE_SIZE.
 	 */
 	private static final int DEFAULT_PAGE_SIZE = 10000;
-
-	/**
-	 * VROPS_MAJOR_VERSION.
-	 */
-	private static final int VROPS_MAJOR_VERSION = 8;
-
-	/**
-	 * VROPS_MINOR_VERSION.
-	 */
-	private static final int VROPS_MINOR_VERSION = 2;
-
 	/**
 	 * VROPS_KIND_ALL.
 	 */
 	private static final String VROPS_KIND_ALL = "ALL";
-
+	/**
+	 * vROPs 8.12 version.
+	 */
+	private static final String VROPS_8_12 = "8.12";
+	/**
+	 * VROPS_8_2 version.
+	 */
+	private static final String VROPS_8_2 = "8.2";	
 	/**
 	 * configuration.
 	 */
 	private ConfigurationVrops configuration;
-
 	/**
 	 * restTemplate.
 	 */
 	private RestTemplate restTemplate;
-	
 	/**
 	 * mapper.
 	 */
 	private ObjectMapper mapper = new ObjectMapper();
-	
 	/**
-	 * productVersion.
+	 * isAbove812 flag.
 	 */
-	private Version productVersion = null;
-
+	private Boolean isAbove812 = null;	
+	/**
+	 * isAbove82 flag.
+	 */
+	private Boolean isAbove82 = null;
+	
 	/**
 	 * RestClientVrops.
 	 * @param configuration
@@ -288,6 +301,45 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
+	 * Checks whether vROPs version is above or equal to certain one.
+	 *
+	 * @param targetVersion  string with target version to compare with.
+	 * @return true if version is above or equal to the certain one otherwise false.
+	 */
+	public boolean isVersionAbove(final String targetVersion) {
+		Version version = new Version(this.getVersion());
+		int isGreater = version.compareTo(new Version(targetVersion));
+
+		return isGreater >= 0;
+	}
+
+	/**
+	 * Checks whether vROPs version is above 8.12.
+	 *
+	 * @return true if version is above 8.12 otherwise false.
+	 */
+	public Boolean isVersionAbove812() {
+		if (this.isAbove812 == null) {
+			this.isAbove812 = this.isVersionAbove(VROPS_8_12);
+		}
+
+		return this.isAbove812;
+	}	
+
+	/**
+	 * Checks whether vROPs version is above 8.2.
+	 *
+	 * @return true if version is above 8.2 otherwise false.
+	 */
+	public Boolean isVersionAbove82() {
+		if (this.isAbove82 == null) {
+			this.isAbove82 = this.isVersionAbove(VROPS_8_2);
+		}
+
+		return this.isAbove82;
+	}	
+	
+	/**
 	 * Import policies from a zip file.
 	 * 
 	 * @param file       policy zip file as byte[]
@@ -300,16 +352,21 @@ public class RestClientVrops extends RestClient {
 	public void importPolicyFromZip(String policyName, File file, Boolean force) throws Exception {
 		URI uri;
 		try {
-			uri = getURI(getURIBuilder().setPath(POLICIES_API + "import"));
+			// for newer vROPs versions the policies API is no longer internal.
+			if (this.isVersionAbove812()) {
+				uri = getURI(getURIBuilder().setPath(POLICIES_IMPORT_PUBLIC_API));
+			} else {
+				uri = getURI(getURIBuilder().setPath(POLICIES_IMPORT_INTERNAL_API));
+			}
 		} catch (RuntimeException e) {
 			throw e;
 		}
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		// Required header for internal API
-		headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
-
+		// older vROPs versions use internal API, thus header must be set for it
+		if (!this.isVersionAbove812()) {
+			headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		}
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("policy", new FileSystemResource(file));
 		body.add("forceImport", force);
@@ -323,6 +380,52 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
+	 * Sets default policy in vROPs to given policy. Note that it applies to vROPs 8.12 and later only.
+	 *
+	 * @param policyName policy name to be set by default.
+	 * @throws Exception exception if the policy is not found or could not be set to default.
+	 */
+	public void setDefaultPolicy(final String policyName) throws Exception {
+		// default policy setting is available since vROPs 8.12 only
+		if (!this.isVersionAbove812()) {
+			logger.warn("Cannot set default policy to '{}' as vROPs version is older than '{}'", policyName, VROPS_8_12);
+			return;
+		}
+		List<PolicyDTO.Policy> allPolicies = this.getAllPolicies();
+		PolicyDTO.Policy policy = allPolicies.stream().filter(item -> item.getName().equalsIgnoreCase(policyName)).findFirst().orElse(null);
+		if (policy == null) {
+			throw new RuntimeException(String.format("The policy '%s' does not exist.", policyName));
+		}
+
+		logger.info("Setting default vROPs policy to '{}'", policyName);
+		try {
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(DEFAULT_POLICY_API).toString()));
+			uriBuilder.queryParam("id", policy.getId());
+			URI restUri = uriBuilder.build().toUri();
+			restTemplate.exchange(restUri, HttpMethod.PUT, null, String.class);
+		} catch (RestClientException e) {
+			throw new RuntimeException(String.format("Error setting default policy to '%s'. Message: %s", policyName, e.getMessage()));
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(String.format("Error building REST URI to set default policy. Message: %s", e.getMessage()));
+		}
+	}
+
+	/**
+	 * Gets the default policy for vROPs. Note that it applies to vROPs 8.12 and later only.
+	 *
+	 * @return PolicyDTO.Policy policy object, or null if the vROPs version is older than 8.12 or no default policy is set.
+	 * @throws Exception exception if the default policy cannot be fetched.
+	 */
+	public PolicyDTO.Policy getDefaultPolicy() throws Exception {
+		// default policy is available since vROPs 8.12 only
+		if (!this.isVersionAbove812()) {
+			return null;
+		}
+
+		return this.getAllPolicies().stream().filter(item -> item.getDefaultPolicy()).findFirst().orElse(null);
+	}
+
+	/**
 	 * Export a zip file per policies, filtered by name.
 	 * 
 	 * @param policyEntries Names of the policies to be exported
@@ -332,17 +435,25 @@ public class RestClientVrops extends RestClient {
 	public List<PolicyDTO.Policy> exportPoliciesFromVrops(List<String> policyEntries) {
 		List<PolicyDTO.Policy> policies = filterPoliciesByName(policyEntries);
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-		for (PolicyDTO.Policy policy : policies) {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_API + "export")));
-			uriBuilder.queryParam("id", policy.getId());
 
+		UriComponentsBuilder uriBuilder;
+		// for newer vROPs versions the policies API is no longer internal.
+		if (this.isVersionAbove812()) {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_PUBLIC_API)));
+		} else {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_INTERNAL_API)));
+		}
+
+		for (PolicyDTO.Policy policy : policies) {
+			uriBuilder.queryParam("id", policy.getId());
 			HttpHeaders exportHeader = new HttpHeaders();
 			exportHeader.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-			// internal header is needed for vROPs internal API
-			exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+			// older vROPs versions use internal API for policies export, thus internal header needs to be set.
+			if (!this.isVersionAbove812()) {
+				exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+			}
 			HttpEntity<String> exportEntity = new HttpEntity<>(exportHeader);
 			ResponseEntity<byte[]> exportResponse = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, exportEntity, byte[].class);
-
 			policy.setZipFile(exportResponse.getBody());
 		}
 
@@ -358,12 +469,21 @@ public class RestClientVrops extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-		// Required header for internal API
-		headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		// older vROPs versions use internal API for policies, thus internal header needs to be set.
+		if (!this.isVersionAbove812()) {
+			headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());			
+		}		
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(POLICIES_API).toString()));
+			UriComponentsBuilder uriBuilder;
+			// for newer vROPs versions the policies API is no longer internal.
+			if (this.isVersionAbove812()) {
+				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_FETCH_PUBLIC_API)));
+			} else {
+				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_FETCH_INTERNAL_API)));
+				
+			}			
 			uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
 			URI restUri = uriBuilder.build().toUri();
 			response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
@@ -371,13 +491,14 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return new ArrayList<>();
 			}
-			throw new RuntimeException(String.format("Error ocurred trying to fetching policies. Message: %s", e.getMessage()));
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(String.format("Error building REST URI to fetch policies. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("HTTP error ocurred trying to fetching policies. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("General error while fetching policies. Message: %s, Server error: %s", e.getMessage(), response.getBody()));
 		}
 		PolicyDTO policyDto = deserializePolicies(response.getBody());
 
-		return policyDto == null ? Collections.emptyList() : policyDto.getPolicies();
+		// in vROPs version 8.12 and above the DTO key is called 'policySummaries', however in older versions the key is called 'policy-summaries'
+		return policyDto == null ? Collections.emptyList() : policyDto.getPolicySummaries() != null ? policyDto.getPolicySummaries() : policyDto.getPolicies();
 	}
 
 	/**
@@ -388,34 +509,86 @@ public class RestClientVrops extends RestClient {
 	 * @return policy
 	 */
 	public PolicyDTO.Policy getPolicyContent(PolicyDTO.Policy policy) {
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_API + "export")));
-		uriBuilder.queryParam("id", policy.getId());
-
+		UriComponentsBuilder uriBuilder;
 		HttpHeaders exportHeader = new HttpHeaders();
-		if (isVrops82OrLater()) {
-			// The API vROPs 8.2 or later expects accept to be MediaType.ALL
-			exportHeader.setAccept(Arrays.asList(MediaType.ALL));
-		} else {
-			exportHeader.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-		}
-		// internal header is needed for the internal API of vROPs
-		exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		exportHeader.setAccept(Arrays.asList(MediaType.ALL));
 
+		// The API vROPs 8.2 or later expects accept to be MediaType.ALL
+		if (this.isVersionAbove82()) {			
+			exportHeader.setAccept(Arrays.asList(MediaType.ALL));
+		}		
+		// for newer vROPs versions the policies API is no longer internal.
+		if (this.isVersionAbove812()) {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_PUBLIC_API)));
+		} else {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_EXPORT_INTERNAL_API)));
+			exportHeader.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+			// older vROPs versions use internal API for policies, thus internal header needs to be set.
+			exportHeader.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		}
+		uriBuilder.queryParam("id", policy.getId());
 		HttpEntity<String> exportEntity = new HttpEntity<>(exportHeader);
-		ResponseEntity<byte[]> response;
+		ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(HttpStatus.OK);
 		try {
 			response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, exportEntity, byte[].class);
 		} catch (RestClientException e) {
-			throw new RuntimeException(String.format("Error exporting all policy %s from vROPS : %s", policy.getName(), e.getMessage()), e);
+			throw new RuntimeException(String.format("Error exporting all policy %s from vROPS : %s , Server error: %s", policy.getName(), e.getMessage(), response.getBody()));
 		}
 
 		if (!HttpStatus.OK.equals(response.getStatusCode())) {
-			throw new RuntimeException(
-					String.format("Error exporting all policy %s from vROPS : remote REST service returned: %s", policy.getName(), response.getStatusCode()));
+			throw new RuntimeException(String.format("Error exporting all policy %s from vROPS : remote REST service returned: %s", policy.getName(), response.getStatusCode()));
 		}
 		policy.setZipFile(response.getBody());
 
 		return policy;
+	}
+
+	/**
+	 * Applies policy to given custom groups.
+	 * 
+	 * @param policy policy DTO object.
+	 * @param groups list of custom group group DTO objects.
+	 *
+	 */
+	public void applyPolicyToCustomGroups(PolicyDTO.Policy policy, List<CustomGroupDTO.Group> groups) {
+		UriComponentsBuilder uriBuilder;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
+		// for newer vROPs versions the policies API is no longer internal.
+		if (this.isVersionAbove812()) {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_APPLY_PUBLIC_API)));
+		} else {
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(POLICIES_APPLY_INTERNAL_API)));
+			// older vROPs versions use internal API for policies, thus internal header needs to be set.
+			headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		}
+		List<String> groupIds = groups.stream().filter(group -> !StringUtils.isEmpty(group.getId())).map(group -> (group.getId())).collect(Collectors.toList());
+
+		PolicyCustomGroupAssignmentDTO policyAssignmentDto = new PolicyCustomGroupAssignmentDTO();
+		policyAssignmentDto.setId(policy.getId());
+		policyAssignmentDto.setGroups(groupIds);
+		String policyAssignment = this.deserializePolicyCustomGroupAssignmentDto(policyAssignmentDto);
+
+		HttpEntity<String> entity = new HttpEntity<>(policyAssignment, headers);
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
+		try {
+			response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, entity, String.class);
+		} catch (HttpClientErrorException e) {
+			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+				throw new RuntimeException(String.format("Unable to find resource while applying policy '%s' to custom groups: %s: ", policy.getName(), e.getStatusText()));
+			} else if (HttpStatus.BAD_REQUEST.equals(e.getStatusCode())) {
+				throw new RuntimeException(String.format("Validation error while applying policy '%s' to custom groups: %s: ", policy.getName(), e.getStatusText()));
+			} else {
+				throw new RuntimeException(String.format("Error while applying policy '%s' to custom groups: %s: ", policy.getName(), e.getStatusText()));
+			}
+		} catch (RestClientException e) {
+			throw new RuntimeException(String.format("Error applying policy '%s' to custom groups: %s", policy.getName(), e.getMessage()));
+		}
+		// For all other HTTP errors than HTTP status OK, throw an error with the message returned by the API.
+		if (!HttpStatus.OK.equals(response.getStatusCode())) {
+			throw new RuntimeException(String.format("Error applying policy '%s' to custom groups: %s: ", policy.getName(), response.getBody()));
+		}
 	}
 
 	/**
@@ -456,8 +629,7 @@ public class RestClientVrops extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-
-		ResponseEntity<String> response;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
 			response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
 		} catch (RestClientException e) {
@@ -487,8 +659,7 @@ public class RestClientVrops extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-
-		ResponseEntity<String> response;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
 			response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
 		} catch (RestClientException e) {
@@ -556,17 +727,17 @@ public class RestClientVrops extends RestClient {
 
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(customGroupPayload, headers);
-		ResponseEntity<String> responseEntity;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
 			URI restUri = new URI(getURIBuilder().setPath(CUSTOM_GROUPS_UPDATE_API).toString());
-			responseEntity = restTemplate.exchange(restUri, method, entity, String.class);
+			response = restTemplate.exchange(restUri, method, entity, String.class);
 		} catch (RestClientException e) {
 			throw new RuntimeException(String.format("Unable to import custom group %s to vROPS : %s", customGroupName, e.getMessage()), e);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Unable to determine vROPs REST endpoint for custom group %s : %s", customGroupName, e.getMessage()), e);
 		}
 
-		HttpStatus status = responseEntity.getStatusCode();
+		HttpStatus status = response.getStatusCode();
 		if (HttpMethod.POST.equals(method)) {
 			if (HttpStatus.BAD_REQUEST.equals(status)) {
 				throw new RuntimeException(String.format("Error creating custom group %s: Validation error in the group data", customGroupName));
@@ -625,24 +796,22 @@ public class RestClientVrops extends RestClient {
 		customGroupTypeDto.setName(customGroupType);
 		String customGroupTypePayload = deserializeCustomGroupType(customGroupTypeDto);
 		HttpEntity<String> entity = new HttpEntity<>(customGroupTypePayload, headers);
-		ResponseEntity<String> responseEntity;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
 			URI restUri = new URI(getURIBuilder().setPath(CUSTOM_GROUP_TYPES_API).toString());
-			responseEntity = restTemplate.exchange(restUri, HttpMethod.POST, entity, String.class);
+			response = restTemplate.exchange(restUri, HttpMethod.POST, entity, String.class);
 		} catch (RestClientException e) {
-			throw new RuntimeException(String.format("Unable to create custom group type %s to vROPS : %s", customGroupType, e.getMessage()), e);
+			throw new RuntimeException(String.format("Unable to create custom group type %s to vROPS : %s", customGroupType, e.getMessage()));
 		} catch (URISyntaxException e) {
-			throw new RuntimeException(String.format("Unable to determine vROPs REST endpoint for custom group type %s : %s", customGroupType, e.getMessage()),
-					e);
+			throw new RuntimeException(String.format("Unable to determine vROPs REST endpoint for custom group type %s : %s", customGroupType, e.getMessage()));
 		}
 
-		HttpStatus status = responseEntity.getStatusCode();
+		HttpStatus status = response.getStatusCode();
 		if (HttpStatus.BAD_REQUEST.equals(status)) {
 			throw new RuntimeException(String.format("Error creating custom group type %s: Validation error in the group data", customGroupType));
 		}
 		if (!HttpStatus.CREATED.equals(status)) {
-			throw new RuntimeException(
-					String.format("Error creating custom group type %s: Remote REST service returned status code %s", customGroupType, status));
+			throw new RuntimeException(String.format("Error creating custom group type %s: Remote REST service returned status code %s", customGroupType, status));
 		}
 	}
 
@@ -687,7 +856,7 @@ public class RestClientVrops extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		String endpointName = String.format(RESOURCES_LIST_PER_ADAPTER_KIND, adapterType);
 		try {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(endpointName).toString()));
@@ -701,19 +870,16 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return new ResourcesDTO();
 			}
-			throw new RuntimeException(String.format("Error occurred when trying to fetch resources for page %s. Message: %s", page, e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch resources for page %s. Message: %s, Server error: %s", page, e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
-			throw new RuntimeException(
-					String.format("Error occurred when trying to build REST URI to fetch resources for page %s. Message: %s", page, e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to fetch resources for page %s. Message: %s", page, e.getMessage()));
 		}
 		try {
 			return mapper.readValue(response.getBody(), ResourcesDTO.class);
 		} catch (JsonMappingException e) {
-			throw new RuntimeException(
-					String.format("JSON mapping error while parsing the resources response for resource page %s. Message: %s", page, e.getMessage()));
+			throw new RuntimeException(String.format("JSON mapping error while parsing the resources response for resource page %s. Message: %s", page, e.getMessage()));
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(
-					String.format("JSON processing error while parsing the resources response for resource page %s. Message: %s", page, e.getMessage()));
+			throw new RuntimeException(String.format("JSON processing error while parsing the resources response for resource page %s. Message: %s", page, e.getMessage()));
 		}
 	}
 
@@ -754,7 +920,7 @@ public class RestClientVrops extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(RESOURCES_LIST_API).toString()));
 			uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
@@ -767,7 +933,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return new ResourcesDTO();
 			}
-			throw new RuntimeException(String.format("Error occurred when trying to fetch resources. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch resources. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to fetch resources. Message: %s", e.getMessage()));
 		}
@@ -789,7 +955,7 @@ public class RestClientVrops extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		SupermetricDTO retVal = new SupermetricDTO();
 		try {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(SUPERMETRICS_LIST_API).toString()));
@@ -800,7 +966,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return retVal;
 			}
-			throw new RuntimeException(String.format("Error occurred when trying to fetch supermetrics list. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch supermetrics list. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to fetch supermetrics. Message: %s", e.getMessage()));
 		}
@@ -829,7 +995,7 @@ public class RestClientVrops extends RestClient {
 		// Required header for internal API
 		headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response;
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		ViewDefinitionDTO retVal = new ViewDefinitionDTO();
 		try {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(VIEW_DEFINITIONS_LIST_API).toString()));
@@ -840,7 +1006,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return retVal;
 			}
-			throw new RuntimeException(String.format("Error ocurred trying to fetching view definitions. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("Error ocurred trying to fetching view definitions. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error building REST URI to fetch view definitions. Message: %s", e.getMessage()));
 		}
@@ -877,7 +1043,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return retVal;
 			}
-			throw new RuntimeException(String.format("Error occurred when trying to fetch report definitions. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch report definitions. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to fetch report definitions. Message: %s", e.getMessage()));
 		}
@@ -915,7 +1081,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return retVal;
 			}
-			throw new RuntimeException(String.format("Error occurred when trying to fetch auth groups. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch auth groups. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to auth groups. Message: %s", e.getMessage()));
 		}
@@ -950,7 +1116,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return retVal;
 			}
-			throw new RuntimeException(String.format("Error occurred when trying to fetch auth users. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch auth users. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to auth users. Message: %s", e.getMessage()));
 		}
@@ -1011,31 +1177,6 @@ public class RestClientVrops extends RestClient {
 		List<AuthUserDTO> allAuthUsers = this.findAllAuthUsers();
 
 		return allAuthUsers.stream().filter(item -> names.contains(item.getUsername())).collect(Collectors.toList());
-	}
-
-	/**
-	 * Get vROPs product version.
-	 * 
-	 * @return version info
-	 */		
-	private Version getProductVersion() {
-		if (this.productVersion == null) {
-			this.productVersion = new Version(getVersion());
-		}
-
-		return this.productVersion;
-	}
-
-	/**
-	 * Checks whether the vROPs is version 8.2 or later.
-	 * 
-	 * @return true if vROPs is 8.2 or later otherwise false
-	 */			
-	private boolean isVrops82OrLater() {
-		Integer major = this.getProductVersion().getMajorVersion();
-		Integer minor = this.getProductVersion().getMinorVersion();
-
-		return (major != null && major >= VROPS_MAJOR_VERSION) && (minor != null && minor >= VROPS_MINOR_VERSION);
 	}
 
 	/**
@@ -1272,7 +1413,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return new ArrayList<>();
 			}
-			throw new RuntimeException(String.format("Error ocurred trying to find custom groups %s. Message: %s", groupInfo, e.getMessage()));
+			throw new RuntimeException(String.format("Error ocurred trying to find custom groups %s. Message: %s, Server error: %s", groupInfo, e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error building REST URI to find custom groups %s. Message: %s", groupInfo, e.getMessage()));
 		}
@@ -1637,12 +1778,9 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return new ResourcesDTO.PageInfo();
 			}
-			throw new RuntimeException(
-					String.format("Error occurred when trying to fetch resources page info for adapter kind '%s'. Message: %s", adapterKind, e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch resources page info for adapter kind '%s'. Message: %s, Server error: %s", adapterKind, e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
-			throw new RuntimeException(
-					String.format("Error occurred when trying to build REST URI to fetch resources page info for adapter kind '%s'. Message: %s", adapterKind,
-							e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to fetch resources page info for adapter kind '%s'. Message: %s", adapterKind, e.getMessage()));
 		}
 		try {
 			ResourcesDTO resource = mapper.readValue(response.getBody(), ResourcesDTO.class);
@@ -1652,11 +1790,9 @@ public class RestClientVrops extends RestClient {
 
 			return resource.getPageInfo();
 		} catch (JsonMappingException e) {
-			throw new RuntimeException(String.format("JSON mapping error while parsing the resources page info response for adapter kind '%s'. Message: %s",
-					adapterKind, e.getMessage()));
+			throw new RuntimeException(String.format("JSON mapping error while parsing the resources page info response for adapter kind '%s'. Message: %s", adapterKind, e.getMessage()));
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(String.format("JSON processing error while parsing the resources page info response for adapter kind '%s'. Message: %s",
-					adapterKind, e.getMessage()));
+			throw new RuntimeException(String.format("JSON processing error while parsing the resources page info response for adapter kind '%s'. Message: %s", adapterKind, e.getMessage()));
 		}
 	}
 
@@ -1674,7 +1810,7 @@ public class RestClientVrops extends RestClient {
 			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
 				return new ResourcesDTO.PageInfo();
 			}
-			throw new RuntimeException(String.format("Error occurred when trying to fetch resources page info. Message: %s", e.getMessage()));
+			throw new RuntimeException(String.format("Error occurred when trying to fetch resources page info. Message: %s, Server error: %s", e.getMessage(), e.getStatusText()));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("Error occurred when trying to build REST URI to fetch resources page info. Message: %s", e.getMessage()));
 		}
@@ -2045,4 +2181,13 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	private String deserializePolicyCustomGroupAssignmentDto(PolicyCustomGroupAssignmentDTO policyCustomGroupAssignmentDto) {
+		try {
+			return mapper.writeValueAsString(policyCustomGroupAssignmentDto);
+		} catch (JsonMappingException e) {
+			throw new RuntimeException(String.format("Failed to de-serialize policy assignment DTO, JSON mapping error: %s", e.getMessage()));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(String.format("Failed to de-serialize policy assignment DTO, JSON processing error: %s", e.getMessage()));
+		}
+	}
 }

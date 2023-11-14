@@ -76,7 +76,7 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 			String sourceId = catalogItem.getId() + "/" + versionName;
 			JsonElement formId = versionObj.get("formId");
 			if (formId != null) {
-				form = this.restClient.fetchRequestForm("com.vmw.blueprint.version", sourceId, formId.getAsString());
+				form = this.restClient.fetchRequestForm(BLUEPRINT_VERSION, sourceId, formId.getAsString());
 				catalogItem.setFormId(form.getId());
 
 			} else {
@@ -167,7 +167,8 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 		} catch (NullPointerException npe) {
 			logger.error("Provided versions array is null");
 		}
-		return newList.get(newList.size() - 1);
+
+		return newList.isEmpty() ? null : newList.get(newList.size() - 1);
 	}
 
 	// =================================================
@@ -184,27 +185,31 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	@Override
 	protected void importCustomForm(final VraNgCatalogItem catalogItem, final File catalogItemFolder) {
 		String formName = getName(catalogItem) + CUSTOM_RESOURCE_SUFFIX;
-		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX
-				+ CUSTOM_RESOURCE_SUFFIX;
+		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX + CUSTOM_RESOURCE_SUFFIX;
 		File customFormFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formName).toFile();
 		File customFormDataFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formDataName).toFile();
 
-		logger.info("Importing custom form: '{}'' with type '{}'", customFormFile.getAbsolutePath(),
-				catalogItem.getType());
+		logger.info("Importing custom form: '{}'' with type '{}'", customFormFile.getAbsolutePath(), catalogItem.getType());
 		VraNgCustomForm customForm = this.jsonFileToVraCustomForm(customFormFile, customFormDataFile);
-
 		// wait 250 ms between each custom form import in order catalog item to be
 		// retrievable by the VRA REST API
 		if (this.waitForCatalogItemToAppear(catalogItem.getName())) {
 			if (catalogItem.getType().equals(VraNgContentSourceType.BLUEPRINT)) {
 				JsonElement version = this.getCatalogItemLatestVersion(catalogItem);
-				JsonObject versionObj = version.getAsJsonObject();
-				String versionName = versionObj.get("id").getAsString();
+				String versionName = "";
+				// do sanity check on the version JSON element
+				if (version != null) {
+					JsonObject versionObj = version.getAsJsonObject();
+					// sanity check on the version object and its properties
+					if (versionObj != null && versionObj.get("id") != null) {
+						versionName = versionObj.get("id").getAsString();
+					}
+				}
 				String newFormName = catalogItem.getId() + CATALOG_ITEM_BLUEPRINT_VERSION_NAME_SEPARATOR + versionName;
 				String newSourceId = catalogItem.getId() + CATALOG_ITEM_BLUEPRINT_VERSION_SOURCE_ID_SEPARATOR + versionName;
 				// normalize here to accommodate < 8.12 to >=8.12
 				customForm.setSourceId(newSourceId);
-				customForm.setSourceType("com.vmw.blueprint.version");
+				customForm.setSourceType(BLUEPRINT_VERSION);
 				customForm.setName(newFormName);
 				logger.info("Importing custom form for blueprint version '{}'", customForm.getName());
 				this.restClient.importCustomForm(customForm, customForm.getSourceId());

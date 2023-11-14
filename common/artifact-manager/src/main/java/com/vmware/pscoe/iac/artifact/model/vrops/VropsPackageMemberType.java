@@ -15,28 +15,94 @@ package com.vmware.pscoe.iac.artifact.model.vrops;
  * #L%
  */
 
+/**
+ * VropsPackageMemberType defines the asset types that vROPs package supports.
+ */
 public enum VropsPackageMemberType {
-    VIEW("view"), DASHBOARD("dashboard"), REPORT("report"), ALERT_DEFINITION("alert_definition"), SYMPTOM_DEFINITION("symptom_definition"), POLICY("policy"),
-    SUPERMETRIC("supermetric"), RECOMMENDATION("recommendation"), METRICCONFIG("metric_config"), CUSTOM_GROUP("custom_group");
 
-    private final String name;
+	/**
+	 * VIEW.
+	 */
+	VIEW("view"),
+	/**
+	 * DASHBOARD.
+	 */
+	DASHBOARD("dashboard"),
+	/**
+	 * REPORT.
+	 */
+	REPORT("report"),
+	/**
+	 * ALERT_DEFINITION.
+	 */
+	ALERT_DEFINITION("alert_definition"),
 
-    VropsPackageMemberType(String name) {
-        this.name = name;
-    }
+	/**
+	 * SYMPTOM_DEFINITION.
+	 */
+	SYMPTOM_DEFINITION("symptom_definition"),
+	/**
+	 * POLICY.
+	 */
+	POLICY("policy"),
+	/**
+	 * DEFAULT_POLICY.
+	 */
+	DEFAULT_POLICY("default_policy"),
+	/**
+	 * SUPERMETRIC.
+	 */
+	SUPERMETRIC("supermetric"),
+	/**
+	 * RECOMMENDATION.
+	 */
+	RECOMMENDATION("recommendation"),
+	/**
+	 * METRICCONFIG.
+	 */
+	METRICCONFIG("metric_config"),
+	/**
+	 * CUSTOM_GROUP.
+	 */
+	CUSTOM_GROUP("custom_group");
 
-    @Override
-    public String toString() {
-        return name;
-    }
+	/**
+	 * name.
+	 */
+	private final String name;
 
-    public static VropsPackageMemberType fromString(String name) {
-        for (VropsPackageMemberType type : VropsPackageMemberType.values()) {
-            if (type.name.equalsIgnoreCase(name)) {
-                return type;
-            }
-        }
+	/**
+	 * Constructor.
+	 * 
+	 * @param name of the member type.
+	 */
+	VropsPackageMemberType(String name) {
+		this.name = name;
+	}
 
-        return null;
-    }
+	/**
+	 * toString().
+	 * 
+	 * @return string representation.
+	 */
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	/**
+	 * fromString().
+	 * 
+	 * @param name name of the type.
+	 * @return VropsPackageMemberType.
+	 */
+	public static VropsPackageMemberType fromString(String name) {
+		for (VropsPackageMemberType type : VropsPackageMemberType.values()) {
+			if (type.name.equalsIgnoreCase(name)) {
+				return type;
+			}
+		}
+
+		return null;
+	}
 }

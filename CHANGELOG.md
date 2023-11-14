@@ -1,5 +1,17 @@
 ### Fixes
+* [artifact-manager] IAC-788 / Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
+* [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
+
+### Enhancements
+* [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
+* [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
+
+## v2.35.1 - 29 Sep 2023
+
+### Fixes
+* [artifact-manager] IAC-785 / vRA custom form import failure with vRA version 8.11.2 and above, made content-item search in content.yaml case insensitive againist the directory item names.
 * [typescript] 163 / The compiled SAGA workflow crashes when no imports are defined in saga yaml
+* [vCD-NG] 167 / When pushing extensibility plugins, if API version 38 or above is detected, the code will automatically switch to API version 37. Otherwise push doesn't work for vCD 10.5 and above.
 
 ## v2.35.0 - 11 Aug 2023
 
@@ -1097,7 +1109,7 @@
 * Support hint collection for dependencies present only on the local machine
 
 ### Fixes
-* Log4j2 logs an error that configuration is missing when building/testing packages
+* Log4j2 logs an error that configuration is missing when building/testing packages.
 
 ## v1.0.1 - 13 Mar 2018
 

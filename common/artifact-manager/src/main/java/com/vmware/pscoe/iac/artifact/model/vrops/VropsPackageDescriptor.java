@@ -23,133 +23,321 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
 
+/**
+ * VropsPackageDescriptor.
+ */
 public class VropsPackageDescriptor extends PackageDescriptor {
-    private List<String> view;
-    private List<String> dashboard;
-    private List<String> report;
-    private List<String> alertDefinition;
-    private List<String> symptomDefinition;
-    private List<String> policy;
-    private List<String> recommendation;
-    private List<String> supermetric;
-    private List<String> metricConfig;
-    private List<String> customGroup;
+	/**
+	 * view.
+	 */
+	private List<String> view;
+	/**
+	 * dashboard.
+	 */
+	private List<String> dashboard;
+	/**
+	 * report.
+	 */
+	private List<String> report;
+	/**
+	 * alertDefinition.
+	 */
+	private List<String> alertDefinition;
+	/**
+	 * alertDefinition.
+	 */
+	private List<String> symptomDefinition;
+	/**
+	 * symptomDefinition.
+	 */
+	private List<String> recommendation;
+	/**
+	 * supermetric.
+	 */
+	private List<String> supermetric;
+	/**
+	 * metricConfig.
+	 */
+	private List<String> metricConfig;
+	/**
+	 * customGroup.
+	 */
+	private List<String> customGroup;
+	/**
+	 * policy.
+	 */
+	private List<String> policy;
+	/**
+	 * defaultPolicy.
+	 */
+	private String defaultPolicy;
 
-    public List<String> getView() {
-        return this.view;
-    }
+	/**
+	 * getView().
+	 * 
+	 * @return list of views.
+	 */
+	public List<String> getView() {
+		return this.view;
+	}
 
-    public void setView(List<String> view) {
-        this.view = view;
-    }
+	/**
+	 * setView().
+	 * 
+	 * @param view list of views.
+	 */
+	public void setView(List<String> view) {
+		this.view = view;
+	}
 
-    public List<String> getDashboard() {
-        return this.dashboard;
-    }
+	/**
+	 * getDashboard().
+	 * 
+	 * @return list of dashboards.
+	 */
+	public List<String> getDashboard() {
+		return this.dashboard;
+	}
 
-    public void setDashboard(List<String> dashboard) {
-        this.dashboard = dashboard;
-    }
+	/**
+	 * setDashboard().
+	 * 
+	 * @param dashboard list of dashboards.
+	 */
+	public void setDashboard(List<String> dashboard) {
+		this.dashboard = dashboard;
+	}
 
-    public List<String> getReport() {
-        return this.report;
-    }
+	/**
+	 * getReport().
+	 * 
+	 * @return list of reports.
+	 */
+	public List<String> getReport() {
+		return this.report;
+	}
 
-    public void setReport(List<String> report) {
-        this.report = report;
-    }
+	/**
+	 * setReport().
+	 * 
+	 * @param report list of reports.
+	 */
+	public void setReport(List<String> report) {
+		this.report = report;
+	}
 
-    public List<String> getAlertDefinition() {
-        return this.alertDefinition;
-    }
+	/**
+	 * getAlertDefinition().
+	 * 
+	 * @return list of alert definitions.
+	 */
+	public List<String> getAlertDefinition() {
+		return this.alertDefinition;
+	}
 
-    public void setAlertDefinition(List<String> alertDefinition) {
-        this.alertDefinition = alertDefinition;
-    }
+	/**
+	 * setAlertDefinition().
+	 * 
+	 * @param alertDefinition list of alert definitions.
+	 */
+	public void setAlertDefinition(List<String> alertDefinition) {
+		this.alertDefinition = alertDefinition;
+	}
 
-    public List<String> getSymptomDefinition() {
-        return this.symptomDefinition;
-    }
+	/**
+	 * getSymptomDefinition().
+	 * 
+	 * @return list of symptom definitions.
+	 */
+	public List<String> getSymptomDefinition() {
+		return this.symptomDefinition;
+	}
 
-    public void setSymptomDefinition(List<String> symptomDefinition) {
-        this.symptomDefinition = symptomDefinition;
-    }
+	/**
+	 * setSymptomDefinition().
+	 * 
+	 * @param symptomDefinition list of symptom definitions.
+	 */
+	public void setSymptomDefinition(List<String> symptomDefinition) {
+		this.symptomDefinition = symptomDefinition;
+	}
 
-    public List<String> getPolicy() {
-        return this.policy;
-    }
+	/**
+	 * getPolicy().
+	 * 
+	 * @return list of policies.
+	 */
+	public List<String> getPolicy() {
+		return policy;
+	}
 
-    public void setPolicy(List<String> policy) {
-        this.policy = policy;
-    }
-    
-    public List<String> getRecommendation() {
-        return recommendation;
-    }
+	/**
+	 * setPolicy().
+	 * 
+	 * @param policy list of symptom definitions.
+	 */
+	public void setPolicy(List<String> policy) {
+		this.policy = policy;
+	}
 
-    public void setRecommendation(List<String> recommendation) {
-        this.recommendation = recommendation;
-    }
+	/**
+	 * getDefaultPolicy().
+	 * 
+	 * @return string with default policy.
+	 */
+	public String getDefaultPolicy() {
+		return defaultPolicy;
+	}
 
-    public List<String> getSuperMetric() {
-        return this.supermetric;
-    }
+	/**
+	 * setDefaultPolicy().
+	 * 
+	 * @param defaultPolicy default policy to be set.
+	 */
+	public void setDefaultPolicy(String defaultPolicy) {
+		this.defaultPolicy = defaultPolicy;
+	}
 
-    public void setSuperMetric(List<String> supermetric) {
-        this.supermetric = supermetric;
-    }
+	/**
+	 * getSupermetric().
+	 * 
+	 * @return list of super metrics.
+	 */
+	public List<String> getSupermetric() {
+		return supermetric;
+	}
 
-    public List<String> getMetricConfig() {
-        return this.metricConfig;
-    }
+	/**
+	 * setSupermetric().
+	 * 
+	 * @param supermetric list of super metrics.
+	 */
+	public void setSupermetric(List<String> supermetric) {
+		this.supermetric = supermetric;
+	}
 
-    public void setMetricConfig(List<String> metricConfig) {
-        this.metricConfig = metricConfig;
-    }
+	/**
+	 * getRecommendation().
+	 * 
+	 * @return list of recommendations.
+	 */
+	public List<String> getRecommendation() {
+		return recommendation;
+	}
 
-    public List<String> getCustomGroup() {
-        return this.customGroup;
-    }
+	/**
+	 * setRecommendation().
+	 * 
+	 * @param recommendation list of recommendations.
+	 */
+	public void setRecommendation(List<String> recommendation) {
+		this.recommendation = recommendation;
+	}
 
-    public void setCustomGroup(List<String> customGroup) {
-        this.customGroup = customGroup;
-    }
+	/**
+	 * getSuperMetric().
+	 * 
+	 * @return list of super metrics.
+	 */
+	public List<String> getSuperMetric() {
+		return this.supermetric;
+	}
 
-    public List<String> getMembersForType(VropsPackageMemberType type) {
-        switch (type) {
-            case VIEW:
-                return getView();
-            case DASHBOARD:
-                return getDashboard();
-            case REPORT:
-                return getReport();
-            case ALERT_DEFINITION:
-                return getAlertDefinition();
-            case SYMPTOM_DEFINITION:
-                return getSymptomDefinition();
-            case POLICY:
-                return getPolicy();
-            case RECOMMENDATION:
-            	return getRecommendation();
-            case SUPERMETRIC:
-                return getSuperMetric();
-            case METRICCONFIG:
-                return getMetricConfig();
-            case CUSTOM_GROUP:
-                return getCustomGroup();
-            default:
-                throw new RuntimeException("ContentType is not supported!");
-        }
-    }
+	/**
+	 * setSuperMetric().
+	 * 
+	 * @param sm list of super metrics.
+	 */
+	public void setSuperMetric(List<String> sm) {
+		this.supermetric = sm;
+	}
 
-    public static VropsPackageDescriptor getInstance(File filesystemPath) {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
-        try {
-            return mapper.readValue(filesystemPath, VropsPackageDescriptor.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to load vROps Package Descriptor [" + filesystemPath.getAbsolutePath() + "]", e);
-        }
-    }
+	/**
+	 * getMetricConfig().
+	 * 
+	 * @return list of metric configs.
+	 */
+	public List<String> getMetricConfig() {
+		return this.metricConfig;
+	}
+
+	/**
+	 * setMetricConfig().
+	 * 
+	 * @param metricConfig of metric configs.
+	 */
+	public void setMetricConfig(List<String> metricConfig) {
+		this.metricConfig = metricConfig;
+	}
+
+	/**
+	 * getCustomGroup().
+	 * 
+	 * @return list of custom groups.
+	 */
+	public List<String> getCustomGroup() {
+		return this.customGroup;
+	}
+
+	/**
+	 * setCustomGroup().
+	 * 
+	 * @param customGroup of custom groups.
+	 */
+	public void setCustomGroup(List<String> customGroup) {
+		this.customGroup = customGroup;
+	}
+
+	/**
+	 * Returns the members based on the member type.
+	 * 
+	 * @param type the type of the vrops package member.
+	 * @return List of the members for given member type.
+	 */
+	public List<String> getMembersForType(VropsPackageMemberType type) {
+		switch (type) {
+			case VIEW:
+				return getView();
+			case DASHBOARD:
+				return getDashboard();
+			case REPORT:
+				return getReport();
+			case ALERT_DEFINITION:
+				return getAlertDefinition();
+			case SYMPTOM_DEFINITION:
+				return getSymptomDefinition();
+			case POLICY:
+				return getPolicy();
+			case RECOMMENDATION:
+				return getRecommendation();
+			case SUPERMETRIC:
+				return getSuperMetric();
+			case METRICCONFIG:
+				return getMetricConfig();
+			case CUSTOM_GROUP:
+				return getCustomGroup();
+			default:
+				throw new RuntimeException("ContentType is not supported!");
+		}
+	}
+
+	/**
+	 * Returns the vrops package descriptor based on the contents of the
+	 * content.yaml file.
+	 * 
+	 * @param filesystemPath path to the content.yaml file.
+	 * @return instance of the descriptor based on the contents of the content.yaml
+	 *         file.
+	 */
+	@SuppressWarnings("deprecation")
+	public static VropsPackageDescriptor getInstance(File filesystemPath) {
+		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		try {
+			return mapper.readValue(filesystemPath, VropsPackageDescriptor.class);
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to load vROps Package Descriptor [" + filesystemPath.getAbsolutePath() + "]", e);
+		}
+	}
 
 }
