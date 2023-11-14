@@ -6,6 +6,7 @@
 * [vro-types/o11n-plugin-aria] IAC-789 / Adding new Aria Automation Plugin vRO inventory Types
 * [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
 * [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
+* [archetypes] IAC-797 / Improved content.yaml definition for "ts-vra-ng" and "vra-ng"
 
 ### Bugs
 * [o11n-plugin-ssh] session esxiCode returns type void() instead of number
