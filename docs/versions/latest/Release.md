@@ -82,7 +82,7 @@ When using SSH with typescript, the `exitCode` method has the type `void`. But t
 Method `.exitCode` should return type `Number` instead of type `void`
 
 #### Related issue
-https://github.com/vmware/build-tools-for-vmware-aria/issues/180
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
