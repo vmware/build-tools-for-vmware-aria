@@ -35,6 +35,21 @@ default-policy: Policy Name
 
 Then the 'Policy Name' will be set to the default policy in vROPs.
 
+### Adding Aria Automation 8.x vRO Plugin Types
+
+Developers can use on their TS projects the vRAHost type properties and functions
+
+#### Relevant Documentation
+NONE
+
+#### Example
+
+`example.ts`:
+```typescript
+export default function (vraHost:VraHost):VraGenericRestClient {
+    return vraHost.createRestClient();
+}
+```
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
@@ -72,6 +87,17 @@ When pushing vROPs policies to vROPs 8.12.0 and above the deprecated internal po
 
 #### Current Behaviour
 When pushing vROPs policies to vROPs 8.12.0 and above the new public policy API in vROPs is used. The older versions of vROPs is also supported.
+
+### Fix SSH Session exitCode type
+
+#### Previous Behaviour
+When using SSH with typescript, the `exitCode` method has the type `void`. But technically, it returns an integer. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable `exitCode` has type `Number`.
+
+#### Current Behaviour
+Method `.exitCode` should return type `Number` instead of type `void`
+
+#### Related issue
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
