@@ -24,6 +24,7 @@ declare class SQLDatabaseManager {
 	/**
 	 * Returns the database object from the plug-in's inventory with a specified name.
 	 * @param name
+	 * @deprecated removed in vRA 7.6 and above / Aria Automation 8. Use getDatabaseById and getDatabases instead.
 	 */
 	static getDatabase(name: string): SQLDatabase;
 	/**
@@ -214,7 +215,7 @@ declare class JDBCConnection {
 	 * Return a connection on a Database connection
 	 * ((String)url,(String)username,(String)password)
 	 */
-	getConnection(url:string, username:string, password:string): Connection;
+	getConnection(url: string, username: string, password: string): Connection;
 }
 
 /**
@@ -230,12 +231,12 @@ declare class Connection {
 	 * Creates a PreparedStatement object for sending
 	 * parameterized SQL statements to the database
 	 */
-	prepareStatement(param0:string): PreparedStatement;
+	prepareStatement(param0: string): PreparedStatement;
 	/**
 	 * Creates a CallableStatement object for calling
 	 * database stored procedures
 	 */
-	prepareCall(param0:string): PreparedStatement;
+	prepareCall(param0: string): PreparedStatement;
 	/**
 	 * Releases this Connection object's database and JDBC
 	 * resources
@@ -303,7 +304,7 @@ declare class PreparedStatement {
 	 * Sets the designated parameter to db null.
 	 * @param parameterIndex
 	 */
-	setNull(parameterIndex : number): this;
+	setNull(parameterIndex: number): this;
 
 	/**
 	 * Registers the OUT parameter in ordinal position parameterIndex to the JDBC type sqlType.
@@ -322,7 +323,7 @@ declare class PreparedStatement {
 	 * Not present in the API documentation
 	 * @param parameterIndex
 	 */
-	getString(parameterIndex : number): string;
+	getString(parameterIndex: number): string;
 }
 
 /**
