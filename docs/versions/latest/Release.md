@@ -102,6 +102,19 @@ Method `.exitCode` should return type `Number` instead of type `void`
 #### Related issue
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
+### Fixed backup of vRO packages so that the all available version are backed up
+#### Previous Behavior
+
+Back up of vRO packages (using the flag in the environment.properties file: vro_enable_backup=true)
+would only work if the currently imported packages (which are to back up), had the same version as the one in vRO.
+Otherwise, the import would throw an '404 Not found' exception and break the import process,
+due to not finding the same package and version to back up.
+
+#### New Behavior
+Back up of vRO packages now works by:
+- backing up all available versions in vRO of the imported package,
+- logging a message that back up is skipped for the package, if no versions of it are found in vRO, continuing with backup of next packages, and the import process.
+
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 

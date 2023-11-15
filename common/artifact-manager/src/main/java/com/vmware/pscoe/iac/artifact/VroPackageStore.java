@@ -149,7 +149,8 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
     public final List<Package> importAllPackages(final List<Package> vroPackages, final boolean dryrun, final boolean mergePackages, final boolean vroEnableBackup) {
 		this.validateFilesystem(vroPackages);
 		
-		System.out.println("Start executing import all packages...");
+		logger.info("Start executing import all packages...");
+
 		this.validateFilesystem(vroPackages);
 
 		List<Package> packagesToImport = vroPackages;
@@ -163,7 +164,8 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 
 		if (vroEnableBackup && packagesToImport.size() > 0) {
 			//TO change the packages to backup to ALL the packages currently present in vRO -> in this if statements replace packagesToImport with destinationEndpointPackages
-			System.out.println("Number of packages to backup: " + packagesToImport.size());
+			logger.info("Number of packages to backup: ", packagesToImport.size());
+
 			boolean exportConfigAttributeValues = true;
 			boolean exportConfigSecureStringValues = true;
 
@@ -175,28 +177,50 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 
 			packagesToImport.forEach(pkg -> {
 				String originalPkgFilePath = pkg.getFilesystemPath();
-				String backupFilePath = this.createBackupFilePath(pkg, currentDateTimeString, backupFilesDirectory);
 
 				try {
-					pkg.setFilesystemPath(backupFilePath);
-					restClient.exportPackage(pkg, dryrun, exportConfigAttributeValues, exportConfigSecureStringValues);
+					logger.info("Package for back up: ", pkg.getFQName());
+
+					List<Package> samePackagesInDest = new ArrayList<Package>();
+					for (int i = 0; i < destinationEndpointPackages.size(); i++) {
+						String currentVroPackageName = destinationEndpointPackages.get(i).getName();
+
+						if (currentVroPackageName.equals(pkg.getName())) {
+							samePackagesInDest.add(destinationEndpointPackages.get(i));
+						}
+					}
+
+					if (!samePackagesInDest.isEmpty()) {
+						List<Package> allCurrentPkgVersions = this.getPackages();
+						for (Package eachPkgVersion: allCurrentPkgVersions
+							 ) {
+							String backupFilePath = this.createBackupFilePath(eachPkgVersion, currentDateTimeString, backupFilesDirectory);
+							eachPkgVersion.setFilesystemPath(backupFilePath);
+							restClient.exportPackage(eachPkgVersion, dryrun, exportConfigAttributeValues, exportConfigSecureStringValues);
+						}
+
+					} else {
+						logger.info("The package does not exist in vRO and backup is skipped: ", pkg.getName());
+					}
 				} catch (Exception ex) {
 					String exceptionMessage = ex.getMessage();
-					System.out.println("ExceptionMessage: " + exceptionMessage);
-					System.out.println("Package Name: " + pkg.getName());
+					logger.info("ExceptionMessage: ", exceptionMessage);
+					logger.info("Package Name: ", pkg.getName());
 
 					if (!exceptionMessage.contains("404 Not Found")
 						||
 						!exceptionMessage.contains(pkg.getName())) { //Unexpected exception
 						throw ex;
 					} else { //The package to be imported has been deleted from the server
-						System.out.println(ex.getMessage());
+						logger.info("ExceptionMessage: ", ex.getMessage());
 					}
 				}
 
-				System.out.println("Restoring original file path...");
+				logger.info("Restoring original file path... ");
+
 				pkg.setFilesystemPath(originalPkgFilePath);
-				System.out.println("File path after restoration: " + pkg.getFilesystemPath());
+				logger.info("File path after restoration: ", pkg.getFilesystemPath());
+
 			});
 		}
 
@@ -367,7 +391,7 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 		Path fileName = pkgFullPath.getFileName();
         logger.debug("fileName: " + fileName.toString());
 
-		String newFileName = fileName.toString() + "_bak_" + currentDateTimeString;
+		String newFileName = fileName.toString() + ".backup_" + currentDateTimeString;
 		logger.debug("newFileName: " + newFileName);
 
 		String newFullPath = backupDirectoryPath + newFileName;
