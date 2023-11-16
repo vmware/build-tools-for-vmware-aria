@@ -1,3 +1,5 @@
+## v2.36.0 - 16 Nov 2023
+
 ### Fixes
 * [artifact-manager] IAC-788 / Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
 * [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
