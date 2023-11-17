@@ -10,49 +10,21 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
+
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 
-### Deprecating SQLDatabaseManager.getDatabase() function
 
-SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automation 8 and above. The function uses name as parameter to retrieve a database. Use getDatabaseById() or getDatabases() and filter by name instead.
 
 [//]: # (Features -> New Functionality)
 ## Features
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation)
+[//]: # (#### Relevant Documentation:)
 
-### Setting Default Policy for vROPs 8.12.x
 
-Added option for setting default policy for vROPs version 8.12.x by setting it in the default-policy configuration item in the content.yaml file.
-
-#### Relevant Documentation
-If in the content.yaml file for a vROPs project the following section is present:
-
-```yaml
-default-policy: Policy Name
-```
-
-Then the 'Policy Name' will be set to the default policy in vROPs.
-
-### Adding Aria Automation 8.x vRO Plugin Types
-
-Developers can use on their TS projects the vRAHost type properties and functions
-
-#### Relevant Documentation
-NONE
-
-#### Example
-
-`example.ts`:
-```typescript
-export default function (vraHost:VraHost):VraGenericRestClient {
-    return vraHost.createRestClient();
-}
-```
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
@@ -65,12 +37,9 @@ export default function (vraHost:VraHost):VraGenericRestClient {
 [//]: # (#### New Behavior)
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation)
+[//]: # (#### Relevant Documentation:)
 
-### vRA Custom Form not Enabled with vRA Version 8.11.2
 
-#### Previous Behaviour
-When pushing vRA custom forms to vRA version 8.11.2 they are not get enabled by default, thus not visible in the blueprint section.
 
 #### Current Behaviour
 When pushing vRA custom forms to vRA version 8.11.2 they are get enabled by default and visible in the blueprint section.
@@ -118,5 +87,5 @@ Back up of vRO packages now works by:
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
-[//]: # (## Changelog)
+[//]: # (## Changelog:)
 [//]: # (Pull request links)
