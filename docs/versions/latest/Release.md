@@ -42,7 +42,7 @@ Files and folders are created with the system dependent separator.
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)
