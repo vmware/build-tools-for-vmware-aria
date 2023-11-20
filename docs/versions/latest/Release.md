@@ -9,13 +9,9 @@
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
-
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
-
 
 [//]: # (Features -> New Functionality)
 ## Features
@@ -24,10 +20,17 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-
-
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
+
+### Wrong unix file path separators when creating backup path
+
+#### Previous Behaviour
+The backup files/folder path on are always created with "\". This is cuasing wrong file names on unix.
+
+#### Current Behaviour
+Files and folders are created with the system dependent separator.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
@@ -38,8 +41,6 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
-
 
 ## Upgrade procedure:
 [//]: # (Explain in details if something needs to be done)

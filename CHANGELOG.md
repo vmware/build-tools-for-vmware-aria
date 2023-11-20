@@ -1,3 +1,5 @@
+* [artifact-manager] IAC-799 / Wrong unix file path separators when creating backup path
+
 ## v2.36.0 - 16 Nov 2023
 
 ### Fixes
