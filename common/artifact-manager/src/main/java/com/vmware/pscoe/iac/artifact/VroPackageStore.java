@@ -187,7 +187,7 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 							samePackagesInDest.add(destinationEndpointPackages.get(i));
 						}
 					}
-					logger.info("Package versions to backup: " + pkg.getName());
+					logger.info("Package versions to backup: " + samePackagesInDest);
 					if (!samePackagesInDest.isEmpty()) {
 						for (Package eachPkgVersion: samePackagesInDest) {
 							String backupFilePath = this.createBackupFilePath(eachPkgVersion, currentDateTimeString, backupFilesDirectory);
