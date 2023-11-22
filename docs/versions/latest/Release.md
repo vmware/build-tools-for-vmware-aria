@@ -44,7 +44,7 @@ The transpilation issue is documented and recommended fix and prevention configu
 
 
 
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)

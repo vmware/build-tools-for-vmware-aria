@@ -3,11 +3,11 @@ Typescript archetype used to compile and push typescript code to vRO.
 
 ## Overview
 This archetype is used when you want to push code to vRO. It supports configuration elements, resource elements, workflows,
-actions, policy templates, native content, types, etc. 
+actions, policy templates, native content, types, etc.
 
 It allows you to write unit tests and has embedded code coverage
 
-## Navigation:
+## Navigation
 1. [Getting Started](General/Getting%20Started.md)
 2. [Core Concepts](General/Core%20Concepts.md)
 3. Operations

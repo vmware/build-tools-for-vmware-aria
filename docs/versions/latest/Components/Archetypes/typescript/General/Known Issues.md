@@ -1,7 +1,7 @@
 # Known Issues
 A list of known typescript archetype issues
 
-## Table Of Contents:
+## Table Of Contents
 1. [Array functions are not transpiled to vRO code](#array-functions-are-not-transpiled-to-vro-code)
 
 ### Array functions are not transpiled to vRO code
