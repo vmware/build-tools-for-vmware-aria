@@ -6,7 +6,7 @@ A list of known typescript archetype issues
 
 ### Array functions are not transpiled to vRO code
 
-If an `Array` variable is not explicitly defined or recognised as such, the transpiler does not convert TS specific Array prototype functions (`find()`, `some()`, etc.) into vRO compatible code resulting in a runtime error.
+If an `Array` variable is not explicitly defined or recognised as such, the transpiler does not convert TS specific `Array` prototype functions (`find()`, `some()`, etc.) into vRO compatible code resulting in a runtime error.
 
 Consider the following example:
 ```javascript
@@ -71,7 +71,7 @@ System.log(res + "");
 ```
 Recommended configuration to prevent such issues is setting `strictNullChecks` to `true` in your project's local `tsconfig.json`. This allows for type hint warning to be displayed in such case.
 
-:scroll:**NOTE!**The warning messages received are optional and are NOT blocking package build and push operations.
+:scroll:**NOTE!** The warning messages received are optional and are NOT blocking package build and push operations.
 
 Let's revisit the example once again with `strictNullChecks` disabled:
 
