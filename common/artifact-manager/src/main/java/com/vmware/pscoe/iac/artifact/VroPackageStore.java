@@ -148,7 +148,7 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 	@Override
     public final List<Package> importAllPackages(final List<Package> vroPackages, final boolean dryrun, final boolean mergePackages, final boolean vroEnableBackup) {
 		this.validateFilesystem(vroPackages);
-		
+
 		logger.info("Start executing import all packages...");
 
 		this.validateFilesystem(vroPackages);
@@ -161,10 +161,10 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 		if (packagesToImport.isEmpty()) {
 			return new ArrayList<>();
 		}
-
-		if (vroEnableBackup && packagesToImport.size() > 0) {
+		if (vroEnableBackup && !packagesToImport.isEmpty()) {
 			//TO change the packages to backup to ALL the packages currently present in vRO -> in this if statements replace packagesToImport with destinationEndpointPackages
-			logger.info("Number of packages to backup: ", packagesToImport.size());
+			logger.info("Number of packages to backup: " + packagesToImport.size());
+			logger.info("Packages to backup: " + packagesToImport);
 
 			boolean exportConfigAttributeValues = true;
 			boolean exportConfigSecureStringValues = true;
@@ -179,8 +179,6 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 				String originalPkgFilePath = pkg.getFilesystemPath();
 
 				try {
-					logger.info("Package for back up: ", pkg.getFQName());
-
 					List<Package> samePackagesInDest = new ArrayList<Package>();
 					for (int i = 0; i < destinationEndpointPackages.size(); i++) {
 						String currentVroPackageName = destinationEndpointPackages.get(i).getName();
@@ -189,37 +187,35 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 							samePackagesInDest.add(destinationEndpointPackages.get(i));
 						}
 					}
-
+					logger.info("Package versions to backup: " + pkg.getName());
 					if (!samePackagesInDest.isEmpty()) {
-						List<Package> allCurrentPkgVersions = this.getPackages();
-						for (Package eachPkgVersion: allCurrentPkgVersions
-							 ) {
+						for (Package eachPkgVersion: samePackagesInDest) {
 							String backupFilePath = this.createBackupFilePath(eachPkgVersion, currentDateTimeString, backupFilesDirectory);
 							eachPkgVersion.setFilesystemPath(backupFilePath);
 							restClient.exportPackage(eachPkgVersion, dryrun, exportConfigAttributeValues, exportConfigSecureStringValues);
 						}
 
 					} else {
-						logger.info("The package does not exist in vRO and backup is skipped: ", pkg.getName());
+						logger.info("The package does not exist in vRO and backup is skipped: " + pkg.getName());
 					}
 				} catch (Exception ex) {
 					String exceptionMessage = ex.getMessage();
-					logger.info("ExceptionMessage: ", exceptionMessage);
-					logger.info("Package Name: ", pkg.getName());
+					logger.info("ExceptionMessage: " + exceptionMessage);
+					logger.info("Package Name: " + pkg.getName());
 
 					if (!exceptionMessage.contains("404 Not Found")
 						||
 						!exceptionMessage.contains(pkg.getName())) { //Unexpected exception
 						throw ex;
 					} else { //The package to be imported has been deleted from the server
-						logger.info("ExceptionMessage: ", ex.getMessage());
+						logger.info("ExceptionMessage: " + ex.getMessage());
 					}
 				}
 
 				logger.info("Restoring original file path... ");
 
 				pkg.setFilesystemPath(originalPkgFilePath);
-				logger.info("File path after restoration: ", pkg.getFilesystemPath());
+				logger.info("File path after restoration: " + pkg.getFilesystemPath());
 
 			});
 		}
