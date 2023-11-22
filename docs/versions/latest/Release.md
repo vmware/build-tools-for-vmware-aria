@@ -30,7 +30,7 @@
 ## Improvements
 ### Transpiler fails to convert Array functions to vRO compatible code
 
-The transpilation issue is documented and recommended fix and prevention configuration is described.
+The transpilation issue is documented and a recommended fix together with a configuration that can prevent it is described.
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)

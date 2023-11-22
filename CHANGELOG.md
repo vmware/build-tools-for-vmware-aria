@@ -1,5 +1,5 @@
 ### Enhancements
-[docs] IAC-800 - Document TS Array functions behaviour and recommended typisation approach
+[docs] IAC-800 - Document TS Array functions behaviour and recommended typization approach.
 
 ## v2.36.0 - 16 Nov 2023
 
