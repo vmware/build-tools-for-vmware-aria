@@ -28,6 +28,9 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
+### Transpiler fails to convert Array functions to vRO compatible code
+
+The transpilation issue is documented and recommended fix and prevention configuration is described.
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
