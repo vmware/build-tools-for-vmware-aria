@@ -1,0 +1,7 @@
+nav:
+    - index.md
+    - getting-started
+    - usage
+    - dev-setup
+    - enterprise-setup
+    - CHANGELOG.md
