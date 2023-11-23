@@ -64,6 +64,50 @@ policy:
 
 To capture the state of your vRA environment simply fill in the names of the content objects and follow the [Pull Content](#pull-content) section.
 
+
+| Method            | Description                          |
+| -----------       | ------------------------------------ |
+| blueprints        | Empty array [] - nothing is exported |
+|                   | List of items - the given items are exported.|
+| `PUT`             | :material-check-all: Update resource |
+| `DELETE`          | :material-close:     Delete resource |
+
+
+### Export Rules for Content Types
+Use the following formats for 
+Empty array [] - nothing is exported
+List of items - the given items are exported.
+Null (nothing given) - everything is being exported
+* blueprints
+* catalog-item
+* content-source
+* custom-resource
+* catalog-entitlement
+* property-group
+* subscription
+
+### Exporting regional content
+To export regional content, cloud account(s) with given tag(s) should be given.
+Empty array [] - nothing is exported 
+List of items - the given items are exported in all regions linked to cloud accounts with given tag 
+Null (nothing given) - everything is being exported in all regions linked to cloud accounts with given tag 
+* flavor-mapping
+* image-mapping
+* storage-profile
+
+### Export all content in all regions linked to cloud accounts with given tag 
+To export all content in all regions linked to cloud accounts, the tag for export should be defined.
+If not defined, nothing will be exported.
+
+
+**Note**: *Unreleased blueprints that have custom form will be automatically released with version 1.*
+
+To capture the state of your vRA NG environment simply fill in the names of the content objects you would like to capture and look at the Pull section of this document.
+
+To import / export custom forms and/or icons you have to specify the associated catalog-item name in ```catalog-item``` tag. The naming convention for this is SOURCE_NAME__CATALOG_ITEM_NAME
+The integration end point data for each workflow that is associated with the content source will be updated as well with the one fetched from the VRA server. 
+
+
 <!-- Build Project Section -->
 {% include-markdown "../../assets/docs/mvn/build-project.md" %}
 The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vra-ng** file generated in the target folder of the project.
@@ -163,66 +207,17 @@ There are few ways to pass the vRA connection parameters to maven pull/push comm
     ```
 
 
-### Export Rules for content types
-Empty array [] - nothing is exported
-List of items - the given items are exported.
-Null (nothing given) - everything is being exported
-* blueprints
-* catalog-item
-* content-source
-* custom-resource
-* catalog-entitlement
-* property-group
-* subscription
+<!-- Pull Content Section -->
+{% include-markdown "../../assets/docs/mvn/pull-content.md" %}
 
-### Exporting regional content
-To export regional content, cloud account(s) with given tag(s) should be given.
-Empty array [] - nothing is exported 
-List of items - the given items are exported in all regions linked to cloud accounts with given tag 
-Null (nothing given) - everything is being exported in all regions linked to cloud accounts with given tag 
-* flavor-mapping
-* image-mapping
-* storage-profile
+!!! note
+    Pull command ```vra:pull``` will fail if the content.yaml is empty or it cannot find some of the described content on the target vRA server.
 
-### Export all content in all regions linked to cloud accounts with given tag 
-To export all content in all regions linked to cloud accounts, the tag for export should be defined.
-If not defined, nothing will be exported.
-
-
-**Note**: *Unreleased blueprints that have custom form will be automatically released with version 1.*
-
-To capture the state of your vRA NG environment simply fill in the names of the content objects you would like to capture and look at the Pull section of this document.
-
-To import / export custom forms and/or icons you have to specify the associated catalog-item name in ```catalog-item``` tag. The naming convention for this is SOURCE_NAME__CATALOG_ITEM_NAME
-The integration end point data for each workflow that is associated with the content source will be updated as well with the one fetched from the VRA server. 
-
-## Pull
-When working on a vRA NG project, you mainly make changes on a live server using the vRA NG Console and then you need to capture those changes in the maven project on your filesystem.
-
-To support this use case, the toolchain comes with a custom goal "vra-ng:pull". The following command will "pull" the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
-
-```bash
-vra-ng:pull -Dvrang.host=api.mgmt.cloud.vmware.com -Dvrang.csp.host=console.cloud.vmware.com -Dvra.port=443 -Dvrang.project.id={project+id} -Dvrang.refresh.token={refresh+token}
-```
-A better approach is to have the different vRO/vRA development environments specified as profiles in the local
-settings.xml file by adding the following snippet under "profiles":
-
-
-
-
-Then, you can sync content back to your local sources by simply activating the profile:
-
-```bash
-mvn vra-ng:pull -Pcorp-env
-```
-
-> Note that ```vra-ng:pull``` will fail if the content.yaml is empty, or it cannot find some described content on the target vRA server.
-
-
-**Note**: *As seen by the examples, you can specify project name or project id in the settings.xml or as command line
- parameters. At least one of those parameters must be present in the configuration. If you define both, project id takes
- precedence over project name. If you define only project name, the solution will search for a project with that name
- and use it for the content operations.*
+!!! note
+    *As seen by the examples, you can specify project name or project id in the settings.xml or as command line
+    parameters. At least one of those parameters must be present in the configuration. If you define both, project id takes
+    precedence over project name. If you define only project name, the solution will search for a project with that name
+    and use it for the content operations.*
 
 **Note**: *When pushing property groups, the project ID specified in the configuration will be used to update the payload sent while creating/updating them in vRA.*
 
