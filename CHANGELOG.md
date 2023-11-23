@@ -1,3 +1,6 @@
+### Fixes
+* [packages/ecmascript] IAC-803 / 192 - Updated `Array.from()` to create shallow clone and to properly handle string, Map and Set input.
+
 ## v2.36.0 - 16 Nov 2023
 
 ### Fixes
