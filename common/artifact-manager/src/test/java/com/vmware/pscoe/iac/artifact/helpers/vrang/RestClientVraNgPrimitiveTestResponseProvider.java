@@ -18,7 +18,7 @@ package com.vmware.pscoe.iac.artifact.helpers.vrang;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class RestClientVraNgPrimitiveTestResponseProvider {
+public final class RestClientVraNgPrimitiveTestResponseProvider {
 
 	/**
 	 * Hide default constructor.
