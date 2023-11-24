@@ -1,5 +1,40 @@
 package com.vmware.pscoe.iac.artifact.rest.vrang;
 
+import static com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil.getOrganization;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.internal.util.StringUtil;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
 import com.google.gson.Gson;
 
 /*
@@ -28,51 +63,15 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.PropertyGroupMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestDouble;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestResponseProvider;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
-import static com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil.getOrganization;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.anyString;
-import org.mockito.MockedStatic;
 
 class RestClientVraNgPrimitiveTest {
 	/**
@@ -154,6 +153,52 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, projects.size());
 	}
+	
+	@Test
+	void testGetCatalogItemsByProjectEmptyFirstPage() {
+		// GIVEN
+		final int totalElements = 0;
+		final int page = 0;
+		final int pageSize = 500;
+		final String projectId = "project 3";
+
+		// WHEN
+		when(
+				restTemplate.exchange(
+						any(URI.class),
+						any(HttpMethod.class),
+						any(HttpEntity.class),
+						any(Class.class)))
+				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
+						pageSize, page));
+		List<VraNgCatalogItem> catalogItems = restClient.testGetCatalogItemsForProjectPrimitive(projectId);
+
+		// THEN
+		assertEquals(totalElements, catalogItems.size());
+	}	
+
+	@Test
+	void testGetCatalogItemPerBlueprintNameSingleElementPage() {
+		// GIVEN
+		final int totalElements = 1;
+		final int page = 0;
+		final int pageSize = 1;
+		final String catalogItemName = "catalog item 0";
+
+		// WHEN
+		when(
+				restTemplate.exchange(
+						any(URI.class),
+						any(HttpMethod.class),
+						any(HttpEntity.class),
+						any(Class.class)))
+				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
+						pageSize, page));
+		VraNgCatalogItem catalogItem = restClient.testGetCatalogItemByBlueprintNamePrimitive(catalogItemName);
+
+		// THEN
+		assertEquals(catalogItem.getName(), catalogItemName);
+	}
 
 	@Test
 	void testGetProjectsPrimitiveNonEmptyFirstPage() {
@@ -176,6 +221,52 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, projects.size());
 	}
+	
+	@Test
+	void testGetCatalogItemsForProjectFirstNonEmptyFirstPage() {
+		// GIVEN
+		final int totalElements = 51;
+		final int pageSize = 500;
+		int page = 0;
+		final String projectId = "project 3";
+
+		// WHEN
+		when(
+				restTemplate.exchange(
+						any(URI.class),
+						any(HttpMethod.class),
+						any(HttpEntity.class),
+						any(Class.class)))
+				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
+						pageSize, page));
+		List<VraNgCatalogItem> catalogItems = restClient.testGetCatalogItemsForProjectPrimitive(projectId);
+
+		// THEN
+		assertEquals(totalElements, catalogItems.size());
+	}
+	
+	@Test
+	void testGetCatalogItemPerBlueprintNameNonEmptyFirstPage() {
+		// GIVEN
+		final int totalElements = 51;
+		final int page = 0;
+		final int pageSize = 500;
+		final String catalogItemName = "catalog item 0";
+
+		// WHEN
+		when(
+				restTemplate.exchange(
+						any(URI.class),
+						any(HttpMethod.class),
+						any(HttpEntity.class),
+						any(Class.class)))
+				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
+						pageSize, page));
+		VraNgCatalogItem catalogItem = restClient.testGetCatalogItemByBlueprintNamePrimitive(catalogItemName);
+
+		// THEN
+		assertEquals(catalogItem.getName(), catalogItemName);
+	}	
 
 	@Test
 	void testGetProjectsPrimitiveFirstPageEdgeCase() {
@@ -198,6 +289,52 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, projects.size());
 	}
+	
+	@Test
+	void testCatalogItemsPerProjectFirstPageEdgeCase() {
+		// GIVEN
+		final int totalElements = 100;
+		final int pageSize = 1000;
+		int page = 0;
+		final String projectId = "project 3";
+
+		// WHEN
+		when(
+				restTemplate.exchange(
+						any(URI.class),
+						any(HttpMethod.class),
+						any(HttpEntity.class),
+						any(Class.class)))
+				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
+						pageSize, page));
+		List<VraNgCatalogItem> catalogItems = restClient.testGetCatalogItemsForProjectPrimitive(projectId);
+
+		// THEN
+		assertEquals(totalElements, catalogItems.size());
+	}
+	
+	@Test
+	void testCatalogItemsPerBlueprintNameFirstPageEdgeCase() {
+		// GIVEN
+		final int totalElements = 100;
+		final int pageSize = 1000;
+		int page = 0;
+		final String catalogItemName = "catalog item 0";
+
+		// WHEN
+		when(
+				restTemplate.exchange(
+						any(URI.class),
+						any(HttpMethod.class),
+						any(HttpEntity.class),
+						any(Class.class)))
+				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
+						pageSize, page));
+		VraNgCatalogItem catalogItem = restClient.testGetCatalogItemByBlueprintNamePrimitive(catalogItemName);
+
+		// THEN
+		assertEquals(catalogItem.getName(), catalogItemName);
+	}	
 
 	@Test
 	void testGetProjectsPrimitiveSecondPageWithSingleElement() throws URISyntaxException {
@@ -758,4 +895,5 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(expected, actual);
 	}
+	
 }

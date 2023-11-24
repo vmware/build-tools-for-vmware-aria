@@ -40,8 +40,15 @@
 [//]: # (#### Relevant Documentation:)
 
 
+### Fix vRA Catalog Items Paging Issue when Fetching Catalog Items from Server
 
-## Upgrade procedure:
+#### Previous Behavior
+* When fetching catalog items from vRA server and the page size is below the available items, in the result list some of the catalog items appear twice.
+
+#### New Behavior
+* When fetching catalog items from vRA server and the page size is below the available items, the result contains unique items only.
+
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)

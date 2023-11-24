@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -907,6 +908,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		return this.getPagedContent(SERVICE_CATALOG_ADMIN_ITEMS, params)
 				.stream()
+				.filter(jsonOb -> jsonOb != null)
 				.map(jsonOb -> gson.fromJson(jsonOb.toString(), VraNgCatalogItem.class))
 				.collect(Collectors.toList());
 	}
@@ -1137,51 +1139,37 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Content Source.
 	 */
 	protected VraNgCatalogItem getCatalogItemByBlueprintNamePrimitive(final String blueprintName) {
+		Map<String, String> params = new HashMap<>();
+		params.put("search", blueprintName.trim());
 
-		URI url = getURI(getURIBuilder()
-				.setPath(SERVICE_CATALOG_ADMIN_ITEMS)
-				.addParameter("search", blueprintName.trim())
-				.addParameter("page", "0"));
+		List<JsonObject> results = this.getPagedContent(SERVICE_CATALOG_ADMIN_ITEMS, params);
+		// filter the results matching the blueprintName
+		JsonObject result = results.stream().filter(item -> {
+			JsonObject ob = item.getAsJsonObject();
+			if (ob == null) {
+				return Boolean.FALSE;
+			}
+			String name = ob.get("name").getAsString().trim();
+			return name.equalsIgnoreCase(blueprintName.trim());
+		}).findFirst().orElse(null);
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
-		if (!root.isJsonObject()) {
+		// return null if the blueprint is not found
+		if (result == null) {
 			return null;
 		}
 
-		Integer totalPages = root.getAsJsonObject().get("totalPages").getAsInt();
-		for (int page = 0; page < totalPages; page++) {
-			JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
-			if (content == null) {
-				continue;
-			}
-
-			for (int i = 0; i < content.size(); i++) {
-				JsonObject ob = content.get(i).getAsJsonObject();
-				if (ob == null) {
-					continue;
-				}
-
-				String name = ob.get("name").getAsString().trim();
-				if (name.equals(blueprintName.trim())) {
-					String id = ob.get("id").getAsString();
-					String sourceId = ob.get("sourceId").getAsString();
-					String sourceName = ob.get("sourceName").getAsString();
-					VraNgCatalogItemType type = new Gson().fromJson(ob.get("type").getAsJsonObject(),
-							VraNgCatalogItemType.class);
-
-					return new VraNgCatalogItem(id, sourceId, name, sourceName, type);
-				}
-			}
-
-			url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ADMIN_ITEMS).addParameter("search", blueprintName)
-					.addParameter("page", String.valueOf(page)));
-			response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
-			root = JsonParser.parseString(response.getBody());
+		// construct the retrieved blueprint object
+		String id = result.get("id").getAsString();
+		String sourceId = result.get("sourceId").getAsString();
+		String sourceName = result.get("sourceName").getAsString();
+		JsonObject typeObj = result.get("type").getAsJsonObject();
+		// additional sanity check
+		if (typeObj == null) {
+			throw new RuntimeException(String.format("Unable to extract catalog item type for blueprint '%s'", blueprintName));
 		}
+		VraNgCatalogItemType type = new Gson().fromJson(typeObj, VraNgCatalogItemType.class);
 
-		return null;
+		return new VraNgCatalogItem(id, sourceId, result.get("name").getAsString().trim(), sourceName, type);
 	}
 
 	/**
@@ -1195,34 +1183,35 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private List<JsonObject> getPagedContent(final String path, final Map<String, String> paramsMap) {
 		URIBuilder uriBuilder = getURIBuilder()
 				.setPath(String.format(path))
-				.setParameter("page", "0");
+				.setParameter("page", "0")
+				.setParameter("size", String.valueOf(PAGE_SIZE));
 
 		// add arbitrary parameters
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
 			uriBuilder.setParameter(entry.getKey(), entry.getValue());
 		}
-
-		ResponseEntity<String> response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET,
-				getDefaultHttpEntity(),
-				String.class);
-
+		URI uri = getURI(uriBuilder);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		if (response == null) {
+			return Collections.emptyList();
+		}
 		JsonElement root = JsonParser.parseString(response.getBody());
-
+		if (root == null) {
+			return Collections.emptyList();
+		}
 		List<JsonObject> allResults = new ArrayList<>();
-
 		Integer totalPages = root.getAsJsonObject().get("totalPages").getAsInt();
-
 		for (int page = 0; page < totalPages; page++) {
 			JsonArray content = root.getAsJsonObject().get("content").getAsJsonArray();
-
 			for (int i = 0; i < content.size(); i++) {
 				allResults.add(content.get(i).getAsJsonObject());
 			}
-
+			// no further REST call is needed if all results are on one page
+			if (totalPages == 1) {
+				return allResults;
+			}
 			uriBuilder.setParameter("page", String.valueOf(page + 1));
-			response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET, getDefaultHttpEntity(),
-					String.class);
-
+			response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET, getDefaultHttpEntity(), String.class);
 			root = JsonParser.parseString(response.getBody());
 		}
 
