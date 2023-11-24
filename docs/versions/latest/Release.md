@@ -10,11 +10,9 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
 
 
 [//]: # (Features -> New Functionality)
@@ -23,7 +21,6 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
@@ -44,14 +41,14 @@
 #### Previous Behavior
 * Calling `Array.from()` doesn't create a shallow clone.
 * Calling `Array.from()` with string input returns the same input instead of character array.
-* Calling `Array.from()` with Map<K, V> and mapping function input throws `TypeError: Cannot find function map in object...`.
-* Calling `Array.from()` with Set<T> and mapping function input throws `TypeError: Cannot find function map in object...`.
+* Calling `Array.from()` with `Map<K, V>` and mapping function input throws `TypeError: Cannot find function map in object...`.
+* Calling `Array.from()` with `Set<T>` and mapping function input throws `TypeError: Cannot find function map in object...`.
 
 #### New Behavior
 * Calling `Array.from()` creates a shallow clone.
 * Calling `Array.from()` with string input returns an array of characters.
-* Calling `Array.from()` with Map<K, V> and mapping function returns an array of key-value pairs.
-* Calling `Array.from()` with Set<T> and mapping function returns an array of unique values.
+* Calling `Array.from()` with `Map<K, V>` and mapping function returns an array of key-value pairs.
+* Calling `Array.from()` with `Set<T>` and mapping function returns an array of unique values.
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
