@@ -21,6 +21,12 @@ import org.springframework.http.ResponseEntity;
 public class RestClientVraNgPrimitiveTestResponseProvider {
 
 	/**
+	 * Hide default constructor.
+	 */	
+	private RestClientVraNgPrimitiveTestResponseProvider() {
+	}
+	
+	/**
 	 * Generates a page of vRA projects.
 	 * Refer to "/iaas/api/projects".
 	 * @param totalElements sum of all elements.
@@ -36,8 +42,7 @@ public class RestClientVraNgPrimitiveTestResponseProvider {
 		int skip = page * pageSize;
 		int max = Math.min(skip + pageSize, totalElements);
 		for (int i = skip; i < max; i++) {
-			builder.append(
-				String.format("{\"name\": \"project\", \"id\": \"%d\"}%s", i, (i == max - 1 ? "" : ",")));
+			builder.append(String.format("{\"name\": \"project\", \"id\": \"%d\"}%s", i, (i == max - 1 ? "" : ",")));
 		}
 		int numberOfElements = Math.min((totalElements - (page * pageSize)), pageSize);
 
@@ -68,22 +73,24 @@ public class RestClientVraNgPrimitiveTestResponseProvider {
 		String catalogItemType = "{ \"id\": \"com.vmw.vro.workflow\", \"name\": \"Automation Orchestrator Workflow\", \"link\":\"/catalog/api/types/com.vmw.vro.workflow\"}";
 		int index = 0;
 		for (int i = skip; i < max; i++) {
-			builder.append(
-				String.format("{\"id\": %d, \"name\": \"catalog item %s\", \"sourceName\": \"%s\" , \"sourceId\": \"1\", \"type\": %s }%s", i, index, sourceName, catalogItemType, (i == max - 1 ? "" : ",")));
-			index ++;
+			builder.append(String.format("{\"id\": %d, \"name\": \"catalog item %s\", \"sourceName\": \"%s\" , \"sourceId\": \"1\", \"type\": %s }%s", i, index,
+					sourceName, catalogItemType, (i == max - 1 ? "" : ",")));
+			index++;
 		}
 		int numberOfElements = Math.min((totalElements - (page * pageSize)), pageSize);
-		int totalPages = (int) (pageSize > totalElements ? 1 : Math.floor(totalElements/pageSize));
-		
+		int totalPages = (int) (pageSize > totalElements ? 1 : Math.floor(totalElements / pageSize));
+
 		builder.append("],");
 		builder.append(String.format("\"totalPages\": %d,", totalPages));
 		builder.append(String.format("\"totalElements\": %d,", totalElements));
 		builder.append(String.format("\"size\": %d,", pageSize));
 		builder.append(String.format("\"number\": %d,", page));
-		builder.append(String.format("\"numberOfElements\": %d,", numberOfElements));		
+		builder.append(String.format("\"numberOfElements\": %d,", numberOfElements));
 		builder.append(String.format("\"empty\": \"%s\"", Boolean.FALSE.toString()));
 		builder.append("}");
 
 		return new ResponseEntity<>(builder.toString(), HttpStatus.OK);
-	}	
+	}
+
+
 }
