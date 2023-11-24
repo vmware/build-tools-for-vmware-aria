@@ -1,3 +1,5 @@
+* [artifact-manager] IAC-778 / Backup only works with current package version, otherwise throws exception 404 not found
+
 ## v2.36.0 - 16 Nov 2023
 
 ### Fixes
