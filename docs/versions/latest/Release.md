@@ -22,6 +22,15 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
+
+### Wrong unix file path separators when creating backup path
+
+#### Previous Behaviour
+The backup files/folder path on are always created with "\". This is cuasing wrong file names on unix.
+
+#### Current Behaviour
+Files and folders are created with the system dependent separator.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)

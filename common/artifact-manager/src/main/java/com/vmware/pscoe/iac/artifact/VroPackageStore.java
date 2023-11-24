@@ -363,7 +363,8 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 		Path parent = pkgFullPath.getParent();
 		logger.debug("parent: " + parent.toString());
 
-		String newParentPath = parent.toString() + "\\backup_" + currentDateTimeString + "\\";
+		String platformSeparator = File.separator;
+		String newParentPath = parent.toString() + platformSeparator + "backup_" + currentDateTimeString + platformSeparator;
 		logger.debug("newParentPath: " + newParentPath);
 
 		File newParentPackage = new File(newParentPath);
