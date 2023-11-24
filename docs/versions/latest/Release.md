@@ -66,8 +66,8 @@ due to not finding the same package and version to back up.
 
 #### New Behavior
 Back up of vRO packages now works by:
-- backing up all available versions in vRO of the imported package,
-- logging a message that back up is skipped for the package, if no versions of it are found in vRO, continuing with backup of next packages, and the import process.
+* backing up all available versions in vRO of the imported package,
+* logging a message that back up is skipped for the package, if no versions of it are found in vRO, continuing with backup of next packages, and the import process.
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
