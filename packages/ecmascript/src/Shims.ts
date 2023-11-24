@@ -109,11 +109,28 @@ export default class Shims {
 		return array;
 	}
 
-	static arrayFrom(arrayLike: ArrayLike<any>, mapfn?: (v: any, k: number) => any): any[] {
-		let array = <any[]>arrayLike;
+	static arrayFrom(arrayLike: ArrayLike<any> | Iterable<any>, mapfn?: (v: any, k: number) => any): any[] {
+		let array: Array<any>;
+		let arrayLikeClone = JSON.parse(JSON.stringify(arrayLike));
+
+		switch (arrayLike.constructor.name) {
+			case "Array": break;
+			case "String":
+				arrayLikeClone = (arrayLikeClone as string).split("");
+				break;
+			case "Set":
+				arrayLikeClone = (arrayLike as Set<any>).values();
+				break;
+			case "Map":
+				arrayLikeClone = (arrayLike as Map<any, any>).entries();
+				break;
+			default: return arrayLikeClone;
+		}
 
 		if (mapfn) {
-			array = array.map(mapfn);
+			array = arrayLikeClone.map(mapfn);
+		} else {
+			array = arrayLikeClone;
 		}
 
 		return array;
