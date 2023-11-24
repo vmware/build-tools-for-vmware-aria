@@ -73,7 +73,7 @@ public class RestClientVraNgPrimitiveTestResponseProvider {
 			index ++;
 		}
 		int numberOfElements = Math.min((totalElements - (page * pageSize)), pageSize);
-		int totalPages = pageSize > totalElements ? 1 : Math.ceilDiv(totalElements, pageSize);
+		int totalPages = (int) (pageSize > totalElements ? 1 : Math.floor(totalElements/pageSize));
 		
 		builder.append("],");
 		builder.append(String.format("\"totalPages\": %d,", totalPages));

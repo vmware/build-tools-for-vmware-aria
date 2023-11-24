@@ -1108,21 +1108,22 @@
 ## v1.1.0 - 03 May 2018
 
 ### Enhancements
-* Support pushing content to vRO/vRA without dependencies
+* Support pushing content to vRO/vRA without dependencies.
 * Support for bulding packages (patches) with only a subset of the project's actions.
 
 ## v1.0.2 - 18 Apr 2018
 
 ### Enhancements
-* Support hint collection for dependencies present only on the local machine
+* Support hint collection for dependencies present only on the local machine.
 
 ### Fixes
 * Log4j2 logs an error that configuration is missing when building/testing packages.
+* Fix for duplicate vra catalog item appearing in the result on large environments.
 
 ## v1.0.1 - 13 Mar 2018
 
 ### Fixes
-* Cloud Client could not import bundles
+* Cloud Client could not import bundles.
 
 ## v1.0.0 - 02 Mar 2018
-* Initial version
+* Initial version.
