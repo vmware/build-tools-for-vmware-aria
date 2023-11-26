@@ -31,16 +31,9 @@ The backup files/folder path on are always created with "\". This is cuasing wro
 #### Current Behaviour
 Files and folders are created with the system dependent separator.
 
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+### Transpiler fails to convert Array functions to vRO compatible code
+
+The transpilation issue is documented and a recommended fix together with a configuration that can prevent it is described.
 
 ### Updated `Array.from()` to create shallow clone and to properly handle `string`, `Map<K, V>` and `Set<T>` input according to official documentation
 
@@ -68,6 +61,17 @@ due to not finding the same package and version to back up.
 Back up of vRO packages now works by:
 * backing up all available versions in vRO of the imported package,
 * logging a message that back up is skipped for the package, if no versions of it are found in vRO, continuing with backup of next packages, and the import process.
+
+[//]: # (### *Improvement Name* )
+[//]: # (Talk ONLY regarding the improvement)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### Previous Behavior)
+[//]: # (Explain how it used to behave, regarding to the change)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### New Behavior)
+[//]: # (Explain how it behaves now, regarding to the change)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
