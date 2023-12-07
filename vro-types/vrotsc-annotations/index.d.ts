@@ -59,8 +59,27 @@ interface VroPolicyTemplate {
 	name?: string;
 	description?: string;
 	path?: string;
-	type?: VroPolicyTemplateType;
 	version?: string;
+	variables?: {
+		[name: string]: string | PolicyAttribute;
+	};
+	elements?: {
+		[name: string]: PolicyElement
+	}
+}
+
+type PolicyElement = {
+	type: VroPolicyTemplateType;
+	events?: {
+		OnMessage?: string | PolicyWorkflowInfo;
+		OnInit?: string | PolicyWorkflowInfo;
+		OnExit?: string | PolicyWorkflowInfo;
+		OnExecute?: string | PolicyWorkflowInfo;
+		OnTrap?: string | PolicyWorkflowInfo;
+		OnTrapAll?: string | PolicyWorkflowInfo;
+		OnConnect?: string | PolicyWorkflowInfo;
+		OnDisconnect?: string | PolicyWorkflowInfo;
+	};
 	schedule?: {
 		periode: VroPolicyTemplateScehdulePeriod;
 		when: string;
@@ -68,7 +87,25 @@ interface VroPolicyTemplate {
 	};
 }
 
-type VroPolicyTemplateType = "AMQP:Subscription" | "MQTT:Subscription" | "SNMP:SnmpDevice" | "SNMP:TrapHost";
+type PolicyWorkflowInfo = {
+	workflowId: string;
+	bindings?: {
+		[name: string]: {
+			type: string;
+			variable: string;
+		}
+	}
+}
+
+type PolicyAttribute = {
+	type: string,
+	value?: AttributeValue;
+	description?: string;
+	configId?: string;
+	configKey?: string;
+}
+
+type VroPolicyTemplateType = "AMQP:Subscription" | "MQTT:Subscription" | "SNMP:SnmpDevice" | "SNMP:TrapHost" | "Periodic Event";
 
 type VroPolicyTemplateScehdulePeriod = "every-minutes" | "every-hours" | "every-days" | "every-weeks" | "every-months";
 
@@ -85,7 +122,7 @@ type CompositeType = {
 	[name: string]: SupportedValues | SupportedValues[];
 }
 
-type AttributeValue	= CompositeType | SupportedValues | SupportedValues[];
+type AttributeValue = CompositeType | SupportedValues | SupportedValues[];
 
 type Attribute = {
 	type: string,
