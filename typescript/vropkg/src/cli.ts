@@ -118,7 +118,7 @@ async function run() {
 
 	// Parse data project data
 	let pkgPromise = parse(input, t.ProjectType[input.in]);
-	let pkg = await pkgPromise;
+	let pkg: t.VroPackageMetadata = await pkgPromise;
 
 	// Certificate is only used to sign the package when serializing
 	let certificateRequired = t.ProjectType[input.out] === t.ProjectType.flat;
@@ -196,7 +196,7 @@ function cleanup(input: CliInputs): void {
 
 async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.VroPackageMetadata> {
 	let pkgPromise: any = null;
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing project type '${projectType.toString()}'`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing project type '${input.in}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
 			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description);
@@ -214,13 +214,13 @@ async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.Vr
 			throw new Error("Unsupported input: " + input.in);
 		}
 	}
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing of project type '${projectType.toString()}' completed`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing of project type '${input.in}' completed`);
 
 	return pkgPromise;
 }
 
-async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: any): Promise<void> {
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing project type '${projectType.toString()}'`);
+async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.VroPackageMetadata): Promise<void> {
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing project type '${input.out}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
 			serializeTree(pkg, input.destPath);
@@ -238,7 +238,7 @@ async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: any)
 			throw new Error("Unsupported output: " + input.out);
 		}
 	}
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing of project type '${projectType.toString()}' completed`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing of project type '${input.out}' completed`);
 }
 
 run();

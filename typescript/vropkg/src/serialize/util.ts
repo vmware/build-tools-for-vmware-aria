@@ -19,7 +19,7 @@ import * as t from "../types";
 import * as winston from 'winston';
 import * as xmlbuilder from "xmlbuilder";
 import * as CRC from "crc-32";
-import { WINSTON_CONFIGURATION } from "../constants";
+import { JSON_MINOR_IDENT, WINSTON_CONFIGURATION } from "../constants";
 
 export const saveOptions = {
     pretty: false
@@ -118,5 +118,6 @@ export const complexActionComment = (element: t.VroNativeElement) => {
         crc: null
     };
     obj.crc = (CRC.str(JSON.stringify(obj)) & 0x7FFFFFFF).toString(16);
-    return JSON.stringify(obj, null, 2);
+
+    return JSON.stringify(obj, null, JSON_MINOR_IDENT);
 }

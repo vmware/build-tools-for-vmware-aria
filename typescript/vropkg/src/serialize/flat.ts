@@ -26,7 +26,7 @@ import { getPackageName, serialize, zipbundle, getActionXml, saveOptions, xmlOpt
 import * as archiver from "archiver";
 import { decode } from "../encoding";
 import * as xmlDoc from "xmldoc";
-import { DEFAULT_ENCODING, WINSTON_CONFIGURATION } from "../constants";
+import { DEFAULT_ENCODING, FORM_ITEM_TEMPLATE, VSO_RESOURCE_INF, WINSTON_CONFIGURATION } from "../constants";
 
 const
     DUNES_META_INF = "dunes-meta-inf",
@@ -95,9 +95,9 @@ const serializeFlatElementData = (target: string) => {
     }
     const append = (name: string) => (data: any) => {
         if (data) {
-            bundle.append(Buffer.from(data, 'utf8'), { name: `${t.VSO_RESOURCE_INF}/${name}` })
+            bundle.append(Buffer.from(data, 'utf8'), { name: `${VSO_RESOURCE_INF}/${name}` })
         } else {
-            winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element not available ${t.VSO_RESOURCE_INF}/${name}`);
+            winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element not available ${VSO_RESOURCE_INF}/${name}`);
         }
     };
 
@@ -177,11 +177,12 @@ const serializeFlatElementInputForm = async (context: any, element: t.VroNativeE
 const serializeFlatElementInputFormItems = async (context: any, element: t.VroNativeElement): Promise<Promise<void>[]> => {
     const promises: Promise<void>[] = [];
     if (element.formItems && Array.isArray(element.formItems)) {
-        element.formItems.forEach(formItem => {
+        element.formItems.forEach((formItem: t.VroNativeFormElement) => {
             const buffer = Buffer.from('\ufeff' + JSON.stringify(formItem.data), "utf16le").swap16();
-            const fileName = formItem.name || "";
+            const formName: string = formItem.name || "";
+            const fileName = FORM_ITEM_TEMPLATE.replace("{{formName}}", formName);
             const promise = context.formItems(buffer, DEFAULT_ENCODING, fileName);
-            promises.push(promise);            
+            promises.push(promise);
         });
     }
 
@@ -216,7 +217,7 @@ const serializeFlatElementBundle = async (context: any, element: t.VroNativeElem
 }
 
 const serializeFlatElementTags = async (context: any, element: t.VroNativeElement): Promise<void> => {
-    if (!element.tags || !element.tags.length) {
+    if (!element.tags?.length) {
         winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element does not have tags ${element.name}`);
         return;
     }
@@ -266,7 +267,7 @@ const serializeFlatElementContent = async (context: any, pkg: t.VroPackageMetada
 }
 
 const exportPackageElementContentSignature = async (context: any, pkg: t.VroPackageMetadata): Promise<void> => {
-    var data = await fs.readFile(path.join(context.target, DATA));
+    let data = await fs.readFile(path.join(context.target, DATA));
 
     return context.contentSignature(s.sign(data, pkg.certificate));
 }

@@ -35,6 +35,10 @@ function parseTreeElement(elementInfoPath: string): t.VroNativeElement {
     let comment = xmlChildNamed(infoXml, "comment");
     let tags: string[] = [];
     let action: t.VroActionData | null = null;
+    // input forms (applicable for vRO workflows only)
+    let formData: any = { form: null, formItems: [] };
+    let form: t.VroNativeFormElement | null = null;
+    let formItems: t.VroNativeFormElement[] = [];
 
     // Tags are optional
     if (exist(elementTagPath)) {
@@ -44,27 +48,34 @@ function parseTreeElement(elementInfoPath: string): t.VroNativeElement {
             tags = tags.concat(xmlToTag(tagsXml));
         }
     }
-    // parse input forms (applicable for vRO workflows only)
-    const formData = parseInputForms(type, name, elementInfoPath);
-    const form: t.VroNativeFormElement = formData.form as t.VroNativeFormElement;
-    const formItems: t.VroNativeFormElement[] = formData.formItems as t.VroNativeFormElement[];
 
-    if (type == t.VroElementType.ResourceElement) {
-        attributes = <t.VroNativeResourceElementAttributes>{
-            id: xmlGet(info, "id"),
-            name: xmlGet(info, "name"),
-            version: xmlGet(info, "version") || RESOURCE_ELEMENT_DEFAULT_VERSION,
-            mimetype: xmlGet(info, "mimetype"),
-            description: xmlGet(info, "description") || "",
-            allowedOperations: "evf" // There is no information in NativeFolder. Using defaults
+    switch (type) {
+        case t.VroElementType.ResourceElement: {
+            attributes = <t.VroNativeResourceElementAttributes>{
+                id: xmlGet(info, "id"),
+                name: xmlGet(info, "name"),
+                version: xmlGet(info, "version") || RESOURCE_ELEMENT_DEFAULT_VERSION,
+                mimetype: xmlGet(info, "mimetype"),
+                description: xmlGet(info, "description") || "",
+                allowedOperations: "evf" // There is no information in NativeFolder. Using defaults
+            }
+            dataFilePath = dataFilePath.replace(".xml", "");
+            break;
         }
-        dataFilePath = dataFilePath.replace(".xml", "");
-    } else if (type == t.VroElementType.ScriptModule) {
-        name = xml(read(dataFilePath)).attr.name;
-        action = xmlToAction(dataFilePath, bundleFilePath, name, comment, description, tags);
+        case t.VroElementType.ScriptModule: {
+            name = xml(read(dataFilePath)).attr.name;
+            action = xmlToAction(dataFilePath, bundleFilePath, name, comment, description, tags);
+            break;
+        }
+        default: {
+            // parse input forms (applicable for vRO workflows only)
+            formData = parseInputForms(type, name, elementInfoPath);
+            form = formData.form as t.VroNativeFormElement;
+            formItems = formData.formItems as t.VroNativeFormElement[];
+        }
     }
 
-    return <t.VroNativeElement><unknown>{ categoryPath, type, id, name, description, attributes, dataFilePath, tags, action, form, formItems };
+    return <t.VroNativeElement>{ categoryPath, type, id, name, description, attributes, dataFilePath, tags, action, form, formItems };
 }
 
 function parseInputForms(elementType: t.VroElementType, workflowName: string, elementInputFormPath: string): any {
@@ -80,24 +91,26 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
     const formFileName = [formFileDir, `${workflowName}${FORM_SUFFIX}`].join(path.sep);
     // Input form is only applicable for vRO workflows
     if (exist(formFileName)) {
-        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form from file ${formFileName}`);
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form '${workflowName}' from file ${formFileName}`);
         form = {
-            data: JSON.parse(read(formFileName))
+            data: JSON.parse(read(formFileName)),
+            name: workflowName
         };
     }
     let formNames: string[] = getWorkflowItems([formFileDir, `${workflowName}.xml`].join(path.sep), WORKFLOW_ITEM_INPUT_TYPE);
     let formItems: t.VroNativeFormElement[] = [];
     formNames.forEach((item: string) => {
-        const formName = FORM_ITEM_TEMPLATE.replace("{{formName}}", item);
-        const formItemFile = VRO_CUSTOM_FORMS_FILENAME_TEMPLATE.replace("{{elementName}}", workflowName).replace("{{formName}}", formName);
+        const formItemFile = VRO_CUSTOM_FORMS_FILENAME_TEMPLATE.replace("{{elementName}}", workflowName).replace("{{formName}}", item);
         const formItemFileName = [formFileDir, formItemFile].join(path.sep);
-        if (exist(formItemFileName)) {
-            winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${formName}' from file '${formItemFileName}'`);
-            const formItem: t.VroNativeFormElement = JSON.parse(read(formItemFileName));
-            if (formItem) {
-                formItems.push({ name: formName, data: formItem });
-            }
+        if (!exist(formItemFileName)) {
+            return;
         }
+        const formItem: t.VroNativeFormElement = JSON.parse(read(formItemFileName));
+        if (!formItem) {
+            return;
+        }
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${item}' from file '${formItemFileName}'`);
+        formItems.push({ name: item, data: formItem });
     });
 
     return {

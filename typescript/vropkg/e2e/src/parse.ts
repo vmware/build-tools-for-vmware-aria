@@ -5,8 +5,6 @@ import * as glob from "glob";
 import * as child_process from "child_process";
 import * as unzipper from "unzipper";
 
-const TARGET_DIRS = ["target-tree-custom-forms", "target-tree", "target-flat", "target-flat-custom-forms", "target-flat-custom-forms.tmp", "target-flat.tmp"]
-
 describe("End-to-End Tests", () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 300000;
 

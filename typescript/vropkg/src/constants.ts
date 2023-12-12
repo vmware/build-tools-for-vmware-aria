@@ -14,19 +14,30 @@
  */
 export const FORM_SUFFIX = ".form.json";
 export const VRO_FORM_TEMPLATE = `{{elementName}}${FORM_SUFFIX}`;
-export const VRO_CUSTOM_FORMS_FILENAME_TEMPLATE = `{{elementName}}_{{formName}}${FORM_SUFFIX}`;
 export const RESOURCE_ELEMENT_DEFAULT_VERSION = "0.0.0";
 export const ELEMENT_INFO_FILE = "element_info.xml";
 export const LOGGER_PREFIX = "vrbt";
+export const JSON_DEFAULT_IDENT = 4;
+export const JSON_MINOR_IDENT = 2;
+export const ZLIB_COMPRESS_LEVEL = 9;
+export const DEFAULT_ENCODING = { encoding: "utf16le" };
+export const FORM_ITEM_TEMPLATE = "input_form_{{formName}}";
+export const VRO_CUSTOM_FORMS_FILENAME_TEMPLATE = `{{elementName}}_${FORM_ITEM_TEMPLATE}${FORM_SUFFIX}`;
+export const WORKFLOW_ITEM_INPUT_TYPE = "input";
+export const DEFAULT_FORM_NAME = "input_form";
+export const DEFAULT_FORM_FILE_NAME = `${DEFAULT_FORM_NAME}_`;
+export const VSO_RESOURCE_INF = "VSO-RESOURCE-INF";
 
 export const SAVE_OPTIONS = {
     prettyPrint: true
 };
+
 export const XML_OPTIONS = {
     version: "1.0",
     encoding: "UTF-8",
     standalone: false
 };
+
 export const WINSTON_CONFIGURATION = {
     logLevel: 'info',
     logPrefix: "vrbt",
@@ -36,7 +47,3 @@ export const WINSTON_CONFIGURATION = {
         default: "vrbt.log"
     }
 };
-export const DEFAULT_ENCODING = { encoding: "utf16le" };
-export const FORM_ITEM_TEMPLATE = "input_form_{{formName}}";
-export const WORKFLOW_ITEM_INPUT_TYPE = "input";
-export const DEFAULT_FORM_NAME = "input_form";

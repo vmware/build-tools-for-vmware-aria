@@ -20,6 +20,7 @@ import * as t from "../types";
 import * as CRC from "crc-32";
 import { exist } from "../util";
 import * as path from "path";
+import { JSON_MINOR_IDENT } from "../constants";
 
 export const read = (file) => decode(fs.readFileSync(file));
 export const xml = (data) => new xmldoc.XmlDocument(data);
@@ -242,7 +243,8 @@ export const getCommentFromJavadoc = (comment: string, bundle: string, returnTyp
         crc: null
     };
     obj.crc = (CRC.str(JSON.stringify(obj)) & 0x7FFFFFFF).toString(16);
-    return JSON.stringify(obj, null, 2);
+
+    return JSON.stringify(obj, null, JSON_MINOR_IDENT);
 }
 
 function getReturnDescriptionFromComment(file: string, expectedResultType: string, comment: string, dump: boolean): string {
