@@ -34,6 +34,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 
 public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive {
@@ -214,5 +215,25 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	 */
 	public List<VraNgCloudAccount> getAllCloudAccounts() throws URISyntaxException {
 		return super.getAllCloudAccounts();
+	}
+	
+	/**
+	 * testGetCatalogItemsForProjectPrimitive.
+	 * @param project project for that catalog items should be returned.
+	 *
+	 * @return entity List<VraNgCatalogItem>
+	 */	
+	public List<VraNgCatalogItem> testGetCatalogItemsForProjectPrimitive(final String project) {
+		return super.getCatalogItemsForProjectPrimitive(project);
+	}
+	
+	/**
+	 * testGetCatalogItemByBlueprintNamePrimitive.
+	 * @param bpName blueprint name.
+	 *
+	 * @return entity VraNgCatalogItem
+	 */	
+	public VraNgCatalogItem testGetCatalogItemByBlueprintNamePrimitive(final String bpName) {
+		return super.getCatalogItemByBlueprintNamePrimitive(bpName);
 	}
 }

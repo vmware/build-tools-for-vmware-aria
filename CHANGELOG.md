@@ -11,6 +11,7 @@
 ### Fixes
 * [artifact-manager] IAC-788 / Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
 * [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
+* [artifact-manager] IAC-801 / Fix vRA catalog items appearing twice on multi page results.
 
 ### Enhancements
 * [vro-types/o11n-plugin-aria] IAC-789 / Adding new Aria Automation Plugin vRO inventory Types.
@@ -1122,6 +1123,7 @@ with different domain.
 
 ### Fixes
 * Log4j2 logs an error that configuration is missing when building/testing packages.
+* Fix for duplicate vra catalog item appearing in the result on large environments.
 
 ## v1.0.1 - 13 Mar 2018
 
