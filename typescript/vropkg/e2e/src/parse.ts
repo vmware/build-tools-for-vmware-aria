@@ -3,16 +3,15 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import * as glob from "glob";
 import * as child_process from "child_process";
-import * as unzipper from 'unzipper';
+import * as unzipper from "unzipper";
 
+const TARGET_DIRS = ["target-tree-custom-forms", "target-tree", "target-flat", "target-flat-custom-forms", "target-flat-custom-forms.tmp", "target-flat.tmp"]
 
 describe("End-to-End Tests", () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 300000;
 
     let childProcLogs = process.env.CHILD_PROC_LOGS == "true" || process.env.CHILD_PROC_LOGS == "1";
-
     const currentPath = process.cwd();
-
     const runCase = (caseName, caseArguments) => {
         if (childProcLogs) {
             console.info(
@@ -38,16 +37,15 @@ describe("End-to-End Tests", () => {
                 if (childProcLogs) {
                     console.log(`${caseName} stderr: ${output}`);
                 }
-                //compensate for unhandled promise rejections
+                // compensate for unhandled promise rejections
                 if (output.indexOf("UnhandledPromiseRejectionWarning") !== -1) {
-                    reject(output)
+                    reject(output);
                 }
             });
             childProcess.on("close", function (code) {
                 if (childProcLogs) {
                     console.log(`${caseName} exit code: ${code}`);
                 }
-
                 if (code !== 0) {
                     reject(code);
                 } else {
@@ -90,12 +88,12 @@ describe("End-to-End Tests", () => {
             const sourceFilePath = path.join(process.cwd(), "test", sourcePath, sourceFilesArray[index]);
             const destFilePath = path.join(process.cwd(), "test", destinationPath, destinationFilesArray[index]);
 
-            if (!fs.statSync(sourceFilePath).isFile() || !fs.statSync(destFilePath).isFile())
+            if (!fs.statSync(sourceFilePath).isFile() || !fs.statSync(destFilePath).isFile()) {
                 continue;
-
-            if (sourceFilesArray[index].indexOf("content-signature") >= 0 || sourceFilesArray[index].indexOf("data") >= 0)
+            }
+            if (sourceFilesArray[index].indexOf("content-signature") >= 0 || sourceFilesArray[index].indexOf("data") >= 0) {
                 continue;
-
+            }
             const sourceFile = readFile(sourceFilePath);
             const destFile = readFile(destFilePath);
             expect(sourceFile)
@@ -103,7 +101,6 @@ describe("End-to-End Tests", () => {
                 .toEqual(destFile);
         }
     }
-
     const expand = (...args: string[]) => path.join(currentPath, ...args);
 
     function readFile(path: string): string {
@@ -118,14 +115,14 @@ describe("End-to-End Tests", () => {
                 '--out', 'flat',
                 '--srcPath', expand('test', 'com.vmware.pscoe.toolchain-expand'),
                 '--destPath', expand('test', 'target-flat'),
-				'--privateKeyPEM', expand('test', 'private_key.pem'),
-				'--certificatesPEM', expand('test', 'cert.pem'),
+                '--privateKeyPEM', expand('test', 'private_key.pem'),
+                '--certificatesPEM', expand('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
                 '--description', '',
                 '--groupId', 'test.group',
-				'--keyPass', "VMware1!"
+                '--keyPass', "VMware1!"
             ]);
         } catch (error) {
             throw error;
@@ -137,6 +134,8 @@ describe("End-to-End Tests", () => {
             .promise();
 
         compare('target-flat.tmp', 'target-flat', ['elements', '**']);
+        deleteDirectoryRecursive(expand('test', 'target-flat.tmp'));
+        deleteDirectoryRecursive(expand('test', 'target-flat'));
     })
 
     it("Convert XML project from flat to tree structure", async () => {
@@ -147,20 +146,93 @@ describe("End-to-End Tests", () => {
                 '--out', 'tree',
                 '--srcPath', expand('test', 'com.vmware.pscoe.toolchain.package'),
                 '--destPath', expand('test', 'target-tree'),
-				'--privateKeyPEM', expand('test', 'private_key.pem'),
-				'--certificatesPEM', expand('test', 'cert.pem'),
+                '--privateKeyPEM', expand('test', 'private_key.pem'),
+                '--certificatesPEM', expand('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
                 '--description', '',
                 '--groupId', 'test.group',
-				'--keyPass', "VMware1!"
+                '--keyPass', "VMware1!"
             ]);
         } catch (error) {
             throw error;
         }
 
         compare('target-tree', 'com.vmware.pscoe.toolchain-expand', ['src', 'main', 'resources', '**']);
+        deleteDirectoryRecursive(expand('test', 'target-tree'));
     })
 
+    it("Convert XML project with custom forms from tree to flat structure", async () => {
+        try {
+            await runCase("Project tree -> flat", [
+                expand("bin", "vropkg"),
+                '--in', 'tree',
+                '--out', 'flat',
+                '--srcPath', expand('test', 'com.vmware.pscoe.toolchain-expand'),
+                '--destPath', expand('test', 'target-flat-custom-forms'),
+                '--privateKeyPEM', expand('test', 'private_key.pem'),
+                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--version', '1.0.0',
+                '--packaging', 'package',
+                '--artifactId', 'proj-artifact',
+                '--description', '',
+                '--groupId', 'test.group',
+                '--keyPass', "VMware1!"
+            ]);
+        } catch (error) {
+            throw error;
+        }
+
+        await fs
+            .createReadStream(expand('test', 'com.vmware.pscoe.toolchain.package'))
+            .pipe(unzipper.Extract({ path: expand('test', 'target-flat-custom-forms.tmp') }))
+            .promise();
+
+        compare('target-flat-custom-forms.tmp', 'target-flat-custom-forms', ['elements', 'input_form*']);
+        deleteDirectoryRecursive(expand('test', 'target-flat-custom-forms.tmp'));
+        deleteDirectoryRecursive(expand('test', 'target-flat-custom-forms'));
+    })
+
+    it("Convert XML project with custom forms from flat to tree structure", async () => {
+        try {
+            await runCase("Project flat -> tree", [
+                expand("bin", "vropkg"),
+                '--in', 'flat',
+                '--out', 'tree',
+                '--srcPath', expand('test', 'com.vmware.pscoe.vrbt.custom.interaction.package'),
+                '--destPath', expand('test', 'target-tree-custom-forms'),
+                '--privateKeyPEM', expand('test', 'private_key.pem'),
+                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--version', '1.0.0',
+                '--packaging', 'package',
+                '--artifactId', 'proj-artifact',
+                '--description', '',
+                '--groupId', 'test.group',
+                '--keyPass', "VMware1!"
+            ]);
+        } catch (error) {
+            throw error;
+        }
+
+        compare('target-tree', 'target-tree-custom-forms', ['src', 'main', 'resources', 'input_form_*.json']);
+        deleteDirectoryRecursive(expand('test', 'target-tree'));
+        deleteDirectoryRecursive(expand('test', 'target-tree-custom-forms'));
+    })
+
+    function deleteDirectoryRecursive(directoryPath: string): void {
+        if (fs.existsSync(directoryPath)) {
+            fs.readdirSync(directoryPath).forEach(file => {
+                const curPath = path.join(directoryPath, file);
+                if (fs.lstatSync(curPath).isDirectory()) {
+                    // recurse
+                    deleteDirectoryRecursive(curPath);
+                } else {
+                    // delete file
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(directoryPath);
+        }
+    };
 });

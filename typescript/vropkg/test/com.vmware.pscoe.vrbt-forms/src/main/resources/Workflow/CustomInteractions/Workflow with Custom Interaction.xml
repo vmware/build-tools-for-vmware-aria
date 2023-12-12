@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="7d4d3ebb-ce17-411b-b4c5-ea9591eae298" version="1.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+    <display-name>
+        <![CDATA[Workflow with Custom Interaction]]>
+    </display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="inputString" type="string"/>
+        <param name="inputStringArray" type="Array/string"/>
+    </input>
+    <workflow-item name="item0" type="end" end-mode="0">
+        <in-binding/>
+        <position y="50.0" x="660.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item3" type="task">
+        <display-name>
+            <![CDATA[Task]]>
+        </display-name>
+        <script encoded="false">
+            <![CDATA[System.warn("Input string " + inputString);
+System.warn("Input string array " + JSON.stringify(inputStringArray, null, 4));]]>
+        </script>
+        <in-binding>
+            <bind name="inputString" type="string" export-name="inputString"/>
+            <bind name="inputStringArray" type="Array/string" export-name="inputStringArray"/>
+        </in-binding>
+        <out-binding/>
+        <description>
+            <![CDATA[Simple task with custom script capability.]]>
+        </description>
+        <position y="60.0" x="260.0"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item1" type="input">
+        <display-name>
+            <![CDATA[User interaction 1]]>
+        </display-name>
+        <in-binding>
+            <bind name="security.group" type="LdapGroup">
+                <description>
+                    <![CDATA[Any user member of this group will be authorized to fill in this form.]]>
+                </description>
+            </bind>
+            <bind name="security.assignees" type="Array/LdapUser">
+                <description>
+                    <![CDATA[Any user from this array of users will be authorized to fill in this form]]>
+                </description>
+            </bind>
+            <bind name="security.assignee.groups" type="Array/LdapGroup">
+                <description>
+                    <![CDATA[Any user member of any of the groups will be authorized to fill in this form.]]>
+                </description>
+            </bind>
+            <bind name="timeout.date" type="Date">
+                <description>
+                    <![CDATA[Timeout date for user interaction 1.]]>
+                </description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <presentation/>
+        <description>
+            <![CDATA[User Interaction: User Interaction 1]]>
+        </description>
+        <position y="60.0" x="160.0"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="customNameUserInteraction" type="input">
+        <display-name>
+            <![CDATA[User interaction 2]]>
+        </display-name>
+        <in-binding>
+            <bind name="security.group" type="LdapGroup">
+                <description>
+                    <![CDATA[Any user member of this group will be authorized to fill in this form.]]>
+                </description>
+            </bind>
+            <bind name="security.assignees" type="Array/LdapUser">
+                <description>
+                    <![CDATA[Any user from this array of users will be authorized to fill in this form]]>
+                </description>
+            </bind>
+            <bind name="security.assignee.groups" type="Array/LdapGroup">
+                <description>
+                    <![CDATA[Any user member of any of the groups will be authorized to fill in this form.]]>
+                </description>
+            </bind>
+            <bind name="timeout.date" type="Date">
+                <description>
+                    <![CDATA[Timeout date for user interaction 2.]]>
+                </description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <presentation/>
+        <description>
+            <![CDATA[User Interaction: User Interaction 2]]>
+        </description>
+        <position y="60.0" x="360.0"/>
+    </workflow-item>
+    <workflow-item name="customNameUserInteraction" out-name="item0" type="input">
+        <display-name>
+            <![CDATA[customNameUserInteraction]]>
+        </display-name>
+        <in-binding>
+            <bind name="security.group" type="LdapGroup">
+                <description>
+                    <![CDATA[Any user member of this group will be authorized to fill in this form.]]>
+                </description>
+            </bind>
+            <bind name="security.assignees" type="Array/LdapUser">
+                <description>
+                    <![CDATA[Any user from this array of users will be authorized to fill in this form]]>
+                </description>
+            </bind>
+            <bind name="security.assignee.groups" type="Array/LdapGroup">
+                <description>
+                    <![CDATA[Any user member of any of the groups will be authorized to fill in this form.]]>
+                </description>
+            </bind>
+            <bind name="timeout.date" type="Date">
+                <description>
+                    <![CDATA[Timeout date for user interaction customNameUserInteraction.]]>
+                </description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <presentation/>
+        <description>
+            <![CDATA[User Interaction: customName User Interaction.]]>
+        </description>
+        <position y="60.0" x="500.0"/>
+    </workflow-item>
+    <presentation/>
+</workflow>

@@ -19,6 +19,7 @@ import * as t from "../types";
 import * as winston from 'winston';
 import * as xmlbuilder from "xmlbuilder";
 import * as CRC from "crc-32";
+import { WINSTON_CONFIGURATION } from "../constants";
 
 export const saveOptions = {
     pretty: false
@@ -35,12 +36,12 @@ export const infoOptions = {
     standalone: false
 };
 
-export const serialize = target => {
+export const serialize = (target: string) => {
     fs.mkdirsSync(target);
-    return file => async (data, options?): Promise<void> => {
-        const absolutePath = path.join(target, file);
+    return (file: string) => async (data: any, options?: any, fileName?: string): Promise<void> => {
+        const absolutePath = path.join(target, (fileName || file));
         fs.mkdirsSync(path.dirname(absolutePath));
-        winston.loggers.get("vrbt").debug(`Writing ${absolutePath}`);
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Writing ${absolutePath}`);
         fs.writeFileSync(absolutePath, data, options || {});
     }
 }
@@ -52,13 +53,13 @@ export const serialize = target => {
  *         itself returns a fuction that can be used to write that resource.
  *         Finally the function that writes the resource is an asynchronous one.
  */
-export const zipbundle = (target : string )=> {
+export const zipbundle = (target: string) => {
     fs.mkdirsSync(target);
-    return (file : string )=> async (sourcePath : string, isDir: boolean): Promise<void> => {
+    return (file: string) => async (sourcePath: string, isDir: boolean): Promise<void> => {
         const absoluteZipPath = path.join(target, file);
         if (isDir) {
-            var output = fs.createWriteStream(absoluteZipPath);
-            var archive = archiver('zip', { zlib: { level: 9 } });
+            let output = fs.createWriteStream(absoluteZipPath);
+            let archive = archiver('zip', { zlib: { level: 9 } });
             archive.directory(sourcePath, false);
             archive.pipe(output);
             archive.finalize();
@@ -72,7 +73,7 @@ export const getPackageName = (pkg: t.VroPackageMetadata): string => {
     return [pkg.groupId, pkg.artifactId + "-" + pkg.version, pkg.packaging].join(".");
 }
 
-export const getActionXml = (id : string, name : string, description:string, action:t.VroActionData) : string => {
+export const getActionXml = (id: string, name: string, description: string, action: t.VroActionData): string => {
     description = description == null ? "" : description;
     let actioncontent = action?.inline?.actionSource;
     if (!actioncontent) {
@@ -91,8 +92,8 @@ export const getActionXml = (id : string, name : string, description:string, act
         root.att("timeout", action.timeout);
     }
     if (action?.memoryLimit != null) {
-            root.att("memory-limit", action.memoryLimit);
-        }
+        root.att("memory-limit", action.memoryLimit);
+    }
     if (action?.runtime?.lang != null && action?.runtime?.lang != t.Lang.javascript) {
         root.ele("runtime").cdata(t.Lang[action.runtime.lang] + ":" + action.runtime.version);
     }
@@ -102,7 +103,7 @@ export const getActionXml = (id : string, name : string, description:string, act
     action.params.forEach(param => {
         root.ele("param").att("n", param.name).att("t", param.type).cdata(param.description);
     });
-    if (actioncontent != null && (action.bundle == null || actioncontent.trim() != "") ) {
+    if (actioncontent != null && (action.bundle == null || actioncontent.trim() != "")) {
         root.ele("script").att("encoded", "false").cdata(actioncontent);
     }
 
@@ -110,12 +111,12 @@ export const getActionXml = (id : string, name : string, description:string, act
 }
 
 export const complexActionComment = (element: t.VroNativeElement) => {
-    let obj : any = {
+    let obj: any = {
         comment: element?.comment,
-        returnType:  element.action.returnType,
+        returnType: element.action.returnType,
         javadoc: element.action?.inline?.javadoc,
         crc: null
     };
-    obj.crc = (CRC.str(JSON.stringify(obj))& 0x7FFFFFFF).toString(16);
+    obj.crc = (CRC.str(JSON.stringify(obj)) & 0x7FFFFFFF).toString(16);
     return JSON.stringify(obj, null, 2);
 }

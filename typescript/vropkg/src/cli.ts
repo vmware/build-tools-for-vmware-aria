@@ -1,45 +1,3 @@
-import * as fs from "fs-extra";
-import * as path from "path";
-import * as cmdArgs from "command-line-args";
-import * as winston from 'winston';
-import * as t from "./types";
-import { loadCertificate } from "./security";
-import { parseTree } from "./parse/tree";
-import { parseFlat } from "./parse/flat";
-import { VroJsProjParser   } from "./parse/js";
-import { serializeTree } from "./serialize/tree";
-import { serializeFlat } from "./serialize/flat";
-import { VroJsProjRealizer } from "./serialize/js";
-import { CleanDefinition } from "./cleaner/definitionCleaner";
-
-
-
-winston.loggers.add('vrbt', <winston.LoggerOptions>{
-	// TODO add as configuration
-	level: 'info',
-	format: winston.format.json(),
-	// defaultMeta: { service: 'user-service' },
-	transports: [
-		new winston.transports.File({ filename: 'vrbt-error.log', level: 'error' }),
-		new winston.transports.File({ filename: 'vrbt.log' }),
-		new winston.transports.Console({
-			format: winston.format.simple()
-		})
-	]
-})
-
-
-interface CliInputs extends cmdArgs.CommandLineOptions {
-	/** whether futher logging is in order */
-	verbose: boolean;
-	vv: boolean;
-
-	/** whether to print out help string and exit */
-	help: boolean;
-
-	/** vRealize Orchestrator native input type [vro_native_folder, vro_native_package] */
-	in: string;
-
 /*-
  * #%L
  * vropkg
@@ -54,6 +12,43 @@ interface CliInputs extends cmdArgs.CommandLineOptions {
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+import * as fs from "fs-extra";
+import * as path from "path";
+import * as cmdArgs from "command-line-args";
+import * as winston from "winston";
+import * as t from "./types";
+import { loadCertificate } from "./security";
+import { parseTree } from "./parse/tree";
+import { parseFlat } from "./parse/flat";
+import { VroJsProjParser } from "./parse/js";
+import { serializeTree } from "./serialize/tree";
+import { serializeFlat } from "./serialize/flat";
+import { VroJsProjRealizer } from "./serialize/js";
+import { CleanDefinition } from "./cleaner/definitionCleaner";
+import { WINSTON_CONFIGURATION } from "./constants";
+
+winston.loggers.add(WINSTON_CONFIGURATION.logPrefix, <winston.LoggerOptions>{
+	level: WINSTON_CONFIGURATION.logLevel,
+	format: winston.format.json(),
+	// defaultMeta: { service: 'user-service' },
+	transports: [
+		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.error, level: 'error' }),
+		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.debug, level: 'debug' }),
+		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.default }),
+		new winston.transports.Console({ format: winston.format.simple() })
+	]
+});
+
+interface CliInputs extends cmdArgs.CommandLineOptions {
+	/** whether futher logging is in order */
+	verbose: boolean;
+	vv: boolean;
+
+	/** whether to print out help string and exit */
+	help: boolean;
+
+	/** vRealize Orchestrator native input type [vro_native_folder, vro_native_package] */
+	in: string;
 
 	/** vRealize Orchestrator native output type [vro_native_folder, vro_native_package] */
 	out: string;
@@ -104,107 +99,38 @@ const cliOpts = <cmdArgs.OptionDefinition[]>[
 	{ name: "groupId", type: String },
 ];
 
-
 async function run() {
-    let input = cmdArgs(cliOpts, { stopAtFirstUnknown: false }) as CliInputs;
+	let input = cmdArgs(cliOpts, { stopAtFirstUnknown: false }) as CliInputs;
 	if (!(input.verbose || input.vv)) {
 		console.debug = () => { };
 	}
 
-	let printHelp = false;
-
-	if (input._unknown) {
-		console.error("Unexpected option:", input._unknown);
-		printHelp = true;
-	}
-
-	if (!input.srcPath) {
-		console.error("Missing srcPath");
-		printHelp = true;
-	}
-
-	if (!input.destPath) {
-        console.error("Missing destPath");
-	}
-
-	if(!input.version) {
-		console.error("Missing project version")
-	}
-
-	if(!input.artifactId){
-		console.error("Missing artifactId")
-	}
-
-	if(!input.groupId){
-		console.error("Missing groupId")
-	}
-
-	var certificateRequired = t.ProjectType[input.out] == t.ProjectType.flat;
-	if (certificateRequired && (!input.certificatesPEM || !input.privateKeyPEM)) {
-		console.error("Missing privateKeyPEM or certificatesPEM");
-		printHelp = true;
-	}
-
+	// validate input data
+	let printHelp = validate(input);
 	if (input.help || printHelp) {
 		printVersion();
 		printUsage();
 		return;
 	}
-	if (t.ProjectType[input.in] == null || t.ProjectType[input.out] == null) {
-		console.error("Incorrect in/out parameter");
-		printVersion();
-		printUsage();
-		return;
-	}
 
-	if (!input.keyPass) {
-		console.warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
-	}
-	
-	winston.loggers.get("vrbt").debug(`Removing empty definitions generated in the compile process ...`);
-	let cleaner = new CleanDefinition();
-	cleaner.removeEmptyDefinitions(input.srcPath);
+	// Cleanup empty definitions prior parsing / serializing
+	cleanup(input);
 
-	winston.loggers.get("vrbt").debug(`Parsing ...`);
-	let pkgPromise = null;
-	switch (t.ProjectType[input.in]) {
-		case t.ProjectType.tree:               pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description);                   break;
-		case t.ProjectType.flat:               pkgPromise = parseFlat(input.srcPath, input.destPath);   break;
-		case t.ProjectType.js:                 pkgPromise = new VroJsProjParser().parse(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging); break;
-		default: throw new Error("Unsupported input: " + input.in);
-	}
-
-	winston.loggers.get("vrbt").debug(`Parsing Completed`);
-
+	// Parse data project data
+	let pkgPromise = parse(input, t.ProjectType[input.in]);
 	let pkg = await pkgPromise;
 
-
 	// Certificate is only used to sign the package when serializing
-	if (certificateRequired){
+	let certificateRequired = t.ProjectType[input.out] === t.ProjectType.flat;
+	if (certificateRequired) {
 		pkg.certificate = loadCertificate(
 			<t.PEM>input.certificatesPEM, /* certificatesPEM is PEM of PEMs */
 			<t.PEM>input.privateKeyPEM,
 			input.keyPass);
 
 	}
-
-
-
-	winston.loggers.get("vrbt").debug(`Serializing ...`);
-
-	switch (t.ProjectType[input.out]) {
-		case t.ProjectType.tree:                
-			serializeTree(pkg, input.destPath);
-			break;
-		case t.ProjectType.flat:                
-			serializeFlat(pkg, input.destPath);                      
-			break;
-		case t.ProjectType.js:
-			await new VroJsProjRealizer().realize(pkg, input.destPath);  break;
-		default: throw new Error("Unsupported output: " + input.out);
-	}
-	winston.loggers.get("vrbt").debug(`Serializing Completed`);
-
+	// Serialize project data
+	serialize(input, t.ProjectType[input.out], pkg);
 }
 
 function printVersion(): void {
@@ -215,13 +141,104 @@ function printVersion(): void {
 	}
 }
 
-function printUsage(arg?: string): boolean {
+function printUsage(): boolean {
 	let usageFilePath = path.join(__dirname, "../Usage.txt");
 	if (fs.existsSync(usageFilePath)) {
 		console.log(fs.readFileSync(usageFilePath).toString());
 	}
 
 	return false;
+}
+
+function validate(input: CliInputs): boolean {
+	let printHelp = false;
+	if (input._unknown) {
+		console.error("Unexpected option:", input._unknown);
+		printHelp = true;
+	}
+	if (!input.srcPath) {
+		console.error("Missing srcPath");
+		printHelp = true;
+	}
+	if (!input.destPath) {
+		console.error("Missing destPath");
+	}
+	if (!input.version) {
+		console.error("Missing project version")
+	}
+	if (!input.artifactId) {
+		console.error("Missing artifactId")
+	}
+	if (!input.groupId) {
+		console.error("Missing groupId")
+	}
+	let certificateRequired = t.ProjectType[input.out] == t.ProjectType.flat;
+	if (certificateRequired && (!input.certificatesPEM || !input.privateKeyPEM)) {
+		console.error("Missing privateKeyPEM or certificatesPEM");
+		printHelp = true;
+	}
+	if (t.ProjectType[input.in] == null || t.ProjectType[input.out] == null) {
+		console.error("Incorrect in/out parameter");
+		printHelp = true;
+	}
+	if (!input.keyPass) {
+		console.warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
+	}
+
+	return printHelp;
+}
+
+function cleanup(input: CliInputs): void {
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Removing empty definitions generated in the compile process ...`);
+	let cleaner = new CleanDefinition();
+	cleaner.removeEmptyDefinitions(input.srcPath);
+}
+
+async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.VroPackageMetadata> {
+	let pkgPromise: any = null;
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing project type '${projectType.toString()}'`);
+	switch (projectType) {
+		case t.ProjectType.tree: {
+			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description);
+			break;
+		}
+		case t.ProjectType.flat: {
+			pkgPromise = parseFlat(input.srcPath, input.destPath);
+			break;
+		}
+		case t.ProjectType.js: {
+			pkgPromise = new VroJsProjParser().parse(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging);
+			break;
+		}
+		default: {
+			throw new Error("Unsupported input: " + input.in);
+		}
+	}
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing of project type '${projectType.toString()}' completed`);
+
+	return pkgPromise;
+}
+
+async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: any): Promise<void> {
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing project type '${projectType.toString()}'`);
+	switch (projectType) {
+		case t.ProjectType.tree: {
+			serializeTree(pkg, input.destPath);
+			break;
+		}
+		case t.ProjectType.flat: {
+			serializeFlat(pkg, input.destPath);
+			break;
+		}
+		case t.ProjectType.js: {
+			await new VroJsProjRealizer().realize(pkg, input.destPath);
+			break;
+		}
+		default: {
+			throw new Error("Unsupported output: " + input.out);
+		}
+	}
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing of project type '${projectType.toString()}' completed`);
 }
 
 run();

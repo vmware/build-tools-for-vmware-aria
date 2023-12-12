@@ -109,6 +109,11 @@ export class VroActionData {
     bundle: VroScriptBundle         // Bundled Script. inline will be null
 }
 
+export interface VroNativeFormElement {
+    name?: string,
+    data: any
+}
+
 export interface VroNativeElement {
     categoryPath: Array<string>
     type: VroElementType
@@ -120,7 +125,8 @@ export interface VroNativeElement {
     dataFilePath: string
     tags: Array<string>
     action: VroActionData
-    form?: any
+    form?: VroNativeFormElement,
+    formItems?: VroNativeFormElement[]
 }
 
 export interface VroNativeElementAttributes {}

@@ -1,18 +1,3 @@
-import * as fs from "fs-extra";
-import * as glob from "glob";
-import * as path from "path";
-import * as winston from 'winston';
-import * as a from "../packaging";
-import * as t from "../types";
-import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc } from "./util";
-import { exist } from "../util";
-
-/**
- * Extracts a vRO element of out unziped Package element folder
- * @param elementInfoPath - vro_package/elements/<id>/info
- */
-const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeElement> => {
-    const source = path.dirname(elementInfoPath);
 
 /*-
  * #%L
@@ -28,18 +13,32 @@ const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeEle
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-    const sourcePath = name => path.join(source, name);
+import * as fs from "fs-extra";
+import * as glob from "glob";
+import * as path from "path";
+import * as winston from "winston";
+import * as a from "../packaging";
+import * as t from "../types";
+import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc, getWorkflowItems } from "./util";
+import { exist } from "../util";
+import { WINSTON_CONFIGURATION, FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME } from "../constants";
+
+/**
+ * Extracts a vRO element of out unziped Package element folder
+ * @param elementInfoPath - vro_package/elements/<id>/info
+ */
+const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeElement> => {
+    const baseDirectory = path.dirname(elementInfoPath);
+    const sourcePath = (name: string) => path.join(baseDirectory, name);
 
     const elementCategoryPath = sourcePath("categories");
     const elementTagPath = sourcePath("tags");
     const elementDataPath = sourcePath("data");
-    const elementInputFormPath = sourcePath("input_form_")
 
     let infoXml = xml(read(elementInfoPath));
     let categoriesXml = xml(read(elementCategoryPath));
     let categoryPath = xmlToCategory(categoriesXml);
     let description = xmlGet(infoXml, "description");
-
 
     if (description == undefined) {
         try {
@@ -54,90 +53,128 @@ const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeEle
     let comment = xmlChildNamed(infoXml, "comment");
     let type = t.VroElementType[xmlGet(infoXml, "type")];
     let id = xmlGet(infoXml, "id");
-    let name;
+    let name: string | undefined;
     let attributes = <t.VroNativeResourceElementAttributes>{};
     let dataFilePath = elementDataPath;
 
-
-    let tags = [];
+    let tags: string[] = [];
     // Tags are optional
     if (exist(elementTagPath)) {
         let tagsXml = exist(elementTagPath) && xml(read(elementTagPath));
         tags = tags.concat(xmlToTag(tagsXml))
     }
 
-    // Input Form only for Workflows
-    let form = null;
-    if (exist(elementInputFormPath)) {
-        form = JSON.parse(read(elementInputFormPath));
-    }
-    var action: t.VroActionData = null;
+    // input forms (applicable for vRO workflows only)
+    let formData: any = { form: null, formItems: [] };
+    let form: t.VroNativeFormElement | null = null;
+    let formItems: t.VroNativeFormElement[] = [];
 
-
+    let action: t.VroActionData | null = null;
     switch (type) {
-        case t.VroElementType.Workflow:
-        case t.VroElementType.ConfigurationElement:
+        case t.VroElementType.Workflow: {
+            name = xml(read(elementDataPath)).valueWithPath("display-name");
+            // parse input forms (applicable for vRO workflows only)
+            formData = parseInputForms(baseDirectory);
+            form = formData.form;
+            formItems = formData.formItems;
+            break;
+        }
+        case t.VroElementType.ConfigurationElement: {
             name = xml(read(elementDataPath)).valueWithPath("display-name");
             break;
-        case t.VroElementType.ScriptModule:
+        }
+        case t.VroElementType.ScriptModule: {
             let elementBundlePath = sourcePath("bundle")
             name = xml(read(elementDataPath)).attr.name;
             action = xmlToAction(elementDataPath, elementBundlePath, name, comment, description, tags);
             comment = getCommentFromJavadoc(comment, action?.bundle?.projectPath, action.returnType, action?.inline?.javadoc);
             break;
-        case t.VroElementType.PolicyTemplate:
+        }
+        case t.VroElementType.PolicyTemplate: {
             name = xml(read(elementDataPath)).attr.name;
             break;
-        case t.VroElementType.ResourceElement:
-            await a.extract(elementDataPath, source);
-
+        }
+        case t.VroElementType.ResourceElement: {
+            await a.extract(elementDataPath, baseDirectory);
             let mapping = t.VroNativeResourceElementAttributesMapping;
-
             Object.keys(mapping).forEach(key => {
-                let filePath = path.join(source, t.VSO_RESOURCE_INF, mapping[key]);
+                let filePath = path.join(baseDirectory, t.VSO_RESOURCE_INF, mapping[key]);
                 if (fs.existsSync(filePath)) {
                     attributes[key] = fs.readFileSync(filePath)
                 } else {
-                    winston.loggers.get("vrbt").debug(`Resource Element data bundle does not specify optional attribute ${mapping[key]}`);
+                    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Resource Element data bundle does not specify optional attribute ${mapping[key]}`);
                 }
             });
-
             name = attributes["name"];
-            dataFilePath = path.join(source, t.VSO_RESOURCE_INF, "data");
+            dataFilePath = path.join(baseDirectory, t.VSO_RESOURCE_INF, "data");
             break;
+        }
+        default: {
+            // noop
+        }
     }
-    return <t.VroNativeElement>{ categoryPath, type, id, name, description, comment, attributes, dataFilePath, tags, action, form };
+
+    return <t.VroNativeElement>{ categoryPath, type, id, name, description, comment, attributes, dataFilePath, tags, action, form, formItems };
+}
+
+const parseInputForms = async (baseDirectory: string) => {
+    let form: t.VroNativeFormElement | undefined;
+
+    // Input form is only applicable for vRO workflows
+    const elementInputFormPath = path.join(baseDirectory, DEFAULT_FORM_NAME);
+    if (exist(elementInputFormPath)) {
+        form = {
+            data: JSON.parse(read(elementInputFormPath)),
+            name: DEFAULT_FORM_NAME
+        };
+    }
+    let formNames: string[] = getWorkflowItems(path.join(baseDirectory, "data"), WORKFLOW_ITEM_INPUT_TYPE);
+    let formItems: t.VroNativeFormElement[] = [];
+    formNames.forEach((formName: string) => {
+        const inputFormItemPath = [baseDirectory, FORM_ITEM_TEMPLATE.replace("{{formName}}", formName)].join(path.sep);
+        if (exist(inputFormItemPath)) {
+            winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${formName}' from file '${inputFormItemPath}'`);
+            const formItem: t.VroNativeFormElement = JSON.parse(read(inputFormItemPath));
+            if (formItem) {
+                formItems.push({ name: formName, data: formItem });
+            }
+        }
+    });
+
+    return {
+        form: form,
+        formItems: formItems
+    };
 }
 
 const parseFlat = async (nativePackagePath: string, destDir: string) => {
     let tmp = path.join(destDir, "tmp");
-    winston.loggers.get("vrbt").info(`Extracting package ${nativePackagePath} to "${destDir}" folder...`);
+    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Extracting package ${nativePackagePath} to "${destDir}" folder...`);
 
     await a.extract(nativePackagePath, tmp);
 
     const dunesMetaInf = xml(read(path.join(tmp, "dunes-meta-inf")))
-    let pkgName = dunesMetaInf.childWithAttribute("key", "pkg-name").val;
-    let pkgDescription = dunesMetaInf.childWithAttribute("key", "pkg-description") ? dunesMetaInf.childWithAttribute("key", "pkg-description").val : "";
-    let endArtifactIndex = pkgName.endsWith("-SNAPSHOT") ? pkgName.length - "-SNAPSHOT".length : pkgName.lastIndexOf("-");
-    let pkgArtifactTokens = pkgName.slice(0, endArtifactIndex).split(".");
+    let pkgName = dunesMetaInf.childWithAttribute("key", "pkg-name")?.val;
+    let pkgDescription = dunesMetaInf.childWithAttribute("key", "pkg-description") ? dunesMetaInf.childWithAttribute("key", "pkg-description")?.val : "";
+    let endArtifactIndex = pkgName?.endsWith("-SNAPSHOT") ? pkgName.length - "-SNAPSHOT".length : pkgName?.lastIndexOf("-") || 0;
+    let pkgArtifactTokens = pkgName?.slice(0, endArtifactIndex).split(".");
 
     let elements = await Promise.all(
         glob
             .sync(path.join(tmp, "elements", "**", "info"))
             .map(file => parseFlatElement(file))
     );
-
     let result = <t.VroPackageMetadata>{
-        groupId: pkgArtifactTokens.slice(0, -1).join("."),
-        artifactId: pkgArtifactTokens.slice(-1).pop(),
-        version: pkgName.slice(endArtifactIndex + 1),
+        groupId: pkgArtifactTokens?.slice(0, -1).join("."),
+        artifactId: pkgArtifactTokens?.slice(-1).pop(),
+        version: pkgName?.slice(endArtifactIndex + 1),
         description: pkgDescription,
         packaging: "package",
         elements: elements
     }
     fs.remove(tmp);
-    return result;
 
+    return result;
 }
 
 export { parseFlat };

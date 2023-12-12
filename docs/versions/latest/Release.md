@@ -73,6 +73,29 @@ Back up of vRO packages now works by:
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Add support for custom interaction component forms for vRO workflows
+#### Previous Behavior
+
+When pulling vRO workflows that contain custom interaction components and their UI forms, they are not present in the output XML tree.
+When manually creating JSON representation of custom interaction components forms they are not part of the vRO package and not pushed to the target vRO.
+
+#### New Behavior
+When pulling vRO workflows that contain custom interaction components and their UI forms, they are are present in the output XML tree as files with the the form.json suffix. Each custom interaction component form will be stored in a separate file.
+When pushing a project that has custom interaction component forms, they are part of the vRO package as well and get pushed to the target vRO and visible in the vRO UI.
+
+### Fixed backup of vRO packages so that the all available version are backed up
+#### Previous Behavior
+
+Back up of vRO packages (using the flag in the environment.properties file: vro_enable_backup=true)
+would only work if the currently imported packages (which are to back up), had the same version as the one in vRO.
+Otherwise, the import would throw an '404 Not found' exception and break the import process,
+due to not finding the same package and version to back up.
+
+#### New Behavior
+Back up of vRO packages now works by:
+* backing up all available versions in vRO of the imported package,
+* logging a message that back up is skipped for the package, if no versions of it are found in vRO, continuing with backup of next packages, and the import process.
+
 ### Fix vRA Catalog Items Paging Issue when Fetching Catalog Items from Server
 
 #### Previous Behavior
