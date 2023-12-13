@@ -18,7 +18,7 @@ import * as t from "../types";
 import * as winston from "winston";
 import { read, stringToCategory, xml, xmlGet, xmlToAction, xmlChildNamed, xmlToTag, getWorkflowItems } from "./util";
 import { exist } from "../util";
-import { FORM_ITEM_TEMPLATE, FORM_SUFFIX, RESOURCE_ELEMENT_DEFAULT_VERSION, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, WINSTON_CONFIGURATION, WORKFLOW_ITEM_INPUT_TYPE } from "../constants";
+import { FORM_SUFFIX, RESOURCE_ELEMENT_DEFAULT_VERSION, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, WINSTON_CONFIGURATION, WORKFLOW_ITEM_INPUT_TYPE } from "../constants";
 
 function parseTreeElement(elementInfoPath: string): t.VroNativeElement {
     let info = xml(read(elementInfoPath));

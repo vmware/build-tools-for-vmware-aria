@@ -99,11 +99,11 @@ Example XML Tree structure of a project that contains 2 custom interaction compo
                 └── Workflow1_input_form_item_2.form.json
                 └── Workflow1_input_form_item_3.form.json
 ```
-The Workflow1_input_form_item_2.form.json and Workflow1_input_form_item_3.form.json contain JSON representation of the forms for custom interaction components item2 and item3 respectively.
+The Workflow1_input_form_item_2.form.json and Workflow1_input_form_item_3.form.json contain JSON representation of the forms for custom interaction components item2 and item3 respectively. You can even adjust the names of the custom form names in the Workflow1.xml file and the result file will be reflected with the new name.
 
 The naming convention for the form files is the following:
 ```text
-<Workflow_Name>_input_form_<Form_Id>.form.json 
+<Workflow_Name>_input_form_<Form_Name>.form.json
 ```
 
 An example of a flat structure of a project tree that has 2 custom interaction components and their forms:
@@ -131,5 +131,15 @@ An example of a flat structure of a project tree that has 2 custom interaction c
 |       └── input_form_item3
 ```
 
-The input_form_ contains a JSON representaton of vRO form, the input_form_item2 and input_form_item3 contain the JSON representation for custom interaction components forms for item2 and item3 respectively in the flat package.
+The input_form_ contains a JSON representaton of vRO form, the input_form_item2 and input_form_item3 contain the JSON representation for custom interaction components forms for item2 and item3 respectively in the flat package. You can even adjust the names of the custom form names in the Workflow1.xml file and the result file will be reflected with the new name in the flat package.
+
+The naming convention for the custom form files in the flat package is the following:
+```text
+input_form_<Form_Name>
+```
+
+The main input form of the workflow is defined as:
+```text
+input_form_
+```
 

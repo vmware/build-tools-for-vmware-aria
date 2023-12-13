@@ -17,11 +17,10 @@ import * as path from "path";
 import * as archiver from 'archiver';
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
-import * as winston from "winston";
 import { serialize, xmlOptions, complexActionComment, getActionXml } from "./util"
 import { exist, isDirectory } from "../util";
 import { decode } from "../encoding";
-import { JSON_DEFAULT_IDENT, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, VRO_FORM_TEMPLATE, WINSTON_CONFIGURATION, ZLIB_COMPRESS_LEVEL } from "../constants";
+import { JSON_DEFAULT_IDENT, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, VRO_FORM_TEMPLATE, ZLIB_COMPRESS_LEVEL } from "../constants";
 
 const buildContext = (target: string) => {
     return {
