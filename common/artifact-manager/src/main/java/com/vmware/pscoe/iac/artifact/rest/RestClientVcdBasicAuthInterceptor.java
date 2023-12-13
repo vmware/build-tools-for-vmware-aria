@@ -60,9 +60,9 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	private MediaType contentType;
 
 	/**
-	 * session api path.
+	 * Provider session api path.
 	 */
-	private static final String URL_SESSION = "/api/sessions";
+	private static final String PROVIDER_URL_SESSION = "/cloudapi/1.0.0/sessions/provider";
 	
 	/**
 	 * version api path.
@@ -102,7 +102,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 			apiVersion = API_VERSION_37;
 		}
 
-		this.contentType = VcdApiHelper.buildMediaType("application/*+json", apiVersion);
+		this.contentType = VcdApiHelper.buildMediaType("application/json", apiVersion);
 	}
 
 	/**
@@ -116,8 +116,8 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
 		try {
-			if (!request.getURI().getPath().contains(URL_SESSION) && !request.getURI().getPath().contains(URL_VERSION)) {
-				if (this.vcloudToken == null) {
+			if (!request.getURI().getPath().contains(PROVIDER_URL_SESSION) && !request.getURI().getPath().contains(URL_VERSION)) {
+				if (this.bearerToken == null) {
 					logger.info("Aquiring vCD auth token...");
 					acquireToken(request);
 					logger.info("vCD auth token aquired");
@@ -135,7 +135,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 
 	private void acquireToken(HttpRequest request) throws JsonProcessingException {
 		final URI tokenUri = UriComponentsBuilder.newInstance().scheme(request.getURI().getScheme())
-				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(URL_SESSION).build().toUri();
+				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(PROVIDER_URL_SESSION).build().toUri();
 
 		// Prepare Headers
 		final HttpHeaders headers = new HttpHeaders();
@@ -153,7 +153,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 
 		final ResponseEntity<String> response = getRestTemplate().exchange(tokenUri, HttpMethod.POST, entity,
 				String.class);
-		this.vcloudToken = response.getHeaders().get(HEADER_VCLOUD_TOKEN).get(0);
+		this.vcloudToken = response.getHeaders().get(HEADER_VCLOUD_TOKEN) == null ? null : response.getHeaders().get(HEADER_VCLOUD_TOKEN).get(0); 
 		this.bearerToken = response.getHeaders().get(HEADER_BEARER_TOKEN).get(0);
 	}
 

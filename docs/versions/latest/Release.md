@@ -10,8 +10,15 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 ## Deprecations
-[//]: # (### *Deprecation*)
-[//]: # (Explain what is deprecated and suggest alternatives)
+### `vrealize:push` is no longer supported for vCloud Director for Service Providers 9.7 (API version 32.0) - officially unsupported
+The new authorization endpoint cloudapi/1.0.0/sessions/provider/post is available after API Version 33.0
+Reference:
+[VMware Cloud Director API Programming Guide](https://developer.vmware.com/docs/14143/vmware-cloud-director-api-programming-guide)
+[VMware Cloud Director OpenAPI  Sessions](https://developer.vmware.com/apis/vmware-cloud-director/latest/cloudapi/1.0.0/sessions/provider/post/)
+
+### Deprecating SQLDatabaseManager.getDatabase() function
+
+SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automation 8 and above. The function uses name as parameter to retrieve a database. Use getDatabaseById() or getDatabases() and filter by name instead.
 
 [//]: # (Features -> New Functionality)
 ## Features
@@ -72,6 +79,18 @@ Back up of vRO packages now works by:
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+### Support `vrealize:push` for VMware Cloud Director 10.5 (API version 38.0)
+
+#### Previous Behavior
+The /api/sessions API login endpoint is deprecated since VMware Cloud Director API version 33.0. For version 38.0 and later, the /api/sessions API login endpoint is no longer supported. You can use the VMware Cloud Director OpenAPI login endpoints to access VMware Cloud Director.
+
+#### New Behavior
+Service provider access to the system organization- POST cloudapi/1.0.0/sessions/provider
+Tenant access to all other organizations apart from the system organization- POST cloudapi/1.0.0/sessions
+
+As per the backward compatibility commitment of VMware Cloud Director, versions 37.2 and earlier continue to support the /api/sessions API login endpoint.
+Reference: [VMware Cloud Director 10.5 Release Notes](https://docs.vmware.com/en/VMware-Cloud-Director/10.5/rn/vmware-cloud-director-105-release-notes/index.html)
 
 ### Fix vRA Catalog Items Paging Issue when Fetching Catalog Items from Server
 
