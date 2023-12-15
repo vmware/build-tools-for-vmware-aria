@@ -2,7 +2,7 @@ version: "3"
 services:
   # NGINX reverse proxy server
   nginx:
-    image: nginx:1.18.0
+    image: nginx:1.25-alpine
     container_name: nginx
     restart: always
     networks:
@@ -36,9 +36,9 @@ services:
     - "127.0.0.1:8080:80"
     hostname: "gitlab.corp.local"
     volumes:
-      - "/srv/gitlab/config:/etc/gitlab"
-      - "/srv/gitlab/logs:/var/log/gitlab"
-      - "/srv/gitlab/data:/var/opt/gitlab"
+      - "gitlab-config:/etc/gitlab"
+      - "gitlab-logs:/var/log/gitlab"
+      - "gitlab-data:/var/opt/gitlab"
   # GitLab CI Runner for CI/CD integration
   gitlab-runner:
     image: pscoelab/vrbt-gitlab-runner:latest
@@ -51,35 +51,34 @@ services:
     extra_hosts:
       - "infra.corp.local:172.18.0.10"
       - "gitlab.corp.local:172.18.0.11"
-      - "artifactory.corp.local:172.18.0.13"
+      - "nexus.corp.local:172.18.0.14"  # Update with Nexus IP
     volumes:
-     - "/srv/gitlab-runner/config:/etc/gitlab-runner"
-     - "/srv/gitlab-runner/m2:/home/gitlab-runner/.m2"     
-     - "/srv/gitlab-runner/opt:/var/opt"     
+     - "gitlab-runner-config:/etc/gitlab-runner"
+     - "gitlab-runner-m2:/home/gitlab-runner/.m2"     
+     - "gitlab-runner-opt:/var/opt"     
      - "/var/run/docker.sock:/var/run/docker.sock"
-  # JFrog Artifactory OSS for artifact management
-  artifactory:
-    image: docker.bintray.io/jfrog/artifactory-oss:6.19.1
-    container_name: artifactory
-    hostname: "artifactory.corp.local"
+  # Sonatype Nexus for artifact management
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexus
+    hostname: "nexus.corp.local"
     networks:
       infranet:
-        ipv4_address: 172.18.0.13
-    extra_hosts:
-      - "gitlab.corp.local:172.18.0.11"
+        ipv4_address: 172.18.0.14
     ports:
      - 127.0.0.1:8081:8081
     volumes:
-     - /data/artifactory:/var/opt/jfrog/artifactory
-#    Add extra Java options by uncommenting the following lines
-#    environment:
-#     - EXTRA_JAVA_OPTIONS=-Xmx4g
+     - "nexus-data:/nexus-data"
     restart: always
-    ulimits:
-      nproc: 65535
-      nofile:
-        soft: 32000
-        hard: 40000
+
+volumes:
+  gitlab-config:
+  gitlab-logs:
+  gitlab-data:
+  gitlab-runner-config:
+  gitlab-runner-m2:
+  gitlab-runner-opt:
+  nexus-data:
+
 networks:
  infranet:
-  external: true
