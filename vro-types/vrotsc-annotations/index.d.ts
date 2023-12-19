@@ -113,7 +113,7 @@ type PolicyAttribute = {
 }
 
 type VroPolicyTemplateType = "AMQP:Subscription" | "MQTT:Subscription" | "SNMP:SnmpDevice" | "SNMP:TrapHost";
-type VroPolicyTemplateTypeV2 = VroPolicyTemplateType | "Periodic Event";
+type VroPolicyTemplateTypeV2 = string | VroPolicyTemplateType | "Periodic Event";
 
 type VroPolicyTemplateScehdulePeriod = "every-minutes" | "every-hours" | "every-days" | "every-weeks" | "every-months";
 
