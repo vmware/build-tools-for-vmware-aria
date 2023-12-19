@@ -964,7 +964,7 @@ public final class Installer {
             PackageStore<?> packageStore = null;
             if (input.allTrue(Option.VRO_EMBEDDED)) {
                 String[] prefixes = { ConfigurationPrefix.VRO.getValue(), ConfigurationPrefix.VRANG.getValue() };
-                packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(prefixes)));
+                packageStore = PackageStoreFactory.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(prefixes)));
             } else {
                 packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
             }
@@ -975,7 +975,7 @@ public final class Installer {
             PackageStore<?> packageStore = null;
             if (input.allTrue(Option.VRO_EMBEDDED)) {
                 String[] prefixes = { ConfigurationPrefix.VRO.getValue(), ConfigurationPrefix.VRANG.getValue() };
-                packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(prefixes)));
+                packageStore = PackageStoreFactory.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(prefixes)));
             } else {
                 packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
             }

@@ -69,6 +69,9 @@ Back up of vRO packages now works by:
 * backing up all available versions in vRO of the imported package,
 * logging a message that back up is skipped for the package, if no versions of it are found in vRO, continuing with backup of next packages, and the import process.
 
+### Installer now uses ConfigurationVroNg instead of ConfigurationVro when embedded
+During cleanup or deletion of previous package versions of an embedded vRO package was trying to use basic authentication as this is the mechanism provided by an standalone vRO. Now uses vRA authentication when it is embedded.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
