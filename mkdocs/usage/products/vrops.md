@@ -1,15 +1,20 @@
-# vROps Projects
+---
+title: Aria Operations 7.x
+---
 
-Before you continue with this section validate that all of the prerequisites are met.
-## Prerequisites
-- Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
+# Aria Operations Projects
 
-## Use
-
-vROps Project is a filesystem representation of vROps content into human friendly YAML and/or JSON format. The project consist of content descriptor and content container.
+## About
+Aria Operations Project is a filesystem representation of vROps content into human friendly YAML and/or JSON format. The project consist of content descriptor and content container.
 
 - *Content Descriptor* defines what part vROps content will be part of this project. The descriptor is a content.yaml file in the root directory of a project
 - *Content Container* holds the actual content representation. Each individual content object is represented in a JSON format in a separate file.
+Before you continue with this section validate that all of the prerequisites are met.
+
+
+## Prerequisites
+Before you continue with this section validate that all of the prerequisites are met.
+- Install and Configure #TO DO: link to workstation setup
 
 ## Crate New vROps Project
 

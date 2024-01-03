@@ -99,8 +99,43 @@ Null (nothing given) - everything is being exported in all regions linked to clo
 To export all content in all regions linked to cloud accounts, the tag for export should be defined.
 If not defined, nothing will be exported.
 
+### Regional Content
+The {{ products.vra_8_short_name }} philosophy is built around the concept of infrastructure definition capable of resource provisioning - 
+compute, network, storage and other types of resources - that builds up an abstract model for resource description.
+This allows workload placement to happen dynamically based on various explicit or implicit rules. Part of this abstract
+model is the definition of various mappings and profiles that provide common higher-level definitions of underlying 
+infrastructure objects. These definitions take the form of various mappings and profiles:
+* flavor mappings - common designation of compute resource t-shirt or other sizing
+* image mappings - common designation of VM images
+* storage profiles - a set of storage policies and configurations used for workload placement
+* network profiles - a set of network-related configurations used for network resource placement
 
-**Note**: *Unreleased blueprints that have custom form will be automatically released with version 1.*
+These abstractions are related to the regions within the cloud accounts and their capabilities. They utilize the various
+underlying resources which are automatically collected and organized into "fabrics" by vRA. As such, they contain
+information about resources in the various connected regions and for the purpose of this project are collectively called 
+**regional content**.
+
+Exporting (pulling) and importing (pushing) of regional content is achieved using a mapping definition specified in the
+content manifest (content.yaml): `region-mappping`. It contains a set of mapping criteria used for exporting and
+importing of content. The vRA-NG package manager handles the `export-tag` and `import-tags` entries of the
+`cloud-account-tags` section of `region-mapping`.
+
+#### Export Regional Content
+When exporting regional content defined in the respective content categories - `image-mapping`, `flavor-mapping`, 
+`storage-profile`, etc., the vRA-NG package manager takes into account the tag that is defined in the `export-tag`
+entry and exports content that is related to a cloud account(s) containing this tag. The content is stored in a
+directory within a unique regional directory bearing the name of the cloud account and the cloud zone id. The cloud
+account and zone combination are persisted for reference to the originating environment. 
+
+#### Import Regional Content
+The vRA-NG package manager uses the `import-tags` entry from the content manifest (content.yaml) to (re)create regional
+content targeting cloud accounts that contain one or more of the import tags. The content is taken from all of the
+regional folders and regardless of its origin, it is imported to the target environment based on the `import-tags`, i.e. 
+related to cloud accounts possessing one or more of the import tags list.
+
+
+!!! note
+    Unreleased blueprints that have custom form will be automatically released with version 1.
 
 To capture the state of your vRA NG environment simply fill in the names of the content objects you would like to capture and look at the Pull section of this document.
 
@@ -207,49 +242,52 @@ There are few ways to pass the vRA connection parameters to maven pull/push comm
     ```
 
 
-<!-- Pull Content Section -->
-{% include-markdown "../../assets/docs/mvn/pull-content.md" %}
-
-!!! note
-    Pull command ```vra:pull``` will fail if the content.yaml is empty or it cannot find some of the described content on the target vRA server.
-
-!!! note
-    *As seen by the examples, you can specify project name or project id in the settings.xml or as command line
-    parameters. At least one of those parameters must be present in the configuration. If you define both, project id takes
-    precedence over project name. If you define only project name, the solution will search for a project with that name
-    and use it for the content operations.*
-
-**Note**: *When pushing property groups, the project ID specified in the configuration will be used to update the payload sent while creating/updating them in vRA.*
-
-**Note**: *Check the **Authentication** section of this document for details on possible authentication methods.*
-
-**Note**: *If a catalog item has a custom form and/or an icon they will be exported in subdirs of the catalog-items directory*
-
-**Note**: *If no catalog entitlements are specified, all of the available entitlements will be exported.*
-
-**Note**: *If catalog entitlement has a projectId in its configuration it will override the one specified in settings.xml during push of the entitlement on the target system.*
-
-**Note**: *In the catalog entitlement yaml file you can specify also project name using the projectName tag instead of projectId.*
-
-
-**Note**: The value of the <vrang.org.name> tag will take precedence over the value of the <vrang.org.id> tag in case both are present (either trough settings.xml or Installer) during filtering of the cloud accounts during pull action.
-
-**Note**: The value of the <vrang.vro.integration> is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
-
-* `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section 
-below). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true`
-in order to avoid unnecessary blueprint versions.
-
-## Push
-To deploy the code developed in the local project or checked out from source control to a live server, you can use
-the ```vrealize:push``` command:
-
+## Pull Content
+To pull the content on the target environment execute the following maven command:
 ```bash
-mvn package vrealize:push -Pcorp-env
+mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
 
-This will build the package and deploy it to the environment described in the ```corp-env``` profile. There are a few
-additional options:
+!!! note
+    Pull command ```vra-ng:pull``` will fail if the content.yaml is empty or it cannot find some of the described content on the target vRA server.
+
+!!! note
+    As seen by the examples, you can specify project name or project id in the settings.xml or as command line
+    parameters. At least one of those parameters must be present in the configuration. If you define both, project id takes
+    precedence over project name. If you define only project name, the solution will search for a project with that name
+    and use it for the content operations.
+
+!!! note
+    When pushing property groups, the project ID specified in the configuration will be used to update the payload sent while creating/updating them in vRA.
+
+!!! note
+    Check the **Authentication** section of this document for details on possible authentication methods.
+
+!!! note
+    If a catalog item has a custom form and/or an icon they will be exported in subdirs of the catalog-items directory
+
+!!! note
+    If no catalog entitlements are specified, all of the available entitlements will be exported.
+
+!!! note
+    If catalog entitlement has a projectId in its configuration it will override the one specified in settings.xml during push of the entitlement on the target system.
+
+!!! note
+    In the catalog entitlement yaml file you can specify also project name using the projectName tag instead of projectId.
+
+!!! note
+    The value of the <vrang.org.name> tag will take precedence over the value of the <vrang.org.id> tag in case both are present (either trough settings.xml or Installer) during filtering of the cloud accounts during pull action.
+
+!!! note
+    The value of the <vrang.vro.integration> is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
+
+### Additional Parameters
+* `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section below). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
+
+<!-- Push Content Section -->
+{% include-markdown "../../assets/docs/mvn/push-content.md" %}
+
+### Additional Parameters
 
 * `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section 
 below). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
@@ -260,11 +298,14 @@ as an interactive parameter `-Dvrang.data.collection.delay.seconds=600`. useful 
 however vRA needs to then retrieve it in order to be able to create the custom Resource and use the Create/Delete Workflows.
 This only happens after a short delay and the vRA data collector scrapes vRO. Defaults to no delay.
 
-**Note**: **If there are any custom forms or icons associated with a catalog-item they will also be imported. 
+!!! note
+    If there are any custom forms or icons associated with a catalog-item they will also be imported. 
 
-**Note**: *If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the VRA server as well.*
+!!! note
+    If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the VRA server as well.
 
-**Note**: *If there are custom forms in the custom-forms directory that are associated with workflows, the content-sources that are associated with them will be imported as well (they will be read from the content-sources directory).*
+!!! note
+    If there are custom forms in the custom-forms directory that are associated with workflows, the content-sources that are associated with them will be imported as well (they will be read from the content-sources directory).
 
 ### Blueprint versioning
 When pushing a blueprint to a vRA server that contains previously released blueprint with the same name as the one
@@ -285,39 +326,6 @@ version of the blueprint. The following version formats are supported with their
 | 1.0.0          | 1.0.1               | Major, minor and patch version - incrementing the patch    |
 | 1.0.0-alpha    | 2020-05-27-10-10-43 | Arbitrary version - generate a new date-time based version |
 
-## Regional Content
-The {{ products.vra_8_short_name }} philosophy is built around the concept of infrastructure definition capable of resource provisioning - 
-compute, network, storage and other types of resources - that builds up an abstract model for resource description.
-This allows workload placement to happen dynamically based on various explicit or implicit rules. Part of this abstract
-model is the definition of various mappings and profiles that provide common higher-level definitions of underlying 
-infrastructure objects. These definitions take the form of various mappings and profiles:
-* flavor mappings - common designation of compute resource t-shirt or other sizing
-* image mappings - common designation of VM images
-* storage profiles - a set of storage policies and configurations used for workload placement
-* network profiles - a set of network-related configurations used for network resource placement
-
-These abstractions are related to the regions within the cloud accounts and their capabilities. They utilize the various
-underlying resources which are automatically collected and organized into "fabrics" by vRA. As such, they contain
-information about resources in the various connected regions and for the purpose of this project are collectively called 
-**regional content**.
-
-Exporting (pulling) and importing (pushing) of regional content is achieved using a mapping definition specified in the
-content manifest (content.yaml): `region-mappping`. It contains a set of mapping criteria used for exporting and
-importing of content. The vRA-NG package manager handles the `export-tag` and `import-tags` entries of the
-`cloud-account-tags` section of `region-mapping`.
-
-### Export Regional Content
-When exporting regional content defined in the respective content categories - `image-mapping`, `flavor-mapping`, 
-`storage-profile`, etc., the vRA-NG package manager takes into account the tag that is defined in the `export-tag`
-entry and exports content that is related to a cloud account(s) containing this tag. The content is stored in a
-directory within a unique regional directory bearing the name of the cloud account and the cloud zone id. The cloud
-account and zone combination are persisted for reference to the originating environment. 
-
-### Import Regional Content
-The vRA-NG package manager uses the `import-tags` entry from the content manifest (content.yaml) to (re)create regional
-content targeting cloud accounts that contain one or more of the import tags. The content is taken from all of the
-regional folders and regardless of its origin, it is imported to the target environment based on the `import-tags`, i.e. 
-related to cloud accounts possessing one or more of the import tags list.
 
 
 ## Release
@@ -333,94 +341,15 @@ Defalut behavior for other parameters:
     - vrang.contentNames: default value "[]". Releases all content of given types on server.
     - vrang.releaseIfNotUpdated: default value "false". Skips content if there are no updates since latest version.
 
-**Note**: Nothing will be released if any of the content already has the given version existing.
+!!! note
+    Nothing will be released if any of the content already has the given version existing.
 
-## Authentication
-Use one of the two possible authentication mechanisms: refresh token or basic auth. When executing command use a profile that has either username/password set or refreshToken parameter.
 
-```bash
-vra-ng:pull -Dvrang.host=api.mgmt.cloud.vmware.com -Dvrang.csp.host=console.cloud.vmware.com -Dvra.port=443 -Dvrang.project.id={project+id} -Dvrang.refresh.token={refresh+token}
-```
+<!-- Clean Up Content Section -->
+{% include-markdown "../../assets/docs/mvn/clean-up-content.md" %}
 
-```bash
-vra-ng:pull -Dvrang.host=api.mgmt.cloud.vmware.com -Dvrang.csp.host=console.cloud.vmware.com -Dvra.port=443 -Dvrang.project.id={project+id} -Dvrang.username={username} -Dvrang.password={password}
-```
-
-**Note**: Basic authentication is performed against an endpoint that communicates with vIDM as authentication backend.
-
-**Note**: Username parameter accepts usernames in the form of `<username>` as well as `<username>@<domain>`. When no `<domain>` is provided, the authentication automatically assumes **System Domain**. Otherwise the provided domain will be used. 
-E.g. `administrator@corp.local` will perform authentication against the `corp.local` domain, whereas `configurationadmin` will perfom authentication agains `System Domain`.
-
-## Include Dependencies
-By default, the ```vrealize:push``` goal will deploy all dependencies of the current project to the target 
-environment. You can control that by the ```-DincludeDependencies``` flag. The value is ```true``` by default, so you
-skip the dependencies by executing the following:
-
-```bash
-mvn package vrealize:push -Pcorp-env -DincludeDependencies=false
-```
-
-Note that dependencies will not be deployed if the server has a newer version of the same package deployed. For example,
-if the current project depends on ```com.vmware.pscoe.example-2.4.0``` and on the server there is ```com.vmware.pscoe.example-2.4.2```,
-the package will not be downgraded. You can force that by adding the ````-Dvra.importOldVersions``` flag:
-```bash
-mvn package vrealize:push -Pcorp-env -Dvra.importOldVersions
-```
-The command above will forcefully deploy the exact versions of the dependent packages, downgrading anything it finds on the server.
-
-### Ignore Certificate Errors (Not recommended)
-> This section describes how to bypass a security feature in development/testing environment. **Do not use those flags when targeting production servers.** Instead, make sure the certificates have the correct CN, use FQDN to access the servers and add the certificates to Java's key store (i.e. cacerts).
-
-You can ignore certificate errors, i.e. the certificate is not trusted, by adding the flag ```-Dvrealize.ssl.ignore.certificate```:
-
-```bash
-mvn package vrealize:push -Pcorp-env -Dvrealize.ssl.ignore.certificate
-```
-
-You can ignore certificate hostname error, i.e. the CN does not match the actual hostname, by adding the flag ```-Dvrealize.ssl.ignore.certificate```:
-```bash
-mvn package vrealize:push -Pcorp-env -Dvrealize.ssl.ignore.hostname
-```
-
-You can also combine the two options above.
-
-The other option is to set the flags in your Maven's settings.xml file for a specific **development** environment.
-
-```xml
-<profile>
-    <id>corp-dev</id>
-    <properties>
-        <!--vRO Connection-->
-        <vro.host>10.29.26.18</vro.host>
-        <vro.port>8281</vro.port>
-        <vro.username>administrator@vsphere.local</vro.username>
-        <vro.password>*****</vro.password>
-        <vro.auth>vra</vro.auth>
-        <vro.tenant>vsphere.local</vro.tenant>
-        <vro.authHost>{auth_host}</vro.authHost>
-        <vro.authPort>{auth_port}</vro.authPort> 
-        <vro.refresh.token>{refresh_token}</vro.refresh.token> 
-        <vro.proxy>http://proxy.host:80</vro.proxy>
-        <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
-        <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
-    </properties>
-</profile>
-```
-
-## Clean Up
-Clean up is currently not supported
-
-## Troubleshooting
-* If Maven error does not contain enough information rerun it with *-X* debug flag.
-
-```Bash
-mvn -X <rest of the command>
-```
-* Sometimes Maven might cache old artifacts. Force fetching new artifacts with *-U*. Alternatively remove *<home>/.m2/repository* folder.
-
-```Bash
-mvn -U <rest of the command>
-```
+<!-- Troubleshooting Section -->
+{% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
 
 ## Known issues:
 * There is an issue with svg icons, they will not be downloaded/uploaded (IAC-482).
