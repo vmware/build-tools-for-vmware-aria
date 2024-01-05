@@ -300,9 +300,9 @@ public class RestClientVcd extends RestClient {
 		VcdPluginMetadataDTO vcdPluginMetadataDTO = new VcdPluginMetadataDTO(manifest);
 
 		if (this.publishedTenantsInfo != null) {
-			vcdPluginMetadataDTO.setTenantScoped((boolean) this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME));
+			vcdPluginMetadataDTO.setTenantScoped((boolean)this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME));
 			vcdPluginMetadataDTO
-					.setProviderScoped((boolean) this.publishedTenantsInfo.get(this.PROVIDER_SCOPED_KEY_NAME));
+					.setProviderScoped((boolean)this.publishedTenantsInfo.get(this.PROVIDER_SCOPED_KEY_NAME));
 		}
 
 		String requestBody = new Gson().toJson(vcdPluginMetadataDTO);
