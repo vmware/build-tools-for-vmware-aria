@@ -230,7 +230,7 @@ public class RestClientVcd extends RestClient {
 
 		return extensions;
 	}
-	
+
 	/**
 	 * 
 	 * @param id extension id
@@ -300,8 +300,9 @@ public class RestClientVcd extends RestClient {
 		VcdPluginMetadataDTO vcdPluginMetadataDTO = new VcdPluginMetadataDTO(manifest);
 
 		if (this.publishedTenantsInfo != null) {
-			vcdPluginMetadataDTO.setTenantScoped((boolean)this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME));
-			vcdPluginMetadataDTO.setProviderScoped((boolean)this.publishedTenantsInfo.get(this.PROVIDER_SCOPED_KEY_NAME));
+			vcdPluginMetadataDTO.setTenantScoped((boolean) this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME));
+			vcdPluginMetadataDTO
+					.setProviderScoped((boolean) this.publishedTenantsInfo.get(this.PROVIDER_SCOPED_KEY_NAME));
 		}
 
 		String requestBody = new Gson().toJson(vcdPluginMetadataDTO);
@@ -331,7 +332,7 @@ public class RestClientVcd extends RestClient {
 
 	/**
 	 * 
-	 * @param localPkg local package
+	 * @param localPkg  local package
 	 * @param remotePkg remote package
 	 * 
 	 * uploadUiPlugin.
@@ -380,7 +381,7 @@ public class RestClientVcd extends RestClient {
 		restTemplate.exchange(url, HttpMethod.DELETE, this.getVcdHttpEntity(), String.class);
 		logger.debug("Plugin resource for [" + remotePkg + "] deleted.");
 	}
-	
+
 	/**
 	 * 
 	 * @param pkg package
@@ -415,7 +416,7 @@ public class RestClientVcd extends RestClient {
 
 		HttpHeaders headers = getCommonVcdHeaders();
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
-		
+
 		restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 		logger.debug("UI extension [" + remotePkg + "] published to all tenants.");
 	}
@@ -423,7 +424,7 @@ public class RestClientVcd extends RestClient {
 	/**
 	 * 
 	 * @param remotePkg remote package
-	 * @param tenants tenants to publish
+	 * @param tenants   tenants to publish
 	 * 
 	 * publishUiPluginToTenants.
 	 */
@@ -465,22 +466,22 @@ public class RestClientVcd extends RestClient {
 		logger.debug("Getting UI extension published tenants info for ID [" + id + "] retrieved.");
 	}
 
-	private void publishOrRepublishUIPlugin(Package remotePkg){
+	private void publishOrRepublishUIPlugin(Package remotePkg) {
 
 		logger.debug("Publish or Republish UI Plugin [" + remotePkg + "] ...");
 
-		if (this.publishedTenantsInfo == null){
+		if (this.publishedTenantsInfo == null) {
 			this.publishUiPlugin(remotePkg);
-		} else if ((boolean)this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME) == true){
-			JsonArray publishedTenants = (JsonArray)this.publishedTenantsInfo.get(this.PUBLISHED_TENANTS_KEY_NAME);
+		} else if ((boolean) this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME) == true) {
+			JsonArray publishedTenants = (JsonArray) this.publishedTenantsInfo.get(this.PUBLISHED_TENANTS_KEY_NAME);
 			boolean checkedAllTenants = this.hasAllTenantsChecked(publishedTenants);
 
-			if(checkedAllTenants == true){
+			if (checkedAllTenants == true) {
 				this.publishUiPlugin(remotePkg);
-			} else{
+			} else {
 				this.publishUiPluginToTenants(remotePkg, publishedTenants);
 			}
-			
+
 		}
 		logger.debug("Publish or Republish UI Plugin [" + remotePkg + "] is Done.");
 	}
@@ -490,12 +491,12 @@ public class RestClientVcd extends RestClient {
 		List<String> filteredTenants = new ArrayList<String>();
 
 		tenantsList.iterator().forEachRemaining((element) -> {
-            final JsonObject entry = element.getAsJsonObject();
-            final String name = entry.getAsJsonPrimitive("name").getAsString();
+			final JsonObject entry = element.getAsJsonObject();
+			final String name = entry.getAsJsonPrimitive("name").getAsString();
 			if (name.equals("System")) {
 				filteredTenants.add(name);
 			}
-        });
+		});
 
 		return (filteredTenants.size() > 0);
 	}
