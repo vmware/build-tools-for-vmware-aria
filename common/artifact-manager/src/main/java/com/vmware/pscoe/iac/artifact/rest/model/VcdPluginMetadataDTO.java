@@ -24,8 +24,8 @@ public class VcdPluginMetadataDTO {
     private final String version;
     private final String license;
     private final String link;
-    private final boolean tenant_scoped;
-    private final boolean provider_scoped;
+    private boolean tenant_scoped;
+    private boolean provider_scoped;
     private final boolean enabled;
 
     public VcdPluginMetadataDTO(VcdNgPackageManifest manifest) {
@@ -64,12 +64,20 @@ public class VcdPluginMetadataDTO {
 		return link;
 	}
 
-	public boolean isTenant_scoped() {
+	public boolean getTenantScoped() {
 		return tenant_scoped;
 	}
 
-	public boolean isProvider_scoped() {
+	public void setTenantScoped(boolean tenant_scoped) {
+		this.tenant_scoped = tenant_scoped;
+	}
+
+	public boolean getProviderScoped() {
 		return provider_scoped;
+	}
+
+	public void setProviderScoped(boolean provider_scoped) {
+		this.provider_scoped = provider_scoped;
 	}
 
 	public boolean isEnabled() {
