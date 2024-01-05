@@ -458,7 +458,7 @@ public class RestClientVcd extends RestClient {
 		this.publishedTenantsInfo.put(this.TENANT_SCOPED_KEY_NAME, tenantScoped);
 		this.publishedTenantsInfo.put(this.PROVIDER_SCOPED_KEY_NAME, providerScoped);
 
-		if (tenantScoped == true) {
+		if (tenantScoped) {
 			JsonArray publishedTenants = this.getUiExtensionTenants(id);
 			this.publishedTenantsInfo.put(this.PUBLISHED_TENANTS_KEY_NAME, publishedTenants);
 		}
@@ -472,11 +472,11 @@ public class RestClientVcd extends RestClient {
 
 		if (this.publishedTenantsInfo == null) {
 			this.publishUiPlugin(remotePkg);
-		} else if ((boolean) this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME) == true) {
+		} else if ((boolean) this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME)) {
 			JsonArray publishedTenants = (JsonArray) this.publishedTenantsInfo.get(this.PUBLISHED_TENANTS_KEY_NAME);
 			boolean checkedAllTenants = this.hasAllTenantsChecked(publishedTenants);
 
-			if (checkedAllTenants == true) {
+			if (checkedAllTenants) {
 				this.publishUiPlugin(remotePkg);
 			} else {
 				this.publishUiPluginToTenants(remotePkg, publishedTenants);
