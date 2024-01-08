@@ -30,10 +30,21 @@ SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automatio
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Blueprints with the same name in a single project will give out a better error message now
+
+#### Previous Behaviour
+
+Misleading error was thrown along the lines of "Duplicate Key@VraNgBluerpintSHA was given", since we tried to assign a value to a map
+when it already existed.
+
+#### Current Behaviour
+
+Now we'll get a meaningful message, outlying that we can't have duplicate Blueprints in a single project.
+
 ### Wrong unix file path separators when creating backup path
 
 #### Previous Behaviour
-The backup files/folder path on are always created with "\". This is cuasing wrong file names on unix.
+The backup files/folder path on are always created with "\". This is causing wrong file names on unix.
 
 #### Current Behaviour
 Files and folders are created with the system dependent separator.
