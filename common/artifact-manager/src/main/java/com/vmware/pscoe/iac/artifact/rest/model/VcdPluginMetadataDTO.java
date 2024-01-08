@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.rest.model;
 
 import com.vmware.pscoe.iac.artifact.model.vcd.VcdNgPackageManifest;
 
-public final class VcdPluginMetadataDTO {
+public class VcdPluginMetadataDTO {
 	private final String pluginName;
 	private final String vendor;
 	private final String description;
