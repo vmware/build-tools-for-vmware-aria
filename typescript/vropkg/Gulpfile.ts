@@ -5,7 +5,6 @@ import * as tsc from "gulp-typescript";
 import * as path from 'path';
 import { execSync } from "child_process";
 
-
 gulp.task("clean", async () => {
 	await fs.remove("dist");
 	await fs.remove(path.join('test', 'target-flat'))
@@ -34,7 +33,8 @@ gulp.task("package-prod", gulp.series(["compile-prod", () => {
 gulp.task("compile-e2e", (done) => {
 	execSync("openssl req -newkey rsa:2048 -x509 -sha256 -days 3650 -subj \"/O=VMware/OU=PS/CN=CoE\" -out ./test/cert.pem -keyout ./test/private_key.pem -passout pass:VMware1!");
 
-	generatePackage();
+	generateBasePackage();
+	generateAdditionalPackage();
 
 	let project = tsc.createProject("conf/tsconfig.e2e.json", {
 		declaration: true,
@@ -66,7 +66,7 @@ function compile(settings: tsc.Settings): NodeJS.ReadWriteStream {
 	return stream.pipe(project()).pipe(gulp.dest("dist"));
 }
 
-function generatePackage() {
+function generateBasePackage() {
 	const options = [
 		path.join( 'bin', 'vropkg'),
 		'--in', 'tree',
@@ -89,4 +89,30 @@ function generatePackage() {
 	});
 
 	fs.moveSync( path.join( 'test', "tmp", "test.group.proj-artifact-1.0.0.package" ), path.join( 'test', "com.vmware.pscoe.toolchain.package" ), { overwrite: true } )
+}
+
+function generateAdditionalPackage() {
+	const options = [
+		path.join( 'bin', 'vropkg'),
+		'--in', 'tree',
+		'--out', 'flat',
+		'--srcPath', path.join('test', 'com.vmware.pscoe.vrbt-forms'),
+		'--destPath', path.join( 'test/tmp' ),
+		'--privateKeyPEM', path.join('test', 'private_key.pem'),
+		'--certificatesPEM', path.join('test', 'cert.pem'),
+		'--version', '1.0.0',
+		'--packaging', 'package',
+		'--artifactId', 'proj-artifact',
+		'--description', '',
+		'--groupId', 'custom.forms',
+		'--keyPass', "VMware1!"
+	]
+
+	execSync( options.join( " " ), {
+		cwd: process.cwd(),
+		env: process.env
+	});
+
+	fs.moveSync( path.join( 'test', "tmp", "custom.forms.proj-artifact-1.0.0.package" ), path.join( 'test', "com.vmware.pscoe.vrbt.custom.interaction.package" ), { overwrite: true } )
+
 }

@@ -1,5 +1,6 @@
 ### Enhancements
-[docs] IAC-800 - Document TS Array functions behaviour and recommended typization approach.
+* [docs] IAC-800 - Document TS Array functions behaviour and recommended typization approach.
+* [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
 
 ### Fixes
 * [packages/ecmascript] IAC-803 / Updated `Array.from()` to create shallow clone and to properly handle string, Map and Set input.

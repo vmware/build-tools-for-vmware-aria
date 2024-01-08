@@ -18,7 +18,7 @@ import * as crypto from "crypto";
 import * as os from "os";
 import * as nforge from "node-forge"
 import * as winston from "winston";
-
+import { WINSTON_CONFIGURATION } from "./constants";
 
 /**
  * loadCertificate the private key and corresponding certificate chain (from files) and return a
@@ -54,9 +54,7 @@ const loadCertificate = (chain: t.PEM, privateKey: t.PEM, privateKeyPassword: st
 	if (chainPEMs.length == 0) {
 		throw "No certificate chain provided."
 	}
-
 	let publicKeyPEM = chainPEMs[chainPEMs.length - 1]
-
 	let subjectPEMChainMap: Map<t.SUBJECT, t.PEM> = new Map();
 	chainPEMs.forEach(pem => {
 		subjectPEMChainMap.set(getSubject(pem), pem);
@@ -74,13 +72,13 @@ const loadCertificate = (chain: t.PEM, privateKey: t.PEM, privateKeyPassword: st
 /**
  * @brief	Determines the OS line end and sets it for future use
  */
-const determineEOL = function ( chunk ) {
-	const data	= chunk.toString();
-	const match	= data.match( new RegExp( `(\r\n|\r|\n)` ) );
-	let EOL		= os.EOL;
+const determineEOL = function (chunk) {
+	const data = chunk.toString();
+	const match = data.match(new RegExp(`(\r\n|\r|\n)`));
+	let EOL = os.EOL;
 
-	if ( match !== null )
-		EOL	= match[1];
+	if (match !== null)
+		EOL = match[1];
 
 	return EOL;
 }
@@ -95,7 +93,7 @@ const determineEOL = function ( chunk ) {
 const extractPEMs = (pemOfPEMs: t.PEM): Array<t.PEM> => {
 	let BOUNDARY_BEGIN = "-----BEGIN CERTIFICATE-----"
 	let BOUNDARY_END = "-----END CERTIFICATE-----"
-	let NEW_LINE = determineEOL( pemOfPEMs );
+	let NEW_LINE = determineEOL(pemOfPEMs);
 	let OS_EOL = os.EOL;
 
 	let store = false
@@ -137,10 +135,10 @@ const getContentIfFile = (pem: t.PEM | string): t.PEM => {
 		return pem;
 	}
 	if (fs.existsSync(pem) && fs.lstatSync(pem).isFile()) {
-		winston.loggers.get("vrbt").info(`Using certificate file ${pem}`);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Using certificate file ${pem}`);
 		return <t.PEM>fs.readFileSync(pem, 'UTF-8');
-	}else{
-		winston.loggers.get("vrbt").info(`Using certificate PEM from console input`);
+	} else {
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Using certificate PEM from console input`);
 		return pem;
 	}
 }
@@ -161,7 +159,6 @@ const getSubject = (certificate: t.PEM): string => {
 		.join(',')
 }
 
-
 /**
  * Sign the {data} with a certificate private key and store it at an optional location {exportFilePath}
  *
@@ -180,7 +177,6 @@ const sign = (data: string | Buffer, certificate: t.Certificate): Buffer => {
 	}));
 }
 
-
 /**
  * Get a PEM encoded certificate or key, strip the header and trailer delimiters and then Base 64 decode the content to obtain
  * the raw DER encoded content of the key or certificate and rerurn it as a Buffer object.
@@ -198,4 +194,4 @@ const pemToDer = (pem: t.PEM): Buffer => {
 	return Buffer.from(b64, 'base64');
 }
 
-export {loadCertificate, sign, pemToDer}
+export { loadCertificate, sign, pemToDer }

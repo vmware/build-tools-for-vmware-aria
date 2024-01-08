@@ -1,0 +1,67 @@
+{
+    "layout": {
+        "pages": [
+            {
+                "id": "inputFormPage",
+                "sections": [
+                    {
+                        "id": "inputStringSection",
+                        "fields": [
+                            {
+                                "id": "inputString",
+                                "display": "textField",
+                                "signpostPosition": "right-middle",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "inputStringArraySection",
+                        "fields": [
+                            {
+                                "id": "inputStringArray",
+                                "display": "array",
+                                "signpostPosition": "right-middle",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "title": "General"
+            }
+        ]
+    },
+    "schema": {
+        "inputString": {
+            "id": "inputString",
+            "type": {
+                "dataType": "string"
+            },
+            "label": "inputString",
+            "constraints": {
+                "required": false
+            }
+        },
+        "inputStringArray": {
+            "id": "inputStringArray",
+            "type": {
+                "dataType": "string",
+                "isMultiple": true
+            },
+            "label": "inputStringArray",
+            "constraints": {
+                "required": false
+            }
+        }
+    },
+    "options": {
+        "externalValidations": []
+    },
+    "itemId": ""
+}
