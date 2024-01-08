@@ -18,27 +18,27 @@ package com.vmware.pscoe.iac.artifact.rest.model;
 import com.vmware.pscoe.iac.artifact.model.vcd.VcdNgPackageManifest;
 
 public class VcdPluginMetadataDTO {
-	private final String pluginName;
-	private final String vendor;
-	private final String description;
-	private final String version;
-	private final String license;
-	private final String link;
-	private boolean tenant_scoped;
-	private boolean provider_scoped;
-	private final boolean enabled;
+    private final String pluginName;
+    private final String vendor;
+    private final String description;
+    private final String version;
+    private final String license;
+    private final String link;
+    private boolean tenant_scoped;
+    private boolean provider_scoped;
+    private final boolean enabled;
 
-	public VcdPluginMetadataDTO(VcdNgPackageManifest manifest) {
-		pluginName = manifest.getName();
-		vendor = manifest.getVendor();
-		description = manifest.getDescription();
-		version = manifest.getVersion();
-		license = manifest.getLicense();
-		link = manifest.getLink();
-		tenant_scoped = manifest.isTenantScoped();
-		provider_scoped = manifest.isProviderScoped();
-		enabled = true;
-	}
+    public VcdPluginMetadataDTO(VcdNgPackageManifest manifest) {
+        pluginName = manifest.getName();
+        vendor = manifest.getVendor();
+        description = manifest.getDescription();
+        version = manifest.getVersion();
+        license = manifest.getLicense();
+        link = manifest.getLink();
+        tenant_scoped = manifest.isTenantScoped();
+        provider_scoped = manifest.isProviderScoped();
+        enabled = true;
+    }
 
 	public String getPluginName() {
 		return pluginName;
