@@ -30,11 +30,11 @@ SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automatio
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
-### Blueprints with the same name in a single project will give out a better error message now.
+### Blueprints with the same name in a single project will give out a better error message now
 
 #### Previous Behaviour
 
-The error was misleading, something like DuplicateKey@VraNgBluerpint<SHA> was given, since we tried to assign a value to a map
+The error was misleading, something like DuplicateKey@VraNgBluerpintSHA was given, since we tried to assign a value to a map
 when it already existed.
 
 #### Current Behaviour
