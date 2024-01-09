@@ -1,5 +1,6 @@
 ### Enhancements
 [docs] IAC-800 - Document TS Array functions behaviour and recommended typization approach.
+[artifact-manager] IAC-802 - Republish the same tenants on VCD Plugin upgrade.
 
 ### Fixes
 * [packages/ecmascript] IAC-803 / Updated `Array.from()` to create shallow clone and to properly handle string, Map and Set input.

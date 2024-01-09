@@ -30,6 +30,16 @@ SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automatio
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Republish the same tenants on VCD Plugin upgrade
+
+Republish the same tenants on VCD plugin upgrade instead of publish to all tenants.
+
+#### Previous Behavior
+* On vcd plugin upgrade, the plugin will published to all tenants.
+
+#### New Behavior
+* On vcd plugin upgrade, the plugin will published only for already published tenants.
+
 ### Wrong unix file path separators when creating backup path
 
 #### Previous Behaviour
