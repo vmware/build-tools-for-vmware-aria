@@ -50,20 +50,25 @@ public final class VcdPluginMetadataDTO {
 	private final String link;
 
 	/**
-	 * tenant_scoped.
+	 * tenantScoped.
 	 */
-	private boolean tenant_scoped;
+	private boolean tenantScoped;
 
 	/**
-	 * provider_scoped.
+	 * providerScoped.
 	 */
-	private boolean provider_scoped;
+	private boolean providerScoped;
 
 	/**
 	 * enabled.
 	 */
 	private final boolean enabled;
 
+	/**
+	 * VcdPluginMetadataDTO.
+	 * 
+	 * @param manifest vcd package manifest.
+	 */
 	public VcdPluginMetadataDTO(VcdNgPackageManifest manifest) {
 		pluginName = manifest.getName();
 		vendor = manifest.getVendor();
@@ -71,8 +76,8 @@ public final class VcdPluginMetadataDTO {
 		version = manifest.getVersion();
 		license = manifest.getLicense();
 		link = manifest.getLink();
-		tenant_scoped = manifest.isTenantScoped();
-		provider_scoped = manifest.isProviderScoped();
+		tenantScoped = manifest.isTenantScoped();
+		providerScoped = manifest.isProviderScoped();
 		enabled = true;
 	}
 
@@ -131,39 +136,39 @@ public final class VcdPluginMetadataDTO {
 	}
 
 	/**
-	 * tenant_scoped.
+	 * tenantScoped.
 	 * 
 	 * @return Tenant scoped.
 	 */
 	public boolean getTenantScoped() {
-		return tenant_scoped;
+		return tenantScoped;
 	}
 
 	/**
 	 * setTenantScoped.
 	 * 
-	 * @param tenant_scoped tenant scoped.
+	 * @param tenantScoped tenant scoped.
 	 */
-	public void setTenantScoped(boolean tenant_scoped) {
-		this.tenant_scoped = tenant_scoped;
+	public void setTenantScoped(boolean tenantScoped) {
+		this.tenantScoped = tenantScoped;
 	}
 
 	/**
-	 * provider_scoped.
+	 * providerScoped.
 	 * 
 	 * @return Provider scoped.
 	 */
 	public boolean getProviderScoped() {
-		return provider_scoped;
+		return providerScoped;
 	}
 
 	/**
 	 * setProviderScoped.
 	 * 
-	 * @param provider_scoped provider scoped.
+	 * @param providerScoped provider scoped.
 	 */
-	public void setProviderScoped(boolean provider_scoped) {
-		this.provider_scoped = provider_scoped;
+	public void setProviderScoped(boolean providerScoped) {
+		this.providerScoped = providerScoped;
 	}
 
 	/**
