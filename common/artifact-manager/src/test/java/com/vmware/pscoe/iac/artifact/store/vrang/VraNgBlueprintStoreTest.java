@@ -27,9 +27,11 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
  
  import org.junit.Rule;
+ import org.junit.internal.runners.statements.ExpectException;
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Test;
+ import org.junit.rules.ExpectedException;
  import org.junit.rules.TemporaryFolder;
  import org.mockito.Mockito;
  
@@ -238,6 +240,39 @@ public class VraNgBlueprintStoreTest {
 		verify(restClient, times(1)).createBlueprint(any());
 		verify(restClient, never()).isBlueprintVersionPresent(any(), any());
 		verify(restClient, times(1)).releaseBlueprintVersion(any(), any());
+	}
+
+	@Test
+	void testImportContentWhenDuplicateBlueprintsExistOnServer() throws IOException, ParseException {
+		// GIVEN
+		List<String> blueprintNames = new ArrayList<>();
+		blueprintNames.add("nginx");
+
+		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
+
+		BlueprintMockBuilder builder = new BlueprintMockBuilder("nginx");
+		VraNgBlueprint blueprint = builder.build();
+
+		fsMocks.blueprintFsMocks().addBlueprint(blueprint);
+
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json"});
+
+		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
+		bluePrintsOnServer.add(blueprint);
+		bluePrintsOnServer.add(blueprint);
+
+		when(restClient.getAllBlueprints()).thenReturn(bluePrintsOnServer);
+
+		// START TEST
+		assertThrows(IllegalStateException.class, () -> {
+			store.importContent(tempFolder.getRoot());
+		});
+
+		// VERIFY
+		verify(restClient, never()).createBlueprint(any());
+		verify(restClient, never()).isBlueprintVersionPresent(any(), any());
+		verify(restClient, never()).releaseBlueprintVersion(any(), any());
 	}
 
 	@Test
