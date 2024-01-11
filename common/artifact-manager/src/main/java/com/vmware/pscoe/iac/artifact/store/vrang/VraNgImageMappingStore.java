@@ -205,10 +205,15 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
                         .filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(), importTags))
                         .filter(cloudAccount -> cloudAccount.getType().equals(cloudRegionProfile.getRegionType()))
                         .forEach(cloudAccount -> cloudAccount.getRegionIds()
-                                .forEach(regionId -> this.importImageProfilesInRegion(
-                                        regionId,
-                                        regionProfileDir,
-                                        imageProfilesByRegion)));
+							.forEach(regionId ->{
+									if(regionProfileDir.getName().contains(regionId)) {
+										this.importImageProfilesInRegion(
+											regionId,
+											regionProfileDir,
+											imageProfilesByRegion);
+									}
+								}
+							));
             } catch (IOException e) {
                 e.printStackTrace();
             }
