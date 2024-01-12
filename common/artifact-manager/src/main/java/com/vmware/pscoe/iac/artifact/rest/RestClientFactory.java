@@ -154,7 +154,7 @@ public class RestClientFactory {
                     messageBuilder.append(message);
                 }
 
-                throw new HttpClientErrorException(response.getStatusCode(), messageBuilder.toString());
+                throw new HttpClientErrorException(response.getStatusCode(), "Invalid/Unreachable FQDN or IP address");
 			}
 
 		});
