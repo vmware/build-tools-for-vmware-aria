@@ -22,8 +22,35 @@ SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automatio
 
 [//]: # (Features -> New Functionality)
 ## Features
-[//]: # (### *Feature Name*)
-[//]: # (Describe the feature)
+
+### *Support subscription with ABX action*
+Start support import/export operation for subscription with ABX action.\
+Example of definition
+
+~~~JSON
+{
+    "id": "sub_1615990481058",
+    "type": "RUNNABLE",
+    "eventTopicId": "compute.provision.pre",
+    "name": "Tagging VM",
+    "ownerId": "Administrator",
+    "subscriberId": "vro-gateway-lbcAbah7LZP1JTKZ",
+    "blocking": true,
+    "description": "",
+    "criteria": "",
+    "constraints": {
+       "projectId": null
+    },
+    "timeout": 0,
+    "broadcast": false,
+    "priority": 10,
+    "disabled": false,
+    "system": false,
+    "runnableType": "extensibility.vro",
+    "runnableName": "TaggingVM"
+}
+~~~
+
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 

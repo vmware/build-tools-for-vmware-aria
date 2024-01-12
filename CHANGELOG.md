@@ -1,5 +1,6 @@
 ### Enhancements
-* [docs] IAC-800 - Document TS Array functions behaviour and recommended typization approach.
+* [docs] IAC-800 / Document TS Array functions behaviour and recommended typization approach.
+* [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
 * [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
 
 ### Fixes
