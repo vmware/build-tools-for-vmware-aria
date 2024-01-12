@@ -28,6 +28,7 @@ public enum VraNgPackageMemberType {
 	PROPERTY_GROUP("property-group"),
     CONTENT_SOURCE("content-source"),
     CATALOG_ITEM("catalog-item"),
+    SECRET("secret"),
 	POLICY("policy");
 
     private final String name;

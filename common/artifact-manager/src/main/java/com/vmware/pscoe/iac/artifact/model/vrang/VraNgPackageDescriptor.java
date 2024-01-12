@@ -35,7 +35,8 @@ import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
 public class VraNgPackageDescriptor extends PackageDescriptor {
     private List<String> catalogItem;
     private List<String> blueprint;
-    private List<String> subscription;
+    private List<String> subscription;    
+    private List<String> secret;
     private List<String> flavorMapping;
     private List<String> imageMapping;
     private List<String> storageProfile;
@@ -77,6 +78,14 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
     public void setSubscription(List<String> subscription) {
         this.subscription = subscription;
+    }
+
+    public List<String> getSecret() {
+        return this.secret;
+    }
+
+    public void setSecret(List<String> secret) {
+        this.secret = secret;
     }
 
     public List<String> getFlavorMapping() {
@@ -156,6 +165,8 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
                 return getBlueprint();
             case SUBSCRIPTION:
                 return getSubscription();
+            case SECRET:
+                return getSecret();
             case FLAVOR_PROFILE:
                 return getFlavorMapping();
             case IMAGE_PROFILE:
