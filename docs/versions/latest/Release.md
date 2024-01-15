@@ -27,6 +27,21 @@ SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automatio
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Conditional execution in saga
+
+This feature enables the conditional execution of tasks/workflows based on a conditional variable (saga state value).
+
+#### Relevant Documentation
+```yaml
+tasks:
+  TestOne:
+    execute: testSagaTask
+    if: conditionalVariable # Newly introduced variable
+  TestTwo:
+    workflow: workflowId
+    if: conditionalVariable # Newly introduced variable
+```
+
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
