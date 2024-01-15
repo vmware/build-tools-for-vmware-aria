@@ -75,7 +75,7 @@ public final class RestClientFactory {
 	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
 
 	/**
-	* This logger is used to log messages and exceptions related to the creation and usage of REST clients.</p>
+	* This logger is used to log messages and exceptions related to the creation and usage of REST clients.
  	*/
     private static final Logger LOGGER = LoggerFactory.getLogger(RestClientFactory.class);
 
@@ -362,13 +362,22 @@ public final class RestClientFactory {
 		return new RestClientVrliV2(configuration, restTemplate);
 	}
 
-	/** 
-	* The above code is defining an enumeration called `TimeoutType` with two possible values:
-	* `CONNECTION` and `SOCKET`.
-	*/
-    private enum TimeoutType {
-        CONNECTION, SOCKET
-    }
+/**
+ * An enumeration of the different types of timeouts that can be configured for a connection.
+ */
+public enum TimeoutType {
+    /**
+     * The connection timeout type.
+     * This represents the maximum time in milliseconds to wait for a connection to be established before giving up.
+     */
+    CONNECTION,
+
+    /**
+     * The socket timeout type.
+     * This represents the maximum time in milliseconds to wait for data to be received after a connection has been established before giving up.
+     */
+    SOCKET
+}
 	
 	/**
 	 * The function returns a RestClientCs object with a configured RestTemplate and
