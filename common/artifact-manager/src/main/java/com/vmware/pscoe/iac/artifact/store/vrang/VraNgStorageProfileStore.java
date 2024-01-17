@@ -77,8 +77,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 				// create region directory
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-               
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+               	String regionName=restClient.getRegion(regionId).getName();
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
 				List<VraNgStorageProfile> storageProfiles = storageProfilesByRegionId.get(regionId)
 					.stream()
@@ -115,7 +115,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 				// create region directory
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+				String regionName=this.restClient.getRegion(regionId).getName();
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
 
 				List<VraNgStorageProfile> storageProfiles = storageProfilesByRegionId.get(regionId)

@@ -30,10 +30,21 @@ SQLDatabaseManager.getDatabase() function is removed in vRA 7.6 / Aria Automatio
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Blueprints with the same name in a single project will give out a better error message now
+
+#### Previous Behaviour
+
+Misleading error was thrown along the lines of "Duplicate Key@VraNgBluerpintSHA was given", since we tried to assign a value to a map
+when it already existed.
+
+#### Current Behaviour
+
+Now we'll get a meaningful message, outlying that we can't have duplicate Blueprints in a single project.
+
 ### Wrong unix file path separators when creating backup path
 
 #### Previous Behaviour
-The backup files/folder path on are always created with "\". This is cuasing wrong file names on unix.
+The backup files/folder path on are always created with "\". This is causing wrong file names on unix.
 
 #### Current Behaviour
 Files and folders are created with the system dependent separator.
@@ -83,6 +94,29 @@ During cleanup or deletion of previous package versions of an embedded vRO packa
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Add support for custom interaction component forms for vRO workflows
+#### Previous Behavior
+
+When pulling vRO workflows that contain custom interaction components and their UI forms, they are not present in the output XML tree.
+When manually creating JSON representation of custom interaction components forms they are not part of the vRO package and not pushed to the target vRO.
+
+#### New Behavior
+When pulling vRO workflows that contain custom interaction components and their UI forms, they are are present in the output XML tree as files with the the form.json suffix. Each custom interaction component form will be stored in a separate file.
+When pushing a project that has custom interaction component forms, they are part of the vRO package as well and get pushed to the target vRO and visible in the vRO UI.
+
+### Fixed backup of vRO packages so that the all available version are backed up
+#### Previous Behavior
+
+Back up of vRO packages (using the flag in the environment.properties file: vro_enable_backup=true)
+would only work if the currently imported packages (which are to back up), had the same version as the one in vRO.
+Otherwise, the import would throw an '404 Not found' exception and break the import process,
+due to not finding the same package and version to back up.
+
+#### New Behavior
+Back up of vRO packages now works by:
+* backing up all available versions in vRO of the imported package,
+* logging a message that back up is skipped for the package, if no versions of it are found in vRO, continuing with backup of next packages, and the import process.
+
 ### Support `vrealize:push` for VMware Cloud Director 10.5 (API version 38.0)
 
 #### Previous Behavior
@@ -108,3 +142,4 @@ Reference: [VMware Cloud Director 10.5 Release Notes](https://docs.vmware.com/en
 
 [//]: # (## Changelog:)
 [//]: # (Pull request links)
+

@@ -21,6 +21,7 @@ import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.CloudAccountMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.FlavorMappingMockBuilder;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.VraNgRegionMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -117,6 +118,11 @@ public class VraNgFlavorMappingStoreTest {
 		FlavorMappingMockBuilder mappingBuilder = new FlavorMappingMockBuilder();
 		mappingBuilder.setName("smallMock");
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		Map<String, List<VraNgFlavorMapping>> mockedFlavorsByRegion = new HashMap<String, List<VraNgFlavorMapping>>();
 		List<VraNgFlavorMapping> flavorMappings = new ArrayList<VraNgFlavorMapping>();
 		flavorMappings.add( mappingBuilder.build() );
@@ -124,6 +130,7 @@ public class VraNgFlavorMappingStoreTest {
 
 		when( vraNgPackageDescriptor.getFlavorMapping() ).thenReturn(null);
 		when( restClient.getAllFlavorMappingsByRegion() ).thenReturn(mockedFlavorsByRegion);
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 
 		//TEST
 		store.exportContent(cloudAccounts);
@@ -160,16 +167,20 @@ public class VraNgFlavorMappingStoreTest {
 		FlavorMappingMockBuilder mappingMediumBuilder = new FlavorMappingMockBuilder();
 		mappingMediumBuilder.setName("mediumMock");
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		Map<String, List<VraNgFlavorMapping>> mockedFlavorsByRegion = new HashMap<String, List<VraNgFlavorMapping>>();
 		List<VraNgFlavorMapping> flavorMappings = new ArrayList<VraNgFlavorMapping>();
 		flavorMappings.add(mappingSmallBuilder.build());
 		flavorMappings.add(mappingMediumBuilder.build());
-
 		mockedFlavorsByRegion.put("mockedRegionId1", flavorMappings);
 
 		when( vraNgPackageDescriptor.getFlavorMapping() ).thenReturn( flavorMappingNames );
 		when( restClient.getAllFlavorMappingsByRegion() ).thenReturn( mockedFlavorsByRegion );
-
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 		//TEST
 		store.exportContent(cloudAccounts);
 
@@ -213,6 +224,11 @@ public class VraNgFlavorMappingStoreTest {
 		FlavorMappingMockBuilder mappingMediumBuilder = new FlavorMappingMockBuilder();
 		mappingMediumBuilder.setName("mediumMock");
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		Map<String, List<VraNgFlavorMapping>> mockedFlavorsByRegion = new HashMap<String, List<VraNgFlavorMapping>>();
 		List<VraNgFlavorMapping> flavorMappings = new ArrayList<VraNgFlavorMapping>();
 		flavorMappings.add(mappingSmallBuilder.build());
@@ -222,6 +238,7 @@ public class VraNgFlavorMappingStoreTest {
 
 		when( vraNgPackageDescriptor.getFlavorMapping() ).thenReturn(flavorMappingNames);
 		when( restClient.getAllFlavorMappingsByRegion() ).thenReturn(mockedFlavorsByRegion);
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 
 		//TEST
 		store.exportContent(cloudAccounts);

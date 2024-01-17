@@ -15,23 +15,24 @@
 import * as fs from "fs-extra";
 import * as xmldoc from "xmldoc";
 import { decode } from "../encoding";
-import {userInfo} from "os";
+import { userInfo } from "os";
 import * as t from "../types";
 import * as CRC from "crc-32";
 import { exist } from "../util";
 import * as path from "path";
+import { JSON_MINOR_IDENT } from "../constants";
 
 export const read = (file) => decode(fs.readFileSync(file));
 export const xml = (data) => new xmldoc.XmlDocument(data);
 export const xmlGet = (doc, key): string => (doc.childWithAttribute("key", key) || {}).val;
-export const xmlChildNamed = (doc, name) : string  =>  doc.childNamed(name)?.val || "";
+export const xmlChildNamed = (doc, name): string => doc.childNamed(name)?.val || "";
 export const xmlToCategory = (categories): string[] => categories.children.map((e: xmldoc.XmlElement) => e.attr.name);
-export const xmlToTag = (tags): string[] => tags.children.filter(e=>e.attr && e.attr.name).map((e: xmldoc.XmlElement) => e.attr.name);
+export const xmlToTag = (tags): string[] => tags.children.filter(e => e.attr && e.attr.name).map((e: xmldoc.XmlElement) => e.attr.name);
 export const stringToCategory = (category): string[] => category.split(/(?<!\/)\./)
-	.map(path => { return path.replace(/\//g, "") })
-	.filter(path => path != "");
+    .map(path => { return path.replace(/\//g, "") })
+    .filter(path => path != "");
 
-export const xmlToAction = (file : string, bundlePath: string, name: string, comment: string, description: string, tags : Array<string>) : t.VroActionData => {
+export const xmlToAction = (file: string, bundlePath: string, name: string, comment: string, description: string, tags: Array<string>): t.VroActionData => {
     let type = "" + t.VroElementType.ScriptModule;
     if (!exist(file)) {
         console.warn(`WARN  Cannot find corresponding data xml file "${file}" for metadata file for element of type "${type}". Skipping that element.`);
@@ -39,19 +40,19 @@ export const xmlToAction = (file : string, bundlePath: string, name: string, com
     }
     if (!fileCanRead(file)) {
         console.warn(`WARN  Data xml file "${file}" that corresponds to the ${type} element metadata file "${file}"`
-        + `, does exist, but is not readable by current user ("${userInfo().username}"). Please update file mode permissions accordingly. Skipping this element.`);
+            + `, does exist, but is not readable by current user ("${userInfo().username}"). Please update file mode permissions accordingly. Skipping this element.`);
         return null;
     }
-    var xmlContent = decode(fs.readFileSync(file));
+    let xmlContent = decode(fs.readFileSync(file));
     let actionXml = new xmldoc.XmlDocument(xmlContent);
     let scriptName = actionXml.attr["name"];
     scriptName = !scriptName ? name : scriptName;
 
     let resultType = actionXml.attr["result-type"];
     let apiVersion = actionXml.attr["api-version"] || "6.0.0";
-    let version    = actionXml.attr["version"];
-    let timeout    = actionXml.attr["timeout"];
-    let memoryLimit    = actionXml.attr["memory-limit"];
+    let version = actionXml.attr["version"];
+    let timeout = actionXml.attr["timeout"];
+    let memoryLimit = actionXml.attr["memory-limit"];
 
     let runtime = null;
     let entryHandler = null;
@@ -63,9 +64,9 @@ export const xmlToAction = (file : string, bundlePath: string, name: string, com
             let paramName = element.attr["n"];
             let paramType = element.attr["t"];
             let paramDesc = element.val; // VroNativeFolderElementParser.getDescriptionForParameterFromXml(actionXmlPath, paramName, element);
-            let param : t.VroActionParameter = {
-                name:        paramName?.trim(),
-                type:        paramType?.trim(),
+            let param: t.VroActionParameter = {
+                name: paramName?.trim(),
+                type: paramType?.trim(),
                 description: paramDesc?.trim()
             };
             params.push(param);
@@ -83,56 +84,56 @@ export const xmlToAction = (file : string, bundlePath: string, name: string, com
     }
     if (apiVersion != "6.0.0") {
         console.warn(`WARN  The api version (${apiVersion}) specified in file "${file}" for ${type} ${scriptName}, `
-        + "might not be supported. Currently well supported api version is 6.0.0. Continuing to process as per 6.0.0.");
+            + "might not be supported. Currently well supported api version is 6.0.0. Continuing to process as per 6.0.0.");
     }
-    let returnType = {name: null, type: resultType, description: getReturnDescriptionFromComment(file, resultType, comment, false)};
+    let returnType = { name: null, type: resultType, description: getReturnDescriptionFromComment(file, resultType, comment, false) };
 
-    let nativeElement : t.VroActionData =
-    {
-        version:      version,
-        params:       params,
-        returnType:   returnType,
-        runtime: getScriptRuntime(runtime),
-        timeout,
-        memoryLimit,
-        inline: inline,
-        bundle: getScriptBundle(file, bundlePath, entryHandler, comment),
-    } as t.VroActionData;
+    let nativeElement: t.VroActionData =
+        {
+            version: version,
+            params: params,
+            returnType: returnType,
+            runtime: getScriptRuntime(runtime),
+            timeout,
+            memoryLimit,
+            inline: inline,
+            bundle: getScriptBundle(file, bundlePath, entryHandler, comment),
+        } as t.VroActionData;
     return nativeElement;
 
 }
 
-export function getScriptRuntime(runtime: string) : t.VroScriptRuntime {
+export function getScriptRuntime(runtime: string): t.VroScriptRuntime {
     if (runtime == null) {
-        return { lang: t.Lang.javascript, version: ""};
+        return { lang: t.Lang.javascript, version: "" };
     }
     runtime = runtime.trim();
     let index = runtime.indexOf(":");
-    let langString  = index == -1 ? runtime : runtime.substring(0, index);
-    let langVersion = index == -1 ? "" : index >= runtime.length -1 ? "" : runtime.substring(index+1);
-    langString  = langString.toLowerCase().trim();
+    let langString = index == -1 ? runtime : runtime.substring(0, index);
+    let langVersion = index == -1 ? "" : index >= runtime.length - 1 ? "" : runtime.substring(index + 1);
+    langString = langString.toLowerCase().trim();
     langVersion = langVersion.toLowerCase().trim();
     let defaultVersion = "";
-    let lang : t.Lang = t.Lang[langString];
+    let lang: t.Lang = t.Lang[langString];
     switch (lang) {
-        case t.Lang.javascript: defaultVersion = "";                  break;
-        case t.Lang.node:       defaultVersion = "12";                break;
-        case t.Lang.powercli:   defaultVersion = "11-powershell-6.2"; break;
-        case t.Lang.python:     defaultVersion = "3.7";               break;
-        default:  throw new Error(`Unsupported runtime language "${langString}". Only supported languages are "javascript", "node", "powercli" and "python".`);
+        case t.Lang.javascript: defaultVersion = ""; break;
+        case t.Lang.node: defaultVersion = "12"; break;
+        case t.Lang.powercli: defaultVersion = "11-powershell-6.2"; break;
+        case t.Lang.python: defaultVersion = "3.7"; break;
+        default: throw new Error(`Unsupported runtime language "${langString}". Only supported languages are "javascript", "node", "powercli" and "python".`);
     };
-    return {lang: lang, version: langVersion != "" ? langVersion : defaultVersion}
+    return { lang: lang, version: langVersion != "" ? langVersion : defaultVersion }
 }
 
-function getScriptInline(file : string, element : xmldoc.XmlElement, comment :string, lazy: boolean) : t.VroScriptInline {
+function getScriptInline(file: string, element: xmldoc.XmlElement, comment: string, lazy: boolean): t.VroScriptInline {
 
-    let scriptSource : string = element.val;
-    let scriptStartLine : number = element.line;
-    let scriptStartIndex : number = element.column;
+    let scriptSource: string = element.val;
+    let scriptStartLine: number = element.line;
+    let scriptStartIndex: number = element.column;
     let lines: Array<string> = scriptSource.split("\n");
-    let lastLine = lines[lines.length-1];
-    let scriptEndLine : number = scriptStartLine + lines.length;
-    let scriptEndIndex : number = -1;
+    let lastLine = lines[lines.length - 1];
+    let scriptEndLine: number = scriptStartLine + lines.length;
+    let scriptEndIndex: number = -1;
     if (lines.length <= 1) {
         scriptEndLine = scriptStartLine;
         scriptEndIndex = scriptStartIndex + lastLine.length;
@@ -140,14 +141,14 @@ function getScriptInline(file : string, element : xmldoc.XmlElement, comment :st
         scriptEndLine = scriptStartLine + lines.length - 1;
         scriptEndIndex = lastLine.length;
     }
-    return  {
+    return {
         actionSource: lazy ? null : scriptSource,
-        sourceFile:   file,
-        sourceStartLine:  scriptStartLine,
+        sourceFile: file,
+        sourceStartLine: scriptStartLine,
         sourceStartIndex: scriptStartIndex,
-        sourceEndLine:    scriptEndLine,
-        sourceEndIndex:   scriptEndIndex,
-        getActionSource: function (action : t.VroActionData):string {
+        sourceEndLine: scriptEndLine,
+        sourceEndIndex: scriptEndIndex,
+        getActionSource: function (action: t.VroActionData): string {
             let jsFile = action.inline.sourceFile;
             let startLine = action.inline.sourceStartLine;
             let startIndex = action.inline.sourceStartIndex;
@@ -167,7 +168,7 @@ function getScriptInline(file : string, element : xmldoc.XmlElement, comment :st
     }
 }
 
-function getScriptBundle(file: string, bundlePath: string, entry: string, comment : string) : t.VroScriptBundle {
+function getScriptBundle(file: string, bundlePath: string, entry: string, comment: string): t.VroScriptBundle {
     if (exist(bundlePath)) {
         if (entry == null) {
             throw new Error(`Cannot find entry handler (entry-point) for script bundle "${bundlePath}". Please check for entry-point tag in the corresponding data file (metadata file): "${file}".`);
@@ -184,12 +185,12 @@ function getScriptBundle(file: string, bundlePath: string, entry: string, commen
     return null;
 }
 
-function getActionBodyFromSourceIndexes(source : string, startLine : number, startIndex : number, endLine : number, endIndex : number) : string {
+function getActionBodyFromSourceIndexes(source: string, startLine: number, startIndex: number, endLine: number, endIndex: number): string {
     if (!source) {
         return "";
     }
-    let lines : Array<string> = source.split("\n");
-    let filtered : Array<string> = [];
+    let lines: Array<string> = source.split("\n");
+    let filtered: Array<string> = [];
     let len = lines.length;
     for (let i = 0; i < len; i++) {
         let line = lines.shift();
@@ -203,15 +204,15 @@ function getActionBodyFromSourceIndexes(source : string, startLine : number, sta
             filteredLine = line.substring(startIndex);
         } else if (i == endLine) {
             filteredLine = line.substring(0, endIndex);
-       } else {
-           filteredLine = line;
-       }
-       filtered.push(filteredLine);
+        } else {
+            filteredLine = line;
+        }
+        filtered.push(filteredLine);
     }
     return filtered.join("\n");
 }
 
-function getJavadocFromComment(file : string, comment : string) : any {
+function getJavadocFromComment(file: string, comment: string): any {
     if (comment == null) {
         return null;
     }
@@ -222,7 +223,7 @@ function getJavadocFromComment(file : string, comment : string) : any {
     }
 }
 
-function getBundlePathFromComment(comment : string) : any {
+function getBundlePathFromComment(comment: string): any {
     if (comment == null) {
         return null;
     }
@@ -233,22 +234,23 @@ function getBundlePathFromComment(comment : string) : any {
     }
 }
 
-export const getCommentFromJavadoc = (comment:string, bundle: string, returnType:t.VroActionParameter, javadoc:any) : string => {
-    let obj : any = {
+export const getCommentFromJavadoc = (comment: string, bundle: string, returnType: t.VroActionParameter, javadoc: any): string => {
+    let obj: any = {
         comment: comment,
-        returnType:  returnType,
+        returnType: returnType,
         bundle: bundle,
         javadoc: javadoc,
         crc: null
     };
-    obj.crc = (CRC.str(JSON.stringify(obj))& 0x7FFFFFFF).toString(16);
-    return JSON.stringify(obj, null, 2);
+    obj.crc = (CRC.str(JSON.stringify(obj)) & 0x7FFFFFFF).toString(16);
+
+    return JSON.stringify(obj, null, JSON_MINOR_IDENT);
 }
 
-function getReturnDescriptionFromComment(file : string, expectedResultType:string, comment: string, dump: boolean) : string {
+function getReturnDescriptionFromComment(file: string, expectedResultType: string, comment: string, dump: boolean): string {
     try {
-        let obj : any = JSON.parse(comment);
-        let resultType  = obj?.returnType?.type;
+        let obj: any = JSON.parse(comment);
+        let resultType = obj?.returnType?.type;
         if (resultType != expectedResultType) {
             return "";
         }
@@ -258,17 +260,24 @@ function getReturnDescriptionFromComment(file : string, expectedResultType:strin
             return "";
         }
         let description = obj?.returnType?.description;
-        return description == null ? "" : description;
+        return description ?? "";
     } catch (e) {
         return "";
     }
 }
 
-function fileCanRead(file:string) : boolean {
+function fileCanRead(file: string): boolean {
     try {
         fs.accessSync(file, fs.constants.R_OK);
         return true;
     } catch (e) {
         return false;
     }
+}
+
+export function getWorkflowItems(workflowDataFile: string, type: string): string[] {
+    const wfItems: xmldoc.XmlElement[] = exist(workflowDataFile) ? xml(read(workflowDataFile)).childrenNamed("workflow-item") : [];
+    const inputWfItems = wfItems.filter(item => item.attr.type === type);
+
+    return inputWfItems.filter(item => item?.attr?.name !== null && item?.attr?.name !== undefined).map(item => item.attr.name);
 }

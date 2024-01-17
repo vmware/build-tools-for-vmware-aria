@@ -16,9 +16,9 @@ import * as Path from "path";
 import * as FileSystem from "fs-extra";
 import * as winston from 'winston';
 import * as glob from "glob";
+import { LOGGER_PREFIX } from "../constants";
 
 export class CleanDefinition {
-
     //Add here others definitions to be removed
     //Each empty definition can not contain white spaces
     private emptyDefinition = [
@@ -30,17 +30,17 @@ export class CleanDefinition {
     public removeEmptyDefinitions(vroJsFolderPath: string): void {
         const JS_EXTENSION = ".js";
 
-        winston.loggers.get("vrbt").debug(`Base Path : "${vroJsFolderPath}"`);
+        winston.loggers.get(LOGGER_PREFIX).debug(`Base Path : "${vroJsFolderPath}"`);
         let baseDir = Path.join(vroJsFolderPath, "src", "main", "resources");
         glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)).forEach(jsFile => {
-            var content = FileSystem.readFileSync(jsFile);
+            let content = FileSystem.readFileSync(jsFile);
             let source = content.toString();
 
             if (this.isVroEmptyAction(source)) {
                 try {
                     if (FileSystem.existsSync(jsFile)) {
                         FileSystem.unlinkSync(jsFile);
-                        winston.loggers.get("vrbt").info(`File deleted : "${jsFile}"`);
+                        winston.loggers.get(LOGGER_PREFIX).info(`File deleted : "${jsFile}"`);
                     }
                 }
                 catch (error) {
@@ -54,7 +54,7 @@ export class CleanDefinition {
     private isVroEmptyAction(fileContent: string): boolean {
         let result = false;
         {
-            var stringWithoutLineBreaks = fileContent
+            let stringWithoutLineBreaks = fileContent
                 .replace(/(\r\n|\n|\r)/gm, "")
                 .replace(/ /g, "")
                 .trim();

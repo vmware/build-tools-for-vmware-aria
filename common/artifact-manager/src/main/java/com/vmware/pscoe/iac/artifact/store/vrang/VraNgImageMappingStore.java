@@ -77,14 +77,18 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+
+				String regionName=restClient.getRegion(regionId).getName();
+
+
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
 				List<VraNgImageMapping> imageMappings = imagesByRegionId.get(regionId)
 					.stream()
 					.map(this::prepareMappingSerialization)
 					.collect(Collectors.toList());
 
-					logger.info("Image mappings to export: {}", 
+					logger.info("Image mappings to export: {}",
 					imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
 
 				imageMappings.forEach(imageMapping ->
@@ -115,9 +119,9 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 			regionsInCloudAccount.forEach(regionId -> {
 
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
-
+				String regionName =this.restClient.getRegion(regionId).getName();
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
 				List<VraNgImageMapping> imageMappings = imagesByRegionId.get(regionId)
 					.stream()
@@ -125,7 +129,10 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 					.map(this::prepareMappingSerialization)
 					.collect(Collectors.toList());
 
-				logger.info("Image mappings to export: {}", 
+
+
+
+				logger.info("Image mappings to export: {}",
 					imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
 
 				imageMappings.forEach(imageMapping ->
@@ -205,10 +212,16 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
                         .filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(), importTags))
                         .filter(cloudAccount -> cloudAccount.getType().equals(cloudRegionProfile.getRegionType()))
                         .forEach(cloudAccount -> cloudAccount.getRegionIds()
-                                .forEach(regionId -> this.importImageProfilesInRegion(
-                                        regionId,
-                                        regionProfileDir,
-                                        imageProfilesByRegion)));
+							.forEach(regionId ->{
+									String regionName=this.restClient.getRegion(regionId).getName();
+									if(regionName.equals(cloudRegionProfile.getRegionName())) {
+										this.importImageProfilesInRegion(
+											regionId,
+											regionProfileDir,
+											imageProfilesByRegion);
+									}
+								}
+							));
             } catch (IOException e) {
                 e.printStackTrace();
             }

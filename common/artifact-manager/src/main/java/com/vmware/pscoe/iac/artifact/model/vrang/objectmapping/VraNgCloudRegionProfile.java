@@ -21,6 +21,7 @@ public class VraNgCloudRegionProfile {
 
     private String cloudAccountId;
     private String regionId;
+	private String regionName;
     private String regionType;
     private List<String> tags;
 
@@ -44,6 +45,13 @@ public class VraNgCloudRegionProfile {
         this.regionId = regionId;
     }
 
+	public String getRegionName() {
+		return regionName;
+	}
+
+	public void setRegionName(String regionName) {
+		this.regionName = regionName;
+	}
     public String getRegionType() {
         return regionType;
     }

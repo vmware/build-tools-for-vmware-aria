@@ -26,6 +26,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.VraNgRegionMockBuilder;
 
 import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Blue;
 import org.junit.Rule;
@@ -118,6 +119,11 @@ public class VraNgStorageProfileStoreTest {
 		StorageProfileMockBuilder storageBuilder = new StorageProfileMockBuilder();
 		VraNgStorageProfile storageProfile = storageBuilder.setName("smallStorageMock").build();
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		Map<String, List<VraNgStorageProfile>> mockStorageProfilesByRegionId = new HashMap<String, List<VraNgStorageProfile>>();
 		List<VraNgStorageProfile> storageProfiles = new ArrayList<VraNgStorageProfile>();
 		storageProfiles.add(storageProfile);
@@ -127,6 +133,7 @@ public class VraNgStorageProfileStoreTest {
 		when(restClient.getAllStorageProfilesByRegion()).thenReturn(mockStorageProfilesByRegionId);
 		when(restClient.getSpecificStorageProfile(anyString(), anyString())).thenReturn(storageProfile);
 		when(restClient.getFabricEntityName(anyString())).thenReturn("mockedFabricEntity");
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 
 		// TEST
 		store.exportContent(cloudAccounts);
@@ -176,6 +183,11 @@ public class VraNgStorageProfileStoreTest {
 		VraNgStorageProfile bigStorageProfile = bigStorageBuilder.setName("bigStorageMock")
 				.setPropertyInRawData("id", "bigId").build();
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		Map<String, List<VraNgStorageProfile>> mockStorageProfilesByRegionId = new HashMap<String, List<VraNgStorageProfile>>();
 		List<VraNgStorageProfile> storageProfiles = new ArrayList<VraNgStorageProfile>();
 		storageProfiles.add(smallStorageProfile);
@@ -187,7 +199,7 @@ public class VraNgStorageProfileStoreTest {
 		when(restClient.getSpecificStorageProfile(anyString(), eq("smallId"))).thenReturn(smallStorageProfile);
 		when(restClient.getSpecificStorageProfile(anyString(), eq("bigId"))).thenReturn(bigStorageProfile);
 		when(restClient.getFabricEntityName(anyString())).thenReturn("mockedFabricEntity");
-
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 		// TEST
 		store.exportContent(cloudAccounts);
 
@@ -239,6 +251,11 @@ public class VraNgStorageProfileStoreTest {
 		StorageProfileMockBuilder bigStorageBuilder = new StorageProfileMockBuilder();
 		VraNgStorageProfile bigStorageProfile = bigStorageBuilder.setName("bigStorageMock")
 				.setPropertyInRawData("id", "bigId").build();
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 
 		Map<String, List<VraNgStorageProfile>> mockStorageProfilesByRegionId = new HashMap<String, List<VraNgStorageProfile>>();
 		List<VraNgStorageProfile> storageProfiles = new ArrayList<VraNgStorageProfile>();
@@ -251,6 +268,7 @@ public class VraNgStorageProfileStoreTest {
 		when(restClient.getSpecificStorageProfile(anyString(), eq("smallId"))).thenReturn(smallStorageProfile);
 		when(restClient.getSpecificStorageProfile(anyString(), eq("bigId"))).thenReturn(bigStorageProfile);
 		when(restClient.getFabricEntityName(anyString())).thenReturn("mockedFabricEntity");
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 
 		// TEST
 		store.exportContent(cloudAccounts);

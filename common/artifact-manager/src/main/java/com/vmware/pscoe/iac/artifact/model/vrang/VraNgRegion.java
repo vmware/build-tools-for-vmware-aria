@@ -19,15 +19,21 @@ public class VraNgRegion {
 
     private final String id;
     private final String cloudAccountId;
+	private final String name;
 
-    public VraNgRegion(String id, String cloudAccountId) {
-        this.id = id;
-        this.cloudAccountId = cloudAccountId;
-    }
+    public VraNgRegion(String id, String cloudAccountId, String regionName) {
+		this.id = id;
+		this.cloudAccountId = cloudAccountId;
+		this.name=regionName;
+	}
 
     public String getId() {
         return id;
     }
+
+	public String getName() {
+		return name;
+	}
 
     public String getCloudAccountId() {
         return cloudAccountId;

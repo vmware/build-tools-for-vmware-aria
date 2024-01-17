@@ -39,6 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.VraNgRegionMockBuilder;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -210,8 +211,14 @@ public class VraNgRegionalContentStoreTest {
 		List<String> flavorMappingNames = new ArrayList<>();
 		flavorMappingNames.add("smallMock");
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		when(restClient.getAllFlavorMappingsByRegion()).thenReturn(mockedFlavorsByRegion);
 		when(vraNgPackageDescriptor.getFlavorMapping()).thenReturn(flavorMappingNames);
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 
 
 		//ImageMapping
