@@ -147,6 +147,14 @@ Reference: [VMware Cloud Director 10.5 Release Notes](https://docs.vmware.com/en
 #### New Behavior
 * When fetching catalog items from vRA server and the page size is below the available items, the result contains unique items only.
 
+### Fix Install vro package fails with 404 not found in case vro_server=vro-l-01a is used not FQDN
+
+#### Previous Behavior
+* When installing a package on a standalone vRO with environment.properties file with priperty "vro_server" containing hostname instead of FQDN an error "404 Not Found 404 page not found" appears.
+
+#### New Behavior
+* When installing a package on a standalone vRO with environment.properties file with priperty "vro_server" containing hostname instead of FQDN an error "Invalid/Unreachable FQDN or IP address" appears.
+
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 

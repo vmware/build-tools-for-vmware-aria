@@ -4,6 +4,7 @@
 * [artifact-manager] IAC-802 - Republish the same tenants on VCD Plugin upgrade.
 
 ### Fixes
+* [artifact-manager] IAC-779 / Install vro package fails with 404 not found in case vro_server=vro-l-01a is used not FQDN
 * [packages/ecmascript] IAC-803 / Updated `Array.from()` to create shallow clone and to properly handle string, Map and Set input.
 * [artifact-manager] IAC-799 / Wrong unix file path separators when creating backup path.
 * [artifact-manager] IAC-778 / Backup only works with current package version, otherwise throws exception 404 not found.
