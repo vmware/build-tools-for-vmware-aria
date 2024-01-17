@@ -137,6 +137,14 @@ Reference: [VMware Cloud Director 10.5 Release Notes](https://docs.vmware.com/en
 #### New Behavior
 * When fetching catalog items from vRA server and the page size is below the available items, the result contains unique items only.
 
+### Fix the overwrite/change of different regions' image mapping while importing image mapping folders to VRA server
+
+#### Previous Behavior
+  when importing image mapping to VRA server ,the importing procedure does not pick up the right image mapping folder corresponding to each region ,which overwrites or add images of regions from  different regions .
+#### New Behavior
+  * store the region name in src-region-profile.json while fetching from VRA server .
+  * use the stored region name to pick the corresponding image mapping folder of the region which is being imported to VRA server .
+
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 

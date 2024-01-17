@@ -7,6 +7,7 @@
 * [artifact-manager] IAC-799 / Wrong unix file path separators when creating backup path.
 * [artifact-manager] IAC-778 / Backup only works with current package version, otherwise throws exception 404 not found.
 * [artifact-manager] 211 / A better error is thrown now in case of an error when 2 blueprints with the same name exist in a single project on the server.
+* [artifact-manager] 207 / Last Region image mapping overwrites the value for all other regions.
 * [vCD-NG] 166 / fix VMware Cloud Director API version 38.0 and later do not support the /api/sessions API login endpoint
 * [installer] 133 / Delete old packages fails with 401 error in case vro is embedded.
 
