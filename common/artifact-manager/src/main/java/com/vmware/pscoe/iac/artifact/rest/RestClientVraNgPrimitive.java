@@ -1101,7 +1101,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonObject ob = root.getAsJsonObject();
 			String cloudAccountId = getLinkCloudAccountId(ob);
 			String regionid = ob.get("id").getAsString();
-			return new VraNgRegion(regionid, cloudAccountId);
+			String regionName= ob.get("name").getAsString();
+			return new VraNgRegion(regionid, cloudAccountId,regionName);
 		}
 		return null;
 	}

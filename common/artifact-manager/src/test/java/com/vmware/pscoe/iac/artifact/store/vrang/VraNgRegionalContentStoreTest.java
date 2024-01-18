@@ -39,7 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
-
+import com.vmware.pscoe.iac.artifact.helpers.stubs.VraNgRegionMockBuilder;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -202,6 +202,11 @@ public class VraNgRegionalContentStoreTest {
 		FlavorMappingMockBuilder flavorBuilder = new FlavorMappingMockBuilder();
 		flavorBuilder.setName("smallMock");
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		Map<String, List<VraNgFlavorMapping>> mockedFlavorsByRegion = new HashMap<String, List<VraNgFlavorMapping>>();
 		List<VraNgFlavorMapping> flavorMappings = new ArrayList<VraNgFlavorMapping>();
 		flavorMappings.add(flavorBuilder.build());
@@ -212,7 +217,7 @@ public class VraNgRegionalContentStoreTest {
 
 		when(restClient.getAllFlavorMappingsByRegion()).thenReturn(mockedFlavorsByRegion);
 		when(vraNgPackageDescriptor.getFlavorMapping()).thenReturn(flavorMappingNames);
-
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 
 		//ImageMapping
 		ImageMappingMockBuilder imageBuilder = new ImageMappingMockBuilder();
@@ -318,6 +323,11 @@ public class VraNgRegionalContentStoreTest {
 		FlavorMappingMockBuilder flavorBuilder = new FlavorMappingMockBuilder();
 		flavorBuilder.setName("smallMock");
 
+		VraNgRegionMockBuilder regionBuilder = new VraNgRegionMockBuilder();
+		regionBuilder.setCloudAccountId("mockedCloudAccountId");
+		regionBuilder.setId("mockedRegionId1");
+		regionBuilder.setRegionName("mockedRegionName");
+
 		Map<String, List<VraNgFlavorMapping>> mockedFlavorsByRegion = new HashMap<String, List<VraNgFlavorMapping>>();
 		List<VraNgFlavorMapping> flavorMappings = new ArrayList<VraNgFlavorMapping>();
 		flavorMappings.add(flavorBuilder.build());
@@ -326,7 +336,7 @@ public class VraNgRegionalContentStoreTest {
 
 		when(restClient.getAllFlavorMappingsByRegion()).thenReturn(mockedFlavorsByRegion);
 		when(vraNgPackageDescriptor.getFlavorMapping()).thenReturn(new ArrayList<>());
-
+		when( restClient.getRegion(any()) ).thenReturn(regionBuilder.build());
 
 		//ImageMapping
 		ImageMappingMockBuilder imageBuilder = new ImageMappingMockBuilder();

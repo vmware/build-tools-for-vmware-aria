@@ -49,7 +49,7 @@ public class VraNgRegionalContentUtils {
      * @param srcDir containing directory
      * @param cloudRegionProfileFolderName folder name for the region with region-specific content
      */
-    public static void createCloudRegionProfileFile(VraNgCloudAccount cloudAccount, String regionId, File srcDir, String cloudRegionProfileFolderName) {
+	public static void createCloudRegionProfileFile(VraNgCloudAccount cloudAccount, String regionId, File srcDir, String cloudRegionProfileFolderName,String regionName) {
         File cloudRegionProfile =
                 Paths.get(srcDir.getPath(), DIR_REGIONS, cloudRegionProfileFolderName, "src-region-profile.json").toFile();
 
@@ -62,6 +62,7 @@ public class VraNgRegionalContentUtils {
         cloudRegionProfileJson.setRegionId(regionId);
         cloudRegionProfileJson.setTags(cloudAccount.getTags());
         cloudRegionProfileJson.setRegionType(cloudAccount.getType());
+		cloudRegionProfileJson.setRegionName(regionName);
 
         String regionJson = gson.toJson(cloudRegionProfileJson, VraNgCloudRegionProfile.class);
 

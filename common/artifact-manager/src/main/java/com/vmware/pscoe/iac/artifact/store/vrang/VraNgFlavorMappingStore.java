@@ -81,7 +81,8 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+				String regionName=restClient.getRegion(regionId).getName();
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
 				List<VraNgFlavorMapping> flavorMappings = new ArrayList<>( flavorsByRegionId.get( regionId ) );
 
@@ -116,7 +117,8 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+				String regionName=restClient.getRegion(regionId).getName();
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
 				List<VraNgFlavorMapping> flavorMappings = flavorsByRegionId.get(regionId)
 					.stream()
