@@ -52,6 +52,7 @@ namespace vrotsc {
         execute: string;
         rollback: string;
         workflow: string;
+        if: string;
         rollbackCurrentTask: boolean;
     }
 
@@ -450,7 +451,7 @@ namespace vrotsc {
                 const rollbackItemId = nextItemId++;
                 const posX = 545 + index * 160;
 
-                if (task.workflow) {
+                if (task.workflow && !task.if) {
                     // Execute
                     items.push({
                         name: getItemName(executeItemId),
@@ -659,15 +660,24 @@ namespace vrotsc {
         }
 
         function buildExecuteScript(saga: SagaDescriptor, taskName: string, task: TaskDescriptor): string {
-            const builder = createStringBuilder();
+            let builder = createStringBuilder();
             builder.append(`System.log("Executing '${taskName}'...");`).appendLine();
+            const conditionalVar = task.if;
             if (task.execute) {
                 buildRequireModuleScript(builder, saga, task.execute);
                 builder.append(`var action = requireModule();`).appendLine();
                 builder.append(`try {`).appendLine();
                 builder.indent();
+                if (conditionalVar) {
+                    builder.append(`if (${ATT_STATE}["${conditionalVar}"]) {`).appendLine();
+                    builder.indent();
+                }
                 builder.append(`(action.execute || action.default)(${ATT_STATE});`).appendLine();
                 builder.unindent();
+                if (conditionalVar) {
+                    builder.append(`}`).appendLine();
+                    builder.unindent();
+                }
                 builder.append(`}`).appendLine();
                 builder.append(`catch (e) {`).appendLine();
                 builder.indent();
@@ -675,13 +685,16 @@ namespace vrotsc {
                 builder.append(`throw e;`).appendLine();
                 builder.unindent();
                 builder.append(`}`).appendLine();
+            } else if (task.workflow && conditionalVar) {
+                builder = buildWorkflowExecutor(builder, task.workflow, conditionalVar, false);
             }
             return builder.toString();
         }
 
         function buildRollbackScript(saga: SagaDescriptor, taskName: string, task: TaskDescriptor): string {
-            const builder = createStringBuilder();
+            let builder = createStringBuilder();
             builder.append(`System.log("Rolling back '${taskName}'...");`).appendLine();
+            const conditionalVar = task.if;
             if (task.rollback) {
                 buildRequireModuleScript(builder, saga, task.rollback);
                 builder.append(`try {`).appendLine();
@@ -695,6 +708,8 @@ namespace vrotsc {
                 builder.append(`System.error(e.toString() + ". Failed to rollback  '${taskName}'.");`).appendLine();
                 builder.unindent();
                 builder.append(`}`).appendLine();
+            } else if (task.workflow && conditionalVar) {
+                builder = buildWorkflowExecutor(builder, task.workflow, conditionalVar, true);
             }
             return builder.toString();
         }
@@ -730,6 +745,23 @@ namespace vrotsc {
             }
             builder.unindent();
             builder.append(`}`).appendLine();
+        }
+
+        function buildWorkflowExecutor(builder: StringBuilder, workflowId: string, conditionalVar: string, rollback: boolean): StringBuilder {
+            builder.append(`if (${ATT_STATE}["${conditionalVar}"]) {`).appendLine();
+            builder.indent();
+            builder.append(`var __global = System.getContext() || (function () { return this; }).call(null);`).appendLine();
+            builder.append(`var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES());`).appendLine();
+            builder.append(`var AsyncWorkflowExecutor_1 = VROES.importLazy("com.vmware.pscoe.library.ts.util/AsyncWorkflowExecutor");`).appendLine();
+            builder.append(`var props = new Properties();`).appendLine();
+            builder.append(`props.put("${PARAM_INPUT_DATA}", ${ATT_STATE});`).appendLine();
+            builder.append(`props.put("${PARAM_INPUT_ROLL}", ${rollback});`).appendLine();
+            builder.append(`var resultFuture = AsyncWorkflowExecutor_1._.AsyncWorkflowExecutor.execute("${workflowId}", props);`).appendLine();
+            builder.append(`var result = resultFuture.get();`).appendLine();
+            builder.append(`${ATT_STATE} = result.get("${ATT_STATE}");`).appendLine();
+            builder.unindent();
+            builder.append(`}`).appendLine();
+            return builder;
         }
 
         function buildWorkflowPresentation(workflow: WorkflowDescriptor, saga: SagaDescriptor): void {
