@@ -36,7 +36,7 @@ import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
 
 public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
-    private final Logger logger = LoggerFactory.getLogger(VraNgImageMappingStore.class);
+    private final Logger logger=LoggerFactory.getLogger(VraNgImageMappingStore.class);
 
     // =================================================
     // IMAGE MAPPINGS EXPORT
@@ -147,7 +147,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
      * @param imageMapping image mapping
      */
     private void exportToFileSystem(File sourceDir, String profileDirName, VraNgImageMapping imageMapping) {
-        File imageMappingFile =
+        File imageMappingFile=
                 Paths.get(sourceDir.getPath(), DIR_REGIONS, profileDirName, DIR_IMAGE_MAPPINGS, imageMapping.getName() + ".json").toFile();
 
         imageMappingFile.getParentFile().mkdirs();

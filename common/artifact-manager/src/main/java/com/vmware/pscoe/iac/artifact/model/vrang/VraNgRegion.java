@@ -15,14 +15,14 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * #L%
  */
 
-public class VraNgRegion {
+public class VraNgRegion{
 
     private final String id;
     private final String cloudAccountId;
 
 	private final String name;
 
-	public VraNgRegion(String id, String cloudAccountId, String regionName) {
+	public VraNgRegion(String id, String cloudAccountId, String regionName){
 		this.id=id;
 		this.cloudAccountId=cloudAccountId;
 		this.name=regionName;

@@ -42,7 +42,7 @@ import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
 
 public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 
-    private final Logger logger = LoggerFactory.getLogger(VraNgFlavorMappingStore.class);
+    private final Logger logger=LoggerFactory.getLogger(VraNgFlavorMappingStore.class);
 
     // =================================================
     // FLAVOR MAPPINGS EXPORT
@@ -54,7 +54,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 	 * @return list of flavor mappings
 	 */
 	@Override
-	protected List<String> getItemListFromDescriptor() {
+	protected List<String> getItemListFromDescriptor(){
 		return this.vraNgPackageDescriptor.getFlavorMapping();
 	}
 
@@ -62,7 +62,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 	 * Called when the List returned from getItemListFromDescriptor is empty
 	 */
 	@Override
-	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts ){
+	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts){
 		Map<String, List<VraNgFlavorMapping>> flavorsByRegionId=this.restClient.getAllFlavorMappingsByRegion();
 
 		cloudAccounts.forEach(cloudAccount ->{
@@ -71,9 +71,9 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 				.filter(flavorsByRegionId::containsKey)
 				.collect(Collectors.toList());
 
-			logger.debug("Exporting flavor mappings from cloud account {}", cloudAccount.getName());
+			logger.debug("Exporting flavor mappings from cloud account{}", cloudAccount.getName());
 
-			regionsInCloudAccount.forEach(regionId -> {
+			regionsInCloudAccount.forEach(regionId ->{
 
 				String profileDirName=cloudAccount.getName() + "~" + regionId;
 
@@ -81,9 +81,9 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 				String regionName=restClient.getRegion(regionId).getName();
 				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
-				List<VraNgFlavorMapping> flavorMappings=new ArrayList<>(flavorsByRegionId.get(regionId ) );
+				List<VraNgFlavorMapping> flavorMappings=new ArrayList<>(flavorsByRegionId.get(regionId));
 
-				logger.info("Flavour mappings to export: {}",
+				logger.info("Flavour mappings to export:{}",
 					flavorMappings.stream().map(VraNgFlavorMapping::getName).collect(Collectors.toList()));
 
 				flavorMappings.forEach(flavorMapping ->
@@ -99,18 +99,18 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 	 * @param	flavorMappingsToExport list of flavor mappings
 	 */
 	@Override
-	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts, List<String> flavorMappingsToExport ) {
-		Map<String, List<VraNgFlavorMapping>> flavorsByRegionId	= this.restClient.getAllFlavorMappingsByRegion();
+	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts, List<String> flavorMappingsToExport){
+		Map<String, List<VraNgFlavorMapping>> flavorsByRegionId	=this.restClient.getAllFlavorMappingsByRegion();
 
-		cloudAccounts.forEach(cloudAccount -> {
+		cloudAccounts.forEach(cloudAccount ->{
 			List<String> regionsInCloudAccount=cloudAccount.getRegionIds()
 				.stream()
 				.filter(flavorsByRegionId::containsKey)
 				.collect(Collectors.toList());
 
-			logger.debug("Exporting flavor mappings from cloud account {}", cloudAccount.getName());
+			logger.debug("Exporting flavor mappings from cloud account{}", cloudAccount.getName());
 
-			regionsInCloudAccount.forEach(regionId -> {
+			regionsInCloudAccount.forEach(regionId ->{
 				String profileDirName=cloudAccount.getName() + "~" + regionId;
 
 				File sourceDir=new File(vraNgPackage.getFilesystemPath());
@@ -122,7 +122,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 					.filter(fm -> flavorMappingsToExport.contains(fm.getName()))
 					.collect(Collectors.toList());
 
-				logger.info("Flavour mappings to export: {}",
+				logger.info("Flavour mappings to export:{}",
 					flavorMappings.stream().map(VraNgFlavorMapping::getName).collect(Collectors.toList()));
 
 				flavorMappings.forEach(flavorMapping ->
@@ -137,8 +137,8 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
      * @param profileDirName region directory
      * @param flavorMapping flavor mapping
      */
-    private void exportFlavorMappingToFileSystem(File sourceDir, String profileDirName, VraNgFlavorMapping flavorMapping) {
-        File flavorMappingFile =
+    private void exportFlavorMappingToFileSystem(File sourceDir, String profileDirName, VraNgFlavorMapping flavorMapping){
+        File flavorMappingFile=
                 Paths.get(sourceDir.getPath(), DIR_REGIONS, profileDirName, DIR_FLAVOR_MAPPINGS, flavorMapping.getName() + ".json").toFile();
 
         flavorMappingFile.getParentFile().mkdirs();
@@ -148,7 +148,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
             String flavorJson=gson.toJson(gson.fromJson(flavorMapping.getJson(), JsonObject.class));
             logger.info("Created file{}", Files.write(Paths.get(flavorMappingFile.getPath()), flavorJson.getBytes(), StandardOpenOption.CREATE));
         } catch(IOException e){
-            logger.error("Unable to store flavor mapping {} {}", flavorMapping.getName(), flavorMappingFile.getPath());
+            logger.error("Unable to store flavor mapping{}{}", flavorMapping.getName(), flavorMappingFile.getPath());
             throw new RuntimeException("Unable to store flavor mapping.", e);
         }
     }
@@ -164,7 +164,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
      */
     public void importContent(File sourceDirectory, List<String> importTags){
         File regionsFolder=Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();
-        if(!regionsFolder.exists()) {
+        if(!regionsFolder.exists()){
             logger.debug("Regions directory does not exist. Skipping import of flavor profiles...");
             return;
         }
@@ -173,10 +173,10 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
 
         Map<String, List<String>> flavorProfilesByRegion=this.restClient.getAllFlavorProfilesByRegion();
 
-        logger.debug("Flavor profiles by region: {}", flavorProfilesByRegion);
+        logger.debug("Flavor profiles by region:{}", flavorProfilesByRegion);
 
         // list all directories in the regions folder
-        Arrays.asList(regionsFolder.listFiles(File::isDirectory)).forEach(regionProfileDir -> {
+        Arrays.asList(regionsFolder.listFiles(File::isDirectory)).forEach(regionProfileDir ->{
             try{
                 VraNgCloudRegionProfile cloudRegionProfile=VraNgRegionalContentUtils.getCloudRegionProfile(regionProfileDir);
                 cloudAccounts
@@ -199,15 +199,15 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
      * @param flavorMappingsDir directory containing the flavor mappings for the region
      * @return list of flavor mappings
      */
-    private List<VraNgFlavorMapping> getFlavorMappingsFromFileSystem(File flavorMappingsDir) {
+    private List<VraNgFlavorMapping> getFlavorMappingsFromFileSystem(File flavorMappingsDir){
         List<VraNgFlavorMapping> flavorMappings=new ArrayList<>();
-        FileUtils.listFiles(flavorMappingsDir, new String[] { "json" }, false).forEach(fm -> {
+        FileUtils.listFiles(flavorMappingsDir, new String[]{ "json" }, false).forEach(fm ->{
             try{
-                File fmFile =(File) fm;
+                File fmFile=(File) fm;
                 String flavorMappingName=FilenameUtils.removeExtension(fmFile.getName());
                 String flavorMappingContent=FileUtils.readFileToString(fmFile, "UTF-8");
                 flavorMappings.add(new VraNgFlavorMapping(flavorMappingName, flavorMappingContent));
-            } catch(IOException e) {
+            } catch(IOException e){
                 e.printStackTrace();
             }
         });
@@ -223,34 +223,34 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore{
      * @param flavorProfilesByRegion list of existing flavor profiles on server
      */
     private void importFlavorProfilesInRegion(
-            String regionId, File regionProfileDir, Map<String, List<String>> flavorProfilesByRegion){
+            String regionId, File regionProfileDir, Map<String,List<String>> flavorProfilesByRegion){
 
-        File flavorMappingsDir=Paths.get(regionProfileDir.getPath(), DIR_FLAVOR_MAPPINGS).toFile();
+        File flavorMappingsDir=Paths.get(regionProfileDir.getPath(),DIR_FLAVOR_MAPPINGS).toFile();
         if(!flavorMappingsDir.exists()){
-            logger.debug("Flavor mappings directory {} does not exist in region {}. Skipping...", DIR_FLAVOR_MAPPINGS, regionId);
+            logger.debug("Flavor mappings directory {} does not exist in region{}. Skipping...",DIR_FLAVOR_MAPPINGS,regionId);
             return;
         }
         List<VraNgFlavorMapping> flavorMappings=this.getFlavorMappingsFromFileSystem(flavorMappingsDir);
 
-        logger.info("Creating/updating {} flavor mappings: {}",
-			flavorMappings.size(), flavorMappings.stream().map(VraNgFlavorMapping::getName).collect(Collectors.toList()));
+        logger.info("Creating/updating {} flavor mappings:{}",
+			flavorMappings.size(),flavorMappings.stream().map(VraNgFlavorMapping::getName).collect(Collectors.toList()));
 
         if(flavorProfilesByRegion.containsKey(regionId)){
-            this.updateFlavorProfilesWithMappings(flavorProfilesByRegion.get(regionId), flavorMappings);
+            this.updateFlavorProfilesWithMappings(flavorProfilesByRegion.get(regionId),flavorMappings);
         } else{
-            this.createFlavorProfilesWithMappings(regionId, flavorMappings);
+            this.createFlavorProfilesWithMappings(regionId,flavorMappings);
         }
     }
 
     private void updateFlavorProfilesWithMappings(
-            List<String> flavorProfilesToPatch, List<VraNgFlavorMapping> flavorMappings){
+            List<String> flavorProfilesToPatch,List<VraNgFlavorMapping> flavorMappings){
 
-        flavorProfilesToPatch.forEach(flavorProfileId -> {
-            this.restClient.updateFlavor(flavorProfileId, flavorMappings);
+        flavorProfilesToPatch.forEach(flavorProfileId ->{
+            this.restClient.updateFlavor(flavorProfileId,flavorMappings);
         });
     }
 
-    private void createFlavorProfilesWithMappings(String regionId, List<VraNgFlavorMapping> flavorMappings){
-        this.restClient.createFlavor(regionId, "Auto Generated Profile from Import", flavorMappings);
+    private void createFlavorProfilesWithMappings(String regionId,List<VraNgFlavorMapping> flavorMappings){
+        this.restClient.createFlavor(regionId,"Auto Generated Profile from Import",flavorMappings);
     }
 }

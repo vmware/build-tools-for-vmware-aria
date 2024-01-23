@@ -102,176 +102,176 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * logger.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVraNgPrimitive.class);
+	private static final Logger LOGGER=LoggerFactory.getLogger(RestClientVraNgPrimitive.class);
 	/**
 	 * SERVICE_IAAS_BASE.
 	 */
-	private static final String SERVICE_IAAS_BASE = "/iaas/api";
+	private static final String SERVICE_IAAS_BASE="/iaas/api";
 	/**
 	 * API_VERSION.
 	 */
-	private static final String API_VERSION = "/iaas/api/about";
+	private static final String API_VERSION="/iaas/api/about";
 	/**
 	 * SERVICE_VERSION.
 	 */
-	private static final String SERVICE_VERSION = "/vco/api/about";
+	private static final String SERVICE_VERSION="/vco/api/about";
 	/**
 	 * SERVICE_BLUEPRINT.
 	 */
-	private static final String SERVICE_BLUEPRINT = "/blueprint/api/blueprints";
+	private static final String SERVICE_BLUEPRINT="/blueprint/api/blueprints";
 	/**
 	 * SERVICE_BLUEPRINT_VERSIONS.
 	 */
-	private static final String SERVICE_BLUEPRINT_VERSIONS = "/versions";
+	private static final String SERVICE_BLUEPRINT_VERSIONS="/versions";
 	/**
 	 * SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION.
 	 */
-	private static final String SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION = "/actions/unrelease";
+	private static final String SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION="/actions/unrelease";
 	/**
 	 * SERVICE_SUBSCRIPTION.
 	 */
-	private static final String SERVICE_SUBSCRIPTION = "/event-broker/api/subscriptions";
+	private static final String SERVICE_SUBSCRIPTION="/event-broker/api/subscriptions";
 	/**
 	 * SERVICE_FLAVORS.
 	 */
-	private static final String SERVICE_FLAVORS = "/iaas/api/flavors";
+	private static final String SERVICE_FLAVORS="/iaas/api/flavors";
 	/**
 	 * SERVICE_FLAVOR_PROFILE.
 	 */
-	private static final String SERVICE_FLAVOR_PROFILE = "/iaas/api/flavor-profiles";
+	private static final String SERVICE_FLAVOR_PROFILE="/iaas/api/flavor-profiles";
 	/**
 	 * SERVICE_IMAGES.
 	 */
-	private static final String SERVICE_IMAGES = "/iaas/api/images";
+	private static final String SERVICE_IMAGES="/iaas/api/images";
 	/**
 	 * SERVICE_IMAGE_PROFILE.
 	 */
-	private static final String SERVICE_IMAGE_PROFILE = "/iaas/api/image-profiles";
+	private static final String SERVICE_IMAGE_PROFILE="/iaas/api/image-profiles";
 	/**
 	 * SERVICE_STORAGE_PROFILE.
 	 */
-	private static final String SERVICE_STORAGE_PROFILE = "/iaas/api/storage-profiles";
+	private static final String SERVICE_STORAGE_PROFILE="/iaas/api/storage-profiles";
 	/**
 	 * SERVICE_CLOUD_ACCOUNT.
 	 */
-	private static final String SERVICE_CLOUD_ACCOUNT = "/iaas/api/cloud-accounts";
+	private static final String SERVICE_CLOUD_ACCOUNT="/iaas/api/cloud-accounts";
 	/**
 	 * SERVICE_CLOUD_PROJECT.
 	 */
-	private static final String SERVICE_CLOUD_PROJECT = "/iaas/api/projects";
+	private static final String SERVICE_CLOUD_PROJECT="/iaas/api/projects";
 	/**
 	 * SERVICE_REGION.
 	 */
-	private static final String SERVICE_REGION = "/iaas/api/regions";
+	private static final String SERVICE_REGION="/iaas/api/regions";
 	/**
 	 * SERVICE_CATALOG_ADMIN_ITEMS.
 	 */
-	private static final String SERVICE_CATALOG_ADMIN_ITEMS = "/catalog/api/admin/items";
+	private static final String SERVICE_CATALOG_ADMIN_ITEMS="/catalog/api/admin/items";
 	/**
 	 * SERVICE_CATALOG_ENTITLEMENTS.
 	 */
-	private static final String SERVICE_CATALOG_ENTITLEMENTS = "/catalog/api/admin/entitlements";
+	private static final String SERVICE_CATALOG_ENTITLEMENTS="/catalog/api/admin/entitlements";
 	/**
 	 * SERVICE_CONTENT_SOURCE.
 	 */
-	private static final String SERVICE_CONTENT_SOURCE = "/catalog/api/admin/sources";
+	private static final String SERVICE_CONTENT_SOURCE="/catalog/api/admin/sources";
 	/**
 	 * SERVICE_CUSTOM_FORM.
 	 */
-	private static final String SERVICE_CUSTOM_FORM = "/form-service/api/forms";
+	private static final String SERVICE_CUSTOM_FORM="/form-service/api/forms";
 	/**
 	 * SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE.
 	 */
-	private static final String SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE = "/form-service/api/forms/fetchBySourceAndType";
+	private static final String SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE="/form-service/api/forms/fetchBySourceAndType";
 	/**
 	 * FETCH_REQUEST_FORM.
 	 */
-	private static final String FETCH_REQUEST_FORM = "/form-service/api/forms/designer/request";
+	private static final String FETCH_REQUEST_FORM="/form-service/api/forms/designer/request";
 	/**
 	 * SERVICE_VRA_INTEGRATIONS.
 	 */
-	private static final String SERVICE_VRA_INTEGRATIONS = "provisioning/uerp/provisioning/mgmt/endpoints";
+	private static final String SERVICE_VRA_INTEGRATIONS="provisioning/uerp/provisioning/mgmt/endpoints";
 	/**
 	 * SERVICE_VRA_ORGANIZATIONS.
 	 */
-	private static final String SERVICE_VRA_ORGANIZATIONS = "/csp/gateway/am/api/loggedin/user/orgs";
+	private static final String SERVICE_VRA_ORGANIZATIONS="/csp/gateway/am/api/loggedin/user/orgs";
 	/**
 	 * SERVICE_VRA_ORGANIZATION.
 	 */
-	private static final String SERVICE_VRA_ORGANIZATION = "/csp/gateway/am/api/orgs/";
+	private static final String SERVICE_VRA_ORGANIZATION="/csp/gateway/am/api/orgs/";
 	/**
 	 * SERVICE_CUSTOM_RESOURCES.
 	 */
-	private static final String SERVICE_CUSTOM_RESOURCES = "/form-service/api/custom/resource-types";
+	private static final String SERVICE_CUSTOM_RESOURCES="/form-service/api/custom/resource-types";
 	/**
 	 * SERVICE_RESOURCE_ACTIONS.
 	 */
-	private static final String SERVICE_RESOURCE_ACTIONS = "/form-service/api/custom/resource-actions";
+	private static final String SERVICE_RESOURCE_ACTIONS="/form-service/api/custom/resource-actions";
 	/**
 	 * SERVICE_ABX_ACTIONS.
 	 */
-	private static final String SERVICE_ABX_ACTIONS = "/abx/api/resources/actions";
+	private static final String SERVICE_ABX_ACTIONS="/abx/api/resources/actions";
 	/**
 	 * SERVICE_ABX_CONSTANT.
 	 */
-	private static final String SERVICE_ABX_CONSTANT = "/abx/api/resources/action-secrets";
+	private static final String SERVICE_ABX_CONSTANT="/abx/api/resources/action-secrets";
 	/**
 	 * SERVICE_ICON_DOWNLOAD.
 	 */
-	private static final String SERVICE_ICON_DOWNLOAD = "/icon/api/icons";
+	private static final String SERVICE_ICON_DOWNLOAD="/icon/api/icons";
 	/**
 	 * SERVICE_ICON_UPLOAD.
 	 */
-	private static final String SERVICE_ICON_UPLOAD = "/icon/api/icons";
+	private static final String SERVICE_ICON_UPLOAD="/icon/api/icons";
 	/**
 	 * SERVICE_CATALOG_ITEM_ICON_UPDATE.
 	 */
-	private static final String SERVICE_CATALOG_ITEM_ICON_UPDATE = "/catalog/api/admin/items";
+	private static final String SERVICE_CATALOG_ITEM_ICON_UPDATE="/catalog/api/admin/items";
 	/**
 	 * SERVICE_GET_PROPERTY_GROUPS.
 	 */
-	private static final String SERVICE_GET_PROPERTY_GROUPS = "/properties/api/property-groups";
+	private static final String SERVICE_GET_PROPERTY_GROUPS="/properties/api/property-groups";
 	/**
 	 * SERVICE_POST_PROPERTY_GROUP.
 	 */
-	private static final String SERVICE_POST_PROPERTY_GROUP = "/properties/api/property-groups";
+	private static final String SERVICE_POST_PROPERTY_GROUP="/properties/api/property-groups";
 	/**
 	 * SERVICE_PUT_PROPERTY_GROUP.
 	 */
-	private static final String SERVICE_PUT_PROPERTY_GROUP = "/properties/api/property-groups";
+	private static final String SERVICE_PUT_PROPERTY_GROUP="/properties/api/property-groups";
 	/**
 	 * SERVICE_SECRET.
 	 */
-	private static final String SERVICE_SECRET = "/platform/api/secrets";
+	private static final String SERVICE_SECRET="/platform/api/secrets";
 	/**
 	 * SERVICE_POLICIES.
 	 */
-	private static final String SERVICE_POLICIES = "/policy/api/policies";
+	private static final String SERVICE_POLICIES="/policy/api/policies";
 	/**
 	 * VRA_VERSION_MAJOR.
 	 */
-	private static final int VRA_VERSION_MAJOR = 8;
+	private static final int VRA_VERSION_MAJOR=8;
 	/**
 	 * VRA_VERSION_MINOR.
 	 */
-	private static final int VRA_VERSION_MINOR = 1;
+	private static final int VRA_VERSION_MINOR=1;
 	/**
 	 * VRA_CLOUD_HOSTS.
 	 */
-	private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com",
+	private static final List<String> VRA_CLOUD_HOSTS=Arrays.asList("console.cloud.vmware.com",
 			"api.mgmt.cloud.vmware.com");
 	/**
 	 * VRA_CLOUD_VERSION.
 	 */
-	private static final String VRA_CLOUD_VERSION = "cloud";
+	private static final String VRA_CLOUD_VERSION="cloud";
 	/**
 	 * CUSTOM_FORM_DEFAULT_FORMAT.
 	 */
-	private static final String CUSTOM_FORM_DEFAULT_FORMAT = "JSON";
+	private static final String CUSTOM_FORM_DEFAULT_FORMAT="JSON";
 	/**
 	 * CONTENT_SHARING_POLICY_TYPE.
 	 */
-	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
+	private static final String CONTENT_SHARING_POLICY_TYPE="com.vmware.policy.catalog.entitlement";
 	/**
 	 * configuration.
 	 */
@@ -401,7 +401,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (StringUtils.isNotEmpty(configuration.getProjectId())) {
 			LOGGER.debug("Using project id defined in configuration: {}", configuration.getProjectId());
 			this.projectId=this.getProjectIdPrimitive(configuration.getProjectId());
-			if (this.projectId ==null) {
+			if (this.projectId==null) {
 				throw new RuntimeException(String.format("Project id '%s' could not be found on target system",
 						configuration.getProjectId()));
 			}
@@ -414,7 +414,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 					"Either project name or project id must be supplied to the vRA NG configuration.");
 		}
 		this.projectId=this.getProjectIdPrimitive(projectName);
-		if (this.projectId ==null) {
+		if (this.projectId==null) {
 			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system",
 					configuration.getProjectName()));
 		}
@@ -487,7 +487,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected List<VraNgProject> getProjectsPrimitive(final String project) {
 		List<VraNgProject> allProjects=this.getProjectsPrimitive();
-		if (allProjects ==null || allProjects.isEmpty()) {
+		if (allProjects==null || allProjects.isEmpty()) {
 			return new ArrayList<>();
 		}
 
@@ -817,7 +817,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgCustomForm getVraWorkflowCustomFormPrimitive(final String formName) {
 		VraNgCatalogItem catalogItem=getCatalogItemByBlueprintNamePrimitive(formName);
-		if (catalogItem ==null || StringUtils.isEmpty(catalogItem.getId())) {
+		if (catalogItem==null || StringUtils.isEmpty(catalogItem.getId())) {
 			return null;
 		}
 		String customFormType=VraNgContentSourceType.VRO_WORKFLOW.toString();
@@ -1147,7 +1147,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// filter the results matching the blueprintName
 		JsonObject result=results.stream().filter(item -> {
 			JsonObject ob=item.getAsJsonObject();
-			if (ob == null) {
+			if (ob==null) {
 				return Boolean.FALSE;
 			}
 			String name=ob.get("name").getAsString().trim();
@@ -1155,7 +1155,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}).findFirst().orElse(null);
 
 		// return null if the blueprint is not found
-		if (result == null) {
+		if (result==null) {
 			return null;
 		}
 
@@ -1165,7 +1165,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String sourceName=result.get("sourceName").getAsString();
 		JsonObject typeObj=result.get("type").getAsJsonObject();
 		// additional sanity check
-		if (typeObj == null) {
+		if (typeObj==null) {
 			throw new RuntimeException(String.format("Unable to extract catalog item type for blueprint '%s'", blueprintName));
 		}
 		VraNgCatalogItemType type=new Gson().fromJson(typeObj, VraNgCatalogItemType.class);
@@ -1193,11 +1193,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		URI uri=getURI(uriBuilder);
 		ResponseEntity<String> response=restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
-		if (response == null) {
+		if (response==null) {
 			return Collections.emptyList();
 		}
 		JsonElement root=JsonParser.parseString(response.getBody());
-		if (root == null) {
+		if (root==null) {
 			return Collections.emptyList();
 		}
 		List<JsonObject> allResults=new ArrayList<>();
@@ -1208,7 +1208,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				allResults.add(content.get(i).getAsJsonObject());
 			}
 			// no further REST call is needed if all results are on one page
-			if (totalPages == 1) {
+			if (totalPages==1) {
 				return allResults;
 			}
 			uriBuilder.setParameter("page", String.valueOf(page + 1));
@@ -1339,7 +1339,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected List<VraNgCatalogEntitlement> getAllCatalogEntitlementsPrimitive() {
 		LOGGER.debug("Fetching all available catalog entitlements");
 		List<VraNgProject> allProjects=this.getProjectsPrimitive();
-		if (allProjects == null || allProjects.isEmpty()) {
+		if (allProjects==null || allProjects.isEmpty()) {
 			return new ArrayList<>();
 		}
 
@@ -1391,7 +1391,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		definition.put("name", entitlement.getName());
 		definition.put("type", entitlement.getType());
 		definition.put("sourceType", entitlement.getSourceType().toString());
-		definition.put("iconId", entitlement.getIconId() == null ? null : entitlement.getIconId());
+		definition.put("iconId", entitlement.getIconId()==null ? null : entitlement.getIconId());
 
 		Map<String, Object> payload=new LinkedHashMap<>();
 		if (!StringUtils.isEmpty(entitlement.getId())) {
@@ -1702,7 +1702,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		List<VraNgFlavorMapping> flavorMappingsToImport=this.getFlavorMappingsToImport(flavorProfileId,
 				flavorMappings);
 
-		if (flavorMappingsToImport.size() == 0) {
+		if (flavorMappingsToImport.size()==0) {
 			return;
 		}
 
@@ -1736,7 +1736,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			URISyntaxException, UnexpectedException {
 		ResponseEntity<String> flavorProfileById=this.getFlavorProfileById(flavorProfileId);
 
-		if (flavorProfileById == null || !flavorProfileById.hasBody()) {
+		if (flavorProfileById==null || !flavorProfileById.hasBody()) {
 			throw new UnexpectedException("Invalid flavor profile response.");
 		}
 
@@ -1936,7 +1936,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.setParameter("apiVersion", this.getVersion()).build();
 		List<VraNgImageMapping> imageMappingsToImport=this.getImageMappingsToImport(imageProfileId, imageMappings);
 
-		if (imageMappingsToImport.size()== 0) {
+		if (imageMappingsToImport.size()==0) {
 			return;
 		}
 
@@ -3031,7 +3031,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 						.filter(catItem -> catItem.getId().equals(id))
 						.findFirst()
 						.orElse(null);
-				if (catalogItem== null) {
+				if (catalogItem==null) {
 					throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with id '%s', please check vRA content sharing policies configuration.", id));
 				}
 				return catalogItem.getName();
@@ -3053,7 +3053,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		try {
 			VraNgContentSourceBase contentSource= this.getContentSources().stream()
 					.filter(cs -> cs.getName().equals(name)).findFirst().orElse(null);
-			if (contentSource== null) {
+			if (contentSource==null) {
 				throw new RuntimeException(String.format(
 						"Content Source with name  '%s' could not be found on target system",
 						name));
@@ -3063,7 +3063,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			VraNgCatalogItem catalogItem=this.getCatalogItemsForProjectPrimitive(this.getProjectId())
 					.stream().filter(catItem -> catItem.getName().equals(name))
 					.findFirst().orElse(null);
-			if (catalogItem== null) {
+			if (catalogItem==null) {
 				throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with name %s", name));
 			}
 			return catalogItem.getId();
