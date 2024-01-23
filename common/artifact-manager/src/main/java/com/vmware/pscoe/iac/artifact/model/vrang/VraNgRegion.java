@@ -23,30 +23,30 @@ public class VraNgRegion {
 	private final String name;
 
 	public VraNgRegion(String id, String cloudAccountId, String regionName) {
-		this.id = id;
-		this.cloudAccountId = cloudAccountId;
+		this.id=id;
+		this.cloudAccountId=cloudAccountId;
 		this.name=regionName;
 	}
 
-    public String getId() {
+    public String getId(){
         return id;
     }
 
-	public String getName() {
+	public String getName(){
 		return name;
 	}
 
-    public String getCloudAccountId() {
+    public String getCloudAccountId(){
         return cloudAccountId;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
+    public boolean equals(Object obj){
+        if (obj==null || !this.getClass().equals(obj.getClass())){
             return false;
         }
 
-        VraNgRegion other = (VraNgRegion) obj;
+        VraNgRegion other=(VraNgRegion) obj;
         return this.id.equals(other.getId());
     }
 

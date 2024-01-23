@@ -291,7 +291,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * mapper.
 	 */
-	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper=new ObjectMapper();
 	/**
 	 * productVersion.
 	 */
@@ -299,15 +299,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * default page size.
 	 */
-	private static final int PAGE_SIZE = 500;
+	private static final int PAGE_SIZE=500;
 	/**
 	 * vRA 8.12 version.
 	 */
-	private static final String VRA_8_12 = "8.12.0.21583018";
+	private static final String VRA_8_12="8.12.0.21583018";
 	/**
 	 * The not found error (used when retrieving the entitlements).
 	 */
-	private static final String NOT_FOUND_ERROR = "404";
+	private static final String NOT_FOUND_ERROR="404";
 	/**
 	 * isVraAbove812.
 	 */
@@ -320,10 +320,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param restTemp restTemplate
 	 */
 	protected RestClientVraNgPrimitive(final ConfigurationVraNg config, final RestTemplate restTemp) {
-		this.configuration = config;
-		this.restTemplate = restTemp;
-		this.productVersion = this.getProductVersion();
-		this.isVraAbove812 = this.isVraAbove(new Version(VRA_8_12));
+		this.configuration=config;
+		this.restTemplate=restTemp;
+		this.productVersion=this.getProductVersion();
+		this.isVraAbove812=this.isVraAbove(new Version(VRA_8_12));
 	}
 
 	/**
@@ -343,14 +343,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	@Override
 	public String getVersion() {
-		if (this.apiVersion != null && !this.apiVersion.isEmpty()) {
+		if (this.apiVersion !=null && !this.apiVersion.isEmpty()) {
 			return this.apiVersion;
 		}
 
-		URI url = getURI(getURIBuilder().setPath(API_VERSION));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(API_VERSION));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
+		this.apiVersion=JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
 		LOGGER.info("Detected API Version {}", this.apiVersion);
 
 		return this.apiVersion;
@@ -362,18 +362,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Version
 	 */
 	public Version getProductVersion() {
-		if (this.productVersion != null) {
+		if (this.productVersion !=null) {
 			return this.productVersion;
 		}
-		URI url = getURI(getURIBuilder().setPath(SERVICE_VERSION));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_VERSION));
 		if (this.isVraCloud(url)) {
 			// vRA Cloud doesn't have vRO services, hence the /vco/api/about is not
 			// available
-			this.productVersion = new Version(VRA_CLOUD_VERSION);
+			this.productVersion=new Version(VRA_CLOUD_VERSION);
 		} else {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+			ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 					String.class);
-			this.productVersion = new Version(JsonPath.parse(response.getBody()).read("$.version"));
+			this.productVersion=new Version(JsonPath.parse(response.getBody()).read("$.version"));
 		}
 
 		return this.productVersion;
@@ -400,21 +400,21 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		if (StringUtils.isNotEmpty(configuration.getProjectId())) {
 			LOGGER.debug("Using project id defined in configuration: {}", configuration.getProjectId());
-			this.projectId = this.getProjectIdPrimitive(configuration.getProjectId());
-			if (this.projectId == null) {
+			this.projectId=this.getProjectIdPrimitive(configuration.getProjectId());
+			if (this.projectId ==null) {
 				throw new RuntimeException(String.format("Project id '%s' could not be found on target system",
 						configuration.getProjectId()));
 			}
 
 			return this.projectId;
 		}
-		String projectName = configuration.getProjectName();
+		String projectName=configuration.getProjectName();
 		if (StringUtils.isEmpty(projectName)) {
 			throw new RuntimeException(
 					"Either project name or project id must be supplied to the vRA NG configuration.");
 		}
-		this.projectId = this.getProjectIdPrimitive(projectName);
-		if (this.projectId == null) {
+		this.projectId=this.getProjectIdPrimitive(projectName);
+		if (this.projectId ==null) {
 			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system",
 					configuration.getProjectName()));
 		}
@@ -433,7 +433,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return entities
 	 */
 	protected ResponseEntity<byte[]> downloadIconPrimitive(final String iconId) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_DOWNLOAD + "/" + iconId));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_ICON_DOWNLOAD + "/" + iconId));
 
 		return restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), byte[].class);
 	}
@@ -447,14 +447,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of responses
 	 */
 	protected ResponseEntity<String> uploadIconPrimitive(final File iconFile) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_ICON_UPLOAD));
-		HttpHeaders headers = new HttpHeaders();
+		URI url=getURI(getURIBuilder().setPath(SERVICE_ICON_UPLOAD));
+		HttpHeaders headers=new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+		MultiValueMap<String, Object> body=new LinkedMultiValueMap<>();
 		body.add("file", new FileSystemResource(iconFile));
 
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+		HttpEntity<MultiValueMap<String, Object>> requestEntity=new HttpEntity<>(body, headers);
 
 		return restTemplate.postForEntity(url, requestEntity, String.class);
 	}
@@ -471,11 +471,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected ResponseEntity<String> patchCatalogItemIconPrimitive(final VraNgCatalogItem catalogItem,
 			final String iconId) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ITEM_ICON_UPDATE + "/" + catalogItem.getId()));
-		Map<String, Object> map = new HashMap<>();
+		URI url=getURI(getURIBuilder().setPath(SERVICE_CATALOG_ITEM_ICON_UPDATE + "/" + catalogItem.getId()));
+		Map<String, Object> map=new HashMap<>();
 		map.put("iconId", iconId);
 
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 		return this.postJsonPrimitive(url, HttpMethod.PATCH, jsonBody);
 	}
 
@@ -486,8 +486,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of projects
 	 */
 	protected List<VraNgProject> getProjectsPrimitive(final String project) {
-		List<VraNgProject> allProjects = this.getProjectsPrimitive();
-		if (allProjects == null || allProjects.isEmpty()) {
+		List<VraNgProject> allProjects=this.getProjectsPrimitive();
+		if (allProjects ==null || allProjects.isEmpty()) {
 			return new ArrayList<>();
 		}
 
@@ -502,8 +502,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of projects
 	 */
 	protected List<VraNgProject> getProjectsPrimitive() {
-		Gson gson = new Gson();
-		List<VraNgProject> projects = this.getTotalElements(SERVICE_CLOUD_PROJECT, new HashMap<>())
+		Gson gson=new Gson();
+		List<VraNgProject> projects=this.getTotalElements(SERVICE_CLOUD_PROJECT, new HashMap<>())
 				.stream()
 				.map(jsonOb -> gson.fromJson(jsonOb, VraNgProject.class))
 				.collect(Collectors.toList());
@@ -518,7 +518,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Id of the project
 	 */
 	protected String getProjectIdPrimitive(final String project) {
-		List<VraNgProject> projects = getProjectsPrimitive(project);
+		List<VraNgProject> projects=getProjectsPrimitive(project);
 
 		return projects.stream().findFirst().isPresent() ? projects.stream().findFirst().get().getId() : null;
 	}
@@ -530,7 +530,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Name of the project
 	 */
 	protected String getProjectNamePrimitive(final String project) {
-		List<VraNgProject> projects = getProjectsPrimitive(project);
+		List<VraNgProject> projects=getProjectsPrimitive(project);
 
 		return projects.stream().findFirst().isPresent() ? projects.stream().findFirst().get().getName() : null;
 	}
@@ -541,13 +541,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return List of VraNg Blueprint Objects
 	 */
 	public List<VraNgBlueprint> getAllBlueprintsPrimitive() {
-		List<VraNgBlueprint> blueprints = new ArrayList<>();
-		List<JsonObject> results = this.getPagedContent(SERVICE_BLUEPRINT, new HashMap<>());
+		List<VraNgBlueprint> blueprints=new ArrayList<>();
+		List<JsonObject> results=this.getPagedContent(SERVICE_BLUEPRINT, new HashMap<>());
 
 		LOGGER.debug("Blueprints found on server: {}", results.size());
 		results.forEach(o -> {
-			JsonObject ob = o.getAsJsonObject();
-			String prjId = ob.get("projectId").getAsString();
+			JsonObject ob=o.getAsJsonObject();
+			String prjId=ob.get("projectId").getAsString();
 			if (getProjectId().equals(prjId)) {
 				blueprints.add(this.getBlueprintPrimitive(ob.get("id").getAsString()));
 			}
@@ -565,9 +565,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNgBlueprint
 	 */
 	public VraNgBlueprint getBlueprintPrimitive(final String id) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + id));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + id));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
 		return new Gson().fromJson(response.getBody(), VraNgBlueprint.class);
@@ -581,20 +581,20 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return String
 	 */
 	public String getBlueprintVersionContentPrimitive(final String blueprintId, final String version) {
-		URI url = getURI(getURIBuilder()
+		URI url=getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version)
 				.addParameter("orderBy", "updatedAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		String content = "";
+		String content="";
 		if (root.isJsonObject()) {
-			JsonObject jsonObject = root.getAsJsonObject();
+			JsonObject jsonObject=root.getAsJsonObject();
 			if (isJsonElementPresent(jsonObject.get("content"))) {
-				content = jsonObject.get("content").getAsString();
+				content=jsonObject.get("content").getAsString();
 			}
 		}
 
@@ -610,21 +610,21 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return String
 	 */
 	public String getBlueprintVersionsContent(final String blueprintId) {
-		URI url = getURI(getURIBuilder()
+		URI url=getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
 				.addParameter("$top", "1000")
 				.addParameter("orderBy", "createdAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		String content = "";
+		String content="";
 		if (root.isJsonObject()) {
-			JsonObject jsonObject = root.getAsJsonObject();
+			JsonObject jsonObject=root.getAsJsonObject();
 			if (isJsonElementPresent(jsonObject.get("content"))) {
-				content = jsonObject.get("content").toString();
+				content=jsonObject.get("content").toString();
 			}
 		}
 
@@ -639,7 +639,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return true if blueprint version present
 	 */
 	public Boolean isBlueprintVersionPresentPrimitive(final String blueprintId, final String version) {
-		URI url = getURI(getURIBuilder()
+		URI url=getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version));
 
 		try {
@@ -660,14 +660,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void releaseBlueprintVersionPrimitive(final String blueprintId, final String version)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder()
+		URI url=getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS));
 
-		Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map=new LinkedHashMap<>();
 		map.put("version", version);
 		map.put("release", true);
 
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 	}
 
@@ -680,7 +680,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder()
+		URI url=getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + versionId + "/" + SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
 	
 		try {
@@ -701,7 +701,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createBlueprintVersionPrimitive(final String blueprintId, final Map<String, Object> versionDetails)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS));
 		this.postJsonPrimitive(url, HttpMethod.POST, this.getJsonString(versionDetails));
 	}
 
@@ -713,10 +713,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	public String createBlueprintPrimitive(final VraNgBlueprint blueprint) throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_BLUEPRINT).build();
-		Map<String, Object> map = this.createBlueprintMap(blueprint);
-		String jsonBody = this.getJsonString(map);
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		URI url=getURIBuilder().setPath(SERVICE_BLUEPRINT).build();
+		Map<String, Object> map=this.createBlueprintMap(blueprint);
+		String jsonBody=this.getJsonString(map);
+		ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 		return new Gson().fromJson(response.getBody(), VraNgBlueprint.class).getId();
 	}
 
@@ -734,10 +734,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 			throw new RuntimeException("Blueprint id is missing.");
 		}
 
-		URI url = getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprint.getId()).build();
-		Map<String, Object> map = this.createBlueprintMap(blueprint);
-		String jsonBody = this.getJsonString(map);
-		ResponseEntity<String> response = this.putJsonPrimitive(url, jsonBody);
+		URI url=getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprint.getId()).build();
+		Map<String, Object> map=this.createBlueprintMap(blueprint);
+		String jsonBody=this.getJsonString(map);
+		ResponseEntity<String> response=this.putJsonPrimitive(url, jsonBody);
 		return new Gson().fromJson(response.getBody(), VraNgBlueprint.class).getId();
 	}
 
@@ -748,21 +748,21 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Blueprint Version.
 	 */
 	public String getBlueprintLastUpdatedVersionPrimitive(final String blueprintId) {
-		URI url = getURI(
+		URI url=getURI(
 				getURIBuilder()
 						.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
 						.addParameter("orderBy", "updatedAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		String lastVersion = null;
+		String lastVersion=null;
 		if (root.isJsonObject()) {
-			JsonArray responseContent = root.getAsJsonObject().getAsJsonArray("content");
+			JsonArray responseContent=root.getAsJsonObject().getAsJsonArray("content");
 			if (responseContent.size() > 0) {
-				lastVersion = responseContent.get(0).getAsJsonObject().get("version").getAsString();
+				lastVersion=responseContent.get(0).getAsJsonObject().get("version").getAsString();
 			}
 		}
 
@@ -777,19 +777,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public boolean isBlueprintReleasedPrimitive(final String blueprintId) {
 
-		final String statusReleased = "RELEASED";
+		final String statusReleased="RELEASED";
 
-		URI url = getURI(getURIBuilder()
+		URI url=getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
 				.addParameter("status", statusReleased));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
 		if (root.isJsonObject()) {
-			JsonArray responseContent = root.getAsJsonObject().getAsJsonArray("content");
+			JsonArray responseContent=root.getAsJsonObject().getAsJsonArray("content");
 			return responseContent.size() > 0;
 		}
 
@@ -803,9 +803,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Content Source ID.
 	 */
 	public String createOrUpdateContentSourcePrimitive(final VraNgContentSourceBase contentSource) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE));
-		Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, gson.toJson(contentSource));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE));
+		Gson gson=new GsonBuilder().setLenient().serializeNulls().create();
+		ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.POST, gson.toJson(contentSource));
 		return new Gson().fromJson(response.getBody(), contentSource.getType().getTypeClass()).getId();
 	}
 
@@ -816,12 +816,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNgCustom Form Object.
 	 */
 	protected VraNgCustomForm getVraWorkflowCustomFormPrimitive(final String formName) {
-		VraNgCatalogItem catalogItem = getCatalogItemByBlueprintNamePrimitive(formName);
-		if (catalogItem == null || StringUtils.isEmpty(catalogItem.getId())) {
+		VraNgCatalogItem catalogItem=getCatalogItemByBlueprintNamePrimitive(formName);
+		if (catalogItem ==null || StringUtils.isEmpty(catalogItem.getId())) {
 			return null;
 		}
-		String customFormType = VraNgContentSourceType.VRO_WORKFLOW.toString();
-		String customFormSourceId = catalogItem.getId();
+		String customFormType=VraNgContentSourceType.VRO_WORKFLOW.toString();
+		String customFormSourceId=catalogItem.getId();
 
 		return this.getCustomFormByTypeAndSourcePrimitive(customFormType, customFormSourceId);
 	}
@@ -834,10 +834,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgContentSource
 	 */
 	protected VraNgContentSource getBlueprintContentSourceForProjectPrimitive() {
-		Gson gson = new Gson();
+		Gson gson=new Gson();
 
-		Map<String, String> params = new HashMap<>();
-		String projectIdentifier = getProjectId();
+		Map<String, String> params=new HashMap<>();
+		String projectIdentifier=getProjectId();
 		params.put("projectId", projectIdentifier);
 		return this.getPagedContent(SERVICE_CONTENT_SOURCE, params)
 				.stream()
@@ -857,16 +857,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgContentSource
 	 */
 	protected List<VraNgContentSourceBase> getContentSourcesForProjectPrimitive(final String project) {
-		Gson gson = new Gson();
+		Gson gson=new Gson();
 
-		Map<String, String> params = new HashMap<>();
-		String csProjectId = StringUtils.isEmpty(project) ? getProjectId() : project;
+		Map<String, String> params=new HashMap<>();
+		String csProjectId=StringUtils.isEmpty(project) ? getProjectId() : project;
 		params.put("projectId", csProjectId);
 
 		return this.getPagedContent(SERVICE_CONTENT_SOURCE, params)
 				.stream()
 				.map(jsonOb -> {
-					VraNgContentSourceType type = VraNgContentSourceType.fromString(jsonOb.get(
+					VraNgContentSourceType type=VraNgContentSourceType.fromString(jsonOb.get(
 							"typeId").getAsString());
 					return gson.fromJson(jsonOb, type.getTypeClass());
 				})
@@ -881,10 +881,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected Map<String, List<VraNgContentSourceBase>> getContentSourcesForProjectsPrimitive(
 			final List<String> projects) {
-		Map<String, List<VraNgContentSourceBase>> retVal = new HashMap<>();
+		Map<String, List<VraNgContentSourceBase>> retVal=new HashMap<>();
 		for (String project : projects) {
-			List<VraNgContentSourceBase> contentSources = this.getContentSourcesForProjectPrimitive(project);
-			if (contentSources != null && !contentSources.isEmpty()) {
+			List<VraNgContentSourceBase> contentSources=this.getContentSourcesForProjectPrimitive(project);
+			if (contentSources !=null && !contentSources.isEmpty()) {
 				retVal.put(project, contentSources);
 			}
 		}
@@ -900,15 +900,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgCatalogItem
 	 */
 	protected List<VraNgCatalogItem> getCatalogItemsForProjectPrimitive(final String project) {
-		Gson gson = new Gson();
+		Gson gson=new Gson();
 
-		Map<String, String> params = new HashMap<>();
-		String ciProjectId = StringUtils.isEmpty(project) ? getProjectId() : project;
+		Map<String, String> params=new HashMap<>();
+		String ciProjectId=StringUtils.isEmpty(project) ? getProjectId() : project;
 		params.put("projectId", ciProjectId);
 
 		return this.getPagedContent(SERVICE_CATALOG_ADMIN_ITEMS, params)
 				.stream()
-				.filter(jsonOb -> jsonOb != null)
+				.filter(jsonOb -> jsonOb !=null)
 				.map(jsonOb -> gson.fromJson(jsonOb.toString(), VraNgCatalogItem.class))
 				.collect(Collectors.toList());
 	}
@@ -920,10 +920,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Content Source.
 	 */
 	protected Map<String, List<VraNgCatalogItem>> getCatalogItemsForProjectsPrimitive(final List<String> projects) {
-		Map<String, List<VraNgCatalogItem>> retVal = new HashMap<>();
+		Map<String, List<VraNgCatalogItem>> retVal=new HashMap<>();
 		for (String project : projects) {
-			List<VraNgCatalogItem> catalogItems = this.getCatalogItemsForProjectPrimitive(project);
-			if (catalogItems != null && !catalogItems.isEmpty()) {
+			List<VraNgCatalogItem> catalogItems=this.getCatalogItemsForProjectPrimitive(project);
+			if (catalogItems !=null && !catalogItems.isEmpty()) {
 				retVal.put(project, catalogItems);
 			}
 		}
@@ -940,15 +940,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void importCustomFormPrimitive(final VraNgCustomForm customForm, final String sourceId)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM));
 
-		String customFormFormat = CUSTOM_FORM_DEFAULT_FORMAT; // Some vro versions don't specify the format. Assuming
+		String customFormFormat=CUSTOM_FORM_DEFAULT_FORMAT; // Some vro versions don't specify the format. Assuming
 																// JSON format as default
-		if (customForm.getFormFormat() != null && !customForm.getFormFormat().equals("")) {
-			customFormFormat = customForm.getFormFormat();
+		if (customForm.getFormFormat() !=null && !customForm.getFormFormat().equals("")) {
+			customFormFormat=customForm.getFormFormat();
 		}
 
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map=new HashMap<>();
 		map.put("name", customForm.getName());
 		map.put("form", customForm.getForm());
 		map.put("sourceType", customForm.getSourceType());
@@ -958,7 +958,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		map.put("formFormat", customFormFormat);
 		map.put("styles", customForm.getStyles());
 
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 	}
@@ -972,7 +972,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected void importSubscriptionPrimitive(final String subscriptionName, final String subscriptionJson)
 			throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_SUBSCRIPTION).build();
+		URI url=getURIBuilder().setPath(SERVICE_SUBSCRIPTION).build();
 
 		this.postJsonPrimitive(url, HttpMethod.POST, subscriptionJson);
 	}
@@ -986,29 +986,29 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public Map<String, VraNgSubscription> getAllSubscriptionsPrimitive(final String filter) {
 		LOGGER.debug("Getting all subscriptions with filter: {}", filter);
 
-		Map<String, String> params = new HashMap<>();
+		Map<String, String> params=new HashMap<>();
 		params.put("$filter", filter);
-		List<JsonObject> allResults = this.getPagedContent(SERVICE_SUBSCRIPTION, params);
+		List<JsonObject> allResults=this.getPagedContent(SERVICE_SUBSCRIPTION, params);
 
-		Map<String, VraNgSubscription> subscriptions = new HashMap<>();
-		String projectIdentifier = getProjectId();
+		Map<String, VraNgSubscription> subscriptions=new HashMap<>();
+		String projectIdentifier=getProjectId();
 
 		allResults.forEach(ob -> {
-			Set<String> projectIds = new HashSet<>();
-			JsonElement constraints = ob.get("constraints");
-			if (constraints != null) {
-				JsonElement pIds = constraints.getAsJsonObject().get("projectId");
+			Set<String> projectIds=new HashSet<>();
+			JsonElement constraints=ob.get("constraints");
+			if (constraints !=null) {
+				JsonElement pIds=constraints.getAsJsonObject().get("projectId");
 				// Check if object and contents of object are not null
-				if (pIds != null && !pIds.isJsonNull()) {
+				if (pIds !=null && !pIds.isJsonNull()) {
 					pIds.getAsJsonArray().forEach(pId -> projectIds.add(pId.getAsString()));
 				}
 			}
 
-			JsonElement id = ob.get("id");
-			JsonElement name = ob.get("name");
+			JsonElement id=ob.get("id");
+			JsonElement name=ob.get("name");
 
 			if (projectIds.isEmpty() || (projectIds.contains(projectIdentifier) && id != null && name != null)) {
-				String json = ob.toString();
+				String json=ob.toString();
 				subscriptions.put(id.getAsString(),
 						new VraNgSubscription(id.getAsString(), name.getAsString(), json));
 			}
@@ -1024,30 +1024,30 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected List<VraNgCloudAccount> getAllCloudAccounts() throws URISyntaxException {
-		List<VraNgCloudAccount> retVal = new ArrayList<>();
+		List<VraNgCloudAccount> retVal=new ArrayList<>();
 
-		URI url = getURIBuilder().setPath(SERVICE_CLOUD_ACCOUNT).setParameter("apiVersion", this.getVersion()).build();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURIBuilder().setPath(SERVICE_CLOUD_ACCOUNT).setParameter("apiVersion", this.getVersion()).build();
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
 		if (!root.isJsonObject()) {
 			return retVal;
 		}
-		String organizationId = VraNgOrganizationUtil.getOrganization(this, configuration).getId();
+		String organizationId=VraNgOrganizationUtil.getOrganization(this, configuration).getId();
 		root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
-			JsonObject ob = o.getAsJsonObject();
+			JsonObject ob=o.getAsJsonObject();
 
-			JsonElement id = ob.get("id");
-			JsonElement name = ob.get("name");
-			JsonElement orgId = ob.get("orgId");
-			JsonElement type = ob.get("cloudAccountType");
-			JsonElement tagsElement = ob.get("tags");
-			JsonElement linksElement = ob.get("_links");
+			JsonElement id=ob.get("id");
+			JsonElement name=ob.get("name");
+			JsonElement orgId=ob.get("orgId");
+			JsonElement type=ob.get("cloudAccountType");
+			JsonElement tagsElement=ob.get("tags");
+			JsonElement linksElement=ob.get("_links");
 
 			if (orgId.getAsString().equals(organizationId)) {
-				List<String> tags = this.getTags(tagsElement);
-				List<String> regionIds = this.getRegions(linksElement);
+				List<String> tags=this.getTags(tagsElement);
+				List<String> regionIds=this.getRegions(linksElement);
 				retVal.add(new VraNgCloudAccount(id.getAsString(), name.getAsString(), type.getAsString(), regionIds,
 						tags));
 			}
@@ -1063,22 +1063,22 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNgRegion
 	 */
 	protected VraNgCloudAccount getCloudAccountPrimitive(final String id) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CLOUD_ACCOUNT + "/" + id));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(SERVICE_CLOUD_ACCOUNT + "/" + id));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
 		if (root.isJsonObject()) {
-			JsonObject ob = root.getAsJsonObject();
+			JsonObject ob=root.getAsJsonObject();
 
-			String cloudAccountId = ob.get("id").getAsString();
-			String name = ob.get("name").getAsString();
-			String type = ob.get("cloudAccountType").getAsString();
-			JsonElement tagsElement = ob.get("tags");
-			JsonElement linkElement = ob.get("_links");
+			String cloudAccountId=ob.get("id").getAsString();
+			String name=ob.get("name").getAsString();
+			String type=ob.get("cloudAccountType").getAsString();
+			JsonElement tagsElement=ob.get("tags");
+			JsonElement linkElement=ob.get("_links");
 
-			List<String> tags = this.getTags(tagsElement);
-			List<String> regionIds = this.getRegions(linkElement);
+			List<String> tags=this.getTags(tagsElement);
+			List<String> regionIds=this.getRegions(linkElement);
 
 			return new VraNgCloudAccount(cloudAccountId, name, type, regionIds, tags);
 		}
@@ -1092,16 +1092,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNgRegion
 	 */
 	protected VraNgRegion getRegionPrimitive(final String id) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_REGION + "/" + id));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(SERVICE_REGION + "/" + id));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
 		if (root.isJsonObject()) {
-			JsonObject ob = root.getAsJsonObject();
-			String cloudAccountId = getLinkCloudAccountId(ob);
-			String regionid = ob.get("id").getAsString();
-			String regionName= ob.get("name").getAsString();
+			JsonObject ob=root.getAsJsonObject();
+			String cloudAccountId=getLinkCloudAccountId(ob);
+			String regionid=ob.get("id").getAsString();
+			String regionName=ob.get("name").getAsString();
 			return new VraNgRegion(regionid, cloudAccountId,regionName);
 		}
 		return null;
@@ -1114,16 +1114,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNgSecret item
 	 */
 	protected VraNgSecret getSecretPrimitive(final String name) {
-		String queryString = String.format("$filter=name eq '%s' and projectId eq '%s'", name, getProjectId());
-		URI url = getURI(getURIBuilder().setPath(SERVICE_SECRET).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		String queryString=String.format("$filter=name eq '%s' and projectId eq '%s'", name, getProjectId());
+		URI url=getURI(getURIBuilder().setPath(SERVICE_SECRET).setCustomQuery(queryString));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
-		JsonObject ob = root.getAsJsonObject();
+		JsonElement root=JsonParser.parseString(response.getBody());
+		JsonObject ob=root.getAsJsonObject();
 
 		if (ob.get("numberOfElements").getAsInt() > 0) {
-			JsonArray entities = ob.get("content").getAsJsonArray();
+			JsonArray entities=ob.get("content").getAsJsonArray();
 
 			if (entities.size() > 0) {
 				return new Gson().fromJson(entities.get(0).getAsJsonObject(), VraNgSecret.class);
@@ -1140,17 +1140,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Content Source.
 	 */
 	protected VraNgCatalogItem getCatalogItemByBlueprintNamePrimitive(final String blueprintName) {
-		Map<String, String> params = new HashMap<>();
+		Map<String, String> params=new HashMap<>();
 		params.put("search", blueprintName.trim());
 
-		List<JsonObject> results = this.getPagedContent(SERVICE_CATALOG_ADMIN_ITEMS, params);
+		List<JsonObject> results=this.getPagedContent(SERVICE_CATALOG_ADMIN_ITEMS, params);
 		// filter the results matching the blueprintName
-		JsonObject result = results.stream().filter(item -> {
-			JsonObject ob = item.getAsJsonObject();
+		JsonObject result=results.stream().filter(item -> {
+			JsonObject ob=item.getAsJsonObject();
 			if (ob == null) {
 				return Boolean.FALSE;
 			}
-			String name = ob.get("name").getAsString().trim();
+			String name=ob.get("name").getAsString().trim();
 			return name.equalsIgnoreCase(blueprintName.trim());
 		}).findFirst().orElse(null);
 
@@ -1160,15 +1160,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 
 		// construct the retrieved blueprint object
-		String id = result.get("id").getAsString();
-		String sourceId = result.get("sourceId").getAsString();
-		String sourceName = result.get("sourceName").getAsString();
-		JsonObject typeObj = result.get("type").getAsJsonObject();
+		String id=result.get("id").getAsString();
+		String sourceId=result.get("sourceId").getAsString();
+		String sourceName=result.get("sourceName").getAsString();
+		JsonObject typeObj=result.get("type").getAsJsonObject();
 		// additional sanity check
 		if (typeObj == null) {
 			throw new RuntimeException(String.format("Unable to extract catalog item type for blueprint '%s'", blueprintName));
 		}
-		VraNgCatalogItemType type = new Gson().fromJson(typeObj, VraNgCatalogItemType.class);
+		VraNgCatalogItemType type=new Gson().fromJson(typeObj, VraNgCatalogItemType.class);
 
 		return new VraNgCatalogItem(id, sourceId, result.get("name").getAsString().trim(), sourceName, type);
 	}
@@ -1182,7 +1182,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return combined results
 	 */
 	private List<JsonObject> getPagedContent(final String path, final Map<String, String> paramsMap) {
-		URIBuilder uriBuilder = getURIBuilder()
+		URIBuilder uriBuilder=getURIBuilder()
 				.setPath(String.format(path))
 				.setParameter("page", "0")
 				.setParameter("size", String.valueOf(PAGE_SIZE));
@@ -1191,20 +1191,20 @@ public class RestClientVraNgPrimitive extends RestClient {
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
 			uriBuilder.setParameter(entry.getKey(), entry.getValue());
 		}
-		URI uri = getURI(uriBuilder);
-		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		URI uri=getURI(uriBuilder);
+		ResponseEntity<String> response=restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		if (response == null) {
 			return Collections.emptyList();
 		}
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 		if (root == null) {
 			return Collections.emptyList();
 		}
-		List<JsonObject> allResults = new ArrayList<>();
-		Integer totalPages = root.getAsJsonObject().get("totalPages").getAsInt();
-		for (int page = 0; page < totalPages; page++) {
-			JsonArray content = root.getAsJsonObject().get("content").getAsJsonArray();
-			for (int i = 0; i < content.size(); i++) {
+		List<JsonObject> allResults=new ArrayList<>();
+		Integer totalPages=root.getAsJsonObject().get("totalPages").getAsInt();
+		for (int page=0; page < totalPages; page++) {
+			JsonArray content=root.getAsJsonObject().get("content").getAsJsonArray();
+			for (int i=0; i < content.size(); i++) {
 				allResults.add(content.get(i).getAsJsonObject());
 			}
 			// no further REST call is needed if all results are on one page
@@ -1212,8 +1212,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 				return allResults;
 			}
 			uriBuilder.setParameter("page", String.valueOf(page + 1));
-			response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET, getDefaultHttpEntity(), String.class);
-			root = JsonParser.parseString(response.getBody());
+			response=restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			root=JsonParser.parseString(response.getBody());
 		}
 
 		return allResults;
@@ -1228,7 +1228,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private List<JsonObject> getTotalElements(final String path, final Map<String, String> paramsMap) {
 
-		URIBuilder uriBuilder = getURIBuilder()
+		URIBuilder uriBuilder=getURIBuilder()
 				.setPath(String.format(path))
 				.setParameter("$top", String.valueOf(PAGE_SIZE))
 				.setParameter("$skip", String.valueOf(0));
@@ -1238,24 +1238,24 @@ public class RestClientVraNgPrimitive extends RestClient {
 			uriBuilder.setParameter(entry.getKey(), entry.getValue());
 		}
 
-		List<JsonObject> allResults = new ArrayList<>();
-		int page = 0;
-		Integer totalElements = 0;
-		Integer numberOfElements = 0;
+		List<JsonObject> allResults=new ArrayList<>();
+		int page=0;
+		Integer totalElements=0;
+		Integer numberOfElements=0;
 		do {
 			uriBuilder.setParameter("$skip", String.valueOf(PAGE_SIZE * (page)));
-			ResponseEntity<String> response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET,
+			ResponseEntity<String> response=restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET,
 					getDefaultHttpEntity(),
 					String.class);
 
-			JsonElement root = JsonParser.parseString(response.getBody());
+			JsonElement root=JsonParser.parseString(response.getBody());
 
-			totalElements = root.getAsJsonObject().get("totalElements").getAsInt();
-			numberOfElements = root.getAsJsonObject().get("numberOfElements").getAsInt();
+			totalElements=root.getAsJsonObject().get("totalElements").getAsInt();
+			numberOfElements=root.getAsJsonObject().get("numberOfElements").getAsInt();
 			LOGGER.debug(String.format("Page %d number of elements: %d", page, numberOfElements));
-			JsonArray content = root.getAsJsonObject().get("content").getAsJsonArray();
+			JsonArray content=root.getAsJsonObject().get("content").getAsJsonArray();
 
-			for (int i = 0; i < content.size(); i++) {
+			for (int i=0; i < content.size(); i++) {
 				allResults.add(content.get(i).getAsJsonObject());
 			}
 
@@ -1273,16 +1273,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Workflow Content Source.
 	 */
 	protected VraNgWorkflowContentSource getVraWorkflowContentSourcePrimitive(final String id) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE + "/" + id));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE + "/" + id));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 		if (StringUtils.isEmpty(response.getBody())) {
 			return null;
 		}
-		VraNgWorkflowContentSource retVal = null;
+		VraNgWorkflowContentSource retVal=null;
 		try {
-			retVal = mapper.readValue(response.getBody(), VraNgWorkflowContentSource.class);
+			retVal=mapper.readValue(response.getBody(), VraNgWorkflowContentSource.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -1297,16 +1297,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Content Source.
 	 */
 	protected VraNgContentSourceBase getContentSourcePrimitive(final String id) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE + "/" + id));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE + "/" + id));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 		if (!root.isJsonObject()) {
 			return null;
 		}
-		JsonObject ob = root.getAsJsonObject();
-		VraNgContentSourceType type = VraNgContentSourceType.fromString(ob.get("typeId").getAsString());
-		VraNgContentSourceBase result = new Gson().fromJson(root, type.getTypeClass());
+		JsonObject ob=root.getAsJsonObject();
+		VraNgContentSourceType type=VraNgContentSourceType.fromString(ob.get("typeId").getAsString());
+		VraNgContentSourceBase result=new Gson().fromJson(root, type.getTypeClass());
 		return result;
 	}
 
@@ -1320,11 +1320,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private VraNgCatalogEntitlementDto[] getCatalogEntitlementsPerProject(final String project) {
 		LOGGER.debug("Fetching catalog entitlement for project '{}'", project);
 
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).addParameter("projectId", project));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).addParameter("projectId", project));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-		VraNgCatalogEntitlementDto[] entitlements = gson.fromJson(response.getBody(),
+		Gson gson=new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+		VraNgCatalogEntitlementDto[] entitlements=gson.fromJson(response.getBody(),
 				VraNgCatalogEntitlementDto[].class);
 		return entitlements;
 	}
@@ -1338,12 +1338,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected List<VraNgCatalogEntitlement> getAllCatalogEntitlementsPrimitive() {
 		LOGGER.debug("Fetching all available catalog entitlements");
-		List<VraNgProject> allProjects = this.getProjectsPrimitive();
+		List<VraNgProject> allProjects=this.getProjectsPrimitive();
 		if (allProjects == null || allProjects.isEmpty()) {
 			return new ArrayList<>();
 		}
 
-		Map<String, List<VraNgCatalogEntitlementDto>> allEntitlements = allProjects
+		Map<String, List<VraNgCatalogEntitlementDto>> allEntitlements=allProjects
 				.stream()
 				.map(project -> this.getCatalogEntitlementsPerProject(project.getId()))
 				.flatMap(Arrays::stream)
@@ -1352,20 +1352,20 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.values()
 				.stream()
 				.map(entitlementsGroup -> {
-					VraNgCatalogEntitlementDto modelEntitlement = entitlementsGroup.get(0);
-					List<String> projectIds = entitlementsGroup
+					VraNgCatalogEntitlementDto modelEntitlement=entitlementsGroup.get(0);
+					List<String> projectIds=entitlementsGroup
 							.stream()
 							.map(ent -> ent.getProjectId())
 							.collect(Collectors.toList());
 
-					VraNgCatalogEntitlement entitlement = new VraNgCatalogEntitlement(
+					VraNgCatalogEntitlement entitlement=new VraNgCatalogEntitlement(
 							modelEntitlement.getId(),
 							null,
 							modelEntitlement.getDefinition().get("name"),
 							projectIds,
 							VraNgCatalogEntitlementType.fromString(modelEntitlement.getDefinition().get("type")),
 							VraNgContentSourceType.fromString(modelEntitlement.getDefinition().get("sourceType")));
-					String iconId = modelEntitlement.getDefinition().get("iconId");
+					String iconId=modelEntitlement.getDefinition().get("iconId");
 					if (iconId != null) {
 						entitlement.setIconId(iconId);
 					}
@@ -1383,17 +1383,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected void createCatalogEntitlementPrimitive(final VraNgCatalogEntitlement entitlement, final String project)
 			throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).build();
+		URI url=getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).build();
 
 		// prepare payload
-		Map<String, Object> definition = new LinkedHashMap<>();
+		Map<String, Object> definition=new LinkedHashMap<>();
 		definition.put("id", entitlement.getSourceId());
 		definition.put("name", entitlement.getName());
 		definition.put("type", entitlement.getType());
 		definition.put("sourceType", entitlement.getSourceType().toString());
 		definition.put("iconId", entitlement.getIconId() == null ? null : entitlement.getIconId());
 
-		Map<String, Object> payload = new LinkedHashMap<>();
+		Map<String, Object> payload=new LinkedHashMap<>();
 		if (!StringUtils.isEmpty(entitlement.getId())) {
 			payload.put("id", entitlement.getId());
 		}
@@ -1401,10 +1401,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		payload.put("definition", definition);
 
 		// prepare request
-		String jsonBody = this.getJsonString(payload);
+		String jsonBody=this.getJsonString(payload);
 		ResponseEntity<String> response;
 		try {
-			response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+			response=this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 		} catch (HttpClientErrorException e) {
 			throw new RuntimeException(
 					String.format("Error ocurred during creating of catalog entitlement. Message: %s", e.getMessage()));
@@ -1425,11 +1425,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return catalogItemVersions JsonArray
 	 */
 	protected JsonArray getCatalogItemVersionsPrimitive(final String catalogItemId) {
-		String path = SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId + "/versions";
-		URI url = getURI(getURIBuilder().setPath(path));
+		String path=SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId + "/versions";
+		URI url=getURI(getURIBuilder().setPath(path));
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
-			JsonElement root = JsonParser.parseString(response.getBody());
+			ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			JsonElement root=JsonParser.parseString(response.getBody());
 			if (root.isJsonObject()) {
 				return root.getAsJsonObject().getAsJsonArray("content");
 			}
@@ -1450,18 +1450,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgCustomForm fetchRequestFormPrimitive(final String sourceType, final String sourceId,
 			final String formId) {
-		final String formType = "requestForm";
-		URI url = getURI(getURIBuilder()
+		final String formType="requestForm";
+		URI url=getURI(getURIBuilder()
 				.setPath(FETCH_REQUEST_FORM)
 				.setParameter("formType", formType)
 				.setParameter("sourceId", sourceId)
 				.setParameter("sourceType", sourceType)
 				.setParameter("formId", formId));
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map=new HashMap<>();
 		map.put("type", "object");
 		try {
-			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, this.getJsonString(map));
-			JsonElement root = JsonParser.parseString(response.getBody());
+			ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.POST, this.getJsonString(map));
+			JsonElement root=JsonParser.parseString(response.getBody());
 			if (root.isJsonObject()) {
 				return new Gson().fromJson(root.getAsJsonObject(), VraNgCustomForm.class);
 			}
@@ -1480,17 +1480,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Custom Form.
 	 */
 	protected VraNgCustomForm getCustomFormByTypeAndSourcePrimitive(final String sourceType, final String sourceId) {
-		final String formType = "requestForm";
-		URI url = getURI(getURIBuilder()
+		final String formType="requestForm";
+		URI url=getURI(getURIBuilder()
 				.setPath(SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE)
 				.setParameter("formType", formType)
 				.setParameter("sourceId", sourceId)
 				.setParameter("sourceType", sourceType));
 
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+			ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 					String.class);
-			JsonElement root = JsonParser.parseString(response.getBody());
+			JsonElement root=JsonParser.parseString(response.getBody());
 			if (root.isJsonObject()) {
 				return new Gson().fromJson(root.getAsJsonObject(), VraNgCustomForm.class);
 			}
@@ -1508,16 +1508,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of region ids
 	 */
 	private List<String> getRegions(final JsonElement linksElement) {
-		List<String> regionIds = new ArrayList<>();
+		List<String> regionIds=new ArrayList<>();
 
 		if (isJsonElementPresent(linksElement)) {
-			JsonElement regions = linksElement.getAsJsonObject().get("regions");
+			JsonElement regions=linksElement.getAsJsonObject().get("regions");
 			if (isJsonElementPresent(regions)) {
-				JsonElement hrefs = regions.getAsJsonObject().get("hrefs");
+				JsonElement hrefs=regions.getAsJsonObject().get("hrefs");
 				if (isJsonElementPresent(hrefs)) {
 					hrefs.getAsJsonArray().forEach(h -> {
-						String href = h.getAsString();
-						String regionId = href.substring(href.lastIndexOf('/') + 1);
+						String href=h.getAsString();
+						String regionId=href.substring(href.lastIndexOf('/') + 1);
 						regionIds.add(regionId);
 					});
 				}
@@ -1528,16 +1528,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	private List<String> getTags(final JsonElement tagsElement) {
-		List<String> tags = new ArrayList<>();
+		List<String> tags=new ArrayList<>();
 
 		if (isJsonElementPresent(tagsElement)) {
 			tagsElement.getAsJsonArray().forEach(tag -> {
-				JsonObject tagObj = tag.getAsJsonObject();
-				String key = tagObj.get("key").getAsString();
-				String value = tagObj.get("value").getAsString();
-				String result = key;
+				JsonObject tagObj=tag.getAsJsonObject();
+				String key=tagObj.get("key").getAsString();
+				String value=tagObj.get("value").getAsString();
+				String result=key;
 				if (StringUtils.isNotEmpty(value)) {
-					result = result + ":" + value;
+					result=result + ":" + value;
 				}
 
 				tags.add(result);
@@ -1559,7 +1559,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getFlavorProfileById(final String id) throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + id)
+		URI url=getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + id)
 				.setParameter("apiVersion", this.getVersion()).build();
 
 		return restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
@@ -1572,27 +1572,27 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgFlavorMapping
 	 */
 	protected Map<String, List<VraNgFlavorMapping>> getAllFlavorMappingsByRegionPrimitive() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_FLAVORS));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_FLAVORS));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		Map<String, List<VraNgFlavorMapping>> flavorMappingsByRegion = new HashMap<>();
+		Map<String, List<VraNgFlavorMapping>> flavorMappingsByRegion=new HashMap<>();
 
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
-				JsonObject ob = o.getAsJsonObject();
+				JsonObject ob=o.getAsJsonObject();
 				LOGGER.debug("Obtaining data from getAllFlavorMappingsByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
-					String regionId = this.getLinkRegionId(ob);
+					String regionId=this.getLinkRegionId(ob);
 					if (!flavorMappingsByRegion.containsKey(regionId)) {
 						flavorMappingsByRegion.put(regionId, new ArrayList<>());
 					}
 
-					JsonObject mappingsJson = ob.get("mapping").getAsJsonObject();
-					List<VraNgFlavorMapping> mappings = this.getFlavorMappings(mappingsJson);
+					JsonObject mappingsJson=ob.get("mapping").getAsJsonObject();
+					List<VraNgFlavorMapping> mappings=this.getFlavorMappings(mappingsJson);
 					flavorMappingsByRegion.get(regionId).addAll(mappings);
 				} else {
 					LOGGER.warn("Obtaining data from getAllFlavorMappingsByRegionPrimitive returns empty objects.");
@@ -1609,22 +1609,22 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return map with key=region, value=list of flavor profile IDs.
 	 */
 	protected Map<String, List<String>> getAllFlavorProfilesByRegionPrimitive() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		Map<String, List<String>> flavorProfileIdsByRegion = new HashMap<>();
+		Map<String, List<String>> flavorProfileIdsByRegion=new HashMap<>();
 
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
-				JsonObject ob = o.getAsJsonObject();
+				JsonObject ob=o.getAsJsonObject();
 				LOGGER.debug("Obtaining data from getAllFlavorProfilesByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
-					String regionId = this.getLinkRegionId(ob);
-					String flavorProfileId = ob.get("id").getAsString();
+					String regionId=this.getLinkRegionId(ob);
+					String flavorProfileId=ob.get("id").getAsString();
 
 					if (!flavorProfileIdsByRegion.containsKey(regionId)) {
 						flavorProfileIdsByRegion.put(regionId, new ArrayList<>());
@@ -1647,12 +1647,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Flavor mappings
 	 */
 	private List<VraNgFlavorMapping> getFlavorMappings(final JsonObject mappingsJson) {
-		List<VraNgFlavorMapping> mappings = new ArrayList<>();
+		List<VraNgFlavorMapping> mappings=new ArrayList<>();
 		// will return members of your object
-		Set<Map.Entry<String, JsonElement>> entries = mappingsJson.entrySet();
+		Set<Map.Entry<String, JsonElement>> entries=mappingsJson.entrySet();
 		for (Map.Entry<String, JsonElement> entry : entries) {
-			String name = entry.getKey();
-			String json = entry.getValue().getAsJsonObject().toString();
+			String name=entry.getKey();
+			String json=entry.getValue().getAsJsonObject().toString();
 			mappings.add(new VraNgFlavorMapping(name, json));
 		}
 
@@ -1670,10 +1670,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void createFlavorPrimitive(final String regionId, final String flavorProfileName,
 			final List<VraNgFlavorMapping> flavorMappings) throws URISyntaxException {
 
-		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE).setParameter("apiVersion", this.getVersion()).build();
+		URI url=getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE).setParameter("apiVersion", this.getVersion()).build();
 
-		Map<String, Object> map = new HashMap<>();
-		Map<String, Object> mappings = new HashMap<>();
+		Map<String, Object> map=new HashMap<>();
+		Map<String, Object> mappings=new HashMap<>();
 		flavorMappings.forEach(fm -> {
 			mappings.put(fm.getName(), JsonParser.parseString(fm.getJson()));
 		});
@@ -1682,7 +1682,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		map.put("regionId", regionId);
 		map.put("flavorMapping", mappings);
 
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 	}
 
@@ -1697,17 +1697,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void updateFlavorPrimitive(final String flavorProfileId, final List<VraNgFlavorMapping> flavorMappings)
 			throws URISyntaxException, UnexpectedException {
 
-		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + flavorProfileId)
+		URI url=getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + flavorProfileId)
 				.setParameter("apiVersion", this.getVersion()).build();
-		List<VraNgFlavorMapping> flavorMappingsToImport = this.getFlavorMappingsToImport(flavorProfileId,
+		List<VraNgFlavorMapping> flavorMappingsToImport=this.getFlavorMappingsToImport(flavorProfileId,
 				flavorMappings);
 
 		if (flavorMappingsToImport.size() == 0) {
 			return;
 		}
 
-		Map<String, Object> map = new HashMap<>();
-		Map<String, Object> flavorMapping = new HashMap<>();
+		Map<String, Object> map=new HashMap<>();
+		Map<String, Object> flavorMapping=new HashMap<>();
 		map.put("flavorMapping", new HashMap<>());
 		flavorMappingsToImport.forEach(fm -> {
 			flavorMapping.put(fm.getName(), JsonParser.parseString(fm.getJson()));
@@ -1715,7 +1715,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		map.put("flavorMapping", flavorMapping);
 
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 		this.postJsonPrimitive(url, HttpMethod.PATCH, jsonBody);
 	}
 
@@ -1734,16 +1734,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private List<VraNgFlavorMapping> getFlavorMappingsToImport(final String flavorProfileId,
 			final List<VraNgFlavorMapping> flavorMappings) throws JsonSyntaxException,
 			URISyntaxException, UnexpectedException {
-		ResponseEntity<String> flavorProfileById = this.getFlavorProfileById(flavorProfileId);
+		ResponseEntity<String> flavorProfileById=this.getFlavorProfileById(flavorProfileId);
 
 		if (flavorProfileById == null || !flavorProfileById.hasBody()) {
 			throw new UnexpectedException("Invalid flavor profile response.");
 		}
 
-		JsonElement flavorProfileRoot = JsonParser.parseString(flavorProfileById.getBody());
-		JsonObject flavorProfileObject = flavorProfileRoot.getAsJsonObject();
+		JsonElement flavorProfileRoot=JsonParser.parseString(flavorProfileById.getBody());
+		JsonObject flavorProfileObject=flavorProfileRoot.getAsJsonObject();
 
-		List<VraNgFlavorMapping> flavorMappingsOnServer = (
+		List<VraNgFlavorMapping> flavorMappingsOnServer=(
 		// If the profile has no flavor mappings yet, it would not have that property at
 		// all, so we're
 		// checking if it exists, and if not - defining the variable with a default
@@ -1755,7 +1755,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 										.getAsJsonObject()))
 						: new ArrayList<>();
 
-		List<VraNgFlavorMapping> flavorMappingsToImport = new ArrayList<>(flavorMappings);
+		List<VraNgFlavorMapping> flavorMappingsToImport=new ArrayList<>(flavorMappings);
 		flavorMappingsOnServer.forEach(fm -> {
 			if (!flavorMappingsToImport.contains(fm)) {
 				flavorMappingsToImport.add(fm);
@@ -1777,7 +1777,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getImageProfileById(final String id) throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + id)
+		URI url=getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + id)
 				.setParameter("apiVersion", this.getVersion()).build();
 
 		return restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
@@ -1790,27 +1790,27 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgImageMapping
 	 */
 	protected Map<String, List<VraNgImageMapping>> getAllImageMappingsByRegionPrimitive() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_IMAGES));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_IMAGES));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		Map<String, List<VraNgImageMapping>> imageMappingsByRegion = new HashMap<>();
+		Map<String, List<VraNgImageMapping>> imageMappingsByRegion=new HashMap<>();
 
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
-				JsonObject ob = o.getAsJsonObject();
+				JsonObject ob=o.getAsJsonObject();
 				LOGGER.debug("Obtaining data from getAllImageMappingsByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
-					String regionId = this.getLinkRegionId(ob);
+					String regionId=this.getLinkRegionId(ob);
 					if (!imageMappingsByRegion.containsKey(regionId)) {
 						imageMappingsByRegion.put(regionId, new ArrayList<>());
 					}
 
-					JsonObject mappingsJson = ob.get("mapping").getAsJsonObject();
-					List<VraNgImageMapping> mappings = this.getImageMappings(mappingsJson);
+					JsonObject mappingsJson=ob.get("mapping").getAsJsonObject();
+					List<VraNgImageMapping> mappings=this.getImageMappings(mappingsJson);
 					imageMappingsByRegion.get(regionId).addAll(mappings);
 				} else {
 					LOGGER.warn("Skipped empty data from getAllImageMappingsByRegion. Some items are empty");
@@ -1828,7 +1828,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return true if valid else false.
 	 */
 	protected boolean jsonObjectValid(final JsonObject ob) {
-		boolean jsonObjectValid = ob.has("mapping")
+		boolean jsonObjectValid=ob.has("mapping")
 				&& ob.has("_links")
 				&& ob.get("mapping").getAsJsonObject().keySet().isEmpty()
 				&& ob.get("_links").getAsJsonObject().keySet().isEmpty();
@@ -1843,23 +1843,23 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return map with key=region, value=list of image profile IDs.
 	 */
 	protected Map<String, List<String>> getAllImageProfilesByRegionPrimitive() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_IMAGE_PROFILE));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_IMAGE_PROFILE));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		Map<String, List<String>> imageProfileIdsByRegion = new HashMap<>();
+		Map<String, List<String>> imageProfileIdsByRegion=new HashMap<>();
 
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
-				JsonObject ob = o.getAsJsonObject();
+				JsonObject ob=o.getAsJsonObject();
 
 				LOGGER.debug("Obtaining data from getAllImageProfilesByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
-					String regionId = this.getLinkRegionId(ob);
-					String imageProfileId = ob.get("id").getAsString();
+					String regionId=this.getLinkRegionId(ob);
+					String imageProfileId=ob.get("id").getAsString();
 
 					if (!imageProfileIdsByRegion.containsKey(regionId)) {
 						imageProfileIdsByRegion.put(regionId, new ArrayList<>());
@@ -1882,12 +1882,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return List of VraNG Image Mapping
 	 */
 	private List<VraNgImageMapping> getImageMappings(final JsonObject mappingsJson) {
-		List<VraNgImageMapping> mappings = new ArrayList<>();
+		List<VraNgImageMapping> mappings=new ArrayList<>();
 		// will return members of your object
-		Set<Map.Entry<String, JsonElement>> entries = mappingsJson.entrySet();
+		Set<Map.Entry<String, JsonElement>> entries=mappingsJson.entrySet();
 		for (Map.Entry<String, JsonElement> entry : entries) {
-			String name = entry.getKey();
-			String json = entry.getValue().getAsJsonObject().toString();
+			String name=entry.getKey();
+			String json=entry.getValue().getAsJsonObject().toString();
 			mappings.add(new VraNgImageMapping(name, json));
 		}
 
@@ -1905,10 +1905,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void createImageProfilePrimitive(final String regionId, final String imageProfileName,
 			final List<VraNgImageMapping> imageMappings) throws URISyntaxException {
 
-		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE).setParameter("apiVersion", this.getVersion()).build();
+		URI url= getURIBuilder().setPath(SERVICE_IMAGE_PROFILE).setParameter("apiVersion", this.getVersion()).build();
 
-		Map<String, Object> map = new HashMap<>();
-		Map<String, Object> mappings = new HashMap<>();
+		Map<String, Object> map=new HashMap<>();
+		Map<String, Object> mappings=new HashMap<>();
 		imageMappings.forEach(im -> {
 			mappings.put(im.getName(), JsonParser.parseString(im.getJson()));
 		});
@@ -1917,7 +1917,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		map.put("regionId", regionId);
 		map.put("imageMapping", mappings);
 
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 	}
 
@@ -1932,16 +1932,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void updateImageProfilePrimitive(final String imageProfileId, final List<VraNgImageMapping> imageMappings)
 			throws URISyntaxException, UnexpectedException {
 
-		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + imageProfileId)
+		URI url=getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + imageProfileId)
 				.setParameter("apiVersion", this.getVersion()).build();
-		List<VraNgImageMapping> imageMappingsToImport = this.getImageMappingsToImport(imageProfileId, imageMappings);
+		List<VraNgImageMapping> imageMappingsToImport=this.getImageMappingsToImport(imageProfileId, imageMappings);
 
-		if (imageMappingsToImport.size() == 0) {
+		if (imageMappingsToImport.size()== 0) {
 			return;
 		}
 
-		Map<String, Object> map = new HashMap<>();
-		Map<String, Object> imageMapping = new HashMap<>();
+		Map<String, Object> map=new HashMap<>();
+		Map<String, Object> imageMapping=new HashMap<>();
 		map.put("imageMapping", new HashMap<>());
 		imageMappingsToImport.forEach(im -> {
 			imageMapping.put(im.getName(), JsonParser.parseString(im.getJson()));
@@ -1949,7 +1949,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		map.put("imageMapping", imageMapping);
 
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 		this.postJsonPrimitive(url, HttpMethod.PATCH, jsonBody);
 	}
 
@@ -1967,16 +1967,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private List<VraNgImageMapping> getImageMappingsToImport(final String imageProfileId,
 			final List<VraNgImageMapping> imageMappings)
 			throws JsonSyntaxException, URISyntaxException, UnexpectedException {
-		ResponseEntity<String> response = this.getImageProfileById(imageProfileId);
+		ResponseEntity<String> response=this.getImageProfileById(imageProfileId);
 
-		if (response == null || !response.hasBody()) {
+		if (response==null || !response.hasBody()) {
 			throw new UnexpectedException("Invalid image profile response.");
 		}
 
-		JsonElement imageProfileRoot = JsonParser.parseString(response.getBody());
-		JsonObject imageProfileObject = imageProfileRoot.getAsJsonObject();
+		JsonElement imageProfileRoot=JsonParser.parseString(response.getBody());
+		JsonObject imageProfileObject=imageProfileRoot.getAsJsonObject();
 
-		List<VraNgImageMapping> imageMappingsOnServer = (
+		List<VraNgImageMapping> imageMappingsOnServer=(
 		// If the profile has no image mappings yet, it would not have that property at
 		// all, so we're
 		// checking if it exists, and if not - defining the variable with a default
@@ -1988,7 +1988,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 										.getAsJsonObject()))
 						: new ArrayList<>();
 
-		List<VraNgImageMapping> imageMappingsToImport = new ArrayList<>(imageMappings);
+		List<VraNgImageMapping> imageMappingsToImport=new ArrayList<>(imageMappings);
 		imageMappingsOnServer.forEach(im -> {
 			if (!imageMappingsToImport.contains(im)) {
 				imageMappingsToImport.add(im);
@@ -2009,28 +2009,28 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @see VraNgStorageProfile
 	 */
 	protected Map<String, List<VraNgStorageProfile>> getAllStorageProfilesByRegionPrimitive() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		Map<String, List<VraNgStorageProfile>> storageProfilesByRegion = new HashMap<>();
+		Map<String, List<VraNgStorageProfile>> storageProfilesByRegion=new HashMap<>();
 
 		if (root.isJsonObject()) {
 			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
-				JsonObject ob = o.getAsJsonObject();
+				JsonObject ob=o.getAsJsonObject();
 				LOGGER.debug("Obtaining data from getAllStorageProfilesByRegionPrimitive");
 				if (!this.jsonObjectValid(ob)) {
-					String regionId = this.getLinkRegionId(ob);
+					String regionId=this.getLinkRegionId(ob);
 					if (!storageProfilesByRegion.containsKey(regionId)) {
 						storageProfilesByRegion.put(regionId, new ArrayList<>());
 					}
 
 					if (ob.has("name")) {
-						String name = ob.get("name").getAsString();
-						String json = ob.toString();
+						String name=ob.get("name").getAsString();
+						String json=ob.toString();
 						storageProfilesByRegion.get(regionId).add(new VraNgStorageProfile(name, json));
 					} else {
 						LOGGER.warn("Storage Profile has been skipped because don't contains a name definition");
@@ -2058,7 +2058,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected void updateStorageProfilePrimitive(final String profileId, final VraNgStorageProfile profile)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE + "/" + profileId));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE + "/" + profileId));
 		this.putJsonPrimitive(url, profile.getJson());
 	}
 
@@ -2071,9 +2071,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 */
 	protected String createStorageProfilePrimitive(final VraNgStorageProfile profile) throws URISyntaxException {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, profile.getJson());
-		JsonElement root = JsonParser.parseString(response.getBody());
+		URI url=getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
+		ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.POST, profile.getJson());
+		JsonElement root=JsonParser.parseString(response.getBody());
 		if (root.isJsonObject()) {
 			return root.getAsJsonObject().get("id").getAsString();
 		}
@@ -2088,15 +2088,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return storage profile
 	 */
 	protected VraNgStorageProfile getSpecificProfilePrimitive(final String targetPool, final String profileId) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + targetPool + "/" + profileId));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + targetPool + "/" + profileId));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
-		JsonObject ob = root.getAsJsonObject();
+		JsonElement root=JsonParser.parseString(response.getBody());
+		JsonObject ob=root.getAsJsonObject();
 
-		String name = ob.get("name").getAsString();
-		String json = ob.toString();
+		String name=ob.get("name").getAsString();
+		String json=ob.toString();
 		return new VraNgStorageProfile(name, json);
 	}
 
@@ -2128,31 +2128,31 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param nameFilter filter
 	 */
 	protected List<VraNgPropertyGroup> getAllPropertyGroupsPrimitive(final String nameFilter) {
-		boolean hasMore = true;
-		int elementsToSkip = 0;
-		List<VraNgPropertyGroup> propertyGroups = new ArrayList<>();
+		boolean hasMore=true;
+		int elementsToSkip=0;
+		List<VraNgPropertyGroup> propertyGroups=new ArrayList<>();
 
 		while (hasMore) {
-			URI url = getURI(
+			URI url=getURI(
 					getURIBuilder()
 							.setPath(SERVICE_GET_PROPERTY_GROUPS)
 							.addParameter("$skip", String.valueOf(elementsToSkip)));
-			ResponseEntity<String> response = restTemplate.exchange(
+			ResponseEntity<String> response=restTemplate.exchange(
 					url,
 					HttpMethod.GET,
 					getDefaultHttpEntity(),
 					String.class);
-			JsonElement jsonElement = JsonParser.parseString(response.getBody());
-			hasMore = jsonElement.getAsJsonObject().get("last").toString().equals("false");
-			JsonArray content = jsonElement.getAsJsonObject().get("content").getAsJsonArray();
-			elementsToSkip += content.size();
+			JsonElement jsonElement=JsonParser.parseString(response.getBody());
+			hasMore=jsonElement.getAsJsonObject().get("last").toString().equals("false");
+			JsonArray content=jsonElement.getAsJsonObject().get("content").getAsJsonArray();
+			elementsToSkip +=content.size();
 
-			for (int i = 0; i < content.size(); i++) {
-				JsonObject propertyGroupObject = content.get(i).getAsJsonObject();
-				String propertyGroupName = StringUtils.strip(propertyGroupObject.get("name").toString(), "\"");
+			for (int i=0; i < content.size(); i++) {
+				JsonObject propertyGroupObject=content.get(i).getAsJsonObject();
+				String propertyGroupName=StringUtils.strip(propertyGroupObject.get("name").toString(), "\"");
 
 				// Accept all if null or filter if given
-				if (nameFilter == null || propertyGroupName.contains(nameFilter)) {
+				if (nameFilter==null || propertyGroupName.contains(nameFilter)) {
 					propertyGroups.add(
 							new VraNgPropertyGroup(
 									propertyGroupName,
@@ -2171,7 +2171,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param propertyGroup - Property group to be posted
 	 */
 	public void createPropertyGroupPrimitive(final VraNgPropertyGroup propertyGroup) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_POST_PROPERTY_GROUP));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_POST_PROPERTY_GROUP));
 		this.postJsonPrimitive(url, HttpMethod.POST, propertyGroup.getRawData());
 	}
 
@@ -2181,7 +2181,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param propertyGroup - Property group to update
 	 */
 	public void updatePropertyGroupPrimitive(final VraNgPropertyGroup propertyGroup) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_PUT_PROPERTY_GROUP + "/" + propertyGroup.getId()));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_PUT_PROPERTY_GROUP + "/" + propertyGroup.getId()));
 		this.putJsonPrimitive(url, propertyGroup.getRawData());
 	}
 
@@ -2196,7 +2196,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void updateSpecificProfilePrimitive(final String patchTarget, final String profileId,
 			final VraNgStorageProfile profile)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + patchTarget + "/" + profileId));
+		URI url=getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + patchTarget + "/" + profileId));
 		this.postJsonPrimitive(url, HttpMethod.PATCH, profile.getJson());
 	}
 
@@ -2208,11 +2208,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return fabric entity name
 	 */
 	protected String getFabricEntityNamePrimitive(final String fabricUrl) {
-		URI url = getURI(getURIBuilder().setPath(fabricUrl));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(fabricUrl));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
 		if (root.isJsonObject()) {
 			return root.getAsJsonObject().get("name").getAsString();
@@ -2228,21 +2228,21 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Fabric Entity ID
 	 */
 	protected String getFabricEntityIdPrimitive(final String fabricType, final String fabricName) {
-		String queryString = String.format("$filter=name eq '%s'", fabricName);
-		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + fabricType).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		String queryString=String.format("$filter=name eq '%s'", fabricName);
+		URI url=getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + fabricType).setCustomQuery(queryString));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
-		JsonObject ob = root.getAsJsonObject();
+		JsonElement root=JsonParser.parseString(response.getBody());
+		JsonObject ob=root.getAsJsonObject();
 
 		// look for a fabric entity with name equals to the requested name
 		if (ob.get("numberOfElements").getAsInt() > 0) {
-			JsonArray entities = ob.get("content").getAsJsonArray();
-			Iterator<JsonElement> it = entities.iterator();
+			JsonArray entities=ob.get("content").getAsJsonArray();
+			Iterator<JsonElement> it=entities.iterator();
 			while (it.hasNext()) {
-				JsonObject entity = it.next().getAsJsonObject();
-				String name = entity.get("name").getAsString();
+				JsonObject entity=it.next().getAsJsonObject();
+				String name=entity.get("name").getAsString();
 				if (name.equals(fabricName)) {
 					return entity.get("id").getAsString();
 				}
@@ -2263,18 +2263,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return null;
 		}
 
-		URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost()).setPath(SERVICE_VRA_ORGANIZATIONS)
+		URIBuilder uriBuilder=getURIBuilder().setHost(configuration.getAuthHost()).setPath(SERVICE_VRA_ORGANIZATIONS)
 				.setParameter("expand", "1");
 
 		URI url;
-		Optional<VraNgOrganization> result = null;
+		Optional<VraNgOrganization> result=null;
 		try {
-			url = uriBuilder.build();
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+			url=uriBuilder.build();
+			ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 					String.class);
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			VraNgOrganizations organizations = gson.fromJson(response.getBody(), VraNgOrganizations.class);
-			result = organizations.getItems().stream().filter(vraNgOrganization -> {
+			Gson gson=new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			VraNgOrganizations organizations=gson.fromJson(response.getBody(), VraNgOrganizations.class);
+			result=organizations.getItems().stream().filter(vraNgOrganization -> {
 				return vraNgOrganization.getName().equalsIgnoreCase(organizationName);
 			}).findFirst();
 		} catch (URISyntaxException e) {
@@ -2297,22 +2297,22 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (StringUtils.isEmpty(organizationId)) {
 			return null;
 		}
-		VraNgOrganization org = null;
+		VraNgOrganization org=null;
 		try {
-			URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost())
+			URIBuilder uriBuilder=getURIBuilder().setHost(configuration.getAuthHost())
 					.setPath(SERVICE_VRA_ORGANIZATION + organizationId);
 			URI url;
 			try {
-				url = uriBuilder.build();
+				url=uriBuilder.build();
 			} catch (URISyntaxException e) {
 				throw new RuntimeException(
 						String.format("Unable to build REST URI to fetch organization with ID %s : %s", organizationId,
 								e.getMessage()));
 			}
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+			ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 					String.class);
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			org = gson.fromJson(response.getBody(), VraNgOrganization.class);
+			Gson gson=new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			org=gson.fromJson(response.getBody(), VraNgOrganization.class);
 
 			LOGGER.debug("Found organization: {}", gson.toJson(org));
 		} catch (Exception error) {
@@ -2334,35 +2334,35 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// for vra 8.0 query string should be: name eq name
 		// for vra 8.1 query string should be: endpointType eq name
 		// for compatibility with both 8.0 and 8.1 the query string should combine both
-		String queryString = String.format("expand=true&$filter=name eq '%s' or endpointType eq '%s'", name, name);
-		URI url = getURI(getURIBuilder().setPath(SERVICE_VRA_INTEGRATIONS).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		String queryString=String.format("expand=true&$filter=name eq '%s' or endpointType eq '%s'", name, name);
+		URI url=getURI(getURIBuilder().setPath(SERVICE_VRA_INTEGRATIONS).setCustomQuery(queryString));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
-		VraNgIntegration retVal = new VraNgIntegration();
+		JsonElement root=JsonParser.parseString(response.getBody());
+		VraNgIntegration retVal=new VraNgIntegration();
 		if (!root.isJsonObject()) {
 			return retVal;
 		}
 
-		JsonObject jsonObject = root.getAsJsonObject();
+		JsonObject jsonObject=root.getAsJsonObject();
 		if (!isJsonElementPresent(jsonObject)) {
 			return retVal;
 		}
 
-		List<String> documentLinks = new ArrayList<>();
-		JsonArray documentLinksObject = jsonObject.getAsJsonArray("documentLinks");
+		List<String> documentLinks=new ArrayList<>();
+		JsonArray documentLinksObject=jsonObject.getAsJsonArray("documentLinks");
 		documentLinksObject.forEach(link -> documentLinks.add(link.getAsString()));
 		for (String documentLink : documentLinks) {
-			JsonElement element = jsonObject.getAsJsonObject("documents").get(documentLink);
+			JsonElement element=jsonObject.getAsJsonObject("documents").get(documentLink);
 			if (!isJsonElementPresent(element)) {
 				continue;
 			}
 			retVal.setEndpointConfigurationLink(documentLink);
 			retVal.setName(name);
-			JsonElement endpointElement = element.getAsJsonObject().get("endpointProperties");
-			if (isJsonElementPresent(endpointElement) && endpointElement != null) {
-				String endpointUri = endpointElement.getAsJsonObject().get("hostName").getAsString();
+			JsonElement endpointElement=element.getAsJsonObject().get("endpointProperties");
+			if (isJsonElementPresent(endpointElement) && endpointElement !=null) {
+				String endpointUri=endpointElement.getAsJsonObject().get("hostName").getAsString();
 				retVal.setEndpointUri(endpointUri);
 			}
 		}
@@ -2376,49 +2376,49 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return VraNg Integration
 	 */
 	protected List<VraNgIntegration> getVraWorkflowIntegrationsPrimitive() {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_VRA_INTEGRATIONS).setCustomQuery("expand=true"));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		URI url=getURI(getURIBuilder().setPath(SERVICE_VRA_INTEGRATIONS).setCustomQuery("expand=true"));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		List<VraNgIntegration> retVal = new ArrayList<>();
-		JsonElement root = JsonParser.parseString(response.getBody());
+		List<VraNgIntegration> retVal=new ArrayList<>();
+		JsonElement root=JsonParser.parseString(response.getBody());
 		if (!root.isJsonObject()) {
 			return retVal;
 		}
 
-		JsonObject jsonObject = root.getAsJsonObject();
+		JsonObject jsonObject=root.getAsJsonObject();
 		if (!isJsonElementPresent(jsonObject)) {
 			return retVal;
 		}
 
-		List<String> documentLinks = new ArrayList<>();
-		JsonArray documentLinksObject = jsonObject.getAsJsonArray("documentLinks");
+		List<String> documentLinks=new ArrayList<>();
+		JsonArray documentLinksObject=jsonObject.getAsJsonArray("documentLinks");
 		documentLinksObject.forEach(link -> documentLinks.add(link.getAsString()));
 		for (String documentLink : documentLinks) {
-			JsonElement document = jsonObject.getAsJsonObject("documents").get(documentLink);
+			JsonElement document=jsonObject.getAsJsonObject("documents").get(documentLink);
 			if (!isJsonElementPresent(document)) {
 				continue;
 			}
-			if (document.getAsJsonObject() == null) {
+			if (document.getAsJsonObject()==null) {
 				continue;
 			}
-			String name = document.getAsJsonObject().get("name").getAsString();
+			String name=document.getAsJsonObject().get("name").getAsString();
 			if (StringUtils.isEmpty(name)) {
 				continue;
 			}
 
-			VraNgIntegration integrationItem = new VraNgIntegration();
+			VraNgIntegration integrationItem=new VraNgIntegration();
 			integrationItem.setEndpointConfigurationLink(documentLink);
 			integrationItem.setName(name);
-			JsonElement endpointProperties = document.getAsJsonObject().get("endpointProperties");
-			if (isJsonElementPresent(endpointProperties) && endpointProperties.getAsJsonObject() != null) {
+			JsonElement endpointProperties=document.getAsJsonObject().get("endpointProperties");
+			if (isJsonElementPresent(endpointProperties) && endpointProperties.getAsJsonObject() !=null) {
 				String endpointUri;
 				if (isJsonElementPresent(endpointProperties.getAsJsonObject().get("apiEndpoint"))) {
-					endpointUri = endpointProperties.getAsJsonObject().get("apiEndpoint").getAsString();
+					endpointUri=endpointProperties.getAsJsonObject().get("apiEndpoint").getAsString();
 				} else if (isJsonElementPresent(endpointProperties.getAsJsonObject().get("hostName"))) {
-					endpointUri = endpointProperties.getAsJsonObject().get("hostName").getAsString();
+					endpointUri=endpointProperties.getAsJsonObject().get("hostName").getAsString();
 				} else {
-					endpointUri = "";
+					endpointUri="";
 				}
 				integrationItem.setEndpointUri(endpointUri);
 			}
@@ -2439,19 +2439,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Resource Actions
 	 */
 	protected Map<String, VraNgCustomResource> getAllCustomResourcesPrimitive() {
-		Map<String, VraNgCustomResource> customResources = new HashMap<>();
-		List<JsonObject> results = this.getPagedContent(SERVICE_CUSTOM_RESOURCES, new HashMap<>());
+		Map<String, VraNgCustomResource> customResources=new HashMap<>();
+		List<JsonObject> results=this.getPagedContent(SERVICE_CUSTOM_RESOURCES, new HashMap<>());
 
 		for (JsonObject o : results) {
-			JsonObject ob = o.getAsJsonObject();
-			JsonElement prjId = ob.get("projectId");
+			JsonObject ob=o.getAsJsonObject();
+			JsonElement prjId=ob.get("projectId");
 			if (isJsonElementPresent(prjId) && !getProjectId().equals(prjId.getAsString())) {
 				continue;
 			}
 
-			JsonElement id = ob.get("id");
-			JsonElement name = ob.get("displayName");
-			String json = ob.toString();
+			JsonElement id=ob.get("id");
+			JsonElement name=ob.get("displayName");
+			String json=ob.toString();
 			customResources.put(id.getAsString(), new VraNgCustomResource(id.getAsString(), name.getAsString(), json));
 		}
 
@@ -2471,23 +2471,23 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception in case of incorrect URI
 	 */
 	protected void importCustomResourcePrimitive(final String customResourceJson) throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_CUSTOM_RESOURCES).build();
+		URI url=getURIBuilder().setPath(SERVICE_CUSTOM_RESOURCES).build();
 
 		// Strip additionalActions from definition
-		JsonObject originalCr = JsonParser.parseString(customResourceJson).getAsJsonObject();
-		JsonArray additionalActions = originalCr.getAsJsonArray("additionalActions");
+		JsonObject originalCr=JsonParser.parseString(customResourceJson).getAsJsonObject();
+		JsonArray additionalActions=originalCr.getAsJsonArray("additionalActions");
 		originalCr.remove("additionalActions");
 		originalCr.add("additionalActions", new JsonArray());
 
-		ResponseEntity<String> resp = this.postJsonPrimitive(url, HttpMethod.POST, originalCr.toString());
+		ResponseEntity<String> resp=this.postJsonPrimitive(url, HttpMethod.POST, originalCr.toString());
 
-		if (resp.getStatusCode().is2xxSuccessful() && additionalActions != null && additionalActions.size() > 0) {
+		if (resp.getStatusCode().is2xxSuccessful() && additionalActions !=null && additionalActions.size() > 0) {
 			// Add additionalActions to definition and upload again
-			JsonObject returnedCr = JsonParser.parseString(resp.getBody()).getAsJsonObject();
+			JsonObject returnedCr=JsonParser.parseString(resp.getBody()).getAsJsonObject();
 			returnedCr.remove("additionalActions");
 			returnedCr.add("additionalActions", additionalActions);
 
-			ResponseEntity<String> resp2 = this.postJsonPrimitive(url, HttpMethod.POST, returnedCr.toString());
+			ResponseEntity<String> resp2=this.postJsonPrimitive(url, HttpMethod.POST, returnedCr.toString());
 			if (!resp2.getStatusCode().is2xxSuccessful()) {
 				throw new RuntimeException(
 						String.format("Unable to import additionalActions for %s",
@@ -2503,8 +2503,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected void deleteCustomResourcePrimitive(final String customResourceId) throws URISyntaxException {
-		String deleteURL = String.format(SERVICE_CUSTOM_RESOURCES + "/%s", customResourceId);
-		URI url = getURIBuilder().setPath(deleteURL).build();
+		String deleteURL=String.format(SERVICE_CUSTOM_RESOURCES + "/%s", customResourceId);
+		URI url=getURIBuilder().setPath(deleteURL).build();
 		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 	}
 
@@ -2518,20 +2518,20 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Resource Actions
 	 */
 	protected Map<String, VraNgResourceAction> getAllResourceActionsPrimitive() {
-		Map<String, VraNgResourceAction> resourceActions = new HashMap<>();
-		List<JsonObject> results = this.getPagedContent(SERVICE_RESOURCE_ACTIONS, new HashMap<>());
+		Map<String, VraNgResourceAction> resourceActions=new HashMap<>();
+		List<JsonObject> results=this.getPagedContent(SERVICE_RESOURCE_ACTIONS, new HashMap<>());
 
 		for (JsonObject o : results) {
-			JsonObject ob = o.getAsJsonObject();
-			JsonElement prjId = ob.get("projectId");
+			JsonObject ob=o.getAsJsonObject();
+			JsonElement prjId=ob.get("projectId");
 			if (isJsonElementPresent(prjId) && !getProjectId().equals(prjId.getAsString())) {
 				continue;
 			}
 
-			JsonElement id = ob.get("id");
-			JsonElement name = ob.get("name");
-			JsonElement resourceType = ob.get("resourceType");
-			String json = ob.toString();
+			JsonElement id=ob.get("id");
+			JsonElement name=ob.get("name");
+			JsonElement resourceType=ob.get("resourceType");
+			String json=ob.toString();
 			resourceActions.put(id.getAsString(),
 					new VraNgResourceAction(id.getAsString(), name.getAsString(), json, resourceType.getAsString()));
 		}
@@ -2547,8 +2547,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
 	protected String importResourceActionPrimitive(final String resourceActionJson) throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_RESOURCE_ACTIONS).build();
-		ResponseEntity<String> result = this.postJsonPrimitive(url, HttpMethod.POST, resourceActionJson);
+		URI url=getURIBuilder().setPath(SERVICE_RESOURCE_ACTIONS).build();
+		ResponseEntity<String> result=this.postJsonPrimitive(url, HttpMethod.POST, resourceActionJson);
 
 		if (result.getStatusCode().is2xxSuccessful()) {
 			return result.getBody();
@@ -2562,10 +2562,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param resourceActionId Resource Action ID to delete
 	 */
 	protected void deleteResourceActionPrimitive(final String resourceActionId) {
-		String deleteURL = String.format(SERVICE_RESOURCE_ACTIONS + "/%s", resourceActionId);
-		URI url = getURI(getURIBuilder().setPath(deleteURL));
+		String deleteURL=String.format(SERVICE_RESOURCE_ACTIONS + "/%s", resourceActionId);
+		URI url=getURI(getURIBuilder().setPath(deleteURL));
 
-		HttpHeaders headers = new HttpHeaders();
+		HttpHeaders headers=new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
 		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
@@ -2581,17 +2581,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return List of Abx Actions
 	 */
 	public List<AbxAction> getAllAbxActionsPrimitive() {
-		List<AbxAction> actions = new ArrayList<>();
-		List<JsonObject> results = this.getPagedContent(SERVICE_ABX_ACTIONS, new HashMap<>());
+		List<AbxAction> actions=new ArrayList<>();
+		List<JsonObject> results=this.getPagedContent(SERVICE_ABX_ACTIONS, new HashMap<>());
 
 		LOGGER.debug("ABX Actions found on server: {}", results.size());
 		results.forEach(o -> {
-			JsonObject ob = o.getAsJsonObject();
-			String prjId = ob.get("projectId").getAsString();
+			JsonObject ob=o.getAsJsonObject();
+			String prjId=ob.get("projectId").getAsString();
 			if (getProjectId().equals(prjId)) {
-				AbxAction action = new AbxAction();
-				action.id = ob.get("id").getAsString();
-				action.name = ob.get("name").getAsString();
+				AbxAction action=new AbxAction();
+				action.id=ob.get("id").getAsString();
+				action.name=ob.get("name").getAsString();
 				actions.add(action);
 			}
 		});
@@ -2607,16 +2607,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return AbxConstant item
 	 */
 	protected AbxConstant getAbxConstantPrimitive(final String name) {
-		String queryString = String.format("$filter=name eq '%s'", name);
-		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_CONSTANT).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		String queryString=String.format("$filter=name eq '%s'", name);
+		URI url=getURI(getURIBuilder().setPath(SERVICE_ABX_CONSTANT).setCustomQuery(queryString));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
-		JsonObject ob = root.getAsJsonObject();
+		JsonElement root=JsonParser.parseString(response.getBody());
+		JsonObject ob=root.getAsJsonObject();
 
 		if (ob.get("numberOfElements").getAsInt() > 0) {
-			JsonArray entities = ob.get("content").getAsJsonArray();
+			JsonArray entities=ob.get("content").getAsJsonArray();
 
 			if (entities.size() > 0) {
 				return new Gson().fromJson(entities.get(0).getAsJsonObject(), AbxConstant.class);
@@ -2635,12 +2635,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws IOException throws IO exception incase of invalid json response
 	 */
 	public String createAbxActionPrimitive(final AbxAction action) throws URISyntaxException, IOException {
-		URI url = getURIBuilder().setPath(SERVICE_ABX_ACTIONS).build();
+		URI url=getURIBuilder().setPath(SERVICE_ABX_ACTIONS).build();
 
-		Map<String, Object> map = createAbxActionMap(action);
+		Map<String, Object> map=createAbxActionMap(action);
 
-		String jsonBody = this.getJsonString(map);
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		String jsonBody=this.getJsonString(map);
+		ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 		return new Gson().fromJson(response.getBody(), AbxAction.class).id;
 	}
 
@@ -2655,12 +2655,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public String updateAbxActionPrimitive(final String id, final AbxAction action)
 			throws URISyntaxException, IOException {
-		URI url = getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + id).build();
+		URI url=getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + id).build();
 
-		Map<String, Object> map = createAbxActionMap(action);
+		Map<String, Object> map=createAbxActionMap(action);
 
-		String jsonBody = this.getJsonString(map);
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.PUT, jsonBody);
+		String jsonBody=this.getJsonString(map);
+		ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.PUT, jsonBody);
 		return new Gson().fromJson(response.getBody(), AbxAction.class).id;
 	}
 
@@ -2671,22 +2671,22 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Abx Action Version
 	 */
 	public AbxActionVersion getAbxLastUpdatedVersionPrimitive(final String actionId) {
-		URI url = getURI(
+		URI url=getURI(
 				getURIBuilder()
 						.setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/versions")
 						.addParameter("projectId", getProjectId())
 						.addParameter("orderBy", "createdMillis DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 
-		AbxActionVersion lastVersion = null;
+		AbxActionVersion lastVersion=null;
 		if (root.isJsonObject()) {
-			JsonArray responseContent = root.getAsJsonObject().getAsJsonArray("content");
+			JsonArray responseContent=root.getAsJsonObject().getAsJsonArray("content");
 			if (responseContent.size() > 0) {
-				lastVersion = new Gson().fromJson(responseContent.get(0).getAsJsonObject(), AbxActionVersion.class);
+				lastVersion=new Gson().fromJson(responseContent.get(0).getAsJsonObject(), AbxActionVersion.class);
 			}
 		}
 
@@ -2701,16 +2701,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Abx Action Version
 	 */
 	public AbxActionVersion createAbxVersionPrimitive(final String actionId, final String version) {
-		URI url = getURI(
+		URI url=getURI(
 				getURIBuilder()
 						.setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/versions")
 						.addParameter("projectId", getProjectId()));
 
-		Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map=new LinkedHashMap<>();
 		map.put("name", version);
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 		return new Gson().fromJson(response.getBody(), AbxActionVersion.class);
 	}
 
@@ -2722,16 +2722,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Abx Action Version
 	 */
 	public AbxActionVersion releaseAbxVersionPrimitive(final String actionId, final String versionId) {
-		URI url = getURI(
+		URI url=getURI(
 				getURIBuilder()
 						.setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/release")
 						.addParameter("projectId", getProjectId()));
 
-		Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map=new LinkedHashMap<>();
 		map.put("version", versionId);
-		String jsonBody = this.getJsonString(map);
+		String jsonBody=this.getJsonString(map);
 
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.PUT, jsonBody);
+		ResponseEntity<String> response=this.postJsonPrimitive(url, HttpMethod.PUT, jsonBody);
 		return new Gson().fromJson(response.getBody(), AbxActionVersion.class);
 	}
 
@@ -2740,7 +2740,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	// =================================================
 
 	private boolean isJsonElementPresent(final JsonElement jsonElement) {
-		return jsonElement != null && !jsonElement.isJsonNull();
+		return jsonElement !=null && !jsonElement.isJsonNull();
 	}
 
 	/**
@@ -2753,7 +2753,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		LOGGER.debug("Extracting data: {}", ob);
 
-		String regionHref = ob.get("_links").getAsJsonObject()
+		String regionHref=ob.get("_links").getAsJsonObject()
 				.get("region").getAsJsonObject()
 				.get("href").getAsString();
 
@@ -2767,7 +2767,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return cloud account id
 	 */
 	private String getLinkCloudAccountId(final JsonObject ob) {
-		String regionHref = ob.get("_links").getAsJsonObject()
+		String regionHref=ob.get("_links").getAsJsonObject()
 				.get("cloud-account").getAsJsonObject()
 				.get("href").getAsString();
 
@@ -2775,7 +2775,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	private Map<String, Object> createBlueprintMap(final VraNgBlueprint blueprint) {
-		Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map=new LinkedHashMap<>();
 
 		map.put("name", blueprint.getName());
 		map.put("content", blueprint.getContent());
@@ -2794,9 +2794,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws IOException throws IO exception incase Faas provider name is not correct
 	 */
 	protected Map<String, Object> createAbxActionMap(final AbxAction action) throws IOException {
-		Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map=new LinkedHashMap<>();
 
-		String[] providers = { "aws", "azure", "on-prem" };
+		String[] providers={ "aws", "azure", "on-prem" };
 
 		map.put("actionType", "SCRIPT");
 		map.put("name", action.getName());
@@ -2808,7 +2808,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		map.put("compressedContent", action.getBundleAsB64());
 		map.put("shared", action.abx.shared);
 
-		if (action.platform.timeoutSec != null && action.platform.timeoutSec > 0) {
+		if (action.platform.timeoutSec !=null && action.platform.timeoutSec > 0) {
 			map.put("timeoutSeconds", action.platform.timeoutSec);
 		}
 
@@ -2827,35 +2827,35 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	private String getJsonString(final Map<String, Object> entity) {
-		Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
+		Gson gson=new GsonBuilder().setLenient().serializeNulls().create();
 
 		return gson.toJson(entity);
 	}
 
 	private ResponseEntity<String> postJsonPrimitive(final URI url, final HttpMethod method, final String jsonBody) {
-		HttpHeaders headers = new HttpHeaders();
+		HttpHeaders headers=new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+		HttpEntity<String> entity=new HttpEntity<>(jsonBody, headers);
 
 		return restTemplate.exchange(url, method, entity, String.class);
 	}
 
 	private ResponseEntity<String> putJsonPrimitive(final URI url, final String jsonBody) {
-		HttpHeaders headers = new HttpHeaders();
+		HttpHeaders headers=new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+		HttpEntity<String> entity=new HttpEntity<>(jsonBody, headers);
 
 		return restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 	}
 
 	private List<VraNgContentSourceBase> getContentSources() {
-		Map<String, String> params = new HashMap<>();
+		Map<String, String> params=new HashMap<>();
 		params.put("projectId", this.getProjectId());
 
 		return this.getPagedContent(SERVICE_CONTENT_SOURCE, params)
 				.stream()
 				.map(contentSource -> {
-					VraNgContentSourceType type = VraNgContentSourceType
+					VraNgContentSourceType type=VraNgContentSourceType
 							.fromString(contentSource.get("typeId").getAsString());
 					return new Gson().fromJson(contentSource, type.getTypeClass());
 				})
@@ -2869,7 +2869,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Retreived VraNg Content Source
 	 */
 	public VraNgContentSourceBase getContentSourceByName(final String contentSourceName) {
-		List<VraNgContentSourceBase> contentSources = this.getContentSources();
+		List<VraNgContentSourceBase> contentSources=this.getContentSources();
 
 		return contentSources.stream()
 				.filter(contentSource -> contentSource.getName().equalsIgnoreCase(contentSourceName))
@@ -2885,10 +2885,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (StringUtils.isEmpty(contentSourceId)) {
 			return;
 		}
-		String deleteURL = String.format(SERVICE_CONTENT_SOURCE + "/%s", contentSourceId);
-		URI url = getURI(getURIBuilder().setPath(deleteURL));
+		String deleteURL=String.format(SERVICE_CONTENT_SOURCE + "/%s", contentSourceId);
+		URI url=getURI(getURIBuilder().setPath(deleteURL));
 
-		HttpHeaders headers = new HttpHeaders();
+		HttpHeaders headers=new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
 		restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
@@ -2925,8 +2925,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public boolean isVraAbove(final Version target) {
 		LOGGER.debug("Product version: {}", productVersion.getString());
 		LOGGER.debug("Targeted version: {}", target.getString());
-		int isGreater = productVersion.compareTo(target);
-		boolean is = isGreater >= 0;
+		int isGreater=productVersion.compareTo(target);
+		boolean is=isGreater >= 0;
 		LOGGER.debug("Is greater: {}", is);
 		return is;
 	}
@@ -2938,11 +2938,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 */
 	protected List<VraNgContentSharingPolicy> getAllContentSharingPoliciesPrimitive() {
-		Map<String, String> params = new HashMap<>();
+		Map<String, String> params=new HashMap<>();
 		params.put("expandDefinition", "true");
 		params.put("computeStats", "true");
 
-		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+		List<VraNgContentSharingPolicy> results=this.getPagedContent(SERVICE_POLICIES, params)
 				.stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
 				.filter(policy -> policy.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
@@ -2961,18 +2961,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 */
 	public String getContentSharingPolicyIdByName(final String name) {
-		Map<String, String> params = new HashMap<>();
+		Map<String, String> params=new HashMap<>();
 		params.put("expandDefinition", "true");
 		params.put("computeStats", "true");
 
-		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
+		VraNgContentSharingPolicy policy=this.getPagedContent(SERVICE_POLICIES, params)
 				.stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
 				.filter(p -> p.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
 				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
 				.findFirst()
 				.orElse(null);
-		if (policy == null) {
+		if (policy==null) {
 			throw new Error("Cannot find Content Sharing Policy by name" + name);
 		} else {
 			return policy.getId();
@@ -2986,23 +2986,23 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Created VraNg Content Sharing Policy
 	 */
 	protected VraNgContentSharingPolicy getContentSharingPolicyPrimitive(final String policyId) {
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
-		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+		VraNgContentSharingPolicy csPolicy=new VraNgContentSharingPolicy();
+		URI url=getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
+		JsonElement root=JsonParser.parseString(response.getBody());
 		if (!root.isJsonObject()) {
 			return null;
 		}
-		JsonObject result = root.getAsJsonObject();
-		String name = result.get("name").getAsString();
-		String description = result.has("description") ? result.get("description").getAsString() : "";
-		String typeId = result.get("typeId").getAsString();
-		String enforcementType = result.get("enforcementType").getAsString();
-		VraNgDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
+		JsonObject result=root.getAsJsonObject();
+		String name=result.get("name").getAsString();
+		String description=result.has("description") ? result.get("description").getAsString() : "";
+		String typeId=result.get("typeId").getAsString();
+		String enforcementType=result.get("enforcementType").getAsString();
+		VraNgDefinition definition=new Gson().fromJson(result.get("definition").getAsJsonObject(),
 				VraNgDefinition.class);
 		definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
-			item.name = this.getUserEntitlementItemName(item.id);
+			item.name=this.getUserEntitlementItemName(item.id);
 		}));
 		csPolicy.setDefinition(definition);
 		csPolicy.setName(name);
@@ -3021,17 +3021,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private String getUserEntitlementItemName(final String id) {
 		try {
-			VraNgContentSourceBase contentSource = this.getContentSourcePrimitive(id);
+			VraNgContentSourceBase contentSource=this.getContentSourcePrimitive(id);
 			return contentSource.getName();
 		} catch (RestClientException hre) {
-			String message = hre.getMessage();
+			String message=hre.getMessage();
 			if (message != null && message.contains(NOT_FOUND_ERROR)) {
-				VraNgCatalogItem catalogItem = this.getCatalogItemsForProjectPrimitive(this.getProjectId())
+				VraNgCatalogItem catalogItem=this.getCatalogItemsForProjectPrimitive(this.getProjectId())
 						.stream()
 						.filter(catItem -> catItem.getId().equals(id))
 						.findFirst()
 						.orElse(null);
-				if (catalogItem == null) {
+				if (catalogItem== null) {
 					throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with id '%s', please check vRA content sharing policies configuration.", id));
 				}
 				return catalogItem.getName();
@@ -3051,19 +3051,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private String getUserEntitlementItemId(final String name) {
 		try {
-			VraNgContentSourceBase contentSource = this.getContentSources().stream()
+			VraNgContentSourceBase contentSource= this.getContentSources().stream()
 					.filter(cs -> cs.getName().equals(name)).findFirst().orElse(null);
-			if (contentSource == null) {
+			if (contentSource== null) {
 				throw new RuntimeException(String.format(
 						"Content Source with name  '%s' could not be found on target system",
 						name));
 			}
 			return contentSource.getId();
 		} catch (RuntimeException re) {
-			VraNgCatalogItem catalogItem = this.getCatalogItemsForProjectPrimitive(this.getProjectId())
+			VraNgCatalogItem catalogItem=this.getCatalogItemsForProjectPrimitive(this.getProjectId())
 					.stream().filter(catItem -> catItem.getName().equals(name))
 					.findFirst().orElse(null);
-			if (catalogItem == null) {
+			if (catalogItem== null) {
 				throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with name %s", name));
 			}
 			return catalogItem.getId();
@@ -3077,9 +3077,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-		String jsonBody = new Gson().toJson(csPolicy);
-		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		URI url=getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody=new Gson().toJson(csPolicy);
+		JsonObject jsonObject=new Gson().fromJson(jsonBody, JsonObject.class);
 		handleItemsProperty(jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
@@ -3090,14 +3090,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param csPolicyJsonObject cs policy json
 	 */
 	public void handleItemsProperty(final JsonObject csPolicyJsonObject) {
-		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
-		JsonArray euArr = definition.getAsJsonArray("entitledUsers");
+		JsonObject definition=csPolicyJsonObject.getAsJsonObject("definition");
+		JsonArray euArr=definition.getAsJsonArray("entitledUsers");
 		for (JsonElement eu : euArr) {
-			JsonObject entitledUserObj = eu.getAsJsonObject();
-			JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
+			JsonObject entitledUserObj=eu.getAsJsonObject();
+			JsonArray itemsArr=entitledUserObj.getAsJsonArray("items");
 			for (JsonElement item : itemsArr) {
-				JsonObject itemObj = item.getAsJsonObject();
-				String contentSourceName = itemObj.get("name").getAsString();
+				JsonObject itemObj=item.getAsJsonObject();
+				String contentSourceName=itemObj.get("name").getAsString();
 				itemObj.addProperty("id", this.getUserEntitlementItemId(contentSourceName));
 				itemObj.remove("name");
 			}

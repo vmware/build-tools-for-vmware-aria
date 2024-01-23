@@ -16,10 +16,8 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  */
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudRegionProfile;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -61,11 +59,11 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	 */
 	@Override
 	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts) {
-		Map<String, List<VraNgImageMapping>> imagesByRegionId = this.restClient.getAllImageMappingsByRegion();
+		Map<String, List<VraNgImageMapping>> imagesByRegionId=this.restClient.getAllImageMappingsByRegion();
 
 		cloudAccounts.forEach(cloudAccount -> {
 
-			List<String> regionsInCloudAccount = cloudAccount.getRegionIds()
+			List<String> regionsInCloudAccount=cloudAccount.getRegionIds()
 				.stream()
 				.filter(imagesByRegionId::containsKey)
 				.collect(Collectors.toList());
@@ -74,15 +72,16 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
 			regionsInCloudAccount.forEach(regionId -> {
 
-				String profileDirName = cloudAccount.getName() + "~" + regionId;
+				String profileDirName=cloudAccount.getName() + "~" + regionId;
 
-				File sourceDir = new File(vraNgPackage.getFilesystemPath());
+				File sourceDir=new File(vraNgPackage.getFilesystemPath());
 				String regionName=restClient.getRegion(regionId).getName();
 
 
 				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
 
-				List<VraNgImageMapping> imageMappings = imagesByRegionId.get(regionId)
+
+				List<VraNgImageMapping> imageMappings=imagesByRegionId.get(regionId)
 					.stream()
 					.map(this::prepareMappingSerialization)
 					.collect(Collectors.toList());
@@ -104,11 +103,11 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	 */
 	@Override
 	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts, List<String> imageMappingsToExport) {
-		Map<String, List<VraNgImageMapping>> imagesByRegionId = this.restClient.getAllImageMappingsByRegion();
+		Map<String, List<VraNgImageMapping>> imagesByRegionId=this.restClient.getAllImageMappingsByRegion();
 
 		cloudAccounts.forEach(cloudAccount -> {
 
-			List<String> regionsInCloudAccount = cloudAccount.getRegionIds()
+			List<String> regionsInCloudAccount=cloudAccount.getRegionIds()
 				.stream()
 				.filter(imagesByRegionId::containsKey)
 				.collect(Collectors.toList());
@@ -117,20 +116,22 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
 			regionsInCloudAccount.forEach(regionId -> {
 
-				String profileDirName = cloudAccount.getName() + "~" + regionId;
+				String profileDirName=cloudAccount.getName() + "~" + regionId;
 
-				File sourceDir = new File(vraNgPackage.getFilesystemPath());
+				File sourceDir=new File(vraNgPackage.getFilesystemPath());
 				String regionName=restClient.getRegion(regionId).getName();
 
 
 				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName,regionName);
-				List<VraNgImageMapping> imageMappings = imagesByRegionId.get(regionId)
+
+
+				List<VraNgImageMapping> imageMappings=imagesByRegionId.get(regionId)
 					.stream()
 					.filter(im -> imageMappingsToExport.contains(im.getName()))
 					.map(this::prepareMappingSerialization)
 					.collect(Collectors.toList());
 
-				logger.info("Image mappings to export: {}", 
+				logger.info("Image mappings to export: {}",
 					imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
 
 				imageMappings.forEach(imageMapping ->
@@ -152,8 +153,8 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
         imageMappingFile.getParentFile().mkdirs();
 
         try {
-            Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-            String imageJson = gson.toJson(gson.fromJson(imageMapping.getJson(), JsonObject.class));
+            Gson gson=new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+            String imageJson=gson.toJson(gson.fromJson(imageMapping.getJson(), JsonObject.class));
             logger.info("Created file {}", Files.write(Paths.get(imageMappingFile.getPath()), imageJson.getBytes(), StandardOpenOption.CREATE));
         } catch (IOException e) {
             logger.error("Unable to store image mapping {} {}", imageMapping.getName(), imageMappingFile.getPath());
@@ -168,10 +169,10 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
      */
     private VraNgImageMapping prepareMappingSerialization(VraNgImageMapping mapping) {
 
-        JsonElement root = new JsonParser().parse(mapping.getJson());
-        JsonObject ob = root.getAsJsonObject();
+        JsonElement root=new JsonParser().parse(mapping.getJson());
+        JsonObject ob=root.getAsJsonObject();
 
-        JsonObject cleanedOb = VraNgRegionalContentUtils.cleanJson(ob, null, Arrays.asList(
+        JsonObject cleanedOb=VraNgRegionalContentUtils.cleanJson(ob, null, Arrays.asList(
                 "_links", "id", "externalRegionId"
         ));
 
@@ -189,37 +190,31 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	 * @param importTags list of tags
      */
     public void importContent(File sourceDirectory, List<String> importTags) {
-        File regionsFolder = Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();
+        File regionsFolder=Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();
         if (!regionsFolder.exists()) {
             logger.debug("Regions directory does not exist. Skipping import of image profiles...");
             return;
         }
 
-        List<VraNgCloudAccount> cloudAccounts = this.restClient.getCloudAccounts();
+        List<VraNgCloudAccount> cloudAccounts=this.restClient.getCloudAccounts();
 
-        Map<String, List<String>> imageProfilesByRegion = this.restClient.getAllImageProfilesByRegion();
+        Map<String, List<String>> imageProfilesByRegion=this.restClient.getAllImageProfilesByRegion();
 
         logger.debug("Image profiles by region: {}", imageProfilesByRegion);
 
         // list all directories in the regions folder
         Arrays.asList(regionsFolder.listFiles(File::isDirectory)).forEach(regionProfileDir -> {
             try {
-                VraNgCloudRegionProfile cloudRegionProfile = VraNgRegionalContentUtils.getCloudRegionProfile(regionProfileDir);
+                VraNgCloudRegionProfile cloudRegionProfile=VraNgRegionalContentUtils.getCloudRegionProfile(regionProfileDir);
                 cloudAccounts
                         .stream()
                         .filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(), importTags))
                         .filter(cloudAccount -> cloudAccount.getType().equals(cloudRegionProfile.getRegionType()))
                         .forEach(cloudAccount -> cloudAccount.getRegionIds()
-							.forEach(regionId ->{
-									String regionName=this.restClient.getRegion(regionId).getName();
-									if(regionName.equals(cloudRegionProfile.getRegionName())) {
-										this.importImageProfilesInRegion(
-											regionId,
-											regionProfileDir,
-											imageProfilesByRegion);
-									}
-								}
-							));
+                                .forEach(regionId -> this.importImageProfilesInRegion(
+                                        regionId,
+                                        regionProfileDir,
+                                        imageProfilesByRegion)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -232,12 +227,12 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
      * @return list of image mappings
      */
     private List<VraNgImageMapping> getImageMappingsFromFileSystem(File imageMappingsDir) {
-        List<VraNgImageMapping> imageMappings = new ArrayList<>();
+        List<VraNgImageMapping> imageMappings=new ArrayList<>();
         FileUtils.listFiles(imageMappingsDir, new String[] { "json" }, false).forEach(im -> {
             try {
-                File imFile = (File) im;
-                String imageMappingName = FilenameUtils.removeExtension(imFile.getName());
-                String imageMappingContent = FileUtils.readFileToString(imFile, "UTF-8");
+                File imFile=(File) im;
+                String imageMappingName=FilenameUtils.removeExtension(imFile.getName());
+                String imageMappingContent=FileUtils.readFileToString(imFile, "UTF-8");
                 imageMappings.add(new VraNgImageMapping(imageMappingName, imageMappingContent));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -257,12 +252,12 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
     private void importImageProfilesInRegion(
             String regionId, File regionProfileDir, Map<String, List<String>> imageProfilesByRegion) {
 
-        File imageMappingsDir = Paths.get(regionProfileDir.getPath(), DIR_IMAGE_MAPPINGS).toFile();
+        File imageMappingsDir=Paths.get(regionProfileDir.getPath(), DIR_IMAGE_MAPPINGS).toFile();
         if (!imageMappingsDir.exists()) {
             logger.debug("Image mappings directory {} does not exist in region {}. Skipping...", DIR_IMAGE_MAPPINGS, regionId);
             return;
         }
-        List<VraNgImageMapping> imageMappings = this.getImageMappingsFromFileSystem(imageMappingsDir);
+        List<VraNgImageMapping> imageMappings=this.getImageMappingsFromFileSystem(imageMappingsDir);
 
         logger.info("Creating/updating {} image mappings: {}",
 			imageMappings.size(), imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
@@ -277,7 +272,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
     private void updateImageProfilesWithMappings(
             List<String> imageProfilesToPatch, List<VraNgImageMapping> imageMappings) {
 
-        List<VraNgImageMapping> mappingList = imageMappings.stream()
+        List<VraNgImageMapping> mappingList=imageMappings.stream()
                 .map(this::getUpsertPayload)
                 .collect(Collectors.toList());
 
@@ -287,7 +282,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
     }
 
     private void createImageProfilesWithMappings(String regionId, List<VraNgImageMapping> imageMappings) {
-        List<VraNgImageMapping> mappingList = imageMappings.stream()
+        List<VraNgImageMapping> mappingList=imageMappings.stream()
                 .map(this::getUpsertPayload)
                 .collect(Collectors.toList());
 
@@ -301,18 +296,18 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
      * @return image mapping with updated payload
      */
     private VraNgImageMapping getUpsertPayload(VraNgImageMapping mapping) {
-        JsonElement root = new JsonParser().parse(mapping.getJson());
-        JsonObject ob = root.getAsJsonObject();
+        JsonElement root=new JsonParser().parse(mapping.getJson());
+        JsonObject ob=root.getAsJsonObject();
 
-        String fabricId = this.restClient.getFabricEntityId("fabric-images", ob.get("name").getAsString());
+        String fabricId=this.restClient.getFabricEntityId("fabric-images", ob.get("name").getAsString());
         if (fabricId != null) {
 
             // add fabric entity id
             ob.addProperty("id", fabricId);
-            Map<String, String> payload = new HashMap<>();
+            Map<String, String> payload=new HashMap<>();
             payload.put("id", fabricId);
 
-            Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
+            Gson gson=new GsonBuilder().setLenient().serializeNulls().create();
             return new VraNgImageMapping(mapping.getName(), gson.toJson(payload));
         }
 
