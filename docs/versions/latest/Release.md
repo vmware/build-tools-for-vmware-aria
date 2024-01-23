@@ -59,7 +59,8 @@ Example of definition
 This feature enables the conditional execution of tasks/workflows based on a conditional variable (saga state value).
 
 #### Relevant Documentation
-```yaml
+
+~~~yaml
 tasks:
   TestOne:
     execute: testSagaTask
@@ -67,7 +68,7 @@ tasks:
   TestTwo:
     workflow: workflowId
     if: conditionalVariable # Newly introduced variable
-```
+~~~
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
