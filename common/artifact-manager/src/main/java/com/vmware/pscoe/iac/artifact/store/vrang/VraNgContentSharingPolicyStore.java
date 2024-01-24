@@ -62,11 +62,11 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	@Override
 	public void importContent(final File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory",
-				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CONTENT_SHARING_POLICIES);
+				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES);
 		// verify directory exists
 		File contentSharingPolicyFolder = Paths
 				.get(sourceDirectory.getPath(),
-						com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CONTENT_SHARING_POLICIES,
+						com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 						CONTENT_SHARING_POLICY)
 				.toFile();
 		if (!contentSharingPolicyFolder.exists()) {
@@ -129,9 +129,13 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
+		logger.info("{}->getItemListFromDescriptor", VraNgContentSharingPolicyStore.class);
+
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
+			logger.info("Descriptor policy is null");
 			return null;
 		} else {
+			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getContentSharing());
 			return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
 		}
 	}
@@ -170,7 +174,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent() {
-
+		System.out.println(this.getClass() + "->exportStoreContent()");
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 
 		csPolicies.forEach(
@@ -187,6 +191,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
+		System.out.println(this.getClass() + "->exportStoreContent({})"+ itemNames.toString());
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 
 		csPolicies.forEach(
@@ -211,7 +216,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		File store = new File(serverPackage.getFilesystemPath());
 		File contentSharingPolicyFile = Paths.get(
 				store.getPath(),
-				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CONTENT_SHARING_POLICIES,
+				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 				CONTENT_SHARING_POLICY,
 				contentSharingPolicy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
 

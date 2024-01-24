@@ -40,33 +40,7 @@ import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementDto;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItemType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganizations;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegion;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
+import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -272,6 +246,26 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * CONTENT_SHARING_POLICY_TYPE.
 	 */
 	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
+	/**
+	 * APPROVAL_POLICY_TYPE.
+	 */
+	private static final String APPROVAL_POLICY_TYPE = "com.vmware.policy.approval";
+	/**
+	 * DAY2_ACTION_POLICY_TYPE.
+	 */
+	private static final String DAY2_ACTION_POLICY_TYPE = "com.vmware.policy.deployment.action";
+	/**
+	 * LEASE_POLICY_TYPE.
+	 */
+	private static final String LEASE_POLICY_TYPE = "com.vmware.policy.deployment.lease";
+	/**
+	 * DEPLOYMENT_LIMIT_POLICY_TYPE.
+	 */
+	private static final String DEPLOYMENT_LIMIT_POLICY_TYPE = "com.vmware.policy.deployment.limit";
+	/**
+	 * RESOURCE_QUOTA_POLICY_TYPE.
+	 */
+	private static final String RESOURCE_QUOTA_POLICY_TYPE = "com.vmware.policy.resource.quota";
 	/**
 	 * configuration.
 	 */
@@ -3104,4 +3098,97 @@ public class RestClientVraNgPrimitive extends RestClient {
 		definition.add("entitledUsers", euArr);
 		csPolicyJsonObject.add("definition", definition);
 	}
+
+	/**
+	 * Retrieve all resource quota  policy Ids.
+	 *
+	 * @return list of resource quota policy Ids that are available.
+	 * 
+	 */
+	protected List<VraNgResourceQuotaPolicy> getAllResourceQuotaPoliciesPrimitive() {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+
+		List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+				.stream()
+				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
+				.filter(policy -> policy.getTypeId().equalsIgnoreCase(RESOURCE_QUOTA_POLICY_TYPE))
+				.collect(Collectors.toList());
+
+		LOGGER.info("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+		return results;
+	}
+	
+	/**
+	 * Creates Resource Quota Policy.
+	 * 
+	 * @param rqPolicy policy data to create
+	 */
+	public void createResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(rqPolicy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		handleItemsProperty(jsonObject);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	/**
+	 * Retrieve resource quota policy based on Id.
+	 * 
+	 * @param policyId policy id
+	 * @return Created VraNg Resource Quota Policy
+	 */
+	protected VraNgResourceQuotaPolicy getResourceQuotaPolicyPrimitive(final String policyId) {
+		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy();
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		JsonElement root = JsonParser.parseString(response.getBody());
+		if (!root.isJsonObject()) {
+			return null;
+		}
+		JsonObject result = root.getAsJsonObject();
+		String name = result.get("name").getAsString();
+		String description = result.has("description") ? result.get("description").getAsString() : "";
+		String typeId = result.get("typeId").getAsString();
+		String enforcementType = result.get("enforcementType").getAsString();
+		VraNgResourceQuotaDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
+			VraNgResourceQuotaDefinition.class);
+		//definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
+		//	item.name = this.getUserEntitlementItemName(item.id);
+	//	}));
+		rqPolicy.setDefinition(definition);
+		rqPolicy.setName(name);
+		rqPolicy.setEnforcementType(enforcementType);
+		rqPolicy.setDescription(description);
+		rqPolicy.setTypeId(typeId);
+		return rqPolicy;
+	}
+	/**
+	 * Retrieve content sharing policy Id based on name.
+	 *
+	 * @param name name of the policy
+	 * @return resource quota policy Id.
+	 * 
+	 */
+	public String getResourceQuotaPolicyIdByName(final String name) {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+
+		VraNgResourceQuotaPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
+				.stream()
+				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
+				.filter(p -> p.getTypeId().equalsIgnoreCase(RESOURCE_QUOTA_POLICY_TYPE))
+				.findFirst()
+				.orElse(null);
+		if (policy == null) {
+			throw new Error("Cannot find Resource Quota Policy by name" + name);
+		} else {
+			return policy.getId();
+		}
+	}
+
 }

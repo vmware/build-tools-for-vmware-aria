@@ -194,7 +194,7 @@ public class VraNgTypeStoreFactory {
 			case RESOURCE_ACTION:
 				return new VraNgResourceActionStore();
 			case POLICY:
-				return new VraNgContentSharingPolicyStore();
+				return new VraNgPolicyStore();
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}
