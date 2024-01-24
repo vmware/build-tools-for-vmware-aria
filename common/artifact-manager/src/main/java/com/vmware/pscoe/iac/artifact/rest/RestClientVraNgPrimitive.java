@@ -1268,7 +1268,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Retrieve Vra Workflow Content Source.
-	 * 
 	 * @param id ID
 	 * @return VraNg Workflow Content Source.
 	 */
@@ -1292,7 +1291,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Retrieve Content Source.
-	 * 
 	 * @param id ID
 	 * @return VraNg Content Source.
 	 */
@@ -1301,7 +1299,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 		JsonElement root=JsonParser.parseString(response.getBody());
-		if (!root.isJsonObject()) {
+		if (!root.isJsonObject()){
 			return null;
 		}
 		JsonObject ob=root.getAsJsonObject();
@@ -1312,7 +1310,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Retrieve all catalog entitlements for the configured project.
-	 * 
 	 * @param project Project
 	 * @return list of VraNgCatalogEntitlement objects.
 	 * @see VraNgCatalogEntitlement
@@ -1331,9 +1328,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Retrieve all catalog entitlements by name for all of the configured projects.
-	 *
 	 * @return list of VraNgCatalogEntitlement objects that are shared for all of
-	 *         the configured projects.
+	 * the configured projects.
 	 * @see VraNgCatalogEntitlement
 	 */
 	protected List<VraNgCatalogEntitlement> getAllCatalogEntitlementsPrimitive() {
@@ -1376,7 +1372,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Create new entitlement.
-	 *
 	 * @param entitlement - the entitlement definition to be created.
 	 * @param project     - project id of where to share the entitlement definition.
 	 * @throws URISyntaxException exception, RuntimeException
@@ -1394,7 +1389,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		definition.put("iconId", entitlement.getIconId()==null ? null : entitlement.getIconId());
 
 		Map<String, Object> payload=new LinkedHashMap<>();
-		if (!StringUtils.isEmpty(entitlement.getId())) {
+		if (!StringUtils.isEmpty(entitlement.getId())){
 			payload.put("id", entitlement.getId());
 		}
 		payload.put("projectId", project);
@@ -1405,12 +1400,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 		ResponseEntity<String> response;
 		try {
 			response=this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-		} catch (HttpClientErrorException e) {
+		} catch (HttpClientErrorException e){
 			throw new RuntimeException(
 					String.format("Error ocurred during creating of catalog entitlement. Message: %s", e.getMessage()));
 		}
 
-		if (!HttpStatus.CREATED.equals(response.getStatusCode())) {
+		if (!HttpStatus.CREATED.equals(response.getStatusCode())){
 			throw new RuntimeException(String.format(
 					"Error ocurred during creating of catalog entitlement. HTTP Status code %s : ( %s )", response
 							.getStatusCodeValue(),
@@ -1420,20 +1415,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * getCatalogItemVersionsPrimitive.
-	 *
 	 * @param catalogItemId catalog item id.
 	 * @return catalogItemVersions JsonArray
 	 */
-	protected JsonArray getCatalogItemVersionsPrimitive(final String catalogItemId) {
+	protected JsonArray getCatalogItemVersionsPrimitive(final String catalogItemId){
 		String path=SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId + "/versions";
 		URI url=getURI(getURIBuilder().setPath(path));
 		try {
 			ResponseEntity<String> response=restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 			JsonElement root=JsonParser.parseString(response.getBody());
-			if (root.isJsonObject()) {
+			if(root.isJsonObject()){
 				return root.getAsJsonObject().getAsJsonArray("content");
 			}
-		} catch (RestClientException e) {
+		} catch(RestClientException e){
 			LOGGER.info("No versions found for catalog item id '{}'", catalogItemId);
 		}
 
@@ -1547,9 +1541,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return tags;
 	}
 
-	// =================================================
+	//=================================================
 	// FLAVOR PROFILES OPERATIONS
-	// =================================================
+	//=================================================
 
 	/**
 	 * Retrieve a flavor profile by id.
@@ -1765,9 +1759,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return flavorMappingsToImport;
 	}
 
-	// =================================================
+	//=================================================
 	// IMAGE PROFILES OPERATIONS
-	// =================================================
+	//=================================================
 
 	/**
 	 * Retrieve an image profile by id.
@@ -1998,9 +1992,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return imageMappingsToImport;
 	}
 
-	// =================================================
+	//=================================================
 	// STORAGE PROFILES OPERATIONS
-	// =================================================
+	//=================================================
 
 	/**
 	 * Retrieve all storage profiles for a given region and group them by region id.
@@ -2320,9 +2314,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		return org;
 	}
-	// =================================================
+	//=================================================
 	// WORKFLOW OPERATIONS
-	// =================================================
+	//=================================================
 
 	/**
 	 * Retreive Vra Workflow Integrations.
@@ -2429,9 +2423,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return retVal;
 	}
 
-	// =================================================
+	//=================================================
 	// CUSTOM RESOURCES
-	// =================================================
+	//=================================================
 
 	/**
 	 * Retreive all Custom Resource.
@@ -2508,9 +2502,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 	}
 
-	// =================================================
+	//=================================================
 	// RESOURCE ACTIONS
-	// =================================================
+	//=================================================
 
 	/**
 	 * Retreive all Resource Actions.
@@ -2571,9 +2565,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 	}
 
-	// =================================================
+	//=================================================
 	// ABX ACTIONS
-	// =================================================
+	//=================================================
 
 	/**
 	 * Retrieve all ABX Actions.
@@ -2735,9 +2729,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return new Gson().fromJson(response.getBody(), AbxActionVersion.class);
 	}
 
-	// =================================================
+	//=================================================
 	// UTILITY METHODS
-	// =================================================
+	//=================================================
 
 	private boolean isJsonElementPresent(final JsonElement jsonElement) {
 		return jsonElement !=null && !jsonElement.isJsonNull();
@@ -2812,13 +2806,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 			map.put("timeoutSeconds", action.platform.timeoutSec);
 		}
 
-		if (action.platform.memoryLimitMb != null && action.platform.memoryLimitMb > 0) {
+		if (action.platform.memoryLimitMb !=null && action.platform.memoryLimitMb > 0) {
 			map.put("memoryInMB", action.platform.memoryLimitMb);
 		}
 
-		if (action.platform.provider != null && Arrays.stream(providers).anyMatch(action.platform.provider::equals)) {
+		if (action.platform.provider !=null && Arrays.stream(providers).anyMatch(action.platform.provider::equals)) {
 			map.put("provider", action.platform.provider);
-		} else if (action.platform.provider != null) {
+		} else if (action.platform.provider !=null) {
 			throw new RuntimeException(
 					"Faas provider name is not correct. Possible values are: " + String.join(",", providers));
 		}
@@ -2900,10 +2894,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return true if version above 81 else false.
 	 */
 	public boolean isVraAbove81() {
-		return productVersion.getMajorVersion() != null && productVersion.getMajorVersion() >= VRA_VERSION_MAJOR
+		return productVersion.getMajorVersion() !=null && productVersion.getMajorVersion() >=VRA_VERSION_MAJOR
 				&& this.productVersion
-						.getMinorVersion() != null
-				&& this.productVersion.getMinorVersion() >= VRA_VERSION_MINOR;
+						.getMinorVersion() !=null
+				&& this.productVersion.getMinorVersion() >=VRA_VERSION_MINOR;
 	}
 
 	/**
@@ -2926,7 +2920,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		LOGGER.debug("Product version: {}", productVersion.getString());
 		LOGGER.debug("Targeted version: {}", target.getString());
 		int isGreater=productVersion.compareTo(target);
-		boolean is=isGreater >= 0;
+		boolean is=isGreater >=0;
 		LOGGER.debug("Is greater: {}", is);
 		return is;
 	}
@@ -3025,7 +3019,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return contentSource.getName();
 		} catch (RestClientException hre) {
 			String message=hre.getMessage();
-			if (message != null && message.contains(NOT_FOUND_ERROR)) {
+			if (message !=null && message.contains(NOT_FOUND_ERROR)) {
 				VraNgCatalogItem catalogItem=this.getCatalogItemsForProjectPrimitive(this.getProjectId())
 						.stream()
 						.filter(catItem -> catItem.getId().equals(id))
@@ -3051,7 +3045,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private String getUserEntitlementItemId(final String name) {
 		try {
-			VraNgContentSourceBase contentSource= this.getContentSources().stream()
+			VraNgContentSourceBase contentSource=this.getContentSources().stream()
 					.filter(cs -> cs.getName().equals(name)).findFirst().orElse(null);
 			if (contentSource==null) {
 				throw new RuntimeException(String.format(
