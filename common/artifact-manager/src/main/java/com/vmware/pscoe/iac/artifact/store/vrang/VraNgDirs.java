@@ -20,7 +20,9 @@ public class VraNgDirs {
     public static final String DIR_ENTITLEMENTS = "entitlements";
     public static final String DIR_PROPERTY_GROUPS = "property-groups";
     public static final String DIR_CATALOG_ITEMS = "catalog-items";
-	public static final String DIR_CONTENT_SHARING_POLICIES = "policies";
+	public static final String DIR_POLICIES = "policies";
+	public static final String DIR_CONTENT_SHARING_POLICIES = "content-sharing";
+	public static final String DIR_RESOURCE_QUOTA_POLICIES = "resource-quota";
     public static final String DIR_CONTENT_SOURCES = "content-sources";
     public static final String DIR_BLUEPRINTS = "blueprints";
     public static final String DIR_SUBSCRIPTIONS = "subscriptions";

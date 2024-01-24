@@ -31,6 +31,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VraNgPackageDescriptor extends PackageDescriptor {
     private List<String> catalogItem;
@@ -46,6 +48,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
     private List<String> resourceAction;
     private List<String> contentSource;
 	private VraNgPolicy policy;
+	private final Logger logger = LoggerFactory.getLogger(VraNgPackageDescriptor.class);
 
 	public List<String> getPropertyGroup() {
 		return this.propertyGroup;
@@ -120,11 +123,13 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
     }
 
 	public VraNgPolicy getPolicy() {
+		logger.info("VraNgPolicy.getPolicy {}", this.policy);
         return this.policy;
     }
 
 	public void setPolicy(VraNgPolicy policy) {
-        this.policy= policy;
+        logger.info("VraNgPolicy.setPolicy {}", policy);
+		this.policy= policy;
     }
 
     public List<String> getCustomResource() {
@@ -228,6 +233,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
         pd.contentSource = map.get(VraNgPackageContent.ContentType.CONTENT_SOURCE);
         pd.catalogItem = map.get(VraNgPackageContent.ContentType.CATALOG_ITEM);
         pd.propertyGroup = map.get(VraNgPackageContent.ContentType.PROPERTY_GROUP);
+		//pd.policy = map.get(VraNgPackageContent.ContentType.POLICY);
 
         // System.out.println("REGION MAPPINGS ------");
         // map.get(VraNgPackageContent.ContentType.REGION_MAPPING).forEach(e -> {

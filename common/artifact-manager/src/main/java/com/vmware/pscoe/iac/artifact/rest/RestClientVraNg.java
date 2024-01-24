@@ -43,6 +43,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegion;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
@@ -1297,6 +1298,49 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	public VraNgContentSharingPolicy getContentSharingPolicy(final String policyId) {
 		try {
 			return this.getContentSharingPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getResourceQuotaPolicyIds.
+	 * 
+	 * @return policies
+	 */
+	public List<VraNgResourceQuotaPolicy> getResourceQuotaPolicies() {
+		try {
+			return this.getAllResourceQuotaPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching content sharing policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createResourceQuotaPolicy.
+	 * 
+	 * @param rqPolicy resource quota policy
+	 */
+	public void createResourceQuotaPolicy(final VraNgResourceQuotaPolicy rqPolicy) {
+		try {
+			createResourceQuotaPolicyPrimitive(rqPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * getResourceQuotaPolicy.
+	 * 
+	 * @param policyId resource quota policy id
+	 * @return policy
+	 */
+	public VraNgResourceQuotaPolicy getResourceQuotaPolicy(final String policyId) {
+		try {
+			return this.getResourceQuotaPolicyPrimitive(policyId);
 		} catch (Exception e) {
 			logger.error("Error fetching content sharing policy - {}", e.getMessage());
 			throw new RuntimeException(e);
