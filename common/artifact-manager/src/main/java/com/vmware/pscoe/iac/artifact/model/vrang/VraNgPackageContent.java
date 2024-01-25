@@ -29,7 +29,7 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
      */
     public enum ContentType implements PackageContent.ContentType { 
 		/**
-		 * Content type for blueprints 
+		 * Content type for blueprints.
 		 */
         BLUEPRINT("blueprint"),
 		/**
