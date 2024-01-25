@@ -195,7 +195,7 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	 * Store Lease policy in JSON file.
 	 *
 	 * @param serverPackage        vra package
-	 * @param contentSharingPolicy contentSharingPolicy representation
+	 * @param leasePolicy LeasePolicy representation
 	 */
 	private void storeLeasePolicyOnFilesystem(final Package serverPackage,
 			final VraNgLeasePolicy leasePolicy) {
