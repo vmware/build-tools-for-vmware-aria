@@ -19,43 +19,84 @@ import java.util.List;
 
 import com.vmware.pscoe.iac.artifact.model.PackageContent;
 
+/**
+ * This class extends the PackageContent class and provides a list of content types specific to VraNg.
+ */
 public class VraNgPackageContent extends PackageContent<VraNgPackageContent.ContentType> {
     
+    /**
+     * This enum represents the various content types that a VraNgPackage can have.
+     */
     public enum ContentType implements PackageContent.ContentType { 
+		//Content type for blueprints
         BLUEPRINT("blueprint"),
+		//Content type for subscriptions
         SUBSCRIPTION("subscription"),
+		//Content type for flavor mappings
         FLAVOR_MAPPING("flavor-mapping"),
+		//Content type for image mappings
         IMAGE_MAPPING("image-mapping"),
+		//Content type for storage profiles
         STORAGE_PROFILE("storage-profile"),
+		//Content type for region mappings
         REGION_MAPPING("region-mapping"),
+		//Content type for catalog entitlement
         CATALOG_ENTITLEMENT("catalog-entitlement"),
+		//Content type for custom resources
         CUSTOM_RESOURCE("custom-resource"),
+		//Content type for resource actions
         RESOURCE_ACTION("resource-action"),
+		//Content type for property groups
         PROPERTY_GROUP("property-group"),
+		//Content type for content sources
         CONTENT_SOURCE("content-source"),
+		//Content type for catalog items
         CATALOG_ITEM("catalog-item"),
-		POLICY("policy"),
+		//Content type for content sharing policies
 		CONTENT_SHARING_POLICY("content-sharing"),
+		//Content type for lease policies
 		LEASE_POLICY("lease-policy"),
+		//Content type for resource quota policies
 		RESOURCE_QUOTA_POLICY("resource-quota"),
+		//Content type for day 2 actions policy
 		DAY2_ACTIONS_POLICY("day2-actions"),
+		//Content type for deployment limit policy
 		DEPLOYMENT_LIMIT_POLICY("deployment-limit"),
+		//Content type for approval policy
 		APPROVAL_POLICY("approval");
 
 
+    	//This attribute should not be modified.
         private final String type;
 
-        private ContentType(String type) {
+        
+        /** 
+         * Constructor for ContentType.
+         *
+         * @param type  the type of the content. 
+         */
+        ContentType(String type) {
             this.type = type;
         }
         
-        public String getTypeValue(){
+        /** 
+         * Gets the type value.
+         *
+         * @return the type value.
+         */
+        public String getTypeValue() { 
             return this.type;
         }
         
-        public static ContentType getInstance(String type) {
-            for(ContentType ct: ContentType.values()) {
-                if(ct.getTypeValue().equalsIgnoreCase(type)) {
+        /** 
+         * Returns the ContentType instance corresponding to the given type.
+         *
+         * @param type  the type of the content. 
+         * @return the ContentType instance.
+         */
+        public static ContentType getInstance(String type) { 
+            for (ContentType ct: ContentType.values()) {
+                if (ct.getTypeValue().equalsIgnoreCase(type)) {
                     return ct;
                 }
             }
@@ -64,7 +105,12 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
         
     }
 
-    public VraNgPackageContent(List<Content<ContentType>> content) {
+    /** 
+     * Constructor for VraNgPackageContent.
+     *
+     * @param content  the content of the package. 
+     */
+    public VraNgPackageContent(List<Content<ContentType>> content) { 
         super(content);
     }
 
