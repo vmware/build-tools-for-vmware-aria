@@ -40,7 +40,9 @@ import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
+
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
+
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -246,6 +248,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * CONTENT_SHARING_POLICY_TYPE.
 	 */
 	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
+	private static final String LEASE_POLICY_TYPE = "com.vmware.policy.deployment.lease";
 	/**
 	 * APPROVAL_POLICY_TYPE.
 	 */
@@ -2924,6 +2927,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return is;
 	}
 
+
+	// =================================================
+	// Content Sharing Policy
+	// =================================================
+
 	/**
 	 * Retrieve all content sharing policy Ids.
 	 *
@@ -3099,6 +3107,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		csPolicyJsonObject.add("definition", definition);
 	}
 
+
 	/**
 	 * Retrieve all resource quota  policy Ids.
 	 *
@@ -3195,6 +3204,30 @@ public class RestClientVraNgPrimitive extends RestClient {
 			.collect(Collectors.toList());
 
 		LOGGER.info("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+=======
+	// =================================================
+	// Lease Policy
+	// =================================================
+
+	/**
+	 * Retrieve all lease policy Ids.
+	 *
+	 * @return list of sharing policy Ids that are available.
+	 * 
+	 */
+	protected List<VraNgLeasePolicy> getAllLeasePoliciesPrimitive() {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+
+		List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+				.stream()
+				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
+				.filter(policy -> policy.getTypeId().equalsIgnoreCase(LEASE_POLICY_TYPE))
+				.filter(policy -> policy.getProjectId().equals(this.getProjectId()))
+				.collect(Collectors.toList());
+
+		LOGGER.debug("Day 2 Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 		return results;
 	}
 
@@ -3244,9 +3277,156 @@ public class RestClientVraNgPrimitive extends RestClient {
 			.orElse(null);
 		if (policy == null) {
 			throw new Error("Cannot find Day 2 Actions Policy by name" + name);
+=======
+	 * Retrieve lease policy Id based on name.
+	 *
+	 * @param name name of the policy
+	 * @return lease policy Id.
+	 * 
+	 */
+	public String getLeasePolicyIdByName(final String name) {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+
+		VraNgLeasePolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
+				.stream()
+				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
+				.filter(p -> p.getTypeId().equalsIgnoreCase(LEASE_POLICY_TYPE))
+				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
+				.findFirst()
+				.orElse(null);
+		if (policy == null) {
+			throw new Error("Cannot find Day 2 Policy by name" + name);
 		} else {
 			return policy.getId();
 		}
 	}
 
+	/**
+	 * Retrieve lease policy based on Id.
+	 * 
+	 * @param policyId policy id
+	 * @return Created VraNg lease Policy
+	 */
+	protected VraNgLeasePolicy getLeasePolicyPrimitive(final String policyId) {
+		VraNgLeasePolicy csPolicy = new VraNgLeasePolicy();
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		JsonElement root = JsonParser.parseString(response.getBody());
+		if (!root.isJsonObject()) {
+			return null;
+		}
+		JsonObject result = root.getAsJsonObject();
+		String name = result.get("name").getAsString();
+		String description = result.has("description") ? result.get("description").getAsString() : "";
+		String typeId = result.get("typeId").getAsString();
+		String enforcementType = result.get("enforcementType").getAsString();
+		VraNgLeasePolicyDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
+		VraNgLeasePolicyDefinition.class);
+		// definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
+		// 	item.name = this.getUserEntitlementItemNameLease(item.id);
+		// }));
+		csPolicy.setDefinition(definition);
+		csPolicy.setName(name);
+		csPolicy.setEnforcementType(enforcementType);
+		csPolicy.setDescription(description);
+		csPolicy.setTypeId(typeId);
+		return csPolicy;
+	}
+
+	/**
+	 * Creates lease Policy.
+	 * 
+	 * @param id policy data to create
+	 * 
+	 * @return the user enitlement item name
+	 */
+	private String getUserEntitlementItemNameLease(final String id) {
+		try {
+			VraNgContentSourceBase contentSource = this.getContentSourcePrimitive(id);
+			return contentSource.getName();
+		} catch (RestClientException hre) {
+			String message = hre.getMessage();
+			if (message != null && message.contains(NOT_FOUND_ERROR)) {
+				VraNgCatalogItem catalogItem = this.getCatalogItemsForProjectPrimitive(this.getProjectId())
+						.stream()
+						.filter(catItem -> catItem.getId().equals(id))
+						.findFirst()
+						.orElse(null);
+				if (catalogItem == null) {
+					throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with id '%s', please check vRA content sharing policies configuration.", id));
+				}
+				return catalogItem.getName();
+			} else {
+				// re-throw
+				throw hre;
+			}
+		}
+	}
+
+	/**
+	 * Update lease Policy.
+	 * 
+	 * @param name policy data to update
+	 * 
+	 * @return the user entitoment id
+	 */
+	private String getUserEntitlementItemIdLease(final String name) {
+		try {
+			VraNgContentSourceBase contentSource = this.getContentSources().stream()
+					.filter(cs -> cs.getName().equals(name)).findFirst().orElse(null);
+			if (contentSource == null) {
+				throw new RuntimeException(String.format(
+						"Content Source with name  '%s' could not be found on target system",
+						name));
+			}
+			return contentSource.getId();
+		} catch (RuntimeException re) {
+			VraNgCatalogItem catalogItem = this.getCatalogItemsForProjectPrimitive(this.getProjectId())
+					.stream().filter(catItem -> catItem.getName().equals(name))
+					.findFirst().orElse(null);
+			if (catalogItem == null) {
+				throw new Error(String.format("Cannot find name of CATALOG_SOURCE_IDENTIFIER with name %s", name));
+			}
+			return catalogItem.getId();
+		}
+	}
+
+	/**
+	 * Creates lease Policy.
+	 * 
+	 * @param csPolicy policy data to create
+	 */
+	public void createLeasePolicyPrimitive(final VraNgLeasePolicy csPolicy)
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(csPolicy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		handleItemsPropertyLease(jsonObject);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	/**
+	 * handleItemsProperty.
+	 * 
+	 * @param csPolicyJsonObject cs policy json
+	 */
+	public void handleItemsPropertyLease(final JsonObject csPolicyJsonObject) {
+		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
+		JsonArray euArr = definition.getAsJsonArray("entitledUsers");
+		for (JsonElement eu : euArr) {
+			JsonObject entitledUserObj = eu.getAsJsonObject();
+			JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
+			for (JsonElement item : itemsArr) {
+				JsonObject itemObj = item.getAsJsonObject();
+				String contentSourceName = itemObj.get("name").getAsString();
+				itemObj.addProperty("id", this.getUserEntitlementItemIdLease(contentSourceName));
+				itemObj.remove("name");
+			}
+		}
+		definition.add("entitledUsers", euArr);
+		csPolicyJsonObject.add("definition", definition);
+	}
 }

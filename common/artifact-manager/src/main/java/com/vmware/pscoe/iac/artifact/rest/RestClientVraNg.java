@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
+
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 
 import org.slf4j.Logger;
@@ -1285,6 +1286,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+
 	 * getResourceQuotaPolicyIds.
 	 * 
 	 * @return policies
@@ -1297,6 +1299,22 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * getLeasePolicies.
+	 * 
+	 * @return lease policies
+	 */
+	public List<VraNgLeasePolicy> getLeasePolicies() {
+		try {
+			return this.getAllLeasePoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching lease policies", e.getMessage());
+
+			throw new RuntimeException(e);
+		}
+	}
+
 
 	/**
 	 * createResourceQuotaPolicy.
@@ -1313,6 +1331,20 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * createLeasePolicy.
+	 * 
+	 * @param csPolicy lease policy
+	 */
+	public void createLeasePolicy(final VraNgLeasePolicy csPolicy) {
+		try {
+			createLeasePolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
+		}
+	}
+
+	/**
 	 * getResourceQuotaPolicy.
 	 * 
 	 * @param policyId resource quota policy id
@@ -1323,6 +1355,21 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getResourceQuotaPolicyPrimitive(policyId);
 		} catch (Exception e) {
 			logger.error("Error fetching resource quota policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getLeasePolicy.
+	 * 
+	 * @param policyId lease policy id
+	 * @return policy
+	 */
+	public VraNgLeasePolicy getLeasePolicy(final String policyId) {
+		try {
+			return this.getLeasePolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching lease policy - {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

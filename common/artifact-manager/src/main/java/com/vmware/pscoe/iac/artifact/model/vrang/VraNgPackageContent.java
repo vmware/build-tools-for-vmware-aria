@@ -35,6 +35,8 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
         CONTENT_SOURCE("content-source"),
         CATALOG_ITEM("catalog-item"),
 		POLICY("policy"),
+		CONTENT_SHARING_POLICY("content-sharing"),
+		LEASE_POLICY("lease-policy"),
 		RESOURCE_QUOTA_POLICY("resource-quota"),
 		DAY2_ACTIONS_POLICY("day2-actions"),
 		DEPLOYMENT_LIMIT_POLICY("deployment-limit"),
