@@ -59,7 +59,8 @@ Example of definition
 This feature enables the conditional execution of tasks/workflows based on a conditional variable (saga state value).
 
 #### Relevant Documentation
-```yaml
+
+~~~yaml
 tasks:
   TestOne:
     execute: testSagaTask
@@ -67,7 +68,7 @@ tasks:
   TestTwo:
     workflow: workflowId
     if: conditionalVariable # Newly introduced variable
-```
+~~~
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
@@ -193,3 +194,12 @@ Reference: [VMware Cloud Director 10.5 Release Notes](https://docs.vmware.com/en
 [//]: # (## Changelog:)
 [//]: # (Pull request links)
 
+### Fix SSH Session output type
+
+#### Previous Behaviour
+
+When using SSH with typescript, the `output` method has the type `void`. But technically, it returns a string. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable `output` has type `String`.
+
+#### Current Behaviour
+
+Method `.output` should return type `String` instead of type `void`

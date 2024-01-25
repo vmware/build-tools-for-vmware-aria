@@ -119,7 +119,7 @@ declare class SSHSession {
 	cmd: void;
 	pty: void;
 	terminal: void;
-	output: void;
+	output: string;
 	error: void;
 	state: void;
 	constructor()

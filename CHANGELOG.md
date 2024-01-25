@@ -12,6 +12,7 @@
 * [artifact-manager] 211 / A better error is thrown now in case of an error when 2 blueprints with the same name exist in a single project on the server.
 * [vCD-NG] 166 / fix VMware Cloud Director API version 38.0 and later do not support the /api/sessions API login endpoint
 * [installer] 133 / Delete old packages fails with 401 error in case vro is embedded.
+* [vro-types] Fix SSHSession 'output' type
 
 ## v2.36.0 - 16 Nov 2023
 
