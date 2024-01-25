@@ -150,20 +150,20 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getContentSharing());
-			return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
+			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getResourceQuota());
+			return this.vraNgPackageDescriptor.getPolicy().getResourceQuota();
 		}
 	}
 
 	@Override
 	protected void exportStoreContent() {
 		System.out.println(this.getClass() + "->exportStoreContent()");
-		List<VraNgResourceQuotaPolicy> csPolicies = this.restClient.getResourceQuotaPolicies();
+		List<VraNgResourceQuotaPolicy> rqPolicies = this.restClient.getResourceQuotaPolicies();
 
-		csPolicies.forEach(
+		rqPolicies.forEach(
 				policy -> {
-					VraNgResourceQuotaPolicy csPolicy = this.restClient.getResourceQuotaPolicy(policy.getId());
-					storeResourceQuotaPolicyOnFilesystem(vraNgPackage, csPolicy);
+					VraNgResourceQuotaPolicy rqPolicy = this.restClient.getResourceQuotaPolicy(policy.getId());
+					storeResourceQuotaPolicyOnFilesystem(vraNgPackage, rqPolicy);
 				});
 	}
 
