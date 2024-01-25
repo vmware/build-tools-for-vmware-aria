@@ -28,31 +28,57 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
      * This enum represents the various content types that a VraNgPackage can have.
      */
     public enum ContentType implements PackageContent.ContentType { 
-		//Content type for blueprints
+		/**
+		 * Content type for blueprints 
+		 */
         BLUEPRINT("blueprint"),
-		//Content type for subscriptions
+		/**
+		 * Content type for subscriptions 
+		 */
         SUBSCRIPTION("subscription"),
-		//Content type for flavor mappings
+		/**
+		 * Content type for flavor mappings 
+		 */
         FLAVOR_MAPPING("flavor-mapping"),
-		//Content type for image mappings
+		/**
+		 * Content type for image mappings 
+		 */
         IMAGE_MAPPING("image-mapping"),
-		//Content type for storage profiles
+		/**
+		 * Content type for storage profiles
+		 */
         STORAGE_PROFILE("storage-profile"),
-		//Content type for region mappings
+		/**
+		 * Content type for region mappings 
+		 */
         REGION_MAPPING("region-mapping"),
-		//Content type for catalog entitlement
+		/**
+		 * Content type for catalog entitlement 
+		 */
         CATALOG_ENTITLEMENT("catalog-entitlement"),
-		//Content type for custom resources
+		/**
+		 * Content type for custom resources 
+		 */
         CUSTOM_RESOURCE("custom-resource"),
-		//Content type for resource actions
+		/**
+		 * Content type for resource actions
+		 */
         RESOURCE_ACTION("resource-action"),
-		//Content type for property groups
+		/**
+		 * Content type for property groups
+		 */
         PROPERTY_GROUP("property-group"),
-		//Content type for content sources
+		/**
+		 * Content type for content sources
+		 */
         CONTENT_SOURCE("content-source"),
-		//Content type for catalog items
+		/**
+		 * Content type for catalog items
+		 */
         CATALOG_ITEM("catalog-item"),
-		//Content type for content sharing policies
+		/**
+		 * Content type for content sharing policies 
+		 */
 		CONTENT_SHARING_POLICY("content-sharing"),
 		//Content type for lease policies
 		LEASE_POLICY("lease-policy"),
@@ -66,7 +92,6 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
 		APPROVAL_POLICY("approval");
 
 
-    	//This attribute should not be modified.
         private final String type;
 
         
