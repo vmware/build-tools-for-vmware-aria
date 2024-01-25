@@ -24,8 +24,22 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+<<<<<<< HEAD
 
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.*;
+=======
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.BLUEPRINT;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CATALOG_ITEM;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CONTENT_SHARING_POLICY;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CONTENT_SOURCE;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CUSTOM_RESOURCE;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.LEASE_POLICY;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.PROPERTY_GROUP;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.RESOURCE_ACTION;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.SUBSCRIPTION;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.REGION_MAPPING;
+>>>>>>> 2a03c7e7 (lease policy export (no definition))
 
 /**
  * Factory to select and setup the store (handler) and determine the order of
@@ -47,6 +61,8 @@ public class VraNgTypeStoreFactory {
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			POLICY,
+			CONTENT_SHARING_POLICY,
+			LEASE_POLICY,
 			RESOURCE_QUOTA_POLICY,
 			DAY2_ACTIONS_POLICY,
 			DEPLOYMENT_LIMIT_POLICY
@@ -76,6 +92,8 @@ public class VraNgTypeStoreFactory {
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			POLICY,
+			CONTENT_SHARING_POLICY,
+			LEASE_POLICY,
 			RESOURCE_QUOTA_POLICY,
 			DAY2_ACTIONS_POLICY
 	};
@@ -190,12 +208,14 @@ public class VraNgTypeStoreFactory {
 				return new VraNgCustomResourceStore();
 			case RESOURCE_ACTION:
 				return new VraNgResourceActionStore();
-			case POLICY:
+			case CONTENT_SHARING_POLICY:
 				return new VraNgContentSharingPolicyStore();
 			case RESOURCE_QUOTA_POLICY:
 				return new VraNgResourceQuotaPolicyStore();
 			case DAY2_ACTIONS_POLICY:
 				return new VraNgDay2ActionsPolicyStore();
+			case LEASE_POLICY:
+				return new VraNgLeasePolicyStore();
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}
