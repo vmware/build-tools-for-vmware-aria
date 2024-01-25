@@ -31,8 +31,8 @@ public class VraNgPolicy {
 	public VraNgPolicy() {
 		logger.info("Empty constructor{}", VraNgPolicyStore.class);
 		this.policiesMap = new EnumMap<VraNgPolicyFolderName, List<String>>(VraNgPolicyFolderName.class);
-//		this.policiesMap.put(VraNgPolicyFolderName.CONTENT_SHARING, null);
-//		this.policiesMap.put(VraNgPolicyFolderName.RESOURCE_QUOTA, null);
+		this.policiesMap.put(VraNgPolicyFolderName.CONTENT_SHARING, new ArrayList<>());
+		this.policiesMap.put(VraNgPolicyFolderName.RESOURCE_QUOTA, new ArrayList<>());
 	}
 
 	public VraNgPolicy(List<String> contentSharing, List<String> resourceQuota) {
