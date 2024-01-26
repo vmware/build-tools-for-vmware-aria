@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-activedirectory",
-  "version": "2.37.0",
+  "version": "2.37.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
