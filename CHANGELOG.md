@@ -1,3 +1,5 @@
+## v2.37.0 - 26 Jan 2024
+
 ### Enhancements
 * [docs] IAC-800 / Document TS Array functions behaviour and recommended typization approach.
 * [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
