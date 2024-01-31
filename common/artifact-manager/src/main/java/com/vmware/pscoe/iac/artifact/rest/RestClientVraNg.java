@@ -1342,7 +1342,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getResourceQuotaPolicyPrimitive(policyId);
 		} catch (Exception e) {
-			logger.error("Error fetching content sharing policy - {}", e.getMessage());
+			logger.error("Error fetching resource quota policy - {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

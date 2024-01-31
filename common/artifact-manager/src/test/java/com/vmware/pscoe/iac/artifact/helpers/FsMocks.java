@@ -15,14 +15,7 @@ package com.vmware.pscoe.iac.artifact.helpers;
  * #L%
  */
 
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.BlueprintFsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.CatalogItemFsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.ContentSharingPolicyFsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.CustomResourceFsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.EntitlementFsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.PropertyGroupFsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.ResourceActionFsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.SubscriptionFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.*;
 
 import java.io.File;
 
@@ -33,6 +26,7 @@ public class FsMocks {
 	private final File tempDir;
 	private BlueprintFsMocks blueprintFsMocks;
 	private ContentSharingPolicyFsMocks contentSharingPolicyFsMocks;
+	private ResourceQuotaPolicyFsMocks resourceQuotaPolicyFsMocks;
 	private PropertyGroupFsMocks propertyGroupFsMocks;
 	private CatalogItemFsMocks catalogItemFsMocks;
 	private CustomResourceFsMocks customResourceFsMocks;
@@ -58,6 +52,13 @@ public class FsMocks {
 		}
 
 		return this.contentSharingPolicyFsMocks;
+	}
+	public ResourceQuotaPolicyFsMocks resourceQuotaPolicyFsMocks() {
+		if (this.resourceQuotaPolicyFsMocks == null) {
+			this.resourceQuotaPolicyFsMocks = new ResourceQuotaPolicyFsMocks(this.tempDir);
+		}
+
+		return this.resourceQuotaPolicyFsMocks;
 	}
 
 	public SubscriptionFsMocks subscriptionFsMocks() {

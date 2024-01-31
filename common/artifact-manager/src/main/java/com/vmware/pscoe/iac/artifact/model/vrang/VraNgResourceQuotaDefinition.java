@@ -12,68 +12,38 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
  * 
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
+ * #L%q
  */
 
 public class VraNgResourceQuotaDefinition {
 
-	public VraNgLimits getProjectLevel() {
+	private VraNgCompositeLimits projectLevel;
+
+	private VraNgCompositeLimits orgLevel;
+
+	public VraNgCompositeLimits getProjectLevel() {
 		return projectLevel;
 	}
 
-	public void setProjectLevel(VraNgLimits projectLevel) {
+	public void setProjectLevel(VraNgCompositeLimits projectLevel) {
+
 		this.projectLevel = projectLevel;
 	}
 
-	public VraNgLimits getUserLevel() {
-		return userLevel;
+	public VraNgCompositeLimits getOrgLevel() {
+		return orgLevel;
 	}
 
-	public void setUserLevel(VraNgLimits userLevel) {
-		this.userLevel = userLevel;
+	public void setOrgLevel(VraNgCompositeLimits orgLevel) {
+		this.orgLevel = orgLevel;
 	}
 
-	/**
-	 * "definition": {
-	 *                 "projectLevel": {
-	 *                     "limits": {
-	 *                         "cpu": {
-	 *                             "value": 234
-	 *                         },
-	 *                         "memory": {
-	 *                             "unit": "GB",
-	 *                             "value": 10.5
-	 *                         },
-	 *                         "storage": {
-	 *                             "unit": "GB",
-	 *                             "value": 111111
-	 *                         },
-	 *                         "instances": {
-	 *                             "value": 22
-	 *                         }
-	 *                     },
-	 *                     "userLevel": {
-	 *                         "limits": {
-	 *                             "cpu": {
-	 *                                 "value": 22.4
-	 *                             },
-	 *                             "memory": {
-	 *                                 "unit": "GB",
-	 *                                 "value": 4342.2
-	 *                             },
-	 *                             "storage": {
-	 *                                 "unit": "GB",
-	 *                                 "value": 20.4
-	 *                             },
-	 *                             "instances": {
-	 *                                 "value": 1.3
-	 *                             }
-	 *                         }
-	 *                     }
-	 *                 }
-	 *             },
-	 */
-private VraNgLimits projectLevel;
-private VraNgLimits userLevel;
-
+	public VraNgResourceQuotaDefinition(VraNgCompositeLimits organizationLevelIn, VraNgCompositeLimits projectLevelIn){
+		this.orgLevel = organizationLevelIn;
+		this.projectLevel = projectLevelIn;
+	}
+	public VraNgResourceQuotaDefinition(){
+		this.orgLevel = new VraNgCompositeLimits();
+		this.projectLevel = new VraNgCompositeLimits();
+	}
 }

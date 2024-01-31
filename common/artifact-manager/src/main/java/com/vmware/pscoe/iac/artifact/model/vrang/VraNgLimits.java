@@ -17,40 +17,51 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 public class VraNgLimits {
 
-	public String getCpuCount() {
-		return cpuCount;
+	public VranNgJsonValue getCpu() {
+		return cpu;
 	}
 
-	public void setCpuCount(String cpuCount) {
-		this.cpuCount = cpuCount;
+	public void setCpu(VranNgJsonValue cpu) {
+		this.cpu = cpu;
 	}
 
-	public String getVmCount() {
-		return vmCount;
+	public VranNgJsonValue getInstances() {
+		return instances;
 	}
 
-	public void setVmCount(String vmCount) {
-		this.vmCount = vmCount;
+	public void setInstances(VranNgJsonValue instances) {
+		this.instances = instances;
 	}
 
-	public String getMemoryGB() {
-		return memoryGB;
+	public VraNgJsonValueWithUnit getMemory() {
+		return memory;
 	}
 
-	public void setMemoryGB(String memoryGB) {
-		this.memoryGB = memoryGB;
+	public void setMemory(VraNgJsonValueWithUnit memory) {
+		this.memory = memory;
 	}
 
-	public String getStorageGB() {
-		return storageGB;
+	public VraNgJsonValueWithUnit getStorage() {
+		return storage;
 	}
 
-	public void setStorageGB(String storageGB) {
-		this.storageGB = storageGB;
+	public void setStorage(VraNgJsonValueWithUnit storage) {
+		this.storage = storage;
 	}
 
-	private String cpuCount;
-	private String vmCount;
-	private String memoryGB;
-	private String storageGB;
+	private VraNgLimits ()
+	{
+
+	}
+
+	public VraNgLimits(String cpu, String instances, String memory, String storage){
+		this.cpu = new VranNgJsonValue(cpu);
+		this.instances = new VranNgJsonValue(instances);
+		this.memory = new VraNgJsonValueWithUnit(memory);
+		this.storage = new VraNgJsonValueWithUnit(storage);
+	}
+	private VranNgJsonValue cpu;
+	private VranNgJsonValue instances;
+	private VraNgJsonValueWithUnit memory;
+	private VraNgJsonValueWithUnit storage;
 }
