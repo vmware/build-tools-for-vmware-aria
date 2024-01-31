@@ -32,6 +32,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaDefinition;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
@@ -181,7 +182,6 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 				policy -> {
 					if (itemNames.contains(policy.getName())) {
 						VraNgResourceQuotaPolicy rqPolicy = this.restClient.getResourceQuotaPolicy(policy.getId());
-						logger.info("policy {}", rqPolicy);
 						logger.info("exporting '{}'", rqPolicy.getName());
 						storeResourceQuotaPolicyOnFilesystem(vraNgPackage, rqPolicy);
 					}
@@ -213,18 +213,19 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			JsonObject rqPolicyJsonObject = gson.fromJson(new Gson().toJson(resourceQuotaPolicy), JsonObject.class);
 			JsonObject definition = rqPolicyJsonObject.getAsJsonObject("definition");
-			JsonArray euArr = definition.getAsJsonArray("entitledUsers");
-			if (euArr != null) {
-				for (JsonElement eu : euArr) {
-					JsonObject entitledUserObj = eu.getAsJsonObject();
-					JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
-					for (JsonElement item : itemsArr) {
-						JsonObject itemObj = item.getAsJsonObject();
-						itemObj.remove("id");
-					}
-				}
-			}
-			definition.add("entitledUsers", euArr);
+			JsonObject orgLevel  = definition.getAsJsonObject("orgLevel");
+			JsonObject limitsO  = orgLevel.getAsJsonObject("limits");
+			JsonObject userLevelO  = orgLevel.getAsJsonObject("userLevel");
+			orgLevel.add("limits", limitsO);
+			orgLevel.add("userLevel", userLevelO);
+			definition.add("orgLevel", orgLevel);
+			JsonObject projectLevel  = definition.getAsJsonObject("projectLevel");
+			JsonObject limitsP  = projectLevel.getAsJsonObject("limits");
+			JsonObject userLevelP  = projectLevel.getAsJsonObject("userLevel");
+			projectLevel.add("limits", limitsP);
+			projectLevel.add("userLevel", userLevelP);
+			definition.add("projectLevel", projectLevel);
+
 			rqPolicyJsonObject.add("definition", definition);
 			// write resource quota file
 			logger.info("Created resource quota file {}",

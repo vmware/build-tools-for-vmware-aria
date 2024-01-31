@@ -188,7 +188,6 @@ public class VraNgTypeStoreFactory {
 			case RESOURCE_ACTION:
 				return new VraNgResourceActionStore();
 			case POLICY:
-				//return new VraNgPolicyStore();
 				return new VraNgContentSharingPolicyStore();
 			case RESOURCE_QUOTA_POLICY:
 				return new VraNgResourceQuotaPolicyStore();

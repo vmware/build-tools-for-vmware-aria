@@ -134,24 +134,24 @@ public class VraNgContentSharingPolicyStoreTest {
 		System.out.println("==========================================================");
 	}
 
-//	@Test
-//	void testExportContentWithNoContentSharingPolicies() {
-//		System.out.println(this.getClass() + "testExportContentWithNoContentSharingPolicies");
-//		//GIVEN
-//		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy());
-//
-//		//TEST
-//		store.exportContent();
-//
-//		File contentSharingPolicyFolder = Paths
-//				.get(tempFolder.getRoot().getPath(), dirContentSharingPolicies, contentSharingPolicy).toFile();
-//
-//		//VERIFY
-//		verify(restClient, never()).getContentSharingPolicies();
-//		verify(restClient, never()).getContentSharingPolicy(anyString());
-//
-//		assertEquals(null, contentSharingPolicyFolder.listFiles());
-//	}
+	@Test
+	void testExportContentWithNoContentSharingPolicies() {
+		System.out.println(this.getClass() + "testExportContentWithNoContentSharingPolicies");
+		//GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy());
+
+		//TEST
+		store.exportContent();
+
+		File contentSharingPolicyFolder = Paths
+				.get(tempFolder.getRoot().getPath(), dirContentSharingPolicies, contentSharingPolicy).toFile();
+
+		//VERIFY
+		verify(restClient, never()).getContentSharingPolicies();
+		verify(restClient, never()).getContentSharingPolicy(anyString());
+
+		assertEquals(null, contentSharingPolicyFolder.listFiles());
+	}
 
 	@Test
 	void testExportContentWithAllContentSharingPolicies() {
@@ -167,7 +167,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		List<VraNgContentSharingPolicy> policies = Arrays.asList(csPolicy, csPolicy2);
 
 		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy());
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null));
 		when(restClient.getContentSharingPolicies()).thenReturn(policies);
 		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicy);
 		when(restClient.getContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c")).thenReturn(csPolicy2);
@@ -279,16 +279,35 @@ public class VraNgContentSharingPolicyStoreTest {
 	void testImportContentForDifferentDestinationProject() {
 		System.out.println("testImportContentForDifferentDestinationProject");
 		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"),null);
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("1", "test",
-				"com.vmware.policy.catalog.entitlement", "asd1", "org2", "HARD", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy(
+			"1",
+			"test",
+			"com.vmware.policy.catalog.entitlement",
+			"asd1",
+			"org2",
+			"HARD",
+			"TEST",
+			new VraNgDefinition());
 
 		VraNgContentSharingPolicy csPolicyFromServer2 = new VraNgContentSharingPolicy(
-				"679daee9-d63d-4ce2-9ee1-d4336861fe86", "test",
-				"com.vmware.policy.catalog.entitlement", "project2", "org1", "HARD", "TEST", new VraNgDefinition());
+			"679daee9-d63d-4ce2-9ee1-d4336861fe86",
+			"test",
+			"com.vmware.policy.catalog.entitlement",
+			"project2",
+			"org1",
+			"HARD",
+			"TEST",
+			new VraNgDefinition());
 
-		VraNgContentSharingPolicy toBeCreated = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe86",
-				"test",
-				"com.vmware.policy.catalog.entitlement", "project2", "org1", "HARD", "TEST", new VraNgDefinition());
+		VraNgContentSharingPolicy toBeCreated = new VraNgContentSharingPolicy(
+			"679daee9-d63d-4ce2-9ee1-d4336861fe86",
+			"test",
+			"com.vmware.policy.catalog.entitlement",
+			"project2",
+			"org1",
+			"HARD",
+			"TEST",
+			new VraNgDefinition());
 		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 

@@ -3154,11 +3154,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String description = result.has("description") ? result.get("description").getAsString() : "";
 		String typeId = result.get("typeId").getAsString();
 		String enforcementType = result.get("enforcementType").getAsString();
-		VraNgResourceQuotaDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
-			VraNgResourceQuotaDefinition.class);
-		//definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
-		//	item.name = this.getUserEntitlementItemName(item.id);
-	//	}));
+		VraNgResourceQuotaDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgResourceQuotaDefinition.class);
+
 		rqPolicy.setDefinition(definition);
 		rqPolicy.setName(name);
 		rqPolicy.setEnforcementType(enforcementType);
