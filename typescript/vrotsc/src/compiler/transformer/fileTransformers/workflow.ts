@@ -12,9 +12,10 @@ import { getPropertyName, getIdentifierTextOrNull, getDecoratorNames } from "../
 import { getVroType } from "../helpers/vro";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
 import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor } from "../../../decorators";
+import { remediateTypeScript } from "../codeTransformers/remediate";
+import { transformModuleSystem } from "../codeTransformers/modules";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
-
 
 export function getWorkflowTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
