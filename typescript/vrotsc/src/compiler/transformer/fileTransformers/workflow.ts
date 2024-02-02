@@ -17,6 +17,8 @@ import { transformModuleSystem } from "../codeTransformers/modules";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
+//@TODO: Take a look at this
+
 export function getWorkflowTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
 	const workflows: WorkflowDescriptor[] = [];
