@@ -11,49 +11,9 @@ import { generateElementId } from "../../../utilities/utilities";
 import { getPropertyName, getIdentifierTextOrNull, getDecoratorNames } from "../helpers/node";
 import { getVroType } from "../helpers/vro";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
+import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter } from "../../../decorators";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
-
-interface WorkflowDescriptor {
-	id: string;
-	name: string;
-	path: string;
-	version: string;
-	presentation: string;
-	parameters: WorkflowParameter[];
-	items: WorkflowItemDescriptor[];
-	description: string;
-}
-
-interface WorkflowItemDescriptor {
-	name: string;
-	input: string[];
-	output: string[];
-	sourceText: string;
-}
-
-interface WorkflowParameter {
-	name: string;
-	type: string;
-	title?: string;
-	required?: boolean;
-	description?: string;
-	multiLine?: boolean;
-	hidden?: boolean;
-	maxStringLength?: number;
-	minStringLength?: number;
-	numberFormat?: string;
-	defaultValue?: string;
-	availableValues?: string[];
-	parameterType: WorkflowParameterType;
-	isAttribute?: boolean;
-}
-
-enum WorkflowParameterType {
-	Default = 0,
-	Input = 1 << 0,
-	Output = 2 << 1,
-}
 
 
 interface PolyglotDescriptor {
