@@ -9,7 +9,7 @@ export interface StringBuilder {
 /**
 * A class to help build strings with indentation.
 */
-export class StringBuilderClass {
+export class StringBuilderClass implements StringBuilder {
 	private content = "";
 	private indentLevel = 0;
 	private needIndentation = false;
