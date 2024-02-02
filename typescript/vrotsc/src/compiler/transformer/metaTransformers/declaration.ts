@@ -1,6 +1,6 @@
-import { FileDescriptor, FileTransformationContext, ScriptFileDescriptor, HierarchyFacts } from "../../types";
-import { system } from "../../system/system";
-import { StringBuilderClass } from "../../utilities/stringBuilder";
+import { FileDescriptor, FileTransformationContext, ScriptFileDescriptor, HierarchyFacts } from "../../../types";
+import { system } from "../../../system/system";
+import { StringBuilderClass } from "../../../utilities/stringBuilder";
 
 const isKeyword: (name: string) => boolean = require("is-keyword-js");
 
