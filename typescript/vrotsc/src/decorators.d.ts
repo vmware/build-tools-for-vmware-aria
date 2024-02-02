@@ -68,3 +68,18 @@ export enum WorkflowParameterType {
 	Input = 1 << 0,
 	Output = 2 << 1,
 }
+
+/////////////////////////////////// Polyglot Decorator ///////////////////////////////////
+
+
+/**
+* Describes a Polyglot element to execute
+*
+* This corresponds to the `VroPolyglotConfiguration` decorator in `vrotsc-annotations`.
+*
+* Search for `Polyglot/VroPolyglotDecorator` in the `vrotsc-annotations` for more information.
+*/
+interface PolyglotDescriptor {
+	package: string;
+	method: string;
+}

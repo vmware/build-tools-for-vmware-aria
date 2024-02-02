@@ -11,30 +11,10 @@ import { generateElementId } from "../../../utilities/utilities";
 import { getPropertyName, getIdentifierTextOrNull, getDecoratorNames } from "../helpers/node";
 import { getVroType } from "../helpers/vro";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
-import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter } from "../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor } from "../../../decorators";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
-
-interface PolyglotDescriptor {
-	package: string;
-
-	/*
-	 * #%L
-	 * vrotsc
-	 * %%
-	 * Copyright (C) 2023 VMware
-	 * %%
-	 * Build Tools for VMware Aria
-	 * Copyright 2023 VMware, Inc.
-	 *
-	 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
-	 *
-	 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
-	 * #L%
-	 */
-	method: string;
-}
 
 export function getWorkflowTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
@@ -89,8 +69,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 					],
 					after: [
 						transformShims,
-						// remediateTypeScript,
-						// transformModuleSystem,
+						remediateTypeScript,
+						transformModuleSystem,
 						emitHeaderComment,
 					],
 				},
