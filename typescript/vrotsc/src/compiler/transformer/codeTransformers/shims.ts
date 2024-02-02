@@ -2,8 +2,8 @@ import * as ts from "typescript";
 import { HierarchyFacts, ScriptTransformationContext } from "../../../types";
 import { NodeVisitor } from "../../visitor";
 import { getIdentifierTextOrNull } from "../helpers/node";
-import { transformSpreadAssignment } from "../transformers/object";
-import { transformSpreadElement } from "../transformers/array";
+import { transformSpreadAssignment } from "../codeTransformers//object";
+import { transformSpreadElement } from "../codeTransformers/array";
 import { createPrologueStatements } from "./prologueStatements";
 
 // Shims are used to replace the built-in objects with the VROES shims.
