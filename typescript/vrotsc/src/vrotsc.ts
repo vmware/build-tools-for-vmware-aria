@@ -1,9 +1,12 @@
 import minimist = require("minimist");
+import * as ansiColors from "ansi-colors";
 import { existsSync, readFileSync } from "fs-extra";
 import { join } from "path";
 import { system } from "./system/system";
-import { DiagnosticCategory, ProgramOptions, WriteFileCallback } from "./types";
+import { DiagnosticCategory, ProgramOptions, WriteFileCallback, Diagnostic } from "./types";
 import { createStringBuilder } from "./utilities/stringBuilder";
+import { createProgram } from "./compiler/program";
+import path = require("path");
 
 interface ParsedArgs {
 	help?: boolean;
@@ -26,6 +29,13 @@ interface ParsedArgs {
 	_: string[];
 }
 
+/**
+ * Executes the main program.
+ *
+ * This function is the entry point of the application. It parses the command line arguments,
+ * sets up the necessary options for the program, creates the program, emits the results, and
+ * handles any diagnostics that are produced.
+ */
 export function execute() {
 	const commandLine = <ParsedArgs>minimist(system.args, {
 		boolean: ["help", "version", "emitHeader"],
@@ -87,6 +97,11 @@ export function execute() {
 	}
 }
 
+/**
+ * Prints the version of the application.
+ *
+ * This function reads the version from the package.json file and prints it to the console.
+ */
 function printVersion(): void {
 	let packageJsonPath = join(__dirname, "..", "package.json");
 
@@ -98,6 +113,11 @@ function printVersion(): void {
 	}
 }
 
+/**
+ * Prints the usage instructions for the application.
+ *
+ * This function reads the usage instructions from a text file and prints them to the console.
+ */
 function printUsage(): void {
 	let usageFilePath = join(__dirname, "..", "Usage.txt");
 	if (existsSync(usageFilePath)) {
@@ -105,6 +125,14 @@ function printUsage(): void {
 	}
 }
 
+/**
+ * Prints the diagnostics produced by the program.
+ *
+ * This function iterates over the diagnostics produced by the program and prints them to the console.
+ * It uses different colors for different categories of diagnostics.
+ *
+ * @param {readonly Diagnostic[]} diagnostics - The diagnostics to print.
+ */
 function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
 	diagnostics.forEach(d => {
 		const sb = createStringBuilder();
@@ -133,6 +161,6 @@ function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
 		}
 
 		sb.append(` ${d.messageText}`);
-		log(sb.toString());
+		console.log(sb.toString());
 	});
 }

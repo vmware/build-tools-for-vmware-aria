@@ -1,9 +1,11 @@
-import { ProgramOptions, WriteFileCallback, EmitResult, TransformerFactory, FileDescriptor, FileTransformationContext } from "../types";
+import { ProgramOptions, WriteFileCallback, EmitResult, TransformerFactory, FileDescriptor, FileTransformationContext, FileType } from "../types";
 import { DiagnosticCollection } from "./diagnostics";
 import { createCompilerOptions } from "./config";
 
 import * as ts from "typescript";
 import { system } from "../system/system";
+import { generateIndexTypes } from "./transformers/declaration";
+import { noop } from "../utilities/ops";
 
 export interface Program {
 	getFiles(): readonly FileDescriptor[];
