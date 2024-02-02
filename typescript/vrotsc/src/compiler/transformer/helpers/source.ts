@@ -49,3 +49,4 @@ export function printSourceFile(sourceFile: ts.SourceFile): string {
 	});
 	return printer.printFile(sourceFile);
 }
+

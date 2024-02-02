@@ -2,14 +2,6 @@ import * as ts from "typescript";
 import { FileTransformationContext, ScriptTransformers, FileDescriptor, ScriptFileDescriptor, HierarchyFacts, ScriptTransformer, Comment } from "../../../types";
 import { system } from "../../../system/system";
 
-export const SCRIPT_VRO_GLOBAL = "__global";
-export const SCRIPT_VROES_VAR = "VROES";
-export const SCRIPT_VROES_MODULE = "VROES";
-export const SCRIPT_VROES_CACHE = "__VROES";
-export const SCRIPT_HELPER_MODULE = "tslib";
-export const SCRIPT_LAZY_IMPORT_NAME = "importLazy";
-export const SCRIPT_VRO_MODULE_PACKAGE = "com.vmware.pscoe.library.ecmascript";
-
 // @TODO: This was not needed in the original code
 // export const nullScriptContext: ts.TransformationContext = {
 // 	getCompilerOptions: notImplemented,
@@ -122,5 +114,3 @@ function removeTrailingMapComment(sourceText: string, fileName: string): string 
 	}
 	return sourceText;
 }
-
-

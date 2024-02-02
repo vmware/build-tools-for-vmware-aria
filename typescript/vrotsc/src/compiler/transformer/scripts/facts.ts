@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import { createVisitor } from '../../visitor';
 
 export function collectFactsBefore(sourceFile: ts.SourceFile, context: ScriptTransformationContext): ts.SourceFile {
 	const visitor = createVisitor(visitNode, context);

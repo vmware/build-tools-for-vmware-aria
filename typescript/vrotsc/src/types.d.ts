@@ -1,5 +1,10 @@
 import * as ts from 'typescript';
 
+/**
+* HierarcyFacts is a set of flags that represent the facts about a script file.
+* These flags determine what is contained in the script file.
+* Uses a bitwise enum to allow for multiple flags to be set and easily checked.
+*/
 export const enum HierarchyFacts {
 	None = 0,
 
