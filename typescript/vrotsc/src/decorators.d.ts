@@ -83,3 +83,29 @@ interface PolyglotDescriptor {
 	package: string;
 	method: string;
 }
+
+
+/////////////////////////////////// Policy Template Decorator ///////////////////////////////////
+
+interface PolicyTemplateDescriptor {
+	id: string;
+	name: string;
+	description?: string;
+	path: string;
+	tag: string;
+	type: string;
+	version: string;
+	schedule?: PolicyTemplateScheduleDescriptor;
+	events: PolicyTemplateEventDescriptor[];
+}
+
+interface PolicyTemplateScheduleDescriptor {
+	periode: string;
+	when: string;
+	timezone: string;
+}
+
+interface PolicyTemplateEventDescriptor {
+	type: string;
+	sourceText: string;
+}
