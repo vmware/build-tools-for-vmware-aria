@@ -33,7 +33,7 @@ gulp.task("compile", done => {
 gulp.task("test", done => {
 	tsc("tests");
 	let error = undefined;
-	if (0 !== exec(process.argv[0], [path.join("build", "tests", "e2e.js")])) {
+	if (0 !== exec(process.argv[0], [path.join("dist", "src", "tests", "e2e.js")])) {
 		error = "One or more test cases failed.";
 	}
 	done(error);
@@ -58,7 +58,7 @@ gulp.task("copyLibs", async done => {
 
 gulp.task("bundle", async done => {
 	const build = await rollup({
-		input: "build/vrotsc.js",
+		input: "dist/src/index.js",
 		onwarn: _ => { },
 		plugins: [
 			rollupResolve({
@@ -68,9 +68,9 @@ gulp.task("bundle", async done => {
 				ignore: ROLLUP_IGNORE,
 				sourceMap: false,
 			}),
-			rollupTerser({
-				sourcemap: false,
-			})
+			// rollupTerser({
+			// 	sourcemap: false,
+			// })
 		]
 	});
 
@@ -83,6 +83,7 @@ gulp.task("bundle", async done => {
 });
 
 gulp.task("build", gulp.series("clean", "compile", "bundle", "copyLibs", "test"));
+// gulp.task("build", gulp.series("clean", "compile", "copyLibs", "test"));
 
 function getLibFiles(path: string): string[] {
 	if (fs.pathExistsSync(path)) {
