@@ -68,6 +68,7 @@ gulp.task("bundle", async done => {
 				ignore: ROLLUP_IGNORE,
 				sourceMap: false,
 			}),
+			// This is responsible for minifying the output
 			// rollupTerser({
 			// 	sourcemap: false,
 			// })
