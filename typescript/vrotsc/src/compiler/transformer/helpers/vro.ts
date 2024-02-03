@@ -2,7 +2,9 @@ import * as ts from "typescript";
 
 /**
 * Maps a TypeScript type to a VRO type.
-* @TODO: What is it used for?
+*
+* This is used in the config and workflow file transformers when generating the
+* XML representation of the Resources.
 */
 export function getVroType(typeNode: ts.TypeNode): string {
 	switch (typeNode.kind) {

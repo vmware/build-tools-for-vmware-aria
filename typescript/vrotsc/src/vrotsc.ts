@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "fs-extra";
 import { join } from "path";
 import { system } from "./system/system";
 import { DiagnosticCategory, ProgramOptions, WriteFileCallback, Diagnostic } from "./types";
-import { createStringBuilder } from "./utilities/stringBuilder";
+import { StringBuilderClass } from "./utilities/stringBuilder";
 import { createProgram } from "./compiler/program";
 import path = require("path");
 
@@ -135,7 +135,7 @@ function printUsage(): void {
  */
 function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
 	diagnostics.forEach(d => {
-		const sb = createStringBuilder();
+		const sb = new StringBuilderClass();
 		if (d.file) {
 			sb.append(ansiColors.cyan(d.file.split("/").join(path.sep)));
 			sb.append(":");

@@ -50,8 +50,3 @@ export class StringBuilderClass implements StringBuilder {
 		}
 	}
 }
-
-// @TODO: Just use the constructor directly
-export function createStringBuilder(newLine: string = "\n", indentToken: string = "\t"): StringBuilder {
-	return new StringBuilderClass(newLine, indentToken);
-}

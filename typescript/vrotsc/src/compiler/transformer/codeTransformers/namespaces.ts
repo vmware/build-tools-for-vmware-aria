@@ -4,8 +4,14 @@ import { NodeVisitor } from '../../visitor';
 import { hasModifier, getPropertyName, getIdentifierTextOrNull } from '../helpers/node';
 import { SCRIPT_VRO_GLOBAL } from '../helpers/VROES';
 
-//@TODO: Take a look at this
 
+/**
+* Traverses the nodes of the source file and collects the names of the namespaces.
+*
+* @param sourceFile - The source file to transform.
+* @param context - The context for the transformation.
+* @returns The transformed source file.
+*/
 export function collectNamespaces(sourceFile: ts.SourceFile, context: ScriptTransformationContext): ts.SourceFile {
 	const visitor = new NodeVisitor(visitNode, context);
 
@@ -35,6 +41,68 @@ export function collectNamespaces(sourceFile: ts.SourceFile, context: ScriptTran
 	}
 }
 
+/**
+* Transforms the namespaces in the source file to use the VROES global object.
+*
+* Example:
+* ```ts
+namespace MyNamespace {
+	export interface BufferLike {
+		[offset: number]: number;
+		length: number;
+	}
+	interface BufferLike2 {}
+
+	export type MemberDecorator = void;
+	type MemberDecorator2 = void;
+
+	export function decorate(decorators: ClassDecorator[], target: Function) {}
+	function decorate2(decorators: ClassDecorator[], target: Function) {}
+
+	export const hasOwn = "val1";
+	const hasOwn2 = "val2";
+
+	export class Mirror {
+		reflect(params: number) {}
+	}
+	class Mirror2 {
+		reflect(params: number) {}
+	}
+}
+* ```
+* Transformed to:
+* ```ts
+(function () {
+    var __global = System.getContext() || (function () {
+        return this;
+    }).call(null);
+    var exports = {};
+
+    var MyNamespace = __global.MyNamespace || (__global.MyNamespace = {});
+    (function (MyNamespace) {
+        function decorate(decorators, target) { }
+        MyNamespace.decorate = decorate;
+        function decorate2(decorators, target) { }
+        MyNamespace.hasOwn = "val1";
+        var hasOwn2 = "val2";
+        var Mirror =  (function() {
+    function Mirror() {}
+    Mirror.prototype.reflect = function(params) { };
+        return Mirror;
+    }());
+    MyNamespace.Mirror = Mirror;
+    var Mirror2 = (function() {
+        function Mirror2() {
+        }
+        Mirror2.prototype.reflect = function(params) { };
+        return Mirror2;
+    }());
+        }) (MyNamespace);
+    return exports;
+    });
+* ```
+*
+*/
 export function transformNamespaces(sourceFile: ts.SourceFile, context: ScriptTransformationContext): ts.SourceFile {
 	if (context.globalIdentifiers.length) {
 		const statements = sourceFile.statements.map(node => {
@@ -101,9 +169,11 @@ export function transformNamespaces(sourceFile: ts.SourceFile, context: ScriptTr
 												ts.createObjectLiteral([], false),
 											)
 										),
-									)),
+									)
+								),
 							]
-						));
+						)
+					);
 				}
 			}
 		}
@@ -123,4 +193,4 @@ export function transformNamespaces(sourceFile: ts.SourceFile, context: ScriptTr
 		}
 		return node;
 	}
-}
+};

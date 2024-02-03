@@ -125,8 +125,6 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
     * // etc...
     * ```
     *
-    * @TODO: Check if we can separate this to a different file later
-    *
     * @param node - The node to visit.
     * @returns - The result of visiting the node.
     */

@@ -2,25 +2,6 @@ import * as ts from "typescript";
 import { FileTransformationContext, ScriptTransformers, FileDescriptor, ScriptFileDescriptor, HierarchyFacts, ScriptTransformer, Comment } from "../../../types";
 import { system } from "../../../system/system";
 
-// @TODO: This was not needed in the original code
-// export const nullScriptContext: ts.TransformationContext = {
-// 	getCompilerOptions: notImplemented,
-// 	startLexicalEnvironment: noop,
-// 	suspendLexicalEnvironment: noop,
-// 	resumeLexicalEnvironment: noop,
-// 	endLexicalEnvironment: returnUndefined,
-// 	hoistFunctionDeclaration: noop,
-// 	hoistVariableDeclaration: noop,
-// 	requestEmitHelper: noop,
-// 	readEmitHelpers: notImplemented,
-// 	enableSubstitution: noop,
-// 	isSubstitutionEnabled: notImplemented,
-// 	onSubstituteNode: notImplemented,
-// 	enableEmitNotification: noop,
-// 	isEmitNotificationEnabled: notImplemented,
-// 	onEmitNode: noop,
-// };
-
 /**
  * Transforms a source file or path using provided context and transformers.
  *

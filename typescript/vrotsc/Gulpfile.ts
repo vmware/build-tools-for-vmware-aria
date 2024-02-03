@@ -4,7 +4,6 @@ import * as fs from "fs-extra";
 import * as gulp from "gulp";
 import * as ansiColors from "ansi-colors";
 import { rollup } from "rollup";
-import { terser as rollupTerser } from "rollup-plugin-terser";
 
 const rollupResolve = require("@rollup/plugin-node-resolve");
 const rollupCommonjs = require("@rollup/plugin-commonjs");

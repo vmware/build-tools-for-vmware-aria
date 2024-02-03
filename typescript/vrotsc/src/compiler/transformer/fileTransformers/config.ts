@@ -310,7 +310,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 }
 
 /**
-* same as the TypeScript transformer, but for YAML files.
+* Same as the TypeScript transformer, but for YAML files.
 * NOTE: From Stef, don't use this, let's use TypeScript instead.
 */
 export function getConfigYamlTransformer(file: FileDescriptor, context: FileTransformationContext) {

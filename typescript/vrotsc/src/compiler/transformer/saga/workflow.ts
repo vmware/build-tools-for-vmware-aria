@@ -1,9 +1,6 @@
 import { XmlElement, XmlCDataNode } from "../../../types";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
 
-//@NOTE: From Stef: I don't know what this does, seems wrong to me, leaving it for now.
-
-
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
 export interface WorkflowDescriptor {
