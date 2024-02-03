@@ -4,8 +4,16 @@ import { createCompilerOptions } from "./config";
 
 import * as ts from "typescript";
 import { system } from "../system/system";
-import { generateIndexTypes } from "./transformers/declaration";
 import { noop } from "../utilities/ops";
+import { getActionTransformer } from "./transformer/fileTransformers/action";
+import { getConfigTypeScriptTransformer, getConfigYamlTransformer } from "./transformer/fileTransformers/config";
+import { getDeclarationTransformer, generateIndexTypes } from "./transformer/metaTransformers/declaration";
+import { getNativeContentTransformer } from "./transformer/fileTransformers/nativeContent";
+import { getPolicyTemplateTransformer } from "./transformer/fileTransformers/policyTemplate";
+import { getResourceTransformer } from "./transformer/fileTransformers/resource";
+import { getTestTransformer } from "./transformer/fileTransformers/test";
+import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow";
+import { getSagaTransformer } from "./transformer/saga/saga";
 
 export interface Program {
 	getFiles(): readonly FileDescriptor[];

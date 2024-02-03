@@ -1,4 +1,7 @@
 {
+    "files": [
+        "src/index.ts"
+    ],
     "include": [
         "src/**/*.ts"
     ],
@@ -6,7 +9,6 @@
         "incremental": true,
         "pretty": true,
         "target": "es5",
-        "rootDir": ".",
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
@@ -14,7 +16,8 @@
         "noEmitOnError": true,
         "alwaysStrict": true,
         "preserveConstEnums": true,
-        "newLine": "lf"
-    },
-    "outDir": "dist"
+        "newLine": "lf",
+        "outDir": "dist",
+        "skipLibCheck": true
+    }
 }

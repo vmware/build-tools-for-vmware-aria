@@ -28,7 +28,7 @@ export interface ConfigurationAttribute {
 *
 * Search for `Workflow/VroWorkflowDecorator` in the `vrotsc-annotations` for more information.
 */
-interface WorkflowDescriptor {
+export interface WorkflowDescriptor {
 	id: string;
 	name: string;
 	path: string;
@@ -39,14 +39,14 @@ interface WorkflowDescriptor {
 	description: string;
 }
 
-interface WorkflowItemDescriptor {
+export interface WorkflowItemDescriptor {
 	name: string;
 	input: string[];
 	output: string[];
 	sourceText: string;
 }
 
-interface WorkflowParameter {
+export interface WorkflowParameter {
 	name: string;
 	type: string;
 	title?: string;
@@ -79,7 +79,7 @@ export enum WorkflowParameterType {
 *
 * Search for `Polyglot/VroPolyglotDecorator` in the `vrotsc-annotations` for more information.
 */
-interface PolyglotDescriptor {
+export interface PolyglotDescriptor {
 	package: string;
 	method: string;
 }
@@ -87,7 +87,7 @@ interface PolyglotDescriptor {
 
 /////////////////////////////////// Policy Template Decorator ///////////////////////////////////
 
-interface PolicyTemplateDescriptor {
+export interface PolicyTemplateDescriptor {
 	id: string;
 	name: string;
 	description?: string;
@@ -99,13 +99,13 @@ interface PolicyTemplateDescriptor {
 	events: PolicyTemplateEventDescriptor[];
 }
 
-interface PolicyTemplateScheduleDescriptor {
+export interface PolicyTemplateScheduleDescriptor {
 	periode: string;
 	when: string;
 	timezone: string;
 }
 
-interface PolicyTemplateEventDescriptor {
+export interface PolicyTemplateEventDescriptor {
 	type: string;
 	sourceText: string;
 }
