@@ -15,8 +15,13 @@ import { PolicyTemplateDescriptor, PolicyTemplateEventDescriptor, PolicyTemplate
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
-// @TODO: Take a look at this
 
+/**
+ * Transforms a policy template file.
+ * @param {FileDescriptor} file - The file to transform.
+ * @param {FileTransformationContext} context - The transformation context.
+ * @returns {Function} The transform function.
+ */
 export function getPolicyTemplateTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
 	const policyTemplates: PolicyTemplateDescriptor[] = [];
@@ -51,6 +56,10 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		});
 	}
 
+    /**
+     * Transpiles policy events.
+     * This function transforms the source code of each policy event and stores the transformed source text in the event descriptor.
+     */
 	function transpilePolicyEvents(): void {
 		const events = policyTemplates.reduce((events, pl) => events.concat(pl.events), <PolicyTemplateEventDescriptor[]>[]);
 		eventSourceFiles.forEach((eventSourceFile, i) => {
@@ -74,6 +83,14 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		});
 	}
 
+    /**
+     * Adds a header comment to the source file if the context allows it.
+     *
+     * The header just warns that changes made directly in VRO Client might be overwritten.
+     *
+     * @param {ts.SourceFile} sourceFile - The source file.
+     * @returns {ts.SourceFile} The source file with a header comment.
+     */
 	function emitHeaderComment(sourceFile: ts.SourceFile): ts.SourceFile {
 		if (context.emitHeader) {
 			addHeaderComment(<ts.Statement[]><unknown>sourceFile.statements);
@@ -81,6 +98,17 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		return sourceFile;
 	}
 
+    /**
+     * This function extracts information from the class declaration and its decorators to create a policy template descriptor.
+     *
+     * This will be done for each class declaration that is decorated with the `@PolicyTemplate` decorator.
+     *
+     * It populates the `policyTemplates` array with the policy template descriptors.
+     *
+     * @TODO: This should be refactored to return the policy template descriptor instead of populating the `policyTemplates` array.
+     *
+     * @param {ts.ClassDeclaration} classNode - The class node.
+     */
 	function registerPolicyTemplateClass(classNode: ts.ClassDeclaration): void {
 		let policyTemplateInfo: PolicyTemplateDescriptor = {
 			id: undefined,
@@ -93,7 +121,16 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		};
 
 		if (classNode.decorators && classNode.decorators.length) {
-			buildPolicyTemplateDecorators(policyTemplateInfo, classNode);
+			classNode.decorators
+				.filter(decoratorNode => {
+					const callExpNode = decoratorNode.expression as ts.CallExpression;
+					if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {
+						return (<ts.Identifier>callExpNode.expression).text === "PolicyTemplate";
+					}
+				})
+				.forEach(decoratorNode => {
+					populatePolicyTemplateInfoFromDecorator(policyTemplateInfo, <ts.CallExpression>decoratorNode.expression);
+				});
 		}
 
 		classNode.members
@@ -109,6 +146,14 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		policyTemplates.push(policyTemplateInfo);
 	}
 
+    /**
+     * This function extracts information from the method declaration to create a policy template event descriptor and a corresponding source file.
+     *
+     * @TODO: This should be refactored to return the policy template event descriptor instead of populating the `policyTemplateInfo.events` array and the `eventSourceFiles` array.
+     *
+     * @param {PolicyTemplateDescriptor} policyTemplateInfo - The policy template info.
+     * @param {ts.MethodDeclaration} methodNode - The method node.
+     */
 	function registerPolicyTemplateItem(policyTemplateInfo: PolicyTemplateDescriptor, methodNode: ts.MethodDeclaration): void {
 		const eventInfo: PolicyTemplateEventDescriptor = {
 			type: getEventType(methodNode),
@@ -134,6 +179,14 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		eventSourceFiles.push(eventSourceFile);
 	}
 
+    /**
+     * Determines the event type based on the method name.
+     *
+     * @TODO: Should be enums for the event types.
+     *
+     * @param {ts.MethodDeclaration} methodNode - The method node.
+     * @returns {string} The event type.
+     */
 	function getEventType(methodNode: ts.MethodDeclaration): string {
 		let eventType = getPropertyName(methodNode.name);
 		switch (eventType.toLowerCase()) {
@@ -158,6 +211,14 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		}
 	}
 
+    /**
+     * Creates prologue statements for a policy template item.
+     * This function creates variable declarations for the parameters of the method.
+     * The variable declarations are added to the beginning of the method body.
+     *
+     * @param {ts.MethodDeclaration} methodNode - The method node.
+     * @returns {ts.Statement[]} The statements.
+     */
 	function createPolicyTemplateItemPrologueStatements(methodNode: ts.MethodDeclaration): ts.Statement[] {
 		const statements: ts.Statement[] = [];
 
@@ -182,20 +243,13 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		return statements;
 	}
 
-	function buildPolicyTemplateDecorators(policyTemplateInfo: PolicyTemplateDescriptor, classNode: ts.ClassDeclaration): void {
-		classNode.decorators
-			.filter(decoratorNode => {
-				const callExpNode = decoratorNode.expression as ts.CallExpression;
-				if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {
-					return (<ts.Identifier>callExpNode.expression).text === "PolicyTemplate";
-				}
-			})
-			.forEach(decoratorNode => {
-				buildPolicyTemplateDecorator(policyTemplateInfo, <ts.CallExpression>decoratorNode.expression);
-			});
-	}
-
-	function buildPolicyTemplateDecorator(policyTemplateInfo: PolicyTemplateDescriptor, decoratorCallExp: ts.CallExpression): void {
+    /**
+     * This function processes a single decorator to fill in the policy template descriptor.
+     *
+     * @param {PolicyTemplateDescriptor} policyTemplateInfo - The policy template info.
+     * @param {ts.CallExpression} decoratorCallExp - The decorator call expression.
+     */
+	function populatePolicyTemplateInfoFromDecorator(policyTemplateInfo: PolicyTemplateDescriptor, decoratorCallExp: ts.CallExpression): void {
 		const objLiteralNode = decoratorCallExp.arguments[0] as ts.ObjectLiteralExpression;
 		if (objLiteralNode) {
 			objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
@@ -240,6 +294,18 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		}
 	}
 
+    /**
+     * This function merges the information from the policy template descriptor into the XML template.
+     *
+     * It will create a new XML document from the XML template and then merge the policy template information into it.
+     *
+     * This is done in case where we have multiple policy templates in the same XML template.
+     *
+     * @param {PolicyTemplateDescriptor} policyTemplate - The policy template.
+     * @param {string} xmlTemplate - The XML template.
+     *
+     * @returns {string} The merged XML.
+     */
 	function mergePolicyTemplateXml(policyTemplate: PolicyTemplateDescriptor, xmlTemplate: string): string {
 		const xmlDoc = new xmldoc.XmlDocument(xmlTemplate);
 		const stringBuilder = new StringBuilderClass();
@@ -298,6 +364,14 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		}
 	}
 
+    /**
+     * This function generates an XML representation of the policy template descriptor.
+     *
+     * This preceeds the merging of the policy template descriptor into the XML template.
+     *
+     * @param {PolicyTemplateDescriptor} policyTemplate - The policy template.
+     * @returns {string} The policy template XML.
+     */
 	function printPolicyTemplateXml(policyTemplate: PolicyTemplateDescriptor): string {
 		const stringBuilder = new StringBuilderClass("", "");
 		stringBuilder.append(`<?xml version="1.0" encoding="utf-8" ?>`).appendLine();
