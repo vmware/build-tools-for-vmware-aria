@@ -8,6 +8,8 @@ import { SCRIPT_VRO_GLOBAL } from '../helpers/VROES';
 /**
 * Traverses the nodes of the source file and collects the names of the namespaces.
 *
+* This is used to build the AST.
+*
 * @param sourceFile - The source file to transform.
 * @param context - The context for the transformation.
 * @returns The transformed source file.
