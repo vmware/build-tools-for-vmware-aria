@@ -78,14 +78,7 @@ interface VroPolicyTemplate {
 type PolicyElement = {
 	type: VroPolicyTemplateTypeV2;
 	events?: {
-		OnMessage?: string | PolicyWorkflowInfo;
-		OnInit?: string | PolicyWorkflowInfo;
-		OnExit?: string | PolicyWorkflowInfo;
-		OnExecute?: string | PolicyWorkflowInfo;
-		OnTrap?: string | PolicyWorkflowInfo;
-		OnTrapAll?: string | PolicyWorkflowInfo;
-		OnConnect?: string | PolicyWorkflowInfo;
-		OnDisconnect?: string | PolicyWorkflowInfo;
+		[event: string]: string | PolicyWorkflowInfo;
 	};
 	schedule?: {
 		periode: VroPolicyTemplateScehdulePeriod;
