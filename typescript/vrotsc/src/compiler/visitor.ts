@@ -25,20 +25,20 @@ export class NodeVisitor implements Visitor {
 	private nodeHeritage: ts.Node[] = [];
 
 
-    /**
-     * Creates a new NodeVisitor.
-     *
-     * @param {ts.Visitor} callback - The callback to be used when visiting nodes.
-     * @param {ts.TransformationContext} context - The context for the transformation.
-     */
+	/**
+	 * Creates a new NodeVisitor.
+	 *
+	 * @param {ts.Visitor} callback - The callback to be used when visiting nodes.
+	 * @param {ts.TransformationContext} context - The context for the transformation.
+	 */
 	constructor(private callback: ts.Visitor, private context: ts.TransformationContext) { }
 
-    /**
-     * Visits a single node in the AST.
-     *
-     * @param {ts.Node} node - The node to visit.
-     * @returns {ts.VisitResult<ts.Node>} - The result of visiting the node.
-     */
+	/**
+	 * Visits a single node in the AST.
+	 *
+	 * @param {ts.Node} node - The node to visit.
+	 * @returns {ts.VisitResult<ts.Node>} - The result of visiting the node.
+	 */
 	visitNode(node: ts.Node): ts.VisitResult<ts.Node> {
 		this.nodeHeritage.push(node);
 		try {
@@ -53,42 +53,42 @@ export class NodeVisitor implements Visitor {
 		}
 	}
 
-    /**
-     * Visits multiple nodes in the AST.
-     *
-     * @param {ts.NodeArray<T> | undefined} nodes - The nodes to visit.
-     * @returns {ts.NodeArray<T>} - The result of visiting the nodes.
-     */
+	/**
+	 * Visits multiple nodes in the AST.
+	 *
+	 * @param {ts.NodeArray<T> | undefined} nodes - The nodes to visit.
+	 * @returns {ts.NodeArray<T>} - The result of visiting the nodes.
+	 */
 	visitNodes<T extends ts.Node>(nodes: ts.NodeArray<T> | undefined): ts.NodeArray<T> {
 		return ts.visitNodes(nodes, this.visitNode.bind(this));
 	}
 
-    /**
-     * Visits each child of a node in the AST.
-     *
-     * @param {T} node - The node whose children to visit.
-     * @returns {T} - The result of visiting the children.
-     */
+	/**
+	 * Visits each child of a node in the AST.
+	 *
+	 * @param {T} node - The node whose children to visit.
+	 * @returns {T} - The result of visiting the children.
+	 */
 	visitEachChild<T extends ts.Node>(node: T): T {
 		return ts.visitEachChild(node, this.visitNode.bind(this), this.context);
 	}
 
-    /**
-     * Gets the parent of a node in the AST.
-     *
-     * @param {number} [index] - The index of the parent to get.
-     * @returns {ts.Node} - The parent of the node.
-     */
+	/**
+	 * Gets the parent of a node in the AST.
+	 *
+	 * @param {number} [index] - The index of the parent to get.
+	 * @returns {ts.Node} - The parent of the node.
+	 */
 	getParent(index?: number): ts.Node {
 		return this.nodeHeritage[this.nodeHeritage.length - 2 - (index || 0)];
 	}
 
-    /**
-     * Checks if a node has parents of certain kinds.
-     *
-     * @param {...ts.SyntaxKind[]} kinds - The kinds of parents to check for.
-     * @returns {boolean} - True if the node has parents of the specified kinds, false otherwise.
-     */
+	/**
+	 * Checks if a node has parents of certain kinds.
+	 *
+	 * @param {...ts.SyntaxKind[]} kinds - The kinds of parents to check for.
+	 * @returns {boolean} - True if the node has parents of the specified kinds, false otherwise.
+	 */
 	hasParents(...kinds: ts.SyntaxKind[]): boolean {
 		for (let i = 0; i < kinds.length; i++) {
 			const parentNode = this.nodeHeritage[this.nodeHeritage.length - 2 + i];

@@ -9,22 +9,22 @@ import { system } from "../system/system";
 export class DiagnosticCollection {
 	private items: Diagnostic[] = [];
 
-    /**
-     * Adds a `Diagnostic` object to the collection.
-     * @param {Diagnostic} diagnostic - The diagnostic to add.
-     */
+	/**
+	 * Adds a `Diagnostic` object to the collection.
+	 * @param {Diagnostic} diagnostic - The diagnostic to add.
+	 */
 	add(diagnostic: Diagnostic) {
 		this.items.push(diagnostic);
 	}
 
-    /**
-     * Creates a new `Diagnostic` object based on a TypeScript `Node`, a message string, and a `DiagnosticCategory`.
-     * It calculates the line and character position of the node in its source file and adds the new diagnostic to the collection.
-     * @param {ts.SourceFile} file - The source file.
-     * @param {ts.Node} node - The node.
-     * @param {string} message - The message.
-     * @param {DiagnosticCategory} category - The category.
-     */
+	/**
+	 * Creates a new `Diagnostic` object based on a TypeScript `Node`, a message string, and a `DiagnosticCategory`.
+	 * It calculates the line and character position of the node in its source file and adds the new diagnostic to the collection.
+	 * @param {ts.SourceFile} file - The source file.
+	 * @param {ts.Node} node - The node.
+	 * @param {string} message - The message.
+	 * @param {DiagnosticCategory} category - The category.
+	 */
 	addAtNode(file: ts.SourceFile, node: ts.Node, message: string, category: DiagnosticCategory) {
 		const lineAndChar = file.getLineAndCharacterOfPosition(node.getStart());
 		this.items.push({
@@ -36,10 +36,10 @@ export class DiagnosticCollection {
 		});
 	}
 
-    /**
-     * Converts a native TypeScript `Diagnostic` into the custom `Diagnostic` format used in this collection, and adds it to the collection.
-     * @param {ts.Diagnostic} d - The native TypeScript diagnostic.
-     */
+	/**
+	 * Converts a native TypeScript `Diagnostic` into the custom `Diagnostic` format used in this collection, and adds it to the collection.
+	 * @param {ts.Diagnostic} d - The native TypeScript diagnostic.
+	 */
 	addNative(d: ts.Diagnostic) {
 		const diagnostic: Diagnostic = {
 			file: undefined,
@@ -57,10 +57,10 @@ export class DiagnosticCollection {
 		this.items.push(diagnostic);
 	}
 
-    /**
-     * Returns the current collection of diagnostics as an array.
-     * @returns {Diagnostic[]} The current collection of diagnostics.
-     */
+	/**
+	 * Returns the current collection of diagnostics as an array.
+	 * @returns {Diagnostic[]} The current collection of diagnostics.
+	 */
 	toArray(): Diagnostic[] {
 		return this.items;
 	}

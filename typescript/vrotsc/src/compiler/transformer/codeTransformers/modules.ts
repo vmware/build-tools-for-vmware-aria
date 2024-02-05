@@ -10,7 +10,7 @@ import { system } from "../../../system/system";
 interface Closure {
 	readonly parent: Closure;
 	getIdentifier(name: string): ClosureIdentifierType;
-	addIdentifier(name: string, type: ClosureIdentifierType, ): void;
+	addIdentifier(name: string, type: ClosureIdentifierType): void;
 	newClosure(): Closure;
 }
 

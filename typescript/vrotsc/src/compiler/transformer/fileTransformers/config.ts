@@ -39,11 +39,11 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 			});
 	};
 
-    /**
-    * Transforms a configuration class into a configuration element.
-    *
-    * @param classNode The class node to transform.
-    */
+	/**
+	* Transforms a configuration class into a configuration element.
+	*
+	* @param classNode The class node to transform.
+	*/
 	function transformConfigClass(classNode: ts.ClassDeclaration): void {
 		const configInfo: ConfigurationDescriptor = {
 			id: undefined,
@@ -89,16 +89,16 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 		}));
 	}
 
-    /**
-    * Fetches the configuration attribute information from the field node and populates the configuration information.
-    *
-    * Done after we've extracted the configuration information from the class decorator,
-    * we override some of the values so they make sense in Aria Orchestrator.
-    *
-    * @param configInfo The configuration information to populate.
-    * @param fieldNode The field node to extract the configuration attribute information from.
-    * @returns The configuration information to populate.
-    */
+	/**
+	* Fetches the configuration attribute information from the field node and populates the configuration information.
+	*
+	* Done after we've extracted the configuration information from the class decorator,
+	* we override some of the values so they make sense in Aria Orchestrator.
+	*
+	* @param configInfo The configuration information to populate.
+	* @param fieldNode The field node to extract the configuration attribute information from.
+	* @returns The configuration information to populate.
+	*/
 	function buildConfigAttribute(configInfo: ConfigurationDescriptor, fieldNode: ts.PropertyDeclaration): void {
 		let attName = getPropertyName(fieldNode.name);
 		let configAtt = configInfo.attributes[attName] as ConfigurationAttribute;
@@ -134,12 +134,12 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 		}
 	}
 
-    /**
-    * Goes through the `Configuration` decorator of the class and extracts the configuration information.
-    *
-    * @param configInfo this will be populated with the configuration information.
-    * @param decoratorCallExp the decorator call expression.
-    */
+	/**
+	* Goes through the `Configuration` decorator of the class and extracts the configuration information.
+	*
+	* @param configInfo this will be populated with the configuration information.
+	* @param decoratorCallExp the decorator call expression.
+	*/
 	function populateConfigInfoFromDecorator(configInfo: ConfigurationDescriptor, decoratorCallExp: ts.CallExpression): void {
 		let objLiteralNode = decoratorCallExp.arguments[0] as ts.ObjectLiteralExpression;
 		if (objLiteralNode) {
@@ -168,32 +168,32 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 		}
 	}
 
-    /**
-    * Populates the configuration information with the configuration attributes.
-    *
-    * Example:
-    * ```
-    * @Configuration({
-    *   attributes: {
-    *       "name": "string",
-    *       "age": "number",
-    *       "isAlive": "boolean",
-    *       "address": {
-    *           type: "string",
-    *           value: "1234 Elm Street",
-    *           description: "The address of the person."
-    *       }
-    *    }
-    * })
-    * ```
-    * This will populate the `configInfo` with the attributes.
-    * Values are optional but if they are present they will be extracted.
-    *
-    * @param configInfo The configuration information to populate.
-    * @param objLiteralNode The object literal node to extract the configuration attributes from.
-    *
-    * @returns The object literal node to extract the configuration attributes from.
-    */
+	/**
+	* Populates the configuration information with the configuration attributes.
+	*
+	* Example:
+	* ```
+	* @Configuration({
+	*   attributes: {
+	*       "name": "string",
+	*       "age": "number",
+	*       "isAlive": "boolean",
+	*       "address": {
+	*           type: "string",
+	*           value: "1234 Elm Street",
+	*           description: "The address of the person."
+	*       }
+	*    }
+	* })
+	* ```
+	* This will populate the `configInfo` with the attributes.
+	* Values are optional but if they are present they will be extracted.
+	*
+	* @param configInfo The configuration information to populate.
+	* @param objLiteralNode The object literal node to extract the configuration attributes from.
+	*
+	* @returns The object literal node to extract the configuration attributes from.
+	*/
 	function populateConfigInfoWithConfigAttributes(configInfo: ConfigurationDescriptor, objLiteralNode: ts.ObjectLiteralExpression): void {
 		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			const name = getPropertyName(property.name);
@@ -219,27 +219,27 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 		});
 	}
 
-    /**
-    * Extracts the configuration attribute information from the object literal node.
-    *
-    * This is when we don't want to use the shorthand notation and we want to specify the type, value and description.
-    *
-    * Example:
-    * ```
-    * @Configuration({
-    *  attributes: {
-    *     "address": {
-    *       type: "string",
-    *       value: "1234 Elm Street",
-    *       description: "The address of the person."
-    *       }
-    *   }
-    * })
-    *
-    * @param exp The object literal node to extract the configuration attributes from.
-    *
-    * @returns The configuration attribute information.
-    */
+	/**
+	* Extracts the configuration attribute information from the object literal node.
+	*
+	* This is when we don't want to use the shorthand notation and we want to specify the type, value and description.
+	*
+	* Example:
+	* ```
+	* @Configuration({
+	*  attributes: {
+	*     "address": {
+	*       type: "string",
+	*       value: "1234 Elm Street",
+	*       description: "The address of the person."
+	*       }
+	*   }
+	* })
+	*
+	* @param exp The object literal node to extract the configuration attributes from.
+	*
+	* @returns The configuration attribute information.
+	*/
 	function getAttrInfo(exp: ts.ObjectLiteralExpression): ConfigurationAttribute {
 		let result: ConfigurationAttribute = { type: "Any", value: null, description: null };
 		exp.properties.forEach((property: ts.PropertyAssignment) => {
