@@ -32,9 +32,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	});
 	eventSourceFiles.forEach(sf => context.sourceFiles.push(sf));
 
-	return transform;
-
-	function transform() {
+	return function transform() {
 		transpilePolicyEvents();
 
 		policyTemplates.forEach(policyTemplateInfo => {
@@ -54,7 +52,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 				id: policyTemplateInfo.id,
 			}));
 		});
-	}
+	};
 
 	/**
 	 * Transpiles policy events.

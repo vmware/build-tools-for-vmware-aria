@@ -15,9 +15,8 @@ import { addHeaderComment } from "../helpers/source";
 export function getActionTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
 	context.sourceFiles.push(sourceFile);
-	return transform;
 
-	function transform() {
+	return function transform() {
 		const [sourceText, typeDefText, mapText] = transformSourceFile(
 			sourceFile,
 			context,
@@ -60,7 +59,7 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 			const targetMapFilePath = system.changeFileExt(system.resolvePath(context.outputs.maps, file.relativeFilePath), ".js.map");
 			context.writeFile(targetMapFilePath, mapText);
 		}
-	}
+	};
 
 	function createActionClosure(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext): ts.SourceFile {
 		const statements: ts.Statement[] = [];

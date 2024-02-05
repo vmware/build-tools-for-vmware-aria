@@ -22,7 +22,6 @@ const yaml: typeof import("js-yaml") = require("js-yaml");
 * @param file The file to transform.
 */
 export function getConfigTypeScriptTransformer(file: FileDescriptor, context: FileTransformationContext) {
-
 	return function() {
 		// This visits the AST of the file
 		const sourceFile = ts.createSourceFile(
