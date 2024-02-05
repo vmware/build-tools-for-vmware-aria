@@ -4,8 +4,8 @@ import { NodeVisitor } from "../../visitor";
 import { SCRIPT_HELPER_MODULE, SCRIPT_VROES_VAR, SCRIPT_LAZY_IMPORT_NAME, SCRIPT_VRO_GLOBAL, SCRIPT_VROES_CACHE, SCRIPT_VRO_MODULE_PACKAGE, SCRIPT_VROES_MODULE } from "../helpers/VROES";
 import { getIdentifierTextOrNull, hasModifier, isRequireCall, getStringTextOrNull } from "../helpers/node";
 import { system } from "../../../system/system";
-
-// @TODO: Take a look at this
+import { createModulePrologueStatements } from "./prologueStatements";
+import { createEpilogueStatements } from "./epilogueStatements";
 
 interface Closure {
 	readonly parent: Closure;
@@ -54,6 +54,13 @@ function createClosure(parent?: Closure): Closure {
 	return closure;
 }
 
+/**
+* This function visits different nodes and transforms them.
+*
+* @param sourceFile The source file to transform.
+* @param context The transformation context.
+* @returns The transformed source file.
+*/
 export function transformModuleSystem(sourceFile: ts.SourceFile, context: ScriptTransformationContext): ts.SourceFile {
 	let closure = createClosure();
 	const visitor = new NodeVisitor(visitNode, context);
@@ -63,6 +70,10 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 
 	return visitSourceFile(sourceFile);
 
+    /**
+    * Callback for the NodeVisitor.
+    * This function is called for each node in the source file.
+    */
 	function visitNode(node: ts.Node): ts.VisitResult<ts.Node> {
 		switch (node.kind) {
 			case ts.SyntaxKind.Identifier:
@@ -88,10 +99,16 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		}
 	}
 
+    /**
+    * Visitor for source file.
+    *
+    * @param node The source file node.
+    * @returns The transformed source file.
+    */
 	function visitSourceFile(node: ts.SourceFile): ts.SourceFile {
 		const statements = visitor.visitNodes(node.statements);
-		const prologue = createPrologueStatements();
-		const epilogue = createEpilogueStatements();
+		const prologue = createModulePrologueStatements(context, tslibVarName);
+		const epilogue = createEpilogueStatements(context);
 
 		return ts.updateSourceFileNode(
 			node,
@@ -104,6 +121,14 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				node.statements));
 	}
 
+    /**
+    * This function visits an identifier node and transforms it.
+    *
+    * An identifier can be a variable, a function, a method parameter, a TSLib import or a lazy import.
+    *
+    * @param node The node to set the facts for.
+    * @returns The transformed node.
+    */
 	function visitIdentifier(node: ts.Identifier): ts.Node {
 		const identifierType = closure.getIdentifier(node.text);
 		if (node.text === SCRIPT_VRO_GLOBAL && identifierType === undefined) {
@@ -124,6 +149,12 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return visitor.visitEachChild(node);
 	}
 
+    /**
+    * Visitor for import declarations.
+    *
+    * @param node The import declaration node.
+    * @returns The transformed node.
+    */
 	function visitImportDeclaration(node: ts.ImportDeclaration): ts.VisitResult<ts.Node> {
 		if (!node.importClause) {
 			return null;
@@ -143,6 +174,9 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 			context.file.hierarchyFacts |= HierarchyFacts.ContainsTSLib;
 			return null;
 		} else {
+            /**
+            * Handles normal imports with vroes for ts actions
+            */
 			const moduleName = resolveFullModuleName(moduleSpecifier);
 			const importVarName = buildImportVarName(moduleName);
 			const moduleNameLiteral = ts.setSourceMapRange(
@@ -159,6 +193,14 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				)
 			];
 
+            /**
+            * Named imports
+            * Example:
+            * import { Foo, Bar } from "..."
+            * import { Foo as Bar } from "..."
+            * import * as key from "..."
+            * ```
+            */
 			if (node.importClause.name) {
 				closure.addIdentifier(node.importClause.name.text, ClosureIdentifierType.Import);
 
@@ -176,7 +218,6 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 					const nsName = node.importClause.namedBindings.name.text;
 					closure.addIdentifier(nsName, ClosureIdentifierType.Import);
 					importMap[nsName] = { var: importVarName, star: true };
-
 				} else {
 					return null;
 				}
@@ -191,6 +232,9 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		}
 	}
 
+    /**
+    * Handles export declarations.
+    */
 	function visitExportDeclaration(node: ts.ExportDeclaration): ts.VisitResult<ts.Node> {
 		// export Foo
 		if (node.exportClause && ts.isNamedExports(node.exportClause)) {
@@ -264,6 +308,11 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return visitor.visitEachChild(node);
 	}
 
+    /**
+    * Handles export assignments.
+    * Example:
+    * export default function() {}
+    */
 	function visitExportAssignment(node: ts.ExportAssignment): ts.VisitResult<ts.Node> {
 		return ts.setSourceMapRange(ts.createExpressionStatement(ts.createBinary(
 			ts.createPropertyAccess(ts.createIdentifier("exports"), "default"),
@@ -272,6 +321,19 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		)), ts.getSourceMapRange(node));
 	}
 
+    /**
+    * Visitor for function declarations.
+    *
+    * This function creates a new closure for the function.
+    * It also registers the function parameters in the closure.
+    *
+    * After visiting the function body, it restores the parent closure.
+    *
+    * If the function is exported, it also creates an export statement.
+    *
+    * @param node The function declaration node.
+    * @returns The transformed node.
+    */
 	function visitFunctionDeclaration(node: ts.FunctionDeclaration): ts.VisitResult<ts.Node> {
 		closure = closure.newClosure();
 		node.parameters.forEach(param => {
@@ -327,6 +389,16 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return visitor.visitEachChild(node);
 	}
 
+    /**
+    * This function creates a new closure for the function.
+    *
+    * After visiting the function body, it restores the parent closure.
+    *
+    * Example:
+    * ```ts
+    * const foo = function() {}
+    * ```
+    */
 	function visitFunctionExpression(node: ts.FunctionExpression): ts.VisitResult<ts.Node> {
 		closure = closure.newClosure();
 		node.parameters.forEach(param => {
@@ -378,22 +450,25 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 	}
 
 	/**
-	 * @brief   Visitor for variable statements.
+	 * Visitor for variable statements.
 	 *
-	 * @details Here lie definitions for variable creations.
-	 *          Examples:
-	 *          const test = '123';
-	 *          let test = '123';
-	 *          export const test = '123'
-	 *          export default test;
+	 * Here lie definitions for variable creations.
+	 * Example:
+     * ```ts
+	 * const test = '123';
+	 * let test = '123';
+     * ```
+     * ```ts
+	 * export const test = '123'
+	 * export default test;
+	 * ```
+	 * There is also some extra logic added when it comes to handling things like:
+	 * ```ts
+	 * import * as key from "something"
 	 *
-	 *          There is also some extra logic added when it comes to handling things like:
-	 *          ```ts
-	 *          import * as key from "something"
-	 *
-	 *          export const METADATA = key;
-	 *          export const TEST = { METADATA };
-	 *          ```
+	 * export const METADATA = key;
+	 * export const TEST = { METADATA };
+	 * ```
 	 *
 	 * @param node
 	 */
@@ -431,6 +506,13 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return visitor.visitEachChild(node);
 	}
 
+    /**
+    * Visitor for variable declarations.
+    *
+    * It also handles require calls and lazy imports.
+    *
+    * the require call is transformed to a call to VROES.importLazy
+    */
 	function visitVariableDeclaration(node: ts.VariableDeclaration): ts.VisitResult<ts.Node> {
 		const varName = getIdentifierTextOrNull(node.name);
 		if (varName) {
@@ -491,133 +573,6 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return moduleName;
 	}
 
-	function createPrologueStatements(): ts.Statement[] {
-		const statements: ts.Statement[] = [];
-		const variableDeclarations: ts.VariableDeclaration[] = [];
-		if (context.file.hierarchyFacts & HierarchyFacts.GlobalScope || context.globalIdentifiers.length) {
-			// Create the following statement:
-			// var __global = (function () {
-			//     return this;
-			// }).call(null);
-			statements.push(ts.createVariableStatement(
-                    /*modifiers*/ undefined,
-				[
-					ts.createVariableDeclaration(
-                            /*name*/ SCRIPT_VRO_GLOBAL,
-                            /*type*/ undefined,
-						ts.createBinary(
-							ts.createCall(
-								ts.createPropertyAccess(ts.createIdentifier("System"), "getContext"),
-                                    /*typeArguments*/ undefined,
-                                    /*argumentsArray*/ undefined),
-							ts.createToken(ts.SyntaxKind.BarBarToken),
-							ts.createCall(
-								ts.createPropertyAccess(
-									ts.createParen(
-										ts.createFunctionExpression(
-                                                /*modifiers*/ undefined,
-                                                /*asteriskToken*/ undefined,
-                                                /*name*/ undefined,
-                                                /*typeParameters*/ undefined,
-                                                /*parameters*/ undefined,
-                                                /*modifiers*/ undefined,
-                                                /*body*/ ts.createBlock([ts.createReturn(ts.createThis())], true))),
-									"call"
-								),
-                                    /*typeArguments*/ undefined,
-                                    /*argumentsArray*/[ts.createNull()]
-							)
-						)
-					)
-				]));
-		}
-
-		if (context.file.hierarchyFacts & HierarchyFacts.VROES) {
-			// var VROES = __global.VROES || (__global.VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES())
-			variableDeclarations.push(
-				ts.createVariableDeclaration(
-                        /*name*/ SCRIPT_VROES_VAR,
-                        /*type*/ undefined,
-					ts.createBinary(
-						ts.createPropertyAccess(
-							ts.createIdentifier(SCRIPT_VRO_GLOBAL),
-							SCRIPT_VROES_CACHE
-						),
-						ts.createToken(ts.SyntaxKind.BarBarToken),
-						ts.createParen(
-							ts.createBinary(
-								ts.createPropertyAccess(
-									ts.createIdentifier(SCRIPT_VRO_GLOBAL),
-									SCRIPT_VROES_CACHE
-								),
-								ts.createToken(ts.SyntaxKind.EqualsToken),
-								ts.createCall(
-									ts.createPropertyAccess(
-										ts.createCall(
-											ts.createPropertyAccess(ts.createIdentifier("System"), "getModule"),
-                                                /* typeArguments */ undefined,
-											[
-												ts.createLiteral(SCRIPT_VRO_MODULE_PACKAGE)
-											]),
-										SCRIPT_VROES_MODULE
-									),
-                                        /* typeArguments */ undefined,
-                                        /* argumentsArray */ undefined
-								)
-							)
-						)
-					)
-				));
-		}
-
-		if (context.file.hierarchyFacts & HierarchyFacts.ContainsRequire) {
-			// var require = VROES.require
-			variableDeclarations.push(
-				ts.createVariableDeclaration(
-					"require",
-                        /*type*/ undefined,
-					ts.createPropertyAccess(
-						ts.createIdentifier(SCRIPT_VROES_VAR),
-						"require"
-					)
-				));
-		}
-
-		if (context.file.hierarchyFacts & HierarchyFacts.ContainsTSLib) {
-			variableDeclarations.push(
-				ts.createVariableDeclaration(tslibVarName,
-					undefined,
-					ts.createPropertyAccess(ts.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_HELPER_MODULE)
-				));
-		}
-
-		if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
-			// var exports = {}
-			variableDeclarations.push(
-				ts.createVariableDeclaration(
-					"exports",
-                        /*type*/ undefined,
-					ts.createObjectLiteral([])
-				));
-		}
-
-		if (variableDeclarations.length) {
-			statements.push(ts.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
-		}
-
-		return statements;
-	}
-
-	function createEpilogueStatements(): ts.Statement[] {
-		const statements: ts.Statement[] = [];
-
-		if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
-			statements.push(ts.createReturn(ts.createIdentifier("exports")));
-		}
-
-		return statements;
-	}
-
 	function tryUpdateLocalRequireCall(requireCallNode: ts.CallExpression): ts.CallExpression {
 		if (requireCallNode.arguments[0].kind === ts.SyntaxKind.StringLiteral) {
 			const importSpecifierNode = requireCallNode.arguments[0] as ts.StringLiteral;
@@ -633,6 +588,21 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return requireCallNode;
 	}
 
+    /**
+    * Registers a function parameter in the closure.
+    *
+    * Parameters are registered as method parameters.
+    * This is used to avoid shadowing of variables.
+    * Example:
+    * ```ts
+    * function foo(bar) {
+    *    var bar = 1;
+    *    console.log(bar);
+    * }
+    * ```
+    * In this example, the parameter bar is registered as a method parameter.
+    *
+    */
 	function registerFunctionParameter(name: ts.BindingName): void {
 		if (!name) {
 			return;
@@ -669,6 +639,15 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return parent && ts.isCallExpression(parent);
 	}
 
+    /**
+    * Check if a given identifier is associated with a lazy import.
+    *
+    * In some cases we can't use the lazy import,
+    *  for example when the identifier is used in a binary expression.
+    *
+    * @param node The identifier node.
+    * @returns True if the identifier is a lazy imported identifier.
+    */
 	function isLazyImportedIdentifier(node: ts.Identifier): boolean {
 		if (!importMap[node.text]) {
 			return false;

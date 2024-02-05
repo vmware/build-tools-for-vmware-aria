@@ -4,7 +4,7 @@ import { NodeVisitor } from "../../visitor";
 import { getIdentifierTextOrNull } from "../helpers/node";
 import { transformSpreadAssignment } from "../codeTransformers//object";
 import { transformSpreadElement } from "../codeTransformers/array";
-import { createPrologueStatements } from "./prologueStatements";
+import { createDeclarationPrologueStatements } from "./prologueStatements";
 
 // Shims are used to replace the built-in objects with the VROES shims.
 // This is done to ensure that the built-in objects work as expected in the Aria Orchestrator environment.
@@ -102,7 +102,7 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 	*/
 	function visitSourceFile(node: ts.SourceFile): ts.SourceFile {
 		const statements = visitor.visitNodes(node.statements);
-		const prologue = createPrologueStatements(context);
+		const prologue = createDeclarationPrologueStatements(context);
 
 		return ts.updateSourceFileNode(
 			node,
