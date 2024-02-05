@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>UTF-16</comment>
+  <entry key="categoryPath">com/.vmware/.pscoe.CustomInteractions</entry>
+  <entry key="name">Workflow with Custom Interaction</entry>
+  <entry key="type">Workflow</entry>
+  <entry key="id">7d4d3ebb-ce17-411b-b4c5-ea9591eae298</entry>
+</properties>

@@ -53,13 +53,46 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 
-public class RestClientFactory {
-    public static final String IGNORE_SSL_CERTIFICATE_VERIFICATION = "vrealize.ssl.ignore.certificate";
-    public static final String IGNORE_SSL_HOSTNAME_VERIFICATION = "vrealize.ssl.ignore.hostname";
-    public static final String CONNECTION_TIMEOUT = "vrealize.connection.timeout";
-    public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
+public final class RestClientFactory {
+  	/**
+     * IGNORE_SSL_CERTIFICATE_VERIFICATION: Indicates whether to ignore SSL certificate verification.
+     */
+	public static final String IGNORE_SSL_CERTIFICATE_VERIFICATION = "vrealize.ssl.ignore.certificate";
 
-    private static final Logger logger = LoggerFactory.getLogger(RestClientFactory.class);
+    /**
+     * IGNORE_SSL_HOSTNAME_VERIFICATION: Indicates whether to ignore SSL hostname verification.
+     */
+	public static final String IGNORE_SSL_HOSTNAME_VERIFICATION = "vrealize.ssl.ignore.hostname";
+
+    /**
+     * CONNECTION_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to establish a connection.
+     */
+	public static final String CONNECTION_TIMEOUT = "vrealize.connection.timeout";
+
+    /**
+     * SOCKET_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to wait for a response from the server.
+     */
+	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
+
+	/**
+	* This logger is used to log messages and exceptions related to the creation and usage of REST clients.
+ 	*/
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientFactory.class);
+
+	/**
+	 * The number of milliseconds in a second.
+	 */
+	private static final Integer TO_MILISECONDS_MULTIPLIER = 1000;
+
+	/**
+	 * The beginning of the HTTP status code range for successful responses.
+	 */
+	private static final Integer STATUS_CODE_2XX_RANGE_BEGIN = 200;
+
+	/**
+	 * The end of the HTTP status code range for successful responses.
+	 */
+	private static final Integer STATUS_CODE_2XX_RANGE_END = 299;
 
     private RestClientFactory() {
         throw new IllegalStateException("Cannot instantiate the factory class: RestClientFactory");
@@ -76,7 +109,7 @@ public class RestClientFactory {
     private static Integer getConnectionTimeout() {
         Integer retVal = parseTimeoutValue(System.getProperty(CONNECTION_TIMEOUT), TimeoutType.CONNECTION);
         if (retVal == null) {
-            return Configuration.DEFAULT_CONNECTION_TIMEOUT * 1000;
+            return Configuration.DEFAULT_CONNECTION_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
         }
         return retVal;
     }
@@ -84,7 +117,7 @@ public class RestClientFactory {
     private static Integer getSocketTimeout() {
         Integer retVal = parseTimeoutValue(System.getProperty(SOCKET_TIMEOUT), TimeoutType.SOCKET);
         if (retVal == null) {
-            return Configuration.DEFAULT_SOCKET_TIMEOUT * 1000;
+            return Configuration.DEFAULT_SOCKET_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
         }
         return retVal;
     }
@@ -94,9 +127,9 @@ public class RestClientFactory {
             return null;
         }
         try {
-            return Integer.parseInt(value) * 1000;
+            return Integer.parseInt(value) * TO_MILISECONDS_MULTIPLIER;
         } catch (NumberFormatException e) {
-            logger.warn("Unable to parse {} timeout value '{}', error: '{}'", type, value, e.getMessage());
+            LOGGER.warn("Unable to parse {} timeout value '{}', error: '{}'", type, value, e.getMessage());
         }
         return null;
     }
@@ -116,16 +149,16 @@ public class RestClientFactory {
 		HttpClientBuilder httpClientBuilder = HttpClients.custom();
 		if (ignoreCertificate()) {
 			httpClientBuilder.setSSLContext(sslContext);
-			logger.warn("SSL: You are now ignoring certificate verification.");
+			LOGGER.warn("SSL: You are now ignoring certificate verification.");
 		}
 		if (ignoreHostname()) {
 			httpClientBuilder.setSSLHostnameVerifier(new NoopHostnameVerifier());
-			logger.warn("SSL: You are now ignoring hostname verification.");
+			LOGGER.warn("SSL: You are now ignoring hostname verification.");
 		}
 
 		if (proxy != null) {
 		    httpClientBuilder.setProxy(proxy);
-		    logger.info("Will use proxy " + proxy.toURI());
+		    LOGGER.info("Will use proxy {}", proxy.toURI());
         }
 
         RequestConfig config = RequestConfig.custom()
@@ -142,7 +175,7 @@ public class RestClientFactory {
 
 			@Override
 			public boolean hasError(ClientHttpResponse response) throws IOException {
-				return response.getRawStatusCode() < 200 || response.getRawStatusCode() > 299;
+				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN || response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
 			}
 
 			@Override
@@ -154,7 +187,7 @@ public class RestClientFactory {
                     messageBuilder.append(message);
                 }
 
-                throw new HttpClientErrorException(response.getStatusCode(), messageBuilder.toString());
+                throw new HttpClientErrorException(response.getStatusCode(), "Invalid/Unreachable FQDN or IP address");
 			}
 
 		});
@@ -162,6 +195,14 @@ public class RestClientFactory {
 		return restTemplate;
 	}
 
+	/**
+	 * The function returns a RestClientVro object with a configured RestTemplate and
+	 * RestClientVraNgAuthNInterceptor.
+	 * 
+	 * @param configuration The configuration parameter is an object of type ConfigurationVroNg. It is used
+	 * to provide the necessary configuration settings for the RestClientVroNg class.
+	 * @return The method is returning an instance of the RestClientVro class.
+	 */
 	public static RestClientVro getClientVroNg(ConfigurationVroNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
@@ -171,11 +212,19 @@ public class RestClientFactory {
 		return new RestClientVro(configuration, restTemplate);
 	}
 
+	/**
+	 * The function `getClientVro` returns a `RestClientVro` object based on the provided
+	 * `ConfigurationVro` object and authentication strategy.
+	 * 
+	 * @param configuration The "configuration" parameter is an object of type ConfigurationVro. It
+	 * contains the necessary configuration settings for creating the RestClientVro object.
+	 * @return The method is returning an instance of the RestClientVro class.
+	 */
 	public static RestClientVro getClientVro(ConfigurationVro configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		RestClientRequestInterceptor<ConfigurationVro> interceptor;
 
-        logger.info("Authentication strategy: '{}'", configuration.getAuth());
+        LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
 		switch (configuration.getAuth()) {
 		case VRA:
 			interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
@@ -191,6 +240,15 @@ public class RestClientFactory {
 		return new RestClientVro(configuration, restTemplate);
 	}
 
+	/**
+	 * The function `getClientVrops` returns a `RestClientVrops` object based on the provided
+	 * `ConfigurationVrops` object and authentication provider.
+	 * 
+	 * @param configuration The `configuration` parameter is an object of type `ConfigurationVrops`. It
+	 * contains the configuration settings for the vRealize Operations (vROps) REST client. This includes
+	 * information such as the vROps server URL, authentication provider, and credentials.
+	 * @return The method is returning an instance of the RestClientVrops class.
+	 */
 	public static RestClientVrops getClientVrops(ConfigurationVrops configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
@@ -210,6 +268,14 @@ public class RestClientFactory {
 		return new RestClientVrops(configuration, restTemplate);
 	}
 
+	/**
+	 * The function getClientVra returns a RestClientVra object with a configured RestTemplate and
+	 * authentication interceptor.
+	 * 
+	 * @param configuration The configuration parameter is an object of type ConfigurationVra. It contains
+	 * the necessary information and settings required to configure the RestClientVra object.
+	 * @return The method is returning an instance of the RestClientVra class.
+	 */
 	public static RestClientVra getClientVra(ConfigurationVra configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
@@ -222,6 +288,14 @@ public class RestClientFactory {
 		return new RestClientVra(configuration, restTemplate);
 	}
 
+	/**
+	 * The function returns a RestClientVraNg object with a configured RestTemplate and
+	 * RestClientVraNgAuthNInterceptor.
+	 * 
+	 * @param configuration The "configuration" parameter is an instance of the ConfigurationVraNg class.
+	 * It contains the necessary information and settings for creating the RestClientVraNg object.
+	 * @return The method is returning an instance of the RestClientVraNg class.
+	 */
 	public static RestClientVraNg getClientVraNg(ConfigurationVraNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 
@@ -231,6 +305,16 @@ public class RestClientFactory {
 		return new RestClientVraNg(configuration, restTemplate);
 	}
 
+	/**
+	 * The function getClientVcd returns a RestClientVcd object with the specified configuration and
+	 * authentication.
+	 * 
+	 * @param configuration The "configuration" parameter is an object of type ConfigurationVcd. It
+	 * contains the necessary configuration settings for connecting to a vCloud Director (vCD) instance.
+	 * This could include information such as the vCD server URL, credentials, and any other required
+	 * settings.
+	 * @return The method is returning an instance of the RestClientVcd class.
+	 */
 	public static RestClientVcd getClientVcd(ConfigurationVcd configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
@@ -244,6 +328,14 @@ public class RestClientFactory {
 		return new RestClientVcd(configuration, restTemplate);
 	}
 
+	/**
+	 * The function returns a RestClientVrliV1 object with a configured RestTemplate and
+	 * RestClientVrliAuthInterceptor.
+	 * 
+	 * @param configuration The "configuration" parameter is an object of type ConfigurationVrli. It is
+	 * used to provide the necessary configuration settings for the RestClientVrliV1 class.
+	 * @return The method is returning an instance of the RestClientVrliV1 class.
+	 */
 	public static RestClientVrliV1 getClientVrliV1(ConfigurationVrli configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
@@ -252,6 +344,15 @@ public class RestClientFactory {
 
 		return new RestClientVrliV1(configuration, restTemplate);
 	}
+
+	/**
+	 * The function returns a RestClientVrliV2 object with a configured RestTemplate and
+	 * RestClientVrliAuthInterceptor.
+	 * 
+	 * @param configuration The configuration parameter is an object of type ConfigurationVrli. It contains
+	 * the necessary information and settings required to establish a connection with the VRli API.
+	 * @return The method is returning an instance of the RestClientVrliV2 class.
+	 */
 	public static RestClientVrliV2 getClientVrliV2(ConfigurationVrli configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
@@ -261,11 +362,31 @@ public class RestClientFactory {
 		return new RestClientVrliV2(configuration, restTemplate);
 	}
 
+/**
+ * An enumeration of the different types of timeouts that can be configured for a connection.
+ */
+public enum TimeoutType {
+    /**
+     * The connection timeout type.
+     * This represents the maximum time in milliseconds to wait for a connection to be established before giving up.
+     */
+    CONNECTION,
 
-    private enum TimeoutType {
-        CONNECTION, SOCKET
-    }
+    /**
+     * The socket timeout type.
+     * This represents the maximum time in milliseconds to wait for data to be received after a connection has been established before giving up.
+     */
+    SOCKET
+}
 	
+	/**
+	 * The function returns a RestClientCs object with a configured RestTemplate and
+	 * RestClientRequestInterceptor.
+	 * 
+	 * @param configuration An object of type ConfigurationCs, which contains the configuration settings
+	 * for the RestClientCs.
+	 * @return The method is returning an instance of the RestClientCs class.
+	 */
 	public static RestClientCs getClientCs(ConfigurationCs configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);

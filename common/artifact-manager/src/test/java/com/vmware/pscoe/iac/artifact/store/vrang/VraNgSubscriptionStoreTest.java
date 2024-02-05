@@ -1,5 +1,12 @@
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
 /*
  * #%L
  * artifact-manager
@@ -22,6 +29,7 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.SubscriptionMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
@@ -30,9 +38,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class VraNgSubscriptionStoreTest {
@@ -52,6 +64,7 @@ public class VraNgSubscriptionStoreTest {
 	protected ConfigurationVraNg 		config;
 	protected VraNgPackageDescriptor 	vraNgPackageDescriptor;
 	protected FsMocks 					fsMocks;
+	protected Gson						gson;
 
 	@BeforeEach
 	void init() {
@@ -68,6 +81,7 @@ public class VraNgSubscriptionStoreTest {
 		pkg						= PackageFactory.getInstance( PackageType.VRANG, tempFolder.getRoot() );
 		config					= Mockito.mock( ConfigurationVraNg.class );
 		vraNgPackageDescriptor	= Mockito.mock( VraNgPackageDescriptor.class );
+		gson 					= new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 
 		//mock all rest calls in init
 		VraNgOrganization mockedOrg = new VraNgOrganization();
@@ -154,6 +168,143 @@ public class VraNgSubscriptionStoreTest {
 		File pathToSubscription = new File( tempFolder.getRoot().getPath() + "/subscriptions" );
 		AssertionsHelper.assertFolderContainsFiles( pathToSubscription, expectedSubscriptionFiles );
 	}
+
+	@Test
+	void testExportAbxSubscriptions() throws IOException{
+		//GIVEN 		
+		List<AbxAction> abxActions = new ArrayList<>();	
+		AbxAction abxAction = new AbxAction();
+		abxAction.id = "329e94b1";
+		abxAction.name = "createDns";
+		abxActions.add(abxAction);
+		
+		List<String> subscriptionNames = new ArrayList<>();
+		subscriptionNames.add("addDnsRecord");
+		
+		SubscriptionMockBuilder subscriptionMockBuilder = new SubscriptionMockBuilder();		
+		subscriptionMockBuilder.setPropertyInRawData("runnableId", "329e94b1");		
+		subscriptionMockBuilder.setPropertyInRawData("runnableType", "extensibility.abx");
+		subscriptionMockBuilder.setName("addDnsRecord");		
+		subscriptionMockBuilder.setId("addDnsRecordId");
+
+		VraNgSubscription subscriptionMock = subscriptionMockBuilder.build();
+		Map<String, VraNgSubscription> subscriptions = new HashMap<>();
+		subscriptions.put("addDnsRecord", subscriptionMock);
+
+		when( vraNgPackageDescriptor.getSubscription()).thenReturn(subscriptionNames);
+		when( restClient.getAllSubscriptions()).thenReturn( subscriptions );
+		when(restClient.getAllAbxActions()).thenReturn(abxActions);
+
+		//TEST
+		store.exportContent();
+
+		// VERIFY
+		File subscription = new File( tempFolder.getRoot().getPath() + "/subscriptions/addDnsRecord.json" );
+		JsonReader reader = new JsonReader(new FileReader(subscription.getPath()));
+		JsonObject jsonObj = JsonParser.parseReader(reader).getAsJsonObject();		
+		assertEquals("createDns", jsonObj.get("runnableName").getAsString());		
+	}
+
+	@Test
+	void testExportContentWithNonExistingAbxAction() throws IOException{
+		//GIVEN 		
+		List<AbxAction> abxActions = new ArrayList<>();	
+		AbxAction abxAction = new AbxAction();
+		abxAction.id = "329e94b1";
+		abxAction.name = "createRecord";
+		abxActions.add(abxAction);
+		
+		List<String> subscriptionNames = new ArrayList<>();	
+		subscriptionNames.add("addDnsRecord");
+		
+		SubscriptionMockBuilder subscriptionMockBuilder = new SubscriptionMockBuilder();		
+		subscriptionMockBuilder.setPropertyInRawData("runnableId", "ebab1ca8");		
+		subscriptionMockBuilder.setPropertyInRawData("runnableType", "extensibility.abx");
+		subscriptionMockBuilder.setName("addDnsRecord");		
+		subscriptionMockBuilder.setId("addDnsRecordId");
+
+		VraNgSubscription subscriptionMock = subscriptionMockBuilder.build();
+		Map<String, VraNgSubscription> subscriptions = new HashMap<>();
+		subscriptions.put("addDnsRecord", subscriptionMock);
+
+		when( vraNgPackageDescriptor.getSubscription()).thenReturn(subscriptionNames);
+		when( restClient.getAllSubscriptions()).thenReturn( subscriptions );
+		when(restClient.getAllAbxActions()).thenReturn(abxActions);
+
+		// VERIFY
+		assertThrows(RuntimeException.class, () -> store.exportContent());
+	}
+
+	@Test
+	void testImportAbxSubscriptionsWithNonExistingAbxActionName() throws IOException{
+		//GIVEN
+		List<AbxAction> abxActions = new ArrayList<>();	
+		AbxAction abxAction = new AbxAction();
+		abxAction.id = "329e94b1";	
+		abxAction.name = "createDns";
+		abxActions.add(abxAction);
+
+		List<String> subscriptionNames = new ArrayList<>();
+		subscriptionNames.add("addDnsRecord");
+
+		SubscriptionMockBuilder subscriptionMockBuilder = new SubscriptionMockBuilder();		
+		subscriptionMockBuilder.setPropertyInRawData("runnableName", "NonExistingName");		
+		subscriptionMockBuilder.setPropertyInRawData("runnableType", "extensibility.abx");
+		subscriptionMockBuilder.setName("addDnsRecord");		
+		subscriptionMockBuilder.setId("addDnsRecordId");
+
+		VraNgSubscription subscriptionMock = subscriptionMockBuilder.build();
+		Map<String, VraNgSubscription> subscriptions = new HashMap<>();
+		subscriptions.put("addDnsRecord", subscriptionMock);
+		fsMocks.subscriptionFsMocks().addSubscription(subscriptionMock);
+		
+		when(restClient.getAllSubscriptions()).thenReturn(subscriptions);
+		when(vraNgPackageDescriptor.getSubscription()).thenReturn(subscriptionNames);
+		when(restClient.getAllAbxActions()).thenReturn(abxActions);
+
+		//VERIFY		
+		assertThrows(RuntimeException.class, () -> store.importContent(tempFolder.getRoot()));
+	}
+
+	@Test
+	void testImportAbxSubscriptions() throws IOException{
+		//GIVEN
+		List<AbxAction> abxActions = new ArrayList<>();	
+		AbxAction abxAction = new AbxAction();
+		abxAction.id = "329e94b1";	
+		abxAction.name = "createDns";
+		abxActions.add(abxAction);
+
+		List<String> subscriptionNames = new ArrayList<>();
+		subscriptionNames.add("addDnsRecord");
+
+		SubscriptionMockBuilder subscriptionMockBuilder = new SubscriptionMockBuilder();		
+		subscriptionMockBuilder.setPropertyInRawData("runnableName", "createDns");		
+		subscriptionMockBuilder.setPropertyInRawData("runnableType", "extensibility.abx");
+		subscriptionMockBuilder.setName("addDnsRecord");		
+		subscriptionMockBuilder.setId("addDnsRecordId");
+
+		VraNgSubscription subscriptionMock = subscriptionMockBuilder.build();
+		Map<String, VraNgSubscription> subscriptions = new HashMap<>();
+		subscriptions.put("addDnsRecord", subscriptionMock);
+		fsMocks.subscriptionFsMocks().addSubscription(subscriptionMock);
+		
+		ArgumentCaptor<String> subscriptionName = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> subscriptionContent = ArgumentCaptor.forClass(String.class);
+		when(restClient.getAllSubscriptions()).thenReturn(subscriptions);
+		when(vraNgPackageDescriptor.getSubscription()).thenReturn(subscriptionNames);
+		when(restClient.getAllAbxActions()).thenReturn(abxActions);
+
+		//TEST
+		store.importContent(tempFolder.getRoot());
+
+		//VERIFY		
+		verify(restClient).importSubscription(subscriptionName.capture(), subscriptionContent.capture());
+		JsonObject subscription = gson.fromJson(subscriptionContent.getValue(), JsonObject.class);
+		assertEquals(abxAction.id, subscription.get("runnableId").getAsString());
+		assertNull(subscription.get("runnableName"));
+	}
+
 
 	@Test
 	void testImportContentExcludingFromConfiguration() throws IOException {

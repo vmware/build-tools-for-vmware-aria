@@ -13,7 +13,7 @@
  * #L%
  */
 export enum ProjectType {
-	tree,
+    tree,
     flat,
     js
 }
@@ -26,11 +26,11 @@ export enum Lang {
 }
 
 export interface Source {
-	directory: string;
+    directory: string;
 }
 
 export interface Destination {
-	directory: string;
+    directory: string;
 }
 
 export type SUBJECT = string;
@@ -38,20 +38,18 @@ export type SUBJECT = string;
 export type PEM = string;
 
 export interface Certificate {
-	subject: string;
+    subject: string;
     privateKey: PEM;
     privateKeyPassword: string
-	publicKey: PEM;
-	chain: Map<SUBJECT, PEM>;
+    publicKey: PEM;
+    chain: Map<SUBJECT, PEM>;
 }
 
 export interface BuildContext {
-	source: Source,
-	destination: Destination,
-	certificate: Certificate,
+    source: Source,
+    destination: Destination,
+    certificate: Certificate,
 }
-
-export const VSO_RESOURCE_INF = "VSO-RESOURCE-INF";
 
 export const VroNativeResourceElementAttributesMapping = {
     id: "attribute_id",
@@ -71,75 +69,81 @@ export enum VroElementType {
 }
 
 export class VroActionParameter {
-    name: string
-    type: string
-    description: string
+    name: string;
+    type: string;
+    description: string;
 }
 
 export class VroScriptRuntime {
-    lang: Lang      // javascript, node, powercli (Powershell) or python
-    version: string // Supported "" for javascript (ECMA5), "12" for node, "11-powershell-6.2" for powercli and "3.7" for python
+    lang: Lang;      // javascript, node, powercli (Powershell) or python
+    version: string; // Supported "" for javascript (ECMA5), "12" for node, "11-powershell-6.2" for powercli and "3.7" for python
 }
 
 export class VroScriptBundle {
-    contentPath: string     // Path on the file system to the dir or zip file containing the bundled script package.
-    projectPath: string
-    entry: string    // The main entry point inside the bundle package.
+    contentPath: string;  // Path on the file system to the dir or zip file containing the bundled script package.
+    projectPath: string;
+    entry: string;        // The main entry point inside the bundle package.
 }
 
 export class VroScriptInline {
-    actionSource: string
-    sourceFile: string
-    sourceStartLine: number
-    sourceStartIndex: number
-    sourceEndLine: number
-    sourceEndIndex: number
-    getActionSource: (action : VroActionData) => string
-    javadoc: any
+    actionSource: string;
+    sourceFile: string;
+    sourceStartLine: number;
+    sourceStartIndex: number;
+    sourceEndLine: number;
+    sourceEndIndex: number;
+    getActionSource: (action: VroActionData) => string;
+    javadoc: any;
 }
 
 export class VroActionData {
-    version: string
-    params: Array<VroActionParameter>
-    returnType: VroActionParameter
-    runtime: VroScriptRuntime
-    timeout?: string
-    memoryLimit?: string
-    inline: VroScriptInline         // Inline Script. bundle will be null
-    bundle: VroScriptBundle         // Bundled Script. inline will be null
+    version: string;
+    params: VroActionParameter[];
+    returnType: VroActionParameter;
+    runtime: VroScriptRuntime;
+    timeout?: string;
+    memoryLimit?: string;
+    inline: VroScriptInline; // Inline Script. bundle will be null
+    bundle: VroScriptBundle; // Bundled Script. inline will be null
+}
+
+export interface VroNativeFormElement {
+    name: string | null,
+    data: any
 }
 
 export interface VroNativeElement {
-    categoryPath: Array<string>
-    type: VroElementType
-    id: string
-    name: string
-    description: string
+    categoryPath: string[],
+    type: VroElementType,
+    id: string,
+    name: string,
+    description: string,
     comment: string,
-    attributes: VroNativeElementAttributes
-    dataFilePath: string
-    tags: Array<string>
-    action: VroActionData
-    form?: any
+    attributes: VroNativeElementAttributes,
+    dataFilePath: string,
+    tags: string[],
+    action: VroActionData,
+    form?: VroNativeFormElement,
+    formItems?: VroNativeFormElement[]
 }
 
-export interface VroNativeElementAttributes {}
+export interface VroNativeElementAttributes { }
 
 export interface VroNativeResourceElementAttributes extends VroNativeElementAttributes {
-    id: string
-    name: string
-    version: string
-    description: string
-    mimetype: string
-    allowedOperations: string
+    id: string,
+    name: string,
+    version: string,
+    description: string,
+    mimetype: string,
+    allowedOperations: string,
 }
 
 export interface VroPackageMetadata {
-    certificate: Certificate
-    groupId: string
-    artifactId: string
-    version: string
-    packaging: string
-    description: string
-    elements: Array<VroNativeElement>
+    certificate: Certificate,
+    groupId: string,
+    artifactId: string,
+    version: string,
+    packaging: string,
+    description: string,
+    elements: VroNativeElement[]
 }

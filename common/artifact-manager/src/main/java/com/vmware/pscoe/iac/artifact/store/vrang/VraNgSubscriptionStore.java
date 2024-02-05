@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
@@ -43,14 +44,28 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
+import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_SUBSCRIPTIONS;
 
 public class VraNgSubscriptionStore extends AbstractVraNgStore {
 
+    /**
+     * Contains Id of the current organization.
+     */
     private String currentOrganizationId;
+
+    /**
+     * Contains information about the projects affected by import/export.
+     */
     private List<VraNgProject> projects;
+
+    /**
+     * Contains Id of the main proect.
+     */
     private String configProjectId;
 
+    /**
+     * Init method, set initial values for base variables.
+     */
     @Override
     public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
             VraNgPackageDescriptor vraNgPackageDescriptor) {
@@ -61,7 +76,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
     }
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return a list of subscriptions
 	 */
@@ -71,28 +86,28 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 */
 	@Override
 	protected void exportStoreContent() {
 		Map<String, VraNgSubscription> subscriptionsOnServer	= this.getAllSubscriptions();
 
-		for ( String subscriptionId : subscriptionsOnServer.keySet() ) {
+		for (String subscriptionId : subscriptionsOnServer.keySet()) {
 			storeSubscriptionOnFilesystem(
 				vraNgPackage,
-				subscriptionsOnServer.get( subscriptionId ).getName(),
-				subscriptionsOnServer.get( subscriptionId ).getJson()
+				subscriptionsOnServer.get(subscriptionId).getName(),
+				subscriptionsOnServer.get(subscriptionId).getJson()
 			);
 		}
 	}
 
 	/**
-	 * Exports all subscription names that match the filter
+	 * Exports all subscription names that match the filter.
 	 *
 	 * @param	subscriptionNames - filter
 	 */
 	@Override
-	protected void exportStoreContent( List<String> subscriptionNames ) {
+	protected void exportStoreContent(List<String> subscriptionNames) {
 		Map<String, VraNgSubscription> subscriptionsOnServer = this.getAllSubscriptions();
 
 		Map<String, String> namesToIdsOnServer = subscriptionsOnServer.keySet().stream()
@@ -112,19 +127,24 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		}
 	}
 
+    /**
+     * Immports all subscriptions from the source directory.
+     * 
+     * @param sourceDirectory - directory with the subscriptions.
+     */
 	public void importContent(File sourceDirectory) {
-		logger.info( "Importing files from the '{}' directory", DIR_SUBSCRIPTIONS );
+		logger.info("Importing files from the '{}' directory", DIR_SUBSCRIPTIONS);
         File folder = Paths.get(sourceDirectory.getPath(), DIR_SUBSCRIPTIONS).toFile();
 		if (!folder.exists()) {
-			logger.info( "Subscription Dir not found." );
+			logger.info("Subscription Dir not found.");
 			return;
 		}
 		File[] files = this.filterBasedOnConfiguration(folder, new CustomFolderFileFilter(this.getItemListFromDescriptor()));
-		if ( files == null || files.length == 0) {
-			logger.info( "Could not find any Subscriptions." );
+		if (files == null || files.length == 0) {
+			logger.info("Could not find any Subscriptions.");
 			return;
 		}
-		logger.info( "Found subscriptions. Importing..." );
+		logger.info("Found subscriptions. Importing...");
 		
 		final Map<String, VraNgSubscription> allSubscriptions = this.getAllSubscriptions();
 		for (File file : files) {
@@ -145,6 +165,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
             // orgId is optional when importing in vRA, so it can be safely removed
             subscriptionJsonElement.remove("orgId");
             addProjectNamesToStorage(subscriptionJsonElement);
+            addRunnableNameToStorage(subscriptionJsonElement);
             subscriptionJson = gson.toJson(subscriptionJsonElement);
             logger.info("Created file {}", Files.write(Paths.get(subscription.getPath()), subscriptionJson.getBytes(),
                     StandardOpenOption.CREATE));
@@ -172,8 +193,8 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
             subscriptionJsonElement.remove("orgId");
             subscriptionJsonElement.addProperty("id", subscriptionId);
             logger.info("Trying to importing subscription '{}' with ID {}...", subscriptionName, subscriptionId);
-
             substituteProjects(subscriptionJsonElement);
+            addRunnableId(subscriptionJsonElement);
             subscriptionContent = gson.toJson(subscriptionJsonElement);
             restClient.importSubscription(subscriptionName, subscriptionContent);
             logger.debug("Subscription '{}' imported successfully.", subscriptionName);
@@ -184,18 +205,33 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
         }
     }
 
+    private void addRunnableId(JsonObject subscriptionJsonElement) {
+        JsonElement runnableTypeElement = subscriptionJsonElement.get("runnableType");
+        if (!runnableTypeElement.getAsString().contains("extensibility.abx")) {
+            return;
+        }
+        JsonElement runnableNameElement = subscriptionJsonElement.get("runnableName");
+        List<AbxAction> actions = restClient.getAllAbxActions().stream()
+                .filter(a -> a.name.equals(runnableNameElement.getAsString()))
+                .collect(Collectors.toList());
+
+        if (actions.size() == 0) {
+            throw new RuntimeException("Abx actions with the specified Name can not be found");
+        }
+
+        subscriptionJsonElement.remove("runnableName");
+        subscriptionJsonElement.addProperty("runnableId", actions.get(0).id);
+    }
+        
     private String generateId(JsonObject subscriptionJsonElement, Map<String, VraNgSubscription> allSubscriptions) {
-        String subscriptionId = null;
+        String subscriptionId = subscriptionJsonElement.get("id").getAsString();
         String subscriptionName = subscriptionJsonElement.get("name").getAsString();
-        if (subscriptionJsonElement.get("id") != null
-                && (subscriptionId = subscriptionJsonElement.get("id").getAsString()) != null) {
+
+        if (subscriptionJsonElement.get("id") != null && subscriptionId != null) {
             subscriptionId = subscriptionId.replaceAll("^[\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}-", "");
-
-            if (allSubscriptions.get(subscriptionId) != null
-                    && JsonParser.parseString(allSubscriptions.get(subscriptionId).getJson()).getAsJsonObject()
-                            .get("orgId").getAsString().equals(currentOrganizationId)) {
-
-            } else {
+            if (allSubscriptions.get(subscriptionId) == null
+                    || !JsonParser.parseString(allSubscriptions.get(subscriptionId).getJson()).getAsJsonObject()
+                            .get("orgId").getAsString().equals(currentOrganizationId)) {            
                 subscriptionId = this.currentOrganizationId + "-" + subscriptionId;
                 logger.debug("Generating new subscription ID '{}' because subscription exists in different organization.", subscriptionId);
 
@@ -205,7 +241,6 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
             logger.debug("Subscription Id is missing. Generate id from organization id and name hashcode: " + subscriptionId);
         }
         return subscriptionId;
-
     }
 
     private void addProjectNamesToStorage(JsonObject subscriptionJsonElement) {
@@ -219,6 +254,26 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
                 constraintElement.getAsJsonObject().add("projectNames", projectNames);
             }
         }
+    }
+
+    private void addRunnableNameToStorage(JsonObject subscriptionJsonElement) {
+
+        JsonElement runnableTypeElement = subscriptionJsonElement.get("runnableType");
+        if (!runnableTypeElement.getAsString().contains("extensibility.abx")) {
+            return;
+        }
+
+        JsonElement runnableIdElement = subscriptionJsonElement.get("runnableId");
+        List<AbxAction> actions = restClient.getAllAbxActions().stream()
+            .filter(a -> a.id.equals(runnableIdElement.getAsString()))
+            .collect(Collectors.toList());
+
+        if (actions.size() == 0) {
+            throw new RuntimeException("Abx actions with the specified Id can not be found");
+        }
+        
+        subscriptionJsonElement.remove("runnableId");
+        subscriptionJsonElement.addProperty("runnableName", actions.get(0).name);        
     }
 
     private void substituteProjects(JsonObject content) {

@@ -17,18 +17,14 @@ This is simply a reminder of what we are going to look for before merging your c
 If you skip any of the tasks from the checklist, add a comment explaining why that task might be irrelevant to your contribution.
 -->
 
-- [ ] Lint and unit tests pass locally with my changes
 - [ ] I have added relevant error handling and logging messages to help troubleshooting
 - [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] I have added necessary documentation (if appropriate)
+- [ ] I have added necessary documentation, relevant usage information (if applicable)
 - [ ] I have updated CHANGELOG.md with a short summary of the changes introduced
 - [ ] I have tested against live environment, if applicable
-- [ ] I have added relevant usage information (As-built)
-- [ ] Any structure and/or content vRA-NG improvements are synchronized with vra-ng and ts-vra-ng archetypes
-- [ ] Every new or updated Installer property is documented in docs/archive/doc/markdown/use-bundle-installer.md
-- [ ] Dependencies in pom.xml are up-to-date
-- [ ] My changes have been rebased and squashed to the minimal number of relevant commits
-- [ ] My changes have a descriptive commit message with a short title, including a `Fixed #XXX -` or `Closed #XXX -` prefix to auto-close the issue
+- [ ] I have synced any structure and/or content vRA-NG improvements with vra-ng and ts-vra-ng archetypes (if applicable)
+- [ ] I have my changes rebased and squashed to the minimal number of relevant commits. **Notice: don't squash all commits**
+- [ ] I have added a descriptive commit message with a short title, including a `Fixed #XXX -` or `Closed #XXX -` prefix to auto-close the issue
 
 ### Testing
 

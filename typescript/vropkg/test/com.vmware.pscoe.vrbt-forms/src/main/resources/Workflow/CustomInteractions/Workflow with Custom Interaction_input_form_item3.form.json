@@ -1,0 +1,40 @@
+{
+    "layout": {
+        "pages": [
+            {
+                "id": "userInteraction2Page",
+                "sections": [
+                    {
+                        "id": "passwordSection",
+                        "fields": [
+                            {
+                                "id": "passwordField_1",
+                                "display": "passwordField",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                },
+                                "signpostPosition": "right-middle"
+                            }
+                        ]
+                    }
+                ],
+                "title": "User Interaction 2 Page",
+                "state": {}
+            }
+        ]
+    },
+    "schema": {
+        "passwordField_1": {
+            "label": "Password",
+            "type": {
+                "dataType": "secureString"
+            },
+            "constraints": {}
+        }
+    },
+    "options": {
+        "externalValidations": []
+    },
+    "itemId": "item3"
+}

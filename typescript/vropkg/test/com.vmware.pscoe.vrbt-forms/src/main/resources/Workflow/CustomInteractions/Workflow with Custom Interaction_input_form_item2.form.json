@@ -1,0 +1,66 @@
+{
+    "layout": {
+        "pages": [
+            {
+                "id": "userInteraction1Page",
+                "sections": [
+                    {
+                        "id": "textArea_Section",
+                        "fields": [
+                            {
+                                "id": "textArea_1",
+                                "display": "textArea",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                },
+                                "signpostPosition": "right-middle"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "dropDown_Section",
+                        "fields": [
+                            {
+                                "id": "dropDown_1",
+                                "display": "dropDown",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                },
+                                "signpostPosition": "right-middle"
+                            }
+                        ]
+                    }
+                ],
+                "title": "User Interaction 1 Page",
+                "state": {}
+            }
+        ]
+    },
+    "schema": {
+        "textArea_1": {
+            "label": "Text Area 1",
+            "placeholder": "",
+            "type": {
+                "dataType": "string"
+            },
+            "constraints": {}
+        },
+        "dropDown_1": {
+            "label": "Drop Down 1",
+            "placeholder": "",
+            "type": {
+                "dataType": "string"
+            },
+            "valueList": [
+                "Option 1\nOption 2\nOption 3"
+            ],
+            "constraints": {}
+        }
+    },
+    "options": {
+        "externalValidations": []
+    },
+    "itemId": "item2"
+}
