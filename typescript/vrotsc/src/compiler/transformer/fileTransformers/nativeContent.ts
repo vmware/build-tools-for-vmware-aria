@@ -3,12 +3,15 @@ import { system } from "../../../system/system";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
-// @TODO: Take a look at this
-
+/**
+* This transformer is responsible for transforming a native element.
+*
+* Native elements are elements that are .xml files and have an associated .element_info.xml file.
+*
+* This is usually used for legacy elements.
+*/
 export function getNativeContentTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	return transform;
-
-	function transform() {
+	return function transform() {
 		const content = system.readFile(file.filePath);
 		const elementInfoContent = getXmlElementInfo();
 		if (elementInfoContent) {
@@ -26,7 +29,7 @@ export function getNativeContentTransformer(file: FileDescriptor, context: FileT
 				context.writeFile(`${targetFileBaseName}.element_info.xml`, elementInfoContent);
 			}
 		}
-	}
+	};
 
 	function getXmlElementInfo(): string {
 		let elementInfoFilePath = `${file.filePath}.element_info.xml`;
