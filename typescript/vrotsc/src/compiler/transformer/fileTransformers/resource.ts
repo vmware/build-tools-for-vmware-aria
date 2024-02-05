@@ -12,10 +12,16 @@ interface ResourceElementInfo {
 	mimeType: string;
 }
 
+/**
+* Any file thaat is not a script, workflow, configuration element, policy template, or test file is considered a resource.
+*
+* This transformer is responsible for transforming a resource file into a resource element.
+*
+* Expects the resource file to have an associated element_info file. Otherwise, sensible defaults are used.
+*  The element_info file can be in either JSON or YAML format.
+*/
 export function getResourceTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	return transform;
-
-	function transform() {
+	return function transform() {
 		const content = system.readFile(file.filePath);
 		const resourceInfo =
 			getYamlElementInfo(`${file.filePath}.element_info.yaml`) ||
@@ -38,7 +44,7 @@ export function getResourceTransformer(file: FileDescriptor, context: FileTransf
 			id: resourceInfo.id,
 			mimetype: resourceInfo.mimeType,
 		}));
-	}
+	};
 
 	function getJsonElementInfo(filePath: string): ResourceElementInfo {
 		if (system.fileExists(filePath)) {
