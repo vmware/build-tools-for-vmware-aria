@@ -18,6 +18,7 @@ package com.vmware.pscoe.iac.artifact.rest.auth;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;
@@ -84,14 +85,17 @@ public class VraSsoAuth {
         final HttpEntity<?> httpEntity = (HttpEntity<?>) tokenUriAndHttpEntity.get(HTTP_ENTITY_TYPE);
         try {
             final ResponseEntity<String> response = this.restTemplate.exchange(tokenUri, HttpMethod.POST, httpEntity, String.class);
+
             final DocumentContext responseBody = JsonPath.parse(response.getBody());
+
             final String tokenValue = isTokenAuth
 				? responseBody.read("$.access_token")
 				: responseBody.read("$." + TOKEN_NAME);
 
             return new SsoToken(tokenValue, AuthProvider.VRA);
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Unable to acquire token for VRO SSO authentication: %s", e.getMessage()));
+            throw new RuntimeException(String.format("Unable to acquire token for VRO SSO authentication: %s. Request was %s %s. Request body not shown due to sensitive data.",
+                e.getMessage(), HttpMethod.POST, tokenUri));
         }
     }
 

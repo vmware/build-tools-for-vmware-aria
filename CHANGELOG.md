@@ -18,6 +18,7 @@
 * [vCD-NG] 166 / fix VMware Cloud Director API version 38.0 and later do not support the /api/sessions API login endpoint
 * [installer] 133 / Delete old packages fails with 401 error in case vro is embedded.
 * [vro-types] Fix SSHSession 'output' type
+* [artifact-manager] Extend Information on Exception messages for some of the  REST API Calls.
 
 ## v2.36.0 - 16 Nov 2023
 

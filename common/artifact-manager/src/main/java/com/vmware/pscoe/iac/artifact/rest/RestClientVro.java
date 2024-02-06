@@ -23,15 +23,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -48,6 +44,7 @@ import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
@@ -282,6 +279,7 @@ public class RestClientVro extends RestClient {
         }
 
         LinkedMultiValueMap<String, Object> contentMap = new LinkedMultiValueMap<>();
+
         contentMap.add("name", filesystemPackage);
         contentMap.add("Content-Type", "application/octet-stream");
         contentMap.add("file", new FileSystemResource(filesystemPackage.getFilesystemPath()));
@@ -290,11 +288,31 @@ public class RestClientVro extends RestClient {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(contentMap, headers);
 
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-
-        if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
-            throw new RuntimeException(String.format("Error during import of package %s, REST API call returned %s", filesystemPackage, response.getStatusCode()));
+            if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
+                throw new RuntimeException(String.format("Error during import of package %s, REST API call returned %s", filesystemPackage, response.getStatusCode()));
+            }
+        } catch (HttpClientErrorException e) {
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append(HttpMethod.POST).append(" ").append(url).append("\n");
+            messageBuilder.append(headers.keySet().stream().map(
+                (String k)->headers.get(k).stream().map(
+                    h->k + ": " + h
+                ).collect(Collectors.joining("\n")) 
+            ).collect(Collectors.joining("\n")));
+            if (requestEntity.hasBody()) {
+                messageBuilder.append("\n\n");
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    messageBuilder.append(mapper.writeValueAsString("<Multipart Form Data>"));
+                } catch (JacksonException jsonException) {
+                    messageBuilder.append("<Body Not shown due to Exception: " + jsonException.getClass().getName() + ":" + jsonException.getLocalizedMessage() + ">");
+                }
+            }
+            throw new RuntimeException(String.format("Error during import of package %s, REST API call Request was %s\n\nAnd Caused Exception: %s",
+                filesystemPackage, messageBuilder.toString(), e.getLocalizedMessage()));
         }
     }
 
