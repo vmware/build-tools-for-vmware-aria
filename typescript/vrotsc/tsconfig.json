@@ -1,6 +1,6 @@
 {
     "files": [
-        "e2e.ts"
+        "src/index.ts"
     ],
     "include": [
         "src/**/*.ts"
@@ -17,7 +17,7 @@
         "alwaysStrict": true,
         "preserveConstEnums": true,
         "newLine": "lf",
-        "outDir": "build",
+        "outDir": "dist",
         "skipLibCheck": true
     }
 }

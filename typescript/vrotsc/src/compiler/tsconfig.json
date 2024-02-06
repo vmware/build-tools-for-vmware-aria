@@ -1,9 +1,0 @@
-{
-  "extends": "../tsconfig-base",
-  "compilerOptions": {
-    "outFile": "../../build/compiler.js"
-  },
-  "include": [
-    "**/*.ts"
-  ]
-}
