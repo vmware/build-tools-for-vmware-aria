@@ -194,7 +194,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
         Map<String, List<String>> imageProfilesByRegion = this.restClient.getAllImageProfilesByRegion();
 
-        logger.debug("Image profiles by region: {}", imageProfilesByRegion);
+        logger.info("Image profiles by region: {}", imageProfilesByRegion);
 
         // list all directories in the regions folder
         Arrays.asList(regionsFolder.listFiles(File::isDirectory)).forEach(regionProfileDir -> {
@@ -205,10 +205,17 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
                         .filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(), importTags))
                         .filter(cloudAccount -> cloudAccount.getType().equals(cloudRegionProfile.getRegionType()))
                         .forEach(cloudAccount -> cloudAccount.getRegionIds()
-                                .forEach(regionId -> this.importImageProfilesInRegion(
+                            .forEach(regionId -> {
+                                boolean shouldImport = regionProfileDir.getName().contains(regionId);
+                                
+                                if (shouldImport) {
+                                    this.importImageProfilesInRegion(
                                         regionId,
                                         regionProfileDir,
-                                        imageProfilesByRegion)));
+                                        imageProfilesByRegion);
+                                }
+                            }
+                        ));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -253,7 +260,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
         }
         List<VraNgImageMapping> imageMappings = this.getImageMappingsFromFileSystem(imageMappingsDir);
 
-        logger.info("Creating/updating {} image mappings: {}",
+        logger.info("importImageProfilesInRegion: Creating/updating {} image mappings: {}",
 			imageMappings.size(), imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
 
         if (imageProfilesByRegion.containsKey(regionId)) {
