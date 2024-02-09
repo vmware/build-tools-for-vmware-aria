@@ -23,7 +23,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.Properties;
+import java.util.Optional;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JacksonException;
@@ -55,7 +61,8 @@ import com.google.gson.JsonObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import com.vmware.pscoe.iac.artifact.configuration.*;
+import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
@@ -72,28 +79,54 @@ import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.BooleanValue;
 import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.NumberValue;
 
 public class RestClientVro extends RestClient {
-    private static final PackageType packageType = PackageType.VRO;
-    private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com", "api.mgmt.cloud.vmware.com");
-    private static final String VRA_CLOUD_VERSION = "cloud";
-    private static final Logger logger = LoggerFactory.getLogger(RestClientVro.class);
 
+    /** The type of package this client handles. Usually this corresponds to some the type of the target system. In this case Aria Automation Orchestrator (vRO). */
+	private static final PackageType PACKAGE_TYPE = PackageType.VRO;
+    /** Aria Automation cloud hosts that are currently being hosted. */
+    private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com", "api.mgmt.cloud.vmware.com");
+	/** Cloud Version. */
+    private static final String VRA_CLOUD_VERSION = "cloud";
+    /** The logger to be used to log info, warning, error and debug messages. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVro.class);
+
+    /** A configuration defining different options affecting the package generation or import.*/
     private ConfigurationNg configuration;
+    /** Rest Template to be utilized in a REST API connection. */
     private RestTemplate restTemplate;
 
+    /**
+     * This method returns the RESTR Template that is used to establish connection to the REST API to the product that
+     * we are creating and publishing packages to - In that case Aria Automation Orchestrator.
+     * @return The REST Template being used to establish connection to the Aria Automation Orchestrator.
+     */
     public RestTemplate getRestTemplate() {
         return restTemplate;
     }
 
+    /**
+     * Get the configuraion such as connectivity details to the product (Aria Automation Orchestrator), how to handle
+     * timeouts and other.
+     * @return Configuration object containing the configuration settings.
+     */
     @Override
     protected Configuration getConfiguration() {
         return (Configuration) this.configuration;
     }
 
+    /**
+     * Consteruct an instance of the object.
+     * @param configuration Configuration defining connectivity parameters (to Aria Automation Orchestrator)
+     * @param restTemplate REST Template.
+     */
     protected RestClientVro(ConfigurationNg configuration, RestTemplate restTemplate) {
         this.configuration = configuration;
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * Get the version of the product.
+     * @return A string representation of the product (Aria Automation Orchestrator) version. Example: 8.12.0
+     */
     @Override
     public String getVersion() {
         URI url = getURI(getURIBuilder().setPath("vco/api/about"));
@@ -106,10 +139,19 @@ public class RestClientVro extends RestClient {
         return JsonPath.parse(response.getBody()).read("$.version");
     }
 
+    /**
+     * The host or IP address of the product (Aria Automation Orchestrator) that we are pushing to.
+     * @return The host name or IP address of the host of the product.
+     */
     public String getHost() {
         return ((Configuration) this.configuration).getHost();
     }
 
+
+    /**
+     * Get list of packages.
+     * @return List of packages.
+     */
     public List<Package> getPackages() {
 
         URI url;
@@ -129,7 +171,7 @@ public class RestClientVro extends RestClient {
 
         return packagesNames
                 .stream()
-                .map(name -> PackageFactory.getInstance(packageType, new File(name + "." + packageType.getPackageExtention())))
+                .map(name -> PackageFactory.getInstance(PACKAGE_TYPE, new File(name + "." + PACKAGE_TYPE.getPackageExtention())))
                 .collect(Collectors.toList());
     }
 
@@ -138,9 +180,6 @@ public class RestClientVro extends RestClient {
 
         for (Package fsPkg : filesystemPackages) {
             Optional<Package> srvPkgOptional = srvPackages.stream().filter(srvPkg -> fsPkg.equals(srvPkg)).findFirst();
-            if (!srvPkgOptional.isPresent()) {
-
-            }
         }
         return getPackages().stream().filter(srvPackage -> {
             boolean found = filesystemPackages.contains(srvPackage);
@@ -151,6 +190,14 @@ public class RestClientVro extends RestClient {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Get list of all packages.
+     * @param vroPackages  Aria Automation Orchestrator packages.
+     * @param dryrun If true, then no actual export.
+     * @param exportConfigAttributeValues If true, then also export Configuration Attribute Values.
+     * @param exportConfigSecureStringValues If true, then also export Configuraiton Secure Strings such as passwords.
+     * @return The list of exported packages.
+     */
 	public List<Package> exportAllPackages(List<Package> vroPackages, 
 										   boolean dryrun, 
 										   boolean exportConfigAttributeValues, 
@@ -161,6 +208,12 @@ public class RestClientVro extends RestClient {
 																		 exportConfigSecureStringValues)).collect(Collectors.toList());
     }
 
+    /**
+     * Download a Resource int a local file.
+     * @param id Resource Id.
+     * @param destination Local destinaton to store the content of the resource into.
+     * @return The file stored locally in the specified destination.
+     */
     public File downloadResource(String id, Path destination) {
         RequestCallback requestCallback = request -> request.getHeaders().setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
 
@@ -182,6 +235,14 @@ public class RestClientVro extends RestClient {
         return destination.toFile();
     }
 
+    /**
+     * Export a given package.
+     * @param pkg The package to be exported.
+     * @param dryrun Dry run option.
+     * @param exportConfigAttributeValues If true, then also export Configuration Attribute Values.
+     * @param exportConfigSecureStringValues If true, then also export Configuraiton Secure Strings such as passwords.
+     * @return The exported package.
+     */
 	public Package exportPackage(Package pkg, 
 								 boolean dryrun, 
 								 boolean exportConfigAttributeValues, 
@@ -212,8 +273,8 @@ public class RestClientVro extends RestClient {
 
         URI url;
         try {
-			logger.debug("exportConfigurationAttributeValues: " + String.valueOf(configuration.isPackageExportConfigurationAttributeValues()));
-			logger.debug("exportConfigSecureStringAttributeValues: " + String.valueOf(configuration.isPackageExportConfigSecureStringAttributeValues()));
+			LOGGER.debug("exportConfigurationAttributeValues: " + String.valueOf(configuration.isPackageExportConfigurationAttributeValues()));
+			LOGGER.debug("exportConfigSecureStringAttributeValues: " + String.valueOf(configuration.isPackageExportConfigSecureStringAttributeValues()));
 
 			//if set to true in the properties this value will be taken with priority
 			boolean packageExportConfigurationValuesFinal = configuration.isPackageExportConfigurationAttributeValues();
@@ -243,16 +304,26 @@ public class RestClientVro extends RestClient {
         return pkg;
     }
 
+    /**
+     * Importing a package allowing merge option.
+     * @param filesystemPackage The package.
+     * @param mergePackages override or merge.
+     */
 	private void importPackageWithMerge(Package filesystemPackage, boolean mergePackages) {
 		String overwritePackages = mergePackages ? Boolean.FALSE.toString() : Boolean.TRUE.toString();
-		if(mergePackages) {
-			logger.warn("Overwrite Package: {}", overwritePackages);
-			logger.warn("The {} package will be updated ONLY with the partial content. Use this option only for faster development", filesystemPackage.getFQName());
+		if (mergePackages) {
+			LOGGER.warn("Overwrite Package: {}", overwritePackages);
+			LOGGER.warn("The {} package will be updated ONLY with the partial content. Use this option only for faster development", filesystemPackage.getFQName());
 		}
-		importPackageForce(filesystemPackage,overwritePackages);
+		importPackageForce(filesystemPackage, overwritePackages);
 	}
 
-    private void importPackageForce(Package filesystemPackage,String overwritePackage) {
+    /**
+     * Import package with force option.
+     * @param filesystemPackage The package.
+     * @param overwritePackage overwrite or merge.
+     */
+    private void importPackageForce(Package filesystemPackage, String overwritePackage) {
 		URI url;
         try {
             url = getURIBuilder()
@@ -268,14 +339,14 @@ public class RestClientVro extends RestClient {
 
         try {
             FileSystemResource f = new FileSystemResource(filesystemPackage.getFilesystemPath());
-            logger.debug(String.format("Package to imports: %s", filesystemPackage.getFilesystemPath()));
-            logger.debug(String.format("File length: %s", f.contentLength()));
-            logger.debug(String.format("File is null: %s", f.getFile() == null));
-            logger.debug(String.format("File filename: %s", f.getFilename()));
-            logger.debug(String.format("File exists: %s", f.exists()));
+            LOGGER.debug(String.format("Package to imports: %s", filesystemPackage.getFilesystemPath()));
+            LOGGER.debug(String.format("File length: %s", f.contentLength()));
+            LOGGER.debug(String.format("File is null: %s", f.getFile() == null));
+            LOGGER.debug(String.format("File filename: %s", f.getFilename()));
+            LOGGER.debug(String.format("File exists: %s", f.exists()));
 
         } catch (Exception e) {
-            logger.debug(String.format("Exception throw: %s", e));
+            LOGGER.debug(String.format("Exception throw: %s", e));
         }
 
         LinkedMultiValueMap<String, Object> contentMap = new LinkedMultiValueMap<>();
@@ -298,8 +369,8 @@ public class RestClientVro extends RestClient {
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.append(HttpMethod.POST).append(" ").append(url).append("\n");
             messageBuilder.append(headers.keySet().stream().map(
-                (String k)->headers.get(k).stream().map(
-                    h->k + ": " + h
+                (String k) -> headers.get(k).stream().map(
+                    h -> k + ": " + h
                 ).collect(Collectors.joining("\n")) 
             ).collect(Collectors.joining("\n")));
             if (requestEntity.hasBody()) {
@@ -316,21 +387,42 @@ public class RestClientVro extends RestClient {
         }
     }
 
+    /**
+     * Import a package with drurun and maerge option.
+     * @param filesystemPackage The package.
+     * @param dryrun  Dry run option.
+     * @param mergePackages merge or overwrite.
+     * @return The imported package.
+     */
     public Package importPackage(Package filesystemPackage, boolean dryrun, boolean mergePackages) {
         if (!dryrun) {
-            importPackageWithMerge(filesystemPackage,mergePackages);
+            importPackageWithMerge(filesystemPackage, mergePackages);
         }
 
         return filesystemPackage;
     }
 
+    /**
+     * Import a list of packages with dru run and merge option.
+     * @param filesystemPackages The package.
+     * @param dryrun Dry run option.
+     * @param mergePackages merge or overwrite.
+     * @return The list of imported packages.
+     */
     public List<Package> importAllPackages(List<Package> filesystemPackages, boolean dryrun, boolean mergePackages) {
         return filesystemPackages.stream().map(pkg -> importPackage(pkg, dryrun, mergePackages)).collect(Collectors.toList());
     }
 
-    public Package deletePackage(Package pkg, boolean withContent, boolean dryrun){
+    /**
+     * Delete/Removee a specific packae.
+     * @param pkg The package id.
+     * @param withContent If true, then also remoce package content.
+     * @param dryrun Dry run option.
+     * @return Information about the package deleted.
+     */
+    public Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
         URIBuilder builder = getURIBuilder().setPath("/vco/api/packages/" + pkg.getFQName());
-        if(withContent) {
+        if (withContent) {
             builder.setParameter("option", "deletePackageWithContent");
         }
 
@@ -338,13 +430,18 @@ public class RestClientVro extends RestClient {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        if(!dryrun) {
+        if (!dryrun) {
             restTemplate.exchange(this.getURI(builder), HttpMethod.DELETE, entity, String.class);
         }
 
         return pkg;
     }
 
+    /**
+     * Delete content.
+     * @param content content
+     * @param dryrun Dry run option.
+     */
     public void deleteContent(Content<VroPackageContent.ContentType> content, boolean dryrun) {
         String deletePath = null;
 
@@ -353,6 +450,9 @@ public class RestClientVro extends RestClient {
             case ACTION: deletePath = "/vco/api/actions/"; break;
             case RESOURCE: deletePath = "/vco/api/resources/"; break;
             case CONFIGURATION: deletePath = "/vco/api/configurations/"; break;
+			default: throw new IllegalArgumentException("Content of type \"" + content.getType() + "\""
+				+ "is not supported. Suported content types are \"" + ContentType.WORKFLOW + "\", \""
+				+  ContentType.ACTION + "\", " + ContentType.RESOURCE + "\" and \"" + ContentType.CONFIGURATION + ".");
         }
 
         URI url = getURI(getURIBuilder().setPath(deletePath + content.getId()).setParameter("force", "true"));
@@ -360,11 +460,16 @@ public class RestClientVro extends RestClient {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        if(!dryrun) {
+        if (!dryrun) {
             restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
         }
     }
 
+    /**
+     * Get the content of a given package.
+     * @param pkg The package.
+     * @return The content of the package.
+     */
     public VroPackageContent getPackageContent(Package pkg) {
         URI url;
         try {
@@ -400,6 +505,9 @@ public class RestClientVro extends RestClient {
             case ACTION: category = "actions"; name = "actions"; break;
             case RESOURCE: category = "resources"; name = "resource"; break;
             case CONFIGURATION: category = "configurations"; name = "configuration"; break;
+			default: throw new IllegalArgumentException("Unsupported content type \"" + type
+				+ "\". Supported content types are \"" + ContentType.WORKFLOW + "\", \"" + ContentType.ACTION + "\", \""
+				+ ContentType.RESOURCE + "\" and \"" + ContentType.CONFIGURATION + "\".");
         }
 
         String template = "$.%s[*].%s.attributes[?(@.name == '%s')].value";
@@ -407,7 +515,7 @@ public class RestClientVro extends RestClient {
         List<String> names = context.read(String.format(template, category, name, "name"));
 
         if (ids.size() != names.size()) {
-            logger.error("Broken package. Count of conttent IDs does not match the count of the names.");
+            LOGGER.error("Broken package. Count of conttent IDs does not match the count of the names.");
             throw new RuntimeException("Broken vRO package");
         }
 
@@ -533,7 +641,7 @@ public class RestClientVro extends RestClient {
 
         String vroVersion = this.getVersion();
         ResponseEntity<String> response = null;
-        if(vroVersion.startsWith("6")
+        if (vroVersion.startsWith("6")
                 || vroVersion.startsWith("7.0")
                 || vroVersion.startsWith("7.1")
                 || vroVersion.startsWith("7.2")
@@ -606,6 +714,7 @@ public class RestClientVro extends RestClient {
      *
      * @param ctx  document context, e.g. JsonPath.parse(response.getBody());
      * @param path the path to read parameters from, e.g. "$.output-parameters.*"
+     * @return The parameters in the form of Properties object.
      */
     private Properties parseWorkflowStringParameters(DocumentContext ctx, String path) {
         Properties output = new Properties();
@@ -633,8 +742,9 @@ public class RestClientVro extends RestClient {
 
     private URI buildUri(String... paths) {
         StringBuilder pathBuilder = new StringBuilder();
-        for (String path : paths)
-            pathBuilder.append(path);
+        for (String path : paths) {
+			pathBuilder.append(path);
+		}
 
         try {
             return getURIBuilder().setPath(pathBuilder.toString()).build();
@@ -643,6 +753,12 @@ public class RestClientVro extends RestClient {
         }
     }
 
+    /**
+     * Build parameters JSON.
+     * @param params Parameters.
+     * @param inputParametersTypes Input parameter types.
+     * @return JSON representation as a string.
+     */
     protected String buildParametersJson(Properties params, Properties inputParametersTypes) {
         WorkflowParameters workflowParameters = new WorkflowParameters();
         List<Parameter> paramsList = new ArrayList<>();
@@ -657,7 +773,7 @@ public class RestClientVro extends RestClient {
 				keyType = inputParametersTypes.get(entry.getKey()).toString();
 			}
 
-            switch(keyType) {
+            switch (keyType) {
                 case "Array/string": 
                     ArrayStringValue arrayStringValue = new ArrayStringValue();
                     String jsonArray = StringEscapeUtils.unescapeJava(entry.getValue().toString());

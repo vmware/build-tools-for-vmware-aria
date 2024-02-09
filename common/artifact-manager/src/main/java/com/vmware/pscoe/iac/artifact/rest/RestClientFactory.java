@@ -186,8 +186,8 @@ public final class RestClientFactory {
                 HttpHeaders headers = response.getHeaders();
                 messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText()).append("\n");
                 messageBuilder.append(headers.keySet().stream().map(
-                    (String k)->headers.get(k).stream().map(
-                        h->k + ": " + h
+                    (String k) -> headers.get(k).stream().map(
+                        h -> k + ": " + h
                     ).collect(Collectors.joining("\n"))
                 ).collect(Collectors.joining("\n")));
                 if (response.getBody() != null && ! response.getBody().equals("")) {
