@@ -3,6 +3,7 @@
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
+* [typescript] 165 / vro:pull command for legacy archetype fails when workflow folder path name contains character '&'.
 
 ## v2.37.0 - 26 Jan 2024
 
