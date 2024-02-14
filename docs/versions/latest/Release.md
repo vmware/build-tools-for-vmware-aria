@@ -10,11 +10,9 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
 
 
 [//]: # (Features -> New Functionality)
@@ -23,7 +21,6 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
@@ -38,7 +35,6 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
 
 
 ## Upgrade procedure:
