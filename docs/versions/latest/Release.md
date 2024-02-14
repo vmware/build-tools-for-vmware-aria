@@ -37,7 +37,7 @@
 [//]: # (#### Relevant Documentation:)
 
 
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)
