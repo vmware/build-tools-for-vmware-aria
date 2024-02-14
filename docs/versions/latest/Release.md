@@ -49,10 +49,10 @@
 
 ### Fix SSH Session methods type
 
- #### Previous Behavior
+#### Previous Behavior
 
- When using SSH with typescript, the `error` and `state` methods has the type `void`. But technically, it returns a string. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable `error` and `state` has type `String`.
+When using SSH with typescript, the `error` and `state` methods has the type `void`. But technically, it returns a string. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable `error` and `state` has type `String`.
 
- #### Current Behavior
+#### Current Behavior
 
- Method `error` and `state` should return type `String` instead of type `void`
+Method `error` and `state` should return type `String` instead of type `void`
