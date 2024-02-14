@@ -40,16 +40,13 @@
 
 #### Previous Behaviour
 
-When executing a vro:pull command on a legacy archetype, the command will fail if the workflow path names contain
-special characters such as '&'.
+When executing a vro:pull command on a legacy archetype, the command will fail if the workflow path names contain special characters such as '&'.
 
-When executing a vro:pull command on JavaScript archetype, it succeeds, ignoring the
-special characters in the folder name.
+When executing a vro:pull command on JavaScript archetype, it succeeds, ignoring the special characters in the folder name.
 
 #### Current Behaviour
 
-When executing a vro:pull command on either Legacy or JS archetype, if the workflows paths contains special character(&),
-the command will successfully execute, ignoring folders with special characters(&).
+When executing a vro:pull command on either Legacy or JS archetype, if the workflows paths contains special character(&), the command will successfully execute, ignoring folders with special characters(&).
 
 /test1/test&/test2 -> /test1/test2
 
