@@ -1,4 +1,4 @@
-# (Incomplete) Bug Report [#207](https://github.com/vmware/build-tools-for-vmware-aria/issues/207) - Last region images mapping overwrites the value for all other regions.
+# Bug Report [#207](https://github.com/vmware/build-tools-for-vmware-aria/issues/207) - Last region images mapping overwrites the value for all other regions.
 
 ## Table of Contents
 - [Bug Report [#207]](#bug-report-207---last-region-images-mapping-overwrites-the-value-for-all-other-regions)
@@ -26,15 +26,33 @@
     - [Why](#why)
     - [But it's been working fine... ish](#but-its-been-working-fine-ish)
   - [Partial Conclusion](#partial-conclusion)
-- [ToDo: Redesign Proposition](#redesign-proposition)
-  - [ToDo: Proposed Solution](#proposed-solution)
-  - [ToDo: Steps to Implement the Solution](#steps-to-implement-the-solution)
-  - [ToDo: Expected Results]()
-  - [ToDo: Risks and Mitigation Strategies]()
-  - [ToDo: Impact Analysis]()
-  - [ToDo: Conclusion]()
-  - [ToDo: Next Steps]()
-  - [ToDo: References]()
+- [Redesign Proposition](#redesign-proposition)
+  - [JSON structure](#json-structure)
+  - [Setup](#setup)
+    - [Dev Environment Regions](#dev-environment-regions)
+    - [Client Environment Regions](#client-environment-regions)
+    - [Dev Environment Image Mappings](#dev-environment-image-mappings)
+  - [Pulling](#pulling-1)
+    - [single-redesign.json](#single-redesignjson)
+    - [dual-redesign.json](#dual-redesignjson)
+    - [triple-redesign.json](#triple-redesignjson)
+  - [Pushing](#pushing-1)
+    - [Algorithm](#algorithm)
+    - [Same Environment](#same-environment)
+    - [Different Environment](#different-environment)
+    - [Examples](#examples)
+      - [Default Scenario](#default-scenario)
+      - [Ignoring a Region](#ignoring-a-region)
+      - [Customizing a Region](#customizing-a-region)
+  - [Backwards Compatibility](#backwards-compatibility)
+    - [Functionality](#functionality)
+    - [Structure](#structure)
+    - [Release Planning](#release-planning)
+  - [Risks and Mitigation Strategies](#risks-and-mitigation-strategies)
+  - [Impact Analysis](#impact-analysis)
+    - [Functional](#functional)
+    - [Non-Functional](#non-functional)
+- [Next Steps](#next-steps)
 
 ## Background
 ### Context
@@ -241,32 +259,262 @@ Since the issue of how to map `dev` and `client` entity ids is both hard and req
 * Ensuring backwards compatibility.
 
 # Redesign Proposition
+The current solution relies on entity ids to define image mappings and regions, which makes it difficult to achieve environmental independence.
 
-## Proposed Solution
-[Provide a detailed explanation of the proposed solution to address the problem.]
+Having a full dev-client environment mapping as discussed earlier is both difficult and probably needless.
 
-## Steps to Implement the Solution
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-    - [Sub-step 1]
-    - [Sub-step 2]
-4. [Step 4]
+The following redesign proposition aims to `fully rework` the image mapping capabilities of the project in order to:
 
-## Expected Results
-[Describe the expected results after implementing the proposed solution.]
+* Better align with the needs of both developers and clients to define, pull and push image mappings.
+* Better structure the code with code organized around image mappings, instead of regions.
+* Create a solution which works easily for the most common scenario, where we are defining an image mapping for a single dev region, pulling it and then pushing it to every client region.
+* Give better and clearer flexibility in ignoring and redefining the default behavior.
+
+## JSON structure
+```typescript
+{
+  name: string,
+  default: {
+    image: string,
+    constraints: string[],
+    script: string
+  },
+  regions: [
+    {
+      name: string,
+      {
+        image: string,
+        constraints: string[],
+        script: string
+      }
+    }
+  ],
+  ignoredRegions: string[]
+}
+```
+
+## Setup
+### Dev Environment Regions
+* `vCenter / dc-01a` region.
+* `vCenter / dc-02a` region.
+* `vCenter / dc-03a` region.
+
+### Client Environment Regions
+* ~~`vCenter / dc-01a` region.~~
+* ~~`vCenter / dc-02a` region.~~
+* `vCenter / dc-03a` region.
+* `vCenter / dc-04a` region.
+* `vCenter / dc-05a` region.
+
+### Dev Environment Image Mappings
+![Single Redesign](single-redesign.png)
+![Dual Redesign](dual-redesign.png)
+*where the `Cloud Configuration` value of*
+* *`vCenter / dc-02a` is `password:((sensitive:123456))`*
+
+![Triple Redesign](triple-redesign.png)
+*where the `Cloud Configuration` value of*
+* *`vCenter / dc-02a` is `password:((sensitive:123456))`*
+* *`vCenter / dc-03a` is `password:((secret:v1:gdq7gdgeggfqu882yhf==))`*
+
+## Pulling
+Pulling from an environment should generate a single `{imageMappingName}.json` file per a image mapping in the `image-mappings` directory.
+
+By default pulling from an environment pulls `all` image mappings specified in the `content.yaml` file, with their first region set as `default`, and all additional regions (if any), pulled into the `regions` array.
+
+`ignoredRegions` is never populated on a pull and is used to indicate which client regions won't be populated during a push.
+
+### single-redesign.json
+```json
+{
+  "name": "Single Redesign",
+  "default": {
+    "image": "wwcoe_contentlib / empty_VM",
+    "constraints": [],
+    "script": ""
+  },
+  "regions": [],
+  "ignoredRegions": []
+}
+```
+The `single-redesign.json` would be the most common scenario we are developing for. This is the scenario, where we have an image mapping with a single region, which is set as `default` when pulling, expected to later be pushed to every client environment region.
+
+### dual-redesign.json
+```json
+{
+  "name": "Dual Redesign",
+  "default": {
+    "image": "wwcoe_contentlib / empty_VM",
+    "constraints": [],
+    "script": ""
+  },
+  "regions": [
+    {
+      "name": "vCenter / dc-02a",
+      "image": "wwcoe_contentlib / Ubuntu_18.04",
+      "constraints": ["env:dev:hard", "nsx:hard"],
+      "script": "password:((sensitive:123456))"
+    }
+  ],
+  "ignoredRegions": []
+}
+```
+
+### triple-redesign.json
+```json
+{
+  "name": "Triple Redesign",
+  "default": {
+    "image": "wwcoe_contentlib / empty_VM",
+    "constraints": [],
+    "script": ""
+  },
+  "regions": [
+    {
+      "name": "vCenter / dc-02a",
+      "image": "wwcoe_contentlib / Ubuntu_18.04",
+      "constraints": ["env:dev:hard", "nsx:hard"],
+      "script": "password:((sensitive:123456))"
+    },
+    {
+      "name": "vCenter / dc-03a",
+      "image": "wwcoe_contentlib / Win2022",
+      "constraints": ["access:ext:hard"],
+      "script": "password:((secret:v1:gdq7gdgeggfqu882yhf==))"
+    }
+  ],
+  "ignoredRegions": []
+}
+```
+
+## Pushing
+As shown above, the `default` property is region agnostic and contains the properties that will be populated for `all` client regions, unless specified otherwise in the `regions` or `ignoredRegions` arrays.
+
+### Algorithm
+![push-algorithm](push-algorithm.png)
+
+### Same Environment
+Pushing on the same or identical environment is expected to recreate exactly the described json.
+
+### Different Environment
+Pushing on a different environment is expected to:
+1. Ignore every environment region specified in the `ignoredRegions` string array if any.
+2. Apply the region specific JSON properties, specified in the `regions` array if any.
+3. Apply the `default` JSON properties to every other environment region.
+
+### Examples
+#### Default Scenario
+Pushing as-is is the most common scenario where we are pulling from a single dev region and pushing to multiple client regions.
+
+```json
+{
+  "name": "Single Redesign",
+  "default": {
+    "image": "wwcoe_contentlib / empty_VM",
+    "constraints": [],
+    "script": ""
+  },
+  "regions": [],
+  "ignoredRegions": []
+}
+```
+
+In this case, since the client has 3 entirely different regions
+* `vCenter / dc-03a`
+* `vCenter / dc-04a`
+* `vCenter / dc-05a`
+
+than the original dev environment's region
+* `vCenter / dc-01a`
+
+and since we don't have additional `regions` definitions or `ignoredRegions` the expectation is that the `default` image mapping will be applied to all client regions.
+
+![Push Default](push-default.png)
+
+#### Ignoring a Region
+Ignoring the `vCenter / dc-05a` client region in the `ignoredRedions` array will as expected not populate it on a push.
+
+```json
+{
+  "name": "Single Redesign",
+  "default": {
+    "image": "wwcoe_contentlib / empty_VM",
+    "constraints": [],
+    "script": ""
+  },
+  "regions": [],
+  "ignoredRegions": ["vCenter / dc-05a"]
+}
+```
+
+![Push Ignored](push-ignored.png)
+
+#### Customizing a Region
+Having definitions in the `regions` array will override the `default` values for the listed regions, while all other regions will get the `default` data.
+```json
+{
+  "name": "Dual Redesign",
+  "default": {
+    "image": "wwcoe_contentlib / empty_VM",
+    "constraints": [],
+    "script": ""
+  },
+  "regions": [
+    {
+      "name": "vCenter / dc-02a",
+      "image": "wwcoe_contentlib / Ubuntu_18.04",
+      "constraints": ["env:dev:hard", "nsx:hard"],
+      "script": "password:((sensitive:123456))"
+    }
+  ],
+  "ignoredRegions": []
+}
+```
+![Push Customized](push-customized.png)
+
+## Backwards Compatibility
+### Functionality
+Functionally wise, the proposed solution will behave similarly if not identically to what currently exists for the most common scenario of pulling from a single region and pushing to all client regions.
+
+For multi-region scenarios, the proposed solution will work as described above, solving the original bug that triggered the whole redesign.
+
+Most importantly pulling and pushing as-is will work mostly the same for both the same and different environments.
+
+### Structure
+Structure wise, the proposed solution uses an entirely different file and JSON structure. As such the newly proposed solution is not structurally backwards compatible.
+
+### Release Planning
+A release planning could help solve the backwards compatibility issues. We could implement both the original and proposed solutions and still have the original solution as default, until the proper time and version where we can switch the default version to the newly proposed one, while still keeping the availability of users to opt-in and use the legacy version.
+
+Further down the line in the next major release, we might decommission the legacy version entirely.
 
 ## Risks and Mitigation Strategies
-[Identify any potential risks associated with the proposed solution and provide mitigation strategies.]
+The major risks identified with the proposed solution, besides the usual bugs and regressions, all revolve around actually implementing a solution to solve the correct problem. 
+
+One of the main purposes of this document is to clearly outline the original design and problem as well as the new solution proposition to make it easier for stakeholders to identify discrepancies or logic lapses.
+
+Some of the mitigation strategies we can use to reduce the technical and business risks include:
+
+* Have a wider stakeholder discussion of the solution design.
+* Agree on a release plan and backwards compatibility.
+* Draft a technical design document.
+* Have a test plan and test the solution.
+* Include a QA in the process.
+* Use the wider CoE user base to feature test a release candidate.
+* Release functionality in parallel to the original one to mitigate production use risks.
 
 ## Impact Analysis
-[Analyze the potential impact of the solution on other parts of the system or project.]
+### Functional
+Initially the impact of the new solution in terms of functionality does not seem huge, since the described bug is a bit of niche scenario. Additionally most user's day to day usage won't change much, besides some slimmer syntax.
 
-## Conclusion
-[Summarize the solution redesign and its expected benefits.]
+Besides the obvious, implementing the solution will both simplify the JSON structure and bring it closer to the actual aria design.
 
-## Next Steps
-[Outline the next steps to be taken, such as implementation, testing, and deployment.]
+Introducing environmental agnosticism, which coupled with the proposed ignore and default override functionality brings more flexibility for edge case development and a more wide range of capabilities for our deliverables.
 
-## References
-[Provide any references or resources that were used to develop the solution redesign.]
+### Non-Functional
+* Increasing the overall domain knowledge of the image-mapping module
+* An opportunity to use this process and draft a `Major refactoring proposition process` to simplify future support and improve the knowledge base.
+
+# Next Steps
+* Have a solution design discussion
+* Decide on actionable items
