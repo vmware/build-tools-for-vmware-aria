@@ -86,6 +86,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -2640,7 +2641,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		String jsonBody = this.getJsonString(map);
 		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-		return new Gson().fromJson(response.getBody(), AbxAction.class).id;
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		AbxAction abxAction = objectMapper.readValue(response.getBody(), AbxAction.class);
+		return abxAction.id;
 	}
 
 	/**

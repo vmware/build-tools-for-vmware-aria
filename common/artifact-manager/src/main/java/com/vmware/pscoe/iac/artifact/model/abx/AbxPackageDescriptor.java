@@ -15,14 +15,13 @@ package com.vmware.pscoe.iac.artifact.model.abx;
  * #L%
  */
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class AbxPackageDescriptor extends PackageDescriptor {
@@ -47,11 +46,14 @@ public class AbxPackageDescriptor extends PackageDescriptor {
         AbxPackageDescriptor pd = new AbxPackageDescriptor();
 
         String packageJsonPath = filesystemPath.getPath() + File.separator + AbxPackageDescriptor.PACKAGE_JSON;
-
-        try (JsonReader reader = new JsonReader(new FileReader(packageJsonPath))) {
-            AbxAction action = new Gson().fromJson(reader, AbxAction.class);
-            logger.info("Action definition: " + new Gson().toJson(action));
-            action.setBundle(new File(filesystemPath, AbxPackageDescriptor.BUNDLE));
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            File packageFile = new File(packageJsonPath);
+            AbxAction action = objectMapper.readValue(packageFile, AbxAction.class);
+            logger.info("Action definition: " + objectMapper.writeValueAsString(action));
+            File file = new File(filesystemPath, AbxPackageDescriptor.BUNDLE);
+            action.setBundle(file);
             pd.setAction(action);
         } catch (IOException e) {
             throw new RuntimeException(String.format("Error reading from file: %s", filesystemPath.getPath()), e);
