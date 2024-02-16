@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({ "bundleAsB64" })
 public class AbxAction {
 
     public String name;
@@ -35,7 +38,6 @@ public class AbxAction {
 
     // The bundle is not part of the ABX package.json, however it is
     // useful to be stored as file reference for enhanced usage.
-
     public File bundle;
 
     public void setBundle(File bundle) {
