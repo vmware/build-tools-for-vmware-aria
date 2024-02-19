@@ -32,7 +32,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaDefinition;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
@@ -88,7 +87,7 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 			.collect(Collectors.toMap(VraNgResourceQuotaPolicy::getName, item -> item));
 
 		for (File resourceQuotaPolicyFile : resourceQuotaPolicyFiles) {
-			this.handleResouceQuotaPolicyImport(resourceQuotaPolicyFile, rqPolicyOnServerByName);
+			this.handleResourceQuotaPolicyImport(resourceQuotaPolicyFile, rqPolicyOnServerByName);
 		}
 	}
 
@@ -100,21 +99,35 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 * 
 	 * @param rqPolicyOnServerByName
 	 */
-	private void handleResouceQuotaPolicyImport(final File resourceQuotaPolicyFile,
-			final Map<String, VraNgResourceQuotaPolicy> rqPolicyOnServerByName) {
+	private void handleResourceQuotaPolicyImport(final File resourceQuotaPolicyFile,
+												 final Map<String, VraNgResourceQuotaPolicy> rqPolicyOnServerByName) {
 		String rqPolicyNameWithExt = resourceQuotaPolicyFile.getName();
 		String rqPolicyName = FilenameUtils.removeExtension(rqPolicyNameWithExt);
 		logger.info("Attempting to import resource quota policy '{}'", rqPolicyName);
 		VraNgResourceQuotaPolicy rqPolicy = jsonFileToVraNgResourceQuotaPolicy(resourceQuotaPolicyFile);
-		this.enrichResourceQuotaPolicy(rqPolicy);
 		// Check if the resource quota policy exists
 		VraNgResourceQuotaPolicy existingRecord = null;
 		if (rqPolicyOnServerByName.containsKey(rqPolicyName)) {
 			existingRecord = rqPolicyOnServerByName.get(rqPolicyName);
 		}
-		if (existingRecord != null) {
-			rqPolicy.setId(this.restClient.getResourceQuotaPolicyIdByName(rqPolicy.getName()));
+		//update the existing policy, is this really needed ????
+		if (existingRecord != null && existingRecord.getId() != null) {
+			rqPolicy.setId(existingRecord.getId());
 		}
+		//if the policy does not exist, and should be created
+		if (existingRecord == null) {
+			//if there is an id, the REST API will assume update, instead of create//may be
+			//so we should remove the id to trigger create operation
+			rqPolicy.setId(null);
+		}
+
+		//if the policy is to be created AND it had a project property, change the project to the current project.
+		//if the policy does not have a project property, it is organization scoped  and does not need project property
+		if (existingRecord == null && !rqPolicy.getProjectId().isBlank()) {
+			logger.debug("Replacing policy project {}, with current project {}", rqPolicy.getProjectId(), this.restClient.getProjectId());
+			rqPolicy.setProjectId(this.restClient.getProjectId());
+		}
+
 
 		this.restClient.createResourceQuotaPolicy(rqPolicy);
 	}
@@ -188,6 +201,8 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 				});
 	}
 
+
+
 	/**
 	 * Store resource quota policy in JSON file.
 	 *
@@ -212,22 +227,6 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			JsonObject rqPolicyJsonObject = gson.fromJson(new Gson().toJson(resourceQuotaPolicy), JsonObject.class);
-			JsonObject definition = rqPolicyJsonObject.getAsJsonObject("definition");
-			JsonObject orgLevel  = definition.getAsJsonObject("orgLevel");
-			JsonObject limitsO  = orgLevel.getAsJsonObject("limits");
-			JsonObject userLevelO  = orgLevel.getAsJsonObject("userLevel");
-			orgLevel.add("limits", limitsO);
-			orgLevel.add("userLevel", userLevelO);
-			definition.add("orgLevel", orgLevel);
-			JsonObject projectLevel  = definition.getAsJsonObject("projectLevel");
-			JsonObject limitsP  = projectLevel.getAsJsonObject("limits");
-			JsonObject userLevelP  = projectLevel.getAsJsonObject("userLevel");
-			projectLevel.add("limits", limitsP);
-			projectLevel.add("userLevel", userLevelP);
-			definition.add("projectLevel", projectLevel);
-
-			rqPolicyJsonObject.add("definition", definition);
-			// write resource quota file
 			logger.info("Created resource quota file {}",
 					Files.write(Paths.get(resourceQuotaPolicyFile.getPath()),
 							gson.toJson(rqPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));

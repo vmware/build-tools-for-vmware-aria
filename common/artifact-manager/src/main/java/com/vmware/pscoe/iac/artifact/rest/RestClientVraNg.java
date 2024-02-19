@@ -27,27 +27,7 @@ import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegion;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
+import com.vmware.pscoe.iac.artifact.model.vrang.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1313,7 +1293,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getAllResourceQuotaPoliciesPrimitive();
 		} catch (Exception e) {
-			logger.error("Error fetching content sharing policies", e.getMessage());
+			logger.error("Error fetching resource quota policies", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -1343,6 +1323,50 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getResourceQuotaPolicyPrimitive(policyId);
 		} catch (Exception e) {
 			logger.error("Error fetching resource quota policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	/**
+	 * getDay2ActionsPolicyIds.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgDay2ActionsPolicy> getDay2ActionsPolicies() {
+		try {
+			return this.getAllDay2ActionsPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching day 2 actions policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createResourceQuotaPolicy.
+	 *
+	 * @param d2aPolicy day 2 actions policy
+	 */
+	public void createDay2ActionsPolicy(final VraNgDay2ActionsPolicy d2aPolicy) {
+		try {
+			createDay2ActionsPolicyPrimitive(d2aPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+				String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * getDay2ActionsPolicy.
+	 *
+	 * @param policyId day 2 actions policy id
+	 * @return policy
+	 */
+	public VraNgDay2ActionsPolicy getDay2ActionsPolicy(final String policyId) {
+		try {
+			return this.getDay2ActionsPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching resource day 2 actions - {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

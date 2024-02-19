@@ -2829,7 +2829,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-
+		LOGGER.debug("Executing method {} on URI {} with entity {} ", method,url, entity);
 		return restTemplate.exchange(url, method, entity, String.class);
 	}
 
@@ -3106,20 +3106,25 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 */
 	protected List<VraNgResourceQuotaPolicy> getAllResourceQuotaPoliciesPrimitive() {
-		Map<String, String> params = new HashMap<>();
-		params.put("expandDefinition", "true");
-		params.put("computeStats", "true");
+		if (this.isVraAbove812) {
 
-		List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+			Map<String, String> params = new HashMap<>();
+			params.put("expandDefinition", "true");
+			params.put("computeStats", "true");
+			params.put("typeId", RESOURCE_QUOTA_POLICY_TYPE);
+
+			List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
 				.stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(RESOURCE_QUOTA_POLICY_TYPE))
 				.collect(Collectors.toList());
 
-		LOGGER.info("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
-		return results;
+			LOGGER.info("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+			return results;
+
+		} else
+			throw(new UnsupportedOperationException());
 	}
-	
+
 	/**
 	 * Creates Resource Quota Policy.
 	 * 
@@ -3130,7 +3135,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(rqPolicy);
 		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-		handleItemsProperty(jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 
@@ -3141,27 +3145,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Created VraNg Resource Quota Policy
 	 */
 	protected VraNgResourceQuotaPolicy getResourceQuotaPolicyPrimitive(final String policyId) {
-		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy();
 		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
-		if (!root.isJsonObject()) {
-			return null;
-		}
-		JsonObject result = root.getAsJsonObject();
-		String name = result.get("name").getAsString();
-		String description = result.has("description") ? result.get("description").getAsString() : "";
-		String typeId = result.get("typeId").getAsString();
-		String enforcementType = result.get("enforcementType").getAsString();
-		VraNgResourceQuotaDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(), VraNgResourceQuotaDefinition.class);
-
-		rqPolicy.setDefinition(definition);
-		rqPolicy.setName(name);
-		rqPolicy.setEnforcementType(enforcementType);
-		rqPolicy.setDescription(description);
-		rqPolicy.setTypeId(typeId);
-		return rqPolicy;
+		return new Gson().fromJson(response.getBody(), VraNgResourceQuotaPolicy.class);
 	}
 	/**
 	 * Retrieve content sharing policy Id based on name.
@@ -3179,10 +3166,84 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
 				.filter(p -> p.getTypeId().equalsIgnoreCase(RESOURCE_QUOTA_POLICY_TYPE))
+				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
 				.findFirst()
 				.orElse(null);
 		if (policy == null) {
 			throw new Error("Cannot find Resource Quota Policy by name" + name);
+		} else {
+			return policy.getId();
+		}
+	}
+
+	/**
+	 * Retrieve all Day 2 Actions  policy Ids.
+	 *
+	 * @return list of Day 2 Actions policy Ids that are available.
+	 *
+	 */
+	protected List<VraNgDay2ActionsPolicy> getAllDay2ActionsPoliciesPrimitive() {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+		//filtering by typeId works on 8.16 but not on earlier versions.
+		params.put("typeId", "com.vmware.policy.deployment.action");
+
+		List<VraNgDay2ActionsPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+			.stream()
+			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
+			.collect(Collectors.toList());
+
+		LOGGER.info("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+		return results;
+	}
+
+	/**
+	 * Creates Day 2 Actions Policy.
+	 *
+	 * @param d2aPolicy policy data to create
+	 */
+	public void createDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy)
+		throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(d2aPolicy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	/**
+	 * Retrieve Day 2 Actions Policy based on Id.
+	 *
+	 * @param policyId policy id
+	 * @return Created VraNg Resource Quota Policy
+	 */
+	protected VraNgDay2ActionsPolicy getDay2ActionsPolicyPrimitive(final String policyId) {
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+			String.class);
+		return new Gson().fromJson(response.getBody(), VraNgDay2ActionsPolicy.class);
+	}
+	/**
+	 * Retrieve content sharing policy Id based on name.
+	 *
+	 * @param name name of the policy
+	 * @return  policy Id.
+	 *
+	 */
+	public String getDay2ActionsPolicyIdByName(final String name) {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+		params.put("typeId",DAY2_ACTION_POLICY_TYPE );
+
+		VraNgDay2ActionsPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
+			.stream()
+			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
+			.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId()))
+			.findFirst()
+			.orElse(null);
+		if (policy == null) {
+			throw new Error("Cannot find Day 2 Actions Policy by name" + name);
 		} else {
 			return policy.getId();
 		}

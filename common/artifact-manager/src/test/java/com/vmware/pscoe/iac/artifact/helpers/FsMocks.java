@@ -27,6 +27,7 @@ public class FsMocks {
 	private BlueprintFsMocks blueprintFsMocks;
 	private ContentSharingPolicyFsMocks contentSharingPolicyFsMocks;
 	private ResourceQuotaPolicyFsMocks resourceQuotaPolicyFsMocks;
+	private Day2ActionsPolicyFsMocks day2ActionsPolicyFsMocks;
 	private PropertyGroupFsMocks propertyGroupFsMocks;
 	private CatalogItemFsMocks catalogItemFsMocks;
 	private CustomResourceFsMocks customResourceFsMocks;
@@ -60,7 +61,13 @@ public class FsMocks {
 
 		return this.resourceQuotaPolicyFsMocks;
 	}
+	public Day2ActionsPolicyFsMocks getDay2ActionsPolicyFsMocks() {
+		if (this.day2ActionsPolicyFsMocks == null) {
+			this.day2ActionsPolicyFsMocks = new Day2ActionsPolicyFsMocks(this.tempDir);
+		}
 
+		return day2ActionsPolicyFsMocks;
+	}
 	public SubscriptionFsMocks subscriptionFsMocks() {
 		if (this.subscription == null) {
 			this.subscription = new SubscriptionFsMocks(this.tempDir);

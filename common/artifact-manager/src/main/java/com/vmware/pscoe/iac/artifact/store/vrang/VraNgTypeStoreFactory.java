@@ -47,7 +47,8 @@ public class VraNgTypeStoreFactory {
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			POLICY,
-			RESOURCE_QUOTA_POLICY
+			RESOURCE_QUOTA_POLICY,
+			DAY2_ACTIONS_POLICY
 	};
 
 	/**
@@ -74,7 +75,8 @@ public class VraNgTypeStoreFactory {
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			POLICY,
-			RESOURCE_QUOTA_POLICY
+			RESOURCE_QUOTA_POLICY,
+			DAY2_ACTIONS_POLICY
 	};
 
 	/**
@@ -191,6 +193,8 @@ public class VraNgTypeStoreFactory {
 				return new VraNgContentSharingPolicyStore();
 			case RESOURCE_QUOTA_POLICY:
 				return new VraNgResourceQuotaPolicyStore();
+			case DAY2_ACTIONS_POLICY:
+				return new VraNgDay2ActionsPolicyStore();
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}
