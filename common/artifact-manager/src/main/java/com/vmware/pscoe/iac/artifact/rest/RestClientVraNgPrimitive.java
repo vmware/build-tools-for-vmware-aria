@@ -247,8 +247,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * CONTENT_SHARING_POLICY_TYPE.
 	 */
+
 	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
-	private static final String LEASE_POLICY_TYPE = "com.vmware.policy.deployment.lease";
 	/**
 	 * APPROVAL_POLICY_TYPE.
 	 */
@@ -3127,7 +3127,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
 				.collect(Collectors.toList());
 
-			LOGGER.info("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 
 		} else
@@ -3203,8 +3203,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
 			.collect(Collectors.toList());
 
-		LOGGER.info("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
-=======
+		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+		return results;
+	}
 	// =================================================
 	// Lease Policy
 	// =================================================
@@ -3219,11 +3220,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		Map<String, String> params = new HashMap<>();
 		params.put("expandDefinition", "true");
 		params.put("computeStats", "true");
+		params.put("typeId", LEASE_POLICY_TYPE);
 
 		List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
 				.stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(LEASE_POLICY_TYPE))
 				.filter(policy -> policy.getProjectId().equals(this.getProjectId()))
 				.collect(Collectors.toList());
 
@@ -3277,7 +3278,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			.orElse(null);
 		if (policy == null) {
 			throw new Error("Cannot find Day 2 Actions Policy by name" + name);
-=======
+		} else {
+			return policy.getId();
+		}
+	}
+	/**
 	 * Retrieve lease policy Id based on name.
 	 *
 	 * @param name name of the policy
