@@ -36,7 +36,10 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
         CATALOG_ITEM("catalog-item"),
 		POLICY("policy"),
 		RESOURCE_QUOTA_POLICY("resource-quota"),
-		DAY2_ACTIONS_POLICY("day2-actions");
+		DAY2_ACTIONS_POLICY("day2-actions"),
+		DEPLOYMENT_LIMIT_POLICY("deployment-limit"),
+		APPROVAL_POLICY("approval");
+
 
         private final String type;
 
