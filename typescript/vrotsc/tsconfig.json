@@ -1,0 +1,23 @@
+{
+    "files": [
+        "src/index.ts"
+    ],
+    "include": [
+        "src/**/*.ts"
+    ],
+    "compilerOptions": {
+        "incremental": true,
+        "pretty": true,
+        "target": "es5",
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "composite": true,
+        "noEmitOnError": true,
+        "alwaysStrict": true,
+        "preserveConstEnums": true,
+        "newLine": "lf",
+        "outDir": "dist",
+        "skipLibCheck": true
+    }
+}

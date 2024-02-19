@@ -1,12 +1,23 @@
 {
-  "extends": "../tsconfig-noncomposite-base",
-  "compilerOptions": {
-    "outDir": "../../build",
-    "declaration": false,
-    "declarationMap": false,
-    "sourceMap": false,
-  },
-  "include": [
-    "**/*.ts"
-  ]
+    "files": [
+        "e2e.ts"
+    ],
+    "include": [
+        "src/**/*.ts"
+    ],
+    "compilerOptions": {
+        "incremental": true,
+        "pretty": true,
+        "target": "es5",
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "composite": true,
+        "noEmitOnError": true,
+        "alwaysStrict": true,
+        "preserveConstEnums": true,
+        "newLine": "lf",
+        "outDir": "build",
+        "skipLibCheck": true
+    }
 }

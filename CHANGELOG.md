@@ -1,14 +1,24 @@
 ### Enhancements
-* [docs] IAC-800 - Document TS Array functions behaviour and recommended typization approach.
+* [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
+
+## v2.37.0 - 26 Jan 2024
+
+### Enhancements
+* [docs] IAC-800 / Document TS Array functions behaviour and recommended typization approach.
+* [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
 * [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
+* [typescript] 206 / Conditional Execution in Saga.
 
 ### Fixes
+* [artifact-manager] IAC-779 / Install vro package fails with 404 not found in case vro_server=vro-l-01a is used not FQDN
 * [packages/ecmascript] IAC-803 / Updated `Array.from()` to create shallow clone and to properly handle string, Map and Set input.
 * [artifact-manager] IAC-799 / Wrong unix file path separators when creating backup path.
 * [artifact-manager] IAC-778 / Backup only works with current package version, otherwise throws exception 404 not found.
 * [artifact-manager] 211 / A better error is thrown now in case of an error when 2 blueprints with the same name exist in a single project on the server.
 * [vCD-NG] 166 / fix VMware Cloud Director API version 38.0 and later do not support the /api/sessions API login endpoint
 * [installer] 133 / Delete old packages fails with 401 error in case vro is embedded.
+* [vro-types] Fix SSHSession 'output' type
+* [artifact-manager] Extend Information on Exception messages for some of the  REST API Calls.
 
 ## v2.36.0 - 16 Nov 2023
 
