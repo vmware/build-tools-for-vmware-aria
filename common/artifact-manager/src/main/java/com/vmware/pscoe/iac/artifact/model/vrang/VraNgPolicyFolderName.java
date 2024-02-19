@@ -19,7 +19,7 @@ public enum VraNgPolicyFolderName {
 
 	CONTENT_SHARING("content-sharing"),
 	RESOURCE_QUOTA("resource-quota"),
-	DAY2_ACTION("day-2-actions"),
+	DAY2_ACTION("day2-actions"),
 	APPROVAL("approval"),
 	LEASE("lease"),
 	DEPLOYMENT_LIMIT("deployment-limit");

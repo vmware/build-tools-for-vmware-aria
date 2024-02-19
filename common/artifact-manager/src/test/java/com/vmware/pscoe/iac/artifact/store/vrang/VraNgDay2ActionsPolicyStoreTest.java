@@ -22,7 +22,10 @@ import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPolicy;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
@@ -34,15 +37,18 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
-public class VraNgResourceQuotaPolicyStoreTest {
-
+public class VraNgDay2ActionsPolicyStoreTest {
 	/**
 	 * Temp Folder.
 	 */
@@ -51,7 +57,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 	/**
 	 * store.
 	 */
-	private VraNgResourceQuotaPolicyStore store;
+	private VraNgDay2ActionsPolicyStore store;
 	/**
 	 * restClient.
 	 */
@@ -77,9 +83,9 @@ public class VraNgResourceQuotaPolicyStoreTest {
 	 */
 	private String dirPolicies = "policies";
 	/**
-	 * resourceQuotaPolicy.
+	 * day2ActionsPolicy.
 	 */
-	private String resourceQuotaPolicy = "resource-quota";
+	private String day2ActionsPolicy = "day2-actions";
 
 	/**
 	 * Init function called before each test.
@@ -93,7 +99,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 		}
 
 		fsMocks = new FsMocks(tempFolder.getRoot());
-		store = new VraNgResourceQuotaPolicyStore();
+		store = new VraNgDay2ActionsPolicyStore();
 		restClient = Mockito.mock(RestClientVraNg.class);
 		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
 		config = Mockito.mock(ConfigurationVraNg.class);
@@ -126,31 +132,31 @@ public class VraNgResourceQuotaPolicyStoreTest {
 	}
 
 	@Test
-	void testExportContentWithNoResourceQuotaPolicies() {
-		System.out.println(this.getClass() + "testExportContentWithNoResourceQuotaPolicies");
+	void testExportContentWithNoDay2ActionsPolicies() {
+		System.out.println(this.getClass() + "testExportContentWithNoDay2ActionsPolicies");
 		//GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy());
 
 		//TEST
 		store.exportContent();
 
-		File resourceQuotaPolicyFolder = Paths
-			.get(tempFolder.getRoot().getPath(), dirPolicies, resourceQuotaPolicy).toFile();
+		File day2ActionsPolicyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, day2ActionsPolicy).toFile();
 
 		//VERIFY
-		verify(restClient, never()).getResourceQuotaPolicies();
-		verify(restClient, never()).getResourceQuotaPolicy(anyString());
+		verify(restClient, never()).getDay2ActionsPolicies();
+		verify(restClient, never()).getDay2ActionsPolicy(anyString());
 
-		assertEquals(null, resourceQuotaPolicyFolder.listFiles());
+		assertEquals(null, day2ActionsPolicyFolder.listFiles());
 	}
 
 	@Test
-	void testExportContentWithAllResourceQuotaPolicies() {
-		System.out.println(this.getClass() + "testExportContentWithAllResourceQuotaPolicies");
-		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy(
+	void testExportContentWithAllDay2ActionsPolicies() {
+		System.out.println(this.getClass() + "testExportContentWithAllDay2ActionsPolicies");
+		VraNgDay2ActionsPolicy policy1 = new VraNgDay2ActionsPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"RQ01",
-			"com.vmware.policy.resource.quota",
+			"D2A01",
+			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -158,10 +164,10 @@ public class VraNgResourceQuotaPolicyStoreTest {
 			new JsonObject(),
 			new JsonObject());
 
-		VraNgResourceQuotaPolicy rqPolicy2 = new VraNgResourceQuotaPolicy(
+		VraNgDay2ActionsPolicy policy2 = new VraNgDay2ActionsPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
-			"RQ02",
-			"com.vmware.policy.resource.quota",
+			"D2A02",
+			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -169,107 +175,107 @@ public class VraNgResourceQuotaPolicyStoreTest {
 			new JsonObject(),
 			new JsonObject());
 
-		List<VraNgResourceQuotaPolicy> policies = Arrays.asList(rqPolicy, rqPolicy2);
+		List<VraNgDay2ActionsPolicy> policies = Arrays.asList(policy1, policy2);
 
 		// // GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null, null));
-		when(restClient.getResourceQuotaPolicies()).thenReturn(policies);
-		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(rqPolicy);
-		when(restClient.getResourceQuotaPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(rqPolicy2);
+		when(restClient.getDay2ActionsPolicies()).thenReturn(policies);
+		when(restClient.getDay2ActionsPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy1);
+		when(restClient.getDay2ActionsPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(policy2);
 
 		// TEST
 		store.exportContent();
 
 		// VERIFY
-		File resourceQuotaPolicyFolder = Paths
-			.get(tempFolder.getRoot().getPath(), dirPolicies, resourceQuotaPolicy).toFile();
-		assertEquals(2, Objects.requireNonNull(resourceQuotaPolicyFolder.listFiles()).length);
+		File day2ActionsPolicyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, day2ActionsPolicy).toFile();
+		assertEquals(2, Objects.requireNonNull(day2ActionsPolicyFolder.listFiles()).length);
 	}
 
 	@Test
-	void testExportContentWithSpecificResourceQuotaPolicies() {
-		System.out.println(this.getClass() + "testExportContentWithSpecificResourceQuotaPolicies");
+	void testExportContentWithSpecificDay2ActionsPolicies() {
+		System.out.println(this.getClass() + "testExportContentWithSpecificDay2ActionsPolicies");
 
-		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy(
+		VraNgDay2ActionsPolicy policy = new VraNgDay2ActionsPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"RQ01",
-			"com.vmware.policy.resource.quota",
+			"D2A01",
+			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
 			"TEST",
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"));
 		// // GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
-		when(restClient.getResourceQuotaPolicies()).thenReturn(Collections.singletonList(rqPolicy));
-		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(rqPolicy);
+		when(restClient.getDay2ActionsPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getDay2ActionsPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
 
 		// TEST
 		store.exportContent();
 
-		File resourceQuotaPolicyFolder = Paths
-			.get(tempFolder.getRoot().getPath(), dirPolicies, resourceQuotaPolicy).toFile();
+		File day2ActionsPolicyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, day2ActionsPolicy).toFile();
 
 		// VERIFY
-		assertEquals(1, Objects.requireNonNull(resourceQuotaPolicyFolder.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(day2ActionsPolicyFolder.listFiles()).length);
 	}
 
 	@Test
 	void testImportContentWithUpdateLogic() {
 		System.out.println("testImportContentWithUpdateLogic");
-		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy(
+		VraNgDay2ActionsPolicy policy = new VraNgDay2ActionsPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"RQ01",
-			"com.vmware.policy.resource.quota",
+			"D2A01",
+			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
 			"TEST",
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"));
 		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 
-		fsMocks.resourceQuotaPolicyFsMocks().addResourceQuotaPolicy(rqPolicy);
+		fsMocks.getDay2ActionsPolicyFsMocks().addPolicy(policy);
 
-		File resourceQuotaPolicyFolder = Paths
-			.get(fsMocks.getTempFolderProjectPath().getPath(), resourceQuotaPolicy).toFile();
+		File day2ActionsPolicyFolder = Paths
+			.get(fsMocks.getTempFolderProjectPath().getPath(), day2ActionsPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(resourceQuotaPolicyFolder, new String[] { "RQ01.json" });
+		AssertionsHelper.assertFolderContainsFiles(day2ActionsPolicyFolder, new String[] { "D2A01.json" });
 
-		when(restClient.getResourceQuotaPolicies()).thenReturn(Arrays.asList(rqPolicy));
-		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(rqPolicy);
+		when(restClient.getDay2ActionsPolicies()).thenReturn(Arrays.asList(policy));
+		when(restClient.getDay2ActionsPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createResourceQuotaPolicy(any());
+		verify(restClient, times(1)).createDay2ActionsPolicy(any());
 	}
 
 
-@Test
+	@Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Arrays.asList("RQ01"), null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Arrays.asList("D2A01"));
 
-		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy(
+		VraNgDay2ActionsPolicy policy = new VraNgDay2ActionsPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"RQ01",
-			"com.vmware.policy.resource.quota",
+			"D2A01",
+			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
 			"TEST",
 			new JsonObject(),
 			new JsonObject());
-		VraNgResourceQuotaPolicy rqPolicyFromServer = new VraNgResourceQuotaPolicy(
+		VraNgDay2ActionsPolicy policyFromServer = new VraNgDay2ActionsPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
-			"RQ02",
-			"com.vmware.policy.resource.quota",
+			"D2A02",
+			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -277,38 +283,39 @@ public class VraNgResourceQuotaPolicyStoreTest {
 			new JsonObject(),
 			new JsonObject());
 
-	// GIVEN
+		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 
-		fsMocks.resourceQuotaPolicyFsMocks().addResourceQuotaPolicy(rqPolicy);
+		fsMocks.getDay2ActionsPolicyFsMocks().addPolicy(policy);
 
-		File resourceQuotaPolicyFolder = Paths
-			.get(fsMocks.getTempFolderProjectPath().getPath(), resourceQuotaPolicy).toFile();
+		File day2ActionsPolicyFolder = Paths
+			.get(fsMocks.getTempFolderProjectPath().getPath(), day2ActionsPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(resourceQuotaPolicyFolder, new String[] { "RQ01.json" });
+		AssertionsHelper.assertFolderContainsFiles(day2ActionsPolicyFolder, new String[] { "D2A01.json" });
 
-		when(restClient.getResourceQuotaPolicies()).thenReturn(Collections.emptyList());
-		when(restClient.getResourceQuotaPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(rqPolicyFromServer);
+		when(restClient.getDay2ActionsPolicies()).thenReturn(Collections.emptyList());
+		when(restClient.getDay2ActionsPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(policyFromServer);
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createResourceQuotaPolicy(any());
+		verify(restClient, times(1)).createDay2ActionsPolicy(any());
 	}
 
-@Test
-void testImportContentWithNoFile() {
-	System.out.println(this.getClass() + "testImportContentWithNoFile");
+	@Test
+	void testImportContentWithNoFile() {
+		System.out.println(this.getClass() + "testImportContentWithNoFile");
 
-	// START TEST
-	store.importContent(tempFolder.getRoot());
+		// START TEST
+		store.importContent(tempFolder.getRoot());
 
-	// VERIFY
-	verify(vraNgPackageDescriptor, never()).getPolicy();
-	verify(restClient, never()).getResourceQuotaPolicies();
-	verify(restClient, never()).getResourceQuotaPolicy(anyString());
-	verify(restClient, never()).createResourceQuotaPolicy(any());
+		// VERIFY
+		verify(vraNgPackageDescriptor, never()).getPolicy();
+		verify(restClient, never()).getDay2ActionsPolicies();
+		verify(restClient, never()).getDay2ActionsPolicy(anyString());
+		verify(restClient, never()).createDay2ActionsPolicy(any());
+	}
+
 }
 
-}

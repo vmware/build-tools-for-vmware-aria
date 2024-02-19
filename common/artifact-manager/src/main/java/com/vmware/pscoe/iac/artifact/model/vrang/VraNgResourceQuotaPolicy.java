@@ -15,6 +15,8 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * #L%
  */
 
+import com.google.gson.JsonObject;
+
 public class VraNgResourceQuotaPolicy {
 	
 
@@ -46,14 +48,16 @@ public class VraNgResourceQuotaPolicy {
 	 * Description of the Resource Quota Policy.
 	 */
 	private String description;
+
+
+	/**
+	 * Scope of the Resource Quota Policy.
+	 */
+	private JsonObject scopeCriteria;
 	/**
 	 * Definition of the Resource Quota Policy.
 	 */
-	private VraNgResourceQuota quotas;
-	/**
-	 * Definition of the Resource Quota Policy.
-	 */
-	private VraNgResourceQuotaDefinition definition;
+	private JsonObject definition;
 
 
 	/**
@@ -73,11 +77,12 @@ public class VraNgResourceQuotaPolicy {
 	 * @param enforcementTypeIn enforcementType
 	 * @param descriptionIn     description
 	 * @param definitionIn      definition
+	 * @param criteriaIn 		scopeCriteria
 	 */
 	public VraNgResourceQuotaPolicy(final String idIn, final String nameIn, final String typeIdIn,
 			final String projectIdIn, final String orgIdIn,
 			final String enforcementTypeIn, final String descriptionIn,
-			final VraNgResourceQuotaDefinition definitionIn) {
+			final JsonObject definitionIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -86,6 +91,7 @@ public class VraNgResourceQuotaPolicy {
 		this.enforcementType = enforcementTypeIn;
 		this.description = descriptionIn;
 		this.definition = definitionIn;
+		this.scopeCriteria = criteriaIn;
 	}
 
 	/**
@@ -219,8 +225,16 @@ public class VraNgResourceQuotaPolicy {
 	 * 
 	 * @return content sharing policy definition
 	 */
-	public VraNgResourceQuotaDefinition getDefinition() {
+	public JsonObject getDefinition() {
 		return definition;
+	}
+
+	public JsonObject getScopeCriteria() {
+		return scopeCriteria;
+	}
+
+	public void setScopeCriteria(JsonObject scopeCriteria) {
+		this.scopeCriteria = scopeCriteria;
 	}
 
 	/**
@@ -228,7 +242,7 @@ public class VraNgResourceQuotaPolicy {
 	 * 
 	 * @param definitionIn - definition of the resource quota policy
 	 */
-	public void setDefinition(final VraNgResourceQuotaDefinition definitionIn) {
+	public void setDefinition(final JsonObject definitionIn) {
 		this.definition = definitionIn;
 	}
 }

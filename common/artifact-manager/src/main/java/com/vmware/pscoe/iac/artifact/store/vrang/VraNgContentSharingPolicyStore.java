@@ -174,7 +174,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent() {
-		System.out.println(this.getClass() + "->exportStoreContent()");
+		this.logger.debug("{}->exportStoreContent()", this.getClass() );
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 
 		csPolicies.forEach(
@@ -191,7 +191,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		System.out.println(this.getClass() + "->exportStoreContent({})"+ itemNames.toString());
+		this.logger.debug("{}->exportStoreContent({})", this.getClass()  , itemNames.toString());
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 
 		csPolicies.forEach(

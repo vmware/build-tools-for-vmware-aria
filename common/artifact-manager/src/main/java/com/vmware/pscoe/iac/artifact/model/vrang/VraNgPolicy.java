@@ -17,68 +17,46 @@ import java.util.*;
  * #L%
  */
 
-import com.vmware.pscoe.iac.artifact.store.vrang.VraNgPolicyStore;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class VraNgPolicy {
 	private final Logger logger  = LoggerFactory.getLogger(VraNgPolicy .class);
-//	private final List<String> contentSharing;
-//	private final List<String> resourceQuota;
-	private final EnumMap<VraNgPolicyFolderName, List<String>> policiesMap;
+	private final List<String> contentSharing;
+	private final List<String> resourceQuota;
+	private final List<String> day2Actions;
 
 	public VraNgPolicy() {
-		logger.info("Empty constructor{}", VraNgPolicyStore.class);
-		this.policiesMap = new EnumMap<VraNgPolicyFolderName, List<String>>(VraNgPolicyFolderName.class);
-		this.policiesMap.put(VraNgPolicyFolderName.CONTENT_SHARING, new ArrayList<>());
-		this.policiesMap.put(VraNgPolicyFolderName.RESOURCE_QUOTA, new ArrayList<>());
+		logger.debug("Empty constructor{}, Initializing member lists with empty array lists", VraNgPolicy.class);
+		this.contentSharing = new ArrayList<>();
+		this.resourceQuota = new ArrayList<>();
+		this.day2Actions = new ArrayList<>();
 	}
 
-	public VraNgPolicy(List<String> contentSharing, List<String> resourceQuota) {
-		logger.info("Parametrized constructor {}", VraNgPolicyStore.class);
-		logger.info("content sharing in {}", contentSharing);
-		logger.info("resource quota in {}", resourceQuota);
+	public VraNgPolicy(List<String> contentSharing, List<String> resourceQuota, List<String> day2Actions) {
+		logger.debug("Parametrized constructor {}", VraNgPolicy.class);
+		logger.debug("content sharing in {}", contentSharing);
+		logger.debug("resource quota in {}", resourceQuota);
+		logger.debug("day2 actions in {}", day2Actions);
+		this.contentSharing = contentSharing;
+		this.resourceQuota = resourceQuota;
+		this.day2Actions = day2Actions;
 
-        //policiesMap  = new EnumMap<VraNgPolicyFolderName, List<String>>(VraNgPolicyFolderName.CONTENT_SHARING, contentSharing, VraNgPolicyFolderName.RESOURCE_QUOTA, resourceQuota);
-		this.policiesMap = new EnumMap<VraNgPolicyFolderName, List<String>>(VraNgPolicyFolderName.class);
-		this.policiesMap.put(VraNgPolicyFolderName.CONTENT_SHARING, contentSharing);
-		this.policiesMap.put(VraNgPolicyFolderName.RESOURCE_QUOTA, resourceQuota);
-		logger.info("policiesMap result {}", policiesMap);
-		//TODO: add the rest when implemented
     }
-	private VraNgPolicy(List<String> policies) {
-		logger.info("parametrized constructor {}", VraNgPolicyStore.class);
-		logger.info("list in {}", policies);
-		//logger.info("resource quota in{}", resourceQuota);
-		this.policiesMap = new EnumMap<VraNgPolicyFolderName, List<String>>(VraNgPolicyFolderName.class);
 
-		if (policies !=null ) {
-			int index = -1;
-			List<String> specificTypePolicyList  = new ArrayList<>();
-			for (String policyName : policies) {
-				if (policyName.endsWith(":")) {
-					index++;
-					String policyFolder = policyName.split(":")[0];
-					this.policiesMap.put( VraNgPolicyFolderName.fromString(policyFolder),specificTypePolicyList );
-					specificTypePolicyList.clear();
-				} else {
-					specificTypePolicyList.add(policyName);
-				}
-			}
-		}
-		logger.info("policiesMap result {}", policiesMap);
-	}
 
 	public List<String> getContentSharing() {
-		logger.info("getContentSharing{}", this.policiesMap.get(VraNgPolicyFolderName.CONTENT_SHARING));
-		//return this.contentSharing;
-		return this.policiesMap.get(VraNgPolicyFolderName.CONTENT_SHARING);
+		logger.debug("getContentSharing{}",  this.contentSharing);
+		return this.contentSharing;
 	}
 	public List<String> getResourceQuota() {
-		logger.info("getResourceQuota{}", this.policiesMap.get(VraNgPolicyFolderName.RESOURCE_QUOTA));
-		//return this.resourceQuota;
-		return this.policiesMap.get(VraNgPolicyFolderName.RESOURCE_QUOTA);
+		logger.debug("getResourceQuota{}", this.resourceQuota );
+		return this.resourceQuota;
+	}
+	public List<String> getDay2Actions() {
+		logger.debug("getDay2Actions{}", this.day2Actions);
+		return this.day2Actions;
 	}
 
 	@Override
