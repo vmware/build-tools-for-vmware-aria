@@ -100,9 +100,6 @@ const serializeTreeElement = async (context: any, element: t.VroNativeElement): 
     } else {
         xInfo.ele("comment").cdata(complexActionComment(element));
     }
-    if (element?.categoryPath) {
-		element.categoryPath = element?.categoryPath.filter(x => x!=null);
-	}
     const categoryPathKey = element.type == t.VroElementType.ScriptModule
         ? element?.categoryPath
         : element?.categoryPath.map(c => c.replace(/\./g, "/."))
