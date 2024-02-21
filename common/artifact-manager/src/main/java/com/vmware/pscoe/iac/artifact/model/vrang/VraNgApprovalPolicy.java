@@ -61,21 +61,21 @@ public final class VraNgApprovalPolicy {
 	private JsonObject definition;
 
 	/**
-	* Empty Constructor
+	* Empty Constructor.
 	*/
-	public VraNgApprovalPolicy(){};
+	public VraNgApprovalPolicy() { };
 
 	/**
-	 * Constructor with all member values
-	 * @param idIn id of the policy
-	 * @param nameIn name of the policy
-	 * @param typeIdIn type of the policy
-	 * @param projectIdIn projectId of the policy
-	 * @param orgIdIn organizationId of the policy
-	 * @param enforcementTypeIn enforcement type of the policy
-	 * @param descriptionIn description of the policy
-	 * @param definitionIn actual policy definition - different for every policy type
-	 * @param criteriaIn scope criteria of the policy
+	 * Constructor with all member values.
+	 * @param idIn id of the policy.
+	 * @param nameIn name of the policy.
+	 * @param typeIdIn type of the policy.
+	 * @param projectIdIn projectId of the policy.
+	 * @param orgIdIn organizationId of the policy.
+	 * @param enforcementTypeIn enforcement type of the policy.
+	 * @param descriptionIn description of the policy.
+	 * @param definitionIn actual policy definition - different structure for every policy type.
+	 * @param criteriaIn scope criteria of the policy.
 	 */
 	public VraNgApprovalPolicy(final String idIn, final String nameIn, final String typeIdIn,
 									  final String projectIdIn, final String orgIdIn,
@@ -92,74 +92,143 @@ public final class VraNgApprovalPolicy {
 		this.criteria = criteriaIn;
 	}
 
+	/**
+	 * Get policy id.
+	 * @return policy id.
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Set policy id.
+	 * @param id  - the policy id.
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * Get the policy name.
+	 * @return policy name.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Set the policy name.
+	 * @param name policy name.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/**
+	 * Get the typeId of the policy.
+	 * @return typeId - typeId of the policy.
+	 */
 	public String getTypeId() {
 		return typeId;
 	}
-
+	/**
+	 * Set the typeId of the policy.
+	 * @param typeId - typeId of the policy.
+	 */
 	public void setTypeId(String typeId) {
 		this.typeId = typeId;
 	}
 
+	/**
+	 * Get the projectIf of the policy. May be missing and return null.
+	 * @return project id.
+	 */
 	public String getProjectId() {
 		return projectId;
 	}
-
+	/**
+	 * Set the projectIf of the policy. May be missing and return null.
+	 * @param projectId the project id of the policy.
+	 */
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
+	/**
+	 * Get the organization id.
+	 * @return the organization id of the policy.
+	 */
 	public String getOrgId() {
 		return orgId;
 	}
 
+	/**
+	 * Set the organization id of the policy.
+	 * @param orgId the organization id of the policy.
+	 */
 	public void setOrgId(String orgId) {
 		this.orgId = orgId;
 	}
 
+	/**
+	 * Get the enforcement type of the policy.
+	 * @return the enforcement type of the policy.
+	 */
 	public String getEnforcementType() {
 		return enforcementType;
 	}
 
+	/**
+	 *  Set the enforcement type of the policy.
+	 * @param enforcementType the enforcement type of the policy.
+	 */
 	public void setEnforcementType(String enforcementType) {
 		this.enforcementType = enforcementType;
 	}
 
+	/**
+	 * Get the description of the policy.
+	 * @return the description of the policy.
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Set the description of the policy.
+	 * @param description the description of the policy.
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * Get the criteria of the policy.
+	 * @return policy criteria as JsonObject.
+	 */
 	public JsonObject getCriteria() {
 		return criteria;
 	}
 
+	/**
+	 * Set the criteria of the policy.
+	 * @param criteria the criteria of the policy.
+	 */
 	public void setCriteria(JsonObject criteria) {
 		this.criteria = criteria;
 	}
 
+	/**
+	 * Get the definition of the policy.
+	 * @return the definition of the policy as JsonObject.
+	 */
 	public JsonObject getDefinition() {
 		return definition;
 	}
 
+	/**
+	 * Set the definition of the policy.
+	 * @param definition the definition of the policy as JsonObject.
+	 */
 	public void setDefinition(JsonObject definition) {
 		this.definition = definition;
 	}
