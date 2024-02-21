@@ -1376,7 +1376,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 
 	/**
-	 * getDay2ActionsPolicyIds.
+	 * getDay2ActionsPolicies.
 	 *
 	 * @return policies
 	 */
@@ -1390,7 +1390,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createResourceQuotaPolicy.
+	 * createDay2ActionsPolicy.
 	 *
 	 * @param d2aPolicy day 2 actions policy
 	 */
@@ -1414,6 +1414,91 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getDay2ActionsPolicyPrimitive(policyId);
 		} catch (Exception e) {
 			logger.error("Error fetching resource day 2 actions - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+	/**
+	 * getDeploymentLimitPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgDeploymentLimitPolicy> getDeploymentLimitPolicies() {
+		try {
+			return this.getAllDeploymentLimitPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching deployemnt limit policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createDeploymentLimitPolicy.
+	 *
+	 * @param policy day 2 actions policy
+	 */
+	public void createDeploymentLimitPolicy(final VraNgDeploymentLimitPolicy policy) {
+		try {
+			createDeploymentLimitPolicyPrimitive(policy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+				String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
+		}
+	}
+
+	/**
+	 * getDeploymentLimitPolicy.
+	 *
+	 * @param policyId day 2 actions policy id
+	 * @return policy
+	 */
+	public VraNgDeploymentLimitPolicy getDeploymentLimitPolicy(final String policyId) {
+		try {
+			return this.getDeploymentLimitPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching deployment limit policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getDeploymentLimitPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgApprovalPolicy> getApprovalPolicies() {
+		try {
+			return this.getAllApprovalPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching Approval policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createApprovalPolicy.
+	 *
+	 * @param policy day 2 actions policy
+	 */
+	public void createApprovalPolicy(final VraNgApprovalPolicy policy) {
+		try {
+			createApprovalPolicyPrimitive(policy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+				String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
+		}
+	}
+
+	/**
+	 * getApprovalPolicy.
+	 *
+	 * @param policyId day 2 actions policy id
+	 * @return policy
+	 */
+	public VraNgApprovalPolicy getApprovalPolicy(final String policyId) {
+		try {
+			return this.getApprovalPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching approval policy - {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

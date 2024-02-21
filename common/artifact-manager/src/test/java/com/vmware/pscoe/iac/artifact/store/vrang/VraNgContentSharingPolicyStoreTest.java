@@ -167,7 +167,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		List<VraNgContentSharingPolicy> policies = Arrays.asList(csPolicy, csPolicy2);
 
 		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null, null));
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null, null, null, null, null));
 		when(restClient.getContentSharingPolicies()).thenReturn(policies);
 		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicy);
 		when(restClient.getContentSharingPolicy("94824034-ef7b-4728-a6c2-fb440aff590c")).thenReturn(csPolicy2);
@@ -187,7 +187,7 @@ public class VraNgContentSharingPolicyStoreTest {
 
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("1", "cs",
 				"com.vmware.policy.catalog.entitlement", "project1", "org1", "HARD", "TEST", new VraNgDefinition());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"), null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"), null, null, null, null, null);
 		// // GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 		when(restClient.getContentSharingPolicies()).thenReturn(Arrays.asList(csPolicy));
@@ -206,7 +206,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithUpdateLogic() {
 		System.out.println("testImportContentWithUpdateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"), null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"), null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87", "cs",
 				"com.vmware.policy.catalog.entitlement", "project1", "org1", "HARD", "TEST", new VraNgDefinition());
 
@@ -233,7 +233,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"), null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"), null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("1", "test",
 				"com.vmware.policy.catalog.entitlement", "project1", "org1", "HARD", "TEST", new VraNgDefinition());
 
@@ -278,7 +278,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentForDifferentDestinationProject() {
 		System.out.println("testImportContentForDifferentDestinationProject");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"),null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"),null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy(
 			"1",
 			"test",

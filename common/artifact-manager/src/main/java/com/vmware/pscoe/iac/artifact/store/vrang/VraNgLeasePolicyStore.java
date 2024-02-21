@@ -62,11 +62,11 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	@Override
 	public void importContent(final File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory",
-				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CONTENT_SHARING_POLICIES);
+				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES);
 		// verify directory exists
 		File leasePolicyFolder = Paths
 				.get(sourceDirectory.getPath(),
-						com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CONTENT_SHARING_POLICIES,
+						com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 						LEASE_POLICY)
 				.toFile();
 		if (!leasePolicyFolder.exists()) {
@@ -100,18 +100,20 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		String csPolicyNameWithExt = leasePolicyFile.getName();
 		String csPolicyName = FilenameUtils.removeExtension(csPolicyNameWithExt);
 		logger.info("Attempting to import Lease policy '{}'", csPolicyName);
-		VraNgLeasePolicy csPolicy = jsonFileToVraNgLeasePolicy(leasePolicyFile);
-		this.enrichLeasePolicy(csPolicy);
+		VraNgLeasePolicy policy = jsonFileToVraNgLeasePolicy(leasePolicyFile);
 		// Check if the Lease policy exists
 		VraNgLeasePolicy existingRecord = null;
 		if (csPolicyOnServerByName.containsKey(csPolicyName)) {
 			existingRecord = csPolicyOnServerByName.get(csPolicyName);
 		}
-		if (existingRecord != null) {
-			csPolicy.setId(this.restClient.getLeasePolicyIdByName(csPolicy.getName()));
+
+		if (existingRecord != null && !existingRecord.getId().isBlank()  ) {
+			policy.setId(existingRecord.getId());
+		} else {
+			policy.setId(null);
 		}
 
-		this.restClient.createLeasePolicy(csPolicy);
+		this.restClient.createLeasePolicy(policy);
 	}
 
 	/**
@@ -124,7 +126,7 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
 			return null;
 		} else {
-			return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
+			return this.vraNgPackageDescriptor.getPolicy().getLease();
 		}
 	}
 
@@ -147,28 +149,16 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Used while import to override the orgId and ProjectId for the receiving vRA instance.
-	 *  
-	 * @param csPolicy
-	 */
-	private void enrichLeasePolicy(final VraNgLeasePolicy csPolicy) {
-		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
-		csPolicy.setOrgId(organizationId);
-		csPolicy.setProjectId(this.restClient.getProjectId());
-	}
-
-	/**
 	 * Exports all the content for the given project.
 	 */
 	@Override
 	protected void exportStoreContent() {
 
-		List<VraNgLeasePolicy> csPolicies = this.restClient.getLeasePolicies();
-
-		csPolicies.forEach(
+		List<VraNgLeasePolicy> policies = this.restClient.getLeasePolicies();
+		this.logger.debug("{}->exportStoreContent()", this.getClass());
+		policies.forEach(
 				policy -> {
-					VraNgLeasePolicy csPolicy = this.restClient.getLeasePolicy(policy.getId());
-					storeLeasePolicyOnFilesystem(vraNgPackage, csPolicy);
+					storeLeasePolicyOnFilesystem(vraNgPackage, policy);
 				});
 	}
 
@@ -179,14 +169,13 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		List<VraNgLeasePolicy> csPolicies = this.restClient.getLeasePolicies();
-
-		csPolicies.forEach(
+		List<VraNgLeasePolicy> policies = this.restClient.getLeasePolicies();
+		this.logger.debug("{}->exportStoreContent({})", this.getClass()  , itemNames.toString());
+		policies.forEach(
 				policy -> {
 					if (itemNames.contains(policy.getName())) {
-						VraNgLeasePolicy csPolicy = this.restClient.getLeasePolicy(policy.getId());
-						logger.info("exporting '{}'", csPolicy.getName());
-						storeLeasePolicyOnFilesystem(vraNgPackage, csPolicy);
+						logger.info("exporting '{}'", policy.getName());
+						storeLeasePolicyOnFilesystem(vraNgPackage, policy);
 					}
 				});
 	}
@@ -199,11 +188,11 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	 */
 	private void storeLeasePolicyOnFilesystem(final Package serverPackage,
 			final VraNgLeasePolicy leasePolicy) {
-		logger.debug("Storing contentSharingPolicy {}", leasePolicy.getName());
+		logger.debug("Storing Lease Policy {}", leasePolicy.getName());
 		File store = new File(serverPackage.getFilesystemPath());
 		File leasePolicyFile = Paths.get(
 				store.getPath(),
-				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CONTENT_SHARING_POLICIES,
+				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 				LEASE_POLICY,
 				leasePolicy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
 

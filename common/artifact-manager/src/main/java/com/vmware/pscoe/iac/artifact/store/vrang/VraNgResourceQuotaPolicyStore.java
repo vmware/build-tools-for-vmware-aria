@@ -132,12 +132,6 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 		this.restClient.createResourceQuotaPolicy(rqPolicy);
 	}
 
-	private void enrichResourceQuotaPolicy(VraNgResourceQuotaPolicy rqPolicy) {
-		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
-		rqPolicy.setOrgId(organizationId);
-		rqPolicy.setProjectId(this.restClient.getProjectId());
-	}
-
 	/**
 	 * Converts a json catalog item file to VraNgResourceQuotaPolicy.
 	 *

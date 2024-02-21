@@ -50,7 +50,8 @@ public class VraNgTypeStoreFactory {
 			LEASE_POLICY,
 			RESOURCE_QUOTA_POLICY,
 			DAY2_ACTIONS_POLICY,
-			DEPLOYMENT_LIMIT_POLICY
+			DEPLOYMENT_LIMIT_POLICY,
+			APPROVAL_POLICY
 	};
 
 	/**
@@ -79,7 +80,9 @@ public class VraNgTypeStoreFactory {
 			CONTENT_SHARING_POLICY,
 			LEASE_POLICY,
 			RESOURCE_QUOTA_POLICY,
-			DAY2_ACTIONS_POLICY
+			DAY2_ACTIONS_POLICY,
+			DEPLOYMENT_LIMIT_POLICY,
+			APPROVAL_POLICY
 	};
 
 	/**
@@ -200,6 +203,10 @@ public class VraNgTypeStoreFactory {
 				return new VraNgDay2ActionsPolicyStore();
 			case LEASE_POLICY:
 				return new VraNgLeasePolicyStore();
+			case DEPLOYMENT_LIMIT_POLICY:
+				return new VraNgDeploymentLimitPolicyStore();
+			case APPROVAL_POLICY:
+				return new VraNgApprovalPolicyStore();
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}

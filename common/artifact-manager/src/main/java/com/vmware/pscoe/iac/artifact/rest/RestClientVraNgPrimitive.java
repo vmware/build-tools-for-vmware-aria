@@ -3225,10 +3225,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
 				.stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
-				.filter(policy -> policy.getProjectId().equals(this.getProjectId()))
 				.collect(Collectors.toList());
 
-		LOGGER.debug("Day 2 Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+		LOGGER.debug("Lease Policies found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 		return results;
 	}
 
@@ -3302,7 +3301,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.findFirst()
 				.orElse(null);
 		if (policy == null) {
-			throw new Error("Cannot find Day 2 Policy by name" + name);
+			throw new Error("Cannot find Lease Policy by name" + name);
 		} else {
 			return policy.getId();
 		}
@@ -3315,30 +3314,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Created VraNg lease Policy
 	 */
 	protected VraNgLeasePolicy getLeasePolicyPrimitive(final String policyId) {
-		VraNgLeasePolicy csPolicy = new VraNgLeasePolicy();
 		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		JsonElement root = JsonParser.parseString(response.getBody());
-		if (!root.isJsonObject()) {
-			return null;
-		}
-		JsonObject result = root.getAsJsonObject();
-		String name = result.get("name").getAsString();
-		String description = result.has("description") ? result.get("description").getAsString() : "";
-		String typeId = result.get("typeId").getAsString();
-		String enforcementType = result.get("enforcementType").getAsString();
-		VraNgLeasePolicyDefinition definition = new Gson().fromJson(result.get("definition").getAsJsonObject(),
-		VraNgLeasePolicyDefinition.class);
-		// definition.entitledUsers.forEach(user -> user.items.forEach(item -> {
-		// 	item.name = this.getUserEntitlementItemNameLease(item.id);
-		// }));
-		csPolicy.setDefinition(definition);
-		csPolicy.setName(name);
-		csPolicy.setEnforcementType(enforcementType);
-		csPolicy.setDescription(description);
-		csPolicy.setTypeId(typeId);
-		return csPolicy;
+		return new Gson().fromJson(response.getBody(), VraNgLeasePolicy.class);
 	}
 
 	/**
@@ -3402,36 +3381,108 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Creates lease Policy.
 	 * 
-	 * @param csPolicy policy data to create
+	 * @param policy policy data to create
 	 */
-	public void createLeasePolicyPrimitive(final VraNgLeasePolicy csPolicy)
+	public void createLeasePolicyPrimitive(final VraNgLeasePolicy policy)
 			throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-		String jsonBody = new Gson().toJson(csPolicy);
+		String jsonBody = new Gson().toJson(policy);
 		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-		handleItemsPropertyLease(jsonObject);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 	}
 
 	/**
-	 * handleItemsProperty.
-	 * 
-	 * @param csPolicyJsonObject cs policy json
+	 * Creates Deployment Limit Policy.
+	 *
+	 * @param policy policy data to create
 	 */
-	public void handleItemsPropertyLease(final JsonObject csPolicyJsonObject) {
-		JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
-		JsonArray euArr = definition.getAsJsonArray("entitledUsers");
-		for (JsonElement eu : euArr) {
-			JsonObject entitledUserObj = eu.getAsJsonObject();
-			JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
-			for (JsonElement item : itemsArr) {
-				JsonObject itemObj = item.getAsJsonObject();
-				String contentSourceName = itemObj.get("name").getAsString();
-				itemObj.addProperty("id", this.getUserEntitlementItemIdLease(contentSourceName));
-				itemObj.remove("name");
-			}
-		}
-		definition.add("entitledUsers", euArr);
-		csPolicyJsonObject.add("definition", definition);
+	public void createDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
+		throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(policy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	/**
+	 * Retrieve Deployment Limit  Policy based on Id.
+	 *
+	 * @param policyId policy id
+	 * @return   Deployment Limit Policy
+	 */
+	protected VraNgDeploymentLimitPolicy getDeploymentLimitPolicyPrimitive(final String policyId) {
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+			String.class);
+		return new Gson().fromJson(response.getBody(), VraNgDeploymentLimitPolicy.class);
+	}
+
+	/**
+	 * Retrieve all Deployment Limit  policy
+	 *
+	 * @return list of Deployment Limit  policies that are available.
+	 *
+	 */
+	protected List<VraNgDeploymentLimitPolicy> getAllDeploymentLimitPoliciesPrimitive() {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+		//filtering by typeId works on 8.16 but not on earlier versions.
+		params.put("typeId", DEPLOYMENT_LIMIT_POLICY_TYPE);
+
+		List<VraNgDeploymentLimitPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+			.stream()
+			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class))
+			.collect(Collectors.toList());
+
+		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+		return results;
+	}
+	/**
+	 * Creates Approval Policy.
+	 *
+	 * @param policy policy data to create
+	 */
+	public void createApprovalPolicyPrimitive(final VraNgApprovalPolicy policy)
+		throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(policy);
+		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+	}
+
+	/**
+	 * Retrieve Approval  Policy based on Id.
+	 *
+	 * @param policyId policy id
+	 * @return   Approval Policy
+	 */
+	protected VraNgApprovalPolicy getApprovalPolicyPrimitive(final String policyId) {
+		URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+			String.class);
+		return new Gson().fromJson(response.getBody(), VraNgApprovalPolicy.class);
+	}
+
+	/**
+	 * Retrieve all Approval policies
+	 *
+	 * @return list of Approval  policies that are available.
+	 *
+	 */
+	protected List<VraNgApprovalPolicy> getAllApprovalPoliciesPrimitive() {
+		Map<String, String> params = new HashMap<>();
+		params.put("expandDefinition", "true");
+		params.put("computeStats", "true");
+		//filtering by typeId works on 8.16 but not on earlier versions.
+		params.put("typeId", APPROVAL_POLICY_TYPE);
+
+		List<VraNgApprovalPolicy> results = this.getPagedContent(SERVICE_POLICIES, params)
+			.stream()
+			.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class))
+			.collect(Collectors.toList());
+
+		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
+		return results;
 	}
 }
