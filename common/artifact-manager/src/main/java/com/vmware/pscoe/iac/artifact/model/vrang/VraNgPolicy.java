@@ -21,7 +21,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VraNgPolicy {
+public final class VraNgPolicy {
 	private final Logger logger  = LoggerFactory.getLogger(VraNgPolicy .class);
 	private final List<String> contentSharing;
 	private final List<String> resourceQuota;
@@ -40,7 +40,7 @@ public class VraNgPolicy {
 		this.deploymentLimit = new ArrayList<>();
 	}
 
-	public VraNgPolicy(List<String> contentSharing, List<String> resourceQuota, List<String> day2Actions, List<String> lease, List<String> approval, List<String> deploymentLimit ){
+	public VraNgPolicy(List<String> contentSharing, List<String> resourceQuota, List<String> day2Actions, List<String> lease, List<String> approval, List<String> deploymentLimit) {
 		logger.debug("Parametrized constructor {}", VraNgPolicy.class);
 		logger.debug("content sharing in {}", contentSharing);
 		logger.debug("resource quota in {}", resourceQuota);

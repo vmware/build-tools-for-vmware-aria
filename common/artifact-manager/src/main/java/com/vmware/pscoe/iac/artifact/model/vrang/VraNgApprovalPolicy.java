@@ -17,7 +17,10 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import com.google.gson.JsonObject;
 
-public class VraNgApprovalPolicy {
+/**
+ * The purpose of this class is to be able to export and import Approval Policy from Service Broker.
+ */
+public final class VraNgApprovalPolicy {
 	/**
 	 * Id of the Policy.
 	 */
@@ -57,7 +60,23 @@ public class VraNgApprovalPolicy {
 	 */
 	private JsonObject definition;
 
-	public  VraNgApprovalPolicy() {};
+	/**
+	* Empty Constructor
+	*/
+	public VraNgApprovalPolicy(){};
+
+	/**
+	 * Constructor with all member values
+	 * @param idIn id of the policy
+	 * @param nameIn name of the policy
+	 * @param typeIdIn type of the policy
+	 * @param projectIdIn projectId of the policy
+	 * @param orgIdIn organizationId of the policy
+	 * @param enforcementTypeIn enforcement type of the policy
+	 * @param descriptionIn description of the policy
+	 * @param definitionIn actual policy definition - different for every policy type
+	 * @param criteriaIn scope criteria of the policy
+	 */
 	public VraNgApprovalPolicy(final String idIn, final String nameIn, final String typeIdIn,
 									  final String projectIdIn, final String orgIdIn,
 									  final String enforcementTypeIn, final String descriptionIn,
