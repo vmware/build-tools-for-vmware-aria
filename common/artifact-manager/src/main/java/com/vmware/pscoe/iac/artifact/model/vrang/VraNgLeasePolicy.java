@@ -15,6 +15,8 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * #L%
  */
 
+import com.google.gson.JsonObject;
+
 /**
 
 */
@@ -58,7 +60,11 @@ public class VraNgLeasePolicy {
     /**
      * Definition of the policy.
      */
-	private VraNgLeasePolicyDefinition definition;
+	private JsonObject definition;
+	/**
+	 * Scope criteria of the policy.
+	 */
+	private JsonObject criteria;
 
 	/**
 	* Default constructor for the VraNgLeasePolicy class.
@@ -81,7 +87,7 @@ public class VraNgLeasePolicy {
 	public VraNgLeasePolicy(final String idIn, final String nameIn, final String typeIdIn,
 			final String projectIdIn, final String orgIdIn,
 			final String enforcementTypeIn, final String descriptionIn,
-			final VraNgLeasePolicyDefinition definitionIn) {
+			final JsonObject definitionIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -90,6 +96,7 @@ public class VraNgLeasePolicy {
 		this.enforcementType = enforcementTypeIn;
 		this.description = descriptionIn;
 		this.definition = definitionIn;
+		this.criteria = criteriaIn;
 	}
 
 	/**
@@ -223,7 +230,7 @@ public class VraNgLeasePolicy {
 	 * 
 	 * @return lease policy definition
 	 */
-	public VraNgLeasePolicyDefinition getDefinition() {
+	public JsonObject getDefinition() {
 		return definition;
 	}
 
@@ -232,7 +239,27 @@ public class VraNgLeasePolicy {
 	 * 
 	 * @param definitionIn - definition of the lease policy
 	 */
-	public void setDefinition(final VraNgLeasePolicyDefinition definitionIn) {
+	public void setDefinition(final JsonObject definitionIn) {
 		this.definition = definitionIn;
 	}
+
+	/**
+	 * Get the criteria of the lease policy.
+	 *
+	 * @return lease policy criteria
+	 */
+	public JsonObject getCriteria() {
+		return criteria;
+	}
+
+	/**
+	 * Set the criteria of the lease policy.
+	 *
+	 * @param criteriaIn - criteria of the lease policy
+	 */
+	public void setCriteria(final JsonObject criteriaIn) {
+		this.criteria = criteriaIn;
+	}
+
+
 }

@@ -172,7 +172,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 		List<VraNgResourceQuotaPolicy> policies = Arrays.asList(rqPolicy, rqPolicy2);
 
 		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null, null));
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null, null, null, null, null));
 		when(restClient.getResourceQuotaPolicies()).thenReturn(policies);
 		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(rqPolicy);
 		when(restClient.getResourceQuotaPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(rqPolicy2);
@@ -200,7 +200,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 			"TEST",
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null, null, null, null);
 		// // GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 		when(restClient.getResourceQuotaPolicies()).thenReturn(Collections.singletonList(rqPolicy));
@@ -229,7 +229,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 			"TEST",
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null, null, null, null);
 		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 
@@ -254,7 +254,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 @Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Arrays.asList("RQ01"), null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Arrays.asList("RQ01"), null, null, null, null);
 
 		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",

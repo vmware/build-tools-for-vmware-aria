@@ -178,7 +178,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 		List<VraNgDay2ActionsPolicy> policies = Arrays.asList(policy1, policy2);
 
 		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null, null));
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(new VraNgPolicy(null, null, null, null, null, null));
 		when(restClient.getDay2ActionsPolicies()).thenReturn(policies);
 		when(restClient.getDay2ActionsPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy1);
 		when(restClient.getDay2ActionsPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(policy2);
@@ -206,7 +206,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 			"TEST",
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"));
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
 		// // GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 		when(restClient.getDay2ActionsPolicies()).thenReturn(Collections.singletonList(policy));
@@ -235,7 +235,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 			"TEST",
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"));
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
 		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 
@@ -260,7 +260,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 	@Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Arrays.asList("D2A01"));
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Arrays.asList("D2A01"), null, null, null);
 
 		VraNgDay2ActionsPolicy policy = new VraNgDay2ActionsPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
