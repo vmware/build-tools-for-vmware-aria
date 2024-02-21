@@ -1,6 +1,9 @@
 ### Enhancements
 * [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
 
+### Fixes
+* [vro-types] Fix SSHSession 'error' and 'state' types
+
 ## v2.37.0 - 26 Jan 2024
 
 ### Enhancements

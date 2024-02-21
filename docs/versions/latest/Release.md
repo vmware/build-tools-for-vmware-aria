@@ -10,11 +10,9 @@
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
 
 
 [//]: # (Features -> New Functionality)
@@ -23,7 +21,6 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
@@ -40,9 +37,18 @@
 [//]: # (#### Relevant Documentation:)
 
 
-
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)
 [//]: # (Pull request links)
+
+### Fix SSH Session methods type
+
+#### Previous Behavior
+
+When using SSH with typescript, the `error` and `state` methods has the type `void`. But technically, it returns a string. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable `error` and `state` has type `String`.
+
+#### Current Behavior
+
+Method `error` and `state` should return type `String` instead of type `void`
