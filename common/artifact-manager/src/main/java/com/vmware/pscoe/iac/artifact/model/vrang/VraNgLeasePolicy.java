@@ -73,7 +73,7 @@ public class VraNgLeasePolicy {
 	}
 
 	/**
-	* Constructs a new instance of the VragLeasePolicy with the given parameters.
+	* Constructs a new instance of the VraNgLeasePolicy with the given parameters.
 	*
 	* @param idIn The unique identifier for the lease policy.
 	* @param nameIn The name of the lease policy
@@ -83,6 +83,7 @@ public class VraNgLeasePolicy {
 	* @param enforcementTypeIn The type of enforcement for the lease policy.
 	* @param descriptionIn A description of the lease policy.
 	* @param definitionIn The definition of the lease policy.
+	* @param criteriaIn  the scope criteria of the lease policy
 	*/
 	public VraNgLeasePolicy(final String idIn, final String nameIn, final String typeIdIn,
 			final String projectIdIn, final String orgIdIn,
