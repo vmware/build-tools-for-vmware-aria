@@ -115,7 +115,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		if (policyOnServerByName.containsKey(policyName)) {
 			existingRecord = policyOnServerByName.get(policyName);
 		}
-		if (existingRecord != null && !existingRecord.getId().isBlank()  ) {
+		if (existingRecord != null && !existingRecord.getId().isBlank()) {
 			policy.setId(existingRecord.getId());
 		} else {
 			policy.setId(null);
@@ -125,7 +125,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	}
 
 	/**
-	 * getItemListFromDescriptor
+	 * getItemListFromDescriptor.
 	 * @return list of policy names to import or export.
 	 */
 	@Override
@@ -136,7 +136,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getApproval());
+			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getApproval());
 			return this.vraNgPackageDescriptor.getPolicy().getApproval();
 		}
 	}

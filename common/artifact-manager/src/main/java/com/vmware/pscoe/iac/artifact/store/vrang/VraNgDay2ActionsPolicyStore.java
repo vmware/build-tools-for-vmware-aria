@@ -22,7 +22,6 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +123,7 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 		this.restClient.createDay2ActionsPolicy(d2aPolicy);
 	}
 	/**
-	 * getItemListFromDescriptor
+	 * getItemListFromDescriptor.
 	 * @return list of policy names to import or export.
 	 */
 	@Override

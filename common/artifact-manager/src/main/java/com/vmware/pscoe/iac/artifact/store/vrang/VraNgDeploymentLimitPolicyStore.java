@@ -123,7 +123,7 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 		this.restClient.createDeploymentLimitPolicy(dlPolicy);
 	}
 	/**
-	 * getItemListFromDescriptor
+	 * getItemListFromDescriptor.
 	 * @return list of policy names to import or export.
 	 */
 	@Override

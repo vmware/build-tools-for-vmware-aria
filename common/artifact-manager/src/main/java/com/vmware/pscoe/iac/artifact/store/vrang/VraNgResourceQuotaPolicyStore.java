@@ -152,7 +152,7 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 		}
 	}
 	/**
-	 * getItemListFromDescriptor
+	 * getItemListFromDescriptor.
 	 * @return list of policy names to import or export.
 	 */
 	@Override
