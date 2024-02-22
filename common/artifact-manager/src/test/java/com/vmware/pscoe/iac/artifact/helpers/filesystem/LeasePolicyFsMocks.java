@@ -17,13 +17,13 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
+public class LeasePolicyFsMocks extends VraNgFsMock {
 	/**
 	 * Policies folder name constant.
 	 */
@@ -31,14 +31,14 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 	/**
 	 * Day2-actions sub-folder name constant.
 	 */
-	private final static String DAY2_ACTIONS_POLICY = "day2-actions";
+	private final static String LEASE_POLICY = "lease";
 
 	/**
 	 * Constructor.
 	 * @param tempDir temporary folder for test data.
 	 */
 
-	public Day2ActionsPolicyFsMocks(File tempDir) {
+	public LeasePolicyFsMocks(File tempDir) {
 		super(tempDir);
 	}
 
@@ -48,7 +48,7 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 	 */
 	@Override
 	public File getWorkdir() {
-		return Paths.get(this.tempDir.getPath(), DIR_POLICIES, DAY2_ACTIONS_POLICY).toFile();
+		return Paths.get(this.tempDir.getPath(), DIR_POLICIES, LEASE_POLICY).toFile();
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 	 *
 	 * @param    policy - The  policy to store
 	 */
-	public void addPolicy(VraNgDay2ActionsPolicy policy) {
+	public void addPolicy(VraNgLeasePolicy policy) {
 		File file = Paths.get(
 			this.getWorkdir().getAbsolutePath(),
 			policy.getName() + ".json"
@@ -69,3 +69,4 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 		writeFileToPath(itemName, gson.toJson(policy).getBytes());
 	}
 }
+
