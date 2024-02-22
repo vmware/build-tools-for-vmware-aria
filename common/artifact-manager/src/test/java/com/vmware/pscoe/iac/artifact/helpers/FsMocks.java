@@ -28,6 +28,9 @@ public class FsMocks {
 	private ContentSharingPolicyFsMocks contentSharingPolicyFsMocks;
 	private ResourceQuotaPolicyFsMocks resourceQuotaPolicyFsMocks;
 	private Day2ActionsPolicyFsMocks day2ActionsPolicyFsMocks;
+	private ApprovalPolicyFsMocks approvalPolicyFsMocks;
+	private LeasePolicyFsMocks leasePolicyFsMocks;
+	private DeploymentLimitPolicyFsMocks deploymentLimitPolicyFsMocks;
 	private PropertyGroupFsMocks propertyGroupFsMocks;
 	private CatalogItemFsMocks catalogItemFsMocks;
 	private CustomResourceFsMocks customResourceFsMocks;
@@ -67,6 +70,27 @@ public class FsMocks {
 		}
 
 		return day2ActionsPolicyFsMocks;
+	}
+	public DeploymentLimitPolicyFsMocks getDeploymentLimitPolicyFsMocks() {
+		if (this.deploymentLimitPolicyFsMocks == null) {
+			this.deploymentLimitPolicyFsMocks = new DeploymentLimitPolicyFsMocks(this.tempDir);
+		}
+
+		return deploymentLimitPolicyFsMocks;
+	}
+	public ApprovalPolicyFsMocks getApprovalPolicyFsMocks() {
+		if (this.approvalPolicyFsMocks == null) {
+			this.approvalPolicyFsMocks = new ApprovalPolicyFsMocks(this.tempDir);
+		}
+
+		return approvalPolicyFsMocks;
+	}
+	public LeasePolicyFsMocks getLeasePolicyFsMocks() {
+		if (this.leasePolicyFsMocks == null) {
+			this.leasePolicyFsMocks = new LeasePolicyFsMocks(this.tempDir);
+		}
+
+		return leasePolicyFsMocks;
 	}
 	public SubscriptionFsMocks subscriptionFsMocks() {
 		if (this.subscription == null) {
