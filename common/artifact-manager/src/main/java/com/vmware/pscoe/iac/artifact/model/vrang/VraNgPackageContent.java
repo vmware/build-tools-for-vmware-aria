@@ -81,30 +81,32 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
 		 */
 		CONTENT_SHARING_POLICY("content-sharing"),
 		/**
-		 * Content type for lease policies
+		 * Content type for lease policies.
 		 */
 		LEASE_POLICY("lease"),
 
 		/**
-		 * Content type for resource quota policies
+		 * Content type for resource quota policies.
 		 */
 		RESOURCE_QUOTA_POLICY("resource-quota"),
 
 		/**
-		 * Content type for day 2 actions policies
+		 * Content type for day 2 actions policies.
 		 */
 		DAY2_ACTIONS_POLICY("day2-actions"),
 
 		/**
-		 * Content type for deployment limit policies
+		 * Content type for deployment limit policies.
 		 */
 		DEPLOYMENT_LIMIT_POLICY("deployment-limit"),
 
 		/**
-		 * Content type for approval policies
+		 * Content type for approval policies.
 		 */
 		APPROVAL_POLICY("approval");
-
+		/**
+		 * PackageContent type.
+		 */
         private final String type;
 
         

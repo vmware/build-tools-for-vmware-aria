@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
+public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Suffix used for all of the resources saved by this store.
 	 */
@@ -50,25 +50,30 @@ public class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgDeploymentLimitPolicyStore.class);
 
-
+	/**
+	 * Imports policies found in specified folder on server, according to filter specified in content.yml file.
+	 * If there is a list of policy names - import only the specified policies.
+	 * If there is no list, import everything.
+	 * @param sourceDirectory the folder where policy files are stored.
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory",
 			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES);
 		// verify directory exists
-		File PolicyFolder = Paths
+		File policyFolder = Paths
 			.get(sourceDirectory.getPath(),
 				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 				DEPLOYMENT_LIMIT)
 			.toFile();
-		if (!PolicyFolder.exists()) {
+		if (!policyFolder.exists()) {
 			logger.info("Deployment limit policy directory not found.");
 			return;
 		}
 
 		List<String> policies = this.getItemListFromDescriptor();
 
-		File[] deploymentLimitPolicyFiles = this.filterBasedOnConfiguration(PolicyFolder,
+		File[] deploymentLimitPolicyFiles = this.filterBasedOnConfiguration(policyFolder,
 			new CustomFolderFileFilter(policies));
 
 		if (deploymentLimitPolicyFiles != null && deploymentLimitPolicyFiles.length == 0) {
@@ -109,7 +114,7 @@ public class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 		if (policyOnServerByName.containsKey(policyName)) {
 			existingRecord = policyOnServerByName.get(policyName);
 		}
-		if (existingRecord != null && !existingRecord.getId().isBlank()  ) {
+		if (existingRecord != null && !existingRecord.getId().isBlank()) {
 			dlPolicy.setId(existingRecord.getId());
 		} else {
 			dlPolicy.setId(null);
@@ -117,7 +122,10 @@ public class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 
 		this.restClient.createDeploymentLimitPolicy(dlPolicy);
 	}
-
+	/**
+	 * getItemListFromDescriptor
+	 * @return list of policy names to import or export.
+	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		logger.info("{}->getItemListFromDescriptor", this.getClass());
@@ -126,11 +134,13 @@ public class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit());
+			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit());
 			return this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit();
 		}
 	}
-
+	/**
+	 * Exporting every policy of this type found on server.
+	 */
 	@Override
 	protected void exportStoreContent() {
 		this.logger.debug("{}->exportStoreContent()", this.getClass());
@@ -150,7 +160,7 @@ public class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		this.logger.debug("{}->exportStoreContent({})", this.getClass()  , itemNames.toString());
+		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		List<VraNgDeploymentLimitPolicy> policies = this.restClient.getDeploymentLimitPolicies();
 
 		policies.forEach(

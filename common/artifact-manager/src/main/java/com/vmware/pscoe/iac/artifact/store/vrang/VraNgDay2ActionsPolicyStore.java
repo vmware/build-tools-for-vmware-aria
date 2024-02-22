@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
+public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Suffix used for all of the resources saved by this store.
 	 */
@@ -51,25 +51,30 @@ public class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgDay2ActionsPolicyStore.class);
 
-
+	/**
+	 * Imports policies found in specified folder on server, according to filter specified in content.yml file.
+	 * If there is a list of policy names - import only the specified policies.
+	 * If there is no list, import everything.
+	 * @param sourceDirectory the folder where policy files are stored.
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory",
 			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES);
 		// verify directory exists
-		File PolicyFolder = Paths
+		File policyFolder = Paths
 			.get(sourceDirectory.getPath(),
 				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 				DAY2_ACTIONS_POLICY)
 			.toFile();
-		if (!PolicyFolder.exists()) {
+		if (!policyFolder.exists()) {
 			logger.info("Day 2 Actions policy directory not found.");
 			return;
 		}
 
 		List<String> policies = this.getItemListFromDescriptor();
 
-		File[] day2ActionsolicyFiles = this.filterBasedOnConfiguration(PolicyFolder,
+		File[] day2ActionsolicyFiles = this.filterBasedOnConfiguration(policyFolder,
 			new CustomFolderFileFilter(policies));
 
 		if (day2ActionsolicyFiles != null && day2ActionsolicyFiles.length == 0) {
@@ -110,7 +115,7 @@ public class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 		if (policyOnServerByName.containsKey(policyName)) {
 			existingRecord = policyOnServerByName.get(policyName);
 		}
-		if (existingRecord != null && !existingRecord.getId().isBlank()  ) {
+		if (existingRecord != null && !existingRecord.getId().isBlank()) {
 			d2aPolicy.setId(existingRecord.getId());
 		} else {
 			d2aPolicy.setId(null);
@@ -118,7 +123,10 @@ public class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 
 		this.restClient.createDay2ActionsPolicy(d2aPolicy);
 	}
-
+	/**
+	 * getItemListFromDescriptor
+	 * @return list of policy names to import or export.
+	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		logger.info("{}->getItemListFromDescriptor", this.getClass());
@@ -127,11 +135,13 @@ public class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getDay2Actions());
+			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getDay2Actions());
 			return this.vraNgPackageDescriptor.getPolicy().getDay2Actions();
 		}
 	}
-
+	/**
+	 * Exporting every policy of this type found on server.
+	 */
 	@Override
 	protected void exportStoreContent() {
 		this.logger.debug("{}->exportStoreContent()", this.getClass());
@@ -151,7 +161,7 @@ public class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		this.logger.debug("{}->exportStoreContent({})", this.getClass()  , itemNames.toString());
+		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		List<VraNgDay2ActionsPolicy> policies = this.restClient.getDay2ActionsPolicies();
 
 		policies.forEach(

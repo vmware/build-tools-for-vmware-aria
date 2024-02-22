@@ -22,7 +22,6 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -41,7 +40,7 @@ import org.apache.commons.io.FilenameUtils;
  * #L%
  */
 
-public class VraNgLeasePolicyStore extends AbstractVraNgStore {
+public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	/**
 	 * Suffix used for all of the resources saved by this store.
 	 */
@@ -107,7 +106,7 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 			existingRecord = csPolicyOnServerByName.get(csPolicyName);
 		}
 
-		if (existingRecord != null && !existingRecord.getId().isBlank()  ) {
+		if (existingRecord != null && !existingRecord.getId().isBlank()) {
 			policy.setId(existingRecord.getId());
 		} else {
 			policy.setId(null);
@@ -170,7 +169,7 @@ public class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
 		List<VraNgLeasePolicy> policies = this.restClient.getLeasePolicies();
-		this.logger.debug("{}->exportStoreContent({})", this.getClass()  , itemNames.toString());
+		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		policies.forEach(
 				policy -> {
 					if (itemNames.contains(policy.getName())) {

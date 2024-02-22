@@ -27,22 +27,19 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
+public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	/**
-	 * Suffix used for all of the resources saved by this store.
+	 * Suffix used for all the resources saved by this store.
 	 */
 	private static final String CUSTOM_RESOURCE_SUFFIX = ".json";
 	/**
@@ -54,25 +51,30 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgResourceQuotaPolicyStore.class);
 
-
+	/**
+	 * Imports policies found in specified folder on server, according to filter specified in content.yml file.
+	 * If there is a list of policy names - import only the specified policies.
+	 * If there is no list, import everything.
+	 * @param sourceDirectory the folder where policy files are stored.
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory",
 			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES);
 		// verify directory exists
-		File PolicyFolder = Paths
+		File policyFolder = Paths
 			.get(sourceDirectory.getPath(),
 				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 				RESOURCE_QUOTA_POLICY)
 			.toFile();
-		if (!PolicyFolder.exists()) {
+		if (!policyFolder.exists()) {
 			logger.info("Resource Quota policy directory not found.");
 			return;
 		}
 
 		List<String> rqPolicies = this.getItemListFromDescriptor();
 
-		File[] resourceQuotaPolicyFiles = this.filterBasedOnConfiguration(PolicyFolder,
+		File[] resourceQuotaPolicyFiles = this.filterBasedOnConfiguration(policyFolder,
 			new CustomFolderFileFilter(rqPolicies));
 
 		if (resourceQuotaPolicyFiles != null && resourceQuotaPolicyFiles.length == 0) {
@@ -149,7 +151,10 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
 		}
 	}
-
+	/**
+	 * getItemListFromDescriptor
+	 * @return list of policy names to import or export.
+	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		logger.info("{}->getItemListFromDescriptor", this.getClass());
@@ -158,11 +163,13 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getResourceQuota());
+			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getResourceQuota());
 			return this.vraNgPackageDescriptor.getPolicy().getResourceQuota();
 		}
 	}
-
+	/**
+	 * Exports all the content for the given project.
+	 */
 	@Override
 	protected void exportStoreContent() {
 		System.out.println(this.getClass() + "->exportStoreContent()");
@@ -182,7 +189,7 @@ public class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		System.out.println(this.getClass() + "->exportStoreContent({})"+ itemNames.toString());
+		System.out.println(this.getClass() + "->exportStoreContent({})" + itemNames.toString());
 		List<VraNgResourceQuotaPolicy> rqPolicies = this.restClient.getResourceQuotaPolicies();
 
 		rqPolicies.forEach(

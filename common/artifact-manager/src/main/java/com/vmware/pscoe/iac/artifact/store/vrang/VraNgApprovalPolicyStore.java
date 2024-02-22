@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
+public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	/**
 	 * Suffix used for all of the resources saved by this store.
 	 */
@@ -51,25 +51,30 @@ public class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgApprovalPolicyStore.class);
 
-
+	/**
+	 * Imports policies found in specified folder on server, according to filter specified in content.yml file.
+	 * If there is a list of policy names - import only the specified policies.
+	 * If there is no list, import everything.
+	 * @param sourceDirectory the folder where policy files are stored.
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory",
 			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES);
 		// verify directory exists
-		File PolicyFolder = Paths
+		File policyFolder = Paths
 			.get(sourceDirectory.getPath(),
 				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 				APPROVAL)
 			.toFile();
-		if (!PolicyFolder.exists()) {
+		if (!policyFolder.exists()) {
 			logger.info("Approval policy directory not found.");
 			return;
 		}
 
 		List<String> policies = this.getItemListFromDescriptor();
 
-		File[] approvalPolicyFiles = this.filterBasedOnConfiguration(PolicyFolder,
+		File[] approvalPolicyFiles = this.filterBasedOnConfiguration(policyFolder,
 			new CustomFolderFileFilter(policies));
 
 		if (approvalPolicyFiles != null && approvalPolicyFiles.length == 0) {
@@ -119,6 +124,10 @@ public class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		this.restClient.createApprovalPolicy(policy);
 	}
 
+	/**
+	 * getItemListFromDescriptor
+	 * @return list of policy names to import or export.
+	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		logger.info("{}->getItemListFromDescriptor", this.getClass());
@@ -132,6 +141,9 @@ public class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Exporting every policy of this type found on server.
+	 */
 	@Override
 	protected void exportStoreContent() {
 		this.logger.debug("{}->exportStoreContent()", this.getClass());
@@ -151,7 +163,7 @@ public class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		this.logger.debug("{}->exportStoreContent({})", this.getClass()  , itemNames.toString());
+		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		List<VraNgApprovalPolicy> policies = this.restClient.getApprovalPolicies();
 
 		policies.forEach(
