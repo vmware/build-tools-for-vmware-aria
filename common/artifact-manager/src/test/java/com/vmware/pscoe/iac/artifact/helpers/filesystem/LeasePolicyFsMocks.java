@@ -27,11 +27,11 @@ public class LeasePolicyFsMocks extends VraNgFsMock {
 	/**
 	 * Policies folder name constant.
 	 */
-	private final static String DIR_POLICIES = "policies";
+	private static final String DIR_POLICIES = "policies";
 	/**
 	 * Day2-actions sub-folder name constant.
 	 */
-	private final static String LEASE_POLICY = "lease";
+	private static final String LEASE_POLICY = "lease";
 
 	/**
 	 * Constructor.

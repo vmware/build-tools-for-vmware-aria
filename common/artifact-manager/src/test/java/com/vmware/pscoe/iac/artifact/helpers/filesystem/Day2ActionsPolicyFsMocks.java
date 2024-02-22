@@ -27,11 +27,11 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 	/**
 	 * Policies folder name constant.
 	 */
-	private final static String DIR_POLICIES = "policies";
+	private static final String DIR_POLICIES = "policies";
 	/**
 	 * Day2-actions sub-folder name constant.
 	 */
-	private final static String DAY2_ACTIONS_POLICY = "day2-actions";
+	private static final String DAY2_ACTIONS_POLICY = "day2-actions";
 
 	/**
 	 * Constructor.

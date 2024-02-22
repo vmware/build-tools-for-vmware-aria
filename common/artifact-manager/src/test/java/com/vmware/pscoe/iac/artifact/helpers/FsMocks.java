@@ -23,25 +23,73 @@ import java.io.File;
  * Class responsible for accepting a temp directory and adding mock files to it
  */
 public class FsMocks {
+	/**
+	 * Temporary folder for storing mock test data.
+	 */
 	private final File tempDir;
+	/**
+	 * Temporary folder for storing mock test data for blueprintFsMocks.
+	 */
 	private BlueprintFsMocks blueprintFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for contentSharingPolicyFsMocks.
+	 */
 	private ContentSharingPolicyFsMocks contentSharingPolicyFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for resourceQuotaPolicyFsMocks.
+	 */
 	private ResourceQuotaPolicyFsMocks resourceQuotaPolicyFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for day2ActionsPolicyFsMocks.
+	 */
 	private Day2ActionsPolicyFsMocks day2ActionsPolicyFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for approvalPolicyFsMocks.
+	 */
 	private ApprovalPolicyFsMocks approvalPolicyFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for leasePolicyFsMocks.
+	 */
 	private LeasePolicyFsMocks leasePolicyFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for deploymentLimitPolicyFsMocks.
+	 */
 	private DeploymentLimitPolicyFsMocks deploymentLimitPolicyFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for propertyGroupFsMocks.
+	 */
 	private PropertyGroupFsMocks propertyGroupFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for catalogItemFsMocks.
+	 */
 	private CatalogItemFsMocks catalogItemFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for customResourceFsMocks.
+	 */
 	private CustomResourceFsMocks customResourceFsMocks;
+	/**
+	 * Temporary folder for storing mock test data for entitlementStore.
+	 */
 	private EntitlementFsMocks entitlementStore;
+	/**
+	 * Temporary folder for storing mock test data for resourceAction.
+	 */
 	private ResourceActionFsMocks resourceAction;
+	/**
+	 * Temporary folder for storing mock test data for subscription.
+	 */
 	private SubscriptionFsMocks subscription;
-
+	/**
+	 * Constructor.
+	 * @param tempDir the folder to store mock data.
+	 */
 	public FsMocks(File tempDir) {
 		this.tempDir = tempDir;
 	}
-
+	/**
+	 * Getter for blueprintFsMocks.
+	 * @return blueprintFsMocks
+	 */
 	public BlueprintFsMocks blueprintFsMocks() {
 		if (this.blueprintFsMocks == null) {
 			this.blueprintFsMocks = new BlueprintFsMocks(this.tempDir);
@@ -49,7 +97,10 @@ public class FsMocks {
 
 		return this.blueprintFsMocks;
 	}
-
+	/**
+	 * Getter for contentSharingFsMocks.
+	 * @return contentSharingFsMocks
+	 */
 	public ContentSharingPolicyFsMocks contentSharingFsMocks() {
 		if (this.contentSharingPolicyFsMocks == null) {
 			this.contentSharingPolicyFsMocks = new ContentSharingPolicyFsMocks(this.tempDir);
@@ -57,6 +108,10 @@ public class FsMocks {
 
 		return this.contentSharingPolicyFsMocks;
 	}
+	/**
+	 * Getter for resourceQuotaPolicyFsMocks.
+	 * @return resourceQuotaPolicyFsMocks
+	 */
 	public ResourceQuotaPolicyFsMocks resourceQuotaPolicyFsMocks() {
 		if (this.resourceQuotaPolicyFsMocks == null) {
 			this.resourceQuotaPolicyFsMocks = new ResourceQuotaPolicyFsMocks(this.tempDir);
@@ -64,6 +119,10 @@ public class FsMocks {
 
 		return this.resourceQuotaPolicyFsMocks;
 	}
+	/**
+	 * Getter for day2ActionsPolicyFsMocks.
+	 * @return day2ActionsPolicyFsMocks
+	 */
 	public Day2ActionsPolicyFsMocks getDay2ActionsPolicyFsMocks() {
 		if (this.day2ActionsPolicyFsMocks == null) {
 			this.day2ActionsPolicyFsMocks = new Day2ActionsPolicyFsMocks(this.tempDir);
@@ -71,6 +130,10 @@ public class FsMocks {
 
 		return day2ActionsPolicyFsMocks;
 	}
+	/**
+	 * Getter for deploymentLimitPolicyFsMocks.
+	 * @return deploymentLimitPolicyFsMocks
+	 */
 	public DeploymentLimitPolicyFsMocks getDeploymentLimitPolicyFsMocks() {
 		if (this.deploymentLimitPolicyFsMocks == null) {
 			this.deploymentLimitPolicyFsMocks = new DeploymentLimitPolicyFsMocks(this.tempDir);
@@ -78,6 +141,10 @@ public class FsMocks {
 
 		return deploymentLimitPolicyFsMocks;
 	}
+	/**
+	 * Getter for approvalPolicyFsMocks.
+	 * @return approvalPolicyFsMocks
+	 */
 	public ApprovalPolicyFsMocks getApprovalPolicyFsMocks() {
 		if (this.approvalPolicyFsMocks == null) {
 			this.approvalPolicyFsMocks = new ApprovalPolicyFsMocks(this.tempDir);
@@ -85,6 +152,10 @@ public class FsMocks {
 
 		return approvalPolicyFsMocks;
 	}
+	/**
+	 * Getter for leasePolicyFsMocks.
+	 * @return leasePolicyFsMocks
+	 */
 	public LeasePolicyFsMocks getLeasePolicyFsMocks() {
 		if (this.leasePolicyFsMocks == null) {
 			this.leasePolicyFsMocks = new LeasePolicyFsMocks(this.tempDir);
@@ -92,6 +163,10 @@ public class FsMocks {
 
 		return leasePolicyFsMocks;
 	}
+	/**
+	 * Getter for subscription.
+	 * @return subscription
+	 */
 	public SubscriptionFsMocks subscriptionFsMocks() {
 		if (this.subscription == null) {
 			this.subscription = new SubscriptionFsMocks(this.tempDir);
@@ -99,7 +174,10 @@ public class FsMocks {
 
 		return this.subscription;
 	}
-
+	/**
+	 * Getter for resourceAction.
+	 * @return resourceAction
+	 */
 	public ResourceActionFsMocks resourceActionFsMocks() {
 		if (this.resourceAction == null) {
 			this.resourceAction = new ResourceActionFsMocks(this.tempDir);
@@ -107,7 +185,10 @@ public class FsMocks {
 
 		return this.resourceAction;
 	}
-
+	/**
+	 * Getter for entitlementStore.
+	 * @return entitlementStore
+	 */
 	public EntitlementFsMocks entitlementStore() {
 		if (this.entitlementStore == null) {
 			this.entitlementStore = new EntitlementFsMocks(this.tempDir);
@@ -115,7 +196,10 @@ public class FsMocks {
 
 		return this.entitlementStore;
 	}
-
+	/**
+	 * Getter for propertyGroupFsMocks.
+	 * @return propertyGroupFsMocks
+	 */
 	public PropertyGroupFsMocks propertyGroupFsMocks() {
 		if (this.propertyGroupFsMocks == null) {
 			this.propertyGroupFsMocks = new PropertyGroupFsMocks(this.tempDir);
@@ -123,7 +207,10 @@ public class FsMocks {
 
 		return this.propertyGroupFsMocks;
 	}
-
+	/**
+	 * Getter for catalogItemFsMocks.
+	 * @return catalogItemFsMocks
+	 */
 	public CatalogItemFsMocks catalogItemFsMocks() {
 		if (this.catalogItemFsMocks == null) {
 			this.catalogItemFsMocks = new CatalogItemFsMocks(this.tempDir);
@@ -132,6 +219,10 @@ public class FsMocks {
 		return this.catalogItemFsMocks;
 	}
 
+	/**
+	 * Getter for customResourceFsMocks.
+	 * @return customResourceFsMocks
+	 */
 	public CustomResourceFsMocks customResourceFsMocks() {
 		if (this.customResourceFsMocks == null) {
 			this.customResourceFsMocks = new CustomResourceFsMocks(this.tempDir);
@@ -159,7 +250,7 @@ public class FsMocks {
 	}
 
 	/**
-	 * Gets the temp folder's project path
+	 * Gets the temp folder's project path.
 	 *
 	 * @return File
 	 */
