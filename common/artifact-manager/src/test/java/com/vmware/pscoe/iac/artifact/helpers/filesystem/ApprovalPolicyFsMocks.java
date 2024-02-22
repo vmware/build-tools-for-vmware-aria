@@ -27,11 +27,11 @@ public class ApprovalPolicyFsMocks extends VraNgFsMock {
 	/**
 	 * Policies folder name constant.
 	 */
-	private final static String DIR_POLICIES = "policies";
+	private static final String DIR_POLICIES = "policies";
 	/**
 	 * Day2-actions sub-folder name constant.
 	 */
-	private final static String APPROVAL_POLICY = "approval";
+	private static final String APPROVAL_POLICY = "approval";
 
 	/**
 	 * Constructor.

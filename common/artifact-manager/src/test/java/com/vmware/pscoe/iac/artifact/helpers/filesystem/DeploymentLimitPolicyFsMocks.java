@@ -27,11 +27,11 @@ public class DeploymentLimitPolicyFsMocks extends VraNgFsMock {
 	/**
 	 * Policies folder name constant.
 	 */
-	private final static String DIR_POLICIES = "policies";
+	private static final String DIR_POLICIES = "policies";
 	/**
 	 * Day2-actions sub-folder name constant.
 	 */
-	private final static String DEPLOYMENT_LIMIT_POLICY = "deployment-limit";
+	private static final String DEPLOYMENT_LIMIT_POLICY = "deployment-limit";
 
 	/**
 	 * Constructor.
