@@ -41,7 +41,39 @@ import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
+
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementDto;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementType;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItemType;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDeploymentLimitPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganizations;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegion;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
 
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
@@ -2832,7 +2864,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-		LOGGER.debug("Executing method {} on URI {} with entity {} ", method,url, entity);
+		LOGGER.debug("Executing method {} on URI {} with entity {} ", method, url, entity);
 		return restTemplate.exchange(url, method, entity, String.class);
 	}
 
@@ -3115,7 +3147,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * 
 	 */
 	protected List<VraNgResourceQuotaPolicy> getAllResourceQuotaPoliciesPrimitive() {
-		if (this.isVraAbove812) {
+		if (!this.isVraAbove812) {
 
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
@@ -3130,8 +3162,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 
-		} else
-			throw(new UnsupportedOperationException());
+		} else {
+			throw (new UnsupportedOperationException());
+		}
 	}
 
 	/**
@@ -3267,7 +3300,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		Map<String, String> params = new HashMap<>();
 		params.put("expandDefinition", "true");
 		params.put("computeStats", "true");
-		params.put("typeId",DAY2_ACTION_POLICY_TYPE );
+		params.put("typeId", DAY2_ACTION_POLICY_TYPE);
 
 		VraNgDay2ActionsPolicy policy = this.getPagedContent(SERVICE_POLICIES, params)
 			.stream()
@@ -3418,7 +3451,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Retrieve all Deployment Limit  policy
+	 * Retrieve all Deployment Limit  policy.
 	 *
 	 * @return list of Deployment Limit  policies that are available.
 	 *
@@ -3465,7 +3498,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Retrieve all Approval policies
+	 * Retrieve all Approval policies.
 	 *
 	 * @return list of Approval  policies that are available.
 	 *
