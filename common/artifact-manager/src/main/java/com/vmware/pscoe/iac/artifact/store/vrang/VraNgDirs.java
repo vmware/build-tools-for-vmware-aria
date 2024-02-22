@@ -15,7 +15,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 
-public class VraNgDirs {
+public final class VraNgDirs {
 	/**
 	 * entitlements folder name.
 	 */
