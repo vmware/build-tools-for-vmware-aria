@@ -36,12 +36,15 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Fix on legacy archetype failing with vro:pull (when workflow folder path name contains special characters(&))
 
-## Upgrade procedure
-[//]: # (Explain in details if something needs to be done)
+#### Previous Behaviour
 
-[//]: # (## Changelog:)
-[//]: # (Pull request links)
+When executing a vro:pull command on a legacy archetype, the command will fail without proper error if the workflow paths contains special characters such as '&'.
+
+#### Current Behaviour
+
+When executing a vro:pull command on a legacy archetype, if the workflows paths contains special character(&), the command will fail but will provide descriptive error message.
 
 ### Fix SSH Session methods type
 
@@ -52,3 +55,10 @@ When using SSH with typescript, the `error` and `state` methods has the type `vo
 #### Current Behavior
 
 Method `error` and `state` should return type `String` instead of type `void`
+
+
+## Upgrade procedure
+[//]: # (Explain in details if something needs to be done)
+
+[//]: # (## Changelog:)
+[//]: # (Pull request links)
