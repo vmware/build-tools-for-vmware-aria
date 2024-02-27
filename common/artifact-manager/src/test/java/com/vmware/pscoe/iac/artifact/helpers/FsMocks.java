@@ -1,3 +1,4 @@
+
 package com.vmware.pscoe.iac.artifact.helpers;
 
 /*
@@ -8,19 +9,30 @@ package com.vmware.pscoe.iac.artifact.helpers;
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-
-import com.vmware.pscoe.iac.artifact.helpers.filesystem.*;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.ApprovalPolicyFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.BlueprintFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.CatalogItemFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.ContentSharingPolicyFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.CustomResourceFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.Day2ActionsPolicyFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.DeploymentLimitPolicyFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.EntitlementFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.LeasePolicyFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.PropertyGroupFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.ResourceActionFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.ResourceQuotaPolicyFsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.filesystem.SubscriptionFsMocks;
 
 import java.io.File;
 
 /**
- * Class responsible for accepting a temp directory and adding mock files to it
+ * Class responsible for accepting a temp directory and adding mock files to it.
  */
 public class FsMocks {
 	/**
@@ -79,15 +91,19 @@ public class FsMocks {
 	 * Temporary folder for storing mock test data for subscription.
 	 */
 	private SubscriptionFsMocks subscription;
+
 	/**
 	 * Constructor.
+	 *
 	 * @param tempDir the folder to store mock data.
 	 */
 	public FsMocks(File tempDir) {
 		this.tempDir = tempDir;
 	}
+
 	/**
 	 * Getter for blueprintFsMocks.
+	 *
 	 * @return blueprintFsMocks
 	 */
 	public BlueprintFsMocks blueprintFsMocks() {
@@ -97,8 +113,10 @@ public class FsMocks {
 
 		return this.blueprintFsMocks;
 	}
+
 	/**
 	 * Getter for contentSharingFsMocks.
+	 *
 	 * @return contentSharingFsMocks
 	 */
 	public ContentSharingPolicyFsMocks contentSharingFsMocks() {
@@ -108,8 +126,10 @@ public class FsMocks {
 
 		return this.contentSharingPolicyFsMocks;
 	}
+
 	/**
 	 * Getter for resourceQuotaPolicyFsMocks.
+	 *
 	 * @return resourceQuotaPolicyFsMocks
 	 */
 	public ResourceQuotaPolicyFsMocks resourceQuotaPolicyFsMocks() {
@@ -119,8 +139,10 @@ public class FsMocks {
 
 		return this.resourceQuotaPolicyFsMocks;
 	}
+
 	/**
 	 * Getter for day2ActionsPolicyFsMocks.
+	 *
 	 * @return day2ActionsPolicyFsMocks
 	 */
 	public Day2ActionsPolicyFsMocks getDay2ActionsPolicyFsMocks() {
@@ -130,8 +152,10 @@ public class FsMocks {
 
 		return day2ActionsPolicyFsMocks;
 	}
+
 	/**
 	 * Getter for deploymentLimitPolicyFsMocks.
+	 *
 	 * @return deploymentLimitPolicyFsMocks
 	 */
 	public DeploymentLimitPolicyFsMocks getDeploymentLimitPolicyFsMocks() {
@@ -141,8 +165,10 @@ public class FsMocks {
 
 		return deploymentLimitPolicyFsMocks;
 	}
+
 	/**
 	 * Getter for approvalPolicyFsMocks.
+	 *
 	 * @return approvalPolicyFsMocks
 	 */
 	public ApprovalPolicyFsMocks getApprovalPolicyFsMocks() {
@@ -152,8 +178,10 @@ public class FsMocks {
 
 		return approvalPolicyFsMocks;
 	}
+
 	/**
 	 * Getter for leasePolicyFsMocks.
+	 *
 	 * @return leasePolicyFsMocks
 	 */
 	public LeasePolicyFsMocks getLeasePolicyFsMocks() {
@@ -163,8 +191,10 @@ public class FsMocks {
 
 		return leasePolicyFsMocks;
 	}
+
 	/**
 	 * Getter for subscription.
+	 *
 	 * @return subscription
 	 */
 	public SubscriptionFsMocks subscriptionFsMocks() {
@@ -174,8 +204,10 @@ public class FsMocks {
 
 		return this.subscription;
 	}
+
 	/**
 	 * Getter for resourceAction.
+	 *
 	 * @return resourceAction
 	 */
 	public ResourceActionFsMocks resourceActionFsMocks() {
@@ -185,8 +217,10 @@ public class FsMocks {
 
 		return this.resourceAction;
 	}
+
 	/**
 	 * Getter for entitlementStore.
+	 *
 	 * @return entitlementStore
 	 */
 	public EntitlementFsMocks entitlementStore() {
@@ -196,8 +230,10 @@ public class FsMocks {
 
 		return this.entitlementStore;
 	}
+
 	/**
 	 * Getter for propertyGroupFsMocks.
+	 *
 	 * @return propertyGroupFsMocks
 	 */
 	public PropertyGroupFsMocks propertyGroupFsMocks() {
@@ -207,8 +243,10 @@ public class FsMocks {
 
 		return this.propertyGroupFsMocks;
 	}
+
 	/**
 	 * Getter for catalogItemFsMocks.
+	 *
 	 * @return catalogItemFsMocks
 	 */
 	public CatalogItemFsMocks catalogItemFsMocks() {
@@ -221,6 +259,7 @@ public class FsMocks {
 
 	/**
 	 * Getter for customResourceFsMocks.
+	 *
 	 * @return customResourceFsMocks
 	 */
 	public CustomResourceFsMocks customResourceFsMocks() {
@@ -235,8 +274,8 @@ public class FsMocks {
 	 * Finds a specific item in the given folder.
 	 * Throws if missing
 	 *
-	 * @param    folder -> the folder to search in
-	 * @param    itemName - The item name to search for
+	 * @param folder   -> the folder to search in
+	 * @param itemName - The item name to search for
 	 * @return File
 	 */
 	public File findItemByNameInFolder(File folder, String itemName) {

@@ -8,17 +8,17 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 
 import com.google.gson.JsonObject;
 
-public class VraNgResourceQuotaPolicy {
-	
+public final class VraNgResourceQuotaPolicy {
+
 
 	/**
 	 * Id of the Resource Quota Policy.
@@ -68,7 +68,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param idIn              Id
 	 * @param nameIn            Name
 	 * @param typeIdIn          Typeid
@@ -77,12 +77,12 @@ public class VraNgResourceQuotaPolicy {
 	 * @param enforcementTypeIn enforcementType
 	 * @param descriptionIn     description
 	 * @param definitionIn      definition
-	 * @param criteriaIn 		scopeCriteria
+	 * @param criteriaIn        scopeCriteria
 	 */
 	public VraNgResourceQuotaPolicy(final String idIn, final String nameIn, final String typeIdIn,
-			final String projectIdIn, final String orgIdIn,
-			final String enforcementTypeIn, final String descriptionIn,
-			final JsonObject definitionIn, final JsonObject criteriaIn) {
+									final String projectIdIn, final String orgIdIn,
+									final String enforcementTypeIn, final String descriptionIn,
+									final JsonObject definitionIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -96,7 +96,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Get the name of the resource quota policy.
-	 * 
+	 *
 	 * @return content sharing policy id
 	 */
 	public String getId() {
@@ -105,7 +105,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Set the id of the resource quota policy.
-	 * 
+	 *
 	 * @param idIn - id of the resource quota policy
 	 */
 	public void setId(final String idIn) {
@@ -114,7 +114,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Get the name of the resource quota policy.
-	 * 
+	 *
 	 * @return content sharing policy name
 	 */
 	public String getName() {
@@ -123,7 +123,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Set the name of the resource quota policy.
-	 * 
+	 *
 	 * @param nameIn - name of the resource quota policy
 	 */
 	public void setName(final String nameIn) {
@@ -132,7 +132,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Get the name of the resource quota policy.
-	 * 
+	 *
 	 * @return content sharing policy name
 	 */
 	public String getProjectId() {
@@ -141,7 +141,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Set the projectId of the resource quota policy.
-	 * 
+	 *
 	 * @param projectIdIn - project id of the resource quota policy
 	 */
 	public void setProjectId(final String projectIdIn) {
@@ -150,7 +150,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Get the id of the resource quota policy org.
-	 * 
+	 *
 	 * @return content sharing policy org id
 	 */
 	public String getOrgId() {
@@ -159,7 +159,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Set the orgId of the resource quota policy.
-	 * 
+	 *
 	 * @param orgIdIn - Org id of the resource quota policy
 	 */
 	public void setOrgId(final String orgIdIn) {
@@ -168,7 +168,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Get the typeId of the resource quota policy.
-	 * 
+	 *
 	 * @return content sharing policy typeId
 	 */
 	public String getTypeId() {
@@ -177,7 +177,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Set the typeId of the resource quota policy.
-	 * 
+	 *
 	 * @param typeIdIn - typeId of the resource quota policy
 	 */
 	public void setTypeId(final String typeIdIn) {
@@ -186,7 +186,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Get the enforcementType of the resource quota policy.
-	 * 
+	 *
 	 * @return content sharing policy enforcementType
 	 */
 	public String getEnforcementType() {
@@ -195,7 +195,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Set the enforcementType of the resource quota policy.
-	 * 
+	 *
 	 * @param enforcementTypeIn - enforcementType of the resource quota policy
 	 */
 	public void setEnforcementType(final String enforcementTypeIn) {
@@ -204,7 +204,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Get the description of the resource quota policy.
-	 * 
+	 *
 	 * @return content sharing policy description
 	 */
 	public String getDescription() {
@@ -213,7 +213,7 @@ public class VraNgResourceQuotaPolicy {
 
 	/**
 	 * Set the description of the resource quota policy.
-	 * 
+	 *
 	 * @param descriptionIn - description of the resource quota policy
 	 */
 	public void setDescription(final String descriptionIn) {
@@ -221,25 +221,36 @@ public class VraNgResourceQuotaPolicy {
 	}
 
 	/**
-	 * Get the definition of the resource quota policy.
-	 * 
-	 * @return content sharing policy definition
+	 * Get the scopeCriteria of the policy.
+	 *
+	 * @return policy scopeCriteria as JsonObject.
 	 */
-	public JsonObject getDefinition() {
-		return definition;
-	}
-
 	public JsonObject getScopeCriteria() {
 		return scopeCriteria;
 	}
+
+	/**
+	 * Set the scopeCriteria of the policy.
+	 *
+	 * @param scopeCriteria the criteria of the policy.
+	 */
 
 	public void setScopeCriteria(JsonObject scopeCriteria) {
 		this.scopeCriteria = scopeCriteria;
 	}
 
 	/**
+	 * Get the definition of the resource quota policy.
+	 *
+	 * @return content sharing policy definition
+	 */
+	public JsonObject getDefinition() {
+		return definition;
+	}
+
+	/**
 	 * Set the definition of the resource quota policy.
-	 * 
+	 *
 	 * @param definitionIn - definition of the resource quota policy
 	 */
 	public void setDefinition(final JsonObject definitionIn) {

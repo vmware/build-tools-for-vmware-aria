@@ -129,13 +129,13 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
-		logger.info("{}->getItemListFromDescriptor", VraNgContentSharingPolicyStore.class);
+		logger.debug("{}->getItemListFromDescriptor", VraNgContentSharingPolicyStore.class);
 
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			logger.info("Descriptor policy is null");
+			logger.debug("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}",this.vraNgPackageDescriptor.getPolicy().getContentSharing());
+			logger.debug("Found items {}", this.vraNgPackageDescriptor.getPolicy().getContentSharing());
 			return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
 		}
 	}
@@ -174,7 +174,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent() {
-		this.logger.debug("{}->exportStoreContent()", this.getClass() );
+		this.logger.debug("{}->exportStoreContent()", this.getClass());
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 
 		csPolicies.forEach(
@@ -191,7 +191,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		this.logger.debug("{}->exportStoreContent({})", this.getClass()  , itemNames.toString());
+		this.logger.debug("{}->exportStoreContent({})", this.getClass() , itemNames.toString());
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 
 		csPolicies.forEach(

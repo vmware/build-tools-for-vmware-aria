@@ -24,17 +24,30 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ResourceQuotaPolicyFsMocks extends VraNgFsMock {
-	private final static String DIR_POLICIES = "policies";
-	private final static String RESOURCE_QUOTA_POLICY = "resource-quota";
+	/**
+	 * Policies folder name constant.
+	 */
+	private static final String DIR_POLICIES = "policies";
+	/**
+	 * Resource-quota sub-folder name constant.
+	 */
+	private static final String RESOURCE_QUOTA_POLICY = "resource-quota";
 
-
+	/**
+	 * Constructor.
+	 * @param tempDir temporary folder for test data.
+	 */
 	public ResourceQuotaPolicyFsMocks(File tempDir) {
 		super(tempDir);
 	}
-
+	/**
+	 * Getter.
+	 * @return the full path where test policy json files are stored during tests.
+	 */
 	@Override
 	public File getWorkdir() {
-		return Paths.get(this.tempDir.getPath(), DIR_POLICIES, RESOURCE_QUOTA_POLICY).toFile();
+		return Paths.get(this.tempDir.getPath(),
+			DIR_POLICIES, RESOURCE_QUOTA_POLICY).toFile();
 	}
 
 	/**

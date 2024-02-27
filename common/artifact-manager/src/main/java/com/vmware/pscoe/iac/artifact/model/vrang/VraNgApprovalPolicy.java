@@ -8,9 +8,9 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -61,26 +61,30 @@ public final class VraNgApprovalPolicy {
 	private JsonObject definition;
 
 	/**
-	* Empty Constructor.
-	*/
-	public VraNgApprovalPolicy() { };
+	 * Empty Constructor.
+	 */
+	public VraNgApprovalPolicy() {
+	}
+
+	;
 
 	/**
 	 * Constructor with all member values.
-	 * @param idIn id of the policy.
-	 * @param nameIn name of the policy.
-	 * @param typeIdIn type of the policy.
-	 * @param projectIdIn projectId of the policy.
-	 * @param orgIdIn organizationId of the policy.
+	 *
+	 * @param idIn              id of the policy.
+	 * @param nameIn            name of the policy.
+	 * @param typeIdIn          type of the policy.
+	 * @param projectIdIn       projectId of the policy.
+	 * @param orgIdIn           organizationId of the policy.
 	 * @param enforcementTypeIn enforcement type of the policy.
-	 * @param descriptionIn description of the policy.
-	 * @param definitionIn actual policy definition - different structure for every policy type.
-	 * @param criteriaIn scope criteria of the policy.
+	 * @param descriptionIn     description of the policy.
+	 * @param definitionIn      actual policy definition - different structure for every policy type.
+	 * @param criteriaIn        scope criteria of the policy.
 	 */
 	public VraNgApprovalPolicy(final String idIn, final String nameIn, final String typeIdIn,
-									  final String projectIdIn, final String orgIdIn,
-									  final String enforcementTypeIn, final String descriptionIn,
-									  final JsonObject definitionIn, final JsonObject criteriaIn) {
+							   final String projectIdIn, final String orgIdIn,
+							   final String enforcementTypeIn, final String descriptionIn,
+							   final JsonObject definitionIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -94,6 +98,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Get policy id.
+	 *
 	 * @return policy id.
 	 */
 	public String getId() {
@@ -102,7 +107,8 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Set policy id.
-	 * @param id  - the policy id.
+	 *
+	 * @param id - the policy id.
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -110,6 +116,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Get the policy name.
+	 *
 	 * @return policy name.
 	 */
 	public String getName() {
@@ -118,20 +125,25 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Set the policy name.
+	 *
 	 * @param name policy name.
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * Get the typeId of the policy.
+	 *
 	 * @return typeId - typeId of the policy.
 	 */
 	public String getTypeId() {
 		return typeId;
 	}
+
 	/**
 	 * Set the typeId of the policy.
+	 *
 	 * @param typeId - typeId of the policy.
 	 */
 	public void setTypeId(String typeId) {
@@ -139,14 +151,17 @@ public final class VraNgApprovalPolicy {
 	}
 
 	/**
-	 * Get the projectIf of the policy. May be missing and return null.
+	 * Get the projectId of the policy. May be missing and return null.
+	 *
 	 * @return project id.
 	 */
 	public String getProjectId() {
 		return projectId;
 	}
+
 	/**
-	 * Set the projectIf of the policy. May be missing and return null.
+	 * Set the projectId of the policy. May be null.
+	 *
 	 * @param projectId the project id of the policy.
 	 */
 	public void setProjectId(String projectId) {
@@ -155,6 +170,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Get the organization id.
+	 *
 	 * @return the organization id of the policy.
 	 */
 	public String getOrgId() {
@@ -163,6 +179,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Set the organization id of the policy.
+	 *
 	 * @param orgId the organization id of the policy.
 	 */
 	public void setOrgId(String orgId) {
@@ -171,6 +188,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Get the enforcement type of the policy.
+	 *
 	 * @return the enforcement type of the policy.
 	 */
 	public String getEnforcementType() {
@@ -178,7 +196,8 @@ public final class VraNgApprovalPolicy {
 	}
 
 	/**
-	 *  Set the enforcement type of the policy.
+	 * Set the enforcement type of the policy.
+	 *
 	 * @param enforcementType the enforcement type of the policy.
 	 */
 	public void setEnforcementType(String enforcementType) {
@@ -187,6 +206,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Get the description of the policy.
+	 *
 	 * @return the description of the policy.
 	 */
 	public String getDescription() {
@@ -195,6 +215,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Set the description of the policy.
+	 *
 	 * @param description the description of the policy.
 	 */
 	public void setDescription(String description) {
@@ -203,6 +224,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Get the criteria of the policy.
+	 *
 	 * @return policy criteria as JsonObject.
 	 */
 	public JsonObject getCriteria() {
@@ -211,6 +233,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Set the criteria of the policy.
+	 *
 	 * @param criteria the criteria of the policy.
 	 */
 	public void setCriteria(JsonObject criteria) {
@@ -219,6 +242,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Get the definition of the policy.
+	 *
 	 * @return the definition of the policy as JsonObject.
 	 */
 	public JsonObject getDefinition() {
@@ -227,6 +251,7 @@ public final class VraNgApprovalPolicy {
 
 	/**
 	 * Set the definition of the policy.
+	 *
 	 * @param definition the definition of the policy as JsonObject.
 	 */
 	public void setDefinition(JsonObject definition) {
