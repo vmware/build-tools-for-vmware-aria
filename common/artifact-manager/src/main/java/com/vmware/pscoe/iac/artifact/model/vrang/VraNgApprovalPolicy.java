@@ -61,14 +61,6 @@ public final class VraNgApprovalPolicy {
 	private JsonObject definition;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public VraNgApprovalPolicy() {
-	}
-
-	;
-
-	/**
 	 * Constructor with all member values.
 	 *
 	 * @param idIn              id of the policy.

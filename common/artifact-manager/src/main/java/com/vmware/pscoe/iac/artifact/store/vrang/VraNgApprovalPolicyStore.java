@@ -184,11 +184,17 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 													final VraNgApprovalPolicy policy) {
 		logger.debug("Storing  {}", policy.getName());
 		File store = new File(serverPackage.getFilesystemPath());
+
+		String filename = policy.getName();
+		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+			throw new IllegalArgumentException("Invalid filename " + filename);
+		}
+
 		File policyFile = Paths.get(
 			store.getPath(),
 			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 			APPROVAL,
-			policy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
+			filename + CUSTOM_RESOURCE_SUFFIX).toFile();
 
 		if (!policyFile.getParentFile().isDirectory()
 			&& !policyFile.getParentFile().mkdirs()) {

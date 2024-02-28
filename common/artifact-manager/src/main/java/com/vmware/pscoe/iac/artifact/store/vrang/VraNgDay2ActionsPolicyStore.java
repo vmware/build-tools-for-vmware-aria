@@ -181,11 +181,17 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 													  final VraNgDay2ActionsPolicy day2ActionsPolicy) {
 		logger.debug("Storing day2ActionsPolicy {}", day2ActionsPolicy.getName());
 		File store = new File(serverPackage.getFilesystemPath());
+
+		String filename = day2ActionsPolicy.getName();
+		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+			throw new IllegalArgumentException("Invalid filename " + filename);
+		}
+
 		File policyFile = Paths.get(
 			store.getPath(),
 			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 			DAY2_ACTIONS_POLICY,
-			day2ActionsPolicy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
+			filename + CUSTOM_RESOURCE_SUFFIX).toFile();
 
 		if (!policyFile.getParentFile().isDirectory()
 			&& !policyFile.getParentFile().mkdirs()) {

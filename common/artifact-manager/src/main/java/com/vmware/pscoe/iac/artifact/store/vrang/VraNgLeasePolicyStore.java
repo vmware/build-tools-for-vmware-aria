@@ -189,16 +189,22 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 			final VraNgLeasePolicy leasePolicy) {
 		logger.debug("Storing Lease Policy {}", leasePolicy.getName());
 		File store = new File(serverPackage.getFilesystemPath());
+		String filename = leasePolicy.getName();
+		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+			throw new IllegalArgumentException("Invalid filename " + filename);
+		}
 		File leasePolicyFile = Paths.get(
 				store.getPath(),
 				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
 				LEASE_POLICY,
-				leasePolicy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
+			filename + CUSTOM_RESOURCE_SUFFIX).toFile();
 
 		if (!leasePolicyFile.getParentFile().isDirectory()
 				&& !leasePolicyFile.getParentFile().mkdirs()) {
 			logger.warn("Could not create folder: {}", leasePolicyFile.getParentFile().getAbsolutePath());
 		}
+
+
 
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();

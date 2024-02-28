@@ -58,14 +58,6 @@ public final class VraNgDeploymentLimitPolicy {
 	private JsonObject definition;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public VraNgDeploymentLimitPolicy() {
-	}
-
-	;
-
-	/**
 	 * Constructor with all member values.
 	 *
 	 * @param idIn              id of the policy.

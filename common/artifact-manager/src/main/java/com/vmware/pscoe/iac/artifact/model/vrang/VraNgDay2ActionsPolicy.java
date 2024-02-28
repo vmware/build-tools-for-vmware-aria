@@ -58,14 +58,6 @@ public final class VraNgDay2ActionsPolicy {
 	private JsonObject definition;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public VraNgDay2ActionsPolicy() {
-	}
-
-	;
-
-	/**
 	 * Constructor with all member values.
 	 *
 	 * @param idIn              id of the policy.

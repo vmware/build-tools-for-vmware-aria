@@ -214,11 +214,15 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 			final VraNgResourceQuotaPolicy resourceQuotaPolicy) {
 		logger.debug("Storing resourceQuotaPolicy {}", resourceQuotaPolicy.getName());
 		File store = new File(serverPackage.getFilesystemPath());
+		String filename = resourceQuotaPolicy.getName();
+		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+			throw new IllegalArgumentException("Invalid filename " + filename);
+		}
 		File resourceQuotaPolicyFile = Paths.get(
-				store.getPath(),
-				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
-				RESOURCE_QUOTA_POLICY,
-				resourceQuotaPolicy.getName() + CUSTOM_RESOURCE_SUFFIX).toFile();
+			store.getPath(),
+			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
+			RESOURCE_QUOTA_POLICY,
+			filename + CUSTOM_RESOURCE_SUFFIX).toFile();
 
 		if (!resourceQuotaPolicyFile.getParentFile().isDirectory()
 				&& !resourceQuotaPolicyFile.getParentFile().mkdirs()) {
