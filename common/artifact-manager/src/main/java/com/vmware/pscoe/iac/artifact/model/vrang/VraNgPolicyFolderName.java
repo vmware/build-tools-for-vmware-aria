@@ -16,24 +16,49 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  */
 
 public enum VraNgPolicyFolderName {
-
+	/**
+	 * Sub-folder name for content sharing policies.
+	 */
 	CONTENT_SHARING("content-sharing"),
+	/**
+	 * Sub-folder name for resource quota policies.
+	 */
 	RESOURCE_QUOTA("resource-quota"),
+	/**
+	 * Sub-folder name for day 2 actions policies.
+	 */
 	DAY2_ACTION("day2-actions"),
+	/**
+	 * Sub-folder name for approval policies.
+	 */
 	APPROVAL("approval"),
+	/**
+	 * Sub-folder name for lease policies.
+	 */
 	LEASE("lease"),
+	/**
+	 * Sub-folder name for deployment limit policies.
+	 */
 	DEPLOYMENT_LIMIT("deployment-limit");
 	private final String name;
-	private VraNgPolicyFolderName (String value){
+	VraNgPolicyFolderName(String value) {
 			this.name = value;
 	}
 
+	/**
+	 * From enum to string.
+	 * @return sub-folder name.
+	 */
 	@Override
 	public String toString() {
 		return this.name;
 	}
 
-
+	/**
+	 * Return sub-folder name from string.
+	 * @param name .
+	 * @return sub-folder name.
+	 */
 	public static VraNgPolicyFolderName fromString(String name) {
 		for (VraNgPolicyFolderName type : VraNgPolicyFolderName.values()) {
 			if (type.name.equalsIgnoreCase(name)) {
@@ -42,7 +67,12 @@ public enum VraNgPolicyFolderName {
 		}
 		return null;
 	}
-	public String getName(){
+
+	/**
+	 * Getter.
+	 * @return sub-folder name.
+	 */
+	public String getName() {
 		return this.name;
 	}
 }
