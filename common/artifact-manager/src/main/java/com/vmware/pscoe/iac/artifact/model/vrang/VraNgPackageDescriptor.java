@@ -104,7 +104,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	 * Setter.
 	 * @param propertyGroup input values.
 	 */
-	public void setPropertyGroup( List<String> propertyGroup ) {
+	public void setPropertyGroup(List<String> propertyGroup) {
 		this.propertyGroup	= propertyGroup;
 	}
 
@@ -137,8 +137,8 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	 * Setter.
 	 * @param catalogItem input values.
 	 */
-    public void setCatalogItem( List<String> catalogItem ) {
-        this.catalogItem	= catalogItem;
+    public void setCatalogItem(List<String> catalogItem) {
+        this.catalogItem = catalogItem;
     }
 
 	/**
@@ -252,7 +252,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	 */
 	public void setPolicy(VraNgPolicy policy) {
         logger.info("VraNgPolicy.setPolicy {}", policy);
-		this.policy= policy;
+		this.policy = policy;
     }
 
 	/**

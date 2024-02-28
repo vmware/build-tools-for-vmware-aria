@@ -40,6 +40,9 @@ public enum VraNgPolicyFolderName {
 	 * Sub-folder name for deployment limit policies.
 	 */
 	DEPLOYMENT_LIMIT("deployment-limit");
+	/**
+	 * Policy sub-folder name.
+	 */
 	private final String name;
 	VraNgPolicyFolderName(String value) {
 			this.name = value;
