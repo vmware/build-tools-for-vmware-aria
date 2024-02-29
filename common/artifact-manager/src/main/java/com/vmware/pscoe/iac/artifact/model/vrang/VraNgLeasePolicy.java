@@ -62,7 +62,7 @@ public class VraNgLeasePolicy {
      */
 	private JsonObject definition;
 	/**
-	 * Scope criteria of the policy.
+	 * Criteria of the policy.
 	 */
 	private JsonObject criteria;
 	/**

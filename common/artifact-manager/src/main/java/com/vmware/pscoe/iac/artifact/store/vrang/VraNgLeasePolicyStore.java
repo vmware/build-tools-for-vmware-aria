@@ -73,10 +73,10 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 			return;
 		}
 
-		List<String> csPolicies = this.getItemListFromDescriptor();
+		List<String> policies = this.getItemListFromDescriptor();
 
 		File[] leasePolicyFiles = this.filterBasedOnConfiguration(leasePolicyFolder,
-				new CustomFolderFileFilter(csPolicies));
+				new CustomFolderFileFilter(policies));
 
 		if (leasePolicyFiles != null && leasePolicyFiles.length == 0) {
 			logger.info("Could not find any Lease Policies.");
@@ -84,26 +84,26 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		}
 
 		logger.info("Found Lease Policies. Importing...");
-		Map<String, VraNgLeasePolicy> csPolicyOnServerByName = this.restClient.getLeasePolicies()
+		Map<String, VraNgLeasePolicy> policyOnServerByName = this.restClient.getLeasePolicies()
 				.stream()
 				.map(csp -> this.restClient.getLeasePolicy(csp.getId()))
 				.collect(Collectors.toMap(VraNgLeasePolicy::getName, item -> item));
 
 		for (File leasePolicyFile : leasePolicyFiles) {
-			this.handleLeasePolicyImport(leasePolicyFile, csPolicyOnServerByName);
+			this.handleLeasePolicyImport(leasePolicyFile, policyOnServerByName);
 		}
 	}
 
 	private void handleLeasePolicyImport(final File leasePolicyFile,
-			final Map<String, VraNgLeasePolicy> csPolicyOnServerByName) {
-		String csPolicyNameWithExt = leasePolicyFile.getName();
-		String csPolicyName = FilenameUtils.removeExtension(csPolicyNameWithExt);
-		logger.info("Attempting to import Lease policy '{}'", csPolicyName);
+			final Map<String, VraNgLeasePolicy> policyOnServerByName) {
+		String policyNameWithExt = leasePolicyFile.getName();
+		String policyName = FilenameUtils.removeExtension(policyNameWithExt);
+		logger.info("Attempting to import Lease policy '{}'", policyName);
 		VraNgLeasePolicy policy = jsonFileToVraNgLeasePolicy(leasePolicyFile);
 		// Check if the Lease policy exists
 		VraNgLeasePolicy existingRecord = null;
-		if (csPolicyOnServerByName.containsKey(csPolicyName)) {
-			existingRecord = csPolicyOnServerByName.get(csPolicyName);
+		if (policyOnServerByName.containsKey(policyName)) {
+			existingRecord = policyOnServerByName.get(policyName);
 		}
 
 		if (existingRecord != null && !existingRecord.getId().isBlank()) {
@@ -204,29 +204,13 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 			logger.warn("Could not create folder: {}", leasePolicyFile.getParentFile().getAbsolutePath());
 		}
 
-
-
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			JsonObject csPolicyJsonObject = gson.fromJson(new Gson().toJson(leasePolicy), JsonObject.class);
-			JsonObject definition = csPolicyJsonObject.getAsJsonObject("definition");
-			JsonArray euArr = definition.getAsJsonArray("entitledUsers");
-			if (euArr != null) {
-				for (JsonElement eu : euArr) {
-					JsonObject entitledUserObj = eu.getAsJsonObject();
-					JsonArray itemsArr = entitledUserObj.getAsJsonArray("items");
-					for (JsonElement item : itemsArr) {
-						JsonObject itemObj = item.getAsJsonObject();
-						itemObj.remove("id");
-					}
-				}
-			}
-			definition.add("entitledUsers", euArr);
-			csPolicyJsonObject.add("definition", definition);
+			JsonObject policyJsonObject = gson.fromJson(new Gson().toJson(leasePolicy), JsonObject.class);
 			// write Lease file
 			logger.info("Created Lease file {}",
 					Files.write(Paths.get(leasePolicyFile.getPath()),
-							gson.toJson(csPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
+							gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to create Lease {}", leasePolicyFile.getAbsolutePath());
 			throw new RuntimeException(
