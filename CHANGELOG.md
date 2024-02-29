@@ -23,6 +23,7 @@
 * [installer] 133 / Delete old packages fails with 401 error in case vro is embedded.
 * [vro-types] Fix SSHSession 'output' type
 * [artifact-manager] Extend Information on Exception messages for some of the  REST API Calls.
+* [vro-types] Fix SSHSession `cmd`, `pty`, `terminal` types
 
 ## v2.36.0 - 16 Nov 2023
 
