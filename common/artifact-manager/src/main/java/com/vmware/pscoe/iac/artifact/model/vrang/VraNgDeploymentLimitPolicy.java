@@ -51,6 +51,10 @@ public final class VraNgDeploymentLimitPolicy {
 	/**
 	 * Scope Criteria of the Policy.
 	 */
+	private JsonObject scopeCriteria;
+	/**
+	 * Criteria of the Policy.
+	 */
 	private JsonObject criteria;
 	/**
 	 * Definition  Policy.
@@ -73,7 +77,7 @@ public final class VraNgDeploymentLimitPolicy {
 	public VraNgDeploymentLimitPolicy(final String idIn, final String nameIn, final String typeIdIn,
 									  final String projectIdIn, final String orgIdIn,
 									  final String enforcementTypeIn, final String descriptionIn,
-									  final JsonObject definitionIn, final JsonObject criteriaIn) {
+									  final JsonObject definitionIn, final JsonObject criteriaIn, final JsonObject scopeCriteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -83,6 +87,7 @@ public final class VraNgDeploymentLimitPolicy {
 		this.description = descriptionIn;
 		this.definition = definitionIn;
 		this.criteria = criteriaIn;
+		this.scopeCriteria = scopeCriteriaIn;
 	}
 
 	/**

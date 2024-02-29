@@ -65,12 +65,11 @@ public class VraNgLeasePolicy {
 	 * Scope criteria of the policy.
 	 */
 	private JsonObject criteria;
-
 	/**
-	* Default constructor for the VraNgLeasePolicy class.
-	*/
-	public VraNgLeasePolicy() {
-	}
+	 * Scope criteria of the policy.
+	 */
+	private JsonObject scopeCriteria;
+
 
 	/**
 	* Constructs a new instance of the VraNgLeasePolicy with the given parameters.
@@ -83,12 +82,13 @@ public class VraNgLeasePolicy {
 	* @param enforcementTypeIn The type of enforcement for the lease policy.
 	* @param descriptionIn A description of the lease policy.
 	* @param definitionIn The definition of the lease policy.
-	* @param criteriaIn  the scope criteria of the lease policy
+	* @param criteriaIn  the criteria of the lease policy.
+	 * @param scopeCriteriaIn    the scope criteria of the lease policy
 	*/
 	public VraNgLeasePolicy(final String idIn, final String nameIn, final String typeIdIn,
 			final String projectIdIn, final String orgIdIn,
 			final String enforcementTypeIn, final String descriptionIn,
-			final JsonObject definitionIn, final JsonObject criteriaIn) {
+			final JsonObject definitionIn, final JsonObject criteriaIn, final JsonObject scopeCriteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -98,6 +98,7 @@ public class VraNgLeasePolicy {
 		this.description = descriptionIn;
 		this.definition = definitionIn;
 		this.criteria = criteriaIn;
+		this.scopeCriteria = scopeCriteriaIn;
 	}
 
 	/**

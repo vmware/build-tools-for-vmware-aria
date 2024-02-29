@@ -46,12 +46,15 @@ public final class VraNgDay2ActionsPolicy {
 	 * Description of the Day 2 Actions Policy.
 	 */
 	private String description;
-
-
 	/**
-	 * Scope of the Day 2 Actions Policy.
+	 * Scope criteria of the Day 2 Actions Policy.
 	 */
 	private JsonObject scopeCriteria;
+
+	/**
+	 * Criteria of the Day 2 Actions Policy.
+	 */
+	private JsonObject criteria;
 	/**
 	 * Definition of the Day 2 Actions Policy.
 	 */
@@ -69,11 +72,12 @@ public final class VraNgDay2ActionsPolicy {
 	 * @param descriptionIn     description of the policy.
 	 * @param definitionIn      actual policy definition - different structure for every policy type.
 	 * @param criteriaIn        scope criteria of the policy.
+	 * @param scopeCriteriaIn        scope criteria of the policy.
 	 */
 	public VraNgDay2ActionsPolicy(final String idIn, final String nameIn, final String typeIdIn,
 								  final String projectIdIn, final String orgIdIn,
 								  final String enforcementTypeIn, final String descriptionIn,
-								  final JsonObject definitionIn, final JsonObject criteriaIn) {
+								  final JsonObject definitionIn, final JsonObject scopeCriteriaIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -82,7 +86,8 @@ public final class VraNgDay2ActionsPolicy {
 		this.enforcementType = enforcementTypeIn;
 		this.description = descriptionIn;
 		this.definition = definitionIn;
-		this.scopeCriteria = criteriaIn;
+		this.scopeCriteria = scopeCriteriaIn;
+		this.criteria = criteriaIn;
 	}
 
 	/**

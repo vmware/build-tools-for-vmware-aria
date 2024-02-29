@@ -1485,7 +1485,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * getDeploymentLimitPolicies.
+	 * getApprovalPolicies.
 	 *
 	 * @return policies
 	 */
@@ -1501,7 +1501,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createApprovalPolicy.
 	 *
-	 * @param policy day 2 actions policy
+	 * @param policy  policy to be created or updated.
 	 */
 	public void createApprovalPolicy(final VraNgApprovalPolicy policy) {
 		try {
@@ -1515,7 +1515,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getApprovalPolicy.
 	 *
-	 * @param policyId day 2 actions policy id
+	 * @param policyId policy id
 	 * @return policy
 	 */
 	public VraNgApprovalPolicy getApprovalPolicy(final String policyId) {

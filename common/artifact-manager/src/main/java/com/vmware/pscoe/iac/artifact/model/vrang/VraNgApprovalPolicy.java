@@ -54,6 +54,10 @@ public final class VraNgApprovalPolicy {
 	/**
 	 * Scope Criteria of the Policy.
 	 */
+	private JsonObject scopeCriteria;
+	/**
+	 * Criteria of the Policy.
+	 */
 	private JsonObject criteria;
 	/**
 	 * Definition  Policy.
@@ -71,12 +75,13 @@ public final class VraNgApprovalPolicy {
 	 * @param enforcementTypeIn enforcement type of the policy.
 	 * @param descriptionIn     description of the policy.
 	 * @param definitionIn      actual policy definition - different structure for every policy type.
-	 * @param criteriaIn        scope criteria of the policy.
+	 * @param scopeCriteriaIn   scope criteria of the policy.
+	 * @param criteriaIn    	criteria of the policy.
 	 */
 	public VraNgApprovalPolicy(final String idIn, final String nameIn, final String typeIdIn,
 							   final String projectIdIn, final String orgIdIn,
 							   final String enforcementTypeIn, final String descriptionIn,
-							   final JsonObject definitionIn, final JsonObject criteriaIn) {
+							   final JsonObject definitionIn, final JsonObject scopeCriteriaIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
@@ -85,6 +90,7 @@ public final class VraNgApprovalPolicy {
 		this.enforcementType = enforcementTypeIn;
 		this.description = descriptionIn;
 		this.definition = definitionIn;
+		this.scopeCriteria = scopeCriteriaIn;
 		this.criteria = criteriaIn;
 	}
 
@@ -219,17 +225,17 @@ public final class VraNgApprovalPolicy {
 	 *
 	 * @return policy criteria as JsonObject.
 	 */
-	public JsonObject getCriteria() {
-		return criteria;
+	public JsonObject getScopeCriteria() {
+		return scopeCriteria;
 	}
 
 	/**
 	 * Set the criteria of the policy.
 	 *
-	 * @param criteria the criteria of the policy.
+	 * @param scopeCriteria the criteria of the policy.
 	 */
-	public void setCriteria(JsonObject criteria) {
-		this.criteria = criteria;
+	public void setScopeCriteria(JsonObject scopeCriteria) {
+		this.scopeCriteria = scopeCriteria;
 	}
 
 	/**

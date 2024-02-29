@@ -162,6 +162,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			"HARD",
 			"TEST",
 			new JsonObject(),
+			new JsonObject(),
 			new JsonObject());
 
 		VraNgDeploymentLimitPolicy policy2 = new VraNgDeploymentLimitPolicy(
@@ -172,6 +173,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
 			"TEST",
+			new JsonObject(),
 			new JsonObject(),
 			new JsonObject());
 
@@ -205,6 +207,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			"HARD",
 			"TEST",
 			new JsonObject(),
+			new JsonObject(),
 			new JsonObject());
 		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
 		// // GIVEN
@@ -233,6 +236,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			"VIDM-L-01A",
 			"HARD",
 			"TEST",
+			new JsonObject(),
 			new JsonObject(),
 			new JsonObject());
 		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
@@ -271,6 +275,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			"HARD",
 			"TEST",
 			new JsonObject(),
+			new JsonObject(),
 			new JsonObject());
 		VraNgDeploymentLimitPolicy policyFromServer = new VraNgDeploymentLimitPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
@@ -280,6 +285,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
 			"TEST",
+			new JsonObject(),
 			new JsonObject(),
 			new JsonObject());
 
