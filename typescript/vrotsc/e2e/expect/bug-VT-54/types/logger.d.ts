@@ -1,5 +1,5 @@
 import { BaseAppender } from "./appender";
-export declare type LogLevel = "ERROR" | "WARN" | "INFO" | "DEBUG";
+export type LogLevel = "ERROR" | "WARN" | "INFO" | "DEBUG";
 export interface LogMessageProvider {
     (): string;
 }

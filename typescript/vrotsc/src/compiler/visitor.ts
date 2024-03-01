@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from 'typescript';
 import { Visitor } from '../types';
 
@@ -31,20 +45,20 @@ export class NodeVisitor implements Visitor {
 	 * @param {ts.Visitor} callback - The callback to be used when visiting nodes.
 	 * @param {ts.TransformationContext} context - The context for the transformation.
 	 */
-	constructor(private callback: ts.Visitor, private context: ts.TransformationContext) { }
+	constructor(private callback: ts.Visitor<ts.Node, ts.Node>, private context: ts.TransformationContext) { }
 
 	/**
 	 * Visits a single node in the AST.
 	 *
-	 * @param {ts.Node} node - The node to visit.
-	 * @returns {ts.VisitResult<ts.Node>} - The result of visiting the node.
+	 * @param {T} node - The node to visit.
+	 * @returns {ts.VisitResult<T>} - The result of visiting the node.
 	 */
-	visitNode(node: ts.Node): ts.VisitResult<ts.Node> {
+	visitNode<T extends ts.Node>(node: T): ts.VisitResult<T> {
 		this.nodeHeritage.push(node);
 		try {
 			const result = this.callback(node);
 			if (result !== undefined) {
-				return result;
+				return result as any;
 			}
 			return ts.visitEachChild(node, this.visitNode.bind(this), this.context);
 		}
@@ -60,7 +74,7 @@ export class NodeVisitor implements Visitor {
 	 * @returns {ts.NodeArray<T>} - The result of visiting the nodes.
 	 */
 	visitNodes<T extends ts.Node>(nodes: ts.NodeArray<T> | undefined): ts.NodeArray<T> {
-		return ts.visitNodes(nodes, this.visitNode.bind(this));
+		return ts.visitNodes(nodes, this.visitNode.bind(this)) as any;
 	}
 
 	/**

@@ -102,6 +102,12 @@ The new archetype can be bootstrapped with:
 #### Related issue
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
+### vrotsc 3.8.3 to 5.3.3 typescript
+
+#### Related issue
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/215>
+
+
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 

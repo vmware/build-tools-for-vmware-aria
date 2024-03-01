@@ -13,9 +13,9 @@
             return tslib_1.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _a = "test1.";
+                        _a = "test1.".concat;
                         return [4 /*yield*/, asyncTest2()];
-                    case 1: return [2 /*return*/, _a + (_b.sent())];
+                    case 1: return [2 /*return*/, _a.apply("test1.", [_b.sent()])];
                 }
             });
         });
@@ -27,9 +27,9 @@
             return tslib_1.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _a = "test2.";
+                        _a = "test2.".concat;
                         return [4 /*yield*/, asyncTest3()];
-                    case 1: return [2 /*return*/, _a + (_b.sent())];
+                    case 1: return [2 /*return*/, _a.apply("test2.", [_b.sent()])];
                 }
             });
         });
