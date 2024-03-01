@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from 'typescript';
 import { Comment } from '../../../types';
 
@@ -109,7 +123,7 @@ export function getPropertyName(node: ts.PropertyName): string {
 /**
 * Helper for vrotsc-annotations decorators
 */
-export function getDecoratorNames(decorators: ts.NodeArray<ts.Decorator>): string[] {
+export function getDecoratorNames(decorators: readonly ts.Decorator[]): string[] {
 	if (decorators && decorators.length) {
 		return decorators
 			.filter(decoratorNode => decoratorNode.expression.kind === ts.SyntaxKind.Identifier)
@@ -118,11 +132,11 @@ export function getDecoratorNames(decorators: ts.NodeArray<ts.Decorator>): strin
 	return [];
 }
 
-export function hasModifier(modifiers: ts.NodeArray<ts.Modifier>, kind: ts.SyntaxKind): boolean {
+export function hasModifier(modifiers: ts.NodeArray<ts.ModifierLike>, kind: ts.SyntaxKind): boolean {
 	return modifiers != null && modifiers.some(x => x.kind === kind);
 }
 
-export function hasAnyModifier(modifiers: ts.NodeArray<ts.Modifier>, ...kinds: ts.SyntaxKind[]): boolean {
+export function hasAnyModifier(modifiers: ts.NodeArray<ts.ModifierLike>, ...kinds: ts.SyntaxKind[]): boolean {
 	return modifiers != null && modifiers.some(x => kinds.some(k => k === x.kind));
 }
 

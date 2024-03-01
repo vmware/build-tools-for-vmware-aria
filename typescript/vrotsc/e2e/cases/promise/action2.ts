@@ -16,11 +16,11 @@ export async function asyncThrowAnError(): Promise<void> {
     throw new Error("test error");
 }
 
-export function all(): Promise<string[]> {
+export function all(): Promise<[string,string, string]> {
     return Promise.all(
         [
             Promise.resolve("test1"),
-            new Promise((resolve) => {
+            new Promise((resolve: (value: string) => void) => {
                 resolve("test2");
             }),
             Promise.resolve("test3")

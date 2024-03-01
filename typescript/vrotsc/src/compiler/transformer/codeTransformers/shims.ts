@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { HierarchyFacts, ScriptTransformationContext } from "../../../types";
 import { NodeVisitor } from "../../visitor";
@@ -104,14 +118,15 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 		const statements = visitor.visitNodes(node.statements);
 		const prologue = createDeclarationPrologueStatements(context);
 
-		return ts.updateSourceFileNode(
+		return ts.factory.updateSourceFile(
 			node,
 			ts.setTextRange(
-				ts.createNodeArray([
+				ts.factory.createNodeArray([
 					...prologue,
 					...statements,
 				]),
-				node.statements));
+				node.statements)
+        );
 	}
 
 	/**
@@ -181,14 +196,14 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 		args.push((<ts.PropertyAccessExpression>node.expression).expression);
 		node.arguments.forEach(n => args.push(n));
 
-		return ts.createCall(
-			ts.createPropertyAccess(
-				ts.createPropertyAccess(
-					ts.createIdentifier("VROES"),
+		return ts.factory.createCallExpression(
+			ts.factory.createPropertyAccessExpression(
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier("VROES"),
 					"Shims"),
 				methodName),
 			undefined,
-			visitor.visitNodes(ts.createNodeArray(args, false)));
+			visitor.visitNodes(ts.factory.createNodeArray(args, false)));
 	}
 
 	/**
@@ -197,10 +212,10 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 	function shimStaticCall(methodName: string, node: ts.CallExpression): ts.CallExpression {
 		context.file.hierarchyFacts |= HierarchyFacts.ContainsPolyfills;
 
-		return ts.createCall(
-			ts.createPropertyAccess(
-				ts.createPropertyAccess(
-					ts.createIdentifier("VROES"),
+		return ts.factory.createCallExpression(
+			ts.factory.createPropertyAccessExpression(
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier("VROES"),
 					"Shims"),
 				methodName),
 			undefined,
@@ -247,10 +262,10 @@ export function transformShimsBefore(sourceFile: ts.SourceFile, context: ScriptT
 	function visitSourceFile(node: ts.SourceFile): ts.SourceFile {
 		const statements = visitor.visitNodes(node.statements);
 
-		return ts.updateSourceFileNode(
+		return ts.factory.updateSourceFile(
 			node,
 			ts.setTextRange(
-				ts.createNodeArray([
+				ts.factory.createNodeArray([
 					...statements,
 				]),
 				node.statements));
@@ -260,7 +275,7 @@ export function transformShimsBefore(sourceFile: ts.SourceFile, context: ScriptT
 		const hasSpreadElement = node.elements.some(e => e.kind === ts.SyntaxKind.SpreadElement);
 		if (hasSpreadElement) {
 			context.file.hierarchyFacts |= HierarchyFacts.ContainsSpreadArray;
-			return transformSpreadElement(visitor, node);
+			return transformSpreadElement(visitor, node, context);
 		}
 		return node;
 	}
