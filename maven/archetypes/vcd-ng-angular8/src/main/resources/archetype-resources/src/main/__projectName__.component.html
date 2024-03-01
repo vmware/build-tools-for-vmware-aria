@@ -1,0 +1,34 @@
+<div class="content-area">
+  <h4 class="dashboard-header">{{'${projectName}.members.title'|translate}}</h4>
+    <clr-datagrid [(clrDgSelected)]="selectedMembers" [clrDgLoading]="membersLoading" [clDgRowSelection]="true">
+      <clr-dg-action-bar>
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="openAddMembersForm()" [disabled]="membersLoading">
+              {{'${projectName}.btn.add_members'|translate}}
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" (click)="openRemoveMembersForm()" [disabled]="membersLoading || !selectedMembers.length">
+              {{'${projectName}.btn.remove_members'|translate}}
+            </button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-icon" (click)="loadMembers()" [disabled]="membersLoading">
+                <clr-icon shape="refresh"></clr-icon>
+              </button>
+        </div>
+      </clr-dg-action-bar>      
+      <clr-dg-column [clrDgField]="'firstName'">{{'${projectName}.firstName'|translate}}</clr-dg-column>
+      <clr-dg-column [clrDgField]="'lastName'">{{'${projectName}.lastName'|translate}}</clr-dg-column>
+      <clr-dg-column [clrDgField]="'address'">{{'${projectName}.address'|translate}}</clr-dg-column>
+      <clr-dg-row *clrDgItems="let member of members" [clrDgItem]="member">
+        <clr-dg-cell>{{member.firstName}}</clr-dg-cell>
+        <clr-dg-cell>{{member.lastName}}</clr-dg-cell>
+        <clr-dg-cell>{{member.address}}</clr-dg-cell>
+      </clr-dg-row>
+      <clr-dg-footer>
+        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} {{'${projectName}.common.pagination.of'|translate}}
+        {{pagination.totalItems}}
+        {{'${projectName}.pagination.members'|translate}}
+        <clr-dg-pagination #pagination [clrDgPageSize]="10"></clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+</div>
