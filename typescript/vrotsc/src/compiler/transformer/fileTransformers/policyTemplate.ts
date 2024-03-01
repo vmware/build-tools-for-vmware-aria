@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { FileDescriptor, FileTransformationContext, FileType, XmlNode, XmlElement } from "../../../types";
 import { system } from "../../../system/system";
@@ -117,9 +131,9 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			version: "1.0.0",
 			events: [],
 		};
-
-		if (classNode.decorators && classNode.decorators.length) {
-			classNode.decorators
+        const decorators = ts.getDecorators(classNode);
+		if (decorators && decorators.length) {
+			decorators
 				.filter(decoratorNode => {
 					const callExpNode = decoratorNode.expression as ts.CallExpression;
 					if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {
@@ -160,7 +174,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 
 		const eventSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${eventInfo.type}.pl.ts`, [".pl.ts"]);
 		const eventSourceText = printSourceFile(
-			ts.updateSourceFileNode(
+			ts.factory.updateSourceFile(
 				sourceFile,
 				[
 					...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
@@ -222,16 +236,16 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			const variableDeclarations: ts.VariableDeclaration[] = [];
 			methodNode.parameters.forEach(paramNode => {
 				const paramName = (<ts.Identifier>paramNode.name).text;
-				variableDeclarations.push(ts.createVariableDeclaration(
+				variableDeclarations.push(ts.factory.createVariableDeclaration(
 					paramName,
-					paramNode.type,
-                        /*initializer*/ undefined
+                    undefined,
+					paramNode.type
 				));
 			});
 
 			if (variableDeclarations.length) {
-				statements.push(ts.createVariableStatement(
-					[ts.createModifier(ts.SyntaxKind.DeclareKeyword)],
+				statements.push(ts.factory.createVariableStatement(
+					[ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)],
 					variableDeclarations));
 			}
 		}

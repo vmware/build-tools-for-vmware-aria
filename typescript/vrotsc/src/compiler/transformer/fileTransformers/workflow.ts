@@ -100,8 +100,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			presentation: undefined,
 			description: undefined
 		};
-
-		if (classNode.decorators && classNode.decorators.length) {
+        const decorators = ts.getDecorators(classNode);
+		if (decorators && decorators.length) {
 			buildWorkflowDecorators(workflowInfo, classNode);
 		}
 
@@ -129,13 +129,13 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			package: "",
 			method: ""
 		};
-
 		//Arnold Here check the Polyglot decorator for the methods
 
 		let decoratorPolyglot = false;
-		if (methodNode.decorators && methodNode.decorators.length >= 1) {
+        const decorators = ts.getDecorators(methodNode);
+		if (decorators && decorators.length >= 1) {
 
-			methodNode.decorators.forEach(decoratorNode => {
+			decorators.forEach(decoratorNode => {
 
 				const callExpNode = decoratorNode.expression as ts.CallExpression;
 				if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {
@@ -154,7 +154,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				const name = getIdentifierTextOrNull(paramNode.name);
 				if (name) {
 					let parameterType = WorkflowParameterType.Default;
-					getDecoratorNames(paramNode.decorators).forEach(decoratorName => {
+                    const decorators = ts.getDecorators(methodNode);
+					getDecoratorNames(decorators).forEach(decoratorName => {
 						switch (decoratorName || "In") {
 							case "In":
 								parameterType |= WorkflowParameterType.Input;
@@ -188,7 +189,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 
 		const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
 		let actionSourceText = printSourceFile(
-			ts.updateSourceFileNode(
+			ts.factory.updateSourceFile(
 				sourceFile,
 				[
 					...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
@@ -218,16 +219,17 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			const variableDeclarations: ts.VariableDeclaration[] = [];
 			methodNode.parameters.forEach(paramNode => {
 				const paramName = (<ts.Identifier>paramNode.name).text;
-				variableDeclarations.push(ts.createVariableDeclaration(
+				variableDeclarations.push(ts.factory.createVariableDeclaration(
 					paramName,
+                    undefined,
 					paramNode.type,
                         /* initializer */ undefined
 				));
 			});
 
 			if (variableDeclarations.length) {
-				statements.push(ts.createVariableStatement(
-					[ts.createModifier(ts.SyntaxKind.DeclareKeyword)],
+				statements.push(ts.factory.createVariableStatement(
+					[ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)],
 					variableDeclarations));
 			}
 		}
@@ -256,7 +258,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	}
 
 	function buildWorkflowDecorators(workflowInfo: WorkflowDescriptor, classNode: ts.ClassDeclaration): void {
-		classNode.decorators
+        const decorators = ts.getDecorators(classNode);
+		decorators
 			.filter(decoratorNode => {
 				const callExpNode = decoratorNode.expression as ts.CallExpression;
 				if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {

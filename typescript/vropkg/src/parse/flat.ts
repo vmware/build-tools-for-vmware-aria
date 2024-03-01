@@ -19,7 +19,7 @@ import * as path from "path";
 import * as winston from "winston";
 import * as a from "../packaging";
 import * as t from "../types";
-import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc, getWorkflowItems, validateWorkflowPath} from "./util";
+import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc, getWorkflowItems } from "./util";
 import { exist } from "../util";
 import { WINSTON_CONFIGURATION, FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME, DEFAULT_FORM_FILE_NAME, VSO_RESOURCE_INF } from "../constants";
 
@@ -37,7 +37,6 @@ const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeEle
 
     let infoXml = xml(read(elementInfoPath));
     let categoriesXml = xml(read(elementCategoryPath));
-    validateWorkflowPath(categoriesXml);
     let categoryPath = xmlToCategory(categoriesXml);
     let description = xmlGet(infoXml, "description");
     // input forms (applicable for vRO workflows only)

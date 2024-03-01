@@ -38,9 +38,14 @@
             <includes>
                 <include>pom.xml</include>
 				<include>package.json</include>
-				<include>angular.json</include>
             </includes>
-        </fileSet>  
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>libs</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
         <fileSet filtered="true" packaged="false" encoding="UTF-8">
             <directory>src</directory>
             <includes>
@@ -52,12 +57,6 @@
             <includes>
                 <include>**/*</include>
             </includes>
-        </fileSet>    
-        <fileSet filtered="false" packaged="false" encoding="UTF-8">
-            <directory>scripts</directory>
-            <includes>
-                <include>**/*</include>
-            </includes>
-        </fileSet>    
+        </fileSet>        
     </fileSets>
 </archetype-descriptor>
