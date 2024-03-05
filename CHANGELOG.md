@@ -1,6 +1,7 @@
 ### Enhancements
 * [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
 * [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
+* add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
@@ -9,7 +10,7 @@
 ## v2.37.0 - 26 Jan 2024
 
 ### Enhancements
-* [docs] IAC-800 / Document TS Array functions behaviour and recommended typization approach.
+* [docs] IAC-800 / Document TS Array functions behavior and recommended typization approach.
 * [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
 * [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
 * [typescript] 206 / Conditional Execution in Saga.

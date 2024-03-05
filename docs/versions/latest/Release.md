@@ -69,10 +69,22 @@ When using SSH with typescript, the  `cmd`, `pty`, `terminal` methods has the ty
 
 Method  `cmd`, `pty`, `terminal` should return type `String` instead of type `void`
 
+### Add missing attribute
+
+There is a single use case where the vGPU can be attached to the VM as a backing device, which is a `VcVirtualDeviceBackingInfo` class. This property doesn't exist and is not documented in API, but it works in Javascript, Python SDK, and PowerCLI.
+
+#### Previous Behavior
+
+The `//@ts-ignore` should be used to skip the error. The compiled JS is working
+
+#### Current Behavior
+
+`spec.deviceChange[ 0 ].device.backing.vgpu = vGPUProfile`  should work as expected
+
 ### Upgrade VCD archetype to support Angular 15
 VMware Cloud Director v10.6 is going to drop support for Angular v9 or less.
 
-#### Previous Behaviour
+#### Previous Behavior
 VMware Cloud Director archetype is using:
 * node v12
 * angular v8
@@ -91,7 +103,7 @@ The old archetype can still be bootstrapped with:
     -DlicenseHeader= \
     -DlicenseTechnicalPreview=false`
 
-#### Current Behaviour
+#### Current Behavior
 VMware Cloud Director archetype is using:
 * node v16+
 * angular v15
