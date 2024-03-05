@@ -5,26 +5,29 @@
 [//]: # (Quick Intro to what is the focus of this release)
 
 ## Breaking Changes
+
 [//]: # (### *Breaking Change*)
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
-
 ## Deprecations
+
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 
-
 [//]: # (Features -> New Functionality)
+
 ## Features
+
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
+
 ## Improvements
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
@@ -38,11 +41,11 @@
 
 ### Fix on legacy archetype failing with vro:pull (when workflow folder path name contains special characters(&))
 
-#### Previous Behaviour
+#### Previous Behavior
 
 When executing a vro:pull command on a legacy archetype, the command will fail without proper error if the workflow paths contains special characters such as '&'.
 
-#### Current Behaviour
+#### Current Behavior
 
 When executing a vro:pull command on a legacy archetype, if the workflows paths contains special character(&), the command will fail but will provide descriptive error message.
 
@@ -56,11 +59,32 @@ When using SSH with typescript, the `error` and `state` methods has the type `vo
 
 Method `error` and `state` should return type `String` instead of type `void`
 
+### Fix SSH Session additional methods type
+
+#### Previous Behavior
+
+When using SSH with typescript, the  `cmd`, `pty`, `terminal` methods has the type `void`. But technically, it returns a string. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable  `cmd`, `pty`, `terminal` has type `String`.
+
+#### Current Behavior
+
+Method  `cmd`, `pty`, `terminal` should return type `String` instead of type `void`
+
+### Add missing attribute
+
+There is a single use case where the vGPU can be attached to the VM as a backing device, which is a `VcVirtualDeviceBackingInfo` class. This property doesn't exist and is not documented in API, but it works in Javascript, Python SDK, and PowerCLI.
+
+#### Previous Behavior
+
+The `//@ts-ignore` should be used to skip the error. The compiled JS is working
+
+#### Current Behavior
+
+`spec.deviceChange[ 0 ].device.backing.vgpu = vGPUProfile`  should work as expected
 
 ### Upgrade VCD archetype to support Angular 15
 VMware Cloud Director v10.6 is going to drop support for Angular v9 or less.
 
-#### Previous Behaviour
+#### Previous Behavior
 VMware Cloud Director archetype is using:
 * node v12
 * angular v8
@@ -79,7 +103,7 @@ The old archetype can still be bootstrapped with:
     -DlicenseHeader= \
     -DlicenseTechnicalPreview=false`
 
-#### Current Behaviour
+#### Current Behavior
 VMware Cloud Director archetype is using:
 * node v16+
 * angular v15
@@ -103,6 +127,7 @@ The new archetype can be bootstrapped with:
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
 ## Upgrade procedure
+
 [//]: # (Explain in details if something needs to be done)
 
 [//]: # (## Changelog:)

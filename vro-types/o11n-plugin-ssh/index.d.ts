@@ -116,9 +116,9 @@ declare class SSHCommand {
  */
 declare class SSHSession {
 	exitCode: number;
-	cmd: void;
-	pty: void;
-	terminal: void;
+	cmd: string;
+	pty: string;
+	terminal: string;
 	output: string;
 	error: string;
 	state: string;
