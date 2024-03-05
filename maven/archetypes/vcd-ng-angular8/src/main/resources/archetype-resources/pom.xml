@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.vmware.pscoe.vcd</groupId>
+        <artifactId>vcd-ng-package</artifactId>
+        <version>${project.version}</version>
+    </parent>
+    <groupId>\${groupId}</groupId>
+    <artifactId>\${artifactId}</artifactId>
+    <version>\${version}</version>
+    <packaging>vcd-ng</packaging>
+    <scm>
+        <developerConnection>${scmDeveloperConnection}</developerConnection>
+    </scm>
+    #if (${licenseTechnicalPreview} == 'true' || ${licenseTechnicalPreview} == 'yes' || ${licenseTechnicalPreview} == 'y')
+    #set( $licenseName = 'Technical Preview License' )
+    #set( $licenseUrl = 'https://flings.vmware.com/vrealize-build-tools/license' )
+    #else
+    #set( $licenseName = 'TODO: Enter License name' )
+    #if(!${licenseUrl} || ${licenseUrl} == '')
+    #set( $licenseUrl = 'https://todo.put.url.to.my.licence/license' )
+    #end
+    #end
+
+    <description>
+        This package is licensed under ${licenseUrl}
+    </description>
+    <licenses>
+        <license>
+            <name>\${licenseName}</name>
+            <url>\${licenseUrl}</url>
+            <distribution>pom</distribution>
+        </license>
+    </licenses>
+    <properties>
+        <generated.from>${artifactId}</generated.from>
+        #if (!${licenseTechnicalPreview} || ${licenseTechnicalPreview} == 'false')<license.organizationName>TODO: Enter Organization name</license.organizationName>#end
+
+        <license.includes>**/*.js,**/*.ts</license.includes>
+        <license.excludes></license.excludes>
+    </properties>
+</project>
