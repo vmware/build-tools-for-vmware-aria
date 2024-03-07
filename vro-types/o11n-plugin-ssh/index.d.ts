@@ -120,8 +120,8 @@ declare class SSHSession {
 	pty: void;
 	terminal: void;
 	output: string;
-	error: void;
-	state: void;
+	error: string;
+	state: string;
 	constructor()
 	/**
 	 * Create a new SSHSession

@@ -1,0 +1,19 @@
+{
+    "en": {
+        "${projectName}.common.pagination.of": "of",
+        "${projectName}.nav.label": "${projectHeading}",
+        "${projectName}.nav.description": "${projectHeading} module",
+        "${projectName}.title": "${projectHeading}",
+        "${projectName}.members.title": "Members",
+        "${projectName}.firstName": "First Name",
+        "${projectName}.lastName": "Last Name",
+        "${projectName}.address": "Address",
+        "${projectName}.description": "Description",
+        "${projectName}.pagination.members": "members",
+        "${projectName}.btn.add_members": "Add Members",
+        "${projectName}.btn.remove_members": "Remove Members",
+        "${projectName}.selectmembers.title": "Add members",
+        "${projectName}.selectmembers.btn.select": "Select",
+        "${projectName}.selectmembers.btn.cancel": "Cancel"
+    }
+}

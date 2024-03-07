@@ -1,6 +1,6 @@
 {
-    "urn": "URN_PLACEHOLDER",
-    "name": "NAME_PLACEHOLDER",
+    "urn": "vmware:vcloud:${projectName}",
+    "name": "${groupId}.${artifactId}",
     "containerVersion": "10.0.0",
     "version": "VERSION_PLACEHOLDER",
     "scope": ["tenant","service-provider"],
