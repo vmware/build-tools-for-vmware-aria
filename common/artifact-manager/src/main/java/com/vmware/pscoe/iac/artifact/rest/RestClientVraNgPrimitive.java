@@ -338,6 +338,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * VMware Aria Automation 8.16.0.33697 (23103949).
 	 */
 	private static final String VRA_8_16 = "8.16.0.33697";
+	private static final String VRA_8_11 = "8.11.2.30052";
 	/**
 	 * The not found error (used when retrieving the entitlements).
 	 */
@@ -349,6 +350,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * isVraAbove816.
 	 */
+	private boolean isVraAbove811;
 	private boolean isVraAbove816;
 
 	/**
@@ -362,6 +364,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		this.restTemplate = restTemp;
 		this.productVersion = this.getProductVersion();
 		this.isVraAbove812 = this.isVraAbove(new Version(VRA_8_12));
+		this.isVraAbove811 = this.isVraAbove(new Version(VRA_8_11));
 		this.isVraAbove816 = this.isVraAbove(new Version(VRA_8_16));
 	}
 
@@ -3149,7 +3152,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of resource quota policy Ids that are available.
 	 */
 	protected List<VraNgResourceQuotaPolicy> getAllResourceQuotaPoliciesPrimitive() {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
@@ -3175,7 +3178,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
 		throws URISyntaxException, UnsupportedOperationException {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(rqPolicy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
@@ -3193,7 +3196,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgResourceQuotaPolicy getResourceQuotaPolicyPrimitive(final String policyId) {
 
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -3212,7 +3215,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of Day 2 Actions policy Ids that are available.
 	 */
 	protected List<VraNgDay2ActionsPolicy> getAllDay2ActionsPoliciesPrimitive() {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
@@ -3238,7 +3241,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy)
 		throws URISyntaxException {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(d2aPolicy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
@@ -3255,7 +3258,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Created olicy
 	 */
 	protected VraNgDay2ActionsPolicy getDay2ActionsPolicyPrimitive(final String policyId) {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -3275,7 +3278,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of sharing policy Ids that are available.
 	 */
 	protected List<VraNgLeasePolicy> getAllLeasePoliciesPrimitive() {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
@@ -3302,7 +3305,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Created VraNg lease Policy
 	 */
 	protected VraNgLeasePolicy getLeasePolicyPrimitive(final String policyId) {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
@@ -3321,7 +3324,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createLeasePolicyPrimitive(final VraNgLeasePolicy policy)
 		throws URISyntaxException {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(policy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
@@ -3342,7 +3345,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
 		throws URISyntaxException {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(policy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
@@ -3359,7 +3362,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Deployment Limit Policy
 	 */
 	protected VraNgDeploymentLimitPolicy getDeploymentLimitPolicyPrimitive(final String policyId) {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
@@ -3376,7 +3379,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of Deployment Limit  policies that are available.
 	 */
 	protected List<VraNgDeploymentLimitPolicy> getAllDeploymentLimitPoliciesPrimitive() {
-		if (this.isVraAbove816) {
+		if (this.isVraAbove811) {
 
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
@@ -3408,7 +3411,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createApprovalPolicyPrimitive(final VraNgApprovalPolicy policy)
 		throws URISyntaxException {
-		if (isVraAbove816) {
+		if (isVraAbove811) {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(policy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
@@ -3425,7 +3428,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Approval Policy
 	 */
 	protected VraNgApprovalPolicy getApprovalPolicyPrimitive(final String policyId) {
-		if (isVraAbove816) {
+		if (isVraAbove811) {
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -3441,7 +3444,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return list of Approval  policies that are available.
 	 */
 	protected List<VraNgApprovalPolicy> getAllApprovalPoliciesPrimitive() {
-		if (isVraAbove816) {
+		if (isVraAbove811) {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
