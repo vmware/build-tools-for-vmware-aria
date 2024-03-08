@@ -33,6 +33,7 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 
+import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,13 +84,9 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 		}
 
 		logger.info("Found Resource Quota Policies. Importing ...");
-		Map<String, VraNgResourceQuotaPolicy> rqPolicyOnServerByName = this.restClient.getResourceQuotaPolicies()
-			.stream()
-			.map(csp -> this.restClient.getResourceQuotaPolicy(csp.getId()))
-			.collect(Collectors.toMap(VraNgResourceQuotaPolicy::getName, item -> item));
 
 		for (File resourceQuotaPolicyFile : resourceQuotaPolicyFiles) {
-			this.handleResourceQuotaPolicyImport(resourceQuotaPolicyFile, rqPolicyOnServerByName);
+			this.handleResourceQuotaPolicyImport(resourceQuotaPolicyFile);
 		}
 	}
 
@@ -98,40 +95,24 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 * Handles logic to update or create a resource quota policy.
 	 *
 	 * @param resourceQuotaPolicyFile
-	 * 
-	 * @param rqPolicyOnServerByName
 	 */
-	private void handleResourceQuotaPolicyImport(final File resourceQuotaPolicyFile,
-												 final Map<String, VraNgResourceQuotaPolicy> rqPolicyOnServerByName) {
-		String rqPolicyNameWithExt = resourceQuotaPolicyFile.getName();
-		String rqPolicyName = FilenameUtils.removeExtension(rqPolicyNameWithExt);
-		logger.info("Attempting to import resource quota policy '{}'", rqPolicyName);
-		VraNgResourceQuotaPolicy rqPolicy = jsonFileToVraNgResourceQuotaPolicy(resourceQuotaPolicyFile);
-		// Check if the resource quota policy exists
-		VraNgResourceQuotaPolicy existingRecord = null;
-		if (rqPolicyOnServerByName.containsKey(rqPolicyName)) {
-			existingRecord = rqPolicyOnServerByName.get(rqPolicyName);
-		}
-		//update the existing policy, is this really needed ????
-		if (existingRecord != null && existingRecord.getId() != null) {
-			rqPolicy.setId(existingRecord.getId());
-		}
-		//if the policy does not exist, and should be created
-		if (existingRecord == null) {
-			//if there is an id, the REST API will assume update, instead of create//may be
-			//so we should remove the id to trigger create operation
-			rqPolicy.setId(null);
-		}
+	private void handleResourceQuotaPolicyImport(final File resourceQuotaPolicyFile) {
 
-		//if the policy is to be created AND it had a project property, change the project to the current project.
-		//if the policy does not have a project property, it is organization scoped  and does not need project property
-		if (existingRecord == null && !rqPolicy.getProjectId().isBlank()) {
-			logger.debug("Replacing policy project {}, with current project {}", rqPolicy.getProjectId(), this.restClient.getProjectId());
-			rqPolicy.setProjectId(this.restClient.getProjectId());
+		VraNgResourceQuotaPolicy policy = jsonFileToVraNgResourceQuotaPolicy(resourceQuotaPolicyFile);
+
+		logger.info("Attempting to import resource quota policy '{}'", policy.getName());
+
+		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
+
+		//if the policy has a project property, replace it with current project id.
+		//if the policy does not have a project property - replacing it will change the policy,
+		// so do not replace a null or blank value.
+		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+			logger.debug("Replacing policy projectId with projectId from configuration.");
+			policy.setProjectId(this.restClient.getProjectId());
 		}
-
-
-		this.restClient.createResourceQuotaPolicy(rqPolicy);
+		policy.setOrgId(organizationId);
+		this.restClient.createResourceQuotaPolicy(policy);
 	}
 
 	/**

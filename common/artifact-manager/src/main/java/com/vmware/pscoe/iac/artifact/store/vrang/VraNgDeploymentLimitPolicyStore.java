@@ -22,6 +22,7 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDeploymentLimitPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,13 +83,8 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 		}
 
 		logger.info("Found Deployment Limit Policies. Importing ...");
-		Map<String, VraNgDeploymentLimitPolicy> dlPolicyOnServerByName = this.restClient.getDeploymentLimitPolicies()
-			.stream()
-			.map(dl -> this.restClient.getDeploymentLimitPolicy(dl.getId()))
-			.collect(Collectors.toMap(VraNgDeploymentLimitPolicy::getName, item -> item));
-
 		for (File policyFile : deploymentLimitPolicyFiles) {
-			this.handleDeploymentLimitPolicyImport(policyFile, dlPolicyOnServerByName);
+			this.handleDeploymentLimitPolicyImport(policyFile);
 		}
 	}
 
@@ -97,30 +93,24 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 * Handles logic to update or create a day 2 actions policy.
 	 *
 	 * @param day2ActionspolicyFile
-	 *
-	 * @param policyOnServerByName
 	 */
-	private void handleDeploymentLimitPolicyImport(final File day2ActionspolicyFile,
-											   final Map<String, VraNgDeploymentLimitPolicy> policyOnServerByName)  {
-		String policyNameWithExt = day2ActionspolicyFile.getName();
-		String policyName = FilenameUtils.removeExtension(policyNameWithExt);
-		logger.info("Attempting to import deployment limit policy '{}'", policyName);
-		VraNgDeploymentLimitPolicy dlPolicy = jsonFileToVraNgDay2ActionsPolicy(day2ActionspolicyFile);
+	private void handleDeploymentLimitPolicyImport(final File day2ActionspolicyFile)  {
 
-		// Check if the policy exists
-		//if it exists, set the id to tell the API to update existing policy
-		//if it does not exists, remove the iD to tell the API to create a new policy
-		VraNgDeploymentLimitPolicy existingRecord = null;
-		if (policyOnServerByName.containsKey(policyName)) {
-			existingRecord = policyOnServerByName.get(policyName);
-		}
-		if (existingRecord != null && !existingRecord.getId().isBlank()) {
-			dlPolicy.setId(existingRecord.getId());
-		} else {
-			dlPolicy.setId(null);
-		}
+		VraNgDeploymentLimitPolicy policy = jsonFileToVraNgDay2ActionsPolicy(day2ActionspolicyFile);
+		logger.info("Attempting to import deployment limit policy '{}'", policy.getName());
+		//replace object organization id with target organization Id
+		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
-		this.restClient.createDeploymentLimitPolicy(dlPolicy);
+
+		//if the policy has a project property, replace it with current project id.
+		//if the policy does not have a project property - replacing it will change the policy,
+		// so do not replace a null or blank value.
+		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+			logger.debug("Replacing policy projectId with projectId from configuration.");
+			policy.setProjectId(this.restClient.getProjectId());
+		}
+		policy.setOrgId(organizationId);
+		this.restClient.createDeploymentLimitPolicy(policy);
 	}
 	/**
 	 * getItemListFromDescriptor.

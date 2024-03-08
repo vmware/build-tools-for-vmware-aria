@@ -21,7 +21,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,46 +83,34 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 			logger.info("Could not find any Approval Policies.");
 			return;
 		}
-
 		logger.info("Found Approval Policies. Importing ...");
-		Map<String, VraNgApprovalPolicy> dlPolicyOnServerByName = this.restClient.getApprovalPolicies()
-			.stream()
-			.map(dl -> this.restClient.getApprovalPolicy(dl.getId()))
-			.collect(Collectors.toMap(VraNgApprovalPolicy::getName, item -> item));
-
 		for (File policyFile : approvalPolicyFiles) {
-			this.handleApprovalPolicyImport(policyFile, dlPolicyOnServerByName);
+			this.handlePolicyImport(policyFile);
 		}
 	}
 
 	/**
-	 * .
-	 * Handles logic to update or create an approval policy.
+	 * Imports policy file to server , replacing the organization id.
 	 *
-	 * @param approvalPolicyFile
-	 *
-	 * @param policyOnServerByName
+	 * @param approvalPolicyFile   the policy to import.
 	 */
-	private void handleApprovalPolicyImport(final File approvalPolicyFile,
-												   final Map<String, VraNgApprovalPolicy> policyOnServerByName)  {
-		String policyNameWithExt = approvalPolicyFile.getName();
-		String policyName = FilenameUtils.removeExtension(policyNameWithExt);
-		logger.info("Attempting to import approval policy '{}'", policyName);
+	private void handlePolicyImport(final File approvalPolicyFile) {
+		//convert file to policy object.
 		VraNgApprovalPolicy policy = jsonFileToVraNgApprovalPolicy(approvalPolicyFile);
+		//replace object organization id with target organization Id
+		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
-		// Check if the policy exists
-		//if it exists, set the id to tell the API to update existing policy
-		//if it does not exists, remove the iD to tell the API to create a new policy
-		VraNgApprovalPolicy existingRecord = null;
-		if (policyOnServerByName.containsKey(policyName)) {
-			existingRecord = policyOnServerByName.get(policyName);
-		}
-		if (existingRecord != null && !existingRecord.getId().isBlank()) {
-			policy.setId(existingRecord.getId());
-		} else {
-			policy.setId(null);
-		}
+		logger.info("Attempting to import approval policy '{}'", policy.getName());
 
+		//if the policy has a project property, replace it with current project id.
+		//if the policy does not have a project property - replacing it will change the policy,
+		// so do not replace a null or blank value.
+		//also, if the policy organization matches current organization, this means the project also matches either the current project or another project in this organization, no need to overwrite, because it is either the current project, or it is another project in the organization, and the push will fail.
+		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+			logger.debug("Replacing policy projectId with projectId from configuration.");
+			policy.setProjectId(this.restClient.getProjectId());
+		}
+		policy.setOrgId(organizationId);
 		this.restClient.createApprovalPolicy(policy);
 	}
 
@@ -168,7 +158,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 
 		policies.forEach(
 			policy -> {
-				if (itemNames.contains(policy.getName())) {
+				if (itemNames.contains(policy.getId())) {
 					logger.info("exporting '{}'", policy.getName());
 					storeApprovalPolicyOnFilesystem(vraNgPackage, policy);
 				}
@@ -185,7 +175,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		logger.debug("Storing  {}", policy.getName());
 		File store = new File(serverPackage.getFilesystemPath());
 
-		String filename = policy.getName();
+		String filename = policy.getId();
 		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
 			throw new IllegalArgumentException("Invalid filename " + filename);
 		}
@@ -202,13 +192,12 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		}
 
 		try {
-			//is serializeNulls() needed?
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			JsonObject d2aPolicyJsonObject = gson.fromJson(new Gson().toJson(policy), JsonObject.class);
+			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().create();
+			JsonObject policyJsonObject = gson.fromJson(new Gson().toJson(policy), JsonObject.class);
 
 			logger.info("Created approval policy file {}",
 				Files.write(Paths.get(policyFile.getPath()),
-					gson.toJson(d2aPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
+					gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to create approval policy  {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(

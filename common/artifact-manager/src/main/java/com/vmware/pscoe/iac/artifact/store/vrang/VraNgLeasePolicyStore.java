@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,34 +85,25 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		}
 
 		logger.info("Found Lease Policies. Importing...");
-		Map<String, VraNgLeasePolicy> policyOnServerByName = this.restClient.getLeasePolicies()
-				.stream()
-				.map(csp -> this.restClient.getLeasePolicy(csp.getId()))
-				.collect(Collectors.toMap(VraNgLeasePolicy::getName, item -> item));
-
 		for (File leasePolicyFile : leasePolicyFiles) {
-			this.handleLeasePolicyImport(leasePolicyFile, policyOnServerByName);
+			this.handleLeasePolicyImport(leasePolicyFile);
 		}
 	}
 
-	private void handleLeasePolicyImport(final File leasePolicyFile,
-			final Map<String, VraNgLeasePolicy> policyOnServerByName) {
-		String policyNameWithExt = leasePolicyFile.getName();
-		String policyName = FilenameUtils.removeExtension(policyNameWithExt);
-		logger.info("Attempting to import Lease policy '{}'", policyName);
+	private void handleLeasePolicyImport(final File leasePolicyFile) {
 		VraNgLeasePolicy policy = jsonFileToVraNgLeasePolicy(leasePolicyFile);
-		// Check if the Lease policy exists
-		VraNgLeasePolicy existingRecord = null;
-		if (policyOnServerByName.containsKey(policyName)) {
-			existingRecord = policyOnServerByName.get(policyName);
-		}
+		logger.info("Attempting to import Lease policy '{}'", policy.getName());
 
-		if (existingRecord != null && !existingRecord.getId().isBlank()) {
-			policy.setId(existingRecord.getId());
-		} else {
-			policy.setId(null);
-		}
+		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
+		//if the policy has a project property, replace it with current project id.
+		//if the policy does not have a project property - replacing it will change the policy,
+		// so do not replace a null or blank value.
+		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+			logger.debug("Replacing policy projectId with projectId from configuration.");
+			policy.setProjectId(this.restClient.getProjectId());
+		}
+		policy.setOrgId(organizationId);
 		this.restClient.createLeasePolicy(policy);
 	}
 

@@ -22,6 +22,7 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,13 +83,9 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 		}
 
 		logger.info("Found Day 2 Actions  Policies. Importing ...");
-		Map<String, VraNgDay2ActionsPolicy> d2aPolicyOnServerByName = this.restClient.getDay2ActionsPolicies()
-			.stream()
-			.map(d2a -> this.restClient.getDay2ActionsPolicy(d2a.getId()))
-			.collect(Collectors.toMap(VraNgDay2ActionsPolicy::getName, item -> item));
 
 		for (File policyFile : day2ActionsolicyFiles) {
-			this.handleDay2ActionsPolicyImport(policyFile, d2aPolicyOnServerByName);
+			this.handleDay2ActionsPolicyImport(policyFile);
 		}
 	}
 
@@ -97,30 +94,22 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 * Handles logic to update or create a day 2 actions policy.
 	 *
 	 * @param day2ActionspolicyFile
-	 *
-	 * @param policyOnServerByName
 	 */
-	private void handleDay2ActionsPolicyImport(final File day2ActionspolicyFile,
-												final Map<String, VraNgDay2ActionsPolicy> policyOnServerByName) {
-		String policyNameWithExt = day2ActionspolicyFile.getName();
-		String policyName = FilenameUtils.removeExtension(policyNameWithExt);
-		logger.info("Attempting to import day 2 actions policy '{}'", policyName);
-		VraNgDay2ActionsPolicy d2aPolicy = jsonFileToVraNgDay2ActionsPolicy(day2ActionspolicyFile);
+	private void handleDay2ActionsPolicyImport(final File day2ActionspolicyFile) {
+		VraNgDay2ActionsPolicy policy = jsonFileToVraNgDay2ActionsPolicy(day2ActionspolicyFile);
+		//replace object organization id with target organization Id
+		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
-		// Check if the day 2 actions policy exists
-		//if it exists, set the id to tell the API to update existing policy
-		//if it does not exists, remove the iD to tell the API to create a new policy
-		VraNgDay2ActionsPolicy existingRecord = null;
-		if (policyOnServerByName.containsKey(policyName)) {
-			existingRecord = policyOnServerByName.get(policyName);
+		logger.info("Attempting to import day 2 actions policy '{}'", policy.getName());
+		//if the policy has a project property, replace it with current project id.
+		//if the policy does not have a project property - replacing it will change the policy,
+		// so do not replace a null or blank value.
+		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+			logger.debug("Replacing policy projectId with projectId from configuration.");
+			policy.setProjectId(this.restClient.getProjectId());
 		}
-		if (existingRecord != null && !existingRecord.getId().isBlank()) {
-			d2aPolicy.setId(existingRecord.getId());
-		} else {
-			d2aPolicy.setId(null);
-		}
-
-		this.restClient.createDay2ActionsPolicy(d2aPolicy);
+		policy.setOrgId(organizationId);
+		this.restClient.createDay2ActionsPolicy(policy);
 	}
 	/**
 	 * getItemListFromDescriptor.
