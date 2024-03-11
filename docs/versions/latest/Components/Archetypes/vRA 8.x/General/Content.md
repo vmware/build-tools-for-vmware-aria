@@ -50,6 +50,7 @@ Null (nothing given) - everything is being imported
 * catalog-entitlement
 * property-group
 * subscription
+* policies
 
 Importing regional content doesn't use the `content.yaml` when pushing content it is working as previously pushes whatever there is the package.
 
@@ -66,6 +67,7 @@ Null (nothing given) - everything is being exported
 * catalog-entitlement
 * property-group
 * subscription
+* policies
 
 #### Exporting regional content
 
@@ -117,4 +119,14 @@ content-source:  # export according to filter
   - Utility Workflows
   - Project Abx Actions
   - Project Code Stream pipelines
+policy:  # export according to filter
+  approval: []
+  content-sharing:
+    - cs policy 1
+    - cs policy 2
+  day2-actions: []
+  deployment-limit: []
+  lease: []
+  resource-quota: []
+
 ~~~
