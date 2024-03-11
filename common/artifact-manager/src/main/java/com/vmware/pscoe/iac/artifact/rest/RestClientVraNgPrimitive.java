@@ -338,6 +338,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * VMware Aria Automation 8.16.0.33697 (23103949).
 	 */
 	private static final String VRA_8_16 = "8.16.0.33697";
+	/**
+	 * vRA 8.11 version.
+	 * VMware Aria Automation 8.11.2.30052.
+	 */
 	private static final String VRA_8_11 = "8.11.2.30052";
 	/**
 	 * The not found error (used when retrieving the entitlements).
@@ -348,9 +352,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private boolean isVraAbove812;
 	/**
-	 * isVraAbove816.
+	 * isVraAbove811.
 	 */
 	private boolean isVraAbove811;
+	/**
+	 * isVraAbove816.
+	 */
 	private boolean isVraAbove816;
 
 	/**
