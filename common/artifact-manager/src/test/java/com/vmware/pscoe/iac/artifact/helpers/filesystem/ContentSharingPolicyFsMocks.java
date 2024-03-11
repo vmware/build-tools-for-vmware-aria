@@ -48,7 +48,7 @@ public class ContentSharingPolicyFsMocks extends VraNgFsMock {
 	public void addContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
 		File file = Paths.get(
 			this.getWorkdir().getAbsolutePath(),
-			csPolicy.getName() + ".json"
+			csPolicy.getId() + ".json"
 		).toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();

@@ -206,7 +206,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithUpdateLogic() {
 		System.out.println("testImportContentWithUpdateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"), null, null, null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("679daee9-d63d-4ce2-9ee1-d4336861fe87"), null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87", "cs",
 				"com.vmware.policy.catalog.entitlement", "project1", "org1", "HARD", "TEST", new VraNgDefinition());
 
@@ -218,7 +218,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		File contentSharingPolicyFolder = Paths
 				.get(fsMocks.getTempFolderProjectPath().getPath(), contentSharingPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "cs.json" });
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "679daee9-d63d-4ce2-9ee1-d4336861fe87.json" });
 
 		when(restClient.getContentSharingPolicies()).thenReturn(Arrays.asList(csPolicy));
 		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicy);
@@ -233,7 +233,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"), null, null, null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("1"), null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("1", "test",
 				"com.vmware.policy.catalog.entitlement", "project1", "org1", "HARD", "TEST", new VraNgDefinition());
 
@@ -249,7 +249,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		File contentSharingPolicyFolder = Paths
 				.get(fsMocks.getTempFolderProjectPath().getPath(), contentSharingPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "test.json" });
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "1.json" });
 
 		when(restClient.getContentSharingPolicies()).thenReturn(Arrays.asList());
 		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicyFromServer);
@@ -278,9 +278,9 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentForDifferentDestinationProject() {
 		System.out.println("testImportContentForDifferentDestinationProject");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"),null, null, null, null, null);
-		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy(
-			"1",
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("679daee9-d63d-4ce2-9ee1-d4336861fe86"),null, null, null, null, null);
+		VraNgContentSharingPolicy csPolicyFromFile = new VraNgContentSharingPolicy(
+			"679daee9-d63d-4ce2-9ee1-d4336861fe86",
 			"test",
 			"com.vmware.policy.catalog.entitlement",
 			"asd1",
@@ -311,12 +311,12 @@ public class VraNgContentSharingPolicyStoreTest {
 		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 
-		fsMocks.contentSharingFsMocks().addContentSharingPolicy(csPolicy);
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(csPolicyFromFile);
 
 		File contentSharingPolicyFolder = Paths
 				.get(fsMocks.getTempFolderProjectPath().getPath(), contentSharingPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "test.json" });
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "679daee9-d63d-4ce2-9ee1-d4336861fe86.json" });
 
 		when(restClient.getProjectId()).thenReturn("project2");
 		when(restClient.getContentSharingPolicyIdByName("test")).thenReturn("679daee9-d63d-4ce2-9ee1-d4336861fe86");
