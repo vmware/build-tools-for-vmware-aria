@@ -33,11 +33,13 @@ public class ContentSharingPolicyMockBuilder {
 		entitledUsers.add(new VraNgEntitledUser(items,"USER", principals));
 		VraNgDefinition definition = new VraNgDefinition(entitledUsers);
 
+		result.setId("679daee9-d63d-4ce2-9ee1-d4336861fe87");
 		result.setName("CsPolicy");
 		result.setDescription("Testing");
 		result.setEnforcementType("HARD");
 		result.setTypeId("com.vmware.policy.catalog.entitlement");
 		result.setDefinition(definition);
+
 		return result;
 	}
 }

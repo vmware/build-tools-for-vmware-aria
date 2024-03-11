@@ -3034,6 +3034,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return null;
 		}
 		JsonObject result = root.getAsJsonObject();
+		String id = result.get("id").getAsString();
 		String name = result.get("name").getAsString();
 		String description = result.has("description") ? result.get("description").getAsString() : "";
 		String typeId = result.get("typeId").getAsString();
@@ -3044,6 +3045,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			item.name = this.getUserEntitlementItemName(item.id);
 		}));
 		csPolicy.setDefinition(definition);
+		csPolicy.setId(id);
 		csPolicy.setName(name);
 		csPolicy.setEnforcementType(enforcementType);
 		csPolicy.setDescription(description);
