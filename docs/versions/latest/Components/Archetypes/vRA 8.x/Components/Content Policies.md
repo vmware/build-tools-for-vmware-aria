@@ -9,7 +9,7 @@ There are 6 types of content policies:
 3. [Known Issues](#known-issues)
 
 ### Structure
-Below is an example structure of a blueprint export.
+Below is an example structure of content policies export.
 
 Example `content.yaml`
 ```yaml
