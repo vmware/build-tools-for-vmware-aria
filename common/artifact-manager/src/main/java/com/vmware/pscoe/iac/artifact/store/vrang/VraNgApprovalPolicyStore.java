@@ -19,12 +19,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +29,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	/**
@@ -85,7 +84,10 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		}
 		logger.info("Found Approval Policies. Importing ...");
 		for (File policyFile : approvalPolicyFiles) {
-			this.handlePolicyImport(policyFile);
+			//exclude hidden files e.g. .DS_Store
+			if (!policyFile.getName().startsWith(".")) {
+				this.handlePolicyImport(policyFile);
+			}
 		}
 	}
 
@@ -100,7 +102,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		//replace object organization id with target organization Id
 		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
-		logger.info("Attempting to import approval policy '{}'", policy.getName());
+		logger.info("Attempting to import approval policy '{}', from file '{}'", policy.getName(), approvalPolicyFile.getName() );
 
 		//if the policy has a project property, replace it with current project id.
 		//if the policy does not have a project property - replacing it will change the policy,
@@ -120,13 +122,13 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
-		logger.info("{}->getItemListFromDescriptor", this.getClass());
+		logger.debug("{}->getItemListFromDescriptor", this.getClass());
 
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			logger.info("Descriptor policy is null");
+			logger.debug("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getApproval());
+			logger.debug("Found items {}", this.vraNgPackageDescriptor.getPolicy().getApproval());
 			return this.vraNgPackageDescriptor.getPolicy().getApproval();
 		}
 	}
@@ -137,14 +139,21 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	@Override
 	protected void exportStoreContent() {
 		this.logger.debug("{}->exportStoreContent()", this.getClass());
+		Path policyFolderPath = getPolicyFolderPath();
+
+
+		Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(policyFolderPath);
+
 		List<VraNgApprovalPolicy> rqPolicies = this.restClient.getApprovalPolicies();
 
 		rqPolicies.forEach(
 			policy -> {
 				logger.info("exporting '{}'", policy.getName());
-				storeApprovalPolicyOnFilesystem(vraNgPackage, policy);
+				storeApprovalPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
 			});
 	}
+
+
 
 	/**
 	 * Exports all the content for the given project based on the names in content.yaml.
@@ -156,40 +165,28 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		List<VraNgApprovalPolicy> policies = this.restClient.getApprovalPolicies();
 
+		Path policyFolderPath = getPolicyFolderPath();
+		Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(policyFolderPath);
+
 		policies.forEach(
 			policy -> {
-				if (itemNames.contains(policy.getId())) {
+				if (itemNames.contains(policy.getName())) {
 					logger.info("exporting '{}'", policy.getName());
-					storeApprovalPolicyOnFilesystem(vraNgPackage, policy);
+					storeApprovalPolicyOnFilesystem(policyFolderPath, policy,  currentPoliciesOnFileSystem );
 				}
 			});
 	}
 	/**
 	 * Store approval policy in JSON file.
 	 *
-	 * @param serverPackage        vra package
+	 * @param policyFolderPath   the folder path where to export.
 	 * @param   policy
 	 */
-	private void storeApprovalPolicyOnFilesystem(final Package serverPackage,
-													final VraNgApprovalPolicy policy) {
+	private void storeApprovalPolicyOnFilesystem(final Path policyFolderPath,
+													final VraNgApprovalPolicy policy, Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem ) {
 		logger.debug("Storing  {}", policy.getName());
-		File store = new File(serverPackage.getFilesystemPath());
 
-		String filename = policy.getId();
-		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
-			throw new IllegalArgumentException("Invalid filename " + filename);
-		}
-
-		File policyFile = Paths.get(
-			store.getPath(),
-			com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
-			APPROVAL,
-			filename + CUSTOM_RESOURCE_SUFFIX).toFile();
-
-		if (!policyFile.getParentFile().isDirectory()
-			&& !policyFile.getParentFile().mkdirs()) {
-			logger.warn("Could not create folder: {}", policyFile.getParentFile().getAbsolutePath());
-		}
+		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
 
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().create();
@@ -198,6 +195,8 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 			logger.info("Created approval policy file {}",
 				Files.write(Paths.get(policyFile.getPath()),
 					gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
+			//after write, put currently policy on the map for the next iteration
+			currentPoliciesOnFileSystem.put(policyFile.getName(), policy);
 		} catch (IOException e) {
 			logger.error("Unable to create approval policy  {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(
@@ -206,6 +205,92 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 				e);
 		}
 
+	}
+
+	/**
+s	 * @param policyFolderPath the correct subfolder path for the policy type.
+	 * @param policy the policy that is exported.
+	 * @param currentPoliciesOnFileSystem  all the other policies currently in the folder.
+	 * @return the file where to store the policy.
+	 */
+
+	private File getPolicyFile(Path policyFolderPath, VraNgApprovalPolicy policy, Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem) {
+		String filename = policy.getName();
+		String policyName = policy.getName();
+		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+			throw new IllegalArgumentException("Invalid filename " + filename);
+		}
+		//see if filename already exists in map.
+		int index = 1;
+		boolean match = false;
+		while (!match) {
+			//logger.debug("File name {}, index {} , name with Index {};", filename, index, filenameWithIndex);
+
+			if (currentPoliciesOnFileSystem.containsKey(filename)) {
+				//check if policy is our policy from previous run or a different one.
+				if (policy.getId().equals(currentPoliciesOnFileSystem.get(filename).getId())) {
+					match = true;
+				} else {
+					filename = policyName + "_" + index;
+					index++;
+
+				}
+			} else {
+				match = true;
+			}
+		}
+
+		logger.debug("Final Filename is {}, for policy with name {}", filename, policy.getName());
+
+		File policyFile = Paths.get(
+                String.valueOf(policyFolderPath),
+			filename + CUSTOM_RESOURCE_SUFFIX).toFile();
+		return policyFile;
+	}
+
+	/**
+	 * Read the filesystem where policies will be stored, make a map of pre existing files there, to avoid duplication and/or unintentional overwriting.
+	 * @param policyFolderPath get actual path where policies should be stored.
+	 * @return a map of filenames and policies, found in the path.
+	 */
+	private Map<String, VraNgApprovalPolicy> getCurrentPoliciesOnFileSystem(Path policyFolderPath) {
+
+		//First make sure path exists and is a folder.
+		if (!policyFolderPath.toFile().isDirectory()
+			&& !policyFolderPath.toFile().mkdirs()) {
+			logger.warn("Could not create folder: {}", policyFolderPath.toFile().getAbsolutePath());
+		}
+
+		File[] approvalPolicyFiles = policyFolderPath.toFile().listFiles();
+		Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem = new HashMap<>();
+
+		for (File policyFile : approvalPolicyFiles) {
+			String fileNameWithExt = policyFile.getName();
+			//exclude hidden files e.g. .DS_Store
+			if (!fileNameWithExt.startsWith(".")) {
+				String fileName = fileNameWithExt.replace(CUSTOM_RESOURCE_SUFFIX, "");
+				currentPoliciesOnFileSystem.put(fileName, this.jsonFileToVraNgApprovalPolicy(policyFile));
+			}
+		}
+		return currentPoliciesOnFileSystem;
+	}
+
+	/**
+	 * Calculate approval policies sub-folder absolute filesystem path.
+	 * @return the approval policies sub-folder absolute filesystem path.
+	 */
+	private Path getPolicyFolderPath() {
+		File store = new File(vraNgPackage.getFilesystemPath());
+
+		Path policyFolderPath = Paths.get(
+			store.getPath(),
+			VraNgDirs.DIR_POLICIES,
+			APPROVAL);
+		if (!policyFolderPath.toFile().isDirectory()
+			&& !policyFolderPath.toFile().mkdirs()) {
+			logger.warn("Could not create folder: {}", policyFolderPath.getFileName());
+		}
+		return policyFolderPath;
 	}
 
 	/**

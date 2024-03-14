@@ -15,6 +15,8 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
@@ -33,10 +35,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +92,11 @@ public class VraNgApprovalPolicyStoreTest  {
 	 * approval Policy.
 	 */
 	private final String approvalPolicy = "approval";
+	/**
+	 * Logger.
+	 */
+	private final Logger logger = LoggerFactory.getLogger(VraNgApprovalPolicyStoreTest.class);
+
 
 	/**
 	 * Init function called before each test.
@@ -155,7 +166,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		System.out.println(this.getClass() + "testExportContentWithAllApprovalPolicies");
 		VraNgApprovalPolicy policy1 = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
+			"AP01",
 			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
@@ -167,7 +178,7 @@ public class VraNgApprovalPolicyStoreTest  {
 
 		VraNgApprovalPolicy policy2 = new VraNgApprovalPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
-			"D2A02",
+			"AP02",
 			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
@@ -196,11 +207,11 @@ public class VraNgApprovalPolicyStoreTest  {
 
 	@Test
 	void testExportContentWithSpecificApprovalPolicies() {
-		System.out.println(this.getClass() + "testExportContentWithSpecificApprovalPolicies");
+		System.out.println(this.getClass() + ".testExportContentWithSpecificApprovalPolicies");
 
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
+			"AP01",
 			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
@@ -209,7 +220,7 @@ public class VraNgApprovalPolicyStoreTest  {
 			new JsonObject(),
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, Collections.singletonList("AP01"), null);
 		// // GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 		when(restClient.getApprovalPolicies()).thenReturn(Collections.singletonList(policy));
@@ -230,7 +241,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		System.out.println("testImportContentWithUpdateLogic");
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
+			"AP01",
 			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
@@ -239,7 +250,7 @@ public class VraNgApprovalPolicyStoreTest  {
 			new JsonObject(),
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, Collections.singletonList("AP01"), null);
 		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 
@@ -248,7 +259,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		File policyFolder = Paths
 			.get(fsMocks.getTempFolderProjectPath().getPath(), approvalPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "D2A01.json" });
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "AP01.json" });
 
 		when(restClient.getApprovalPolicies()).thenReturn(Arrays.asList(policy));
 		when(restClient.getApprovalPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
@@ -264,11 +275,11 @@ public class VraNgApprovalPolicyStoreTest  {
 	@Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Arrays.asList("D2A01"), null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, Collections.singletonList("AP01"), null);
 
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
+			"AP01",
 			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
@@ -279,7 +290,7 @@ public class VraNgApprovalPolicyStoreTest  {
 			new JsonObject());
 		VraNgApprovalPolicy policyFromServer = new VraNgApprovalPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
-			"D2A02",
+			"AP02",
 			"com.vmware.policy.deployment.action",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
@@ -297,7 +308,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		File policyFolder = Paths
 			.get(fsMocks.getTempFolderProjectPath().getPath(), approvalPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "D2A01.json" });
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "AP01.json" });
 
 		when(restClient.getApprovalPolicies()).thenReturn(Collections.emptyList());
 		when(restClient.getApprovalPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(policyFromServer);
@@ -322,5 +333,91 @@ public class VraNgApprovalPolicyStoreTest  {
 		verify(restClient, never()).getApprovalPolicy(anyString());
 		verify(restClient, never()).createApprovalPolicy(any());
 	}
+
+	@Test
+	void testExportContentWithSpecificApprovalPoliciesAndDuplicateFiles() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificApprovalPoliciesAndDuplicateFiles");
+		VraNgApprovalPolicy policyInFile = new VraNgApprovalPolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"AP01",
+			"com.vmware.policy.deployment.action",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+
+		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"AP01",
+			"com.vmware.policy.deployment.action",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, Collections.singletonList("AP01"), null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getApprovalPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getApprovalPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, approvalPolicy).toFile();
+
+
+		fsMocks.getApprovalPolicyFsMocks().addPolicy(policyInFile);
+		policyInFile.setName("AP01_1");
+		fsMocks.getApprovalPolicyFsMocks().addPolicy(policyInFile);
+		policyInFile.setName("AP01_2");
+		fsMocks.getApprovalPolicyFsMocks().addPolicy(policyInFile);
+		policyInFile.setName("AP01_3");
+		fsMocks.getApprovalPolicyFsMocks().addPolicy(policyInFile);
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
+	}
+
+	@Test
+	void testExportContentWithPolicyAlreadyInFile() {
+		System.out.println(this.getClass() + ".testExportContentWithPolicyAlreadyInFile");
+
+		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"AP01",
+			"com.vmware.policy.deployment.action",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, Collections.singletonList("AP01"), null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getApprovalPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getApprovalPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, approvalPolicy).toFile();
+
+
+		fsMocks.getApprovalPolicyFsMocks().addPolicy(policy);
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		//export should overwrite policy, not create a new file.
+		assertEquals(1, Objects.requireNonNull(policyFolder.listFiles()).length);
+	}
+
 
 }

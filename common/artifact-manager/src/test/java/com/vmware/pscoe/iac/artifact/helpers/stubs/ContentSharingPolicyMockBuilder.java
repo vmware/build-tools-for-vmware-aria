@@ -22,9 +22,9 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgEntitledUser;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPrincipal;
 
-public class ContentSharingPolicyMockBuilder {
+public final class ContentSharingPolicyMockBuilder {
 
-	private ContentSharingPolicyMockBuilder() {};
+	private ContentSharingPolicyMockBuilder() { };
 	/**
 	 * Create a mock policy  for testing.
 	 * @return an instance of VraNgContentSharingPolicy for testing.
