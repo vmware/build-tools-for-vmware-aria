@@ -167,7 +167,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policy1 = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"AP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -179,7 +179,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policy2 = new VraNgApprovalPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
 			"AP02",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -212,7 +212,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"AP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -242,7 +242,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"AP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -280,7 +280,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"AP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -291,7 +291,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policyFromServer = new VraNgApprovalPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
 			"AP02",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -340,7 +340,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policyInFile = new VraNgApprovalPolicy(
 			"d160119e-4027-48d1-a2b5-5229b3cee282",
 			"AP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"SOFT",
@@ -352,7 +352,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"AP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -392,7 +392,7 @@ public class VraNgApprovalPolicyStoreTest  {
 		VraNgApprovalPolicy policy = new VraNgApprovalPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"AP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.approval",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
