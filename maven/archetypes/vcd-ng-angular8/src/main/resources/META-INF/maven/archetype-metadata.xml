@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archetype-descriptor name="package-vcd-ng-archetype"
+<archetype-descriptor name="package-vcd-ng-angular8-archetype"
                       xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                       xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd">
@@ -38,9 +38,14 @@
             <includes>
                 <include>pom.xml</include>
 				<include>package.json</include>
-				<include>angular.json</include>
             </includes>
-        </fileSet>  
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>libs</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
         <fileSet filtered="true" packaged="false" encoding="UTF-8">
             <directory>src</directory>
             <includes>
@@ -52,12 +57,6 @@
             <includes>
                 <include>**/*</include>
             </includes>
-        </fileSet>    
-        <fileSet filtered="false" packaged="false" encoding="UTF-8">
-            <directory>scripts</directory>
-            <includes>
-                <include>**/*</include>
-            </includes>
-        </fileSet>    
+        </fileSet>        
     </fileSets>
 </archetype-descriptor>
