@@ -383,6 +383,7 @@ public class VraNgApprovalPolicyStoreTest  {
 
 		// VERIFY
 		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "AP01.json", "AP01_1.json", "AP01_2.json", "AP01_3.json", "AP01_4.json" });
 	}
 
 	@Test

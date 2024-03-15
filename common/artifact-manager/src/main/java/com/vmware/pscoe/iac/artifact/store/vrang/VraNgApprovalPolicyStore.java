@@ -140,15 +140,12 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	protected void exportStoreContent() {
 		this.logger.debug("{}->exportStoreContent()", this.getClass());
 		Path policyFolderPath = getPolicyFolderPath();
-
-
 		Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(policyFolderPath);
-
 		List<VraNgApprovalPolicy> rqPolicies = this.restClient.getApprovalPolicies();
 
 		rqPolicies.forEach(
 			policy -> {
-				logger.info("exporting '{}'", policy.getName());
+				logger.debug("exporting '{}'", policy.getName());
 				storeApprovalPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
 			});
 	}
@@ -164,14 +161,13 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	protected void exportStoreContent(final List<String> itemNames) {
 		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		List<VraNgApprovalPolicy> policies = this.restClient.getApprovalPolicies();
-
 		Path policyFolderPath = getPolicyFolderPath();
 		Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(policyFolderPath);
 
 		policies.forEach(
 			policy -> {
 				if (itemNames.contains(policy.getName())) {
-					logger.info("exporting '{}'", policy.getName());
+					logger.debug("exporting '{}'", policy.getName());
 					storeApprovalPolicyOnFilesystem(policyFolderPath, policy,  currentPoliciesOnFileSystem );
 				}
 			});
@@ -184,7 +180,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	 */
 	private void storeApprovalPolicyOnFilesystem(final Path policyFolderPath,
 													final VraNgApprovalPolicy policy, Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem ) {
-		logger.debug("Storing  {}", policy.getName());
+		logger.info("Storing  {}", policy.getName());
 
 		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
 

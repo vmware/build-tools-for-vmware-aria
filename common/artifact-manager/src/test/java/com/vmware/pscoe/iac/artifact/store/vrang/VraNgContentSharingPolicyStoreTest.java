@@ -28,8 +28,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+import com.google.gson.JsonObject;
+import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,11 +47,6 @@ import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPolicy;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 public class VraNgContentSharingPolicyStoreTest {
@@ -206,7 +205,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithUpdateLogic() {
 		System.out.println("testImportContentWithUpdateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("679daee9-d63d-4ce2-9ee1-d4336861fe87"), null, null, null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("cs"), null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87", "cs",
 				"com.vmware.policy.catalog.entitlement", "project1", "org1", "HARD", "TEST", new VraNgDefinition());
 
@@ -218,7 +217,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		File contentSharingPolicyFolder = Paths
 				.get(fsMocks.getTempFolderProjectPath().getPath(), contentSharingPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "679daee9-d63d-4ce2-9ee1-d4336861fe87.json" });
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "cs.json" });
 
 		when(restClient.getContentSharingPolicies()).thenReturn(Arrays.asList(csPolicy));
 		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicy);
@@ -233,7 +232,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("1"), null, null, null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"), null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy("1", "test",
 				"com.vmware.policy.catalog.entitlement", "project1", "org1", "HARD", "TEST", new VraNgDefinition());
 
@@ -249,7 +248,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		File contentSharingPolicyFolder = Paths
 				.get(fsMocks.getTempFolderProjectPath().getPath(), contentSharingPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "1.json" });
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "test.json" });
 
 		when(restClient.getContentSharingPolicies()).thenReturn(Arrays.asList());
 		when(restClient.getContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe87")).thenReturn(csPolicyFromServer);
@@ -278,7 +277,7 @@ public class VraNgContentSharingPolicyStoreTest {
 	@Test
 	void testImportContentForDifferentDestinationProject() {
 		System.out.println("testImportContentForDifferentDestinationProject");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("679daee9-d63d-4ce2-9ee1-d4336861fe86"),null, null, null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Arrays.asList("test"),null, null, null, null, null);
 		VraNgContentSharingPolicy csPolicyFromFile = new VraNgContentSharingPolicy(
 			"679daee9-d63d-4ce2-9ee1-d4336861fe86",
 			"test",
@@ -316,7 +315,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		File contentSharingPolicyFolder = Paths
 				.get(fsMocks.getTempFolderProjectPath().getPath(), contentSharingPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "679daee9-d63d-4ce2-9ee1-d4336861fe86.json" });
+		AssertionsHelper.assertFolderContainsFiles(contentSharingPolicyFolder, new String[] { "test.json" });
 
 		when(restClient.getProjectId()).thenReturn("project2");
 		when(restClient.getContentSharingPolicyIdByName("test")).thenReturn("679daee9-d63d-4ce2-9ee1-d4336861fe86");
@@ -334,4 +333,83 @@ public class VraNgContentSharingPolicyStoreTest {
 				&& x.getProjectId().equals(toBeCreated.getProjectId());
 		}));
 	}
+	@Test
+	void testExportContentWithPolicyAlreadyInFile() {
+		System.out.println(this.getClass() + ".testExportContentWithPolicyAlreadyInFile");
+
+		VraNgContentSharingPolicy policy = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new VraNgDefinition());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Collections.singletonList("CS01"), null, null, null, null, null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getContentSharingPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirContentSharingPolicies, contentSharingPolicy).toFile();
+
+
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policy);
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		//export should overwrite policy, not create a new file.
+		assertEquals(1, Objects.requireNonNull(policyFolder.listFiles()).length);
+	}
+	@Test
+	void testExportContentWithSpecificPoliciesAndDuplicateFiles() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateFiles");
+		VraNgContentSharingPolicy policyInFile = new VraNgContentSharingPolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new VraNgDefinition());
+
+		VraNgContentSharingPolicy policy = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new VraNgDefinition());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Collections.singletonList("CS01"), null, null, null, null, null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getContentSharingPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirContentSharingPolicies, contentSharingPolicy).toFile();
+
+
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
+		policyInFile.setName("CS01_1");
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
+		policyInFile.setName("CS01_2");
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
+		policyInFile.setName("CS01_3");
+		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "CS01.json", "CS01_1.json", "CS01_2.json", "CS01_3.json", "CS01_4.json" });
+	}
+
 }

@@ -52,10 +52,7 @@ public class ApprovalPolicyFsMocks extends VraNgFsMock {
 	}
 
 	/**
-	 * JSON encodes a resource action and adds it to the resource actions directory.
-	 * This will also create the content.yaml based on the resource action and alternatively accepts a versions' data containing
-	 * information about the versions.
-	 *
+	 * JSON encodes a policy and adds it to the resource actions directory.
 	 * @param    policy - The  policy to store
 	 */
 	public void addPolicy(VraNgApprovalPolicy policy) {

@@ -3170,7 +3170,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return results;
 
 		} else {
-			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer."));
+			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.10.x or newer."));
 		}
 	}
 
@@ -3187,7 +3187,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
 			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
-			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer."));
+			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.10.x or newer."));
 		}
 	}
 
@@ -3205,7 +3205,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				String.class);
 			return new Gson().fromJson(response.getBody(), VraNgResourceQuotaPolicy.class);
 		} else {
-			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer."));
+			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.10.x or newer."));
 		}
 	}
 	// =================================================
@@ -3234,7 +3234,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3251,7 +3251,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
 			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3268,7 +3268,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				String.class);
 			return new Gson().fromJson(response.getBody(), VraNgDay2ActionsPolicy.class);
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3298,7 +3298,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Lease Policies found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3317,7 +3317,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				String.class);
 			return new Gson().fromJson(response.getBody(), VraNgLeasePolicy.class);
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3335,7 +3335,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
 			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3356,7 +3356,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
 			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3374,7 +3374,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				String.class);
 			return new Gson().fromJson(response.getBody(), VraNgDeploymentLimitPolicy.class);
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3401,7 +3401,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3423,7 +3423,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
 			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3440,7 +3440,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				String.class);
 			return new Gson().fromJson(response.getBody(), VraNgApprovalPolicy.class);
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 	}
 
@@ -3468,7 +3468,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.16.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 
 	}

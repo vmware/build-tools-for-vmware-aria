@@ -22,10 +22,7 @@ import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDeploymentLimitPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
@@ -155,8 +152,8 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 		System.out.println(this.getClass() + "testExportContentWithAllDeploymentLimitPolicies");
 		VraNgDeploymentLimitPolicy policy1 = new VraNgDeploymentLimitPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
-			"com.vmware.policy.deployment.action",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -167,8 +164,8 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 
 		VraNgDeploymentLimitPolicy policy2 = new VraNgDeploymentLimitPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
-			"D2A02",
-			"com.vmware.policy.deployment.action",
+			"DL02",
+			"com.vmware.policy.deployment.limit",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -200,8 +197,8 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 
 		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
-			"com.vmware.policy.deployment.action",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -209,7 +206,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			new JsonObject(),
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, null, Collections.singletonList("DL01"));
 		// // GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 		when(restClient.getDeploymentLimitPolicies()).thenReturn(Collections.singletonList(policy));
@@ -230,8 +227,8 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 		System.out.println("testImportContentWithUpdateLogic");
 		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
-			"com.vmware.policy.deployment.action",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -239,7 +236,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			new JsonObject(),
 			new JsonObject(),
 			new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, null, Collections.singletonList("DL01"));
 		// GIVEN
 		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
 
@@ -248,7 +245,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 		File policyFolder = Paths
 			.get(fsMocks.getTempFolderProjectPath().getPath(), deploymentLimitPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "D2A01.json" });
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "DL01.json" });
 
 		when(restClient.getDeploymentLimitPolicies()).thenReturn(Arrays.asList(policy));
 		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
@@ -264,12 +261,12 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 	@Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Arrays.asList("D2A01"), null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, null, Collections.singletonList("DL01"));
 
 		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-			"D2A01",
-			"com.vmware.policy.deployment.action",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -279,8 +276,8 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 			new JsonObject());
 		VraNgDeploymentLimitPolicy policyFromServer = new VraNgDeploymentLimitPolicy(
 			"2cf93725-38e9-4cb9-888a-a40994754c31",
-			"D2A02",
-			"com.vmware.policy.deployment.action",
+			"DL02",
+			"com.vmware.policy.deployment.limit",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 			"HARD",
@@ -297,7 +294,7 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 		File policyFolder = Paths
 			.get(fsMocks.getTempFolderProjectPath().getPath(), deploymentLimitPolicy).toFile();
 
-		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "D2A01.json" });
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "DL01.json" });
 
 		when(restClient.getDeploymentLimitPolicies()).thenReturn(Collections.emptyList());
 		when(restClient.getDeploymentLimitPolicy("2cf93725-38e9-4cb9-888a-a40994754c31")).thenReturn(policyFromServer);
@@ -322,5 +319,89 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 		verify(restClient, never()).getDeploymentLimitPolicy(anyString());
 		verify(restClient, never()).createDeploymentLimitPolicy(any());
 	}
+	@Test
+	void testExportContentWithSpecificDeploymentLimitPoliciesAndDuplicateFiles() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificDeploymentLimitPoliciesAndDuplicateFiles");
+		VraNgDeploymentLimitPolicy policyInFile = new VraNgDeploymentLimitPolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
 
+		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, null, Collections.singletonList("DL01"));
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getDeploymentLimitPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, deploymentLimitPolicy).toFile();
+
+
+		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
+		policyInFile.setName("DL01_1");
+		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
+		policyInFile.setName("DL01_2");
+		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
+		policyInFile.setName("DL01_3");
+		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "DL01.json", "DL01_1.json", "DL01_2.json", "DL01_3.json", "DL01_4.json" });
+	}
+
+	@Test
+	void testExportContentWithPolicyAlreadyInFile() {
+		System.out.println(this.getClass() + ".testExportContentWithPolicyAlreadyInFile");
+
+		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, null, Collections.singletonList("DL01"));
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getDeploymentLimitPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, deploymentLimitPolicy).toFile();
+
+
+		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policy);
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		//export should overwrite policy, not create a new file.
+		assertEquals(1, Objects.requireNonNull(policyFolder.listFiles()).length);
+	}
 }

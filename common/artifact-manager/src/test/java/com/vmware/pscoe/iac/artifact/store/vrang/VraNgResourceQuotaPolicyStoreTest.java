@@ -310,5 +310,86 @@ void testImportContentWithNoFile() {
 	verify(restClient, never()).getResourceQuotaPolicy(anyString());
 	verify(restClient, never()).createResourceQuotaPolicy(any());
 }
+	@Test
+	void testExportContentWithPolicyAlreadyInFile() {
+		System.out.println(this.getClass() + ".testExportContentWithPolicyAlreadyInFile");
+
+		VraNgResourceQuotaPolicy policy = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.deployment.action",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null, null, null, null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getResourceQuotaPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, resourceQuotaPolicy).toFile();
+
+
+		fsMocks.resourceQuotaPolicyFsMocks().addResourceQuotaPolicy(policy);
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		//export should overwrite policy, not create a new file.
+		assertEquals(1, Objects.requireNonNull(policyFolder.listFiles()).length);
+	}
+	@Test
+	void testExportContentWithSpecificPoliciesAndDuplicateFiles() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateFiles");
+		VraNgResourceQuotaPolicy policyInFile = new VraNgResourceQuotaPolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.deployment.action",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new JsonObject(),
+			new JsonObject());
+
+		VraNgResourceQuotaPolicy policy = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.deployment.action",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject());
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null, null, null, null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getResourceQuotaPolicies()).thenReturn(Collections.singletonList(policy));
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, resourceQuotaPolicy).toFile();
+
+
+		fsMocks.resourceQuotaPolicyFsMocks().addResourceQuotaPolicy(policyInFile);
+		policyInFile.setName("RQ01_1");
+		fsMocks.resourceQuotaPolicyFsMocks().addResourceQuotaPolicy(policyInFile);
+		policyInFile.setName("RQ01_2");
+		fsMocks.resourceQuotaPolicyFsMocks().addResourceQuotaPolicy(policyInFile);
+		policyInFile.setName("RQ01_3");
+		fsMocks.resourceQuotaPolicyFsMocks().addResourceQuotaPolicy(policyInFile);
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "RQ01.json", "RQ01_1.json", "RQ01_2.json", "RQ01_3.json", "RQ01_4.json" });
+	}
 
 }

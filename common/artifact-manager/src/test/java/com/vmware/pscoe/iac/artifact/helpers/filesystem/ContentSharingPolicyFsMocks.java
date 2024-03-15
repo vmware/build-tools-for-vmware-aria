@@ -37,18 +37,13 @@ public class ContentSharingPolicyFsMocks extends VraNgFsMock {
 	}
 
 	/**
-	 * JSON encodes a resource action and adds it to the resource actions directory.
-	 * This will also create the content.yaml based on the resource action and alternatively accepts a versions' data containing
-	 * information about the versions.
-	 *
-	 * @see    com.vmware.pscoe.iac.artifact.helpers.stubs.resource actionVersionsMockBuilder
-	 * @param    resourceAction - The resource action to store
-	 * @param    versionsData - A string containing the versioning data
+	 * JSON encodes a content sharing policy and adds it to the policies/content-sharing directory.
+	 * @param    csPolicy - The resource action to store
 	 */
 	public void addContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
 		File file = Paths.get(
 			this.getWorkdir().getAbsolutePath(),
-			csPolicy.getId() + ".json"
+			csPolicy.getName() + ".json"
 		).toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
