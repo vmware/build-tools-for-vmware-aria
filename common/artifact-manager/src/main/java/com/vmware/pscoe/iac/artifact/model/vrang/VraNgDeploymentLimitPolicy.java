@@ -72,7 +72,8 @@ public final class VraNgDeploymentLimitPolicy {
 	 * @param enforcementTypeIn enforcement type of the policy.
 	 * @param descriptionIn     description of the policy.
 	 * @param definitionIn      actual policy definition - different structure for every policy type.
-	 * @param criteriaIn        scope criteria of the policy.
+	 * @param criteriaIn        criteria of the policy.
+	 * @param scopeCriteriaIn   scope criteria of the policy.
 	 */
 	public VraNgDeploymentLimitPolicy(final String idIn, final String nameIn, final String typeIdIn,
 									  final String projectIdIn, final String orgIdIn,

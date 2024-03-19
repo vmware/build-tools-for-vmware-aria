@@ -335,7 +335,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private static final String VRA_8_12 = "8.12.0.21583018";
 
 	/**
-	 * vRealize Automation 8.10.2.27406 (20867529)
+	 * vRA 8.10 version.
+	 * vRealize Automation 8.10.2.27406 (20867529).
 	 */
 	private static final String VRA_8_10 = "8.10.2.27406";
 	/**

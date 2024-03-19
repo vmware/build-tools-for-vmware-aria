@@ -166,7 +166,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 		csPolicies.forEach(
 				policy -> {
-					storeContentSharingPolicyOnFilesystem(policyFolderPath, policy,currentPoliciesOnFileSystem);
+					storeContentSharingPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
 				});
 	}
 
@@ -186,7 +186,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		csPolicies.forEach(
 				policy -> {
 					if (itemNames.contains(policy.getName())) {
-						storeContentSharingPolicyOnFilesystem(policyFolderPath, policy,currentPoliciesOnFileSystem);
+						storeContentSharingPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
 					}
 				});
 	}
@@ -238,7 +238,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 	}
 	/**
-	 s	 * @param policyFolderPath the correct subfolder path for the policy type.
+	 * @param policyFolderPath the correct subfolder path for the policy type.
 	 * @param policy the policy that is exported.
 	 * @param currentPoliciesOnFileSystem  all the other policies currently in the folder.
 	 * @return the file where to store the policy.

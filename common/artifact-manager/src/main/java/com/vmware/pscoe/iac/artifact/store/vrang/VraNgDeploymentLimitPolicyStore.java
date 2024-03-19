@@ -108,7 +108,7 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 		//if the policy has a project property, replace it with current project id.
 		//if the policy does not have a project property - replacing it will change the policy,
 		// so do not replace a null or blank value.
-		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
 			logger.debug("Replacing policy projectId with projectId from configuration.");
 			policy.setProjectId(this.restClient.getProjectId());
 		}
@@ -174,7 +174,7 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	private void storeDeploymentLimitPolicyOnFilesystem(final Path policyFolderPath,
 													final VraNgDeploymentLimitPolicy policy,
-													Map<String, VraNgDeploymentLimitPolicy> currentPoliciesOnFileSystem ) {
+													Map<String, VraNgDeploymentLimitPolicy> currentPoliciesOnFileSystem) {
 		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
 		logger.info("Storing deployment limit policy '{}', to file '{}", policy.getName(), policyFile.getPath());
 

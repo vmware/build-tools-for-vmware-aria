@@ -22,8 +22,6 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 
-import org.apache.commons.io.FilenameUtils;
-
 /*
  * #%L
  * artifact-manager
@@ -100,7 +98,7 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		//if the policy has a project property, replace it with current project id.
 		//if the policy does not have a project property - replacing it will change the policy,
 		// so do not replace a null or blank value.
-		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
 			logger.debug("Replacing policy projectId with projectId from configuration.");
 			policy.setProjectId(this.restClient.getProjectId());
 		}
@@ -184,7 +182,7 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	 */
 	private void storeLeasePolicyOnFilesystem(final Path policyFolderPath,
 											  final VraNgLeasePolicy policy,
-											  Map<String, VraNgLeasePolicy> currentPoliciesOnFileSystem ) {
+											  Map<String, VraNgLeasePolicy> currentPoliciesOnFileSystem) {
 		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
 		logger.info("Storing lease  policy '{}', to file '{}", policy.getName(), policyFile.getPath());
 

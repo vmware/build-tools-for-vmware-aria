@@ -109,7 +109,7 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 		//if the policy has a project property, replace it with current project id.
 		//if the policy does not have a project property - replacing it will change the policy,
 		// so do not replace a null or blank value.
-		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
 			logger.debug("Replacing policy projectId with projectId from configuration.");
 			policy.setProjectId(this.restClient.getProjectId());
 		}
@@ -173,7 +173,7 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		logger.debug(this.getClass() + "->exportStoreContent({})" , itemNames.toString());
+		logger.debug(this.getClass() + "->exportStoreContent({})", itemNames.toString());
 		List<VraNgResourceQuotaPolicy> rqPolicies = this.restClient.getResourceQuotaPolicies();
 		Path policyFolderPath = getPolicyFolderPath();
 		Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(policyFolderPath);
@@ -197,7 +197,7 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 */
 	private void storeResourceQuotaPolicyOnFilesystem(final Path policyFolderPath,
 													  final VraNgResourceQuotaPolicy policy,
-													  Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem ) {
+													  Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem) {
 		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
 		logger.debug("Storing resource quota policy '{}', to file '{}", policy.getName(), policyFile.getPath());
 

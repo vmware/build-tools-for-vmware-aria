@@ -102,13 +102,13 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		//replace object organization id with target organization Id
 		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
-		logger.info("Attempting to import approval policy '{}', from file '{}'", policy.getName(), approvalPolicyFile.getName() );
+		logger.info("Attempting to import approval policy '{}', from file '{}'", policy.getName(), approvalPolicyFile.getName());
 
 		//if the policy has a project property, replace it with current project id.
 		//if the policy does not have a project property - replacing it will change the policy,
 		// so do not replace a null or blank value.
 		//also, if the policy organization matches current organization, this means the project also matches either the current project or another project in this organization, no need to overwrite, because it is either the current project, or it is another project in the organization, and the push will fail.
-		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
 			logger.debug("Replacing policy projectId with projectId from configuration.");
 			policy.setProjectId(this.restClient.getProjectId());
 		}
@@ -168,7 +168,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 			policy -> {
 				if (itemNames.contains(policy.getName())) {
 					logger.debug("exporting '{}'", policy.getName());
-					storeApprovalPolicyOnFilesystem(policyFolderPath, policy,  currentPoliciesOnFileSystem );
+					storeApprovalPolicyOnFilesystem(policyFolderPath, policy,  currentPoliciesOnFileSystem);
 				}
 			});
 	}
@@ -176,10 +176,12 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	 * Store approval policy in JSON file.
 	 *
 	 * @param policyFolderPath   the folder path where to export.
-	 * @param   policy
+	 * @param policy the policy object  to export.
+	 * @param currentPoliciesOnFileSystem  map of other policy files in the same folder, to escape overwriting duplicate files..
 	 */
 	private void storeApprovalPolicyOnFilesystem(final Path policyFolderPath,
-													final VraNgApprovalPolicy policy, Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem ) {
+												 final VraNgApprovalPolicy policy,
+												 Map<String, VraNgApprovalPolicy> currentPoliciesOnFileSystem) {
 		logger.info("Storing  {}", policy.getName());
 
 		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
@@ -205,7 +207,7 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	}
 
 	/**
-s	 * @param policyFolderPath the correct subfolder path for the policy type.
+	 * @param policyFolderPath the correct subfolder path for the policy type.
 	 * @param policy the policy that is exported.
 	 * @param currentPoliciesOnFileSystem  all the other policies currently in the folder.
 	 * @return the file where to store the policy.

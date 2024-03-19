@@ -19,11 +19,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +35,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	/**
@@ -109,7 +106,7 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 		//if the policy has a project property, replace it with current project id.
 		//if the policy does not have a project property - replacing it will change the policy,
 		// so do not replace a null or blank value.
-		if ( policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
 			logger.debug("Replacing policy projectId with projectId from configuration.");
 			policy.setProjectId(this.restClient.getProjectId());
 		}
@@ -172,15 +169,13 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Store day 2 actions policy in JSON file.
 	 *
-	 * @param policyFolderPath,        day 2 actions folder path
+	 * @param policyFolderPath        day 2 actions folder path
 	 * @param day2ActionsPolicy day2ActionsPolicy representation
 	 * @param currentPoliciesOnFileSystem  a map of file names and policies, already present in the folder, used to avoid duplicate file names.
 	 */
 	private void storeDay2ActionsPolicyOnFilesystem(final Path policyFolderPath,
 													final VraNgDay2ActionsPolicy day2ActionsPolicy,
-													Map<String, VraNgDay2ActionsPolicy> currentPoliciesOnFileSystem ) {
-
-
+													Map<String, VraNgDay2ActionsPolicy> currentPoliciesOnFileSystem) {
 
 		File policyFile = getPolicyFile(policyFolderPath, day2ActionsPolicy, currentPoliciesOnFileSystem);
 		logger.info("Storing day2ActionsPolicy '{}', to file '{}", day2ActionsPolicy.getName(), policyFile.getPath());
@@ -209,7 +204,7 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 
 	}
 	/**
-	 s	 * @param policyFolderPath the correct subfolder path for the policy type.
+	 * @param policyFolderPath the correct subfolder path for the policy type.
 	 * @param policy the policy that is exported.
 	 * @param currentPoliciesOnFileSystem  all the other policies currently in the folder.
 	 * @return the file where to store the policy.
