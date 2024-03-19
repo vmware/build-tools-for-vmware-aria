@@ -33,7 +33,7 @@ public final class ContentSharingPolicyFsMocks extends VraNgFsMock {
 	private static final String CONTENT_SHARING_POLICY = "content-sharing";
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * @param tempDir a folder to store temporary test data
 	 */
 	public ContentSharingPolicyFsMocks(File tempDir) {
