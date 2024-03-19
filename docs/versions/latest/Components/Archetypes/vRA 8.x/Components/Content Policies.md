@@ -59,16 +59,15 @@ Operations are invoked on policies based on filtering from content.yml file, acc
 
 
 #### Importing
-When importing a policy, it is matched by its `id`. If there is a policy with the same id on the server,
-an update will be performed. Otherwise, the policy will be created instead.
+When importing policies, files are read form the filesystem, and the content.yml filter is by filename. All non-hidden files are read from the folder, and if the name of the file, without the extension matches the list in content.yml, the policy will be imported.
+The filename is only important for filtering. Actual policy fields are read from the file contents.
+If there is a policy with the same id on the server, an update will be performed. Otherwise, the policy will be created instead, using the same id, that is found in the file.
 On import the organization will be changed to match the receiving organization.
-Project Id will also be changed , but only if present, and if the organization has also been changed.
-
+Project Id will also be changed, but only if present, and if the organization has also been changed.
 
 #### Exporting
 When exporting a policy, a json file will be created on the filesystem. The filename will be the policyName[-index].json.
 Index will be added only if there are multiple policies with the same name.
-
 ### Known Issues
  * Multitenancy Currently not supported.
 
