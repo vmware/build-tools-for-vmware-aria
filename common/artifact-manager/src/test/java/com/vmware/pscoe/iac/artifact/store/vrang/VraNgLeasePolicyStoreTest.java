@@ -327,7 +327,7 @@ public class VraNgLeasePolicyStoreTest  {
 		VraNgLeasePolicy policy = new VraNgLeasePolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"LP01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.deployment.lease",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -404,5 +404,107 @@ public class VraNgLeasePolicyStoreTest  {
 		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
 		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "LP01.json", "LP01_1.json", "LP01_2.json", "LP01_3.json", "LP01_4.json" });
 	}
+	@Test
+	void testExportContentWithSpecificPoliciesAndDuplicateNames() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateNames");
+		VraNgLeasePolicy policyInFile = new VraNgLeasePolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"LP01",
+			"com.vmware.policy.deployment.lease",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
 
+		VraNgLeasePolicy policy = new VraNgLeasePolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"LP01",
+			"com.vmware.policy.deployment.lease",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgLeasePolicy policy1 = new VraNgLeasePolicy(
+			"df60ff9e-4027-11d1-a2b5-5229b3cee282",
+			"LP01",
+			"com.vmware.policy.deployment.lease",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST1",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgLeasePolicy policy2 = new VraNgLeasePolicy(
+			"df60ff9e-4027-12d1-a2b5-5229b3cee282",
+			"LP01",
+			"com.vmware.policy.deployment.lease",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST2",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgLeasePolicy policy3 = new VraNgLeasePolicy(
+			"df60ff9e-4027-13d1-a2b5-5229b3cee282",
+			"LP01",
+			"com.vmware.policy.deployment.lease",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST3",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgLeasePolicy policy4 = new VraNgLeasePolicy(
+			"df60ff9e-4027-14d1-a2b5-5229b3cee282",
+			"LP01",
+			"com.vmware.policy.deployment.lease",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST4",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgLeasePolicy policy5 = new VraNgLeasePolicy(
+			"df60ff9e-4027-15d1-a2b5-5229b3cee282",
+			"LP01",
+			"com.vmware.policy.deployment.lease",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST5",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, Collections.singletonList("LP01"), null, null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getLeasePolicies()).thenReturn(Arrays.asList(policy, policy1, policy2, policy3, policy4, policy5));
+		when(restClient.getLeasePolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+		when(restClient.getLeasePolicy("df60ff9e-4027-11d1-a2b5-5229b3cee282")).thenReturn(policy1);
+		when(restClient.getLeasePolicy("df60ff9e-4027-12d1-a2b5-5229b3cee282")).thenReturn(policy2);
+		when(restClient.getLeasePolicy("df60ff9e-4027-13d1-a2b5-5229b3cee282")).thenReturn(policy3);
+		when(restClient.getLeasePolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
+		when(restClient.getLeasePolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, leasePolicy).toFile();
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "LP01.json", "LP01_1.json", "LP01_2.json", "LP01_3.json", "LP01_4.json", "LP01_5.json" });
+	}
 }

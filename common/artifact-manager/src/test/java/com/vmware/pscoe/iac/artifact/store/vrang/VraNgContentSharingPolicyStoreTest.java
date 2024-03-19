@@ -411,5 +411,94 @@ public class VraNgContentSharingPolicyStoreTest {
 		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
 		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "CS01.json", "CS01_1.json", "CS01_2.json", "CS01_3.json", "CS01_4.json" });
 	}
+	@Test
+	void testExportContentWithSpecificPoliciesAndDuplicateNames() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateNames");
+		VraNgContentSharingPolicy policyInFile = new VraNgContentSharingPolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new VraNgDefinition());
+
+		VraNgContentSharingPolicy policy = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new VraNgDefinition());
+		VraNgContentSharingPolicy policy1 = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-11d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST1",
+			new VraNgDefinition());
+		VraNgContentSharingPolicy policy2 = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-12d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST2",
+			new VraNgDefinition());
+		VraNgContentSharingPolicy policy3 = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-13d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST3",
+			new VraNgDefinition());
+		VraNgContentSharingPolicy policy4 = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-14d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST4",
+			new VraNgDefinition());
+		VraNgContentSharingPolicy policy5 = new VraNgContentSharingPolicy(
+			"df60ff9e-4027-15d1-a2b5-5229b3cee282",
+			"CS01",
+			"com.vmware.policy.catalog.entitlement",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST5",
+			new VraNgDefinition());
+
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(Collections.singletonList("CS01"), null, null, null, null, null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getContentSharingPolicies()).thenReturn(Arrays.asList(policy, policy1, policy2, policy3, policy4, policy5));
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-11d1-a2b5-5229b3cee282")).thenReturn(policy1);
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-12d1-a2b5-5229b3cee282")).thenReturn(policy2);
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-13d1-a2b5-5229b3cee282")).thenReturn(policy3);
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
+		when(restClient.getContentSharingPolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirContentSharingPolicies, contentSharingPolicy).toFile();
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "CS01.json", "CS01_1.json", "CS01_2.json", "CS01_3.json", "CS01_4.json", "CS01_5.json" });
+	}
 
 }

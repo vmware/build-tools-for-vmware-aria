@@ -209,7 +209,8 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 					Files.write(Paths.get(policyFile.getPath()),
 							gson.toJson(rqPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
 			//after write, put currently policy on the map for the next iteration
-			currentPoliciesOnFileSystem.put(policyFile.getName(), policy);
+			String fileName = policyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
+			currentPoliciesOnFileSystem.put(fileName, policy);
 		} catch (IOException e) {
 			logger.error("Unable to create resource quota {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(

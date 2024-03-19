@@ -195,7 +195,9 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 				Files.write(Paths.get(policyFile.getPath()),
 					gson.toJson(d2aPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
 			//after write, put currently policy on the map for the next iteration
-			currentPoliciesOnFileSystem.put(policyFile.getName(), day2ActionsPolicy);
+
+			String fileName = policyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
+			currentPoliciesOnFileSystem.put(fileName, day2ActionsPolicy);
 
 		} catch (IOException e) {
 			logger.error("Unable to create day 2 actions policy  {}", policyFile.getAbsolutePath());

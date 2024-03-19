@@ -225,7 +225,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 					Files.write(Paths.get(contentSharingPolicyFile.getPath()),
 							gson.toJson(csPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
 			//after write, put currently policy on the map for the next iteration
-			 currentPoliciesOnFileSystem.put(contentSharingPolicyFile.getName(), contentSharingPolicy);
+			String fileName = contentSharingPolicyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
+			currentPoliciesOnFileSystem.put(fileName, contentSharingPolicy);
 
 		} catch (IOException e) {
 			logger.error("Unable to create content sharing {}", contentSharingPolicyFile.getAbsolutePath());

@@ -254,7 +254,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 @Test
 	void testImportContentWithCreateLogic() {
 		System.out.println("testImportContentWithCreateLogic");
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Arrays.asList("RQ01"), null, null, null, null);
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null, null, null, null);
 
 		VraNgResourceQuotaPolicy rqPolicy = new VraNgResourceQuotaPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
@@ -317,7 +317,7 @@ void testImportContentWithNoFile() {
 		VraNgResourceQuotaPolicy policy = new VraNgResourceQuotaPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"RQ01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.resource.quota",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -348,7 +348,7 @@ void testImportContentWithNoFile() {
 		VraNgResourceQuotaPolicy policyInFile = new VraNgResourceQuotaPolicy(
 			"d160119e-4027-48d1-a2b5-5229b3cee282",
 			"RQ01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.resource.quota",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"SOFT",
@@ -359,7 +359,7 @@ void testImportContentWithNoFile() {
 		VraNgResourceQuotaPolicy policy = new VraNgResourceQuotaPolicy(
 			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 			"RQ01",
-			"com.vmware.policy.deployment.action",
+			"com.vmware.policy.resource.quota",
 			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
 			"VIDM-L-01A",
 			"HARD",
@@ -391,5 +391,100 @@ void testImportContentWithNoFile() {
 		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
 		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "RQ01.json", "RQ01_1.json", "RQ01_2.json", "RQ01_3.json", "RQ01_4.json" });
 	}
+	@Test
+	void testExportContentWithSpecificPoliciesAndDuplicateNames() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateNames");
+		VraNgResourceQuotaPolicy policyInFile = new VraNgResourceQuotaPolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.resource.quota",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new JsonObject(),
+			new JsonObject());
 
+		VraNgResourceQuotaPolicy policy = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.resource.quota",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject());
+		VraNgResourceQuotaPolicy policy1 = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-11d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.resource.quota",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST1",
+			new JsonObject(),
+			new JsonObject());
+		VraNgResourceQuotaPolicy policy2 = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-12d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.resource.quota",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST2",
+			new JsonObject(),
+			new JsonObject());
+		VraNgResourceQuotaPolicy policy3 = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-13d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.resource.quota",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST3",
+			new JsonObject(),
+			new JsonObject());
+		VraNgResourceQuotaPolicy policy4 = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-14d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.resource.quota",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST4",
+			new JsonObject(),
+			new JsonObject());
+		VraNgResourceQuotaPolicy policy5 = new VraNgResourceQuotaPolicy(
+			"df60ff9e-4027-15d1-a2b5-5229b3cee282",
+			"RQ01",
+			"com.vmware.policy.resource.quota",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST5",
+			new JsonObject(),
+			new JsonObject());
+
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, Collections.singletonList("RQ01"), null, null, null, null);
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getResourceQuotaPolicies()).thenReturn(Arrays.asList(policy, policy1, policy2, policy3, policy4, policy5));
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-11d1-a2b5-5229b3cee282")).thenReturn(policy1);
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-12d1-a2b5-5229b3cee282")).thenReturn(policy2);
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-13d1-a2b5-5229b3cee282")).thenReturn(policy3);
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
+		when(restClient.getResourceQuotaPolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, resourceQuotaPolicy).toFile();
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "RQ01.json", "RQ01_1.json", "RQ01_2.json", "RQ01_3.json", "RQ01_4.json", "RQ01_5.json" });
+	}
 }

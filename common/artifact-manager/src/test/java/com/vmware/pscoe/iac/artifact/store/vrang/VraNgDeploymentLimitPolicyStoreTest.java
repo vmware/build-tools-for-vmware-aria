@@ -404,4 +404,108 @@ public class VraNgDeploymentLimitPolicyStoreTest  {
 		//export should overwrite policy, not create a new file.
 		assertEquals(1, Objects.requireNonNull(policyFolder.listFiles()).length);
 	}
+
+	@Test
+	void testExportContentWithSpecificPoliciesAndDuplicateNames() {
+		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateNames");
+		VraNgDeploymentLimitPolicy policyInFile = new VraNgDeploymentLimitPolicy(
+			"d160119e-4027-48d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"SOFT",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+
+		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-48d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgDeploymentLimitPolicy policy1 = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-11d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST1",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgDeploymentLimitPolicy policy2 = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-12d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST2",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgDeploymentLimitPolicy policy3 = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-13d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST3",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgDeploymentLimitPolicy policy4 = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-14d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST4",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+		VraNgDeploymentLimitPolicy policy5 = new VraNgDeploymentLimitPolicy(
+			"df60ff9e-4027-15d1-a2b5-5229b3cee282",
+			"DL01",
+			"com.vmware.policy.deployment.limit",
+			"b899c648-bf84-4d35-a61c-db212ecb4c1e",
+			"VIDM-L-01A",
+			"HARD",
+			"TEST5",
+			new JsonObject(),
+			new JsonObject(),
+			new JsonObject());
+
+		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, null, Collections.singletonList("DL01"));
+		// // GIVEN
+		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
+		when(restClient.getDeploymentLimitPolicies()).thenReturn(Arrays.asList(policy, policy1, policy2, policy3, policy4, policy5));
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-11d1-a2b5-5229b3cee282")).thenReturn(policy1);
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-12d1-a2b5-5229b3cee282")).thenReturn(policy2);
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-13d1-a2b5-5229b3cee282")).thenReturn(policy3);
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
+		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
+
+		File policyFolder = Paths
+			.get(tempFolder.getRoot().getPath(), dirPolicies, deploymentLimitPolicy).toFile();
+
+		// TEST
+		store.exportContent();
+
+		// VERIFY
+		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
+		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "DL01.json", "DL01_1.json", "DL01_2.json", "DL01_3.json", "DL01_4.json", "DL01_5.json" });
+	}
 }

@@ -192,7 +192,8 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 				Files.write(Paths.get(policyFile.getPath()),
 					gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 			//after write, put currently policy on the map for the next iteration
-			currentPoliciesOnFileSystem.put(policyFile.getName(), policy);
+			String fileName = policyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
+			currentPoliciesOnFileSystem.put(fileName, policy);
 		} catch (IOException e) {
 			logger.error("Unable to create approval policy  {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(
@@ -220,18 +221,19 @@ s	 * @param policyFolderPath the correct subfolder path for the policy type.
 		int index = 1;
 		boolean match = false;
 		while (!match) {
-			//logger.debug("File name {}, index {} , name with Index {};", filename, index, filenameWithIndex);
-
 			if (currentPoliciesOnFileSystem.containsKey(filename)) {
 				//check if policy is our policy from previous run or a different one.
 				if (policy.getId().equals(currentPoliciesOnFileSystem.get(filename).getId())) {
+					//if this is the same policy overwrite
+					logger.debug("Same policy, overwriting file {}.", filename);
 					match = true;
 				} else {
 					filename = policyName + "_" + index;
 					index++;
-
+					logger.debug("Different policy, add index and check the new file name: {}.", filename);
 				}
 			} else {
+				logger.debug("File not found in folder, create with {} name.", filename);
 				match = true;
 			}
 		}

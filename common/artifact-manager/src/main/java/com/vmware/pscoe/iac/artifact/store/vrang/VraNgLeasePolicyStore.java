@@ -196,7 +196,8 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 					Files.write(Paths.get(policyFile.getPath()),
 							gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 			//after write, put currently policy on the map for the next iteration
-			currentPoliciesOnFileSystem.put(policyFile.getName(), policy);
+			String fileName = policyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
+			currentPoliciesOnFileSystem.put(fileName, policy);
 		} catch (IOException e) {
 			logger.error("Unable to create Lease {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(
