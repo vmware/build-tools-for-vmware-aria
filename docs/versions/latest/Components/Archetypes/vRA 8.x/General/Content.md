@@ -4,8 +4,8 @@
 ## Overview
 The vRA 8.x elements that you want to work with are described in the `content.yaml`
 
-## Table Of Contents:
-1. [Content.yaml](#Content.yaml)
+## Table Of Contents
+1. [Content.yaml](#contentyaml)
 
 
 ### Content.yaml
@@ -89,7 +89,7 @@ If not defined, nothing will be exported.
 
 ### Examples
 
-Example of `content.yaml` file. 
+Example of `content.yaml` file.
 
 ~~~yaml
 blueprint: # will export all 
