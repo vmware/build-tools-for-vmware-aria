@@ -166,7 +166,9 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 		csPolicies.forEach(
 				policy -> {
-					storeContentSharingPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
+					//getting full policy information from server
+					VraNgContentSharingPolicy csPolicy = this.restClient.getContentSharingPolicy(policy.getId());
+					storeContentSharingPolicyOnFilesystem(policyFolderPath, csPolicy, currentPoliciesOnFileSystem);
 				});
 	}
 
@@ -183,10 +185,13 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		Map<String, VraNgContentSharingPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(policyFolderPath);
 
 
+
 		csPolicies.forEach(
 				policy -> {
 					if (itemNames.contains(policy.getName())) {
-						storeContentSharingPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
+						//getting full policy information from server
+						VraNgContentSharingPolicy csPolicy = this.restClient.getContentSharingPolicy(policy.getId());
+						storeContentSharingPolicyOnFilesystem(policyFolderPath, csPolicy, currentPoliciesOnFileSystem);
 					}
 				});
 	}
