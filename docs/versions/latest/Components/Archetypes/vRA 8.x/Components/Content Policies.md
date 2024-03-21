@@ -69,5 +69,5 @@ Project Id will also be changed, but only if present, and if the organization ha
 When exporting a policy, a json file will be created on the filesystem. The filename will be the policyName[-index].json.
 Index will be added only if there are multiple policies with the same name.
 ### Known Issues
-- Multitenancy Currently not supported.
+
 
