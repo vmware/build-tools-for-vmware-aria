@@ -70,4 +70,3 @@ When exporting a policy, a json file will be created on the filesystem. The file
 Index will be added only if there are multiple policies with the same name.
 ### Known Issues
 
-
