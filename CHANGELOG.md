@@ -1,8 +1,22 @@
 ### Enhancements
+* [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
+* [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
+
+### Fixes
+* [vro-types] Fix SSHSession 'error' and 'state' types
+* [typescript] 165 / vro:pull command for legacy archetype fails when workflow folder path name contains character '&'.
+
+## v2.37.0 - 26 Jan 2024
+
+### Enhancements
 * [docs] IAC-800 / Document TS Array functions behaviour and recommended typization approach.
 * [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
 * [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
+<<<<<<< HEAD
 * [artifact-manager] IAC-802 / Republish the same tenants on VCD Plugin upgrade.
+=======
+* [typescript] 206 / Conditional Execution in Saga.
+>>>>>>> b12171f7685b4cedf60859781f3a8c00f9576e10
 
 ### Fixes
 * [artifact-manager] IAC-779 / Install vro package fails with 404 not found in case vro_server=vro-l-01a is used not FQDN
@@ -12,6 +26,8 @@
 * [artifact-manager] 211 / A better error is thrown now in case of an error when 2 blueprints with the same name exist in a single project on the server.
 * [vCD-NG] 166 / fix VMware Cloud Director API version 38.0 and later do not support the /api/sessions API login endpoint
 * [installer] 133 / Delete old packages fails with 401 error in case vro is embedded.
+* [vro-types] Fix SSHSession 'output' type
+* [artifact-manager] Extend Information on Exception messages for some of the  REST API Calls.
 
 ## v2.36.0 - 16 Nov 2023
 
@@ -20,12 +36,13 @@
 * [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
 * [artifact-manager] IAC-801 / Fix vRA catalog items appearing twice on multi page results.
 
+## v2.35.2
 ### Enhancements
 * [vro-types/o11n-plugin-aria] IAC-789 / Adding new Aria Automation Plugin vRO inventory Types.
 * [vro-types/o11n-plugin-aria] IAC-798 / Deprecating SQLDatabaseManager getDatabase() function.
 * [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
 * [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
-* [archetypes] IAC-797 / Improved content.yaml definition for "ts-vra-ng" and "vra-ng".
+* [archetypes] IAC-797 / Improved content.yaml definition for "ts-vra-ng" and "vra-ng"
 
 ### Bugs
 * [o11n-plugin-ssh] session esxiCode returns type void() instead of number.

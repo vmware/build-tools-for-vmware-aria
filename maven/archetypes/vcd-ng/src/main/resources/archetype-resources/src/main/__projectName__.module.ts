@@ -1,17 +1,21 @@
 import { CommonModule } from "@angular/common";
 import { Inject, NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { HttpModule } from "@angular/http";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
-import { ClarityModule } from "clarity-angular";
 import { Store } from "@ngrx/store";
-import { EXTENSION_ROUTE, ExtensionNavRegistration } from "@vcd/sdk/common";
-import { VcdApiClient, VcdSdkModule } from "@vcd/sdk";
-import { PluginModule } from "@vcd/sdk/core";
-import { TranslateService } from "@vcd/sdk/i18n";
+import { 
+    EXTENSION_ASSET_URL,
+    VcdApiClient,
+    VcdSdkModule,
+    EXTENSION_ROUTE,
+    ExtensionNavRegistration,
+    PluginModule
+} from "@vcd/sdk";
+import { ClarityModule } from "@clr/angular";
 import { ${projectHeading}Component } from "./${projectName}.component";
 import { SampleService } from "./services/sample.service";
+import { I18nModule, TranslationService } from "@vcd/i18n";
 
 const ROUTES: Routes = [
     {
@@ -24,7 +28,8 @@ const ROUTES: Routes = [
     imports: [
         ClarityModule,
         CommonModule,
-        HttpModule,
+        I18nModule.forChild(EXTENSION_ASSET_URL, true),
+        VcdSdkModule.forRoot(),
         FormsModule,
         HttpClientModule,
         VcdSdkModule,
@@ -41,8 +46,12 @@ const ROUTES: Routes = [
     ],
 })
 export class ${projectHeading}Module extends PluginModule {
-    constructor(appStore: Store<any>, @Inject(EXTENSION_ROUTE) extensionRoute: string, translate: TranslateService) {
-        super(appStore, translate);
+    constructor(
+        appStore: Store<any>,
+        @Inject(EXTENSION_ROUTE) extensionRoute: string,
+        translationService: TranslationService
+    ) {
+        super(appStore);
 
         let registrations: ExtensionNavRegistration[] = [
             {
@@ -51,7 +60,7 @@ export class ${projectHeading}Module extends PluginModule {
                 descriptionCode: "${projectName}.nav.description"
             }
         ];
-
+        translationService.registerTranslations();
         registrations.forEach(registration => this.registerExtension(registration));
     }
 }

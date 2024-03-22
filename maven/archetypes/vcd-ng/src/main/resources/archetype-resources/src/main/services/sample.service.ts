@@ -1,6 +1,5 @@
 import { Injectable, Inject } from "@angular/core";
-import { VcdApiClient } from "@vcd/sdk";
-import { SESSION_ORGANIZATION } from "@vcd/sdk/common";
+import { VcdApiClient, SESSION_ORGANIZATION } from "@vcd/sdk";
 import { SampleMember } from "../model/sample-member";
 
 @Injectable()

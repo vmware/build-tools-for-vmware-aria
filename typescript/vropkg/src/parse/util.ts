@@ -31,7 +31,12 @@ export const xmlToTag = (tags): string[] => tags.children.filter(e => e.attr && 
 export const stringToCategory = (category): string[] => category.split(/(?<!\/)\./)
     .map(path => { return path.replace(/\//g, "") })
     .filter(path => path != "");
-
+export const validateWorkflowPath = (xmlDocument) => {
+	const invalidElement = xmlDocument.children.find((e) => e.attr.name === null || e.attr.name === undefined);
+	if (invalidElement && invalidElement.firstChild !== null){
+		throw new Error(`Unsupported characters detected in the workflow path. The value "${invalidElement.firstChild.val}" contains characters that are not allowed.`);
+	}
+};
 export const xmlToAction = (file: string, bundlePath: string, name: string, comment: string, description: string, tags: Array<string>): t.VroActionData => {
     let type = "" + t.VroElementType.ScriptModule;
     if (!exist(file)) {

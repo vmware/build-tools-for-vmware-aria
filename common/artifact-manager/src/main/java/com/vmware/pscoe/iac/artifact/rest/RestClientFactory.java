@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
@@ -36,6 +37,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
@@ -178,17 +180,24 @@ public final class RestClientFactory {
 				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN || response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
 			}
 
-			@Override
-			public void handleError(ClientHttpResponse response) throws IOException {
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
                 StringBuilder messageBuilder = new StringBuilder();
-                messageBuilder.append(response.getStatusText() + " ");
-                if (response.getBody() != null) {
+                HttpHeaders headers = response.getHeaders();
+                messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText()).append("\n");
+                messageBuilder.append(headers.keySet().stream().map(
+                    (String k) -> headers.get(k).stream().map(
+                        h -> k + ": " + h
+                    ).collect(Collectors.joining("\n"))
+                ).collect(Collectors.joining("\n")));
+                if (response.getBody() != null && ! response.getBody().equals("")) {
+                    messageBuilder.append("\n\n");
                     String message = org.apache.commons.io.IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);
                     messageBuilder.append(message);
                 }
 
-                throw new HttpClientErrorException(response.getStatusCode(), "Invalid/Unreachable FQDN or IP address");
-			}
+                throw new HttpClientErrorException(response.getStatusCode(), "Invalid/Unreachable FQDN or IP address: " + messageBuilder.toString());
+            }
 
 		});
 

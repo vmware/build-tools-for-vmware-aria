@@ -1,0 +1,14 @@
+{
+    "urn": "vmware:vcloud:${projectName}",
+    "name": "${groupId}.${artifactId}",
+    "containerVersion": "10.0.0",
+    "version": "VERSION_PLACEHOLDER",
+    "scope": ["tenant","service-provider"],
+    "permissions": [],
+    "description": "",
+    "vendor": "VMware",
+    "license": "Copyright (C) VMware 2019.  All rights reserved.",
+    "link": "http://www.vmware.com/support",
+    "module": "${projectHeading}Module",
+    "route": "${projectName}"
+}

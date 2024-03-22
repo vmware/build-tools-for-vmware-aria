@@ -41,33 +41,62 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro.AuthProvider
 import com.vmware.pscoe.iac.artifact.rest.model.sso.SsoEndpointDto;
 
 public class VraSsoAuth {
+    /** CAFE_CLI_OWNER. */
     private static final String CAFE_CLI_OWNER = "CAFE_CLI_OWNER";
+    /** Authorication endpoint for vRA 8.x. */
     private static final String AUTHORIZATION_SERVICE_URL_VRA_CLOUD = "/csp/gateway/am/api/auth/api-tokens/authorize";
+    /** Login endpoint for vRA 8.x . */
     private static final String AUTHORIZATION_SERVICE_URL_VRA_8 = "/csp/gateway/am/api/login";
+    /** Authentication endpoint for vRA 7.x . */
     private static final String AUTHORIZATION_SERVICE_URL_VRA_7 = "/SAAS/t/%s/auth/oauthtoken";
+    /** Single Sign On endpont for vRA 7.x . */
     private static final String COMPONENT_REGISTRY_URL_VRA_7 = "/component-registry/endpoints/types/sso";
-    private static final String VERSION_URL= "vco/api/about";
+    /** Endpont used to get the version. */
+    private static final String VERSION_URL = "vco/api/about";
+    /** Protocol scheme. */
     private static final String DEFAULT_HTTP_SCHEME = "https";
+    /** CSP Authentication token name. */
     private static final String TOKEN_NAME = "cspAuthToken";
+    /** Bearer token type. */
     private static final String DEFAULT_TOKEN_TYPE = "Bearer";
+    /**Version prefix for vRA versions 8.x. */
     private static final String VRA_8_VERSION_PREFIX = "8.";
+    /** Http Entity. */
     private static final String HTTP_ENTITY_TYPE = "httpEntity";
+    /** Token URI. */
     private static final String TOKEN_URL_TYPE = "tokenUri";
 
+    /** vRO Config.*/
     private ConfigurationVro vroConfig;
+    /** REST Tempalate to be used for communicating with  the REST API of the. */
     private RestTemplate restTemplate;
+    /** Aria Automation version. */
     private String serverVersion;
 
+    /**
+     * Create new instance of the class that is using the orivided configuraiton and REST Template.
+     * @param config Configuration on how to connect to Aria Automation.
+     * @param restTemplate REST Temaplate to be used to issue REST API calls.
+     */
     public VraSsoAuth(ConfigurationVro config, RestTemplate restTemplate) {
         this.vroConfig = config;
         this.restTemplate = restTemplate;
         this.serverVersion = this.getVersion();
     }
 
+    /**
+     * Accuire authentication token from Aria Automation.
+     * @return The token returned by Aria Automation.
+     */
     public SsoToken acquireToken() {
         return acquireToken(null);
     }
 
+    /**
+     * Accuire authentcation token from Aria Automation using the specified client id.
+     * @param clientId The client id.
+     * @return The token obtained from Aria Automation.
+     */
     public SsoToken acquireToken(String clientId) {
         final  Map<String, Object> tokenUriAndHttpEntity;
 		final boolean isTokenAuth = this.serverVersion.endsWith("-saas-enabled") || !StringUtils.isEmpty(this.vroConfig.getRefreshToken());
@@ -84,18 +113,27 @@ public class VraSsoAuth {
         final HttpEntity<?> httpEntity = (HttpEntity<?>) tokenUriAndHttpEntity.get(HTTP_ENTITY_TYPE);
         try {
             final ResponseEntity<String> response = this.restTemplate.exchange(tokenUri, HttpMethod.POST, httpEntity, String.class);
+
             final DocumentContext responseBody = JsonPath.parse(response.getBody());
+
             final String tokenValue = isTokenAuth
 				? responseBody.read("$.access_token")
 				: responseBody.read("$." + TOKEN_NAME);
 
             return new SsoToken(tokenValue, AuthProvider.VRA);
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Unable to acquire token for VRO SSO authentication: %s", e.getMessage()));
+            throw new RuntimeException(String.format("Unable to acquire token for VRO SSO authentication: %s. Request was %s %s. Request body not shown due to sensitive data.",
+                e.getMessage(), HttpMethod.POST, tokenUri));
         }
     }
 
-    public Map<String, Object> getTokenUriAndHttpEntityVra7(String clientId){
+    /**
+     * Get authentication URL type and Entity type and entity from vRealize Automation 7.x using the specified client id.
+     * This will only work for vRealize Automation 7.x versions of vRA.
+     * @param clientId Client id.
+     * @return A map that is containing the Token URL type (TOKEN_URL_TYPE) and the entity type (HTTP_ENTITY_TYPE).
+     */
+    public Map<String, Object> getTokenUriAndHttpEntityVra7(String clientId) {
         if (StringUtils.isEmpty(clientId)) {
             clientId = retrieveClientId();
         }
@@ -127,7 +165,12 @@ public class VraSsoAuth {
         return tokenUriAndHttpEntity;
     }
 
-    public Map<String, Object> getTokenUriAndHttpEntityVra8(){
+    /**
+     * Obtain and return an authentication URL type and entity type from Aria Automation 8.x.
+     * This will only work with Aria Automation verison 8.x of Aria Automation.
+     * @return A map that is containing the Token URL type (TOKEN_URL_TYPE) and the entity type (HTTP_ENTITY_TYPE).
+     */
+    public Map<String, Object> getTokenUriAndHttpEntityVra8() {
         final URI tokenUri = UriComponentsBuilder.newInstance()
             .scheme(DEFAULT_HTTP_SCHEME)
             .host(this.vroConfig.getAuthHost())
@@ -157,7 +200,12 @@ public class VraSsoAuth {
         return tokenUriAndHttpEntity;
     }
 
-	public Map<String, Object> getTokenUriAndHttpEntityVraCloud(){
+    /**
+     * Obtain and return an authentication URL type and entity type from Aria Automation Cloud.
+     * This will only work with Aria Automation Cloud.
+     * @return A map that is containing the Token URL type (TOKEN_URL_TYPE) and the entity type (HTTP_ENTITY_TYPE).
+     */
+	public Map<String, Object> getTokenUriAndHttpEntityVraCloud() {
 		final URI tokenUri = UriComponentsBuilder.newInstance()
 			.scheme(DEFAULT_HTTP_SCHEME)
 			.host(this.vroConfig.getAuthHost())
@@ -168,7 +216,7 @@ public class VraSsoAuth {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
 		final MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("api_token",this.vroConfig.getRefreshToken());
+		map.add("api_token", this.vroConfig.getRefreshToken());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
@@ -179,6 +227,10 @@ public class VraSsoAuth {
 		return tokenUriAndHttpEntity;
 	}
 
+    /**
+     * Retrieve SSO Client Id.
+     * @return The client id.
+     */
     public String retrieveClientId() {
         final URI tokenUri = UriComponentsBuilder.newInstance()
                 .scheme(DEFAULT_HTTP_SCHEME)
@@ -192,6 +244,10 @@ public class VraSsoAuth {
                 .orElseThrow(() -> new RuntimeException("Could not find the SSO Client ID")).getValue();
     }
 
+    /**
+     * Retrive vRA version.
+     * @return the strig representation of the version.
+     */
     private String getVersion() {
         // vRA Cloud doesn't have vRO services and it's auth host (console.cloud.vmware.com)
         // is different than the Extensibility Proxy's vRO address (ext-proxy01.corp.local),
@@ -226,29 +282,56 @@ public class VraSsoAuth {
         return new HttpEntity<>(headers);
     }
 
+    /**
+     * Single Signe On token class.
+     */
     public static class SsoToken {
+        /** The token value. */
         private String value;
+        /** The token type, such as "Bearer". */
         private String tokenType;
+        /** Authentication provider. */
         private AuthProvider type;
 
+        /**
+         * Create a new Single Sign On token based on the given token string and Authentication Provider.
+         * @param token Toek string.
+         * @param type Authentication provider.
+         */
         public SsoToken(String token, AuthProvider type) {
             this.value = token;
             this.type = type;
             this.tokenType = DEFAULT_TOKEN_TYPE;
         }
 
+        /**
+         * Return the token string.
+         * @return the token string.
+         */
         public String getValue() {
             return value;
         }
 
+        /**
+         * Return true if expired and  false otherwise.
+         * @return true if expired and false otherwise.
+         */
         public boolean isExpired() {
             return Boolean.TRUE;
         }
 
+        /**
+        * Return the authentication provider type.
+         * @return the authentication provider type.
+         */
         public AuthProvider getType() {
             return type;
         }
 
+        /**
+         * The toekn type such as Bearer.
+         * @return toekn type such as Bearer.
+         */
         public String getTokenType() {
             return tokenType;
         }

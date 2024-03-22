@@ -119,9 +119,9 @@ declare class SSHSession {
 	cmd: void;
 	pty: void;
 	terminal: void;
-	output: void;
-	error: void;
-	state: void;
+	output: string;
+	error: string;
+	state: string;
 	constructor()
 	/**
 	 * Create a new SSHSession
