@@ -70,3 +70,12 @@ When exporting a policy, a json file will be created on the filesystem. The file
 Index will be added only if there are multiple policies with the same name.
 ### Known Issues
 
+Re-Creating Deleted policy.
+If you delete a policy, and then try to re-import it immediately, the import command will not fail, however, the policy will not be created.
+After a certain delay, the policy can be re-created again  via vrealize:push.
+"Open bug: [VRAE-61849](https://jira.eng.vmware.com/browse/VRAE-61849)"
+
+Here are two approaches to prevent this from happening:
+- **Do not delete policies before re-importing them.** This approach will only work if you do not need to change some properties like projectId.
+- **Remove policy ids from JSON files.** After successful import, do a export to get the new policyIds in the JSON files again. This approach will only work if you are exporting and importing from a single site. If you are exporting from SiteA to SiteB regularly, this may lead to policy duplicates.
+
