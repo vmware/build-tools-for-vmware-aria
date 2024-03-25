@@ -36,6 +36,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Republish the same tenants on VCD Plugin upgrade
+
+Republish the same tenants on VCD plugin upgrade instead of publish to all tenants.
+
+#### Previous Behavior
+* On vcd plugin upgrade, the plugin will published to all tenants.
+
+#### New Behavior
+* On vcd plugin upgrade, the plugin will published only for already published tenants.
+
 ### Fix on legacy archetype failing with vro:pull (when workflow folder path name contains special characters(&))
 
 #### Previous Behaviour
