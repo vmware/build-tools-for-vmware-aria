@@ -1,0 +1,39 @@
+{
+	"id": "80b8c817-63cd-43f4-9dda-e7abd5b51087",
+	"name": "L01",
+	"typeId": "com.vmware.policy.deployment.lease",
+	"orgId": "b2c558c8-f20c-4da6-9bc3-d7561f64df16",
+	"scopeCriteria": {
+		"matchExpression": [
+			{
+				"key": "project.name",
+				"operator": "contains",
+				"value": "ljklasdfgh"
+			}
+		]
+	},
+	"enforcementType": "SOFT",
+	"definition": {
+		"leaseGrace": 120,
+		"leaseTermMax": 30,
+		"leaseTotalTermMax": 240
+	},
+	"criteria": {
+		"matchExpression": [
+			{
+				"or": [
+					{
+						"key": "id",
+						"operator": "notEq",
+						"value": "92ba8f3b-bd9e-4ffb-b998-59e42b73141a"
+					},
+					{
+						"key": "id",
+						"operator": "notEq",
+						"value": "daa91784-99ff-40c0-9999-db980ca504fb"
+					}
+				]
+			}
+		]
+	}
+}

@@ -4,8 +4,8 @@
 ## Overview
 The vRA 8.x elements that you want to work with are described in the `content.yaml`
 
-## Table Of Contents:
-1. [Content.yaml](#Content.yaml)
+## Table Of Contents
+1. [Content.yaml](#contentyaml)
 
 
 ### Content.yaml
@@ -50,6 +50,7 @@ Null (nothing given) - everything is being imported
 * catalog-entitlement
 * property-group
 * subscription
+* policies
 
 Importing regional content doesn't use the `content.yaml` when pushing content it is working as previously pushes whatever there is the package.
 
@@ -66,6 +67,7 @@ Null (nothing given) - everything is being exported
 * catalog-entitlement
 * property-group
 * subscription
+* policies
 
 #### Exporting regional content
 
@@ -87,7 +89,7 @@ If not defined, nothing will be exported.
 
 ### Examples
 
-Example of `content.yaml` file. 
+Example of `content.yaml` file.
 
 ~~~yaml
 blueprint: # will export all 
@@ -117,4 +119,14 @@ content-source:  # export according to filter
   - Utility Workflows
   - Project Abx Actions
   - Project Code Stream pipelines
+policy:  # export according to filter
+  approval: []
+  content-sharing:
+    - cs policy 1
+    - cs policy 2
+  day2-actions: []
+  deployment-limit: []
+  lease: []
+  resource-quota: []
+
 ~~~

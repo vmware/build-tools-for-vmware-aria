@@ -25,6 +25,13 @@ The tool respects configuration in manifest when doing `vra-ng:pull` for the giv
 * catalog-entitlement
 * property-group
 * subscription
+* policies
+  * approval
+  * content-sharing
+  * day2-actions
+  * deployment-limit
+  * lease
+  * resource-quota
 
 It will throw an error if the given entities are not on the server.
 

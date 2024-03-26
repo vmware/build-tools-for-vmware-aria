@@ -80,6 +80,21 @@ catalog
             └── customResource.json
         └── resource-actions
             └── resourceAction.json
+        └── policy:
+            └── approval:
+                └── aprovalPolicy1.json
+            └── content-sharing:
+                └── contentSharingPolicy1.json
+            └── day2-actions:
+                └── day2ActionsPolicy1.json
+            └── deployment-limit:
+                └── deploymentLimitPolicy1.json
+            └── lease:
+                └── leasePolicy1.json 
+            └── resource-quota:
+                └── resourceQuotaPolicy1.json 
+            
+            
 ~~~
 
 Content Descriptor is implemented by content.yaml file with the following defaults.
