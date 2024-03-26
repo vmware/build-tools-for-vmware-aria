@@ -91,8 +91,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 			String filename = policyFile.getName();
 			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
 				this.handleContentSharingPolicyImport(policyFile);
-			}
-			else {
+			} else {
 				logger.warn("Skipped unexpected file '{}'", filename);
 			}
 		}

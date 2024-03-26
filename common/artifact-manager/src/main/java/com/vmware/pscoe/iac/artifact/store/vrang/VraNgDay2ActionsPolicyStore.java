@@ -89,8 +89,7 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 			String filename = policyFile.getName();
 			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
 				this.handleDay2ActionsPolicyImport(policyFile);
-			}
-			else {
+			} else {
 				logger.warn("Skipped unexpected file '{}'", filename);
 			}
 		}

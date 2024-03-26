@@ -87,8 +87,7 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 			String filename = policyFile.getName();
 			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
 				this.handleLeasePolicyImport(policyFile);
-			}
-			else {
+			} else {
 				logger.warn("Skipped unexpected file '{}'", filename);
 			}
 		}
