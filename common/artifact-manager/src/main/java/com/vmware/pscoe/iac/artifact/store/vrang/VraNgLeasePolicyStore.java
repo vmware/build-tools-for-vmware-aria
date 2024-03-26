@@ -81,10 +81,15 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		}
 
 		logger.info("Found Lease Policies. Importing...");
-		for (File leasePolicyFile : leasePolicyFiles) {
+		for (File policyFile : leasePolicyFiles) {
 			//exclude hidden files e.g. .DS_Store
-			if (!leasePolicyFile.getName().startsWith(".")) {
-				this.handleLeasePolicyImport(leasePolicyFile);
+			//exclude files that do not end with a '.json' extension as defined in CUSTOM_RESOURCE_SUFFIX
+			String filename = policyFile.getName();
+			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
+				this.handleLeasePolicyImport(policyFile);
+			}
+			else {
+				logger.warn("Skipped unexpected file '{}'", filename);
 			}
 		}
 	}

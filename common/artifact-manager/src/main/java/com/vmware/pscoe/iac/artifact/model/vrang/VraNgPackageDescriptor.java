@@ -242,7 +242,6 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	 * @return policy container.
 	 */
 	public VraNgPolicy getPolicy() {
-		logger.info("VraNgPolicy.getPolicy {}", this.policy);
         return this.policy;
     }
 

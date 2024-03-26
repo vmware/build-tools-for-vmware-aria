@@ -85,8 +85,13 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 
 		for (File policyFile : day2ActionsolicyFiles) {
 			//exclude hidden files e.g. .DS_Store
-			if (!policyFile.getName().startsWith(".")) {
+			//exclude files that do not end with a '.json' extension as defined in CUSTOM_RESOURCE_SUFFIX
+			String filename = policyFile.getName();
+			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
 				this.handleDay2ActionsPolicyImport(policyFile);
+			}
+			else {
+				logger.warn("Skipped unexpected file '{}'", filename);
 			}
 		}
 	}
@@ -119,7 +124,6 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
-		logger.info("{}->getItemListFromDescriptor", this.getClass());
 
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
 			logger.info("Descriptor policy is null");

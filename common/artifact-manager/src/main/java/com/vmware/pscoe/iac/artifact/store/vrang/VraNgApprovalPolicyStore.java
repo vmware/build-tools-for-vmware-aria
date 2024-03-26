@@ -85,8 +85,13 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 		logger.info("Found Approval Policies. Importing ...");
 		for (File policyFile : approvalPolicyFiles) {
 			//exclude hidden files e.g. .DS_Store
-			if (!policyFile.getName().startsWith(".")) {
+			//exclude files that do not end with a '.json' extension as defined in CUSTOM_RESOURCE_SUFFIX
+			String filename = policyFile.getName();
+			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
 				this.handlePolicyImport(policyFile);
+			}
+			else {
+				logger.warn("Skipped unexpected file '{}'", filename);
 			}
 		}
 	}
@@ -122,8 +127,6 @@ public final class VraNgApprovalPolicyStore  extends AbstractVraNgStore {
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
-		logger.debug("{}->getItemListFromDescriptor", this.getClass());
-
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
 			logger.debug("Descriptor policy is null");
 			return null;

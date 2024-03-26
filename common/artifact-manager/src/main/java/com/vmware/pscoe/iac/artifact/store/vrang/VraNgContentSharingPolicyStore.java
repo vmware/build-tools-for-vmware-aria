@@ -85,10 +85,15 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 		logger.info("Found Content Sharing Policies. Importing...");
 
-		for (File contentSharingPolicyFile : contentSharingPolicyFiles) {
-			if (!contentSharingPolicyFile.getName().startsWith(".")) {
-				//exclude hidden files e.g. .DS_Store
-				this.handleContentSharingPolicyImport(contentSharingPolicyFile);
+		for (File policyFile : contentSharingPolicyFiles) {
+			//exclude hidden files e.g. .DS_Store
+			//exclude files that do not end with a '.json' extension as defined in CUSTOM_RESOURCE_SUFFIX
+			String filename = policyFile.getName();
+			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
+				this.handleContentSharingPolicyImport(policyFile);
+			}
+			else {
+				logger.warn("Skipped unexpected file '{}'", filename);
 			}
 		}
 	}
@@ -114,8 +119,6 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
-		logger.debug("{}->getItemListFromDescriptor", VraNgContentSharingPolicyStore.class);
-
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
 			logger.debug("Descriptor policy is null");
 			return null;
