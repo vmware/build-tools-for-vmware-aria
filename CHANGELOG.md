@@ -1,3 +1,5 @@
+## v2.38.0 - 29 Mar 2024
+
 ### Enhancements
 * [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
 * [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
