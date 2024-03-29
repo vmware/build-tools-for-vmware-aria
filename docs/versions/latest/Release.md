@@ -46,7 +46,7 @@ The `//@ts-ignore` should be used to skip the error. The compiled JS is working
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-## Upgrade procedure:
+## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
 
