@@ -102,6 +102,16 @@ The new archetype can be bootstrapped with:
 #### Related issue
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
+### Fix SSH Session additional methods type
+
+#### Previous Behavior
+
+ When using SSH with typescript, the  `cmd`, `pty`, `terminal` methods has the type `void`. But technically, it returns a string. VSCode highlight it as an error and the complication failed. The same method is working in JS (obviously). Example from the built-in Workflow. Variable  `cmd`, `pty`, `terminal` has type `String`.
+
+#### Current Behavior
+
+ Method  `cmd`, `pty`, `terminal` should return type `String` instead of type `void`
+
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
 
