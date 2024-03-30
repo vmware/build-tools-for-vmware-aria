@@ -1,3 +1,6 @@
+### Enhancements
+* Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+
 ## v2.38.0 - 29 Mar 2024
 
 ### Enhancements
@@ -5,7 +8,6 @@
 * [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
 * [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 * [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
-* Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
