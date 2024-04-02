@@ -16,10 +16,18 @@ package com.vmware.pscoe.iac.artifact.store.cs;
  */
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,7 +35,7 @@ import com.google.gson.JsonParser;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.yaml.snakeyaml.Yaml;
 
 public class CsPipelineStore extends AbstractCsStore {
 	private static final String DIR_PIPELINES = "pipelines";
@@ -43,8 +51,9 @@ public class CsPipelineStore extends AbstractCsStore {
 	}
 
 	/**
-	* Exporting the contents of all blueprints listed in the content.yaml file, available for the configured project
-	*/
+	 * Exporting the contents of all blueprints listed in the content.yaml file,
+	 * available for the configured project
+	 */
 	public void exportContent() {
 		List<String> pipelineNames = this.descriptor.getPipeline();
 		if (pipelineNames == null) {
@@ -60,6 +69,7 @@ public class CsPipelineStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
+	 * 
 	 * @param sourceDirectory sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
@@ -68,12 +78,94 @@ public class CsPipelineStore extends AbstractCsStore {
 			return;
 		}
 
-		Collection<File> pipelineFiles = FileUtils.listFiles(pipelinesFolder, new String[] {"yaml"}, false);
+		Collection<File> pipelineFiles = FileUtils.listFiles(pipelinesFolder, new String[] { "yaml" }, false);
 		if (pipelineFiles == null || pipelineFiles.isEmpty()) {
 			return;
 		}
 
-		pipelineFiles.stream().forEach(this::importPipeline);
+		// Map to store dependencies extracted from YAML files
+		Map<String, Set<String>> dependencies = new HashMap<>();
+
+		// Parse YAML files and extract dependencies
+		for (File file : pipelineFiles) {
+			Set<String> deps = extractPipeRollbackDependencies(file);
+			dependencies.put(file.getName(), deps);
+		}
+
+		// Perform topological sort
+		List<String> orderedFiles = topologicalSort(dependencies);
+
+		// Import pipelines in the ordered sequence
+		for (String fileName : orderedFiles) {
+			File file = new File(pipelinesFolder, fileName);
+			importPipeline(file);
+		}
+	}
+
+	private Set<String> extractPipeRollbackDependencies(File yamlFile) {
+		Set<String> dependencies = new HashSet<>();
+		try (InputStream inputStream = new FileInputStream(yamlFile)) {
+			Yaml yaml = new Yaml();
+			Map<String, Object> data = yaml.load(inputStream);
+			if (data.containsKey("rollbacks")) {
+				Object rollbacksObj = data.get("rollbacks");
+				if (rollbacksObj instanceof List) {
+					for (Object rollback : (List<?>) rollbacksObj) {
+						if (rollback instanceof Map) {
+							Object nameObj = ((Map<?, ?>) rollback).get("name");
+							if (nameObj instanceof String) {
+								String dependencyFileName = (String) nameObj;
+								dependencies.add(dependencyFileName + ".yaml");
+							}
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return dependencies;
+	}
+
+	// Topological sort algorithm
+	private List<String> topologicalSort(Map<String, Set<String>> dependencies) {
+		Map<String, Integer> vertexMap = new HashMap<>();
+		List<String> fileList = new ArrayList<>(dependencies.keySet());
+		for (int i = 0; i < fileList.size(); i++) {
+			vertexMap.put(fileList.get(i), i);
+		}
+
+		List<List<Integer>> graph = new ArrayList<>();
+		for (int i = 0; i < fileList.size(); i++) {
+			graph.add(new ArrayList<>());
+		}
+		for (Map.Entry<String, Set<String>> entry : dependencies.entrySet()) {
+			int from = vertexMap.get(entry.getKey());
+			for (String dep : entry.getValue()) {
+				int to = vertexMap.get(dep);
+				graph.get(from).add(to);
+			}
+		}
+
+		List<String> orderedFiles = new ArrayList<>();
+		boolean[] visited = new boolean[fileList.size()];
+		for (int i = 0; i < fileList.size(); i++) {
+			if (!visited[i]) {
+				topologicalSortUtil(graph, i, visited, orderedFiles, fileList);
+			}
+		}
+		return orderedFiles;
+	}
+
+	private void topologicalSortUtil(List<List<Integer>> graph, int v, boolean[] visited, List<String> orderedFiles,
+			List<String> fileList) {
+		visited[v] = true;
+		for (int i : graph.get(v)) {
+			if (!visited[i]) {
+				topologicalSortUtil(graph, i, visited, orderedFiles, fileList);
+			}
+		}
+		orderedFiles.add(fileList.get(v));
 	}
 
 	private void exportPipeline(JsonObject obj) {
