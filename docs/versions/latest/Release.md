@@ -35,6 +35,18 @@ The `//@ts-ignore` should be used to skip the error. The compiled JS is working
 
 `spec.deviceChange[ 0 ].device.backing.vgpu = vGPUProfile`  should work as expected
 
+### Add missing types to AD Plugin
+
+Fix Issue #251
+
+#### Previous Behavior
+
+AD types were not implemented
+
+#### Current Behavior
+
+AD types were added
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)

@@ -1,5 +1,8 @@
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+  
+### Fixes
+* [vro-types] 251 / Add missing types to AD Plugin
 
 ## v2.38.0 - 29 Mar 2024
 
