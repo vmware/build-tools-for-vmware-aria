@@ -1,10 +1,10 @@
 package com.vmware.pscoe.iac.artifact.store.cs;
 
-/*
+/*-
  * #%L
  * artifact-manager
  * %%
- * Copyright (C) 2023 VMware
+ * Copyright (C) 2023 - 2024 VMware
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
@@ -37,9 +37,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
-public class CsPipelineStore extends AbstractCsStore {
+public final class CsPipelineStore extends AbstractCsStore {
+	/**
+	 * The pipelines root folder.
+	 */
 	private static final String DIR_PIPELINES = "pipelines";
+
+	/**
+	 * logger.
+	 */
 	private final Logger logger = LoggerFactory.getLogger(CsPipelineStore.class);
+
+	/**
+	 * projectPipelines.
+	 */
 	private List<JsonObject> projectPipelines;
 
 	List<JsonObject> getProjectPipelines() {
@@ -52,7 +63,7 @@ public class CsPipelineStore extends AbstractCsStore {
 
 	/**
 	 * Exporting the contents of all blueprints listed in the content.yaml file,
-	 * available for the configured project
+	 * available for the configured project.
 	 */
 	public void exportContent() {
 		List<String> pipelineNames = this.descriptor.getPipeline();
@@ -68,7 +79,7 @@ public class CsPipelineStore extends AbstractCsStore {
 	}
 
 	/**
-	 * Importing content into vRA target environment
+	 * Importing content into vRA target environment.
 	 * 
 	 * @param sourceDirectory sourceDirectory
 	 */
