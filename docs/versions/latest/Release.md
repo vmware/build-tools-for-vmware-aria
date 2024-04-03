@@ -29,6 +29,19 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
+
+### Add missing types to AD Plugin
+
+Fix Issue #251
+
+#### Previous Behavior
+
+AD types were not implemented
+
+#### Current Behavior
+
+AD types were added
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
