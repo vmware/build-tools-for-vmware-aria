@@ -618,7 +618,7 @@ declare interface AD_User {
 	readonly userPrincipalName: string;
 	readonly sID: string;
 	readonly accountName: string;
-	readonly memberof: AD_Group[];
+	readonly memberOf: AD_Group[];
 	readonly distinguishedName: string;
 	readonly allAttributes: any;
 	readonly gUID: string;
@@ -672,7 +672,7 @@ declare interface AD_User {
 	/**
 	 * Get an AD attribute for an array of values.
 	 */
-	getAttributeValueBytes(attribName: string): string[];
+	getArrayAttribute(attribName: string): string[];
 }
 
 /**
@@ -734,12 +734,12 @@ declare interface AD_UserGroup {
 	/**
 	 * Get an AD attribute value as byte array.
 	 */
-	addAttribute(attribName: string): object[];
+	getAttributeValueBytes(attribName: string): object[];
 
 	/**
 	 * Get an AD attribute for an array of values.
 	 */
-	addAttribute(attribName: string): string[];
+	getArrayAttribute(attribName: string): string[];
 }
 
 /**
