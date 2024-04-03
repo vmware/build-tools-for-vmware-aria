@@ -1,6 +1,9 @@
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
 
+### Fixes
+* [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.
+
 ## v2.38.0 - 29 Mar 2024
 
 ### Enhancements

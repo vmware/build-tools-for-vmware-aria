@@ -22,6 +22,8 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
+### *Fixed an issue with Arira Pipelines import*
+You can now import pipelines with dependencies to other pipelines in their rollback section definition.
 
 ### Add missing attribute to VcVirtualDeviceBackingInfo class
 
