@@ -1,3 +1,5 @@
+## v2.38.1 - 03 Apr 2024
+
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
 
