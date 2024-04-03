@@ -1,8 +1,13 @@
+## v2.38.1 - 03 Apr 2024
+
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
   
 ### Fixes
 * [vro-types] 251 / Add missing types to AD Plugin
+
+### Fixes
+* [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.
 
 ## v2.38.0 - 29 Mar 2024
 
