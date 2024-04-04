@@ -2,6 +2,9 @@
 
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+  
+### Fixes
+* [vro-types] 251 / Add missing types to AD Plugin
 
 ### Fixes
 * [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.

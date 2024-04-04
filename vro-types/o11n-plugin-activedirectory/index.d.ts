@@ -470,7 +470,80 @@ declare interface AD_Computer {
  * Group
  */
 declare interface AD_Group {
-	id: string;
+	readonly id: string;
+	readonly users: object[];
+	readonly computers: object[];
+	readonly userGroups: object[];
+	readonly containers: object[];
+	readonly organizationalUnits: object[];
+	readonly distinguishedName: string;
+	readonly allAttributes: object[];
+	readonly gUID: string;
+
+	/**
+	 * Creates a new user and adds it to this container.
+	 */
+	createUser(accountName: string, domainName: string, displayName: string): void;
+
+	/**
+	 * Creates a new user, sets its password and adds it to this container.
+	 */
+	createUserWithPassword(accountName: string, password: string, domainName: string, displayName: string): void;
+
+	/**
+	 * Creates a new user, sets its password and adds it to this container.
+	 */
+	createUserWithDetails(accountName: string, password: string, domainName: string, displayName: string, firstName: string, lastName: string): void;
+
+	/**
+	 * Creates a new user group and adds it to this container.
+	 */
+	createUserGroup(groupName: string): void;
+
+	/**
+	 * Creates a new organizational unit and adds it to this container.
+	 */
+	createOrganizationalUnit(ouName: string): void;
+
+	/**
+	 * Create a new computer and add it to this container.
+	 */
+	createComputer(computerName: string, domainName: string, computerNamePreWin2K: string): void;
+
+	/**
+	 * Create a new computer with password and add it to this container.
+	 */
+	createComputerWithPassword(computerName: string, domainName: string, password: string, computerNamePreWin2K: string): void;
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Change the value of an existing attribute.
+	 */
+	setAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute.
+	 */
+	getAttribute(attribName: string): string;
+
+	/**
+	 * Adds an attribute.
+	 */
+	addAttribute(attribName: string, newValue: string): void;
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 */
+	getAttributeValueBytes(attribName: string): object[];
+
+	/**
+	 * Get an AD attribute for an array of values.
+	 */
+	getArrayAttribute(attribName: string): string[];
 }
 
 /**
@@ -490,21 +563,183 @@ declare interface AD_OrganizationalUnit {
  * Unknown type of object
  */
 declare interface AD_Unknown {
-	id: string;
+	readonly id: string;
+	readonly distinguishedName: string;
+	readonly allAttributes: object[];
+	readonly gUID: string;
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 */
+	rename(name: string): void;
+
+	/**
+	 * Change the value of an existing attribute.
+	 */
+	setAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute.
+	 */
+	getAttribute(attribName: string): string;
+
+	/**
+	 * Adds an attribute.
+	 */
+	addAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 */
+	getAttributeValueBytes(attribName: string): any[];
+
+	/**
+	 * Get an AD attribute for an array of values.
+	 */
+	getArrayAttribute(attribName: string): string[];
 }
 
 /**
  * User
  */
 declare interface AD_User {
-	id: string;
+	readonly id: string;
+	readonly enabled: boolean;
+	readonly userPrincipalName: string;
+	readonly sID: string;
+	readonly accountName: string;
+	readonly memberOf: AD_Group[];
+	readonly distinguishedName: string;
+	readonly allAttributes: any;
+	readonly gUID: string;
+
+	/**
+	 * Sets the passed in String value as a password of this user.
+	 */
+	setPassword(password: string): void;
+
+	/**
+	 * Sets the user account to change or not change the password at next logon.
+	 * @param param0 - Set this value to true if you want to enforce the user to change his password at next logon
+	 */
+	setChangePasswordAtNextLogon(param0: boolean): void;
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 */
+	rename(name: string): void;
+
+	/**
+	 * Change the value of an existing attribute.
+	 */
+	 setAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute.
+	 */
+	getAttribute(attribName: string): string;
+
+	/**
+	 * Adds an attribute.
+	 */
+	addAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 */
+	getAttributeValueBytes(attribName: string): object[];
+
+	/**
+	 * Get an AD attribute for an array of values.
+	 */
+	getArrayAttribute(attribName: string): string[];
 }
 
 /**
  * UserGroup
  */
 declare interface AD_UserGroup {
-	id: string;
+	readonly id: string;
+	readonly sID: string;
+	readonly computerMembers: AD_Computer[];
+	readonly userMembers: AD_User[];
+	readonly memberOf: AD_UserGroup[];
+	readonly groupMembers: AD_UserGroup[];
+	readonly distinguishedName: string;
+	readonly allAttributes: object[];
+	readonly gUID: object;
+
+	/**
+	 * Removes elements from the group.
+	 * @elements - All elements to remove from the group
+	 */
+	removeElements(elements: object[]): void;
+
+	/**
+	 * Adds elements to the group.
+	 * @elements - All elements to remove from the group
+	 */
+	addElements(elements: object[]): void;
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 */
+	rename(name: string): void;
+
+	/**
+	 * Change the value of an existing attribute.
+	 */
+	setAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute.
+	 */
+	getAttribute(attribName: string): string;
+
+	/**
+	 * Adds an attribute.
+	 */
+	addAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 */
+	getAttributeValueBytes(attribName: string): object[];
+
+	/**
+	 * Get an AD attribute for an array of values.
+	 */
+	getArrayAttribute(attribName: string): string[];
 }
 
 /**
