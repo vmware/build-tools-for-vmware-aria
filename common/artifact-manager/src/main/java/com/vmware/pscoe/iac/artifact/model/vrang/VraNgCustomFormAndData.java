@@ -8,50 +8,37 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
- * Deserialized Custom Form in a format suitabe for the REST API to work with.
- * Still to store this form on the file system, please convert it to VraNgCustomFormAndData object first.
+ * Deserialized Custom Form in a form that is suitable to store on the file system (repository).
+ * If you need to use the custom form data with REST API, please first convert it to VraNgCustomForm object.
  * @see VraNgCustomForm
  */
-public class VraNgCustomForm {
+public class VraNgCustomFormAndData {
 	/**
 	 * id.
 	 */
 	private String id;
-
+	
 	/**
 	 * name.
 	 */
 	private String name;
 	
 	/**
-	 * The form serialized into a string, so when the whole VraNgCustomForm object is serealized on the
-	 * file system repo, it will look as double serialized object such as" <br/><br/>
-	 * <code>
-	 * {
-	 *   "id": "e694a748-7067-47d1-91a4-614da73dda03",
-	 *   "name": "Test",
-	 *   "form": "{\"layout\": {...},\"schema\": {...},\"options\": {...}}",
-	 *   "styles": null,
-	 *   "sourceType": "com.vmw.blueprint",
-	 *   "sourceId": "71ac6ebc-6a94-3c5a-8c00-2a44ddf81bce",
-	 *   "type": "requestForm",
-	 *   "status": "ON",
-	 *   "formFormat": "JSON"
-	 * }
-	 * </code>
-	 * rather than
+	 * The form represented as JSON object which has its own structure. So when the whole VraNgCustomFormAndData is
+	 * serealized on the file system repo, the form will look as natural part of the whole object. <br/><br/>
+	 * Example:
 	 * <code>
 	 *     {
 	 *   "id": "e694a748-7067-47d1-91a4-614da73dda03",
@@ -75,62 +62,70 @@ public class VraNgCustomForm {
 	 *   "formFormat": "JSON"
 	 * }
 	 * </code>
+	 * and not as double serialized string:
+	 * <code>
+	 * {
+	 *   "id": "e694a748-7067-47d1-91a4-614da73dda03",
+	 *   "name": "Test",
+	 *   "form": "{\"layout\": {...},\"schema\": {...},\"options\": {...}}",
+	 *   "styles": null,
+	 *   "sourceType": "com.vmw.blueprint",
+	 *   "sourceId": "71ac6ebc-6a94-3c5a-8c00-2a44ddf81bce",
+	 *   "type": "requestForm",
+	 *   "status": "ON",
+	 *   "formFormat": "JSON"
+	 * }
+	 * </code>
 	 */
-	private String form;
-
+	private JsonElement form;
+	
 	/**
 	 * style.
 	 */
 	private String styles;
-
+	
 	/**
 	 * sourceType.
 	 */
 	private String sourceType;
-
+	
 	/**
 	 * sourceId.
 	 */
 	private String sourceId;
-
+	
 	/**
 	 * type.
 	 */
 	private String type;
-
+	
 	/**
 	 * status.
 	 */
 	private String status;
-
+	
 	/**
 	 * formFormat.
 	 */
 	private String formFormat;
-
+	
 	/**
-	 * Constructor function for VraNgCustomForm. This object is used by the REST API to export/import custom forms
-	 * from/to Aria Automation. Still this is not suitable for serializing and storeing it on the file system as then
-	 * the form field (which has its own internal structure) will be serialized as one line string making it very
-	 * difficult for a human to work with it.
+	 * Constructor function for VraNgCustomForm.
 	 * @param idIn Id value
 	 * @param nameIn name value
-	 * @param formIn form value. This is expected to be a form converted in string format event if it represents a
-	 *               (YAML or JSON) object it will be converted into string. If you serialize this VraNgCustomForm
-	 *               object, it will contain the form field properly serialized as one line string and any new lines
-	 *               properly escaped (\n).
+	 * @param formIn form value in the form of a deserialized object.
 	 * @param stylesIn form styles
 	 * @param sourceIdIn form source id value
 	 * @param sourceTypeIn form source type value
 	 * @param typeIn form type value
 	 * @param statusIn form status
 	 * @param formFormatIn form format
-	 * @see VraNgCustomForm#form
-	 * @see VraNgCustomFormAndData
 	 * @see VraNgCustomFormAndData#form
+	 * @see VraNgCustomForm
+	 * @see VraNgCustomForm#form
 	 */
-	public VraNgCustomForm(final String idIn, final String nameIn, final String formIn, final String stylesIn, final String sourceIdIn, final String sourceTypeIn,
-			final String typeIn, final String statusIn, final String formFormatIn) {
+	public VraNgCustomFormAndData(final String idIn, final String nameIn, final JsonElement formIn, final String stylesIn, final String sourceIdIn, final String sourceTypeIn,
+						   final String typeIn, final String statusIn, final String formFormatIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.form = formIn;
@@ -143,36 +138,28 @@ public class VraNgCustomForm {
 	}
 	
 	/**
-	 * Construct new VraNgCustomForm suoitable for the REST API, from VraNgCustomFormAndData object which is
-	 * read from the file system repository.
-	 * @param repoForm Form as represented in the file system repository.
-	 * @see VraNgCustomForm#form
-	 * @see VraNgCustomFormAndData
+	 * Construct new VraNgCustomFormAndData from VraNgCustomForm which is received as part of the REST API calls.
+	 * @param restForm the form as returmed by REST API calls.
 	 * @see VraNgCustomFormAndData#form
+	 * @see VraNgCustomForm
+	 * @see VraNgCustomForm#form
 	 */
-	public VraNgCustomForm(VraNgCustomFormAndData repoForm) {
-		this.id = repoForm.getId();
-		this.name = repoForm.getName();
-		this.styles = repoForm.getStyles();
-		this.sourceType = repoForm.getSourceType();
-		this.sourceId = repoForm.getSourceId();
-		this.type = repoForm.getType();
-		this.status = repoForm.getStatus();
-		this.formFormat = repoForm.getFormFormat();
-		JsonElement json = repoForm.getForm();
-		if (json == null || json.isJsonNull()) {
-			return;
-		}
-		if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
-			this.form = json.getAsJsonPrimitive().getAsString();
-		} else if (json.isJsonObject()) {
-			Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
-			this.form = gson.toJson(json);
-		} else {
-			this.form = json.toString();
-		}
+	public VraNgCustomFormAndData(VraNgCustomForm restForm) {
+		this.id = restForm.getId();
+		this.name = restForm.getName();
+		this.styles = restForm.getStyles();
+		this.sourceType = restForm.getSourceType();
+		this.sourceId = restForm.getSourceId();
+		this.type = restForm.getType();
+		this.status = restForm.getStatus();
+		this.formFormat = restForm.getFormFormat();
+		String formString = restForm.getForm();
+		setForm(restForm.getForm());
+		
 	}
-
+	
+	
+	
 	/**
 	 * Getter for id.
 	 * @return id String
@@ -180,7 +167,7 @@ public class VraNgCustomForm {
 	public String getId() {
 		return this.id;
 	}
-
+	
 	/**
 	 * Setter for name.
 	 * @param nameIn String
@@ -188,7 +175,7 @@ public class VraNgCustomForm {
 	public void setName(final String nameIn) {
 		this.name = nameIn;
 	}
-
+	
 	/**
 	 * Getter for name.
 	 * @return name String
@@ -196,15 +183,15 @@ public class VraNgCustomForm {
 	public String getName() {
 		return this.name;
 	}
-
+	
 	/**
 	 * Getter for form.
 	 * @return form String
 	 */
-	public String getForm() {
+	public JsonElement getForm() {
 		return this.form;
 	}
-
+	
 	/**
 	 * Getter for styles.
 	 * @return styles String
@@ -212,7 +199,7 @@ public class VraNgCustomForm {
 	public String getStyles() {
 		return this.styles;
 	}
-
+	
 	/**
 	 * Getter for sourceType.
 	 * @return sourceType String
@@ -220,7 +207,7 @@ public class VraNgCustomForm {
 	public String getSourceType() {
 		return this.sourceType;
 	}
-
+	
 	/**
 	 * Getter for sourceId.
 	 * @return sourceId String
@@ -228,7 +215,7 @@ public class VraNgCustomForm {
 	public String getSourceId() {
 		return this.sourceId;
 	}
-
+	
 	/**
 	 * Setter for sourceId. Override in case of 812 blueprint form version.
 	 * @param sourceIdIn String
@@ -236,7 +223,7 @@ public class VraNgCustomForm {
 	public void setSourceId(final String sourceIdIn) {
 		this.sourceId = sourceIdIn;
 	}
-
+	
 	/**
 	 * Getter for type.
 	 * @return type String
@@ -253,7 +240,7 @@ public class VraNgCustomForm {
 	public void setSourceType(final String sourceTypeIn) {
 		this.sourceType = sourceTypeIn;
 	}
-
+	
 	/**
 	 * Getter for status.
 	 * @return status String
@@ -261,7 +248,7 @@ public class VraNgCustomForm {
 	public String getStatus() {
 		return this.status;
 	}
-
+	
 	/**
 	 * Getter for formFormat.
 	 * @return formFormat String
@@ -269,12 +256,28 @@ public class VraNgCustomForm {
 	public String getFormFormat() {
 		return this.formFormat;
 	}
-
+	
 	/**
 	 * Setter for form.
 	 * @param formIn String
 	 */
-	public void setForm(final String formIn) {
+	public void setForm(final JsonObject formIn) {
 		this.form = formIn;
 	}
+	
+	/**
+	 * Set the form data for the custom form using a string representation of the form.
+	 * The string is expected to contain a serialized JSON object that represents the atual form data.
+	 * So this method will try to deserialize the input string into JSON Element, then store it in.
+	 * If deserialization fails, then a
+	 * @param formIn form data serialized as string.
+	 */
+	public void setForm(final String formIn) {
+		if (formIn == null) {
+			return;
+		}
+		JsonElement json = JsonParser.parseString(formIn);
+		this.form = json;
+	}
 }
+
