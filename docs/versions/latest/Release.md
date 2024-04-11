@@ -17,6 +17,50 @@
 
 [//]: # (Features -> New Functionality)
 ## Features
+### Pretty formatted JSON for Custom Forms when storing them together with Custom Form Metadata
+When Custom Forms are pulled from Aria Automation, they are stored on the file system (the repo) in a form similar to
+```
+{
+  "id": "e694a748-7067-47d1-91a4-614da73dda03",
+  "name": "Test",
+  "form": "{\"layout\": {...},\"schema\": {...},\"options\": {...}}",
+  "styles": null,
+  "sourceType": "com.vmw.blueprint",
+  "sourceId": "71ac6ebc-6a94-3c5a-8c00-2a44ddf81bce",
+  "type": "requestForm",
+  "status": "ON",
+  "formFormat": "JSON"
+}
+```
+Here, please note that the form field is a double serialized JSON as string : "{"layout": {...},"schema": {...},"options": {...}}"
+which makes it goes in one line and very difficult for a human to work with. If there is any commits and. changes in the form in the repo, the diffs are very difficult to find (when reviewing pull requests).
+As a whole it is not human friendly and very difficult for a human to deal with.
+
+The current pull request, makes it so that the format will become a properly formatted JSON object like:
+```
+{
+  "id": "e694a748-7067-47d1-91a4-614da73dda03",
+  "name": "Test",
+  "form": {
+    "layout": {
+    ...
+    },
+    "schema": {
+    ...
+    },
+    "options": {
+    ...
+    }
+  },
+  "styles": null,
+  "sourceType": "com.vmw.blueprint",
+  "sourceId": "71ac6ebc-6a94-3c5a-8c00-2a44ddf81bce",
+  "type": "requestForm",
+  "status": "ON",
+  "formFormat": "JSON"
+}
+```
+This way it is more easy to work with.
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
