@@ -16,6 +16,7 @@
 * [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
 * [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 * [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
+* [artifact-manager] Export (Pull) Arai Automation Custom forms in a structured JSON, rather than in string encoded JSON, when stored together with the Custom Form metadata, thus making it more human friendly to operate with when stored in a repo.
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
