@@ -1,4 +1,4 @@
-[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
+# (VERSION_PLACEHOLDER DO NOT DELETE)
 [//]: # (Used when working on a new release. Placed together with the Version.md)
 [//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
 [//]: # (Do not fill the version, it will be done automatically)
@@ -19,7 +19,7 @@
 ## Features
 ### Pretty formatted JSON for Custom Forms when storing them together with Custom Form Metadata
 When Custom Forms are pulled from Aria Automation, they are stored on the file system (the repo) in a form similar to
-```
+```json
 {
   "id": "e694a748-7067-47d1-91a4-614da73dda03",
   "name": "Test",
@@ -37,7 +37,7 @@ which makes it goes in one line and very difficult for a human to work with. If 
 As a whole it is not human friendly and very difficult for a human to deal with.
 
 The current pull request, makes it so that the format will become a properly formatted JSON object like:
-```
+```json
 {
   "id": "e694a748-7067-47d1-91a4-614da73dda03",
   "name": "Test",
@@ -61,10 +61,6 @@ The current pull request, makes it so that the format will become a properly for
 }
 ```
 This way it is more easy to work with.
-[//]: # (### *Feature Name*)
-[//]: # (Describe the feature)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
