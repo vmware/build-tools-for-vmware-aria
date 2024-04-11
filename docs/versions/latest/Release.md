@@ -17,9 +17,30 @@
 
 [//]: # (Features -> New Functionality)
 ## Features
+### Enable support for binding workflow attributes to Configuration Element variables 
+Be able to bind attribute values to Configuration Element variables
+
+To do that one have to provide the following annotation for the workflow ts file (SomeFile.wf.ts)
+```
+@Workflow({
+        id: "<Some Id>",
+        name: "<Some Name>",
+        path: "<Some Path>",
+        attributes: {
+            attributeName: {
+            type: "string",
+            bind: true,   
+            value: "Some/Path/To/ConfigurationElement/variableName"
+            }
+        }
+    })
+```
+Here
+`bind: true` - means that we have to bind the value of the attribute to Configuration Element variable.
+`value: "Some/Path/To/ConfigurationElement/variableName"` - points to the Configuration Element and variable inside the Configuration Element to bind to.
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (Optional But higlhy recommended Specify *NONE* if mis
 [//]: # (#### Relevant Documentation:)
 
 

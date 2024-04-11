@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8" ?><config-element id="2d33a702-b903-395e-9989-fd02fbb91e0d" version="1.0.0"><display-name><![CDATA[ConfigurationEl]]></display-name><atts><att name="variable1" type="string" read-only="false"><value encoded="n"><![CDATA[SomeValue]]></value><description><![CDATA[Some Description]]></description></att></atts></config-element>
