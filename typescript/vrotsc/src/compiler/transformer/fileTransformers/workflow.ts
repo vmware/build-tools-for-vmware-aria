@@ -43,7 +43,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			const xmlTemplateFilePath = system.changeFileExt(file.filePath, ".xml");
 			const xmlTemplate = system.fileExists(xmlTemplateFilePath) ? system.readFile(xmlTemplateFilePath).toString() : undefined;
 
-			context.writeFile(`${targetFilePath}.xml`, xmlTemplate ? mergeWorkflowXml(workflowInfo, xmlTemplate) : printWorkflowXml(workflowInfo));
+			context.writeFile(`${targetFilePath}.xml`, xmlTemplate ? mergeWorkflowXml(workflowInfo, xmlTemplate) : printWorkflowXml(workflowInfo, context));
 			context.writeFile(`${targetFilePath}.element_info.xml`, printElementInfo({
 				categoryPath: workflowInfo.path.replace(/(\\|\/)/g, "."),
 				name: workflowInfo.name,
@@ -129,6 +129,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			package: "",
 			method: ""
 		};
+
 
 		//Arnold Here check the Polyglot decorator for the methods
 
@@ -351,6 +352,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 							parameter.numberFormat = (<ts.StringLiteral>property.initializer).text;
 							break;
 						case "defaultValue":
+						case "value":
 							{
 								parameter.defaultValue = getWorkflowParamValue(property.initializer);
 								if (parameter.defaultValue === undefined) {
@@ -375,6 +377,11 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 								}
 							}
 							break;
+						case "bind":
+							{
+								parameter.bind = property.initializer.kind === ts.SyntaxKind.TrueKeyword;
+								break;
+							}
 						default:
 							throw new Error(`Workflow parameter attribute '${propName}' is not suported.`);
 					}
@@ -462,7 +469,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		}
 	}
 
-	function printWorkflowXml(workflow: WorkflowDescriptor): string {
+	function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTransformationContext): string {
 		const stringBuilder = new StringBuilderClass("", "");
 		stringBuilder.append(`<?xml version="1.0" encoding="utf-8" ?>`).appendLine();
 		stringBuilder.append(`<workflow`
@@ -515,8 +522,37 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 
 		function buildAttributes(attributes: WorkflowParameter[]): void {
 			attributes.forEach(att => {
-				stringBuilder.append(`<attrib name="${att.name}" type="${att.type}" read-only="false" />`).appendLine();
+				stringBuilder.append(`<attrib name="${att.name}" type="${att.type}" read-only="false"`);
+				buildBindAttribute(att)
+				stringBuilder.append(` />`).appendLine();
 			});
+		}
+
+		function buildBindAttribute(att: WorkflowParameter) {
+			let value = "" + att.defaultValue;
+			if (att.bind) {
+				const index = value.lastIndexOf("/");
+				if (index == -1) {
+					throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Elemene) but its value "${value}" `
+						+	`cannot be mapped to a Configuraiton Element path. No / separator in value. Expected formaat is "/Path/To/Confif/variable".`);
+				}
+				if (index >= value.length-1) {
+					throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Elemene) `
+						+	`but its value "${value}" ends in / character. Expected formaat is "/Path/To/Confif/variable".`);
+				}
+				const key = value.substring(index+1).trim();
+				const path = value.substring(0, index).trim();
+				const id = context.configIdsMap[path];
+				if (id == null) {
+					throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that its value is bound to configuration element with path "${path}" and variable "${key}"`
+						+	`, but a configuration element with path "${path}" cannot be found in project at that stage. If you belive it is indeed really part of the project, `
+						+	`please try moving the file earlier alphabetically so it is processed earlier than the workflow that uses it. Currently available configuration elements are: `
+						+	JSON.stringify(context.configIdsMap));
+				}
+				stringBuilder.append(` conf-id="${id}" `);
+				stringBuilder.append(` conf-key="${key}" `);
+				value = "";
+			}
 		}
 
 		function buildEndItem() {

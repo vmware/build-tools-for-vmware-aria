@@ -61,6 +61,7 @@ export interface WorkflowParameter {
 	availableValues?: string[];
 	parameterType: WorkflowParameterType;
 	isAttribute?: boolean;
+	bind?: boolean;
 }
 
 export enum WorkflowParameterType {
