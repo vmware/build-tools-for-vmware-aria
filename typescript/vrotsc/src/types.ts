@@ -83,7 +83,7 @@ export interface FileTransformationContext {
 	outputs: ProgramOutputs;
 	diagnostics: DiagnosticCollection;
 	sourceFiles: ts.SourceFile[];
-	configIdsMap: any;											// Holds ConfigElement Path -> Id mappings.
+	configIdsMap: {[key: string]: string};											// Holds ConfigElement Path -> Id mappings.
 	getFile(fileName: string): FileDescriptor | undefined;
 	readFile(fileName: string): string | undefined;
 	writeFile(fileName: string, data: string | Buffer): void;
