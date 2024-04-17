@@ -11,7 +11,7 @@ package com.vmware.pscoe.iac.artifact.store.cs;
  * Copyright (C) 2024 VMware
  * %%
  * Build Tools for VMware Aria
- * Copyright 2024 VMware, Inc.
+ * Copyright 2023 VMware, Inc.
  * 
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
  * 

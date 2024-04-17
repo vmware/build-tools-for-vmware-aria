@@ -19,6 +19,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
 
@@ -154,14 +155,13 @@ public class VraNgCustomFormTest {
 
         repoFormSource.setForm(jsonString);
         JsonElement form = repoFormSource.getForm();
-
-        new VraNgCustomForm(repoFormSource);
         VraNgCustomFormAndData repoFormNew =
         new VraNgCustomFormAndData(restFormSource);
 
         JsonElement formnew = repoFormNew.getForm();
 
         // THEN
+        assertDoesNotThrow(() -> new VraNgCustomForm(repoFormSource));
         assertTrue(form.isJsonObject());
         assertTrue(!form.isJsonPrimitive());
         assertTrue(form.getAsJsonObject().get("layout") != null);
