@@ -198,8 +198,7 @@ public class RestClientVcd extends RestClient {
 			acceptableMediaTypes.add(contentType);
 			headers.setAccept(acceptableMediaTypes);
 
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,
-					new HttpEntity<String>(headers), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<String>(headers), String.class);
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
 			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)) {
@@ -218,6 +217,7 @@ public class RestClientVcd extends RestClient {
 	 * 
 	 * @return list of packages
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Package> getAllUiExtensions() {
 		URI url = getURI(getURIBuilder().setPath(URL_UI_EXTENSION_BASE));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getVcdHttpEntity(), String.class);
@@ -248,8 +248,8 @@ public class RestClientVcd extends RestClient {
 		String pluginVersion = JsonPath.parse(response.getBody()).read("$.version");
 
 		logger.debug("UI extension for ID [" + id + "] retrieved.");
-		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId,
-				new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
+
+		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId, new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
 	}
 
 	/**
@@ -300,13 +300,11 @@ public class RestClientVcd extends RestClient {
 		VcdPluginMetadataDTO vcdPluginMetadataDTO = new VcdPluginMetadataDTO(manifest);
 
 		if (this.publishedTenantsInfo != null) {
-			vcdPluginMetadataDTO.setTenantScoped((boolean) this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME));
-			vcdPluginMetadataDTO
-					.setProviderScoped((boolean) this.publishedTenantsInfo.get(this.PROVIDER_SCOPED_KEY_NAME));
+			vcdPluginMetadataDTO.setTenantScoped((boolean) this.publishedTenantsInfo.get(TENANT_SCOPED_KEY_NAME));
+			vcdPluginMetadataDTO.setProviderScoped((boolean) this.publishedTenantsInfo.get(PROVIDER_SCOPED_KEY_NAME));
 		}
 
 		String requestBody = new Gson().toJson(vcdPluginMetadataDTO);
-
 		URI url = getURI(getURIBuilder().setPath(URL_UI_EXTENSION_BASE));
 		HttpHeaders headers = getCommonVcdHeaders();
 		HttpEntity<String> entity = new HttpEntity<String>(requestBody, headers);
@@ -450,30 +448,27 @@ public class RestClientVcd extends RestClient {
 		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_EXTENSION_BY_ID, id)));
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getVcdHttpEntity(), String.class);
-
-		boolean tenantScoped = JsonPath.parse(response.getBody()).read("$." + this.TENANT_SCOPED_KEY_NAME);
-		boolean providerScoped = JsonPath.parse(response.getBody()).read("$." + this.PROVIDER_SCOPED_KEY_NAME);
+		boolean tenantScoped = JsonPath.parse(response.getBody()).read("$." + TENANT_SCOPED_KEY_NAME);
+		boolean providerScoped = JsonPath.parse(response.getBody()).read("$." + PROVIDER_SCOPED_KEY_NAME);
 
 		this.publishedTenantsInfo = new HashMap<>();
-		this.publishedTenantsInfo.put(this.TENANT_SCOPED_KEY_NAME, tenantScoped);
-		this.publishedTenantsInfo.put(this.PROVIDER_SCOPED_KEY_NAME, providerScoped);
+		this.publishedTenantsInfo.put(TENANT_SCOPED_KEY_NAME, tenantScoped);
+		this.publishedTenantsInfo.put(PROVIDER_SCOPED_KEY_NAME, providerScoped);
 
 		if (tenantScoped) {
 			JsonArray publishedTenants = this.getUiExtensionTenants(id);
-			this.publishedTenantsInfo.put(this.PUBLISHED_TENANTS_KEY_NAME, publishedTenants);
+			this.publishedTenantsInfo.put(PUBLISHED_TENANTS_KEY_NAME, publishedTenants);
 		}
 
 		logger.debug("Getting UI extension published tenants info for ID [" + id + "] retrieved.");
 	}
 
 	private void publishOrRepublishUIPlugin(Package remotePkg) {
-
 		logger.debug("Publish or Republish UI Plugin [" + remotePkg + "] ...");
-
 		if (this.publishedTenantsInfo == null) {
 			this.publishUiPlugin(remotePkg);
-		} else if ((boolean) this.publishedTenantsInfo.get(this.TENANT_SCOPED_KEY_NAME)) {
-			JsonArray publishedTenants = (JsonArray) this.publishedTenantsInfo.get(this.PUBLISHED_TENANTS_KEY_NAME);
+		} else if ((boolean) this.publishedTenantsInfo.get(TENANT_SCOPED_KEY_NAME)) {
+			JsonArray publishedTenants = (JsonArray) this.publishedTenantsInfo.get(PUBLISHED_TENANTS_KEY_NAME);
 			boolean checkedAllTenants = this.hasAllTenantsChecked(publishedTenants);
 
 			if (checkedAllTenants) {
@@ -487,9 +482,7 @@ public class RestClientVcd extends RestClient {
 	}
 
 	private boolean hasAllTenantsChecked(JsonArray tenantsList) {
-
 		List<String> filteredTenants = new ArrayList<String>();
-
 		tenantsList.iterator().forEachRemaining((element) -> {
 			final JsonObject entry = element.getAsJsonObject();
 			final String name = entry.getAsJsonPrimitive("name").getAsString();
