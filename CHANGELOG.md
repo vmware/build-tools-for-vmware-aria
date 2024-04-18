@@ -1,10 +1,26 @@
+## v2.38.1 - 03 Apr 2024
+
+### Enhancements
+* Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+  
+### Fixes
+* [vro-types] 251 / Add missing types to AD Plugin
+
+### Fixes
+* [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.
+
+## v2.38.0 - 29 Mar 2024
+
 ### Enhancements
 * [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
 * [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
+* [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
+* [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
 * [typescript] 165 / vro:pull command for legacy archetype fails when workflow folder path name contains character '&'.
+* [vro-types] Fix SSHSession `cmd`, `pty`, `terminal` types
 
 ## v2.37.0 - 26 Jan 2024
 
