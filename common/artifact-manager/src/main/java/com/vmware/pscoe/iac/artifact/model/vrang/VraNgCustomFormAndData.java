@@ -29,15 +29,15 @@ public class VraNgCustomFormAndData {
 	 * id.
 	 */
 	private String id;
-	
+
 	/**
 	 * name.
 	 */
 	private String name;
-	
+
 	/**
 	 * The form represented as JSON object which has its own structure. So when the whole VraNgCustomFormAndData is
-	 * serealized on the file system repo, the form will look as natural part of the whole object. <br/><br/>
+	 * serialized on the file system repo, the form will look as natural part of the whole object. <br/><br/>
 	 * Example:
 	 * <code>
 	 *     {
@@ -78,37 +78,37 @@ public class VraNgCustomFormAndData {
 	 * </code>
 	 */
 	private JsonElement form;
-	
+
 	/**
 	 * style.
 	 */
 	private String styles;
-	
+
 	/**
 	 * sourceType.
 	 */
 	private String sourceType;
-	
+
 	/**
 	 * sourceId.
 	 */
 	private String sourceId;
-	
+
 	/**
 	 * type.
 	 */
 	private String type;
-	
+
 	/**
 	 * status.
 	 */
 	private String status;
-	
+
 	/**
 	 * formFormat.
 	 */
 	private String formFormat;
-	
+
 	/**
 	 * Constructor function for VraNgCustomForm.
 	 * @param idIn Id value
@@ -136,10 +136,10 @@ public class VraNgCustomFormAndData {
 		this.status = statusIn;
 		this.formFormat = formFormatIn;
 	}
-	
+
 	/**
 	 * Construct new VraNgCustomFormAndData from VraNgCustomForm which is received as part of the REST API calls.
-	 * @param restForm the form as returmed by REST API calls.
+	 * @param restForm the form as returned by REST API calls.
 	 * @see VraNgCustomFormAndData#form
 	 * @see VraNgCustomForm
 	 * @see VraNgCustomForm#form
@@ -153,13 +153,9 @@ public class VraNgCustomFormAndData {
 		this.type = restForm.getType();
 		this.status = restForm.getStatus();
 		this.formFormat = restForm.getFormFormat();
-		String formString = restForm.getForm();
 		setForm(restForm.getForm());
-		
 	}
-	
-	
-	
+
 	/**
 	 * Getter for id.
 	 * @return id String
@@ -167,7 +163,7 @@ public class VraNgCustomFormAndData {
 	public String getId() {
 		return this.id;
 	}
-	
+
 	/**
 	 * Setter for name.
 	 * @param nameIn String
@@ -175,7 +171,7 @@ public class VraNgCustomFormAndData {
 	public void setName(final String nameIn) {
 		this.name = nameIn;
 	}
-	
+
 	/**
 	 * Getter for name.
 	 * @return name String
@@ -183,7 +179,7 @@ public class VraNgCustomFormAndData {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	/**
 	 * Getter for form.
 	 * @return form String
@@ -191,7 +187,7 @@ public class VraNgCustomFormAndData {
 	public JsonElement getForm() {
 		return this.form;
 	}
-	
+
 	/**
 	 * Getter for styles.
 	 * @return styles String
@@ -199,7 +195,7 @@ public class VraNgCustomFormAndData {
 	public String getStyles() {
 		return this.styles;
 	}
-	
+
 	/**
 	 * Getter for sourceType.
 	 * @return sourceType String
@@ -207,7 +203,7 @@ public class VraNgCustomFormAndData {
 	public String getSourceType() {
 		return this.sourceType;
 	}
-	
+
 	/**
 	 * Getter for sourceId.
 	 * @return sourceId String
@@ -215,7 +211,7 @@ public class VraNgCustomFormAndData {
 	public String getSourceId() {
 		return this.sourceId;
 	}
-	
+
 	/**
 	 * Setter for sourceId. Override in case of 812 blueprint form version.
 	 * @param sourceIdIn String
@@ -223,7 +219,7 @@ public class VraNgCustomFormAndData {
 	public void setSourceId(final String sourceIdIn) {
 		this.sourceId = sourceIdIn;
 	}
-	
+
 	/**
 	 * Getter for type.
 	 * @return type String
@@ -231,7 +227,7 @@ public class VraNgCustomFormAndData {
 	public String getType() {
 		return this.type;
 	}
-	
+
 	/**
 	 * sourceType.
 	 *
@@ -240,7 +236,7 @@ public class VraNgCustomFormAndData {
 	public void setSourceType(final String sourceTypeIn) {
 		this.sourceType = sourceTypeIn;
 	}
-	
+
 	/**
 	 * Getter for status.
 	 * @return status String
@@ -248,7 +244,7 @@ public class VraNgCustomFormAndData {
 	public String getStatus() {
 		return this.status;
 	}
-	
+
 	/**
 	 * Getter for formFormat.
 	 * @return formFormat String
@@ -256,7 +252,7 @@ public class VraNgCustomFormAndData {
 	public String getFormFormat() {
 		return this.formFormat;
 	}
-	
+
 	/**
 	 * Setter for form.
 	 * @param formIn String
@@ -264,11 +260,11 @@ public class VraNgCustomFormAndData {
 	public void setForm(final JsonObject formIn) {
 		this.form = formIn;
 	}
-	
+
 	/**
 	 * Set the form data for the custom form using a string representation of the form.
-	 * The string is expected to contain a serialized JSON object that represents the atual form data.
-	 * So this method will try to deserialize the input string into JSON Element, then store it in.
+	 * The string is expected to contain a serialized JSON object that represents the actual form data.
+	 * So this method will try to deserialized the input string into JSON Element, then store it in.
 	 * If deserialization fails, then a
 	 * @param formIn form data serialized as string.
 	 */
@@ -280,4 +276,3 @@ public class VraNgCustomFormAndData {
 		this.form = json;
 	}
 }
-
