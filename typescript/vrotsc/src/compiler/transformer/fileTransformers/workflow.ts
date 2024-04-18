@@ -543,7 +543,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				const key = value.substring(index+1).trim();
 				const path = value.substring(0, index).trim();
 				const id = context.configIdsMap[path];
-				if (id == null) {
+				if (id === null) {
 					throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that its value is bound to configuration element with path "${path}" and variable "${key}"`
 						+	`, but a configuration element with path "${path}" cannot be found in project at that stage. If you belive it is indeed really part of the project, `
 						+	`please try moving the file earlier alphabetically so it is processed earlier than the workflow that uses it. Currently available configuration elements are: `
