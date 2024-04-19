@@ -1,0 +1,104 @@
+{
+	"id": "f7cd2b97-d157-4042-96a3-c9c713729d57",
+	"name": "RQ05",
+	"typeId": "com.vmware.policy.resource.quota",
+	"enforcementType": "HARD",
+	"description": "",
+	"orgId": "b2c558c8-f20c-4da6-9bc3-d7561f64df16",
+	"scopeCriteria": {
+		"matchExpression": [
+			{
+				"or": [
+					{
+						"and": [
+							{
+								"key": "project.description",
+								"operator": "contains",
+								"value": "a"
+							},
+							{
+								"key": "project.description",
+								"operator": "notEq",
+								"value": "test"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	"definition": {
+		"orgLevel": {
+			"limits": {
+				"cpu": {
+					"value": 128.0
+				},
+				"memory": {
+					"unit": "GB",
+					"value": 1024.0
+				},
+				"storage": {
+					"unit": "GB",
+					"value": 10240.0
+				},
+				"instances": {
+					"value": 16.0
+				}
+			},
+			"userLevel": {
+				"limits": {
+					"cpu": {
+						"value": 16.0
+					},
+					"memory": {
+						"unit": "GB",
+						"value": 1024.0
+					},
+					"storage": {
+						"unit": "GB",
+						"value": 10240.0
+					},
+					"instances": {
+						"value": 16.0
+					}
+				}
+			}
+		},
+		"projectLevel": {
+			"limits": {
+				"cpu": {
+					"value": 128.0
+				},
+				"memory": {
+					"unit": "GB",
+					"value": 1024.0
+				},
+				"storage": {
+					"unit": "GB",
+					"value": 10240.0
+				},
+				"instances": {
+					"value": 16.0
+				}
+			},
+			"userLevel": {
+				"limits": {
+					"cpu": {
+						"value": 128.0
+					},
+					"memory": {
+						"unit": "GB",
+						"value": 1024.0
+					},
+					"storage": {
+						"unit": "GB",
+						"value": 10240.0
+					},
+					"instances": {
+						"value": 16.0
+					}
+				}
+			}
+		}
+	}
+}

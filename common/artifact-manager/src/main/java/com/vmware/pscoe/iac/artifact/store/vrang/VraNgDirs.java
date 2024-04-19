@@ -15,19 +15,64 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * #L%
  */
 
-public class VraNgDirs {
-
+public final class VraNgDirs {
+	/**
+	 * entitlements folder name.
+	 */
     public static final String DIR_ENTITLEMENTS = "entitlements";
+	/**
+	 * property-groups folder name.
+	 */
     public static final String DIR_PROPERTY_GROUPS = "property-groups";
+	/**
+	 * catalog-items folder name.
+	 */
     public static final String DIR_CATALOG_ITEMS = "catalog-items";
-	public static final String DIR_CONTENT_SHARING_POLICIES = "policies";
+	/**
+	 * policies folder name.
+	 */
+	public static final String DIR_POLICIES = "policies";
+	/**
+	 * content-sources folder name.
+	 */
     public static final String DIR_CONTENT_SOURCES = "content-sources";
+	/**
+	 * blueprints folder name.
+	 */
     public static final String DIR_BLUEPRINTS = "blueprints";
+	/**
+	 * subscriptions folder name.
+	 */
     public static final String DIR_SUBSCRIPTIONS = "subscriptions";
+	/**
+	 * regions folder name.
+	 */
     public static final String DIR_REGIONS = "regions";
+	/**
+	 * flavor-mappings folder name.
+	 */
     public static final String DIR_FLAVOR_MAPPINGS = "flavor-mappings";
+	/**
+	 * image-mappings folder name.
+	 */
     public static final String DIR_IMAGE_MAPPINGS = "image-mappings";
+	/**
+	 * storage-profiles folder name.
+	 */
     public static final String DIR_STORAGE_PROFILES = "storage-profiles";
+	/**
+	 * resource-actions folder name.
+	 */
     public static final String DIR_RESOURCE_ACTIONS = "resource-actions";
+	/**
+	 * custom-resources folder name.
+	 */
     public static final String DIR_CUSTOM_RESOURCES = "custom-resources";
+
+	/**
+	 * Hiding constructor of utility class.
+	 * Linter quote:
+	 * Utility classes should not have a public or default constructor. [HideUtilityClassConstructor] .
+	 */
+	private VraNgDirs() { };
 }

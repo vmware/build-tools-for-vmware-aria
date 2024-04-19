@@ -27,6 +27,8 @@ import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
+
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
@@ -36,13 +38,17 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDeploymentLimitPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegion;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
@@ -1299,6 +1305,224 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getContentSharingPolicyPrimitive(policyId);
 		} catch (Exception e) {
 			logger.error("Error fetching content sharing policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+
+	 * getResourceQuotaPolicyIds.
+	 * 
+	 * @return policies
+	 */
+	public List<VraNgResourceQuotaPolicy> getResourceQuotaPolicies() {
+		try {
+			return this.getAllResourceQuotaPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching resource quota policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getLeasePolicies.
+	 * 
+	 * @return lease policies
+	 */
+	public List<VraNgLeasePolicy> getLeasePolicies() {
+		try {
+			return this.getAllLeasePoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching lease policies", e.getMessage());
+
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	/**
+	 * createResourceQuotaPolicy.
+	 * 
+	 * @param rqPolicy resource quota policy
+	 */
+	public void createResourceQuotaPolicy(final VraNgResourceQuotaPolicy rqPolicy) {
+		try {
+			createResourceQuotaPolicyPrimitive(rqPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * createLeasePolicy.
+	 * 
+	 * @param csPolicy lease policy
+	 */
+	public void createLeasePolicy(final VraNgLeasePolicy csPolicy) {
+		try {
+			createLeasePolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * getResourceQuotaPolicy.
+	 * 
+	 * @param policyId resource quota policy id
+	 * @return policy
+	 */
+	public VraNgResourceQuotaPolicy getResourceQuotaPolicy(final String policyId) {
+		try {
+			return this.getResourceQuotaPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching resource quota policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getLeasePolicy.
+	 * 
+	 * @param policyId lease policy id
+	 * @return policy
+	 */
+	public VraNgLeasePolicy getLeasePolicy(final String policyId) {
+		try {
+			return this.getLeasePolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching lease policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	/**
+	 * getDay2ActionsPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgDay2ActionsPolicy> getDay2ActionsPolicies() {
+		try {
+			return this.getAllDay2ActionsPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching day 2 actions policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createDay2ActionsPolicy.
+	 *
+	 * @param d2aPolicy day 2 actions policy
+	 */
+	public void createDay2ActionsPolicy(final VraNgDay2ActionsPolicy d2aPolicy) {
+		try {
+			createDay2ActionsPolicyPrimitive(d2aPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+				String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * getDay2ActionsPolicy.
+	 *
+	 * @param policyId day 2 actions policy id
+	 * @return policy
+	 */
+	public VraNgDay2ActionsPolicy getDay2ActionsPolicy(final String policyId) {
+		try {
+			return this.getDay2ActionsPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching resource day 2 actions - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+	/**
+	 * getDeploymentLimitPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgDeploymentLimitPolicy> getDeploymentLimitPolicies() {
+		try {
+			return this.getAllDeploymentLimitPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching deployemnt limit policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createDeploymentLimitPolicy.
+	 *
+	 * @param policy day 2 actions policy
+	 */
+	public void createDeploymentLimitPolicy(final VraNgDeploymentLimitPolicy policy) {
+		try {
+			createDeploymentLimitPolicyPrimitive(policy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+				String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
+		}
+	}
+
+	/**
+	 * getDeploymentLimitPolicy.
+	 *
+	 * @param policyId day 2 actions policy id
+	 * @return policy
+	 */
+	public VraNgDeploymentLimitPolicy getDeploymentLimitPolicy(final String policyId) {
+		try {
+			return this.getDeploymentLimitPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching deployment limit policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getApprovalPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgApprovalPolicy> getApprovalPolicies() {
+		try {
+			return this.getAllApprovalPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching Approval policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createApprovalPolicy.
+	 *
+	 * @param policy  policy to be created or updated.
+	 */
+	public void createApprovalPolicy(final VraNgApprovalPolicy policy) {
+		try {
+			createApprovalPolicyPrimitive(policy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+				String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
+		}
+	}
+
+	/**
+	 * getApprovalPolicy.
+	 *
+	 * @param policyId policy id
+	 * @return policy
+	 */
+	public VraNgApprovalPolicy getApprovalPolicy(final String policyId) {
+		try {
+			return this.getApprovalPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching approval policy - {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
