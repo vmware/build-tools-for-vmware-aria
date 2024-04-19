@@ -15,6 +15,7 @@ It allows you to write unit tests and has embedded code coverage
    * [Pushing](Operations/Pushing.md)
 4. Components
    * [Config](Components/Config.md)
+   * [Policies](Components/Policy.md)
 5. Testing
    * [Code Coverage](General/Testing/Code%20Coverage.md)
 6. [Known Issues](General/Known%20Issues.md)
