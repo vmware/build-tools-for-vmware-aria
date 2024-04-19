@@ -26,6 +26,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomFormAndData;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -118,8 +119,9 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			// write form metadata file
+			VraNgCustomFormAndData repoForm = new VraNgCustomFormAndData(form);
 			logger.info("Created custom form metadata file {}",
-					Files.write(Paths.get(customFormFile.getPath()), gson.toJson(form).getBytes(),
+					Files.write(Paths.get(customFormFile.getPath()), gson.toJson(repoForm).getBytes(),
 							StandardOpenOption.CREATE));
 			// write form data file
 			if (!StringUtils.isEmpty(form.getForm())) {
