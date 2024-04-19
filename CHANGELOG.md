@@ -17,6 +17,7 @@
 * [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 * [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 * [artifact-manager] Export (Pull) Arai Automation Custom forms in a structured JSON, rather than in string encoded JSON, when stored together with the Custom Form metadata, thus making it more human friendly to operate with when stored in a repo.
+* [vrotsc]  Allow definition of workflow attribute which value is bound to the value of a Configuration Element variable.
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types

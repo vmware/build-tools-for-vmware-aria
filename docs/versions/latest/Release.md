@@ -62,6 +62,28 @@ The current pull request, makes it so that the format will become a properly for
 ```
 This way it is more easy to work with.
 
+### Enable support for binding workflow attributes to Configuration Element variables
+Be able to bind attribute values to Configuration Element variables
+
+To do that one have to provide the following annotation for the workflow ts file (SomeFile.wf.ts)
+```json
+@Workflow({
+        id: "<Some Id>",
+        name: "<Some Name>",
+        path: "<Some Path>",
+        attributes: {
+            attributeName: {
+            type: "string",
+            bind: true,   
+            value: "Some/Path/To/ConfigurationElement/variableName"
+            }
+        }
+    })
+```
+Here
+`bind: true` - means that we have to bind the value of the attribute to Configuration Element variable.
+`value: "Some/Path/To/ConfigurationElement/variableName"` - points to the Configuration Element and variable inside the Configuration Element to bind to.
+
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
