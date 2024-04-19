@@ -38,10 +38,8 @@ namespace vroapi {
         * @param key
         */
         getAttributeWithKey(key: string): Attribute {
-            // const attribute = this.attributes.find(a => a.name === key);
-            const attribute: any = this.attributes != null ? this.attributes.find(a => a.name === key) : [];
-
-
+            const attribute = this.attributes.find(a => a.name === key);
+          
             return typeof attribute === 'undefined' ? null : attribute;
         }
 
@@ -52,7 +50,6 @@ namespace vroapi {
          */
         setAttributeWithKey(key: string, value: any, typeHint?: any): void {
             let attr = this.getAttributeWithKey(key);
-            this._attributes = this._attributes === null ? [] : this._attributes
             if (!attr) {
                 attr = new Attribute();
                 attr.name = key;
