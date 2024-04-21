@@ -40,12 +40,12 @@ declare class SSHCommand {
 	 */
 	execute(): void;
 	/**
-	 * Execute a single command and wait until end. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
+	 * Execute a single command and wait until end. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occurred.
 	 * @param file
 	 */
 	executeAndLog(file: string): void;
 	/**
-	 * Execute a single command and wait until completed, return the stdout result if sychronous. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
+	 * Execute a single command and wait until completed, return the stdout result if synchronous. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
 	 * @param cmd
 	 * @param wait
 	 */
@@ -122,6 +122,7 @@ declare class SSHSession {
 	output: string;
 	error: string;
 	state: string;
+	soTimeout: number;
 	constructor()
 	/**
 	 * Create a new SSHSession
@@ -137,7 +138,7 @@ declare class SSHSession {
 	 */
 	constructor(host: string, username: string, port: number)
 	/**
-	 * Connect the session using simple username/password authentification.
+	 * Connect the session using simple username/password authentication.
 	 * @param password
 	 */
 	connectWithPassword(password: any): void;
@@ -189,12 +190,12 @@ declare class SSHSession {
 	 */
 	execute(): void;
 	/**
-	 * Execute a single command and wait until end. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
+	 * Execute a single command and wait until end. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occurred.
 	 * @param file
 	 */
 	executeAndLog(file: any): void;
 	/**
-	 * Execute a single command and wait until completed, return the stdout result if sychronous. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
+	 * Execute a single command and wait until completed, return the stdout result if synchronous. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
 	 * @param cmd
 	 * @param wait
 	 */
