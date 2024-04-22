@@ -93,11 +93,41 @@ export interface PolicyTemplateDescriptor {
 	name: string;
 	description?: string;
 	path: string;
-	tag: string;
-	type: string;
 	version: string;
-	schedule?: PolicyTemplateScheduleDescriptor;
+	type?: string;
+	templateVersion?: string;
+	variables: Record<string, PolicyAttribute>;
 	events: PolicyTemplateEventDescriptor[];
+	elements: Record<string, PolicyElement>;
+	schedule?: {
+		periode: string;
+		when: string;
+		timezone: string;
+	};
+}
+
+export interface PolicyElement {
+	type: string;
+	events?: Record<string, string | PolicyWorkflowInfo>;
+	schedule?: PolicyTemplateScheduleDescriptor;
+}
+
+export interface PolicyWorkflowInfo {
+	workflowId: string;
+	bindings?: Record<string, WorkflowBindingInfo>;
+}
+
+interface WorkflowBindingInfo {
+	type: string;
+	variable: string;
+}
+
+export interface PolicyAttribute {
+	type: string,
+	value?: any;
+	description?: string;
+	configId?: string;
+	configKey?: string;
 }
 
 export interface PolicyTemplateScheduleDescriptor {
