@@ -2,6 +2,8 @@
 
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+* Add missing attribute `soTimeout` in `SSHSession`
+* Misspell fixes
   
 ### Fixes
 * [vro-types] 251 / Add missing types to AD Plugin

@@ -100,6 +100,18 @@ AD types were not implemented
 
 AD types were added
 
+### Add missing attribute to SSHSession
+
+Add `soTimeout` attribute to `SSHSession`
+
+#### Previous Behavior
+
+This attribute was missing
+
+#### Current Behavior
+
+This attributed is added
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
