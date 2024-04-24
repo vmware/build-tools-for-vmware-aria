@@ -5,6 +5,8 @@
 
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+* Add missing attribute `soTimeout` in `SSHSession`
+* Misspell fixes
   
 ### Fixes
 * [vro-types] 251 / Add missing types to AD Plugin
@@ -34,6 +36,7 @@
 * [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
 * [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
 * [typescript] 206 / Conditional Execution in Saga.
+* [typescript/vrotsc] IAC-791 - Full support of the vRO Policies feature.
 
 ### Fixes
 * [artifact-manager] IAC-779 / Install vro package fails with 404 not found in case vro_server=vro-l-01a is used not FQDN
