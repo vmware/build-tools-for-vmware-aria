@@ -1,3 +1,6 @@
+### Enhancements
+* [artifact-manager] Issue 220 / mvn archetype:generate for abx project - updated the package.json template for generating abx actions
+
 ## v2.38.1 - 03 Apr 2024
 
 ### Enhancements
