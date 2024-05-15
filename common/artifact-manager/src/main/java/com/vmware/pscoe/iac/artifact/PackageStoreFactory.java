@@ -59,7 +59,7 @@ public class PackageStoreFactory {
 
 		String version;
 
-		if (configuration.isImportNewVersions()) {
+		if (configuration.isForceImportLatestVersions()) {
 			strategies.add(new StrategyForceLatestVersions());
 		} else if (!configuration.isImportOldVersions()) {
 			strategies.add(new StrategySkipOldVersions());

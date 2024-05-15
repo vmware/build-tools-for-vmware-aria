@@ -56,7 +56,7 @@ public abstract class Configuration {
 	 *
 	 * NOTE: This is only used during pushing
 	 */
-	public static final String IMPORT_NEW_VERSIONS = "importNewVersions";
+	public static final String FORCE_IMPORT_LATEST_VERSIONS = "forceImportLatestVersions";
 
 	protected Properties properties;
 
@@ -103,8 +103,8 @@ public abstract class Configuration {
 		return Boolean.parseBoolean(this.properties.getProperty(IMPORT_OLD_VERSIONS));
 	}
 
-	public boolean isImportNewVersions() {
-		return Boolean.parseBoolean(this.properties.getProperty(IMPORT_NEW_VERSIONS));
+	public boolean isForceImportLatestVersions() {
+		return Boolean.parseBoolean(this.properties.getProperty(FORCE_IMPORT_LATEST_VERSIONS));
 	}
 
 	public void validate(boolean domainOptional) throws ConfigurationException {
