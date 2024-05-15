@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.model.Package;
 
-public class StrategySkipOldVersions implements Strategy {
+public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 
 	private final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
 
@@ -51,33 +51,16 @@ public class StrategySkipOldVersions implements Strategy {
 					pass = diff < 0;
 				}
 			}
+			if (!pass) {
+				logInfoPackages(sourcePackage, latest, "FAIL", ">");
+				throw new RuntimeException("You are trying to import an older version of the package. Check logs above for details");
+			}
+
 			logInfoPackages(sourcePackage, latest, pass ? "PASS" : "SKIP", ">");
 			return pass;
 		}).collect(Collectors.toList());
 
 		return sourceEndpointPackagesHigerVersion;
-	}
-
-	/**
-	 * @return - sourceEndpointPackages with higher version then their server
-	 *         representative
-	 */
-	@Override
-	public List<Package> getImportPackages(List<Package> sourceEndpointPackages,
-			List<Package> destinationEndpointPackages) {
-		logger.info("STRATEGY| INFO | Apply Configuration strategies for import");
-		return filterHigherVersions(sourceEndpointPackages, destinationEndpointPackages);
-	}
-
-	/**
-	 * @return - sourceEndpointPackages with higher version then their server
-	 *         representative
-	 */
-	@Override
-	public List<Package> getExportPackages(List<Package> sourceEndpointPackages,
-			List<Package> destinationEndpointPackages) {
-		logger.info("STRATEGY| INFO | Apply Configuration strategies for export");
-		return filterHigherVersions(sourceEndpointPackages, destinationEndpointPackages);
 	}
 
 	private void logInfoPackages(Package sourcePackage, Package destinationPackage, String filterFlag,
@@ -87,5 +70,4 @@ public class StrategySkipOldVersions implements Strategy {
 				(destinationPackage != null ? destinationPackage.getVersion() : "missing"));
 		logger.info(msg);
 	}
-
 }
