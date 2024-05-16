@@ -80,7 +80,7 @@ public class StrategySkipOldVersions implements Strategy {
 		return filterHigherVersions(sourceEndpointPackages, destinationEndpointPackages);
 	}
 
-	private void logInfoPackages(Package sourcePackage, Package destinationPackage, String filterFlag,
+	protected void logInfoPackages(Package sourcePackage, Package destinationPackage, String filterFlag,
 			String filterSign) {
 		String msg = String.format("PACKAGE | %s | %s (%s) %s (%s)", filterFlag, sourcePackage.getName(),
 				sourcePackage.getVersion(), filterSign,
