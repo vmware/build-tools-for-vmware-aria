@@ -28,6 +28,10 @@ public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 
 	private final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
 
+	/**
+	 * This strategy will only import a package if it's the same or newer version
+	 * than the one in the Orchestrator server.
+	 */
 	public List<Package> filterHigherVersions(List<Package> sourceEndpointPackages,
 			List<Package> destinationEndpointPackages) {
 		Hashtable<String, Package> latestPackages = new Hashtable<>();
@@ -43,17 +47,22 @@ public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 			Package latest = latestPackages.get(sourcePackage.getName());
 			boolean pass = true;
 			if (latest != null) {
-				int diff = latest.compareTo(sourcePackage);
-				// same version with -SNAPSHOT is considered newer
-				if (diff == 0 && latest.isSnapshot()) {
+				int diff = sourcePackage.compareTo(latest);
+				// 0 or more means we are uploading same or newer version, we are ok with that
+				if (diff >= 0) {
 					pass = true;
 				} else {
-					pass = diff < 0;
+					// -1 or less means we are uploading an older version, we are not ok with that
+					pass = false;
 				}
 			}
+
 			if (!pass) {
 				logInfoPackages(sourcePackage, latest, "FAIL", ">");
-				throw new RuntimeException("You are trying to import an older version of the package. Check logs above for details");
+				throw new RuntimeException(
+						String.format("Package %s version %s is older than the one in the Orchestrator server %s",
+								sourcePackage.getName(),
+								sourcePackage.getVersion(), latest.getVersion()));
 			}
 
 			logInfoPackages(sourcePackage, latest, pass ? "PASS" : "SKIP", ">");
@@ -61,13 +70,5 @@ public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 		}).collect(Collectors.toList());
 
 		return sourceEndpointPackagesHigerVersion;
-	}
-
-	private void logInfoPackages(Package sourcePackage, Package destinationPackage, String filterFlag,
-			String filterSign) {
-		String msg = String.format("PACKAGE | %s | %s (%s) %s (%s)", filterFlag, sourcePackage.getName(),
-				sourcePackage.getVersion(), filterSign,
-				(destinationPackage != null ? destinationPackage.getVersion() : "missing"));
-		logger.info(msg);
 	}
 }
