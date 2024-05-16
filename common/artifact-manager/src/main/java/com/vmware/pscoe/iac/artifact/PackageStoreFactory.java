@@ -59,7 +59,9 @@ public class PackageStoreFactory {
 
 		String version;
 
-		if (configuration.isForceImportLatestVersions()) {
+		// @TODO: You should be able to select a strategy to use, this doesn't make much sense,
+		//   we can fix it later
+		if (configuration.isForceImportLatestVersions()) { 
 			logger.info("Using StrategyForceLatestVersions");
 			strategies.add(new StrategyForceLatestVersions());
 		} else if (!configuration.isImportOldVersions()) {

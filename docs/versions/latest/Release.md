@@ -17,6 +17,19 @@
 
 [//]: # (Features -> New Functionality)
 ## Features
+
+### New strategy when importing packages in Orchestrator `StrategyForceLatestVersions`
+
+This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for 
+better CI/CD pipelines, where we can ensure that the latest versions are always used on the server.
+
+The new strategy can be triggered by passing `-Dvro.forceImportLatestVersions=true`. It is by default set to `false`.
+
+Example usage:
+```bash
+mvn clean package vrealize:push -DincludeDependencies=true -Dvro.forceImportLatestVersions=true -DskipTests -PDevLab
+```
+
 ### Pretty formatted JSON for Custom Forms when storing them together with Custom Form Metadata
 When Custom Forms are pulled from Aria Automation, they are stored on the file system (the repo) in a form similar to
 ```json

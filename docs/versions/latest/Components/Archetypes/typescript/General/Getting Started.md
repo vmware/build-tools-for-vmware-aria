@@ -28,3 +28,7 @@
 Add the skipInstallNodeDeps flag to skip the deletion and re installation of node-deps.
 Ex: mvn clean package -DskipInstallNodeDeps=true
 Note: If node_modules folder doesn't exist, then this flag is ineffective. 
+
+#### -Dvro.forceImportLatestVersions
+This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for 
+better CI/CD pipelines, where we can ensure that the latest versions are always used on the server.
