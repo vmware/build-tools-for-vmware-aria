@@ -60,7 +60,7 @@ public class PackageStoreFactory {
 		String version;
 
 		// @TODO: You should be able to select a strategy to use, this doesn't make much sense,
-		//   we can fix it later
+		//   but we have no choice since we want to be backward compatible
 		if (configuration.isForceImportLatestVersions()) { 
 			logger.info("Using StrategyForceLatestVersions");
 			strategies.add(new StrategyForceLatestVersions());
