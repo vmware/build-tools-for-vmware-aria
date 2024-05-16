@@ -1,3 +1,7 @@
+### Enhancements
+
+* [vro] Added new strategy StrategyForceLatestVersions that will force you to upload a newer or same version of artifacts, otherwise the build will fail. New property has been introduced `-Dvro.forceImportLatestVersions={{BOOLEAN}}` that is set by default to true
+
 ## v2.38.1 - 03 Apr 2024
 
 ### Enhancements
