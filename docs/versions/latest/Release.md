@@ -20,7 +20,7 @@
 
 ### New strategy when importing packages in Orchestrator `StrategyForceLatestVersions`
 
-This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for 
+This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for
 better CI/CD pipelines, where we can ensure that the latest versions are always used on the server.
 
 The new strategy can be triggered by passing `-Dvro.forceImportLatestVersions=true`. It is by default set to `false`.
