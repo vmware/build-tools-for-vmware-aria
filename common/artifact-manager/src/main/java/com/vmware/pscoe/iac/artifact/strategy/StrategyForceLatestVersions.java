@@ -24,13 +24,26 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.model.Package;
 
+/**
+ * This strategy will only import a package if it's the same or newer version
+ * than the one in the Orchestrator server.
+ * Snapshot versions are considered newer if they are the same version.
+ */
 public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 
-	private final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
+	/**
+	 * @param logger - the class logger
+	 */
+	private final Logger logger = LoggerFactory.getLogger(StrategyForceLatestVersions.class);
 
 	/**
-	 * This strategy will only import a package if it's the same or newer version
-	 * than the one in the Orchestrator server.
+	 * We filter the packages.
+	 *
+	 * Logic:
+	 * - If the package is not present in the destination, we will import it.
+	 * - If the package has a newer version, and we will import it (`diff` will be a positive value)
+	 * - If the package has the same version, we will import it if it's a snapshot. (`diff` will be 0)
+	 * - If the package has an older version, we will not import it. (`diff` will be a negative value)
 	 */
 	public List<Package> filterHigherVersions(List<Package> sourceEndpointPackages,
 			List<Package> destinationEndpointPackages) {
@@ -45,28 +58,25 @@ public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 		logger.info("STRATEGY| PASS | Source.Version > Destination.Version");
 		List<Package> sourceEndpointPackagesHigerVersion = sourceEndpointPackages.stream().filter(sourcePackage -> {
 			Package latest = latestPackages.get(sourcePackage.getName());
-			boolean pass = true;
 			if (latest != null) {
 				int diff = sourcePackage.compareTo(latest);
-				// 0 or more means we are uploading same or newer version, we are ok with that
-				if (diff >= 0) {
-					pass = true;
+
+				if (diff > 0 || diff == 0 && latest.isSnapshot()) {
+					logInfoPackages(sourcePackage, latest, "PASS", ">");
+					return true;
+				} else if (diff == 0) {
+					return false;
 				} else {
-					// -1 or less means we are uploading an older version, we are not ok with that
-					pass = false;
+					logInfoPackages(sourcePackage, latest, "FAIL", ">");
+					throw new RuntimeException(
+							String.format("Package %s version %s is older than the one in the Orchestrator server %s",
+									sourcePackage.getName(),
+									sourcePackage.getVersion(), latest.getVersion()));
 				}
 			}
 
-			if (!pass) {
-				logInfoPackages(sourcePackage, latest, "FAIL", ">");
-				throw new RuntimeException(
-						String.format("Package %s version %s is older than the one in the Orchestrator server %s",
-								sourcePackage.getName(),
-								sourcePackage.getVersion(), latest.getVersion()));
-			}
-
-			logInfoPackages(sourcePackage, latest, pass ? "PASS" : "SKIP", ">");
-			return pass;
+			logInfoPackages(sourcePackage, latest, "PASS", ">");
+			return true;
 		}).collect(Collectors.toList());
 
 		return sourceEndpointPackagesHigerVersion;

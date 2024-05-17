@@ -26,7 +26,7 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 
 public class StrategySkipOldVersions implements Strategy {
 
-	private final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
+	protected final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
 
 	public List<Package> filterHigherVersions(List<Package> sourceEndpointPackages,
 			List<Package> destinationEndpointPackages) {
