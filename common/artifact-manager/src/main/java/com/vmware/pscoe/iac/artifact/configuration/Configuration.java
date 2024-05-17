@@ -25,19 +25,75 @@ import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
+/**
+ * Contains properties common for all configurations.
+ */
 public abstract class Configuration {
 
+	/**
+	 * The type of the package.
+	 * Can be: `vro`, `vra-ng`, etc
+	 *
+	 * @param type
+	 */
 	private final PackageType type;
 
 	// Important - Maven base projects (maven/base-package/**/pom.xml)
 	// configurations must be compatible with @Configuration and all its subclasses
+	/**
+	 * Hostname of the server, without the protocol.
+	 *
+	 * @param HOST 
+	 */
 	public static final String HOST = "host";
+
+	/**
+	 * Port of the server.
+	 *
+	 * @param PORT
+	 */
 	public static final String PORT = "port";
+
+	/**
+	 * Username to authenticate with.
+	 *
+	 * @param USERNAME
+	 */
 	public static final String USERNAME = "username";
+
+	/**
+	 * Password to authenticate with.
+	 *
+	 * @param PASSWORD
+	 */
 	public static final String PASSWORD = "password";
+
+	/**
+	 * Connection timeout in seconds.
+	 *
+	 * @param CONNECTION_TIMEOUT
+	 */
 	public static final String CONNECTION_TIMEOUT = "vrealize.connection.timeout";
+
+	/**
+	 * Socket timeout in seconds.
+	 *
+	 * @param SOCKET_TIMEOUT
+	 */
 	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
+
+	/**
+	 * Default connection timeout in seconds.
+	 *
+	 * @param DEFAULT_CONNECTION_TIMEOUT
+	 */
 	public static final Integer DEFAULT_CONNECTION_TIMEOUT = 360;
+
+	/**
+	 * Default socket timeout in seconds.
+	 *
+	 * @param DEFAULT_SOCKET_TIMEOUT
+	 */
 	public static final Integer DEFAULT_SOCKET_TIMEOUT = 360;
 
 	/**
@@ -58,8 +114,16 @@ public abstract class Configuration {
 	 */
 	public static final String FORCE_IMPORT_LATEST_VERSIONS = "forceImportLatestVersions";
 
+	/**
+	 * Contains all the properties passed by the user
+	 *
+	 * @param properties
+	 */
 	protected Properties properties;
 
+	/**
+	 * Logger instance
+	 */
 	protected final Logger logger = LoggerFactory.getLogger(Configuration.class);;
 
 	protected Configuration(PackageType type, Properties props) {
@@ -67,14 +131,23 @@ public abstract class Configuration {
 		this.properties = props;
 	}
 
+	/**
+	 * @return the package type
+	 */
 	public PackageType getPackageType() {
 		return type;
 	}
 
+	/**
+	 * @return the host
+	 */
 	public String getHost() {
 		return this.properties.getProperty(HOST);
 	}
 
+	/**
+	 * @return the port
+	 */
 	public int getPort() {
 		try {
 			return Integer.parseInt(this.properties.getProperty(PORT));
@@ -83,34 +156,59 @@ public abstract class Configuration {
 		}
 	}
 
+	/**
+	 * Will return the username without the domain.
+	 *
+	 * @return the username
+	 */
 	public String getUsername() {
 		String username = this.properties.getProperty(USERNAME);
 		return StringUtils.isEmpty(username) ? username
 				: (username.indexOf("@") > 0 ? username.substring(0, username.lastIndexOf("@")) : username);
 	}
 
+	/**
+	 * Will return the domain from the username if it exists.
+	 *
+	 * @return the domain
+	 */
 	public String getDomain() {
 		String username = this.properties.getProperty(USERNAME);
 		return StringUtils.isEmpty(username) ? username
 				: (username.indexOf("@") > 0 ? username.substring(username.lastIndexOf("@") + 1) : null);
 	}
 
+	/**
+	 * @return the password
+	 */
 	public String getPassword() {
 		return this.properties.getProperty(PASSWORD);
 	}
 
+	/**
+	 * @return a boolean value indicating if old versions should be imported
+	 */
 	public boolean isImportOldVersions() {
 		return Boolean.parseBoolean(this.properties.getProperty(IMPORT_OLD_VERSIONS));
 	}
 
+	/**
+	 * @return a boolean value indicating if the latest versions should be enforced
+	 */
 	public boolean isForceImportLatestVersions() {
 		return Boolean.parseBoolean(this.properties.getProperty(FORCE_IMPORT_LATEST_VERSIONS));
 	}
 
+	/**
+	 * Perform validation on the configuration.
+	 */
 	public void validate(boolean domainOptional) throws ConfigurationException {
 		validate(domainOptional, false);
 	}
 
+	/**
+	 * Perform validation on the configuration.
+	 */
 	public void validate(boolean domainOptional, boolean useRefreshTokenForAuthentication)
 			throws ConfigurationException {
 		StringBuilder message = new StringBuilder();
@@ -144,5 +242,4 @@ public abstract class Configuration {
 			throw new ConfigurationException(e.getMessage(), e);
 		}
 	}
-
 }
