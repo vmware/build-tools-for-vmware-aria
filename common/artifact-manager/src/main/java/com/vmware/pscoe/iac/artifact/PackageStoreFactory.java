@@ -42,39 +42,53 @@ import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategyForceLatestVersions;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
 
-public class PackageStoreFactory {
+/**
+ * Factory class to create PackageStore instances.
+ */
+public final class PackageStoreFactory {
 
+	/**
+	 * Private constructor to prevent instantiation.
+	 */
 	private PackageStoreFactory() {
 	}
 
-	private final static Logger logger = LoggerFactory.getLogger(VraPackageStore.class);
+	/**
+	 * Logger instance.
+	 */
+	private final static Logger LOGGER = LoggerFactory.getLogger(VraPackageStore.class);
 
 	/**
-	 * Regarding the strategies, the following rules apply:
+	 * Regarding the strategies, the following rules apply.
 	 * 
+	 * - If forceImportLatestVersions is set, the StrategyForceLatestVersions is used
+	 *   and the importOldVersions flag is ignored.
+	 *
+	 * @param configuration The configuration object.
+	 * @return The PackageStore instance.
 	 */
 	public static <T extends Configuration> PackageStore<?> getInstance(T configuration) {
 		List<Strategy> strategies = new ArrayList<>();
-		logger.info("Searching for Package Store for type " + configuration.getPackageType());
+		LOGGER.info("Searching for Package Store for type " + configuration.getPackageType());
 
 		String version;
 
-		// @TODO: You should be able to select a strategy to use, this doesn't make much sense,
+		// TODO: You should be able to select a strategy to use, this doesn't make much sense,
 		//   but we have no choice since we want to be backward compatible
 		if (configuration.isForceImportLatestVersions()) { 
-			logger.info("Using StrategyForceLatestVersions");
+			LOGGER.info("Using StrategyForceLatestVersions");
 			strategies.add(new StrategyForceLatestVersions());
 		} else if (!configuration.isImportOldVersions()) {
-			logger.info("Using StrategySkipOldVersions");
+			LOGGER.info("Using StrategySkipOldVersions");
 			strategies.add(new StrategySkipOldVersions());
 		}
 
 		if (configuration instanceof ConfigurationVroNg) {
-			logger.info("Detected ConfigurationVroNg");
+			LOGGER.info("Detected ConfigurationVroNg");
 			ConfigurationVroNg config = (ConfigurationVroNg) configuration;
 			RestClientVro restClient = RestClientFactory.getClientVroNg(config);
 			version = restClient.getVersion();
-			logger.info("Detecting vRO Server version '{}'.", version);
+			LOGGER.info("Detecting vRO Server version '{}'.", version);
 			List<PackageStoreExtention<VroPackageDescriptor>> extentions = new ArrayList<>();
 			extentions.addAll(loadVroExtensions(version, config, restClient));
 
@@ -82,11 +96,11 @@ public class PackageStoreFactory {
 		}
 
 		if (configuration instanceof ConfigurationVro) {
-			logger.info("Detected ConfigurationVro");
+			LOGGER.info("Detected ConfigurationVro");
 			ConfigurationVro config = (ConfigurationVro) configuration;
 			RestClientVro restClient = RestClientFactory.getClientVro(config);
 			version = restClient.getVersion();
-			logger.info("Detecting vRO Server version '{}'.", version);
+			LOGGER.info("Detecting vRO Server version '{}'.", version);
 			List<PackageStoreExtention<VroPackageDescriptor>> extentions = new ArrayList<>();
 			extentions.addAll(loadVroExtensions(version, config, restClient));
 
@@ -94,11 +108,11 @@ public class PackageStoreFactory {
 		}
 
 		if (configuration instanceof ConfigurationVra) {
-			logger.info("Detected ConfigurationVra");
+			LOGGER.info("Detected ConfigurationVra");
 			ConfigurationVra config = (ConfigurationVra) configuration;
 			RestClientVra restClient = RestClientFactory.getClientVra(config);
 			version = restClient.getVersion();
-			logger.info("Detecting vRA Server version '{}'.", version);
+			LOGGER.info("Detecting vRA Server version '{}'.", version);
 			List<PackageStoreExtention<VraPackageDescriptor>> extentions = new ArrayList<>();
 			extentions.addAll(loadVraExtensions(version, config, restClient));
 
@@ -106,8 +120,8 @@ public class PackageStoreFactory {
 		}
 
 		if (configuration instanceof ConfigurationAbx) {
-			logger.info("Detected ConfigurationAbx");
-			logger.info("Creating configuration for ABX");
+			LOGGER.info("Detected ConfigurationAbx");
+			LOGGER.info("Creating configuration for ABX");
 			ConfigurationAbx config = (ConfigurationAbx) configuration;
 
 			// ABX service is part of vRA therefore the same REST client is used
@@ -117,46 +131,46 @@ public class PackageStoreFactory {
 			return new AbxPackageStore(restClient, config);
 		}
 		if (configuration instanceof ConfigurationCs) {
-			logger.info("Detected ConfigurationCs");
+			LOGGER.info("Detected ConfigurationCs");
 			ConfigurationCs config = (ConfigurationCs) configuration;
 			RestClientCs restClient = RestClientFactory.getClientCs(config);
-			logger.info("Creating configuration for Code Stream");
+			LOGGER.info("Creating configuration for Code Stream");
 			return new CsPackageStore(restClient, config);
 		}
 
 		if (configuration instanceof ConfigurationVraNg) {
-			logger.info("Detected ConfigurationVraNg");
+			LOGGER.info("Detected ConfigurationVraNg");
 			ConfigurationVraNg config = (ConfigurationVraNg) configuration;
 			RestClientVraNg restClient = RestClientFactory.getClientVraNg(config);
-			logger.info("Creating configuration for VRA NG");
+			LOGGER.info("Creating configuration for VRA NG");
 
 			return new VraNgPackageStore(restClient, config);
 		}
 
 		if (configuration instanceof ConfigurationVcd) {
-			logger.info("Detected ConfigurationVcd");
+			LOGGER.info("Detected ConfigurationVcd");
 			ConfigurationVcd config = (ConfigurationVcd) configuration;
 			RestClientVcd restClient = RestClientFactory.getClientVcd(config);
 			version = restClient.getVersion();
-			logger.info("Detecting vCD Server version '{}'.", version);
+			LOGGER.info("Detecting vCD Server version '{}'.", version);
 
 			return new VcdNgPackageStore(restClient, strategies, new Version(version));
 		}
 
 		if (configuration instanceof ConfigurationVrops) {
-			logger.info("Detected ConfigurationVrops");
+			LOGGER.info("Detected ConfigurationVrops");
 			ConfigurationVrops config = (ConfigurationVrops) configuration;
 
 			CliManagerVrops cliManager = CliManagerFactory.getVropsCliManager(config);
 			RestClientVrops restClient = RestClientFactory.getClientVrops(config);
 			version = restClient.getVersion();
-			logger.info("Detecting vROPs Server version '{}'.", version);
+			LOGGER.info("Detecting vROPs Server version '{}'.", version);
 
 			return new VropsPackageStore(cliManager, restClient, new Version(version));
 		}
 
 		if (configuration instanceof ConfigurationVrli) {
-			logger.info("Detected ConfigurationVrli");
+			LOGGER.info("Detected ConfigurationVrli");
 			ConfigurationVrli config = (ConfigurationVrli) configuration;
 			RestClientVrliV1 restClientV1 = RestClientFactory.getClientVrliV1(config);
 			RestClientVrliV2 restClientV2 = RestClientFactory.getClientVrliV2(config);
@@ -166,17 +180,17 @@ public class PackageStoreFactory {
 			} catch (Exception e) {
 				version = restClientV2.getVersion();
 			}
-			logger.info("Detected vRLI version " + version);
+			LOGGER.info("Detected vRLI version " + version);
 			if (!StringUtils.isEmpty(version) && Version.compareSemanticVersions(version, "8.8") > -1) {
-				logger.info("Instantiate REST Client v2.");
+				LOGGER.info("Instantiate REST Client v2.");
 				return new VrliPackageStoreV2(restClientV2);
 			}
-			logger.info("Instantiate REST Client v1.");
+			LOGGER.info("Instantiate REST Client v1.");
 			return new VrliPackageStoreV1(restClientV1);
 		}
 
 		if (configuration instanceof ConfigurationSsh) {
-			logger.info("Detected ConfigurationSsh");
+			LOGGER.info("Detected ConfigurationSsh");
 			ConfigurationSsh config = (ConfigurationSsh) configuration;
 			return new SshPackageStore(config);
 		}

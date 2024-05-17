@@ -97,12 +97,12 @@ public abstract class Configuration {
 	public static final String FORCE_IMPORT_LATEST_VERSIONS = "forceImportLatestVersions";
 
 	/**
-	 * Contains all the properties passed by the user
+	 * Contains all the properties passed by the user.
 	 */
 	protected Properties properties;
 
 	/**
-	 * Logger instance
+	 * Logger instance.
 	 */
 	protected final Logger logger = LoggerFactory.getLogger(Configuration.class);;
 
@@ -181,6 +181,8 @@ public abstract class Configuration {
 
 	/**
 	 * Perform validation on the configuration.
+	 *
+	 * @param domainOptional if the domain is optional
 	 */
 	public void validate(boolean domainOptional) throws ConfigurationException {
 		validate(domainOptional, false);
@@ -188,6 +190,9 @@ public abstract class Configuration {
 
 	/**
 	 * Perform validation on the configuration.
+	 *
+	 * @param domainOptional if the domain is optional
+	 * @param useRefreshTokenForAuthentication if the refresh token should be used for authentication
 	 */
 	public void validate(boolean domainOptional, boolean useRefreshTokenForAuthentication)
 			throws ConfigurationException {

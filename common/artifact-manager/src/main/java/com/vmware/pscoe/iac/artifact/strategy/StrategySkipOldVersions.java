@@ -25,19 +25,21 @@ import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.model.Package;
 
 /**
- * Strategy to skip packages with older versions
+ * Strategy to skip packages with older versions.
  */
 public class StrategySkipOldVersions implements Strategy {
 
 	/**
-	 * Logger for the class
+	 * Logger for the class.
 	 */
 	protected final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
 
 	/**
-	 * Filter sourceEndpointPackages with higher version then their server representative
+	 * Filter sourceEndpointPackages with higher version then their server representative.
 	 *
-	 * @return - sourceEndpointPackages with higher version then their server representative
+	 * @param sourceEndpointPackages      - sourceEndpointPackages
+	 * @param destinationEndpointPackages - destinationEndpointPackages
+	 * @return - sourceEndpointPackages with higher version then their server representative.
 	 */
 	public List<Package> filterHigherVersions(List<Package> sourceEndpointPackages,
 			List<Package> destinationEndpointPackages) {
@@ -71,7 +73,7 @@ public class StrategySkipOldVersions implements Strategy {
 
 	/**
 	 * @return - sourceEndpointPackages with higher version then their server
-	 *         representative
+	 *         representative.
 	 */
 	@Override
 	public List<Package> getImportPackages(List<Package> sourceEndpointPackages,
@@ -82,7 +84,7 @@ public class StrategySkipOldVersions implements Strategy {
 
 	/**
 	 * @return - sourceEndpointPackages with higher version then their server
-	 *         representative
+	 *         representative.
 	 */
 	@Override
 	public List<Package> getExportPackages(List<Package> sourceEndpointPackages,
@@ -92,7 +94,12 @@ public class StrategySkipOldVersions implements Strategy {
 	}
 
 	/**
-	 * Log information about packages
+	 * Log information about packages.
+	 *
+	 * @param sourcePackage      - the source package
+	 * @param destinationPackage - the destination package
+	 * @param filterFlag         - the filter flag
+	 * @param filterSign         - the filter sign
 	 */
 	protected void logInfoPackages(Package sourcePackage, Package destinationPackage, String filterFlag,
 			String filterSign) {
