@@ -32,7 +32,7 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 
 	/**
-	 * @param logger - the class logger
+	 * The class logger
 	 */
 	private final Logger logger = LoggerFactory.getLogger(StrategyForceLatestVersions.class);
 

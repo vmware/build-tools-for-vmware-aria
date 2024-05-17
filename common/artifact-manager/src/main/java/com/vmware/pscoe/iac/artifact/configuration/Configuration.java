@@ -33,8 +33,6 @@ public abstract class Configuration {
 	/**
 	 * The type of the package.
 	 * Can be: `vro`, `vra-ng`, etc
-	 *
-	 * @param type
 	 */
 	private final PackageType type;
 
@@ -42,57 +40,41 @@ public abstract class Configuration {
 	// configurations must be compatible with @Configuration and all its subclasses
 	/**
 	 * Hostname of the server, without the protocol.
-	 *
-	 * @param HOST 
 	 */
 	public static final String HOST = "host";
 
 	/**
 	 * Port of the server.
-	 *
-	 * @param PORT
 	 */
 	public static final String PORT = "port";
 
 	/**
 	 * Username to authenticate with.
-	 *
-	 * @param USERNAME
 	 */
 	public static final String USERNAME = "username";
 
 	/**
 	 * Password to authenticate with.
-	 *
-	 * @param PASSWORD
 	 */
 	public static final String PASSWORD = "password";
 
 	/**
 	 * Connection timeout in seconds.
-	 *
-	 * @param CONNECTION_TIMEOUT
 	 */
 	public static final String CONNECTION_TIMEOUT = "vrealize.connection.timeout";
 
 	/**
 	 * Socket timeout in seconds.
-	 *
-	 * @param SOCKET_TIMEOUT
 	 */
 	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
 
 	/**
 	 * Default connection timeout in seconds.
-	 *
-	 * @param DEFAULT_CONNECTION_TIMEOUT
 	 */
 	public static final Integer DEFAULT_CONNECTION_TIMEOUT = 360;
 
 	/**
 	 * Default socket timeout in seconds.
-	 *
-	 * @param DEFAULT_SOCKET_TIMEOUT
 	 */
 	public static final Integer DEFAULT_SOCKET_TIMEOUT = 360;
 
@@ -116,8 +98,6 @@ public abstract class Configuration {
 
 	/**
 	 * Contains all the properties passed by the user
-	 *
-	 * @param properties
 	 */
 	protected Properties properties;
 
