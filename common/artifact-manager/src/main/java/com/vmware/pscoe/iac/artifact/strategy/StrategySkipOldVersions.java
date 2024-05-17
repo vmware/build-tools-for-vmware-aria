@@ -24,10 +24,21 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.model.Package;
 
+/**
+ * Strategy to skip packages with older versions
+ */
 public class StrategySkipOldVersions implements Strategy {
 
+	/**
+	 * @param logger - logger for the class
+	 */
 	protected final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
 
+	/**
+	 * Filter sourceEndpointPackages with higher version then their server representative
+	 *
+	 * @return - sourceEndpointPackages with higher version then their server representative
+	 */
 	public List<Package> filterHigherVersions(List<Package> sourceEndpointPackages,
 			List<Package> destinationEndpointPackages) {
 		Hashtable<String, Package> latestPackages = new Hashtable<>();
@@ -80,6 +91,9 @@ public class StrategySkipOldVersions implements Strategy {
 		return filterHigherVersions(sourceEndpointPackages, destinationEndpointPackages);
 	}
 
+	/**
+	 * Log information about packages
+	 */
 	protected void logInfoPackages(Package sourcePackage, Package destinationPackage, String filterFlag,
 			String filterSign) {
 		String msg = String.format("PACKAGE | %s | %s (%s) %s (%s)", filterFlag, sourcePackage.getName(),
