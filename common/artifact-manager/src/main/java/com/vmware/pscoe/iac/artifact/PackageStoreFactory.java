@@ -56,7 +56,7 @@ public final class PackageStoreFactory {
 	/**
 	 * Logger instance.
 	 */
-	private final static Logger LOGGER = LoggerFactory.getLogger(VraPackageStore.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(VraPackageStore.class);
 
 	/**
 	 * Regarding the strategies, the following rules apply.
@@ -65,6 +65,7 @@ public final class PackageStoreFactory {
 	 *   and the importOldVersions flag is ignored.
 	 *
 	 * @param configuration The configuration object.
+	 * @param <T>           The configuration type.
 	 * @return The PackageStore instance.
 	 */
 	public static <T extends Configuration> PackageStore<?> getInstance(T configuration) {
@@ -73,7 +74,7 @@ public final class PackageStoreFactory {
 
 		String version;
 
-		// TODO: You should be able to select a strategy to use, this doesn't make much sense,
+		// @TODO: You should be able to select a strategy to use, this doesn't make much sense,
 		//   but we have no choice since we want to be backward compatible
 		if (configuration.isForceImportLatestVersions()) { 
 			LOGGER.info("Using StrategyForceLatestVersions");

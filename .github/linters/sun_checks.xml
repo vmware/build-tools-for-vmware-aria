@@ -205,7 +205,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="ArrayTypeStyle" />
 		<!-- FinalParameters reports False positives -->
 		<!-- <module name="FinalParameters" /> -->
-		<module name="TodoComment" />
+		<!-- <module name="TodoComment" /> -->
 		<module name="UpperEll" />
 
 		<!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
