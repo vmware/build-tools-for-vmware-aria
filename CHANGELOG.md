@@ -1,3 +1,6 @@
+### Fixes
+* [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
+
 ## v2.38.1 - 03 Apr 2024
 
 ### Enhancements
