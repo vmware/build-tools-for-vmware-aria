@@ -1,14 +1,14 @@
 /**
- * Package that handles Aria Pipelines imports/exports.
+ * Package that represents vRA 8 Rest Model Package.
  *
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.rest.model;
 
 /*-
  * #%L
  * artifact-manager
  * %%
- * Copyright (C) 2024 VMware
+ * Copyright (C) 2023 VMware
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.

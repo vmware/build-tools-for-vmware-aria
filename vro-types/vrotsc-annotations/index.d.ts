@@ -21,6 +21,8 @@ interface VroAttributeList {
 
 interface VroAttribute {
 	type: string;
+	bind?: boolean;
+	value: any;
 }
 
 interface Type<T> extends Function { new(...args: any[]): T; }
@@ -61,6 +63,13 @@ interface VroPolicyTemplate {
 	path?: string;
 	type?: VroPolicyTemplateType;
 	version?: string;
+	templateVersion?: "v1" | "v2";
+	variables?: {
+		[name: string]: string | PolicyAttribute;
+	};
+	elements?: {
+		[name: string]: PolicyElement
+	};
 	schedule?: {
 		periode: VroPolicyTemplateScehdulePeriod;
 		when: string;
@@ -68,7 +77,38 @@ interface VroPolicyTemplate {
 	};
 }
 
+type PolicyElement = {
+	type: VroPolicyTemplateTypeV2;
+	events?: {
+		[event: string]: string | PolicyWorkflowInfo;
+	};
+	schedule?: {
+		periode: VroPolicyTemplateScehdulePeriod;
+		when: string;
+		timezone: string;
+	};
+}
+
+type PolicyWorkflowInfo = {
+	workflowId: string;
+	bindings?: {
+		[name: string]: {
+			type: string;
+			variable: string;
+		}
+	}
+}
+
+type PolicyAttribute = {
+	type: string,
+	value?: AttributeValue;
+	description?: string;
+	configId?: string;
+	configKey?: string;
+}
+
 type VroPolicyTemplateType = "AMQP:Subscription" | "MQTT:Subscription" | "SNMP:SnmpDevice" | "SNMP:TrapHost";
+type VroPolicyTemplateTypeV2 = string | VroPolicyTemplateType | "Periodic Event";
 
 type VroPolicyTemplateScehdulePeriod = "every-minutes" | "every-hours" | "every-days" | "every-weeks" | "every-months";
 
@@ -85,7 +125,7 @@ type CompositeType = {
 	[name: string]: SupportedValues | SupportedValues[];
 }
 
-type AttributeValue	= CompositeType | SupportedValues | SupportedValues[];
+type AttributeValue = CompositeType | SupportedValues | SupportedValues[];
 
 type Attribute = {
 	type: string,

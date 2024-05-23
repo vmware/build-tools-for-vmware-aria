@@ -1,7 +1,12 @@
+### Fixes
+* [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
+
 ## v2.38.1 - 03 Apr 2024
 
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+* Add missing attribute `soTimeout` in `SSHSession`
+* Misspell fixes
   
 ### Fixes
 * [vro-types] 251 / Add missing types to AD Plugin
@@ -16,6 +21,8 @@
 * [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
 * [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 * [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
+* [artifact-manager] Export (Pull) Arai Automation Custom forms in a structured JSON, rather than in string encoded JSON, when stored together with the Custom Form metadata, thus making it more human friendly to operate with when stored in a repo.
+* [vrotsc]  Allow definition of workflow attribute which value is bound to the value of a Configuration Element variable.
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
@@ -28,7 +35,9 @@
 * [docs] IAC-800 / Document TS Array functions behaviour and recommended typization approach.
 * [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
 * [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
+* [artifact-manager] IAC-802 / Republish the same tenants on VCD Plugin upgrade.
 * [typescript] 206 / Conditional Execution in Saga.
+* [typescript/vrotsc] IAC-791 - Full support of the vRO Policies feature.
 
 ### Fixes
 * [artifact-manager] IAC-779 / Install vro package fails with 404 not found in case vro_server=vro-l-01a is used not FQDN
