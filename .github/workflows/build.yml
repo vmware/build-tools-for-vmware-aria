@@ -18,8 +18,8 @@ jobs:
       matrix:
         java: ["17"]
         maven: ["3.9.2"]
-        node: ["20.13.1"]
-        node_vmware_samples: ["20.13.1"]
+        node: ["19.6.0"]
+        node_vmware_samples: ["19.6.0"]
         os: ["ubuntu-latest"]
 
     runs-on: ${{ matrix.os }}
