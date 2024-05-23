@@ -1,6 +1,9 @@
 ### Enhancements
 
 * [vro] Added new strategy StrategyForceLatestVersions that will force you to upload a newer or same version of artifacts, otherwise the build will fail. New property has been introduced `-Dvro.forceImportLatestVersions={{BOOLEAN}}` that is set by default to false
+=======
+### Fixes
+* [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
 
 ## v2.38.1 - 03 Apr 2024
 
@@ -36,6 +39,7 @@
 * [docs] IAC-800 / Document TS Array functions behaviour and recommended typization approach.
 * [artifact-manager] IAC-643 / Support subscription with ABX action - point to proper ABX action.
 * [vropkg] IAC-793 / Support for vRO custom interaction forms in the vRO package during parsing and serializing.
+* [artifact-manager] IAC-802 / Republish the same tenants on VCD Plugin upgrade.
 * [typescript] 206 / Conditional Execution in Saga.
 * [typescript/vrotsc] IAC-791 - Full support of the vRO Policies feature.
 
@@ -241,7 +245,6 @@
 * [package-installer] IAC-428 / Added descriptions for some package installer and maven settings.xml configuration options.
 
 ## v2.26.0 - 19 Jul 2022
-
 
 ### Enhancements
 
