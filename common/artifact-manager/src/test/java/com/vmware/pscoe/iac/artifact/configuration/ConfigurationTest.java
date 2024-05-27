@@ -68,6 +68,6 @@ class ConfigurationTest {
 	}
 
 	private static Stream<Arguments> importStrategyProvider() {
-		return Stream.of(arguments("", Boolean.TRUE));
+		return Stream.of(arguments("", Boolean.FALSE));
 	}
 }

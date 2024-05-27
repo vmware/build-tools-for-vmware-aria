@@ -101,9 +101,9 @@ public abstract class Configuration {
 	protected Properties properties;
 
 	/**
-	 * Default flag for the default import strategy.
+	 * Default flag for the default import strategy. It is currently set to false for backwards compatibility.
 	 */
-	private static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = true;
+	private static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = false;
 
 	/**
 	 * Logger instance.
