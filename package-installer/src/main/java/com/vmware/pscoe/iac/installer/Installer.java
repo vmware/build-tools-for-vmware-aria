@@ -1109,15 +1109,8 @@ public final class Installer {
         } else {
             input.put(Option.IGNORE_SSL_HOST_CHECK, Boolean.valueOf(ignoreHostCheck));
         }
-
         // common properties (i.e. timeouts)
-        readCommonProperties(input);
-        
-        // read default package import strategy in case there are vRO packages
-        boolean hasVroPackages = !getFilesystemPackages(PackageType.VRO).isEmpty();
-        if (hasVroPackages) {
-            readPackageImportStrategy(input);        	
-        }
+        readCommonProperties(input);        
 
         //  +------------------------------
         //  |  vRealize Automation
@@ -1140,16 +1133,13 @@ public final class Installer {
         if (hasCsPackages) {
             userInput(input, Option.CS_IMPORT, "Import Code Stream packages?", true);
         }
-
         //  +-------------------------------------
         //  |  vRealize Automation (New Generation)
         //  +-------------------------------------
         boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty();
         if (hasVraNgPackages) {
-            userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
-          
+            userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);          
         }
-
         if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT)) {
             readVrangProperties(input);
         }
@@ -1159,7 +1149,6 @@ public final class Installer {
         if (input.anyTrue(Option.CS_IMPORT)) {
             readCsImportProperties(input);
         }
-
         //  +-------------------------------------
         //  |  vRealize Orchestrator
         //  +-------------------------------------
@@ -1167,7 +1156,6 @@ public final class Installer {
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
 				userInput(input, Option.VRO_ENABLE_BACKUP, "Backup existing vRO packages?", true);
-
                 userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
                 if (input.anyTrue(Option.VRO_EMBEDDED)) {
                     readVroEmbeddedInVrangProperties(input, false);
@@ -1222,7 +1210,6 @@ public final class Installer {
         if (input.anyTrue(Option.VCD_IMPORT, Option.VCD_DELETE_OLD_VERSIONS)) {
             readVcdProperties(input);
         }
-
         //  +-------------------------------------
         //  |  SSH
         //  +-------------------------------------
@@ -1232,7 +1219,6 @@ public final class Installer {
         if (input.anyTrue(Option.SSH_IMPORT)) {
             readSshImportProperties(input);
         }
-
         //  +-------------------------------------
         //  |  Store Properties for reusage
         //  +-------------------------------------
@@ -1320,9 +1306,6 @@ public final class Installer {
         userInput(input, Option.VRA_USERNAME, "  vRA Username@Domain", "configurationadmin@vsphere.local");
         passInput(input, Option.VRA_PASSWORD, "  vRA Password");
     }
-    private static void readPackageImportStrategy(final Input input) {
-        userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "Default package import strategy", Boolean.TRUE.toString());        	
-    }    
     private static void readVroEmbeddedInVrangProperties(final Input input, final boolean needCspHost) {
         input.getText().getTextTerminal().println("vRealize Automation NG Configuration:");
         userInput(input, Option.VRANG_SERVER, "  vRA FQDN:");
@@ -1373,6 +1356,7 @@ public final class Installer {
         input.put(Option.VRO_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VRO_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
         userInput(input, Option.VRO_IMPORT_CONFIGURATION_ATTRIBUTE_VALUES, "  Import Configuration Elements Values?", false);
         userInput(input, Option.VRO_IMPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES, "  Import Configuration Elements Secure String Values?", false);
+        userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "  Force import latest versions of packages?", true);
     }
 
     private static void readVraImportProperties(final Input input) {
