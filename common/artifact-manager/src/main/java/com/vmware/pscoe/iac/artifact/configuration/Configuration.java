@@ -31,8 +31,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 public abstract class Configuration {
 
 	/**
-	 * The type of the package.
-	 * Can be: `vro`, `vra-ng`, etc
+	 * The type of the package. Can be: `vro`, `vra-ng`, etc
 	 */
 	private final PackageType type;
 
@@ -87,10 +86,10 @@ public abstract class Configuration {
 	public static final String IMPORT_OLD_VERSIONS = "importOldVersions";
 
 	/**
-	 * Strategy configuration property. If set to true will only import a
-	 * package if it's the same or newer version than the one in the vRO server.
-	 * The difference between this strategy and the default one is that this one will throw an error
-	 * failing the pipeline.
+	 * Strategy configuration property. If set to true will only import a package if
+	 * it's the same or newer version than the one in the vRO server. The difference
+	 * between this strategy and the default one is that this one will throw an
+	 * error failing the pipeline.
 	 *
 	 * NOTE: This is only used during pushing
 	 */
@@ -100,6 +99,11 @@ public abstract class Configuration {
 	 * Contains all the properties passed by the user.
 	 */
 	protected Properties properties;
+
+	/**
+	 * Default flag for the default import strategy.
+	 */
+	private static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = true;
 
 	/**
 	 * Logger instance.
@@ -143,8 +147,7 @@ public abstract class Configuration {
 	 */
 	public String getUsername() {
 		String username = this.properties.getProperty(USERNAME);
-		return StringUtils.isEmpty(username) ? username
-				: (username.indexOf("@") > 0 ? username.substring(0, username.lastIndexOf("@")) : username);
+		return !StringUtils.hasLength(username) ? username : (username.indexOf("@") > 0 ? username.substring(0, username.lastIndexOf("@")) : username);
 	}
 
 	/**
@@ -154,8 +157,7 @@ public abstract class Configuration {
 	 */
 	public String getDomain() {
 		String username = this.properties.getProperty(USERNAME);
-		return StringUtils.isEmpty(username) ? username
-				: (username.indexOf("@") > 0 ? username.substring(username.lastIndexOf("@") + 1) : null);
+		return !StringUtils.hasLength(username) ? username : (username.indexOf("@") > 0 ? username.substring(username.lastIndexOf("@") + 1) : null);
 	}
 
 	/**
@@ -176,7 +178,11 @@ public abstract class Configuration {
 	 * @return a boolean value indicating if the latest versions should be enforced
 	 */
 	public boolean isForceImportLatestVersions() {
-		return Boolean.parseBoolean(this.properties.getProperty(FORCE_IMPORT_LATEST_VERSIONS));
+		if (!StringUtils.hasLength(this.properties.getProperty(FORCE_IMPORT_LATEST_VERSIONS))) {
+			return DEFAULT_FORCE_IMPORT_LATEST_VERSIONS;
+		} else {
+			return Boolean.parseBoolean(this.properties.getProperty(FORCE_IMPORT_LATEST_VERSIONS));
+		}
 	}
 
 	/**
@@ -191,31 +197,29 @@ public abstract class Configuration {
 	/**
 	 * Perform validation on the configuration.
 	 *
-	 * @param domainOptional if the domain is optional
-	 * @param useRefreshTokenForAuthentication if the refresh token should be used for authentication
+	 * @param domainOptional                   if the domain is optional
+	 * @param useRefreshTokenForAuthentication if the refresh token should be used
+	 *                                         for authentication
 	 */
-	public void validate(boolean domainOptional, boolean useRefreshTokenForAuthentication)
-			throws ConfigurationException {
+	public void validate(boolean domainOptional, boolean useRefreshTokenForAuthentication) throws ConfigurationException {
 		StringBuilder message = new StringBuilder();
-		if (StringUtils.isEmpty(getHost())) {
+		if (!StringUtils.hasLength(getHost())) {
 			message.append("Hostname ");
 		}
-		if (StringUtils.isEmpty(getPort())) {
+		if (!StringUtils.hasLength(String.valueOf(getPort()))) {
 			message.append("Port ");
 		}
-		if (StringUtils.isEmpty(getDomain()) && !domainOptional) {
+		if (!StringUtils.hasLength(getDomain()) && !domainOptional) {
 			message.append("Domain (in username) ");
 		}
 		if (!useRefreshTokenForAuthentication) {
-
 			logger.info("Refresh token not detected. Checking username and password on configuration");
-			if (StringUtils.isEmpty(getUsername())) {
+			if (!StringUtils.hasLength(getUsername())) {
 				message.append("Username ");
 			}
-			if (StringUtils.isEmpty(getPassword())) {
+			if (!StringUtils.hasLength(getPassword())) {
 				message.append("Password ");
 			}
-
 		}
 		if (message.length() != 0) {
 			throw new ConfigurationException("Configuration validation failed: Empty " + message);

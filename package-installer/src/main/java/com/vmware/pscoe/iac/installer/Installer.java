@@ -124,6 +124,7 @@ enum Option {
     VRA_IMPORT_OLD_VERSIONS(
             "vra_import_old_versions",
             ConfigurationVra.IMPORT_OLD_VERSIONS),
+   
 	/**
 	 * Skip VRA import old versions.
 	 */
@@ -136,6 +137,13 @@ enum Option {
     VRA_IMPORT_OVERWRITE_MODE(
             "vra_import_overwrite_mode",
             ConfigurationVra.PACKAGE_IMPORT_OVERWRITE_MODE),
+    
+	/**
+	 * VRO force import latest package versions.
+	 */
+    VRO_FORCE_IMPORT_LATEST_VERSION(
+            "vro_force_import_latest_versions",
+            Configuration.FORCE_IMPORT_LATEST_VERSIONS),     
 	/**
 	 * VRANG host.
 	 */
@@ -1104,6 +1112,12 @@ public final class Installer {
 
         // common properties (i.e. timeouts)
         readCommonProperties(input);
+        
+        // read default package import strategy in case there are vRO packages
+        boolean hasVroPackages = !getFilesystemPackages(PackageType.VRO).isEmpty();
+        if (hasVroPackages) {
+            readPackageImportStrategy(input);        	
+        }
 
         //  +------------------------------
         //  |  vRealize Automation
@@ -1306,6 +1320,9 @@ public final class Installer {
         userInput(input, Option.VRA_USERNAME, "  vRA Username@Domain", "configurationadmin@vsphere.local");
         passInput(input, Option.VRA_PASSWORD, "  vRA Password");
     }
+    private static void readPackageImportStrategy(final Input input) {
+        userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "Default package import strategy", Boolean.TRUE.toString());        	
+    }    
     private static void readVroEmbeddedInVrangProperties(final Input input, final boolean needCspHost) {
         input.getText().getTextTerminal().println("vRealize Automation NG Configuration:");
         userInput(input, Option.VRANG_SERVER, "  vRA FQDN:");

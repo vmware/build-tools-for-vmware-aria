@@ -16,38 +16,31 @@ package com.vmware.pscoe.iac.artifact.configuration;
  */
 
 import com.vmware.pscoe.iac.artifact.configuration.fixtures.ConfigurationTestDouble;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-
 import java.util.Properties;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-
 class ConfigurationTest {
-
 	protected Properties properties;
 
 	@ParameterizedTest
 	@MethodSource("usernameProvider")
-	public void testGetUsername(String username, String expectedUsername, String expectedDomain ) {
+	public void testGetUsername(String username, String expectedUsername, String expectedDomain) {
 		Properties properties = new Properties();
 		properties.setProperty("username", username);
 		ConfigurationTestDouble configuration = new ConfigurationTestDouble(properties);
 
 		assertEquals(expectedUsername, configuration.getUsername());
 	}
+
 	@ParameterizedTest
 	@MethodSource("usernameProvider")
-	public void testGetDomain(String username, String expectedUsername, String expectedDomain ) {
+	public void testGetDomain(String username, String expectedUsername, String expectedDomain) {
 		Properties properties = new Properties();
 		properties.setProperty("username", username);
 		ConfigurationTestDouble configuration = new ConfigurationTestDouble(properties);
@@ -55,14 +48,26 @@ class ConfigurationTest {
 		assertEquals(expectedDomain, configuration.getDomain());
 	}
 
+	@ParameterizedTest
+	@MethodSource("importStrategyProvider")
+	public void testDefaultImportStrategy(Boolean actualStrategy, Boolean expectedStrategy) {
+		Properties properties = new Properties();
+		properties.setProperty("forceImportLatestVersions", "");
+		ConfigurationTestDouble configuration = new ConfigurationTestDouble(properties);
+
+		assertEquals(expectedStrategy, configuration.isForceImportLatestVersions());
+	}
+
 	private static Stream<Arguments> usernameProvider() {
-		return Stream.of(
-			arguments("configurationadmin", "configurationadmin", null),
-			arguments("configurationadmin@corp.local", "configurationadmin", "corp.local"),
-			arguments("configurationadmin@System Domain", "configurationadmin", "System Domain"),
-			arguments("configurationadmin@@System Domain", "configurationadmin@", "System Domain"),
-			arguments("configurationadmin@test@System Domain", "configurationadmin@test", "System Domain"),
-			arguments("configurationadmin@test@test2@System Domain", "configurationadmin@test@test2", "System Domain")
-		);
+		return Stream.of(arguments("configurationadmin", "configurationadmin", null),
+				arguments("configurationadmin@corp.local", "configurationadmin", "corp.local"),
+				arguments("configurationadmin@System Domain", "configurationadmin", "System Domain"),
+				arguments("configurationadmin@@System Domain", "configurationadmin@", "System Domain"),
+				arguments("configurationadmin@test@System Domain", "configurationadmin@test", "System Domain"),
+				arguments("configurationadmin@test@test2@System Domain", "configurationadmin@test@test2", "System Domain"));
+	}
+
+	private static Stream<Arguments> importStrategyProvider() {
+		return Stream.of(arguments("", Boolean.TRUE));
 	}
 }
