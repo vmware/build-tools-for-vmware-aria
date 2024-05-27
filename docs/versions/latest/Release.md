@@ -88,6 +88,18 @@ Here
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Update the package.json template for generating abx actions
+
+Fix Issue #220
+
+#### Previous Behavior
+
+The package.json template for generating abx actions was missing some of the recently implemented parameters.
+
+#### Current Behavior
+
+The package.json template for generating abx actions now contains the recently implemented parameters: base, memoryLimitMb, timeoutSec, provider and abx (inputSecrets, inputConstants, etc.).
+
 ### Add missing types to AD Plugin
 
 Fix Issue #251

@@ -1,3 +1,6 @@
+### Enhancements
+* [artifact-manager] Issue 220 / mvn archetype:generate for abx project - updated the package.json template for generating abx actions
+=======
 ### Fixes
 * [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
 
