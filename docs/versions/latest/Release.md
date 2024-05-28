@@ -22,7 +22,7 @@
 Add support for native `Object.setPrototypeOf()` function that can be used to properly setup prototype chain during inheritance.
 
 E.g. with the following code the prototype chain is setup properly and the log message is `Constructor name: NsxtError`.
-```
+```typescript
 class NsxtError extends Error {
     public readonly cause: string
     constructor(message: string, service: string) {
@@ -36,7 +36,7 @@ System.log(`Constructor name: ${testError.constructor.name}`);
 ```
 
 Without the `Object.setPrototypeOf` the NsxtError is not properly added to the prototype chain and the log message is `Constructor name: Error`.
-```
+```typescript
 class NsxtError extends Error {
     public readonly cause: string
     constructor(message: string, service: string) {
