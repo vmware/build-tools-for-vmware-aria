@@ -17,6 +17,37 @@
 
 [//]: # (Features -> New Functionality)
 ## Features
+
+### Implement `Object.setPrototypeOf()` function
+Add support for native `Object.setPrototypeOf()` function that can be used to properly setup prototype chain during inheritance.
+
+E.g. with the following code the prototype chain is setup properly and the log message is `Constructor name: NsxtError`.
+```
+class NsxtError extends Error {
+    public readonly cause: string
+    constructor(message: string, service: string) {
+        super(`Received error ${message} from NSX-T Service ${service}.`);
+        Object.setPrototypeOf(this, new.target.prototype)
+    }
+}
+
+const testError = new NsxtError("Object not found", "SecurityPolicyService");
+System.log(`Constructor name: ${testError.constructor.name}`);
+```
+
+Without the `Object.setPrototypeOf` the NsxtError is not properly added to the prototype chain and the log message is `Constructor name: Error`.
+```
+class NsxtError extends Error {
+    public readonly cause: string
+    constructor(message: string, service: string) {
+        super(`Received error ${message} from NSX-T Service ${service}.`);
+    }
+}
+
+const testError = new NsxtError("Object not found", "SecurityPolicyService");
+System.log(`Constructor name: ${testError.constructor.name}`);
+```
+
 ### Pretty formatted JSON for Custom Forms when storing them together with Custom Form Metadata
 When Custom Forms are pulled from Aria Automation, they are stored on the file system (the repo) in a form similar to
 ```json
