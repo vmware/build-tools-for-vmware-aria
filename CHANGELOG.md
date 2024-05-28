@@ -1,6 +1,7 @@
 ### Enhancements
-* [artifact-manager] Issue 220 / mvn archetype:generate for abx project - updated the package.json template for generating abx actions
-=======
+* [artifact-manager] Issue 220 / mvn archetype:generate for abx project - update the package.json template for generating abx actions
+* [typescript/vrotsc] Implement `Object.setPrototypeOf()` function
+
 ### Fixes
 * [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
 
@@ -13,8 +14,6 @@
   
 ### Fixes
 * [vro-types] 251 / Add missing types to AD Plugin
-
-### Fixes
 * [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.
 
 ## v2.38.0 - 29 Mar 2024
