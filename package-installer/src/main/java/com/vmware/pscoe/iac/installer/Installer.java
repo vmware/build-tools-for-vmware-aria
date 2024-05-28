@@ -1110,7 +1110,7 @@ public final class Installer {
             input.put(Option.IGNORE_SSL_HOST_CHECK, Boolean.valueOf(ignoreHostCheck));
         }
         // common properties (i.e. timeouts)
-        readCommonProperties(input);        
+        readCommonProperties(input);
 
         //  +------------------------------
         //  |  vRealize Automation
@@ -1356,7 +1356,7 @@ public final class Installer {
         input.put(Option.VRO_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VRO_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
         userInput(input, Option.VRO_IMPORT_CONFIGURATION_ATTRIBUTE_VALUES, "  Import Configuration Elements Values?", false);
         userInput(input, Option.VRO_IMPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES, "  Import Configuration Elements Secure String Values?", false);
-        userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "  Force import latest versions of packages?", true);
+        userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "  Force import latest versions of packages?", false);
     }
 
     private static void readVraImportProperties(final Input input) {
