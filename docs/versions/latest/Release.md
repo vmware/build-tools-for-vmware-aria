@@ -9,16 +9,27 @@
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 
-
 [//]: # (Features -> New Functionality)
 ## Features
 
+### New strategy when importing packages in Orchestrator `StrategyForceLatestVersions`
+
+This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for
+better CI/CD pipelines, where we can ensure that the latest versions are always used on the server.
+
+The new strategy can be triggered by passing `-Dvro.forceImportLatestVersions=true`. It is by default set to `false`.
+
+Example usage:
+```bash
+mvn clean package vrealize:push -DincludeDependencies=true -Dvro.forceImportLatestVersions=true -DskipTests -PDevLab
+```
+
 ### Implement `Object.setPrototypeOf()` function
+
 Add support for native `Object.setPrototypeOf()` function that can be used to properly setup prototype chain during inheritance.
 
 E.g. with the following code the prototype chain is setup properly and the log message is `Constructor name: NsxtError`.
@@ -49,6 +60,7 @@ System.log(`Constructor name: ${testError.constructor.name}`);
 ```
 
 ### Pretty formatted JSON for Custom Forms when storing them together with Custom Form Metadata
+
 When Custom Forms are pulled from Aria Automation, they are stored on the file system (the repo) in a form similar to
 ```json
 {
@@ -114,7 +126,6 @@ To do that one have to provide the following annotation for the workflow ts file
 Here
 `bind: true` - means that we have to bind the value of the attribute to Configuration Element variable.
 `value: "Some/Path/To/ConfigurationElement/variableName"` - points to the Configuration Element and variable inside the Configuration Element to bind to.
-
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
@@ -196,7 +207,6 @@ When using SSH with typescript, the `error` and `state` methods has the type `vo
 
 Method `error` and `state` should return type `String` instead of type `void`
 
-
 ### Upgrade VCD archetype to support Angular 15
 VMware Cloud Director v10.6 is going to drop support for Angular v9 or less.
 
@@ -237,7 +247,6 @@ The new archetype can be bootstrapped with:
     -DlicenseUrl= \
     -DlicenseHeader= \
     -DlicenseTechnicalPreview=false`
-
 
 #### Related issue
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/180>

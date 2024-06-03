@@ -1,6 +1,7 @@
 ### Enhancements
-* [artifact-manager] Issue 220 / mvn archetype:generate for abx project - update the package.json template for generating abx actions
+* [vro] Added new strategy StrategyForceLatestVersions that will force you to upload a newer or same version of artifacts, otherwise the build will fail. New property has been introduced `-Dvro.forceImportLatestVersions={{BOOLEAN}}` that is set by default to false.
 * [typescript/vrotsc] Implement `Object.setPrototypeOf()` function
+* [artifact-manager] Issue 220 / mvn archetype:generate for abx project - update the package.json template for generating abx actions.
 
 ### Fixes
 * [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
@@ -243,7 +244,6 @@
 * [package-installer] IAC-428 / Added descriptions for some package installer and maven settings.xml configuration options.
 
 ## v2.26.0 - 19 Jul 2022
-
 
 ### Enhancements
 
