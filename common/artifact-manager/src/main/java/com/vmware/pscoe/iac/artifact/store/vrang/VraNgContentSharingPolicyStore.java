@@ -10,7 +10,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,12 +167,10 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Handles the export of the content sharing policies.
 	 *
-	 * @param List<VraNgContentSharingPolicy> csPolicies policies that need to be
-	 *                                        exported.
-	 * @param Path                            policyFolderPath target directory
-	 *                                        where the policies should be exported
-	 *                                        into.
-	 *
+	 * @param csPolicies       policies that need to be exported.
+	 * @param policyFolderPath target directory where the policies should be
+	 *                         exported into.
+	 * 
 	 */
 	private void handleContentSharingPolicyExport(List<VraNgContentSharingPolicy> csPolicies, Path policyFolderPath) {
 		Map<String, VraNgContentSharingPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(policyFolderPath);
@@ -190,11 +187,10 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 * will be serialized / deserialized (depending on the operation type (export or
 	 * import)).
 	 * 
-	 * @param VraNgContentSharingPolicy policy that need to be enriched with
-	 *                                  resolved data.
-	 * @param isByNameResolved          a flag whether to resolve the data by name.
-	 *                                  . In case import of policies the flag should
-	 *                                  be true otherwise it should be false.
+	 * @param csPolicy         policy that need to be enriched with resolved data.
+	 * @param isByNameResolved a flag whether to resolve the data by name. . In case
+	 *                         import of policies the flag should be true otherwise
+	 *                         it should be false.
 	 *
 	 */
 	private void resolveEntitledUsersOrgAndScope(VraNgContentSharingPolicy csPolicy, boolean isByNameResolved) {
@@ -207,8 +203,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		if (csPolicy.getDefinition() != null && csPolicy.getDefinition().getEntitledUsers() != null) {
 			csPolicy.getDefinition().getEntitledUsers().forEach(user -> {
 				// resolve the name of the element based on its type
-				if (user.items != null) {
-					user.items.forEach(item -> {
+				if (user.getItems() != null) {
+					user.getItems().forEach(item -> {
 						this.resolveSingleItem(item, isByNameResolved, contentSources, catalogItems);
 					});
 				}
@@ -230,7 +226,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Resolve the the single vra item name / id.
 	 * 
-	 * @param VraNgItem        item where data should be resolved.
+	 * @param item             item where data should be resolved.
 	 * @param isByNameResolved a flag whether to resolve the data by name. . In case
 	 *                         import of policies the flag should be false otherwise
 	 *                         it should be true.
@@ -239,20 +235,21 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 * @param catalogItems     list of catalog items per project
 	 */
 	private void resolveSingleItem(VraNgItem item, boolean isByNameResolved, List<VraNgContentSourceBase> contentSources, List<VraNgCatalogItem> catalogItems) {
-		switch (item.type) {
+		switch (item.getType()) {
 			case CATALOG_ITEM: {
 				VraNgCatalogItem foundCatalogItem;
 				if (isByNameResolved) {
-					foundCatalogItem = catalogItems.stream().filter(catalogItem -> catalogItem.getName().equalsIgnoreCase(item.name)).findFirst().orElse(null);
+					foundCatalogItem = catalogItems.stream().filter(catalogItem -> catalogItem.getName().equalsIgnoreCase(item.getName())).findFirst()
+							.orElse(null);
 					if (foundCatalogItem != null) {
-						item.id = foundCatalogItem.getId();
-						item.name = null;
+						item.setId(foundCatalogItem.getId());
+						item.setName(null);
 					}
 				} else {
-					foundCatalogItem = catalogItems.stream().filter(catalogItem -> catalogItem.getId().equalsIgnoreCase(item.id)).findFirst().orElse(null);
+					foundCatalogItem = catalogItems.stream().filter(catalogItem -> catalogItem.getId().equalsIgnoreCase(item.getId())).findFirst().orElse(null);
 					if (foundCatalogItem != null) {
-						item.name = foundCatalogItem.getName();
-						item.id = null;
+						item.setName(foundCatalogItem.getName());
+						item.setId(null);
 					}
 				}
 				break;
@@ -260,28 +257,30 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 			case CONTENT_SOURCE: {
 				VraNgContentSourceBase foundContentSource;
 				if (isByNameResolved) {
-					foundContentSource = contentSources.stream().filter(contentSource -> contentSource.getName().equalsIgnoreCase(item.name)).findFirst().orElse(null);
+					foundContentSource = contentSources.stream().filter(contentSource -> contentSource.getName().equalsIgnoreCase(item.getName())).findFirst()
+							.orElse(null);
 					if (foundContentSource != null) {
-						item.id = foundContentSource.getId();
-						item.name = null;
+						item.setId(foundContentSource.getId());
+						item.setName(null);
 					}
 				} else {
-					foundContentSource = contentSources.stream().filter(contentSource -> contentSource.getId().equalsIgnoreCase(item.id)).findFirst().orElse(null);
+					foundContentSource = contentSources.stream().filter(contentSource -> contentSource.getId().equalsIgnoreCase(item.getId())).findFirst()
+							.orElse(null);
 					if (foundContentSource != null) {
-						item.name = foundContentSource.getName();
-						item.id = null;
+						item.setName(foundContentSource.getName());
+						item.setId(null);
 					}
 				}
 				break;
 			}
 			default: {
-				this.logger.warn("Type {}, for definition: {} is unsupported", item.type, item.id);
+				this.logger.warn("Type {}, for definition: {} is unsupported", item.getType(), item.getId());
 			}
 		}
 	}
 
 	/**
-	 * Converts a json catalog item file to VraNgContentSharingPolicy.
+	 * Converts a JSON catalog item file to VraNgContentSharingPolicy.
 	 *
 	 * @param jsonFile
 	 *
@@ -341,8 +340,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		try {
 			if (contentSharingPolicy.getDefinition().getEntitledUsers() != null) {
 				contentSharingPolicy.getDefinition().getEntitledUsers().forEach(user -> {
-					if (user.items != null) {
-						user.items.forEach(item -> item.id = null);
+					if (user.getItems() != null) {
+						user.getItems().forEach(item -> item.setId(null));
 					}
 				});
 			}

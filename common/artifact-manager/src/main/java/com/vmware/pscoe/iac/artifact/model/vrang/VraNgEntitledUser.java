@@ -1,6 +1,5 @@
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*-
@@ -22,15 +21,15 @@ public class VraNgEntitledUser {
 	/**
 	 * items that are part of the user entitlement.
 	 */
-	public List<VraNgItem> items;
+	private List<VraNgItem> items;
 	/**
 	 * userType of the user.
 	 */
-	public String userType;
+	private String userType;
 	/**
 	 * principals for the user.
 	 */
-	public List<VraNgPrincipal> principals;
+	private List<VraNgPrincipal> principals;
 
 	/**
 	 * Default constructor.
@@ -50,4 +49,59 @@ public class VraNgEntitledUser {
 		this.userType = userType;
 		this.principals = principals;
 	}
+
+	/**
+	 * Get the list vRA items.
+	 * 
+	 * @return list vRA items.
+	 */
+	public List<VraNgItem> getItems() {
+		return items;
+	}
+
+	/**
+	 * Set the list of the vRA items.
+	 * 
+	 * @param items list of vRA items.
+	 */
+	public void setItems(List<VraNgItem> items) {
+		this.items = items;
+	}
+
+	/**
+	 * Get the user type.
+	 * 
+	 * @return user type.
+	 */
+	public String getUserType() {
+		return userType;
+	}
+
+	/**
+	 * Set the user type.
+	 * 
+	 * @param userType user type.
+	 */
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	/**
+	 * Get the list of principals for the user.
+	 * 
+	 * @return list of VraNgPrincipal for the user.
+	 */
+	public List<VraNgPrincipal> getPrincipals() {
+		return principals;
+	}
+
+	/**
+	 * Set the list of the vRA principals.
+	 * 
+	 * @param principals list of vRA principals.
+	 */
+	public void setPrincipals(List<VraNgPrincipal> principals) {
+		this.principals = principals;
+	}
+
 }

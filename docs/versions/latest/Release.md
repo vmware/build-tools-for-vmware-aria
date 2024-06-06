@@ -16,9 +16,9 @@
 [//]: # (Features -> New Functionality)
 ## Features
 
-### Support of project scope / organization during import of content sharing policies.
+### Support of project scope / organization during import of content sharing policies
 
-Content sharing policies now support different project for their scope / organization parameters. If a scope project is defined in the content 
+Content sharing policies now supports different project for their scope/organization parameters. If a scope project is defined in the content 
 sharing JSON file it will be used as a project during push, hence allowing more granular content sharing across different projects.
 If there is no scope / organization defined in the content sharing JSON file then the one defined in the global settings.xml file will be used.
 
@@ -29,6 +29,7 @@ policy:
 ```
 
 Example content sharing policy JSON file with scope / organization parameters.
+
 ```JSON
 {
   "id": "1",
@@ -44,10 +45,12 @@ Example content sharing policy JSON file with scope / organization parameters.
   }
 }
 ```
+
 In the example above the organization and scope of the content sharing policy is different than the one defined in settings xml. They will be used when 
 importing the policy in the target system in order to assign the organization and scope of the content sharing policy.
 
 Example content sharing policy JSON file without scope / organization parameters.
+
 ```JSON
 {
   "id": "1",

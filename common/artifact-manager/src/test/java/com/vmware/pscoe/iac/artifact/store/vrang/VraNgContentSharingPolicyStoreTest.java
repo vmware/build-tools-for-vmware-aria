@@ -440,19 +440,19 @@ public class VraNgContentSharingPolicyStoreTest {
 		VraNgDefinition contentSourcesDefinition = new VraNgDefinition();
 		VraNgEntitledUser entitledUser = new VraNgEntitledUser();
 		VraNgItem vraNgItem = new VraNgItem();
-		vraNgItem.id = "1";
-		vraNgItem.name = "Content Source 1";
-		vraNgItem.type = "CATALOG_SOURCE_IDENTIFIER";
-		entitledUser.items = Arrays.asList(new VraNgItem[] { vraNgItem });
+		vraNgItem.setId("1");
+		vraNgItem.setName("Content Source 1");
+		vraNgItem.setType("CATALOG_SOURCE_IDENTIFIER");
+		entitledUser.setItems(Arrays.asList(new VraNgItem[] { vraNgItem }));
 		contentSourcesDefinition.setEntitledUsers(Arrays.asList(new VraNgEntitledUser[] { entitledUser }));
 
 		VraNgDefinition contentItemsDefinition = new VraNgDefinition();
 		entitledUser = new VraNgEntitledUser();
 		vraNgItem = new VraNgItem();
-		vraNgItem.id = "1";
-		vraNgItem.name = "Catalog Item 1";
-		vraNgItem.type = "CATALOG_ITEM_IDENTIFIER";
-		entitledUser.items = Arrays.asList(new VraNgItem[] { vraNgItem });
+		vraNgItem.setId("1");
+		vraNgItem.setName("Catalog Item 1");
+		vraNgItem.setType("CATALOG_ITEM_IDENTIFIER");
+		entitledUser.setItems(Arrays.asList(new VraNgItem[] { vraNgItem }));
 
 		VraNgContentSharingPolicy csPolicyFromFile = new VraNgContentSharingPolicy("679daee9-d63d-4ce2-9ee1-d4336861fe86", "test",
 				"com.vmware.policy.catalog.entitlement", "1", this.organization.getId(), "HARD", "TEST", contentSourcesDefinition, scope, organization);

@@ -21,7 +21,7 @@ public class VraNgDefinition {
 	/**
 	 * entitledUsers for the Content Sharing Policy.
 	 */
-	public List<VraNgEntitledUser> entitledUsers;
+	private List<VraNgEntitledUser> entitledUsers;
 
 	/**
 	 * Default Constructor.
