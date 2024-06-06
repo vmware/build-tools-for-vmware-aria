@@ -24,15 +24,21 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPrincipal;
 
 public final class ContentSharingPolicyMockBuilder {
 
-	private ContentSharingPolicyMockBuilder() { };
+	private ContentSharingPolicyMockBuilder() {
+	};
+
 	/**
-	 * Create a mock policy  for testing.
+	 * Create a mock policy for testing.
+	 * 
 	 * @return an instance of VraNgContentSharingPolicy for testing.
 	 */
 	public static VraNgContentSharingPolicy buildContentSharingPolicy() {
 		VraNgContentSharingPolicy result = new VraNgContentSharingPolicy();
 		ArrayList<VraNgItem> items = new ArrayList<>();
-		items.add(new VraNgItem("d0624893-4932-46a7-8e25-fab1e4109c2e", "Contentsource", "CATALOG_SOURCE_IDENTIFIER"));
+		VraNgItem item = new VraNgItem();
+		item.id = "d0624893-4932-46a7-8e25-fab1e4109c2e";
+		item.type = "CATALOG_SOURCE_IDENTIFIER";
+		items.add(item);
 		ArrayList<VraNgPrincipal> principals = new ArrayList<>();
 		principals.add(new VraNgPrincipal("PROJECT", ""));
 		ArrayList<VraNgEntitledUser> entitledUsers = new ArrayList<>();
@@ -43,6 +49,8 @@ public final class ContentSharingPolicyMockBuilder {
 		result.setName("CsPolicy");
 		result.setDescription("Testing");
 		result.setEnforcementType("HARD");
+		result.setProjectId("c3f029f9-a97c-4df6-bdc4-c0e4b91aa18e");
+		result.setOrgId("27aaf31d-d9af-4c48-9736-eb9c9faa4ae8");
 		result.setTypeId("com.vmware.policy.catalog.entitlement");
 		result.setDefinition(definition);
 

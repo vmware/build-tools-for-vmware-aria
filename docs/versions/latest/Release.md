@@ -16,6 +16,56 @@
 [//]: # (Features -> New Functionality)
 ## Features
 
+### Support of project scope / organization during import of content sharing policies.
+
+Content sharing policies now support different project for their scope / organization parameters. If a scope project is defined in the content 
+sharing JSON file it will be used as a project during push, hence allowing more granular content sharing across different projects.
+If there is no scope / organization defined in the content sharing JSON file then the one defined in the global settings.xml file will be used.
+
+```yaml
+policy:
+  content-sharing:
+    - contentSharingPolicy
+```
+
+Example content sharing policy JSON file with scope / organization parameters.
+```JSON
+{
+  "id": "1",
+  "name": "contentSharingPolicy",
+  "typeId": "com.vmware.policy.catalog.entitlement",
+  "projectId": "1",
+  "scope": "projectId1",
+  "organization": "organization1",
+  "enforcementType": "HARD",
+  "description": "TEST",
+  "definition": {
+    "entitledUsers": []
+  }
+}
+```
+In the example above the organization and scope of the content sharing policy is different than the one defined in settings xml. They will be used when 
+importing the policy in the target system in order to assign the organization and scope of the content sharing policy.
+
+Example content sharing policy JSON file without scope / organization parameters.
+```JSON
+{
+  "id": "1",
+  "name": "contentSharingPolicy",
+  "typeId": "com.vmware.policy.catalog.entitlement",
+  "projectId": "1",
+  "orgId": "1",
+  "enforcementType": "HARD",
+  "description": "TEST",
+  "definition": {
+    "entitledUsers": []
+  }
+}
+```
+
+In the example above the organization and scope of the content sharing policy is not defined, hence the ones defined in the settings.xml configuration file
+will be used for assignment of the project / organization on the target system during import.
+
 ### New strategy when importing packages in Orchestrator `StrategyForceLatestVersions`
 
 This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for

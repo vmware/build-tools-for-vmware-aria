@@ -18,13 +18,41 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 import java.util.List;
 
 public class VraNgDefinition {
+	/**
+	 * entitledUsers for the Content Sharing Policy.
+	 */
 	public List<VraNgEntitledUser> entitledUsers;
 
+	/**
+	 * Default Constructor.
+	 */
 	public VraNgDefinition() {
-
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param entitledUsers list of the entitled users able to access the policy.
+	 */
 	public VraNgDefinition(List<VraNgEntitledUser> entitledUsers) {
+		this.entitledUsers = entitledUsers;
+	}
+
+	/**
+	 * Get the list of entitled users.
+	 * 
+	 * @return list of the entitled users.
+	 */
+	public List<VraNgEntitledUser> getEntitledUsers() {
+		return entitledUsers;
+	}
+
+	/**
+	 * Set the list of the entitled users.
+	 * 
+	 * @param entitledUsers - list of entitled users.
+	 */
+	public void setEntitledUsers(List<VraNgEntitledUser> entitledUsers) {
 		this.entitledUsers = entitledUsers;
 	}
 }
