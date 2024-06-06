@@ -194,22 +194,20 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 *
 	 */
 	private void resolveEntitledUsersOrgAndScope(VraNgContentSharingPolicy csPolicy, boolean isByNameResolved) {
-		if (csPolicy.getDefinition().getEntitledUsers() == null) {
+		if (csPolicy.getDefinition() == null || csPolicy.getDefinition().getEntitledUsers() == null) {
 			return;
 		}
 		// enrich entitled users with the item names.
 		List<VraNgContentSourceBase> contentSources = this.restClient.getContentSourcesForProject(csPolicy.getProjectId());
 		List<VraNgCatalogItem> catalogItems = this.restClient.getCatalogItemsForProject(csPolicy.getProjectId());
-		if (csPolicy.getDefinition() != null && csPolicy.getDefinition().getEntitledUsers() != null) {
-			csPolicy.getDefinition().getEntitledUsers().forEach(user -> {
-				// resolve the name of the element based on its type
-				if (user.getItems() != null) {
-					user.getItems().forEach(item -> {
-						this.resolveSingleItem(item, isByNameResolved, contentSources, catalogItems);
-					});
-				}
-			});
-		}
+		csPolicy.getDefinition().getEntitledUsers().forEach(user -> {
+			// resolve the name of the element based on its type
+			if (user.getItems() != null) {
+				user.getItems().forEach(item -> {
+					this.resolveSingleItem(item, isByNameResolved, contentSources, catalogItems);
+				});
+			}
+		});
 
 		if (!isByNameResolved) {
 			if (StringUtils.hasLength(csPolicy.getProjectId())) {

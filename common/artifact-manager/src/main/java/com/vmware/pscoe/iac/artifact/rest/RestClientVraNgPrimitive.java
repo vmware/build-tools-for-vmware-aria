@@ -2898,8 +2898,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
-		JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-		this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 	}
 
 	// =================================================
