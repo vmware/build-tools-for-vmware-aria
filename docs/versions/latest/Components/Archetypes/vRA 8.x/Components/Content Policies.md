@@ -96,6 +96,91 @@ The scope and organization of the content sharing policy will be exported as *sc
 
 The catalog items and content source policies will be stored with their names in the output JSON file.
 
+#### Content Sharing Polices Examples
+
+Example content sharing policy JSON file with scope / organization parameters.
+
+```JSON
+{
+    "id": "1",
+    "name": "contentSharingPolicy",
+    "typeId": "com.vmware.policy.catalog.entitlement",
+    "projectId": "1",
+    "scope": "projectId1",
+    "organization": "organization1",
+    "enforcementType": "HARD",
+    "description": "TEST",
+    "definition": {
+        "entitledUsers": [
+            {
+                "items": [
+                    {
+                        "name": "Content Source 1",
+                        "type": "CATALOG_SOURCE_IDENTIFIER"
+                    },
+                    {
+                        "name": "Content Source 2",
+                        "type": "CATALOG_SOURCE_IDENTIFIER"
+                    },
+                    {
+                        "name": "Catalog Item 1",
+                        "type": "CATALOG_ITEM_IDENTIFIER"
+                    },
+                ],
+                "userType": "USER",
+                "principals": [
+                    {
+                        "type": "PROJECT",
+                        "referenceId": ""
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
+Example content sharing policy JSON file without scope / organization parameters.
+
+```JSON
+{
+    "id": "1",
+    "name": "contentSharingPolicy",
+    "typeId": "com.vmware.policy.catalog.entitlement",
+    "projectId": "1",
+    "orgId": "1",
+    "enforcementType": "HARD",
+    "description": "TEST",
+    "definition": {
+       "entitledUsers": [
+              {
+                  "items": [
+                      {
+                          "name": "Content Source 2",
+                          "type": "CATALOG_SOURCE_IDENTIFIER"
+                      },
+                      {
+                          "name": "Content Source 3",
+                          "type": "CATALOG_SOURCE_IDENTIFIER"
+                      },
+                      {
+                          "name": "Catalog Item 4",
+                          "type": "CATALOG_ITEM_IDENTIFIER"
+                      },
+                  ],
+                  "userType": "USER",
+                  "principals": [
+                      {
+                          "type": "PROJECT",
+                          "referenceId": ""
+                      }
+                  ]
+              }
+          ]
+    }
+}
+```
+
 ### Known Issues
 
 Re-Creating Deleted policy.
