@@ -84,7 +84,7 @@ The name of the content source(s) and catalog item(s) in the file are stored in 
 #### Exporting
 
 When exporting a policy, a json file will be created on the filesystem. The filename will be the policyName[-index].json.
-Index will be added only if there are multiple policies with the same name. 
+Index will be added only if there are multiple policies with the same name.
 
 #### Content Sharing Polices Export
 
