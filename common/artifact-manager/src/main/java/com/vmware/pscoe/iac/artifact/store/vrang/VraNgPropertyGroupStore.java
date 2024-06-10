@@ -35,6 +35,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_PROPERTY_GROUPS;
 
@@ -101,23 +102,35 @@ public class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	 */
 	private void importPropertyGroup(VraNgPropertyGroup propertyGroup, File propertyGroupsFolder) {
 		File customPropertyGroupFile = Paths.get(propertyGroupsFolder.getPath(), getName(propertyGroup)).toFile();
+		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
+
 		VraNgPropertyGroup existingPropertyGroup = this.getPropertyGroupByName(propertyGroup.getName());
 
-		if (existingPropertyGroup != null) {
-			if (!existingPropertyGroup.hasTheSameProjectId(this.projectId)) {
-				logger.warn("The property group {} is already assigned to a different project. Property group scope will NOT be changed and the group will NOT be updated.", getName(propertyGroup));
+			if (!propertyGroup.hasTheSameOrgId(organizationId)) {
+				if (propertyGroup.getProjectId() != null && !(propertyGroup.getProjectId().isBlank())) {
+					logger.debug("Replacing propertyGroup projectId with projectId from configuration.");
+					propertyGroup.setProjectId(this.restClient.getProjectId());
+				}
+				propertyGroup.setOrgIdInRawData(organizationId);
+				logger.debug("Replacing propertyGroup organizationId with organizationId from configuration.");
 			} else {
-				propertyGroup.setId(existingPropertyGroup.getId());
-				logger.info("Updating property group: {}", customPropertyGroupFile.getAbsolutePath());
-				this.restClient.updatePropertyGroup(propertyGroup);
+				if (!propertyGroup.getProjectId().equals(this.restClient.getProjectId())) {
+					logger.warn("The property group {} is already assigned to a different project. Property group scope will NOT be changed and the group will NOT be updated.", getName(propertyGroup));
+				return;
+				}
 			}
 
+		if (existingPropertyGroup != null) {
+			propertyGroup.setId(existingPropertyGroup.getId());
+			logger.info("Updating property group: {}", customPropertyGroupFile.getAbsolutePath());
+			this.restClient.updatePropertyGroup(propertyGroup);
 		} else {
-			propertyGroup.setProjectIdInRawData(this.projectId);
-
 			logger.info("Creating property group: {}", customPropertyGroupFile.getAbsolutePath());
 			this.restClient.createPropertyGroup(propertyGroup);
 		}
+
+
+
 	}
 
 	/**
@@ -227,8 +240,6 @@ public class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	 * @param propertyGroupRawData
      */
     private void sanitizePropertyGroupJsonElement(JsonObject propertyGroupRawData) {
-        propertyGroupRawData.remove("orgId");
-        propertyGroupRawData.remove("projectId");
         propertyGroupRawData.remove("projectName");
         propertyGroupRawData.remove("id");
         propertyGroupRawData.remove("createdAt");
