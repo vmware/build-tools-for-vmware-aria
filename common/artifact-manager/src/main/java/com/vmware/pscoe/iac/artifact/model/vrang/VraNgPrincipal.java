@@ -16,15 +16,65 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  */
 
 public class VraNgPrincipal {
-	public String type;
-	public String referenceId;
+	/**
+	 * principal type.
+	 */
+	private String type;
+	/**
+	 * principal reference object id.
+	 */
+	private String referenceId;
 
+	/**
+	 * Default constructor.
+	 */
 	public VraNgPrincipal() {
-
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param type        type of the principal.
+	 * @param referenceId reference object id of the principal.
+	 */
 	public VraNgPrincipal(String type, String referenceId) {
 		this.type = type;
+		this.referenceId = referenceId;
+	}
+
+	/**
+	 * Get the type of the principal.
+	 * 
+	 * @return item type.
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * Set the type of the principal.
+	 * 
+	 * @param type item type.
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * Get the type reference object id for the principal.
+	 * 
+	 * @return item reference object id.
+	 */
+	public String getReferenceId() {
+		return referenceId;
+	}
+
+	/**
+	 * Set the reference id of the principal.
+	 * 
+	 * @param referenceId item reference object id.
+	 */
+	public void setReferenceId(String referenceId) {
 		this.referenceId = referenceId;
 	}
 }
