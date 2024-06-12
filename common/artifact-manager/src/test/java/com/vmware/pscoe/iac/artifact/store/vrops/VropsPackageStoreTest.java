@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
@@ -34,7 +35,6 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
 import com.vmware.pscoe.iac.artifact.PackageMocked;
 import com.vmware.pscoe.iac.artifact.VropsPackageStore;
 import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
@@ -104,7 +104,7 @@ public class VropsPackageStoreTest {
         VropsPackageDescriptor descriptor = getVropsPackageDescriptorMock(testViewName, defaultPolicy.getName());
 
         // WHEN
-        Package pkg = store.exportPackage(vropsPkg, descriptor, false);
+        store.exportPackage(vropsPkg, descriptor, false);
 
         // THEN
         File views = new File(packageDir, "views");
@@ -125,14 +125,13 @@ public class VropsPackageStoreTest {
 	private void importVropsPackage(boolean isVropsAbove812) throws Exception {
 		// GIVEN
 		tempFolder.create();
-		String testViewName = "Test View";
+
 		String testCustomGroupName = "Test custom group";
 		String testCustomGroupPayload = "{}";
 		String existingGroup = "group1";
 		String existingUser = "user1";
 		String existingDashboard = "DashboardName";
 		String defaultPolicy = "policy";
-		String contentYaml = "content.yaml";
 
 		String[] shareGroups = new String[] { existingGroup };
 		String[] unshareGroups = new String[] { existingGroup };
@@ -179,6 +178,7 @@ public class VropsPackageStoreTest {
 		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.RECOMMENDATION, new HashMap<>());
 		Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload, new HashMap<>());
 		Mockito.doNothing().when(restClientMock).setDefaultPolicy(defaultPolicy);
+		Mockito.doNothing().when(restClientMock).setPolicyPriorities(anyList());
 		Mockito.doNothing().when(restClientMock).importPolicyFromZip(any(), Mockito.isA(File.class), anyBoolean());
 
 		VropsPackageStore store = new VropsPackageStore(cliMock, restClientMock, tempFolder.newFolder());
@@ -267,9 +267,6 @@ public class VropsPackageStoreTest {
             @Override
             public boolean hasAnyCommands() {
                 return true;
-            }
-
-            private void copyLocalToRemote() throws JSchException, IOException, SftpException {
             }
 
             @Override

@@ -57,7 +57,7 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcraft.jsch.JSchException;
@@ -1143,15 +1143,43 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
     }
 
 	/**
+	 * Set the policy priorities. The ordering of the policies in the content.yaml file
+	 * will define policy priorities (first will be with top priority, last with least priority).
+	 * Note it will not do anything if: vROPs version is below 8.17.0.
+	 * (as it is not supported by the vROPS API).
+	 * @param vropsPackage package to read policies from.
+	 * @param tmpDir temporary directory where the content.yaml file resides.
+	 * @throws RuntimeException if the policy priorities cannot be set.
+	 */
+    private void setPolicyPriorities(final Package vropsPackage, final File tmpDir) {
+        if (!tmpDir.exists()) {
+            return;
+        }
+        File contentYamlFile = new File(tmpDir, CONTENT_YAML_FILE_NAME);
+        VropsPackageDescriptor descriptor = this.parseContentYamlFile(contentYamlFile);
+
+        if (descriptor.getPolicy() == null || descriptor.getPolicy().isEmpty()) {
+            return;
+        }
+        if (StringUtils.isEmpty(descriptor.getDefaultPolicy())) {
+            return;
+        }
+        try {
+            restClient.setPolicyPriorities(descriptor.getPolicy());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+	/**
 	 * Parse the content.yaml file.
 	 * @param contentYamlFile content.yaml file handle.
 	 * @return VropsPackageDescriptor POJO with the populated values from the content.yaml file.
 	 * @throws RuntimeException if the content yaml cannot be parsed.
 	 */
-	@SuppressWarnings("deprecation")
 	private VropsPackageDescriptor parseContentYamlFile(final File contentYamlFile) {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
 		try {
 			return mapper.readValue(contentYamlFile, VropsPackageDescriptor.class);
 		} catch (Exception e) {
@@ -1470,6 +1498,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
             manageDashboardActivation(tmpDir, false);
             // set default policy after importing policies
             setDefaultPolicy(pkg, tmpDir);
+            // set policy priorities
+            setPolicyPriorities(pkg, tmpDir);
         } catch (IOException | JSchException | ConfigurationException e) {
             String message = String.format("Unable to push package '%s' to vROps Server '%s' : %s : %s", pkg.getFQName(), cliManager, e.getClass().getName(),
                     e.getMessage());
@@ -1495,17 +1525,19 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
     @Override
     protected Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
-        throw new NotImplementedException("Not implemented");
+        throw new IllegalStateException("Package deletion is not supported");
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     protected PackageContent getPackageContent(final Package pkg) {
-        throw new NotImplementedException("Not implemented");
+        throw new IllegalStateException("Fetching package content is not supported");
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected void deleteContent(final Content content, final boolean dryrun) {
-        throw new NotImplementedException("Not implemented");
+        throw new IllegalStateException("Content deletion is not supported");
     }
 
     private void addViewToImportList(final Package pkg, final File tmp) throws IOException, ConfigurationException {
