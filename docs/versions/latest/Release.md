@@ -121,7 +121,7 @@ Here
 
 ### `string[]`, `Test[]` and such are now supported in the @params documentation
 
-Fix Issue #264
+Fix Issue #278
 Wider support for types in the @params documentation
 
 #### Previous Behavior
