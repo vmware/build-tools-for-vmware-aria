@@ -1,27 +1,97 @@
 # (VERSION_PLACEHOLDER DO NOT DELETE)
+
 [//]: # (Used when working on a new release. Placed together with the Version.md)
 [//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
 [//]: # (Do not fill the version, it will be done automatically)
 [//]: # (Quick Intro to what is the focus of this release)
 
 ## Breaking Changes
+
 [//]: # (### *Breaking Change*)
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
-
 ## Deprecations
+
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 
-
 [//]: # (Features -> New Functionality)
+
 ## Features
 
+### Support of project scope / organization during import of content sharing policies
+
+Content sharing policies now supports different project for their scope/organization parameters. If a scope project is defined in the content
+sharing JSON file it will be used as a project during push, hence allowing more granular content sharing across different projects.
+If there is no scope / organization defined in the content sharing JSON file then the one defined in the global settings.xml file will be used.
+
+```yaml
+policy:
+  content-sharing:
+    - contentSharingPolicy
+```
+
+Example content sharing policy JSON file with scope / organization parameters.
+
+```JSON
+{
+  "id": "1",
+  "name": "contentSharingPolicy",
+  "typeId": "com.vmware.policy.catalog.entitlement",
+  "projectId": "1",
+  "scope": "projectId1",
+  "organization": "organization1",
+  "enforcementType": "HARD",
+  "description": "TEST",
+  "definition": {
+    "entitledUsers": []
+  }
+}
+```
+
+In the example above the organization and scope of the content sharing policy is different than the one defined in settings xml. They will be used when
+importing the policy in the target system in order to assign the organization and scope of the content sharing policy.
+
+Example content sharing policy JSON file without scope / organization parameters.
+
+```JSON
+{
+  "id": "1",
+  "name": "contentSharingPolicy",
+  "typeId": "com.vmware.policy.catalog.entitlement",
+  "projectId": "1",
+  "orgId": "1",
+  "enforcementType": "HARD",
+  "description": "TEST",
+  "definition": {
+    "entitledUsers": []
+  }
+}
+```
+
+In the example above the organization and scope of the content sharing policy is not defined, hence the ones defined in the settings.xml configuration file
+will be used for assignment of the project / organization on the target system during import.
+
+### New strategy when importing packages in Orchestrator `StrategyForceLatestVersions`
+
+This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for
+better CI/CD pipelines, where we can ensure that the latest versions are always used on the server.
+
+The new strategy can be triggered by passing `-Dvro.forceImportLatestVersions=true`. It is by default set to `false`.
+
+Example usage:
+
+```bash
+mvn clean package vrealize:push -DincludeDependencies=true -Dvro.forceImportLatestVersions=true -DskipTests -PDevLab
+```
+
 ### Implement `Object.setPrototypeOf()` function
+
 Add support for native `Object.setPrototypeOf()` function that can be used to properly setup prototype chain during inheritance.
 
 E.g. with the following code the prototype chain is setup properly and the log message is `Constructor name: NsxtError`.
+
 ```typescript
 class NsxtError extends Error {
     public readonly cause: string
@@ -36,6 +106,7 @@ System.log(`Constructor name: ${testError.constructor.name}`);
 ```
 
 Without the `Object.setPrototypeOf` the NsxtError is not properly added to the prototype chain and the log message is `Constructor name: Error`.
+
 ```typescript
 class NsxtError extends Error {
     public readonly cause: string
@@ -49,7 +120,9 @@ System.log(`Constructor name: ${testError.constructor.name}`);
 ```
 
 ### Pretty formatted JSON for Custom Forms when storing them together with Custom Form Metadata
+
 When Custom Forms are pulled from Aria Automation, they are stored on the file system (the repo) in a form similar to
+
 ```json
 {
   "id": "e694a748-7067-47d1-91a4-614da73dda03",
@@ -63,11 +136,13 @@ When Custom Forms are pulled from Aria Automation, they are stored on the file s
   "formFormat": "JSON"
 }
 ```
+
 Here, please note that the form field is a double serialized JSON as string : "{"layout": {...},"schema": {...},"options": {...}}"
 which makes it goes in one line and very difficult for a human to work with. If there is any commits and. changes in the form in the repo, the diffs are very difficult to find (when reviewing pull requests).
 As a whole it is not human friendly and very difficult for a human to deal with.
 
 The current pull request, makes it so that the format will become a properly formatted JSON object like:
+
 ```json
 {
   "id": "e694a748-7067-47d1-91a4-614da73dda03",
@@ -91,12 +166,15 @@ The current pull request, makes it so that the format will become a properly for
   "formFormat": "JSON"
 }
 ```
+
 This way it is more easy to work with.
 
 ### Enable support for binding workflow attributes to Configuration Element variables
+
 Be able to bind attribute values to Configuration Element variables
 
 To do that one have to provide the following annotation for the workflow ts file (SomeFile.wf.ts)
+
 ```json
 @Workflow({
         id: "<Some Id>",
@@ -111,10 +189,10 @@ To do that one have to provide the following annotation for the workflow ts file
         }
     })
 ```
+
 Here
 `bind: true` - means that we have to bind the value of the attribute to Configuration Element variable.
 `value: "Some/Path/To/ConfigurationElement/variableName"` - points to the Configuration Element and variable inside the Configuration Element to bind to.
-
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
@@ -184,9 +262,11 @@ This attributed is added
 Republish the same tenants on VCD plugin upgrade instead of publish to all tenants.
 
 #### Previous Behavior
+
 * On vcd plugin upgrade, the plugin will published to all tenants.
 
 #### New Behavior
+
 * On vcd plugin upgrade, the plugin will published only for already published tenants.
 
 ### Fix on legacy archetype failing with vro:pull (when workflow folder path name contains special characters(&))
@@ -209,12 +289,14 @@ When using SSH with typescript, the `error` and `state` methods has the type `vo
 
 Method `error` and `state` should return type `String` instead of type `void`
 
-
 ### Upgrade VCD archetype to support Angular 15
+
 VMware Cloud Director v10.6 is going to drop support for Angular v9 or less.
 
 #### Previous Behaviour
+
 VMware Cloud Director archetype is using:
+
 * node v12
 * angular v8
 * clarity v2
@@ -233,7 +315,9 @@ The old archetype can still be bootstrapped with:
     -DlicenseTechnicalPreview=false`
 
 #### Current Behaviour
+
 VMware Cloud Director archetype is using:
+
 * node v16+
 * angular v15
 * clarity v15
@@ -251,11 +335,12 @@ The new archetype can be bootstrapped with:
     -DlicenseHeader= \
     -DlicenseTechnicalPreview=false`
 
-
 #### Related issue
+
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
 ## Upgrade procedure
+
 [//]: # (Explain in details if something needs to be done)
 [//]: # (## Changelog:)
 [//]: # (Pull request links)
