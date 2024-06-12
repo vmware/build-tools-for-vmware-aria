@@ -14,7 +14,6 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -25,6 +24,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomFormAndData;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -276,7 +276,6 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		VraNgCustomForm form = this.restClient.getCustomFormByTypeAndSource(
 				contentSource.getType().toString(),
 				catalogItem.getId());
-
 		if (form == null) {
 			logger.debug(
 					"No form found for catalogItem: {} with source {}",
@@ -284,7 +283,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 					catalogItem.getSourceName());
 			return null;
 		}
-
+		
 		File store = new File(serverPackage.getFilesystemPath());
 		File customFormFile = Paths.get(
 				store.getPath(),
@@ -305,8 +304,10 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			// write form metadata file
+			// in a format (VraNgCustomFormAndData) suitable to be stored in a source code repository.
+			VraNgCustomFormAndData repoForm = new VraNgCustomFormAndData(form);
 			logger.info("Created custom form metadata file {}",
-					Files.write(Paths.get(customFormFile.getPath()), gson.toJson(form).getBytes(),
+					Files.write(Paths.get(customFormFile.getPath()), gson.toJson(repoForm).getBytes(),
 							StandardOpenOption.CREATE));
 			// write form data file
 			if (!StringUtils.isEmpty(form.getForm())) {
@@ -666,18 +667,21 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 */
 	protected VraNgCustomForm jsonFileToVraCustomForm(final File jsonFormFile, final File jsonFormDataFile) {
 		logger.debug("Converting custom form file to VraNgCustomForm. Name: '{}'", jsonFormFile.getName());
-
-		VraNgCustomForm retVal;
+		
+		VraNgCustomFormAndData repoForm;	// As read from the file system (the repo)
+		VraNgCustomForm restForm;			// in a form suitable for usage in a REST API Call.
+		
 		try (JsonReader reader = new JsonReader(new FileReader(jsonFormFile.getPath()))) {
-			retVal = new Gson().fromJson(reader, VraNgCustomForm.class);
+			repoForm = new Gson().fromJson(reader, VraNgCustomFormAndData.class);
+			restForm = new VraNgCustomForm(repoForm);
 			// if there is a separate form data file then set the form content from it,
 			// otherwise use the one stored in the JSON form file
 			if (jsonFormDataFile.exists()) {
 				logger.info("Found custom form data file '{}' for form name '{}'", jsonFormDataFile.getPath(),
 						jsonFormFile.getName());
-				retVal.setForm(FileUtils.readFileToString(jsonFormDataFile, Charset.defaultCharset()));
+				restForm.setForm(FileUtils.readFileToString(jsonFormDataFile, Charset.defaultCharset()));
 			}
-			return retVal;
+			return restForm;
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading from file: %s", jsonFormFile.getPath()), e);
 		}

@@ -17,61 +17,165 @@ package com.vmware.pscoe.iac.artifact.rest.model;
 
 import com.vmware.pscoe.iac.artifact.model.vcd.VcdNgPackageManifest;
 
-public class VcdPluginMetadataDTO {
-    private final String pluginName;
-    private final String vendor;
-    private final String description;
-    private final String version;
-    private final String license;
-    private final String link;
-    private final boolean tenant_scoped;
-    private final boolean provider_scoped;
-    private final boolean enabled;
+public final class VcdPluginMetadataDTO {
 
-    public VcdPluginMetadataDTO(VcdNgPackageManifest manifest) {
-        pluginName = manifest.getName();
-        vendor = manifest.getVendor();
-        description = manifest.getDescription();
-        version = manifest.getVersion();
-        license = manifest.getLicense();
-        link = manifest.getLink();
-        tenant_scoped = manifest.isTenantScoped();
-        provider_scoped = manifest.isProviderScoped();
-        enabled = true;
-    }
+	/**
+	 * pluginName.
+	 */
+	private final String pluginName;
 
+	/**
+	 * vendor.
+	 */
+	private final String vendor;
+
+	/**
+	 * description.
+	 */
+	private final String description;
+
+	/**
+	 * version.
+	 */
+	private final String version;
+
+	/**
+	 * license.
+	 */
+	private final String license;
+
+	/**
+	 * link.
+	 */
+	private final String link;
+
+	/**
+	 * tenantScoped.
+	 */
+	private boolean tenantScoped;
+
+	/**
+	 * providerScoped.
+	 */
+	private boolean providerScoped;
+
+	/**
+	 * enabled.
+	 */
+	private final boolean enabled;
+
+	/**
+	 * VcdPluginMetadataDTO.
+	 * 
+	 * @param manifest vcd package manifest.
+	 */
+	public VcdPluginMetadataDTO(VcdNgPackageManifest manifest) {
+		pluginName = manifest.getName();
+		vendor = manifest.getVendor();
+		description = manifest.getDescription();
+		version = manifest.getVersion();
+		license = manifest.getLicense();
+		link = manifest.getLink();
+		tenantScoped = manifest.isTenantScoped();
+		providerScoped = manifest.isProviderScoped();
+		enabled = true;
+	}
+
+	/**
+	 * getPluginName.
+	 * 
+	 * @return Plugin name.
+	 */
 	public String getPluginName() {
 		return pluginName;
 	}
 
+	/**
+	 * vendor.
+	 * 
+	 * @return Vendor.
+	 */
 	public String getVendor() {
 		return vendor;
 	}
 
+	/**
+	 * description.
+	 * 
+	 * @return Description.
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * version.
+	 * 
+	 * @return Version.
+	 */
 	public String getVersion() {
 		return version;
 	}
 
+	/**
+	 * license.
+	 * 
+	 * @return License.
+	 */
 	public String getLicense() {
 		return license;
 	}
 
+	/**
+	 * link.
+	 * 
+	 * @return Link.
+	 */
 	public String getLink() {
 		return link;
 	}
 
-	public boolean isTenant_scoped() {
-		return tenant_scoped;
+	/**
+	 * tenantScoped.
+	 * 
+	 * @return Tenant scoped.
+	 */
+	public boolean getTenantScoped() {
+		return tenantScoped;
 	}
 
-	public boolean isProvider_scoped() {
-		return provider_scoped;
+	/**
+	 * setTenantScoped.
+	 * 
+	 * @param tenantScoped tenant scoped.
+	 */
+	public void setTenantScoped(boolean tenantScoped) {
+		this.tenantScoped = tenantScoped;
 	}
 
+	/**
+	 * providerScoped.
+	 * 
+	 * @return Provider scoped.
+	 */
+	public boolean getProviderScoped() {
+		return providerScoped;
+	}
+
+	/**
+	 * setProviderScoped.
+	 * 
+	 * @param providerScoped provider scoped.
+	 */
+	public void setProviderScoped(boolean providerScoped) {
+		this.providerScoped = providerScoped;
+	}
+
+	/**
+	 * enabled.
+	 * 
+	 * @return Enabled.
+	 */
 	public boolean isEnabled() {
 		return enabled;
 	}

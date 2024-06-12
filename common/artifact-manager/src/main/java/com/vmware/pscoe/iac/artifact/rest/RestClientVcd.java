@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -33,6 +35,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
@@ -89,6 +93,16 @@ public class RestClientVcd extends RestClient {
 	private static final String URL_UI_EXTENSION_BY_ID = URL_UI_EXTENSION_BASE + "/%s";
 
 	/**
+	 * url ui extension tenants path.
+	 */
+	private static final String URL_UI_EXTENSION_TENANTS = URL_UI_EXTENSION_BY_ID + "/tenants";
+
+	/**
+	 * url ui extension tenants publish path.
+	 */
+	private static final String URL_UI_EXTENSION_TENANTS_PUBLISH = URL_UI_EXTENSION_TENANTS + "/publish";
+
+	/**
 	 * plugin base.
 	 */
 	private static final String URL_UI_PLUGIN_BY_ID = URL_UI_EXTENSION_BASE + "/%s/plugin";
@@ -107,6 +121,26 @@ public class RestClientVcd extends RestClient {
 	 * api version that is not yet supported.
 	 */
 	private static final String API_VERSION_38 = "38.0";
+
+	/**
+	 * tenant scoped key name.
+	 */
+	private static final String TENANT_SCOPED_KEY_NAME = "tenant_scoped";
+
+	/**
+	 * provider scoped key name.
+	 */
+	private static final String PROVIDER_SCOPED_KEY_NAME = "provider_scoped";
+
+	/**
+	 * published tenants key name.
+	 */
+	private static final String PUBLISHED_TENANTS_KEY_NAME = "publishedTenants";
+
+	/**
+	 * publishedTenantsInfo.
+	 */
+	private Map<String, Object> publishedTenantsInfo;
 
 	protected RestClientVcd(ConfigurationVcd configuration, RestTemplate restTemplate) {
 		this.configuration = configuration;
@@ -164,8 +198,7 @@ public class RestClientVcd extends RestClient {
 			acceptableMediaTypes.add(contentType);
 			headers.setAccept(acceptableMediaTypes);
 
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,
-					new HttpEntity<String>(headers), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<String>(headers), String.class);
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
 			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)) {
@@ -184,6 +217,7 @@ public class RestClientVcd extends RestClient {
 	 * 
 	 * @return list of packages
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Package> getAllUiExtensions() {
 		URI url = getURI(getURIBuilder().setPath(URL_UI_EXTENSION_BASE));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getVcdHttpEntity(), String.class);
@@ -196,7 +230,7 @@ public class RestClientVcd extends RestClient {
 
 		return extensions;
 	}
-	
+
 	/**
 	 * 
 	 * @param id extension id
@@ -214,8 +248,25 @@ public class RestClientVcd extends RestClient {
 		String pluginVersion = JsonPath.parse(response.getBody()).read("$.version");
 
 		logger.debug("UI extension for ID [" + id + "] retrieved.");
-		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId,
-				new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
+
+		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId, new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
+	}
+
+	/**
+	 * 
+	 * @param id extension id
+	 * @return Package
+	 * 
+	 * getUiExtensionTenants.
+	 */
+	public JsonArray getUiExtensionTenants(String id) {
+		logger.debug("Getting UI extension Tenants for ID [" + id + "]...");
+		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_EXTENSION_TENANTS, id)));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getVcdHttpEntity(), String.class);
+		JsonArray publishedTenants = new Gson().fromJson(response.getBody(), JsonObject.class).getAsJsonArray("values");
+		logger.debug("publishedTenants [" + publishedTenants.toString() + "]...");
+
+		return publishedTenants;
 	}
 
 	/**
@@ -246,8 +297,14 @@ public class RestClientVcd extends RestClient {
 	public Package addUiExtension(Package pkg) {
 		logger.debug("Adding UI extension for [" + pkg + "]...");
 		VcdNgPackageManifest manifest = VcdNgPackageManifest.getInstance(pkg);
-		String requestBody = new Gson().toJson(new VcdPluginMetadataDTO(manifest));
+		VcdPluginMetadataDTO vcdPluginMetadataDTO = new VcdPluginMetadataDTO(manifest);
 
+		if (this.publishedTenantsInfo != null) {
+			vcdPluginMetadataDTO.setTenantScoped((boolean) this.publishedTenantsInfo.get(TENANT_SCOPED_KEY_NAME));
+			vcdPluginMetadataDTO.setProviderScoped((boolean) this.publishedTenantsInfo.get(PROVIDER_SCOPED_KEY_NAME));
+		}
+
+		String requestBody = new Gson().toJson(vcdPluginMetadataDTO);
 		URI url = getURI(getURIBuilder().setPath(URL_UI_EXTENSION_BASE));
 		HttpHeaders headers = getCommonVcdHeaders();
 		HttpEntity<String> entity = new HttpEntity<String>(requestBody, headers);
@@ -273,7 +330,7 @@ public class RestClientVcd extends RestClient {
 
 	/**
 	 * 
-	 * @param localPkg local package
+	 * @param localPkg  local package
 	 * @param remotePkg remote package
 	 * 
 	 * uploadUiPlugin.
@@ -322,7 +379,7 @@ public class RestClientVcd extends RestClient {
 		restTemplate.exchange(url, HttpMethod.DELETE, this.getVcdHttpEntity(), String.class);
 		logger.debug("Plugin resource for [" + remotePkg + "] deleted.");
 	}
-	
+
 	/**
 	 * 
 	 * @param pkg package
@@ -333,17 +390,18 @@ public class RestClientVcd extends RestClient {
 	public Package addOrReplaceUiPlugin(Package pkg) {
 		Package remotePkg = this.getUiExtension(pkg);
 		if (remotePkg != null) {
+			this.setUiExtensionPublishedTenantsInfo(remotePkg.getId());
 			this.deleteUiPlugin(remotePkg);
 			this.removeUiExtension(remotePkg);
 		}
 
 		remotePkg = this.addUiExtension(pkg);
 		this.uploadUiPlugin(pkg, remotePkg);
-		this.publishUiPlugin(remotePkg);
-		
+		this.publishOrRepublishUIPlugin(remotePkg);
+
 		return remotePkg;
 	}
-	
+
 	/**
 	 * 
 	 * @param remotePkg remote package
@@ -356,8 +414,83 @@ public class RestClientVcd extends RestClient {
 
 		HttpHeaders headers = getCommonVcdHeaders();
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
-		
+
 		restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 		logger.debug("UI extension [" + remotePkg + "] published to all tenants.");
+	}
+
+	/**
+	 * 
+	 * @param remotePkg remote package
+	 * @param tenants   tenants to publish
+	 * 
+	 * publishUiPluginToTenants.
+	 */
+	public void publishUiPluginToTenants(Package remotePkg, JsonArray tenants) {
+		logger.debug("Publishing UI plugin [" + remotePkg + "] to specific tenants...");
+
+		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_EXTENSION_TENANTS_PUBLISH, remotePkg.getId())));
+		HttpHeaders headers = getCommonVcdHeaders();
+		HttpEntity<String> entity = new HttpEntity<String>(tenants.toString(), headers);
+
+		restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+		logger.debug("UI plugin [" + remotePkg + "] published to specific tenants.");
+	}
+
+	/**
+	 * 
+	 * @param id extension id
+	 * 
+	 * getUiExtension.
+	 */
+	private void setUiExtensionPublishedTenantsInfo(String id) {
+		logger.debug("Getting UI extension published tenants info for ID [" + id + "]...");
+		URI url = getURI(getURIBuilder().setPath(String.format(URL_UI_EXTENSION_BY_ID, id)));
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getVcdHttpEntity(), String.class);
+		boolean tenantScoped = JsonPath.parse(response.getBody()).read("$." + TENANT_SCOPED_KEY_NAME);
+		boolean providerScoped = JsonPath.parse(response.getBody()).read("$." + PROVIDER_SCOPED_KEY_NAME);
+
+		this.publishedTenantsInfo = new HashMap<>();
+		this.publishedTenantsInfo.put(TENANT_SCOPED_KEY_NAME, tenantScoped);
+		this.publishedTenantsInfo.put(PROVIDER_SCOPED_KEY_NAME, providerScoped);
+
+		if (tenantScoped) {
+			JsonArray publishedTenants = this.getUiExtensionTenants(id);
+			this.publishedTenantsInfo.put(PUBLISHED_TENANTS_KEY_NAME, publishedTenants);
+		}
+
+		logger.debug("Getting UI extension published tenants info for ID [" + id + "] retrieved.");
+	}
+
+	private void publishOrRepublishUIPlugin(Package remotePkg) {
+		logger.debug("Publish or Republish UI Plugin [" + remotePkg + "] ...");
+		if (this.publishedTenantsInfo == null) {
+			this.publishUiPlugin(remotePkg);
+		} else if ((boolean) this.publishedTenantsInfo.get(TENANT_SCOPED_KEY_NAME)) {
+			JsonArray publishedTenants = (JsonArray) this.publishedTenantsInfo.get(PUBLISHED_TENANTS_KEY_NAME);
+			boolean checkedAllTenants = this.hasAllTenantsChecked(publishedTenants);
+
+			if (checkedAllTenants) {
+				this.publishUiPlugin(remotePkg);
+			} else {
+				this.publishUiPluginToTenants(remotePkg, publishedTenants);
+			}
+
+		}
+		logger.debug("Publish or Republish UI Plugin [" + remotePkg + "] is Done.");
+	}
+
+	private boolean hasAllTenantsChecked(JsonArray tenantsList) {
+		List<String> filteredTenants = new ArrayList<String>();
+		tenantsList.iterator().forEachRemaining((element) -> {
+			final JsonObject entry = element.getAsJsonObject();
+			final String name = entry.getAsJsonPrimitive("name").getAsString();
+			if (name.equals("System")) {
+				filteredTenants.add(name);
+			}
+		});
+
+		return (filteredTenants.size() > 0);
 	}
 }

@@ -146,16 +146,13 @@ namespace vroapi {
     function getElementAttributes(categoryPath: string, elementName: string): Attribute[] {
         const categoryDescriptor = findDescriptorByPath(categoryPath);
         if (!categoryDescriptor) {
-          return null;
+          return [];
         }
         const elementDescriptor = categoryDescriptor.elements[elementName];
         if (!elementDescriptor || !elementDescriptor.path) {
-          return null;
+          return [];
         }
         const attributeDescriptors = parseJsonFile<AttributeDescriptor[]>(elementDescriptor.path);
-        if (attributeDescriptors.length === 0) {
-          return null;
-        }
         return attributeDescriptors.map(attrInfo => {
           const attr = new Attribute();
           attr.name = attrInfo.name;
@@ -164,7 +161,7 @@ namespace vroapi {
           attr.value = attrInfo.value != null ? convertAttrValue(attrInfo.type, attrInfo.value) : null;
           return attr;
         });
-      }
+    }
 
 
     function findDescriptorByPath(categoryPath: string): CategoryDescriptor {

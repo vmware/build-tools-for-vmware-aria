@@ -1,0 +1,44 @@
+{
+	"id": "e42189dd-19fa-4f4d-a0db-315c748a5b60",
+	"name": "DL01",
+	"typeId": "com.vmware.policy.deployment.limit",
+	"orgId": "b2c558c8-f20c-4da6-9bc3-d7561f64df16",
+	"enforcementType": "HARD",
+	"criteria": {
+		"matchExpression": [
+			{
+				"key": "deploymentName",
+				"operator": "contains",
+				"value": "n"
+			}
+		]
+	},
+	"scopeCriteria": {
+		"matchExpression": [
+			{
+				"key": "project.description",
+				"operator": "contains",
+				"value": "a"
+			}
+		]
+	},
+	"definition": {
+		"deploymentLimits": {
+			"cpu": {
+				"value": 254
+			}
+		},
+		"deploymentResourceLimits": {
+			"resources": [
+				{
+					"name": "LimitCPU1",
+					"limits": {
+						"cpu": {
+							"value": 32
+						}
+					}
+				}
+			]
+		}
+	}
+}

@@ -1,10 +1,39 @@
 ### Enhancements
+* [vra] Issue 279 / content sharing policies not pulled if scope is different than configured project in the settings.xml.
+* [vro] Added new strategy StrategyForceLatestVersions that will force you to upload a newer or same version of artifacts, otherwise the build will fail. New property has been introduced `-Dvro.forceImportLatestVersions={{BOOLEAN}}` that is set by default to false.
+* [typescript/vrotsc] Implement `Object.setPrototypeOf()` function
+* [artifact-manager] Issue 220 / mvn archetype:generate for abx project - update the package.json template for generating abx actions.
+* [vrotsc]  Allow definition of workflow attribute which value is bound to the value of a Configuration Element variable.
+* [artifact-manager] Export (Pull) Aria Automation Custom forms in a structured JSON, rather than in string encoded JSON, when stored together with the Custom Form metadata, thus making it more human friendly to operate with when stored in a repo.
+* [artifact-manager] IAC-802 / Republish the same tenants on VCD Plugin upgrade instead of publishing to all tenants.
+* [typescript/vrotsc] IAC-791 / Full support of the vRO Policies feature.
+* Add missing attribute `soTimeout` in `SSHSession`.
+* Misspell fixes.
+
+### Fixes
+* [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
+
+## v2.38.1 - 03 Apr 2024
+
+### Enhancements
+* Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
+
+### Fixes
+* [vro-types] 251 / Add missing types to AD Plugin
+* [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.
+
+## v2.38.0 - 29 Mar 2024
+
+### Enhancements
 * [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
 * [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
+* [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
+* [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
 * [typescript] 165 / vro:pull command for legacy archetype fails when workflow folder path name contains character '&'.
+* [vro-types] Fix SSHSession `cmd`, `pty`, `terminal` types
 
 ## v2.37.0 - 26 Jan 2024
 
@@ -216,7 +245,6 @@
 * [package-installer] IAC-428 / Added descriptions for some package installer and maven settings.xml configuration options.
 
 ## v2.26.0 - 19 Jul 2022
-
 
 ### Enhancements
 

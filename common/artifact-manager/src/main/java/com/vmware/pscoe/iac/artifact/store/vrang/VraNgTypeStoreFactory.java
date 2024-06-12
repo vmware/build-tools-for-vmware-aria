@@ -24,16 +24,22 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.APPROVAL_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.BLUEPRINT;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CATALOG_ITEM;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CONTENT_SHARING_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CONTENT_SOURCE;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CUSTOM_RESOURCE;
-import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.POLICY;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.DAY2_ACTIONS_POLICY;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.DEPLOYMENT_LIMIT_POLICY;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.LEASE_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.PROPERTY_GROUP;
-import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.RESOURCE_ACTION;
-import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.SUBSCRIPTION;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.REGION_MAPPING;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.RESOURCE_ACTION;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.SUBSCRIPTION;
 
 /**
  * Factory to select and setup the store (handler) and determine the order of
@@ -54,7 +60,12 @@ public class VraNgTypeStoreFactory {
 			REGION_MAPPING,
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
-			POLICY
+			CONTENT_SHARING_POLICY,
+			LEASE_POLICY,
+			RESOURCE_QUOTA_POLICY,
+			DAY2_ACTIONS_POLICY,
+			DEPLOYMENT_LIMIT_POLICY,
+			APPROVAL_POLICY
 	};
 
 	/**
@@ -80,7 +91,12 @@ public class VraNgTypeStoreFactory {
 			REGION_MAPPING,
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
-			POLICY
+			CONTENT_SHARING_POLICY,
+			LEASE_POLICY,
+			RESOURCE_QUOTA_POLICY,
+			DAY2_ACTIONS_POLICY,
+			DEPLOYMENT_LIMIT_POLICY,
+			APPROVAL_POLICY
 	};
 
 	/**
@@ -193,8 +209,18 @@ public class VraNgTypeStoreFactory {
 				return new VraNgCustomResourceStore();
 			case RESOURCE_ACTION:
 				return new VraNgResourceActionStore();
-			case POLICY:
+			case CONTENT_SHARING_POLICY:
 				return new VraNgContentSharingPolicyStore();
+			case RESOURCE_QUOTA_POLICY:
+				return new VraNgResourceQuotaPolicyStore();
+			case DAY2_ACTIONS_POLICY:
+				return new VraNgDay2ActionsPolicyStore();
+			case LEASE_POLICY:
+				return new VraNgLeasePolicyStore();
+			case DEPLOYMENT_LIMIT_POLICY:
+				return new VraNgDeploymentLimitPolicyStore();
+			case APPROVAL_POLICY:
+				return new VraNgApprovalPolicyStore();
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}

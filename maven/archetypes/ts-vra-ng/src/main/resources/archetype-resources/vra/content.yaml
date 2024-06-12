@@ -22,7 +22,22 @@
 # property-group:
 #  - property-group-1
 # policy:
-#   content-sharing: 
+#   approval:
+#     - policy name 1
+#     - policy name 2
+#   content-sharing:
+#     - policy name 1
+#     - policy name 2
+#   day2-actions:
+#     - policy name 1
+#     - policy name 2
+#   deployment-limit:
+#     - policy name 1
+#     - policy name 2
+#   lease:
+#     - policy name 1
+#     - policy name 2
+#   resource-quota:
 #     - policy name 1
 #     - policy name 2
 
@@ -45,6 +60,11 @@ catalog-entitlement: []
 
 property-group: []
 policy:
+  approval: []
   content-sharing: []
+  day2-actions: []
+  deployment-limit: []
+  lease: []
+  resource-quota: []
 
 content-source: []

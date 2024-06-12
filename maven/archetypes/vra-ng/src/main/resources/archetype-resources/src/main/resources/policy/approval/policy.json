@@ -1,0 +1,30 @@
+{
+	"id": "policy uiid",
+	"name": "policy name",
+	"description": "",
+	"typeId": "com.vmware.policy.approval",
+	"enforcementType": "HARD|SOFT",
+	"orgId": "organization uiid",
+	"scopeCriteria": {
+		"matchExpression": [
+			{
+				"key": "project.name",
+				"operator": "contains",
+				"value": "g"
+			}
+		]
+	},
+	"definition": {
+		"level": 1,
+		"actions": [
+			"Allocations.Storage.Delete"
+		],
+		"approvers": [
+			"USER:configurationadmin"
+		],
+		"approvalMode": "ANY_OF",
+		"approverType": "USER",
+		"autoApprovalExpiry": 5,
+		"autoApprovalDecision": "APPROVE"
+	}
+}

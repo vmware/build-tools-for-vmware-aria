@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { FileDescriptor, FileTransformationContext, FileType } from "../../../types";
 import { system } from "../../../system/system";
@@ -86,6 +100,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 			type: "ConfigurationElement",
 			id: configInfo.id,
 		}));
+		context.configIdsMap[`${configInfo.path}/${configInfo.name}`] = configInfo.id;
 	}
 
 	/**
@@ -333,6 +348,7 @@ export function getConfigYamlTransformer(file: FileDescriptor, context: FileTran
 			type: "ConfigurationElement",
 			id: configInfo.id,
 		}));
+		context.configIdsMap[`${configInfo.path}/${configInfo.name}`] = configInfo.id;
 	};
 }
 
