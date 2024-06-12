@@ -328,7 +328,7 @@ export class VroJsProjParser {
 	/**
 	 * Function to parse the type from the jsdoc type object
 	 *
-	 * If an array type is detected, it will be returned as "Array/<type>"
+	 * @NOTE: If an array type is detected, it will be returned as "Array/<type>"
 	 */
 	private static parseType(type: any): string {
 		const primitiveTypes: Array<string> = ["boolean", "number", "string", "Any", "undefined", "null", "object"];
