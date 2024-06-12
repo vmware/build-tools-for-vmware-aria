@@ -325,10 +325,12 @@ export class VroJsProjParser {
 		return destination;
 	}
 
+	/**
+	 * Function to parse the type from the jsdoc type object
+	 *
+	 * If an array type is detected, it will be returned as "Array/<type>"
+	 */
 	private static parseType(type: any): string {
-		console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-		console.log("type: ", type);
-
 		const primitiveTypes: Array<string> = ["boolean", "number", "string", "Any", "undefined", "null", "object"];
 		if (type?.type == "NameExpression") {
 			let typeName: string = type.name ? type.name : "" + JSON.stringify(type);
@@ -337,6 +339,12 @@ export class VroJsProjParser {
 					return primitiveTypes[index];
 				}
 			}
+
+			if (typeName.endsWith("[]")) {
+				let arrayType = typeName.substring(0, typeName.length - 2);
+				return `Array/${arrayType}`;
+			}
+
 			return typeName;
 		}
 		return "Any";
