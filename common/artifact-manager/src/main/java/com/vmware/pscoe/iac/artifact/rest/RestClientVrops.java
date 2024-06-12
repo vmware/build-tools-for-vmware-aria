@@ -500,11 +500,9 @@ public class RestClientVrops extends RestClient {
 			parameters.put("policyIds", policyIds);
 
 			restTemplate.exchange(restUri, HttpMethod.PUT, new HttpEntity<>(gson.toJson(parameters), headers), String.class);
-		}
-		catch (RestClientException e) {
+		} catch (RestClientException e) {
 			throw new RuntimeException(String.format("REST service error while ordering policies by priority for policies '%s'. Message: %s", this.concatenateList(policies, ", "), e.getMessage()));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error while ordering policies by priority for policies '%s'. Message: %s", this.concatenateList(policies, ", "), e.getMessage()));
 		}
 	}
