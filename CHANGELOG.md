@@ -12,6 +12,7 @@
 
 ### Fixes
 * [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
+* [vro-types] Convert VcKeyAnyValue from interface to class
 
 ## v2.38.1 - 03 Apr 2024
 
