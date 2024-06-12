@@ -1,4 +1,7 @@
 ### Enhancements
+* [vrotsc] `vrotsc` migrate ts from 3.8.3 to 5.4.5. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/245) for detailed information
+
+### Enhancements
 * [vra] Issue 279 / content sharing policies not pulled if scope is different than configured project in the settings.xml.
 * [vro] Added new strategy StrategyForceLatestVersions that will force you to upload a newer or same version of artifacts, otherwise the build will fail. New property has been introduced `-Dvro.forceImportLatestVersions={{BOOLEAN}}` that is set by default to false.
 * [typescript/vrotsc] Implement `Object.setPrototypeOf()` function
@@ -17,19 +20,20 @@
 
 ### Enhancements
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
-
+  
 ### Fixes
 * [vro-types] 251 / Add missing types to AD Plugin
+
+### Fixes
 * [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.
 
 ## v2.38.0 - 29 Mar 2024
 
 ### Enhancements
 * [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
-* [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
+* [artifact-manage] IAC-796 / Upgrade VCD archetype to support Angular 15
 * [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 * [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
-
 ### Fixes
 * [vro-types] Fix SSHSession 'error' and 'state' types
 * [typescript] 165 / vro:pull command for legacy archetype fails when workflow folder path name contains character '&'.
@@ -61,13 +65,12 @@
 * [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
 * [artifact-manager] IAC-801 / Fix vRA catalog items appearing twice on multi page results.
 
-## v2.35.2
 ### Enhancements
 * [vro-types/o11n-plugin-aria] IAC-789 / Adding new Aria Automation Plugin vRO inventory Types.
 * [vro-types/o11n-plugin-aria] IAC-798 / Deprecating SQLDatabaseManager getDatabase() function.
 * [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
 * [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
-* [archetypes] IAC-797 / Improved content.yaml definition for "ts-vra-ng" and "vra-ng"
+* [archetypes] IAC-797 / Improved content.yaml definition for "ts-vra-ng" and "vra-ng".
 
 ### Bugs
 * [o11n-plugin-ssh] session esxiCode returns type void() instead of number.
@@ -245,6 +248,7 @@
 * [package-installer] IAC-428 / Added descriptions for some package installer and maven settings.xml configuration options.
 
 ## v2.26.0 - 19 Jul 2022
+
 
 ### Enhancements
 

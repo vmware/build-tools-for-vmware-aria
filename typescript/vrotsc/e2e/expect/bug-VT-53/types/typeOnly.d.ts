@@ -1,1 +1,1 @@
-export declare type TransformationResult = Object | string;
+export type TransformationResult = Object | string;

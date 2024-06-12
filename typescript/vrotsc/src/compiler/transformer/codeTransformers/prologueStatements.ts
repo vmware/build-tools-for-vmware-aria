@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { HierarchyFacts, ScriptTransformationContext, FileType } from "../../../types";
 import { SCRIPT_VROES_VAR, SCRIPT_VRO_GLOBAL, SCRIPT_VROES_CACHE, SCRIPT_VRO_MODULE_PACKAGE, SCRIPT_VROES_MODULE, SCRIPT_HELPER_MODULE } from "../helpers/VROES";
@@ -19,80 +33,85 @@ import { SCRIPT_VROES_VAR, SCRIPT_VRO_GLOBAL, SCRIPT_VROES_CACHE, SCRIPT_VRO_MOD
 * These will be added to the top(prologue) of the file. All calls to these objects will be replaced with the VROES shims.
 */
 export function createDeclarationPrologueStatements(context: ScriptTransformationContext): ts.Statement[] {
-	const statements: ts.Statement[] = [];
-	const variableDeclarations: ts.VariableDeclaration[] = [];
+    const statements: ts.Statement[] = [];
+    const variableDeclarations: ts.VariableDeclaration[] = [];
 
-	if (context.file.hierarchyFacts & HierarchyFacts.ContainsMap) {
-		// var Map = VROES.Map
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
-				"Map",
-                    /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
-					"Map"
-				)
-			)
-		);
-	}
+    if (context.file.hierarchyFacts & HierarchyFacts.ContainsMap) {
+        // var Map = VROES.Map
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
+                "Map",
+                undefined,
+                undefined,
+                ts.factory.createPropertyAccessExpression(
+                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+                    "Map"
+                )
+            )
+        );
+    }
 
-	if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakMap) {
-		// var WeakMap = VROES.Map
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
-				"WeakMap",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
-					"Map"
-				)
-			));
-	}
+    if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakMap) {
+        // var WeakMap = VROES.Map
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
+                "WeakMap",
+                undefined,
+                undefined,
+                ts.factory.createPropertyAccessExpression(
+                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+                    "Map"
+                )
+            ));
+    }
 
-	if (context.file.hierarchyFacts & HierarchyFacts.ContainsSet) {
-		// var Set = VROES.Set
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
-				"Set",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
-					"Set"
-				)
-			));
-	}
+    if (context.file.hierarchyFacts & HierarchyFacts.ContainsSet) {
+        // var Set = VROES.Set
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
+                "Set",
+                undefined,
+                undefined,
+                ts.factory.createPropertyAccessExpression(
+                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+                    "Set"
+                )
+            ));
+    }
 
-	if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakSet) {
-		// var WeakSet = VROES.Set
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
-				"WeakSet",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
-					"Set"
-				)
-			));
-	}
+    if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakSet) {
+        // var WeakSet = VROES.Set
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
+                "WeakSet",
+                undefined,
+                undefined,
+                ts.factory.createPropertyAccessExpression(
+                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+                    "Set"
+                )
+            ));
+    }
 
-	if (context.file.hierarchyFacts & HierarchyFacts.ContainsPromise) {
-		// var Promise = VROES.Promise
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
-				"Promise",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
-					"Promise"
-				)
-			));
-	}
+    if (context.file.hierarchyFacts & HierarchyFacts.ContainsPromise) {
+        // var Promise = VROES.Promise
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
+                "Promise",
+                undefined,
+                undefined,
+                ts.factory.createPropertyAccessExpression(
+                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+                    "Promise"
+                )
+            ));
+    }
 
-	if (variableDeclarations.length) {
-		statements.push(ts.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
-	}
+    if (variableDeclarations.length) {
+        statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
+    }
 
-	return statements;
+    return statements;
 }
 
 /**
@@ -105,118 +124,123 @@ export function createDeclarationPrologueStatements(context: ScriptTransformatio
 * Any other variables for the module scope are added as well.
 */
 export function createModulePrologueStatements(context: ScriptTransformationContext, tslibVarName: string): ts.Statement[] {
-	const statements: ts.Statement[] = [];
-	const variableDeclarations: ts.VariableDeclaration[] = [];
-	if (context.file.hierarchyFacts & HierarchyFacts.GlobalScope || context.globalIdentifiers.length) {
-		// Create the following statement:
-		// var __global = (function () {
-		//     return this;
-		// }).call(null);
-		statements.push(ts.createVariableStatement(
+    const statements: ts.Statement[] = [];
+    const variableDeclarations: ts.VariableDeclaration[] = [];
+    if (context.file.hierarchyFacts & HierarchyFacts.GlobalScope || context.globalIdentifiers.length) {
+        // Create the following statement:
+        // var __global = (function () {
+        //     return this;
+        // }).call(null);
+        statements.push(ts.factory.createVariableStatement(
                     /*modifiers*/ undefined,
-			[
-				ts.createVariableDeclaration(
+            [
+                ts.factory.createVariableDeclaration(
                             /*name*/ SCRIPT_VRO_GLOBAL,
-                            /*type*/ undefined,
-					ts.createBinary(
-						ts.createCall(
-							ts.createPropertyAccess(ts.createIdentifier("System"), "getContext"),
+                            undefined,
+                            undefined,
+                    ts.factory.createBinaryExpression(
+                        ts.factory.createCallExpression(
+                            ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getContext"),
                                     /*typeArguments*/ undefined,
                                     /*argumentsArray*/ undefined),
-						ts.createToken(ts.SyntaxKind.BarBarToken),
-						ts.createCall(
-							ts.createPropertyAccess(
-								ts.createParen(
-									ts.createFunctionExpression(
+                        ts.factory.createToken(ts.SyntaxKind.BarBarToken),
+                        ts.factory.createCallExpression(
+                            ts.factory.createPropertyAccessExpression(
+                                ts.factory.createParenthesizedExpression(
+                                    ts.factory.createFunctionExpression(
                                                 /*modifiers*/ undefined,
                                                 /*asteriskToken*/ undefined,
                                                 /*name*/ undefined,
                                                 /*typeParameters*/ undefined,
                                                 /*parameters*/ undefined,
                                                 /*modifiers*/ undefined,
-                                                /*body*/ ts.createBlock([ts.createReturn(ts.createThis())], true))),
-								"call"
-							),
+                                                /*body*/ ts.factory.createBlock([ts.factory.createReturnStatement(ts.factory.createThis())], true))),
+                                "call"
+                            ),
                                     /*typeArguments*/ undefined,
-                                    /*argumentsArray*/[ts.createNull()]
-						)
-					)
-				)
-			]));
-	}
+                                    /*argumentsArray*/[ts.factory.createNull()]
+                        )
+                    )
+                )
+            ]));
+    }
 
-	if (context.file.hierarchyFacts & HierarchyFacts.VROES) {
-		// var VROES = __global.VROES || (__global.VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES())
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
+    if (context.file.hierarchyFacts & HierarchyFacts.VROES) {
+        // var VROES = __global.VROES || (__global.VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES())
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
                         /*name*/ SCRIPT_VROES_VAR,
+                        undefined,
                         /*type*/ undefined,
-				ts.createBinary(
-					ts.createPropertyAccess(
-						ts.createIdentifier(SCRIPT_VRO_GLOBAL),
-						SCRIPT_VROES_CACHE
-					),
-					ts.createToken(ts.SyntaxKind.BarBarToken),
-					ts.createParen(
-						ts.createBinary(
-							ts.createPropertyAccess(
-								ts.createIdentifier(SCRIPT_VRO_GLOBAL),
-								SCRIPT_VROES_CACHE
-							),
-							ts.createToken(ts.SyntaxKind.EqualsToken),
-							ts.createCall(
-								ts.createPropertyAccess(
-									ts.createCall(
-										ts.createPropertyAccess(ts.createIdentifier("System"), "getModule"),
+                ts.factory.createBinaryExpression(
+                    ts.factory.createPropertyAccessExpression(
+                        ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
+                        SCRIPT_VROES_CACHE
+                    ),
+                    ts.factory.createToken(ts.SyntaxKind.BarBarToken),
+                    ts.factory.createParenthesizedExpression(
+                        ts.factory.createBinaryExpression(
+                            ts.factory.createPropertyAccessExpression(
+                                ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
+                                SCRIPT_VROES_CACHE
+                            ),
+                            ts.factory.createToken(ts.SyntaxKind.EqualsToken),
+                            ts.factory.createCallExpression(
+                                ts.factory.createPropertyAccessExpression(
+                                    ts.factory.createCallExpression(
+                                        ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getModule"),
                                                 /* typeArguments */ undefined,
-										[
-											ts.createLiteral(SCRIPT_VRO_MODULE_PACKAGE)
-										]),
-									SCRIPT_VROES_MODULE
-								),
+                                        [
+                                            ts.factory.createStringLiteral(SCRIPT_VRO_MODULE_PACKAGE)
+                                        ]),
+                                    SCRIPT_VROES_MODULE
+                                ),
                                         /* typeArguments */ undefined,
                                         /* argumentsArray */ undefined
-							)
-						)
-					)
-				)
-			));
-	}
+                            )
+                        )
+                    )
+                )
+            ));
+    }
 
-	if (context.file.hierarchyFacts & HierarchyFacts.ContainsRequire) {
-		// var require = VROES.require
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
-				"require",
+    if (context.file.hierarchyFacts & HierarchyFacts.ContainsRequire) {
+        // var require = VROES.require
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
+                "require",
+        /*type*/undefined,
+                undefined,
+                ts.factory.createPropertyAccessExpression(
+                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+                    "require"
+                )
+            ));
+    }
+
+    if (context.file.hierarchyFacts & HierarchyFacts.ContainsTSLib) {
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(tslibVarName,
+                undefined,
+                undefined,
+                ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_HELPER_MODULE)
+            ));
+    }
+
+    if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
+        // var exports = {}
+        variableDeclarations.push(
+            ts.factory.createVariableDeclaration(
+                "exports",
                         /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
-					"require"
-				)
-			));
-	}
+                        undefined,
+                ts.factory.createObjectLiteralExpression([])
+            ));
+    }
 
-	if (context.file.hierarchyFacts & HierarchyFacts.ContainsTSLib) {
-		variableDeclarations.push(
-			ts.createVariableDeclaration(tslibVarName,
-				undefined,
-				ts.createPropertyAccess(ts.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_HELPER_MODULE)
-			));
-	}
+    if (variableDeclarations.length) {
+        statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
+    }
 
-	if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
-		// var exports = {}
-		variableDeclarations.push(
-			ts.createVariableDeclaration(
-				"exports",
-                        /*type*/ undefined,
-				ts.createObjectLiteral([])
-			));
-	}
-
-	if (variableDeclarations.length) {
-		statements.push(ts.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
-	}
-
-	return statements;
+    return statements;
 }

@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { Visitor } from "../../../types";
 
@@ -15,12 +29,12 @@ export function transformSpreadAssignment(visitor: Visitor, node: ts.ObjectLiter
 
 	const addCurrentProps = () => {
 		if (currentProps.length) {
-			objects.push(ts.createObjectLiteral(currentProps));
+			objects.push(ts.factory.createObjectLiteralExpression(currentProps));
 			currentProps = [];
 		}
 	};
 
-	objects.push(ts.createObjectLiteral([]));
+	objects.push(ts.factory.createObjectLiteralExpression([]));
 
 	for (const property of node.properties) {
 		if (property.kind === ts.SyntaxKind.SpreadAssignment) {
@@ -34,10 +48,10 @@ export function transformSpreadAssignment(visitor: Visitor, node: ts.ObjectLiter
 
 	addCurrentProps();
 
-	return ts.createCall(
-		ts.createPropertyAccess(
-			ts.createPropertyAccess(
-				ts.createIdentifier("VROES"),
+	return ts.factory.createCallExpression(
+		ts.factory.createPropertyAccessExpression(
+			ts.factory.createPropertyAccessExpression(
+				ts.factory.createIdentifier("VROES"),
 				"Shims"),
 			"objectAssign"),
 		undefined,
