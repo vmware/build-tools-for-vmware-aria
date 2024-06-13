@@ -197,6 +197,19 @@ Here
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### `string[]`, `Test[]` and such are now supported in the @params documentation
+
+Fix Issue #278
+Wider support for types in the @params documentation
+
+#### Previous Behavior
+
+The @params documentation did not support `string[]`, `Test[]` and such and was not transforming it at all and leaving it as is. This was causing linting issues
+
+#### Current Behavior
+
+The @params documentation now supports `string[]`, `Test[]` and such and transforms it to `Array/string`, `Array/Test` and such
+
 ### Update the package.json template for generating abx actions
 
 Fix Issue #220

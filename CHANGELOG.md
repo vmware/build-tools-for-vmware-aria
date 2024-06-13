@@ -12,6 +12,7 @@
 
 ### Fixes
 * [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
+* [vropkg] 278 / `string[]`, `Test[]` and such types are now supported in `@param` tag, converting them to `Array/string`, `Array/Test` respectively.
 * [vro-types] Convert VcKeyAnyValue from interface to class
 
 ## v2.38.1 - 03 Apr 2024
