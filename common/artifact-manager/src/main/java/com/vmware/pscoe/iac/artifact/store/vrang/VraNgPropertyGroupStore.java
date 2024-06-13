@@ -40,19 +40,30 @@ import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_PROPERTY_GROUPS;
 
 /**
- * Store responsible for exporting and importing Property groups from vRA 8.3+
+ * Store responsible for exporting and importing Property groups from vRA 8.3+.
  */
-public class VraNgPropertyGroupStore extends AbstractVraNgStore {
+public final class VraNgPropertyGroupStore extends AbstractVraNgStore {
+	/**
+	 * List of existing property groups on target VRA.
+	 */
 	private List<VraNgPropertyGroup> existingPropertyGroups;
+	/**
+	 * Project Id from configuration.
+	 */
 	private String projectId;
 	/**
-	 * Suffix used for the property groups
+	 * Suffix used for the property groups.
 	 */
-	private static final String PROPERTY_GROUP_SUFFIX	= ".json";
+	private static final String PROPERTY_GROUP_SUFFIX = ".json";
 
+	/**
+	 * Initialize store.
+	 * Cache some items from VRA - e.g. porjectId and existing proeprty groups.
+	 */
 	@Override
-    public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config, VraNgPackageDescriptor vraNgPackageDescriptor) {
-        super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
+	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
+			VraNgPackageDescriptor vraNgPackageDescriptor) {
+		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 		this.existingPropertyGroups = this.restClient.getPropertyGroups();
 		this.projectId = this.restClient.getProjectId();
 	}
@@ -61,80 +72,107 @@ public class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	 * Imports all content in content.yaml.
 	 * WIll do nothing if property group dir does not exist
 	 *
-	 * @param	sourceDirectory path of source directory
+	 * @param sourceDirectory path of source directory
 	 */
 	@Override
-	public void importContent( File sourceDirectory ) {
-		logger.info( "Importing files from the '{}' directory", DIR_PROPERTY_GROUPS );
+	public void importContent(File sourceDirectory) {
+		logger.info("Importing files from the '{}' directory", DIR_PROPERTY_GROUPS);
 
 		// verify directory exists
-		File propertyGroupFolder = Paths.get( sourceDirectory.getPath(), DIR_PROPERTY_GROUPS ).toFile();
-		if ( ! propertyGroupFolder.exists() ) {
-			logger.info( "Property Group Dir not found." );
+		File propertyGroupFolder = Paths.get(sourceDirectory.getPath(), DIR_PROPERTY_GROUPS).toFile();
+		if (!propertyGroupFolder.exists()) {
+			logger.info("Property Group Dir not found.");
 			return;
 		}
 
-		File[] propertyGroupFiles= this.filterBasedOnConfiguration(propertyGroupFolder, new CustomFolderFileFilter(this.getItemListFromDescriptor()));
-		if ( propertyGroupFiles == null || propertyGroupFiles.length == 0) {
-			logger.info( "Could not find any property groups." );
+		File[] propertyGroupFiles = this.filterBasedOnConfiguration(propertyGroupFolder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
+		if (propertyGroupFiles == null || propertyGroupFiles.length == 0) {
+			logger.info("Could not find any property groups.");
 			return;
 		}
 
-		logger.info( "Found property groups. Importing..." );
+		logger.info("Found property groups. Importing...");
 
 		for (File file : propertyGroupFiles) {
-			logger.info( file.getName() );
-			logger.info( file.getAbsolutePath() );
-			VraNgPropertyGroup propertyGroup	= jsonFileToVraPropertyGroup( file );
-			importPropertyGroup( propertyGroup, propertyGroupFolder );
+			logger.info(file.getName());
+			logger.info(file.getAbsolutePath());
+			VraNgPropertyGroup propertyGroup = jsonFileToVraPropertyGroup(file);
+			importPropertyGroup(propertyGroup, propertyGroupFolder);
 		}
 	}
 
 	/**
-	 * Imports a specific property group.
-	 * First checks if a property group with given name already exists,
-	 * so it gets its id and based on that performs either create or update operation.
-	 * If a property group doesn't exist set project ID in request.
-	 * If a property group exists, set the property group id in the request, so vRA knows which PG to update
+	 * Imports or update a specific property group.
 	 *
+	 * Note: a property group cannot be deleted immediately before import or update.
+	 * Because when property group delete is requested, the property group is only
+	 * marked for deletion.
+	 * Then it is deleted by the server at a later unspecified time.
+	 * While the property group exists and is marked for deletion, all update
+	 * operations succeed,
+	 * however, all get operations for this property group fail.
+	 * There is no way to restore such a property group, you have to wait for the
+	 * deletion, and then create it again.
+	 * 
+	 * 
+	 * Therefore, if deleting everything from an environment with the purpose of
+	 * having a clean slate for import,
+	 * one should make sure that enough time has passed, and everything is really
+	 * deleted.
+	 * 
 	 * @param propertyGroup
 	 * @param propertyGroupsFolder
+	 * @throws Exception
 	 */
-	private void importPropertyGroup(VraNgPropertyGroup propertyGroup, File propertyGroupsFolder) {
+	private void importPropertyGroup(VraNgPropertyGroup propertyGroup, File propertyGroupsFolder)
+			throws UnsupportedOperationException {
 		File customPropertyGroupFile = Paths.get(propertyGroupsFolder.getPath(), getName(propertyGroup)).toFile();
 		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
 		VraNgPropertyGroup existingPropertyGroup = this.getPropertyGroupByName(propertyGroup.getName());
+		// Replace existing organisation id with the id of target organisation
+		propertyGroup.setOrgId(organizationId);
+		if (existingPropertyGroup != null) {
+			// Property group with the same name already exists on the server
+			// Update
+			// First check for change of scope:
+			// If a non-blank projectID is different from the configuration project ID, we
+			// will request change of scope and the API will return an error.
+			// Scope change is not an operation supported by the API.
+			String existingPropertyGroupProjectId = existingPropertyGroup.getProjectId();
+			if (existingPropertyGroupProjectId != null && !existingPropertyGroupProjectId.isBlank()
+					&& !existingPropertyGroupProjectId.equals(this.projectId)) {
 
-			if (!propertyGroup.hasTheSameOrgId(organizationId)) {
-				if (propertyGroup.getProjectId() != null && !(propertyGroup.getProjectId().isBlank())) {
-					logger.debug("Replacing propertyGroup projectId with projectId from configuration.");
-					propertyGroup.setProjectId(this.restClient.getProjectId());
-				}
-				propertyGroup.setOrgIdInRawData(organizationId);
-				logger.debug("Replacing propertyGroup organizationId with organizationId from configuration.");
-			} else {
-				if (!propertyGroup.getProjectId().equals(this.restClient.getProjectId())) {
-					logger.warn("The property group {} is already assigned to a different project. Property group scope will NOT be changed and the group will NOT be updated.", getName(propertyGroup));
-				return;
-				}
+				String message = "The property group" + getName(propertyGroup)
+						+ "is already assigned to a different project. Property group scope will NOT be changed and the group will NOT be updated.";
+				throw new UnsupportedOperationException(message);
 			}
 
-		if (existingPropertyGroup != null) {
+			// If projectId is blank, then it is a global property group for all projects,
+			// do not change the scope.
+			// If projectId is not blank - replace it with target projectId
+			if (propertyGroup.getProjectId() != null && !(propertyGroup.getProjectId().isBlank())) {
+				logger.debug("Replacing propertyGroup projectId with projectId from configuration.");
+				propertyGroup.setProjectId(this.projectId);
+			}
+
 			propertyGroup.setId(existingPropertyGroup.getId());
 			logger.info("Updating property group: {}", customPropertyGroupFile.getAbsolutePath());
 			this.restClient.updatePropertyGroup(propertyGroup);
-		} else {
+		} else { // CREATE
+			if (propertyGroup.getProjectId() != null && !(propertyGroup.getProjectId().isBlank())) {
+				logger.debug("Replacing propertyGroup projectId with projectId from configuration.");
+				propertyGroup.setProjectId(this.projectId);
+			}
 			logger.info("Creating property group: {}", customPropertyGroupFile.getAbsolutePath());
 			this.restClient.createPropertyGroup(propertyGroup);
 		}
 
-
-
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of property groups
 	 */
@@ -144,140 +182,137 @@ public class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Exports all the property groups, case when the user has not defined any
+	 * Exports all the property groups, case when the user has not listed specific
+	 * items for export.
 	 */
 	protected void exportStoreContent() {
-		logger.info( "Fetched propertyGroups: {}", new Gson().toJson( this.existingPropertyGroups ) );
+		logger.info("Fetched propertyGroups: {}", new Gson().toJson(this.existingPropertyGroups));
 
-		this.existingPropertyGroups.forEach( propertyGroup -> storePropertyGroupOnFileSystem( vraNgPackage, propertyGroup ) );
+		this.existingPropertyGroups
+				.forEach(propertyGroup -> storePropertyGroupOnFileSystem(vraNgPackage, propertyGroup));
 	}
 
 	/**
-	 * Export specific propertyGroupNames
+	 * Export specific propertyGroupNames.
 	 *
-	 * @param	propertyGroupNames list of group names
+	 * @param propertyGroupNames list of group names
 	 */
-	protected void exportStoreContent( List<String> propertyGroupNames ) {
-		logger.info( "Filtering Property Groups" );
-		propertyGroupNames.forEach( propertyGroupName -> {
+	protected void exportStoreContent(List<String> propertyGroupNames) {
+		logger.info("Filtering Property Groups");
+		propertyGroupNames.forEach(propertyGroupName -> {
 			VraNgPropertyGroup propertyGroup = this.existingPropertyGroups.stream()
-				.filter(gr -> propertyGroupName.equals(gr.getName()))
-				.findAny()
-				.orElse(null);
+					.filter(gr -> propertyGroupName.equals(gr.getName()))
+					.findAny()
+					.orElse(null);
 			if (propertyGroup == null) {
 				throw new IllegalStateException(
-					String.format(
-							"Property Group [%s] not found on the server.",
-							propertyGroupName
-				));
+						String.format(
+								"Property Group [%s] not found on the server.",
+								propertyGroupName));
 			}
-			storePropertyGroupOnFileSystem( vraNgPackage, propertyGroup );
+			storePropertyGroupOnFileSystem(vraNgPackage, propertyGroup);
 		});
 	}
 
 	/**
-	 * Get property group by given name or null if not existing
-	 *
-	 * @param	propertyGroupName
+	 * Get property group by given name or null if not existing.
+	 * 
+	 * @param propertyGroupName name of group to search for
+	 * @return property grop or null
 	 */
 	private VraNgPropertyGroup getPropertyGroupByName(String propertyGroupName) {
 		// Name is unique, so there should always be either one or empty
 		return this.existingPropertyGroups.stream().filter(
-				item -> item.getName().equalsIgnoreCase( propertyGroupName )
-			).findFirst().orElse(null);
+				item -> item.getName().equalsIgnoreCase(propertyGroupName)).findFirst().orElse(null);
 	}
 
 	/**
-	 * Stores teh property group on the file system
+	 * Stores the property group on the file system.
 	 *
-	 * @param	serverPackage
-	 * @param	propertyGroup
+	 * @param serverPackage
+	 * @param propertyGroup
 	 */
-	private void storePropertyGroupOnFileSystem( Package serverPackage, VraNgPropertyGroup propertyGroup ) {
-		logger.info( "Storing PropertyGroup: {}", propertyGroup.getName() );
+	private void storePropertyGroupOnFileSystem(Package serverPackage, VraNgPropertyGroup propertyGroup) {
+		logger.info("Storing PropertyGroup: {}", propertyGroup.getName());
 
-		File store						= new File( serverPackage.getFilesystemPath() );
-		File customPropertyGroupFile	= Paths.get(
-			store.getPath(),
-			VraNgDirs.DIR_PROPERTY_GROUPS,
-			propertyGroup.getName() + PROPERTY_GROUP_SUFFIX
-		).toFile();
+		File store = new File(serverPackage.getFilesystemPath());
+		File customPropertyGroupFile = Paths.get(
+				store.getPath(),
+				VraNgDirs.DIR_PROPERTY_GROUPS,
+				propertyGroup.getName() + PROPERTY_GROUP_SUFFIX).toFile();
 
-		logger.debug( "Creating folder: {}", customPropertyGroupFile.getParentFile().getAbsolutePath() );
+		logger.debug("Creating folder: {}", customPropertyGroupFile.getParentFile().getAbsolutePath());
 
-		if ( ! customPropertyGroupFile.getParentFile().mkdirs() ) {
-			logger.warn( "Could not create folder: {}", customPropertyGroupFile.getParentFile().getAbsolutePath() );
+		if (!customPropertyGroupFile.getParentFile().mkdirs()) {
+			logger.warn("Could not create folder: {}", customPropertyGroupFile.getParentFile().getAbsolutePath());
 		}
 
 		try {
-			Gson gson	= new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			final JsonObject propertyGroupJsonElement = gson.fromJson(propertyGroup.getRawData(), JsonObject.class);
 
-            this.sanitizePropertyGroupJsonElement(propertyGroupJsonElement);
+			this.sanitizePropertyGroupJsonElement(propertyGroupJsonElement);
 
-            String propertyGroupJson = gson.toJson(propertyGroupJsonElement);
-            logger.info("Created file {}", Files.write(
-				Paths.get(customPropertyGroupFile.getPath()),
-				propertyGroupJson.getBytes(), 
-				StandardOpenOption.CREATE
-			));
-		} catch ( IOException e ) {
-			logger.error( "Unable to create property group {}", customPropertyGroupFile.getPath() );
+			String propertyGroupJson = gson.toJson(propertyGroupJsonElement);
+			logger.info("Created file {}", Files.write(
+					Paths.get(customPropertyGroupFile.getPath()),
+					propertyGroupJson.getBytes(),
+					StandardOpenOption.CREATE));
+		} catch (IOException e) {
+			logger.error("Unable to create property group {}", customPropertyGroupFile.getPath());
 			throw new RuntimeException(
-				String.format(
-					"Unable to store property group to file %s.",
-					customPropertyGroupFile.getPath()
-				),
-				e
-			);
+					String.format(
+							"Unable to store property group to file %s.",
+							customPropertyGroupFile.getPath()),
+					e);
 		}
 	}
 
 	/**
-     * Sanitize PropertyGroup json from unnecessary elements that prevent store or
-     * publish later the content to different vRA environments.
+	 * Sanitize PropertyGroup json from unnecessary data.
+	 * The data could prevent store or
+	 * publish later the content to different vRA environments.
 	 * 
 	 * @param propertyGroupRawData
-     */
-    private void sanitizePropertyGroupJsonElement(JsonObject propertyGroupRawData) {
-        propertyGroupRawData.remove("projectName");
-        propertyGroupRawData.remove("id");
-        propertyGroupRawData.remove("createdAt");
-        propertyGroupRawData.remove("createdBy");
-        propertyGroupRawData.remove("updatedAt");
-        propertyGroupRawData.remove("updatedBy");
-    }
+	 */
+	private void sanitizePropertyGroupJsonElement(JsonObject propertyGroupRawData) {
+		propertyGroupRawData.remove("projectName");
+		propertyGroupRawData.remove("id");
+		propertyGroupRawData.remove("createdAt");
+		propertyGroupRawData.remove("createdBy");
+		propertyGroupRawData.remove("updatedAt");
+		propertyGroupRawData.remove("updatedBy");
+	}
 
 	/**
-	 * Converts a json property group file to VraNgPropertyGroup
+	 * Converts a json property group file to VraNgPropertyGroup.
 	 *
-	 * @param	jsonFile
+	 * @param jsonFile
 	 *
-	 * @return	VraNgPropertyGroup
+	 * @return VraNgPropertyGroup
 	 */
-	private VraNgPropertyGroup jsonFileToVraPropertyGroup( File jsonFile ) {
-		logger.debug( "Converting property group file to VraNgPropertyGroup. Name: " + jsonFile.getName() );
+	private VraNgPropertyGroup jsonFileToVraPropertyGroup(File jsonFile) {
+		logger.debug("Converting property group file to VraNgPropertyGroup. Name: " + jsonFile.getName());
 
-		try ( JsonReader reader = new JsonReader( new FileReader( jsonFile.getPath() ) ) ) {
+		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
 			JsonObject propertyGroupJson = JsonParser.parseReader(reader).getAsJsonObject();
 			return new VraNgPropertyGroup(
-				propertyGroupJson.get("name").getAsString(),
-				null,
-				new Gson().toJson(propertyGroupJson)
-			);
-		} catch ( IOException e ) {
-			throw new RuntimeException( String.format( "Error reading from file: %s", jsonFile.getPath() ), e );
+					propertyGroupJson.get("name").getAsString(),
+					null,
+					new Gson().toJson(propertyGroupJson));
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
 		}
 	}
 
 	/**
-	 * Returns custom property group resource name
+	 * Returns custom property group resource name.
 	 *
-	 * @param	propertyGroup
+	 * @param propertyGroup
 	 *
-	 * @return	String
+	 * @return String
 	 */
-	private String getName( VraNgPropertyGroup propertyGroup ) {
+	private String getName(VraNgPropertyGroup propertyGroup) {
 		return propertyGroup.getName() + PROPERTY_GROUP_SUFFIX;
 	}
 }

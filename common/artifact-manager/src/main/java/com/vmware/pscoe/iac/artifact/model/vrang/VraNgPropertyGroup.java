@@ -44,24 +44,35 @@ public class VraNgPropertyGroup {
 	 */
 	private String orgId;
 
+	/*
+	 * Project Id JSON key
+	 */
+	private static final String projectIdKey = "projectId";
+		/*
+	 * Organisation Id JSON key
+	 */
+	private static final String orgIdKey = "orgId";
+
 	/**
 	 * Constructor.
+	 * 
 	 * @param name
 	 * @param id
 	 * @param rawData
 	 */
-	public VraNgPropertyGroup( String name, String id, String rawData ) {
-		this.name		= name;
-		this.id			= id;
-		this.rawData	= rawData;
+	public VraNgPropertyGroup(String name, String id, String rawData) {
+		this.name = name;
+		this.id = id;
+		this.rawData = rawData;
 		JsonObject rawDataObj = this.getRawDataAsJsonObject();
-		this.projectId = rawDataObj.has("projectId")? rawDataObj.get("projectId").getAsString():"";
-		this.orgId =  rawDataObj.has("orgId")? rawDataObj.get("orgId").getAsString():"";
+		this.projectId = rawDataObj.has(projectIdKey) ? rawDataObj.get(projectIdKey).getAsString() : "";
+		this.orgId = rawDataObj.has(orgIdKey) ? rawDataObj.get(orgIdKey).getAsString() : "";
 	}
 
 	/**
 	 * Returns the property group's JSON definition as string.
-	 * @return
+	 * 
+	 * @return String
 	 */
 	public String getRawData() {
 		return rawData;
@@ -70,21 +81,24 @@ public class VraNgPropertyGroup {
 	/**
 	 * Modifies the rawData by setting the orgId identifier.
 	 *
-	 * @param orgId organizaion uuid
+	 * @param value organizaion uuid
 	 */
-	public void setOrgIdInRawData(String orgId) {
-		this.modifyRawData("orgId", orgId);
+	private void setOrgIdInRawData(String value) {
+		this.modifyRawData(orgIdKey, value);
 	}
 
 	/**
 	 * Modifies the rawData properties.
+	 * 
+	 * @param key   key
+	 * @param value value
 	 */
 	private void modifyRawData(String key, String value) {
 		JsonObject rawDataObj = this.getRawDataAsJsonObject();
 
 		if (rawDataObj.has(key)) {
 			rawDataObj.remove(key);
-		} 
+		}
 		rawDataObj.addProperty(key, value);
 
 		this.rawData = rawDataObj.toString();
@@ -106,13 +120,15 @@ public class VraNgPropertyGroup {
 
 	/**
 	 * Sets the Id.
-	 * @param id
+	 * 
+	 * @param value
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setId(String value) {
+		this.id = value;
 
-		this.modifyRawData( "id", id );
+		this.modifyRawData("id", value);
 	}
+
 	/**
 	 * @return String
 	 */
@@ -122,13 +138,15 @@ public class VraNgPropertyGroup {
 
 	/**
 	 * Sets the organization id.
-	 * @param id
+	 * 
+	 * @param value
 	 */
-	public void setOrgId(String id) {
-		this.orgId = id;
+	public void setOrgId(String value) {
+		this.orgId = value;
 
-		this.modifyRawData( "orgId", id );
+		this.modifyRawData(orgIdKey, value);
 	}
+
 	/**
 	 * @return String
 	 */
@@ -138,24 +156,26 @@ public class VraNgPropertyGroup {
 
 	/**
 	 * Sets the project id.
-	 * @param id
+	 * 
+	 * @param value
 	 */
-	public void setProjectId(String id) {
-		this.projectId = id;
+	public void setProjectId(String value) {
+		this.projectId = value;
 
-		this.modifyRawData( "projectId", id );
+		this.modifyRawData(projectIdKey, value);
 	}
 
 	/**
 	 * Checks property group's organizaion id against the input value.
+	 * 
 	 * @param value
-	 * @return
+	 * @return true if the organization id matches the input.
 	 */
 	public boolean hasTheSameOrgId(String value) {
 		JsonObject rawDataObj = this.getRawDataAsJsonObject();
 
-		if (rawDataObj.has("orgId")) {
-			String rawDataProjectId = rawDataObj.get("orgId").getAsString();
+		if (rawDataObj.has(orgIdKey)) {
+			String rawDataProjectId = rawDataObj.get(orgIdKey).getAsString();
 			return rawDataProjectId.equals(value);
 		}
 		return false;
@@ -163,11 +183,11 @@ public class VraNgPropertyGroup {
 
 	/**
 	 * Returns the property group's definition as a JsonObject instance.
-	 * @return
+	 * 
+	 * @return property group definition as a JsonObject.
 	 */
 	private JsonObject getRawDataAsJsonObject() {
-		JsonElement rawData = JsonParser.parseString(this.rawData);
-		JsonObject rawDataObj = rawData.getAsJsonObject();
-		return rawDataObj;
+		JsonElement rawDataElement = JsonParser.parseString(this.rawData);
+		return rawDataElement.getAsJsonObject();
 	}
 }

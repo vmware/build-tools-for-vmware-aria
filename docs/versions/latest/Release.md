@@ -197,6 +197,19 @@ Here
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 ## Improvements
 
+### Add support for global scope property-group export/import
+
+#### Previous Behavior
+
+On export projectId and orgId values are removed from property-group data to facilitate import into a different VRA system.
+On import projectId and orgId values are added to property-group data unconditionally. This prevented importing property-groups with global scope.
+
+#### Current Behavior
+
+On export projectId and orgId values are now saved with the rest of the property-group data.
+On import if orgId and projectId values match the current configuration, the property group is updated. This allows for global-scope property groups to be updated. If projectId does not match, an error message is generated and the property group is not updated as scope update is not allowed by the API.
+If the orgId does not match, the orgId is overriden, the projectId is overriden only if it exists.  Then the propery group is created. This allows for creating new property-groups at global scope.
+
 ### Update the package.json template for generating abx actions
 
 Fix Issue #220
