@@ -339,6 +339,16 @@ The new archetype can be bootstrapped with:
 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/180>
 
+### Convert VcKeyAnyValue from interface to class
+
+#### Previous Behaviour
+
+It was an interface, because in JS API it is an interface, but actually, it is acting as a class and must to be initialized to work
+
+#### Current Behaviour
+
+Converted to class and constructor is added
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
