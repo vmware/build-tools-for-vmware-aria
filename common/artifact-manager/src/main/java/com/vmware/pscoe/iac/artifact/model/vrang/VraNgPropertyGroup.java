@@ -44,14 +44,14 @@ public class VraNgPropertyGroup {
 	 */
 	private String orgId;
 
-	/*
+	/**
 	 * Project Id JSON key
 	 */
-	private static final String projectIdKey = "projectId";
-		/*
+	private static final String PROJECT_ID_KEY = "projectId";
+	/**
 	 * Organisation Id JSON key
 	 */
-	private static final String orgIdKey = "orgId";
+	private static final String ORG_ID_KEY = "orgId";
 
 	/**
 	 * Constructor.
@@ -65,8 +65,8 @@ public class VraNgPropertyGroup {
 		this.id = id;
 		this.rawData = rawData;
 		JsonObject rawDataObj = this.getRawDataAsJsonObject();
-		this.projectId = rawDataObj.has(projectIdKey) ? rawDataObj.get(projectIdKey).getAsString() : "";
-		this.orgId = rawDataObj.has(orgIdKey) ? rawDataObj.get(orgIdKey).getAsString() : "";
+		this.projectId = rawDataObj.has(PROJECT_ID_KEY) ? rawDataObj.get(PROJECT_ID_KEY).getAsString() : "";
+		this.orgId = rawDataObj.has(ORG_ID_KEY) ? rawDataObj.get(ORG_ID_KEY).getAsString() : "";
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class VraNgPropertyGroup {
 	 * @param value organizaion uuid
 	 */
 	private void setOrgIdInRawData(String value) {
-		this.modifyRawData(orgIdKey, value);
+		this.modifyRawData(ORG_ID_KEY, value);
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class VraNgPropertyGroup {
 	public void setOrgId(String value) {
 		this.orgId = value;
 
-		this.modifyRawData(orgIdKey, value);
+		this.modifyRawData(ORG_ID_KEY, value);
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class VraNgPropertyGroup {
 	public void setProjectId(String value) {
 		this.projectId = value;
 
-		this.modifyRawData(projectIdKey, value);
+		this.modifyRawData(PROJECT_ID_KEY, value);
 	}
 
 	/**
@@ -174,8 +174,8 @@ public class VraNgPropertyGroup {
 	public boolean hasTheSameOrgId(String value) {
 		JsonObject rawDataObj = this.getRawDataAsJsonObject();
 
-		if (rawDataObj.has(orgIdKey)) {
-			String rawDataProjectId = rawDataObj.get(orgIdKey).getAsString();
+		if (rawDataObj.has(ORG_ID_KEY)) {
+			String rawDataProjectId = rawDataObj.get(ORG_ID_KEY).getAsString();
 			return rawDataProjectId.equals(value);
 		}
 		return false;
