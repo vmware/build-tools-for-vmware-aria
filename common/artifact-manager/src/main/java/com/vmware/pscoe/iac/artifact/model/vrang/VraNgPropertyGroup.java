@@ -45,11 +45,11 @@ public class VraNgPropertyGroup {
 	private String orgId;
 
 	/**
-	 * Project Id JSON key
+	 * Project Id JSON key.
 	 */
 	private static final String PROJECT_ID_KEY = "projectId";
 	/**
-	 * Organisation Id JSON key
+	 * Organisation Id JSON key.
 	 */
 	private static final String ORG_ID_KEY = "orgId";
 

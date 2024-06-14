@@ -210,7 +210,7 @@ On import projectId and orgId values are added to property-group data unconditio
 #### Current Behavior
 
 On export projectId and orgId values are now saved with the rest of the property-group data.
-On import orgId is always overridden. The projectId is overridden only if it already existed in the json file. 
+On import orgId is always overridden. The projectId is overridden only if it already existed in the json file.
 Thus property groups with global scope which do not have projectId can now be created or updated via vrealize:push command.
 
 ### `string[]`, `Test[]` and such are now supported in the @params documentation
