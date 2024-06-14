@@ -207,7 +207,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * Constructor.
 	 * @param cliManager CLI Manager
 	 * @param restClientVrops REST Client for vROPs
-	 * @param tempDir Temp DIR
+	 * @param tempDir temporary DIR
 	 */
     public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final File tempDir) {
         this.cliManager = cliManager;
@@ -293,7 +293,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
     }
 
     /**
-     * Implement the pull usecase, so pull all of the packages described in the {@code vropsPackageDescriptor} (constructed from content.yaml).
+     * Implement the pull use case, so pull all of the packages described in the {@code vropsPackageDescriptor} (constructed from content.yaml).
      * @param vropsPackage vropsPackage
      * @param vropsPackageDescriptor vropsPackageDescriptor
      * @param dryrun dryrun
@@ -721,7 +721,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	/**
      * Activate / Deactivate dashboards per user or group, based on the data in the activation metadata file.
      * @param rootDir Root directory where the dashboards and the metadata files reside.
-     * @param isGroupActivation flag wheter group activation is specified.
+     * @param isGroupActivation flag whether group activation is specified.
      * @throws RuntimeException if the activation / deactivation per user or group fails.
      */
 	private void manageDashboardActivation(final File rootDir, final boolean isGroupActivation) {
@@ -1525,19 +1525,19 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
     @Override
     protected Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
-        throw new IllegalStateException("Package deletion is not supported");
+        throw new UnsupportedOperationException("Package deletion is not supported");
     }
 
     @SuppressWarnings("rawtypes")
 	@Override
     protected PackageContent getPackageContent(final Package pkg) {
-        throw new IllegalStateException("Fetching package content is not supported");
+        throw new UnsupportedOperationException("Fetching package content is not supported");
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     protected void deleteContent(final Content content, final boolean dryrun) {
-        throw new IllegalStateException("Content deletion is not supported");
+        throw new UnsupportedOperationException("Content deletion is not supported");
     }
 
     private void addViewToImportList(final Package pkg, final File tmp) throws IOException, ConfigurationException {
