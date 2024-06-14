@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-vapi",
-  "version": "2.39.0",
+  "version": "2.39.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
