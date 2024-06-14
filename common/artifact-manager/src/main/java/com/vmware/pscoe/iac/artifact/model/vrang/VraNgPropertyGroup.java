@@ -80,6 +80,7 @@ public class VraNgPropertyGroup {
 
 	/**
 	 * Modifies the rawData by setting the orgId identifier.
+	 * Modifies the rawData by setting the orgId identifier.
 	 *
 	 * @param value organizaion uuid
 	 */
