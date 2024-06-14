@@ -1,3 +1,5 @@
+## v2.39.0 - 14 Jun 2024
+
 ### Enhancements
 
 * [vrops] Issue 280 / Support for priority ordering of the vROPs policies during push.
@@ -1360,5 +1362,9 @@ with different domain.
 * Cloud Client could not import bundles.
 
 ## v1.0.0 - 02 Mar 2018
+<<<<<<< HEAD
 
 * Initial version.
+=======
+* Initial version.
+>>>>>>> main
