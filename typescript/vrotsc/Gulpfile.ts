@@ -31,11 +31,11 @@ gulp.task("compile", done => {
 
 gulp.task("test", done => {
 	tsc("tests");
-	let error = undefined;
+	let error = "";
 	if (0 !== exec(process.argv[0], [path.join("dist", "src", "tests", "e2e.js")])) {
 		error = "One or more test cases failed.";
 	}
-	done(error);
+	done(error ? new Error(error): null);
 });
 
 gulp.task("clean", done => {
@@ -104,7 +104,7 @@ function tsc(projectName?: string): void {
 	exec(tscCommand, tscArgs, undefined, true);
 }
 
-function exec(command: string, args: string[] = [], cwd?: string, checkExitCode?: boolean): number {
+function exec(command: string, args: string[] = [], cwd?: string, checkExitCode?: boolean): number | null{
 	const commandLine = `${command} ${args.join(" ")}`;
 	log(`Executing '${ansiColors.cyan(commandLine)}'...`);
 	const result = childProcess.spawnSync(`"${command}"`, args, {

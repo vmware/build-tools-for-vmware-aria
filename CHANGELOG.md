@@ -1,6 +1,7 @@
 ### Enhancements
 
 * [vrops] Issue 280 / Support for priority ordering of the vROPs policies during push.
+* [vrotsc] `vrotsc` migrate ts from 3.8.3 to 5.4.5. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/245) for detailed information
 
 ## v2.39.0 - 14 Jun 2024
 
@@ -26,10 +27,13 @@
 ### Enhancements
 
 * Add support for `vgpu` in `VcVirtualDeviceBackingInfo` class
-
+  
 ### Fixes
 
 * [vro-types] 251 / Add missing types to AD Plugin
+
+### Fixes
+
 * [artifact-manager] IACCOE-809 : Fixed an issue for importing Aria Pipelines with dependencies on another pipelines for rollback.
 
 ## v2.38.0 - 29 Mar 2024
@@ -37,7 +41,7 @@
 ### Enhancements
 
 * [vrotsc] `vrotsc` refactoring. Updated documentation and reworks. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/233) for detailed information
-* [artifact-manager] IAC-796 / Upgrade VCD archetype to support Angular 15
+* [artifact-manage] IAC-796 / Upgrade VCD archetype to support Angular 15
 * [vRA-NG] IAC-782 / vra-ng:pull : Added support for export of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 * [artifact-manager] IAC-782 / vrealize:push : Added support for import of policies of the following types: Approval Policy, Day 2 Actions Policy, Deployment Limit Policy, Lease Policy, Resource Quota policy.
 
@@ -84,7 +88,7 @@
 * [vro-types/o11n-plugin-aria] IAC-798 / Deprecating SQLDatabaseManager getDatabase() function.
 * [artifact-manager] IAC-786 / Set Aria Operations Default Policy vROPs 8.12.x.
 * [artifact-manager] IAC-790 / Update usage of deprecated policy APIs for vROPs 8.12.x.
-* [archetypes] IAC-797 / Improved content.yaml definition for "ts-vra-ng" and "vra-ng"
+* [archetypes] IAC-797 / Improved content.yaml definition for "ts-vra-ng" and "vra-ng".
 
 ### Bugs
 
@@ -291,6 +295,7 @@
 * [package-installer] IAC-428 / Added descriptions for some package installer and maven settings.xml configuration options.
 
 ## v2.26.0 - 19 Jul 2022
+
 
 ### Enhancements
 

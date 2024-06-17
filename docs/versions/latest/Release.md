@@ -47,6 +47,8 @@ If the Aria Operations server is 8.17.0 and later during push the policies will 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### VROTSC Upgrade the ts version from 3.8.3 to 5.4.5
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
