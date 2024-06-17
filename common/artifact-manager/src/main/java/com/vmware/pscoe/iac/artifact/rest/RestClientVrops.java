@@ -478,7 +478,9 @@ public class RestClientVrops extends RestClient {
 		List<String> missingPolicies = new ArrayList<String>();
 		policies.forEach(policyName -> {
 			PolicyDTO.Policy foundPolicy = allPolicies.stream().filter(item -> item.getName().equalsIgnoreCase(policyName)).findFirst().orElse(null);
-			if (foundPolicy != null) {
+			// note that the default policy cannot be part of the policy ordering (according to the API documentation),
+			// hence skip the default policy from the list
+			if (foundPolicy != null && !foundPolicy.getDefaultPolicy()) {
 				policyIds.add(foundPolicy.getId());
 			} else {
 				missingPolicies.add(policyName);
@@ -493,13 +495,15 @@ public class RestClientVrops extends RestClient {
 		try {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(POLICY_PRIORITY_PUBLIC_API).toString()));
 			URI restUri = uriBuilder.build().toUri();
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 			parameters.put("policyIds", policyIds);
 
-			restTemplate.exchange(restUri, HttpMethod.PUT, new HttpEntity<>(gson.toJson(parameters), headers), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(restUri, HttpMethod.PUT, new HttpEntity<>(gson.toJson(parameters), headers), String.class);
+			if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
+				throw new RuntimeException(response.getBody());
+			}
 		} catch (RestClientException e) {
 			throw new RuntimeException(String.format("REST service error while ordering policies by priority for policies '%s'. Message: %s", this.concatenateList(policies, ", "), e.getMessage()));
 		} catch (Exception e) {
