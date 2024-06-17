@@ -9,24 +9,20 @@
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
-
-
 ## Deprecations
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
-
-
 [//]: # (Features -> New Functionality)
+
 ## Features
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
-
-
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
+### VROTSC Upgrade the ts version from 3.8.3 to 5.4.5
+
+
 ## Improvements
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
@@ -40,9 +36,7 @@
 [//]: # (#### Relevant Documentation:)
 
 
-
-## Upgrade procedure:
+## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
-
 [//]: # (## Changelog:)
 [//]: # (Pull request links)

@@ -15,9 +15,9 @@
 import * as ts from "typescript";
 import { HierarchyFacts, ScriptTransformationContext } from "../../../types";
 import { NodeVisitor } from "../../visitor";
+import { getIdentifierTextOrNull } from "../helpers/node";
 import { transformSpreadAssignment } from "../codeTransformers//object";
 import { transformSpreadElement } from "../codeTransformers/array";
-import { getIdentifierTextOrNull } from "../helpers/node";
 import { createDeclarationPrologueStatements } from "./prologueStatements";
 
 // Shims are used to replace the built-in objects with the VROES shims.
@@ -90,9 +90,9 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 		}
 	}
 
-    /**
-    * Visits the entire source file and replaces variables declarations with the VROES shims.
-    */
+	/**
+	* Visits the entire source file and replaces variables declarations with the VROES shims.
+	*/
 	function visitIdentifier(node: ts.Identifier): ts.Identifier {
 		const shimRef = ShimReferences[node.text];
 		if (shimRef) {
@@ -111,37 +111,38 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 		return visitor.visitEachChild(node);
 	}
 
-    /**
-    * Will place the prologue statements at the top of the file and replace the built-in objects with the VROES shims.
-    */
+	/**
+	* Will place the prologue statements at the top of the file and replace the built-in objects with the VROES shims.
+	*/
 	function visitSourceFile(node: ts.SourceFile): ts.SourceFile {
 		const statements = visitor.visitNodes(node.statements);
 		const prologue = createDeclarationPrologueStatements(context);
 
-		return ts.updateSourceFileNode(
+		return ts.factory.updateSourceFile(
 			node,
 			ts.setTextRange(
-				ts.createNodeArray([
+				ts.factory.createNodeArray([
 					...prologue,
 					...statements,
 				]),
-				node.statements));
+				node.statements)
+        );
 	}
 
-    /**
-    * Visits the entire source file and replaces some built-in methods with the VROES shims.
-    *
-    * Example:
-    * ```ts
-    * "foo".startsWith("f"); // Transformed to VROES.Shims.stringStartsWith("foo", "f");
-    * "foo".endsWith("o"); // Transformed to VROES.Shims.stringEndsWith("foo", "o");
-    * "foo".includes("o"); // Transformed to VROES.Shims.stringIncludes("foo", "o");
-    * // etc...
-    * ```
-    *
-    * @param node - The node to visit.
-    * @returns - The result of visiting the node.
-    */
+	/**
+	* Visits the entire source file and replaces some built-in methods with the VROES shims.
+	*
+	* Example:
+	* ```ts
+	* "foo".startsWith("f"); // Transformed to VROES.Shims.stringStartsWith("foo", "f");
+	* "foo".endsWith("o"); // Transformed to VROES.Shims.stringEndsWith("foo", "o");
+	* "foo".includes("o"); // Transformed to VROES.Shims.stringIncludes("foo", "o");
+	* // etc...
+	* ```
+	*
+	* @param node - The node to visit.
+	* @returns - The result of visiting the node.
+	*/
 	function visitCallExpression(node: ts.CallExpression): ts.Expression {
 		const symbol = context.typeChecker.getSymbolAtLocation(node.expression);
 		if (symbol) {
@@ -170,8 +171,6 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 					return shimStaticCall("arrayOf", node);
 				case "ObjectConstructor.assign":
 					return shimStaticCall("objectAssign", node);
-				case "ObjectConstructor.setPrototypeOf":
-					return shimStaticCall("objectSetPrototypeOf", node);
 			}
 		}
 
@@ -180,12 +179,12 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 	}
 
 
-    /**
-    * Helper function to shim instance calls.
-    *
-    * if the node is a call expression and the expression is a property access expression,
-    * then it will be replaced with the VROES shims.
-    */
+	/**
+	* Helper function to shim instance calls.
+	*
+	* if the node is a call expression and the expression is a property access expression,
+	* then it will be replaced with the VROES shims.
+	*/
 	function shimInstanceCall(methodName: string, node: ts.CallExpression): ts.CallExpression {
 		if (node.expression.kind !== ts.SyntaxKind.PropertyAccessExpression) {
 			return visitor.visitEachChild(node);
@@ -197,26 +196,26 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 		args.push((<ts.PropertyAccessExpression>node.expression).expression);
 		node.arguments.forEach(n => args.push(n));
 
-		return ts.createCall(
-			ts.createPropertyAccess(
-				ts.createPropertyAccess(
-					ts.createIdentifier("VROES"),
+		return ts.factory.createCallExpression(
+			ts.factory.createPropertyAccessExpression(
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier("VROES"),
 					"Shims"),
 				methodName),
 			undefined,
-			visitor.visitNodes(ts.createNodeArray(args, false)));
+			visitor.visitNodes(ts.factory.createNodeArray(args, false)));
 	}
 
-    /**
-    * Same as shimInstanceCall but for static calls.
-    */
+	/**
+	* Same as shimInstanceCall but for static calls.
+	*/
 	function shimStaticCall(methodName: string, node: ts.CallExpression): ts.CallExpression {
 		context.file.hierarchyFacts |= HierarchyFacts.ContainsPolyfills;
 
-		return ts.createCall(
-			ts.createPropertyAccess(
-				ts.createPropertyAccess(
-					ts.createIdentifier("VROES"),
+		return ts.factory.createCallExpression(
+			ts.factory.createPropertyAccessExpression(
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier("VROES"),
 					"Shims"),
 				methodName),
 			undefined,
@@ -257,16 +256,16 @@ export function transformShimsBefore(sourceFile: ts.SourceFile, context: ScriptT
 		}
 	}
 
-    /**
-    * Visits the entire source file and replaces the spread elements with the VROES shims.
-    */
+	/**
+	* Visits the entire source file and replaces the spread elements with the VROES shims.
+	*/
 	function visitSourceFile(node: ts.SourceFile): ts.SourceFile {
 		const statements = visitor.visitNodes(node.statements);
 
-		return ts.updateSourceFileNode(
+		return ts.factory.updateSourceFile(
 			node,
 			ts.setTextRange(
-				ts.createNodeArray([
+				ts.factory.createNodeArray([
 					...statements,
 				]),
 				node.statements));
@@ -276,7 +275,7 @@ export function transformShimsBefore(sourceFile: ts.SourceFile, context: ScriptT
 		const hasSpreadElement = node.elements.some(e => e.kind === ts.SyntaxKind.SpreadElement);
 		if (hasSpreadElement) {
 			context.file.hierarchyFacts |= HierarchyFacts.ContainsSpreadArray;
-			return transformSpreadElement(visitor, node);
+			return transformSpreadElement(visitor, node, context);
 		}
 		return node;
 	}
