@@ -1,0 +1,4 @@
+name: Release Drafter
+
+on:
+  workflow_dispatch:
