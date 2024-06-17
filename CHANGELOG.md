@@ -1,3 +1,5 @@
+## v2.39.0 - 14 Jun 2024
+
 ### Enhancements
 * [vra] Issue 279 / content sharing policies not pulled if scope is different than configured project in the settings.xml.
 * [vro] Added new strategy StrategyForceLatestVersions that will force you to upload a newer or same version of artifacts, otherwise the build will fail. New property has been introduced `-Dvro.forceImportLatestVersions={{BOOLEAN}}` that is set by default to false.
@@ -12,6 +14,8 @@
 
 ### Fixes
 * [vro-scripting-api] Revert 110 / Mocking for configuration elements is incorrect.
+* [vropkg] 278 / `string[]`, `Test[]` and such types are now supported in `@param` tag, converting them to `Array/string`, `Array/Test` respectively.
+* [vro-types] Convert VcKeyAnyValue from interface to class
 
 ## v2.38.1 - 03 Apr 2024
 
