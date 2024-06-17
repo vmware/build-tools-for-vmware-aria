@@ -1,7 +1,7 @@
-## v2.39.0 - 14 Jun 2024
-
 ### Enhancements
 * [vrotsc] `vrotsc` migrate ts from 3.8.3 to 5.4.5. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/245) for detailed information
+
+## v2.39.0 - 14 Jun 2024
 
 ### Enhancements
 * [vra] Issue 279 / content sharing policies not pulled if scope is different than configured project in the settings.xml.
