@@ -20,7 +20,11 @@ If you skip any of the tasks from the checklist, add a comment explaining why th
 - [ ] I have added relevant error handling and logging messages to help troubleshooting
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] I have added necessary documentation, relevant usage information (if applicable)
-- [ ] I have updated the PR title with a short summary of the changes introduced
+- [ ] I have updated the PR title with affected component, related issue number and a short summary of the changes introduced
+<!--
+Sample PR title:
+[artifact-manager] (#220) Update the package.json template for generating ABX actions
+-->
 - [ ] I have added labels for implementation type (enhancement, bug, dependencies) and version change (major, minor, patch)
 - [ ] I have tested against live environment, if applicable
 - [ ] I have synced any structure and/or content vRA-NG improvements with vra-ng and ts-vra-ng archetypes (if applicable)
