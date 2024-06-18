@@ -66,7 +66,7 @@ When contributing, please refer to our [How to write documentation](./docs/Docum
 ## Contributing Code
 When adding new code make sure to cover the following mandatory points:
 
-1. Append information about the implemented functionality to [CHANGELOG.md](./CHANGELOG.md) and [Release.md](./docs/versions/latest/Release.md).
+1. Append information about the implemented functionality to [Release.md](./docs/versions/latest/Release.md).
 2. Satisfy the checklist in [PR template](./.github/pull_request_template.md)
     -   If you skip any of the tasks from the checklist, add a comment explaining why that task might be irrelevant to your contribution.
 3. Unit tests are mandatory.  

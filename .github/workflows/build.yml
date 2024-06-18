@@ -154,7 +154,7 @@ jobs:
         if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
         run: |
           cp maven/repository/target/iac-maven-repository.zip .
-          tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt" CHANGELOG.md
+          tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2

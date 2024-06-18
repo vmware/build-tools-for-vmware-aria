@@ -56,7 +56,7 @@ All of the comments from `Release.md` will be automatically deleted. ( Future im
 No, only the new one. The old one should be removed soon.
 
 ### Should we still update the CHANGELOG.md?
-We are transitioning away from the changelog, for now we should still update it.
+No. We are transitioning away from changelog in favour of auto-generated release notes based on PR title and labels.
 
 ### Who should contribute?
 Idea for now is everyone who submits a pull request to update the documentation accordingly ( wherever possible ). New 
