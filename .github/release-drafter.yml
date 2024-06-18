@@ -39,3 +39,14 @@ template: |
   ## Contributors
 
   $CONTRIBUTORS
+autolabeler:
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix/i'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+    title:
+      - '/add|implement|support/i'
