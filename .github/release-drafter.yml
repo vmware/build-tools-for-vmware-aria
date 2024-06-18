@@ -15,6 +15,10 @@ categories:
       - 'dependencies'
 exclude-labels:
   - 'skip-changelog'
+exclude-contributors:
+  - 'WWCoE CI admin'
+  - 'dependabot'
+  - 'dependabot[bot]'
 change-template: '* $TITLE by @$AUTHOR in #$NUMBER'
 version-resolver:
   major:
