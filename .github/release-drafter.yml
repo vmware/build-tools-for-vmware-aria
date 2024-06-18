@@ -16,7 +16,7 @@ categories:
 exclude-labels:
   - 'skip-changelog'
 exclude-contributors:
-  - 'WWCoE CI admin'
+  - 'svc-wwcoe-ci-admin'
   - 'dependabot'
   - 'dependabot[bot]'
 change-template: '* $TITLE by @$AUTHOR in #$NUMBER'
@@ -35,7 +35,14 @@ template: |
   ## What's Changed
 
   $CHANGES
-
-  ## Contributors
-
-  $CONTRIBUTORS
+autolabeler:
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix/i'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+    title:
+      - '/add|implement|support/i'
