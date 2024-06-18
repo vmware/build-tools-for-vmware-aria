@@ -35,10 +35,6 @@ template: |
   ## What's Changed
 
   $CHANGES
-
-  ## Contributors
-
-  $CONTRIBUTORS
 autolabeler:
   - label: 'bug'
     branch:
