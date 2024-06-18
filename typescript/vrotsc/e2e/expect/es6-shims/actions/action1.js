@@ -31,7 +31,7 @@
     map.set("key1", "value1");
     map.set("key2", "value2");
     map.forEach(function (k, v) {
-        console.log(k + "=" + v);
+        console.log("".concat(k, "=").concat(v));
     });
     // Object
     var obj = {

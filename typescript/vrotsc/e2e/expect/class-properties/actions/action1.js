@@ -13,20 +13,20 @@
             set: function (value) {
                 this.field1 = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TestClass1.prototype, "prop2", {
             get: function () {
                 return "prop2";
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TestClass1.prototype, "prop3", {
             set: function (value) {
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TestClass1, "static_prop1", {
@@ -36,20 +36,20 @@
             set: function (value) {
                 this.staticField1 = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TestClass1, "static_prop2", {
             get: function () {
                 return "prop2";
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TestClass1, "static_prop3", {
             set: function (value) {
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return TestClass1;
