@@ -25,23 +25,23 @@ Looking for places to contribute to the codebase? You can start by looking throu
 
 ### Getting the code
 
-```
+``` shell
 git clone https://github.com/vmware/build-tools-for-vmware-aria.git
 ```
 
 ### Prerequisites
 
--   [Git](https://git-scm.com/)
--   [Node.js](https://nodejs.org/), `~14.17.1`
--   [Npm](https://www.npmjs.com), `~6.14.13`
--   [Maven](https://maven.apache.org/), `~3.8.6`
--   [JDK](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html), `1.8.0_xxx`
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/), `~14.17.1`
+- [Npm](https://www.npmjs.com), `~6.14.13`
+- [Maven](https://maven.apache.org/), `~3.8.6`
+- [JDK](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html), `1.8.0_xxx`
 
 
 ### Guides
 1. [Setting up local environment](docs/versions/latest/General/Getting%20Started/Setting%20Up%20Local%20Environment.md)
 2. [Setting up workstation](docs/archive/doc/markdown/setup-workstation.md)
-   - Publicly available: https://github.com/vmware/vrealize-developer-tools/wiki/Setup-Developer-Workstation
+   - vRealize-Developer-Tools [related documentation](https://github.com/vmware/vrealize-developer-tools/wiki/Setup-Developer-Workstation)
 3. Adding new functionalities - here are few guidelines that could be followed to ease the development process:
    - Read the ticket description to understand which is the mvn plugin that needs to be updated. All plugin executions (`mvn package`, `pull` and `push`) start from a `Mojo` class under the plugin's directory `/maven/plugins/PLUGIN-XXX/src/main/java/com/vmware/pscoe/maven/plugins/`.
      - Example: `PullMojo.java` under `/maven/plugins/vra-ng` will be executed when you do the `mvn pull` command in VMware Aria Automation 8 (vRA 8\) context.
@@ -66,12 +66,12 @@ When contributing, please refer to our [How to write documentation](./docs/Docum
 ## Contributing Code
 When adding new code make sure to cover the following mandatory points:
 
-1. Append information about the implemented functionality to [CHANGELOG.md](./CHANGELOG.md) and [Release.md](./docs/versions/latest/Release.md).
+1. Append information about the implemented functionality to [Release.md](./docs/versions/latest/Release.md).
 2. Satisfy the checklist in [PR template](./.github/pull_request_template.md)
-    -   If you skip any of the tasks from the checklist, add a comment explaining why that task might be irrelevant to your contribution.
+    - If you skip any of the tasks from the checklist, add a comment explaining why that task might be irrelevant to your contribution.
 3. Unit tests are mandatory.  
-    -   If adding unit tests is not viable - other options are to be explored.
-    -   If no unit tests are included justification should be provided.
+    - If adding unit tests is not viable - other options are to be explored.
+    - If no unit tests are included justification should be provided.
 4. Include usage information based on [As-Built](./As-built-template.md) template.
 
 :scroll:**NOTE!** When doing a Pull Request review make sure that all points mentioned above are covered before approving the PR.
@@ -94,6 +94,6 @@ If you cannot find an existing issue that describes your bug or feature, create 
 
 ### Writing Good Issue Reports
 
--   File a single issue per problem and feature request. Do not enumerate multiple bugs or feature requests in the same issue.
--   Do not add your issue as a comment to an existing issue unless it's related. Many issues look similar, but have different causes.
--   When filing bugs, please follow the [bug template](./.github/ISSUE_TEMPLATE/bug_report.md) and include as much information as possible. The more information you can provide, the more likely someone will be successful at reproducing the issue and finding a fix.
+- File a single issue per problem and feature request. Do not enumerate multiple bugs or feature requests in the same issue.
+- Do not add your issue as a comment to an existing issue unless it's related. Many issues look similar, but have different causes.
+- When filing bugs, please follow the [bug template](./.github/ISSUE_TEMPLATE/bug_report.md) and include as much information as possible. The more information you can provide, the more likely someone will be successful at reproducing the issue and finding a fix.
