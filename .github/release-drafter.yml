@@ -19,7 +19,7 @@ exclude-contributors:
   - 'svc-wwcoe-ci-admin'
   - 'dependabot'
   - 'dependabot[bot]'
-change-template: '* $TITLE by @$AUTHOR in #$NUMBER, PR Body: $BODY'
+change-template: '* $TITLE by @$AUTHOR in #$NUMBER'
 version-resolver:
   major:
     labels:
