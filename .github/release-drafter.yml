@@ -35,6 +35,8 @@ template: |
   ## What's Changed
 
   $CHANGES
+
+  For in-depth feature set review refer to the following document: https://github.com/vmware/build-tools-for-vmware-aria/blob/main/docs/versions/v2.39.0/Release.md
 autolabeler:
   - label: 'bug'
     branch:
