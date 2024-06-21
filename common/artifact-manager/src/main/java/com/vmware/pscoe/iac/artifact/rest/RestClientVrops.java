@@ -875,13 +875,15 @@ public class RestClientVrops extends RestClient {
 			this.createCustomGroupType(customGroupResourceKind);
 		}
 
-		customGroup.getMembershipDefinition().getRules().forEach(rule -> {
-			String resourceKindKey = rule.getResourceKindKey().getResourceKind();
-			String adapterKindKey = rule.getResourceKindKey().getAdapterKind();
-			if (!resourceKindExists(resourceKindKey, adapterKindKey)) {
-				this.createCustomGroupType(resourceKindKey);
-			}
-		});
+		if (customGroup.getMembershipDefinition() != null) {
+			customGroup.getMembershipDefinition().getRules().forEach(rule -> {
+				String resourceKindKey = rule.getResourceKindKey().getResourceKind();
+				String adapterKindKey = rule.getResourceKindKey().getAdapterKind();
+				if (!resourceKindExists(resourceKindKey, adapterKindKey)) {
+					this.createCustomGroupType(resourceKindKey);
+				}
+			});
+		}
 	}
 
 	/**
