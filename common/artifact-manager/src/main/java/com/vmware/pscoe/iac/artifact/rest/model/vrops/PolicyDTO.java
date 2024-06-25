@@ -88,7 +88,7 @@ public class PolicyDTO {
 	@JsonProperty("policy-summaries")
 	public void setPolicies(List<Policy> policies) {
 		this.policies = policies;
-	}	
+	}
 
 	/**
 	 * getAdditionalProperties().
@@ -114,7 +114,8 @@ public class PolicyDTO {
 	/**
 	 * Policy.
 	 */
-	@JsonPropertyOrder({ "id", "name", "defaultPolicy" })
+	@JsonPropertyOrder({ "id", "name", "defaultPolicy", "priority" })
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Policy {
 
 		/**
@@ -140,6 +141,12 @@ public class PolicyDTO {
 		 */
 		@JsonProperty("defaultPolicy")
 		private boolean defaultPolicy;
+
+		/**
+		 * priority.
+		 */
+		@JsonProperty("priority")
+		private long priority;
 
 		/**
 		 * additionalProperties.
@@ -225,6 +232,26 @@ public class PolicyDTO {
 		@JsonProperty("defaultPolicy")
 		public void setDefaultPolicy(boolean defaultPolicy) {
 			this.defaultPolicy = defaultPolicy;
+		}
+
+		/**
+		 * getPriority().
+		 *
+		 * @return policy priority (if applicable).
+		 */
+		@JsonProperty("priority")
+		public long getPriority() {
+			return priority;
+		}
+
+		/**
+		 * setPriority().
+		 *
+		 * @param priority set policy priority.
+		 */
+		@JsonProperty("priority")
+		public void setPriority(long priority) {
+			this.priority = priority;
 		}
 
 		/**
