@@ -1161,8 +1161,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
         if (descriptor.getPolicy() == null || descriptor.getPolicy().isEmpty()) {
             return;
         }
-        // if the policies contain wild card then skip (as the ordering cannot be guaranteed)
-        boolean hasWildCard = !descriptor.getPolicy().stream().allMatch(policy -> WILDCARD_MATCH_SYMBOL.endsWith(policy));
+        // if the policies contain wild card then skip setting priorities (as the ordering cannot be guaranteed)
+        boolean hasWildCard = descriptor.getPolicy().stream().allMatch(policy -> policy.endsWith(WILDCARD_MATCH_SYMBOL));
         if (hasWildCard) {
         	return;
         }
