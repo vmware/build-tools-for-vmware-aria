@@ -13,7 +13,7 @@
  * #L%
  */
 import * as ts from "typescript";
-import { getDecoratorName, getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
+import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
 import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowMethodType, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
 import { getVroType } from "../../helpers/vro";
 import { DiagnosticCategory, FileTransformationContext } from "../../../../types";
@@ -34,10 +34,13 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 		throw new Error(`Method '${itemInfo.name}' should have exactly one decorator.`);
 	}
 
+	const decoratorNode = decorators[0];
+	const callExpNode = decoratorNode.expression as ts.CallExpression;
+	const identifierText = getIdentifierTextOrNull(callExpNode.expression);
 
-	const decoratorName = getDecoratorName(decorators[0]);
+	console.log(`Identifier text: ${identifierText}`);
 
-	switch (decoratorName) {
+	switch (identifierText) {
 		case WorkflowMethodType.Item:
 
 			break;
@@ -297,4 +300,4 @@ function getWorkflowParamValue(node: ts.Node): string {
 		case ts.SyntaxKind.FalseKeyword:
 			return "false";
 	}
-}
+};
