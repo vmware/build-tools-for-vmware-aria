@@ -155,8 +155,8 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		const type = ITEM_ENUM_TO_TYPE[item.itemType] || "task";
 
 		switch (item.itemType) {
-
 			case WorkflowItemType.Decision:
+				item.sourceText = item.sourceText.replace(/function wrapper\(\) \{|}$/gm, '').trim();
 				stringBuilder.append(`<workflow-item`
 					+ ` name="item${pos}"`
 					+ ` out-name="${targetItem}"`
@@ -167,8 +167,9 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ">").appendLine();
 				stringBuilder.indent();
 				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
+				// the script has "return" and that breaks everything
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
-
+				break;
 			case WorkflowItemType.WaitingTimer:
 				stringBuilder.append(`<workflow-item`
 					+ ` name="item${pos}"`

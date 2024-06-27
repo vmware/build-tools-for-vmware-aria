@@ -85,6 +85,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 					],
 				},
 				file);
+
 			actionItems[i].sourceText = sourceText;
 		});
 	}
@@ -157,14 +158,47 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		registerMethodArgumentDecorators(methodNode, workflowInfo, itemInfo);
 
 		const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-		let actionSourceText = printSourceFile(
-			ts.factory.updateSourceFile(
-				sourceFile,
-				[
-					...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
-					...createWorkflowItemPrologueStatements(methodNode),
-					...methodNode.body.statements
-				]));
+
+		let actionSourceText: string;
+
+		if (itemInfo.itemType === WorkflowItemType.Decision) {
+			itemInfo.itemType = WorkflowItemType.Decision;
+
+			// Create a new function declaration
+			// The wrapper declaration is needed for typescript to work
+			// later the wrapper function will be removed
+			const wrapperFunction = ts.factory.createFunctionDeclaration(
+				undefined,
+				undefined,
+				"wrapper",
+				undefined,
+				[],
+				undefined,
+				methodNode.body
+			);
+			actionSourceText = printSourceFile(
+				ts.factory.updateSourceFile(
+					sourceFile,
+					[
+						...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
+						...createWorkflowItemPrologueStatements(methodNode),
+						wrapperFunction
+					]
+				)
+			);
+		}
+		else {
+
+			actionSourceText = printSourceFile(
+				ts.factory.updateSourceFile(
+					sourceFile,
+					[
+						...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
+						...createWorkflowItemPrologueStatements(methodNode),
+						...methodNode.body.statements
+					]));
+		}
+
 
 		//Exists a declaration of a Polyglot decorator
 		if (itemInfo.input.length > 0 && itemInfo.output.length > 0 && decoratorPolyglot) {

@@ -50,7 +50,6 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 				registerCanvasItemArguments(objLiteralNode, identifierText, workflowInfo, itemInfo);
 		}
 	}
-
 }
 
 function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression, identifierText: string, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
