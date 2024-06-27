@@ -6,7 +6,7 @@
 ## Prerequisites
 - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
 - [vRealize Developer Tools](https://github.com/vmware/vrealize-developer-tools)
-- Java 8 ([official installation guide](https://www.java.com/en/download/help/download_options.xml))
+- Java 17
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 - Development vRealize Automation Tenant configured with development vRealize Orchestrator
     - Tenant administrator user

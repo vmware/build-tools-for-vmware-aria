@@ -6,7 +6,7 @@
 
 ### Requirements
 - Make sure that the artefacts in the Build plan are shared:
-- Java JDK 8+ installed on the hatchery vm
+- Java JDK 17 installed on the hatchery vm
 
 
 

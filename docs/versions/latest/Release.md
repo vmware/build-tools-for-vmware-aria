@@ -34,7 +34,15 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+### Updated documentation to specify Java 17 as the required version
 
+#### Previous Behavior
+
+Required Java version mentioned in the documentation was Java 8.
+
+#### Current Behavior
+
+Required Java version updated to Java 17 in the documentation.
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)

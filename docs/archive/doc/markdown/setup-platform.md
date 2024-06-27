@@ -10,7 +10,7 @@
 - CI Server capable of running Maven commands (we assume Gitlab):
     - Git client
     - Maven 3.5+
-    - Java 8
+    - Java 17
     - NodeJS 16.12+ (NPM 6.7+)
     - (Optional) PowerShell version 6+ (recommended 7.2.3+) is required for supporting powershell polyglot projects.
 - Temporary access to internet during the installation
