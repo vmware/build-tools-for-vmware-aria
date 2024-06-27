@@ -138,7 +138,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	 *
 	 * The `out-name` points to the next item in the workflow
 	 *
-	 * @TODO: If we want breaking changes, if target is missing / null -> assume end
+	 * @WARN: If we want breaking changes, if target is missing / null -> assume end
 	 *
 	 * @param item The item to build
 	 * @param pos The position of the item in the workflow. Cannot be 0, as that is reserved for the end item
@@ -167,8 +167,9 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ">").appendLine();
 				stringBuilder.indent();
 				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
-				// the script has "return" and that breaks everything
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
+				// @TODO: Figure out what this is
+				stringBuilder.append(`<condition name="waitingTimer" type="Date" comparator="4" label="null" />`).appendLine();
 				break;
 			case WorkflowItemType.WaitingTimer:
 				stringBuilder.append(`<workflow-item`
