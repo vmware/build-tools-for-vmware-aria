@@ -1,7 +1,9 @@
 # Build Tools for VMware Aria Workstation
+
 **Build Tools for VMware Aria Workstation** represents a vRealize engineer development machine configured to work with **Build Tools for VMware Aria** toolchain.
 
 ## Prerequisites
+
 - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
 - [vRealize Developer Tools](https://github.com/vmware/vrealize-developer-tools)
 - Java 17
@@ -20,9 +22,11 @@
 ## Installation and Configuration
 
 ### Configuration
+
 - [Build Tools for VMware Aria Build System](setup-workstation-maven.md)
 
 ## Use
+
 - [vRO Projects](use-workstation-vro-project.md)
 - [vRA Projects](use-workstation-vra-project.md)
 - [vRA NG Projects](use-workstation-vra-ng-project.md)

@@ -1,15 +1,14 @@
 # Set-up continuous deployment project in Bamboo
 
-
 ## Table of Contents
 
+## Requirements
 
-### Requirements
 - Make sure that the artefacts in the Build plan are shared:
 - Java JDK 17 installed on the hatchery vm
 
-
 ## Environment setup
+
 1. Open already created Bamboo project.
 2. Click Create → Create deployment project.
 3. Create a new local repository (e.g. **vro-local**) and add it to the virtual release repository (e.g. **libs-release**).
@@ -20,7 +19,9 @@
 8. Add an Artefact download task and select the artefact you want to run with the installer (vRO package OR vRA package). Click Save.  
 9. Add SCP Task and provide the IP address of the hatchery  ( Host field ).  Provide login credentials (Username and Password ). Select again the artefact which will be copied and installed. Add Remote Path. For example /tmp/vra.zip
 10. Add SSH Task. The task will connect to the hatchery and install the artefact.
-The SSH command/script ( environment.properties section have to be modified accordingly to the specific project)
+
+    Following is a sample listing of the SSH command/script ( environment.properties section have to be modified accordingly to the specific project)
+
     ```bash
     echo "On the hatchery server"
     
@@ -99,6 +100,7 @@ The SSH command/script ( environment.properties section have to be modified acco
     
     exit $exitcode
     ```
+
 11. Optional: Trigger deployment after successful build:
-Click Add trigger → Select trigger: After successful build plan.
-On the next screen provide Trigger description, select the branch and click Save trigger.
+    1. Click Add trigger → Select trigger: After successful build plan.
+    2. On the next screen provide Trigger description, select the branch and click Save trigger.
