@@ -45,6 +45,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 				break;
 			default:
 				itemInfo.itemType = identifierText as WorkflowItemType;
+
 				const objLiteralNode = callExpNode.arguments[0] as ts.ObjectLiteralExpression;
 				registerCanvasItemArguments(objLiteralNode, identifierText, workflowInfo, itemInfo);
 		}
@@ -68,7 +69,7 @@ function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression,
 							itemInfo.canvasItemPolymorphicBag.exception = propValue;
 							break;
 						default:
-							throw new Error(`Item attribute '${propName}' is not suported.`);
+							throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
 					}
 					break;
 				case WorkflowItemType.Decision:
@@ -80,8 +81,18 @@ function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression,
 							itemInfo.canvasItemPolymorphicBag.else = propValue;
 							break;
 						default:
-							throw new Error(`Item attribute '${propName}' is not suported.`);
+							throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
 					}
+					break;
+				case WorkflowItemType.WaitingTimer:
+					switch (propName) {
+						case "target":
+							itemInfo.target = propValue;
+							break;
+						default:
+							throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
+					}
+					break;
 			}
 		});
 	}

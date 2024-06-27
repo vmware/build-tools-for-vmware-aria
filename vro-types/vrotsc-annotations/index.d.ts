@@ -186,6 +186,15 @@ interface VroWaitingTimerItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
+// <workflow-item name="item2" out-name="item0" type="waiting-timer">
+// 	<display-name>
+// 		<![CDATA[waitForEvent]]>
+// 	</display-name>
+// 	<in-binding>
+// 		<bind name="waitingTimer" type="Date" export-name="waitingTimer" />
+// 	</in-binding>
+// 	<position x="385.0" y="55.40909090909091" />
+// </workflow-item>
 
 // ---------------------------------------------- Workflow Canvas Decision Item ------------------------------------------------
 
