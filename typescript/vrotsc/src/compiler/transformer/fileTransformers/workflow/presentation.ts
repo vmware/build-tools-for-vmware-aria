@@ -32,7 +32,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		+ ` xmlns="http://vmware.com/vco/workflow"`
 		+ ` xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`
 		+ ` xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd"`
-		+ ` root-name="item1"`
+		+ ` root-name="item${workflow.items.findIndex(item => item.name === workflow.rootItem) + 1 || "1"}"`
 		+ ` object-name="workflow:name=generic"`
 		+ ` id="${workflow.id}"`
 		+ ` version="${workflow.version}"`
@@ -50,7 +50,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	buildParameters("output", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Output));
 	buildAttributes(workflow.parameters.filter(p => p.isAttribute));
 	buildEndItem();
-	workflow.items.forEach((item, i) => buildItem(item, i + 1));
+	workflow.items.forEach((item, i, items) => buildItem(item, i + 1, items));
 	buildPresentation();
 	stringBuilder.unindent();
 	stringBuilder.append(`</workflow>`).appendLine();
@@ -124,12 +124,23 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	 *
 	 * The `out-name` points to the next item in the workflow
 	 *
+	 * @TODO: If we want breaking changes, if target is missing / null -> assume end
+	 *
 	 * @param item The item to build
+	 * @param pos The position of the item in the workflow. Cannot be 0, as that is reserved for the end item
+	 * @param items The list of all items in the workflow
 	 */
-	function buildItem(item: WorkflowItemDescriptor, pos: number): void {
+	function buildItem(item: WorkflowItemDescriptor, pos: number, items: WorkflowItemDescriptor[]): void {
+		const targetItem =
+			item.target != null
+				? item.target === "end"
+					? "item0"
+					: `item${items.findIndex((i) => i.name === item.target) + 1 || 0}`
+				: pos < workflow.items.length ? `item${pos + 1}` : "item0";
+
 		stringBuilder.append(`<workflow-item`
 			+ ` name="item${pos}"`
-			+ ` out-name="${pos < workflow.items.length ? `item${pos + 1}` : "item0"}"`
+			+ ` out-name="${targetItem}"`
 			+ ` type="task"`
 			+ ">").appendLine();
 		stringBuilder.indent();

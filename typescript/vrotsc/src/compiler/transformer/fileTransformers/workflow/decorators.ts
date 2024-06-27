@@ -14,7 +14,7 @@
  */
 import * as ts from "typescript";
 import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
-import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowMethodType, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
 import { getVroType } from "../../helpers/vro";
 import { DiagnosticCategory, FileTransformationContext } from "../../../../types";
 
@@ -28,42 +28,58 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 		return;
 	}
 
-	console.log(decorators);
+	for (const decoratorNode of decorators) {
+		const callExpNode = decoratorNode.expression as ts.CallExpression;
+		const identifierText = getIdentifierTextOrNull(callExpNode.expression);
 
-	if (decorators.length !== 1) {
-		throw new Error(`Method '${itemInfo.name}' should have exactly one decorator.`);
+		switch (identifierText) {
+			case "RootItem":
+
+				if (ts.isIdentifier(methodNode.name) || ts.isPrivateIdentifier(methodNode.name)) {
+					workflowInfo.rootItem = methodNode.name.escapedText as string;
+				}
+				else {
+					throw new Error(`RootItem decorator must be applied to a method with an identifier name.`);
+				}
+				break;
+			default:
+				const objLiteralNode = callExpNode.arguments[0] as ts.ObjectLiteralExpression;
+				registerCanvasItemArguments(objLiteralNode, identifierText, workflowInfo, itemInfo);
+		}
 	}
 
-	const decoratorNode = decorators[0];
-	const callExpNode = decoratorNode.expression as ts.CallExpression;
-	const identifierText = getIdentifierTextOrNull(callExpNode.expression);
+}
 
-	console.log(`Identifier text: ${identifierText}`);
-
-	const objLiteralNode = callExpNode.arguments[0] as ts.ObjectLiteralExpression;
+function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression, identifierText: string, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
 	if (objLiteralNode) {
 		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			const propName = getPropertyName(property.name);
 			const propValue = (<ts.StringLiteral>property.initializer).text;
-			console.log(`Property name: ${propName}`);
-			console.log(`Property value: ${propValue}`);
 
-			// switch (propName) {
-			// 	case "package":
-			// 		break;
-			// 	case "method":
-			// 		break;
-			// 	default:
-			// 		throw new Error(`Polyglot attribute '${propName}' is not suported.`);
-			// }
+			switch (identifierText) {
+				case WorkflowItemType.Item:
+					switch (propName) {
+						case "target":
+							itemInfo.target = propValue;
+							break;
+						default:
+							throw new Error(`Item attribute '${propName}' is not suported.`);
+					}
+					break;
+				case WorkflowItemType.Decision:
+					switch (propName) {
+						case "target":
+							itemInfo.target = propValue;
+							break;
+						case "else":
+							itemInfo.canvasItemPolymorphicBag.else = propValue;
+						default:
+							throw new Error(`Item attribute '${propName}' is not suported.`);
+					}
+
+			}
 		});
 	}
-
-	// switch (identifierText) {
-	// 	case WorkflowMethodType.Item:
-	//
-	// 		break;
-	// }
 }
 
 export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {

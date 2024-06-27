@@ -7,7 +7,7 @@ import { transformShimsBefore, transformShims } from "../../codeTransformers/shi
 import { printSourceFile } from "../../helpers/source";
 import { generateElementId } from "../../../../utilities/utilities";
 import { getPropertyName } from "../../helpers/node";
-import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor } from "../../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor, WorkflowItemType } from "../../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
 import { printPolyglotCode, registerPolyglotDecorators } from "./polyglot";
@@ -96,6 +96,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			path: undefined,
 			version: "1.0.0",
 			parameters: [],
+			rootItem: null,
 			items: [],
 			presentation: undefined,
 			description: undefined
@@ -128,6 +129,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			input: [],
 			output: [],
 			sourceText: "",
+			itemType: WorkflowItemType.Item,
+			target: null
 		};
 
 		const polyglotInfo: PolyglotDescriptor = { package: "", method: "" };
