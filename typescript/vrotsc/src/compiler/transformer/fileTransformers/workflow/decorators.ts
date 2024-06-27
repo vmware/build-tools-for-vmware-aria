@@ -40,11 +40,30 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 
 	console.log(`Identifier text: ${identifierText}`);
 
-	switch (identifierText) {
-		case WorkflowMethodType.Item:
+	const objLiteralNode = callExpNode.arguments[0] as ts.ObjectLiteralExpression;
+	if (objLiteralNode) {
+		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
+			const propName = getPropertyName(property.name);
+			const propValue = (<ts.StringLiteral>property.initializer).text;
+			console.log(`Property name: ${propName}`);
+			console.log(`Property value: ${propValue}`);
 
-			break;
+			// switch (propName) {
+			// 	case "package":
+			// 		break;
+			// 	case "method":
+			// 		break;
+			// 	default:
+			// 		throw new Error(`Polyglot attribute '${propName}' is not suported.`);
+			// }
+		});
 	}
+
+	// switch (identifierText) {
+	// 	case WorkflowMethodType.Item:
+	//
+	// 		break;
+	// }
 }
 
 export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {

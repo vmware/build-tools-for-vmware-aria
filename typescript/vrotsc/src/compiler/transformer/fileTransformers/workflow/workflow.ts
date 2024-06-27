@@ -6,12 +6,12 @@ import { collectFactsBefore } from "../../metaTransformers/facts";
 import { transformShimsBefore, transformShims } from "../../codeTransformers/shims";
 import { printSourceFile } from "../../helpers/source";
 import { generateElementId } from "../../../../utilities/utilities";
-import { getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
+import { getPropertyName } from "../../helpers/node";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
-import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor } from "../../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor } from "../../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
-import { buildPolyglotInfo, printPolyglotCode, registerPolyglotDecorators } from "./polyglot";
+import { printPolyglotCode, registerPolyglotDecorators } from "./polyglot";
 import { prepareHeaderEmitter } from "../../codeTransformers/header";
 import { createWorkflowItemPrologueStatements } from "../../codeTransformers/prologueStatements";
 import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMethodDecorators } from "./decorators";
@@ -135,20 +135,20 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 
 		const polyglotInfo: PolyglotDescriptor = { package: "", method: "" };
 
-/*-
- * #%L
- * vrotsc
- * %%
- * Copyright (C) 2023 - 2024 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
+		/*-
+		 * #%L
+		 * vrotsc
+		 * %%
+		 * Copyright (C) 2023 - 2024 VMware
+		 * %%
+		 * Build Tools for VMware Aria
+		 * Copyright 2023 VMware, Inc.
+		 *
+		 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+		 *
+		 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+		 * #L%
+		 */
 
 
 		const decoratorPolyglot = registerPolyglotDecorators(methodNode, polyglotInfo);

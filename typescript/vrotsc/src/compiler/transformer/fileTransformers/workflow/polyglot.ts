@@ -18,7 +18,7 @@ export function registerPolyglotDecorators(methodNode: ts.MethodDeclaration, pol
 				decoratorPolyglot = true;
 
 				//Extract the information stored in the @Polyglot decorator
-				buildPolyglotInfo(polyglotInfo, <ts.CallExpression>decoratorNode.expression);
+				buildPolyglotInfo(polyglotInfo, callExpNode);
 			}
 		});
 	}
