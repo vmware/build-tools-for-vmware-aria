@@ -33,85 +33,85 @@ import { SCRIPT_VROES_VAR, SCRIPT_VRO_GLOBAL, SCRIPT_VROES_CACHE, SCRIPT_VRO_MOD
 * These will be added to the top(prologue) of the file. All calls to these objects will be replaced with the VROES shims.
 */
 export function createDeclarationPrologueStatements(context: ScriptTransformationContext): ts.Statement[] {
-    const statements: ts.Statement[] = [];
-    const variableDeclarations: ts.VariableDeclaration[] = [];
+	const statements: ts.Statement[] = [];
+	const variableDeclarations: ts.VariableDeclaration[] = [];
 
-    if (context.file.hierarchyFacts & HierarchyFacts.ContainsMap) {
-        // var Map = VROES.Map
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
-                "Map",
-                undefined,
-                undefined,
-                ts.factory.createPropertyAccessExpression(
-                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
-                    "Map"
-                )
-            )
-        );
-    }
+	if (context.file.hierarchyFacts & HierarchyFacts.ContainsMap) {
+		// var Map = VROES.Map
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
+				"Map",
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+					"Map"
+				)
+			)
+		);
+	}
 
-    if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakMap) {
-        // var WeakMap = VROES.Map
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
-                "WeakMap",
-                undefined,
-                undefined,
-                ts.factory.createPropertyAccessExpression(
-                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
-                    "Map"
-                )
-            ));
-    }
+	if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakMap) {
+		// var WeakMap = VROES.Map
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
+				"WeakMap",
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+					"Map"
+				)
+			));
+	}
 
-    if (context.file.hierarchyFacts & HierarchyFacts.ContainsSet) {
-        // var Set = VROES.Set
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
-                "Set",
-                undefined,
-                undefined,
-                ts.factory.createPropertyAccessExpression(
-                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
-                    "Set"
-                )
-            ));
-    }
+	if (context.file.hierarchyFacts & HierarchyFacts.ContainsSet) {
+		// var Set = VROES.Set
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
+				"Set",
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+					"Set"
+				)
+			));
+	}
 
-    if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakSet) {
-        // var WeakSet = VROES.Set
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
-                "WeakSet",
-                undefined,
-                undefined,
-                ts.factory.createPropertyAccessExpression(
-                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
-                    "Set"
-                )
-            ));
-    }
+	if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakSet) {
+		// var WeakSet = VROES.Set
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
+				"WeakSet",
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+					"Set"
+				)
+			));
+	}
 
-    if (context.file.hierarchyFacts & HierarchyFacts.ContainsPromise) {
-        // var Promise = VROES.Promise
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
-                "Promise",
-                undefined,
-                undefined,
-                ts.factory.createPropertyAccessExpression(
-                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
-                    "Promise"
-                )
-            ));
-    }
+	if (context.file.hierarchyFacts & HierarchyFacts.ContainsPromise) {
+		// var Promise = VROES.Promise
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
+				"Promise",
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+					"Promise"
+				)
+			));
+	}
 
-    if (variableDeclarations.length) {
-        statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
-    }
+	if (variableDeclarations.length) {
+		statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
+	}
 
-    return statements;
+	return statements;
 }
 
 /**
@@ -124,30 +124,30 @@ export function createDeclarationPrologueStatements(context: ScriptTransformatio
 * Any other variables for the module scope are added as well.
 */
 export function createModulePrologueStatements(context: ScriptTransformationContext, tslibVarName: string): ts.Statement[] {
-    const statements: ts.Statement[] = [];
-    const variableDeclarations: ts.VariableDeclaration[] = [];
-    if (context.file.hierarchyFacts & HierarchyFacts.GlobalScope || context.globalIdentifiers.length) {
-        // Create the following statement:
-        // var __global = (function () {
-        //     return this;
-        // }).call(null);
-        statements.push(ts.factory.createVariableStatement(
+	const statements: ts.Statement[] = [];
+	const variableDeclarations: ts.VariableDeclaration[] = [];
+	if (context.file.hierarchyFacts & HierarchyFacts.GlobalScope || context.globalIdentifiers.length) {
+		// Create the following statement:
+		// var __global = (function () {
+		//     return this;
+		// }).call(null);
+		statements.push(ts.factory.createVariableStatement(
                     /*modifiers*/ undefined,
-            [
-                ts.factory.createVariableDeclaration(
+			[
+				ts.factory.createVariableDeclaration(
                             /*name*/ SCRIPT_VRO_GLOBAL,
-                            undefined,
-                            undefined,
-                    ts.factory.createBinaryExpression(
-                        ts.factory.createCallExpression(
-                            ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getContext"),
+					undefined,
+					undefined,
+					ts.factory.createBinaryExpression(
+						ts.factory.createCallExpression(
+							ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getContext"),
                                     /*typeArguments*/ undefined,
                                     /*argumentsArray*/ undefined),
-                        ts.factory.createToken(ts.SyntaxKind.BarBarToken),
-                        ts.factory.createCallExpression(
-                            ts.factory.createPropertyAccessExpression(
-                                ts.factory.createParenthesizedExpression(
-                                    ts.factory.createFunctionExpression(
+						ts.factory.createToken(ts.SyntaxKind.BarBarToken),
+						ts.factory.createCallExpression(
+							ts.factory.createPropertyAccessExpression(
+								ts.factory.createParenthesizedExpression(
+									ts.factory.createFunctionExpression(
                                                 /*modifiers*/ undefined,
                                                 /*asteriskToken*/ undefined,
                                                 /*name*/ undefined,
@@ -155,92 +155,126 @@ export function createModulePrologueStatements(context: ScriptTransformationCont
                                                 /*parameters*/ undefined,
                                                 /*modifiers*/ undefined,
                                                 /*body*/ ts.factory.createBlock([ts.factory.createReturnStatement(ts.factory.createThis())], true))),
-                                "call"
-                            ),
+								"call"
+							),
                                     /*typeArguments*/ undefined,
                                     /*argumentsArray*/[ts.factory.createNull()]
-                        )
-                    )
-                )
-            ]));
-    }
+						)
+					)
+				)
+			]));
+	}
 
-    if (context.file.hierarchyFacts & HierarchyFacts.VROES) {
-        // var VROES = __global.VROES || (__global.VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES())
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
+	if (context.file.hierarchyFacts & HierarchyFacts.VROES) {
+		// var VROES = __global.VROES || (__global.VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES())
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
                         /*name*/ SCRIPT_VROES_VAR,
-                        undefined,
+				undefined,
                         /*type*/ undefined,
-                ts.factory.createBinaryExpression(
-                    ts.factory.createPropertyAccessExpression(
-                        ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
-                        SCRIPT_VROES_CACHE
-                    ),
-                    ts.factory.createToken(ts.SyntaxKind.BarBarToken),
-                    ts.factory.createParenthesizedExpression(
-                        ts.factory.createBinaryExpression(
-                            ts.factory.createPropertyAccessExpression(
-                                ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
-                                SCRIPT_VROES_CACHE
-                            ),
-                            ts.factory.createToken(ts.SyntaxKind.EqualsToken),
-                            ts.factory.createCallExpression(
-                                ts.factory.createPropertyAccessExpression(
-                                    ts.factory.createCallExpression(
-                                        ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getModule"),
+				ts.factory.createBinaryExpression(
+					ts.factory.createPropertyAccessExpression(
+						ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
+						SCRIPT_VROES_CACHE
+					),
+					ts.factory.createToken(ts.SyntaxKind.BarBarToken),
+					ts.factory.createParenthesizedExpression(
+						ts.factory.createBinaryExpression(
+							ts.factory.createPropertyAccessExpression(
+								ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
+								SCRIPT_VROES_CACHE
+							),
+							ts.factory.createToken(ts.SyntaxKind.EqualsToken),
+							ts.factory.createCallExpression(
+								ts.factory.createPropertyAccessExpression(
+									ts.factory.createCallExpression(
+										ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getModule"),
                                                 /* typeArguments */ undefined,
-                                        [
-                                            ts.factory.createStringLiteral(SCRIPT_VRO_MODULE_PACKAGE)
-                                        ]),
-                                    SCRIPT_VROES_MODULE
-                                ),
+										[
+											ts.factory.createStringLiteral(SCRIPT_VRO_MODULE_PACKAGE)
+										]),
+									SCRIPT_VROES_MODULE
+								),
                                         /* typeArguments */ undefined,
                                         /* argumentsArray */ undefined
-                            )
-                        )
-                    )
-                )
-            ));
-    }
+							)
+						)
+					)
+				)
+			));
+	}
 
-    if (context.file.hierarchyFacts & HierarchyFacts.ContainsRequire) {
-        // var require = VROES.require
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
-                "require",
+	if (context.file.hierarchyFacts & HierarchyFacts.ContainsRequire) {
+		// var require = VROES.require
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
+				"require",
         /*type*/undefined,
-                undefined,
-                ts.factory.createPropertyAccessExpression(
-                    ts.factory.createIdentifier(SCRIPT_VROES_VAR),
-                    "require"
-                )
-            ));
-    }
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
+					"require"
+				)
+			));
+	}
 
-    if (context.file.hierarchyFacts & HierarchyFacts.ContainsTSLib) {
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(tslibVarName,
-                undefined,
-                undefined,
-                ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_HELPER_MODULE)
-            ));
-    }
+	if (context.file.hierarchyFacts & HierarchyFacts.ContainsTSLib) {
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(tslibVarName,
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_HELPER_MODULE)
+			));
+	}
 
-    if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
-        // var exports = {}
-        variableDeclarations.push(
-            ts.factory.createVariableDeclaration(
-                "exports",
+	if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
+		// var exports = {}
+		variableDeclarations.push(
+			ts.factory.createVariableDeclaration(
+				"exports",
                         /*type*/ undefined,
-                        undefined,
-                ts.factory.createObjectLiteralExpression([])
-            ));
-    }
+				undefined,
+				ts.factory.createObjectLiteralExpression([])
+			));
+	}
 
-    if (variableDeclarations.length) {
-        statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
-    }
+	if (variableDeclarations.length) {
+		statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
+	}
 
-    return statements;
+	return statements;
+}
+
+/**
+ * This will create the prologue statements for the workflow item.
+ *
+ * The prologue statements are the statements that are added at the beginning of the file.
+ * In this case, we add the variable declarations for the parameters of the method.
+ *
+ * @param methodNode - The method node.
+ * @returns The prologue statements.
+ */
+export function createWorkflowItemPrologueStatements(methodNode: ts.MethodDeclaration): ts.Statement[] {
+	const statements: ts.Statement[] = [];
+
+	if (methodNode.parameters.length) {
+		const variableDeclarations: ts.VariableDeclaration[] = [];
+		methodNode.parameters.forEach(paramNode => {
+			const paramName = (<ts.Identifier>paramNode.name).text;
+			variableDeclarations.push(ts.factory.createVariableDeclaration(
+				paramName,
+				undefined,
+				paramNode.type,
+                /* initializer */ undefined
+			));
+		});
+
+		if (variableDeclarations.length) {
+			statements.push(ts.factory.createVariableStatement(
+				[ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)],
+				variableDeclarations));
+		}
+	}
+
+	return statements;
 }
