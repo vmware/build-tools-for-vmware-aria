@@ -33,6 +33,7 @@ export interface WorkflowDescriptor {
 	name: string;
 	path: string;
 	version: string;
+	rootItem: string;
 	presentation: string;
 	parameters: WorkflowParameter[];
 	items: WorkflowItemDescriptor[];
@@ -44,6 +45,9 @@ export interface WorkflowItemDescriptor {
 	input: string[];
 	output: string[];
 	sourceText: string;
+	itemType: WorkflowItemType;
+	target: string; // Points to which item this item is connected to by name
+	canvasItemPolymorphicBag: any;
 }
 
 export interface WorkflowParameter {
@@ -70,8 +74,27 @@ export enum WorkflowParameterType {
 	Output = 2 << 1,
 }
 
-export enum WorkflowMethodType {
+export enum WorkflowItemType {
+	/**
+	 * This is the default item type.
+	 *
+	 * It can target a specific item as well as have an exception target
+	 */
 	Item = "Item",
+
+	/**
+	 * This item type is used to represent a decision item.
+	 *
+	 * It can target 2 other items based on the decision result.
+	 */
+	Decision = "DecisionItem",
+
+	/**
+	 * This item type is used to represent a waiting timer item.
+	 *
+	 * It can target a specific item after the timer is done.
+	 */
+	WaitingTimer = "WaitingTimerItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
@@ -87,20 +110,20 @@ export enum WorkflowMethodType {
 export interface PolyglotDescriptor {
 	package: string;
 
-/*-
- * #%L
- * vrotsc
- * %%
- * Copyright (C) 2023 - 2024 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
+	/*-
+	 * #%L
+	 * vrotsc
+	 * %%
+	 * Copyright (C) 2023 - 2024 VMware
+	 * %%
+	 * Build Tools for VMware Aria
+	 * Copyright 2023 VMware, Inc.
+	 *
+	 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+	 *
+	 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+	 * #L%
+	 */
 
 	method: string;
 }
