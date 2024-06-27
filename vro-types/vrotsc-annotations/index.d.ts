@@ -151,7 +151,7 @@ interface VroConfigurationDecorator {
 
 export declare const Configuration: VroConfigurationDecorator;
 
-// ---------------------------------------------- Workflow Canvas Items ------------------------------------------------
+// ---------------------------------------------- Workflow Canvas Item ------------------------------------------------
 
 export declare const Item: VroItemDecorator;
 
@@ -168,6 +168,53 @@ interface VroItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
+
+// ---------------------------------------------- Workflow Canvas Waiting Timer Item ------------------------------------------------
+
+export declare const WaitingTimerItem: VroWaitingTimerItemDecorator;
+
+interface VroWaitingTimerItemDecorator {
+	(obj?: VroWaitingTimerItemConfiguraiton): VroWaitingTimerItemMethodDecorator;
+	new(obj?: VroWaitingTimerItemConfiguraiton): VroWaitingTimerItemConfiguraiton;
+}
+
+interface VroWaitingTimerItemConfiguraiton {
+	target: string;
+}
+
+interface VroWaitingTimerItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Workflow Canvas Decision Item ------------------------------------------------
+
+export declare const DecisionItem: VroDecisionItemDecorator;
+
+interface VroDecisionItemDecorator {
+	(obj?: VroDecisionItemConfiguraiton): VroDecisionItemMethodDecorator;
+	new(obj?: VroDecisionItemConfiguraiton): VroDecisionItemConfiguraiton;
+}
+
+interface VroDecisionItemConfiguraiton {
+	target: string;
+}
+
+interface VroDecisionItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// <workflow-item name="item4" out-name="item1" type="waiting-timer">
+// 	<display-name><![CDATA[Waiting timer]]></display-name>
+// 	<in-binding>
+// 		<bind name="timer.date" type="Date" export-name="waitingTimer">
+// 			<description><![CDATA[This timer item will wait until date and will continue workflow execution.]]></description>
+// 		</bind>
+// 	</in-binding>
+// 	<out-binding />
+// 	<position y="110.0" x="340.0" />
+// </workflow-item>
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
