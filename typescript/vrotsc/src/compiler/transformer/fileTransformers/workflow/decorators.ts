@@ -76,6 +76,7 @@ function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression,
 							break;
 						case "else":
 							itemInfo.canvasItemPolymorphicBag.else = propValue;
+							break;
 						default:
 							throw new Error(`Item attribute '${propName}' is not suported.`);
 					}

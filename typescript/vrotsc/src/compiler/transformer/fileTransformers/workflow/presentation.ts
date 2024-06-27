@@ -168,16 +168,16 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 				stringBuilder.indent();
 				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
-				buildItemParameterBindings("in-binding", item.input);
-				buildItemParameterBindings("out-binding", item.output);
-				// @TODO: figure out what this is
-				stringBuilder.append(`<condition name="waitingTimer" type="Date" comparator="4" label="null" />`).appendLine();
-
-				stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
-				stringBuilder.unindent();
-				stringBuilder.append(`</workflow-item>`).appendLine();
 
 			case WorkflowItemType.WaitingTimer:
+				stringBuilder.append(`<workflow-item`
+					+ ` name="item${pos}"`
+					+ ` out-name="${targetItem}"`
+					+ ` type="${type}"`
+					+ ">").appendLine();
+				stringBuilder.indent();
+				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
+				break;
 			case WorkflowItemType.Item:
 			default:
 				stringBuilder.append(`<workflow-item`
@@ -188,12 +188,13 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 				stringBuilder.indent();
 				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
-				buildItemParameterBindings("in-binding", item.input);
-				buildItemParameterBindings("out-binding", item.output);
-				stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
-				stringBuilder.unindent();
-				stringBuilder.append(`</workflow-item>`).appendLine();
 		}
+
+		buildItemParameterBindings("in-binding", item.input);
+		buildItemParameterBindings("out-binding", item.output);
+		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+		stringBuilder.unindent();
+		stringBuilder.append(`</workflow-item>`).appendLine();
 	}
 
 	function buildItemParameterBindings(parentName: string, parameters: string[]): void {
