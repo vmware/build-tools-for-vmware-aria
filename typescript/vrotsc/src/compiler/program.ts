@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -26,8 +26,8 @@ import { getNativeContentTransformer } from "./transformer/fileTransformers/nati
 import { getPolicyTemplateTransformer } from "./transformer/fileTransformers/policyTemplate";
 import { getResourceTransformer } from "./transformer/fileTransformers/resource";
 import { getTestTransformer } from "./transformer/fileTransformers/test";
-import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow";
 import { getSagaTransformer } from "./transformer/saga/saga";
+import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow/workflow";
 
 export interface Program {
 	getFiles(): readonly FileDescriptor[];
