@@ -1,17 +1,15 @@
 # Build Tools for VMware Aria System
 
-**Build Tools for VMware Aria** are built on top of the Maven build automation ecosystem. vRealize Automation and vRealize 
+**Build Tools for VMware Aria** are built on top of the Maven build automation ecosystem. vRealize Automation and vRealize
 Orchestrator content are described as Maven Project Object Models which enable huge amount of options like automated build
 going through phases like validate, compile, test, package, verify, install and deploy; dependency management, versioning, etc.
-
-# Installation and Configuration
 
 ## Installation
 
 ### Prerequisites
 - Build Tools for VMware Aria Platform
-    - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
-    - Workstation can access Build Tools for VMware Aria Platform services
+  - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
+  - Workstation can access Build Tools for VMware Aria Platform services
 - Java 17
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 
@@ -21,7 +19,7 @@ There are several things that need to be in place before you can use the toolcha
 
 ### Java Keystore
 Java keystore used for signing packages build time.
-```
+```shell
 # Create new Keystore
 keytool -keystore package.jks -genkey -alias _dunesrsa_alias_ -storepass 'VMware1!' -keyalg RSA
 
@@ -51,10 +49,10 @@ keytool -exportcert -alias _dunesrsa_alias_ -keystore package.jks -storepass 'VM
 Firstly, you will need to configure Maven.
 
 There are a number of properties that must be set through profiles in the settings.xml file, as they are environment specific:
-* keystorePassword - Required. This is the password for the keystore used for signing vRO packages.
-* keystoreLocation - Required. This is the location of the keystore. You can either hardcode a location on the machine executing the build.
-* snapshotRepositoryUrl - Required. This is the url of the snapshot maven repository.
-* releaseRepositoryUrl - Required. This is the url of the release maven repository. Could be the same as snapshotRepositoryUrl.
+- keystorePassword - Required. This is the password for the keystore used for signing vRO packages.
+- keystoreLocation - Required. This is the location of the keystore. You can either hardcode a location on the machine executing the build.
+- snapshotRepositoryUrl - Required. This is the url of the snapshot maven repository.
+- releaseRepositoryUrl - Required. This is the url of the release maven repository. Could be the same as snapshotRepositoryUrl.
 
 The recommended approach is to keep a settings XML file under SCM to be used by developers and a modified version with credentials for the Artifactory deployed on the CI server directly (i.e. not accessible by everyone).
 
@@ -82,17 +80,17 @@ to the maven invocation.
         <profile>
             <id>packaging</id>
             <properties>
-				<!-- Version < 2.14
+        <!-- Version < 2.14
                 <keystorePassword>{keystore_password}</keystorePassword>
                 <keystoreLocation>{keystore_location}</keystoreLocation> -->
 
-				<!-- Version >= 2.14 -->
-				<keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
-				<keystoreArtifactId>archetype.keystore</keystoreArtifactId>
-				<keystoreVersion>2.0.0</keystoreVersion>
-				<vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
-				<vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
-				<vroKeyPass>VMware1!</vroKeyPass>
+        <!-- Version >= 2.14 -->
+        <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
+        <keystoreArtifactId>archetype.keystore</keystoreArtifactId>
+        <keystoreVersion>2.0.0</keystoreVersion>
+        <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
+        <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
+        <vroKeyPass>VMware1!</vroKeyPass>
             </properties>
         </profile>
         <profile>
@@ -181,7 +179,7 @@ You must have the keystore file accessible on the machine and set the **keystore
 ### Bundling
 There is a built-in bundling capabilities that are described in a Maven profile. You can decide to not only package a vRO/vRA project, but also to create a ```*-bundle.zip``` with all its dependencies. This will create an archive with the following structure:
 
-```sh
+```text
 vro/ # all vRO packages. If the current project is vRO, its package will be here as well.
 vra/ # all vRA packages. IF the current project is vRA, its package will be here as well.
 repo/ # JARs that comprise the bundle installer - a CLI tool that is capable of importing the whole bundle to a target environment.
@@ -190,8 +188,8 @@ bin/ # shells for invoking the bundle installer CLI.
     intasller.bat # Batch exectable version of the installer for Windows
 ```
 The bundle is produced as a separate artifact during ```mvn package```. To produce it, you need to add the ```-Pbundle-with-installer``` profile:
-```
-$ mvn clean deploy -Pbundle-with-installer
+```sh
+mvn clean deploy -Pbundle-with-installer
 ```
 
 To learn more about the bundle installer, check [Build Tools for VMware Aria - Bundle Installer](use-bundle-installer.md) for more information.
@@ -200,22 +198,22 @@ To learn more about the bundle installer, check [Build Tools for VMware Aria - B
 ### Security
 All API calls from the toolchain (i.e. the client) verify the SSL certificate
 returned by vRO/vRA (i.e. the server). If you are using self-signed or third-party signed certificates, you may need to
-add those certificates or their CA certificates to the default JAVA keystore, i.e. ```JAVA_HOME/lib/security/cacerts```. __This is the recommended approach.__
+add those certificates or their CA certificates to the default JAVA keystore, i.e. ```JAVA_HOME/lib/security/cacerts```. **This is the recommended approach.**
 
 
-The other option, __applicable ONLY for development environments__, is to ignore certificate checks by passing a flag.
+The other option, **applicable ONLY for development environments**, is to ignore certificate checks by passing a flag.
 
 ### Timeouts
 Controlling timeouts is done through the following System Properties:
-* the Connection Timeout ("vrealize.connection.timeout") – the time to establish the connection with the remote host (Defaults to 360 seconds (6 minutes))
-* the Socket Timeout ("vrealize.socket.timeout") – the time waiting for data – after establishing the connection maximum time of inactivity between two data packets (Defaults to 360 seconds(6 minutes))
-* the vra 8.x content import timeout ("vrang.import.timeout") – (in miliseconds) the time out waiting for import of custom forms / content sources to complete (Defaults to 6 seconds)
+- the Connection Timeout ("vrealize.connection.timeout") – the time to establish the connection with the remote host (Defaults to 360 seconds (6 minutes))
+- the Socket Timeout ("vrealize.socket.timeout") – the time waiting for data – after establishing the connection maximum time of inactivity between two data packets (Defaults to 360 seconds(6 minutes))
+- the vra 8.x content import timeout ("vrang.import.timeout") – (in miliseconds) the time out waiting for import of custom forms / content sources to complete (Defaults to 6 seconds)
 
 ### Delays
-* the vra 8.x data collection delay ("vrang.data.collection.delay.seconds") – (in seconds) the amount of time to way before running the import job.
+- the vra 8.x data collection delay ("vrang.data.collection.delay.seconds") – (in seconds) the amount of time to way before running the import job.
 The vRA data collection usually takes around 10 minutes ( 600 seconds ) to complete. Defaults to no delay.
 
-You can set these as JVM Options as specified here: https://maven.apache.org/configure.html
+You can set these as JVM Options as specified [here]( https://maven.apache.org/configure.html )
 
 Timeouts can be set up to be used by the installer too using the following settings (in the environment properties file):
 http_connection_timeout - for the connection timeout (in seconds), default is 360 seconds (6 minutes)

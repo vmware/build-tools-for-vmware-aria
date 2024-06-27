@@ -7,7 +7,7 @@
 ## Overview
 Prerequisites for installation of Build Tools for VMware Aria.
 
-## Table Of Contents:
+## Table Of Contents
 1. [Prerequisites](#prerequisites)
 2. [Installation and Configuration](#installation-and-configuration)
 
@@ -17,15 +17,15 @@ Prerequisites for installation of Build Tools for VMware Aria.
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 - NodeJS 16.x.x (use `nvm` if possible) [official downloads](https://nodejs.org/en/download/releases/)
 - Development vRealize Automation Tenant configured with development vRealize Orchestrator
-    - Tenant administrator user
-    - Workstation can access vRA server on port 443
+  - Tenant administrator user
+  - Workstation can access vRA server on port 443
 - Development vRealize Orchestrator
-    - vRO administrator user
-    - vRO appliance root user
-    - Workstation can access vRO server on ports [443 or 8281], 8283
+  - vRO administrator user
+  - vRO appliance root user
+  - Workstation can access vRO server on ports [443 or 8281], 8283
 - Powershell Core for Linux/MacOS if working with the polyglot powershell archetype.
-    - MacOS: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos
-    - Linux: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux
+  - [MacOS]( https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos )
+  - [Linux]( https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux )
 
 ### Installation and Configuration
 
