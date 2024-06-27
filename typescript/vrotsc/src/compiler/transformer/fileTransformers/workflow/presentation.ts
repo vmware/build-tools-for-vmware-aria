@@ -6,15 +6,17 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
-import { FileTransformationContext } from "../../../../types";
+import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
+
+const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
 /**
  * This will print the workflow in XML format
@@ -117,6 +119,13 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		stringBuilder.append(`</workflow-item>`).appendLine();
 	}
 
+	/**
+	 * Builds a single Workflow Item (canvas element)
+	 *
+	 * The `out-name` points to the next item in the workflow
+	 *
+	 * @param item The item to build
+	 */
 	function buildItem(item: WorkflowItemDescriptor, pos: number): void {
 		stringBuilder.append(`<workflow-item`
 			+ ` name="item${pos}"`
@@ -199,6 +208,65 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 				stringBuilder.unindent();
 				stringBuilder.append(`</presentation>`).appendLine();
 			}
+		}
+	}
+}
+
+export function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: string): string {
+	console.log(`Merging ${workflow.name}`);
+	const xmlDoc = new xmldoc.XmlDocument(xmlTemplate);
+	const stringBuilder = new StringBuilderClass();
+	let scriptIndex = 0;
+	let xmlLevel = 0;
+
+	stringBuilder.append(`<?xml version="1.0" encoding="UTF-8"?>`).appendLine();
+	mergeNode(xmlDoc);
+
+	return stringBuilder.toString();
+
+	function mergeNode(node: XmlNode): void {
+		switch (node.type) {
+			case "element":
+				mergeElement(<XmlElement>node);
+				break;
+			case "text":
+			case "cdata":
+				stringBuilder.append(node.toString().trim());
+				break;
+		}
+	}
+
+	function mergeElement(ele: XmlElement): void {
+		stringBuilder.append(`<${ele.name}`);
+		for (let attName in ele.attr || {}) {
+			if (xmlLevel === 0 && attName === "id") {
+				stringBuilder.append(` ${attName}="${workflow.id}"`);
+			}
+			else {
+				stringBuilder.append(` ${attName}="${ele.attr[attName]}"`);
+			}
+		}
+		stringBuilder.append(">");
+		mergeChildren(ele);
+		stringBuilder.append(`</${ele.name}>`);
+	}
+
+	function mergeChildren(ele: XmlElement): void {
+		if (ele.name === "script") {
+			stringBuilder.append(`<![CDATA[${workflow.items[scriptIndex++].sourceText}]]>`);
+		}
+		else if (ele.name === "display-name" && xmlLevel === 1) {
+			stringBuilder.append(`<![CDATA[${workflow.name}]]>`);
+		}
+		else if (ele.children && ele.children.length) {
+			xmlLevel++;
+			(ele.children || []).forEach(childNode => {
+				mergeNode(childNode);
+			});
+			xmlLevel--;
+		}
+		else if (ele.val != null) {
+			stringBuilder.append(ele.val);
 		}
 	}
 }

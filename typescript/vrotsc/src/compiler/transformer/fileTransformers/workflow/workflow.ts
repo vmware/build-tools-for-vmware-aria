@@ -1,4 +1,4 @@
-import { FileDescriptor, FileTransformationContext, FileType, XmlNode, XmlElement } from "../../../../types";
+import { FileDescriptor, FileTransformationContext, FileType } from "../../../../types";
 import { system } from "../../../../system/system";
 import { printElementInfo } from "../../../elementInfo";
 import { transformSourceFile } from "../../scripts/scripts";
@@ -7,7 +7,6 @@ import { transformShimsBefore, transformShims } from "../../codeTransformers/shi
 import { printSourceFile } from "../../helpers/source";
 import { generateElementId } from "../../../../utilities/utilities";
 import { getPropertyName } from "../../helpers/node";
-import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor } from "../../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
@@ -15,11 +14,9 @@ import { printPolyglotCode, registerPolyglotDecorators } from "./polyglot";
 import { prepareHeaderEmitter } from "../../codeTransformers/header";
 import { createWorkflowItemPrologueStatements } from "../../codeTransformers/prologueStatements";
 import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMethodDecorators } from "./decorators";
-import { printWorkflowXml } from "./presentation";
+import { mergeWorkflowXml, printWorkflowXml } from "./presentation";
 
 import * as ts from "typescript";
-
-const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
 //@TODO: Take a look at this
 
@@ -179,66 +176,4 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		actionSourceFiles.push(actionSourceFile);
 		workflowInfo.items.push(itemInfo);
 	}
-
-
-	function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: string): string {
-		console.log(`Merging ${workflow.name}`);
-		const xmlDoc = new xmldoc.XmlDocument(xmlTemplate);
-		const stringBuilder = new StringBuilderClass();
-		let scriptIndex = 0;
-		let xmlLevel = 0;
-
-		stringBuilder.append(`<?xml version="1.0" encoding="UTF-8"?>`).appendLine();
-		mergeNode(xmlDoc);
-
-		return stringBuilder.toString();
-
-		function mergeNode(node: XmlNode): void {
-			switch (node.type) {
-				case "element":
-					mergeElement(<XmlElement>node);
-					break;
-				case "text":
-				case "cdata":
-					stringBuilder.append(node.toString().trim());
-					break;
-			}
-		}
-
-		function mergeElement(ele: XmlElement): void {
-			stringBuilder.append(`<${ele.name}`);
-			for (let attName in ele.attr || {}) {
-				if (xmlLevel === 0 && attName === "id") {
-					stringBuilder.append(` ${attName}="${workflow.id}"`);
-				}
-				else {
-					stringBuilder.append(` ${attName}="${ele.attr[attName]}"`);
-				}
-			}
-			stringBuilder.append(">");
-			mergeChildren(ele);
-			stringBuilder.append(`</${ele.name}>`);
-		}
-
-		function mergeChildren(ele: XmlElement): void {
-			if (ele.name === "script") {
-				stringBuilder.append(`<![CDATA[${workflow.items[scriptIndex++].sourceText}]]>`);
-			}
-			else if (ele.name === "display-name" && xmlLevel === 1) {
-				stringBuilder.append(`<![CDATA[${workflow.name}]]>`);
-			}
-			else if (ele.children && ele.children.length) {
-				xmlLevel++;
-				(ele.children || []).forEach(childNode => {
-					mergeNode(childNode);
-				});
-				xmlLevel--;
-			}
-			else if (ele.val != null) {
-				stringBuilder.append(ele.val);
-			}
-		}
-	}
-
-
 }
