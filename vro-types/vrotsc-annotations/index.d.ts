@@ -198,9 +198,27 @@ interface VroDecisionItemDecorator {
 
 interface VroDecisionItemConfiguraiton {
 	target: string;
+	else: string;
 }
 
 interface VroDecisionItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Workflow Canvas Root Item ------------------------------------------------
+
+export declare const RootItem: VroRootItemDecorator;
+
+interface VroRootItemDecorator {
+	(obj?: VroRootItemConfiguraiton): VroRootItemMethodDecorator;
+	new(obj?: VroRootItemConfiguraiton): VroRootItemConfiguraiton;
+}
+
+interface VroRootItemConfiguraiton {
+}
+
+interface VroRootItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
