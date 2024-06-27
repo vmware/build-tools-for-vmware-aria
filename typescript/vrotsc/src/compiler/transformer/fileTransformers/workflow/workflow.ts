@@ -1,19 +1,21 @@
 import * as ts from "typescript";
 
-import { FileDescriptor, FileTransformationContext, FileType, DiagnosticCategory, XmlNode, XmlElement } from "../../../types";
-import { system } from "../../../system/system";
-import { printElementInfo } from "../../elementInfo";
-import { transformSourceFile } from "../scripts/scripts";
-import { collectFactsBefore } from "../metaTransformers/facts";
-import { transformShimsBefore, transformShims } from "../codeTransformers/shims";
-import { addHeaderComment, printSourceFile } from "../helpers/source";
-import { generateElementId } from "../../../utilities/utilities";
-import { getPropertyName, getIdentifierTextOrNull, getDecoratorNames, getDecoratorName } from "../helpers/node";
-import { getVroType } from "../helpers/vro";
-import { StringBuilderClass } from "../../../utilities/stringBuilder";
-import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor, WorkflowMethodType } from "../../../decorators";
-import { remediateTypeScript } from "../codeTransformers/remediate";
-import { transformModuleSystem } from "../codeTransformers/modules";
+import { FileDescriptor, FileTransformationContext, FileType, DiagnosticCategory, XmlNode, XmlElement } from "../../../../types";
+import { system } from "../../../../system/system";
+import { printElementInfo } from "../../../elementInfo";
+import { transformSourceFile } from "../../scripts/scripts";
+import { collectFactsBefore } from "../../metaTransformers/facts";
+import { transformShimsBefore, transformShims } from "../../codeTransformers/shims";
+import { addHeaderComment, printSourceFile } from "../../helpers/source";
+import { generateElementId } from "../../../../utilities/utilities";
+import { getPropertyName, getIdentifierTextOrNull, getDecoratorNames, getDecoratorName } from "../../helpers/node";
+import { getVroType } from "../../helpers/vro";
+import { StringBuilderClass } from "../../../../utilities/stringBuilder";
+import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor, WorkflowMethodType } from "../../../../decorators";
+import { remediateTypeScript } from "../../codeTransformers/remediate";
+import { transformModuleSystem } from "../../codeTransformers/modules";
+import { buildPolyglotInfo, printPolyglotCode } from "./polyglot";
+import { prepareHeaderEmitter } from "../../codeTransformers/header";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -74,19 +76,12 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 						transformShims,
 						remediateTypeScript,
 						transformModuleSystem,
-						emitHeaderComment,
+						prepareHeaderEmitter(context)
 					],
 				},
 				file);
 			actionItems[i].sourceText = sourceText;
 		});
-	}
-
-	function emitHeaderComment(sourceFile: ts.SourceFile): ts.SourceFile {
-		if (context.emitHeader) {
-			addHeaderComment(<ts.Statement[]><unknown>sourceFile.statements);
-		}
-		return sourceFile;
 	}
 
 	function registerWorkflowClass(classNode: ts.ClassDeclaration): void {
@@ -125,25 +120,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			sourceText: "",
 		};
 
-		const polyglotInfo: PolyglotDescriptor = {
-			package: "",
-			method: ""
-		};
+		const polyglotInfo: PolyglotDescriptor = { package: "", method: "" };
 
-/*-
- * #%L
- * vrotsc
- * %%
- * Copyright (C) 2023 - 2024 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- *
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- *
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
 
 		let decoratorPolyglot = false;
 		const decorators = ts.getDecorators(methodNode);
@@ -191,9 +169,9 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		workflowInfo.items.push(itemInfo);
 	}
 
-    /**
-     * Fetches details from the decorators for the methods and adds the information to the Descriptors
-     */
+	/**
+	 * Fetches details from the decorators for the methods and adds the information to the Descriptors
+	 */
 	function registerMethodDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
 		const decorators = ts.getDecorators(methodNode);
 
@@ -451,7 +429,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	}
 
 	function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: string): string {
-        console.log(`Merging ${workflow.name}`)
+		console.log(`Merging ${workflow.name}`);
 		const xmlDoc = new xmldoc.XmlDocument(xmlTemplate);
 		const stringBuilder = new StringBuilderClass();
 		let scriptIndex = 0;
@@ -511,6 +489,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 
 	function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTransformationContext): string {
 		console.log(`Printing workflow ${workflow.name}...`);
+		console.log(workflow);
 		const stringBuilder = new StringBuilderClass("", "");
 		stringBuilder.append(`<?xml version="1.0" encoding="utf-8" ?>`).appendLine();
 		stringBuilder.append(`<workflow`
@@ -690,51 +669,4 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		}
 	}
 
-	function buildPolyglotInfo(polyglotInfo: PolyglotDescriptor, decoratorCallExp: ts.CallExpression) {
-		const objLiteralNode = decoratorCallExp.arguments[0] as ts.ObjectLiteralExpression;
-		if (objLiteralNode) {
-			objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
-				const propName = getPropertyName(property.name);
-				switch (propName) {
-					case "package":
-						polyglotInfo.package = (<ts.StringLiteral>property.initializer).text;
-						break;
-					case "method":
-						polyglotInfo.method = (<ts.StringLiteral>property.initializer).text;
-						break;
-					default:
-						throw new Error(`Polyglot attribute '${propName}' is not suported.`);
-				}
-			});
-		}
-	}
-
-	function printPolyglotCode(moduleName: string, methodName: string, input: string[], output: string[]): string {
-		let result = "";
-		result += `//AUTOGENERATED POLYGLOT INVOCATION ---- DON'T TOUCHE THIS SECTION CODE\n`;
-		result += `System.log("Starting execution of polyglot decorator")\n`;
-		result += `var polyglot_module = System.getModule("${moduleName}");`;
-		result += `var polyglot_result = polyglot_module["${methodName}"](${buildPolyglotInputArgs(input)});\n`;
-		result += `${buildOutput(output)} = polyglot_result;\n`;
-		result += `System.log("Finish execution of polyglot decorator")\n`;
-		result += `System.log("Starting execution of action code")\n`;
-
-		return result;
-	}
-
-	function buildPolyglotInputArgs(input: string[]): string {
-		let inputArgs = "";
-		{
-			for (let i = 0; i < input.length; i += 1) {
-				inputArgs += `${input[i]},`;
-			}
-		}
-		return inputArgs.substring(0, inputArgs.length - 1);//Remove the last ','
-	}
-
-	function buildOutput(output: string[]): string {
-		if (output == undefined || output.length == 0)
-			throw new Error("Polyglot decorator require an @Out parameter");
-		return output[0];
-	}
-		}
+}

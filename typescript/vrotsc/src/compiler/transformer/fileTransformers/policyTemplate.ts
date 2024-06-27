@@ -26,6 +26,7 @@ import { generateElementId } from "../../../utilities/utilities";
 import { getPropertyName } from "../helpers/node";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
 import { PolicyTemplateDescriptor, PolicyTemplateEventDescriptor, PolicyTemplateScheduleDescriptor } from "../../../decorators";
+import { prepareHeaderEmitter } from "../codeTransformers/header";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -86,7 +87,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 						transformShims,
 						remediateTypeScript,
 						transformModuleSystem,
-						emitHeaderComment,
+						prepareHeaderEmitter(context),
 					],
 				},
 				file);
@@ -94,20 +95,6 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		});
 	}
 
-	/**
-	 * Adds a header comment to the source file if the context allows it.
-	 *
-	 * The header just warns that changes made directly in VRO Client might be overwritten.
-	 *
-	 * @param {ts.SourceFile} sourceFile - The source file.
-	 * @returns {ts.SourceFile} The source file with a header comment.
-	 */
-	function emitHeaderComment(sourceFile: ts.SourceFile): ts.SourceFile {
-		if (context.emitHeader) {
-			addHeaderComment(<ts.Statement[]><unknown>sourceFile.statements);
-		}
-		return sourceFile;
-	}
 
 	/**
 	 * This function extracts information from the class declaration and its decorators to create a policy template descriptor.
