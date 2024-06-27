@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { getDecoratorName, getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
 import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowMethodType, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
@@ -10,9 +24,16 @@ import { DiagnosticCategory, FileTransformationContext } from "../../../../types
 export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
 	const decorators = ts.getDecorators(methodNode);
 
-	if (decorators && decorators.length !== 1) {
+	if (!decorators || decorators?.length === 0) {
+		return;
+	}
+
+	console.log(decorators);
+
+	if (decorators.length !== 1) {
 		throw new Error(`Method '${itemInfo.name}' should have exactly one decorator.`);
 	}
+
 
 	const decoratorName = getDecoratorName(decorators[0]);
 
@@ -258,7 +279,6 @@ function buildWorkflowDecoratorParameters(
 		}
 	});
 }
-
 
 function getWorkflowParamValue(node: ts.Node): string {
 	switch (node.kind) {

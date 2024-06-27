@@ -1,7 +1,30 @@
+import { PolyglotDescriptor } from "../../../../decorators";
+import { getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
+
 import * as ts from "typescript";
 
-import { PolyglotDescriptor } from "../../../../decorators";
-import { getPropertyName } from "../../helpers/node";
+export function registerPolyglotDecorators(methodNode: ts.MethodDeclaration, polyglotInfo: PolyglotDescriptor) {
+
+	let decoratorPolyglot = false;
+	const decorators = ts.getDecorators(methodNode);
+	if (decorators && decorators.length >= 1) {
+
+		decorators.forEach(decoratorNode => {
+			const callExpNode = decoratorNode.expression as ts.CallExpression;
+
+			const identifierText = getIdentifierTextOrNull(callExpNode.expression);
+
+			if (identifierText === "Polyglot") {
+				decoratorPolyglot = true;
+
+				//Extract the information stored in the @Polyglot decorator
+				buildPolyglotInfo(polyglotInfo, <ts.CallExpression>decoratorNode.expression);
+			}
+		});
+	}
+
+	return decoratorPolyglot;
+}
 
 /**
  * Contains code related to workflow polyglot logic.

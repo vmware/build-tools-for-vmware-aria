@@ -68,7 +68,7 @@ interface VroPolicyTemplate {
 		[name: string]: string | PolicyAttribute;
 	};
 	elements?: {
-		[name: string]: PolicyElement
+		[name: string]: PolicyElement;
 	};
 	schedule?: {
 		periode: VroPolicyTemplateScehdulePeriod;
@@ -87,7 +87,7 @@ type PolicyElement = {
 		when: string;
 		timezone: string;
 	};
-}
+};
 
 type PolicyWorkflowInfo = {
 	workflowId: string;
@@ -95,9 +95,9 @@ type PolicyWorkflowInfo = {
 		[name: string]: {
 			type: string;
 			variable: string;
-		}
-	}
-}
+		};
+	};
+};
 
 type PolicyAttribute = {
 	type: string,
@@ -105,7 +105,7 @@ type PolicyAttribute = {
 	description?: string;
 	configId?: string;
 	configKey?: string;
-}
+};
 
 type VroPolicyTemplateType = "AMQP:Subscription" | "MQTT:Subscription" | "SNMP:SnmpDevice" | "SNMP:TrapHost";
 type VroPolicyTemplateTypeV2 = string | VroPolicyTemplateType | "Periodic Event";
@@ -123,7 +123,7 @@ type SupportedValues = string | boolean | number;
 
 type CompositeType = {
 	[name: string]: SupportedValues | SupportedValues[];
-}
+};
 
 type AttributeValue = CompositeType | SupportedValues | SupportedValues[];
 
@@ -131,7 +131,7 @@ type Attribute = {
 	type: string,
 	value?: AttributeValue;
 	description?: string;
-}
+};
 
 // Configuration
 interface VroConfiguration {
@@ -151,6 +151,24 @@ interface VroConfigurationDecorator {
 
 export declare const Configuration: VroConfigurationDecorator;
 
+// ---------------------------------------------- Workflow Canvas Items ------------------------------------------------
+
+export declare const Item: VroItemDecorator;
+
+interface VroItemDecorator {
+	(obj?: VroItemConfiguraiton): VroItemMethodDecorator;
+	new(obj?: VroItemConfiguraiton): VroItemConfiguraiton;
+}
+
+interface VroItemConfiguraiton {
+	target: string;
+	exception?: string;
+}
+interface VroItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
 
@@ -159,7 +177,7 @@ interface VroPolyglotDecorator {
 	new(obj?: VroPolyglotConfiguration): VroPolyglotConfiguration;
 }
 
-interface VroPolyglotConfiguration { package: string, method: string }
+interface VroPolyglotConfiguration { package: string, method: string; }
 interface PolyglotMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;

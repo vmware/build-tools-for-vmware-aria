@@ -1,5 +1,3 @@
-import * as ts from "typescript";
-
 import { FileDescriptor, FileTransformationContext, FileType, XmlNode, XmlElement } from "../../../../types";
 import { system } from "../../../../system/system";
 import { printElementInfo } from "../../../elementInfo";
@@ -8,16 +6,18 @@ import { collectFactsBefore } from "../../metaTransformers/facts";
 import { transformShimsBefore, transformShims } from "../../codeTransformers/shims";
 import { printSourceFile } from "../../helpers/source";
 import { generateElementId } from "../../../../utilities/utilities";
-import { getPropertyName } from "../../helpers/node";
+import { getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor } from "../../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
-import { buildPolyglotInfo, printPolyglotCode } from "./polyglot";
+import { buildPolyglotInfo, printPolyglotCode, registerPolyglotDecorators } from "./polyglot";
 import { prepareHeaderEmitter } from "../../codeTransformers/header";
 import { createWorkflowItemPrologueStatements } from "../../codeTransformers/prologueStatements";
-import { buildWorkflowDecorators, registerMethodArgumentDecorators } from "./decorators";
+import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMethodDecorators } from "./decorators";
 import { printWorkflowXml } from "./presentation";
+
+import * as ts from "typescript";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -136,25 +136,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		const polyglotInfo: PolyglotDescriptor = { package: "", method: "" };
 
 
-		let decoratorPolyglot = false;
-		const decorators = ts.getDecorators(methodNode);
-		if (decorators && decorators.length >= 1) {
-
-			decorators.forEach(decoratorNode => {
-
-				const callExpNode = decoratorNode.expression as ts.CallExpression;
-				if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {
-					if ((<ts.Identifier>callExpNode.expression).text === "Polyglot") {
-						decoratorPolyglot = true;
-
-						//Extract the information stored in the @Polyglot decorator
-						buildPolyglotInfo(polyglotInfo, <ts.CallExpression>decoratorNode.expression);
-					}
-				}
-			});
-		}
-
-		// registerMethodDecorators(methodNode, workflowInfo, itemInfo);
+		const decoratorPolyglot = registerPolyglotDecorators(methodNode, polyglotInfo);
+		registerMethodDecorators(methodNode, workflowInfo, itemInfo);
 		registerMethodArgumentDecorators(methodNode, workflowInfo, itemInfo);
 
 		const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
