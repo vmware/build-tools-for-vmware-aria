@@ -132,6 +132,15 @@ export function getDecoratorNames(decorators: readonly ts.Decorator[]): string[]
 	return [];
 }
 
+/**
+ * Wrapper for getDecoratorNames that returns the first decorator name or null if none are found.
+ */
+export function getDecoratorName(decorator: ts.Decorator): string {
+	const result = getDecoratorNames([decorator]);
+
+	return result.length > 0 ? result[0] : null;
+}
+
 export function hasModifier(modifiers: ts.NodeArray<ts.ModifierLike>, kind: ts.SyntaxKind): boolean {
 	return modifiers != null && modifiers.some(x => x.kind === kind);
 }

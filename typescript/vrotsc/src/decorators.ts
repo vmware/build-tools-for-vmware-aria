@@ -70,6 +70,10 @@ export enum WorkflowParameterType {
 	Output = 2 << 1,
 }
 
+export enum WorkflowMethodType {
+	Item = "Item",
+}
+
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
 
 
@@ -97,6 +101,7 @@ export interface PolyglotDescriptor {
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+
 	method: string;
 }
 

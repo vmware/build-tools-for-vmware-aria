@@ -8,10 +8,10 @@ import { collectFactsBefore } from "../metaTransformers/facts";
 import { transformShimsBefore, transformShims } from "../codeTransformers/shims";
 import { addHeaderComment, printSourceFile } from "../helpers/source";
 import { generateElementId } from "../../../utilities/utilities";
-import { getPropertyName, getIdentifierTextOrNull, getDecoratorNames } from "../helpers/node";
+import { getPropertyName, getIdentifierTextOrNull, getDecoratorNames, getDecoratorName } from "../helpers/node";
 import { getVroType } from "../helpers/vro";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
-import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor } from "../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameterType, WorkflowParameter, PolyglotDescriptor, WorkflowMethodType } from "../../../decorators";
 import { remediateTypeScript } from "../codeTransformers/remediate";
 import { transformModuleSystem } from "../codeTransformers/modules";
 
@@ -100,7 +100,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			presentation: undefined,
 			description: undefined
 		};
-        const decorators = ts.getDecorators(classNode);
+		const decorators = ts.getDecorators(classNode);
 		if (decorators && decorators.length) {
 			buildWorkflowDecorators(workflowInfo, classNode);
 		}
@@ -138,17 +138,15 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 
-		//Arnold Here check the Polyglot decorator for the methods
-
 		let decoratorPolyglot = false;
-        const decorators = ts.getDecorators(methodNode);
+		const decorators = ts.getDecorators(methodNode);
 		if (decorators && decorators.length >= 1) {
 
 			decorators.forEach(decoratorNode => {
@@ -165,12 +163,61 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			});
 		}
 
+		// registerMethodDecorators(methodNode, workflowInfo, itemInfo);
+		registerMethodArgumentDecorators(methodNode, workflowInfo, itemInfo);
+
+		const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
+		let actionSourceText = printSourceFile(
+			ts.factory.updateSourceFile(
+				sourceFile,
+				[
+					...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
+					...createWorkflowItemPrologueStatements(methodNode),
+					...methodNode.body.statements
+				]));
+
+		//Exists a declaration of a Polyglot decorator
+		if (itemInfo.input.length > 0 && itemInfo.output.length > 0 && decoratorPolyglot) {
+			const polyglotCall = printPolyglotCode(polyglotInfo.package, polyglotInfo.method, itemInfo.input, itemInfo.output);
+			actionSourceText = polyglotCall + actionSourceText;
+		}
+		const actionSourceFile = ts.createSourceFile(
+			actionSourceFilePath,
+			actionSourceText,
+			ts.ScriptTarget.Latest,
+			true);
+
+		actionSourceFiles.push(actionSourceFile);
+		workflowInfo.items.push(itemInfo);
+	}
+
+    /**
+     * Fetches details from the decorators for the methods and adds the information to the Descriptors
+     */
+	function registerMethodDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
+		const decorators = ts.getDecorators(methodNode);
+
+		if (decorators && decorators.length !== 1) {
+			throw new Error(`Method '${itemInfo.name}' should have exactly one decorator.`);
+		}
+
+		const decoratorName = getDecoratorName(decorators[0]);
+
+		switch (decoratorName) {
+			case WorkflowMethodType.Item:
+
+				break;
+		}
+	}
+
+	function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
 		if (methodNode.parameters.length) {
 			methodNode.parameters.forEach(paramNode => {
 				const name = getIdentifierTextOrNull(paramNode.name);
 				if (name) {
 					let parameterType = WorkflowParameterType.Default;
-                    const decorators = ts.getDecorators(methodNode);
+					const decorators = ts.getDecorators(methodNode);
+					// Adds state of what decorators are present
 					getDecoratorNames(decorators).forEach(decoratorName => {
 						switch (decoratorName || "In") {
 							case "In":
@@ -200,32 +247,6 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				}
 			});
 		}
-
-
-
-		const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-		let actionSourceText = printSourceFile(
-			ts.factory.updateSourceFile(
-				sourceFile,
-				[
-					...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
-					...createWorkflowItemPrologueStatements(methodNode),
-					...methodNode.body.statements
-				]));
-
-		//Exists a declaration of a Polyglot decorator
-		if (itemInfo.input.length > 0 && itemInfo.output.length > 0 && decoratorPolyglot) {
-			const polyglotCall = printPolyglotCode(polyglotInfo.package, polyglotInfo.method, itemInfo.input, itemInfo.output);
-			actionSourceText = polyglotCall + actionSourceText;
-		}
-		const actionSourceFile = ts.createSourceFile(
-			actionSourceFilePath,
-			actionSourceText,
-			ts.ScriptTarget.Latest,
-			true);
-
-		actionSourceFiles.push(actionSourceFile);
-		workflowInfo.items.push(itemInfo);
 	}
 
 	function createWorkflowItemPrologueStatements(methodNode: ts.MethodDeclaration): ts.Statement[] {
@@ -237,7 +258,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				const paramName = (<ts.Identifier>paramNode.name).text;
 				variableDeclarations.push(ts.factory.createVariableDeclaration(
 					paramName,
-                    undefined,
+					undefined,
 					paramNode.type,
                         /* initializer */ undefined
 				));
@@ -274,7 +295,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	}
 
 	function buildWorkflowDecorators(workflowInfo: WorkflowDescriptor, classNode: ts.ClassDeclaration): void {
-        const decorators = ts.getDecorators(classNode);
+		const decorators = ts.getDecorators(classNode);
 		decorators
 			.filter(decoratorNode => {
 				const callExpNode = decoratorNode.expression as ts.CallExpression;
@@ -430,6 +451,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	}
 
 	function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: string): string {
+        console.log(`Merging ${workflow.name}`)
 		const xmlDoc = new xmldoc.XmlDocument(xmlTemplate);
 		const stringBuilder = new StringBuilderClass();
 		let scriptIndex = 0;
@@ -488,6 +510,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	}
 
 	function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTransformationContext): string {
+		console.log(`Printing workflow ${workflow.name}...`);
 		const stringBuilder = new StringBuilderClass("", "");
 		stringBuilder.append(`<?xml version="1.0" encoding="utf-8" ?>`).appendLine();
 		stringBuilder.append(`<workflow`
@@ -541,7 +564,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		function buildAttributes(attributes: WorkflowParameter[]): void {
 			attributes.forEach(att => {
 				stringBuilder.append(`<attrib name="${att.name}" type="${att.type}" read-only="false"`);
-				buildBindAttribute(att)
+				buildBindAttribute(att);
 				stringBuilder.append(` />`).appendLine();
 			});
 		}
@@ -552,20 +575,20 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				const index = value.lastIndexOf("/");
 				if (index == -1) {
 					throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Elemene) but its value "${value}" `
-						+	`cannot be mapped to a Configuraiton Element path. No / separator in value. Expected formaat is "/Path/To/Confif/variable".`);
+						+ `cannot be mapped to a Configuraiton Element path. No / separator in value. Expected formaat is "/Path/To/Confif/variable".`);
 				}
-				if (index >= value.length-1) {
+				if (index >= value.length - 1) {
 					throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Elemene) `
-						+	`but its value "${value}" ends in / character. Expected formaat is "/Path/To/Confif/variable".`);
+						+ `but its value "${value}" ends in / character. Expected formaat is "/Path/To/Confif/variable".`);
 				}
-				const key = value.substring(index+1).trim();
+				const key = value.substring(index + 1).trim();
 				const path = value.substring(0, index).trim();
 				const id = context.configIdsMap[path];
 				if (id === null) {
 					throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that its value is bound to configuration element with path "${path}" and variable "${key}"`
-						+	`, but a configuration element with path "${path}" cannot be found in project at that stage. If you belive it is indeed really part of the project, `
-						+	`please try moving the file earlier alphabetically so it is processed earlier than the workflow that uses it. Currently available configuration elements are: `
-						+	JSON.stringify(context.configIdsMap));
+						+ `, but a configuration element with path "${path}" cannot be found in project at that stage. If you belive it is indeed really part of the project, `
+						+ `please try moving the file earlier alphabetically so it is processed earlier than the workflow that uses it. Currently available configuration elements are: `
+						+ JSON.stringify(context.configIdsMap));
 				}
 				stringBuilder.append(` conf-id="${id}" `);
 				stringBuilder.append(` conf-key="${key}" `);
@@ -714,4 +737,4 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			throw new Error("Polyglot decorator require an @Out parameter");
 		return output[0];
 	}
-}
+		}
