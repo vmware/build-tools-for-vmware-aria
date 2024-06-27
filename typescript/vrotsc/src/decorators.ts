@@ -40,14 +40,22 @@ export interface WorkflowDescriptor {
 	description: string;
 }
 
-export interface WorkflowItemDescriptor {
+export interface WorkflowItemDescriptor<T = any> {
 	name: string;
 	input: string[];
 	output: string[];
 	sourceText: string;
 	itemType: WorkflowItemType;
 	target: string; // Points to which item this item is connected to by name
-	canvasItemPolymorphicBag: any;
+	canvasItemPolymorphicBag: T;
+}
+
+export interface CanvasItemPolymorphicBagForItem {
+	exception?: string;
+}
+
+export interface CanvasItemPolymorphicBagForDecision {
+	else: string;
 }
 
 export interface WorkflowParameter {
@@ -96,6 +104,12 @@ export enum WorkflowItemType {
 	 */
 	WaitingTimer = "WaitingTimerItem",
 }
+
+export const ITEM_ENUM_TO_TYPE = {
+	[WorkflowItemType.Item]: "task",
+	[WorkflowItemType.Decision]: "condition",
+	[WorkflowItemType.WaitingTimer]: "waiting-timer"
+};
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
 

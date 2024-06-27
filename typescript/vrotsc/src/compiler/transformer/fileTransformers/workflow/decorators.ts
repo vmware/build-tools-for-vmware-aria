@@ -79,7 +79,6 @@ function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression,
 						default:
 							throw new Error(`Item attribute '${propName}' is not suported.`);
 					}
-
 			}
 		});
 	}

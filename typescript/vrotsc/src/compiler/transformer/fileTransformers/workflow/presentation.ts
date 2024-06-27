@@ -12,11 +12,25 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
+import { CanvasItemPolymorphicBagForDecision, ITEM_ENUM_TO_TYPE, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
 import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
+
+/**
+ * This function will find the index of the item with the given name, or return 0 if not found
+ *
+ * The index is incremented by 1, as the first item in the workflow is always the end item
+ *
+ * @param items The list of items to search
+ * @param name The name of the item to find
+ * @returns The index of the item with the given name, or 0 if not found
+ */
+function findItemByName(items: WorkflowItemDescriptor[], name: string): number {
+	const index = items.findIndex(item => item.name === name);
+	return index === -1 ? 0 : index + 1;;
+}
 
 /**
  * This will print the workflow in XML format
@@ -32,7 +46,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		+ ` xmlns="http://vmware.com/vco/workflow"`
 		+ ` xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`
 		+ ` xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd"`
-		+ ` root-name="item${workflow.items.findIndex(item => item.name === workflow.rootItem) + 1 || "1"}"`
+		+ ` root-name="item${findItemByName(workflow.items, workflow.rootItem) || "1"}"`
 		+ ` object-name="workflow:name=generic"`
 		+ ` id="${workflow.id}"`
 		+ ` version="${workflow.version}"`
@@ -135,22 +149,51 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 			item.target != null
 				? item.target === "end"
 					? "item0"
-					: `item${items.findIndex((i) => i.name === item.target) + 1 || 0}`
+					: `item${findItemByName(items, item.target) || 0}`
 				: pos < workflow.items.length ? `item${pos + 1}` : "item0";
 
-		stringBuilder.append(`<workflow-item`
-			+ ` name="item${pos}"`
-			+ ` out-name="${targetItem}"`
-			+ ` type="task"`
-			+ ">").appendLine();
-		stringBuilder.indent();
-		stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
-		stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
-		buildItemParameterBindings("in-binding", item.input);
-		buildItemParameterBindings("out-binding", item.output);
-		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
-		stringBuilder.unindent();
-		stringBuilder.append(`</workflow-item>`).appendLine();
+		const type = ITEM_ENUM_TO_TYPE[item.itemType] || "task";
+
+		switch (item.itemType) {
+
+			case WorkflowItemType.Decision:
+				stringBuilder.append(`<workflow-item`
+					+ ` name="item${pos}"`
+					+ ` out-name="${targetItem}"`
+					+ ` type="${type}"`
+					+ ` alt-out-name="item${findItemByName(items, (item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else) || 0}"`
+					//@TODO: figure out what this is
+					+ ` comparator="0"`
+					+ ">").appendLine();
+				stringBuilder.indent();
+				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
+				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
+				buildItemParameterBindings("in-binding", item.input);
+				buildItemParameterBindings("out-binding", item.output);
+				// @TODO: figure out what this is
+				stringBuilder.append(`<condition name="waitingTimer" type="Date" comparator="4" label="null" />`).appendLine();
+
+				stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+				stringBuilder.unindent();
+				stringBuilder.append(`</workflow-item>`).appendLine();
+
+			case WorkflowItemType.WaitingTimer:
+			case WorkflowItemType.Item:
+			default:
+				stringBuilder.append(`<workflow-item`
+					+ ` name="item${pos}"`
+					+ ` out-name="${targetItem}"`
+					+ ` type="${type}"`
+					+ ">").appendLine();
+				stringBuilder.indent();
+				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
+				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
+				buildItemParameterBindings("in-binding", item.input);
+				buildItemParameterBindings("out-binding", item.output);
+				stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+				stringBuilder.unindent();
+				stringBuilder.append(`</workflow-item>`).appendLine();
+		}
 	}
 
 	function buildItemParameterBindings(parentName: string, parameters: string[]): void {
