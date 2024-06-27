@@ -131,7 +131,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			sourceText: "",
 			itemType: WorkflowItemType.Item,
 			target: null,
-			canvasItemPolymorphicBag: null
+			canvasItemPolymorphicBag: {}
 		};
 
 		const polyglotInfo: PolyglotDescriptor = { package: "", method: "" };
