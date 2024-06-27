@@ -32,6 +32,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 		const callExpNode = decoratorNode.expression as ts.CallExpression;
 		const identifierText = getIdentifierTextOrNull(callExpNode.expression);
 
+
 		switch (identifierText) {
 			case "RootItem":
 
@@ -43,6 +44,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 				}
 				break;
 			default:
+				itemInfo.itemType = identifierText as WorkflowItemType;
 				const objLiteralNode = callExpNode.arguments[0] as ts.ObjectLiteralExpression;
 				registerCanvasItemArguments(objLiteralNode, identifierText, workflowInfo, itemInfo);
 		}
