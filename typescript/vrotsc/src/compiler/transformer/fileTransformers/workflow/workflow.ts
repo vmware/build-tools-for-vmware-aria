@@ -118,7 +118,43 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		classNode.members
 			.filter(member => member.kind === ts.SyntaxKind.MethodDeclaration)
 			.forEach((methodNode: ts.MethodDeclaration) => {
-				registerWorkflowItem(workflowInfo, methodNode);
+				const itemInfo = createWorkflowItemDescriptor(methodNode.name);
+				workflowInfo.items.push(itemInfo);
+
+				const polyglotDescriptor = registerWorkflowItem(workflowInfo, itemInfo, methodNode);
+
+				const decoratorPolyglot = polyglotDescriptor.method !== "" || polyglotDescriptor.package !== "";
+
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
+
+				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
+				let actionSourceText = getActionSourceText(methodNode, itemInfo, sourceFile);
+
+				//Exists a declaration of a Polyglot decorator
+				if (itemInfo.input.length > 0 && itemInfo.output.length > 0 && decoratorPolyglot) {
+					const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
+					actionSourceText = polyglotCall + actionSourceText;
+				}
+				const actionSourceFile = ts.createSourceFile(
+					actionSourceFilePath,
+					actionSourceText,
+					ts.ScriptTarget.Latest,
+					true);
+
+				actionSourceFiles.push(actionSourceFile);
 			});
 
 		workflowInfo.name = workflowInfo.name || classNode.name.text;
@@ -127,114 +163,98 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		workflows.push(workflowInfo);
 	}
 
-	/**
-	 * Responsible for extracting the information from a method node and registering data in the workflowInfo object.
-	 * It will also transpile the method body
-	 *
-	 * @param workflowInfo The workflow descriptor object.
-	 * @param methodNode The method node to extract information from.
-	 * @returns void
-	 */
-	function registerWorkflowItem(workflowInfo: WorkflowDescriptor, methodNode: ts.MethodDeclaration): void {
-		const itemInfo: WorkflowItemDescriptor = {
-			name: getPropertyName(methodNode.name),
-			input: [],
-			output: [],
-			sourceText: "",
-			itemType: WorkflowItemType.Item,
-			target: null,
-			canvasItemPolymorphicBag: {}
-		};
 
-		// @TODO: This can be "unstupified" by moving the logic with the rest of the decorators.
-		const polyglotInfo: PolyglotDescriptor = { method: "", package: "" };
+}
 
-		/*-
-		 * #%L
-		 * vrotsc
-		 * %%
-		 * Copyright (C) 2023 - 2024 VMware
-		 * %%
-		 * Build Tools for VMware Aria
-		 * Copyright 2023 VMware, Inc.
-		 *
-		 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
-		 *
-		 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
-		 * #L%
-		*/
-		const decoratorPolyglot = registerPolyglotDecorators(methodNode, polyglotInfo);
+/**
+ * Responsible for extracting the information from a method node and registering data in the workflowInfo object.
+ *
+ * @param workflowInfo The workflow descriptor object.
+ * @param itemInfo The workflow item descriptor that will be populated with information
+ * @param methodNode The method node to extract information from.
+ * @returns void
+ */
+function registerWorkflowItem(workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor, methodNode: ts.MethodDeclaration): PolyglotDescriptor {
+	// @TODO: This can be "unstupified" by moving the logic with the rest of the decorators.
+	const polyglotDescriptor: PolyglotDescriptor = createPolyglotDescriptor();
 
-		registerMethodDecorators(methodNode, workflowInfo, itemInfo);
-		registerMethodArgumentDecorators(methodNode, workflowInfo, itemInfo);
+	registerPolyglotDecorators(methodNode, polyglotDescriptor);
+	registerMethodDecorators(methodNode, workflowInfo, itemInfo);
+	registerMethodArgumentDecorators(methodNode, workflowInfo, itemInfo);
 
-		const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-		let actionSourceText = getActionSourceText(methodNode, itemInfo);
+	return polyglotDescriptor;
+}
 
-		//Exists a declaration of a Polyglot decorator
-		if (itemInfo.input.length > 0 && itemInfo.output.length > 0 && decoratorPolyglot) {
-			const polyglotCall = printPolyglotCode(polyglotInfo.package, polyglotInfo.method, itemInfo.input, itemInfo.output);
-			actionSourceText = polyglotCall + actionSourceText;
-		}
-		const actionSourceFile = ts.createSourceFile(
-			actionSourceFilePath,
-			actionSourceText,
-			ts.ScriptTarget.Latest,
-			true);
+/**
+ * This function is responsible for returning the source text of the action item.
+ *
+ * If the item is a decision, it will wrap the method body in a function and register it as a decision.
+ *  This wrapping is necessary because "return"s are not allowed in the root of a typescript file, but are allowed in the case of vRO.
+ *  The "wrapper" function will later be removed in the transpilation process.
+ *  @NOTE: This is 100% due to a typescript limitation, and not a vRO limitation.
+ *
+ * @param methodNode The method node to extract the source text from.
+ * @param itemInfo The item descriptor object.
+ * @returns string - The source text of the action item.
+ */
+function getActionSourceText(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor, sourceFile: ts.SourceFile): string {
+	switch (itemInfo.itemType) {
+		case WorkflowItemType.Decision:
+			itemInfo.itemType = WorkflowItemType.Decision;
 
-		actionSourceFiles.push(actionSourceFile);
-		workflowInfo.items.push(itemInfo);
+			const wrapperFunction = ts.factory.createFunctionDeclaration(
+				undefined,
+				undefined,
+				"wrapper",
+				undefined,
+				[],
+				undefined,
+				methodNode.body
+			);
+			return printSourceFile(
+				ts.factory.updateSourceFile(
+					sourceFile,
+					[
+						...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
+						...createWorkflowItemPrologueStatements(methodNode),
+						wrapperFunction
+					]
+				)
+			);
+		default:
+			return printSourceFile(
+				ts.factory.updateSourceFile(
+					sourceFile,
+					[
+						...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
+						...createWorkflowItemPrologueStatements(methodNode),
+						...methodNode.body.statements
+					]
+				)
+			);
 	}
+}
 
-	/**
-	 * This function is responsible for returning the source text of the action item.
-	 *
-	 * If the item is a decision, it will wrap the method body in a function and register it as a decision.
-	 *  This wrapping is necessary because "return"s are not allowed in the root of a typescript file, but are allowed in the case of vRO.
-	 *  The "wrapper" function will later be removed in the transpilation process.
-	 *  @NOTE: This is 100% due to a typescript limitation, and not a vRO limitation.
-	 *
-	 * @param methodNode The method node to extract the source text from.
-	 * @param itemInfo The item descriptor object.
-	 * @returns string - The source text of the action item.
-	 */
-	function getActionSourceText(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor): string {
-		switch (itemInfo.itemType) {
-			case WorkflowItemType.Decision:
-				itemInfo.itemType = WorkflowItemType.Decision;
+/**
+ * Represents the polyglot info extracted from the code
+ */
+function createPolyglotDescriptor(): PolyglotDescriptor {
+	return { method: "", package: "" };
+}
 
-				const wrapperFunction = ts.factory.createFunctionDeclaration(
-					undefined,
-					undefined,
-					"wrapper",
-					undefined,
-					[],
-					undefined,
-					methodNode.body
-				);
-				return printSourceFile(
-					ts.factory.updateSourceFile(
-						sourceFile,
-						[
-							...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
-							...createWorkflowItemPrologueStatements(methodNode),
-							wrapperFunction
-						]
-					)
-				);
-			default:
-				return printSourceFile(
-					ts.factory.updateSourceFile(
-						sourceFile,
-						[
-							...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
-							...createWorkflowItemPrologueStatements(methodNode),
-							...methodNode.body.statements
-						]
-					)
-				);
-		}
-	}
+/**
+ * Represents the workflow item descriptor information extracted from the property name node
+ */
+function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName) {
+	return {
+		name: getPropertyName(propertyNameNode),
+		input: [],
+		output: [],
+		sourceText: "",
+		itemType: WorkflowItemType.Item,
+		target: null,
+		canvasItemPolymorphicBag: {}
+	};
 }
 
 /**
