@@ -38,7 +38,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	actionSourceFiles.forEach(sourceFile => context.sourceFiles.push(sourceFile));
 
 	return function() {
-		transpileActionItems();
+		transpileActionItems(workflows, actionSourceFiles, context, file);
 
 		workflows.forEach(workflowInfo => {
 			const targetFilePath = system.changeFileExt(
@@ -70,30 +70,6 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 			}
 		});
 	};
-
-	function transpileActionItems(): void {
-		const actionItems = workflows.reduce((items, wf) => items.concat(wf.items), <WorkflowItemDescriptor[]>[]);
-		actionSourceFiles.forEach((actionSourceFile, i) => {
-			const [sourceText] = transformSourceFile(
-				actionSourceFile,
-				context,
-				{
-					before: [
-						collectFactsBefore,
-						transformShimsBefore,
-					],
-					after: [
-						transformShims,
-						remediateTypeScript,
-						transformModuleSystem,
-						prepareHeaderEmitter(context)
-					],
-				},
-				file);
-
-			actionItems[i].sourceText = sourceText;
-		});
-	}
 
 	/**
 	 * Handles parsing the decorators of a class node and registering the information in the workflowInfo object.
@@ -159,20 +135,20 @@ function decorateSourceFileTextWithPolyglot(actionSourceText: string, polyglotDe
 	if (itemInfo.input.length > 0 && itemInfo.output.length > 0) {
 		const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
 
-/*-
- * #%L
- * vrotsc
- * %%
- * Copyright (C) 2023 - 2024 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
+		/*-
+		 * #%L
+		 * vrotsc
+		 * %%
+		 * Copyright (C) 2023 - 2024 VMware
+		 * %%
+		 * Build Tools for VMware Aria
+		 * Copyright 2023 VMware, Inc.
+		 *
+		 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+		 *
+		 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+		 * #L%
+		 */
 		actionSourceText = polyglotCall + actionSourceText;
 	}
 
@@ -243,6 +219,49 @@ function getActionSourceText(methodNode: ts.MethodDeclaration, itemInfo: Workflo
 	}
 }
 
+/**
+ * Transpiles the action items.
+ *
+ * This function is responsible for transforming the source files of the action items.
+ * It will collect the source text of the action items and store it in the workflow descriptor.
+ *
+ * @param workflows The workflow descriptors.
+ * @param actionSourceFiles The source files of the action items.
+ * @param context The file transformation context.
+ * @param file The file descriptor.
+ * @returns void
+ */
+function transpileActionItems(
+	workflows: WorkflowDescriptor[],
+	actionSourceFiles: ts.SourceFile[],
+	context: FileTransformationContext,
+	file: FileDescriptor
+): void {
+	const actionItems = workflows.reduce((items, wf) => items.concat(wf.items), <WorkflowItemDescriptor[]>[]);
+
+	actionSourceFiles.forEach((actionSourceFile, i) => {
+		const [sourceText] = transformSourceFile(
+			actionSourceFile,
+			context,
+			{
+				before: [
+					collectFactsBefore,
+					transformShimsBefore,
+				],
+				after: [
+					transformShims,
+					remediateTypeScript,
+					transformModuleSystem,
+					prepareHeaderEmitter(context)
+				],
+			},
+			file);
+
+		actionItems[i].sourceText = sourceText;
+	});
+}
+
+// ---------------------------------------- Utility functions ----------------------------------------
 
 /**
  * Represents the workflow item descriptor information extracted from the property name node
