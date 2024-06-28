@@ -20,7 +20,7 @@ import { printElementInfo } from "../../elementInfo";
 import { getPropertyName } from "../helpers/node";
 import { getVroType } from "../helpers/vro";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
-import { ConfigurationDescriptor, ConfigurationAttribute } from "../../../decorators";
+import { ConfigurationDescriptor, ConfigurationAttribute } from "../../decorators";
 const yaml: typeof import("js-yaml") = require("js-yaml");
 
 /**
@@ -66,7 +66,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 			attributes: {}
 		};
 
-        const decorators = ts.getDecorators(classNode);
+		const decorators = ts.getDecorators(classNode);
 		if (decorators && decorators.length) {
 			decorators
 				.filter(decoratorNode => {

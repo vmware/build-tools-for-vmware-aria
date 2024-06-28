@@ -7,7 +7,7 @@ import { transformShimsBefore, transformShims } from "../../codeTransformers/shi
 import { printSourceFile } from "../../helpers/source";
 import { generateElementId } from "../../../../utilities/utilities";
 import { getPropertyName } from "../../helpers/node";
-import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor, WorkflowItemType } from "../../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor, WorkflowItemType } from "../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
 import { printPolyglotCode, registerPolyglotDecorators } from "./polyglot";

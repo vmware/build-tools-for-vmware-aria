@@ -25,7 +25,7 @@ import { addHeaderComment, printSourceFile } from "../helpers/source";
 import { generateElementId } from "../../../utilities/utilities";
 import { getPropertyName } from "../helpers/node";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
-import { PolicyTemplateDescriptor, PolicyTemplateEventDescriptor, PolicyTemplateScheduleDescriptor } from "../../../decorators";
+import { PolicyTemplateDescriptor, PolicyTemplateEventDescriptor, PolicyTemplateScheduleDescriptor } from "../../decorators";
 import { prepareHeaderEmitter } from "../codeTransformers/header";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
