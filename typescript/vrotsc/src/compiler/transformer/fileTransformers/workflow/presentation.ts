@@ -38,8 +38,6 @@ function findItemByName(items: WorkflowItemDescriptor[], name: string): number {
  * This is called when we are working with a `wf.ts` file
  */
 export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTransformationContext): string {
-	console.log(`Printing workflow ${workflow.name}...`);
-	console.log(workflow);
 	const stringBuilder = new StringBuilderClass("", "");
 	stringBuilder.append(`<?xml version="1.0" encoding="utf-8" ?>`).appendLine();
 	stringBuilder.append(`<workflow`
@@ -295,7 +293,6 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 }
 
 export function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: string): string {
-	console.log(`Merging ${workflow.name}`);
 	const xmlDoc = new xmldoc.XmlDocument(xmlTemplate);
 	const stringBuilder = new StringBuilderClass();
 	let scriptIndex = 0;

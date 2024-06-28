@@ -106,7 +106,6 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 				const decorators = ts.getDecorators(paramNode);
 				// Adds state of what decorators are present
 				getDecoratorNames(decorators).forEach(decoratorName => {
-					console.log("decoratorName: ", decoratorName);
 					switch (decoratorName || "In") {
 						case "In":
 							parameterType |= WorkflowParameterType.Input;
@@ -118,8 +117,6 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 							throw new Error(`Decorator '${decoratorName} is not supported'`);
 					}
 				});
-
-				console.log("parameterType: ", parameterType);
 
 				if (parameterType === WorkflowParameterType.Default) {
 					parameterType = WorkflowParameterType.Input;
