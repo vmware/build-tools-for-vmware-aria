@@ -93,10 +93,10 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		classNode.members
 			.filter(member => member.kind === ts.SyntaxKind.MethodDeclaration)
 			.forEach((methodNode: ts.MethodDeclaration) => {
-				const itemInfo = createWorkflowItemDescriptor(methodNode.name);
+				const itemInfo = createWorkflowItemDescriptor(methodNode.name, workflowInfo);
 				workflowInfo.items.push(itemInfo);
 
-				registerWorkflowItem(workflowInfo, itemInfo, methodNode);
+				registerWorkflowItem(itemInfo, methodNode);
 
 				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
 				let actionSourceText = getActionSourceText(methodNode, itemInfo, sourceFile);
@@ -162,10 +162,10 @@ function decorateSourceFileTextWithPolyglot(actionSourceText: string, polyglotDe
  * @param methodNode The method node to extract information from.
  * @returns void
  */
-function registerWorkflowItem(workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor, methodNode: ts.MethodDeclaration): void {
+function registerWorkflowItem(itemInfo: WorkflowItemDescriptor, methodNode: ts.MethodDeclaration): void {
 	registerPolyglotDecorators(methodNode, itemInfo);
-	registerMethodDecorators(methodNode, workflowInfo, itemInfo);
-	registerMethodArgumentDecorators(methodNode, workflowInfo, itemInfo);
+	registerMethodDecorators(methodNode, itemInfo);
+	registerMethodArgumentDecorators(methodNode, itemInfo);
 }
 
 /**
@@ -265,7 +265,7 @@ function transpileActionItems(
 /**
  * Represents the workflow item descriptor information extracted from the property name node
  */
-function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName): WorkflowItemDescriptor {
+function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName, workflowInfo: WorkflowDescriptor): WorkflowItemDescriptor {
 	return {
 		name: getPropertyName(propertyNameNode),
 		input: [],
@@ -274,6 +274,7 @@ function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName): Workfl
 		itemType: WorkflowItemType.Item,
 		target: null,
 		canvasItemPolymorphicBag: {},
+		workflowDescriptorRef: workflowInfo
 	};
 }
 

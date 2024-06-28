@@ -21,7 +21,7 @@ import { DiagnosticCategory, FileTransformationContext } from "../../../../types
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
  */
-export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
+export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
 	const decorators = ts.getDecorators(methodNode);
 
 	if (!decorators || decorators?.length === 0) {
@@ -29,9 +29,8 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 	}
 
 	for (const decoratorNode of decorators) {
-		const callExpNode = decoratorNode.expression as ts.CallExpression;
-		const identifierText = getIdentifierTextOrNull(callExpNode.expression);
-
+		const decoratorExpressionNode = decoratorNode.expression as ts.CallExpression;
+		const identifierText = getIdentifierTextOrNull(decoratorExpressionNode.expression);
 
 		switch (identifierText) {
 			case WorkflowItemType.RootItem:
@@ -39,63 +38,74 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 					throw new Error(`RootItem decorator must be applied to a method with an identifier name.`);
 				}
 
-				workflowInfo.rootItem = methodNode.name.escapedText as string;
+				itemInfo.workflowDescriptorRef.rootItem = methodNode.name.escapedText as string;
 				break;
 			default:
 				itemInfo.itemType = identifierText as WorkflowItemType;
 
-				const objLiteralNode = callExpNode.arguments[0] as ts.ObjectLiteralExpression;
-				registerCanvasItemArguments(objLiteralNode, identifierText, workflowInfo, itemInfo);
+				const objLiteralNode = decoratorExpressionNode.arguments[0] as ts.ObjectLiteralExpression;
+				registerCanvasItemArguments(objLiteralNode, identifierText, itemInfo);
 		}
 	}
 }
 
-function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression, identifierText: string, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
-	if (objLiteralNode) {
-		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
-			const propName = getPropertyName(property.name);
-			const propValue = (<ts.StringLiteral>property.initializer).text;
-
-			switch (identifierText) {
-				case WorkflowItemType.Item:
-					switch (propName) {
-						case "target":
-							itemInfo.target = propValue;
-							break;
-						case "exception":
-							itemInfo.canvasItemPolymorphicBag.exception = propValue;
-							break;
-						default:
-							throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
-					}
-					break;
-				case WorkflowItemType.Decision:
-					switch (propName) {
-						case "target":
-							itemInfo.target = propValue;
-							break;
-						case "else":
-							itemInfo.canvasItemPolymorphicBag.else = propValue;
-							break;
-						default:
-							throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
-					}
-					break;
-				case WorkflowItemType.WaitingTimer:
-					switch (propName) {
-						case "target":
-							itemInfo.target = propValue;
-							break;
-						default:
-							throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
-					}
-					break;
-			}
-		});
+/**
+ * Registers the canvas item arguments
+ *
+ * This is where information is extracted from the decorator and added to the infoObjects
+ *
+ * @param objLiteralNode The object literal node
+ * @param identifierText The identifier text
+ * @param itemInfo The item info
+ */
+function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression, identifierText: string, itemInfo: WorkflowItemDescriptor) {
+	if (!objLiteralNode) {
+		return;
 	}
+
+	objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
+		const propName = getPropertyName(property.name);
+		const propValue = (<ts.StringLiteral>property.initializer).text;
+
+		switch (identifierText) {
+			case WorkflowItemType.Item:
+				switch (propName) {
+					case "target":
+						itemInfo.target = propValue;
+						break;
+					case "exception":
+						itemInfo.canvasItemPolymorphicBag.exception = propValue;
+						break;
+					default:
+						throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
+				}
+				break;
+			case WorkflowItemType.Decision:
+				switch (propName) {
+					case "target":
+						itemInfo.target = propValue;
+						break;
+					case "else":
+						itemInfo.canvasItemPolymorphicBag.else = propValue;
+						break;
+					default:
+						throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
+				}
+				break;
+			case WorkflowItemType.WaitingTimer:
+				switch (propName) {
+					case "target":
+						itemInfo.target = propValue;
+						break;
+					default:
+						throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
+				}
+				break;
+		}
+	});
 }
 
-export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaration, workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor) {
+export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
 	if (methodNode.parameters.length) {
 		methodNode.parameters.forEach(paramNode => {
 			const name = getIdentifierTextOrNull(paramNode.name);
@@ -128,13 +138,19 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 					itemInfo.output.push(name);
 				}
 
-				buildWorkflowParameter(workflowInfo, paramNode, parameterType);
+				addParamToWorkflowParams(itemInfo.workflowDescriptorRef, paramNode, parameterType);
 			}
 		});
 	}
 }
 
-function buildWorkflowParameter(workflowInfo: WorkflowDescriptor, paramNode: ts.ParameterDeclaration, parameterType: WorkflowParameterType): void {
+/**
+ * This function adds the parameter to the workflow parameters
+ *
+ * It ensures that the parameter is not already present in the workflow parameters.
+ * This is needed since transitive variables must be defined as attirubtes
+ */
+function addParamToWorkflowParams(workflowInfo: WorkflowDescriptor, paramNode: ts.ParameterDeclaration, parameterType: WorkflowParameterType): void {
 	const name = (<ts.Identifier>paramNode.name).text;
 	let parameter = workflowInfo.parameters.find(p => p.name === name);
 	if (!parameter) {

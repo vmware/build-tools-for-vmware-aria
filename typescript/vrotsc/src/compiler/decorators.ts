@@ -43,6 +43,8 @@ export interface WorkflowDescriptor {
  * Represents a Workflow item (task, decision, waiting timer, polyglot)
  *
  * If the Workflow has a Polyglot decorator, the `polyglot` field will be present and it will contain the Polyglot information.
+ * The workflowDescriptorRef field is a reference to the parent WorkflowDescriptor, this is done since Workflow Flags and data is collected along with the
+ *   WorkflowItemDescriptor
  */
 export interface WorkflowItemDescriptor<T = any> {
 	name: string;
@@ -53,6 +55,7 @@ export interface WorkflowItemDescriptor<T = any> {
 	target: string; // Points to which item this item is connected to by name
 	canvasItemPolymorphicBag: T;
 	polyglot?: PolyglotDescriptor;
+	workflowDescriptorRef: WorkflowDescriptor;
 }
 
 export interface CanvasItemPolymorphicBagForItem {
