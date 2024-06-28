@@ -103,7 +103,7 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 			const name = getIdentifierTextOrNull(paramNode.name);
 			if (name) {
 				let parameterType = WorkflowParameterType.Default;
-				const decorators = ts.getDecorators(methodNode);
+				const decorators = ts.getDecorators(paramNode);
 				// Adds state of what decorators are present
 				getDecoratorNames(decorators).forEach(decoratorName => {
 					console.log("decoratorName: ", decoratorName);
