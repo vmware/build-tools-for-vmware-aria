@@ -162,14 +162,10 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ` out-name="${targetItem}"`
 					+ ` type="${type}"`
 					+ ` alt-out-name="item${findItemByName(items, (item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else) || 0}"`
-					//@TODO: figure out what this is
-					+ ` comparator="0"`
 					+ ">").appendLine();
 				stringBuilder.indent();
 				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
-				// @TODO: Figure out what this is
-				stringBuilder.append(`<condition name="waitingTimer" type="Date" comparator="4" label="null" />`).appendLine();
 				break;
 			case WorkflowItemType.WaitingTimer:
 				stringBuilder.append(`<workflow-item`

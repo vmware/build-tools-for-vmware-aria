@@ -107,7 +107,7 @@ export enum WorkflowItemType {
 
 export const ITEM_ENUM_TO_TYPE = {
 	[WorkflowItemType.Item]: "task",
-	[WorkflowItemType.Decision]: "condition",
+	[WorkflowItemType.Decision]: "custom-condition",
 	[WorkflowItemType.WaitingTimer]: "waiting-timer"
 };
 
