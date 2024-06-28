@@ -90,6 +90,13 @@ export enum WorkflowParameterType {
 
 export enum WorkflowItemType {
 	/**
+	 * This is a meta element, doesn't actually represent a workflow item.
+	 *
+	 * It indicates which item is the entry point of the workflow.
+	 */
+	RootItem = "RootItem",
+
+	/**
 	 * This is the default item type.
 	 *
 	 * It can target a specific item as well as have an exception target

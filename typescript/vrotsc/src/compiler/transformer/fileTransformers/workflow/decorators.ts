@@ -34,14 +34,12 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, workf
 
 
 		switch (identifierText) {
-			case "RootItem":
-
-				if (ts.isIdentifier(methodNode.name) || ts.isPrivateIdentifier(methodNode.name)) {
-					workflowInfo.rootItem = methodNode.name.escapedText as string;
-				}
-				else {
+			case WorkflowItemType.RootItem:
+				if (!ts.isIdentifier(methodNode.name) && !ts.isPrivateIdentifier(methodNode.name)) {
 					throw new Error(`RootItem decorator must be applied to a method with an identifier name.`);
 				}
+
+				workflowInfo.rootItem = methodNode.name.escapedText as string;
 				break;
 			default:
 				itemInfo.itemType = identifierText as WorkflowItemType;
