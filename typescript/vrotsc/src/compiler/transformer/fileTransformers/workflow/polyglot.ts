@@ -1,11 +1,11 @@
-import { PolyglotDescriptor } from "../../../decorators";
+import { PolyglotDescriptor, WorkflowItemDescriptor } from "../../../decorators";
 import { getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
 
 import * as ts from "typescript";
 
-export function registerPolyglotDecorators(methodNode: ts.MethodDeclaration, polyglotInfo: PolyglotDescriptor) {
+export function registerPolyglotDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
+	const polyglotInfo: PolyglotDescriptor = createPolyglotDescriptor();
 
-	let decoratorPolyglot = false;
 	const decorators = ts.getDecorators(methodNode);
 	if (decorators && decorators.length >= 1) {
 
@@ -15,15 +15,12 @@ export function registerPolyglotDecorators(methodNode: ts.MethodDeclaration, pol
 			const identifierText = getIdentifierTextOrNull(callExpNode.expression);
 
 			if (identifierText === "Polyglot") {
-				decoratorPolyglot = true;
-
 				//Extract the information stored in the @Polyglot decorator
 				buildPolyglotInfo(polyglotInfo, callExpNode);
+				itemInfo.polyglot = polyglotInfo;
 			}
 		});
 	}
-
-	return decoratorPolyglot;
 }
 
 /**
@@ -91,4 +88,11 @@ function buildOutput(output: string[]): string {
 		throw new Error("Polyglot decorator require an @Out parameter");
 	}
 	return output[0];
+}
+
+/**
+ * Represents the polyglot info extracted from the code
+ */
+function createPolyglotDescriptor(): PolyglotDescriptor {
+	return { method: "", package: "" };
 }

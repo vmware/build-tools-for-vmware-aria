@@ -121,9 +121,43 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				const itemInfo = createWorkflowItemDescriptor(methodNode.name);
 				workflowInfo.items.push(itemInfo);
 
-				const polyglotDescriptor = registerWorkflowItem(workflowInfo, itemInfo, methodNode);
+				registerWorkflowItem(workflowInfo, itemInfo, methodNode);
 
-				const decoratorPolyglot = polyglotDescriptor.method !== "" || polyglotDescriptor.package !== "";
+				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
+				let actionSourceText = getActionSourceText(methodNode, itemInfo, sourceFile);
+
+				// @TODO: "Unstupify" me
+				if (itemInfo.polyglot) {
+					actionSourceText = decorateSourceFileTextWithPolyglot(actionSourceText, itemInfo.polyglot, itemInfo);
+				}
+
+				actionSourceFiles.push(ts.createSourceFile(
+					actionSourceFilePath,
+					actionSourceText,
+					ts.ScriptTarget.Latest,
+					true));
+			});
+
+		workflowInfo.name = workflowInfo.name || classNode.name.text;
+		workflowInfo.path = workflowInfo.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
+		workflowInfo.id = workflowInfo.id || generateElementId(FileType.Workflow, `${workflowInfo.path}/${workflowInfo.name}`);
+
+		workflows.push(workflowInfo);
+	}
+}
+
+/**
+ * Responsible for decorating the source file text with the Polyglot decorator.
+ *
+ * This should be called only if the item has a Polyglot decorator.
+ *
+ * @NOTE: No idea why this is needed... did not test polyglot decorators, tests are passing tho. Anyway, this
+ *        should be refactored to adhere to the rest of the canvas items
+ */
+function decorateSourceFileTextWithPolyglot(actionSourceText: string, polyglotDescriptor: PolyglotDescriptor, itemInfo: WorkflowItemDescriptor): string {
+	//Exists a declaration of a Polyglot decorator
+	if (itemInfo.input.length > 0 && itemInfo.output.length > 0) {
+		const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
 
 /*-
  * #%L
@@ -139,31 +173,10 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-
-				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-				let actionSourceText = getActionSourceText(methodNode, itemInfo, sourceFile);
-
-				//Exists a declaration of a Polyglot decorator
-				if (itemInfo.input.length > 0 && itemInfo.output.length > 0 && decoratorPolyglot) {
-					const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
-					actionSourceText = polyglotCall + actionSourceText;
-				}
-				const actionSourceFile = ts.createSourceFile(
-					actionSourceFilePath,
-					actionSourceText,
-					ts.ScriptTarget.Latest,
-					true);
-
-				actionSourceFiles.push(actionSourceFile);
-			});
-
-		workflowInfo.name = workflowInfo.name || classNode.name.text;
-		workflowInfo.path = workflowInfo.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
-		workflowInfo.id = workflowInfo.id || generateElementId(FileType.Workflow, `${workflowInfo.path}/${workflowInfo.name}`);
-		workflows.push(workflowInfo);
+		actionSourceText = polyglotCall + actionSourceText;
 	}
 
-
+	return actionSourceText;
 }
 
 /**
@@ -174,15 +187,10 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
  * @param methodNode The method node to extract information from.
  * @returns void
  */
-function registerWorkflowItem(workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor, methodNode: ts.MethodDeclaration): PolyglotDescriptor {
-	// @TODO: This can be "unstupified" by moving the logic with the rest of the decorators.
-	const polyglotDescriptor: PolyglotDescriptor = createPolyglotDescriptor();
-
-	registerPolyglotDecorators(methodNode, polyglotDescriptor);
+function registerWorkflowItem(workflowInfo: WorkflowDescriptor, itemInfo: WorkflowItemDescriptor, methodNode: ts.MethodDeclaration): void {
+	registerPolyglotDecorators(methodNode, itemInfo);
 	registerMethodDecorators(methodNode, workflowInfo, itemInfo);
 	registerMethodArgumentDecorators(methodNode, workflowInfo, itemInfo);
-
-	return polyglotDescriptor;
 }
 
 /**
@@ -235,17 +243,11 @@ function getActionSourceText(methodNode: ts.MethodDeclaration, itemInfo: Workflo
 	}
 }
 
-/**
- * Represents the polyglot info extracted from the code
- */
-function createPolyglotDescriptor(): PolyglotDescriptor {
-	return { method: "", package: "" };
-}
 
 /**
  * Represents the workflow item descriptor information extracted from the property name node
  */
-function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName) {
+function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName): WorkflowItemDescriptor {
 	return {
 		name: getPropertyName(propertyNameNode),
 		input: [],
@@ -253,7 +255,7 @@ function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName) {
 		sourceText: "",
 		itemType: WorkflowItemType.Item,
 		target: null,
-		canvasItemPolymorphicBag: {}
+		canvasItemPolymorphicBag: {},
 	};
 }
 

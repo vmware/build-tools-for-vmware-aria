@@ -39,7 +39,11 @@ export interface WorkflowDescriptor {
 	items: WorkflowItemDescriptor[];
 	description: string;
 }
-
+/**
+ * Represents a Workflow item (task, decision, waiting timer, polyglot)
+ *
+ * If the Workflow has a Polyglot decorator, the `polyglot` field will be present and it will contain the Polyglot information.
+ */
 export interface WorkflowItemDescriptor<T = any> {
 	name: string;
 	input: string[];
@@ -48,6 +52,7 @@ export interface WorkflowItemDescriptor<T = any> {
 	itemType: WorkflowItemType;
 	target: string; // Points to which item this item is connected to by name
 	canvasItemPolymorphicBag: T;
+	polyglot?: PolyglotDescriptor;
 }
 
 export interface CanvasItemPolymorphicBagForItem {
