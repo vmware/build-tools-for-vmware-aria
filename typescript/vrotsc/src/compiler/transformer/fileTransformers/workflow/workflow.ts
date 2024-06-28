@@ -28,14 +28,16 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	const workflows: WorkflowDescriptor[] = [];
 	const actionSourceFiles: ts.SourceFile[] = [];
 
-	sourceFile.statements.filter(n => n.kind === ts.SyntaxKind.ClassDeclaration).forEach(classNode => {
-		registerWorkflowClass(classNode as ts.ClassDeclaration);
-	});
-	actionSourceFiles.forEach(sf => context.sourceFiles.push(sf));
+	sourceFile.statements
+		.filter(node => node.kind === ts.SyntaxKind.ClassDeclaration)
+		.forEach(classNode => {
+			const workflowInfo = createWorkflowDescriptor(classNode as ts.ClassDeclaration);
+			registerWorkflowClass(workflowInfo, classNode as ts.ClassDeclaration);
+		});
 
-	return transform;
+	actionSourceFiles.forEach(sourceFile => context.sourceFiles.push(sourceFile));
 
-	function transform() {
+	return function() {
 		transpileActionItems();
 
 		workflows.forEach(workflowInfo => {
@@ -67,7 +69,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				context.writeFile(`${targetFilePath}.form.json`, workflowJsonForm);
 			}
 		});
-	}
+	};
 
 	function transpileActionItems(): void {
 		const actionItems = workflows.reduce((items, wf) => items.concat(wf.items), <WorkflowItemDescriptor[]>[]);
@@ -93,18 +95,16 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 		});
 	}
 
-	function registerWorkflowClass(classNode: ts.ClassDeclaration): void {
-		const workflowInfo: WorkflowDescriptor = {
-			id: undefined,
-			name: classNode.name.text,
-			path: undefined,
-			version: "1.0.0",
-			parameters: [],
-			rootItem: null,
-			items: [],
-			presentation: undefined,
-			description: undefined
-		};
+	/**
+	 * Handles parsing the decorators of a class node and registering the information in the workflowInfo object.
+	 *
+	 * This is the entry point for the workflow transformation.
+	 *
+	 * @param workflowInfo The workflow descriptor object.
+	 * @param classNode The class node to extract information from.
+	 * @returns void
+	 */
+	function registerWorkflowClass(workflowInfo: WorkflowDescriptor, classNode: ts.ClassDeclaration): void {
 		const decorators = ts.getDecorators(classNode);
 		if (decorators && decorators.length) {
 			buildWorkflowDecorators(
@@ -148,6 +148,21 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 
 		// @TODO: This can be "unstupified" by moving the logic with the rest of the decorators.
 		const polyglotInfo: PolyglotDescriptor = { method: "", package: "" };
+
+		/*-
+		 * #%L
+		 * vrotsc
+		 * %%
+		 * Copyright (C) 2023 - 2024 VMware
+		 * %%
+		 * Build Tools for VMware Aria
+		 * Copyright 2023 VMware, Inc.
+		 *
+		 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+		 *
+		 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+		 * #L%
+		*/
 		const decoratorPolyglot = registerPolyglotDecorators(methodNode, polyglotInfo);
 
 		registerMethodDecorators(methodNode, workflowInfo, itemInfo);
@@ -215,7 +230,26 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 							...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
 							...createWorkflowItemPrologueStatements(methodNode),
 							...methodNode.body.statements
-						]));
+						]
+					)
+				);
 		}
 	}
+}
+
+/**
+ * Represents the workflow information extracted from the TypeScript file.
+ */
+function createWorkflowDescriptor(classNode: ts.ClassDeclaration): WorkflowDescriptor {
+	return {
+		id: undefined,
+		name: classNode.name.text,
+		path: undefined,
+		version: "1.0.0",
+		parameters: [],
+		rootItem: null,
+		items: [],
+		presentation: undefined,
+		description: undefined
+	};
 }
