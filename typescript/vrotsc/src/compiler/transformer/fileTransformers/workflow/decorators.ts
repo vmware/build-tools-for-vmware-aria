@@ -14,7 +14,7 @@
  */
 import * as ts from "typescript";
 import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
-import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
+import { PolyglotDescriptor, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
 import { getVroType } from "../../helpers/vro";
 import { DiagnosticCategory, FileTransformationContext } from "../../../../types";
 
@@ -351,3 +351,75 @@ function getWorkflowParamValue(node: ts.Node): string {
 			return "false";
 	}
 };
+
+// ------------------------------------- Polyglot -------------------------------------
+
+/**
+ * Registers the Polyglot decorator information
+ *
+ * @param methodNode The method node
+ * @param itemInfo The item info
+ */
+export function registerPolyglotDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
+	const polyglotInfo: PolyglotDescriptor = createPolyglotDescriptor();
+
+	const decorators = ts.getDecorators(methodNode);
+	if (decorators && decorators.length >= 1) {
+
+		decorators.forEach(decoratorNode => {
+			const callExpNode = decoratorNode.expression as ts.CallExpression;
+
+			const identifierText = getIdentifierTextOrNull(callExpNode.expression);
+
+			if (identifierText === "Polyglot") {
+				//Extract the information stored in the @Polyglot decorator
+				buildPolyglotInfo(polyglotInfo, callExpNode);
+				itemInfo.polyglot = polyglotInfo;
+			}
+		});
+	}
+}
+
+/**
+ * Contains code related to workflow polyglot logic.
+ */
+export function buildPolyglotInfo(polyglotInfo: PolyglotDescriptor, decoratorCallExp: ts.CallExpression) {
+	const objLiteralNode = decoratorCallExp.arguments[0] as ts.ObjectLiteralExpression;
+	if (objLiteralNode) {
+		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
+			const propName = getPropertyName(property.name);
+			switch (propName) {
+				case "package":
+					polyglotInfo.package = (<ts.StringLiteral>property.initializer).text;
+
+					/*-
+					 * #%L
+					 * vrotsc
+					 * %%
+					 * Copyright (C) 2023 - 2024 VMware
+					 * %%
+					 * Build Tools for VMware Aria
+					 * Copyright 2023 VMware, Inc.
+					 *
+					 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+					 *
+					 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+					 * #L%
+					 */
+					break;
+				case "method":
+					polyglotInfo.method = (<ts.StringLiteral>property.initializer).text;
+					break;
+				default:
+					throw new Error(`Polyglot attribute '${propName}' is not suported.`);
+			}
+		});
+	}
+}
+
+/**
+ * Represents the polyglot info extracted from the code
+ */
+function createPolyglotDescriptor(): PolyglotDescriptor {
+	return { method: "", package: "" };
+}

@@ -10,11 +10,10 @@ import { getPropertyName } from "../../helpers/node";
 import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor, WorkflowItemType } from "../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
-import { printPolyglotCode, registerPolyglotDecorators } from "./polyglot";
 import { prepareHeaderEmitter } from "../../codeTransformers/header";
 import { createWorkflowItemPrologueStatements } from "../../codeTransformers/prologueStatements";
-import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMethodDecorators } from "./decorators";
-import { mergeWorkflowXml, printWorkflowXml } from "./presentation";
+import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMethodDecorators, registerPolyglotDecorators } from "./decorators";
+import { mergeWorkflowXml, printPolyglotCode, printWorkflowXml } from "./presentation";
 
 import * as ts from "typescript";
 
