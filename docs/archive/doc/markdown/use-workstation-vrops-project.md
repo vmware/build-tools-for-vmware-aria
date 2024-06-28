@@ -6,7 +6,7 @@ Before you continue with this section validate that all of the prerequisites are
 
 - Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
 
-## Use
+## Usage
 
 vROps Project is a filesystem representation of vROps content into human friendly YAML and/or JSON format. The project consist of content descriptor and content container.
 

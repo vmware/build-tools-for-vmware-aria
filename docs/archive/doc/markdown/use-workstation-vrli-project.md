@@ -6,7 +6,7 @@ Before you continue with this section validate that all of the prerequisites are
 
 - Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
 
-## Use
+## Usage
 
 VRLI Project is a file system representation of VRLI content into human friendly JSON format. The project consist of content descriptor and content container.
 

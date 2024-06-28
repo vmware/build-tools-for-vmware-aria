@@ -6,7 +6,7 @@ Before you continue with this section validate that all of the prerequisites are
 
 - Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
 
-## Use
+## Usage
 
 Code Stream Project is a filesystem representation of Code Stream content into human friendly YAML and/or JSON format. The project consist of content descriptor and content container.
 
@@ -29,7 +29,7 @@ mvn archetype:generate \
     -DartifactId=codestream
 ```
 
-**Note**: *The specified <iac_for_vrealize_version> should be minimum 2.8.1*
+**Note**: *The specified \<iac_for_vrealize_version\> should be minimum 2.8.1*
 
 The result of this command will produce the following project file structure:
 
@@ -170,7 +170,7 @@ the `vrealize:push` command:
 mvn package vrealize:push -Pcorp-env
 ```
 
-This will build the package and deploy it to the environment described in the ```corp-env``` profile.
+This will build the package and deploy it to the environment described in the `corp-env` profile.
 
 > **Note:** project context is required and in case of vRA Cloud the cloud proxy name used by the endpoints is required
 
@@ -198,8 +198,7 @@ cs:pull -Dvrang.host=vra-l-01a.corp.local -Dvra.port=443 -Dvrang.project.id={pro
 
 > **Note**: Basic authentication is performed against an endpoint that communicates with vIDM as authentication backend.
 
-**Note**: Username parameter accepts usernames in the form of `<username>` as well as `<username>@<domain>`. When no `<domain>` is provided, the authentication automatically assumes **System Domain**. Otherwise the provided domain will be used.
-E.g. `administrator@corp.local` will perform authentication against the `corp.local` domain, whereas `configurationadmin` will perfom authentication agains `System Domain`.
+**Note**: Username parameter accepts usernames in the form of `<username>` as well as `<username>@<domain>`. When no `<domain>` is provided, the authentication automatically assumes **System Domain**. Otherwise the provided domain will be used. E.g. `administrator@corp.local` will perform authentication against the `corp.local` domain, whereas `configurationadmin` will perfom authentication agains `System Domain`.
 
 ### Include Dependencies
 
@@ -261,3 +260,4 @@ Clean up is currently not supported
   ```Bash
   mvn -U <rest of the command>
   ```
+  

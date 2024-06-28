@@ -1,17 +1,21 @@
+# Prerequisites
+
 [//]: # (TODO: Update the links in the Use section after the files are moved)
 [//]: # (TODO: More in Installation section?)
 [//]: # (TODO: Replace all references of the setup-workstation.md to point to Prerequisites.md)
 
-# Prerequisites
-
 ## Overview
+
 Prerequisites for installation of Build Tools for VMware Aria.
 
 ## Table Of Contents
+
 1. [Prerequisites](#prerequisites)
 2. [Installation and Configuration](#installation-and-configuration)
+3. [Usage](#usage)
 
 ### Prerequisites
+
 - [vRealize Developer Tools](https://github.com/vmware/vrealize-developer-tools) (Optional)
 - Java 17
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
@@ -30,14 +34,17 @@ Prerequisites for installation of Build Tools for VMware Aria.
 ### Installation and Configuration
 
 #### Configuration
+
 - [Build Tools for VMware Aria Build System](Setting%20Up%20Artifactory.md)
 
-### Use
+### Usage
+
 - [vRO Projects](use-workstation-vro-project.md)
 - [vRA Projects](use-workstation-vra-project.md)
 - [vRA NG Projects](use-workstation-vra-ng-project.md)
 - [ABX Projects](use-workstation-abx-project.md)
 - [vROps Projects](use-workstation-vrops-project.md)
 
-## Next: [Setting Up Artifactory](./Setting%20Up%20Artifactory.md)
+## What's Next
 
+See [Setting Up Artifactory](./Setting%20Up%20Artifactory.md).

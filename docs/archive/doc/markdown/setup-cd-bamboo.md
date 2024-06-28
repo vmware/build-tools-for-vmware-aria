@@ -2,12 +2,12 @@
 
 ## Table of Contents
 
-## Requirements
+### Requirements
 
 - Make sure that the artefacts in the Build plan are shared:
 - Java JDK 17 installed on the hatchery vm
 
-## Environment setup
+### Environment setup
 
 1. Open already created Bamboo project.
 2. Click Create → Create deployment project.

@@ -6,7 +6,7 @@ Before you continue with this section validate that all of the prerequisites are
 
 - Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
 
-## Use
+## Usage
 
 vRA NG Project is a filesystem representation of vRA NG content into human friendly YAML and/or JSON format. The project consist of content descriptor and content container.
 
@@ -29,7 +29,7 @@ mvn archetype:generate \
     -DartifactId=catalog
 ```
 
-**Note**: *The specified <iac_for_vrealize_version> should be minimum 2.4.11*
+**Note**: *The specified \<iac_for_vrealize_version\> should be minimum 2.4.11*
 
 The result of this command will produce the following project file structure:
 
@@ -308,7 +308,7 @@ settings.xml file by adding the following snippet under "profiles":
 </profile>
 ```
 
-Then, you can sync content back to your local sources by simply activating the profile:
+Then you can sync content back to your local sources by simply activating the profile:
 
 ```bash
 mvn vra-ng:pull -Pcorp-env
@@ -396,7 +396,7 @@ The vRA-NG package manager uses the `import-tags` entry from the content manifes
 
 ### Release
 
-To release a specific content uploaded on a live server, you can use the ```vrealize:release``` command:
+To release a specific content uploaded on a live server, you can use the `vrealize:release` command:
 
 ```bash
 mvn clean package vrealize:release -Pcorp-env -Dvrang.contentType=blueprint -Dvrang.contentNames=testBlueprint -Dvrang.version=1 -DreleaseIfNotUpdated=false

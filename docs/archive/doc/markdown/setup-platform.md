@@ -8,7 +8,7 @@
 2. [Installation](#installation)
 3. [Upload vRO artifacts to Artifactory](#upload-vro-artifacts-to-artifactory)
 
-## Requirements
+### Requirements
 
 - Git-based Source control system (we assume Gitlab)
 - CI Server capable of running Maven commands (we assume Gitlab):
@@ -20,9 +20,9 @@
 - Temporary access to internet during the installation
 - vRO 7.3.0 Appliance - the toolchain uses vRO 7.3.0 dependencies that are part of the appliance and are served as an embedded Maven repository.
 
-## Installation
+### Installation
 
-### Uploading toolchain artifacts to Artifactory
+#### Uploading toolchain artifacts to Artifactory
 
 _Note that the libs-release, libs-snapshot, etc., are the default Maven repositories created by JFrog's **Quick Setup** shown at first login. This guide assumes that this **Quick Setup** has been executed._
 
@@ -49,7 +49,7 @@ _Note that the libs-release, libs-snapshot, etc., are the default Maven reposito
     }
     ```
 
-## Upload vRO artifacts to Artifactory
+### Upload vRO artifacts to Artifactory
 
 First you need access to a 7.3.0 vRO appliance to get the vRO dependencies for the toolchain in your artifactory.
 
@@ -87,6 +87,6 @@ First you need access to a 7.3.0 vRO appliance to get the vRO dependencies for t
 8. Give **Deploy/Cache, Annotate, Read** permissions
 9. Click **Save & Finish**
 
-## Next step
+## What's Next
 
-- Configure developer **[Build Tools for VMware Aria Workstation](setup-workstation.md)**
+See Configure developer **[Build Tools for VMware Aria Workstation](setup-workstation.md)**.

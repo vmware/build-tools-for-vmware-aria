@@ -1,6 +1,6 @@
 # Setup development environment
 
-See [Build Tools for VMware Aria Workstation](./setup-workstation.md)
+See [Build Tools for VMware Aria Workstation](setup-workstation.md)
 
 ## Starting work on a task
 

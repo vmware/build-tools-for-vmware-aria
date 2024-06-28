@@ -6,7 +6,7 @@ Before you continue with this section validate that all of the prerequisites are
 
 - Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
 
-## Use
+## Usage
 
 ### Crate New vRO Project
 
@@ -62,7 +62,7 @@ Every \*.js file that follows the convention (see sample.js for reference) will 
 
 Actions in vRO are essentially functions that you can call by using **System.getModule**. In plain JavaScript, we model actions in the same way. Therefore, in the JS format it is required to have a single root function that represents the action. Since JavaScript is dynamically typed and vRO isn't, it is recommended to describe the parameter types and the return value type in JsDoc (see sample.js for reference). If you omit the JsDoc all types will be assumed to be be "Any".
 
-### Xml-Based Project
+#### Xml-Based Project
 
 This is the standard vRO project that can cover all use cases. It contains workflows, resource elements, configuration elements, actions and policies and can have dependencies to any other vRO project type.
 
@@ -213,9 +213,9 @@ You can delete the examples and start developing your code.
 
 Every \*.ts file will be compiled into one of the corresponding types.
 
-- Actions (sample.ts) will be compiled into the module < groupId >.< artifactId >.<the path under src/ folder>
+- Actions (sample.ts) will be compiled into the module \<groupId>.\<artifactId>.\<the path under `src/` folder>.
 - Tests (sample.test.ts) will not be added to the vRO package, but will be compiled into Javascript and triggered the same way as for the JS based projects
-- Configuration Elements (sample.conf.ts), Policies (sample.pl.ts), Workflows (sample.wf.ts) will be placed and named depending on their deocrator "path" and "name" properties. Resource Elements placement is depending on \*.element_info.json descriptor. If those are missing form the decorator  description they are defined under the < artifactId >.<the path under src/ folder> category
+- Configuration Elements (sample.conf.ts), Policies (sample.pl.ts), Workflows (sample.wf.ts) will be placed and named depending on their deocrator "path" and "name" properties. Resource Elements placement is depending on \*.element_info.json descriptor. If those are missing form the decorator  description they are defined under the \<artifactId>.\<the path under `src/` folder> category.
 - VRA 8 workflow form (sample.wf.form.json) will be attached to its corresponding Workflow (sample.wf.ts)
 - Types (sample.d.ts) will not be added to the final package.
 
@@ -253,7 +253,7 @@ class SampleConfig {
 }
 ```
 
-##### Workflow
+###### Workflow
 
 ```ts
 import { Workflow, Out } from "tsc-annotations";

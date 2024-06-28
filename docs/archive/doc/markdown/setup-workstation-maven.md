@@ -22,7 +22,7 @@ There are several things that need to be in place before you can use the toolcha
 
 Java keystore used for signing packages build time.
 
-```shell
+```bash
 # Create new Keystore
 keytool -keystore package.jks -genkey -alias _dunesrsa_alias_ -storepass 'VMware1!' -keyalg RSA
 
@@ -174,7 +174,7 @@ to the maven invocation.
 </settings>
 ```
 
-`Note:` {vro_username} is usually taking the form of `username`@`domain`. For vRO8 embedded in vRA8 with BASIC for {vro_auth} it will be required that only `username` part is specified for successful authentication.
+`Note:` {vro_username} is usually taking the form of `username@domain`. For vRO8 embedded in vRA8 with BASIC for {vro_auth} it will be required that only `username` part is specified for successful authentication.
 
 ### Signing
 
@@ -187,7 +187,7 @@ You must have the keystore file accessible on the machine and set the **keystore
 
 ### Bundling
 
-There is a built-in bundling capabilities that are described in a Maven profile. You can decide to not only package a vRO/vRA project, but also to create a ```*-bundle.zip``` with all its dependencies. This will create an archive with the following structure:
+There is a built-in bundling capabilities that are described in a Maven profile. You can decide to not only package a vRO/vRA project, but also to create a `*-bundle.zip` with all its dependencies. This will create an archive with the following structure:
 
 ```text
 vro/ # all vRO packages. If the current project is vRO, its package will be here as well.
@@ -198,9 +198,9 @@ bin/ # shells for invoking the bundle installer CLI.
     intasller.bat # Batch exectable version of the installer for Windows
 ```
 
-The bundle is produced as a separate artifact during ```mvn package```. To produce it, you need to add the ```-Pbundle-with-installer``` profile:
+The bundle is produced as a separate artifact during `mvn package`. To produce it, you need to add the `-Pbundle-with-installer` profile:
 
-```sh
+```bash
 mvn clean deploy -Pbundle-with-installer
 ```
 
@@ -210,7 +210,7 @@ To learn more about the bundle installer, check [Build Tools for VMware Aria - B
 
 All API calls from the toolchain (i.e. the client) verify the SSL certificate
 returned by vRO/vRA (i.e. the server). If you are using self-signed or third-party signed certificates, you may need to
-add those certificates or their CA certificates to the default JAVA keystore, i.e. ```JAVA_HOME/lib/security/cacerts```. **This is the recommended approach.**
+add those certificates or their CA certificates to the default JAVA keystore, i.e. `JAVA_HOME/lib/security/cacerts`. **This is the recommended approach.**
 
 The other option, **applicable ONLY for development environments**, is to ignore certificate checks by passing a flag.
 
@@ -227,7 +227,7 @@ Controlling timeouts is done through the following System Properties:
 - the vra 8.x data collection delay ("vrang.data.collection.delay.seconds") – (in seconds) the amount of time to way before running the import job.
 The vRA data collection usually takes around 10 minutes ( 600 seconds ) to complete. Defaults to no delay.
 
-You can set these as JVM Options as specified [here]( https://maven.apache.org/configure.html )
+You can set these as JVM Options as specified [here](https://maven.apache.org/configure.html).
 
 Timeouts can be set up to be used by the installer too using the following settings (in the environment properties file):
 http_connection_timeout - for the connection timeout (in seconds), default is 360 seconds (6 minutes)

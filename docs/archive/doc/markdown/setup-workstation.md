@@ -25,7 +25,7 @@
 
 - [Build Tools for VMware Aria Build System](setup-workstation-maven.md)
 
-## Use
+## Usage
 
 - [vRO Projects](use-workstation-vro-project.md)
 - [vRA Projects](use-workstation-vra-project.md)

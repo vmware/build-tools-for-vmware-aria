@@ -1,28 +1,30 @@
 # Build Tools for VMware Aria - License plugin
 
 Build Tools for VMware Aria uses **[license-maven-plugin](https://www.mojohaus.org/license-maven-plugin/index.html)** as a production-ready solution for managing the licenses.
+
 The plugin is active on project build if **license_data/licenses.properties** exists in project's root folder.
+
 If activated it will generate license file and license header from templates provided in **license_data/**.
 
-## Use
+## Usage
 
 ### Generate project from an archetype with custom licensing
 
-#### You need to use next additional parameters when creating new project
+You need to use the following additional parameters when creating new project
 
-* **licenseUrl**
-  * The parameter will have a default value of `null`.
-  * If it is set, the license URL will be included in the new project pom.xml description.
+- **licenseUrl**
+  - The parameter will have a default value of `null`.
+  - If it is set, the license URL will be included in the new project `pom.xml` description.
   
     Also, the content of the URL will be saved as a license template file and will be used on project's build phase.
 
-* **licenseHeader**
-  * Valid value: Either text or URL.
-  * If the param is set: The text, or the content of the provided URL, will be stored in a 'licence_header' template. The content of that file will be used to fill the license header of each code file, during the build of the project.
-  * If the param is not set: A default content of a 'licence_header' will be used ("Copyright [yyyy] [name of copyright owner]").
+- **licenseHeader**
+  - Valid value: Either text or URL.
+  - If the param is set: The text, or the content of the provided URL, will be stored in a 'licence_header' template. The content of that file will be used to fill the license header of each code file, during the build of the project.
+  - If the param is not set: A default content of a 'licence_header' will be used ("Copyright [yyyy] [name of copyright owner]").
 
-* **licenseTechnicalPreview**
-  * If set: The default VMware Technical Preview license will be used in the generated project. All upper properties are ignored.
+- **licenseTechnicalPreview**
+  - If set: The default VMware Technical Preview license will be used in the generated project. All upper properties are ignored.
 
 #### Examples
 
@@ -57,7 +59,7 @@ For more information about usage, [click here](https://www.mojohaus.org/license-
 
 #### Example results
 
-* Example of generated header in js file.
+- Example of generated header in js file.
 
   ```jshelllanguage
   /*
@@ -77,7 +79,7 @@ For more information about usage, [click here](https://www.mojohaus.org/license-
   });
   ```
 
-* Generated content in `pom.xml`.
+- Generated content in `pom.xml`.
 
   ```xml
   ...
@@ -96,7 +98,7 @@ For more information about usage, [click here](https://www.mojohaus.org/license-
   ...
   ```
 
-## Customizing the maven-license-plugin
+### Customizing the maven-license-plugin
 
 You can customize the plugin behaviour by editing its properties in project's pom.xml. Here are the default values if not provided:
 
