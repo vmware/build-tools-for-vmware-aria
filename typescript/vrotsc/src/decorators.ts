@@ -60,6 +60,7 @@ export interface CanvasItemPolymorphicBagForDecision {
 
 export interface WorkflowParameter {
 	name: string;
+	isWaitingTimer?: boolean;
 	type: string;
 	title?: string;
 	required?: boolean;
@@ -110,6 +111,10 @@ export const ITEM_ENUM_TO_TYPE = {
 	[WorkflowItemType.Decision]: "custom-condition",
 	[WorkflowItemType.WaitingTimer]: "waiting-timer"
 };
+
+export enum InputOutputBindings {
+	IsWaitingTimer = 1 << 0,
+}
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
 

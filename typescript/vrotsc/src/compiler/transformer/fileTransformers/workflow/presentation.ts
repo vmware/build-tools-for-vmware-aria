@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { CanvasItemPolymorphicBagForDecision, ITEM_ENUM_TO_TYPE, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
+import { CanvasItemPolymorphicBagForDecision, ITEM_ENUM_TO_TYPE, InputOutputBindings, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../../decorators";
 import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 
@@ -138,21 +138,14 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	 *
 	 * The `out-name` points to the next item in the workflow
 	 *
-	 * @WARN: If we want breaking changes, if target is missing / null -> assume end
-	 *
 	 * @param item The item to build
 	 * @param pos The position of the item in the workflow. Cannot be 0, as that is reserved for the end item
 	 * @param items The list of all items in the workflow
 	 */
 	function buildItem(item: WorkflowItemDescriptor, pos: number, items: WorkflowItemDescriptor[]): void {
-		const targetItem =
-			item.target != null
-				? item.target === "end"
-					? "item0"
-					: `item${findItemByName(items, item.target) || 0}`
-				: pos < workflow.items.length ? `item${pos + 1}` : "item0";
-
+		const targetItem = findTargetItem(item, pos, items);
 		const type = ITEM_ENUM_TO_TYPE[item.itemType] || "task";
+		let inputOutputBindings = 0;
 
 		switch (item.itemType) {
 			case WorkflowItemType.Decision:
@@ -164,7 +157,6 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ` alt-out-name="item${findItemByName(items, (item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else) || 0}"`
 					+ ">").appendLine();
 				stringBuilder.indent();
-				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
 				break;
 			case WorkflowItemType.WaitingTimer:
@@ -174,7 +166,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ` type="${type}"`
 					+ ">").appendLine();
 				stringBuilder.indent();
-				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
+				inputOutputBindings |= InputOutputBindings.IsWaitingTimer;
 				break;
 			case WorkflowItemType.Item:
 			default:
@@ -184,25 +176,62 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ` type="${type}"`
 					+ ">").appendLine();
 				stringBuilder.indent();
-				stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
 		}
 
-		buildItemParameterBindings("in-binding", item.input);
-		buildItemParameterBindings("out-binding", item.output);
+		stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
+		buildItemParameterBindings("in-binding", item.input, inputOutputBindings);
+		buildItemParameterBindings("out-binding", item.output, inputOutputBindings);
 		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 	}
 
-	function buildItemParameterBindings(parentName: string, parameters: string[]): void {
+	/**
+	 * Helper function to find the target item for the given item
+	 *
+	 * If the `item.target` is "end", it will return "item0"
+	 * If the `item.target` is not null, it will return the item with the given name, or 0 if not found
+	 * If the `item.target` is null, it will return the next item in the workflow, or "item0" if it is the last item
+	 *
+	 *
+	 * @param item The item to find the target for
+	 * @param pos The position of the item in the workflow
+	 * @param items The list of all items in the workflow
+	 * @returns The name of the target item
+	 */
+	function findTargetItem(item: WorkflowItemDescriptor, pos: number, items: WorkflowItemDescriptor[]): string {
+		if (item.target === "end") {
+			return "item0";
+		}
+
+		if (item.target != null) {
+			return `item${findItemByName(items, item.target) || 0}`;
+		}
+
+		return pos < workflow.items.length ? `item${pos + 1}` : "item0";
+	}
+
+	/**
+	 * This will build the parameter bindings for the given item
+	 *
+	 * In case of a waiting timer, the `timer.date` parameter will be bound instead of the actual parameter name, as this is required by vRO
+	 *
+	 * @param parentName The name of the parent element
+	 * @param parameters The list of parameters to bind
+	 * @param inputOutputBindings The input output bindings. Use this to send additional information for the bindings
+	 * @returns void
+	 */
+	function buildItemParameterBindings(parentName: string, parameters: string[], inputOutputBindings: number): void {
 		if (parameters.length) {
 			stringBuilder.append(`<${parentName}>`).appendLine();
 			stringBuilder.indent();
 			parameters.forEach(paramName => {
 				const param = workflow.parameters.find(p => p.name === paramName);
 				if (param) {
-					stringBuilder.append(`<bind name="${param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
+					const isWaitingTimer = (inputOutputBindings & InputOutputBindings.IsWaitingTimer) === InputOutputBindings.IsWaitingTimer;
+
+					stringBuilder.append(`<bind name="${isWaitingTimer ? "timer.date" : param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
 				}
 			});
 			stringBuilder.unindent();
