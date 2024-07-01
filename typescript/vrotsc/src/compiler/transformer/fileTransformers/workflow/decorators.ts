@@ -25,6 +25,9 @@ import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStr
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
+ *
+ * This method will assign a decorator by default to `WorkflowItemType.Item` if none is added with empty arguments
+ *  This behaviour will essentially make the method point to the next one in the workflow.
  */
 export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
 	let decorators = ts.getDecorators(methodNode);
@@ -33,7 +36,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 		decorators = [
 			ts.factory.createDecorator(
 				ts.factory.createCallExpression(
-					ts.factory.createIdentifier("Item"),
+					ts.factory.createIdentifier(WorkflowItemType.Item),
 					undefined,
 					[
 						ts.factory.createObjectLiteralExpression([])
