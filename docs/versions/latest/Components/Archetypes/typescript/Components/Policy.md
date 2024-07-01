@@ -1,22 +1,26 @@
 # Policies
+
 vRO Policies and how to define them in Aria Orchestrator
 
 ## Overview
+
 Aria Orchestrator supports creating Policies with different elements and variables.
 
 ## Table of Contents
+
 1. [Policy Template Versioning](#policy-template-versioning)
-2. [Example Policy](#exmaple-policy)
+2. [Example Policy](#example-policy)
 3. [Naming Convention](#naming-convention)
 4. [Creating Variables in Policy](#creating-a-variable-in-policy)
-5. [Creating Elements to a Policy](#creating-a-elements-to-a-policy)
+5. [Creating Elements to a Policy](#creating-elements-to-a-policy)
 
-## Policy Template Versioning
+### Policy Template Versioning
+
 Policy template now has two versions for backward compatability. Template versions can be changed using the **templateVersion** attribute. Use v2 for full support of creating Policy with variables and multiple elements.
 
 **NOTE:** templateVersion attribute is optional. if not provided, templateVersion will be considered as v1 by default.
 
-~~~ts
+```ts
 import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
@@ -25,13 +29,15 @@ import { PolicyTemplate } from "vrotsc-annotations";
     description: "Some Description",
     templateVersion: "v2", // or v1
 })
-~~~
+```
 
-## Exmaple Policy
+### Example Policy
+
 A Example typescript policy with all posible configurations for Policy Template Version 2 (v2).
 
-### Version 1
-~~~ts
+#### Version 1
+
+```ts
 import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
@@ -44,11 +50,11 @@ export class PolicyTemplateAmqp {
         System.log("onMessage");
     }
 }
+```
 
-~~~
+#### Version 2
 
-### Version 2
-~~~ts
+```ts
 import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
@@ -101,12 +107,13 @@ import { PolicyTemplate } from "vrotsc-annotations";
         }
     }
 })
-~~~
+```
 
-## Naming Convention
+### Naming Convention
+
 Naming convention for creating variables, elements with different types of elements and events.
 
-~~~ts
+```ts
 import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
@@ -162,22 +169,27 @@ import { PolicyTemplate } from "vrotsc-annotations";
         }
     }
 })
-~~~
+```
 
-## Creating a Variable in Policy
+### Creating a Variable in Policy
+
 Variables can be created in a policy by adding them under **variables** attribute as shown in the example.
 
-### Creating a String variable
+#### Creating a String variable
+
 String variables can be added by directly assigning values to the them.
-~~~ts
+
+```ts
 variables: {
     sample2: "a direct string value"
 }
-~~~
+```
 
-### Creating Variables with other data types
+#### Creating Variables with other data types
+
 Other data type variables can be added by providing the additional information to them.
-~~~ts
+
+```ts
 variables: {
     sample: {
         type: "boolean",
@@ -190,12 +202,13 @@ variables: {
         description: "A Numeric value"
     }
 }
-~~~
+```
 
-### Creating Variables with Configuration binding
+#### Creating Variables with Configuration binding
+
 Variables can be binded to configurations by providing configuration ID and key.
 
-~~~ts
+```ts
 variables: {
     config: {
         type: "Properties",
@@ -204,24 +217,27 @@ variables: {
         description: "A variable created with configuration binding"
     }
 }
-~~~
+```
 
 **Note:** Configuration binding will be considered if both value and configuration ID are provided to a variable.
 
-## Creating a Elements to a Policy
+### Creating Elements to a Policy
+
 Elements can be created in a policy by adding them under **elements** attribute as shown in example
 
-### Supported Element types
-1. AMQP:Subscription
-2. MQTT:Subscription
-3. SNMP:SnmpDevice
-4. SNMP:TrapHost
-5. Periodic Event
+#### Supported Element types
 
-### Creating a Periodic Event Element with defined event Method
+- AMQP:Subscription
+- MQTT:Subscription
+- SNMP:SnmpDevice
+- SNMP:TrapHost
+- Periodic Event
+
+#### Creating a Periodic Event Element with defined event Method
+
 Periodic Event element can be added by providing the list of events and schedules as below. Schedules are mandatory for Periodic Event type elements
 
-~~~ts
+```ts
 elements: {
     PeriodicEvent: {
         type: "Periodic Event",
@@ -242,12 +258,13 @@ export class SamplePolicy {
         System.log(`Received message ${message.bodyAsText}`);
     }
 }
-~~~
+```
 
-### Creating a Periodic Event Element with defined event Method
-Events can either be a method defined in the typescipt Policy or can be binded to a workflow.
+#### Creating a Periodic Event Element with bound event Method
 
-~~~ts
+Events can either be a method defined in the typescipt Policy or can be bound to a workflow.
+
+```ts
 elements: {
     PeriodicEvent: {
         type: "Periodic Event",
@@ -269,14 +286,15 @@ elements: {
         }
     }
 }
-~~~
+```
 
 From the above example, the workflow ID and its input bindings are provided. The inputs are binded to variables created in the policy.
 
-### Creating Other Element Types
+#### Creating Other Element Types
+
 Other supported element types can be as below. Events can be a method defined in the policy or can be binded to a workflow.
 
-~~~ts
+```ts
 elements: {
     ElementOne: {
         type: "AMQP:Subscription",
@@ -306,4 +324,4 @@ export class SamplePolicy {
         System.log(`Received message ${message.bodyAsText}`);
     }
 }
-~~~
+```
