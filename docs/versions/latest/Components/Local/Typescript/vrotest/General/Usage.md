@@ -1,26 +1,34 @@
 # Usage
+
 Provides detailed instructions on how to use vrotest
 
 ## Overview
+
 The usage is divided in 2 steps
-* build -> Builds the test bed
-* run -> Runs the unit tests
+
+1. `build` -> Builds the test bed
+2. `run` -> Runs the unit tests
 
 If `mvn clean test` is run inside of the created project, build will be executed after which run will be called.
 
-## Table Of Contents:
+## Table Of Contents
+
 1. [Building](#building) - how to build the testbed
 2. [Running](#running) - how to run the tests
 
 [//]: # (Fill As many of these as you need. Use h4 and further here, do not include h1s, h2s or h3s.)
+
 ### Building
 
 #### Usage
+
 `vrotest build [options]`
 
 #### CLI options
+
 The following commandline options are accepted when building:
-~~~plaintext
+
+```txt
   --actions                     Path to the vRO JavaScript folder.
   --testHelpers                 Path to the vRO JavaScript test helpers folder.
   --tests                       Path to the folder containing all tests.
@@ -50,23 +58,30 @@ The following commandline options are accepted when building:
                                   * lcov
                                   * lcovonly
   --per-file                    Code coverage per file bases. Set custom --coverage-thresholds, if any file in the project drops below those thresholds, the build will fail
-~~~
+```
 
 #### Examples
-`vrotest build --actions src --testHelpers src --tests test --output target/vro-test --coverage-thresholds 50:60:all,65:70:statements --coverage-reports text,html,lcovonly`
 
+```bash
+vrotest build --actions src --testHelpers src --tests test --output target/vro-test --coverage-thresholds 50:60:all,65:70:statements --coverage-reports text,html,lcovonly
+```
 
 ### Running
 
 #### Usage
-`vrotest run [testbed path] [options]`
+
+```bash
+vrotest run [testbed path] [options]
+```
 
 #### CLI options
+
 The following commandline options are accepted when running tests:
-~~~plaintext
+
+```plaintext
   --instrument                        Instrument code and generate code coverage reports.
-~~~
+```
 
 #### Examples
-`vrotest run target/vro-test --instrument`
 
+`vrotest run target/vro-test --instrument`

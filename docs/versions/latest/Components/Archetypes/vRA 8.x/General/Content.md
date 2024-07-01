@@ -2,18 +2,18 @@
 # Content
 
 ## Overview
+
 The vRA 8.x elements that you want to work with are described in the `content.yaml`
 
 ## Table Of Contents
-1. [Content.yaml](#contentyaml)
 
+1. [Content.yaml](#contentyaml)
 
 ### Content.yaml
 
 By default the `content.yaml` looks like this.
 
-~~~yaml
-
+```yaml
 blueprint:
 subscription:
 flavor-mapping:
@@ -31,67 +31,65 @@ catalog-entitlement:
 catalog-item:
 content-sources:
 property-group:
-~~~
+```
 
-### Content Filtering
+#### Content Filtering
 
 Contents are exported by different rules.
 
 #### Import Rules for content types
 
-Empty array [] - nothing is imported  
-List of items - the given items are imported. If they are not present on the server an Exception is thrown.  
-Null (nothing given) - everything is being imported  
-
-* blueprints
-* catalog-item
-* content-source
-* custom-resource
-* catalog-entitlement
-* property-group
-* subscription
-* policies
+- Empty array [] - nothing is imported  
+- List of items - the given items are imported. If they are not present on the server an Exception is thrown.  
+- Null (nothing given) - everything is being imported  
+  - blueprints
+  - catalog-item
+  - content-source
+  - custom-resource
+  - catalog-entitlement
+  - property-group
+  - subscription
+  - policies
 
 Importing regional content doesn't use the `content.yaml` when pushing content it is working as previously pushes whatever there is the package.
 
 #### Export Rules for content types
 
-Empty array [] - nothing is exported  
-List of items - the given items are exported. If they are not present on the server an Exception is thrown.  
-Null (nothing given) - everything is being exported  
-
-* blueprints
-* catalog-item
-* content-source
-* custom-resource
-* catalog-entitlement
-* property-group
-* subscription
-* policies
+- Empty array [] - nothing is exported  
+- List of items - the given items are exported. If they are not present on the server an Exception is thrown.  
+- Null (nothing given) - everything is being exported
+  - blueprints
+  - catalog-item
+  - content-source
+  - custom-resource
+  - catalog-entitlement
+  - property-group
+  - subscription
+  - policies
 
 #### Exporting regional content
 
-To export regional content, cloud account(s) with given tag(s) should be given.  
-Empty array [] - nothing is exported  
-List of items - the given items are exported in all regions linked to cloud accounts with given tag  
-Null (nothing given) - everything is being exported in all regions linked to cloud accounts with given tag  
-If they are added to the manifest, but not present on the server - they are skipped.
+To export regional content, cloud account(s) with given tag(s) should be given.
 
-* flavor-mapping
-* image-mapping
-* storage-profile
+- Empty array [] - nothing is exported  
+- List of items - the given items are exported in all regions linked to cloud accounts with given tag.
+
+  If they are added to the manifest, but not present on the server - they are skipped.
+
+- Null (nothing given) - everything is being exported in all regions linked to cloud accounts with given tag  
+  - flavor-mapping
+  - image-mapping
+  - storage-profile
 
 #### Export all content in all regions linked to cloud accounts with given tag
 
-To export all content in all regions linked to cloud accounts, the tag for export should be defined.
-If not defined, nothing will be exported.
+To export all content in all regions linked to cloud accounts, the tag for export should be defined. If not defined, nothing will be exported.
 
-
-### Examples
+#### Examples
 
 Example of `content.yaml` file.
 
-~~~yaml
+```yaml
 blueprint: # will export all 
 subscription: # will export all 
 flavor-mapping: # only "small" and "meduim" will be exported in all regions linked to cloud accounts with given tag 
@@ -128,5 +126,4 @@ policy:  # export according to filter
   deployment-limit: []
   lease: []
   resource-quota: []
-
-~~~
+```
