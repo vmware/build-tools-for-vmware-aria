@@ -140,7 +140,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ` name="item${pos}"`
 					+ ` out-name="${targetItem}"`
 					+ ` type="${type}"`
-					+ ` alt-out-name="item${findItemByName(items, (item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else) || 0}"`
+					+ ` alt-out-name="item${findItemByName(items, (item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else || "") || 0}"`
 					+ ">").appendLine();
 				stringBuilder.indent();
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();

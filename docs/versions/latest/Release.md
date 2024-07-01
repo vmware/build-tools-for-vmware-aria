@@ -24,7 +24,126 @@
 [//]: # (#### Relevant Documentation:)
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### VROTSC Upgrade the ts version from 3.8.3 to 5.4.5
+### [vrotsc] Enhanced Workflows to support more Canvas elements
+
+All of the `wf.ts` files now have the ability to add method Decorators to their functions giving you the ability 
+to add more Canvas elements to your workflows.
+
+The following Decorators are available:
+- `@Item({target:'test', exception: ''})` - Specifies a scriptable task. `target` will be the name of the next in line item, `exception` is not implemented yet.
+- `WaitingTimerItem({target:'test'})` - Specifies a waiting timer. `target` will be the name of the next in line item. Expects an `@In` 
+                                        parameter with the name of the waiting timer.
+- `@DecisionItem({target:'test', else: 'otherTest'})` - Specifies a decision item. `target` will be the name of the next in line item, `else` will be 
+                                                      the name of the next in line item if the decision is false.
+- `@RootItem()` - This is a meta decorator. Add this to whichever function you want to be the entry point of the workflow.
+
+Example:
+```ts
+import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem } from "vrotsc-annotations";
+
+@Workflow({
+	name: "Example Waiting Timer",
+	path: "VMware/PSCoE",
+	attributes: {
+		waitingTimer: {
+			type: "Date"
+		},
+		counter: {
+			type: "number"
+		}
+	}
+})
+export class HandleNetworkConfigurationBackup {
+	@DecisionItem({
+		target: "waitForEvent",
+		else: null // null means end
+	})
+	public decisionElement(waitingTimer: Date) {
+		return waitingTimer !== null;
+	}
+
+	@Item({
+		target: "decisionElement",
+		exception: ""
+	})
+	public execute(
+		@Out @In waitingTimer: Date,
+		@Out @In counter: number
+	): void {
+		if (!counter) {
+			counter = 0;
+		}
+
+		counter++;
+
+		if (counter < 2) {
+			const tt = Date.now() + 5 * 1000;
+			waitingTimer = new Date(tt);
+		} else {
+			waitingTimer = null;
+		}
+
+		System.log("Counter: " + counter);
+		System.log("Waiting Timer: " + waitingTimer);
+	}
+
+	@Item({
+		target: "execute",
+		exception: ""
+	})
+	@RootItem()
+	public start() {
+		System.log("Starting workflow");
+	}
+
+	@WaitingTimerItem({
+		target: "execute"
+	})
+	public waitForEvent(@In waitingTimer: Date) {
+	}
+}
+```
+
+#### `@Item`
+
+This decorator is used to specify a scriptable task.
+
+Supported parameters:
+- `target` - The name of the next in line item. If this is set to `end`, it will point to the end of the workflow. 
+              If this is set to `null`, it will point to the next item or if none, the end of the wf.
+- `exception` - **Not implemented yet**
+
+#### `@WaitingTimerItem`
+
+This decorator is used to specify a waiting timer.
+
+Supported parameters:
+- `target` - The name of the next in line item. Same as `@Item`.
+This decorator expects an `@In` parameter with the name of the waiting timer. If one isn't added, the workflow will not work.
+
+#### `@DecisionItem`
+
+This decorator is used to specify a decision item.
+
+Supported parameters:
+- `target` - The name of the next in line item. Same as `@Item`.
+- `else` - The name of the next in line item if the decision is false. If this is set to `end`, it will point to the end of the workflow. 
+            If this is set to `null`, it will point to the next item or if none, the end of the wf.
+
+#### `@RootItem`
+
+This is a meta decorator. Add this to whichever function you want to be the entry point of the workflow.
+
+
+#### Backwards compatibility
+
+This feature is backwards compatible with the previous version of the `vrotsc` package. If no decorators are added, will assume an empty `@Item`.
+
+
+#### Relevant Documentation:
+
+- [Workflows](./Components/Archetypes/typescript/Components/Workflows.md)
+
 
 ## Improvements
 
@@ -38,6 +157,8 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+### VROTSC Upgrade the ts version from 3.8.3 to 5.4.5
 
 ### Updated documentation to specify Java 17 as the required version
 
