@@ -6,7 +6,7 @@ import { collectFactsBefore } from "../../metaTransformers/facts";
 import { transformShimsBefore, transformShims } from "../../codeTransformers/shims";
 import { generateElementId } from "../../../../utilities/utilities";
 import { getPropertyName } from "../../helpers/node";
-import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor, WorkflowItemType } from "../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor } from "../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
 import { prepareHeaderEmitter } from "../../codeTransformers/header";
@@ -224,7 +224,7 @@ function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName, workflo
 		target: null,
 		item: null,
 		canvasItemPolymorphicBag: {},
-		workflowDescriptorRef: workflowInfo
+		parent: workflowInfo
 	};
 }
 

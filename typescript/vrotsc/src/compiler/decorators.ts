@@ -57,7 +57,7 @@ export interface WorkflowItemDescriptor<T = any> {
 	target: string; // Points to which item this item is connected to by name
 	canvasItemPolymorphicBag: T;
 	polyglot?: PolyglotDescriptor;
-	workflowDescriptorRef: WorkflowDescriptor;
+	parent: WorkflowDescriptor;
 }
 
 export interface CanvasItemPolymorphicBagForItem {

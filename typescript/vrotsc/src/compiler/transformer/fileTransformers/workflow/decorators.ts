@@ -112,7 +112,7 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 					itemInfo.output.push(name);
 				}
 
-				addParamToWorkflowParams(itemInfo.workflowDescriptorRef, paramNode, parameterType);
+				addParamToWorkflowParams(itemInfo.parent, paramNode, parameterType);
 			}
 		});
 	}

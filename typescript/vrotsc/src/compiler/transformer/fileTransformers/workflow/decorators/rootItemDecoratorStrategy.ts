@@ -33,7 +33,7 @@ export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStr
 			throw new Error(`RootItem decorator must be applied to a method with an identifier name.`);
 		}
 
-		this.itemInfo.workflowDescriptorRef.rootItem = methodNode.name.escapedText as string;
+		this.itemInfo.parent.rootItem = methodNode.name.escapedText as string;
 	}
 
 	/**
