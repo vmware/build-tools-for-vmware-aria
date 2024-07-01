@@ -5,25 +5,29 @@
 [//]: # (Quick Intro to what is the focus of this release)
 
 ## Breaking Changes
+
 [//]: # (### *Breaking Change*)
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 ## Deprecations
+
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 [//]: # (Features -> New Functionality)
 
 ## Features
+
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
+
 ### VROTSC Upgrade the ts version from 3.8.3 to 5.4.5
 
-
 ## Improvements
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
@@ -35,6 +39,30 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Updated documentation to specify Java 17 as the required version
+
+#### Previous Behavior
+
+Required Java version mentioned in the documentation was Java 8.
+
+#### Current Behavior
+
+Required Java version updated to Java 17 in the documentation.
+
+### Add missing properties to VcComputeResourceConfigSpec and related class definitions in vRO interfaces
+
+#### Previous Behavior
+
+The `VcComputeResourceConfigSpec` class is missing a few attributes and related class interfaces.
+
+#### Current Behavior
+
+The `enableConfigManager`, `maximumHardwareVersionKey` and `desiredSoftwareSpec` attributes are added to the `VcComputeResourceConfigSpec` class interface. Related class interfaces for `VcDesiredSoftwareSpec`, `VcDesiredSoftwareSpecBaseImageSpec`, `VcDesiredSoftwareSpecVendorAddOnSpec` and `VcDesiredSoftwareSpecComponentSpec` are added vCenter plugin interfaces.
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/297>
 
 ## Upgrade procedure
+
 [//]: # (Explain in details if something needs to be done)

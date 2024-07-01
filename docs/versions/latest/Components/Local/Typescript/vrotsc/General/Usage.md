@@ -1,21 +1,28 @@
 # Usage
+
 Provides detailed instructions on how to use vrotsc
 
 ## Overview
-vrotsc has only one command to run, with different options. Detailed instructions can be found below on the possible options
-as well as an example
 
-## Table Of Contents:
+`vrotsc` has only one command to run, with different options. Detailed instructions can be found below on the possible options as well as an example.
+
+## Table Of Contents
+
 1. [Running](#running)
 
 ### Running
 
 #### Usage
-`vrotsc [SRC_DIR] [OPTIONS]`
+
+```bash
+vrotsc [SRC_DIR] [OPTIONS]
+```
 
 #### CLI options
+
 The following commandline options are accepted:
-~~~plaintext
+
+```plaintext
   -h, --help                           Print this message.
   -v, --version                        Print the compiler's version.
   -p, --project                        Path to the tsconfig.json file to use.
@@ -30,10 +37,11 @@ The following commandline options are accepted:
   --mapsOut                            Specify the output directory for source maps.
   --actionsNamespace                   Specify actions namespace.
   --workflowsNamespace                 Specify workflows namespace.
-~~~
+```
 
 #### Examples
-~~~bash
+
+```bash
 vrotsc src \
  --actionsNamespace com.vmware.pscoe.example \
  --workflowsNamespace example \
@@ -47,4 +55,4 @@ vrotsc src \
  --policiesOut target/vro-sources/xml/src/main/resources/PolicyTemplate \
  --resourcesOut target/vro-sources/xml/src/main/resources/ResourceElement \
  --configsOut target/vro-sources/xml/src/main/resources/ConfigurationElement
-~~~
+```

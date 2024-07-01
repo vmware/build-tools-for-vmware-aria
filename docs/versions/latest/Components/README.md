@@ -1,13 +1,18 @@
 # Build Tools for VMware Aria Components
+
 Navigation to different components of the Toolchain
 
 ## Overview
+
 The Components are divided in 2 types.
+
 1. Archetypes -> Project Archetype that Build Tools for VMware Aria can generate
 2. Local -> Local developer-centric documentation on how different Components of Build Tools for VMware Aria work
 
 [//]: # (External navigation)
-## Navigation:
+
+## Navigation
+
 1. Archetypes
    * [Typescript](./Archetypes/typescript)
 2. Local

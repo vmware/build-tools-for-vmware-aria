@@ -1,7 +1,8 @@
 # New Project
 
-## Table Of Contents:
-1. [Generate A New Project](#generate-a-new-project)
+## Table Of Contents
+
+- [Generate A New Project](#generate-a-new-project)
 
 ### Generate A New Project
 
