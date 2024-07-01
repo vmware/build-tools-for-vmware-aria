@@ -43,7 +43,7 @@ The `VcComputeResourceConfigSpec` class is missing a few attributes and related 
 
 #### Current Behavior
 
-The attributes are missing and corresponding types are missing
+The `enableConfigManager`, `maximumHardwareVersionKey` and `desiredSoftwareSpec` attributes are added to the `VcComputeResourceConfigSpec` class interface. Related class interfaces for `VcDesiredSoftwareSpec`, `VcDesiredSoftwareSpecBaseImageSpec`, `VcDesiredSoftwareSpecVendorAddOnSpec` and `VcDesiredSoftwareSpecComponentSpec` are added vCenter plugin interfaces.
 
 #### Related issue
 
