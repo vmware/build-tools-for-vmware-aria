@@ -35,6 +35,19 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Add missing properties to VcComputeResourceConfigSpec and related class definitions in vRO interfaces
+
+#### Previous Behavior
+
+The VcComputeResourceConfigSpec class is missing a few attributes and types of those attributes
+
+#### Current Behavior
+
+The attributes are missing and corresponding types are missing
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/297>
 
 ## Upgrade procedure
 [//]: # (Explain in details if something needs to be done)
