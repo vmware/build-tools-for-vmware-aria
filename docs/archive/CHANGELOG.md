@@ -5,6 +5,8 @@
 
 ## v2.39.0 - 14 Jun 2024
 
+### Enhancements
+
 * [vra] Issue 279 / content sharing policies not pulled if scope is different than configured project in the settings.xml.
 * [vro] Added new strategy StrategyForceLatestVersions that will force you to upload a newer or same version of artifacts, otherwise the build will fail. New property has been introduced `-Dvro.forceImportLatestVersions={{BOOLEAN}}` that is set by default to false.
 * [typescript/vrotsc] Implement `Object.setPrototypeOf()` function
@@ -146,7 +148,7 @@
 
 ### Enhancements
 
-* [package-installer] IAC-728 / Deprecate ```vro_delete_include_dependencies``` flag  .
+* [package-installer] IAC-728 / Deprecate `vro_delete_include_dependencies` flag  .
 * [package-installer] IAC-591 / Added backup functionalities for vRO packages that will be imported.
 * [maven] 87 / npm installation will now throw in case of a failure.
 * [artifact-manager] IAC-765 / Add Support for Blueprint Custom Form Serialization/Deserialization.
@@ -189,7 +191,7 @@
 ### Enhancements
 
 * [polyglot] IAC-604 / vRBT to support downloading powershell modules through 'Ssl3' | 'Tls' | 'Tls11' | 'Tls12' | 'Tls13' .
-* [polyglot] IAC-604 / Using Import-Module must always be in the format of Import-Module ```<module name>``` without -Name and ; at the end of the line to avoid confusion .
+* [polyglot] IAC-604 / Using Import-Module must always be in the format of Import-Module `<module name>` without -Name and ; at the end of the line to avoid confusion .
 * [base-package] IAC-746 / Make base packages (ssh project) deployable to artifactory server and local maven repository.
 * [core] IAC-718 / All pom.xml should inherit a single pom.xml. All pom.xml-s are now children or grand-children of ./pom.xml. Project version is stored only in the 'revision' property.
 * [core] IAC-719 / Prepare for maven central. Add needed plugins: maven-javadoc-plugin, maven-gpg-plugin, and maven-source-plugin.
@@ -295,7 +297,6 @@
 * [package-installer] IAC-428 / Added descriptions for some package installer and maven settings.xml configuration options.
 
 ## v2.26.0 - 19 Jul 2022
-
 
 ### Enhancements
 
@@ -606,7 +607,6 @@
 
 ## v2.13.5 - 14 May 2021
 
-
 * [vRA-NG] Fixed issue when importing subscription in multi-tenant vRA environments.
 
 ## v2.13.4 - 12 May 2021
@@ -614,12 +614,6 @@
 ## v2.13.3 - 10 May 2021
 
 ## v2.13.2 - 05 May 2021
-
-## v2.13.1 - 20 Apr 2021
-
-## v2.13.1 - 20 Apr 2021
-
-## v2.13.1 - 20 Apr 2021
 
 ## v2.13.1 - 20 Apr 2021
 
@@ -650,7 +644,6 @@
 
 * [TS] vRO pkg - Adds support for slash in workflow path or name.
 * [vRBT] vRBT installer - updated documentation, added checking of workflow input, writing of workflow error message to file, setting of installer exit code when executing of a workflow.
-
 
 ## v2.11.1 - 01 Dec 2020
 
@@ -880,11 +873,11 @@ with different domain.
 * [MVN] Fix failure in TS Tests executed on Windows by increasing default JVM Heap size for background jobs.
 * [TS] Fix Tests failing if TS project contains dash in artifactId.
 
-
 ## v2.4.1 - 27 Nov 2019
-### Fixes
-[MVN] fix installDeps when .m2 repo has not cached the required dependencies. Use dependency:go-offline to ensure they are cached.
 
+### Fixes
+
+* [MVN] fix installDeps when .m2 repo has not cached the required dependencies. Use dependency:go-offline to ensure they are cached.
 
 ## v2.4.0 - 13 Nov 2019
 
@@ -971,7 +964,7 @@ with different domain.
 
 ### Enhancements
 
-* Add ```generated.from``` Maven property to the root POM of all archetypes. This can be used to differentiate which "template" was used to generate the project, for example in the context of a CI pipeline.
+* Add `generated.from` Maven property to the root POM of all archetypes. This can be used to differentiate which "template" was used to generate the project, for example in the context of a CI pipeline.
 
 ## v1.5.10 - 19 Apr 2019
 
@@ -983,11 +976,11 @@ with different domain.
 
 ### Enhancements
 
-* ```vro:pull```, ```vra:pull``` and ```vra:auth``` Maven goals now support the SSL verification flags to be set as properties in a Maven profile, similarly to the ```vrealize:push``` goal.
+* `vro:pull`, `vra:pull` and `vra:auth` Maven goals now support the SSL verification flags to be set as properties in a Maven profile, similarly to the `vrealize:push` goal.
 
 ### Fixes
 
-* When using the Bundle Installer with a properties file the value of ```vro_delete_old_versions``` used to be ignored - if the property was present, the installer would do the cleanup. Now, if the property is not present it is considered false. If it is present, however, its value will be used to opt-in for the cleanup.
+* When using the Bundle Installer with a properties file the value of `vro_delete_old_versions` used to be ignored - if the property was present, the installer would do the cleanup. Now, if the property is not present it is considered false. If it is present, however, its value will be used to opt-in for the cleanup.
 
 ## v1.5.8 - 15 Apr 2019
 
@@ -1001,8 +994,8 @@ with different domain.
 
 ### Enhancements
 
-* Installer CLI now prompts for SSL verification flags. Default is still to verify the certificate against Java's key store (i.e. cacerts) and to verify the hostname. Those flags can be persisted and controlled via the environment's ```.properties``` file.
-* vrealize:push Maven goal now supports the SSL verification flags to be set as properties in a Maven profile, i.e. you can add ```<vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>``` under ```<properties>``` in an active Maven profile to skip the certificate verification against JAVA's key store (i.e. cacerts). You can also add ```<vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>``` to skip the hostname verification. **WARNING** this is intended for use with production endpoints. For those cases, register vRA/vRO certificate in Java's key store and access the endpoint using its FQDN.
+* Installer CLI now prompts for SSL verification flags. Default is still to verify the certificate against Java's key store (i.e. cacerts) and to verify the hostname. Those flags can be persisted and controlled via the environment's `.properties` file.
+* vrealize:push Maven goal now supports the SSL verification flags to be set as properties in a Maven profile, i.e. you can add `<vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>` under `<properties>` in an active Maven profile to skip the certificate verification against JAVA's key store (i.e. cacerts). You can also add `<vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>` to skip the hostname verification. **WARNING** this is intended for use with production endpoints. For those cases, register vRA/vRO certificate in Java's key store and access the endpoint using its FQDN.
 
 ## v1.5.6 - 27 Mar 2019
 
@@ -1010,15 +1003,15 @@ with different domain.
 
 * **BREAKING** All certificates are now verified as part of API calls from the toolchain to vRA/vRO:
   * Verify hostname - the hostname if the vRO/vRA server should match the CN of the SSL certificate. *For development environments, this can be skipped by a flag described in documentation.*
-  * Verify certificate - the SSL certificate used by vRO/vRA is verified against the Java default keystore, i.e. ```cacerts```. Self-signed or third-party certificates have to either be addded to the trusted store (or their CA) or the check can be ignored for development environments by a flag described in documentation.
+  * Verify certificate - the SSL certificate used by vRO/vRA is verified against the Java default keystore, i.e. `cacerts`. Self-signed or third-party certificates have to either be addded to the trusted store (or their CA) or the check can be ignored for development environments by a flag described in documentation.
 
 * Improved logging when installing packages - logs will report which package will be included (pass) and which will be excluded (skip).
-* ```vrealize:push``` will import all packages per type in a single batch, reporting what will be included (pass) and excluded (skip).
+* `vrealize:push` will import all packages per type in a single batch, reporting what will be included (pass) and excluded (skip).
 
 ### Fixes
 
 * Installer overwrites newer versions of packages found on the server if a concrete source package, e.g. v1.0.2 is not found.
-* ```vrealize:push``` downgrades dependent packages, i.e. it will always forcefully install the concrete versions of the dependencies regardless of the state of the target vRO/vRA server. This is still possible if an additianal flag is passed to the command: ```-Dvro.importOldVersions``` and respectively ```-Dvra.importOldVersions```.
+* `vrealize:push` downgrades dependent packages, i.e. it will always forcefully install the concrete versions of the dependencies regardless of the state of the target vRO/vRA server. This is still possible if an additianal flag is passed to the command: `-Dvro.importOldVersions` and respectively `-Dvra.importOldVersions`.
 
 ## v1.5.5 - 14 Mar 2019
 
@@ -1082,15 +1075,15 @@ with different domain.
 
 * New setting to *exclude* certain projects from the list of build tasks (`Cmd+Shift+B`) by using glob patterns.
 
-```javascript
-"o11n.tasks.exclude" : [
-    "com.vmware.pscoe.library*", // Exclude all PSCoE libraries
-    "!com.vmware.pscoe.library*", // Exclude everything, except PSCoE libraries
-    "com.vmware.pscoe.!(library*)", // Exclude everything PSCoE, except libraries
-    "com.vmware.pscoe.library:{nsx,vra,vc}", // Exclude nsx, vra and vc libraries
-    "com.vmware.pscoe.library:util" // Exclude util library (<groupId>:<artifactId>)
-]
-```
+  ```javascript
+  "o11n.tasks.exclude" : [
+      "com.vmware.pscoe.library*", // Exclude all PSCoE libraries
+      "!com.vmware.pscoe.library*", // Exclude everything, except PSCoE libraries
+      "com.vmware.pscoe.!(library*)", // Exclude everything PSCoE, except libraries
+      "com.vmware.pscoe.library:{nsx,vra,vc}", // Exclude nsx, vra and vc libraries
+      "com.vmware.pscoe.library:util" // Exclude util library (<groupId>:<artifactId>)
+  ]
+  ```
 
 ### Known Issues
 
@@ -1176,8 +1169,8 @@ with different domain.
 
 ### Enhancements
 
-* Include package installer in the toolchain to enable -Pbundle-with-installer. When a package is build with ```mvn package -Pbundle-with-installer``` this will produce a zip file with all the dependencies and a bin/ and repo/ folders. The bundle can be installed by unziping it and calling ./bin/installer.
-* Archetype generated projects now work with release.sh immediately, i.e. without further modifying the pom.xml file of the root project. You can still have the SCM remote written in the POM and not specify it every time, but OOTB after you add the project to SCM and add your remote (origin) you can use the ```-r``` option of the **release.sh** script: ```sh ./release.sh -r $(git remote get-url origin)```.
+* Include package installer in the toolchain to enable -Pbundle-with-installer. When a package is build with `mvn package -Pbundle-with-installer` this will produce a zip file with all the dependencies and a bin/ and repo/ folders. The bundle can be installed by unziping it and calling ./bin/installer.
+* Archetype generated projects now work with release.sh immediately, i.e. without further modifying the pom.xml file of the root project. You can still have the SCM remote written in the POM and not specify it every time, but OOTB after you add the project to SCM and add your remote (origin) you can use the `-r` option of the **release.sh** script: `sh ./release.sh -r $(git remote get-url origin)`.
 
 ### Fixes
 
@@ -1271,13 +1264,13 @@ with different domain.
 
 * Since v1.2.0, all mixed projects that have to use vRA SSO authentication, should have the following added to their root **pom.xml** file.
 
-```xml
-<parent>
-    <groupId>com.vmware.pscoe.o11n</groupId>
-    <artifactId>base-package</artifactId>
-    <version>1.2.0</version>
-</parent>
-```
+  ```xml
+  <parent>
+      <groupId>com.vmware.pscoe.o11n</groupId>
+      <artifactId>base-package</artifactId>
+      <version>1.2.0</version>
+  </parent>
+  ```
 
 * `o11n.maven.profile` setting is now required by the VSCode extension.
 

@@ -1,7 +1,13 @@
 # Content Policies
 
 There are 6 types of content policies:
-  Approval, Content Sharing, Day 2 Actions, Deployment Limit, Lease and Resource Quota policies.
+
+- Approval
+- Content Sharing
+- Day 2 Actions
+- Deployment Limit
+- Lease
+- Resource Quota
 
 ## Table Of Contents
 
@@ -66,14 +72,13 @@ Operations are invoked on policies based on filtering from content.yml file, acc
 
 #### Importing
 
-When importing policies, files are read form the filesystem, and the content.yml filter is by filename. All non-hidden files are read from the folder, and if the name of the file, without the extension matches the list in content.yml, the policy will be imported.
-The filename is only important for filtering. Actual policy fields are read from the file contents.
-If there is a policy with the same id on the server, an update will be performed. Otherwise, the policy will be created instead, using the same id, that is found in the file.
+When importing policies, files are read form the filesystem, and the content.yml filter is by filename. All non-hidden files are read from the folder, and if the name of the file, without the extension matches the list in content.yml, the policy will be imported. The filename is only important for filtering. Actual policy fields are read from the file contents. If there is a policy with the same id on the server, an update will be performed. Otherwise, the policy will be created instead, using the same id, that is found in the file.
 
-#### Content Sharing Polices Import
+##### Content Sharing Polices Import
 
 If project name is is defined as a *scope* proprty in the content sharing JSON file it will be used as a project scope during push , hence allowing more granular content sharing across different projects. If the *scope* property is not defined then the project id defined in the settings.xml configuration file will be used.
-If a orgaanization name is defined as *organization* property in the content sharing JSON file then it will be used as organization of the content sharing policy, otherwise the organization defined in the settings.xml file will be used. The following policy types can be used during import:
+
+If a organization name is defined as *organization* property in the content sharing JSON file then it will be used as organization of the content sharing policy, otherwise the organization defined in the settings.xml file will be used. The following policy types can be used during import:
 
 1. Content source policies.
 2. Catalog item policies.
@@ -86,7 +91,7 @@ The name of the content source(s) and catalog item(s) in the file are stored in 
 When exporting a policy, a json file will be created on the filesystem. The filename will be the policyName[-index].json.
 Index will be added only if there are multiple policies with the same name.
 
-#### Content Sharing Polices Export
+##### Content Sharing Polices Export
 
 The scope and organization of the content sharing policy will be exported as *scope* and *organization* properties in the output JSON file(s). The project name will be used as as *scope* parameter and organization name will be used as a *organization* parameter. The following policy types can be created on the target system and they will be exported as well:
 
