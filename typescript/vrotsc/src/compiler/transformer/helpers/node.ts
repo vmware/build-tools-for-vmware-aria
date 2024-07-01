@@ -14,6 +14,7 @@
  */
 import * as ts from 'typescript';
 import { Comment } from '../../../types';
+import { WorkflowItemType } from '../../decorators';
 
 /**
 * Helper function to get the text of an identifier or return null.
@@ -162,5 +163,30 @@ export function getLeadingComments(sourceFile: ts.SourceFile, node: ts.Node): Co
 		pos: c.pos,
 		end: c.end,
 	});
+}
+
+/**
+ * This will fetch all the props of a decoratorNode
+ *
+ * @param decoratorNode The decorator node to get the properties from.
+ * @returns An array of key-value touple arrays.
+ */
+export function getDecoratorProps(decoratorNode: ts.Decorator): [string, any][] {
+	const decoratorValues = [];
+	const objLiteralNode = (decoratorNode.expression as ts.CallExpression)?.arguments?.[0] as ts.ObjectLiteralExpression;
+
+	if (!objLiteralNode) {
+		return decoratorValues;
+	}
+
+
+	objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
+		const propName = getPropertyName(property.name);
+		const propValue = (<ts.StringLiteral>property.initializer).text;
+
+		decoratorValues.push([propName, propValue]);
+	});
+
+	return decoratorValues;
 }
 

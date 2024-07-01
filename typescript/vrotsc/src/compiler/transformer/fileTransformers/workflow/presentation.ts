@@ -12,25 +12,11 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { CanvasItemPolymorphicBagForDecision, ITEM_ENUM_TO_TYPE, InputOutputBindings, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
+import { CanvasItemPolymorphicBagForDecision, InputOutputBindings, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
 import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
-
-/**
- * This function will find the index of the item with the given name, or return 0 if not found
- *
- * The index is incremented by 1, as the first item in the workflow is always the end item
- *
- * @param items The list of items to search
- * @param name The name of the item to find
- * @returns The index of the item with the given name, or 0 if not found
- */
-function findItemByName(items: WorkflowItemDescriptor[], name: string): number {
-	const index = items.findIndex(item => item.name === name);
-	return index === -1 ? 0 : index + 1;;
-}
 
 /**
  * This will print the workflow in XML format
@@ -142,10 +128,12 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	 */
 	function buildItem(item: WorkflowItemDescriptor, pos: number, items: WorkflowItemDescriptor[]): void {
 		const targetItem = findTargetItem(item, pos, items);
-		const type = ITEM_ENUM_TO_TYPE[item.itemType] || "task";
+		const itemType = item.item.getDecoratorType();
+		const type = item.item.getCanvasType();
 		let inputOutputBindings = 0;
 
-		switch (item.itemType) {
+		//@TODO: Move to the strategies
+		switch (itemType) {
 			case WorkflowItemType.Decision:
 				item.sourceText = item.sourceText.replace(/function wrapper\(\) \{|}$/gm, '').trim();
 				stringBuilder.append(`<workflow-item`
@@ -378,4 +366,18 @@ function buildOutput(output: string[]): string {
 		throw new Error("Polyglot decorator require an @Out parameter");
 	}
 	return output[0];
+}
+
+/**
+ * This function will find the index of the item with the given name, or return 0 if not found
+ *
+ * The index is incremented by 1, as the first item in the workflow is always the end item
+ *
+ * @param items The list of items to search
+ * @param name The name of the item to find
+ * @returns The index of the item with the given name, or 0 if not found
+ */
+function findItemByName(items: WorkflowItemDescriptor[], name: string): number {
+	const index = items.findIndex(item => item.name === name);
+	return index === -1 ? 0 : index + 1;;
 }

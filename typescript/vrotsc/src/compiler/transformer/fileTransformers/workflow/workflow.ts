@@ -4,14 +4,12 @@ import { printElementInfo } from "../../../elementInfo";
 import { transformSourceFile } from "../../scripts/scripts";
 import { collectFactsBefore } from "../../metaTransformers/facts";
 import { transformShimsBefore, transformShims } from "../../codeTransformers/shims";
-import { printSourceFile } from "../../helpers/source";
 import { generateElementId } from "../../../../utilities/utilities";
 import { getPropertyName } from "../../helpers/node";
 import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor, WorkflowItemType } from "../../../decorators";
 import { remediateTypeScript } from "../../codeTransformers/remediate";
 import { transformModuleSystem } from "../../codeTransformers/modules";
 import { prepareHeaderEmitter } from "../../codeTransformers/header";
-import { createWorkflowItemPrologueStatements } from "../../codeTransformers/prologueStatements";
 import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMethodDecorators, registerPolyglotDecorators } from "./decorators";
 import { mergeWorkflowXml, printPolyglotCode, printWorkflowXml } from "./presentation";
 
@@ -99,7 +97,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				registerWorkflowItem(itemInfo, methodNode);
 
 				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-				let actionSourceText = getActionSourceText(methodNode, itemInfo, sourceFile);
+				let actionSourceText = itemInfo.item.printSourceFile(methodNode, sourceFile);
 
 				// @TODO: "Unstupify" me
 				if (itemInfo.polyglot) {
@@ -169,56 +167,6 @@ function registerWorkflowItem(itemInfo: WorkflowItemDescriptor, methodNode: ts.M
 }
 
 /**
- * This function is responsible for returning the source text of the action item.
- *
- * If the item is a decision, it will wrap the method body in a function and register it as a decision.
- *  This wrapping is necessary because "return"s are not allowed in the root of a typescript file, but are allowed in the case of vRO.
- *  The "wrapper" function will later be removed in the transpilation process.
- *  @NOTE: This is 100% due to a typescript limitation, and not a vRO limitation.
- *
- * @param methodNode The method node to extract the source text from.
- * @param itemInfo The item descriptor object.
- * @returns string - The source text of the action item.
- */
-function getActionSourceText(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor, sourceFile: ts.SourceFile): string {
-	switch (itemInfo.itemType) {
-		case WorkflowItemType.Decision:
-			itemInfo.itemType = WorkflowItemType.Decision;
-
-			const wrapperFunction = ts.factory.createFunctionDeclaration(
-				undefined,
-				undefined,
-				"wrapper",
-				undefined,
-				[],
-				undefined,
-				methodNode.body
-			);
-			return printSourceFile(
-				ts.factory.updateSourceFile(
-					sourceFile,
-					[
-						...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
-						...createWorkflowItemPrologueStatements(methodNode),
-						wrapperFunction
-					]
-				)
-			);
-		default:
-			return printSourceFile(
-				ts.factory.updateSourceFile(
-					sourceFile,
-					[
-						...sourceFile.statements.filter(n => n.kind !== ts.SyntaxKind.ClassDeclaration),
-						...createWorkflowItemPrologueStatements(methodNode),
-						...methodNode.body.statements
-					]
-				)
-			);
-	}
-}
-
-/**
  * Transpiles the action items.
  *
  * This function is responsible for transforming the source files of the action items.
@@ -264,6 +212,8 @@ function transpileActionItems(
 
 /**
  * Represents the workflow item descriptor information extracted from the property name node
+ *
+ * @TODO: See which logic you can move to the strategies
  */
 function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName, workflowInfo: WorkflowDescriptor): WorkflowItemDescriptor {
 	return {
@@ -271,8 +221,8 @@ function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName, workflo
 		input: [],
 		output: [],
 		sourceText: "",
-		itemType: WorkflowItemType.Item,
 		target: null,
+		item: null,
 		canvasItemPolymorphicBag: {},
 		workflowDescriptorRef: workflowInfo
 	};

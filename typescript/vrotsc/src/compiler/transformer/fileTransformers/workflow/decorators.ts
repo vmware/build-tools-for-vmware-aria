@@ -17,92 +17,63 @@ import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../
 import { PolyglotDescriptor, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
 import { getVroType } from "../../helpers/vro";
 import { DiagnosticCategory, FileTransformationContext } from "../../../../types";
+import CanvasItemDecoratorStrategy from "./decorators/canvasItemDecoratorStrategy";
+import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
+import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
+import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDecoratorStrategy";
+import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
  */
 export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
-	const decorators = ts.getDecorators(methodNode);
+	let decorators = ts.getDecorators(methodNode);
 
 	if (!decorators || decorators?.length === 0) {
-		return;
+		decorators = [
+			ts.factory.createDecorator(
+				ts.factory.createCallExpression(
+					ts.factory.createIdentifier("Item"),
+					undefined,
+					[
+						ts.factory.createObjectLiteralExpression([])
+					]
+				)
+			)
+		];
 	}
 
 	for (const decoratorNode of decorators) {
-		const decoratorExpressionNode = decoratorNode.expression as ts.CallExpression;
-		const identifierText = getIdentifierTextOrNull(decoratorExpressionNode.expression);
-
-		switch (identifierText) {
-			case WorkflowItemType.RootItem:
-				if (!ts.isIdentifier(methodNode.name) && !ts.isPrivateIdentifier(methodNode.name)) {
-					throw new Error(`RootItem decorator must be applied to a method with an identifier name.`);
-				}
-
-				itemInfo.workflowDescriptorRef.rootItem = methodNode.name.escapedText as string;
-				break;
-			default:
-				itemInfo.itemType = identifierText as WorkflowItemType;
-
-				const objLiteralNode = decoratorExpressionNode.arguments[0] as ts.ObjectLiteralExpression;
-				registerCanvasItemArguments(objLiteralNode, identifierText, itemInfo);
-		}
+		const itemStrategy = getItemStrategy(decoratorNode, itemInfo);
+		itemStrategy.registerItemArguments(decoratorNode);
 	}
 }
 
 /**
- * Registers the canvas item arguments
+ * Determines the item strategy to use given the decorator node
  *
- * This is where information is extracted from the decorator and added to the infoObjects
+ * The itemInfo is passed, to be given to the strategy
  *
- * @param objLiteralNode The object literal node
- * @param identifierText The identifier text
+ * @param decoratorNode The decorator node
  * @param itemInfo The item info
+ * @returns The item strategy
  */
-function registerCanvasItemArguments(objLiteralNode: ts.ObjectLiteralExpression, identifierText: string, itemInfo: WorkflowItemDescriptor) {
-	if (!objLiteralNode) {
-		return;
+function getItemStrategy(decoratorNode: ts.Decorator, itemInfo: WorkflowItemDescriptor): CanvasItemDecoratorStrategy {
+	const decoratorExpressionNode = decoratorNode.expression as ts.CallExpression;
+	const identifierText = getIdentifierTextOrNull(decoratorExpressionNode.expression);
+
+	switch (identifierText) {
+		case WorkflowItemType.Item:
+			return new ItemDecoratorStrategy(itemInfo);
+		case WorkflowItemType.Decision:
+			return new DecisionItemDecoratorStrategy(itemInfo);
+		case WorkflowItemType.WaitingTimer:
+			return new WaitingTimerItemDecoratorStrategy(itemInfo);
+		case WorkflowItemType.RootItem:
+			return new RootItemDecoratorStrategy(itemInfo);
+		default:
+			throw new Error(`Invalid decorator type: ${identifierText}`);
 	}
-
-	objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
-		const propName = getPropertyName(property.name);
-		const propValue = (<ts.StringLiteral>property.initializer).text;
-
-		switch (identifierText) {
-			case WorkflowItemType.Item:
-				switch (propName) {
-					case "target":
-						itemInfo.target = propValue;
-						break;
-					case "exception":
-						itemInfo.canvasItemPolymorphicBag.exception = propValue;
-						break;
-					default:
-						throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
-				}
-				break;
-			case WorkflowItemType.Decision:
-				switch (propName) {
-					case "target":
-						itemInfo.target = propValue;
-						break;
-					case "else":
-						itemInfo.canvasItemPolymorphicBag.else = propValue;
-						break;
-					default:
-						throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
-				}
-				break;
-			case WorkflowItemType.WaitingTimer:
-				switch (propName) {
-					case "target":
-						itemInfo.target = propValue;
-						break;
-					default:
-						throw new Error(`Item attribute '${propName}' is not suported for ${identifierText} item`);
-				}
-				break;
-		}
-	});
 }
 
 export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {

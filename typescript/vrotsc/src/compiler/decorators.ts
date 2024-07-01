@@ -1,5 +1,7 @@
 /////////////////////////////////// Configuration Decorator ///////////////////////////////////
 
+import CanvasItemDecoratorStrategy from "./transformer/fileTransformers/workflow/decorators/canvasItemDecoratorStrategy";
+
 /**
 * Describes the configuration element.
 * This corresponds to the `VroConfiguration` decorator in `vrotsc-annotations`.
@@ -51,7 +53,7 @@ export interface WorkflowItemDescriptor<T = any> {
 	input: string[];
 	output: string[];
 	sourceText: string;
-	itemType: WorkflowItemType;
+	item: CanvasItemDecoratorStrategy;
 	target: string; // Points to which item this item is connected to by name
 	canvasItemPolymorphicBag: T;
 	polyglot?: PolyglotDescriptor;
@@ -120,12 +122,6 @@ export enum WorkflowItemType {
 	 */
 	WaitingTimer = "WaitingTimerItem",
 }
-
-export const ITEM_ENUM_TO_TYPE = {
-	[WorkflowItemType.Item]: "task",
-	[WorkflowItemType.Decision]: "custom-condition",
-	[WorkflowItemType.WaitingTimer]: "waiting-timer"
-};
 
 export enum InputOutputBindings {
 	IsWaitingTimer = 1 << 0,
