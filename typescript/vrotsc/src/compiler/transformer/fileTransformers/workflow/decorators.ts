@@ -30,10 +30,14 @@ import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStr
  *  This behaviour will essentially make the method point to the next one in the workflow.
  */
 export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
-	let decorators = ts.getDecorators(methodNode);
+	let decorators = ts.getDecorators(methodNode) as ts.Decorator[] || [];
 
-	if (!decorators || decorators?.length === 0) {
-		decorators = [
+	if (
+		!decorators
+		|| decorators?.length === 0
+		|| (decorators.length === 1 && getItemStrategy(decorators[0], itemInfo).getDecoratorType() === WorkflowItemType.RootItem)
+	) {
+		decorators.push(
 			ts.factory.createDecorator(
 				ts.factory.createCallExpression(
 					ts.factory.createIdentifier(WorkflowItemType.Item),
@@ -43,7 +47,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 					]
 				)
 			)
-		];
+		);
 	}
 
 	for (const decoratorNode of decorators) {

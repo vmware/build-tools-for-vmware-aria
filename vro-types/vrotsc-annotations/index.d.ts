@@ -161,7 +161,7 @@ interface VroItemDecorator {
 }
 
 interface VroItemConfiguraiton {
-	target: string;
+	target?: string;
 	exception?: string;
 }
 interface VroItemMethodDecorator {
@@ -179,7 +179,7 @@ interface VroWaitingTimerItemDecorator {
 }
 
 interface VroWaitingTimerItemConfiguraiton {
-	target: string;
+	target?: string;
 }
 
 interface VroWaitingTimerItemMethodDecorator {
@@ -206,8 +206,8 @@ interface VroDecisionItemDecorator {
 }
 
 interface VroDecisionItemConfiguraiton {
-	target: string;
-	else: string;
+	target?: string;
+	else?: string;
 }
 
 interface VroDecisionItemMethodDecorator {

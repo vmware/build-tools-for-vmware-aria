@@ -127,7 +127,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	 * @param items The list of all items in the workflow
 	 */
 	function buildItem(item: WorkflowItemDescriptor, pos: number, items: WorkflowItemDescriptor[]): void {
-		const targetItem = findTargetItem(item, pos, items);
+		const targetItem = findTargetItem(item.target, pos, item);
 		const itemType = item.item.getDecoratorType();
 		const type = item.item.getCanvasType();
 		let inputOutputBindings = 0;
@@ -140,7 +140,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 					+ ` name="item${pos}"`
 					+ ` out-name="${targetItem}"`
 					+ ` type="${type}"`
-					+ ` alt-out-name="item${findItemByName(items, (item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else || "") || 0}"`
+					+ ` alt-out-name="${findTargetItem((item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, item)}"`
 					+ ">").appendLine();
 				stringBuilder.indent();
 				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
@@ -186,16 +186,16 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	 * @param items The list of all items in the workflow
 	 * @returns The name of the target item
 	 */
-	function findTargetItem(item: WorkflowItemDescriptor, pos: number, items: WorkflowItemDescriptor[]): string {
-		if (item.target === "end") {
+	function findTargetItem(target: any, pos: number, item: WorkflowItemDescriptor): string {
+		if (target === "end") {
 			return "item0";
 		}
 
-		if (item.target != null) {
-			return `item${findItemByName(items, item.target) || 0}`;
+		if (target != null) {
+			return `item${findItemByName(item.parent.items, target) || 0}`;
 		}
 
-		return pos < workflow.items.length ? `item${pos + 1}` : "item0";
+		return pos < item.parent.items.length ? `item${pos + 1}` : "item0";
 	}
 
 	/**

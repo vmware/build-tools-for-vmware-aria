@@ -1,8 +1,7 @@
 import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem } from "vrotsc-annotations";
 
 @Workflow({
-	id: "16083aae-bae5-38d8-a11e-a21445c7b9e9",
-	name: "Complex",
+	name: "Example Waiting Timer",
 	path: "VMware/PSCoE",
 	attributes: {
 		waitingTimer: {

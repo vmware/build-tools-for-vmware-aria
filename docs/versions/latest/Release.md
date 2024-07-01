@@ -111,6 +111,7 @@ This decorator is used to specify a scriptable task.
 Supported parameters:
 - `target` - The name of the next in line item. If this is set to `end`, it will point to the end of the workflow. 
               If this is set to `null`, it will point to the next item or if none, the end of the wf.
+              If this is set to a string, but it does not exist in the workflow, it will point to the end of the wf.
 - `exception` - **Not implemented yet**
 
 #### `@WaitingTimerItem`
