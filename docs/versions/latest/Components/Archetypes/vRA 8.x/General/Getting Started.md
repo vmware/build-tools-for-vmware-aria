@@ -127,7 +127,7 @@ The following need to be added to the profile that you intend to use:
 </profile>
 ```
 
-- `vrang.refresh.token` - will use the given refresh token instead of credentials. 
+- `vrang.refresh.token` - will use the given refresh token instead of credentials.
 
   **Note:** this will take precedence over
 credentials.

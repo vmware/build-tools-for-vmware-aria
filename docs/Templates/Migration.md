@@ -1,7 +1,7 @@
+# Migration XXX - YYY
+
 [//]: # (Used when placing migrations inside of the Migration folder)
 [//]: # (Describe the migration)
-
-# Migration XXX - YYY
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@
 
 [//]: # (Describe which environment this is targeting)
 
-## Environment 
+## Environment
 
 [//]: # (Cli tools versions, third party systems state, like jfrog, azure devops, etc. further details...)
 

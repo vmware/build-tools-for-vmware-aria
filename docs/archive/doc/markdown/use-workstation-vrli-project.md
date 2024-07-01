@@ -127,7 +127,7 @@ Then, you can sync content back to your local sources by simply activating the p
 mvn vrli:pull -Piac-vrli
 ```
 
-> Note that ```vrli:pull``` will fail if the content.yaml is empty or it cannot find some of the described content on the target VRLI server.
+> Note that `vrli:pull` will fail if the content.yaml is empty or it cannot find some of the described content on the target VRLI server.
 
 ### Push
 
@@ -198,7 +198,7 @@ The other option is to set the flags in your Maven's settings.xml file for a spe
 To produce a bundle.zip containing the package and all its dependencies, use:
 
 ```bash
-$ mvn clean deploy -Pbundle
+mvn clean deploy -Pbundle
 ```
 
 Refer to [Build Tools for VMware Aria](setup-workstation-maven.md)/Bundling for more information.

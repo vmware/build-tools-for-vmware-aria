@@ -238,7 +238,7 @@ mvn package vrealize:push -Pcorp-env -Dvrealize.ssl.ignore.hostname
 To produce a bundle.zip containing the package and all its dependencies, use:
 
 ```Bash
-$ mvn clean deploy -Pbundle
+mvn clean deploy -Pbundle
 ```
 
 Refer to [Build Tools for VMware Aria](setup-workstation-maven.md)/Bundling for more information.

@@ -10,4 +10,4 @@ Helpers are testing files. Naming convention is - filename.helper.ts . They are 
 
 ### Known Issues
 
-Helper files must be located in any folder under `src/`, recommended place is `src/tests/helpers `
+Helper files must be located in any folder under `src/`, recommended place is `src/tests/helpers`.

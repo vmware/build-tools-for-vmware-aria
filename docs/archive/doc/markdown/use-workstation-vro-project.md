@@ -580,7 +580,7 @@ The other option is to set the flags in your Maven's settings.xml file for a spe
 To produce a bundle.zip containing the package and all its dependencies, use:
 
 ```bash
-$ mvn clean deploy -Pbundle
+mvn clean deploy -Pbundle
 ```
 
 Refer to [Build Tools for VMware Aria](setup-workstation-maven.md)/Bundling for more information.

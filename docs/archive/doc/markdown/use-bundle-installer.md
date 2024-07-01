@@ -8,7 +8,7 @@ Before you continue with this section validate that all of the prerequisites are
 
 ## Usage
 
-When you package a vRO/vRA project with the ```-Pbundle-with-installer``` Maven profile, you will get an additional artifact ```***-bundle.zip``` that contains your project, all its dependencies (both vRA and vRO) plus the bundle installer CLI.
+When you package a vRO/vRA project with the `-Pbundle-with-installer` Maven profile, you will get an additional artifact `***-bundle.zip` that contains your project, all its dependencies (both vRA and vRO) plus the bundle installer CLI.
 
 You can extract the zip bundle and install all packages on a target environment.
 

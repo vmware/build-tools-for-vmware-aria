@@ -65,7 +65,7 @@ keytool -exportcert -alias _dunesrsa_alias_ -keystore package.jks -storepass 'VM
 
 > **Note**: Mind the single quotes in the examples above on Windows - those might be part of the passowrd depending on which interpreter (shell) you are using. Correct the string literal and escaping appropriately for your case.
 
-> **Note**: JKS is a propriatary format specific to the particular JVM provider. When running above commands, ensure the keytool used is the one under the JVM that Maven would use (check with `mvn -v`).
+**Note**: JKS is a propriatary format specific to the particular JVM provider. When running above commands, ensure the keytool used is the one under the JVM that Maven would use (check with `mvn -v`).
 
 #### Global Configuration (*settings.xml*)
 
