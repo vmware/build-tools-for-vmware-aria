@@ -39,7 +39,7 @@
 
 #### Previous Behavior
 
-The VcComputeResourceConfigSpec class is missing a few attributes and types of those attributes
+The `VcComputeResourceConfigSpec` class is missing a few attributes and related class interfaces.
 
 #### Current Behavior
 
