@@ -72,6 +72,20 @@ Required Java version mentioned in the documentation was Java 8.
 
 Required Java version updated to Java 17 in the documentation.
 
+### Add missing properties to VcComputeResourceConfigSpec and related class definitions in vRO interfaces
+
+#### Previous Behavior
+
+The `VcComputeResourceConfigSpec` class is missing a few attributes and related class interfaces.
+
+#### Current Behavior
+
+The `enableConfigManager`, `maximumHardwareVersionKey` and `desiredSoftwareSpec` attributes are added to the `VcComputeResourceConfigSpec` class interface. Related class interfaces for `VcDesiredSoftwareSpec`, `VcDesiredSoftwareSpecBaseImageSpec`, `VcDesiredSoftwareSpecVendorAddOnSpec` and `VcDesiredSoftwareSpecComponentSpec` are added vCenter plugin interfaces.
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/297>
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
