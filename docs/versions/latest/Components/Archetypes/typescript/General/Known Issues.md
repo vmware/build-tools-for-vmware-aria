@@ -1,7 +1,9 @@
 # Known Issues
+
 A list of known typescript archetype issues.
 
 ## Table Of Contents
+
 1. [Array functions are not transpiled to vRO code](#array-functions-are-not-transpiled-to-vro-code)
 
 ### Array functions are not transpiled to vRO code
@@ -9,6 +11,7 @@ A list of known typescript archetype issues.
 If an `Array` variable is not explicitly defined or recognized as such, the transpiler does not convert the TS-specific `Array` prototype functions (`find()`, `some()`, etc.) into vRO compatible code which results in a runtime error.
 
 Consider the following example:
+
 ```javascript
 const testArray = [1, 2, 3, 4, 5];
 
@@ -74,7 +77,7 @@ System.log(res + "");
 
 The recommended configuration to prevent such issues is to set the `strictNullChecks` property to `true` in your project's local `tsconfig.json` file. This allows for a type hint warning to be displayed in case the type is not explicitly defined.
 
-:scroll:**NOTE!** The warning messages received are optional and are NOT blocking package build and push operations.
+> **NOTE!** The warning messages received are optional and are NOT blocking package build and push operations.
 
 Let's revisit the example once again with `strictNullChecks` enabled:
 

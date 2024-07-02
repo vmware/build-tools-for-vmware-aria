@@ -6,5 +6,5 @@ interface TestInterface {
     }
 }
 
-var obj: TestInterface = {};
-System.log(`obj.prop1.prop2.prop3=${obj.prop1?.prop2?.prop3}`);
+var obj1: TestInterface = {};
+System.log(`obj.prop1.prop2.prop3=${obj1.prop1?.prop2?.prop3}`);

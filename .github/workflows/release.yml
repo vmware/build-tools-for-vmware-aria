@@ -79,8 +79,6 @@ jobs:
           rm -rf $LATEST_VERSION_RELEASE_MD
           cp -rf ./docs/Templates/Release.md $LATEST_VERSION_RELEASE_MD
 
-          printf "## $DOC_DATE_VERSION\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
-
           echo "Done Generating Documentation." 
 
       - name: Generate plugin arguments
