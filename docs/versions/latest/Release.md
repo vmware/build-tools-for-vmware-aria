@@ -147,7 +147,7 @@ This is a meta decorator. Add this to whichever function you want to be the entr
 
 This feature is backwards compatible with the previous version of the `vrotsc` package. If no decorators are added, will assume an empty `@Item`.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 
 - [Workflows](./Components/Archetypes/typescript/Components/Workflows.md)
 
@@ -162,7 +162,7 @@ This feature is backwards compatible with the previous version of the `vrotsc` p
 [//]: # "#### New Behavior"
 [//]: # "Explain how it behaves now, regarding to the change"
 [//]: # "Optional But highly recommended Specify *NONE* if missing"
-[//]: # "#### Relevant Documentation:"
+[//]: # "#### Relevant Documentation"
 
 ### VROTSC Upgrade the ts version from 3.8.3 to 5.4.5
 
@@ -186,10 +186,10 @@ The `VcComputeResourceConfigSpec` class is missing a few attributes and related 
 
 The `enableConfigManager`, `maximumHardwareVersionKey` and `desiredSoftwareSpec` attributes are added to the `VcComputeResourceConfigSpec` class interface. Related class interfaces for `VcDesiredSoftwareSpec`, `VcDesiredSoftwareSpecBaseImageSpec`, `VcDesiredSoftwareSpecVendorAddOnSpec` and `VcDesiredSoftwareSpecComponentSpec` are added vCenter plugin interfaces.
 
-#### Related issue
+#### Related Issue
 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/297>
 
-## Upgrade procedure
+## Upgrade Procedure
 
 [//]: # "Explain in details if something needs to be done"
