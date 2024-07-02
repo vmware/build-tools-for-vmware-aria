@@ -28,6 +28,71 @@
 
 ## Improvements
 
+### Add support for global scope property-group export/import
+
+Fix issue #250
+Property groups of global scope can now be imported with vrealize:push
+
+#### Previous Behavior
+
+On export projectId and orgId values are removed from property-group data to facilitate import into a different VRA system.
+On import projectId and orgId values are added to property-group data unconditionally. This prevented importing property-groups with global scope.
+
+#### Current Behavior
+
+On export projectId and orgId values are now saved with the rest of the property-group data.
+On import orgId is always overridden. The projectId is overridden only if it already existed in the json file.
+Thus property groups with global scope which do not have projectId can now be created or updated via vrealize:push command.
+
+### `string[]`, `Test[]` and such are now supported in the @params documentation
+
+Fix Issue #278
+Wider support for types in the @params documentation
+
+#### Previous Behavior
+
+The @params documentation did not support `string[]`, `Test[]` and such and was not transforming it at all and leaving it as is. This was causing linting issues
+
+#### Current Behavior
+
+The @params documentation now supports `string[]`, `Test[]` and such and transforms it to `Array/string`, `Array/Test` and such
+
+### Update the package.json template for generating abx actions
+
+Fix Issue #220
+
+#### Previous Behavior
+
+The package.json template for generating abx actions was missing some of the recently implemented parameters.
+
+#### Current Behavior
+
+The package.json template for generating abx actions now contains the recently implemented parameters: base, memoryLimitMb, timeoutSec, provider and abx (inputSecrets, inputConstants, etc.).
+
+### Add missing types to AD Plugin
+
+Fix Issue #251
+
+#### Previous Behavior
+
+AD types were not implemented
+
+#### Current Behavior
+
+AD types were added
+
+### Add missing attribute to SSHSession
+
+Add `soTimeout` attribute to `SSHSession`
+
+#### Previous Behavior
+
+This attribute was missing
+
+#### Current Behavior
+
+This attributed is added
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)

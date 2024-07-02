@@ -22,6 +22,7 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.PropertyGroupMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
@@ -68,6 +69,15 @@ public class VraNgPropertyGroupStoreTest {
 		pkg						= PackageFactory.getInstance( PackageType.VRANG, tempFolder.getRoot() );
 		config					= Mockito.mock( ConfigurationVraNg.class );
 		vraNgPackageDescriptor	= Mockito.mock( VraNgPackageDescriptor.class );
+
+		VraNgOrganization org = new VraNgOrganization();
+		org.setId("b2c558c8-f20c-4da6-9bc3-d7561f64df16");
+		org.setName("VIDM-L-01A");
+
+		when(config.getOrgId()).thenReturn("b2c558c8-f20c-4da6-9bc3-d7561f64df16");
+		when(config.getOrgName()).thenReturn("VIDM-L-01A");
+		when(restClient.getOrganizationById("b2c558c8-f20c-4da6-9bc3-d7561f64df16")).thenReturn(org);
+		when(restClient.getOrganizationByName("VIDM-L-01A")).thenReturn(org);
 
 		System.out.println( "==========================================================" );
 		System.out.println( "START" );
