@@ -55,6 +55,6 @@ export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStr
 	}
 
 	private throwDoNotCallError(): never {
-		throw new Error("Method shuld not be called. RootItem is a meta decorator.");
+		throw new Error("Method should not be called. RootItem is a meta decorator.");
 	}
 }

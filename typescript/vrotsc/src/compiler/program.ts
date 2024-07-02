@@ -117,7 +117,7 @@ export function createProgram(options: ProgramOptions): Program {
 						sourceFileCache[fileName] = ts.createSourceFile(
 							fileName,
 							system.readFile(fileName).toString(),
-							languageVersion !== undefined ? languageVersion : ts.ScriptTarget.Latest,
+							languageVersion ?? ts.ScriptTarget.Latest,
 							true);
 					}
 					sourceFile = sourceFileCache[fileName];
@@ -153,15 +153,15 @@ export function createProgram(options: ProgramOptions): Program {
 
 		filePaths.forEach(filePath => fileSet[filePath.toLowerCase()] = true);
 
-		if (options.files && options.files.length) {
+		if (options?.files?.length) {
 			const filesFiltered = options.files.filter((item, i, ar) => ar.indexOf(item) === i);
 			const selectedFiles = [];
 			filesFiltered.forEach(fileName => {
-				for (let i = 0; i < filePaths.length; i++) {
-					const item = filePaths[i];
-					if (item.includes(fileName, 0))
-						selectedFiles.push(item);
-				}
+				filePaths.forEach(filePath => {
+					if (filePath.includes(fileName, 0)){
+						selectedFiles.push(filePath);
+					}
+				});
 			});
 			filePaths = selectedFiles;
 			console.log(`Files in system: ${JSON.stringify(filePaths, null, 2)}`);
@@ -193,39 +193,30 @@ export function createProgram(options: ProgramOptions): Program {
 		if (filePath.endsWith(".wf.ts")) {
 			return FileType.Workflow;
 		}
-
 		if (filePath.endsWith(".conf.ts")) {
 			return FileType.ConfigurationTS;
 		}
-
 		if (filePath.endsWith(".pl.ts")) {
 			return FileType.PolicyTemplate;
 		}
-
 		if (filePath.endsWith(".d.ts")) {
 			return FileType.TypeDef;
 		}
-
 		if (filePath.endsWith(".test.ts") || filePath.endsWith(".test.js")) {
 			return FileType.JasmineTest;
 		}
-
 		if (filePath.endsWith(".ts") || filePath.endsWith(".js")) {
 			return FileType.Action;
 		}
-
 		if (filePath.endsWith(".conf.yaml")) {
 			return FileType.ConfigurationYAML;
 		}
-
 		if (filePath.endsWith(".saga.yaml")) {
 			return FileType.Saga;
 		}
-
 		if (filePath.endsWith(".xml") && fileSet[`${system.changeFileExt(filePath, "")}.element_info.xml`]) {
 			return FileType.NativeContent;
 		}
-
 		if (!filePath.endsWith(".element_info.xml") &&
 			!filePath.endsWith(".element_info.yaml") &&
 			!filePath.endsWith(".element_info.json") &&

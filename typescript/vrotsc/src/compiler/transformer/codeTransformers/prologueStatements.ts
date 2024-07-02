@@ -228,7 +228,6 @@ export function createModulePrologueStatements(context: ScriptTransformationCont
 	}
 
 	if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
-		// var exports = {}
 		variableDeclarations.push(
 			ts.factory.createVariableDeclaration(
 				"exports",

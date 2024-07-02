@@ -71,7 +71,7 @@ interface VroPolicyTemplate {
 		[name: string]: PolicyElement;
 	};
 	schedule?: {
-		periode: VroPolicyTemplateScehdulePeriod;
+		periode: VroPolicyTemplateSchedulePeriod;
 		when: string;
 		timezone: string;
 	};
@@ -83,7 +83,7 @@ type PolicyElement = {
 		[event: string]: string | PolicyWorkflowInfo;
 	};
 	schedule?: {
-		periode: VroPolicyTemplateScehdulePeriod;
+		periode: VroPolicyTemplateSchedulePeriod;
 		when: string;
 		timezone: string;
 	};
@@ -110,7 +110,7 @@ type PolicyAttribute = {
 type VroPolicyTemplateType = "AMQP:Subscription" | "MQTT:Subscription" | "SNMP:SnmpDevice" | "SNMP:TrapHost";
 type VroPolicyTemplateTypeV2 = string | VroPolicyTemplateType | "Periodic Event";
 
-type VroPolicyTemplateScehdulePeriod = "every-minutes" | "every-hours" | "every-days" | "every-weeks" | "every-months";
+type VroPolicyTemplateSchedulePeriod = "every-minutes" | "every-hours" | "every-days" | "every-weeks" | "every-months";
 
 interface VroPolicyTemplateDecorator {
 	(obj?: VroPolicyTemplate): TypeDecorator;
@@ -156,11 +156,11 @@ export declare const Configuration: VroConfigurationDecorator;
 export declare const Item: VroItemDecorator;
 
 interface VroItemDecorator {
-	(obj?: VroItemConfiguraiton): VroItemMethodDecorator;
-	new(obj?: VroItemConfiguraiton): VroItemConfiguraiton;
+	(obj?: VroItemConfiguration): VroItemMethodDecorator;
+	new(obj?: VroItemConfiguration): VroItemConfiguration;
 }
 
-interface VroItemConfiguraiton {
+interface VroItemConfiguration {
 	target?: string;
 	exception?: string;
 }
@@ -174,11 +174,11 @@ interface VroItemMethodDecorator {
 export declare const WaitingTimerItem: VroWaitingTimerItemDecorator;
 
 interface VroWaitingTimerItemDecorator {
-	(obj?: VroWaitingTimerItemConfiguraiton): VroWaitingTimerItemMethodDecorator;
-	new(obj?: VroWaitingTimerItemConfiguraiton): VroWaitingTimerItemConfiguraiton;
+	(obj?: VroWaitingTimerItemConfiguration): VroWaitingTimerItemMethodDecorator;
+	new(obj?: VroWaitingTimerItemConfiguration): VroWaitingTimerItemConfiguration;
 }
 
-interface VroWaitingTimerItemConfiguraiton {
+interface VroWaitingTimerItemConfiguration {
 	target?: string;
 }
 
@@ -201,11 +201,11 @@ interface VroWaitingTimerItemMethodDecorator {
 export declare const DecisionItem: VroDecisionItemDecorator;
 
 interface VroDecisionItemDecorator {
-	(obj?: VroDecisionItemConfiguraiton): VroDecisionItemMethodDecorator;
-	new(obj?: VroDecisionItemConfiguraiton): VroDecisionItemConfiguraiton;
+	(obj?: VroDecisionItemConfiguration): VroDecisionItemMethodDecorator;
+	new(obj?: VroDecisionItemConfiguration): VroDecisionItemConfiguration;
 }
 
-interface VroDecisionItemConfiguraiton {
+interface VroDecisionItemConfiguration {
 	target?: string;
 	else?: string;
 }
@@ -231,11 +231,11 @@ interface VroDecisionItemMethodDecorator {
 export declare const RootItem: VroRootItemDecorator;
 
 interface VroRootItemDecorator {
-	(obj?: VroRootItemConfiguraiton): VroRootItemMethodDecorator;
-	new(obj?: VroRootItemConfiguraiton): VroRootItemConfiguraiton;
+	(obj?: VroRootItemConfiguration): VroRootItemMethodDecorator;
+	new(obj?: VroRootItemConfiguration): VroRootItemConfiguration;
 }
 
-interface VroRootItemConfiguraiton {
+interface VroRootItemConfiguration {
 }
 
 interface VroRootItemMethodDecorator {

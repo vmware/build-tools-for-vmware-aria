@@ -14,7 +14,6 @@
  */
 import * as ts from 'typescript';
 import { Comment } from '../../../types';
-import { WorkflowItemType } from '../../decorators';
 
 /**
 * Helper function to get the text of an identifier or return null.
@@ -112,11 +111,11 @@ export function isRequireCall(callExpression: ts.Node): boolean {
 export function getPropertyName(node: ts.PropertyName): string {
 	switch (node.kind) {
 		case ts.SyntaxKind.Identifier:
-			return (<ts.Identifier>node).text;
+			return (node).text;
 		case ts.SyntaxKind.StringLiteral:
-			return (<ts.StringLiteral>node).text;
+			return (node).text;
 		case ts.SyntaxKind.ComputedPropertyName:
-			return (<ts.ComputedPropertyName>node).getFullText();
+			return (node).getFullText();
 	}
 }
 
@@ -125,12 +124,13 @@ export function getPropertyName(node: ts.PropertyName): string {
 * Helper for vrotsc-annotations decorators
 */
 export function getDecoratorNames(decorators: readonly ts.Decorator[]): string[] {
-	if (decorators && decorators.length) {
-		return decorators
-			.filter(decoratorNode => decoratorNode.expression.kind === ts.SyntaxKind.Identifier)
-			.map(decoratorNode => (<ts.Identifier>decoratorNode.expression).text);
+	if (!decorators?.length) {
+		return [];
 	}
-	return [];
+
+	return decorators
+		.filter(decoratorNode => decoratorNode.expression.kind === ts.SyntaxKind.Identifier)
+		.map(decoratorNode => (<ts.Identifier>decoratorNode.expression).text);
 }
 
 /**
@@ -143,11 +143,11 @@ export function getDecoratorName(decorator: ts.Decorator): string {
 }
 
 export function hasModifier(modifiers: ts.NodeArray<ts.ModifierLike>, kind: ts.SyntaxKind): boolean {
-	return modifiers != null && modifiers.some(x => x.kind === kind);
+	return modifiers?.some(x => x.kind === kind);
 }
 
 export function hasAnyModifier(modifiers: ts.NodeArray<ts.ModifierLike>, ...kinds: ts.SyntaxKind[]): boolean {
-	return modifiers != null && modifiers.some(x => kinds.some(k => k === x.kind));
+	return modifiers?.some(x => kinds.some(k => k === x.kind));
 }
 
 /**
@@ -178,8 +178,6 @@ export function getDecoratorProps(decoratorNode: ts.Decorator): [string, any][] 
 	if (!objLiteralNode) {
 		return decoratorValues;
 	}
-
-
 	objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 		const propName = getPropertyName(property.name);
 		const propValue = (<ts.StringLiteral>property.initializer).text;

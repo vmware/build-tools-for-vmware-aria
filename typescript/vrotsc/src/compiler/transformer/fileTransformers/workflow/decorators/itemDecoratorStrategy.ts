@@ -35,18 +35,20 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	}
 
 	registerItemArguments(decoratorNode: Decorator): void {
-		getDecoratorProps(decoratorNode).forEach((propTouple) => {
-			const [propName, propValue] = propTouple;
-
+		getDecoratorProps(decoratorNode).forEach((propTuple) => {
+			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "target":
+				case "target": {
 					this.itemInfo.target = propValue;
 					break;
-				case "exception":
+				}
+				case "exception": {
 					this.itemInfo.canvasItemPolymorphicBag.exception = propValue;
 					break;
-				default:
-					throw new Error(`Item attribute '${propName}' is not suported for ${this.getDecoratorType()} item`);
+				}
+				default: {
+					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
+				}
 			}
 		});
 	}

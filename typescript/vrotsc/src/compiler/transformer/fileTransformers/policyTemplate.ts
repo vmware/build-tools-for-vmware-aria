@@ -284,8 +284,9 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 							});
 						break;
 					}
-					default:
+					default: {
 						throw new Error(`PolicyTemplate attribute '${propName}' is not supported.`);
+					}
 				}
 			});
 		}
@@ -316,13 +317,15 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 
 		function mergeNode(node: XmlNode): void {
 			switch (node.type) {
-				case "element":
-					mergeElement(<XmlElement>node);
+				case "element": {
+					mergeElement(node);
 					break;
+				}
 				case "text":
-				case "cdata":
+				case "cdata": {
 					stringBuilder.append(node.toString().trim());
 					break;
+				}
 			}
 		}
 
@@ -348,7 +351,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			else if (ele.name === "description" && xmlLevel === 1 && policyTemplate.description != null) {
 				stringBuilder.append(`<![CDATA[${policyTemplate.description}]]>`);
 			}
-			else if (ele.children && ele.children.length) {
+			else if (ele?.children?.length) {
 				xmlLevel++;
 				(ele.children || []).forEach(childNode => {
 					mergeNode(childNode);
@@ -364,7 +367,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	/**
 	 * This function generates an XML representation of the policy template descriptor.
 	 *
-	 * This preceeds the merging of the policy template descriptor into the XML template.
+	 * This precedes the merging of the policy template descriptor into the XML template.
 	 *
 	 * @param {PolicyTemplateDescriptor} policyTemplate - The policy template.
 	 * @returns {string} The policy template XML.

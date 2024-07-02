@@ -84,29 +84,29 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 
 	function buildBindAttribute(att: WorkflowParameter) {
 		let value = "" + att.defaultValue;
-		if (att.bind) {
-			const index = value.lastIndexOf("/");
-			if (index == -1) {
-				throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Elemene) but its value "${value}" `
-					+ `cannot be mapped to a Configuraiton Element path. No / separator in value. Expected formaat is "/Path/To/Confif/variable".`);
-			}
-			if (index >= value.length - 1) {
-				throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Elemene) `
-					+ `but its value "${value}" ends in / character. Expected formaat is "/Path/To/Confif/variable".`);
-			}
-			const key = value.substring(index + 1).trim();
-			const path = value.substring(0, index).trim();
-			const id = context.configIdsMap[path];
-			if (id === null) {
-				throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that its value is bound to configuration element with path "${path}" and variable "${key}"`
-					+ `, but a configuration element with path "${path}" cannot be found in project at that stage. If you belive it is indeed really part of the project, `
-					+ `please try moving the file earlier alphabetically so it is processed earlier than the workflow that uses it. Currently available configuration elements are: `
-					+ JSON.stringify(context.configIdsMap));
-			}
-			stringBuilder.append(` conf-id="${id}" `);
-			stringBuilder.append(` conf-key="${key}" `);
-			value = "";
+		if (!att?.bind) {
+			return;
 		}
+		const index = value.lastIndexOf("/");
+		if (index == -1) {
+			throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Element) but its value "${value}" `
+				+ `cannot be mapped to a Configuration Element path. No / separator in value. Expected format is "/Path/To/Config/variable".`);
+		}
+		if (index >= value.length - 1) {
+			throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Element) `
+				+ `but its value "${value}" ends in / character. Expected format is "/Path/To/Config/variable".`);
+		}
+		const key = value.substring(index + 1).trim();
+		const path = value.substring(0, index).trim();
+		const id = context.configIdsMap[path];
+		if (id === null) {
+			throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that its value is bound to configuration element with path "${path}" and variable "${key}"`
+				+ `, but a configuration element with path "${path}" cannot be found in project at that stage. If you believe it is indeed really part of the project, `
+				+ `please try moving the file earlier alphabetically so it is processed earlier than the workflow that uses it. Currently available configuration elements are: `
+				+ JSON.stringify(context.configIdsMap));
+		}
+		stringBuilder.append(` conf-id="${id}" `);
+		stringBuilder.append(` conf-key="${key}" `);
 	}
 
 	function buildEndItem() {
@@ -190,7 +190,6 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		if (target === "end") {
 			return "item0";
 		}
-
 		if (target != null) {
 			return `item${findItemByName(item.parent.items, target) || 0}`;
 		}
@@ -209,20 +208,20 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	 * @returns void
 	 */
 	function buildItemParameterBindings(parentName: string, parameters: string[], inputOutputBindings: number): void {
-		if (parameters.length) {
-			stringBuilder.append(`<${parentName}>`).appendLine();
-			stringBuilder.indent();
-			parameters.forEach(paramName => {
-				const param = workflow.parameters.find(p => p.name === paramName);
-				if (param) {
-					const isWaitingTimer = (inputOutputBindings & InputOutputBindings.IsWaitingTimer) === InputOutputBindings.IsWaitingTimer;
-
-					stringBuilder.append(`<bind name="${isWaitingTimer ? "timer.date" : param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
-				}
-			});
-			stringBuilder.unindent();
-			stringBuilder.append(`</${parentName}>`).appendLine();
+		if (!parameters?.length) {
+			return;
 		}
+		stringBuilder.append(`<${parentName}>`).appendLine();
+		stringBuilder.indent();
+		parameters.forEach(paramName => {
+			const param = workflow.parameters.find(p => p.name === paramName);
+			if (param) {
+				const isWaitingTimer = (inputOutputBindings & InputOutputBindings.IsWaitingTimer) === InputOutputBindings.IsWaitingTimer;
+				stringBuilder.append(`<bind name="${isWaitingTimer ? "timer.date" : param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
+			}
+		});
+		stringBuilder.unindent();
+		stringBuilder.append(`</${parentName}>`).appendLine();
 	}
 
 	function buildPresentation(): void {
@@ -231,51 +230,43 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		}
 		else {
 			const inputParameters = workflow.parameters.filter(p => p.parameterType === WorkflowParameterType.Input);
-			if (inputParameters.length) {
-				stringBuilder.append(`<presentation>`).appendLine();
-				stringBuilder.indent();
-
-				inputParameters.forEach(param => {
-					stringBuilder.append(`<p-param name="${param.name}">`).appendLine();
-					stringBuilder.indent();
-					stringBuilder.append(`<desc><![CDATA[${param.title || param.name}]]></desc>`).appendLine();
-
-					if (param.required) {
-						stringBuilder.append(`<p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>`).appendLine();
-					}
-
-					if (param.multiLine) {
-						stringBuilder.append(`<p-qual kind="static" name="textInput" type="void" />`).appendLine();
-					}
-
-					if (param.minStringLength != null) {
-						stringBuilder.append(`<p-qual kind="static" name="minStringLength" type="Number"><![CDATA[${param.minStringLength.toString()}]]></p-qual>`).appendLine();
-					}
-
-					if (param.maxStringLength != null) {
-						stringBuilder.append(`<p-qual kind="static" name="maxStringLength" type="Number"><![CDATA[${param.maxStringLength.toString()}]]></p-qual>`).appendLine();
-					}
-
-					if (param.numberFormat != null) {
-						stringBuilder.append(`<p-qual kind="static" name="numberFormat" type="String"><![CDATA[${param.numberFormat}]]></p-qual>`).appendLine();
-					}
-
-					if (param.defaultValue != null) {
-						stringBuilder.append(`<p-qual kind="static" name="defaultValue" type="${param.type}"><![CDATA[${param.defaultValue}]]></p-qual>`).appendLine();
-					}
-
-					if (param.availableValues != null && param.availableValues.length) {
-						const availableValuesToken = `#{${param.availableValues.map(v => `#${param.type}#${v}#`).join(";")}}#`;
-						stringBuilder.append(`<p-qual kind="static" name="genericEnumeration" type="Array/${param.type}"><![CDATA[${availableValuesToken}]]></p-qual>`).appendLine();
-					}
-
-					stringBuilder.unindent();
-					stringBuilder.append(`</p-param>`).appendLine();
-				});
-
-				stringBuilder.unindent();
-				stringBuilder.append(`</presentation>`).appendLine();
+			if (inputParameters === null) {
+				return;
 			}
+			stringBuilder.append(`<presentation>`).appendLine();
+			stringBuilder.indent();
+			inputParameters.forEach(param => {
+				stringBuilder.append(`<p-param name="${param.name}">`).appendLine();
+				stringBuilder.indent();
+				stringBuilder.append(`<desc><![CDATA[${param.title || param.name}]]></desc>`).appendLine();
+				if (param.required) {
+					stringBuilder.append(`<p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>`).appendLine();
+				}
+				if (param.multiLine) {
+					stringBuilder.append(`<p-qual kind="static" name="textInput" type="void" />`).appendLine();
+				}
+				if (param.minStringLength != null) {
+					stringBuilder.append(`<p-qual kind="static" name="minStringLength" type="Number"><![CDATA[${param.minStringLength.toString()}]]></p-qual>`).appendLine();
+				}
+				if (param.maxStringLength != null) {
+					stringBuilder.append(`<p-qual kind="static" name="maxStringLength" type="Number"><![CDATA[${param.maxStringLength.toString()}]]></p-qual>`).appendLine();
+				}
+				if (param.numberFormat != null) {
+					stringBuilder.append(`<p-qual kind="static" name="numberFormat" type="String"><![CDATA[${param.numberFormat}]]></p-qual>`).appendLine();
+				}
+				if (param.defaultValue != null) {
+					stringBuilder.append(`<p-qual kind="static" name="defaultValue" type="${param.type}"><![CDATA[${param.defaultValue}]]></p-qual>`).appendLine();
+				}
+				if (param.availableValues?.length) {
+					const availableValuesToken = `#{${param.availableValues.map(v => `#${param.type}#${v}#`).join(";")}}#`;
+					stringBuilder.append(`<p-qual kind="static" name="genericEnumeration" type="Array/${param.type}"><![CDATA[${availableValuesToken}]]></p-qual>`).appendLine();
+				}
+				stringBuilder.unindent();
+				stringBuilder.append(`</p-param>`).appendLine();
+			});
+
+			stringBuilder.unindent();
+			stringBuilder.append(`</presentation>`).appendLine();
 		}
 	}
 }
@@ -293,13 +284,15 @@ export function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: stri
 
 	function mergeNode(node: XmlNode): void {
 		switch (node.type) {
-			case "element":
-				mergeElement(<XmlElement>node);
+			case "element": {
+				mergeElement(node);
 				break;
+			}
 			case "text":
-			case "cdata":
+			case "cdata": {
 				stringBuilder.append(node.toString().trim());
 				break;
+			}
 		}
 	}
 
@@ -325,7 +318,7 @@ export function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: stri
 		else if (ele.name === "display-name" && xmlLevel === 1) {
 			stringBuilder.append(`<![CDATA[${workflow.name}]]>`);
 		}
-		else if (ele.children && ele.children.length) {
+		else if (ele?.children?.length) {
 			xmlLevel++;
 			(ele.children || []).forEach(childNode => {
 				mergeNode(childNode);
@@ -340,7 +333,7 @@ export function mergeWorkflowXml(workflow: WorkflowDescriptor, xmlTemplate: stri
 
 export function printPolyglotCode(moduleName: string, methodName: string, input: string[], output: string[]): string {
 	let result = "";
-	result += `//AUTOGENERATED POLYGLOT INVOCATION ---- DON'T TOUCHE THIS SECTION CODE\n`;
+	result += `//AUTOGENERATED POLYGLOT INVOCATION ---- DON'T TOUCH THIS SECTION CODE\n`;
 	result += `System.log("Starting execution of polyglot decorator")\n`;
 	result += `var polyglot_module = System.getModule("${moduleName}");`;
 	result += `var polyglot_result = polyglot_module["${methodName}"](${buildPolyglotInputArgs(input)});\n`;
@@ -352,13 +345,7 @@ export function printPolyglotCode(moduleName: string, methodName: string, input:
 }
 
 export function buildPolyglotInputArgs(input: string[]): string {
-	let inputArgs = "";
-	{
-		for (let i = 0; i < input.length; i += 1) {
-			inputArgs += `${input[i]},`;
-		}
-	}
-	return inputArgs.substring(0, inputArgs.length - 1);//Remove the last ','
+	return input.join(",");
 }
 
 function buildOutput(output: string[]): string {
