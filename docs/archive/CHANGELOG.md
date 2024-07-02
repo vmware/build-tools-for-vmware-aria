@@ -1,5 +1,6 @@
 ### Enhancements
 
+* [vrops] Issue 280 / Support for priority ordering of the vROPs policies during push.
 * [vrotsc] `vrotsc` migrate ts from 3.8.3 to 5.4.5. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/245) for detailed information
 
 ## v2.39.0 - 14 Jun 2024
@@ -80,6 +81,8 @@
 * [artifact-manager] IAC-788 / Fix vRA Custom Forms not enabled with vRA Version prior 8.12.x.
 * [artifact-manager] IAC-788 / Improved Handling of Empty vRA Blueprint Versions for vRA 8.12.x.
 * [artifact-manager] IAC-801 / Fix vRA catalog items appearing twice on multi page results.
+
+## v2.35.2
 
 ### Enhancements
 
