@@ -68,10 +68,10 @@ interface VroPolicyTemplate {
 		[name: string]: string | PolicyAttribute;
 	};
 	elements?: {
-		[name: string]: PolicyElement
+		[name: string]: PolicyElement;
 	};
 	schedule?: {
-		periode: VroPolicyTemplateScehdulePeriod;
+		periode: VroPolicyTemplateSchedulePeriod;
 		when: string;
 		timezone: string;
 	};
@@ -83,11 +83,11 @@ type PolicyElement = {
 		[event: string]: string | PolicyWorkflowInfo;
 	};
 	schedule?: {
-		periode: VroPolicyTemplateScehdulePeriod;
+		periode: VroPolicyTemplateSchedulePeriod;
 		when: string;
 		timezone: string;
 	};
-}
+};
 
 type PolicyWorkflowInfo = {
 	workflowId: string;
@@ -95,9 +95,9 @@ type PolicyWorkflowInfo = {
 		[name: string]: {
 			type: string;
 			variable: string;
-		}
-	}
-}
+		};
+	};
+};
 
 type PolicyAttribute = {
 	type: string,
@@ -105,12 +105,12 @@ type PolicyAttribute = {
 	description?: string;
 	configId?: string;
 	configKey?: string;
-}
+};
 
 type VroPolicyTemplateType = "AMQP:Subscription" | "MQTT:Subscription" | "SNMP:SnmpDevice" | "SNMP:TrapHost";
 type VroPolicyTemplateTypeV2 = string | VroPolicyTemplateType | "Periodic Event";
 
-type VroPolicyTemplateScehdulePeriod = "every-minutes" | "every-hours" | "every-days" | "every-weeks" | "every-months";
+type VroPolicyTemplateSchedulePeriod = "every-minutes" | "every-hours" | "every-days" | "every-weeks" | "every-months";
 
 interface VroPolicyTemplateDecorator {
 	(obj?: VroPolicyTemplate): TypeDecorator;
@@ -123,7 +123,7 @@ type SupportedValues = string | boolean | number;
 
 type CompositeType = {
 	[name: string]: SupportedValues | SupportedValues[];
-}
+};
 
 type AttributeValue = CompositeType | SupportedValues | SupportedValues[];
 
@@ -131,7 +131,7 @@ type Attribute = {
 	type: string,
 	value?: AttributeValue;
 	description?: string;
-}
+};
 
 // Configuration
 interface VroConfiguration {
@@ -151,6 +151,109 @@ interface VroConfigurationDecorator {
 
 export declare const Configuration: VroConfigurationDecorator;
 
+// ---------------------------------------------- Workflow Canvas Item ------------------------------------------------
+
+export declare const Item: VroItemDecorator;
+
+interface VroItemDecorator {
+	(obj?: VroItemConfiguration): VroItemMethodDecorator;
+	new(obj?: VroItemConfiguration): VroItemConfiguration;
+}
+
+interface VroItemConfiguration {
+	target?: string;
+	exception?: string;
+}
+interface VroItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Workflow Canvas Waiting Timer Item ------------------------------------------------
+
+export declare const WaitingTimerItem: VroWaitingTimerItemDecorator;
+
+interface VroWaitingTimerItemDecorator {
+	(obj?: VroWaitingTimerItemConfiguration): VroWaitingTimerItemMethodDecorator;
+	new(obj?: VroWaitingTimerItemConfiguration): VroWaitingTimerItemConfiguration;
+}
+
+interface VroWaitingTimerItemConfiguration {
+	target?: string;
+}
+
+interface VroWaitingTimerItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+// <workflow-item name="item2" out-name="item0" type="waiting-timer">
+// 	<display-name>
+// 		<![CDATA[waitForEvent]]>
+// 	</display-name>
+// 	<in-binding>
+// 		<bind name="waitingTimer" type="Date" export-name="waitingTimer" />
+// 	</in-binding>
+// 	<position x="385.0" y="55.40909090909091" />
+// </workflow-item>
+
+// ---------------------------------------------- Workflow Canvas Decision Item ------------------------------------------------
+
+export declare const DecisionItem: VroDecisionItemDecorator;
+
+interface VroDecisionItemDecorator {
+	(obj?: VroDecisionItemConfiguration): VroDecisionItemMethodDecorator;
+	new(obj?: VroDecisionItemConfiguration): VroDecisionItemConfiguration;
+}
+
+interface VroDecisionItemConfiguration {
+	target?: string;
+	else?: string;
+}
+
+interface VroDecisionItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// <workflow-item name="item3" out-name="item4" type="custom-condition" alt-out-name="item2">
+//   <display-name><![CDATA[Decision]]></display-name>
+//   <script encoded="false"><![CDATA[return waitingTimer !== null]]></script>
+//   <in-binding>
+//     <bind name="waitingTimer" type="Date" export-name="waitingTimer"/>
+//   </in-binding>
+//   <out-binding/>
+//   <description><![CDATA[Custom decision based on a custom script.]]></description>
+//   <position y="40.0" x="380.0"/>
+// </workflow-item>
+
+// ---------------------------------------------- Workflow Canvas Root Item ------------------------------------------------
+
+export declare const RootItem: VroRootItemDecorator;
+
+interface VroRootItemDecorator {
+	(obj?: VroRootItemConfiguration): VroRootItemMethodDecorator;
+	new(obj?: VroRootItemConfiguration): VroRootItemConfiguration;
+}
+
+interface VroRootItemConfiguration {
+}
+
+interface VroRootItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// <workflow-item name="item4" out-name="item1" type="waiting-timer">
+// 	<display-name><![CDATA[Waiting timer]]></display-name>
+// 	<in-binding>
+// 		<bind name="timer.date" type="Date" export-name="waitingTimer">
+// 			<description><![CDATA[This timer item will wait until date and will continue workflow execution.]]></description>
+// 		</bind>
+// 	</in-binding>
+// 	<out-binding />
+// 	<position y="110.0" x="340.0" />
+// </workflow-item>
+
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
 
@@ -159,7 +262,7 @@ interface VroPolyglotDecorator {
 	new(obj?: VroPolyglotConfiguration): VroPolyglotConfiguration;
 }
 
-interface VroPolyglotConfiguration { package: string, method: string }
+interface VroPolyglotConfiguration { package: string, method: string; }
 interface PolyglotMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;

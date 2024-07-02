@@ -1,5 +1,7 @@
 /////////////////////////////////// Configuration Decorator ///////////////////////////////////
 
+import CanvasItemDecoratorStrategy from "./transformer/fileTransformers/workflow/decorators/canvasItemDecoratorStrategy";
+
 /**
 * Describes the configuration element.
 * This corresponds to the `VroConfiguration` decorator in `vrotsc-annotations`.
@@ -33,17 +35,37 @@ export interface WorkflowDescriptor {
 	name: string;
 	path: string;
 	version: string;
+	rootItem: string;
 	presentation: string;
 	parameters: WorkflowParameter[];
 	items: WorkflowItemDescriptor[];
 	description: string;
 }
-
-export interface WorkflowItemDescriptor {
+/**
+ * Represents a Workflow item (task, decision, waiting timer, polyglot)
+ *
+ * If the Workflow has a Polyglot decorator, the `polyglot` field will be present and it will contain the Polyglot information.
+ * The workflowDescriptorRef field is a reference to the parent WorkflowDescriptor, this is done since Workflow Flags and data is collected along with the
+ *   WorkflowItemDescriptor
+ */
+export interface WorkflowItemDescriptor<T = any> {
 	name: string;
 	input: string[];
 	output: string[];
 	sourceText: string;
+	item: CanvasItemDecoratorStrategy;
+	target: string; // Points to which item this item is connected to by name
+	canvasItemPolymorphicBag: T;
+	polyglot?: PolyglotDescriptor;
+	parent: WorkflowDescriptor;
+}
+
+export interface CanvasItemPolymorphicBagForItem {
+	exception?: string;
+}
+
+export interface CanvasItemPolymorphicBagForDecision {
+	else: string;
 }
 
 export interface WorkflowParameter {
@@ -70,6 +92,40 @@ export enum WorkflowParameterType {
 	Output = 2 << 1,
 }
 
+export enum WorkflowItemType {
+	/**
+	 * This is a meta element, doesn't actually represent a workflow item.
+	 *
+	 * It indicates which item is the entry point of the workflow.
+	 */
+	RootItem = "RootItem",
+
+	/**
+	 * This is the default item type.
+	 *
+	 * It can target a specific item as well as have an exception target
+	 */
+	Item = "Item",
+
+	/**
+	 * This item type is used to represent a decision item.
+	 *
+	 * It can target 2 other items based on the decision result.
+	 */
+	Decision = "DecisionItem",
+
+	/**
+	 * This item type is used to represent a waiting timer item.
+	 *
+	 * It can target a specific item after the timer is done.
+	 */
+	WaitingTimer = "WaitingTimerItem",
+}
+
+export enum InputOutputBindings {
+	IsWaitingTimer = 1 << 0,
+}
+
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
 
 
@@ -83,20 +139,21 @@ export enum WorkflowParameterType {
 export interface PolyglotDescriptor {
 	package: string;
 
-/*-
- * #%L
- * vrotsc
- * %%
- * Copyright (C) 2023 - 2024 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
+	/*-
+	 * #%L
+	 * vrotsc
+	 * %%
+	 * Copyright (C) 2023 - 2024 VMware
+	 * %%
+	 * Build Tools for VMware Aria
+	 * Copyright 2023 VMware, Inc.
+	 *
+	 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+	 *
+	 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+	 * #L%
+	 */
+
 	method: string;
 }
 
