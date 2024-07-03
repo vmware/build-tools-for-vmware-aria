@@ -190,6 +190,17 @@ The `enableConfigManager`, `maximumHardwareVersionKey` and `desiredSoftwareSpec`
 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/297>
 
+### Cloud Template folder name and details.json->name mismatch issue fixed
+
+#### Previous Behavior
+
+- When Cloud-Template folder name and details.json->name mismatch,  folder name is used for validating if the record exists on the server and details.json->name is used for creating/updating the cloud template on server.
+
+#### Current Behavior
+
+- When Cloud-Template folder name and details.json->name mismatch, now an error throwing explaining the mismatch.
+- details.json->name is now used for both validating and creating/updating cloud template on the server.
+
 ## Upgrade Procedure
 
 [//]: # "Explain in details if something needs to be done"

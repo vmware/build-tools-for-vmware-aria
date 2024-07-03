@@ -59,8 +59,18 @@ public class BlueprintFsMocks extends VraNgFsMock {
 	 * @param    blueprint - The blueprint to store
 	 */
 	public void addBlueprint(final VraNgBlueprint blueprint) {
-		File blueprintFolder = Paths.get(this.getWorkdir().getAbsolutePath(),
-			blueprint.getName()).toFile();
+		addBlueprint(blueprint, blueprint.getName());
+	}
+
+	/**
+	 * JSON encodes a blueprint and adds it to the blueprint directory.
+	 * This will also create the content.yaml based on the blueprint and alternatively accepts a versions' data containing
+	 * information about the versions.
+	 * @param blueprint - Blueprint to store
+	 * @param folderName - Blueprint folder name
+	 */
+	public void addBlueprint(final VraNgBlueprint blueprint, String folderName) {
+		File blueprintFolder = Paths.get(this.getWorkdir().getAbsolutePath(), folderName).toFile();
 
 		if (!blueprintFolder.exists()) {
 			if (!blueprintFolder.mkdirs()) {
