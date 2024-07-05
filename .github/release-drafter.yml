@@ -38,6 +38,7 @@ template: |
 
   ---
   For in-depth feature set review refer to the following document: https://github.com/vmware/build-tools-for-vmware-aria/blob/main/docs/versions/v$RESOLVED_VERSION/Release.md
+  
   **Full Changelog**: https://github.com/vmware/build-tools-for-vmware-aria/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 autolabeler:
   - label: 'bug'
