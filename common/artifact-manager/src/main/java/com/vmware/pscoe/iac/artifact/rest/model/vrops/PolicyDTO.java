@@ -146,7 +146,7 @@ public class PolicyDTO {
 		 * priority.
 		 */
 		@JsonProperty("priority")
-		private long priority;
+		private Long priority;
 
 		/**
 		 * additionalProperties.
@@ -240,7 +240,7 @@ public class PolicyDTO {
 		 * @return policy priority (if applicable).
 		 */
 		@JsonProperty("priority")
-		public long getPriority() {
+		public Long getPriority() {
 			return priority;
 		}
 
@@ -250,7 +250,7 @@ public class PolicyDTO {
 		 * @param priority set policy priority.
 		 */
 		@JsonProperty("priority")
-		public void setPriority(long priority) {
+		public void setPriority(Long priority) {
 			this.priority = priority;
 		}
 

@@ -95,7 +95,7 @@ public class VropsPackageStoreTest {
 		PolicyDTO.Policy defaultPolicy = new PolicyDTO.Policy();
 		defaultPolicy.setName("default policy");
 		defaultPolicy.setId("1");
-		defaultPolicy.setPriority(1);
+		defaultPolicy.setPriority(Long.valueOf(1));
 		defaultPolicy.setZipFile(new byte[] { '1' });
 
 		Mockito.doReturn(allReportDefs).when(restClientMock).getAllReportDefinitions();

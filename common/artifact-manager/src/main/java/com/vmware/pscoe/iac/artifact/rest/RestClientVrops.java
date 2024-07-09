@@ -480,9 +480,10 @@ public class RestClientVrops extends RestClient {
 			PolicyDTO.Policy foundPolicy = allPolicies.stream().filter(item -> item.getName().equalsIgnoreCase(policyName)).findFirst().orElse(null);
 			if (foundPolicy == null) {
 				missingPolicies.add(policyName);
-			} else if (foundPolicy != null && foundPolicy.getDefaultPolicy()) {
+			} else if (foundPolicy.getDefaultPolicy()) {
 				// note that the default policy cannot be part of the policy ordering (according to the API documentation)
-				logger.warn("Skipping default policy '{}' from the policy priority order as it is not supported by vROPs", foundPolicy.getName());
+				logger.warn("Skipping default policy '{}' from the policy priority order as the default policy cannot be part of priority order list",
+						foundPolicy.getName());
 			} else {
 				policyIds.add(foundPolicy.getId());
 			}
@@ -499,12 +500,11 @@ public class RestClientVrops extends RestClient {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-			parameters.put("policyIds", policyIds);
-
-			ResponseEntity<String> response = restTemplate.exchange(restUri, HttpMethod.PUT, new HttpEntity<>(gson.toJson(parameters), headers), String.class);
-			if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
-				throw new RuntimeException(response.getBody());
-			}
+			List<String> mergedPolicyIds = policyIds;
+			// in order priority list to work properly preserve the current ordering for the rest of the policies prior sending them to the API
+			mergedPolicyIds.addAll(allPolicies.stream().filter(item -> item.getPriority() != null).map(item -> item.getId()).collect(Collectors.toList()));
+			parameters.put("policyIds", mergedPolicyIds);
+			restTemplate.exchange(restUri, HttpMethod.PUT, new HttpEntity<>(gson.toJson(parameters), headers), String.class);
 		} catch (RestClientException e) {
 			throw new RuntimeException(String.format("REST service error while ordering policies by priority for policies '%s'. Message: %s",
 					this.concatenateList(policies, ", "), e.getMessage()));
