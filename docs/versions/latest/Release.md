@@ -194,12 +194,12 @@ The `enableConfigManager`, `maximumHardwareVersionKey` and `desiredSoftwareSpec`
 
 #### Previous Behavior
 
-- When Cloud-Template folder name and details.json->name mismatch,  folder name is used for validating if the record exists on the server and details.json->name is used for creating/updating the cloud template on server.
+- When the Cloud-Template folder name does not match the name from details.json, folder name is used for validating if the record exists on the server and the name from details.json is used for creating/updating the cloud template on server.
 
 #### Current Behavior
 
-- When Cloud-Template folder name and details.json->name mismatch, now an error throwing explaining the mismatch.
-- details.json->name is now used for both validating and creating/updating cloud template on the server.
+- When the Cloud-Template folder name does not match the name from details.json, now an error throwing explaining the mismatch.
+- The name from details.json is now used for both validating and creating/updating cloud template on the server.
 
 ## Upgrade Procedure
 

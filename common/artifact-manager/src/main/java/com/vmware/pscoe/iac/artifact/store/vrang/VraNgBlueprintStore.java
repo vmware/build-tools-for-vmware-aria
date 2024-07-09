@@ -242,9 +242,9 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		VraNgBlueprint bp = loadBlueprintFromFilesystem(bpDir);
 		String bpID;
 
-		// Check the blueprint folder name(bpName) with details.json->name(bp.getName())
+		// Check the blueprint folder name(bpName) with the name from details.json(bp.getName())
 		if (!Objects.equals(bp.getName(), bpName)) {
-			throw new IllegalStateException(String.format("Mismatch between blueprint folder name and details.json->name. (%s, %s)", bpName, bp.getName()));
+			throw new IllegalStateException(String.format("Mismatch between the blueprint folder name and the name from details.json. (%s, %s)", bpName, bp.getName()));
 		}
 
 		// Check if the blueprint exists
