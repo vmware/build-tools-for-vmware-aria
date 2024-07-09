@@ -23,6 +23,15 @@ import com.google.gson.JsonParser;
  * Holds raw data for the property group and name to use as an identifier.
  */
 public class VraNgPropertyGroup {
+
+	/**
+	 * Project Id JSON key.
+	 */
+	private static final String PROJECT_ID_KEY = "projectId";
+	/**
+	 * Organisation Id JSON key.
+	 */
+	private static final String ORG_ID_KEY = "orgId";
 	/**
 	 * Property group Name.
 	 */
@@ -43,15 +52,6 @@ public class VraNgPropertyGroup {
 	 * Property group organizationId.
 	 */
 	private String orgId;
-
-	/**
-	 * Project Id JSON key.
-	 */
-	private static final String PROJECT_ID_KEY = "projectId";
-	/**
-	 * Organisation Id JSON key.
-	 */
-	private static final String ORG_ID_KEY = "orgId";
 
 	/**
 	 * Constructor.
@@ -80,8 +80,7 @@ public class VraNgPropertyGroup {
 
 	/**
 	 * Modifies the rawData by setting the orgId identifier.
-	 * Modifies the rawData by setting the orgId identifier.
-	 *
+	 * 
 	 * @param value organizaion uuid
 	 */
 	private void setOrgIdInRawData(String value) {
