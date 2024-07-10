@@ -233,8 +233,9 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 * Handling import of a single blueprint - reading files from a directory, it's name would match
 	 * the blueprint name and contain files describing its details, content and versions.
 	 *
-	 * @param bpDir
-	 * @param bpsOnServerByName
+	 * @param bpDir blueprint folder
+	 * @param bpsOnServerByName existing blueprints from the server
+	 * @throws IllegalStateException if blueprint folder name mismatch with the name from details.json
 	 */
 	private void handleBlueprintImport(final File bpDir, final Map<String, VraNgBlueprint> bpsOnServerByName) {
 		String bpName = bpDir.getName();
