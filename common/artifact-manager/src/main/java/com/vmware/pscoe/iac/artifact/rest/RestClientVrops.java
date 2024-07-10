@@ -42,6 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -474,25 +475,23 @@ public class RestClientVrops extends RestClient {
 			return;
 		}
 		List<PolicyDTO.Policy> allPolicies = this.getAllPolicies();
-		List<String> policyIds = new ArrayList<String>();
-		List<String> missingPolicies = new ArrayList<String>();
-		policies.forEach(policyName -> {
-			PolicyDTO.Policy foundPolicy = allPolicies.stream().filter(item -> item.getName().equalsIgnoreCase(policyName)).findFirst().orElse(null);
-			if (foundPolicy == null) {
-				missingPolicies.add(policyName);
-			} else if (foundPolicy.getDefaultPolicy()) {
-				// note that the default policy cannot be part of the policy ordering (according to the API documentation)
-				logger.warn("Skipping default policy '{}' from the policy priority order as the default policy cannot be part of priority order list",
-						foundPolicy.getName());
-			} else {
-				policyIds.add(foundPolicy.getId());
-			}
-		});
+		List<PolicyDTO.Policy> policyObjects = policies.stream()
+				.map(policyName -> allPolicies.stream().filter(policyObject -> policyObject.getName().equalsIgnoreCase(policyName)).findFirst().orElse(null))
+				.toList();
+		// the default policy cannot be part of the priority order list (due to limitation of vROPs)
+		List<PolicyDTO.Policy> filteredObjects = policyObjects.stream().filter(policyObject -> policyObject != null && !policyObject.getDefaultPolicy())
+				.collect(Collectors.toList());
+		List<String> policyIds = filteredObjects.stream().map(policyObject -> policyObject.getId()).collect(Collectors.toList());
+		List<String> policyNames = filteredObjects.stream().map(policyObject -> policyObject.getName()).collect(Collectors.toList());
+
+		// check whether there are missing policies
+		List<String> missingPolicies = CollectionUtils.subtract(policies, allPolicies.stream().map(item -> item.getName()).collect(Collectors.toList()))
+				.stream().collect(Collectors.toList());
 		if (!missingPolicies.isEmpty()) {
 			throw new RuntimeException(String.format("The policies '%s' cannot be found on the target system", this.concatenateList(missingPolicies, ", ")));
 		}
 
-		logger.info("Ordering policies by priority '{}'", this.concatenateList(policies, ", "));
+		logger.info("Ordering policies by priority '{}'", this.concatenateList(policyNames, ", "));
 		Gson gson = new GsonBuilder().setLenient().create();
 		try {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(POLICY_PRIORITY_PUBLIC_API).toString()));
@@ -507,10 +506,10 @@ public class RestClientVrops extends RestClient {
 			restTemplate.exchange(restUri, HttpMethod.PUT, new HttpEntity<>(gson.toJson(parameters), headers), String.class);
 		} catch (RestClientException e) {
 			throw new RuntimeException(String.format("REST service error while ordering policies by priority for policies '%s'. Message: %s",
-					this.concatenateList(policies, ", "), e.getMessage()));
+					this.concatenateList(policyNames, ", "), e.getMessage()));
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error while ordering policies by priority for policies '%s'. Message: %s",
-					this.concatenateList(policies, ", "), e.getMessage()));
+					this.concatenateList(policyNames, ", "), e.getMessage()));
 		}
 	}
 
