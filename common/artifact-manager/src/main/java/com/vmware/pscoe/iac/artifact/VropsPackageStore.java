@@ -1539,7 +1539,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
     @SuppressWarnings("rawtypes")
     @Override
     protected void deleteContent(final Content content, final boolean dryrun) {
-        throw new UnsupportedOperationException("Content deletion is not supported");
+        throw new NotImplementedException("Not implemented");
     }
 
     private void addViewToImportList(final Package pkg, final File tmp) throws IOException, ConfigurationException {
