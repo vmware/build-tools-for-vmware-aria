@@ -1527,13 +1527,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
     @Override
     protected Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
-        throw new UnsupportedOperationException("Package deletion is not supported");
+        throw new NotImplementedException("Not implemented");
     }
 
     @SuppressWarnings("rawtypes")
 	@Override
     protected PackageContent getPackageContent(final Package pkg) {
-        throw new UnsupportedOperationException("Fetching package content is not supported");
+        throw new NotImplementedException("Not implemented");
     }
 
     @SuppressWarnings("rawtypes")
