@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class VraNgBlueprintStore extends AbstractVraNgStore {
 
@@ -232,8 +233,9 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 * Handling import of a single blueprint - reading files from a directory, it's name would match
 	 * the blueprint name and contain files describing its details, content and versions.
 	 *
-	 * @param bpDir
-	 * @param bpsOnServerByName
+	 * @param bpDir blueprint folder
+	 * @param bpsOnServerByName existing blueprints from the server
+	 * @throws IllegalStateException if blueprint folder name mismatch with the name from details.json
 	 */
 	private void handleBlueprintImport(final File bpDir, final Map<String, VraNgBlueprint> bpsOnServerByName) {
 		String bpName = bpDir.getName();
@@ -241,10 +243,15 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		VraNgBlueprint bp = loadBlueprintFromFilesystem(bpDir);
 		String bpID;
 
+		// Check the blueprint folder name(bpName) with the name from details.json(bp.getName())
+		if (!Objects.equals(bp.getName(), bpName)) {
+			throw new IllegalStateException(String.format("Mismatch between the blueprint folder name and the name from details.json. (%s, %s)", bpName, bp.getName()));
+		}
+
 		// Check if the blueprint exists
 		VraNgBlueprint existingRecord = null;
-		if (bpsOnServerByName.containsKey(bpName)) {
-			existingRecord = bpsOnServerByName.get(bpName);
+		if (bpsOnServerByName.containsKey(bp.getName())) {
+			existingRecord = bpsOnServerByName.get(bp.getName());
 		}
 
 		if (existingRecord == null) {
