@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -479,10 +481,9 @@ public class RestClientVrops extends RestClient {
 				.map(policyName -> allPolicies.stream().filter(policyObject -> policyObject.getName().equalsIgnoreCase(policyName)).findFirst().orElse(null))
 				.toList();
 		// the default policy cannot be part of the priority order list (due to limitation of vROPs)
-		List<PolicyDTO.Policy> filteredObjects = policyObjects.stream().filter(policyObject -> policyObject != null && !policyObject.getDefaultPolicy())
-				.collect(Collectors.toList());
-		List<String> policyIds = filteredObjects.stream().map(policyObject -> policyObject.getId()).collect(Collectors.toList());
-		List<String> policyNames = filteredObjects.stream().map(policyObject -> policyObject.getName()).collect(Collectors.toList());
+		List<PolicyDTO.Policy> filteredObjects = policyObjects.stream().filter(policyObject -> policyObject != null && !policyObject.getDefaultPolicy()).collect(Collectors.toList());
+		List<String> policyIds = filteredObjects.stream().map(item -> item.getId()).collect(Collectors.toList());
+		List<String> policyNames = filteredObjects.stream().map(item -> item.getName()).collect(Collectors.toList());
 
 		// check whether there are missing policies
 		List<String> missingPolicies = CollectionUtils.subtract(policies, allPolicies.stream().map(item -> item.getName()).collect(Collectors.toList()))
@@ -500,8 +501,11 @@ public class RestClientVrops extends RestClient {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 			List<String> mergedPolicyIds = policyIds;
-			// in order priority list to work properly preserve the current ordering for the rest of the policies prior sending them to the API
-			mergedPolicyIds.addAll(allPolicies.stream().filter(item -> item.getPriority() != null).map(item -> item.getId()).collect(Collectors.toList()));
+			// in order priority list to work properly preserve the current ordering for the
+			// rest of the policies prior sending them to the API
+			mergedPolicyIds.addAll(allPolicies.stream().filter(item -> item.getPriority() != null).filter(item -> !policyIds.contains(item.getId()))
+					.sorted((object1, object2) -> object1.getPriority().compareTo(object2.getPriority())).map(item -> item.getId())
+					.collect(Collectors.toList()));
 			parameters.put("policyIds", mergedPolicyIds);
 			restTemplate.exchange(restUri, HttpMethod.PUT, new HttpEntity<>(gson.toJson(parameters), headers), String.class);
 		} catch (RestClientException e) {
