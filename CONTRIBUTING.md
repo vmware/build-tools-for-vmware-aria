@@ -96,7 +96,7 @@ If none of the above types fit, you should review your code, it probably encompa
 
 ### Commits Message Convention
 
-When creating a branch, please follow the naming convention: [Semantic Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+When commiting to a branch, please follow the following convention: [Semantic Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ## Submitting a Pull Request
 
