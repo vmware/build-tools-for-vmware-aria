@@ -77,7 +77,7 @@ When adding new code make sure to cover the following mandatory points:
 
 ### Naming Convention For Branches
 
-When creating a branch, please follow the naming convention: 
+When creating a branch, please follow the naming convention:
 
 Format: `<type>/<issueNumber>-<name>`
 
