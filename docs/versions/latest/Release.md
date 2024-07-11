@@ -198,6 +198,23 @@ This feature is backwards compatible with the previous version of the `vrotsc` p
 
 ### VROTSC Upgrade the ts version from 3.8.3 to 5.4.5
 
+## Improvements
+
+### Add support for global scope property-group export/import
+
+Property groups of global scope can now be imported with vrealize:push
+
+#### Previous Behavior
+
+On export projectId and orgId values are removed from property-group data to facilitate import into a different VRA system.
+On import projectId and orgId values are added to property-group data unconditionally. This prevented importing property-groups with global scope.
+
+#### Current Behavior
+
+On export projectId and orgId values are now saved with the rest of the property-group data.
+On import orgId is always overridden. The projectId is overridden only if it already existed in the json file.
+Thus property groups with global scope which do not have projectId can now be created or updated via vrealize:push command.
+
 ### Updated documentation to specify Java 17 as the required version
 
 #### Previous Behavior
