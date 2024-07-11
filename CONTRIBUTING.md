@@ -75,6 +75,29 @@ When adding new code make sure to cover the following mandatory points:
 
 :scroll:**NOTE!** When doing a Pull Request review make sure that all points mentioned above are covered before approving the PR.
 
+### Naming Convention For Branches
+
+When creating a branch, please follow the naming convention: 
+
+Format: `<type>/#<issueNumber>-<name>`
+
+Types can be:
+
+- `feature` / `feat` - for new features
+- `bugfix` / `fix` - for bug fixes
+- `hotfix` - for hotfixes
+- `docs` - for documentation changes
+- `style` - for changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- `refactor` - for changes that neither fixes a bug nor adds a feature
+- `test` - for adding missing tests or correcting existing tests
+- `chore` - for changes to the build process or auxiliary tools and libraries such as documentation generation
+
+If none of the above types fit, you should review your code, it probably encompasses more than one type and needs to be split into multiple branches. Exceptions can be made if given a good reason why.
+
+### Commits Message Convention
+
+When creating a branch, please follow the naming convention: [Semantic Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+
 ## Submitting a Pull Request
 
 Please follow the instructions in the [PR template](./.github/pull_request_template.md).
