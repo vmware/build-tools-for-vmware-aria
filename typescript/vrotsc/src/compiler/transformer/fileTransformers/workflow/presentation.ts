@@ -12,10 +12,9 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { CanvasItemPolymorphicBagForDecision, InputOutputBindings, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
+import { WorkflowDescriptor, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
 import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
-import { findTargetItem } from "./helpers/findTargetItem";
 import { findItemByName } from "./helpers/findItemByName";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
@@ -50,7 +49,13 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	buildParameters("output", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Output));
 	buildAttributes(workflow.parameters.filter(p => p.isAttribute));
 	buildEndItem();
-	workflow.items.forEach((item, i, items) => buildItem(item, i + 1, items));
+
+	workflow.items.forEach((item, i) => {
+		const pos = i + 1;
+
+		stringBuilder.appendContent(item.item.printItem(pos));
+	});
+
 	buildPresentation();
 	stringBuilder.unindent();
 	stringBuilder.append(`</workflow>`).appendLine();
@@ -117,89 +122,6 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		stringBuilder.append(`<position x="${265 + 160 * workflow.items.length}.0" y="45.40909090909091" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
-	}
-
-	/**
-	 * Builds a single Workflow Item (canvas element)
-	 *
-	 * The `out-name` points to the next item in the workflow
-	 *
-	 * @param item The item to build
-	 * @param pos The position of the item in the workflow. Cannot be 0, as that is reserved for the end item
-	 * @param items The list of all items in the workflow
-	 */
-	function buildItem(item: WorkflowItemDescriptor, pos: number, items: WorkflowItemDescriptor[]): void {
-		const targetItem = findTargetItem(item.target, pos, item);
-		const itemType = item.item.getDecoratorType();
-		const type = item.item.getCanvasType();
-		let inputOutputBindings = 0;
-
-		//@TODO: Move to the strategies
-		switch (itemType) {
-			case WorkflowItemType.Decision:
-				item.sourceText = item.sourceText.replace(/function wrapper\(\) \{|}$/gm, '').trim();
-				stringBuilder.append(`<workflow-item`
-					+ ` name="item${pos}"`
-					+ ` out-name="${targetItem}"`
-					+ ` type="${type}"`
-					+ ` alt-out-name="${findTargetItem((item.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, item)}"`
-					+ ">").appendLine();
-				stringBuilder.indent();
-				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
-				break;
-			case WorkflowItemType.WaitingTimer:
-				stringBuilder.append(`<workflow-item`
-					+ ` name="item${pos}"`
-					+ ` out-name="${targetItem}"`
-					+ ` type="${type}"`
-					+ ">").appendLine();
-				stringBuilder.indent();
-				inputOutputBindings |= InputOutputBindings.IsWaitingTimer;
-				break;
-			case WorkflowItemType.Item:
-			default:
-				stringBuilder.append(`<workflow-item`
-					+ ` name="item${pos}"`
-					+ ` out-name="${targetItem}"`
-					+ ` type="${type}"`
-					+ ">").appendLine();
-				stringBuilder.indent();
-				stringBuilder.append(`<script encoded="false"><![CDATA[${item.sourceText}]]></script>`).appendLine();
-		}
-
-		stringBuilder.append(`<display-name><![CDATA[${item.name}]]></display-name>`).appendLine();
-		buildItemParameterBindings("in-binding", item.input, inputOutputBindings);
-		buildItemParameterBindings("out-binding", item.output, inputOutputBindings);
-		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
-		stringBuilder.unindent();
-		stringBuilder.append(`</workflow-item>`).appendLine();
-	}
-
-	/**
-	 * This will build the parameter bindings for the given item
-	 *
-	 * In case of a waiting timer, the `timer.date` parameter will be bound instead of the actual parameter name, as this is required by vRO
-	 *
-	 * @param parentName The name of the parent element
-	 * @param parameters The list of parameters to bind
-	 * @param inputOutputBindings The input output bindings. Use this to send additional information for the bindings
-	 * @returns void
-	 */
-	function buildItemParameterBindings(parentName: string, parameters: string[], inputOutputBindings: number): void {
-		if (!parameters?.length) {
-			return;
-		}
-		stringBuilder.append(`<${parentName}>`).appendLine();
-		stringBuilder.indent();
-		parameters.forEach(paramName => {
-			const param = workflow.parameters.find(p => p.name === paramName);
-			if (param) {
-				const isWaitingTimer = (inputOutputBindings & InputOutputBindings.IsWaitingTimer) === InputOutputBindings.IsWaitingTimer;
-				stringBuilder.append(`<bind name="${isWaitingTimer ? "timer.date" : param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
-			}
-		});
-		stringBuilder.unindent();
-		stringBuilder.append(`</${parentName}>`).appendLine();
 	}
 
 	function buildPresentation(): void {

@@ -122,10 +122,6 @@ export enum WorkflowItemType {
 	WaitingTimer = "WaitingTimerItem",
 }
 
-export enum InputOutputBindings {
-	IsWaitingTimer = 1 << 0,
-}
-
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
 
 
