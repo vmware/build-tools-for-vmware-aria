@@ -19,6 +19,9 @@
 #    - vSphere World, vSAN Datastores
 #    - Foundation Policy
 #    - vSphere World, vSAN Datastores
+#  # Since vROPs 8.17.0 the policies can be ordered by priority, hence the ordering in the list above
+#  # can be used to prioritize the policies during pushing of policies,
+#  # for older version of vROPs the ordering does not matter
 #  default-policy: vSphere World
 #  recommendation:
 #    - Recommendation-df-physicaldisks.physdiskcapacity

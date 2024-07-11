@@ -307,4 +307,25 @@ public class VraNgBlueprintStoreTest {
 		// VERIFY
 		verify(restClient, times(1)).createBlueprint(any());
 	}
+
+	@Test
+	void testImportContentWithDiffBlueprintFolderName() {
+		// GIVEN
+		List<String> blueprintNames = new ArrayList<>();
+		blueprintNames.add("nginx-blueprint-1");
+
+		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
+
+		// INSIDE THE details.json -> name
+		BlueprintMockBuilder builder = new BlueprintMockBuilder("nginx-blueprint");
+		VraNgBlueprint blueprint = builder.build();
+
+		fsMocks.blueprintFsMocks().addBlueprint(blueprint, "nginx-blueprint-1");
+
+		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
+		when(restClient.getAllBlueprints()).thenReturn(bluePrintsOnServer);
+
+		// START TEST & VERIFY EXCEPTION
+		assertThrows(IllegalStateException.class, () -> store.importContent(tempFolder.getRoot()));
+	}
 }
