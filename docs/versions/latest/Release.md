@@ -23,21 +23,6 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### Support for global scope property-group export/import
-
-Property groups of global scope can now be imported with vrealize:push
-
-#### Previous Behavior
-
-On export projectId and orgId values are removed from property-group data to facilitate import into a different VRA system.
-On import projectId and orgId values are added to property-group data unconditionally. This prevented importing property-groups with global scope.
-
-#### Current Behavior
-
-On export projectId and orgId values are now saved with the rest of the property-group data.
-On import orgId is always overridden. The projectId is overridden only if it already existed in the json file.
-Thus property groups with global scope which do not have projectId can now be created or updated via vrealize:push command.
-
 ### Support of ordering of Aria Operations (vROPs) policies by priority
 
 Aria Operations (vROPs) since version 8.17.0 supports ordering policies by priority. If the target server has Aria Operations version 8.17 and later the policies will be ordered by priority during pushing of policies to the server as they appear in the content.yaml file with the first policy with highest priority and the last one with lowest priority, hence making possible to control the priority of the policies in the configuration file.
@@ -217,7 +202,6 @@ This feature is backwards compatible with the previous version of the `vrotsc` p
 
 ### Add support for global scope property-group export/import
 
-Fix issue #250
 Property groups of global scope can now be imported with vrealize:push
 
 #### Previous Behavior
