@@ -21,7 +21,7 @@ By contributing to this project you agree to the [Developer Certificate of Origi
 
 ## Getting Started
 
-Looking for places to contribute to the codebase? You can start by looking through the [`help-wanted`](https://github.com/vmware/build-tools-for-vmware-aria/labels/status:help-wanted) issues.
+Looking for places to contribute to the codebase? You can start by looking through the [`triage/accepted`](https://github.com/vmware/build-tools-for-vmware-aria/issues?q=is%3Aissue+is%3Aopen+label%3Atriage%2Faccepted) issues or [`pr/need-help`](https://github.com/vmware/build-tools-for-vmware-aria/pulls?q=is%3Apr+is%3Aopen+label%3Apr%2Fneed-help) Pull Requests.
 
 ### Getting the code
 
@@ -72,7 +72,6 @@ When adding new code make sure to cover the following mandatory points:
 3. Unit tests are mandatory.  
     - If adding unit tests is not viable - other options are to be explored.
     - If no unit tests are included justification should be provided.
-4. Include usage information based on [As-Built](./As-built-template.md) template.
 
 :scroll:**NOTE!** When doing a Pull Request review make sure that all points mentioned above are covered before approving the PR.
 
@@ -97,3 +96,39 @@ If you cannot find an existing issue that describes your bug or feature, create 
 - File a single issue per problem and feature request. Do not enumerate multiple bugs or feature requests in the same issue.
 - Do not add your issue as a comment to an existing issue unless it's related. Many issues look similar, but have different causes.
 - When filing bugs, please follow the [bug template](./.github/ISSUE_TEMPLATE/bug_report.md) and include as much information as possible. The more information you can provide, the more likely someone will be successful at reproducing the issue and finding a fix.
+
+### Labels
+
+If you create a new issue, you should add a label to it `triage/needed`, then someone from the maintainers team will decide if that issue is relevant and if it will be done. If you don't add a label, then it will be up to the maintainers to do so, but your issue may take longer to be resolved.
+
+Overall before an issue is resolved, it should have a `triage`, `kind` and `version` labels.
+
+There are other labels that can be added optionally if you think they are relevant. Check down below for more information.
+
+#### Triaging Labels
+
+The main labels used for triaging are:
+
+- `triage/needed` - This label is used to mark issues that need to be triaged.
+- `triage/accepted` - This label is used to mark issues that are relevant and will be done.
+- `triage/rejected` - This label is used to mark issues that are not relevant and will not be done.
+
+There are others that can be used to convey different information, for more info check [the labels](https://github.com/vmware/build-tools-for-vmware-aria/labels?q=triage)
+
+#### Kind Labels
+
+The main labels used for kind are:
+
+- `kind/bug` - This label is used to mark issues that are bugs.
+- `kind/feature` - This label is used to mark issues that are feature requests.
+
+There are others that can be used to convey different information, for more info check [the labels](https://github.com/vmware/build-tools-for-vmware-aria/labels?q=kind)
+
+#### Version Labels
+
+The main labels used for version are:
+
+- `version/patch` - This label is used to mark issues that are patches.
+- `version/minor` - This label is used to mark issues that are minor versions.
+- `version/major` - This label is used to mark issues that are major versions.
+
