@@ -15,6 +15,8 @@
 import { CanvasItemPolymorphicBagForDecision, InputOutputBindings, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
 import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
+import { findTargetItem } from "./helpers/findTargetItem";
+import { findItemByName } from "./helpers/findItemByName";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -174,30 +176,6 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	}
 
 	/**
-	 * Helper function to find the target item for the given item
-	 *
-	 * If the `item.target` is "end", it will return "item0"
-	 * If the `item.target` is not null, it will return the item with the given name, or 0 if not found
-	 * If the `item.target` is null, it will return the next item in the workflow, or "item0" if it is the last item
-	 *
-	 *
-	 * @param item The item to find the target for
-	 * @param pos The position of the item in the workflow
-	 * @param items The list of all items in the workflow
-	 * @returns The name of the target item
-	 */
-	function findTargetItem(target: any, pos: number, item: WorkflowItemDescriptor): string {
-		if (target === "end") {
-			return "item0";
-		}
-		if (target != null) {
-			return `item${findItemByName(item.parent.items, target) || 0}`;
-		}
-
-		return pos < item.parent.items.length ? `item${pos + 1}` : "item0";
-	}
-
-	/**
 	 * This will build the parameter bindings for the given item
 	 *
 	 * In case of a waiting timer, the `timer.date` parameter will be bound instead of the actual parameter name, as this is required by vRO
@@ -353,18 +331,4 @@ function buildOutput(output: string[]): string {
 		throw new Error("Polyglot decorator require an @Out parameter");
 	}
 	return output[0];
-}
-
-/**
- * This function will find the index of the item with the given name, or return 0 if not found
- *
- * The index is incremented by 1, as the first item in the workflow is always the end item
- *
- * @param items The list of items to search
- * @param name The name of the item to find
- * @returns The index of the item with the given name, or 0 if not found
- */
-function findItemByName(items: WorkflowItemDescriptor[], name: string): number {
-	const index = items.findIndex(item => item.name === name);
-	return index === -1 ? 0 : index + 1;;
 }
