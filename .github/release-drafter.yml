@@ -5,16 +5,22 @@ categories:
     labels:
       - 'feature'
       - 'enhancement'
+      - 'kind/feature'
+      - 'kind/enhancement'
+      - 'kind/refactor'
   - title: '🐛 Bug Fixes'
     labels:
+      - 'kind/fix'
+      - 'kind/bugfix'
+      - 'kind/bug'
+      - 'bug'
       - 'fix'
       - 'bugfix'
-      - 'bug'
   - title: '⬆️ Dependencies'
     labels:
-      - 'dependencies'
+      - 'kind/dependencies'
 exclude-labels:
-  - 'skip-changelog'
+  - 'type/skip-changelog'
 exclude-contributors:
   - 'svc-wwcoe-ci-admin'
   - 'dependabot'
@@ -23,13 +29,13 @@ change-template: '* $TITLE by @$AUTHOR in #$NUMBER'
 version-resolver:
   major:
     labels:
-      - 'major'
+      - 'version/major'
   minor:
     labels:
-      - 'minor'
+      - 'version/minor'
   patch:
     labels:
-      - 'patch'
+      - 'version/patch'
   default: patch
 template: |
   ## What's Changed
@@ -41,13 +47,24 @@ template: |
   
   **Full Changelog**: https://github.com/vmware/build-tools-for-vmware-aria/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 autolabeler:
-  - label: 'bug'
+  - label: 'kind/bug'
     branch:
       - '/fix\/.+/'
     title:
       - '/fix/i'
-  - label: 'enhancement'
+
+  - label: 'kind/feature'
     branch:
       - '/feature\/.+/'
+
+  - label: 'kind/enhancement'
     title:
-      - '/add|implement|support/i'
+      - '/improve|support|enhance/i'
+
+  - label: 'kind/refactor'
+    title:
+      - '/refactor/i'
+
+  - label: 'kind/dependencies'
+    title:
+      - '/dependencies|dependency/i'

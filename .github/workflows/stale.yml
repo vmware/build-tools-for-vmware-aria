@@ -29,3 +29,5 @@ jobs:
           days-before-stale: 30
           days-before-close: 7
           enable-statistics: true
+          exempt-issue-labels: triage/blocked,triage/accepted
+          exempt-pr-labels: pr/need-help,pr/wip
