@@ -18,6 +18,38 @@
 
 ## Features
 
+[//]: # (### *Feature Name*)
+[//]: # (Describe the feature)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
+
+### Support of ordering of Aria Operations (vROPs) policies by priority
+
+Aria Operations (vROPs) since version 8.17.0 supports ordering policies by priority. If the target server has Aria Operations version 8.17 and later the policies will be ordered by priority during pushing of policies to the server as they appear in the content.yaml file with the first policy with highest priority and the last one with lowest priority, hence making possible to control the priority of the policies in the configuration file.
+Note that the default policy will not be part of priority order list due to limitation of Aria Operations product.
+
+Example content.yaml file with policies ordered by priority.
+
+```yaml
+policy:
+- "Policy 1"
+- "Policy 2"
+- "Policy 3"
+```
+
+If the Aria Operations server is 8.17.0 and later during push the policies will be ordered by priority as follows:
+
+1. "Policy 1" (top priority)
+2. "Policy 2"
+3. "Policy 3" (lowest priority)
+
+#### Backwards Compatibility
+
+This feature is backwards compatible with the previous version of the `Aria Operation (vROPs)` servers. If the `vROPs` server is older then the policies will not be ordered by priority.
+
+### Support of project scope / organization during import of content sharing policies
+
+[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 [//]: # "### *Feature Name*"
 [//]: # "Describe the feature"
 [//]: # "Optional But highly recommended Specify *NONE* if missing"

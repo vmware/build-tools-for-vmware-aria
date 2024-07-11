@@ -1,5 +1,6 @@
 ### Enhancements
 
+* [vrops] Issue 280 / Support for priority ordering of the vROPs policies during push.
 * [vrotsc] `vrotsc` migrate ts from 3.8.3 to 5.4.5. Check [this](https://github.com/vmware/build-tools-for-vmware-aria/pull/245) for detailed information
 
 ## v2.39.0 - 14 Jun 2024
