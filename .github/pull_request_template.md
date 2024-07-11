@@ -24,7 +24,7 @@ Sample PR title:
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] I have added necessary documentation, relevant usage information (if applicable)
 - [ ] I have updated the PR title with affected component, related issue number and a short summary of the changes introduced
-- [ ] I have added labels for implementation type (enhancement, bug, dependencies) and version change (major, minor, patch)
+- [ ] I have added labels for implementation kind (kind/*) and version type (version/*)
 - [ ] I have tested against live environment, if applicable
 - [ ] I have synced any structure and/or content vRA-NG improvements with vra-ng and ts-vra-ng archetypes (if applicable)
 - [ ] I have my changes rebased and squashed to the minimal number of relevant commits. **Notice: don't squash all commits**
