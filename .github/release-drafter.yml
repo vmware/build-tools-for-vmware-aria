@@ -20,7 +20,7 @@ categories:
     labels:
       - 'kind/dependencies'
 exclude-labels:
-  - 'type/skip-changelog'
+  - 'kind/skip-changelog'
 exclude-contributors:
   - 'svc-wwcoe-ci-admin'
   - 'dependabot'
