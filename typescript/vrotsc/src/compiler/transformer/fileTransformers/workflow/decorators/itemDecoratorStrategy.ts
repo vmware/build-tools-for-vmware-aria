@@ -71,7 +71,11 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	 */
 	printItem(pos: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
+
 		const targetItem = findTargetItem(this.itemInfo.target, pos, this.itemInfo);
+		if (targetItem === null) {
+			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
+		}
 
 		stringBuilder.append(`<workflow-item`
 			+ ` name="item${pos}"`
