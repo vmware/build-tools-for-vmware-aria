@@ -13,13 +13,22 @@
  * #L%
  */
 import * as ts from "typescript";
-import { WorkflowItemType } from "../../../../decorators";
+import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 
 export default interface CanvasItemDecoratorStrategy {
 	/**
 	 * Returns the type of the decorator
 	 */
 	getDecoratorType(): WorkflowItemType;
+
+	/**
+	 * Returns the item info associated with the decorator
+	 *
+	 * The WorkflowItemDescriptor is passed in the constructor of the strategy and is used internally
+	 *
+	 * @returns {WorkflowItemDescriptor}
+	 */
+	getItemInfo(): WorkflowItemDescriptor;
 
 	/**
 	 * This will be the type of the canvas item.

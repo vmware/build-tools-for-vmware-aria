@@ -13,10 +13,13 @@
  * #L%
  */
 import { Decorator, MethodDeclaration, SourceFile } from "typescript";
-import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
+import { CanvasItemPolymorphicBagForDecision, WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { SourceFilePrinter, WrapperSourceFilePrinter } from "./helpers/sourceFile";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
+import { findTargetItem } from "../helpers/findTargetItem";
+import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
 export default class DecisionItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(
@@ -24,6 +27,10 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		private readonly sourceFilePrinter: SourceFilePrinter = new WrapperSourceFilePrinter()
 	) {
 		this.itemInfo.item = this;
+	}
+
+	getItemInfo(): WorkflowItemDescriptor {
+		return this.itemInfo;
 	}
 
 	getDecoratorType(): WorkflowItemType {
@@ -57,7 +64,53 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile);
 	}
 
+	/**
+	 * Prints out the decision item
+	 *
+	 * - `out-name` is the target if the condition is met
+	 * - `alt-out-name` is the target if the `else` condition is met
+	 *
+	 * The `sourceText` is cleared of the `wrapper` function, if it exists
+	 *  it was only added to the sourceText to make the code valid for typescript
+	 *
+	 * @param pos The position of the item in the workflow
+	 * @returns The string representation of the decision item
+	 */
 	printItem(pos: number): string {
-		throw new Error("Method not implemented.");
+		const stringBuilder = new StringBuilderClass("", "");
+
+		const targetItem = findTargetItem(this.itemInfo.target, pos, this.itemInfo);
+		if (targetItem === null) {
+			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
+		}
+
+		this.itemInfo.sourceText = this.clearWrapperFunction(this.itemInfo.sourceText);
+		stringBuilder.append(`<workflow-item`
+			+ ` name="item${pos}"`
+			+ ` out-name="${targetItem}"`
+			+ ` type="${this.getCanvasType()}"`
+			+ ` alt-out-name="${findTargetItem((this.itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, this.itemInfo)}"`
+			+ ">").appendLine();
+
+		stringBuilder.indent();
+		stringBuilder.append(`<script encoded="false"><![CDATA[${this.itemInfo.sourceText}]]></script>`).appendLine();
+		stringBuilder.append(`<display-name><![CDATA[${this.itemInfo.name}]]></display-name>`).appendLine();
+		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+		stringBuilder.unindent();
+		stringBuilder.append(`</workflow-item>`).appendLine();
+
+		return stringBuilder.toString();
+	}
+
+	/**
+	 * Clears the `wrapper` function from the sourceText
+	 *
+	 * @param sourceText The source text to clear the `wrapper` function from
+	 * @returns The source text without the `wrapper` function
+	 */
+	private clearWrapperFunction(sourceText: string): string {
+		return sourceText.replace(/function wrapper\(\) \{|}$/gm, '').trim();
 	}
 }

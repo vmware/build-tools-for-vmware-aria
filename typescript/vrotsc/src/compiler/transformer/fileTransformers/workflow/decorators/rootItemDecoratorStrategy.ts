@@ -19,6 +19,10 @@ import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(private readonly itemInfo: WorkflowItemDescriptor) { }
 
+	getItemInfo(): WorkflowItemDescriptor {
+		return this.itemInfo;
+	}
+
 	getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.RootItem;
 	}
@@ -36,23 +40,9 @@ export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStr
 		this.itemInfo.parent.rootItem = methodNode.name.escapedText as string;
 	}
 
-	/**
-	 * Must not be called
-	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
-		return this.throwDoNotCallError();
-	}
-
-	/**
-	 * Must not be called
-	 */
-	getCanvasType(): string {
-		return this.throwDoNotCallError();
-	}
-
-	printItem(pos: number): string {
-		return this.throwDoNotCallError();
-	}
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return this.throwDoNotCallError(); }
+	getCanvasType(): string { return this.throwDoNotCallError(); }
+	printItem(pos: number): string { return this.throwDoNotCallError(); }
 
 	private throwDoNotCallError(): never {
 		throw new Error("Method should not be called. RootItem is a meta decorator.");

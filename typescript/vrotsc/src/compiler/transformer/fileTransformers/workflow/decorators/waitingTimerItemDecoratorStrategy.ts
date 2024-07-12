@@ -17,6 +17,9 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { getDecoratorProps } from "../../../helpers/node";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
+import { findTargetItem } from "../helpers/findTargetItem";
+import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(
@@ -24,6 +27,10 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()
 	) {
 		this.itemInfo.item = this;
+	}
+
+	getItemInfo(): WorkflowItemDescriptor {
+		return this.itemInfo;
 	}
 
 	getCanvasType(): string {
@@ -53,7 +60,36 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile);
 	}
 
+	/**
+	 * Prints the waiting timer to the workflow file
+	 *
+	 * - `out-name` is the name of the item that the waiting timer will transition to after the timer is complete
+	 *
+	 * @param pos The position of the item in the workflow
+	 * @returns The string representation of the item
+	 */
 	printItem(pos: number): string {
-		throw new Error("Method not implemented.");
+		const stringBuilder = new StringBuilderClass("", "");
+
+		const targetItem = findTargetItem(this.itemInfo.target, pos, this.itemInfo);
+		if (targetItem === null) {
+			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
+		}
+
+		stringBuilder.append(`<workflow-item`
+			+ ` name="item${pos}"`
+			+ ` out-name="${targetItem}"`
+			+ ` type="${this.getCanvasType()}"`
+			+ ">").appendLine();
+		stringBuilder.indent();
+
+		stringBuilder.append(`<display-name><![CDATA[${this.itemInfo.name}]]></display-name>`).appendLine();
+		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+		stringBuilder.unindent();
+		stringBuilder.append(`</workflow-item>`).appendLine();
+
+		return stringBuilder.toString();
 	}
 }
