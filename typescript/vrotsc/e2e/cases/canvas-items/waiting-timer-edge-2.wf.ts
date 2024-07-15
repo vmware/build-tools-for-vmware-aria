@@ -1,9 +1,9 @@
 import { Workflow, In, WaitingTimerItem } from "vrotsc-annotations";
 
 @Workflow({
-	name: "Example Waiting Timer",
+	name: "Waitin Timer Edge 2",
 	path: "VMware/PSCoE",
-	description: "Waiting timer will point to shouldGoHere with target"
+	description: "Waiting timer will point to shouldGoHere with target",
 	attributes: {
 		waitingTimer: {
 			type: "Date"

@@ -1,9 +1,9 @@
-import { Workflow, In } from "vrotsc-annotations";
+import { Workflow, In, Item, RootItem } from "vrotsc-annotations";
 
 @Workflow({
-	name: "Example Waiting Timer",
+	name: "Root When Set",
 	path: "VMware/PSCoE",
-	description: "root is shouldGoHere, points to end"
+	description: "root is shouldGoHere, points to end",
 	attributes: {
 		waitingTimer: {
 			type: "Date"
