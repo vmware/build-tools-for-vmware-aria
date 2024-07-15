@@ -1,7 +1,7 @@
 import { Workflow, In } from "vrotsc-annotations";
 
 @Workflow({
-	name: "Example Waiting Timer",
+	name: "Root Default First",
 	path: "VMware/PSCoE",
 	description: "default is first item, points to end"
 	attributes: {

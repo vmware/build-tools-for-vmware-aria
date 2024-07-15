@@ -1,7 +1,7 @@
 import { Workflow, DecisionItem } from "vrotsc-annotations";
 
 @Workflow({
-	name: "Example Waiting Timer",
+	name: "Decision Happy",
 	path: "VMware/PSCoE",
 	description: "decisionElement is the root, it will point with else to end and target to shouldGoHere. shouldGoHere will point to end too",
 	attributes: {
