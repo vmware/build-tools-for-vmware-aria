@@ -22,7 +22,7 @@ interface VroAttributeList {
 interface VroAttribute {
 	type: string;
 	bind?: boolean;
-	value: any;
+	value?: any;
 }
 
 interface Type<T> extends Function { new(...args: any[]): T; }
