@@ -47,7 +47,7 @@ Fixed an issue where the ABX archetype could not compile due to an old version o
 
 We were getting a build error when trying to compile the ABX archetype:
 
-```
+```log
 info:    Error ts(1110) /root/vro/polyglot_test_project/node_modules/@types/node/crypto.d.ts (3569,17): Type expected.
 info:    Error ts(1005) /root/vro/polyglot_test_project/node_modules/@types/node/events.d.ts (105,28): ',' expected.
 ...
