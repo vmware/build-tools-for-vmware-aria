@@ -56,7 +56,16 @@ autolabeler:
   - label: 'kind/feature'
     branch:
       - '/feature\/.+/'
+      - '/feat\/.+/'
 
+  - label: 'kind/documentation'
+    branch:
+      - '/docs\/.+/'
+
+  - label: 'kind/refactor'
+    branch:
+      - '/refactor\/.+/'
+  
   - label: 'kind/enhancement'
     title:
       - '/improve|support|enhance/i'
