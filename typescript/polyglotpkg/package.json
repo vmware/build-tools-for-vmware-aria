@@ -28,7 +28,7 @@
     "package"
   ],
   "engines": {
-    "node": ">=16.15.1 <16.20.2",
+    "node": ">=16.15.1",
     "npm": ">=6.14.0"
   },
   "author": "VMware WWCoE",
