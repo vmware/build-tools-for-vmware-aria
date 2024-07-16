@@ -73,8 +73,6 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	 *
 	 * This is the entry point for the workflow transformation.
 	 *
-	 * Some of the Workflow Canvas Items do not have scripting, they are not going to be transformed.
-	 *
 	 * @param workflowInfo The workflow descriptor object.
 	 * @param classNode The class node to extract information from.
 	 * @returns void
@@ -105,16 +103,14 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 					actionSourceText = decorateSourceFileTextWithPolyglot(actionSourceText, itemInfo.polyglot, itemInfo);
 				}
 
-				if (actionSourceText) {
-					const sourceFile = ts.createSourceFile(
-						actionSourceFilePath,
-						actionSourceText,
-						ts.ScriptTarget.Latest,
-						true
-					);
+				const newSourceFile = ts.createSourceFile(
+					actionSourceFilePath,
+					actionSourceText,
+					ts.ScriptTarget.Latest,
+					true
+				);
 
-					actionSourceFiles.push(sourceFile);
-				}
+				actionSourceFiles.push(newSourceFile);
 			});
 
 		workflowInfo.name = workflowInfo.name || classNode.name.text;
