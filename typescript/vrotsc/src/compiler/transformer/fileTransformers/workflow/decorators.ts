@@ -22,6 +22,7 @@ import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
 import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDecoratorStrategy";
 import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
+import WorkflowItemDecoratorStrategy from "./decorators/workflowItemDecoratorStrategy";
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
@@ -76,6 +77,8 @@ function getItemStrategy(decoratorNode: ts.Decorator, itemInfo: WorkflowItemDesc
 			return new DecisionItemDecoratorStrategy(itemInfo);
 		case WorkflowItemType.WaitingTimer:
 			return new WaitingTimerItemDecoratorStrategy(itemInfo);
+		case WorkflowItemType.Workflow:
+			return new WorkflowItemDecoratorStrategy(itemInfo);
 		case WorkflowItemType.RootItem:
 			return new RootItemDecoratorStrategy(itemInfo);
 		default:
@@ -268,23 +271,23 @@ function buildWorkflowDecoratorParameters(
 		objectLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			const propName = getPropertyName(property.name);
 			switch (propName) {
-				case "type":{
+				case "type": {
 					parameter.type = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
-				case "title":{
+				case "title": {
 					parameter.title = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
-				case "required":{
+				case "required": {
 					parameter.required = property.initializer.kind === ts.SyntaxKind.TrueKeyword;
 					break;
 				}
-				case "description":{
+				case "description": {
 					parameter.description = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
-				case "multiLine":{
+				case "multiLine": {
 					parameter.multiLine = property.initializer.kind === ts.SyntaxKind.TrueKeyword;
 					break;
 				}
@@ -300,7 +303,7 @@ function buildWorkflowDecoratorParameters(
 					parameter.minStringLength = parseInt((<ts.NumericLiteral>property.initializer).text);
 					break;
 				}
-				case "numberFormat":{
+				case "numberFormat": {
 					parameter.numberFormat = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}

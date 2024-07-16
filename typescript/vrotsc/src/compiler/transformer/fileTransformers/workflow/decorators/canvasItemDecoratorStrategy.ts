@@ -40,6 +40,11 @@ export default interface CanvasItemDecoratorStrategy {
 	 */
 	registerItemArguments(decoratorNode: ts.Decorator): void;
 
+	/**
+	 * Only items that have scripts should return something here.
+	 *
+	 * The rest can return an empty string.
+	 */
 	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile): string;
 
 	printItem(pos: number): string;

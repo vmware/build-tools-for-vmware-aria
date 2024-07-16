@@ -120,6 +120,13 @@ export enum WorkflowItemType {
 	 * It can target a specific item after the timer is done.
 	 */
 	WaitingTimer = "WaitingTimerItem",
+
+	/**
+	 * This item type represents a workflow item
+	 *
+	 * It can target a specific item and accepts input and output bindings
+	 */
+	Workflow = "WorkflowItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
