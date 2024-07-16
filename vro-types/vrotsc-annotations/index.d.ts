@@ -254,6 +254,38 @@ interface VroRootItemMethodDecorator {
 // 	<position y="110.0" x="340.0" />
 // </workflow-item>
 
+// ---------------------------------------------- Workflow Canvas Item ------------------------------------------------
+
+export declare const WorkflowItem: VroWorkflowItemDecorator;
+
+interface VroWorkflowItemDecorator {
+	(obj?: VroWorkflowItemConfiguration): VroWorkflowItemMethodDecorator;
+	new(obj?: VroWorkflowItemConfiguration): VroWorkflowItemConfiguration;
+}
+
+interface VroWorkflowItemConfiguration {
+	target?: string;
+}
+
+interface VroWorkflowItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// <workflow-item name="item1" out-name="item2" throw-bind-name="" type="link" linked-workflow-id="72676355-8293-4758-bdeb-18d2896e8318">
+//    <display-name><![CDATA[Stef]]></display-name>
+//    <in-binding>
+//      <bind name="test" type="string" export-name="test"/>
+//      <bind name="secureString" type="SecureString" export-name="secureString"/>
+//      <bind name="host" type="REST:RESTHost" export-name="host"/>
+//    </in-binding>
+//    <out-binding>
+//      <bind name="message" type="string" export-name="message"/>
+//    </out-binding>
+//    <description><![CDATA[ ]]></description>
+//    <position y="50.0" x="220.0"/>
+//  </workflow-item>
+
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
 
