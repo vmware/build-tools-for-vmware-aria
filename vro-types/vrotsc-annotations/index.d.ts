@@ -265,6 +265,7 @@ interface VroWorkflowItemDecorator {
 
 interface VroWorkflowItemConfiguration {
 	target?: string;
+	linkedItem: string;
 }
 
 interface VroWorkflowItemMethodDecorator {
