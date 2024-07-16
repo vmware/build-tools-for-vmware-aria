@@ -73,6 +73,8 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 	 *
 	 * This is the entry point for the workflow transformation.
 	 *
+	 * Some of the Workflow Canvas Items do not have scripting, they are not going to be transformed.
+	 *
 	 * @param workflowInfo The workflow descriptor object.
 	 * @param classNode The class node to extract information from.
 	 * @returns void
@@ -102,11 +104,17 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				if (itemInfo.polyglot) {
 					actionSourceText = decorateSourceFileTextWithPolyglot(actionSourceText, itemInfo.polyglot, itemInfo);
 				}
-				actionSourceFiles.push(ts.createSourceFile(
-					actionSourceFilePath,
-					actionSourceText,
-					ts.ScriptTarget.Latest,
-					true));
+
+				if (actionSourceText) {
+					const sourceFile = ts.createSourceFile(
+						actionSourceFilePath,
+						actionSourceText,
+						ts.ScriptTarget.Latest,
+						true
+					);
+
+					actionSourceFiles.push(sourceFile);
+				}
 			});
 
 		workflowInfo.name = workflowInfo.name || classNode.name.text;
@@ -130,20 +138,20 @@ function decorateSourceFileTextWithPolyglot(actionSourceText: string, polyglotDe
 	if (itemInfo.input.length > 0 && itemInfo.output.length > 0) {
 		const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
 
-/*-
- * #%L
- * vrotsc
- * %%
- * Copyright (C) 2023 - 2024 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
+		/*-
+		 * #%L
+		 * vrotsc
+		 * %%
+		 * Copyright (C) 2023 - 2024 VMware
+		 * %%
+		 * Build Tools for VMware Aria
+		 * Copyright 2023 VMware, Inc.
+		 *
+		 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+		 *
+		 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+		 * #L%
+		 */
 		actionSourceText = polyglotCall + actionSourceText;
 	}
 
@@ -169,6 +177,8 @@ function registerWorkflowItem(itemInfo: WorkflowItemDescriptor, methodNode: ts.M
  *
  * This function is responsible for transforming the source files of the action items.
  * It will collect the source text of the action items and store it in the workflow descriptor.
+ *
+ * This method sets the sourceText property in the workflow item descriptors.
  *
  * @param workflows The workflow descriptors.
  * @param actionSourceFiles The source files of the action items.
