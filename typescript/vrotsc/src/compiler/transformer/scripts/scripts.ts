@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -23,6 +23,8 @@ import { system } from "../../../system/system";
  * from the source files in the program. The `emit` method traverses the AST of the source files and transforms it into JavaScript code,
  * type declarations (.d.ts files), and source maps (.js.map files).
  *
+ * All resources call this function to transform the source files in the program.
+ *
  * @returns the transformed source text, types text and map text.
  */
 export function transformSourceFile(
@@ -32,6 +34,11 @@ export function transformSourceFile(
 	file?: FileDescriptor
 ): [string, string, string] {
 	const program = context.getScriptProgram();
+
+	if (!program) {
+		return ["", "", ""];
+	}
+
 	const sourceFile = typeof sourceFileOrPath === "string"
 		? program.getSourceFile(sourceFileOrPath)
 		: sourceFileOrPath;
