@@ -13,7 +13,7 @@
 * #L%
 */
 import { StringBuilderClass } from "../../../../../../utilities/stringBuilder";
-import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../../decorators";
+import { WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter } from "../../../../../decorators";
 
 export enum InputOutputBindings {
 	IN_BINDINGS = "in-binding",
@@ -43,7 +43,7 @@ export function buildItemParameterBindings(
 	stringBuilder.append(`<${parameterType}>`).appendLine();
 	stringBuilder.indent();
 	parameters.forEach(paramName => {
-		const param = itemInfo.parent.parameters.find(p => p.name === paramName);
+		const param = itemInfo.parent.parameters.find((p: WorkflowParameter) => p.name === paramName);
 		if (param) {
 			const isWaitingTimer = itemInfo.strategy.getDecoratorType() === WorkflowItemType.WaitingTimer;
 

@@ -84,7 +84,7 @@ export function createProgram(options: ProgramOptions): Program {
 			getScriptProgram: () =>
 				scriptProgram
 				|| (
-					scriptProgram = context.sourceFiles.length
+					scriptProgram = context.sourceFiles?.length
 						? createScriptProgram(context, compilerOptions)
 						: undefined
 				),
