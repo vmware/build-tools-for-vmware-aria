@@ -186,15 +186,6 @@ interface VroWaitingTimerItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
-// <workflow-item name="item2" out-name="item0" type="waiting-timer">
-// 	<display-name>
-// 		<![CDATA[waitForEvent]]>
-// 	</display-name>
-// 	<in-binding>
-// 		<bind name="waitingTimer" type="Date" export-name="waitingTimer" />
-// 	</in-binding>
-// 	<position x="385.0" y="55.40909090909091" />
-// </workflow-item>
 
 // ---------------------------------------------- Workflow Canvas Decision Item ------------------------------------------------
 
@@ -215,16 +206,6 @@ interface VroDecisionItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
-// <workflow-item name="item3" out-name="item4" type="custom-condition" alt-out-name="item2">
-//   <display-name><![CDATA[Decision]]></display-name>
-//   <script encoded="false"><![CDATA[return waitingTimer !== null]]></script>
-//   <in-binding>
-//     <bind name="waitingTimer" type="Date" export-name="waitingTimer"/>
-//   </in-binding>
-//   <out-binding/>
-//   <description><![CDATA[Custom decision based on a custom script.]]></description>
-//   <position y="40.0" x="380.0"/>
-// </workflow-item>
 
 // ---------------------------------------------- Workflow Canvas Root Item ------------------------------------------------
 
@@ -243,16 +224,26 @@ interface VroRootItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
-// <workflow-item name="item4" out-name="item1" type="waiting-timer">
-// 	<display-name><![CDATA[Waiting timer]]></display-name>
-// 	<in-binding>
-// 		<bind name="timer.date" type="Date" export-name="waitingTimer">
-// 			<description><![CDATA[This timer item will wait until date and will continue workflow execution.]]></description>
-// 		</bind>
-// 	</in-binding>
-// 	<out-binding />
-// 	<position y="110.0" x="340.0" />
-// </workflow-item>
+
+// ---------------------------------------------- Workflow Canvas Item ------------------------------------------------
+
+export declare const WorkflowItem: VroWorkflowItemDecorator;
+
+interface VroWorkflowItemDecorator {
+	(obj?: VroWorkflowItemConfiguration): VroWorkflowItemMethodDecorator;
+	new(obj?: VroWorkflowItemConfiguration): VroWorkflowItemConfiguration;
+}
+
+interface VroWorkflowItemConfiguration {
+	target?: string;
+	linkedItem: string;
+}
+
+interface VroWorkflowItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;

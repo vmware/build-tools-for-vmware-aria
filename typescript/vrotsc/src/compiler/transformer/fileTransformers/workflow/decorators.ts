@@ -22,6 +22,7 @@ import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
 import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDecoratorStrategy";
 import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
+import WorkflowItemDecoratorStrategy from "./decorators/workflowItemDecoratorStrategy";
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
@@ -35,7 +36,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 	if (
 		!decorators
 		|| decorators?.length === 0
-		|| (decorators.length === 1 && getItemStrategy(decorators[0], itemInfo).getDecoratorType() === WorkflowItemType.RootItem)
+		|| (decorators.length === 1 && getItemStrategy(decorators[0]).getDecoratorType() === WorkflowItemType.RootItem)
 	) {
 		decorators.push(
 			ts.factory.createDecorator(
@@ -51,8 +52,12 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 	}
 
 	for (const decoratorNode of decorators) {
-		const itemStrategy = getItemStrategy(decoratorNode, itemInfo);
-		itemStrategy.registerItemArguments(decoratorNode);
+		const itemStrategy = getItemStrategy(decoratorNode);
+		if (itemStrategy.getDecoratorType() !== WorkflowItemType.RootItem) {
+			itemInfo.strategy = itemStrategy;
+		}
+
+		itemStrategy.registerItemArguments(itemInfo, decoratorNode);
 	}
 }
 
@@ -62,22 +67,23 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
  * The itemInfo is passed, to be given to the strategy
  *
  * @param decoratorNode The decorator node
- * @param itemInfo The item info
  * @returns The item strategy
  */
-function getItemStrategy(decoratorNode: ts.Decorator, itemInfo: WorkflowItemDescriptor): CanvasItemDecoratorStrategy {
+function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrategy {
 	const decoratorExpressionNode = decoratorNode.expression as ts.CallExpression;
 	const identifierText = getIdentifierTextOrNull(decoratorExpressionNode.expression);
 
 	switch (identifierText) {
 		case WorkflowItemType.Item:
-			return new ItemDecoratorStrategy(itemInfo);
+			return new ItemDecoratorStrategy();
 		case WorkflowItemType.Decision:
-			return new DecisionItemDecoratorStrategy(itemInfo);
+			return new DecisionItemDecoratorStrategy();
 		case WorkflowItemType.WaitingTimer:
-			return new WaitingTimerItemDecoratorStrategy(itemInfo);
+			return new WaitingTimerItemDecoratorStrategy();
+		case WorkflowItemType.Workflow:
+			return new WorkflowItemDecoratorStrategy();
 		case WorkflowItemType.RootItem:
-			return new RootItemDecoratorStrategy(itemInfo);
+			return new RootItemDecoratorStrategy();
 		default:
 			throw new Error(`Invalid decorator type: ${identifierText}`);
 	}
@@ -268,23 +274,23 @@ function buildWorkflowDecoratorParameters(
 		objectLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			const propName = getPropertyName(property.name);
 			switch (propName) {
-				case "type":{
+				case "type": {
 					parameter.type = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
-				case "title":{
+				case "title": {
 					parameter.title = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
-				case "required":{
+				case "required": {
 					parameter.required = property.initializer.kind === ts.SyntaxKind.TrueKeyword;
 					break;
 				}
-				case "description":{
+				case "description": {
 					parameter.description = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
-				case "multiLine":{
+				case "multiLine": {
 					parameter.multiLine = property.initializer.kind === ts.SyntaxKind.TrueKeyword;
 					break;
 				}
@@ -300,7 +306,7 @@ function buildWorkflowDecoratorParameters(
 					parameter.minStringLength = parseInt((<ts.NumericLiteral>property.initializer).text);
 					break;
 				}
-				case "numberFormat":{
+				case "numberFormat": {
 					parameter.numberFormat = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}

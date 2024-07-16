@@ -81,8 +81,13 @@ export function createProgram(options: ProgramOptions): Program {
 					emittedFiles.push(fileName);
 				}
 			},
-			getScriptProgram: () => scriptProgram || (scriptProgram = context.sourceFiles.length ?
-				createScriptProgram(context, compilerOptions) : undefined),
+			getScriptProgram: () =>
+				scriptProgram
+				|| (
+					scriptProgram = context.sourceFiles?.length
+						? createScriptProgram(context, compilerOptions)
+						: undefined
+				),
 		};
 
 		files.map(file => transformerFactoryMap[file.type](file, context)).forEach(transform => transform());
@@ -158,7 +163,7 @@ export function createProgram(options: ProgramOptions): Program {
 			const selectedFiles = [];
 			filesFiltered.forEach(fileName => {
 				filePaths.forEach(filePath => {
-					if (filePath.includes(fileName, 0)){
+					if (filePath.includes(fileName, 0)) {
 						selectedFiles.push(filePath);
 					}
 				});

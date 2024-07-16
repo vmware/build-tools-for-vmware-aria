@@ -22,15 +22,6 @@ export default interface CanvasItemDecoratorStrategy {
 	getDecoratorType(): WorkflowItemType;
 
 	/**
-	 * Returns the item info associated with the decorator
-	 *
-	 * The WorkflowItemDescriptor is passed in the constructor of the strategy and is used internally
-	 *
-	 * @returns {WorkflowItemDescriptor}
-	 */
-	getItemInfo(): WorkflowItemDescriptor;
-
-	/**
 	 * This will be the type of the canvas item.
 	 */
 	getCanvasType(): string;
@@ -38,10 +29,15 @@ export default interface CanvasItemDecoratorStrategy {
 	/**
 	 * Registers the arguments from the decorator to the workflowInfo
 	 */
-	registerItemArguments(decoratorNode: ts.Decorator): void;
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: ts.Decorator): void;
 
+	/**
+	 * Only items that have scripts should return something here.
+	 *
+	 * The rest can return an empty string.
+	 */
 	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile): string;
 
-	printItem(pos: number): string;
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string;
 }
 

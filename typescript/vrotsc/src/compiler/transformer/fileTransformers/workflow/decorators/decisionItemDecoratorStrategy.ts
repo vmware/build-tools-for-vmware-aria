@@ -21,17 +21,23 @@ import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { findTargetItem } from "../helpers/findTargetItem";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
+/**
+ * Responsible for printing out decision items
+ *
+ * @example
+ <workflow-item name="item3" out-name="item4" type="custom-condition" alt-out-name="item2">
+   <display-name><![CDATA[Decision]]></display-name>
+   <script encoded="false"><![CDATA[return waitingTimer !== null]]></script>
+   <in-binding>
+	 <bind name="waitingTimer" type="Date" export-name="waitingTimer"/>
+   </in-binding>
+   <out-binding/>
+   <description><![CDATA[Custom decision based on a custom script.]]></description>
+   <position y="40.0" x="380.0"/>
+ </workflow-item>
+ */
 export default class DecisionItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(
-		private readonly itemInfo: WorkflowItemDescriptor,
-		private readonly sourceFilePrinter: SourceFilePrinter = new WrapperSourceFilePrinter()
-	) {
-		this.itemInfo.item = this;
-	}
-
-	getItemInfo(): WorkflowItemDescriptor {
-		return this.itemInfo;
-	}
+	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new WrapperSourceFilePrinter()) { }
 
 	getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.Decision;
@@ -41,16 +47,16 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		return "custom-condition";
 	}
 
-	registerItemArguments(decoratorNode: Decorator): void {
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		getDecoratorProps(decoratorNode).forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
 				case "target": {
-					this.itemInfo.target = propValue;
+					itemInfo.target = propValue;
 					break;
 				}
 				case "else": {
-					this.itemInfo.canvasItemPolymorphicBag.else = propValue;
+					itemInfo.canvasItemPolymorphicBag.else = propValue;
 					break;
 				}
 				default: {
@@ -73,30 +79,31 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	 * The `sourceText` is cleared of the `wrapper` function, if it exists
 	 *  it was only added to the sourceText to make the code valid for typescript
 	 *
+	 * @param itemInfo The item to print
 	 * @param pos The position of the item in the workflow
 	 * @returns The string representation of the decision item
 	 */
-	printItem(pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const targetItem = findTargetItem(this.itemInfo.target, pos, this.itemInfo);
+		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItem === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
 
-		this.itemInfo.sourceText = this.clearWrapperFunction(this.itemInfo.sourceText);
+		itemInfo.sourceText = this.clearWrapperFunction(itemInfo.sourceText);
 		stringBuilder.append(`<workflow-item`
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
-			+ ` alt-out-name="${findTargetItem((this.itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, this.itemInfo)}"`
+			+ ` alt-out-name="${findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)}"`
 			+ ">").appendLine();
 
 		stringBuilder.indent();
-		stringBuilder.append(`<script encoded="false"><![CDATA[${this.itemInfo.sourceText}]]></script>`).appendLine();
-		stringBuilder.append(`<display-name><![CDATA[${this.itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
+		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
 		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();

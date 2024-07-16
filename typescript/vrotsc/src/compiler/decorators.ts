@@ -53,7 +53,7 @@ export interface WorkflowItemDescriptor<T = any> {
 	input: string[];
 	output: string[];
 	sourceText: string;
-	item: CanvasItemDecoratorStrategy;
+	strategy: CanvasItemDecoratorStrategy;
 	target: string; // Points to which item this item is connected to by name
 	canvasItemPolymorphicBag: T;
 	polyglot?: PolyglotDescriptor;
@@ -120,6 +120,13 @@ export enum WorkflowItemType {
 	 * It can target a specific item after the timer is done.
 	 */
 	WaitingTimer = "WaitingTimerItem",
+
+	/**
+	 * This item type represents a workflow item
+	 *
+	 * It can target a specific item and accepts input and output bindings
+	 */
+	Workflow = "WorkflowItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////

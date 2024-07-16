@@ -97,16 +97,20 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				registerWorkflowItem(itemInfo, methodNode);
 
 				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-				let actionSourceText = itemInfo.item.printSourceFile(methodNode, sourceFile);
+				let actionSourceText = itemInfo.strategy.printSourceFile(methodNode, sourceFile);
 				// @TODO: "Unstupify" me
 				if (itemInfo.polyglot) {
 					actionSourceText = decorateSourceFileTextWithPolyglot(actionSourceText, itemInfo.polyglot, itemInfo);
 				}
-				actionSourceFiles.push(ts.createSourceFile(
+
+				const newSourceFile = ts.createSourceFile(
 					actionSourceFilePath,
 					actionSourceText,
 					ts.ScriptTarget.Latest,
-					true));
+					true
+				);
+
+				actionSourceFiles.push(newSourceFile);
 			});
 
 		workflowInfo.name = workflowInfo.name || classNode.name.text;
@@ -130,20 +134,20 @@ function decorateSourceFileTextWithPolyglot(actionSourceText: string, polyglotDe
 	if (itemInfo.input.length > 0 && itemInfo.output.length > 0) {
 		const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
 
-/*-
- * #%L
- * vrotsc
- * %%
- * Copyright (C) 2023 - 2024 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
+		/*-
+		 * #%L
+		 * vrotsc
+		 * %%
+		 * Copyright (C) 2023 - 2024 VMware
+		 * %%
+		 * Build Tools for VMware Aria
+		 * Copyright 2023 VMware, Inc.
+		 *
+		 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+		 *
+		 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+		 * #L%
+		 */
 		actionSourceText = polyglotCall + actionSourceText;
 	}
 
@@ -169,6 +173,8 @@ function registerWorkflowItem(itemInfo: WorkflowItemDescriptor, methodNode: ts.M
  *
  * This function is responsible for transforming the source files of the action items.
  * It will collect the source text of the action items and store it in the workflow descriptor.
+ *
+ * This method sets the sourceText property in the workflow item descriptors.
  *
  * @param workflows The workflow descriptors.
  * @param actionSourceFiles The source files of the action items.
@@ -220,7 +226,7 @@ function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName, workflo
 		output: [],
 		sourceText: "",
 		target: null,
-		item: null,
+		strategy: null,
 		canvasItemPolymorphicBag: {},
 		parent: workflowInfo
 	};

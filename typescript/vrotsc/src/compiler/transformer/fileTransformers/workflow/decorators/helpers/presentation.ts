@@ -13,8 +13,7 @@
 * #L%
 */
 import { StringBuilderClass } from "../../../../../../utilities/stringBuilder";
-import { WorkflowItemType } from "../../../../../decorators";
-import CanvasItemDecoratorStrategy from "../canvasItemDecoratorStrategy";
+import { WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter } from "../../../../../decorators";
 
 export enum InputOutputBindings {
 	IN_BINDINGS = "in-binding",
@@ -31,12 +30,10 @@ export enum InputOutputBindings {
  * @returns void
  */
 export function buildItemParameterBindings(
-	canvasItemStrategy: CanvasItemDecoratorStrategy,
+	itemInfo: WorkflowItemDescriptor,
 	parameterType: InputOutputBindings
 ): string {
 	const stringBuilder = new StringBuilderClass("", "");
-
-	const itemInfo = canvasItemStrategy.getItemInfo();
 	const parameters = parameterType === InputOutputBindings.IN_BINDINGS ? itemInfo.input : itemInfo.output;
 
 	if (!parameters?.length) {
@@ -46,9 +43,9 @@ export function buildItemParameterBindings(
 	stringBuilder.append(`<${parameterType}>`).appendLine();
 	stringBuilder.indent();
 	parameters.forEach(paramName => {
-		const param = itemInfo.parent.parameters.find(p => p.name === paramName);
+		const param = itemInfo.parent.parameters.find((p: WorkflowParameter) => p.name === paramName);
 		if (param) {
-			const isWaitingTimer = canvasItemStrategy.getDecoratorType() === WorkflowItemType.WaitingTimer;
+			const isWaitingTimer = itemInfo.strategy.getDecoratorType() === WorkflowItemType.WaitingTimer;
 
 			stringBuilder.append(`<bind name="${isWaitingTimer ? "timer.date" : param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
 		}
