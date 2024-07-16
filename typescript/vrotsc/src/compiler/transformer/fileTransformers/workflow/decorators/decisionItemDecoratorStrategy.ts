@@ -21,6 +21,21 @@ import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { findTargetItem } from "../helpers/findTargetItem";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
+/**
+ * Responsible for printing out decision items
+ *
+ * @example
+ <workflow-item name="item3" out-name="item4" type="custom-condition" alt-out-name="item2">
+   <display-name><![CDATA[Decision]]></display-name>
+   <script encoded="false"><![CDATA[return waitingTimer !== null]]></script>
+   <in-binding>
+	 <bind name="waitingTimer" type="Date" export-name="waitingTimer"/>
+   </in-binding>
+   <out-binding/>
+   <description><![CDATA[Custom decision based on a custom script.]]></description>
+   <position y="40.0" x="380.0"/>
+ </workflow-item>
+ */
 export default class DecisionItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new WrapperSourceFilePrinter()) { }
 

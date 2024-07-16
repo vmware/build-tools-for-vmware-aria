@@ -21,6 +21,22 @@ import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { findTargetItem } from "../helpers/findTargetItem";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
+/**
+ * Responsible for printing out the waiting timer item
+ *
+ * @example
+ * ```xml
+ <workflow-item name="item2" out-name="item0" type="waiting-timer">
+	  <display-name>
+			<![CDATA[waitForEvent]]>
+	  </display-name>
+	  <in-binding>
+			<bind name="waitingTimer" type="Date" export-name="waitingTimer" />
+	  </in-binding>
+	  <position x="385.0" y="55.40909090909091" />
+ </workflow-item>
+ * ```
+ */
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
 
