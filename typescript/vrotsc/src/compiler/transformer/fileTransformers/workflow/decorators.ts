@@ -36,7 +36,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 	if (
 		!decorators
 		|| decorators?.length === 0
-		|| (decorators.length === 1 && getItemStrategy(decorators[0], itemInfo).getDecoratorType() === WorkflowItemType.RootItem)
+		|| (decorators.length === 1 && getItemStrategy(decorators[0]).getDecoratorType() === WorkflowItemType.RootItem)
 	) {
 		decorators.push(
 			ts.factory.createDecorator(
@@ -52,8 +52,11 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 	}
 
 	for (const decoratorNode of decorators) {
-		const itemStrategy = getItemStrategy(decoratorNode, itemInfo);
-		itemInfo.item = itemStrategy;
+		const itemStrategy = getItemStrategy(decoratorNode);
+		if (itemStrategy.getDecoratorType() !== WorkflowItemType.RootItem) {
+			itemInfo.item = itemStrategy;
+		}
+
 		itemStrategy.registerItemArguments(itemInfo, decoratorNode);
 	}
 }
@@ -64,10 +67,9 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
  * The itemInfo is passed, to be given to the strategy
  *
  * @param decoratorNode The decorator node
- * @param itemInfo The item info
  * @returns The item strategy
  */
-function getItemStrategy(decoratorNode: ts.Decorator, itemInfo: WorkflowItemDescriptor): CanvasItemDecoratorStrategy {
+function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrategy {
 	const decoratorExpressionNode = decoratorNode.expression as ts.CallExpression;
 	const identifierText = getIdentifierTextOrNull(decoratorExpressionNode.expression);
 
