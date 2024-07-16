@@ -29,7 +29,7 @@ export default interface CanvasItemDecoratorStrategy {
 	/**
 	 * Registers the arguments from the decorator to the workflowInfo
 	 */
-	registerItemArguments(decoratorNode: ts.Decorator): void;
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: ts.Decorator): void;
 
 	/**
 	 * Only items that have scripts should return something here.
@@ -38,6 +38,6 @@ export default interface CanvasItemDecoratorStrategy {
 	 */
 	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile): string;
 
-	printItem(pos: number): string;
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string;
 }
 

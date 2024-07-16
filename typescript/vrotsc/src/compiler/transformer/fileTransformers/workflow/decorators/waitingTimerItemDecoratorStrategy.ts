@@ -22,12 +22,7 @@ import { findTargetItem } from "../helpers/findTargetItem";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(
-		private readonly itemInfo: WorkflowItemDescriptor,
-		private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()
-	) {
-		this.itemInfo.item = this;
-	}
+	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
 
 	getCanvasType(): string {
 		return "waiting-timer";
@@ -37,17 +32,16 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		return WorkflowItemType.WaitingTimer;
 	}
 
-	registerItemArguments(decoratorNode: Decorator): void {
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		getDecoratorProps(decoratorNode).forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "target": {
-					this.itemInfo.target = propValue;
+				case "target":
+					itemInfo.target = propValue;
 					break;
-				}
-				default: {
+
+				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-				}
 			}
 		});
 	}
@@ -63,13 +57,14 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	 *
 	 * - `out-name` is the name of the item that the waiting timer will transition to after the timer is complete
 	 *
+	 * @param itemInfo The item to print
 	 * @param pos The position of the item in the workflow
 	 * @returns The string representation of the item
 	 */
-	printItem(pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const targetItem = findTargetItem(this.itemInfo.target, pos, this.itemInfo);
+		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItem === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
@@ -81,9 +76,9 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 			+ ">").appendLine();
 		stringBuilder.indent();
 
-		stringBuilder.append(`<display-name><![CDATA[${this.itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
 		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();

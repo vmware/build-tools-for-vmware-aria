@@ -22,12 +22,7 @@ import { findTargetItem } from "../helpers/findTargetItem";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 
 export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(
-		private readonly itemInfo: WorkflowItemDescriptor,
-		private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()
-	) {
-		this.itemInfo.item = this;
-	}
+	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
 
 	getCanvasType(): string {
 		return "task";
@@ -37,21 +32,20 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 		return WorkflowItemType.Item;
 	}
 
-	registerItemArguments(decoratorNode: Decorator): void {
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		getDecoratorProps(decoratorNode).forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "target": {
-					this.itemInfo.target = propValue;
+				case "target":
+					itemInfo.target = propValue;
 					break;
-				}
-				case "exception": {
-					this.itemInfo.canvasItemPolymorphicBag.exception = propValue;
+
+				case "exception":
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
 					break;
-				}
-				default: {
+
+				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-				}
 			}
 		});
 	}
@@ -64,11 +58,16 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	 * Prints out the item
 	 *
 	 * - `out-name` is the target canvas item to be called after the item is executed
+	 *
+	 * @param itemInfo The item to print
+	 * @param pos The position of the item in the workflow
+	 *
+	 * @returns The string representation of the item
 	 */
-	printItem(pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const targetItem = findTargetItem(this.itemInfo.target, pos, this.itemInfo);
+		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItem === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
@@ -79,11 +78,11 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 			+ ` type="${this.getCanvasType()}"`
 			+ ">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(`<script encoded="false"><![CDATA[${this.itemInfo.sourceText}]]></script>`).appendLine();
+		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
 
-		stringBuilder.append(`<display-name><![CDATA[${this.itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
 		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();

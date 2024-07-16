@@ -53,7 +53,8 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 
 	for (const decoratorNode of decorators) {
 		const itemStrategy = getItemStrategy(decoratorNode, itemInfo);
-		itemStrategy.registerItemArguments(decoratorNode);
+		itemInfo.item = itemStrategy;
+		itemStrategy.registerItemArguments(itemInfo, decoratorNode);
 	}
 }
 
@@ -72,15 +73,15 @@ function getItemStrategy(decoratorNode: ts.Decorator, itemInfo: WorkflowItemDesc
 
 	switch (identifierText) {
 		case WorkflowItemType.Item:
-			return new ItemDecoratorStrategy(itemInfo);
+			return new ItemDecoratorStrategy();
 		case WorkflowItemType.Decision:
-			return new DecisionItemDecoratorStrategy(itemInfo);
+			return new DecisionItemDecoratorStrategy();
 		case WorkflowItemType.WaitingTimer:
-			return new WaitingTimerItemDecoratorStrategy(itemInfo);
+			return new WaitingTimerItemDecoratorStrategy();
 		case WorkflowItemType.Workflow:
-			return new WorkflowItemDecoratorStrategy(itemInfo);
+			return new WorkflowItemDecoratorStrategy();
 		case WorkflowItemType.RootItem:
-			return new RootItemDecoratorStrategy(itemInfo);
+			return new RootItemDecoratorStrategy();
 		default:
 			throw new Error(`Invalid decorator type: ${identifierText}`);
 	}

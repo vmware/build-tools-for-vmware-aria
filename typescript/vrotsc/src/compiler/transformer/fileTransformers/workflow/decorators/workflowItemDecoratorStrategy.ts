@@ -21,10 +21,6 @@ import { findTargetItem } from "../helpers/findTargetItem";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 
 export default class WorkflowItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(private readonly itemInfo: WorkflowItemDescriptor) {
-		this.itemInfo.item = this;
-	}
-
 	getCanvasType(): string {
 		return "link";
 	}
@@ -33,20 +29,20 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 		return WorkflowItemType.Workflow;
 	}
 
-	registerItemArguments(decoratorNode: Decorator): void {
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		getDecoratorProps(decoratorNode).forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
 				case "target":
-					this.itemInfo.target = propValue;
+					itemInfo.target = propValue;
 					break;
 
 				case "exception":
-					this.itemInfo.canvasItemPolymorphicBag.exception = propValue;
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
 					break;
 
 				case "linkedItem":
-					this.itemInfo.canvasItemPolymorphicBag.linkedItem = propValue;
+					itemInfo.canvasItemPolymorphicBag.linkedItem = propValue;
 					break;
 
 				default:
@@ -64,11 +60,16 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 	 * Prints out the item
 	 *
 	 * - `out-name` is the target canvas item to be called after the item is executed
+	 *
+	 * @param itemInfo The item to print
+	 * @param pos The position of the item in the workflow
+	 *
+	 * @returns The string representation of the item
 	 */
-	printItem(pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const targetItem = findTargetItem(this.itemInfo.target, pos, this.itemInfo);
+		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItem === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
@@ -77,12 +78,12 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
-			+ ` linked-workflow-id="${this.itemInfo.canvasItemPolymorphicBag.linkedItem}"`
+			+ ` linked-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}"`
 			+ ">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(`<display-name><![CDATA[${this.itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
 		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();

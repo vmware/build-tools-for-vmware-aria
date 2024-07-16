@@ -17,8 +17,6 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 
 export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(private readonly itemInfo: WorkflowItemDescriptor) { }
-
 	getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.RootItem;
 	}
@@ -26,19 +24,19 @@ export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStr
 	/**
 	 * This function should NOT register the itemType in the itemInfo object, as it's not a real item type.
 	 */
-	registerItemArguments(decoratorNode: Decorator): void {
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		const methodNode = decoratorNode.parent as MethodDeclaration;
 
 		if (!isIdentifier(methodNode.name) && !isPrivateIdentifier(methodNode.name)) {
 			throw new Error(`RootItem decorator must be applied to a method with an identifier name.`);
 		}
 
-		this.itemInfo.parent.rootItem = methodNode.name.escapedText as string;
+		itemInfo.parent.rootItem = methodNode.name.escapedText as string;
 	}
 
 	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return this.throwDoNotCallError(); }
 	getCanvasType(): string { return this.throwDoNotCallError(); }
-	printItem(pos: number): string { return this.throwDoNotCallError(); }
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string { return this.throwDoNotCallError(); }
 
 	private throwDoNotCallError(): never {
 		throw new Error("Method should not be called. RootItem is a meta decorator.");
