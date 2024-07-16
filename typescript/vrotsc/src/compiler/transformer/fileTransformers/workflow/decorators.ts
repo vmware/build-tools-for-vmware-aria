@@ -54,7 +54,7 @@ export function registerMethodDecorators(methodNode: ts.MethodDeclaration, itemI
 	for (const decoratorNode of decorators) {
 		const itemStrategy = getItemStrategy(decoratorNode);
 		if (itemStrategy.getDecoratorType() !== WorkflowItemType.RootItem) {
-			itemInfo.item = itemStrategy;
+			itemInfo.strategy = itemStrategy;
 		}
 
 		itemStrategy.registerItemArguments(itemInfo, decoratorNode);

@@ -45,7 +45,7 @@ export function buildItemParameterBindings(
 	parameters.forEach(paramName => {
 		const param = itemInfo.parent.parameters.find(p => p.name === paramName);
 		if (param) {
-			const isWaitingTimer = itemInfo.item.getDecoratorType() === WorkflowItemType.WaitingTimer;
+			const isWaitingTimer = itemInfo.strategy.getDecoratorType() === WorkflowItemType.WaitingTimer;
 
 			stringBuilder.append(`<bind name="${isWaitingTimer ? "timer.date" : param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
 		}

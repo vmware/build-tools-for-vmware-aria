@@ -53,7 +53,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	workflow.items.forEach((item, i) => {
 		const pos = i + 1;
 
-		stringBuilder.appendContent(item.item.printItem(item, pos));
+		stringBuilder.appendContent(item.strategy.printItem(item, pos));
 	});
 
 	buildPresentation();

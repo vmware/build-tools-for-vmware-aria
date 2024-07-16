@@ -53,7 +53,7 @@ export interface WorkflowItemDescriptor<T = any> {
 	input: string[];
 	output: string[];
 	sourceText: string;
-	item: CanvasItemDecoratorStrategy;
+	strategy: CanvasItemDecoratorStrategy;
 	target: string; // Points to which item this item is connected to by name
 	canvasItemPolymorphicBag: T;
 	polyglot?: PolyglotDescriptor;
