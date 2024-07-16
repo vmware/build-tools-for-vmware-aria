@@ -19,10 +19,6 @@ import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(private readonly itemInfo: WorkflowItemDescriptor) { }
 
-	getItemInfo(): WorkflowItemDescriptor {
-		return this.itemInfo;
-	}
-
 	getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.RootItem;
 	}

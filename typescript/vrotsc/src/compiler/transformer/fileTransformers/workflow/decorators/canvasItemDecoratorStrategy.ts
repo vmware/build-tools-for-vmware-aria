@@ -22,15 +22,6 @@ export default interface CanvasItemDecoratorStrategy {
 	getDecoratorType(): WorkflowItemType;
 
 	/**
-	 * Returns the item info associated with the decorator
-	 *
-	 * The WorkflowItemDescriptor is passed in the constructor of the strategy and is used internally
-	 *
-	 * @returns {WorkflowItemDescriptor}
-	 */
-	getItemInfo(): WorkflowItemDescriptor;
-
-	/**
 	 * This will be the type of the canvas item.
 	 */
 	getCanvasType(): string;

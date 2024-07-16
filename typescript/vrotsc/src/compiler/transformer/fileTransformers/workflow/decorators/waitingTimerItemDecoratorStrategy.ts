@@ -29,10 +29,6 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		this.itemInfo.item = this;
 	}
 
-	getItemInfo(): WorkflowItemDescriptor {
-		return this.itemInfo;
-	}
-
 	getCanvasType(): string {
 		return "waiting-timer";
 	}
@@ -86,8 +82,8 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		stringBuilder.indent();
 
 		stringBuilder.append(`<display-name><![CDATA[${this.itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(buildItemParameterBindings(this, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(buildItemParameterBindings(this.itemInfo, InputOutputBindings.OUT_BINDINGS));
 		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
