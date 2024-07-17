@@ -16,11 +16,15 @@ const GLOBAL = System.getContext() || (function () {
 	return this;
 }).call(null);
 
+export type ErrorHandler = (errorMessage: string) => null;
+
+/** Default function to handle errors when importing a module/action. Logs the error and returns null. */
+export const SILENT_ERR_HANDLER: ErrorHandler = (err) => { System.error(err); return null; }
+
 export interface ModuleConstructor extends Function {
 	import(...specifiers: string[]): ModuleImport;
-	export(path: string): ModuleExport;
-	load(path: string): ModuleDescriptor;
-	require(path: string): any;
+	export(): ModuleExport;
+	load(path: string, onError?: ErrorHandler): ModuleDescriptor;
 }
 
 export interface ModuleDescriptor {
@@ -32,7 +36,7 @@ export interface ModuleImportConstructor {
 }
 
 export interface ModuleImport {
-	from(path: string, base?: string): any | any[];
+	from(path: string, base?: string, onError?: ErrorHandler): any | any[];
 }
 
 export interface ModuleExportConstructor {
@@ -57,28 +61,66 @@ export interface ModuleElementList {
 		this.specifiers = specifiers || [];
 	};
 
-	Import.prototype.from = function (path: string, base?: string): any | any[] {
-		if (base) {
-			if (path[0] == ".") {
-				path = path.replace(/[\\]/g, "/");
-				if (path.indexOf("./") == 0) {
-					path = path.substring(2);
-				}
-				else {
-					while (path.indexOf("../") == 0) {
-						path = path.substring(3);
-						base = base.substring(0, base.lastIndexOf("."));
-					}
-				}
+	Import.prototype.from = function (path: string, base?: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any | any[] {
+		let error = !this.specifiers?.length ? "No actions or modules were specified for import! "
+			: (!base && path?.[0] === "." ? `Cannot resolve relative path '${path}' without a base path!` : "");
 
-				path = `${base}.${path}`;
-			}
-			path = path.replace(/[\/]/g, ".");
+		if (error) {
+			return onError(error);
 		}
-		let actionResult = loadActionOrModule(path);
-		let result = this.specifiers.map(name => (name == "*" ? actionResult : actionResult && actionResult[name]));
+		if (path?.[0] === ".") {
+			error = `Relative path '${path}' is not valid for base path '${base}'!`;
+			path = path.replace(/[\\]/g, "/");
+			if (path.indexOf("./") === 0) {
+				path = path.substring(2);
+			}
+			else {
+				while (base && path.indexOf("../") === 0) {
+					path = path.substring(3);
+					base = base.substring(0, base.lastIndexOf("."));
+				}
+			}
+			if (!path || !base || path.indexOf("./") >= 0) {
+				return onError(error);
+			}
+			path = `${base}.${path}`;
+		}
+		path = path && path.replace(/[\/]/g, ".");
+		const actionResult = loadActionOrModule(path, onError);
+		if (!actionResult) {
+			return onError(`Cannot import from module with path '${path}'!`);
+		}
+
+		const invalidNames = checkForInvalidImportSpecifiers(this.specifiers, actionResult);
+		if (invalidNames.length) {
+			return onError("Some of the specified elements for import are invalid:\n" + invalidNames.join("\n"));
+		}
+
+		let result = this.specifiers.map(name => (name === "*" ? actionResult : actionResult[name]));
 		return result.length > 1 ? result : result[0];
 	};
+
+	function checkForInvalidImportSpecifiers(specifiers: string[], importedModule?: any): string[] {
+		const invalidNames: string[] = [];
+		const importNames: string[] = [];
+
+		specifiers.forEach((specifier, index) => {
+			if (!specifier) {
+				invalidNames.push(`[${index}]: '${specifier}'`);
+			}
+			else if (importNames.indexOf(specifier) >= 0) {
+				invalidNames.push(`[${index}]: '${specifier}' (duplicate)`);
+			}
+			else if (specifier !== "*" && specifier !== "default" && importedModule && !importedModule[specifier]) {
+				invalidNames.push(`[${index}]: '${specifier}' (module contains no such action or namespace)`);
+			}
+			else {
+				importNames.push(specifier);
+			}
+		});
+
+		return invalidNames;
+	}
 
 	let Export: ModuleExportConstructor = <any>function () {
 		this.elements = {};
@@ -142,58 +184,68 @@ export interface ModuleElementList {
 		return new Export();
 	};
 
-	Module.load = function (name: string) {
-		let moduleInfo = System.getModule(name);
-		return moduleInfo ? createModule(moduleInfo) : null;
+	Module.load = function (name: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any {
+		let result: any;
+		let error: any = "";
+		try {
+			const moduleInfo = !name ? null : System.getModule(name);
+			result = !moduleInfo ? null : createModule(moduleInfo, onError);
+		} catch (err) {
+			error = err;
+		}
+		return result || onError(`Failed to load module '${name}'! ${error}`);
 	};
 
-	function loadActionOrModule(path: string): any {
-		let actionResults = GLOBAL.__actions__ = (GLOBAL.__actions__ || {});
-		let actionResult = actionResults[path];
+	function loadActionOrModule(path: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any {
+		const actionResults = GLOBAL.__actions__ = (GLOBAL.__actions__ || {});
+		let actionResult = !path ? null : actionResults[path];
+		let error: any = "";
 
 		if (actionResult === undefined) {
 			let loadStack = GLOBAL.__importStack__ = (GLOBAL.__importStack__ || []);
-			let indexOfPathInStack = loadStack.indexOf(path);
+			const indexOfPathInStack = loadStack.indexOf(path);
 			if (indexOfPathInStack >= 0) {
-				let circPath = loadStack.slice(indexOfPathInStack);
+				const circPath = loadStack.slice(indexOfPathInStack);
 				circPath.push(path);
 				loadStack = [];
-				throw new Error(`Detected circular dependency in module loading. Path: ${JSON.stringify(circPath)}`);
+				error = `Detected circular dependency in module loading. Path: ${JSON.stringify(circPath)}`;
+			} else {
+				loadStack.push(path);
+				try {
+					actionResult = invokeActionOrModule(path, onError);
+				}
+				catch (err) {
+					error = err?.message || err;
+				}
+				finally {
+					loadStack.pop();
+				}
 			}
-
-			loadStack.push(path);
-			try {
-				actionResult = invokeActionOrModule(path);
-			}
-			finally {
-				loadStack.pop();
-			}
-
-			actionResults[path] = actionResult;
+			actionResults[path] = actionResult || null; // won't reattempt unsuccessful load
 		}
 
-		return actionResult;
+		return actionResult || onError(`Failed to load action or module with path '${path}'! ${error}`);
 	}
 
-	function invokeActionOrModule(path: string): any {
-		let classIndex = path.lastIndexOf(".");
-		let moduleName = path.substring(0, classIndex);
-		let actionName = path.substring(classIndex + 1);
-		let moduleInfo = <Module>System.getModule(moduleName);
-		if (moduleInfo && moduleInfo.actionDescriptions.some(a => a.name == actionName)) {
+	function invokeActionOrModule(path: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any {
+		const classIndex = path.lastIndexOf(".");
+		const moduleName = path.substring(0, classIndex);
+		const actionName = path.substring(classIndex + 1);
+		let moduleInfo: Module = !moduleName ? null : System.getModule(moduleName);
+		if (hasAction(moduleInfo, actionName)) {
 			return invokeAction(moduleInfo, actionName);
 		}
-		else {
-			moduleInfo = <Module>System.getModule(path);
-			if (moduleInfo) {
-				if (moduleInfo.actionDescriptions.some(a => a.name == "index")) {
-					return invokeAction(moduleInfo, "index")
-				}
-				else {
-					return createModule(moduleInfo);
-				}
-			}
+		moduleInfo = !path ? null : System.getModule(path);
+		if (!moduleInfo) {
+			throw new Error(`No action or module found for paths: '${path}', '${path}/index'!`);
 		}
+		return hasAction(moduleInfo, "index")
+			? invokeAction(moduleInfo, "index")
+			: createModule(moduleInfo, onError);
+	}
+
+	function hasAction(moduleInfo: Module, actionName: string): boolean {
+		return !!actionName && moduleInfo?.actionDescriptions?.some(a => a?.name === actionName);
 	}
 
 	function invokeAction(moduleInfo: Module, actionName: string): any {
@@ -207,16 +259,16 @@ export interface ModuleElementList {
 		}
 
 		// Handle default exports
-		if (typeof actionResult == "function") {
+		if (typeof actionResult === "function") {
 			actionResult = {
 				default: actionResult,
 			};
 		}
 
 		// Handle class metadata
-		for (let propName in actionResult) {
+		for (const propName in actionResult) {
 			const exportObject = actionResult[propName];
-			if (typeof exportObject == "function") {
+			if (typeof exportObject === "function") {
 				const descriptor = exportObject.__descriptor || (exportObject.__descriptor = {});
 				descriptor.name = exportObject.name;
 				descriptor.module = moduleInfo.name;
@@ -228,12 +280,12 @@ export interface ModuleElementList {
 		return actionResult;
 	}
 
-	function createModule(moduleInfo: Module): ModuleDescriptor {
+	function createModule(moduleInfo: Module, onError: ErrorHandler = SILENT_ERR_HANDLER): ModuleDescriptor {
 		const ModuleCtor = <any>function () {
 			moduleInfo.actionDescriptions.forEach(actionInfo => {
 				Object.defineProperty(ModuleCtor.prototype, actionInfo.name, {
 					get: () => {
-						return loadActionOrModule(`${moduleInfo.name}.${actionInfo.name}`);
+						return loadActionOrModule(`${moduleInfo.name}.${actionInfo.name}`, onError);
 					},
 					enumerable: true,
 					configurable: true
@@ -241,12 +293,12 @@ export interface ModuleElementList {
 			});
 
 			System.getAllModules()
-				.filter(m => 0 == m.name.indexOf(moduleInfo.name + "."))
+				.filter(m => 0 === m.name.indexOf(moduleInfo.name + "."))
 				.forEach(childModuleInfo => {
-					let childModuleName = childModuleInfo.name.substring(childModuleInfo.name.lastIndexOf(".") + 1);
+					const childModuleName = childModuleInfo.name.substring(childModuleInfo.name.lastIndexOf(".") + 1);
 					Object.defineProperty(ModuleCtor.prototype, childModuleName, {
 						get: () => {
-							return loadActionOrModule(childModuleInfo.name);
+							return loadActionOrModule(childModuleInfo.name, onError);
 						},
 						enumerable: true,
 						configurable: true
