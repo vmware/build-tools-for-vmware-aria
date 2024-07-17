@@ -16,14 +16,36 @@ const GLOBAL = System.getContext() || (function () {
 	return this;
 }).call(null);
 
+/**
+ * Function to handle errors when importing a module/action.
+ * @param {string} err - error message
+ * @returns null - indicates an unsuccessful attempt to load the module was made (as opposed to undefined)
+ */
 export type ErrorHandler = (errorMessage: string) => null;
 
-/** Default function to handle errors when importing a module/action. Logs the error and returns null. */
-export const SILENT_ERR_HANDLER: ErrorHandler = (err) => { System.error(err); return null; }
+/** Default function to handle errors when importing a module/action. Logs an error and returns null. */
+export const DEFAULT_ERR_HANDLER: ErrorHandler = (err) => { System.error(err); return null; }
 
 export interface ModuleConstructor extends Function {
+	/**
+	 * @param {string[]} specifiers - listed names of elements (actions/modules) to import from a Module. At least 1 is required.
+	 * Also accepts "default" and "*" as specifiers for the default exports/full contents of the module.
+	 * The module can be specified via chained call to from(modulePath)
+	 * @returns {ModuleImport}
+	 */
 	import(...specifiers: string[]): ModuleImport;
+	/**
+	 * Initiates the export of an element.
+	 * @returns {ModuleExport} - builder instance.
+	 */
 	export(): ModuleExport;
+	/**
+	 * Loads an action or module (namespace) by its path.
+	 * @param {string} name - module/action name (path)
+	 * @param {ErrorHandler} [onError] - function to handle errors when loading a module/action.
+	 * @returns {any} - action or module. Null if the path is null/undefined
+	 * 					or if System cannot find a module with the given path.
+	 */
 	load(path: string, onError?: ErrorHandler): ModuleDescriptor;
 }
 
@@ -36,6 +58,16 @@ export interface ModuleImportConstructor {
 }
 
 export interface ModuleImport {
+	/**
+	 * Attemps to import the specified  action or module (namespace).
+	 * @param {string} path - path of the module to import from
+	 * @param {string} [base] - base path of the module to import from. Required when the path is relative.
+	 * @param {ErrorHandler} [onError] - function to handle errors when importing a module/action. Invoked if:
+	 * - no valid specifiers were provided.
+	 * - the path is missing or invalid relative to the provided basePath
+	 * - the System cannot load an action or module for the given path.
+	 * @returns {any|Array<any>} the imported module/actions(s).
+	 */
 	from(path: string, base?: string, onError?: ErrorHandler): any | any[];
 }
 
@@ -44,8 +76,23 @@ export interface ModuleExportConstructor {
 }
 
 export interface ModuleExport {
+	/**
+	 * Prepares an element to be exported with the given name upon completion of the export builder.
+	 * @param {string} name - name of the exported element 
+	 * @param {any} element 
+	 * @returns {ModuleExport} the builder instance
+	 */
 	named(name: string, element: any): ModuleExport;
+	/**
+	 * Prepares an element to be exported as default upon completion of the export builder.
+	 * @param {any} element 
+	 * @returns {ModuleExport} the builder instance
+	 */
 	default(element: any): ModuleExport;
+	/**
+	 * Completes the export builder.
+	 * @returns {ModuleElementList} object containing the prepared elements for export.
+	 */
 	build(): ModuleElementList;
 }
 
@@ -61,7 +108,18 @@ export interface ModuleElementList {
 		this.specifiers = specifiers || [];
 	};
 
-	Import.prototype.from = function (path: string, base?: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any | any[] {
+	/**
+	 * Attemps to import the specified  action or module (namespace).
+	 * @param {string} path - path of the module to import from
+	 * @param {string} [base] - base path of the module to import from. Required when the path is relative.
+	 * @param {ErrorHandler} [onError = DEFAULT_ERR_HANDLER] - function to handle errors when importing a module/action. Invoked if:
+	 * - no valid specifiers were provided.
+	 * - the path is missing or invalid relative to the provided basePath
+	 * - the System cannot load an action or module for the given path.
+	 * Passed on recursively to any child modules of the loaded one.
+	 * @returns {any|Array<any>} the imported module/actions(s).
+	 */
+	Import.prototype.from = function (path: string, base?: string, onError: ErrorHandler = DEFAULT_ERR_HANDLER): any | any[] {
 		let error = !this.specifiers?.length ? "No actions or modules were specified for import! "
 			: (!base && path?.[0] === "." ? `Cannot resolve relative path '${path}' without a base path!` : "");
 
@@ -100,6 +158,12 @@ export interface ModuleElementList {
 		return result.length > 1 ? result : result[0];
 	};
 
+	/**
+	 * Checks for invalid specifiers
+	 * @param {string[]} specifiers - list of specifiers ("default", "*", names of module elements)
+	 * @param {any} [importedModule] - module descriptor
+	 * @returns {string[]} - list of invalid specifiers (blank, duplicate, missing from the provided module)
+	 */
 	function checkForInvalidImportSpecifiers(specifiers: string[], importedModule?: any): string[] {
 		const invalidNames: string[] = [];
 		const importNames: string[] = [];
@@ -136,6 +200,7 @@ export interface ModuleElementList {
 		return this;
 	};
 
+	/** @deprecated - unused and not part of {@link ModuleExport} */
 	Export.prototype.from = function (moduleName: string, ...specifiers: (string | [string, string])[]) {
 		let importNames: string[] = [];
 		let exportNames: string[] = [];
@@ -184,7 +249,15 @@ export interface ModuleElementList {
 		return new Export();
 	};
 
-	Module.load = function (name: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any {
+	/**
+	 * Loads an action or module (namespace) by its path.
+	 * @param {string} name - module name (path)
+	 * @param {ErrorHandler} [onError = DEFAULT_ERR_HANDLER] - function to handle errors when loading a module/action.
+	 * Invoked on failure to create the module or (JIT) its child actions/modules.
+	 * @returns {any} - action or module. Null if the path is null/undefined
+	 * 					or if System cannot find a module with the given path. 
+	 */
+	Module.load = function (name: string, onError: ErrorHandler = DEFAULT_ERR_HANDLER): any {
 		let result: any;
 		let error: any = "";
 		try {
@@ -196,7 +269,15 @@ export interface ModuleElementList {
 		return result || onError(`Failed to load module '${name}'! ${error}`);
 	};
 
-	function loadActionOrModule(path: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any {
+	/**
+	 * Loads and caches an action or module (namespace) by its path.
+	 * @param {string} name - module name (path). Used as key for caching.
+	 * @param {ErrorHandler} [onError = DEFAULT_ERR_HANDLER] - function to handle errors when loading a module/action. Invoked if:
+	 * - a circular dependency is detected.
+	 * - the System cannot find a module with the given path.
+	 * @returns {any} - (cached) action or module or NULL, if not found or the path is blank or null/undefined.
+	 */
+	function loadActionOrModule(path: string, onError: ErrorHandler = DEFAULT_ERR_HANDLER): any {
 		const actionResults = GLOBAL.__actions__ = (GLOBAL.__actions__ || {});
 		let actionResult = !path ? null : actionResults[path];
 		let error: any = "";
@@ -209,7 +290,8 @@ export interface ModuleElementList {
 				circPath.push(path);
 				loadStack = [];
 				error = `Detected circular dependency in module loading. Path: ${JSON.stringify(circPath)}`;
-			} else {
+			}
+			else {
 				loadStack.push(path);
 				try {
 					actionResult = invokeActionOrModule(path, onError);
@@ -227,7 +309,18 @@ export interface ModuleElementList {
 		return actionResult || onError(`Failed to load action or module with path '${path}'! ${error}`);
 	}
 
-	function invokeActionOrModule(path: string, onError: ErrorHandler = SILENT_ERR_HANDLER): any {
+	/**
+	 * Attempts to invoke the action or module (namespace) with the given path.
+	 * @param {string} path - absolute path with dot (.) separators. Cannot be blank or null/undefined.
+	 * @param {ErrorHandler} [onError = DEFAULT_ERR_HANDLER] - function to handle errors when loading a module/action.
+	 * Passed on recursively to a module's child modules - to be invoked on creation.
+	 * @returns any - action or module:
+	 * - If there is an action at the given path, it will be returned.
+	 * - if there is a module with an "index" action at the given path, the "index" action will be returned.
+	 * - if there is a module at the given path without an "index" action, a module descriptor for it will be returned.
+	 * @throws Error if no module exists for the given path.
+	 */
+	function invokeActionOrModule(path: string, onError: ErrorHandler = DEFAULT_ERR_HANDLER): any {
 		const classIndex = path.lastIndexOf(".");
 		const moduleName = path.substring(0, classIndex);
 		const actionName = path.substring(classIndex + 1);
@@ -244,10 +337,22 @@ export interface ModuleElementList {
 			: createModule(moduleInfo, onError);
 	}
 
+	/**
+	 * Checks if a module contains an action with the given name.
+	 * @param {Module} moduleInfo - module from System.getModule(). Will return false if null/undefined.
+	 * @param {string} actionName - action name. Will return false if blank or null/undefined
+	 * @returns {boolean} true if the module's actionDescriptions match the given name
+	 */
 	function hasAction(moduleInfo: Module, actionName: string): boolean {
 		return !!actionName && moduleInfo?.actionDescriptions?.some(a => a?.name === actionName);
 	}
 
+	/**
+	 * Creates and caches the descriptor (default exports, metadata) of an action, returning the result.
+	 * @param {Module} moduleInfo - Module from System.getModule(), containing the action. Required.
+	 * @param {string} actionName - name of the action
+	 * @returns {any}
+	 */
 	function invokeAction(moduleInfo: Module, actionName: string): any {
 		// Use Class library cache for backward-compatibility.
 		const __classes__ = GLOBAL.__classes__ || (GLOBAL.__classes__ = {});
@@ -280,7 +385,14 @@ export interface ModuleElementList {
 		return actionResult;
 	}
 
-	function createModule(moduleInfo: Module, onError: ErrorHandler = SILENT_ERR_HANDLER): ModuleDescriptor {
+	/**
+	 * Creates a new {@link ModuleDescriptor}
+	 * @param {Module} moduleInfo - Module info from System.getModule(). Required.
+	 * @param {ErrorHandler} [onError = DEFAULT_ERR_HANDLER]  - function to handle errors when loading a module/action.
+	 * Passed on recursively to a module's child modules - to be invoked on creation.
+	 * @returns {ModuleDescriptor}
+	 */
+	function createModule(moduleInfo: Module, onError: ErrorHandler = DEFAULT_ERR_HANDLER): ModuleDescriptor {
 		const ModuleCtor = <any>function () {
 			moduleInfo.actionDescriptions.forEach(actionInfo => {
 				Object.defineProperty(ModuleCtor.prototype, actionInfo.name, {
