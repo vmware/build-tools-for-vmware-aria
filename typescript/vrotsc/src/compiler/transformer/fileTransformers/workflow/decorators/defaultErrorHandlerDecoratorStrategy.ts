@@ -112,7 +112,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 		}
 		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exception;
 		// attach error handler with attaching of exception variable if defined
-		if (exceptionVariable !== null) {
+		if (exceptionVariable !== null && exceptionVariable !== undefined && exceptionVariable) {
 			stringBuilder.append(`<error-handler name="item${pos}" throw-bind-name="${exceptionVariable}">`).appendLine();
 		} else {
 			stringBuilder.append(`<error-handler name="item${pos}">`).appendLine();
@@ -133,7 +133,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	private buildDefaultEndItem(itemInfo: WorkflowItemDescriptor, pos: number, exceptionVariable: string): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		if (exceptionVariable !== null) {
+		if (exceptionVariable !== null && exceptionVariable !== undefined && exceptionVariable) {
 			stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="1" throw-bind-name="${exceptionVariable}">`).appendLine();
 		} else {
 			stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="0">`).appendLine();
