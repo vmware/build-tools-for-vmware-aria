@@ -24,12 +24,12 @@
 [//]: # "#### Relevant Documentation:"
 [//]: # "Improvements -> Bugfixes/hotfixes or general improvements"
 
-### \*New `DefaultErrorHandler` decorator for Workflows
+### New `DefaultErrorHandler` decorator for Workflows
 
 This decorator is used to specify a default error handler. Note that the default error handler will be generated
 with its own end workflow item as it is required by the component.
 
-##### Supported Parameters
+#### Supported Parameters
 
 - `target` - **Not implemented yet**
 - `exception` - if set the variable will be bound to the error handler and its own end workflow component.
@@ -72,7 +72,7 @@ export class HandleDefaultError {
 }
 ```
 
-### \*New `WorkflowItem` decorator for Workflows
+### New `WorkflowItem` decorator for Workflows
 
 The new Decorator gives you the ability to specify a canvas item that calls a Workflow.
 

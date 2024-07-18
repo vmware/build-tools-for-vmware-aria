@@ -12,7 +12,7 @@ How to use Aria Orchestrator Workflows and available decorators.
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
    - [`@RootItem`](#rootitem)
-   - [`@DefaultErrorHandler`](#defaultErrorHandler)
+   - [`@DefaultErrorHandler`](#defaulterrorhandler)
 3. [Example Workflow](#example-workflow)
 
 ### Workflow Decorator
