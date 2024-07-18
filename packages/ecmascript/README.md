@@ -78,16 +78,16 @@ import defaultExport, { MyClass, myFunction as myFunc } from "module-name";
 var { myFunc} = ESModule.import("myFunction").from(
   "module-name",
   null, // no base path needed when module path is not relative
-  function (errorMessage) { 
-    throw new Error(errorMessage);
+  function (error) { 
+    throw typeof error === "string" ? new Error(error) : error;
   }
 );
 // log the error as warning
 var { myFunc} = ESModule.import("myFunction").from(
   "module-name",
   null,
-  function (errorMessage) { 
-    System.warn(errorMessage);
+  function (error) { 
+    System.warn(error.toString());
     return null; // required
   }
 );
@@ -95,7 +95,7 @@ var { myFunc} = ESModule.import("myFunction").from(
 var { myFunc} = ESModule.import("myFunction").from(
   "module-name",
   null,
-  function (errorMessage) {
+  function (error) {
     
     return null; // required
   }

@@ -18,13 +18,13 @@ const GLOBAL = System.getContext() || (function () {
 
 /**
  * Function to handle errors when importing a module/action.
- * @param {string} err - error message
+ * @param {string | Error} err - error (message)
  * @returns null - indicates an unsuccessful attempt to load the module was made (as opposed to undefined)
  */
-export type ErrorHandler = (errorMessage: string) => null;
+export type ErrorHandler = (error: string | Error) => null;
 
 /** Default function to handle errors when importing a module/action. Logs an error and returns null. */
-export const DEFAULT_ERR_HANDLER: ErrorHandler = (err) => { System.error(err); return null; }
+export const DEFAULT_ERR_HANDLER: ErrorHandler = (err) => { System.error(err?.toString()); return null; }
 
 export interface ModuleConstructor extends Function {
 	/**
@@ -297,7 +297,7 @@ export interface ModuleElementList {
 					actionResult = invokeActionOrModule(path, onError);
 				}
 				catch (err) {
-					error = err?.message || err;
+					error = err?.toString();
 				}
 				finally {
 					loadStack.pop();

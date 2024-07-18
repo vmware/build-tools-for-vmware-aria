@@ -90,7 +90,7 @@ describe("Module", () => {
 			const wrongPath = "com.wrong.path.library.class";
 			expect(ESModule.import("Class").from(wrongPath)).toBeNull();
 			expect(loggedSystemErrors).toEqual([
-				`Failed to load action or module with path '${wrongPath}'! No action or module found for paths: '${wrongPath}', '${wrongPath}/index'!`,
+				`Failed to load action or module with path '${wrongPath}'! Error: No action or module found for paths: '${wrongPath}', '${wrongPath}/index'!`,
 				`Cannot import from module with path '${wrongPath}'!`
 			]);
 		});
