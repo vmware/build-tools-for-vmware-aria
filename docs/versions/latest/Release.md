@@ -24,7 +24,7 @@
 [//]: # "#### Relevant Documentation:"
 [//]: # "Improvements -> Bugfixes/hotfixes or general improvements"
 
-#### \*New `@WorkflowEndItem` decorator for Workflows
+### \*New `@WorkflowEndItem` decorator for Workflows
 
 The decorator is used to specify a custom workflow end item.
 
@@ -66,7 +66,7 @@ export class WorkflowEnd {
   }
 
   @WorkflowEndItem({
-    endMode: 0,
+    endMode: 1,
     exception: "errorMessage",
   })
   public workflowEnd(@In endMode: number, @Out errorMessage: string) {
