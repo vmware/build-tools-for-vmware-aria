@@ -259,6 +259,7 @@ interface VroWorkflowEndItemDecorator {
 interface VroWorkflowEndItemConfiguration {
 	endMode?: WorkflowEndMode;
 	exception?: string;
+	businessStatus?: string;
 }
 
 interface VroWorkflowEndItemMethodDecorator {

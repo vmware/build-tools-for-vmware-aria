@@ -8,6 +8,9 @@ import { Workflow, In, Out, RootItem, WorkflowEndItem } from "vrotsc-annotations
 		errorMessage: {
 			type: "string"
 		},
+		businessStatus: {
+			type: "string"
+		},
 		endMode: {
 			type: "number"
 		}
@@ -22,7 +25,8 @@ export class WorkflowEnd {
 
 	@WorkflowEndItem({
 		endMode: 1,
-		exception: "errorMessage"
+		exception: "errorMessage",
+		businessStatus: "Bad"
 	})
 	public workflowEnd(@In endMode: number, @Out errorMessage: string) {
 		// NOOP

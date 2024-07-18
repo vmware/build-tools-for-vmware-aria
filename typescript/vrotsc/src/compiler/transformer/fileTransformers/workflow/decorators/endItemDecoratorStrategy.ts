@@ -65,6 +65,10 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 					itemInfo.canvasItemPolymorphicBag.exception = propValue;
 					break;
 				}
+				case "businessStatus": {
+					itemInfo.canvasItemPolymorphicBag.businessStatus = propValue;
+					break;
+				}
 				default: {
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
 				}
@@ -92,11 +96,18 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 
 		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode;
 		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exception;
-		if (exceptionVariable !== null && exceptionVariable !== undefined && exceptionVariable) {
-			stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}" throw-bind-name="${exceptionVariable}">`).appendLine();
-		} else {
-			stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}">`).appendLine();
+		const businessStatus = itemInfo?.canvasItemPolymorphicBag?.businessStatus;
+		const hasException = (exceptionVariable !== null && exceptionVariable !== undefined && exceptionVariable);
+		const hasBusinessStatus = (businessStatus !== null && businessStatus !== undefined && businessStatus);
+
+		stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}" `);
+		if (hasException) {
+			stringBuilder.append(`throw-bind-name="${exceptionVariable}" `);
 		}
+		if (hasBusinessStatus) {
+			stringBuilder.append(`business-status="${businessStatus}" `);
+		}
+		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
 		stringBuilder.append(`<position x="${xBasePosition + offSet * (pos + 10)}" y="${yBasePosition}"/>`).appendLine();
