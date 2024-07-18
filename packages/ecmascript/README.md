@@ -1,7 +1,7 @@
 # ECMAScript library
 The purpose of the library is to provide runtime support for Typescript based projects by handling the export/import features of ECMA script as well as providing implementations for Set, Map and sum of the Array functions.
 
-# Usage
+## Usage
 This library is not to be used directly.
 
 ## Export
@@ -13,10 +13,10 @@ export function myFunction() {}
 export var myVar = 5;
 
 ESModule.export()
-	.named("MyClass", MyClass)
-	.named("myFunction", myFunction)
-	.named("myVar", myVar)
-	.build();
+  .named("MyClass", MyClass)
+  .named("myFunction", myFunction)
+  .named("myVar", myVar)
+  .build();
 ```
 
 Default exports (function)
@@ -24,8 +24,8 @@ Default exports (function)
 export default function myFunction() {}
 
 ESModule.export()
-	.default(myFunction)
-	.build();
+  .default(myFunction)
+  .build();
 ```
 
 Default exports (class)
@@ -33,8 +33,8 @@ Default exports (class)
 export default class MyClass {}
 
 ESModule.export()
-	.default(MyClass)
-	.build();
+  .default(MyClass)
+  .build();
 ```
 
 ## Import
