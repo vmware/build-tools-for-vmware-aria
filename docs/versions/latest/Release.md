@@ -28,7 +28,7 @@
 
 The decorator is used to specify a custom workflow end item.
 
-##### Supported Parameters
+#### Supported Parameters
 
 - `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
 - `exception` - Exception variable that will hold the exception data when triggered.
