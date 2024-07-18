@@ -12,6 +12,7 @@ How to use Aria Orchestrator Workflows and available decorators.
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
    - [`@RootItem`](#rootitem)
+   - [`@DefaultErrorHandler`](#defaultErrorHandler)
 3. [Example Workflow](#example-workflow)
 
 ### Workflow Decorator
@@ -19,6 +20,17 @@ How to use Aria Orchestrator Workflows and available decorators.
 Not implemented yet.
 
 ### Available Method Decorators
+
+#### `@DefaultErrorHandler`
+
+The decorator is used to specify a default error handler within a workflow.
+
+##### Supported Parameters
+
+- `target` - **Not implemented yet**
+- `exception` - Exception variable that will hold the exception data when triggered.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
 #### `@Item`
 
@@ -64,28 +76,38 @@ This is a meta decorator. Add this to whichever function you want to be the entr
 ### Example Workflow
 
 ```ts
-import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem } from "vrotsc-annotations";
+import {
+  Workflow,
+  Out,
+  In,
+  Item,
+  RootItem,
+  DecisionItem,
+  WaitingTimerItem,
+  WorkflowItem,
+  DefaultErrorHandler,
+} from "vrotsc-annotations";
 
 @Workflow({
   name: "Example Waiting Timer",
   path: "VMware/PSCoE",
   attributes: {
     waitingTimer: {
-      type: "Date"
+      type: "Date",
     },
     counter: {
-      type: "number"
+      type: "number",
     },
     first: {
-      type: "number"
+      type: "number",
     },
     second: {
-      type: "number"
+      type: "number",
     },
     result: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 })
 export class HandleNetworkConfigurationBackup {
   @DecisionItem({ target: "waitForEvent", else: "prepareItems" })
@@ -101,10 +123,13 @@ export class HandleNetworkConfigurationBackup {
 
   @WorkflowItem({
     target: "print",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
   })
-  public callOtherWf(@In first: number, @In second: number, @Out result: number) {
-  }
+  public callOtherWf(
+    @In first: number,
+    @In second: number,
+    @Out result: number
+  ) {}
 
   @Item({ target: "end" })
   public print(@In result: number) {
@@ -118,7 +143,6 @@ export class HandleNetworkConfigurationBackup {
     }
 
     counter++;
-
     if (counter < 2) {
       const tt = Date.now() + 5 * 1000;
       waitingTimer = new Date(tt);
@@ -138,6 +162,14 @@ export class HandleNetworkConfigurationBackup {
 
   @WaitingTimerItem({ target: "execute" })
   public waitForEvent(@In waitingTimer: Date) {
+    // NOOP
+  }
+
+  @DefaultErrorHandler({
+    exception: "errorMessage",
+  })
+  public defaultErrorHandler(@Out errorMessage: string) {
+    // NOOP
   }
 }
 ```

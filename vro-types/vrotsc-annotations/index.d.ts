@@ -127,6 +127,8 @@ type CompositeType = {
 
 type AttributeValue = CompositeType | SupportedValues | SupportedValues[];
 
+type WorkflowEndMode = 0 | 1;
+
 type Attribute = {
 	type: string,
 	value?: AttributeValue;
@@ -206,7 +208,6 @@ interface VroDecisionItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
-
 // ---------------------------------------------- Workflow Canvas Root Item ------------------------------------------------
 
 export declare const RootItem: VroRootItemDecorator;
@@ -223,7 +224,6 @@ interface VroRootItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
-
 
 // ---------------------------------------------- Workflow Canvas Item ------------------------------------------------
 
@@ -244,6 +244,19 @@ interface VroWorkflowItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
+// ---------------------------------------------- Workflow Default Error Handler Canvas Item ------------------------------------------------
+
+export declare const DefaultErrorHandler: VroWorkflowDefaultErrorHandlerDecorator;
+
+interface VroWorkflowDefaultErrorHandlerDecorator {
+	(obj?: VroItemConfiguration): VroWorkflowDefaultErrorHandlerMethodDecorator;
+	new(obj?: VroItemConfiguration): VroItemConfiguration;
+}
+
+interface VroWorkflowDefaultErrorHandlerMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
@@ -253,7 +266,11 @@ interface VroPolyglotDecorator {
 	new(obj?: VroPolyglotConfiguration): VroPolyglotConfiguration;
 }
 
-interface VroPolyglotConfiguration { package: string, method: string; }
+interface VroPolyglotConfiguration {
+	package: string,
+	method: string;
+}
+
 interface PolyglotMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;

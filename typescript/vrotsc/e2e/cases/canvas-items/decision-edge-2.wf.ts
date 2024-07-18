@@ -11,10 +11,13 @@ import { Workflow, DecisionItem } from "vrotsc-annotations";
 	}
 })
 export class HandleNetworkConfigurationBackup {
+	
 	@DecisionItem({})
 	public decisionElement(waitingTimer: Date) {
 		return waitingTimer !== null;
 	}
 
-	public shouldGoHere() { }
+	public shouldGoHere() { 
+		// NOOP
+	}
 }

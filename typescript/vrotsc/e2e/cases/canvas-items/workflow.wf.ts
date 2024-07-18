@@ -1,4 +1,4 @@
-import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem } from "vrotsc-annotations";
+import { Workflow, Out, In, Item, RootItem, DecisionItem, DefaultErrorHandler, WaitingTimerItem, WorkflowItem } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Workflow Test",
@@ -19,10 +19,14 @@ import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, Work
 		},
 		result: {
 			type: "number"
+		},
+		errorMessage: {
+			type: "string"
 		}
 	}
 })
 export class HandleNetworkConfigurationBackup {
+
 	@DecisionItem({ target: "waitForEvent", else: "prepareItems" })
 	public decisionElement(waitingTimer: Date) {
 		return waitingTimer !== null;
@@ -39,6 +43,7 @@ export class HandleNetworkConfigurationBackup {
 		linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
 	})
 	public callOtherWf(@In first: number, @In second: number, @Out result: number) {
+		// NOOP
 	}
 
 	@Item({ target: "end" })
@@ -53,7 +58,6 @@ export class HandleNetworkConfigurationBackup {
 		}
 
 		counter++;
-
 		if (counter < 2) {
 			const tt = Date.now() + 5 * 1000;
 			waitingTimer = new Date(tt);
@@ -73,5 +77,13 @@ export class HandleNetworkConfigurationBackup {
 
 	@WaitingTimerItem({ target: "execute" })
 	public waitForEvent(@In waitingTimer: Date) {
+		// NOOP
+	}
+
+	@DefaultErrorHandler({
+		exception: "errorMessage"
+	})
+	public defaultErrorHandler(@Out errorMessage: string) {
+		// NOOP
 	}
 }

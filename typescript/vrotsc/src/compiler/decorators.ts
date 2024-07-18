@@ -58,6 +58,7 @@ export interface WorkflowItemDescriptor<T = any> {
 	canvasItemPolymorphicBag: T;
 	polyglot?: PolyglotDescriptor;
 	parent: WorkflowDescriptor;
+	type?: WorkflowItemType;
 }
 
 export interface CanvasItemPolymorphicBagForItem {
@@ -127,6 +128,20 @@ export enum WorkflowItemType {
 	 * It can target a specific item and accepts input and output bindings
 	 */
 	Workflow = "WorkflowItem",
+
+	/**
+	 * This item type represents a workflow end item
+	 *
+	 * It accepts input and output bindings.
+	 */
+	End = "WorkflowEndItem",
+
+	/**
+	 * This item type represents a default error handler item.
+	 *
+	 * It must target a workflow end item and accepts output bindings.
+	 */
+	DefaultErrorHandler = "DefaultErrorHandler",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
