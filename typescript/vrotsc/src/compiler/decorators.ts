@@ -127,6 +127,12 @@ export enum WorkflowItemType {
 	 * It can target a specific item and accepts input and output bindings
 	 */
 	Workflow = "WorkflowItem",
+
+	/**
+	 * This item type represents a workflow end item.
+	 *
+	 */
+	End = "WorkflowEndItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////

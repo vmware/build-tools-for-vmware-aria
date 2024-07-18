@@ -20,6 +20,17 @@ Not implemented yet.
 
 ### Available Method Decorators
 
+#### `@WorkflowEndItem`
+
+The decorator is used to specify a custom workflow end item.
+
+##### Supported Parameters
+
+- `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
+- `exception` - Exception variable that will hold the exception data when triggered.
+
+In order to bind inputs and outputs, you do it with the `@Out` decorator. This is the same way we do it for other items.
+
 #### `@Item`
 
 This decorator is used to specify a scriptable task.
@@ -64,28 +75,41 @@ This is a meta decorator. Add this to whichever function you want to be the entr
 ### Example Workflow
 
 ```ts
-import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem } from "vrotsc-annotations";
+import {
+  Workflow,
+  Out,
+  In,
+  Item,
+  RootItem,
+  DecisionItem,
+  WaitingTimerItem,
+  WorkflowItem,
+  WorkflowEndItem,
+} from "vrotsc-annotations";
 
 @Workflow({
   name: "Example Waiting Timer",
   path: "VMware/PSCoE",
   attributes: {
     waitingTimer: {
-      type: "Date"
+      type: "Date",
     },
     counter: {
-      type: "number"
+      type: "number",
     },
     first: {
-      type: "number"
+      type: "number",
     },
     second: {
-      type: "number"
+      type: "number",
     },
     result: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+    errorMessage: {
+      type: "string",
+    },
+  },
 })
 export class HandleNetworkConfigurationBackup {
   @DecisionItem({ target: "waitForEvent", else: "prepareItems" })
@@ -101,9 +125,14 @@ export class HandleNetworkConfigurationBackup {
 
   @WorkflowItem({
     target: "print",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
   })
-  public callOtherWf(@In first: number, @In second: number, @Out result: number) {
+  public callOtherWf(
+    @In first: number,
+    @In second: number,
+    @Out result: number
+  ) {
+    // NOOP
   }
 
   @Item({ target: "end" })
@@ -118,7 +147,6 @@ export class HandleNetworkConfigurationBackup {
     }
 
     counter++;
-
     if (counter < 2) {
       const tt = Date.now() + 5 * 1000;
       waitingTimer = new Date(tt);
@@ -138,6 +166,15 @@ export class HandleNetworkConfigurationBackup {
 
   @WaitingTimerItem({ target: "execute" })
   public waitForEvent(@In waitingTimer: Date) {
+    // NOOP
+  }
+
+  @WorkflowEndItem({
+    endMode: 0,
+    exception: "errorMessage",
+  })
+  public workflowEnd(@In endMode: number, @Out errorMessage: string) {
+    // NOOP
   }
 }
 ```
