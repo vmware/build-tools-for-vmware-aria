@@ -62,3 +62,42 @@ Mixed imports
 import defaultExport, { MyClass, myFunction as myFunc } from "module-name";
 var { defaultExport, MyClass, myFunc} = ESModule.import("default", "MyClass", "myFunction").from("module-name");
 ```
+
+Import with relative and base path
+```js
+import defaultExport, { MyClass, myFunction as myFunc } from "module-name";
+// Note: ./ and ../ are supported only at the start of the relative path. Relative paths without base path will result in error
+var { myFunc} = ESModule.import("myFunction").from("../../relative/path", "module-name");
+var { MyClass} = ESModule.import("MyClass").from("./relative/path", "module-name");
+```
+
+Import with custom error handling (default behavior is to log an Error and return null)
+```js
+import defaultExport, { MyClass, myFunction as myFunc } from "module-name";
+// throw the error
+var { myFunc} = ESModule.import("myFunction").from(
+  "module-name",
+  null, // no base path needed when module path is not relative
+  function (errorMessage) { 
+    throw new Error(errorMessage);
+  }
+);
+// log the error as warning
+var { myFunc} = ESModule.import("myFunction").from(
+  "module-name",
+  null,
+  function (errorMessage) { 
+    System.warn(errorMessage);
+    return null; // required
+  }
+);
+// do nothing - e.g. to avoid cluttering the logs when trying several potential module paths
+var { myFunc} = ESModule.import("myFunction").from(
+  "module-name",
+  null,
+  function (errorMessage) {
+    
+    return null; // required
+  }
+);
+```
