@@ -172,6 +172,22 @@ org.apache.commons.exec.ExecuteException: Process exited with an error: 1 (Exit 
 
 The ABX archetype now compiles successfully.
 
+### *VROES.import from invalid package throws Unknown error*
+
+Fixed an issue with VROES.import() in ecmascript Module.
+
+#### Previous Behavior
+
+VROES import from an invalid module path resulted in Unknown error.
+The Unknown error could not be caught in a try/catch block and was not shown in the logs.
+
+#### New Behavior
+
+VROES import from a missing/invalid module path, or import of non-existing elements of a valid module,
+result in more detailed errors in the logs. No exceptions are thrown by default (as per the existing behaviour)
+but there is an option to alter the error handling behaviour via an optional parameter in import.from().
+
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
