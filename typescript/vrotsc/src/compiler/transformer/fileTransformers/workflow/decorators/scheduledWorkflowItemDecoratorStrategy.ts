@@ -116,7 +116,7 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
-			+ ` linked-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}"`
+			+ ` launched-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}"`
 			+ ">").appendLine();
 
 		stringBuilder.indent();
