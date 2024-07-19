@@ -68,3 +68,11 @@ export class WrapperSourceFilePrinter implements SourceFilePrinter {
 		);
 	}
 }
+
+export class ScheduledWorkflowItemSourceFilePrinter extends DefaultSourceFilePrinter {
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
+		// return printSourceFile(
+		// );
+		return "";
+	}
+}
