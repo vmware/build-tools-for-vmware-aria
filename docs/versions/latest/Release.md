@@ -26,7 +26,88 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### *New `WorkflowItem` decorator for Workflows
+### *New `ScheduledWorkflowItem` decorator for Workflows*
+
+The new decorator gives you the ability to specify a canvas item that schedules a Workflow.
+
+- `@ScheduledWorkflowItem({target: "", linkedItem: "" })`
+  - `target` - The name of the next in line item.
+  - `linkedItem` - The ID of the workflow to schedule
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+#### Inputs
+
+Special input is needed for the ScheduledWorkflowItem.
+
+- `workflowScheduleDate` - {Date} is required. The name **must** be `workflowScheduleDate`. If this is missing an error is thrown. We don't check if the type is `Date` but Aria Orchestrator will complain.
+
+#### Outputs
+
+Special output is needed for the ScheduledWorkflowItem.
+
+- `scheduledTask` - {Task} is optional. If it's missing nothing will happen, if it's added, then the name **must** be `scheduledTask`. This is the task that is scheduled.
+
+#### Example
+
+```ts
+import { Workflow, Out, In, Item, RootItem, ScheduledWorkflowItem } from "vrotsc-annotations";
+
+@Workflow({
+	name: "Scheduled Workflow Test",
+	path: "VMware/PSCoE",
+	description: "Scheduling another workflow and binding values correctly",
+	attributes: {
+		waitingTimer: {
+			type: "Date"
+		},
+		counter: {
+			type: "number"
+		},
+		first: {
+			type: "number"
+		},
+		second: {
+			type: "number"
+		},
+		workflowScheduleDate: {
+			type: "Date"
+		},
+		scheduledTask: {
+			type: "Task"
+		}
+	}
+})
+export class HandleNetworkConfigurationBackup {
+	@ScheduledWorkflowItem({
+		target: "printScheduledDetails",
+		linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+	})
+	public scheduleOtherWf(@In first: number, @In second: number, @In workflowScheduleDate: Date, @Out scheduledTask: Task) {
+	}
+
+	@Item({ target: "scheduleOtherWf" })
+	public prepareItems(@In @Out first: number, @In @Out second: number, @In @Out workflowScheduleDate: Date) {
+		first = 1;
+		second = 2;
+		workflowScheduleDate = System.getDate("1 minute from now", undefined);
+	}
+
+	@Item({ target: "end" })
+	public printScheduledDetails(@In scheduledTask: Task) {
+		System.log(`Scheduled task: ${scheduledTask.id}, [${scheduledTask.state}]`);
+	}
+
+
+	@Item({ target: "prepareItems", exception: "" })
+	@RootItem()
+	public start() {
+		System.log("Starting workflow");
+	}
+}
+```
+
+### *New `WorkflowItem` decorator for Workflows*
 
 The new Decorator gives you the ability to specify a canvas item that calls a Workflow.
 
