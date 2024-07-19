@@ -1,32 +1,30 @@
-[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
-[//]: # (Used when working on a new release. Placed together with the Version.md)
-[//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
-[//]: # (Do not fill the version, it will be done automatically)
-[//]: # (Quick Intro to what is the focus of this release)
+[//]: # "VERSION_PLACEHOLDER DO NOT DELETE"
+[//]: # "Used when working on a new release. Placed together with the Version.md"
+[//]: # "Nothing here is optional. If a step must not be performed, it must be said so"
+[//]: # "Do not fill the version, it will be done automatically"
+[//]: # "Quick Intro to what is the focus of this release"
 
 ## Breaking Changes
 
-[//]: # (### *Breaking Change*)
-[//]: # (Describe the breaking change AND explain how to resolve it)
-[//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
+[//]: # "### *Breaking Change*"
+[//]: # "Describe the breaking change AND explain how to resolve it"
+[//]: # "You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/"
 
 ## Deprecations
 
-[//]: # (### *Deprecation*)
-[//]: # (Explain what is deprecated and suggest alternatives)
-
-[//]: # (Features -> New Functionality)
+[//]: # "### *Deprecation*"
+[//]: # "Explain what is deprecated and suggest alternatives"
+[//]: # "Features -> New Functionality"
 
 ## Features
 
-[//]: # (### *Feature Name*)
-[//]: # (Describe the feature)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+[//]: # "### *Feature Name*"
+[//]: # "Describe the feature"
+[//]: # "Optional But higlhy recommended Specify *NONE* if missing"
+[//]: # "#### Relevant Documentation:"
+[//]: # "Improvements -> Bugfixes/hotfixes or general improvements"
 
-[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
-
-### *New `WorkflowItem` decorator for Workflows
+### \*New `WorkflowItem` decorator for Workflows
 
 The new Decorator gives you the ability to specify a canvas item that calls a Workflow.
 
@@ -39,28 +37,37 @@ In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorat
 Example:
 
 ```typescript
-import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem } from "vrotsc-annotations";
+import {
+  Workflow,
+  Out,
+  In,
+  Item,
+  RootItem,
+  DecisionItem,
+  WaitingTimerItem,
+  WorkflowItem,
+} from "vrotsc-annotations";
 
 @Workflow({
   name: "Example Waiting Timer",
   path: "VMware/PSCoE",
   attributes: {
     waitingTimer: {
-      type: "Date"
+      type: "Date",
     },
     counter: {
-      type: "number"
+      type: "number",
     },
     first: {
-      type: "number"
+      type: "number",
     },
     second: {
-      type: "number"
+      type: "number",
     },
     result: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 })
 export class HandleNetworkConfigurationBackup {
   @DecisionItem({ target: "waitForEvent", else: "prepareItems" })
@@ -76,10 +83,13 @@ export class HandleNetworkConfigurationBackup {
 
   @WorkflowItem({
     target: "print",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
   })
-  public callOtherWf(@In first: number, @In second: number, @Out result: number) {
-  }
+  public callOtherWf(
+    @In first: number,
+    @In second: number,
+    @Out result: number
+  ) {}
 
   @Item({ target: "end" })
   public print(@In result: number) {
@@ -112,25 +122,24 @@ export class HandleNetworkConfigurationBackup {
   }
 
   @WaitingTimerItem({ target: "execute" })
-  public waitForEvent(@In waitingTimer: Date) {
-  }
+  public waitForEvent(@In waitingTimer: Date) {}
 }
 ```
 
 ## Improvements
 
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+[//]: # "### *Improvement Name* "
+[//]: # "Talk ONLY regarding the improvement"
+[//]: # "Optional But higlhy recommended"
+[//]: # "#### Previous Behavior"
+[//]: # "Explain how it used to behave, regarding to the change"
+[//]: # "Optional But higlhy recommended"
+[//]: # "#### New Behavior"
+[//]: # "Explain how it behaves now, regarding to the change"
+[//]: # "Optional But higlhy recommended Specify *NONE* if missing"
+[//]: # "#### Relevant Documentation:"
 
-### *ABX archetype build issue, cannot compile*
+### _ABX archetype build issue, cannot compile_
 
 Fixed an issue where the ABX archetype could not compile due to an old version of the `xmlbuilder2` package.
 
@@ -172,6 +181,40 @@ org.apache.commons.exec.ExecuteException: Process exited with an error: 1 (Exit 
 
 The ABX archetype now compiles successfully.
 
+### Add missing classes to `o11n-plugin-aria` and add missing methods to the existing classes
+
+#### Previous Behavior
+
+Many classes are missing completely compared with vRO API and some existing classes were missing some methods
+
+#### Current Behavior
+
+The following classes were added to `o11n-plugin-aria`:
+
+- VraInfrastructureClient
+- VraCloudAccountService
+- VraUpdateCloudAccountVsphereSpecification
+- VraCloudAccountVsphereSpecification
+- VraRegionSpecification
+- VraCloudAccountVsphere
+- VraCloudZoneService
+- VraZone
+- VraHref
+- VraZoneSpecification
+- VraTag
+- VraDataCollectorService
+- VraRequestService
+- VraRequestTracker
+  
+The following missing methods were added to the exist classes:
+
+- Class `VraHost`
+  - `destroy`
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
+
 ## Upgrade procedure
 
-[//]: # (Explain in details if something needs to be done)
+[//]: # "Explain in details if something needs to be done"
