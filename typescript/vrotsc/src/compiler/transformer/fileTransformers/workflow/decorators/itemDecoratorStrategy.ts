@@ -77,6 +77,7 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
 			+ ">").appendLine();
+
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
 

@@ -38,8 +38,6 @@ import { InputOutputBindings, buildItemParameterBindings } from "./helpers/prese
  * ```
  */
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
-
 	getCanvasType(): string {
 		return "waiting-timer";
 	}
