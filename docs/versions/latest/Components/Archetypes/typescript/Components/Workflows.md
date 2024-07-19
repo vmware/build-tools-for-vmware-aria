@@ -90,97 +90,97 @@ This is a meta decorator. Add this to whichever function you want to be the entr
 import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem, ScheduledWorkflowItem } from "vrotsc-annotations";
 
 @Workflow({
-	name: "Example Waiting Timer",
-	path: "VMware/PSCoE",
-	attributes: {
-		waitingTimer: {
-			type: "Date"
-		},
-		counter: {
-			type: "number"
-		},
-		first: {
-			type: "number"
-		},
-		second: {
-			type: "number"
-		},
-		result: {
-			type: "number"
-		},
-		workflowScheduleDate: {
-			type: "Date"
-		},
-		scheduledTask: {
-			type: "Task"
-		}
-	}
+  name: "Example Waiting Timer",
+  path: "VMware/PSCoE",
+  attributes: {
+    waitingTimer: {
+      type: "Date"
+    },
+    counter: {
+      type: "number"
+    },
+    first: {
+      type: "number"
+    },
+    second: {
+      type: "number"
+    },
+    result: {
+      type: "number"
+    },
+    workflowScheduleDate: {
+      type: "Date"
+    },
+    scheduledTask: {
+      type: "Task"
+    }
+  }
 })
 export class HandleNetworkConfigurationBackup {
-	@DecisionItem({ target: "waitForEvent", else: "prepareItems" })
-	public decisionElement(waitingTimer: Date) {
-		return waitingTimer !== null;
-	}
+  @DecisionItem({ target: "waitForEvent", else: "prepareItems" })
+  public decisionElement(waitingTimer: Date) {
+    return waitingTimer !== null;
+  }
 
-	@Item({ target: "callOtherWf" })
-	public prepareItems(@In @Out first: number, @In @Out second: number, @In @Out workflowScheduleDate: Date) {
-		first = 1;
-		second = 2;
-		workflowScheduleDate = System.getDate("1 minute from now", undefined);
-	}
+  @Item({ target: "callOtherWf" })
+  public prepareItems(@In @Out first: number, @In @Out second: number, @In @Out workflowScheduleDate: Date) {
+    first = 1;
+    second = 2;
+    workflowScheduleDate = System.getDate("1 minute from now", undefined);
+  }
 
-	@WorkflowItem({
-		target: "print",
-		linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
-	})
-	public callOtherWf(@In first: number, @In second: number, @Out result: number) {
-	}
+  @WorkflowItem({
+    target: "print",
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+  })
+  public callOtherWf(@In first: number, @In second: number, @Out result: number) {
+  }
 
 
-	@Item({ target: "scheduleOtherWf" })
-	public print(@In result: number) {
-		System.log("Result: " + result);
-	}
+  @Item({ target: "scheduleOtherWf" })
+  public print(@In result: number) {
+    System.log("Result: " + result);
+  }
 
-	@ScheduledWorkflowItem({
-		target: "printScheduledDetails",
-		linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
-	})
-	public scheduleOtherWf(@In first: number, @In second: number, @In workflowScheduleDate: Date, @Out scheduledTask: Task) {
-	}
+  @ScheduledWorkflowItem({
+    target: "printScheduledDetails",
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+  })
+  public scheduleOtherWf(@In first: number, @In second: number, @In workflowScheduleDate: Date, @Out scheduledTask: Task) {
+  }
 
-	@Item({ target: "end" })
-	public printScheduledDetails(@In scheduledTask: Task) {
-		System.log(`Scheduled task: ${scheduledTask.id}, [${scheduledTask.state}]`);
-	}
+  @Item({ target: "end" })
+  public printScheduledDetails(@In scheduledTask: Task) {
+    System.log(`Scheduled task: ${scheduledTask.id}, [${scheduledTask.state}]`);
+  }
 
-	@Item({ target: "decisionElement", exception: "" })
-	public execute(@Out @In waitingTimer: Date, @Out @In counter: number): void {
-		if (!counter) {
-			counter = 0;
-		}
+  @Item({ target: "decisionElement", exception: "" })
+  public execute(@Out @In waitingTimer: Date, @Out @In counter: number): void {
+    if (!counter) {
+      counter = 0;
+    }
 
-		counter++;
+    counter++;
 
-		if (counter < 2) {
-			const tt = Date.now() + 5 * 1000;
-			waitingTimer = new Date(tt);
-		} else {
-			waitingTimer = null;
-		}
+    if (counter < 2) {
+      const tt = Date.now() + 5 * 1000;
+      waitingTimer = new Date(tt);
+    } else {
+      waitingTimer = null;
+    }
 
-		System.log("Counter: " + counter);
-		System.log("Waiting Timer: " + waitingTimer);
-	}
+    System.log("Counter: " + counter);
+    System.log("Waiting Timer: " + waitingTimer);
+  }
 
-	@Item({ target: "execute", exception: "" })
-	@RootItem()
-	public start() {
-		System.log("Starting workflow");
-	}
+  @Item({ target: "execute", exception: "" })
+  @RootItem()
+  public start() {
+    System.log("Starting workflow");
+  }
 
-	@WaitingTimerItem({ target: "execute" })
-	public waitForEvent(@In waitingTimer: Date) {
-	}
+  @WaitingTimerItem({ target: "execute" })
+  public waitForEvent(@In waitingTimer: Date) {
+  }
 }
 ```
