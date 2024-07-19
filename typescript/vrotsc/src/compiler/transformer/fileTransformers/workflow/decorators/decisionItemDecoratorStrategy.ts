@@ -66,8 +66,8 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		});
 	}
 
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
-		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile);
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
 	}
 
 	/**

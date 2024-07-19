@@ -34,7 +34,7 @@ export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStr
 		itemInfo.parent.rootItem = methodNode.name.escapedText as string;
 	}
 
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return this.throwDoNotCallError(); }
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return this.throwDoNotCallError(); }
 	getCanvasType(): string { return this.throwDoNotCallError(); }
 	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string { return this.throwDoNotCallError(); }
 

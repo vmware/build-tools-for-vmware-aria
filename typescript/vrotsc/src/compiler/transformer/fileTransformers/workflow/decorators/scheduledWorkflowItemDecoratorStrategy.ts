@@ -88,7 +88,9 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	/**
 	 * There is no need to print the source file for the workflow item
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return ""; }
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
+	}
 
 	/**
 	 * Prints out the item
@@ -134,10 +136,10 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	 * Validates that the item has all the required parameters
 	 *
 	 * Inputs:
-	 * - workflowScheduleDate
+	 * - {Date} workflowScheduleDate
 	 *
 	 * Outputs:
-	 * - scheduledTask (optional) but if present, it should be the only output
+	 * - {Task} scheduledTask (optional) but if present, it should be the only output
 	 *
 	 * @param itemInfo The item to validate
 	 * @throws Error if the item is missing required parameters

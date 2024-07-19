@@ -74,7 +74,7 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 	/**
 	 * There is no need to print the source file for the workflow item
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return ""; }
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints out the item

@@ -64,7 +64,7 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	/**
 	 * There is no need to print the source file for a waiting timer item
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return ""; }
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints the waiting timer to the workflow file
