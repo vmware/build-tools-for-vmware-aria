@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { MethodDeclaration, SourceFile, SyntaxKind, factory } from "typescript";
+import { MethodDeclaration, SourceFile, SyntaxKind, addSyntheticLeadingComment, factory } from "typescript";
 import { printSourceFile } from "../../../../helpers/source";
 import { createWorkflowItemPrologueStatements } from "../../../../codeTransformers/prologueStatements";
 import { WorkflowItemDescriptor } from "../../../../../decorators";
@@ -70,10 +70,12 @@ export class WrapperSourceFilePrinter implements SourceFilePrinter {
 	}
 }
 
-
-//   <workflow-item name="item1" out-name="item0" type="task" launched-workflow-id="9e4503db-cbaa-435a-9fad-144409c08df0">
-// 	<display-name><![CDATA[Other Workflow]]></display-name>
-// 	<script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+/**
+ * This is used to print the source file for a scheduled workflow item.
+ *
+ * The Scheduled workflow is essentially just a normal task with special representation.
+ *
+ * @Example of what is printed:
 // var workflowToLaunch = Server.getWorkflowWithId("9e4503db-cbaa-435a-9fad-144409c08df0");
 // if (workflowToLaunch == null) {
 // 	throw "Workflow not found";
@@ -83,63 +85,107 @@ export class WrapperSourceFilePrinter implements SourceFilePrinter {
 // workflowParameters.put("first",first);
 // workflowParameters.put("second",second);
 // scheduledTask = workflowToLaunch.schedule(workflowParameters, workflowScheduleDate);
-// ]]></script>
-// 	<in-binding>
-// 	  <bind name="workflowScheduleDate" type="Date" export-name="workflowScheduleDate"/>
-// 	  <bind name="first" type="number" export-name="first"/>
-// 	  <bind name="second" type="number" export-name="second"/>
-// 	</in-binding>
-// 	<out-binding>
-// 	  <bind name="scheduledTask" type="Task"/>
-// 	</out-binding>
-// 	<description><![CDATA[Schedule a workflow and create a task.]]></description>
-// 	<position y="60.0" x="260.0"/>
-//   </workflow-item>
+ *
+ */
 export class ScheduledWorkflowItemSourceFilePrinter implements SourceFilePrinter {
 	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
-		const segments = [];
-
-		segments.push(
-			factory.createVariableDeclaration(
-				"workflowToLaunch",
-				undefined,
-				undefined,
-				factory.createCallExpression(
-					factory.createPropertyAccessExpression(
-						factory.createIdentifier("Server"),
-						factory.createIdentifier("getWorkflowWithId")
-					),
-					undefined,
-					[factory.createStringLiteral(itemInfo.canvasItemPolymorphicBag.linkedItem)]
-				)
-			)
-		);
-
-		segments.push(
-			factory.createIfStatement(
-				factory.createBinaryExpression(
-					factory.createIdentifier("workflowToLaunch"),
-					factory.createToken(SyntaxKind.ExclamationEqualsToken),
-					factory.createNull()
-				),
-				factory.createBlock(
-					[
-						factory.createThrowStatement(
-							factory.createStringLiteral("Workflow not found")
-						)
-					],
-					true
-				)
-			)
-		);
-
 		return printSourceFile(
 			factory.updateSourceFile(
 				sourceFile,
 				[
 					...sourceFile.statements.filter(n => n.kind !== SyntaxKind.ClassDeclaration),
 					...createWorkflowItemPrologueStatements(methodNode),
-					...segments,
+					// Variable declarations are on top
+					factory.createVariableStatement(
+						undefined,
+						// A list of declarations
+						factory.createVariableDeclarationList(
+							[
+								// `var workflowParameters = new Properties();`
+								factory.createVariableDeclaration(
+									"workflowParameters",
+									undefined,
+									undefined,
+									factory.createNewExpression(
+										factory.createIdentifier("Properties"),
+										undefined,
+										[]
+									)
+								),
+								// `, workflowToLaunch = Server.getWorkflowWithId("some id here");`
+								factory.createVariableDeclaration(
+									"workflowToLaunch",
+									undefined,
+									undefined,
+									factory.createCallExpression(
+										factory.createPropertyAccessExpression(
+											factory.createIdentifier("Server"),
+											factory.createIdentifier("getWorkflowWithId")
+										),
+										undefined,
+										[factory.createStringLiteral(itemInfo.canvasItemPolymorphicBag.linkedItem)]
+									)
+								)
+							],
+							undefined
+						)
+					),
+
+					// `if (workflowToLaunch == null) { throw "Workflow not found"; }`
+					factory.createIfStatement(
+						factory.createBinaryExpression(
+							factory.createIdentifier("workflowToLaunch"),
+							factory.createToken(SyntaxKind.EqualsEqualsToken),
+							factory.createNull()
+						),
+						factory.createBlock(
+							[
+								factory.createThrowStatement(
+									factory.createStringLiteral("Workflow not found")
+								)
+							],
+							true
+						)
+					),
+
+					// `workflowParameters.put("first",first);`
+					// `workflowParameters.put("second",second);`
+					// ...... etc
+					...itemInfo.input.filter(i => i !== "workflowScheduleDate").map((input) => {
+						return factory.createExpressionStatement(
+							factory.createCallExpression(
+								factory.createPropertyAccessExpression(
+									factory.createIdentifier("workflowParameters"),
+									factory.createIdentifier("put")
+								),
+								undefined,
+								[
+									factory.createStringLiteral(input),
+									factory.createIdentifier(input)
+								]
+							)
+						);
+					}),
+
+					// `scheduledTask = workflowToLaunch.schedule(workflowParameters, workflowScheduleDate);`
+					factory.createExpressionStatement(
+						factory.createAssignment(
+							factory.createIdentifier("scheduledTask"),
+							factory.createCallExpression(
+								factory.createPropertyAccessExpression(
+									factory.createIdentifier("workflowToLaunch"),
+									factory.createIdentifier("schedule")
+								),
+								undefined,
+								[
+									factory.createIdentifier("workflowParameters"),
+									factory.createIdentifier("workflowScheduleDate"),
+									factory.createIdentifier("undefined"),
+									factory.createIdentifier("undefined")
+								]
+							)
+						)
+					)
 				]
 			)
 		);
