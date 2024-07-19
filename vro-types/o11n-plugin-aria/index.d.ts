@@ -10,7 +10,6 @@ declare class VraHost {
 	readonly sessionMode: string;
 	readonly connectionType: string;
 	readonly user: string;
-	constructor();
 	/**
 	 * Automation Host No Argument Constructor.
 	 */
