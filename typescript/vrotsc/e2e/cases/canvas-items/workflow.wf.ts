@@ -81,7 +81,7 @@ export class HandleNetworkConfigurationBackup {
 
 	@WorkflowEndItem({
 		endMode: 0,
-		exception: "errorMessage"
+		exceptionVariable: "errorMessage"
 	})
 	public workflowEnd(@In endMode: number, @Out errorMessage: string) {
 		// NOOP

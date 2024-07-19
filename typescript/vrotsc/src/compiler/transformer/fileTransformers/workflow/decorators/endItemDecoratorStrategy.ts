@@ -24,6 +24,21 @@ const xBasePosition = 160;
 const yBasePosition = 100;
 const offSet = 20;
 
+/**
+ *
+ * Responsible for printing out the workflow end item.
+ * The following decorator properties are supported
+ * 1. exception - exception variable
+ * 2. endMode - end mode of the component (0 means success, 1 means error).
+ * 3. businessStatus - business status of the end component.
+ * @example
+ * ```xml
+  <workflow-item name="item8" throw-bind-name="errorMessage" type="end" end-mode="1" business-status="Bad">
+	<in-binding/>
+	<position y="110.0" x="280.0"/>
+  </workflow-item>
+ * ```
+ */
 export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	/**
 	 * Return XML tag for the end workflow item.
@@ -61,8 +76,8 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 					itemInfo.canvasItemPolymorphicBag.endMode = propValue;
 					break;
 				}
-				case "exception": {
-					itemInfo.canvasItemPolymorphicBag.exception = propValue;
+				case "exceptionVariable": {
+					itemInfo.canvasItemPolymorphicBag.exceptionVariable = propValue;
 					break;
 				}
 				case "businessStatus": {
@@ -95,16 +110,14 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode;
-		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exception;
+		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exceptionVariable;
 		const businessStatus = itemInfo?.canvasItemPolymorphicBag?.businessStatus;
-		const hasException = (exceptionVariable !== null && exceptionVariable !== undefined && exceptionVariable);
-		const hasBusinessStatus = (businessStatus !== null && businessStatus !== undefined && businessStatus);
 
 		stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}" `);
-		if (hasException) {
+		if (exceptionVariable) {
 			stringBuilder.append(`throw-bind-name="${exceptionVariable}" `);
 		}
-		if (hasBusinessStatus) {
+		if (businessStatus) {
 			stringBuilder.append(`business-status="${businessStatus}" `);
 		}
 		stringBuilder.append(">").appendLine();

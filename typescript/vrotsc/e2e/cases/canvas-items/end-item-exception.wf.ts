@@ -25,7 +25,7 @@ export class WorkflowEnd {
 
 	@WorkflowEndItem({
 		endMode: 1,
-		exception: "errorMessage",
+		exceptionVariable: "errorMessage",
 		businessStatus: "Bad"
 	})
 	public workflowEnd(@In endMode: number, @Out errorMessage: string) {

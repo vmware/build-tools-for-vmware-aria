@@ -20,7 +20,7 @@ export class WorkflowEnd {
 	@WorkflowEndItem({
 		endMode: 0
 	})
-	public workflowEnd(@In endMode: number) {
+	public workflowEnd() {
 		// NOOP
 	}
 }
