@@ -12,6 +12,7 @@ How to use Aria Orchestrator Workflows and available decorators.
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
    - [`@RootItem`](#rootitem)
+   - [`@DefaultErrorHandler`](#defaulterrorhandler)
    - [`@WorkflowEndItem`](#workflowenditem)
 3. [Example Workflow](#example-workflow)
 
@@ -19,7 +20,7 @@ How to use Aria Orchestrator Workflows and available decorators.
 
 Not implemented yet.
 
-### \*New `DefaultErrorHandler` decorator for Workflows
+#### `@DefaultErrorHandler`
 
 This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
 
