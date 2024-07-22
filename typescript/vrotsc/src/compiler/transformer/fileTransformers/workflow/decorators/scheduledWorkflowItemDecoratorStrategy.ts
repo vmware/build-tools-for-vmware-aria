@@ -89,10 +89,6 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 					itemInfo.target = propValue;
 					break;
 
-				case "exception":
-					itemInfo.canvasItemPolymorphicBag.exception = propValue;
-					break;
-
 				case "linkedItem":
 					itemInfo.canvasItemPolymorphicBag.linkedItem = propValue;
 					break;
