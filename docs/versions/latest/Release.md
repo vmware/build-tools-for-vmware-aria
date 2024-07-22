@@ -24,6 +24,74 @@
 [//]: # "#### Relevant Documentation:"
 [//]: # "Improvements -> Bugfixes/hotfixes or general improvements"
 
+### \*New `DefaultErrorHandler` decorator for Workflows
+
+This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
+
+#### Supported Parameters
+
+- `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+Example:
+
+```typescript
+import {
+  Workflow,
+  RootItem,
+  In,
+  Out,
+  Item,
+  DefaultErrorHandler,
+  WorkflowEndItem,
+} from "vrotsc-annotations";
+
+@Workflow({
+  name: "Default Error Handler Custom Item",
+  path: "VMware/PSCoE",
+  description:
+    "Default error handler workflow with error handler redirecting to a workflow item",
+  attributes: {
+    errorMessage: {
+      type: "string",
+    },
+  },
+})
+export class HandleDefaultError {
+  @RootItem()
+  public initiateWorkflow() {
+    System.log("Initiating workflow execution");
+  }
+
+  @Item({
+    target: "workflowEnd",
+  })
+  public processError(@In errorMessage: string) {
+    System.log(
+      `Processing error using custom task with message '${errorMessage}'`
+    );
+  }
+
+  @DefaultErrorHandler({
+    exceptionVariable: "errorMessage",
+    target: "processError",
+  })
+  public defaultErrorHandler(@Out errorMessage: string) {
+    // NOOP
+  }
+
+  @WorkflowEndItem({
+    endMode: 0,
+    exceptionVariable: "errorMessage",
+  })
+  public workflowEnd(@Out errorMessage: string) {
+    System.log(`Terminating workflow with error ${errorMessage}`);
+  }
+}
+```
+
 ### \*New `@WorkflowEndItem` decorator for Workflows
 
 The decorator is used to specify a custom workflow end item.

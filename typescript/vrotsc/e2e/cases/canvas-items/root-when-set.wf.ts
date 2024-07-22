@@ -14,12 +14,16 @@ import { Workflow, In, Item, RootItem } from "vrotsc-annotations";
 	}
 })
 export class Complex {
+
 	@Item({
 		target: "end"
 	})
 	public waitForEvent(@In waitingTimer: Date) {
+		// NOOP
 	}
 
 	@RootItem()
-	public shouldGoHere() { }
+	public shouldGoHere() {
+		// NOOP
+	}
 }

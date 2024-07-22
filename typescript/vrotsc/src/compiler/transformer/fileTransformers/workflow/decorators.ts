@@ -19,6 +19,7 @@ import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../
 import { getVroType } from "../../helpers/vro";
 import CanvasItemDecoratorStrategy from "./decorators/canvasItemDecoratorStrategy";
 import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
+import DefaultErrorHandlerDecoratorStrategy from "./decorators/defaultErrorHandlerDecoratorStrategy";
 import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
 import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
@@ -85,6 +86,8 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 			return new WorkflowItemDecoratorStrategy();
 		case WorkflowItemType.RootItem:
 			return new RootItemDecoratorStrategy();
+		case WorkflowItemType.DefaultErrorHandler:
+			return new DefaultErrorHandlerDecoratorStrategy();
 		case WorkflowItemType.End:
 			return new EndItemDecoratorStrategy();			
 		default:

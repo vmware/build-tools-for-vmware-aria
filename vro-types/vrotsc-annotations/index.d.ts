@@ -208,7 +208,6 @@ interface VroDecisionItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
-
 // ---------------------------------------------- Workflow Canvas Root Item ------------------------------------------------
 
 export declare const RootItem: VroRootItemDecorator;
@@ -225,7 +224,6 @@ interface VroRootItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
-
 
 // ---------------------------------------------- Workflow Canvas Item ------------------------------------------------
 
@@ -246,6 +244,24 @@ interface VroWorkflowItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
+// ---------------------------------------------- Workflow Default Error Handler Canvas Item ------------------------------------------------
+
+export declare const DefaultErrorHandler: VroWorkflowDefaultErrorHandlerDecorator;
+
+interface VroWorkflowDefaultErrorHandlerDecorator {
+	(obj?: VroWorkflowDefaultErrorHandlerConfiguration): VroWorkflowDefaultErrorHandlerMethodDecorator;
+	new(obj?: VroWorkflowDefaultErrorHandlerConfiguration): VroWorkflowDefaultErrorHandlerConfiguration;
+}
+
+interface VroWorkflowDefaultErrorHandlerMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+interface VroWorkflowDefaultErrorHandlerConfiguration {
+	target?: string;
+	exceptionVariable?: string;
+}
 
 // ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
 
@@ -275,7 +291,11 @@ interface VroPolyglotDecorator {
 	new(obj?: VroPolyglotConfiguration): VroPolyglotConfiguration;
 }
 
-interface VroPolyglotConfiguration { package: string, method: string; }
+interface VroPolyglotConfiguration {
+	package: string,
+	method: string;
+}
+
 interface PolyglotMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;

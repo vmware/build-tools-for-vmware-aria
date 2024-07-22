@@ -14,9 +14,13 @@ import { Workflow, In, WaitingTimerItem } from "vrotsc-annotations";
 	}
 })
 export class Complex {
+
 	@WaitingTimerItem({})
 	public waitForEvent(@In waitingTimer: Date) {
+		// NOOP
 	}
 
-	public shouldGoHere() { }
+	public shouldGoHere() { 
+		// NOOP
+	}
 }
