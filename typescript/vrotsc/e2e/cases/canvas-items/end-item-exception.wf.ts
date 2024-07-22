@@ -28,7 +28,7 @@ export class WorkflowEnd {
 		exceptionVariable: "errorMessage",
 		businessStatus: "Bad"
 	})
-	public workflowEnd(@In endMode: number, @Out errorMessage: string) {
+	public workflowEnd() {
 		// NOOP
 	}
 }

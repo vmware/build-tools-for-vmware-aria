@@ -25,10 +25,9 @@ const yBasePosition = 100;
 const offSet = 20;
 
 /**
- *
  * Responsible for printing out the workflow end item.
- * The following decorator properties are supported
- * 1. exception - exception variable
+ * The following decorator properties are supported:
+ * 1. exceptionVariable - exception variable used within the component.
  * 2. endMode - end mode of the component (0 means success, 1 means error).
  * 3. businessStatus - business status of the end component.
  * @example
@@ -109,7 +108,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode;
+		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode ?? 0;
 		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exceptionVariable;
 		const businessStatus = itemInfo?.canvasItemPolymorphicBag?.businessStatus;
 
