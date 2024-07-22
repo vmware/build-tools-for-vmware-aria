@@ -24,7 +24,121 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
+### *New `DefaultErrorHandler` decorator for Workflows*
+
+This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
+
+#### Supported Parameters
+
+- `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+Example:
+
+```typescript
+import {
+  Workflow,
+  RootItem,
+  In,
+  Out,
+  Item,
+  DefaultErrorHandler,
+  WorkflowEndItem,
+} from "vrotsc-annotations";
+
+@Workflow({
+  name: "Default Error Handler Custom Item",
+  path: "VMware/PSCoE",
+  description:
+    "Default error handler workflow with error handler redirecting to a workflow item",
+  attributes: {
+    errorMessage: {
+      type: "string",
+    },
+  },
+})
+export class HandleDefaultError {
+  @RootItem()
+  public initiateWorkflow() {
+    System.log("Initiating workflow execution");
+  }
+
+  @Item({
+    target: "workflowEnd",
+  })
+  public processError(@In errorMessage: string) {
+    System.log(
+      `Processing error using custom task with message '${errorMessage}'`
+    );
+  }
+
+  @DefaultErrorHandler({
+    exceptionVariable: "errorMessage",
+    target: "processError",
+  })
+  public defaultErrorHandler(@Out errorMessage: string) {
+    // NOOP
+  }
+
+  @WorkflowEndItem({
+    endMode: 0,
+    exceptionVariable: "errorMessage",
+  })
+  public workflowEnd(@Out errorMessage: string) {
+    System.log(`Terminating workflow with error ${errorMessage}`);
+  }
+}
+```
+
+### *New `@WorkflowEndItem` decorator for Workflows*
+
+The decorator is used to specify a custom workflow end item.
+
+#### Supported Parameters
+
+- `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+- `businessStatus` - Value of the business status in the end component.
+
+Example:
+
+```typescript
+import { Workflow, RootItem, WorkflowEndItem } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Workflow End Exception",
+  path: "VMware/PSCoE",
+  description: "Workflow with root and end item with end mode 1",
+  attributes: {
+    errorMessage: {
+      type: "string",
+    },
+    businessStatus: {
+      type: "string",
+    },
+    endMode: {
+      type: "number",
+    },
+  },
+})
+export class WorkflowEnd {
+  @RootItem()
+  public initiateWorkflow() {
+    // NOOP
+  }
+
+  @WorkflowEndItem({
+    endMode: 1,
+    exceptionVariable: "errorMessage",
+    businessStatus: "Bad",
+  })
+  public workflowEnd() {
+    // NOOP
+  }
+}
+```
 
 ### *New `ScheduledWorkflowItem` decorator for Workflows*
 
@@ -103,6 +217,69 @@ export class HandleNetworkConfigurationBackup {
   @RootItem()
   public start() {
     System.log("Starting workflow");
+=======
+This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
+
+#### Supported Parameters
+
+- `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+Example:
+
+```typescript
+import {
+  Workflow,
+  RootItem,
+  In,
+  Out,
+  Item,
+  DefaultErrorHandler,
+  WorkflowEndItem,
+} from "vrotsc-annotations";
+
+@Workflow({
+  name: "Default Error Handler Custom Item",
+  path: "VMware/PSCoE",
+  description:
+    "Default error handler workflow with error handler redirecting to a workflow item",
+  attributes: {
+    errorMessage: {
+      type: "string",
+    },
+  },
+})
+export class HandleDefaultError {
+  @RootItem()
+  public initiateWorkflow() {
+    System.log("Initiating workflow execution");
+  }
+
+  @Item({
+    target: "workflowEnd",
+  })
+  public processError(@In errorMessage: string) {
+    System.log(
+      `Processing error using custom task with message '${errorMessage}'`
+    );
+  }
+
+  @DefaultErrorHandler({
+    exceptionVariable: "errorMessage",
+    target: "processError",
+  })
+  public defaultErrorHandler(@Out errorMessage: string) {
+    // NOOP
+  }
+
+  @WorkflowEndItem({
+    endMode: 0,
+    exceptionVariable: "errorMessage",
+  })
+  public workflowEnd(@Out errorMessage: string) {
+    System.log(`Terminating workflow with error ${errorMessage}`);
   }
 }
 ```
@@ -120,28 +297,37 @@ In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorat
 Example:
 
 ```typescript
-import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem } from "vrotsc-annotations";
+import {
+  Workflow,
+  Out,
+  In,
+  Item,
+  RootItem,
+  DecisionItem,
+  WaitingTimerItem,
+  WorkflowItem,
+} from "vrotsc-annotations";
 
 @Workflow({
   name: "Example Waiting Timer",
   path: "VMware/PSCoE",
   attributes: {
     waitingTimer: {
-      type: "Date"
+      type: "Date",
     },
     counter: {
-      type: "number"
+      type: "number",
     },
     first: {
-      type: "number"
+      type: "number",
     },
     second: {
-      type: "number"
+      type: "number",
     },
     result: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 })
 export class HandleNetworkConfigurationBackup {
   @DecisionItem({ target: "waitForEvent", else: "prepareItems" })
@@ -157,10 +343,13 @@ export class HandleNetworkConfigurationBackup {
 
   @WorkflowItem({
     target: "print",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
   })
-  public callOtherWf(@In first: number, @In second: number, @Out result: number) {
-  }
+  public callOtherWf(
+    @In first: number,
+    @In second: number,
+    @Out result: number
+  ) {}
 
   @Item({ target: "end" })
   public print(@In result: number) {
@@ -174,7 +363,6 @@ export class HandleNetworkConfigurationBackup {
     }
 
     counter++;
-
     if (counter < 2) {
       const tt = Date.now() + 5 * 1000;
       waitingTimer = new Date(tt);
@@ -194,6 +382,7 @@ export class HandleNetworkConfigurationBackup {
 
   @WaitingTimerItem({ target: "execute" })
   public waitForEvent(@In waitingTimer: Date) {
+    // NOOP
   }
 }
 ```

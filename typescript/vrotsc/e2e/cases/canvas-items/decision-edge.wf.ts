@@ -11,6 +11,7 @@ import { Workflow, DecisionItem } from "vrotsc-annotations";
 	}
 })
 export class HandleNetworkConfigurationBackup {
+
 	@DecisionItem({
 		target: "waitForEvent",
 	})
@@ -18,5 +19,7 @@ export class HandleNetworkConfigurationBackup {
 		return waitingTimer !== null;
 	}
 
-	public shouldGoHere() { }
+	public shouldGoHere() {
+		// NOOP
+	}
 }

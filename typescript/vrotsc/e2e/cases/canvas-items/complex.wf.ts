@@ -13,6 +13,7 @@ import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem } fro
 	}
 })
 export class Complex {
+	
 	@DecisionItem({
 		target: "waitForEvent",
 		else: null
@@ -59,5 +60,6 @@ export class Complex {
 		target: "execute"
 	})
 	public waitForEvent(@In waitingTimer: Date) {
+		// NOOP
 	}
 }
