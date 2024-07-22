@@ -1,4 +1,4 @@
-import { Workflow, In, Out, RootItem, WorkflowEndItem } from "vrotsc-annotations";
+import { Workflow, RootItem, WorkflowEndItem } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Workflow End Exception",
