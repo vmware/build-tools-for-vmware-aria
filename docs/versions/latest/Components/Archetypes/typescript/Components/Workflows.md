@@ -12,25 +12,71 @@ How to use Aria Orchestrator Workflows and available decorators.
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
    - [`@RootItem`](#rootitem)
-   - [`@DefaultErrorHandler`](#defaulterrorhandler)
+   - [`@WorkflowEndItem`](#workflowenditem)
 3. [Example Workflow](#example-workflow)
 
 ### Workflow Decorator
 
 Not implemented yet.
 
+### \*New `DefaultErrorHandler` decorator for Workflows
+
+This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
+
+#### Supported Parameters
+
+- `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+Example:
+
+```typescript
+import {
+  Workflow,
+  Out,
+  RootItem,
+  DefaultErrorHandler,
+} from "vrotsc-annotations";
+
+@Workflow({
+  name: "Default Error Handler"
+  path: "VMware/PSCoE",
+  description: "Default error handler workflow",
+  attributes: {
+    errorMessage: {
+      type: "string",
+    },
+  },
+})
+export class HandleDefaultError {
+  @RootItem()
+  public initiateWorkflow() {
+    // NOOP
+  }
+
+  @DefaultErrorHandler({
+    exceptionVariable: "errorMessage",
+    target: "end"
+  })
+  public defaultErrorHandler() {
+    // NOOP
+  }
+}
+```
+
 ### Available Method Decorators
 
-#### `@DefaultErrorHandler`
+#### `@WorkflowEndItem`
 
-The decorator is used to specify a default error handler within a workflow.
+The decorator is used to specify a custom workflow end item.
 
 ##### Supported Parameters
 
-- `target` - **Not implemented yet**
-- `exception` - Exception variable that will hold the exception data when triggered.
-
-In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+- `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+- `businessStatus` - Value of the business status in the end component.
 
 #### `@Item`
 
@@ -85,7 +131,7 @@ import {
   DecisionItem,
   WaitingTimerItem,
   WorkflowItem,
-  DefaultErrorHandler,
+  WorkflowEndItem,
 } from "vrotsc-annotations";
 
 @Workflow({
@@ -106,6 +152,9 @@ import {
     },
     result: {
       type: "number",
+    },
+    errorMessage: {
+      type: "string",
     },
   },
 })
@@ -129,7 +178,9 @@ export class HandleNetworkConfigurationBackup {
     @In first: number,
     @In second: number,
     @Out result: number
-  ) {}
+  ) {
+    // NOOP
+  }
 
   @Item({ target: "end" })
   public print(@In result: number) {
@@ -165,10 +216,12 @@ export class HandleNetworkConfigurationBackup {
     // NOOP
   }
 
-  @DefaultErrorHandler({
+  @WorkflowEndItem({
+    endMode: 0,
     exception: "errorMessage",
+    businessStatus: "Bad"
   })
-  public defaultErrorHandler(@Out errorMessage: string) {
+  public workflowEnd() {
     // NOOP
   }
 }

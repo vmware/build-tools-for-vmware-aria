@@ -16,37 +16,36 @@ import { Decorator, MethodDeclaration, SourceFile } from "typescript";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { buildItemParameterBindings, InputOutputBindings } from "./helpers/presentation";
 
 // UI positioning constants in the output XML file.
-const xBasePosition = 180;
-const yBasePosition = 110;
+const xBasePosition = 160;
+const yBasePosition = 100;
 const offSet = 20;
 
 /**
- * Responsible for printing out a default error handler
- * Important Note: The name of the error handler component should match the name of the end workflow element.
+ * Responsible for printing out the workflow end item.
+ * The following decorator properties are supported:
+ * 1. exceptionVariable - exception variable used within the component.
+ * 2. endMode - end mode of the component (0 means success, 1 means error).
+ * 3. businessStatus - business status of the end component.
  * @example
  * ```xml
-	<error-handler name="item1">
-		<position x="415.0" y="65.40"/>
-	</error-handler>
-	<workflow-item name="item1" type="end" end-mode="0">
-		<position x="405.0" y="55.40"/>
-	</workflow-item>
+  <workflow-item name="item8" throw-bind-name="errorMessage" type="end" end-mode="1" business-status="Bad">
+	<in-binding/>
+	<position y="110.0" x="280.0"/>
+  </workflow-item>
  * ```
  */
-export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
-
+export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	/**
-	 * Return XML tag for the error handler workflow item.
+	 * Return XML tag for the end workflow item.
 	 * 
 	 * @returns XML tag name.
 	 */
-	public getCanvasType(): string {
-		return "error-handler";
+	getCanvasType(): string {
+		return "end";
 	}
 
 	/**
@@ -54,17 +53,17 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	 * 
 	 * @returns type of the workflow element.
 	 */
-	public getDecoratorType(): WorkflowItemType {
-		return WorkflowItemType.DefaultErrorHandler;
+	getDecoratorType(): WorkflowItemType {
+		return WorkflowItemType.End;
 	}
 
 	/**
-	 * Register the canvas item arguments. For the default error handler only "target" and "exception" are supported.
+	 * Register the canvas item arguments. For the default error handler only "endMode" and "exception" are supported.
 	 * 
 	 * @param itemInfo item info for that properties should be fetched.
 	 * @param decoratorNode decorator node handle.
 	 */
-	public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
+	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		const decoratorProperties: [string, any][] = getDecoratorProps(decoratorNode);
 		if (!decoratorProperties?.length) {
 			return;
@@ -72,12 +71,16 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "target": {
-					itemInfo.target = propValue;
+				case "endMode": {
+					itemInfo.canvasItemPolymorphicBag.endMode = propValue;
 					break;
 				}
 				case "exceptionVariable": {
 					itemInfo.canvasItemPolymorphicBag.exceptionVariable = propValue;
+					break;
+				}
+				case "businessStatus": {
+					itemInfo.canvasItemPolymorphicBag.businessStatus = propValue;
 					break;
 				}
 				default: {
@@ -88,40 +91,40 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	}
 
 	/**
-	 * There is no need to print the source file for the default error handler.
+	 * There is no need to print the source file for the workflow item.
 	 */
-	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
 		return "";
 	}
 
 	/**
-	 * Prints out the default handler item. Note that it needs to be connected with an end item and
-	 * both must have identical name.
+	 * Prints out the end item.
 	 *
 	 * @param itemInfo The item to print.
 	 * @param pos The position of the item in the workflow.
 	 *
 	 * @returns The string representation of the item.
 	 */
-	public printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const targetItemName = findTargetItem(itemInfo.target, pos, itemInfo);
-		if (targetItemName === null) {
-			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
-		}
+		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode ?? 0;
 		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exceptionVariable;
-		// it is important that the name of the error handler should be the same as the pointing target item name
-		stringBuilder.append(`<error-handler name="${targetItemName}" `);
+		const businessStatus = itemInfo?.canvasItemPolymorphicBag?.businessStatus;
+
+		stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}" `);
 		if (exceptionVariable) {
 			stringBuilder.append(`throw-bind-name="${exceptionVariable}" `);
 		}
+		if (businessStatus) {
+			stringBuilder.append(`business-status="${businessStatus}" `);
+		}
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(`<position x="${xBasePosition + offSet * pos}" y="${yBasePosition}"/>`).appendLine();
+		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(`<position x="${xBasePosition + offSet * (pos + 10)}" y="${yBasePosition}"/>`).appendLine();
 		stringBuilder.unindent();
-		stringBuilder.append("</error-handler>").appendLine();
-		stringBuilder.unindent();
+		stringBuilder.append(`</workflow-item>`).appendLine();
 
 		return stringBuilder.toString();
 	}

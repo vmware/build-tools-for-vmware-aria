@@ -58,7 +58,6 @@ export interface WorkflowItemDescriptor<T = any> {
 	canvasItemPolymorphicBag: T;
 	polyglot?: PolyglotDescriptor;
 	parent: WorkflowDescriptor;
-	type?: WorkflowItemType;
 }
 
 export interface CanvasItemPolymorphicBagForItem {
@@ -130,16 +129,15 @@ export enum WorkflowItemType {
 	Workflow = "WorkflowItem",
 
 	/**
-	 * This item type represents a workflow end item
+	 * This item type represents a workflow end item.
 	 *
-	 * It accepts input and output bindings.
 	 */
 	End = "WorkflowEndItem",
 
 	/**
 	 * This item type represents a default error handler item.
 	 *
-	 * It must target a workflow end item and accepts output bindings.
+	 * It can target a workflow item or workflow end and accepts input and output bindings.
 	 */
 	DefaultErrorHandler = "DefaultErrorHandler",
 }

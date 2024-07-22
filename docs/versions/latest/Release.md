@@ -24,16 +24,14 @@
 [//]: # "#### Relevant Documentation:"
 [//]: # "Improvements -> Bugfixes/hotfixes or general improvements"
 
-### New `DefaultErrorHandler` decorator for Workflows
+### \*New `DefaultErrorHandler` decorator for Workflows
 
-This decorator is used to specify a default error handler. Note that the default error handler will be generated
-with its own end workflow item as it is required by the component.
+This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
 
 #### Supported Parameters
 
-- `target` - **Not implemented yet**
-- `exception` - if set the variable will be bound to the error handler and its own end workflow component.
-  If set the end workflow component bound to the error handler will have exit code 1, otherwise the exit code will be 0.
+- `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -48,7 +46,7 @@ import {
 } from "vrotsc-annotations";
 
 @Workflow({
-  name: "Default Error Handler Happy",
+  name: "Default Error Handler"
   path: "VMware/PSCoE",
   description: "Default error handler workflow",
   attributes: {
@@ -64,15 +62,64 @@ export class HandleDefaultError {
   }
 
   @DefaultErrorHandler({
-    exception: "errorMessage",
+    exceptionVariable: "errorMessage",
+    target: "end"
   })
-  public defaultErrorHandler(@Out errorMessage: string) {
+  public defaultErrorHandler() {
     // NOOP
   }
 }
 ```
 
-### New `WorkflowItem` decorator for Workflows
+### \*New `@WorkflowEndItem` decorator for Workflows
+
+The decorator is used to specify a custom workflow end item.
+
+#### Supported Parameters
+
+- `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
+- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+- `businessStatus` - Value of the business status in the end component.
+
+Example:
+
+```typescript
+import { Workflow, RootItem, WorkflowEndItem } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Workflow End Exception",
+  path: "VMware/PSCoE",
+  description: "Workflow with root and end item with end mode 1",
+  attributes: {
+    errorMessage: {
+      type: "string",
+    },
+    businessStatus: {
+      type: "string",
+    },
+    endMode: {
+      type: "number",
+    },
+  },
+})
+export class WorkflowEnd {
+  @RootItem()
+  public initiateWorkflow() {
+    // NOOP
+  }
+
+  @WorkflowEndItem({
+    endMode: 1,
+    exceptionVariable: "errorMessage",
+    businessStatus: "Bad",
+  })
+  public workflowEnd() {
+    // NOOP
+  }
+}
+```
+
+### \*New `WorkflowItem` decorator for Workflows
 
 The new Decorator gives you the ability to specify a canvas item that calls a Workflow.
 
@@ -151,7 +198,6 @@ export class HandleNetworkConfigurationBackup {
     }
 
     counter++;
-
     if (counter < 2) {
       const tt = Date.now() + 5 * 1000;
       waitingTimer = new Date(tt);
@@ -170,7 +216,13 @@ export class HandleNetworkConfigurationBackup {
   }
 
   @WaitingTimerItem({ target: "execute" })
+<<<<<<< HEAD
   public waitForEvent(@In waitingTimer: Date) {}
+=======
+  public waitForEvent(@In waitingTimer: Date) {
+    // NOOP
+  }
+>>>>>>> main
 }
 ```
 

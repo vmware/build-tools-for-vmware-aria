@@ -117,6 +117,8 @@ interface VroPolicyTemplateDecorator {
 	new(obj?: VroPolicyTemplate): VroPolicyTemplate;
 }
 
+type WorkflowEndMode = 0 | 1;
+
 export declare const PolicyTemplate: VroPolicyTemplateDecorator;
 
 type SupportedValues = string | boolean | number;
@@ -126,8 +128,6 @@ type CompositeType = {
 };
 
 type AttributeValue = CompositeType | SupportedValues | SupportedValues[];
-
-type WorkflowEndMode = 0 | 1;
 
 type Attribute = {
 	type: string,
@@ -249,11 +249,36 @@ interface VroWorkflowItemMethodDecorator {
 export declare const DefaultErrorHandler: VroWorkflowDefaultErrorHandlerDecorator;
 
 interface VroWorkflowDefaultErrorHandlerDecorator {
-	(obj?: VroItemConfiguration): VroWorkflowDefaultErrorHandlerMethodDecorator;
-	new(obj?: VroItemConfiguration): VroItemConfiguration;
+	(obj?: VroWorkflowDefaultErrorHandlerConfiguration): VroWorkflowDefaultErrorHandlerMethodDecorator;
+	new(obj?: VroWorkflowDefaultErrorHandlerConfiguration): VroWorkflowDefaultErrorHandlerConfiguration;
 }
 
 interface VroWorkflowDefaultErrorHandlerMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+interface VroWorkflowDefaultErrorHandlerConfiguration {
+	target?: string;
+	exceptionVariable?: string;
+}
+
+// ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
+
+export declare const WorkflowEndItem: VroWorkflowEndItemDecorator;
+
+interface VroWorkflowEndItemDecorator {
+	(obj?: VroWorkflowEndItemConfiguration): VroWorkflowEndItemMethodDecorator;
+	new(obj?: VroWorkflowEndItemConfiguration): VroWorkflowEndItemConfiguration;
+}
+
+interface VroWorkflowEndItemConfiguration {
+	endMode?: WorkflowEndMode;
+	exceptionVariable?: string;
+	businessStatus?: string;
+}
+
+interface VroWorkflowEndItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
