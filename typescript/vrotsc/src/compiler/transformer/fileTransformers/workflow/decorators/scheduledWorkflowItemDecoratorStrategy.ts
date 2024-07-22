@@ -55,14 +55,32 @@ scheduledTask = workflowToLaunch.schedule(workflowParameters, workflowScheduleDa
 export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new ScheduledWorkflowItemSourceFilePrinter()) { }
 
+	/**
+	 * @returns The type of canvas item
+	 */
 	getCanvasType(): string {
 		return "task";
 	}
 
+	/**
+	 * @returns The type of decorator
+	 */
 	getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.ScheduledWorkflow;
 	}
 
+	/**
+	 * Registers the item arguments
+	 *
+	 * - `target` is the name of the item to call after the item is executed
+	 * - `exception` is the exception to throw if the item fails
+	 * - `linkedItem` is the id of the workflow to schedule
+	 *
+	 * @param itemInfo The item to register
+	 * @param decoratorNode The decorator node
+	 * @returns void
+	 * @throws Error if an unsupported attribute is found
+	 */
 	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		getDecoratorProps(decoratorNode).forEach((propTuple) => {
 			const [propName, propValue] = propTuple;

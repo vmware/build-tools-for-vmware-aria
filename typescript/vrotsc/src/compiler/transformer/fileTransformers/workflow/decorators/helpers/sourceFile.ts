@@ -18,7 +18,7 @@ import { createWorkflowItemPrologueStatements } from "../../../../codeTransforme
 import { WorkflowItemDescriptor } from "../../../../../decorators";
 
 export interface SourceFilePrinter {
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo?: WorkflowItemDescriptor): string;
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string;
 }
 
 /**

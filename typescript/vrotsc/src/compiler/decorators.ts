@@ -148,7 +148,6 @@ export enum WorkflowItemType {
 	 * It can target a workflow item or workflow end and accepts input and output bindings.
 	 */
 	DefaultErrorHandler = "DefaultErrorHandler",
-
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
