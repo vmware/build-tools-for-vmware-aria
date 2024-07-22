@@ -32,26 +32,22 @@ The decorator is used to specify a custom workflow end item.
 
 - `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
 - `exceptionVariable` - Exception variable that will hold the exception data when triggered.
-
-In order to bind inputs and outputs, you do it with the `@Out` decorator. This is the same way we do it for other items.
+- `businessStatus` - Value of the business status in the end component.
 
 Example:
 
 ```typescript
-import {
-  Workflow,
-  In,
-  Out,
-  RootItem,
-  WorkflowEndItem,
-} from "vrotsc-annotations";
+import { Workflow, RootItem, WorkflowEndItem } from "vrotsc-annotations";
 
 @Workflow({
-  name: "Workflow End Happy",
+  name: "Workflow End Exception",
   path: "VMware/PSCoE",
-  description: "Workflow with root and end item",
+  description: "Workflow with root and end item with end mode 1",
   attributes: {
     errorMessage: {
+      type: "string",
+    },
+    businessStatus: {
       type: "string",
     },
     endMode: {
@@ -67,9 +63,10 @@ export class WorkflowEnd {
 
   @WorkflowEndItem({
     endMode: 1,
-    exception: "errorMessage",
+    exceptionVariable: "errorMessage",
+    businessStatus: "Bad",
   })
-  public workflowEnd(@In endMode: number, @Out errorMessage: string) {
+  public workflowEnd() {
     // NOOP
   }
 }

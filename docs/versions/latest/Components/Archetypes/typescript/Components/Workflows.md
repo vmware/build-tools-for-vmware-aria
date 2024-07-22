@@ -12,6 +12,7 @@ How to use Aria Orchestrator Workflows and available decorators.
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
    - [`@RootItem`](#rootitem)
+   - [`@WorkflowEndItem`](#workflowenditem)
 3. [Example Workflow](#example-workflow)
 
 ### Workflow Decorator
@@ -28,8 +29,7 @@ The decorator is used to specify a custom workflow end item.
 
 - `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
 - `exceptionVariable` - Exception variable that will hold the exception data when triggered.
-
-In order to bind inputs and outputs, you do it with the `@Out` decorator. This is the same way we do it for other items.
+- `businessStatus` - Value of the business status in the end component.
 
 #### `@Item`
 
@@ -172,8 +172,9 @@ export class HandleNetworkConfigurationBackup {
   @WorkflowEndItem({
     endMode: 0,
     exception: "errorMessage",
+    businessStatus: "Bad"
   })
-  public workflowEnd(@In endMode: number, @Out errorMessage: string) {
+  public workflowEnd() {
     // NOOP
   }
 }
