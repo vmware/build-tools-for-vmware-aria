@@ -117,6 +117,8 @@ interface VroPolicyTemplateDecorator {
 	new(obj?: VroPolicyTemplate): VroPolicyTemplate;
 }
 
+type WorkflowEndMode = 0 | 1;
+
 export declare const PolicyTemplate: VroPolicyTemplateDecorator;
 
 type SupportedValues = string | boolean | number;
@@ -244,6 +246,26 @@ interface VroWorkflowItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
+
+// ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
+
+export declare const WorkflowEndItem: VroWorkflowEndItemDecorator;
+
+interface VroWorkflowEndItemDecorator {
+	(obj?: VroWorkflowEndItemConfiguration): VroWorkflowEndItemMethodDecorator;
+	new(obj?: VroWorkflowEndItemConfiguration): VroWorkflowEndItemConfiguration;
+}
+
+interface VroWorkflowEndItemConfiguration {
+	endMode?: WorkflowEndMode;
+	exceptionVariable?: string;
+	businessStatus?: string;
+}
+
+interface VroWorkflowEndItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
