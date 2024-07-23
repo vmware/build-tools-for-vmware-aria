@@ -13,12 +13,11 @@
  * #L%
  */
 import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
-import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { findTargetItem } from "../helpers/findTargetItem";
+import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
 /**
