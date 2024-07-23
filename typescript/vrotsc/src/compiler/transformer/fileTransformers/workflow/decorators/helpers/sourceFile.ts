@@ -12,19 +12,20 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { MethodDeclaration, SourceFile, SyntaxKind, factory } from "typescript";
+import { MethodDeclaration, SourceFile, SyntaxKind, addSyntheticLeadingComment, factory } from "typescript";
 import { printSourceFile } from "../../../../helpers/source";
 import { createWorkflowItemPrologueStatements } from "../../../../codeTransformers/prologueStatements";
+import { WorkflowItemDescriptor } from "../../../../../decorators";
 
 export interface SourceFilePrinter {
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string;
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string;
 }
 
 /**
  * Default source file printer will directly print the source file with the method node body statements.
  */
 export class DefaultSourceFilePrinter implements SourceFilePrinter {
-	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
 		return printSourceFile(
 			factory.updateSourceFile(
 				sourceFile,
@@ -46,7 +47,7 @@ export class DefaultSourceFilePrinter implements SourceFilePrinter {
  *  @NOTE: This is 100% due to a typescript limitation, and not a vRO limitation.
  */
 export class WrapperSourceFilePrinter implements SourceFilePrinter {
-	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
 		const wrapperFunction = factory.createFunctionDeclaration(
 			undefined,
 			undefined,
@@ -63,6 +64,128 @@ export class WrapperSourceFilePrinter implements SourceFilePrinter {
 					...sourceFile.statements.filter(n => n.kind !== SyntaxKind.ClassDeclaration),
 					...createWorkflowItemPrologueStatements(methodNode),
 					wrapperFunction
+				]
+			)
+		);
+	}
+}
+
+/**
+ * This is used to print the source file for a scheduled workflow item.
+ *
+ * The Scheduled workflow is essentially just a normal task with special representation.
+ *
+ * @Example of what is printed:
+// var workflowToLaunch = Server.getWorkflowWithId("9e4503db-cbaa-435a-9fad-144409c08df0");
+// if (workflowToLaunch == null) {
+// 	throw "Workflow not found";
+// }
+//
+// var workflowParameters = new Properties();
+// workflowParameters.put("first",first);
+// workflowParameters.put("second",second);
+// scheduledTask = workflowToLaunch.schedule(workflowParameters, workflowScheduleDate);
+ *
+ */
+export class ScheduledWorkflowItemSourceFilePrinter implements SourceFilePrinter {
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return printSourceFile(
+			factory.updateSourceFile(
+				sourceFile,
+				[
+					...sourceFile.statements.filter(n => n.kind !== SyntaxKind.ClassDeclaration),
+					...createWorkflowItemPrologueStatements(methodNode),
+					// Variable declarations are on top
+					factory.createVariableStatement(
+						undefined,
+						// A list of declarations
+						factory.createVariableDeclarationList(
+							[
+								// `var workflowParameters = new Properties();`
+								factory.createVariableDeclaration(
+									"workflowParameters",
+									undefined,
+									undefined,
+									factory.createNewExpression(
+										factory.createIdentifier("Properties"),
+										undefined,
+										[]
+									)
+								),
+								// `, workflowToLaunch = Server.getWorkflowWithId("some id here");`
+								factory.createVariableDeclaration(
+									"workflowToLaunch",
+									undefined,
+									undefined,
+									factory.createCallExpression(
+										factory.createPropertyAccessExpression(
+											factory.createIdentifier("Server"),
+											factory.createIdentifier("getWorkflowWithId")
+										),
+										undefined,
+										[factory.createStringLiteral(itemInfo.canvasItemPolymorphicBag.linkedItem)]
+									)
+								)
+							],
+							undefined
+						)
+					),
+
+					// `if (workflowToLaunch == null) { throw "Workflow not found"; }`
+					factory.createIfStatement(
+						factory.createBinaryExpression(
+							factory.createIdentifier("workflowToLaunch"),
+							factory.createToken(SyntaxKind.EqualsEqualsToken),
+							factory.createNull()
+						),
+						factory.createBlock(
+							[
+								factory.createThrowStatement(
+									factory.createStringLiteral("Workflow not found")
+								)
+							],
+							true
+						)
+					),
+
+					// `workflowParameters.put("first",first);`
+					// `workflowParameters.put("second",second);`
+					// ...... etc
+					...itemInfo.input.filter(i => i !== "workflowScheduleDate").map((input) => {
+						return factory.createExpressionStatement(
+							factory.createCallExpression(
+								factory.createPropertyAccessExpression(
+									factory.createIdentifier("workflowParameters"),
+									factory.createIdentifier("put")
+								),
+								undefined,
+								[
+									factory.createStringLiteral(input),
+									factory.createIdentifier(input)
+								]
+							)
+						);
+					}),
+
+					// `scheduledTask = workflowToLaunch.schedule(workflowParameters, workflowScheduleDate);`
+					factory.createExpressionStatement(
+						factory.createAssignment(
+							factory.createIdentifier("scheduledTask"),
+							factory.createCallExpression(
+								factory.createPropertyAccessExpression(
+									factory.createIdentifier("workflowToLaunch"),
+									factory.createIdentifier("schedule")
+								),
+								undefined,
+								[
+									factory.createIdentifier("workflowParameters"),
+									factory.createIdentifier("workflowScheduleDate"),
+									factory.createIdentifier("undefined"),
+									factory.createIdentifier("undefined")
+								]
+							)
+						)
+					)
 				]
 			)
 		);

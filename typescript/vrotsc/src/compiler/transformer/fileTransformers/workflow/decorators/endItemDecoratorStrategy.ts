@@ -93,7 +93,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	/**
 	 * There is no need to print the source file for the workflow item.
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
 		return "";
 	}
 

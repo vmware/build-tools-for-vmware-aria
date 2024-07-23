@@ -18,7 +18,6 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { getDecoratorProps } from "../../../helpers/node";
 import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { buildItemParameterBindings, InputOutputBindings } from "./helpers/presentation";
 
 // UI positioning constants in the output XML file.
 const xBasePosition = 180;
@@ -90,7 +89,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	/**
 	 * There is no need to print the source file for the default error handler.
 	 */
-	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
 		return "";
 	}
 

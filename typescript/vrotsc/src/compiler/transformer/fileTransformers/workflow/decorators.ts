@@ -25,6 +25,7 @@ import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
 import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDecoratorStrategy";
 import WorkflowItemDecoratorStrategy from "./decorators/workflowItemDecoratorStrategy";
+import ScheduledWorkflowItemDecoratorStrategy from "./decorators/scheduledWorkflowItemDecoratorStrategy";
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
@@ -86,10 +87,12 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 			return new WorkflowItemDecoratorStrategy();
 		case WorkflowItemType.RootItem:
 			return new RootItemDecoratorStrategy();
+		case WorkflowItemType.ScheduledWorkflow:
+			return new ScheduledWorkflowItemDecoratorStrategy();
 		case WorkflowItemType.DefaultErrorHandler:
 			return new DefaultErrorHandlerDecoratorStrategy();
 		case WorkflowItemType.End:
-			return new EndItemDecoratorStrategy();			
+			return new EndItemDecoratorStrategy();
 		default:
 			throw new Error(`Invalid decorator type: ${identifierText}`);
 	}

@@ -137,6 +137,29 @@ The decorator is used to specify a workflow item that will be called.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
+#### `@ScheduledWorkflowItem`
+
+The decorator is used to specify a scheduled workflow item that will be called.
+
+##### Supported Parameters
+
+- `target` - The name of the next in line item. Same as `@Item`.
+- `linkedItem` - The ID of the workflow to schedule.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+##### Inputs
+
+Special input is needed for the ScheduledWorkflowItem.
+
+- `workflowScheduleDate` - {Date} is required. The name **must** be `workflowScheduleDate`. If this is missing an error is thrown. We don't check if the type is `Date` but Aria Orchestrator will complain.
+
+##### Outputs
+
+Special output is needed for the ScheduledWorkflowItem.
+
+- `scheduledTask` - {Task} is optional. If it's missing nothing will happen, if it's added, then the name **must** be `scheduledTask`. This is the task that is scheduled.
+
 #### `@RootItem`
 
 This is a meta decorator. Add this to whichever function you want to be the entry point of the workflow.
@@ -154,6 +177,7 @@ import {
   WaitingTimerItem,
   WorkflowItem,
   WorkflowEndItem,
+  ScheduledWorkflowItem
 } from "vrotsc-annotations";
 
 @Workflow({
@@ -175,6 +199,12 @@ import {
     result: {
       type: "number",
     },
+    workflowScheduleDate: {
+      type: "Date"
+    },
+    scheduledTask: {
+      type: "Task"
+    }
     errorMessage: {
       type: "string",
     },
@@ -187,9 +217,10 @@ export class HandleNetworkConfigurationBackup {
   }
 
   @Item({ target: "callOtherWf" })
-  public prepareItems(@In @Out first: number, @In @Out second: number) {
+  public prepareItems(@In @Out first: number, @In @Out second: number, @In @Out workflowScheduleDate: Date) {
     first = 1;
     second = 2;
+    workflowScheduleDate = System.getDate("1 minute from now", undefined);
   }
 
   @WorkflowItem({
@@ -204,9 +235,22 @@ export class HandleNetworkConfigurationBackup {
     // NOOP
   }
 
-  @Item({ target: "end" })
+
+  @Item({ target: "scheduleOtherWf" })
   public print(@In result: number) {
     System.log("Result: " + result);
+  }
+
+  @ScheduledWorkflowItem({
+    target: "printScheduledDetails",
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+  })
+  public scheduleOtherWf(@In first: number, @In second: number, @In workflowScheduleDate: Date, @Out scheduledTask: Task) {
+  }
+
+  @Item({ target: "end" })
+  public printScheduledDetails(@In scheduledTask: Task) {
+    System.log(`Scheduled task: ${scheduledTask.id}, [${scheduledTask.state}]`);
   }
 
   @Item({ target: "decisionElement", exception: "" })

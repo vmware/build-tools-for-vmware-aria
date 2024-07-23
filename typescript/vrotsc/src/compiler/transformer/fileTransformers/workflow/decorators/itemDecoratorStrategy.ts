@@ -13,13 +13,13 @@
  * #L%
  */
 import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
-import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { findTargetItem } from "../helpers/findTargetItem";
-import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
+import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
+import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
+import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
 
 export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
@@ -50,8 +50,8 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 		});
 	}
 
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
-		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile);
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
 	}
 
 	/**
@@ -77,6 +77,7 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
 			+ ">").appendLine();
+
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
 
