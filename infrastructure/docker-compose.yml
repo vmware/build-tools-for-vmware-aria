@@ -1,85 +1,88 @@
-version: "3"
 services:
-  # NGINX reverse proxy server
   nginx:
-    image: nginx:1.18.0
+    image: nginx
     container_name: nginx
     restart: always
     networks:
       infranet:
         ipv4_address: 172.18.0.10
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80 # Web Interface
     hostname: "infra.corp.local"
     volumes:
-      - "./nginx/conf.d:/etc/nginx/conf.d"
-      - "./nginx/vhost.d:/etc/nginx/vhost.d"
-      - "./nginx/html:/usr/share/nginx/html"
-      - "./nginx/certs:/etc/nginx/certs:ro"
-      - "./nginx/proxy.conf:/etc/nginx/proxy.conf:ro"
-      - "/var/log/nginx:/var/log/nginx"
-  # GitLab CE Git repository manager
-  gitlab:
-    image: gitlab/gitlab-ce:12.10.3-ce.0
-    container_name: gitlab-ce
-    restart: always
+      - "./nginx:/etc/nginx/"
+  nexus:
+    image: klo2k/nexus3 # Mac
+    #image: sonatype/nexus3 # Linux
+    container_name: nexus
+    hostname: "nexus.corp.local"
     environment:
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url "http://infra.corp.local/gitlab"
+      NEXUS_CONTEXT: nexus
     networks:
       infranet:
         ipv4_address: 172.18.0.11
     extra_hosts:
-      - "infra.corp.local:<DOCKER_HOST_IP>"
+      - "gitlab.corp.local:172.18.0.12"
     ports:
-    - "127.0.0.1:8080:80"
-    hostname: "gitlab.corp.local"
+     - 8081:8081 # Web Interface
     volumes:
-      - "/srv/gitlab/config:/etc/gitlab"
-      - "/srv/gitlab/logs:/var/log/gitlab"
-      - "/srv/gitlab/data:/var/opt/gitlab"
-  # GitLab CI Runner for CI/CD integration
-  gitlab-runner:
-    image: pscoelab/vrbt-gitlab-runner:latest
-    container_name: gitlab-runner
-    restart: always
-    hostname: "gitlab-runner.corp.local"
-    networks:
-      infranet:
-        ipv4_address: 172.18.0.12
-    extra_hosts:
-      - "infra.corp.local:172.18.0.10"
-      - "gitlab.corp.local:172.18.0.11"
-      - "artifactory.corp.local:172.18.0.13"
-    volumes:
-     - "/srv/gitlab-runner/config:/etc/gitlab-runner"
-     - "/srv/gitlab-runner/m2:/home/gitlab-runner/.m2"     
-     - "/srv/gitlab-runner/opt:/var/opt"     
-     - "/var/run/docker.sock:/var/run/docker.sock"
-  # JFrog Artifactory OSS for artifact management
-  artifactory:
-    image: docker.bintray.io/jfrog/artifactory-oss:6.19.1
-    container_name: artifactory
-    hostname: "artifactory.corp.local"
-    networks:
-      infranet:
-        ipv4_address: 172.18.0.13
-    extra_hosts:
-      - "gitlab.corp.local:172.18.0.11"
-    ports:
-     - 127.0.0.1:8081:8081
-    volumes:
-     - /data/artifactory:/var/opt/jfrog/artifactory
-#    Add extra Java options by uncommenting the following lines
-#    environment:
-#     - EXTRA_JAVA_OPTIONS=-Xmx4g
+      - "nexus-data:/var/sonatype/work"
     restart: always
     ulimits:
       nproc: 65535
       nofile:
         soft: 32000
         hard: 40000
+  gitlab:
+    image: yrzr/gitlab-ce-arm64v8 # Mac
+    #image: gitlab/gitlab-ce # Linux
+    container_name: gitlab-ce
+    restart: always
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://infra.corp.local/gitlab'
+    networks:
+      infranet:
+        ipv4_address: 172.18.0.12
+    extra_hosts:
+      - "infra.corp.local:172.18.0.10"
+    ports:
+      - 8082:80 # Web Interface
+      - 8022:22 # SSH
+    hostname: "gitlab.corp.local"
+    volumes:
+      - "gitlab-config:/var/gitlab/config"
+      - "gitlab-data:/var/gitlab/data"
+      - "gitlab-log:/var/gitlab/log"
+  gitlab-runner:
+    image: gitlab-runner # Custom image build from the gitlab-runner directory
+    container_name: gitlab-runner
+    restart: always
+    hostname: "gitlab-runner.corp.local"
+    networks:
+      infranet:
+        ipv4_address: 172.18.0.13
+    extra_hosts:
+      - "infra.corp.local:172.18.0.10"
+      - "nexus.corp.local:172.18.0.11"
+      - "gitlab.corp.local:172.18.0.12"
+    ports:
+      - 2811:2811
+    volumes:
+      - "./.m2:/home/gitlab-runner/.m2"
+      - "gitlab-runner-config:/var/gitlab-runner/config"
+      - "gitlab-runner-opt:/var/gitlab-runner/opt"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+volumes:
+  nexus-data: {}
+  gitlab-config: {}
+  gitlab-data: {}
+  gitlab-log: {}
+  gitlab-runner-config: {}
+  gitlab-runner-opt: {}
 networks:
- infranet:
-  external: true
+  infranet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24
