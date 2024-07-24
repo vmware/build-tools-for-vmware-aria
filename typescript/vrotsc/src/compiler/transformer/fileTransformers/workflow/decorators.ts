@@ -27,6 +27,7 @@ import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDeco
 import WorkflowItemDecoratorStrategy from "./decorators/workflowItemDecoratorStrategy";
 import ScheduledWorkflowItemDecoratorStrategy from "./decorators/scheduledWorkflowItemDecoratorStrategy";
 import AsyncWorkflowItemDecoratorStrategy from "./decorators/asyncWorkflowItemDecoratorStrategy";
+import ActionItemDecoratorStrategy from "./decorators/actionItemDecoratorStrategy";
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
@@ -88,6 +89,8 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 			return new WorkflowItemDecoratorStrategy();
 		case WorkflowItemType.RootItem:
 			return new RootItemDecoratorStrategy();
+		case WorkflowItemType.Action:
+			return new ActionItemDecoratorStrategy();
 		case WorkflowItemType.ScheduledWorkflow:
 			return new ScheduledWorkflowItemDecoratorStrategy();
 		case WorkflowItemType.AsyncWorkflow:

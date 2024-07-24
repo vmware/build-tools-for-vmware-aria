@@ -312,3 +312,45 @@ export class AsyncWorkflowItemSourceFilePrinter implements SourceFilePrinter {
 	}
 }
 
+/**
+ * This is used to print the source file for an action item.
+ *
+ * @Example of what is printed:
+ * ```js
+	actionResult = System.getModule("com.vmware.stef").PrintStef(a,b);
+ * ```
+ */
+export class ActionItemSourceFilePrinter implements SourceFilePrinter {
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return printSourceFile(
+			factory.updateSourceFile(
+				sourceFile,
+				[
+					...sourceFile.statements.filter(n => n.kind !== SyntaxKind.ClassDeclaration),
+					...createWorkflowItemPrologueStatements(methodNode),
+					// `actionResult = System.getModule("com.vmware.stef").PrintStef(a,b);`
+					factory.createExpressionStatement(
+						factory.createAssignment(
+							factory.createIdentifier(itemInfo.output[0]),
+							factory.createCallExpression(
+								factory.createPropertyAccessExpression(
+									factory.createCallExpression(
+										factory.createPropertyAccessExpression(
+											factory.createIdentifier("System"),
+											factory.createIdentifier("getModule")
+										),
+										undefined,
+										[factory.createStringLiteral(itemInfo.canvasItemPolymorphicBag.scriptModule.split("/")[0])]
+									),
+									factory.createIdentifier(itemInfo.canvasItemPolymorphicBag.scriptModule.split("/")[1])
+								),
+								undefined,
+								itemInfo.input.map((input) => factory.createIdentifier(input))
+							)
+						)
+					)
+				]
+			)
+		);
+	}
+}
