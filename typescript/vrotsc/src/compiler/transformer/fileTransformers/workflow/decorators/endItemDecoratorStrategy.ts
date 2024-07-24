@@ -41,7 +41,7 @@ const offSet = 20;
 export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	/**
 	 * Return XML tag for the end workflow item.
-	 * 
+	 *
 	 * @returns XML tag name.
 	 */
 	getCanvasType(): string {
@@ -50,7 +50,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 
 	/**
 	 * Return the workflow item type supported by this decorator.
-	 * 
+	 *
 	 * @returns type of the workflow element.
 	 */
 	getDecoratorType(): WorkflowItemType {
@@ -59,12 +59,12 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 
 	/**
 	 * Register the canvas item arguments. For the default error handler only "endMode" and "exception" are supported.
-	 * 
+	 *
 	 * @param itemInfo item info for that properties should be fetched.
 	 * @param decoratorNode decorator node handle.
 	 */
 	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		const decoratorProperties: [string, any][] = getDecoratorProps(decoratorNode);
+		const decoratorProperties = getDecoratorProps(decoratorNode);
 		if (!decoratorProperties?.length) {
 			return;
 		}

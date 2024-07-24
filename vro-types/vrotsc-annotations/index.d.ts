@@ -302,6 +302,25 @@ interface VroScheduledWorkflowItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
+// ---------------------------------------------- Async Workflow Canvas Item ------------------------------------------------
+
+export declare const AsyncWorkflowItem: VroAsyncWorkflowItemDecorator;
+
+interface VroAsyncWorkflowItemDecorator {
+	(obj?: VroAsyncWorkflowItemConfiguration): VroAsyncWorkflowItemMethodDecorator;
+	new(obj?: VroAsyncWorkflowItemConfiguration): VroAsyncWorkflowItemConfiguration;
+}
+
+interface VroAsyncWorkflowItemConfiguration {
+	target?: string;
+	linkedItem: string;
+}
+
+interface VroAsyncWorkflowItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
 

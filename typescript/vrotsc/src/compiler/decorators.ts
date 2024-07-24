@@ -136,6 +136,14 @@ export enum WorkflowItemType {
 	 */
 	ScheduledWorkflow = "ScheduledWorkflowItem",
 
+
+	/**
+	 * This item type represents an async workflow item.
+	 *
+	 * It can target a specific item and accepts input and output bindings.
+	 */
+	AsyncWorkflow = "AsyncWorkflowItem",
+
 	/**
 	 * This item type represents a workflow end item.
 	 *

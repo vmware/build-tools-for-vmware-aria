@@ -41,7 +41,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 	/**
 	 * Return XML tag for the error handler workflow item.
-	 * 
+	 *
 	 * @returns XML tag name.
 	 */
 	public getCanvasType(): string {
@@ -50,7 +50,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 	/**
 	 * Return the workflow item type supported by this decorator.
-	 * 
+	 *
 	 * @returns type of the workflow element.
 	 */
 	public getDecoratorType(): WorkflowItemType {
@@ -59,12 +59,12 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 	/**
 	 * Register the canvas item arguments. For the default error handler only "target" and "exception" are supported.
-	 * 
+	 *
 	 * @param itemInfo item info for that properties should be fetched.
 	 * @param decoratorNode decorator node handle.
 	 */
 	public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		const decoratorProperties: [string, any][] = getDecoratorProps(decoratorNode);
+		const decoratorProperties = getDecoratorProps(decoratorNode);
 		if (!decoratorProperties?.length) {
 			return;
 		}

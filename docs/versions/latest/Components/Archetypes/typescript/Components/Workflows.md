@@ -164,6 +164,27 @@ Special output is needed for the ScheduledWorkflowItem.
 
 This is a meta decorator. Add this to whichever function you want to be the entry point of the workflow.
 
+
+#### `@AsyncWorkflowItem`
+
+##### Supported Parameters
+
+- `@AsyncWorkflowItem({target: "", linkedItem: "" })`
+  - `target` - The name of the next in line item.
+  - `linkedItem` - The ID of the workflow to call
+
+
+##### Outputs
+
+Special output is needed for the AsyncWorkflowItem.
+
+- `wfToken` - {WorkflowToken} is required. The name **must** be `wfToken`. If this is missing an error is thrown. We don't check if the type is `WorkflowToken` but Aria Orchestrator will complain.
+
+##### Inputs
+
+No special inputs are needed for the AsyncWorkflowItem.
+
+
 ### Example Workflow
 
 ```ts
@@ -208,6 +229,9 @@ import {
     errorMessage: {
       type: "string",
     },
+    wfToken: {
+      type: "WorkflowToken"
+    }
   },
 })
 export class HandleNetworkConfigurationBackup {
@@ -248,10 +272,25 @@ export class HandleNetworkConfigurationBackup {
   public scheduleOtherWf(@In first: number, @In second: number, @In workflowScheduleDate: Date, @Out scheduledTask: Task) {
   }
 
-  @Item({ target: "end" })
+  @Item({ target: "asyncCall" })
   public printScheduledDetails(@In scheduledTask: Task) {
     System.log(`Scheduled task: ${scheduledTask.id}, [${scheduledTask.state}]`);
   }
+
+
+  @AsyncWorkflowItem({
+    target: "printAsync",
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+  })
+  public asyncCall(@In first: number, @In second: number, @Out wfToken: WorkflowToken) {
+  }
+
+  @Item({ target: "end" })
+  public printAsync(@In wfToken: WorkflowToken) {
+    System.log(`Workflow token: ${wfToken.id} and state: ${wfToken.state}`);
+    System.log("Workflow finished");
+  }
+
 
   @Item({ target: "decisionElement", exception: "" })
   public execute(@Out @In waitingTimer: Date, @Out @In counter: number): void {

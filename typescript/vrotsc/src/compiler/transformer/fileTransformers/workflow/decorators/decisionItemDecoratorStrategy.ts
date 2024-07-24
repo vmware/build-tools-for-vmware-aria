@@ -48,7 +48,11 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	}
 
 	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		getDecoratorProps(decoratorNode).forEach((propTuple) => {
+		const decoratorProperties = getDecoratorProps(decoratorNode);
+		if (!decoratorProperties?.length) {
+			return;
+		}
+		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
 				case "target": {
