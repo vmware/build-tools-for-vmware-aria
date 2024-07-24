@@ -55,6 +55,8 @@ export default class Set<T extends string | number> {
 
 	public add(value: any): any {
 		this.items[value] = true;
+		this.size++;
+
 		return this;
 	}
 
