@@ -66,12 +66,11 @@ export default class Map<K extends (string | number), V> {
 
 	public set(key: any, value: any): any {
 		let exist = this.has(key);
+		this.items[key] = value;
+
 		if (exist) {
-			this.items[key] = value;
-			this.size++;
 			return this;
 		}
-		this.items[key] = value;
 		this.size++;
 
 		return this;
