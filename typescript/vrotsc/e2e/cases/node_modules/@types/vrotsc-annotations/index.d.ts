@@ -321,6 +321,26 @@ interface VroAsyncWorkflowItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
+// ---------------------------------------------- Action Canvas Item ------------------------------------------------
+
+export declare const ActionItem: VroActionItemDecorator;
+
+interface VroActionItemDecorator {
+	(obj?: VroActionItemConfiguration): VroActionItemMethodDecorator;
+	new(obj?: VroActionItemConfiguration): VroActionItemConfiguration;
+}
+
+interface VroActionItemConfiguration {
+	target?: string;
+	scriptModule: string;
+}
+
+interface VroActionItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
 
