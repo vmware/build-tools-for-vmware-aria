@@ -54,7 +54,12 @@ export default class Set<T extends string | number> {
 	}
 
 	public add(value: any): any {
+		let exist = this.has(value);
 		this.items[value] = true;
+
+		if (exist) {
+			return this;
+		}
 		this.size++;
 
 		return this;
