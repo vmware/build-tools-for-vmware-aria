@@ -13,7 +13,7 @@
  * #L%
  */
 export default class Set<T extends string | number> {
-	private size: number = 0;
+	public size: number = 0;
 	private items: { [name: string]: boolean } = {};
 
 	constructor(values?: ReadonlyArray<T> | null) {

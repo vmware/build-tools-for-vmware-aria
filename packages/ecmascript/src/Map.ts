@@ -14,7 +14,7 @@
  */
 
 export default class Map<K extends (string | number), V> {
-	private size: number = 0;
+	public size: number = 0;
 	private items: { [name: string]: any } = {};
 
 	constructor(values?: ReadonlyArray<[K, V]> | null) {
