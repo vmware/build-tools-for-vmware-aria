@@ -184,6 +184,20 @@ Special output is needed for the AsyncWorkflowItem.
 
 No special inputs are needed for the AsyncWorkflowItem.
 
+#### `@ActionItem`
+
+##### Supported Parameters
+
+- `@ActionItem({target: "", scriptModule: "" })`
+  - `target` - The name of the next in line item. Same as `@Item`.
+  - `scriptModule` - The path of the action you want to call and the action name, separated by `/`. Example: `com.vmware.pscoe.library.general/echo`.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+##### Outputs
+
+There is a requirement to have only one output, and it will be of type `ActionResult`.
+
 
 ### Example Workflow
 
@@ -231,6 +245,9 @@ import {
     },
     wfToken: {
       type: "WorkflowToken"
+    },
+    actionResult: {
+      type: "ActionResult"
     }
   },
 })
@@ -285,10 +302,21 @@ export class HandleNetworkConfigurationBackup {
   public asyncCall(@In first: number, @In second: number, @Out wfToken: WorkflowToken) {
   }
 
-  @Item({ target: "end" })
+  @Item({ target: "printActionResult" })
   public printAsync(@In wfToken: WorkflowToken) {
     System.log(`Workflow token: ${wfToken.id} and state: ${wfToken.state}`);
-    System.log("Workflow finished");
+  }
+
+  @ActionItem({
+    target: "printActionResult",
+    scriptModule: "com.vmware.pscoe.onboarding.sgenov.actions/test"
+  })
+  public callTestAction(@In first: number, @In second: number, @Out actionResult: ActionResult) {
+  }
+
+  @Item({ target: "end" })
+  public printActionResult(@In actionResult: ActionResult) {
+    System.log(`Action result: ${actionResult.getResult()}`);
   }
 
 

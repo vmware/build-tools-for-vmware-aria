@@ -24,6 +24,56 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *New `@ActionItem` decorator for Workflows*
+
+The new decorator gives you the ability to specify a canvas item that calls an action.
+
+#### Supported Parameters
+
+- `target` - The name of the next in line item. Same as `@Item`.
+- `scriptModule` - The path of the action you want to call and the action name, separated by `/`. Example: `com.vmware.pscoe.library.general/echo`.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+#### Outputs
+
+There is a requirement to have only one output, and it will be of type `ActionResult`.
+
+#### Example
+
+```typescript
+import { Workflow, Out, In, Item, ActionItem } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Example",
+  path: "VMware/PSCoE",
+  attributes: {
+    first: {
+      type: "number"
+    },
+    second: {
+      type: "number"
+    },
+    actionResult: {
+      type: "ActionResult"
+    }
+  }
+})
+export class Example {
+  @ActionItem({
+    target: "printActionResult",
+    scriptModule: "com.vmware.pscoe.onboarding.sgenov.actions/test"
+  })
+  public callTestAction(@In first: number, @In second: number, @Out actionResult: ActionResult) {
+  }
+
+  @Item({ target: "end" })
+  public printActionResult(@In actionResult: ActionResult) {
+    System.log(`Action result: ${actionResult.getResult()}`);
+  }
+}
+```
+
 ### *New `DefaultErrorHandler` decorator for Workflows*
 
 This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
