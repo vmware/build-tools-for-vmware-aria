@@ -24,6 +24,10 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Support python 3.10 runtime
+
+Add support for python 3.10 runtime in Orchestrator. This is now the default, since python 3.7 is deprecated.
+
 ### *New `@ActionItem` decorator for Workflows*
 
 The new decorator gives you the ability to specify a canvas item that calls an action.
