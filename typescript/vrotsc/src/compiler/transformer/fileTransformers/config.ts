@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -20,7 +20,7 @@ import { printElementInfo } from "../../elementInfo";
 import { getPropertyName } from "../helpers/node";
 import { getVroType } from "../helpers/vro";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
-import { ConfigurationDescriptor, ConfigurationAttribute } from "../../../decorators";
+import { ConfigurationDescriptor, ConfigurationAttribute } from "../../decorators";
 const yaml: typeof import("js-yaml") = require("js-yaml");
 
 /**
@@ -36,7 +36,7 @@ const yaml: typeof import("js-yaml") = require("js-yaml");
 * @param file The file to transform.
 */
 export function getConfigTypeScriptTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	return function() {
+	return function () {
 		// This visits the AST of the file
 		const sourceFile = ts.createSourceFile(
 			file.filePath,
@@ -66,8 +66,9 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 			attributes: {}
 		};
 
-		if (classNode.decorators && classNode.decorators.length) {
-			classNode.decorators
+		const decorators = ts.getDecorators(classNode);
+		if (decorators?.length) {
+			decorators
 				.filter(decoratorNode => {
 					const callExpNode = decoratorNode.expression as ts.CallExpression;
 					if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {
@@ -213,19 +214,21 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 			const name = getPropertyName(property.name);
 			let attrInfo: ConfigurationAttribute = { type: "Any", value: null, description: null };
 			switch (property.initializer.kind) {
-				case ts.SyntaxKind.StringLiteral:
+				case ts.SyntaxKind.StringLiteral: {
 					let type: string = (<ts.StringLiteral>property.initializer).text;
 					attrInfo.type = type;
 					break;
-				case ts.SyntaxKind.ObjectLiteralExpression:
+				}
+				case ts.SyntaxKind.ObjectLiteralExpression: {
 					attrInfo = getAttrInfo(property.initializer as ts.ObjectLiteralExpression);
 					break;
+				}
 			};
 			let configAtt = configInfo.attributes[name] as ConfigurationAttribute;
 			if (configAtt) {
-				configAtt.type = attrInfo.type != null ? attrInfo.type : configAtt.type;
-				configAtt.value = attrInfo.value != null ? attrInfo.value : configAtt.value;
-				configAtt.description = attrInfo.description != null ? attrInfo.description : configAtt.description;
+				configAtt.type = attrInfo.type ?? configAtt.type;
+				configAtt.value = attrInfo.value ?? configAtt.value;
+				configAtt.description = attrInfo.description ?? configAtt.description;
 			}
 			else {
 				configInfo.attributes[name] = attrInfo;
@@ -328,7 +331,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 * NOTE: From Stef, don't use this, let's use TypeScript instead.
 */
 export function getConfigYamlTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	return function() {
+	return function () {
 		const configInfo: ConfigurationDescriptor = yaml.safeLoad(system.readFile(file.filePath).toString());
 		configInfo.name = configInfo.name || system.changeFileExt(file.fileName, "");
 		configInfo.path = configInfo.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
@@ -377,15 +380,13 @@ function printConfigXml(config: ConfigurationDescriptor): string {
 			const att: ConfigurationAttribute = typeof attOrType === "string" ? { type: attOrType } : attOrType;
 			stringBuilder.append(`<att name="${attName}" type="${att.type}" read-only="false"`);
 
-			if (att.value != null && att.type.indexOf("Array/") === 0) {
+			if (att.value != null && att.type.startsWith("Array/")) {
 				att.value = printAttributeArrayValue(att.value, att.type);
 			}
-
-			if (att.value != null && att.type.indexOf("CompositeType(") === 0) {
+			if (att.value != null && att.type.startsWith("CompositeType(")) {
 				att.value = printAttributeCompositeValue(att.value, att.type);
 			}
-
-			if (att.value != null || att.description != null) {
+			if (att?.value || att?.description) {
 				stringBuilder.append(`>`).appendLine();
 				stringBuilder.indent();
 				if (att.value != null) {
@@ -407,6 +408,7 @@ function printConfigXml(config: ConfigurationDescriptor): string {
 	stringBuilder.append(`</atts>`).appendLine();
 	stringBuilder.unindent();
 	stringBuilder.append(`</config-element>`).appendLine();
+
 	return stringBuilder.toString();
 }
 
@@ -458,23 +460,18 @@ function printAttributeCompositeValue(compositeValue: any, compositeType: string
 
 	for (let [key, value] of Object.entries(compositeValue)) {
 		const isArray = Array.isArray(value);
-
 		if (isArray) {
 			const valueType = getArrayTypeFromCompositeType(compositeType, key);
-
 			if (valueType === null) {
 				throw new Error(`Composite Type Array is in invalid format for ${key}!`);
 			}
-
 			value = `Array#${printAttributeArrayValue(value as [], valueType)}`;
 		}
 		else {
 			value = `${typeof value}#${value}`;
 		}
-
 		output += `#${key}#=#${value}#+`;
 	}
-
 	// Cut the last +
 	output = output.slice(0, -1) + "]#";
 
@@ -493,7 +490,7 @@ function printAttributeCompositeValue(compositeValue: any, compositeType: string
  * @private
  */
 function getArrayTypeFromCompositeType(compositeType: string, key: string): string | null {
-	const result = compositeType.match(new RegExp(`${key}:(Array\\/[^,)]+)`));
+	const result = RegExp(new RegExp(`${key}:(Array\\/[^,)]+)`)).exec(compositeType);
 
 	return result === null ? null : result[1];
 }

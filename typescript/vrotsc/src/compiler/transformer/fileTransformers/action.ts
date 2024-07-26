@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { FileDescriptor, FileTransformationContext, ScriptTransformationContext, HierarchyFacts } from "../../../types";
 import { system } from "../../../system/system";
@@ -63,6 +77,7 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 
 	function createActionClosure(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext): ts.SourceFile {
 		const statements: ts.Statement[] = [];
+        const { factory } = ctx;
 
 		if (ctx.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) {
 			// Copy all statements preceeding the action closure
@@ -76,16 +91,16 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 			if (context.emitHeader) {
 				addHeaderComment(funcStatements);
 			}
-			const updatedExpStatement = ts.updateExpressionStatement(expStatement,
-				ts.updateParen(parenExpression,
-					ts.updateFunctionExpression(funcExpression,
+			const updatedExpStatement = factory.updateExpressionStatement(expStatement,
+				factory.updateParenthesizedExpression(parenExpression,
+					factory.updateFunctionExpression(funcExpression,
                             /* modifiers */ undefined,
                             /* asteriskToken */ undefined,
                             /* name */ undefined,
                             /* typeParameters */ undefined,
                             /* parameters */ funcExpression.parameters,
                             /* type */ undefined,
-                            /* body */ ts.updateBlock(funcExpression.body, funcStatements),
+                            /* body */ factory.updateBlock(funcExpression.body, funcStatements),
 					)));
 			statements.push(updatedExpStatement);
 		}
@@ -95,16 +110,16 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 			}
 
 			// Wrap statements in an action closure
-			let closureStatement = ts.createStatement(
-				ts.createParen(
-					ts.createFunctionExpression(
+			let closureStatement = factory.createExpressionStatement(
+				factory.createParenthesizedExpression(
+					factory.createFunctionExpression(
                             /*modifiers*/ undefined,
                             /*asteriskToken*/ undefined,
                             /*name*/ undefined,
                             /*typeParameters*/ undefined,
                             /*parameters*/ undefined,
                             /*modifiers*/ undefined,
-                            /*body*/ ts.createBlock(sourceFile.statements, true))));
+                            /*body*/ factory.createBlock(sourceFile.statements, true))));
 			closureStatement = ts.addSyntheticLeadingComment(
 				closureStatement,
 				ts.SyntaxKind.MultiLineCommentTrivia,
@@ -113,10 +128,10 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 			statements.push(closureStatement);
 		}
 
-		return ts.updateSourceFileNode(
+		return factory.updateSourceFile(
 			sourceFile,
 			ts.setTextRange(
-				ts.createNodeArray(statements),
+				factory.createNodeArray(statements),
 				sourceFile.statements));
 	}
 }

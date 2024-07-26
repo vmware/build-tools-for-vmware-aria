@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from 'typescript';
 import { ScriptTransformationContext, HierarchyFacts } from '../../../types';
 import { NodeVisitor } from '../../visitor';
@@ -117,10 +131,10 @@ export function transformNamespaces(sourceFile: ts.SourceFile, context: ScriptTr
 			return node;
 		});
 
-		return ts.updateSourceFileNode(
+		return ts.factory.updateSourceFile(
 			sourceFile,
 			ts.setTextRange(
-				ts.createNodeArray([
+				ts.factory.createNodeArray([
 					...statements
 				]),
 				sourceFile.statements));
@@ -134,41 +148,42 @@ export function transformNamespaces(sourceFile: ts.SourceFile, context: ScriptTr
 			if (!varNode.initializer) {
 				const varName = getIdentifierTextOrNull(varNode.name);
 				if (varName && context.globalIdentifiers.indexOf(varName) > -1) {
-					return ts.updateVariableStatement(
+					return ts.factory.updateVariableStatement(
 						node,
 						node.modifiers,
-						ts.updateVariableDeclarationList(
+						ts.factory.updateVariableDeclarationList(
 							node.declarationList,
 							[
-								ts.updateVariableDeclaration(
+								ts.factory.updateVariableDeclaration(
 									varNode,
 									varNode.name,
+                                    undefined,
 									varNode.type,
 									/* initializer */
-									ts.createBinary(
+									ts.factory.createBinaryExpression(
 										/* left */
-										ts.createPropertyAccess(
+										ts.factory.createPropertyAccessExpression(
 											/* expression */
-											ts.createIdentifier(SCRIPT_VRO_GLOBAL),
+											ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
 											/* name */
-											ts.createIdentifier(varName),
+											ts.factory.createIdentifier(varName),
 										),
 										/* operator */
-										ts.createToken(ts.SyntaxKind.BarBarToken),
+										ts.factory.createToken(ts.SyntaxKind.BarBarToken),
 										/* right */
-										ts.createParen(
-											ts.createBinary(
+										ts.factory.createParenthesizedExpression(
+											ts.factory.createBinaryExpression(
 												/* left */
-												ts.createPropertyAccess(
+												ts.factory.createPropertyAccessExpression(
 													/* expression */
-													ts.createIdentifier(SCRIPT_VRO_GLOBAL),
+													ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
 													/* name */
-													ts.createIdentifier(varName),
+													ts.factory.createIdentifier(varName),
 												),
 												/* operator */
-												ts.createToken(ts.SyntaxKind.FirstAssignment),
+												ts.factory.createToken(ts.SyntaxKind.FirstAssignment),
 												/* right */
-												ts.createObjectLiteral([], false),
+												ts.factory.createObjectLiteralExpression([], false),
 											)
 										),
 									)

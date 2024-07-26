@@ -1,0 +1,79 @@
+name-template: 'v$RESOLVED_VERSION 🌈'
+tag-template: 'v$RESOLVED_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+      - 'kind/feature'
+      - 'kind/enhancement'
+      - 'kind/refactor'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'kind/fix'
+      - 'kind/bugfix'
+      - 'kind/bug'
+      - 'bug'
+      - 'fix'
+      - 'bugfix'
+  - title: '⬆️ Dependencies'
+    labels:
+      - 'kind/dependencies'
+exclude-labels:
+  - 'kind/skip-changelog'
+exclude-contributors:
+  - 'svc-wwcoe-ci-admin'
+  - 'dependabot'
+  - 'dependabot[bot]'
+change-template: '* $TITLE by @$AUTHOR in #$NUMBER'
+version-resolver:
+  major:
+    labels:
+      - 'version/major'
+  minor:
+    labels:
+      - 'version/minor'
+  patch:
+    labels:
+      - 'version/patch'
+  default: patch
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+  ---
+  For in-depth feature set review refer to the following document: https://github.com/vmware/build-tools-for-vmware-aria/blob/main/docs/versions/v$RESOLVED_VERSION/Release.md
+  
+  **Full Changelog**: https://github.com/vmware/build-tools-for-vmware-aria/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+autolabeler:
+  - label: 'kind/bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix/i'
+
+  - label: 'kind/feature'
+    branch:
+      - '/feature\/.+/'
+      - '/feat\/.+/'
+
+  - label: 'kind/documentation'
+    branch:
+      - '/docs\/.+/'
+
+  - label: 'kind/refactor'
+    branch:
+      - '/refactor\/.+/'
+  
+  - label: 'kind/enhancement'
+    title:
+      - '/improve|support|enhance/i'
+
+  - label: 'kind/refactor'
+    title:
+      - '/refactor/i'
+
+  - label: 'kind/dependencies'
+    title:
+      - '/dependencies|dependency/i'

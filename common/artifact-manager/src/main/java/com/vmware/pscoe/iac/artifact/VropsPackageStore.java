@@ -57,7 +57,7 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcraft.jsch.JSchException;
@@ -207,7 +207,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * Constructor.
 	 * @param cliManager CLI Manager
 	 * @param restClientVrops REST Client for vROPs
-	 * @param tempDir Temp DIR
+	 * @param tempDir temporary DIR
 	 */
     public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final File tempDir) {
         this.cliManager = cliManager;
@@ -293,7 +293,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
     }
 
     /**
-     * Implement the pull usecase, so pull all of the packages described in the {@code vropsPackageDescriptor} (constructed from content.yaml).
+     * Implement the pull use case, so pull all of the packages described in the {@code vropsPackageDescriptor} (constructed from content.yaml).
      * @param vropsPackage vropsPackage
      * @param vropsPackageDescriptor vropsPackageDescriptor
      * @param dryrun dryrun
@@ -721,7 +721,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	/**
      * Activate / Deactivate dashboards per user or group, based on the data in the activation metadata file.
      * @param rootDir Root directory where the dashboards and the metadata files reside.
-     * @param isGroupActivation flag wheter group activation is specified.
+     * @param isGroupActivation flag whether group activation is specified.
      * @throws RuntimeException if the activation / deactivation per user or group fails.
      */
 	private void manageDashboardActivation(final File rootDir, final boolean isGroupActivation) {
@@ -1143,15 +1143,45 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
     }
 
 	/**
+	 * Set the policy priorities. The ordering of the policies in the content.yaml file
+	 * will define policy priorities (first will be with top priority, last with least priority).
+	 * Note it will not do anything if: vROPs version is below 8.17.0.
+	 * (as it is not supported by the vROPS API).
+	 * @param vropsPackage package to read policies from.
+	 * @param tmpDir temporary directory where the content.yaml file resides.
+	 * @throws RuntimeException if the policy priorities cannot be set.
+	 */
+    private void setPolicyPriorities(final Package vropsPackage, final File tmpDir) {
+        if (!tmpDir.exists()) {
+            return;
+        }
+        File contentYamlFile = new File(tmpDir, CONTENT_YAML_FILE_NAME);
+        VropsPackageDescriptor descriptor = this.parseContentYamlFile(contentYamlFile);
+
+        if (descriptor.getPolicy() == null || descriptor.getPolicy().isEmpty()) {
+            return;
+        }
+        // if the policies contain wild card then skip setting priorities (as the ordering cannot be guaranteed)
+        boolean hasWildCard = descriptor.getPolicy().stream().allMatch(policy -> policy.endsWith(WILDCARD_MATCH_SYMBOL));
+        if (hasWildCard) {
+        	return;
+        }
+        try {
+            restClient.setPolicyPriorities(descriptor.getPolicy());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+	/**
 	 * Parse the content.yaml file.
 	 * @param contentYamlFile content.yaml file handle.
 	 * @return VropsPackageDescriptor POJO with the populated values from the content.yaml file.
 	 * @throws RuntimeException if the content yaml cannot be parsed.
 	 */
-	@SuppressWarnings("deprecation")
 	private VropsPackageDescriptor parseContentYamlFile(final File contentYamlFile) {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
 		try {
 			return mapper.readValue(contentYamlFile, VropsPackageDescriptor.class);
 		} catch (Exception e) {
@@ -1470,6 +1500,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
             manageDashboardActivation(tmpDir, false);
             // set default policy after importing policies
             setDefaultPolicy(pkg, tmpDir);
+            // set policy priorities
+            setPolicyPriorities(pkg, tmpDir);
         } catch (IOException | JSchException | ConfigurationException e) {
             String message = String.format("Unable to push package '%s' to vROps Server '%s' : %s : %s", pkg.getFQName(), cliManager, e.getClass().getName(),
                     e.getMessage());
@@ -1498,11 +1530,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
         throw new NotImplementedException("Not implemented");
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     protected PackageContent getPackageContent(final Package pkg) {
         throw new NotImplementedException("Not implemented");
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected void deleteContent(final Content content, final boolean dryrun) {
         throw new NotImplementedException("Not implemented");

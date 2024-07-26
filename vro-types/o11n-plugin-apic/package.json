@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-apic",
-  "version": "2.38.2-SNAPSHOT",
+  "version": "2.40.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true

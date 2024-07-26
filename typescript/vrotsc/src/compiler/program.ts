@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -26,8 +26,8 @@ import { getNativeContentTransformer } from "./transformer/fileTransformers/nati
 import { getPolicyTemplateTransformer } from "./transformer/fileTransformers/policyTemplate";
 import { getResourceTransformer } from "./transformer/fileTransformers/resource";
 import { getTestTransformer } from "./transformer/fileTransformers/test";
-import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow";
 import { getSagaTransformer } from "./transformer/saga/saga";
+import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow/workflow";
 
 export interface Program {
 	getFiles(): readonly FileDescriptor[];
@@ -81,8 +81,13 @@ export function createProgram(options: ProgramOptions): Program {
 					emittedFiles.push(fileName);
 				}
 			},
-			getScriptProgram: () => scriptProgram || (scriptProgram = context.sourceFiles.length ?
-				createScriptProgram(context, compilerOptions) : undefined),
+			getScriptProgram: () =>
+				scriptProgram
+				|| (
+					scriptProgram = context.sourceFiles?.length
+						? createScriptProgram(context, compilerOptions)
+						: undefined
+				),
 		};
 
 		files.map(file => transformerFactoryMap[file.type](file, context)).forEach(transform => transform());
@@ -117,7 +122,7 @@ export function createProgram(options: ProgramOptions): Program {
 						sourceFileCache[fileName] = ts.createSourceFile(
 							fileName,
 							system.readFile(fileName).toString(),
-							languageVersion !== undefined ? languageVersion : ts.ScriptTarget.Latest,
+							languageVersion ?? ts.ScriptTarget.Latest,
 							true);
 					}
 					sourceFile = sourceFileCache[fileName];
@@ -153,15 +158,15 @@ export function createProgram(options: ProgramOptions): Program {
 
 		filePaths.forEach(filePath => fileSet[filePath.toLowerCase()] = true);
 
-		if (options.files && options.files.length) {
+		if (options?.files?.length) {
 			const filesFiltered = options.files.filter((item, i, ar) => ar.indexOf(item) === i);
 			const selectedFiles = [];
 			filesFiltered.forEach(fileName => {
-				for (let i = 0; i < filePaths.length; i++) {
-					const item = filePaths[i];
-					if (item.includes(fileName, 0))
-						selectedFiles.push(item);
-				}
+				filePaths.forEach(filePath => {
+					if (filePath.includes(fileName, 0)) {
+						selectedFiles.push(filePath);
+					}
+				});
 			});
 			filePaths = selectedFiles;
 			console.log(`Files in system: ${JSON.stringify(filePaths, null, 2)}`);
@@ -193,39 +198,30 @@ export function createProgram(options: ProgramOptions): Program {
 		if (filePath.endsWith(".wf.ts")) {
 			return FileType.Workflow;
 		}
-
 		if (filePath.endsWith(".conf.ts")) {
 			return FileType.ConfigurationTS;
 		}
-
 		if (filePath.endsWith(".pl.ts")) {
 			return FileType.PolicyTemplate;
 		}
-
 		if (filePath.endsWith(".d.ts")) {
 			return FileType.TypeDef;
 		}
-
 		if (filePath.endsWith(".test.ts") || filePath.endsWith(".test.js")) {
 			return FileType.JasmineTest;
 		}
-
 		if (filePath.endsWith(".ts") || filePath.endsWith(".js")) {
 			return FileType.Action;
 		}
-
 		if (filePath.endsWith(".conf.yaml")) {
 			return FileType.ConfigurationYAML;
 		}
-
 		if (filePath.endsWith(".saga.yaml")) {
 			return FileType.Saga;
 		}
-
 		if (filePath.endsWith(".xml") && fileSet[`${system.changeFileExt(filePath, "")}.element_info.xml`]) {
 			return FileType.NativeContent;
 		}
-
 		if (!filePath.endsWith(".element_info.xml") &&
 			!filePath.endsWith(".element_info.yaml") &&
 			!filePath.endsWith(".element_info.json") &&

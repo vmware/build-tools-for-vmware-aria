@@ -29,9 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-
 class ConfigurationVroTest {
-
 	protected Properties properties;
 	protected ConfigurationVro configurationVro;
 	protected final String VRO_TEST_REFRESH_TOKEN = "7Zrj54LHsnerIjMgBGj4tCIvdtsWpOxI";
@@ -39,7 +37,6 @@ class ConfigurationVroTest {
 
 	@BeforeEach
 	void init() {
-
 		this.properties = new Properties();
 		this.properties.setProperty("host", "host.corp.local");
 		this.properties.setProperty("port", "443");
@@ -57,7 +54,7 @@ class ConfigurationVroTest {
 
 	@ParameterizedTest
 	@MethodSource("usernameProvider")
-	public void testGetUsername(String username, String auth, String expectedUsername, String expectedDomain ) {
+	public void testGetUsername(String username, String auth, String expectedUsername, String expectedDomain) {
 		Properties properties = new Properties();
 		properties.setProperty("username", username);
 		properties.setProperty("auth", auth);
@@ -65,32 +62,16 @@ class ConfigurationVroTest {
 
 		assertEquals(expectedUsername, configuration.getUsername());
 	}
+
 	@ParameterizedTest
 	@MethodSource("usernameProvider")
-	public void testGetDomain(String username, String auth, String expectedUsername, String expectedDomain ) {
+	public void testGetDomain(String username, String auth, String expectedUsername, String expectedDomain) {
 		Properties properties = new Properties();
 		properties.setProperty("username", username);
 		properties.setProperty("auth", auth);
 		ConfigurationVro configuration = new ConfigurationVro(properties);
 
 		assertEquals(expectedDomain, configuration.getDomain());
-	}
-
-	private static Stream<Arguments> usernameProvider() {
-		return Stream.of(
-			arguments("configurationadmin", "vra", "configurationadmin", null),
-			arguments("configurationadmin@corp.local", "vra", "configurationadmin", "corp.local"),
-			arguments("configurationadmin@System Domain", "vra", "configurationadmin", "System Domain"),
-			arguments("configurationadmin@@System Domain", "vra", "configurationadmin@", "System Domain"),
-			arguments("configurationadmin@test@System Domain", "vra", "configurationadmin@test", "System Domain"),
-			arguments("configurationadmin@test@test2@System Domain", "vra", "configurationadmin@test@test2", "System Domain"),
-			arguments("configurationadmin", "basic", "configurationadmin", null),
-			arguments("configurationadmin@corp.local", "basic", "configurationadmin@corp.local", "corp.local"),
-			arguments("configurationadmin@System Domain", "basic", "configurationadmin@System Domain", "System Domain"),
-			arguments("configurationadmin@@System Domain", "basic", "configurationadmin@@System Domain", "System Domain"),
-			arguments("configurationadmin@test@System Domain", "basic", "configurationadmin@test@System Domain", "System Domain"),
-			arguments("configurationadmin@test@test2@System Domain", "basic", "configurationadmin@test@test2@System Domain", "System Domain")
-		);
 	}
 
 	@Test
@@ -138,4 +119,18 @@ class ConfigurationVroTest {
 		assertSame(this.configurationVro.getPassword(), "test");
 	}
 
+	private static Stream<Arguments> usernameProvider() {
+		return Stream.of(arguments("configurationadmin", "vra", "configurationadmin", null),
+				arguments("configurationadmin@corp.local", "vra", "configurationadmin", "corp.local"),
+				arguments("configurationadmin@System Domain", "vra", "configurationadmin", "System Domain"),
+				arguments("configurationadmin@@System Domain", "vra", "configurationadmin@", "System Domain"),
+				arguments("configurationadmin@test@System Domain", "vra", "configurationadmin@test", "System Domain"),
+				arguments("configurationadmin@test@test2@System Domain", "vra", "configurationadmin@test@test2", "System Domain"),
+				arguments("configurationadmin", "basic", "configurationadmin", null),
+				arguments("configurationadmin@corp.local", "basic", "configurationadmin@corp.local", "corp.local"),
+				arguments("configurationadmin@System Domain", "basic", "configurationadmin@System Domain", "System Domain"),
+				arguments("configurationadmin@@System Domain", "basic", "configurationadmin@@System Domain", "System Domain"),
+				arguments("configurationadmin@test@System Domain", "basic", "configurationadmin@test@System Domain", "System Domain"),
+				arguments("configurationadmin@test@test2@System Domain", "basic", "configurationadmin@test@test2@System Domain", "System Domain"));
+	}
 }

@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from 'typescript';
 import { Comment } from '../../../types';
 
@@ -97,11 +111,11 @@ export function isRequireCall(callExpression: ts.Node): boolean {
 export function getPropertyName(node: ts.PropertyName): string {
 	switch (node.kind) {
 		case ts.SyntaxKind.Identifier:
-			return (<ts.Identifier>node).text;
+			return (node).text;
 		case ts.SyntaxKind.StringLiteral:
-			return (<ts.StringLiteral>node).text;
+			return (node).text;
 		case ts.SyntaxKind.ComputedPropertyName:
-			return (<ts.ComputedPropertyName>node).getFullText();
+			return (node).getFullText();
 	}
 }
 
@@ -109,21 +123,31 @@ export function getPropertyName(node: ts.PropertyName): string {
 /**
 * Helper for vrotsc-annotations decorators
 */
-export function getDecoratorNames(decorators: ts.NodeArray<ts.Decorator>): string[] {
-	if (decorators && decorators.length) {
-		return decorators
-			.filter(decoratorNode => decoratorNode.expression.kind === ts.SyntaxKind.Identifier)
-			.map(decoratorNode => (<ts.Identifier>decoratorNode.expression).text);
+export function getDecoratorNames(decorators: readonly ts.Decorator[]): string[] {
+	if (!decorators?.length) {
+		return [];
 	}
-	return [];
+
+	return decorators
+		.filter(decoratorNode => decoratorNode.expression.kind === ts.SyntaxKind.Identifier)
+		.map(decoratorNode => (<ts.Identifier>decoratorNode.expression).text);
 }
 
-export function hasModifier(modifiers: ts.NodeArray<ts.Modifier>, kind: ts.SyntaxKind): boolean {
-	return modifiers != null && modifiers.some(x => x.kind === kind);
+/**
+ * Wrapper for getDecoratorNames that returns the first decorator name or null if none are found.
+ */
+export function getDecoratorName(decorator: ts.Decorator): string {
+	const result = getDecoratorNames([decorator]);
+
+	return result.length > 0 ? result[0] : null;
 }
 
-export function hasAnyModifier(modifiers: ts.NodeArray<ts.Modifier>, ...kinds: ts.SyntaxKind[]): boolean {
-	return modifiers != null && modifiers.some(x => kinds.some(k => k === x.kind));
+export function hasModifier(modifiers: ts.NodeArray<ts.ModifierLike>, kind: ts.SyntaxKind): boolean {
+	return modifiers?.some(x => x.kind === kind);
+}
+
+export function hasAnyModifier(modifiers: ts.NodeArray<ts.ModifierLike>, ...kinds: ts.SyntaxKind[]): boolean {
+	return modifiers?.some(x => kinds.some(k => k === x.kind));
 }
 
 /**
@@ -139,5 +163,28 @@ export function getLeadingComments(sourceFile: ts.SourceFile, node: ts.Node): Co
 		pos: c.pos,
 		end: c.end,
 	});
+}
+
+/**
+ * This will fetch all the props of a decoratorNode
+ *
+ * @param decoratorNode The decorator node to get the properties from.
+ * @returns An array of key-value touple arrays.
+ */
+export function getDecoratorProps(decoratorNode: ts.Decorator): [string, any][] {
+	const decoratorValues = [];
+	const objLiteralNode = (decoratorNode.expression as ts.CallExpression)?.arguments?.[0] as ts.ObjectLiteralExpression;
+
+	if (!objLiteralNode) {
+		return decoratorValues;
+	}
+	objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
+		const propName = getPropertyName(property.name);
+		const propValue = (<ts.StringLiteral>property.initializer).text;
+
+		decoratorValues.push([propName, propValue]);
+	});
+
+	return decoratorValues;
 }
 

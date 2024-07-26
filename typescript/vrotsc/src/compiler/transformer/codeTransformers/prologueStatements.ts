@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as ts from "typescript";
 import { HierarchyFacts, ScriptTransformationContext, FileType } from "../../../types";
 import { SCRIPT_VROES_VAR, SCRIPT_VRO_GLOBAL, SCRIPT_VROES_CACHE, SCRIPT_VRO_MODULE_PACKAGE, SCRIPT_VROES_MODULE, SCRIPT_HELPER_MODULE } from "../helpers/VROES";
@@ -25,11 +39,12 @@ export function createDeclarationPrologueStatements(context: ScriptTransformatio
 	if (context.file.hierarchyFacts & HierarchyFacts.ContainsMap) {
 		// var Map = VROES.Map
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
 				"Map",
-                    /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
 					"Map"
 				)
 			)
@@ -39,11 +54,12 @@ export function createDeclarationPrologueStatements(context: ScriptTransformatio
 	if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakMap) {
 		// var WeakMap = VROES.Map
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
 				"WeakMap",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
 					"Map"
 				)
 			));
@@ -52,11 +68,12 @@ export function createDeclarationPrologueStatements(context: ScriptTransformatio
 	if (context.file.hierarchyFacts & HierarchyFacts.ContainsSet) {
 		// var Set = VROES.Set
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
 				"Set",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
 					"Set"
 				)
 			));
@@ -65,11 +82,12 @@ export function createDeclarationPrologueStatements(context: ScriptTransformatio
 	if (context.file.hierarchyFacts & HierarchyFacts.ContainsWeakSet) {
 		// var WeakSet = VROES.Set
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
 				"WeakSet",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
 					"Set"
 				)
 			));
@@ -78,18 +96,19 @@ export function createDeclarationPrologueStatements(context: ScriptTransformatio
 	if (context.file.hierarchyFacts & HierarchyFacts.ContainsPromise) {
 		// var Promise = VROES.Promise
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
 				"Promise",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
+				undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
 					"Promise"
 				)
 			));
 	}
 
 	if (variableDeclarations.length) {
-		statements.push(ts.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
+		statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
 	}
 
 	return statements;
@@ -112,33 +131,34 @@ export function createModulePrologueStatements(context: ScriptTransformationCont
 		// var __global = (function () {
 		//     return this;
 		// }).call(null);
-		statements.push(ts.createVariableStatement(
+		statements.push(ts.factory.createVariableStatement(
                     /*modifiers*/ undefined,
 			[
-				ts.createVariableDeclaration(
+				ts.factory.createVariableDeclaration(
                             /*name*/ SCRIPT_VRO_GLOBAL,
-                            /*type*/ undefined,
-					ts.createBinary(
-						ts.createCall(
-							ts.createPropertyAccess(ts.createIdentifier("System"), "getContext"),
+					undefined,
+					undefined,
+					ts.factory.createBinaryExpression(
+						ts.factory.createCallExpression(
+							ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getContext"),
                                     /*typeArguments*/ undefined,
                                     /*argumentsArray*/ undefined),
-						ts.createToken(ts.SyntaxKind.BarBarToken),
-						ts.createCall(
-							ts.createPropertyAccess(
-								ts.createParen(
-									ts.createFunctionExpression(
+						ts.factory.createToken(ts.SyntaxKind.BarBarToken),
+						ts.factory.createCallExpression(
+							ts.factory.createPropertyAccessExpression(
+								ts.factory.createParenthesizedExpression(
+									ts.factory.createFunctionExpression(
                                                 /*modifiers*/ undefined,
                                                 /*asteriskToken*/ undefined,
                                                 /*name*/ undefined,
                                                 /*typeParameters*/ undefined,
                                                 /*parameters*/ undefined,
                                                 /*modifiers*/ undefined,
-                                                /*body*/ ts.createBlock([ts.createReturn(ts.createThis())], true))),
+                                                /*body*/ ts.factory.createBlock([ts.factory.createReturnStatement(ts.factory.createThis())], true))),
 								"call"
 							),
                                     /*typeArguments*/ undefined,
-                                    /*argumentsArray*/[ts.createNull()]
+                                    /*argumentsArray*/[ts.factory.createNull()]
 						)
 					)
 				)
@@ -148,29 +168,30 @@ export function createModulePrologueStatements(context: ScriptTransformationCont
 	if (context.file.hierarchyFacts & HierarchyFacts.VROES) {
 		// var VROES = __global.VROES || (__global.VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES())
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
                         /*name*/ SCRIPT_VROES_VAR,
+				undefined,
                         /*type*/ undefined,
-				ts.createBinary(
-					ts.createPropertyAccess(
-						ts.createIdentifier(SCRIPT_VRO_GLOBAL),
+				ts.factory.createBinaryExpression(
+					ts.factory.createPropertyAccessExpression(
+						ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
 						SCRIPT_VROES_CACHE
 					),
-					ts.createToken(ts.SyntaxKind.BarBarToken),
-					ts.createParen(
-						ts.createBinary(
-							ts.createPropertyAccess(
-								ts.createIdentifier(SCRIPT_VRO_GLOBAL),
+					ts.factory.createToken(ts.SyntaxKind.BarBarToken),
+					ts.factory.createParenthesizedExpression(
+						ts.factory.createBinaryExpression(
+							ts.factory.createPropertyAccessExpression(
+								ts.factory.createIdentifier(SCRIPT_VRO_GLOBAL),
 								SCRIPT_VROES_CACHE
 							),
-							ts.createToken(ts.SyntaxKind.EqualsToken),
-							ts.createCall(
-								ts.createPropertyAccess(
-									ts.createCall(
-										ts.createPropertyAccess(ts.createIdentifier("System"), "getModule"),
+							ts.factory.createToken(ts.SyntaxKind.EqualsToken),
+							ts.factory.createCallExpression(
+								ts.factory.createPropertyAccessExpression(
+									ts.factory.createCallExpression(
+										ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("System"), "getModule"),
                                                 /* typeArguments */ undefined,
 										[
-											ts.createLiteral(SCRIPT_VRO_MODULE_PACKAGE)
+											ts.factory.createStringLiteral(SCRIPT_VRO_MODULE_PACKAGE)
 										]),
 									SCRIPT_VROES_MODULE
 								),
@@ -186,11 +207,12 @@ export function createModulePrologueStatements(context: ScriptTransformationCont
 	if (context.file.hierarchyFacts & HierarchyFacts.ContainsRequire) {
 		// var require = VROES.require
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
 				"require",
-                        /*type*/ undefined,
-				ts.createPropertyAccess(
-					ts.createIdentifier(SCRIPT_VROES_VAR),
+        /*type*/undefined,
+				undefined,
+				ts.factory.createPropertyAccessExpression(
+					ts.factory.createIdentifier(SCRIPT_VROES_VAR),
 					"require"
 				)
 			));
@@ -198,24 +220,59 @@ export function createModulePrologueStatements(context: ScriptTransformationCont
 
 	if (context.file.hierarchyFacts & HierarchyFacts.ContainsTSLib) {
 		variableDeclarations.push(
-			ts.createVariableDeclaration(tslibVarName,
+			ts.factory.createVariableDeclaration(tslibVarName,
 				undefined,
-				ts.createPropertyAccess(ts.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_HELPER_MODULE)
+				undefined,
+				ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_HELPER_MODULE)
 			));
 	}
 
 	if (!(context.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) && context.file.type === FileType.Action) {
-		// var exports = {}
 		variableDeclarations.push(
-			ts.createVariableDeclaration(
+			ts.factory.createVariableDeclaration(
 				"exports",
                         /*type*/ undefined,
-				ts.createObjectLiteral([])
+				undefined,
+				ts.factory.createObjectLiteralExpression([])
 			));
 	}
 
 	if (variableDeclarations.length) {
-		statements.push(ts.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
+		statements.push(ts.factory.createVariableStatement(/*modifiers*/ undefined, variableDeclarations));
+	}
+
+	return statements;
+}
+
+/**
+ * This will create the prologue statements for the workflow item.
+ *
+ * The prologue statements are the statements that are added at the beginning of the file.
+ * In this case, we add the variable declarations for the parameters of the method.
+ *
+ * @param methodNode - The method node.
+ * @returns The prologue statements.
+ */
+export function createWorkflowItemPrologueStatements(methodNode: ts.MethodDeclaration): ts.Statement[] {
+	const statements: ts.Statement[] = [];
+
+	if (methodNode.parameters.length) {
+		const variableDeclarations: ts.VariableDeclaration[] = [];
+		methodNode.parameters.forEach(paramNode => {
+			const paramName = (<ts.Identifier>paramNode.name).text;
+			variableDeclarations.push(ts.factory.createVariableDeclaration(
+				paramName,
+				undefined,
+				paramNode.type,
+                /* initializer */ undefined
+			));
+		});
+
+		if (variableDeclarations.length) {
+			statements.push(ts.factory.createVariableStatement(
+				[ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)],
+				variableDeclarations));
+		}
 	}
 
 	return statements;

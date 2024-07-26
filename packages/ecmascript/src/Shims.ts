@@ -160,6 +160,11 @@ export default class Shims {
 		return Object.keys(target).map(key => target[key]);
 	}
 
+	static objectSetPrototypeOf(target, prototype): any {
+		target.__proto__ = prototype;
+		return target;
+	}
+
 	static spreadArrays() {
 		var size = 0;
 		for (var i = 0, len = arguments.length; i < len; i++) {

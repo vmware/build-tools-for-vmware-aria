@@ -124,6 +124,7 @@ enum Option {
     VRA_IMPORT_OLD_VERSIONS(
             "vra_import_old_versions",
             ConfigurationVra.IMPORT_OLD_VERSIONS),
+   
 	/**
 	 * Skip VRA import old versions.
 	 */
@@ -136,6 +137,13 @@ enum Option {
     VRA_IMPORT_OVERWRITE_MODE(
             "vra_import_overwrite_mode",
             ConfigurationVra.PACKAGE_IMPORT_OVERWRITE_MODE),
+    
+	/**
+	 * VRO force import latest package versions.
+	 */
+    VRO_FORCE_IMPORT_LATEST_VERSION(
+            "vro_force_import_latest_versions",
+            Configuration.FORCE_IMPORT_LATEST_VERSIONS),     
 	/**
 	 * VRANG host.
 	 */
@@ -1101,7 +1109,6 @@ public final class Installer {
         } else {
             input.put(Option.IGNORE_SSL_HOST_CHECK, Boolean.valueOf(ignoreHostCheck));
         }
-
         // common properties (i.e. timeouts)
         readCommonProperties(input);
 
@@ -1126,16 +1133,13 @@ public final class Installer {
         if (hasCsPackages) {
             userInput(input, Option.CS_IMPORT, "Import Code Stream packages?", true);
         }
-
         //  +-------------------------------------
         //  |  vRealize Automation (New Generation)
         //  +-------------------------------------
         boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty();
         if (hasVraNgPackages) {
-            userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
-          
+            userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);          
         }
-
         if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT)) {
             readVrangProperties(input);
         }
@@ -1145,7 +1149,6 @@ public final class Installer {
         if (input.anyTrue(Option.CS_IMPORT)) {
             readCsImportProperties(input);
         }
-
         //  +-------------------------------------
         //  |  vRealize Orchestrator
         //  +-------------------------------------
@@ -1153,7 +1156,6 @@ public final class Installer {
             userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
             if (input.anyTrue(Option.VRO_IMPORT)) {
 				userInput(input, Option.VRO_ENABLE_BACKUP, "Backup existing vRO packages?", true);
-
                 userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
                 if (input.anyTrue(Option.VRO_EMBEDDED)) {
                     readVroEmbeddedInVrangProperties(input, false);
@@ -1208,7 +1210,6 @@ public final class Installer {
         if (input.anyTrue(Option.VCD_IMPORT, Option.VCD_DELETE_OLD_VERSIONS)) {
             readVcdProperties(input);
         }
-
         //  +-------------------------------------
         //  |  SSH
         //  +-------------------------------------
@@ -1218,7 +1219,6 @@ public final class Installer {
         if (input.anyTrue(Option.SSH_IMPORT)) {
             readSshImportProperties(input);
         }
-
         //  +-------------------------------------
         //  |  Store Properties for reusage
         //  +-------------------------------------
@@ -1356,6 +1356,7 @@ public final class Installer {
         input.put(Option.VRO_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VRO_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
         userInput(input, Option.VRO_IMPORT_CONFIGURATION_ATTRIBUTE_VALUES, "  Import Configuration Elements Values?", false);
         userInput(input, Option.VRO_IMPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES, "  Import Configuration Elements Secure String Values?", false);
+        userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "  Force import latest versions of packages?", false);
     }
 
     private static void readVraImportProperties(final Input input) {
