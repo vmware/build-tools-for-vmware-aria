@@ -67,10 +67,6 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 					itemInfo.target = propValue;
 					break;
 
-				case "exception":
-					itemInfo.canvasItemPolymorphicBag.exception = propValue;
-					break;
-
 				case "scriptModule":
 					itemInfo.canvasItemPolymorphicBag.scriptModule = propValue;
 					break;
