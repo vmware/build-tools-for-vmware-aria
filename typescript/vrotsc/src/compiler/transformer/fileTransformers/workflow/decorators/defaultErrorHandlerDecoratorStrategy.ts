@@ -18,11 +18,7 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { getDecoratorProps } from "../../../helpers/node";
 import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-
-// UI positioning constants in the output XML file.
-const xBasePosition = 180;
-const yBasePosition = 110;
-const offSet = 20;
+import { GraphNode } from "./helpers/graph";
 
 /**
  * Responsible for printing out a default error handler
@@ -87,11 +83,19 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	}
 
 	/**
+	 * @see CanvasItemDecoratorStrategy.getGraphNode
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return {
+			name: `item${pos}`,
+			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+		};
+	}
+
+	/**
 	 * There is no need to print the source file for the default error handler.
 	 */
-	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
-		return "";
-	}
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints out the default handler item. Note that it needs to be connected with an end item and
@@ -102,7 +106,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	 *
 	 * @returns The string representation of the item.
 	 */
-	public printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const targetItemName = findTargetItem(itemInfo.target, pos, itemInfo);
@@ -117,7 +121,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 		}
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(`<position x="${xBasePosition + offSet * pos}" y="${yBasePosition}"/>`).appendLine();
+		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append("</error-handler>").appendLine();
 		stringBuilder.unindent();

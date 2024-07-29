@@ -1,36 +1,17 @@
-// const nodes = [
-// 	// First Start
-// 	{ name: "A", targets: ["B"] },
-// 	{ name: "B", targets: ["C"] },
-// 	{ name: "C", targets: ["D", "G"] },
-// 	{ name: "D", targets: ["E"] },
-// 	{ name: "E", targets: ["C", "F"] },
-// 	{ name: "F", targets: ["O"] },
-// 	{ name: "G", targets: ["H"] },
-// 	{ name: "H", targets: ["I"] },
-// 	{ name: "I", targets: ["J", "K", "L", "M"] },
-// 	{ name: "J", targets: [] },
-// 	{ name: "K", targets: [] },
-// 	{ name: "L", targets: [] },
-// 	{ name: "M", targets: [] },
-// 	{ name: "O", targets: ["P"] },
-// 	{ name: "P", targets: ["Q"] },
-// 	{ name: "Q", targets: [] },
-//
-// 	// Second start
-// 	{ name: "S", targets: ["T"] },
-// 	{ name: "T", targets: ["U", "W", "D"] },
-// 	{ name: "U", targets: [] },
-// 	{ name: "W", targets: [] },
-//
-// 	// Third Start
-// 	{ name: "X", targets: ["Y"] },
-// 	{ name: "Y", targets: [] },
-// ];
-//
-// const graph = new Graph(nodes, ["A", "S", "X"]);
-//
-// graph.draw();
+/*-
+ * #%L
+ * vrotsc
+ * %%
+ * Copyright (C) 2023 - 2024 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 
 /**
  * The node holds information about it's position
@@ -60,22 +41,77 @@ interface Tree {
 	};
 }
 
+/**
+ * This is used to chart out a graph and give you the x and y positions of each node
+ *
+ * Example:
+ * ```typescript
+const nodes = [
+	// First Start
+	{ name: "A", targets: ["B"] },
+	{ name: "B", targets: ["C"] },
+	{ name: "C", targets: ["D", "G"] },
+	{ name: "D", targets: ["E"] },
+	{ name: "E", targets: ["C", "F"] },
+	{ name: "F", targets: ["O"] },
+	{ name: "G", targets: ["H"] },
+	{ name: "H", targets: ["I"] },
+	{ name: "I", targets: ["J", "K", "L", "M"] },
+	{ name: "J", targets: [] },
+	{ name: "K", targets: [] },
+	{ name: "L", targets: [] },
+	{ name: "M", targets: [] },
+	{ name: "O", targets: ["P"] },
+	{ name: "P", targets: ["Q"] },
+	{ name: "Q", targets: [] },
+
+	// Second start
+	{ name: "S", targets: ["T"] },
+	{ name: "T", targets: ["U", "W", "D"] },
+	{ name: "U", targets: [] },
+	{ name: "W", targets: [] },
+
+	// Third Start
+	{ name: "X", targets: ["Y"] },
+	{ name: "Y", targets: [] },
+];
+
+const graph = new Graph(nodes, ["A", "S", "X"]);
+
+graph.draw();
+ * ```
+ *
+ * Will output:
+ * ```
+....................................................................................................
+....................................................................................................
+....................................................................................................
+..............................F....O....P....Q......................................................
+....................................................................................................
+....................................................................................................
+....................D....E..........................................................................
+....................................................................................................
+.....A....B....C...................J................................................................
+....................................................................................................
+....................................................................................................
+....................G....H....I.....................................................................
+....................................................................................................
+.....S....T....U...................K................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+...............W...................L................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+...................................M................................................................
+....................................................................................................
+....................................................................................................
+ * ```
+ */
 export class Graph {
-	/**
-	 * Space between nodes
-	 */
-	public NODE_SPACING = 5;
-
-	/**
-	 * Max width of the graph
-	 */
-	public WIDTH = 100;
-
-	/**
-	 * Max height of the graph
-	 */
-	public HEIGHT = 40;
-
 	/**
 	 * Holds a flag if calculations were already done
 	 */
@@ -89,10 +125,16 @@ export class Graph {
 	/**
 	 * @param {GraphNode[]} nodes - List of the nodes that will be used to build the tree
 	 * @param {string[]} startNodeNames - List of the names of the nodes that will be used as the start of the tree
+	 * @param {number} nodeSpacing - The spacing between the nodes
+	 * @param {number} height - The height of the graph
+	 * @param {number} width - The width of the graph
 	 */
 	constructor(
 		private nodes: GraphNode[],
-		startNodeNames: string[]
+		startNodeNames: string[],
+		private nodeSpacing: number = 5,
+		private readonly height: number = 40,
+		private readonly width: number = 100
 	) {
 		this.tree = {
 			startNodes: startNodeNames,
@@ -110,7 +152,7 @@ export class Graph {
 	public draw() {
 		this.calculatePositions();
 
-		const grid = Array.from({ length: this.HEIGHT }, () => Array(this.WIDTH).fill('.'));
+		const grid = Array.from({ length: this.height }, () => Array(this.width).fill('.'));
 
 		for (const leaf of Object.values(this.tree.leaves)) {
 			grid[Math.round(leaf.node.y)][Math.round(leaf.node.x)] = leaf.node.name;
@@ -151,6 +193,33 @@ export class Graph {
 	}
 
 	/**
+	 * Height of the graph
+	 *
+	 * Retrieve from here so you don't have to store a variable
+	 */
+	public getHeight() {
+		return this.height;
+	}
+
+	/**
+	 * Width of the graph
+	 *
+	 * Retrieve from here so you don't have to store a variable
+	 */
+	public getWidth() {
+		return this.width;
+	}
+
+	/**
+	 * Node spacing
+	 *
+	 * Retrieve from here so you don't have to store a variable
+	 */
+	public getNodeSpacing() {
+		return this.nodeSpacing;
+	}
+
+	/**
 	 * Check if a node is already at the given position
 	 */
 	private hasOverlap(x: number, y: number) {
@@ -170,23 +239,23 @@ export class Graph {
 	private buildTree(
 		origin: GraphNode,
 		visited: Set<GraphNode> = new Set<GraphNode>(),
-		x: number = this.NODE_SPACING,
-		y: number = this.HEIGHT / 2
+		x: number = this.nodeSpacing,
+		y: number = this.height / 2
 	) {
 		while (this.hasOverlap(x, y)) {
-			y += this.NODE_SPACING;
+			y += this.nodeSpacing;
 		}
 
 		origin.x = x;
 		origin.y = y;
 
 		let positions = {
-			x: x + this.NODE_SPACING,
+			x: x + this.nodeSpacing,
 			y: y
 		};
 
 		if (origin.targets.length > 1) {
-			positions.y -= this.NODE_SPACING * (origin.targets.length - 1) / 2;
+			positions.y -= this.nodeSpacing * (origin.targets.length - 1) / 2;
 		}
 
 		origin.targets.forEach(targetName => {
@@ -207,7 +276,7 @@ export class Graph {
 			visited.add(target);
 
 			this.buildTree(targetLeaf.node, visited, positions.x, positions.y);
-			positions.y += this.NODE_SPACING;
+			positions.y += this.nodeSpacing;
 		});
 	}
 
@@ -227,8 +296,8 @@ export class Graph {
 		}
 
 		const visited = new Set<GraphNode>();
-		const spacedOutY = this.HEIGHT / (this.tree.startNodes.length + 1);
-		const positions = { x: this.NODE_SPACING, y: spacedOutY };
+		const spacedOutY = this.height / (this.tree.startNodes.length + 1);
+		const positions = { x: this.nodeSpacing, y: spacedOutY };
 
 		for (const name of this.tree.startNodes) {
 			const startNode = this.getNode(name);
