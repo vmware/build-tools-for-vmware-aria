@@ -1,34 +1,37 @@
-[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
-[//]: # (Used when working on a new release. Placed together with the Version.md)
-[//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
-[//]: # (Do not fill the version, it will be done automatically)
-[//]: # (Quick Intro to what is the focus of this release)
+[//]: # "VERSION_PLACEHOLDER DO NOT DELETE"
+[//]: # "Used when working on a new release. Placed together with the Version.md"
+[//]: # "Nothing here is optional. If a step must not be performed, it must be said so"
+[//]: # "Do not fill the version, it will be done automatically"
+[//]: # "Quick Intro to what is the focus of this release"
 
 ## Breaking Changes
 
-[//]: # (### *Breaking Change*)
-[//]: # (Describe the breaking change AND explain how to resolve it)
-[//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
+[//]: # "### *Breaking Change*"
+[//]: # "Describe the breaking change AND explain how to resolve it"
+[//]: # "You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/"
 
 ## Deprecations
 
-[//]: # (### *Deprecation*)
-[//]: # (Explain what is deprecated and suggest alternatives)
-
-[//]: # (Features -> New Functionality)
+[//]: # "### *Deprecation*"
+[//]: # "Explain what is deprecated and suggest alternatives"
+[//]: # "Features -> New Functionality"
 
 ## Features
 
-[//]: # (### *Feature Name*)
-[//]: # (Describe the feature)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+[//]: # "### *Feature Name*"
+[//]: # "Describe the feature"
+[//]: # "Optional But higlhy recommended Specify *NONE* if missing"
+[//]: # "#### Relevant Documentation:"
+
+### Support of Objects in the VROES.Shims.arrayFrom() Method
+
+Add support for objects in the `VROES.Shims.arrayFrom()` method so its behavior is similar to the standard `Array.from()` method.
 
 ### Support python 3.10 runtime
 
 Add support for python 3.10 runtime in Orchestrator. This is now the default, since python 3.7 is deprecated.
 
-### *New `@ActionItem` decorator for Workflows*
+### _New `@ActionItem` decorator for Workflows_
 
 The new decorator gives you the ability to specify a canvas item that calls an action.
 
@@ -53,23 +56,26 @@ import { Workflow, Out, In, Item, ActionItem } from "vrotsc-annotations";
   path: "VMware/PSCoE",
   attributes: {
     first: {
-      type: "number"
+      type: "number",
     },
     second: {
-      type: "number"
+      type: "number",
     },
     actionResult: {
-      type: "ActionResult"
-    }
-  }
+      type: "ActionResult",
+    },
+  },
 })
 export class Example {
   @ActionItem({
     target: "printActionResult",
-    scriptModule: "com.vmware.pscoe.onboarding.sgenov.actions/test"
+    scriptModule: "com.vmware.pscoe.onboarding.sgenov.actions/test",
   })
-  public callTestAction(@In first: number, @In second: number, @Out actionResult: ActionResult) {
-  }
+  public callTestAction(
+    @In first: number,
+    @In second: number,
+    @Out actionResult: ActionResult
+  ) {}
 
   @Item({ target: "end" })
   public printActionResult(@In actionResult: ActionResult) {
@@ -78,7 +84,7 @@ export class Example {
 }
 ```
 
-### *New `DefaultErrorHandler` decorator for Workflows*
+### _New `DefaultErrorHandler` decorator for Workflows_
 
 This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
 
@@ -146,7 +152,7 @@ export class HandleDefaultError {
 }
 ```
 
-### *New `@WorkflowEndItem` decorator for Workflows*
+### _New `@WorkflowEndItem` decorator for Workflows_
 
 The decorator is used to specify a custom workflow end item.
 
@@ -194,7 +200,7 @@ export class WorkflowEnd {
 }
 ```
 
-### *New `AsyncWorkflowItem` decorator for Workflows*
+### _New `AsyncWorkflowItem` decorator for Workflows_
 
 The decorator is used to specify a canvas item that calls an asynchronous workflow.
 
@@ -214,40 +220,51 @@ Special output is needed for the AsyncWorkflowItem.
 
 No special inputs are needed for the AsyncWorkflowItem.
 
-
 #### Example
 
 ```typescript
-import { Workflow, Out, In, Item, RootItem, AsyncWorkflowItem } from "vrotsc-annotations";
+import {
+  Workflow,
+  Out,
+  In,
+  Item,
+  RootItem,
+  AsyncWorkflowItem,
+} from "vrotsc-annotations";
 
 @Workflow({
   name: "Async Workflow Test",
   path: "VMware/PSCoE",
-  description: "Calling another workflow asynchronously and binding values correctly",
+  description:
+    "Calling another workflow asynchronously and binding values correctly",
   attributes: {
     waitingTimer: {
-      type: "Date"
+      type: "Date",
     },
     counter: {
-      type: "number"
+      type: "number",
     },
     first: {
-      type: "number"
+      type: "number",
     },
     second: {
-      type: "number"
+      type: "number",
     },
     wfToken: {
-      type: "WorkflowToken"
-    }
-  }
+      type: "WorkflowToken",
+    },
+  },
 })
 export class HandleNetworkConfigurationBackup {
   @AsyncWorkflowItem({
     target: "printAsync",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
   })
-  public asyncCall(@In first: number, @In second: number, @Out wfToken: WorkflowToken) { }
+  public asyncCall(
+    @In first: number,
+    @In second: number,
+    @Out wfToken: WorkflowToken
+  ) {}
 
   @Item({ target: "callAsyncWf" })
   public prepareItems(@In @Out first: number, @In @Out second: number) {
@@ -269,7 +286,7 @@ export class HandleNetworkConfigurationBackup {
 }
 ```
 
-### *New `ScheduledWorkflowItem` decorator for Workflows*
+### _New `ScheduledWorkflowItem` decorator for Workflows_
 
 The new decorator gives you the ability to specify a canvas item that schedules a Workflow.
 
@@ -294,34 +311,44 @@ Special output is needed for the ScheduledWorkflowItem.
 #### Example
 
 ```ts
-import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem, ScheduledWorkflowItem } from "vrotsc-annotations";
+import {
+  Workflow,
+  Out,
+  In,
+  Item,
+  RootItem,
+  DecisionItem,
+  WaitingTimerItem,
+  WorkflowItem,
+  ScheduledWorkflowItem,
+} from "vrotsc-annotations";
 
 @Workflow({
   name: "Example Waiting Timer",
   path: "VMware/PSCoE",
   attributes: {
     waitingTimer: {
-      type: "Date"
+      type: "Date",
     },
     counter: {
-      type: "number"
+      type: "number",
     },
     first: {
-      type: "number"
+      type: "number",
     },
     second: {
-      type: "number"
+      type: "number",
     },
     result: {
-      type: "number"
+      type: "number",
     },
     workflowScheduleDate: {
-      type: "Date"
+      type: "Date",
     },
     scheduledTask: {
-      type: "Task"
-    }
-  }
+      type: "Task",
+    },
+  },
 })
 export class HandleNetworkConfigurationBackup {
   @DecisionItem({ target: "waitForEvent", else: "prepareItems" })
@@ -330,7 +357,11 @@ export class HandleNetworkConfigurationBackup {
   }
 
   @Item({ target: "callOtherWf" })
-  public prepareItems(@In @Out first: number, @In @Out second: number, @In @Out workflowScheduleDate: Date) {
+  public prepareItems(
+    @In @Out first: number,
+    @In @Out second: number,
+    @In @Out workflowScheduleDate: Date
+  ) {
     first = 1;
     second = 2;
     workflowScheduleDate = System.getDate("1 minute from now", undefined);
@@ -338,11 +369,13 @@ export class HandleNetworkConfigurationBackup {
 
   @WorkflowItem({
     target: "print",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
   })
-  public callOtherWf(@In first: number, @In second: number, @Out result: number) {
-  }
-
+  public callOtherWf(
+    @In first: number,
+    @In second: number,
+    @Out result: number
+  ) {}
 
   @Item({ target: "scheduleOtherWf" })
   public print(@In result: number) {
@@ -351,10 +384,14 @@ export class HandleNetworkConfigurationBackup {
 
   @ScheduledWorkflowItem({
     target: "printScheduledDetails",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
   })
-  public scheduleOtherWf(@In first: number, @In second: number, @In workflowScheduleDate: Date, @Out scheduledTask: Task) {
-  }
+  public scheduleOtherWf(
+    @In first: number,
+    @In second: number,
+    @In workflowScheduleDate: Date,
+    @Out scheduledTask: Task
+  ) {}
 
   @Item({ target: "end" })
   public printScheduledDetails(@In scheduledTask: Task) {
@@ -387,12 +424,11 @@ export class HandleNetworkConfigurationBackup {
   }
 
   @WaitingTimerItem({ target: "execute" })
-  public waitForEvent(@In waitingTimer: Date) {
-  }
+  public waitForEvent(@In waitingTimer: Date) {}
 }
 ```
 
-### *New `WorkflowItem` decorator for Workflows*
+### _New `WorkflowItem` decorator for Workflows_
 
 The new Decorator gives you the ability to specify a canvas item that calls a Workflow.
 
@@ -497,18 +533,18 @@ export class HandleNetworkConfigurationBackup {
 
 ## Improvements
 
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+[//]: # "### *Improvement Name* "
+[//]: # "Talk ONLY regarding the improvement"
+[//]: # "Optional But higlhy recommended"
+[//]: # "#### Previous Behavior"
+[//]: # "Explain how it used to behave, regarding to the change"
+[//]: # "Optional But higlhy recommended"
+[//]: # "#### New Behavior"
+[//]: # "Explain how it behaves now, regarding to the change"
+[//]: # "Optional But higlhy recommended Specify *NONE* if missing"
+[//]: # "#### Relevant Documentation:"
 
-### *ABX archetype build issue, cannot compile*
+### _ABX archetype build issue, cannot compile_
 
 Fixed an issue where the ABX archetype could not compile due to an old version of the `xmlbuilder2` package.
 
@@ -552,4 +588,4 @@ The ABX archetype now compiles successfully.
 
 ## Upgrade procedure
 
-[//]: # (Explain in details if something needs to be done)
+[//]: # "Explain in details if something needs to be done"
