@@ -34,30 +34,30 @@ From input:
 
 ```ts
 const nodes = [
-	{ name: "A", targets: ["B"] },
-	{ name: "B", targets: ["C"] },
-	{ name: "C", targets: ["D", "G"] },
-	{ name: "D", targets: ["E", "F"] },
-	{ name: "E", targets: ["C"] },
-	{ name: "F", targets: ["O"] },
-	{ name: "G", targets: ["H"] },
-	{ name: "H", targets: ["I"] },
-	{ name: "I", targets: ["J", "K", "L", "M"] },
-	{ name: "J", targets: [] },
-	{ name: "K", targets: [] },
-	{ name: "L", targets: [] },
-	{ name: "M", targets: [] },
-	{ name: "O", targets: ["P"] },
-	{ name: "P", targets: ["Q"] },
-	{ name: "Q", targets: [] },
+  { name: "A", targets: ["B"] },
+  { name: "B", targets: ["C"] },
+  { name: "C", targets: ["D", "G"] },
+  { name: "D", targets: ["E", "F"] },
+  { name: "E", targets: ["C"] },
+  { name: "F", targets: ["O"] },
+  { name: "G", targets: ["H"] },
+  { name: "H", targets: ["I"] },
+  { name: "I", targets: ["J", "K", "L", "M"] },
+  { name: "J", targets: [] },
+  { name: "K", targets: [] },
+  { name: "L", targets: [] },
+  { name: "M", targets: [] },
+  { name: "O", targets: ["P"] },
+  { name: "P", targets: ["Q"] },
+  { name: "Q", targets: [] },
 
-	// Second start?
-	{ name: "S", targets: ["T"] },
-	{ name: "T", targets: ["U", "W", "D"] },
-	{ name: "U", targets: [] },
-	{ name: "W", targets: [] },
-	{ name: "X", targets: ["Y"] },
-	{ name: "Y", targets: [] },
+  // Second start?
+  { name: "S", targets: ["T"] },
+  { name: "T", targets: ["U", "W", "D"] },
+  { name: "U", targets: [] },
+  { name: "W", targets: [] },
+  { name: "X", targets: ["Y"] },
+  { name: "Y", targets: [] },
 ];
 ```
 
