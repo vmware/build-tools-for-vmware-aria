@@ -90,6 +90,9 @@ We get:
 ....................................................................................................
 ....................................................................................................
 ```
+### Support python 3.10 runtime
+
+Add support for python 3.10 runtime in Orchestrator. This is now the default, since python 3.7 is deprecated.
 
 ### *New `@ActionItem` decorator for Workflows*
 

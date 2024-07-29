@@ -60,6 +60,7 @@ export class Packager extends EventEmitter {
                     await strategy.packageProject();
                     break;
                 case ActionRuntime.ABX_PYTHON:
+                case ActionRuntime.VRO_PYTHON_310:
                 case ActionRuntime.VRO_PYTHON_37:
                     strategy = new PythonStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
                     await strategy.packageProject();
