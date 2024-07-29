@@ -1,5 +1,5 @@
 /**
- * Specifies the object Type VRA:HOST.
+ * VMware Aria Automation Host provides access to connection host properties & validation access.
  */
 declare class VraHost {
 	readonly displayName: string;
@@ -34,7 +34,6 @@ declare class VraHost {
 }
 
 declare class VraInfrastructureClient {
-	constructor();
 	/**
 	 * @param genericRestClient
 	 */
@@ -63,7 +62,6 @@ declare class VraInfrastructureClient {
 
 declare class VraCloudAccountService {
 	constructor();
-	constructor();
 
 	/**
 	 * @param genericRestClient
@@ -74,7 +72,7 @@ declare class VraCloudAccountService {
 	 * Delete a vSphere Cloud Account with a given id
 	 * @param cloudAccountVsphereId
 	 */
-	deleteVSphereCloudAccountById(cloudAccountVsphereId): void;
+	deleteVSphereCloudAccountById(cloudAccountVsphereId: string): void;
 
 	/**
 	 * Delete a vSphere Cloud Account with a given cloudAccountVsphere object
@@ -134,7 +132,6 @@ declare class VraUpdateCloudAccountVsphereSpecification {
 	username: string;
 	tags: Object[];
 	constructor();
-	constructor();
 
 	/**
 	 * @param associatedCloudAccountIdsItem
@@ -172,7 +169,6 @@ declare class VraCloudAccountVsphereSpecification {
 	username: string;
 	tags: Object[];
 	constructor();
-	constructor();
 
 	/**
 	 * @param regionsItem
@@ -198,7 +194,6 @@ declare class VraRegionSpecification {
 	externalRegionId: string;
 	name: string;
 	constructor();
-	constructor();
 }
 
 declare class VraCloudAccountVsphere {
@@ -221,7 +216,6 @@ declare class VraCloudAccountVsphere {
 	username: string;
 	customPropertiesExtension: string;
 	constructor();
-	constructor();
 
 	/**
 	 * @param key
@@ -240,7 +234,6 @@ declare class VraCloudAccountVsphere {
 }
 
 declare class VraCloudZoneService {
-	constructor();
 	constructor();
 
 	/**
@@ -291,7 +284,6 @@ declare class VraZone {
 	updatedAt: string;
 	customPropertiesExtension: string;
 	constructor();
-	constructor();
 
 	/**
 	 * @param tagsToMatchItem
@@ -320,7 +312,6 @@ declare class VraHref {
 	hrefs: Object[];
 	href: string;
 	constructor();
-	constructor();
 
 	/**
 	 * @param hrefsItem
@@ -340,7 +331,6 @@ declare class VraZoneSpecification {
 	placementPolicy: string;
 	description: string;
 	tags: Object[];
-	constructor();
 	constructor();
 
 	/**
@@ -374,7 +364,6 @@ declare class VraTag {
 	host: VraHost;
 	value: string;
 	key: string;
-	constructor();
 	constructor();
 }
 
@@ -421,7 +410,6 @@ declare class VraRequestTracker {
 	requestTrackerStatus: string;
 	message: string;
 	selfLink: string;
-	constructor();
 
 	/**
 	 * An object used to track long-running operations.
@@ -429,20 +417,51 @@ declare class VraRequestTracker {
 	constructor();
 
 	/**
-	 * An object used to track long-running operations.
 	 * @param resourcesItem
 	 */
 	addResourcesItem(resourcesItem: string): VraRequestTracker;
 }
 
+/**
+ * A generic VMware Aria Automation Rest client for executing REST operations
+ */
 declare class VraGenericRestClient {
-	readonly host: VraHost;
+	host: VraHost;
+
+	/**
+	 * Automation GenericRestClient No Argument Constructor.
+	 */
+	constructor();
+
+	/**
+	 * Get Method to execute rest operation by setting Request object. Request object can hold information (http method, resource url, request payload)
+	 * @param request
+	 */
+	get(request: VraRestRequest): VraRestResponse;
 
 	/**
 	 * Method to execute rest operation by setting Request object. Request object can hold information (http method, resource url, request payload)
 	 * @param restRequest
 	 */
 	execute(restRequest: VraRestRequest): VraRestResponse;
+
+	/**
+	 * Put Method to execute rest operation by setting Request object. Request object can hold information (http method, resource url, request payload)
+	 * @param request
+	 */
+	put(request: VraRestRequest): VraRestResponse;
+
+	/**
+	 * Delete Method (Http Delete) to execute rest operation by setting Request object. Request object can hold information (http method, resource url, request payload)
+	 * @param request
+	 */
+	delete(request: VraRestRequest): VraRestResponse;
+
+	/**
+	 * Post Method to execute rest operation by setting Request object. Request object can hold information (http method, resource url, request payload)
+	 * @param request
+	 */
+	post(request: VraRestRequest): VraRestResponse;
 
 	/**
 	 * Method to create HTTP rest Request. It holds parameter (HTTP Method (GET/PUT/POST/DELETE/PATCH), Resource Path URI, Request Payload (Stringified JSON)).
@@ -455,6 +474,12 @@ declare class VraGenericRestClient {
 		path: string,
 		requestPayload: string
 	): VraRestRequest;
+
+	/**
+	 * Patch Method (Http Patch) to execute rest operation by setting Request object. Request object can hold information (http method, resource url, request payload)
+	 * @param request
+	 */
+	patch(request: VraRestRequest): VraRestResponse;
 }
 
 declare class VraRestRequest {
