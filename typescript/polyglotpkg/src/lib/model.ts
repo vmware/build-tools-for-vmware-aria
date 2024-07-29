@@ -27,6 +27,7 @@ export enum ActionRuntime {
     VRO_POWERCLI_11_PS_62 = 'powercli:11-powershell-6.2',
     VRO_POWERCLI_12_PS_71 = 'powercli:12-powershell-7.1',
     VRO_PYTHON_37 = 'python:3.7',
+    VRO_PYTHON_310 = 'python:3.10',
     ABX_NODEJS = 'nodejs',
     ABX_POWERSHELL = 'powershell',
     ABX_PYTHON = 'python',
@@ -35,7 +36,7 @@ export enum ActionRuntime {
 export type ActionRuntimeType =
     ActionRuntime.ABX_NODEJS | ActionRuntime.VRO_NODEJS_12 | ActionRuntime.VRO_NODEJS_14
     | ActionRuntime.ABX_POWERSHELL | ActionRuntime.VRO_POWERCLI_11_PS_62 | ActionRuntime.VRO_POWERCLI_12_PS_71
-    | ActionRuntime.VRO_PYTHON_37 | ActionRuntime.ABX_PYTHON
+    | ActionRuntime.VRO_PYTHON_37 | ActionRuntime.VRO_PYTHON_310 | ActionRuntime.ABX_PYTHON
 
 export type PackageDefinition = {
     [key: string]: any,
