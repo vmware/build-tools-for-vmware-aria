@@ -1,4 +1,4 @@
-import { Workflow, RootItem, WorkflowEndItem } from "vrotsc-annotations";
+import { Workflow, RootItem, DecisionItem, WorkflowEndItem } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Workflow End Exception",
@@ -11,16 +11,17 @@ import { Workflow, RootItem, WorkflowEndItem } from "vrotsc-annotations";
 		businessStatus: {
 			type: "string"
 		},
-		endMode: {
-			type: "number"
-		}
 	}
 })
 export class WorkflowEnd {
 
 	@RootItem()
+	@DecisionItem({
+		target: "end",
+		else: "workflowEnd"
+	})
 	public initiateWorkflow() {
-		// NOOP
+		return true;
 	}
 
 	@WorkflowEndItem({

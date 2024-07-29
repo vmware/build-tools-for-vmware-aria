@@ -13,10 +13,9 @@ import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem } fro
 	}
 })
 export class Complex {
-	
 	@DecisionItem({
 		target: "waitForEvent",
-		else: null
+		else: "end"
 	})
 	public decisionElement(waitingTimer: Date) {
 		return waitingTimer !== null;

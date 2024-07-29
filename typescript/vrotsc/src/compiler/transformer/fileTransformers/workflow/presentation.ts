@@ -48,7 +48,14 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		stringBuilder.append(`<description><![CDATA[${workflow.description}]]></description>`).appendLine();
 	}
 
-	const graph = getGraph(workflow);
+	let graph: Graph;
+
+	try {
+		graph = getGraph(workflow);
+	} catch (e) {
+		throw new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.
+                        Original Error: ${e.message}`);
+	}
 
 	stringBuilder.append(`<position x="${graph.getNodeSpacing()}" y="${graph.getHeight() / 2}" />`).appendLine();
 	buildParameters("input", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Input));
@@ -272,7 +279,7 @@ function buildOutput(output: string[]): string {
  * Will insert the default `end` node as well as the others require it but it's not an actual workflow item
  */
 function getGraph(workflow: WorkflowDescriptor) {
-
+	// start node
 	const startNodes = [`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`];
 	const nodes = workflow.items.map((item, i) => {
 		switch (item.strategy.getCanvasType()) {
@@ -285,12 +292,11 @@ function getGraph(workflow: WorkflowDescriptor) {
 
 		return item.strategy.getGraphNode(item, i + 1);
 	});
+	// end node
 	nodes.push({ name: "item0", targets: [] });
 
 	const nodeSpacing = 100;
 	const height = 200;
 	const width = LARGEST_INT32;
-	const graph = new Graph(nodes, startNodes, nodeSpacing, height, width);
-
-	return graph;
+	return new Graph(nodes, startNodes, nodeSpacing, height, width);
 }

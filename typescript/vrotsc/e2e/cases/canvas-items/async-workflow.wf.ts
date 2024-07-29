@@ -29,7 +29,7 @@ export class HandleNetworkConfigurationBackup {
 	})
 	public asyncCall(@In first: number, @In second: number, @Out wfToken: WorkflowToken) { }
 
-	@Item({ target: "callAsyncWf" })
+	@Item({ target: "asyncCall" })
 	public prepareItems(@In @Out first: number, @In @Out second: number) {
 		first = 1;
 		second = 2;

@@ -307,6 +307,27 @@ export class Graph {
 		}
 
 		this.calculated = true;
+
+		for (const leaf of Object.values(this.tree.leaves)) {
+			if (this.tree.startNodes.includes(leaf.node.name)) {
+				continue;
+			}
+
+			if (leaf.node.x === undefined || leaf.node.y === undefined) {
+
+				console.log(
+					JSON.stringify(
+						Object.values(this.tree.leaves).map(l => {
+							return { node: l.node, leaves: l.leaves.map(le => le.node.name) };
+						}),
+						null,
+						2
+					)
+				);
+
+				throw new Error(`Node "${leaf.node.name}" has no position, seems like one of the nodes is not connected which would make your wf unusable, check your targets. Above should be a log of all the leaves.`);
+			}
+		}
 	}
 
 
