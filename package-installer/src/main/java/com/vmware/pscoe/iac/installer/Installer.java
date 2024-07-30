@@ -252,6 +252,18 @@ enum Option {
     VRANG_CLOUD_PROXY_NAME(
             "varng_cloud_proxy_name",
             ConfigurationVraNg.CLOUD_PROXY_NAME),
+
+	/**
+	 * VRANG unrelease blueprint versions. Decides wether old versions need to be
+	 * unrelased
+	 *
+	 * This only works when running in non interactive mode
+	 */
+	VRANG_BP_UNRELEASE_VERSIONS(
+			"vrang_bp_unrelease_versions",
+			ConfigurationVraNg.UNRELEASE_BLUEPRINT_VERSIONS),
+
+
 	/**
 	 * VRLI server.
 	 */
