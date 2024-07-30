@@ -201,6 +201,7 @@ The following missing methods were added to the exist classes:
 
 - Class `VraHost`
   - `destroy`
+  - `createInfrastructureClient`
 
 #### Related issue
 
