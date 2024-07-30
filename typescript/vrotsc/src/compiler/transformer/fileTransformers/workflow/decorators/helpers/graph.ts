@@ -233,6 +233,9 @@ export class Graph {
 
 	/**
 	 * Check if a node is already at the given position
+	 *
+	 * @param {number} x
+	 * @param {number} y
 	 */
 	private hasOverlap(x: number, y: number) {
 		for (const leaf of Object.values(this.tree.leaves)) {
@@ -247,6 +250,11 @@ export class Graph {
 	 * Builds the tree
 	 *
 	 * Calculates the x and y positions of each leaf
+	 *
+	 * @param {GraphNode} origin - The node to start building the tree from
+	 * @param {Set<GraphNode>} visited - The set of visited nodes
+	 * @param {number} x - The x position of the new node
+	 * @param {number} y - The y position of the new node
 	 */
 	private buildTree(
 		origin: GraphNode,
@@ -326,16 +334,10 @@ export class Graph {
 			}
 
 			if (leaf.node.x === undefined || leaf.node.y === undefined) {
-
-				console.log(
-					JSON.stringify(
-						Object.values(this.tree.leaves).map(l => {
-							return { node: l.node, leaves: l.leaves.map(le => le.node.name) };
-						}),
-						null,
-						2
-					)
-				);
+				const nodes = Object.values(this.tree.leaves).map(l => {
+					return { node: l.node, leaves: l.leaves.map(le => le.node.name) };
+				});
+				console.log(JSON.stringify(nodes, null, 2));
 
 				throw new Error(`Node "${leaf.node.name}" has no position, seems like one of the nodes is not connected which would make your wf unusable, check your targets. Above should be a log of all the leaves.`);
 			}
