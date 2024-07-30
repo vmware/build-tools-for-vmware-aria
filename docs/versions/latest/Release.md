@@ -616,6 +616,41 @@ org.apache.commons.exec.ExecuteException: Process exited with an error: 1 (Exit 
 
 The ABX archetype now compiles successfully.
 
+### Add missing classes to `o11n-plugin-aria` and add missing methods to the existing classes
+
+#### Previous Behavior
+
+Many classes are missing completely compared with vRO API and some existing classes were missing some methods
+
+#### Current Behavior
+
+The following classes were added to `o11n-plugin-aria`:
+
+- VraInfrastructureClient
+- VraCloudAccountService
+- VraUpdateCloudAccountVsphereSpecification
+- VraCloudAccountVsphereSpecification
+- VraRegionSpecification
+- VraCloudAccountVsphere
+- VraCloudZoneService
+- VraZone
+- VraHref
+- VraZoneSpecification
+- VraTag
+- VraDataCollectorService
+- VraRequestService
+- VraRequestTracker
+  
+The following missing methods were added to the exist classes:
+
+- Class `VraHost`
+  - `destroy`
+  - `createInfrastructureClient`
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
