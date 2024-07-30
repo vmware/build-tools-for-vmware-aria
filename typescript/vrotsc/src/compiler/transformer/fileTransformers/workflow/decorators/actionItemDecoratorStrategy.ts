@@ -20,6 +20,7 @@ import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { ActionItemSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
+import { GraphNode } from "./helpers/graph";
 
 /**
  *
@@ -78,6 +79,16 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 	}
 
 	/**
+	 * @see CanvasItemDecoratorStrategy.getGraphNode
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return {
+			name: `item${pos}`,
+			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+		};
+	}
+
+	/**
 	 * There is no need to print the source file for the workflow item
 	 */
 	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
@@ -95,7 +106,7 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 	 *
 	 * @returns The string representation of the item
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		this.validateNeededParameters(itemInfo);
@@ -117,7 +128,7 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

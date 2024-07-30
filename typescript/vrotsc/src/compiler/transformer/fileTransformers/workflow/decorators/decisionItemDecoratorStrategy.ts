@@ -20,6 +20,7 @@ import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { SourceFilePrinter, WrapperSourceFilePrinter } from "./helpers/sourceFile";
+import { GraphNode } from "./helpers/graph";
 
 /**
  * Responsible for printing out decision items
@@ -70,6 +71,19 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		});
 	}
 
+	/**
+	 * @see CanvasItemDecoratorStrategy.getGraphNode
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return {
+			name: `item${pos}`,
+			targets: [
+				findTargetItem(itemInfo.target, pos, itemInfo),
+				findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)
+			]
+		};
+	}
+
 	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
 		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
 	}
@@ -87,7 +101,7 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	 * @param pos The position of the item in the workflow
 	 * @returns The string representation of the decision item
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
@@ -108,7 +122,7 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

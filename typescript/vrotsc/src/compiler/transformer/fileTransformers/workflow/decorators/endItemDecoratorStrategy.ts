@@ -18,11 +18,7 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { getDecoratorProps } from "../../../helpers/node";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { buildItemParameterBindings, InputOutputBindings } from "./helpers/presentation";
-
-// UI positioning constants in the output XML file.
-const xBasePosition = 160;
-const yBasePosition = 100;
-const offSet = 20;
+import { GraphNode } from "./helpers/graph";
 
 /**
  * Responsible for printing out the workflow end item.
@@ -91,11 +87,19 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	}
 
 	/**
+	 * @see CanvasItemDecoratorStrategy.getGraphNode
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return {
+			name: `item${pos}`,
+			targets: []
+		};
+	}
+
+	/**
 	 * There is no need to print the source file for the workflow item.
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
-		return "";
-	}
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints out the end item.
@@ -105,7 +109,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	 *
 	 * @returns The string representation of the item.
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode ?? 0;
@@ -122,7 +126,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${xBasePosition + offSet * (pos + 10)}" y="${yBasePosition}"/>`).appendLine();
+		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

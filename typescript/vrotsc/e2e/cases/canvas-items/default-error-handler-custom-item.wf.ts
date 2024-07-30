@@ -18,6 +18,13 @@ export class HandleDefaultError {
 	}
 
 	@Item({
+		target: "end"
+	})
+	public goToEnd() {
+		// NOOP
+	}
+
+	@Item({
 		target: "workflowEnd"
 	})
 	public processError(@In errorMessage: string) {
