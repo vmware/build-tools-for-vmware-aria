@@ -518,3 +518,160 @@ declare class VraRestResponse {
 	 */
 	getHeaderValues(headerName: string): string;
 }
+
+declare class VraBlockDevice {
+	owner: string;
+	cloudAccountIdsExtension: string;
+	linksExtension: string;
+	externalZoneId: string;
+	externalRegionId: string;
+	externalId: string;
+	description: string;
+	orgId: string;
+	tags: Object[];
+	capacityInGB: number;
+	cloudAccountIds: Object[];
+	createdAt: string;
+	provisioningStatus: string;
+	deploymentId: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	tagsExtension: string;
+	blockDeviceStatus: string;
+	id: string;
+	persistent: boolean;
+	projectId: string;
+	updatedAt: string;
+	customPropertiesExtension: string;
+	constructor();
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(key: string, customPropertiesItem: string): VraBlockDevice;
+
+	/**
+   * @param tagsItem
+   */
+	addTagsItem(tagsItem: VraTag): VraBlockDevice;
+
+	/**
+   * @param cloudAccountIdsItem
+   */
+	addCloudAccountIdsItem(cloudAccountIdsItem: string): VraBlockDevice;
+
+	/**
+   * @param key
+	 * @param linksItem
+   */
+	putLinksItem(key: string, linksItem: VraHref): VraBlockDevice;
+}
+
+/**
+ * State object representing a query result of block device.
+ */
+declare class VraBlockDeviceResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+	constructor();
+}
+
+/**
+ * BlockDeviceSpecification
+ */
+declare class VraBlockDeviceSpecification {
+	capacityInGB: number;
+	sourceReference: string;
+	encrypted: boolean;
+	deploymentId: string;
+	name: string;
+	description: string;
+	diskContentBase64: string;
+	persistent: boolean;
+	constraints: Object[];
+	projectId: string;
+	tags: Object[];
+	constructor();
+
+	/**
+   * @param constraintsItem
+   */
+	addConstraintsItem(constraintsItem: VraConstraint): VraBlockDeviceSpecification;
+
+	/**
+   * @param tagsItem
+   */
+	addTagsItem(tagsItem: VraTag): VraBlockDeviceSpecification;
+
+	/**
+   * @param key
+	 * @param customPropertiesItem
+   */
+	putCustomPropertiesItem(key: string, customPropertiesItem: string): VraBlockDeviceSpecification;
+}
+
+/**
+ * A constraint that is conveyed to the policy engine.
+ */
+declare class VraConstraint {
+  expression: string;
+  mandatory: boolean;
+  constructor();
+}
+
+/**
+ * Specification for a second day change security groups operation for a vsphere machine
+ */
+declare class VraChangeSecurityGroupSpecification {
+	owner: string;
+	createdAt: string;
+	networkInterfaceSpecifications: Object[];
+	name: string;
+	description: string;
+	id: string;
+	orgId: string;
+	updatedAt: string;
+	constructor();
+
+	/**
+   * @param networkInterfaceSpecificationsItem
+   */
+	addNetworkInterfaceSpecificationsItem(networkInterfaceSpecificationsItem: VraNetworkInterfaceSpecification): VraChangeSecurityGroupSpecification;
+
+	/**
+   * @param key
+   * @param linksItem
+   */
+	putLinksItem(key: string, linksItem: VraHref): VraChangeSecurityGroupSpecification;
+}
+
+declare class VraNetworkInterfaceSpecification {
+	addresses: Object[];
+	macAddress: string;
+	securityGroupIds: Object[];
+	fabricNetworkId: string;
+	name: string;
+	description: string;
+	networkId: string;
+	deviceIndex: number;
+	constructor();
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(key: string, customPropertiesItem: string): VraNetworkInterfaceSpecification;
+
+	/**
+   * @param securityGroupIdsItem
+   */
+	addSecurityGroupIdsItem(securityGroupIdsItem: string): VraNetworkInterfaceSpecification;
+
+	/**
+   * @param addressesItem
+   */
+	addAddressesItem(addressesItem: string): VraNetworkInterfaceSpecification;
+}
