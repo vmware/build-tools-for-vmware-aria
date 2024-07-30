@@ -13,12 +13,11 @@
  * #L%
  */
 import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
-import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { findTargetItem } from "../helpers/findTargetItem";
+import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 
 /**
@@ -38,8 +37,6 @@ import { InputOutputBindings, buildItemParameterBindings } from "./helpers/prese
  * ```
  */
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
-
 	getCanvasType(): string {
 		return "waiting-timer";
 	}
@@ -49,7 +46,11 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	}
 
 	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		getDecoratorProps(decoratorNode).forEach((propTuple) => {
+		const decoratorProperties = getDecoratorProps(decoratorNode);
+		if (!decoratorProperties?.length) {
+			return;
+		}
+		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
 				case "target":
@@ -66,7 +67,7 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	/**
 	 * There is no need to print the source file for a waiting timer item
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return ""; }
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints the waiting timer to the workflow file

@@ -97,7 +97,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 				registerWorkflowItem(itemInfo, methodNode);
 
 				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-				let actionSourceText = itemInfo.strategy.printSourceFile(methodNode, sourceFile);
+				let actionSourceText = itemInfo.strategy.printSourceFile(methodNode, sourceFile, itemInfo);
 				// @TODO: "Unstupify" me
 				if (itemInfo.polyglot) {
 					actionSourceText = decorateSourceFileTextWithPolyglot(actionSourceText, itemInfo.polyglot, itemInfo);

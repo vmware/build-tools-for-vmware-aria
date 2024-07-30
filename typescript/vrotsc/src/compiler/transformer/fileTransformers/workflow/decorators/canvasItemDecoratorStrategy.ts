@@ -36,7 +36,7 @@ export default interface CanvasItemDecoratorStrategy {
 	 *
 	 * The rest can return an empty string.
 	 */
-	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile): string;
+	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile, itemInfo: WorkflowItemDescriptor): string;
 
 	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string;
 }

@@ -27,8 +27,11 @@ export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionTyp
                 return actionType === ActionType.ABX ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_11_PS_62;
             case "powercli:12-powershell-7.1":
                 return actionType === ActionType.ABX ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_12_PS_71;
-            case "python":
+            case "python:3.7":
                 return actionType === ActionType.ABX ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_37;
+            case "python:3.10":
+            case "python":
+                return actionType === ActionType.ABX ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_310;
             default:
                 return pkg.platform.runtime;
         }
@@ -45,8 +48,11 @@ export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionTyp
         case "powercli:11-powershell-6.2":
         case 'powershell':
             return pkg.vro ? ActionRuntime.VRO_POWERCLI_11_PS_62 : ActionRuntime.ABX_POWERSHELL;
-        case 'python':
+        case 'python:3.7':
             return pkg.vro ? ActionRuntime.VRO_PYTHON_37 : ActionRuntime.ABX_PYTHON;
+        case 'python:3.10':
+        case 'python':
+            return pkg.vro ? ActionRuntime.VRO_PYTHON_310 : ActionRuntime.ABX_PYTHON;
         default:
             return pkg.platform.runtime;
     }

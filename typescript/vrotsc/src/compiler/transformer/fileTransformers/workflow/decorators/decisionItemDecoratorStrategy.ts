@@ -13,13 +13,13 @@
  * #L%
  */
 import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { CanvasItemPolymorphicBagForDecision, WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { SourceFilePrinter, WrapperSourceFilePrinter } from "./helpers/sourceFile";
-import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { findTargetItem } from "../helpers/findTargetItem";
+import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
+import { SourceFilePrinter, WrapperSourceFilePrinter } from "./helpers/sourceFile";
 
 /**
  * Responsible for printing out decision items
@@ -48,7 +48,11 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	}
 
 	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		getDecoratorProps(decoratorNode).forEach((propTuple) => {
+		const decoratorProperties = getDecoratorProps(decoratorNode);
+		if (!decoratorProperties?.length) {
+			return;
+		}
+		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
 				case "target": {
@@ -66,8 +70,8 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		});
 	}
 
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
-		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile);
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
 	}
 
 	/**

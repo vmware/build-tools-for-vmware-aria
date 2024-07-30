@@ -11,6 +11,7 @@ import { Workflow, DecisionItem } from "vrotsc-annotations";
 	}
 })
 export class HandleNetworkConfigurationBackup {
+
 	@DecisionItem({
 		target: "shouldGoHere",
 		else: "end"
@@ -20,5 +21,7 @@ export class HandleNetworkConfigurationBackup {
 	}
 
 	// This will point to end too, but no incoming
-	public shouldGoHere() { }
+	public shouldGoHere() {
+		// NOOP
+	}
 }
