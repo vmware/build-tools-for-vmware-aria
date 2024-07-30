@@ -241,6 +241,10 @@ declare class VraCloudZoneService {
 	 */
 	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
 
+	/**
+	 * This method deletes Zone based on given zoneId
+	 * @param zoneId
+	 */
 	deleteZoneById(zoneId: string): void;
 
 	/**
