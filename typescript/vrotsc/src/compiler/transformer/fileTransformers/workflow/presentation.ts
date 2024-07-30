@@ -57,7 +57,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
                         Original Error: ${e.message}`);
 	}
 
-	stringBuilder.append(`<position x="${graph.getNodeSpacing()}" y="${graph.getHeight() / 2}" />`).appendLine();
+	stringBuilder.append(`<position x="${graph.getNodeSpacing() / 2}" y="${graph.getHeight() / 2}" />`).appendLine();
 	buildParameters("input", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Input));
 	buildParameters("output", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Output));
 	buildAttributes(workflow.parameters.filter(p => p.isAttribute));
