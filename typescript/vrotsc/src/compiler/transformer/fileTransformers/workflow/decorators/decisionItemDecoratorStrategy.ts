@@ -124,6 +124,10 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
 		}
 
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
+		}
+
 		stringBuilder.append(">");
 
 		stringBuilder.indent();

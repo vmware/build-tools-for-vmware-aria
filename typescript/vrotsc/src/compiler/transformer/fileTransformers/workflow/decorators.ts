@@ -104,6 +104,15 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 	}
 }
 
+/**
+ * Registers all the argument decorators for the method
+ *
+ * Adds `input`, `output` and `canvasItemPolymorphicBag.exceptionBinding`
+ *
+ * @param methodNode The method node
+ * @param itemInfo The item info
+ * @returns void
+ */
 export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaration, itemInfo: WorkflowItemDescriptor) {
 	if (!methodNode.parameters.length) {
 		return;
@@ -126,6 +135,10 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 					parameterType |= WorkflowParameterType.Output;
 					break;
 				}
+				case "Error": {
+					parameterType |= WorkflowParameterType.Error;
+					break;
+				}
 				default: {
 					throw new Error(`Decorator '${decoratorName}' is not supported'`);
 				}
@@ -139,6 +152,9 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 		}
 		if (parameterType & WorkflowParameterType.Output) {
 			itemInfo.output.push(name);
+		}
+		if (parameterType & WorkflowParameterType.Error) {
+			itemInfo.canvasItemPolymorphicBag.exceptionBinding = name;
 		}
 
 		addParamToWorkflowParams(itemInfo.parent, paramNode, parameterType);

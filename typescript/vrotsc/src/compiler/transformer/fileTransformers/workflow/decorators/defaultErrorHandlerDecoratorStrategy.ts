@@ -67,17 +67,12 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "target": {
+				case "target":
 					itemInfo.target = propValue;
 					break;
-				}
-				case "exceptionVariable": {
-					itemInfo.canvasItemPolymorphicBag.exceptionVariable = propValue;
-					break;
-				}
-				default: {
+
+				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-				}
 			}
 		});
 	}
@@ -113,12 +108,14 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 		if (targetItemName === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
-		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exceptionVariable;
+		//
 		// it is important that the name of the error handler should be the same as the pointing target item name
 		stringBuilder.append(`<error-handler name="${targetItemName}" `);
-		if (exceptionVariable) {
-			stringBuilder.append(`throw-bind-name="${exceptionVariable}" `);
+
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
 		}
+
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
 		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();

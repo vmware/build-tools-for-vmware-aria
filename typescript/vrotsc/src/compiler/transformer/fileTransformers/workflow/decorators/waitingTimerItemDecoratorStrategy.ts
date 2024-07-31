@@ -110,6 +110,10 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
 		}
 
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
+		}
+
 		stringBuilder.append(">");
 
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();

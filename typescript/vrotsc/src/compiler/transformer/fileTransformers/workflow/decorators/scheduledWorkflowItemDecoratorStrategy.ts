@@ -156,8 +156,11 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
 		}
 
-		stringBuilder.append(">");
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
+		}
 
+		stringBuilder.append(">");
 
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
