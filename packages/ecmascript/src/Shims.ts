@@ -126,9 +126,18 @@ export default class Shims {
 				break;
 			case "Object":
 				arrayLikeClone = [];
-				// check whether the object is an array (using the length property)
+				// Check if the object is an array-like object
 				if (Object.keys(arrayLike).find(item => item.indexOf('length') >= 0)) {
-					arrayLikeClone = Array.apply(null, Array(arrayLike));// nosonar
+					const length = (arrayLike as ArrayLike<any>).length;
+					// mimic the behavior of the standard Array.from() method
+					arrayLikeClone = Array.apply(null, Array(length));// nosonar
+					Object.keys(arrayLike).forEach(element => {
+						const indexKey = parseInt(element);
+						// Check if object key is like an indexed element and within range
+						if (!isNaN(indexKey) && indexKey < length) {
+							arrayLikeClone[element] = arrayLike[element];
+						}
+					});
 				}
 				break;
 			default:
