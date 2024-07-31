@@ -59,10 +59,18 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		return {
+		const node: GraphNode = {
 			name: `item${pos}`,
-			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+			targets: [
+				findTargetItem(itemInfo.target, pos, itemInfo),
+			]
 		};
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			node.targets.push(findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
+		}
+
+		return node;
 	}
 
 	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {

@@ -127,21 +127,20 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 		// Adds state of what decorators are present
 		getDecoratorNames(decorators).forEach(decoratorName => {
 			switch (decoratorName || "In") {
-				case "In": {
+				case "In":
 					parameterType |= WorkflowParameterType.Input;
 					break;
-				}
-				case "Out": {
+
+				case "Out":
 					parameterType |= WorkflowParameterType.Output;
 					break;
-				}
-				case "Err": {
+
+				case "Err":
 					parameterType |= WorkflowParameterType.Err;
 					break;
-				}
-				default: {
+
+				default:
 					throw new Error(`Decorator '${decoratorName}' is not supported'`);
-				}
 			}
 		});
 		if (parameterType === WorkflowParameterType.Default) {
