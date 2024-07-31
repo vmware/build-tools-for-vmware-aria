@@ -321,7 +321,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.7.1</version>
 				<executions>
 					<execution>
 						<id>copy</id>
@@ -356,7 +356,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.7.1</version>
 				<executions>
 					<execution>
 						<id>iac-maven-repository</id>
