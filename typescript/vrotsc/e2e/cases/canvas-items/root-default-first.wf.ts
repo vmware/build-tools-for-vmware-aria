@@ -3,7 +3,7 @@ import { Workflow, In, Item } from "vrotsc-annotations";
 @Workflow({
 	name: "Root Default First",
 	path: "VMware/PSCoE",
-	description: "default is first item, points to end",
+	description: "default is first item",
 	attributes: {
 		waitingTimer: {
 			type: "Date"
@@ -16,13 +16,13 @@ import { Workflow, In, Item } from "vrotsc-annotations";
 export class Complex {
 
 	@Item({
-		target: "end"
+		target: "shouldGoHere"
 	})
 	public waitForEvent(@In waitingTimer: Date) {
 		// NOOP
 	}
 
-	public shouldNotGoHere() {
+	public shouldGoHere() {
 		// NOOP
 	}
 }

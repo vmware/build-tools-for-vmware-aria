@@ -19,6 +19,10 @@ export class HandleNetworkConfigurationBackup {
 		return waitingTimer !== null;
 	}
 
+	public waitForEvent() {
+		// NOOP
+	}
+
 	public shouldGoHere() {
 		// NOOP
 	}

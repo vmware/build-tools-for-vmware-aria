@@ -1,37 +1,104 @@
-[//]: # "VERSION_PLACEHOLDER DO NOT DELETE"
-[//]: # "Used when working on a new release. Placed together with the Version.md"
-[//]: # "Nothing here is optional. If a step must not be performed, it must be said so"
-[//]: # "Do not fill the version, it will be done automatically"
-[//]: # "Quick Intro to what is the focus of this release"
+[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
+[//]: # (Used when working on a new release. Placed together with the Version.md)
+[//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
+[//]: # (Do not fill the version, it will be done automatically)
+[//]: # (Quick Intro to what is the focus of this release)
 
 ## Breaking Changes
 
-[//]: # "### *Breaking Change*"
-[//]: # "Describe the breaking change AND explain how to resolve it"
-[//]: # "You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/"
+[//]: # (### *Breaking Change*)
+[//]: # (Describe the breaking change AND explain how to resolve it)
+[//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
 ## Deprecations
 
-[//]: # "### *Deprecation*"
-[//]: # "Explain what is deprecated and suggest alternatives"
-[//]: # "Features -> New Functionality"
+[//]: # (### *Deprecation*)
+[//]: # (Explain what is deprecated and suggest alternatives)
+
+[//]: # (Features -> New Functionality)
 
 ## Features
 
-[//]: # "### *Feature Name*"
-[//]: # "Describe the feature"
-[//]: # "Optional But higlhy recommended Specify *NONE* if missing"
-[//]: # "#### Relevant Documentation:"
+[//]: # (### *Feature Name*)
+[//]: # (Describe the feature)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
 ### Support of Objects in the VROES.Shims.arrayFrom() Method
 
 Add support for objects in the `VROES.Shims.arrayFrom()` method so its behavior is similar to the standard `Array.from()` method.
 
+### *Better ordering of the canvas items*
+
+The canvas items are now ordered based on an tree algorithm.
+
+Example:
+
+From input:
+
+```ts
+const nodes = [
+  { name: "A", targets: ["B"] },
+  { name: "B", targets: ["C"] },
+  { name: "C", targets: ["D", "G"] },
+  { name: "D", targets: ["E", "F"] },
+  { name: "E", targets: ["C"] },
+  { name: "F", targets: ["O"] },
+  { name: "G", targets: ["H"] },
+  { name: "H", targets: ["I"] },
+  { name: "I", targets: ["J", "K", "L", "M"] },
+  { name: "J", targets: [] },
+  { name: "K", targets: [] },
+  { name: "L", targets: [] },
+  { name: "M", targets: [] },
+  { name: "O", targets: ["P"] },
+  { name: "P", targets: ["Q"] },
+  { name: "Q", targets: [] },
+
+  // Second start?
+  { name: "S", targets: ["T"] },
+  { name: "T", targets: ["U", "W", "D"] },
+  { name: "U", targets: [] },
+  { name: "W", targets: [] },
+  { name: "X", targets: ["Y"] },
+  { name: "Y", targets: [] },
+];
+```
+
+We get:
+```log
+....................................................................................................
+....................................................................................................
+....................................................................................................
+..............................F....O....P....Q......................................................
+....................................................................................................
+....................................................................................................
+....................D....E..........................................................................
+....................................................................................................
+.....A....B....C...................J................................................................
+....................................................................................................
+....................................................................................................
+....................G....H....I.....................................................................
+....................................................................................................
+.....S....T....U...................K................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+...............W...................L................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+...................................M................................................................
+....................................................................................................
+....................................................................................................
+```
 ### Support python 3.10 runtime
 
 Add support for python 3.10 runtime in Orchestrator. This is now the default, since python 3.7 is deprecated.
 
-### _New `@ActionItem` decorator for Workflows_
+### *New `@ActionItem` decorator for Workflows*
 
 The new decorator gives you the ability to specify a canvas item that calls an action.
 
@@ -56,26 +123,23 @@ import { Workflow, Out, In, Item, ActionItem } from "vrotsc-annotations";
   path: "VMware/PSCoE",
   attributes: {
     first: {
-      type: "number",
+      type: "number"
     },
     second: {
-      type: "number",
+      type: "number"
     },
     actionResult: {
-      type: "ActionResult",
-    },
-  },
+      type: "ActionResult"
+    }
+  }
 })
 export class Example {
   @ActionItem({
     target: "printActionResult",
-    scriptModule: "com.vmware.pscoe.onboarding.sgenov.actions/test",
+    scriptModule: "com.vmware.pscoe.onboarding.sgenov.actions/test"
   })
-  public callTestAction(
-    @In first: number,
-    @In second: number,
-    @Out actionResult: ActionResult
-  ) {}
+  public callTestAction(@In first: number, @In second: number, @Out actionResult: ActionResult) {
+  }
 
   @Item({ target: "end" })
   public printActionResult(@In actionResult: ActionResult) {
@@ -84,7 +148,7 @@ export class Example {
 }
 ```
 
-### _New `DefaultErrorHandler` decorator for Workflows_
+### *New `DefaultErrorHandler` decorator for Workflows*
 
 This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
 
@@ -152,7 +216,7 @@ export class HandleDefaultError {
 }
 ```
 
-### _New `@WorkflowEndItem` decorator for Workflows_
+### *New `@WorkflowEndItem` decorator for Workflows*
 
 The decorator is used to specify a custom workflow end item.
 
@@ -200,7 +264,7 @@ export class WorkflowEnd {
 }
 ```
 
-### _New `AsyncWorkflowItem` decorator for Workflows_
+### *New `AsyncWorkflowItem` decorator for Workflows*
 
 The decorator is used to specify a canvas item that calls an asynchronous workflow.
 
@@ -220,51 +284,40 @@ Special output is needed for the AsyncWorkflowItem.
 
 No special inputs are needed for the AsyncWorkflowItem.
 
+
 #### Example
 
 ```typescript
-import {
-  Workflow,
-  Out,
-  In,
-  Item,
-  RootItem,
-  AsyncWorkflowItem,
-} from "vrotsc-annotations";
+import { Workflow, Out, In, Item, RootItem, AsyncWorkflowItem } from "vrotsc-annotations";
 
 @Workflow({
   name: "Async Workflow Test",
   path: "VMware/PSCoE",
-  description:
-    "Calling another workflow asynchronously and binding values correctly",
+  description: "Calling another workflow asynchronously and binding values correctly",
   attributes: {
     waitingTimer: {
-      type: "Date",
+      type: "Date"
     },
     counter: {
-      type: "number",
+      type: "number"
     },
     first: {
-      type: "number",
+      type: "number"
     },
     second: {
-      type: "number",
+      type: "number"
     },
     wfToken: {
-      type: "WorkflowToken",
-    },
-  },
+      type: "WorkflowToken"
+    }
+  }
 })
 export class HandleNetworkConfigurationBackup {
   @AsyncWorkflowItem({
     target: "printAsync",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
   })
-  public asyncCall(
-    @In first: number,
-    @In second: number,
-    @Out wfToken: WorkflowToken
-  ) {}
+  public asyncCall(@In first: number, @In second: number, @Out wfToken: WorkflowToken) { }
 
   @Item({ target: "callAsyncWf" })
   public prepareItems(@In @Out first: number, @In @Out second: number) {
@@ -286,7 +339,7 @@ export class HandleNetworkConfigurationBackup {
 }
 ```
 
-### _New `ScheduledWorkflowItem` decorator for Workflows_
+### *New `ScheduledWorkflowItem` decorator for Workflows*
 
 The new decorator gives you the ability to specify a canvas item that schedules a Workflow.
 
@@ -311,44 +364,34 @@ Special output is needed for the ScheduledWorkflowItem.
 #### Example
 
 ```ts
-import {
-  Workflow,
-  Out,
-  In,
-  Item,
-  RootItem,
-  DecisionItem,
-  WaitingTimerItem,
-  WorkflowItem,
-  ScheduledWorkflowItem,
-} from "vrotsc-annotations";
+import { Workflow, Out, In, Item, RootItem, DecisionItem, WaitingTimerItem, WorkflowItem, ScheduledWorkflowItem } from "vrotsc-annotations";
 
 @Workflow({
   name: "Example Waiting Timer",
   path: "VMware/PSCoE",
   attributes: {
     waitingTimer: {
-      type: "Date",
+      type: "Date"
     },
     counter: {
-      type: "number",
+      type: "number"
     },
     first: {
-      type: "number",
+      type: "number"
     },
     second: {
-      type: "number",
+      type: "number"
     },
     result: {
-      type: "number",
+      type: "number"
     },
     workflowScheduleDate: {
-      type: "Date",
+      type: "Date"
     },
     scheduledTask: {
-      type: "Task",
-    },
-  },
+      type: "Task"
+    }
+  }
 })
 export class HandleNetworkConfigurationBackup {
   @DecisionItem({ target: "waitForEvent", else: "prepareItems" })
@@ -357,11 +400,7 @@ export class HandleNetworkConfigurationBackup {
   }
 
   @Item({ target: "callOtherWf" })
-  public prepareItems(
-    @In @Out first: number,
-    @In @Out second: number,
-    @In @Out workflowScheduleDate: Date
-  ) {
+  public prepareItems(@In @Out first: number, @In @Out second: number, @In @Out workflowScheduleDate: Date) {
     first = 1;
     second = 2;
     workflowScheduleDate = System.getDate("1 minute from now", undefined);
@@ -369,13 +408,11 @@ export class HandleNetworkConfigurationBackup {
 
   @WorkflowItem({
     target: "print",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
   })
-  public callOtherWf(
-    @In first: number,
-    @In second: number,
-    @Out result: number
-  ) {}
+  public callOtherWf(@In first: number, @In second: number, @Out result: number) {
+  }
+
 
   @Item({ target: "scheduleOtherWf" })
   public print(@In result: number) {
@@ -384,14 +421,10 @@ export class HandleNetworkConfigurationBackup {
 
   @ScheduledWorkflowItem({
     target: "printScheduledDetails",
-    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0"
   })
-  public scheduleOtherWf(
-    @In first: number,
-    @In second: number,
-    @In workflowScheduleDate: Date,
-    @Out scheduledTask: Task
-  ) {}
+  public scheduleOtherWf(@In first: number, @In second: number, @In workflowScheduleDate: Date, @Out scheduledTask: Task) {
+  }
 
   @Item({ target: "end" })
   public printScheduledDetails(@In scheduledTask: Task) {
@@ -424,11 +457,12 @@ export class HandleNetworkConfigurationBackup {
   }
 
   @WaitingTimerItem({ target: "execute" })
-  public waitForEvent(@In waitingTimer: Date) {}
+  public waitForEvent(@In waitingTimer: Date) {
+  }
 }
 ```
 
-### _New `WorkflowItem` decorator for Workflows_
+### *New `WorkflowItem` decorator for Workflows*
 
 The new Decorator gives you the ability to specify a canvas item that calls a Workflow.
 
@@ -533,18 +567,98 @@ export class HandleNetworkConfigurationBackup {
 
 ## Improvements
 
-[//]: # "### *Improvement Name* "
-[//]: # "Talk ONLY regarding the improvement"
-[//]: # "Optional But higlhy recommended"
-[//]: # "#### Previous Behavior"
-[//]: # "Explain how it used to behave, regarding to the change"
-[//]: # "Optional But higlhy recommended"
-[//]: # "#### New Behavior"
-[//]: # "Explain how it behaves now, regarding to the change"
-[//]: # "Optional But higlhy recommended Specify *NONE* if missing"
-[//]: # "#### Relevant Documentation:"
+[//]: # (### *Improvement Name* )
+[//]: # (Talk ONLY regarding the improvement)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### Previous Behavior)
+[//]: # (Explain how it used to behave, regarding to the change)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### New Behavior)
+[//]: # (Explain how it behaves now, regarding to the change)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
-### _ABX archetype build issue, cannot compile_
+
+### *`for each` statements are now being converted by `vropkg` when pulling*
+
+`for each` is valid syntax in the Java's Rhino engine, but not in normal JS.
+
+#### Previous Behavior
+
+When pulling a workflow with `for each` statements, the action would be pulled, but then would not be able to be pushed as the syntax is invalid.
+
+#### New Behavior
+
+`for each` statements are now being converted to `for` statements when pulling a workflow.
+
+Example:
+
+```js
+var test = ["ya", "da"]
+
+for each (var i in test) {
+    for each (var y in test) {
+        System.log(y)
+        for each(var z in test){System.log(z)}
+    }
+  System.log(i)
+}
+
+for each (
+var n in test
+) {
+    System.log(n)
+}
+
+for (var i in test) {
+  System.log(i)
+}
+
+for (var $index in test) {
+    var i = test[$index]
+  System.log(i)
+}
+```
+
+is converted to
+
+
+```js
+/**
+ * @return {string}
+ */
+(function() {
+  var test = ["ya", "da"]
+
+  for (var $index_i in test) {
+    var i = test[$index_i];
+    for (var $index_y in test) {
+      var y = test[$index_y];
+      System.log(y)
+      for (var $index_z in test) {
+        var z = test[$index_z];
+        System.log(z)
+      }
+    }
+    System.log(i)
+  }
+
+  for (var $index_n in test) {
+    var n = test[$index_n];
+    System.log(n)
+  }
+  for (var i in test) {
+    System.log(i)
+  }
+
+  for (var $index in test) {
+    var i = test[$index]
+    System.log(i)
+  }
+});
+```
+
+### *ABX archetype build issue, cannot compile*
 
 Fixed an issue where the ABX archetype could not compile due to an old version of the `xmlbuilder2` package.
 
@@ -586,6 +700,41 @@ org.apache.commons.exec.ExecuteException: Process exited with an error: 1 (Exit 
 
 The ABX archetype now compiles successfully.
 
+### Add missing classes to `o11n-plugin-aria` and add missing methods to the existing classes
+
+#### Previous Behavior
+
+Many classes are missing completely compared with vRO API and some existing classes were missing some methods
+
+#### Current Behavior
+
+The following classes were added to `o11n-plugin-aria`:
+
+- VraInfrastructureClient
+- VraCloudAccountService
+- VraUpdateCloudAccountVsphereSpecification
+- VraCloudAccountVsphereSpecification
+- VraRegionSpecification
+- VraCloudAccountVsphere
+- VraCloudZoneService
+- VraZone
+- VraHref
+- VraZoneSpecification
+- VraTag
+- VraDataCollectorService
+- VraRequestService
+- VraRequestTracker
+  
+The following missing methods were added to the exist classes:
+
+- Class `VraHost`
+  - `destroy`
+  - `createInfrastructureClient`
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
+
 ## Upgrade procedure
 
-[//]: # "Explain in details if something needs to be done"
+[//]: # (Explain in details if something needs to be done)
