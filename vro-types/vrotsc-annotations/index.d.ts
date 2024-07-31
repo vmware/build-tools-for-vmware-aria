@@ -263,7 +263,6 @@ interface VroWorkflowDefaultErrorHandlerMethodDecorator {
 
 interface VroWorkflowDefaultErrorHandlerConfiguration {
 	target?: string;
-	exceptionVariable?: string;
 }
 
 // ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
@@ -277,7 +276,6 @@ interface VroWorkflowEndItemDecorator {
 
 interface VroWorkflowEndItemConfiguration {
 	endMode?: WorkflowEndMode;
-	exceptionVariable?: string;
 	businessStatus?: string;
 }
 
