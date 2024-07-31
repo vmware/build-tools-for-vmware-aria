@@ -93,6 +93,10 @@ export default class AsyncWorkflowItemDecoratorStrategy implements CanvasItemDec
 					itemInfo.target = propValue;
 					break;
 
+				case "exception":
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
+					break;
+
 				case "linkedItem":
 					itemInfo.canvasItemPolymorphicBag.linkedItem = propValue;
 					break;
@@ -146,7 +150,13 @@ export default class AsyncWorkflowItemDecoratorStrategy implements CanvasItemDec
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
 			+ ` launched-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}"`
-			+ ">").appendLine();
+		);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+		}
+
+		stringBuilder.append(">");
 
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();

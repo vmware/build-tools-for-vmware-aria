@@ -68,6 +68,10 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 					itemInfo.target = propValue;
 					break;
 
+				case "exception":
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
+					break;
+
 				case "scriptModule":
 					itemInfo.canvasItemPolymorphicBag.scriptModule = propValue;
 					break;
@@ -121,7 +125,13 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
 			+ ` script-module="${itemInfo.canvasItemPolymorphicBag.scriptModule}"`
-			+ ">").appendLine();
+		);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+		}
+
+		stringBuilder.append(">");
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
 

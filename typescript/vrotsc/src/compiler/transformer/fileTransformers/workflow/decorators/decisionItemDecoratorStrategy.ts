@@ -56,17 +56,20 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "target": {
+				case "target":
 					itemInfo.target = propValue;
 					break;
-				}
-				case "else": {
+
+				case "exception":
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
+					break;
+
+				case "else":
 					itemInfo.canvasItemPolymorphicBag.else = propValue;
 					break;
-				}
-				default: {
+
+				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-				}
 			}
 		});
 	}
@@ -115,7 +118,13 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
 			+ ` alt-out-name="${findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)}"`
-			+ ">").appendLine();
+		);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+		}
+
+		stringBuilder.append(">");
 
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();

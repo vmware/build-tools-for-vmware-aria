@@ -114,7 +114,14 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
 			+ ` linked-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}"`
-			+ ">").appendLine();
+		);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+		}
+
+		stringBuilder.append(">");
+
 		stringBuilder.indent();
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));

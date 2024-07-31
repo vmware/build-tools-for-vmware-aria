@@ -58,6 +58,10 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 					itemInfo.target = propValue;
 					break;
 
+				case "exception":
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
+					break;
+
 				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
 			}
@@ -100,8 +104,13 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
-			+ ">").appendLine();
-		stringBuilder.indent();
+		);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+		}
+
+		stringBuilder.append(">");
 
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));

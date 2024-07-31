@@ -182,6 +182,7 @@ interface VroWaitingTimerItemDecorator {
 
 interface VroWaitingTimerItemConfiguration {
 	target?: string;
+	exception?: string;
 }
 
 interface VroWaitingTimerItemMethodDecorator {
@@ -201,6 +202,7 @@ interface VroDecisionItemDecorator {
 interface VroDecisionItemConfiguration {
 	target?: string;
 	else?: string;
+	exception?: string;
 }
 
 interface VroDecisionItemMethodDecorator {
@@ -237,6 +239,7 @@ interface VroWorkflowItemDecorator {
 interface VroWorkflowItemConfiguration {
 	target?: string;
 	linkedItem: string;
+	exception?: string;
 }
 
 interface VroWorkflowItemMethodDecorator {
@@ -295,6 +298,7 @@ interface VroScheduledWorkflowItemDecorator {
 interface VroScheduledWorkflowItemConfiguration {
 	target?: string;
 	linkedItem: string;
+	exception?: string;
 }
 
 interface VroScheduledWorkflowItemMethodDecorator {
@@ -314,6 +318,7 @@ interface VroAsyncWorkflowItemDecorator {
 interface VroAsyncWorkflowItemConfiguration {
 	target?: string;
 	linkedItem: string;
+	exception?: string;
 }
 
 interface VroAsyncWorkflowItemMethodDecorator {
@@ -333,6 +338,7 @@ interface VroActionItemDecorator {
 interface VroActionItemConfiguration {
 	target?: string;
 	scriptModule: string;
+	exception?: string;
 }
 
 interface VroActionItemMethodDecorator {

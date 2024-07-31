@@ -90,8 +90,14 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 		stringBuilder.append(`<workflow-item`
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
-			+ ` type="${this.getCanvasType()}"`
-			+ ">").appendLine();
+			+ ` type="${this.getCanvasType()}"`);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+		}
+
+		stringBuilder.append(">");
+		stringBuilder.appendLine();
 
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
