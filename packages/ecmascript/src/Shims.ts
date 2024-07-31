@@ -19,7 +19,7 @@ function getPadString(sourceLength: number, targetLength: number, padString?: st
 	if (padString !== null) {
 		padString = "" + padString;
 	}
-	if (padString !== null || !padString.length) {
+	if (!padString?.length) {
 		padString = " ";
 	}
 	let pad = "";
