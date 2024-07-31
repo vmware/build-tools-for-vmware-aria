@@ -34,7 +34,7 @@ interface TypeDecorator {
 
 export declare function In(target: Object, propertyKey: string | symbol, parameterIndex: number);
 export declare function Out(target: Object, propertyKey: string | symbol, parameterIndex: number);
-export declare function Error(target: Object, propertyKey: string | symbol, parameterIndex: number);
+export declare function Err(target: Object, propertyKey: string | symbol, parameterIndex: number);
 
 // Workflow
 export declare const Workflow: VroWorkflowDecorator;

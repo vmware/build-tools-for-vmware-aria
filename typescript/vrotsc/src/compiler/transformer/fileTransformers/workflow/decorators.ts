@@ -135,8 +135,8 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 					parameterType |= WorkflowParameterType.Output;
 					break;
 				}
-				case "Error": {
-					parameterType |= WorkflowParameterType.Error;
+				case "Err": {
+					parameterType |= WorkflowParameterType.Err;
 					break;
 				}
 				default: {
@@ -153,7 +153,7 @@ export function registerMethodArgumentDecorators(methodNode: ts.MethodDeclaratio
 		if (parameterType & WorkflowParameterType.Output) {
 			itemInfo.output.push(name);
 		}
-		if (parameterType & WorkflowParameterType.Error) {
+		if (parameterType & WorkflowParameterType.Err) {
 			itemInfo.canvasItemPolymorphicBag.exceptionBinding = name;
 		}
 
