@@ -141,7 +141,7 @@ export default class Shims {
 				}
 				break;
 			default:
-				return arrayLikeClone;
+				return [];
 		}
 
 		return mapFunction ? arrayLikeClone.map(mapFunction) : arrayLikeClone;

@@ -724,6 +724,12 @@ The following classes were added to `o11n-plugin-aria`:
 - VraDataCollectorService
 - VraRequestService
 - VraRequestTracker
+- VraBlockDevice
+- VraBlockDeviceResult
+- VraBlockDeviceSpecification
+- VraConstraint
+- VraChangeSecurityGroupSpecification
+- VraNetworkInterfaceSpecification
   
 The following missing methods were added to the exist classes:
 
@@ -734,6 +740,23 @@ The following missing methods were added to the exist classes:
 #### Related issue
 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
+
+### Change default return Object of `Array.from()` Method to be empty array
+
+#### Previous Behavior
+
+In case the object type of the array-like Object does not match any of the expected types (e.g. is a Number) the default case of `Array.from()` returns a clone of the object. This does not match the desired behaviour according to the official documentation.
+
+```js
+Array.from(10) // Output: 10
+```
+
+#### Current Behavior
+In case the object type of the array-like Object does not match any of the expected types (e.g. is a Number) the default case of `Array.from()` returns an empty array.
+
+```js
+Array.from(10) // Output: []
+```
 
 ### *VROES.import from invalid package throws Unknown error*
 
