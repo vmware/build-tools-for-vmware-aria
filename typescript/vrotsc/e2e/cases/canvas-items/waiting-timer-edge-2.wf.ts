@@ -1,7 +1,7 @@
 import { Workflow, In, WaitingTimerItem } from "vrotsc-annotations";
 
 @Workflow({
-	name: "Waitin Timer Edge 2",
+	name: "Waiting Timer Edge",
 	path: "VMware/PSCoE",
 	description: "Waiting timer will point to shouldGoHere with target",
 	attributes: {
@@ -20,7 +20,7 @@ export class Complex {
 		// NOOP
 	}
 
-	public shouldGoHere() { 
+	public shouldGoHere() {
 		// NOOP
 	}
 }

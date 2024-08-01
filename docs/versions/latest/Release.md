@@ -24,6 +24,76 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Support of Objects in the VROES.Shims.arrayFrom() Method
+
+Add support for objects in the `VROES.Shims.arrayFrom()` method so its behavior is similar to the standard `Array.from()` method.
+
+### *Better ordering of the canvas items*
+
+The canvas items are now ordered based on an tree algorithm.
+
+Example:
+
+From input:
+
+```ts
+const nodes = [
+  { name: "A", targets: ["B"] },
+  { name: "B", targets: ["C"] },
+  { name: "C", targets: ["D", "G"] },
+  { name: "D", targets: ["E", "F"] },
+  { name: "E", targets: ["C"] },
+  { name: "F", targets: ["O"] },
+  { name: "G", targets: ["H"] },
+  { name: "H", targets: ["I"] },
+  { name: "I", targets: ["J", "K", "L", "M"] },
+  { name: "J", targets: [] },
+  { name: "K", targets: [] },
+  { name: "L", targets: [] },
+  { name: "M", targets: [] },
+  { name: "O", targets: ["P"] },
+  { name: "P", targets: ["Q"] },
+  { name: "Q", targets: [] },
+
+  // Second start?
+  { name: "S", targets: ["T"] },
+  { name: "T", targets: ["U", "W", "D"] },
+  { name: "U", targets: [] },
+  { name: "W", targets: [] },
+  { name: "X", targets: ["Y"] },
+  { name: "Y", targets: [] },
+];
+```
+
+We get:
+```log
+....................................................................................................
+....................................................................................................
+....................................................................................................
+..............................F....O....P....Q......................................................
+....................................................................................................
+....................................................................................................
+....................D....E..........................................................................
+....................................................................................................
+.....A....B....C...................J................................................................
+....................................................................................................
+....................................................................................................
+....................G....H....I.....................................................................
+....................................................................................................
+.....S....T....U...................K................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+...............W...................L................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+...................................M................................................................
+....................................................................................................
+....................................................................................................
+```
 ### Support python 3.10 runtime
 
 Add support for python 3.10 runtime in Orchestrator. This is now the default, since python 3.7 is deprecated.
@@ -507,6 +577,86 @@ export class HandleNetworkConfigurationBackup {
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+
+### *`for each` statements are now being converted by `vropkg` when pulling*
+
+`for each` is valid syntax in the Java's Rhino engine, but not in normal JS.
+
+#### Previous Behavior
+
+When pulling a workflow with `for each` statements, the action would be pulled, but then would not be able to be pushed as the syntax is invalid.
+
+#### New Behavior
+
+`for each` statements are now being converted to `for` statements when pulling a workflow.
+
+Example:
+
+```js
+var test = ["ya", "da"]
+
+for each (var i in test) {
+    for each (var y in test) {
+        System.log(y)
+        for each(var z in test){System.log(z)}
+    }
+  System.log(i)
+}
+
+for each (
+var n in test
+) {
+    System.log(n)
+}
+
+for (var i in test) {
+  System.log(i)
+}
+
+for (var $index in test) {
+    var i = test[$index]
+  System.log(i)
+}
+```
+
+is converted to
+
+
+```js
+/**
+ * @return {string}
+ */
+(function() {
+  var test = ["ya", "da"]
+
+  for (var $index_i in test) {
+    var i = test[$index_i];
+    for (var $index_y in test) {
+      var y = test[$index_y];
+      System.log(y)
+      for (var $index_z in test) {
+        var z = test[$index_z];
+        System.log(z)
+      }
+    }
+    System.log(i)
+  }
+
+  for (var $index_n in test) {
+    var n = test[$index_n];
+    System.log(n)
+  }
+  for (var i in test) {
+    System.log(i)
+  }
+
+  for (var $index in test) {
+    var i = test[$index]
+    System.log(i)
+  }
+});
+```
 
 ### *ABX archetype build issue, cannot compile*
 
