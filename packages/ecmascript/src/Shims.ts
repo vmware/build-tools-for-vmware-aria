@@ -16,10 +16,10 @@ function getPadString(sourceLength: number, targetLength: number, padString?: st
 	if (sourceLength > targetLength) {
 		return "";
 	}
-	if (padString != null) {
+	if (padString !== null) {
 		padString = "" + padString;
 	}
-	if (padString == null || !padString.length) {
+	if (!padString?.length) {
 		padString = " ";
 	}
 	let pad = "";
@@ -79,7 +79,7 @@ export default class Shims {
 		return str + getPadString(str.length, targetLength, padString);
 	}
 
-	static arrayFind = function <T>(array: T[], predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined {
+	static readonly arrayFind = function <T>(array: T[], predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined {
 		for (let i = 0; i < array.length; i++) {
 			if (predicate(array[i], i, array)) {
 				return array[i];
@@ -87,7 +87,7 @@ export default class Shims {
 		}
 	}
 
-	static arrayFindIndex = function <T>(array: T[], predicate: (value: T, index: number, obj: T[]) => boolean): number {
+	static readonly arrayFindIndex = function <T>(array: T[], predicate: (value: T, index: number, obj: T[]) => boolean): number {
 		for (let i = 0; i < array.length; i++) {
 			if (predicate(array[i], i, array)) {
 				return i;
@@ -97,7 +97,7 @@ export default class Shims {
 		return -1;
 	}
 
-	static arrayFill = function <T>(array: T[], value: T, start?: number, end?: number): T[] {
+	static readonly arrayFill = function <T>(array: T[], value: T, start?: number, end?: number): T[] {
 		if (end < 0) {
 			end = array.length + end * -1;
 		}
@@ -109,12 +109,12 @@ export default class Shims {
 		return array;
 	}
 
-	static arrayFrom(arrayLike: ArrayLike<any> | Iterable<any>, mapfn?: (v: any, k: number) => any): any[] {
-		let array: Array<any>;
+	static arrayFrom(arrayLike: ArrayLike<any> | Iterable<any>, mapFunction?: (v: any, k: number) => any): any[] {
 		let arrayLikeClone = JSON.parse(JSON.stringify(arrayLike));
 
 		switch (arrayLike.constructor.name) {
-			case "Array": break;
+			case "Array":
+				break;
 			case "String":
 				arrayLikeClone = (arrayLikeClone as string).split("");
 				break;
@@ -124,30 +124,41 @@ export default class Shims {
 			case "Map":
 				arrayLikeClone = (arrayLike as Map<any, any>).entries();
 				break;
-			default: return arrayLikeClone;
+			case "Object":
+				arrayLikeClone = [];
+				// Check if the object is an array-like object
+				if (Object.keys(arrayLike).find(item => item.indexOf('length') >= 0)) {
+					const length = (arrayLike as ArrayLike<any>).length;
+					// mimic the behavior of the standard Array.from() method
+					arrayLikeClone = Array.apply(null, Array(length));// nosonar
+					Object.keys(arrayLike).forEach(element => {
+						const indexKey = parseInt(element);
+						// Check if object key is like an indexed element and within range
+						if (!isNaN(indexKey) && indexKey < length) {
+							arrayLikeClone[element] = arrayLike[element];
+						}
+					});
+				}
+				break;
+			default:
+				return [];
 		}
 
-		if (mapfn) {
-			array = arrayLikeClone.map(mapfn);
-		} else {
-			array = arrayLikeClone;
-		}
-
-		return array;
+		return mapFunction ? arrayLikeClone.map(mapFunction) : arrayLikeClone;
 	}
 
 	static arrayOf(): any[] {
 		return Array.prototype.slice.call(arguments);
 	}
 
-	static objectAssign(target): any {
+	static objectAssign(target: any): any {
 		if (target === null || target === undefined) {
 			throw new TypeError("Cannot convert undefined or null to object");
 		}
 
-		for (var i = 1, len = arguments.length; i < len; i++) {
-			var source = arguments[i];
-			for (var p in source) {
+		for (let i = 1, len = arguments.length; i < len; i++) {
+			let source = arguments[i];
+			for (let p in source) {
 				if (Object.prototype.hasOwnProperty.call(source, p)) {
 					target[p] = source[p];
 				}
@@ -160,22 +171,25 @@ export default class Shims {
 		return Object.keys(target).map(key => target[key]);
 	}
 
-	static objectSetPrototypeOf(target, prototype): any {
-		target.__proto__ = prototype;
+	static objectSetPrototypeOf(target: any, prototype: any): any {
+		Object.setPrototypeOf(target, prototype);
 		return target;
 	}
 
 	static spreadArrays() {
-		var size = 0;
-		for (var i = 0, len = arguments.length; i < len; i++) {
+		let size = 0;
+		let len = arguments.length;
+
+		for (let i = 0; i < len; i++) {
 			size += arguments[i].length;
 		}
-		var result = Array(size);
-		for (var k = 0, i = 0; i < len; i++) {
-			for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+		let result = Array(size);
+		for (let k = 0, i = 0; i < len; i++) {
+			for (let a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
 				result[k] = a[j];
 			}
 		}
+
 		return result;
 	}
 }
