@@ -724,6 +724,12 @@ The following classes were added to `o11n-plugin-aria`:
 - VraDataCollectorService
 - VraRequestService
 - VraRequestTracker
+- VraBlockDevice
+- VraBlockDeviceResult
+- VraBlockDeviceSpecification
+- VraConstraint
+- VraChangeSecurityGroupSpecification
+- VraNetworkInterfaceSpecification
   
 The following missing methods were added to the exist classes:
 
