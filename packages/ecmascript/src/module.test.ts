@@ -68,36 +68,47 @@ describe("Module", () => {
 		});
 		beforeEach(() => loggedSystemErrors.length = 0);
 
-		[null, undefined, ""].forEach(invalidPath => it(`import from invalid path (${invalidPath})`, () => {
-			expect(ESModule.import("default").from(invalidPath)).toBeNull();
-			expect(loggedSystemErrors).toEqual([
-				`Failed to load action or module with path '${invalidPath}'! `,
-				`Cannot import from module with path '${invalidPath}'!`
-			]);
-		}));
-		it("import with relative path without base path", () => {
-			const path = "./Class";
-			expect(ESModule.import("default").from(path)).toBeNull();
-			expect(loggedSystemErrors).toEqual([`Cannot resolve relative path '${path}' without a base path!`]);
-		});
+		[
+			null, undefined, "", " ", "/start/separator", "end.separator.", "dupl..separator", "repative/in/../middle", "dis@llowedCharacters?!"
+		].forEach(invalidPath =>
+			it(`import from invalid path (${invalidPath})`, () => {
+				expect(ESModule.import("default").from(invalidPath)).toBeNull();
+				expect(loggedSystemErrors).toEqual([
+					`Cannot import from module with path '${invalidPath}'! Error: Path is invalid!`
+				]);
+			})
+		);
+		[
+			null, undefined, "", " ", "non/dot/separators", "duplicate..separators", ".start.separator", "end.separator.", "dis@llowedCharacters?!"
+		].forEach(invalidBasePath =>
+			it(`import with relative path with invalid base path '${invalidBasePath}'`, () => {
+				const path = "./Class";
+				expect(ESModule.import("default").from(path, invalidBasePath)).toBeNull();
+				expect(loggedSystemErrors).toEqual([
+					`Cannot import from module with relative path '${path}'! Error: Base path is invalid: '${invalidBasePath}'!`
+				]);
+			})
+		);
 		it("import with relative path invalid for given base path", () => {
 			const basePath = "com.vmware.pscoe.library.class.Class";
 			const invalidRelativePath = basePath.split(".").map(s => "../").join("") + "Class"; // too many steps back
 			expect(ESModule.import("default").from(invalidRelativePath, basePath)).toBeNull();
-			expect(loggedSystemErrors).toEqual([`Relative path '${invalidRelativePath}' is not valid for base path '${basePath}'!`]);
+			expect(loggedSystemErrors).toEqual([
+				`Cannot import from module with relative path '${invalidRelativePath}'! Error: Too many steps back for base path '${basePath}'!`
+			]);
 		});
 		it("import with invalid module path", () => {
 			const wrongPath = "com.wrong.path.library.class";
 			expect(ESModule.import("Class").from(wrongPath)).toBeNull();
 			expect(loggedSystemErrors).toEqual([
-				`Failed to load action or module with path '${wrongPath}'! Error: No action or module found for paths: '${wrongPath}', '${wrongPath}/index'!`,
-				`Cannot import from module with path '${wrongPath}'!`
+				`Cannot import from module with path '${wrongPath}'! Error: No action or module found for paths: '${wrongPath}', '${wrongPath}/index'!`
 			]);
 		});
 		it("import without valid specifiers", () => {
 			const path = "com.vmware.pscoe.library.class";
 			expect(ESModule.import(null, undefined, "", "whatever", "Class", "default", "*", "Class").from(path)).toBeNull();
 			expect(loggedSystemErrors).toEqual([
+				`Cannot import from module with path '${path}'! Error: ` +
 				"Some of the specified elements for import are invalid:\n" +
 				"[0]: 'null'\n" +
 				"[1]: 'undefined'\n" +
