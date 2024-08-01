@@ -24,6 +24,10 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Support of Objects in the VROES.Shims.arrayFrom() Method
+
+Add support for objects in the `VROES.Shims.arrayFrom()` method so its behavior is similar to the standard `Array.from()` method.
+
 ### *Better ordering of the canvas items*
 
 The canvas items are now ordered based on an tree algorithm.
