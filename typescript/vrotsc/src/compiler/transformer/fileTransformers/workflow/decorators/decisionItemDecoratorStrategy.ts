@@ -108,6 +108,9 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	 *
 	 * @param itemInfo The item to print
 	 * @param pos The position of the item in the workflow
+	 * @param x position on X axis that will be used for UI display
+	 * @param y position on Y axis that will be used for UI display
+	 *
 	 * @returns The string representation of the decision item
 	 */
 	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
