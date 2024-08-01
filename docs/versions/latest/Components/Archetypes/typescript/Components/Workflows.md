@@ -6,7 +6,8 @@ How to use Aria Orchestrator Workflows and available decorators.
 
 ## Table of Contents
 
-1. [Workflow Decorator](#workflow-decorator)
+1. [Argument Decorators](#argument-decorators)
+1. [Workflow Decorators](#workflow-decorators)
 2. [Available Method Decorators](#available-method-decorators)
    - [`@Item`](#item)
    - [`@WaitingTimerItem`](#waitingtimeritem)
@@ -16,7 +17,13 @@ How to use Aria Orchestrator Workflows and available decorators.
    - [`@WorkflowEndItem`](#workflowenditem)
 3. [Example Workflow](#example-workflow)
 
-### Workflow Decorator
+### Argument Decorators
+
+- `@In` - Used to bind an input to a function.
+- `@Out` - Used to bind an output to a function.
+- `@Err` - Used to bind an error to a function.
+
+### Workflow Decorators
 
 Not implemented yet.
 
