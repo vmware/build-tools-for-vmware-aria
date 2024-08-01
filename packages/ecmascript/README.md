@@ -71,33 +71,27 @@ var { myFunc} = ESModule.import("myFunction").from("../../relative/path", "modul
 var { MyClass} = ESModule.import("MyClass").from("./relative/path", "module-name");
 ```
 
-Import with custom error handling (default behavior is to log an Error and return null)
+Change error handling behavior on module import/load:
 ```js
 import defaultExport, { MyClass, myFunction as myFunc } from "module-name";
-// throw the error
-var { myFunc} = ESModule.import("myFunction").from(
-  "module-name",
-  null, // no base path needed when module path is not relative
-  function (error) { 
-    throw typeof error === "string" ? new Error(error) : error;
-  }
-);
-// log the error as warning
-var { myFunc} = ESModule.import("myFunction").from(
-  "module-name",
-  null,
-  function (error) { 
-    System.warn(error.toString());
-    return null; // required
-  }
-);
-// do nothing - e.g. to avoid cluttering the logs when trying several potential module paths
-var { myFunc} = ESModule.import("myFunction").from(
-  "module-name",
-  null,
-  function (error) {
-    
-    return null; // required
-  }
-);
+// With predefined error handling options:
+
+// [0] DefaultModuleErrorHandlers.SYS_ERROR - Creates a System ERROR level log entry for the error. Default.
+ESModule.setModuleErrorHandler(DefaultModuleErrorHandlers.SYS_ERROR);
+// [1] DefaultModuleErrorHandlers.SYS_WARN - Creates a System ERROR level log entry for the error.
+ESModule.setModuleErrorHandler(DefaultModuleErrorHandlers.SYS_WARN);
+// [2] DefaultModuleErrorHandlers.SYS_INFO - Creates a System INFO level log entry for the error
+ESModule.setModuleErrorHandler(DefaultModuleErrorHandlers.SYS_INFO);
+// [3] DefaultModuleErrorHandlers.SYS_DEBUG - Creates a System DEBUG level log entry for the error
+ESModule.setModuleErrorHandler(DefaultModuleErrorHandlers.SYS_DEBUG);
+// [4] DefaultModuleErrorHandlers.SILENT - Ignores the error
+ESModule.setModuleErrorHandler(DefaultModuleErrorHandlers.SILENT);
+// [5]DefaultModuleErrorHandlers.THROW_ERROR - Rethtows the error without handling it
+ESModule.setModuleErrorHandler(DefaultModuleErrorHandlers.THROW_ERROR);
+
+
+// With custom error handling:
+ESModule.setModuleErrorHandler(function(error) {
+  // custom error treatment - formatting, reporting, etc.
+});
 ```
