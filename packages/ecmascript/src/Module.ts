@@ -23,7 +23,7 @@ const GLOBAL = System.getContext() || (function () {
 export type ModuleErrorHandler = (error: string | Error) => void;
 
 /** Predefined {@link ModuleErrorHandler error handler options} for use in {@link Module.setModuleErrorHandler} */
-export enum DefaultModuleErrorHandlers {
+enum DefaultModuleErrorHandlers {
 	/** [Default] Creates a System ERROR level log entry for the error. */
 	SYS_ERROR,
 	/** Creates a System WARNING level log entry for the error. */
