@@ -15,6 +15,7 @@
 import { Decorator, MethodDeclaration, SourceFile, isIdentifier, isPrivateIdentifier } from "typescript";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
+import { GraphNode } from "./helpers/graph";
 
 export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	getDecoratorType(): WorkflowItemType {
@@ -34,9 +35,13 @@ export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStr
 		itemInfo.parent.rootItem = methodNode.name.escapedText as string;
 	}
 
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return this.throwDoNotCallError(); }
+	/**
+	 * @see CanvasItemDecoratorStrategy.getGraphNode
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode { this.throwDoNotCallError(); }
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return this.throwDoNotCallError(); }
 	getCanvasType(): string { return this.throwDoNotCallError(); }
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string { return this.throwDoNotCallError(); }
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string { return this.throwDoNotCallError(); }
 
 	private throwDoNotCallError(): never {
 		throw new Error("Method should not be called. RootItem is a meta decorator.");

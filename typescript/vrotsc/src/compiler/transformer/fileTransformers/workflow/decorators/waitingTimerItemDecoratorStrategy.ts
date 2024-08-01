@@ -13,13 +13,13 @@
  * #L%
  */
 import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
-import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { findTargetItem } from "../helpers/findTargetItem";
+import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
+import { GraphNode } from "./helpers/graph";
 
 /**
  * Responsible for printing out the waiting timer item
@@ -38,8 +38,6 @@ import { InputOutputBindings, buildItemParameterBindings } from "./helpers/prese
  * ```
  */
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
-
 	getCanvasType(): string {
 		return "waiting-timer";
 	}
@@ -49,7 +47,11 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	}
 
 	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		getDecoratorProps(decoratorNode).forEach((propTuple) => {
+		const decoratorProperties = getDecoratorProps(decoratorNode);
+		if (!decoratorProperties?.length) {
+			return;
+		}
+		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
 				case "target":
@@ -62,11 +64,20 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		});
 	}
 
+	/**
+	 * @see CanvasItemDecoratorStrategy.getGraphNode
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return {
+			name: `item${pos}`,
+			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+		};
+	}
 
 	/**
 	 * There is no need to print the source file for a waiting timer item
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string { return ""; }
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints the waiting timer to the workflow file
@@ -77,7 +88,7 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	 * @param pos The position of the item in the workflow
 	 * @returns The string representation of the item
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
@@ -95,7 +106,7 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

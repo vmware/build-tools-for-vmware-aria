@@ -13,13 +13,14 @@
  * #L%
  */
 import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
-import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { findTargetItem } from "../helpers/findTargetItem";
-import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
+import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
+import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
+import { DefaultSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
+import { GraphNode } from "./helpers/graph";
 
 export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new DefaultSourceFilePrinter()) { }
@@ -33,7 +34,11 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	}
 
 	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		getDecoratorProps(decoratorNode).forEach((propTuple) => {
+		const decoratorProperties = getDecoratorProps(decoratorNode);
+		if (!decoratorProperties?.length) {
+			return;
+		}
+		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
 				case "target":
@@ -50,8 +55,18 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 		});
 	}
 
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile): string {
-		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile);
+	/**
+	 * @see CanvasItemDecoratorStrategy.getGraphNode
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return {
+			name: `item${pos}`,
+			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+		};
+	}
+
+	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
 	}
 
 	/**
@@ -64,7 +79,7 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	 *
 	 * @returns The string representation of the item
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string {
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
@@ -77,13 +92,14 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
 			+ ">").appendLine();
+
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
 
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${225 + 160 * (pos - 1)}.0" y="55.40909090909091" />`).appendLine();
+		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

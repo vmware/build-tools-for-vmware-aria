@@ -117,6 +117,8 @@ interface VroPolicyTemplateDecorator {
 	new(obj?: VroPolicyTemplate): VroPolicyTemplate;
 }
 
+type WorkflowEndMode = 0 | 1;
+
 export declare const PolicyTemplate: VroPolicyTemplateDecorator;
 
 type SupportedValues = string | boolean | number;
@@ -206,7 +208,6 @@ interface VroDecisionItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
-
 // ---------------------------------------------- Workflow Canvas Root Item ------------------------------------------------
 
 export declare const RootItem: VroRootItemDecorator;
@@ -223,7 +224,6 @@ interface VroRootItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
-
 
 // ---------------------------------------------- Workflow Canvas Item ------------------------------------------------
 
@@ -244,6 +244,102 @@ interface VroWorkflowItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
+// ---------------------------------------------- Workflow Default Error Handler Canvas Item ------------------------------------------------
+
+export declare const DefaultErrorHandler: VroWorkflowDefaultErrorHandlerDecorator;
+
+interface VroWorkflowDefaultErrorHandlerDecorator {
+	(obj?: VroWorkflowDefaultErrorHandlerConfiguration): VroWorkflowDefaultErrorHandlerMethodDecorator;
+	new(obj?: VroWorkflowDefaultErrorHandlerConfiguration): VroWorkflowDefaultErrorHandlerConfiguration;
+}
+
+interface VroWorkflowDefaultErrorHandlerMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+interface VroWorkflowDefaultErrorHandlerConfiguration {
+	target?: string;
+	exceptionVariable?: string;
+}
+
+// ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
+
+export declare const WorkflowEndItem: VroWorkflowEndItemDecorator;
+
+interface VroWorkflowEndItemDecorator {
+	(obj?: VroWorkflowEndItemConfiguration): VroWorkflowEndItemMethodDecorator;
+	new(obj?: VroWorkflowEndItemConfiguration): VroWorkflowEndItemConfiguration;
+}
+
+interface VroWorkflowEndItemConfiguration {
+	endMode?: WorkflowEndMode;
+	exceptionVariable?: string;
+	businessStatus?: string;
+}
+
+interface VroWorkflowEndItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Scheduled Workflow Canvas Item ------------------------------------------------
+
+export declare const ScheduledWorkflowItem: VroScheduledWorkflowItemDecorator;
+
+interface VroScheduledWorkflowItemDecorator {
+	(obj?: VroScheduledWorkflowItemConfiguration): VroScheduledWorkflowItemMethodDecorator;
+	new(obj?: VroScheduledWorkflowItemConfiguration): VroScheduledWorkflowItemConfiguration;
+}
+
+interface VroScheduledWorkflowItemConfiguration {
+	target?: string;
+	linkedItem: string;
+}
+
+interface VroScheduledWorkflowItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Async Workflow Canvas Item ------------------------------------------------
+
+export declare const AsyncWorkflowItem: VroAsyncWorkflowItemDecorator;
+
+interface VroAsyncWorkflowItemDecorator {
+	(obj?: VroAsyncWorkflowItemConfiguration): VroAsyncWorkflowItemMethodDecorator;
+	new(obj?: VroAsyncWorkflowItemConfiguration): VroAsyncWorkflowItemConfiguration;
+}
+
+interface VroAsyncWorkflowItemConfiguration {
+	target?: string;
+	linkedItem: string;
+}
+
+interface VroAsyncWorkflowItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Action Canvas Item ------------------------------------------------
+
+export declare const ActionItem: VroActionItemDecorator;
+
+interface VroActionItemDecorator {
+	(obj?: VroActionItemConfiguration): VroActionItemMethodDecorator;
+	new(obj?: VroActionItemConfiguration): VroActionItemConfiguration;
+}
+
+interface VroActionItemConfiguration {
+	target?: string;
+	scriptModule: string;
+}
+
+interface VroActionItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;
@@ -253,7 +349,11 @@ interface VroPolyglotDecorator {
 	new(obj?: VroPolyglotConfiguration): VroPolyglotConfiguration;
 }
 
-interface VroPolyglotConfiguration { package: string, method: string; }
+interface VroPolyglotConfiguration {
+	package: string,
+	method: string;
+}
+
 interface PolyglotMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;

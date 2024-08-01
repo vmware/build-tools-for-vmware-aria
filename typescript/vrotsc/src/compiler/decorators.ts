@@ -122,11 +122,47 @@ export enum WorkflowItemType {
 	WaitingTimer = "WaitingTimerItem",
 
 	/**
+	 * This item type represents an action item.
+	 *
+	 * It can target a specific item and accepts input and output bindings
+	 */
+	Action = "ActionItem",
+
+	/**
 	 * This item type represents a workflow item
 	 *
 	 * It can target a specific item and accepts input and output bindings
 	 */
 	Workflow = "WorkflowItem",
+
+	/*
+	 * This item type represents a scheduled workflow item
+	 *
+	 * It can target a specific item and accepts input bindings
+	 * There is only one outputBinding if you want to get the scheduledTask information
+	 */
+	ScheduledWorkflow = "ScheduledWorkflowItem",
+
+
+	/**
+	 * This item type represents an async workflow item.
+	 *
+	 * It can target a specific item and accepts input and output bindings.
+	 */
+	AsyncWorkflow = "AsyncWorkflowItem",
+
+	/**
+	 * This item type represents a workflow end item.
+	 *
+	 */
+	End = "WorkflowEndItem",
+
+	/**
+	 * This item type represents a default error handler item.
+	 *
+	 * It can target a workflow item or workflow end and accepts input and output bindings.
+	 */
+	DefaultErrorHandler = "DefaultErrorHandler",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////

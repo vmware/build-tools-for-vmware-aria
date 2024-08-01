@@ -3,7 +3,7 @@ import { Workflow, In, Item, RootItem } from "vrotsc-annotations";
 @Workflow({
 	name: "Root When Set",
 	path: "VMware/PSCoE",
-	description: "root is shouldGoHere, points to end",
+	description: "root is shouldGoHere",
 	attributes: {
 		waitingTimer: {
 			type: "Date"
@@ -14,12 +14,19 @@ import { Workflow, In, Item, RootItem } from "vrotsc-annotations";
 	}
 })
 export class Complex {
+
 	@Item({
 		target: "end"
 	})
 	public waitForEvent(@In waitingTimer: Date) {
+		// NOOP
 	}
 
 	@RootItem()
-	public shouldGoHere() { }
+	@Item({
+		target: "waitForEvent"
+	})
+	public shouldGoHere() {
+		// NOOP
+	}
 }

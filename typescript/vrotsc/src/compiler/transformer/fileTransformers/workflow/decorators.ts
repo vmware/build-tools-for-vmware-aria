@@ -13,16 +13,21 @@
  * #L%
  */
 import * as ts from "typescript";
-import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
-import { PolyglotDescriptor, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
-import { getVroType } from "../../helpers/vro";
 import { DiagnosticCategory, FileTransformationContext } from "../../../../types";
+import { PolyglotDescriptor, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
+import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
+import { getVroType } from "../../helpers/vro";
 import CanvasItemDecoratorStrategy from "./decorators/canvasItemDecoratorStrategy";
+import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
+import DefaultErrorHandlerDecoratorStrategy from "./decorators/defaultErrorHandlerDecoratorStrategy";
+import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
 import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
 import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDecoratorStrategy";
-import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
 import WorkflowItemDecoratorStrategy from "./decorators/workflowItemDecoratorStrategy";
+import ScheduledWorkflowItemDecoratorStrategy from "./decorators/scheduledWorkflowItemDecoratorStrategy";
+import AsyncWorkflowItemDecoratorStrategy from "./decorators/asyncWorkflowItemDecoratorStrategy";
+import ActionItemDecoratorStrategy from "./decorators/actionItemDecoratorStrategy";
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
@@ -84,6 +89,16 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 			return new WorkflowItemDecoratorStrategy();
 		case WorkflowItemType.RootItem:
 			return new RootItemDecoratorStrategy();
+		case WorkflowItemType.Action:
+			return new ActionItemDecoratorStrategy();
+		case WorkflowItemType.ScheduledWorkflow:
+			return new ScheduledWorkflowItemDecoratorStrategy();
+		case WorkflowItemType.AsyncWorkflow:
+			return new AsyncWorkflowItemDecoratorStrategy();
+		case WorkflowItemType.DefaultErrorHandler:
+			return new DefaultErrorHandlerDecoratorStrategy();
+		case WorkflowItemType.End:
+			return new EndItemDecoratorStrategy();
 		default:
 			throw new Error(`Invalid decorator type: ${identifierText}`);
 	}

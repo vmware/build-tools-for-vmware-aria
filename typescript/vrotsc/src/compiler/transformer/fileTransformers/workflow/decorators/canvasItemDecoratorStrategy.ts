@@ -14,6 +14,7 @@
  */
 import * as ts from "typescript";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
+import { GraphNode } from "./helpers/graph";
 
 export default interface CanvasItemDecoratorStrategy {
 	/**
@@ -36,8 +37,13 @@ export default interface CanvasItemDecoratorStrategy {
 	 *
 	 * The rest can return an empty string.
 	 */
-	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile): string;
+	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile, itemInfo: WorkflowItemDescriptor): string;
 
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number): string;
+	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string;
+
+	/**
+	 * Returns the Node representation of the item
+	 */
+	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode;
 }
 
