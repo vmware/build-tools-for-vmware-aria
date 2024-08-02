@@ -138,11 +138,11 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 		);
 
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
 		}
 
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
-			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
 
 		stringBuilder.append(">");

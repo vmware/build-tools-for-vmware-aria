@@ -115,7 +115,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 		stringBuilder.append(`<error-handler name="${targetItemName}" `);
 
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
-			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
 
 		stringBuilder.append(">").appendLine();

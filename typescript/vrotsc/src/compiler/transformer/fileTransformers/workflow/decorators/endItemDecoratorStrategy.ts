@@ -115,7 +115,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}" `);
 
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
-			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
 
 		if (businessStatus) {
