@@ -730,6 +730,22 @@ The following classes were added to `o11n-plugin-aria`:
 - VraConstraint
 - VraChangeSecurityGroupSpecification
 - VraNetworkInterfaceSpecification
+- VraCloudAccount
+- VraCloudAccountNsxT
+- VraCloudAccountNsxTResult
+- VraCloudAccountNsxV
+- VraCloudAccountNsxVResult
+- VraCloudAccountRegions
+- VraRegion
+- VraCloudAccountResult
+- VraCloudAccountVsphereRegionEnumerationSpecification
+- VraCloudAccountVsphereResult
+- VraDataCollector
+- VraDataCollectorResult
+- VraDiskAttachmentSpecification
+- VraDiskService
+- VraDiskSnapshotSpecification
+- 
   
 The following missing methods were added to the exist classes:
 
