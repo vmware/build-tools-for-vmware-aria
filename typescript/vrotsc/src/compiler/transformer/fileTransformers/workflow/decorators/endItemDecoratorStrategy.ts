@@ -67,21 +67,16 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "endMode": {
+				case "endMode":
 					itemInfo.canvasItemPolymorphicBag.endMode = propValue;
 					break;
-				}
-				case "exceptionVariable": {
-					itemInfo.canvasItemPolymorphicBag.exceptionVariable = propValue;
-					break;
-				}
-				case "businessStatus": {
+
+				case "businessStatus":
 					itemInfo.canvasItemPolymorphicBag.businessStatus = propValue;
 					break;
-				}
-				default: {
+
+				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-				}
 			}
 		});
 	}
@@ -106,6 +101,8 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	 *
 	 * @param itemInfo The item to print.
 	 * @param pos The position of the item in the workflow.
+	 * @param x position on X axis that will be used for UI display
+	 * @param y position on Y axis that will be used for UI display
 	 *
 	 * @returns The string representation of the item.
 	 */
@@ -113,13 +110,14 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode ?? 0;
-		const exceptionVariable = itemInfo?.canvasItemPolymorphicBag?.exceptionVariable;
 		const businessStatus = itemInfo?.canvasItemPolymorphicBag?.businessStatus;
 
 		stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}" `);
-		if (exceptionVariable) {
-			stringBuilder.append(`throw-bind-name="${exceptionVariable}" `);
+
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
 		}
+
 		if (businessStatus) {
 			stringBuilder.append(`business-status="${businessStatus}" `);
 		}

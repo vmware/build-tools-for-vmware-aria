@@ -24,6 +24,55 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Error handling for workflow canvas elements*
+
+There is a new decorator added `@Err` that can be used with arguments. This decorator will mean that the argument will be bound to the exeption if it occurs.
+Note, you add it as normal `@In` or `@Out` decorators, but the variable should not be used in the method.
+
+Furthermore, supported canvas items now have `exception` parameter that can be used to specify the method that will handle the exception.
+
+#### Supported Canvas Items
+
+- `@Item`
+- `@AsyncWorkflowItem`
+- `@ScheduledWorkflowItem`
+- `@WorkflowItem`
+- `@ActionItem`
+- `@DecisionItem`
+- `@WaitingTimerItem`
+
+#### Example
+
+```typescript
+import { Workflow, Out, In, Err, RootItem, Item } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Example",
+  path: "VMware/PSCoE",
+  attributes: {
+    error: {
+      type: "string"
+    }
+  }
+})
+export class Example {
+  @Item({ 
+    target: "end",
+    exception: "exceptionHandle"
+  })
+  @RootItem()
+  public start(@Err error: string) {
+    if (true) {
+      throw new Error("Error");
+    }
+  }
+
+  @Item({ target: "end" })
+  public exceptionHandle(@In error: string) {
+    System.log(`Error: ${error}`);
+  }
+}
+```
 ### Support of Objects in the VROES.Shims.arrayFrom() Method
 
 Add support for objects in the `VROES.Shims.arrayFrom()` method so its behavior is similar to the standard `Array.from()` method.

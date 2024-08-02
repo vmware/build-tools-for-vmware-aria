@@ -1,4 +1,4 @@
-import { Workflow, Out, In, Item, RootItem, DecisionItem, DefaultErrorHandler, WaitingTimerItem, WorkflowEndItem, WorkflowItem } from "vrotsc-annotations";
+import { Workflow, Out, In, Err, Item, RootItem, DecisionItem, DefaultErrorHandler, WaitingTimerItem, WorkflowEndItem, WorkflowItem } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Workflow Test",
@@ -82,18 +82,16 @@ export class HandleNetworkConfigurationBackup {
 
 	@WorkflowEndItem({
 		endMode: 0,
-		exceptionVariable: "errorMessage",
 		businessStatus: "Bad"
 	})
-	public workflowEnd() {
+	public workflowEnd(@Err errorMessage: string) {
 		// NOOP
 	}
 
 	@DefaultErrorHandler({
-		exceptionVariable: "errorMessage",
 		target: "workflowEnd"
 	})
-	public defaultErrorHandler() {
+	public defaultErrorHandler(@Err errorMessage: string) {
 		// NOOP
 	}
 }
