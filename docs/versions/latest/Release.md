@@ -27,7 +27,7 @@
 ### *Error handling for workflow canvas elements*
 
 There is a new decorator added `@Err` that can be used with arguments. This decorator will mean that the argument will be bound to the exeption if it occurs.
-Note, you add is as normal `@In` or `@Out` decorators, but the variable should not be used in the method.
+Note, you add it as normal `@In` or `@Out` decorators, but the variable should not be used in the method.
 
 Furthermore, supported canvas items now have `exception` parameter that can be used to specify the method that will handle the exception.
 
