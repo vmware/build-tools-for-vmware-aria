@@ -745,7 +745,6 @@ The following classes were added to `o11n-plugin-aria`:
 - VraDiskAttachmentSpecification
 - VraDiskService
 - VraDiskSnapshotSpecification
-- 
   
 The following missing methods were added to the exist classes:
 
