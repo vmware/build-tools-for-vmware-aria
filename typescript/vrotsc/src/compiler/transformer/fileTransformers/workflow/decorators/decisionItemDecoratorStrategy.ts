@@ -126,15 +126,15 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
-			+ ` alt-out-name="${findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)}"`
+			+ ` alt-out-name="${findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)}" `
 		);
 
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}"`);
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
 		}
 
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
-			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}"`);
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
 
 		stringBuilder.append(">");
