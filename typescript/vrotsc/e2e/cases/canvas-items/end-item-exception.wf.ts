@@ -1,4 +1,4 @@
-import { Workflow, RootItem, DecisionItem, WorkflowEndItem } from "vrotsc-annotations";
+import { Workflow, RootItem, DecisionItem, WorkflowEndItem, Err } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Workflow End Exception",
@@ -26,10 +26,9 @@ export class WorkflowEnd {
 
 	@WorkflowEndItem({
 		endMode: 1,
-		exceptionVariable: "errorMessage",
 		businessStatus: "Bad"
 	})
-	public workflowEnd() {
+	public workflowEnd(@Err errorMessage: string) {
 		// NOOP
 	}
 }

@@ -56,17 +56,20 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		decoratorProperties.forEach((propTuple) => {
 			const [propName, propValue] = propTuple;
 			switch (propName) {
-				case "target": {
+				case "target":
 					itemInfo.target = propValue;
 					break;
-				}
-				case "else": {
+
+				case "exception":
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
+					break;
+
+				case "else":
 					itemInfo.canvasItemPolymorphicBag.else = propValue;
 					break;
-				}
-				default: {
+
+				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-				}
 			}
 		});
 	}
@@ -75,13 +78,19 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		return {
+		const node: GraphNode = {
 			name: `item${pos}`,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 				findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)
 			]
 		};
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			node.targets.push(findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
+		}
+
+		return node;
 	}
 
 	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
@@ -99,6 +108,9 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	 *
 	 * @param itemInfo The item to print
 	 * @param pos The position of the item in the workflow
+	 * @param x position on X axis that will be used for UI display
+	 * @param y position on Y axis that will be used for UI display
+	 *
 	 * @returns The string representation of the decision item
 	 */
 	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
@@ -114,8 +126,18 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
-			+ ` alt-out-name="${findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)}"`
-			+ ">").appendLine();
+			+ ` alt-out-name="${findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)}" `
+		);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
+		}
+
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
+		}
+
+		stringBuilder.append(">");
 
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();

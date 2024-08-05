@@ -1,4 +1,4 @@
-import { Workflow, RootItem, DefaultErrorHandler } from "vrotsc-annotations";
+import { Workflow, RootItem, DefaultErrorHandler, Err } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Default Error Handler Happy",
@@ -18,10 +18,9 @@ export class HandleDefaultError {
 	}
 
 	@DefaultErrorHandler({
-		exceptionVariable: "errorMessage",
 		target: "end"
 	})
-	public defaultErrorHandler() {
+	public defaultErrorHandler(@Err errorMessage: string) {
 		// NOOP
 	}
 }

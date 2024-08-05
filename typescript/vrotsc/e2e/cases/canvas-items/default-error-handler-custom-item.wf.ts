@@ -1,4 +1,4 @@
-import { Workflow, RootItem, In, Out, Item, DefaultErrorHandler, WorkflowEndItem } from "vrotsc-annotations";
+import { Workflow, RootItem, In, Out, Err, Item, DefaultErrorHandler, WorkflowEndItem } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Default Error Handler Custom Item",
@@ -32,18 +32,16 @@ export class HandleDefaultError {
 	}
 
 	@DefaultErrorHandler({
-		exceptionVariable: "errorMessage",
 		target: "processError"
 	})
-	public defaultErrorHandler(@Out errorMessage: string) {
+	public defaultErrorHandler(@Out @Err errorMessage: string) {
 		// NOOP
 	}
 
 	@WorkflowEndItem({
 		endMode: 0,
-		exceptionVariable: "errorMessage",
 	})
-	public workflowEnd(@Out errorMessage: string) {
+	public workflowEnd(@Out @Err errorMessage: string) {
 		System.log(`Terminating workflow with error ${errorMessage}`);
 	}
 }

@@ -94,6 +94,10 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 					itemInfo.target = propValue;
 					break;
 
+				case "exception":
+					itemInfo.canvasItemPolymorphicBag.exception = propValue;
+					break;
+
 				case "linkedItem":
 					itemInfo.canvasItemPolymorphicBag.linkedItem = propValue;
 					break;
@@ -108,10 +112,18 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		return {
+		const node: GraphNode = {
 			name: `item${pos}`,
-			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+			targets: [
+				findTargetItem(itemInfo.target, pos, itemInfo),
+			]
 		};
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			node.targets.push(findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
+		}
+
+		return node;
 	}
 
 	/**
@@ -128,6 +140,8 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	 *
 	 * @param itemInfo The item to print
 	 * @param pos The position of the item in the workflow
+	 * @param x position on X axis that will be used for UI display
+	 * @param y position on Y axis that will be used for UI display
 	 *
 	 * @returns The string representation of the item
 	 */
@@ -145,8 +159,18 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}"`
-			+ ` launched-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}"`
-			+ ">").appendLine();
+			+ ` launched-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}" `
+		);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
+		}
+
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
+		}
+
+		stringBuilder.append(">");
 
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();

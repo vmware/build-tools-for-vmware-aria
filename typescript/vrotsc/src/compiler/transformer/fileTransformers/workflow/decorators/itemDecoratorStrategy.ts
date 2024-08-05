@@ -59,10 +59,18 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		return {
+		const node: GraphNode = {
 			name: `item${pos}`,
-			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+			targets: [
+				findTargetItem(itemInfo.target, pos, itemInfo),
+			]
 		};
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			node.targets.push(findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
+		}
+
+		return node;
 	}
 
 	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
@@ -76,6 +84,8 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 	 *
 	 * @param itemInfo The item to print
 	 * @param pos The position of the item in the workflow
+	 * @param x position on X axis that will be used for UI display
+	 * @param y position on Y axis that will be used for UI display
 	 *
 	 * @returns The string representation of the item
 	 */
@@ -90,8 +100,18 @@ export default class ItemDecoratorStrategy implements CanvasItemDecoratorStrateg
 		stringBuilder.append(`<workflow-item`
 			+ ` name="item${pos}"`
 			+ ` out-name="${targetItem}"`
-			+ ` type="${this.getCanvasType()}"`
-			+ ">").appendLine();
+			+ ` type="${this.getCanvasType()}" `);
+
+		if (itemInfo.canvasItemPolymorphicBag.exception) {
+			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
+		}
+
+		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
+			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
+		}
+
+		stringBuilder.append(">");
+		stringBuilder.appendLine();
 
 		stringBuilder.indent();
 		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();

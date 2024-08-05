@@ -89,7 +89,8 @@ export interface WorkflowParameter {
 export enum WorkflowParameterType {
 	Default = 0,
 	Input = 1 << 0,
-	Output = 2 << 1,
+	Output = 1 << 2,
+	Err = 1 << 3
 }
 
 export enum WorkflowItemType {

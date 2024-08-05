@@ -34,6 +34,7 @@ interface TypeDecorator {
 
 export declare function In(target: Object, propertyKey: string | symbol, parameterIndex: number);
 export declare function Out(target: Object, propertyKey: string | symbol, parameterIndex: number);
+export declare function Err(target: Object, propertyKey: string | symbol, parameterIndex: number);
 
 // Workflow
 export declare const Workflow: VroWorkflowDecorator;
@@ -182,6 +183,7 @@ interface VroWaitingTimerItemDecorator {
 
 interface VroWaitingTimerItemConfiguration {
 	target?: string;
+	exception?: string;
 }
 
 interface VroWaitingTimerItemMethodDecorator {
@@ -201,6 +203,7 @@ interface VroDecisionItemDecorator {
 interface VroDecisionItemConfiguration {
 	target?: string;
 	else?: string;
+	exception?: string;
 }
 
 interface VroDecisionItemMethodDecorator {
@@ -237,6 +240,7 @@ interface VroWorkflowItemDecorator {
 interface VroWorkflowItemConfiguration {
 	target?: string;
 	linkedItem: string;
+	exception?: string;
 }
 
 interface VroWorkflowItemMethodDecorator {
@@ -260,7 +264,6 @@ interface VroWorkflowDefaultErrorHandlerMethodDecorator {
 
 interface VroWorkflowDefaultErrorHandlerConfiguration {
 	target?: string;
-	exceptionVariable?: string;
 }
 
 // ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
@@ -274,7 +277,6 @@ interface VroWorkflowEndItemDecorator {
 
 interface VroWorkflowEndItemConfiguration {
 	endMode?: WorkflowEndMode;
-	exceptionVariable?: string;
 	businessStatus?: string;
 }
 
@@ -295,6 +297,7 @@ interface VroScheduledWorkflowItemDecorator {
 interface VroScheduledWorkflowItemConfiguration {
 	target?: string;
 	linkedItem: string;
+	exception?: string;
 }
 
 interface VroScheduledWorkflowItemMethodDecorator {
@@ -314,6 +317,7 @@ interface VroAsyncWorkflowItemDecorator {
 interface VroAsyncWorkflowItemConfiguration {
 	target?: string;
 	linkedItem: string;
+	exception?: string;
 }
 
 interface VroAsyncWorkflowItemMethodDecorator {
@@ -333,6 +337,7 @@ interface VroActionItemDecorator {
 interface VroActionItemConfiguration {
 	target?: string;
 	scriptModule: string;
+	exception?: string;
 }
 
 interface VroActionItemMethodDecorator {
