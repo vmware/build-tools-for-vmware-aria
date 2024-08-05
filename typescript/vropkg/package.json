@@ -1,6 +1,6 @@
 {
 	"name": "@vmware-pscoe/vropkg",
-	"version": "2.40.1-SNAPSHOT",
+	"version": "2.41.1-SNAPSHOT",
 	"description": "Used to build vRealize Orchestrator signed package out of it source code (expand to package XML)",
 	"author": "VMware PSCoE",
 	"license": "VMware Confidential",
@@ -42,8 +42,8 @@
 		"@types/uuid": "3.4.3",
 		"@types/xmlbuilder": "0.0.33",
 		"@types/xmldoc": "^1.1.4",
-		"gulp": "^4.0.2",
-		"gulp-cli": "^2.2.0",
+		"gulp": "^5.0.0",
+		"gulp-cli": "^3.0.0",
 		"gulp-jasmine": "^4.0.0",
 		"gulp-typescript": "^5.0.1",
 		"jasmine": "^3.3.1",
