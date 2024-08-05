@@ -699,7 +699,7 @@ declare class VraCloudAccount {
 	linksExtension: string;
 	cloudAccountType: string;
 	description: string;
-	enabledRegionIdsExtension: string;
+	enabledRegionIdsExtension: Object[];
 	orgId: string;
 	tags: Object[];
 	createdAt: string;
