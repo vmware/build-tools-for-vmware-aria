@@ -39,6 +39,36 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Add missing classes to `o11n-plugin-aria` and add missing methods to the existing classes
+
+#### Previous Behavior
+
+Many classes are missing completely compared with vRO API and some existing classes were missing some methods
+
+#### Current Behavior
+
+The following classes were added to `o11n-plugin-aria`:
+
+- VraCloudAccount
+- VraCloudAccountNsxT
+- VraCloudAccountNsxTResult
+- VraCloudAccountNsxV
+- VraCloudAccountNsxVResult
+- VraCloudAccountRegions
+- VraRegion
+- VraCloudAccountResult
+- VraCloudAccountVsphereRegionEnumerationSpecification
+- VraCloudAccountVsphereResult
+- VraDataCollector
+- VraDataCollectorResult
+- VraDiskAttachmentSpecification
+- VraDiskService
+- VraDiskSnapshotSpecification
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

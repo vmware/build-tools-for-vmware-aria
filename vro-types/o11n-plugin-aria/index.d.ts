@@ -550,22 +550,25 @@ declare class VraBlockDevice {
 	 * @param key
 	 * @param customPropertiesItem
 	 */
-	putCustomPropertiesItem(key: string, customPropertiesItem: string): VraBlockDevice;
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraBlockDevice;
 
 	/**
-   * @param tagsItem
-   */
+	 * @param tagsItem
+	 */
 	addTagsItem(tagsItem: VraTag): VraBlockDevice;
 
 	/**
-   * @param cloudAccountIdsItem
-   */
+	 * @param cloudAccountIdsItem
+	 */
 	addCloudAccountIdsItem(cloudAccountIdsItem: string): VraBlockDevice;
 
 	/**
-   * @param key
+	 * @param key
 	 * @param linksItem
-   */
+	 */
 	putLinksItem(key: string, linksItem: VraHref): VraBlockDevice;
 }
 
@@ -597,29 +600,34 @@ declare class VraBlockDeviceSpecification {
 	constructor();
 
 	/**
-   * @param constraintsItem
-   */
-	addConstraintsItem(constraintsItem: VraConstraint): VraBlockDeviceSpecification;
+	 * @param constraintsItem
+	 */
+	addConstraintsItem(
+		constraintsItem: VraConstraint
+	): VraBlockDeviceSpecification;
 
 	/**
-   * @param tagsItem
-   */
+	 * @param tagsItem
+	 */
 	addTagsItem(tagsItem: VraTag): VraBlockDeviceSpecification;
 
 	/**
-   * @param key
+	 * @param key
 	 * @param customPropertiesItem
-   */
-	putCustomPropertiesItem(key: string, customPropertiesItem: string): VraBlockDeviceSpecification;
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraBlockDeviceSpecification;
 }
 
 /**
  * A constraint that is conveyed to the policy engine.
  */
 declare class VraConstraint {
-  expression: string;
-  mandatory: boolean;
-  constructor();
+	expression: string;
+	mandatory: boolean;
+	constructor();
 }
 
 /**
@@ -637,15 +645,20 @@ declare class VraChangeSecurityGroupSpecification {
 	constructor();
 
 	/**
-   * @param networkInterfaceSpecificationsItem
-   */
-	addNetworkInterfaceSpecificationsItem(networkInterfaceSpecificationsItem: VraNetworkInterfaceSpecification): VraChangeSecurityGroupSpecification;
+	 * @param networkInterfaceSpecificationsItem
+	 */
+	addNetworkInterfaceSpecificationsItem(
+		networkInterfaceSpecificationsItem: VraNetworkInterfaceSpecification
+	): VraChangeSecurityGroupSpecification;
 
 	/**
-   * @param key
-   * @param linksItem
-   */
-	putLinksItem(key: string, linksItem: VraHref): VraChangeSecurityGroupSpecification;
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(
+		key: string,
+		linksItem: VraHref
+	): VraChangeSecurityGroupSpecification;
 }
 
 declare class VraNetworkInterfaceSpecification {
@@ -663,15 +676,355 @@ declare class VraNetworkInterfaceSpecification {
 	 * @param key
 	 * @param customPropertiesItem
 	 */
-	putCustomPropertiesItem(key: string, customPropertiesItem: string): VraNetworkInterfaceSpecification;
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraNetworkInterfaceSpecification;
 
 	/**
-   * @param securityGroupIdsItem
-   */
-	addSecurityGroupIdsItem(securityGroupIdsItem: string): VraNetworkInterfaceSpecification;
+	 * @param securityGroupIdsItem
+	 */
+	addSecurityGroupIdsItem(
+		securityGroupIdsItem: string
+	): VraNetworkInterfaceSpecification;
 
 	/**
-   * @param addressesItem
-   */
+	 * @param addressesItem
+	 */
 	addAddressesItem(addressesItem: string): VraNetworkInterfaceSpecification;
+}
+
+declare class VraCloudAccount {
+	owner: string;
+	linksExtension: string;
+	cloudAccountType: string;
+	description: string;
+	enabledRegionIdsExtension: string;
+	orgId: string;
+	tags: Object[];
+	createdAt: string;
+	enabledRegions: Object[];
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	tagsExtention: string;
+	id: string;
+	updatedAt: string;
+	customPropertiesExtension: string;
+	constructor();
+
+	/**
+	 * @param enabledRegionsItem
+	 */
+	addEnabledRegionsItem(enabledRegionsItem: VraRegion): VraCloudAccount;
+
+	/**
+	 * @param key
+	 * @param cloudAccountPropertiesItem
+	 */
+	putCloudAccountPropertiesItem(
+		key: string,
+		cloudAccountProperties: string
+	): VraCloudAccount;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraCloudAccount;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraCloudAccount;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraCloudAccount;
+}
+
+declare class VraCloudAccountNsxT {
+	owner: string;
+	hostName: string;
+	managerMode: boolean;
+	description: string;
+	orgId: string;
+	tags: Object[];
+	createdAt: string;
+	dcid: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	id: string;
+	isGlobalManager: boolean;
+	updatedAt: string;
+	username: string;
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraCloudAccountNsxT;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraCloudAccountNsxT;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraCloudAccountNsxT;
+}
+
+declare class VraCloudAccountNsxTResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+	constructor();
+}
+
+/**
+ * State object representing an Nsx-V cloud account.<br><br>A cloud account identifies a cloud account type and an account-specific deployment region or data center where the associated cloud account resources are hosted.<br>**HATEOAS** links:<br>**self** - CloudAccountNsxV - Self link to this cloud account
+ */
+declare class VraCloudAccountNsxV {
+	owner: string;
+	hostName: string;
+	description: string;
+	orgId: string;
+	tags: Object[];
+	createdAt: string;
+	dcid: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	id: string;
+	updatedAt: string;
+	username: string;
+	constructor();
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraCloudAccountNsxV;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraCloudAccountNsxV;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraCloudAccountNsxV;
+}
+
+/**
+ * State object representing a query result of Nsx-V cloud accounts.
+ */
+declare class VraCloudAccountNsxVResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+	constructor();
+}
+
+/**
+ * State object representing cloud account region.<br><br>**externalRegions** - array[RegionSpecification] - Set of regions that can be enabled for this cloud account.<br>**externalRegionIds** - array[String] - Set of ids of regions that can be enabled for this cloud account.<br>
+ */
+declare class VraCloudAccountRegions {
+	externalRegions: Object[];
+	constructor();
+
+	/**
+	 * @param externalRegionsItem
+	 */
+	addExternalRegionsItem(
+		externalRegionsItem: VraRegionSpecification
+	): VraCloudAccountRegions;
+}
+
+declare class VraRegion {
+	owner: string;
+	createdAt: string;
+	externalRegionId: string;
+	readonly internalIdString: string;
+	cloudAccountId: string;
+	name: string;
+	host: VraHost;
+	id: string;
+	orgId: string;
+	updatedAt: string;
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraRegion;
+}
+
+/**
+ * State object representing a query result of cloud accounts.
+ */
+declare class VraCloudAccountResult {
+	readonly numberOfElements: number;
+	readonly content: VraCloudAccount[];
+	readonly totalElements: number;
+	constructor();
+}
+
+/**
+ * Specification for a region enumeration of vshpere cloud account.
+ */
+declare class VraCloudAccountVsphereRegionEnumerationSpecification {
+	acceptSelfSignedCertificate: boolean;
+	hostName: string;
+	password: string;
+	dcid: string;
+	cloudAccountId: string;
+	username: string;
+	constructor();
+}
+
+declare class VraCloudAccountVsphereResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+	constructor();
+}
+
+declare class VraDataCollector {
+	hostName: string;
+	dcid: string;
+	readonly internalIdString: string;
+	ipAddress: string;
+	host: VraHost;
+	name: string;
+	status: string;
+	constructor();
+}
+
+/**
+ * State object representing a query result of data collectors.
+ */
+declare class VraDataCollectorResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+	constructor();
+}
+
+declare class VraDiskAttachmentSpecification {
+	blockDeviceId: string;
+	scsiController: string;
+	name: string;
+	description: string;
+	unitNumber: string;
+	constructor();
+
+	/**
+     * @param key
+     * @param diskAttachmentPropertiesItem
+     */
+	putDiskAttachmentPropertiesItem(key: string, diskAttachmentPropertiesItem: string): VraDiskAttachmentSpecification
+}
+
+declare class VraDiskService {
+	constructor();
+
+	/**
+     * @param genericRestClient
+     */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void
+
+	/**
+	 * Create a BlockDevice in Synchronous manner
+     * @param blockDeviceSpecification
+     */
+	createBlockDevice(blockDeviceSpecification: VraBlockDeviceSpecification): VraBlockDevice
+
+	/**
+     * Resize a BlockDevice in an asynchronous manner.
+     * @param diskId
+	 * @param capacityInGB
+     */
+	resizeBlockDevice(diskId: string, capacityInGB: number): VraRequestTracker
+
+	/**
+     * Delete a BlockDevice in an asynchronous manner.
+     * @param diskId
+	 * @param purge
+	 * @param forceDelete
+     */
+	deleteBlockDevice(diskId: string, purge: boolean, forceDelete: boolean): VraRequestTracker
+
+	/**
+     * Create a BlockDevice in an asynchronous manner
+	 * @param blockDeviceSpecification
+     */
+	createBlockDeviceAsync(blockDeviceSpecification: VraBlockDeviceSpecification): VraRequestTracker
+
+	/**
+	 * Create a BlockDevice Snapshot in an asynchronous manner.
+	 * @param diskId
+	 * @param diskSnapshotSpecification
+	 */
+	createBlockDeviceSnapshot(diskId: string, diskSnapshotSpecification: VraDiskSnapshotSpecification): VraRequestTracker
+
+	/**
+     * Revert a BlockDevice Snapshot in an asynchronous manner.
+     * @param diskId
+     * @param snapshotId
+     */
+	revertBlockDeviceSnapshot(diskId: string, snapshotId: string): VraRequestTracker
+
+	/**
+     * Promote a BlockDevice in an asynchronous manner. Second day promote operation on disk. Applicable for vSphere Block Devices only
+     * @param diskId
+     */
+	promoteBlockDevice(diskId: string): VraRequestTracker
+
+	/**
+     * Delete a BlockDevice Snapshot in an asynchronous manner.
+     * @param diskId
+	 * @param snapshotId
+     */
+	deleteBlockDeviceSnapshot(diskId: string, snapshotId: string): VraRequestTracker
+}
+
+/**
+ * Specification for Disk Snapshot creation request.
+ */
+declare class VraDiskSnapshotSpecification {
+	name: string;
+	description: string;
+	tags: Object[];
+	constructor();
+
+	/**
+     * @param key
+     * @param customPropertiesItem
+     */
+	putSnapshotPropertiesItem(key: string, customPropertiesItem: string): VraDiskSnapshotSpecification
+
+	/**
+     * @param tagsItem
+     */
+	addTagsItem(tagsItem: VraTag): VraDiskSnapshotSpecification
 }
