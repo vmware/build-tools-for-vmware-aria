@@ -49,11 +49,7 @@ In most archetypes that generate projects with Javascript or Typescript code lic
 
 All archetypes that generate projects with Javascript and Typescript code have exclusion rules that skip adding license headers for test files.
 
-#### Related issue
-
-https://github.com/vmware/build-tools-for-vmware-aria/issues/379
-
-### *Re-enable license plugin `<excludes>` configuration inheritance through `pom.xml` property value *
+### *Re-enable license plugin `<excludes>` configuration inheritance through `pom.xml` property value*
 
 #### Previous Behavior
 
