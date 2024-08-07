@@ -11,6 +11,26 @@
   <artifactId>\${artifactId}.actions</artifactId>
   <version>\${version}</version>
   <packaging>package</packaging>
+  #if (${licenseTechnicalPreview} == 'true' || ${licenseTechnicalPreview} == 'yes' || ${licenseTechnicalPreview} == 'y')
+  #set( $licenseName = 'Technical Preview License' )
+  #set( $licenseUrl = 'https://flings.vmware.com/vrealize-build-tools/license' )
+  #else
+  #set( $licenseName = 'TODO: Enter License name' )
+  #if(!${licenseUrl} || ${licenseUrl} == '')
+  #set( $licenseUrl = 'https://todo.put.url.to.my.licence/license' )
+  #end
+  #end
+
+  <description>
+    This package is licensed under ${licenseUrl}
+  </description>
+  <licenses>
+    <license>
+      <name>\${licenseName}</name>
+      <url>\${licenseUrl}</url>
+      <distribution>pom</distribution>
+    </license>
+  </licenses>
 
   <properties>
     <generated.from>${artifactId}</generated.from>

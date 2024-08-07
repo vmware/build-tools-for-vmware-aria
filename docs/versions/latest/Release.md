@@ -53,6 +53,16 @@ All archetypes that generate projects with Javascript and Typescript code have e
 
 https://github.com/vmware/build-tools-for-vmware-aria/issues/379
 
+### *Re-enable license plugin `<excludes>` configuration inheritance through `pom.xml` property value *
+
+#### Previous Behavior
+
+License plugin `<excludes>` uses hardcoded value defined in the `base-package` -> `pom.xml`.
+
+#### Current Behavior
+
+The default value of license plugin's `<excludes>` configuration can be overwritten by providing `<license.excludes>` property in a projects `pom.xml` -> `<properties>` tag.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
