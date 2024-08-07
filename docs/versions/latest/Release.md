@@ -39,35 +39,19 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### Add missing classes to `o11n-plugin-aria` and add missing methods to the existing classes
+### *Exclude Javascript and Typescript test files during license header generation*
 
 #### Previous Behavior
 
-Many classes are missing completely compared with vRO API and some existing classes were missing some methods
+In most archetypes that generate projects with Javascript or Typescript code license headers are added for all `*.ts` and `*.js` files.
 
 #### Current Behavior
 
-The following classes were added to `o11n-plugin-aria`:
-
-- VraCloudAccount
-- VraCloudAccountNsxT
-- VraCloudAccountNsxTResult
-- VraCloudAccountNsxV
-- VraCloudAccountNsxVResult
-- VraCloudAccountRegions
-- VraRegion
-- VraCloudAccountResult
-- VraCloudAccountVsphereRegionEnumerationSpecification
-- VraCloudAccountVsphereResult
-- VraDataCollector
-- VraDataCollectorResult
-- VraDiskAttachmentSpecification
-- VraDiskService
-- VraDiskSnapshotSpecification
+All archetypes that generate projects with Javascript and Typescript code have exclusion rules that skip adding license headers for test files.
 
 #### Related issue
 
-<https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
+https://github.com/vmware/build-tools-for-vmware-aria/issues/379
 
 ## Upgrade procedure
 
