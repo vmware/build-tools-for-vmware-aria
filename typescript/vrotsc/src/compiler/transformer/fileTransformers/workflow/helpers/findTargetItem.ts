@@ -6,35 +6,52 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 import { WorkflowItemDescriptor } from "../../../../decorators";
 import { findItemByName } from "./findItemByName";
 
+export const DEFAULT_END_ITEM_NAME = "item0";
+
 /**
  * Helper function to find the target item for the given item
  *
- * If the `item.target` is "end", it will return "item0"
- * If the `item.target` is not null, it will return the item with the given name, or 0 if not found
- * If the `item.target` is null, it will return the next item in the workflow, or "item0" if it is the last item
- *
- *
- * @param item The item to find the target for
- * @param pos The position of the item in the workflow
- * @param items The list of all items in the workflow
- * @returns The name of the target item
+ * @param target The name of the target item (optional)
+ * @param pos The position of the current item in the workflow.
+ *  If target isn't specified, the element in the next position will be targeted (if applicable)
+ * @param item The current item. Used to get the list of all items in the workflow.
+ * @returns The name of the target item:
+ * If the `item.target` is "end", it will return {@link DEFAULT_END_ITEM_NAME}
+ * If the `item.target` is defined, it will return the item with the given name, throw if not found/not targetable
+ * If the `item.target` is null/undefined, it will return the next item in the workflow,
+ * or {@link DEFAULT_END_ITEM_NAME} when there is no such item or it cannot be targeted
+ * @throws if the specified target is invalid (missing, not targetable)
  */
 export function findTargetItem(target: any, pos: number, item: WorkflowItemDescriptor): string {
-	if (target === "end") {
-		return "item0";
+	const wfItems = item.parent.items;
+	const nextInd = target == null ? pos + 1 : findItemByName(wfItems, target);
+	const nextItem = nextInd && nextInd <= wfItems.length ? wfItems[nextInd - 1] : null;
+	if (!nextItem) {
+		return handleTargetError(target,
+			`Could not find next item [${target == null ? nextInd - 1 : target}] in: [${wfItems.map(i => i.name)}]`);
 	}
-	if (target != null) {
-		return `item${findItemByName(item.parent.items, target) || 0}`;
+	if (nextItem.strategy.isNotTargetable) {
+		return handleTargetError(target,
+			`${item.name} cannot target ${nextItem.name} with type ${nextItem.strategy.getCanvasType()}`);
 	}
+	return `item${nextInd}`;
+}
 
-	return pos < item.parent.items.length ? `item${pos + 1}` : "item0";
+function handleTargetError(target, errMsg: string, debug: boolean = false): string {
+	if (target != null && target !== "end") {
+		throw new Error(`${errMsg}!`);
+	}
+	if (debug) {
+		console.debug(`${errMsg}. Targeting the default end element (${DEFAULT_END_ITEM_NAME}) instead.`);
+	}
+	return DEFAULT_END_ITEM_NAME;
 }
