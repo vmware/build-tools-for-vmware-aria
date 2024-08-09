@@ -74,6 +74,7 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 			]

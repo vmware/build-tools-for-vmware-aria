@@ -82,6 +82,7 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 			]

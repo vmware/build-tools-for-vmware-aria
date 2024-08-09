@@ -45,5 +45,8 @@ export default interface CanvasItemDecoratorStrategy {
 	 * Returns the Node representation of the item
 	 */
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode;
+
+	/** If true, the item cannot be a target */
+	readonly isNotTargetable?: boolean;
 }
 

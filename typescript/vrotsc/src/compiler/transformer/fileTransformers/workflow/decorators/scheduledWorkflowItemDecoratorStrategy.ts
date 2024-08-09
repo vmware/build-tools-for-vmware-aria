@@ -114,6 +114,7 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 			]

@@ -23,7 +23,9 @@ import { SourceFilePrinter, WrapperSourceFilePrinter } from "./helpers/sourceFil
 import { GraphNode } from "./helpers/graph";
 
 /**
- * Responsible for printing out decision items
+ * Responsible for printing out decision items.
+ * Note: Decision element in UI supports "else" instead of "exception".
+ * Any exceptions that occur in the condition script are thrown and may be captured in a Default Error Handler element for further handling.
  *
  * @example
  <workflow-item name="item3" out-name="item4" type="custom-condition" alt-out-name="item2">
@@ -80,6 +82,7 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 				findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)

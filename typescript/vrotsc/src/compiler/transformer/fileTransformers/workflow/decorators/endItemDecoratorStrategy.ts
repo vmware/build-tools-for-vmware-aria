@@ -87,6 +87,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		return {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: []
 		};
 	}

@@ -35,6 +35,8 @@ import { GraphNode } from "./helpers/graph";
  */
 export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
 
+	public readonly isNotTargetable = true;
+
 	/**
 	 * Return XML tag for the error handler workflow item.
 	 *
@@ -83,6 +85,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		return {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
 		};
 	}
