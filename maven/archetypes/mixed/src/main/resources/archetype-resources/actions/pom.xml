@@ -37,6 +37,6 @@
     #if (!${licenseTechnicalPreview} || ${licenseTechnicalPreview} == 'false')<license.organizationName>TODO: Enter Organization name</license.organizationName>#end
 
     <license.includes>**/*.js</license.includes>
-    <license.excludes>test/resources/**/*.js</license.excludes>
+    <license.excludes>/test/**/*.js</license.excludes>
   </properties>
 </project>
