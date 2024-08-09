@@ -18,142 +18,250 @@
  */
 export interface GraphNode {
 	name: string;
+	origName: string;
 	x?: number;
 	y?: number;
 	targets: string[];
+	sources?: string[];
 }
 
 /**
- * Leaf holds the node and its children(leaves)
+ * Tree representation with grid coordinates for its elements.
+ * Holds a {@link GraphNode} with its grid row and column, and an array of Tree branches for its children.
  */
-export interface Leaf {
+interface GridTree {
 	node: GraphNode;
-	leaves: Leaf[];
+	branches: GridTree[];
+	rootRow?: number;
+	rootCol?: number;
 }
 
 /**
- * Tree holds the structure of the graph, it's populated with the calculated positions
+ * Tracks the position within {@link GridTree} currently being populated.
+ * After building the tree, holds the dimensions of the grid.
  */
-interface Tree {
-	startNodes: string[];
-	leaves: Record<string, Leaf>;
+interface GridTracker {
+	lastRow: number; // last reached row; only increments
+	lastCol: number; // last reached col
+	currentCol?: number; // tracks tree level during recursion
 }
 
 /**
- * This is used to chart out a graph and give you the x and y positions of each node
- *
+ * Tree representation of a (part of) workflow diagram with grid coordinates for its elements.
+ * Holds a {@link GraphNode} with its grid row and column, and an array of Tree branches for its children.
+ * When complete:
+ * - the root of the tree will be an empty node (not to be displayed)
+ * - its children will be the start nodes (Start, [Default Error Handler])
+ * - branches represent node targets in order, unless already visited (when targeted by multiple sources)
+ * - leaves (branches without children) represent workflow End elements
+ * Coordinates represent row and column within a grid, where:
+ * - row 0 is the coordinate for the first encountered leaf when building from the root (depth-first)
+ * - rows increase by 2 for each encountered leaf (leaving a blank row)
  * Example:
- * ```typescript
+```
 const nodes = [
-	// First Start
-	{ name: "A", targets: ["B"] },
-	{ name: "B", targets: ["C"] },
-	{ name: "C", targets: ["D", "G"] },
-	{ name: "D", targets: ["E"] },
-	{ name: "E", targets: ["C", "F"] },
-	{ name: "F", targets: ["O"] },
-	{ name: "G", targets: ["H"] },
-	{ name: "H", targets: ["I"] },
-	{ name: "I", targets: ["J", "K", "L", "M"] },
-	{ name: "J", targets: [] },
-	{ name: "K", targets: [] },
-	{ name: "L", targets: [] },
-	{ name: "M", targets: [] },
-	{ name: "O", targets: ["P"] },
-	{ name: "P", targets: ["Q"] },
-	{ name: "Q", targets: [] },
+    // First Start
+    { name: "A", targets: ["B"] },
+    { name: "B", targets: ["C"] },
+    { name: "C", targets: ["G", "D"] },
+    { name: "D", targets: ["E"] },
+    { name: "E", targets: ["C", "F"] },
+    { name: "F", targets: ["O"] },
+    { name: "G", targets: ["H"] },
+    { name: "H", targets: ["I"] },
+    { name: "I", targets: ["J", "K", "L", "M"] },
+    { name: "J", targets: [] },
+    { name: "K", targets: [] },
+    { name: "L", targets: [] },
+    { name: "M", targets: [] },
+    { name: "O", targets: ["P"] },
+    { name: "P", targets: ["Q"] },
+    { name: "Q", targets: [] },
 
-	// Second start
-	{ name: "S", targets: ["T"] },
-	{ name: "T", targets: ["U", "W", "D"] },
-	{ name: "U", targets: [] },
-	{ name: "W", targets: [] },
+    // Second start
+    { name: "S", targets: ["T"] },
+    { name: "T", targets: ["U", "W", "D"] },
+    { name: "U", targets: [] },
+    { name: "W", targets: [] },
 
-	// Third Start
-	{ name: "X", targets: ["Y"] },
-	{ name: "Y", targets: [] },
+    // Third Start is no longer supported
+    // { name: "X", targets: ["Y"] },
+    // { name: "Y", targets: [] },
 ];
 
-const graph = new Graph(nodes, ["A", "S", "X"]);
+const graph = new Graph(nodes.map(n => ({...n, origName: n.name})), ["A", "S"]);
 
-graph.draw();
- * ```
- *
- * Will output:
- * ```
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-..............................F....O....P....Q......................................................
-....................................................................................................
-....................................................................................................
-....................D....E..........................................................................
-....................................................................................................
-.....A....B....C...................J................................................................
-....................................................................................................
-....................................................................................................
-....................G....H....I.....................................................................
-....................................................................................................
-...............U...................K................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-.....S....T....W...................L................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-...................................M................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-.....X....Y.........................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
-....................................................................................................
- * ```
+console.log('\n' + graph.draw() + '\n');
+
+```
+*
+* Will output diagram of the type (compact, secondary links not displayed):
+*
+```
+			   /[D]--[E]--[F]--[O]--[P]--[Q]
+>[A]--[B]--[C]-				  /[J]
+			   \[G]--[H]--[I]-|[K]
+							  |[L]
+							  \[M]
+>[S]--[T]-/[U]
+		  \[W]
+```
  */
 export class Graph {
-	/**
-	 * Holds a flag if calculations were already done
-	 */
-	private calculated = false;
+	/** Name of start node (added automatically, used to calculate start element position) */
+	public static START = "start";
 
 	/**
-	 * Will hold the calculated tree
+	 * Will hold the calculated tree.
+	 * Tree root is an empty node, its children will be the start nodes, their children will be
+	 * calculated recursively based on (visited) node targets (see {@link buildGridTree}).
 	 */
-	private tree: Tree;
+	private tree: GridTree = { node: null, branches: [] };
+	/**
+	 * Will hold grid dimensions after the tree is calculated;
+	 * used during tree calculation to track current row/column index.
+	 */
+	private gridTracker: GridTracker = { currentCol: -1, lastRow: 0, lastCol: 0 };
+	/**
+	 * Record of all visited nodes during tree calculation. Object keys are the node names.
+	 * Will hold all connected nodes at the end of tree calculation.
+	 */
+	private visitedNodes: Record<string, GridTree> = {};
 
 	/**
 	 * @param {GraphNode[]} nodes - List of the nodes that will be used to build the tree
 	 * @param {string[]} startNodeNames - List of the names of the nodes that will be used as the start of the tree
-	 * @param {number} nodeSpacing - The spacing between the nodes
-	 * @param {number} height - The height of the graph
-	 * @param {number} width - The width of the graph
+	 * @param {boolean} [compact = false] - If false, adds an additional row between leaf nodes
 	 */
 	constructor(
 		private nodes: GraphNode[],
-		startNodeNames: string[],
-		private nodeSpacing: number = 5,
-		private readonly height: number = 40,
-		private readonly width: number = 100
+		private startNodeNames: string[],
+		private compact = false
 	) {
-		this.tree = {
-			startNodes: startNodeNames,
-			leaves: {}
-		};
+		if (!this.nodes?.length || this.nodes.find(n => !n?.name || !Array.isArray(n?.targets))) {
+			throw new Error(`Invalid nodes: ${JSON.stringify(this.nodes)}`);
+		}
+		if (!this.startNodeNames?.length || this.startNodeNames.length > 2) {
+			throw new Error(`Number of starting nodes must be 1 (Root element) or 2 (Root element, Default Error Handler element)!`)
+		}
+		// auto-insert start node (will be on left-most column as Default Error Handler, if present)
+		this.nodes.unshift({name: Graph.START, origName: "Start", targets:[startNodeNames[0]]});
+		this.startNodeNames[0] = Graph.START;
 
-		this.calculatePositions();
+		this.populateNodeSources();
+		this.buildGridTree();
+		if (!this.compact) {
+			this.gridTracker.lastRow--; // compensate for extra row
+        }
+	}
+
+	// Validates starting nodes and populates sources. First encountered defines tree structure, others are secondary.
+	populateNodeSources(): void {
+		this.nodes?.forEach(node => {
+			node.targets = Array.from(new Set(node.targets));
+			node.sources = this.nodes.filter(n => n.targets?.indexOf(node.name) > -1).map(n => n.name);
+		});
+		const invalidStartNodes = this.startNodeNames.filter(name => {
+			const n = this.getNode(name);
+			return !n || n.sources?.length || n.targets?.length !== 1;
+		}).join();
+		if (invalidStartNodes) {
+			throw new Error(`Invalid start nodes: ${invalidStartNodes}. Verify the nodes exist, `
+				+ `have exactly 1 target each and are not targeted by other nodes: ${JSON.stringify(this.nodes)}!`);
+		}
+		const unlinkedNodes = this.nodes.filter(n => !n.sources?.length && this.startNodeNames.indexOf(n.name) < 0);
+		if (unlinkedNodes.length) {
+			throw new Error(`There are disconnected nodes: ${unlinkedNodes.map(n => n.name).join()}! `
+				+ `Check node targets: ${JSON.stringify(this.nodes)}`)
+		}
+	}
+
+	buildGridTree(
+		tree: GridTree = this.tree,
+		targets: string[] = this.startNodeNames
+	): void {
+		targets.map(t => this.getNode(t)) // throws
+			.filter(node => !tree.node || tree.node.name === node.sources[0])
+			.forEach(node => {
+				if (!(node.name in this.visitedNodes)) {
+					try {
+						this.gridTracker.currentCol++;
+						this.gridTracker.lastCol = Math.max(this.gridTracker.currentCol + 1, this.gridTracker.lastCol);
+						const branch: GridTree = { node, branches: [] };
+						this.visitedNodes[node.name] = branch;
+						tree.branches.push(branch);
+						this.buildGridTree(branch, node.targets); // depth-first
+					} finally {
+						this.gridTracker.currentCol--;
+					}
+				}
+			});
+		if (!tree.node) { // tree root's empty node won't be displayed
+			return;
+		}
+		// Rows and columns will be populated from leaves to root (depth first).
+		tree.rootCol = Math.max(tree.rootCol || 0, this.gridTracker.currentCol);
+		if (!tree.branches?.length) { // leaf (no children); put on lastRow and increment it for the next leaf
+			tree.rootRow = this.gridTracker.lastRow++;
+
+		    if (!this.compact) {
+			    this.gridTracker.lastRow++; // extra row
+            }
+			tree.branches = null;
+		} else { // has children - put on row approximately between the first and last child's;
+			tree.rootRow = Math.floor((tree.branches[0].rootRow + tree.branches[tree.branches.length - 1].rootRow) / 2); //tree.branches[0].rootRow;//
+			// in case of back reference on the same row - avoid arrows crossing intermediate node(s)
+			while (tree.node.sources.find((root, ind) => {
+				const visitedNode = !ind ? null : this.visitedNodes[root];
+				return visitedNode?.rootRow === tree.rootRow && visitedNode.rootCol > tree.rootCol + 1;
+			})) {
+				tree.rootRow++;
+				this.gridTracker.lastRow = Math.max(this.gridTracker.lastRow, tree.rootRow);
+			}
+		}
+	}
+
+	/**
+	 * (Re-)calculates x and y coordinates of all nodes based on their branch root's row and column.
+	 *
+	 * @param {number} [nodeSpacing = 5] - The spacing between the nodes
+	 * @param {number} [height = 100] - The max height of the graph
+	 * @param {number} [width = 100] - The max width of the graph
+	 * @param {boolean} [throwOutOfBoundsError = false] - whether to throw an Error when the dimentions exceed the given maximum values (true)
+	 * or only logs the error on the console (false)
+	 * @returns the graph with recalculated node coordinates
+	 * @throws Error when throwOutOfBoundsError = true and the dimentions exceed the given maximum values
+	 */
+	setDimensions(
+		nodeSpacing: number = 5,
+		height: number = 100,
+		width: number = 100,
+		throwOutOfBoundsError = false
+	): this {
+		const gridDimensions = [this.gridTracker.lastCol, this.gridTracker.lastRow].map(d => nodeSpacing * (d + 1));
+		const canvasDimensions = [width, height];
+		if (gridDimensions[0] > canvasDimensions[0] || gridDimensions[1] > canvasDimensions[1]) {
+			const err = `Grid dimensions ${gridDimensions} exceed canvas size ${canvasDimensions}!`;
+			if (throwOutOfBoundsError) {
+				throw new Error(err);
+			} else {
+				console.error(err);
+			}
+		}
+		this.treeWalk(this.tree, t => {
+			if (t.node) {
+				t.node.x = Math.round(nodeSpacing * (0.5 + t.rootCol));
+				t.node.y = Math.round(nodeSpacing * (0.5 + t.rootRow));
+			}
+		});
+
+		return this;
+	}
+
+	private treeWalk(tree: GridTree, fnPre: (t: GridTree) => void, fnPost: (t: GridTree) => void = (t) => { }) {
+		fnPre(tree);
+		tree.branches?.forEach(branch => this.treeWalk(branch, fnPre, fnPost));
+		fnPost(tree);
 	}
 
 	/**
@@ -161,25 +269,51 @@ export class Graph {
 	 *
 	 * @WARN: Used for debugging purposes
 	 */
-	public draw() {
-		this.calculatePositions();
+	public draw(label: string = "Workflow"): string {
+		const blankRow: string[] = Array.from({ length: this.gridTracker.lastCol }, () => "");
+		this.treeWalk(this.tree, (b) =>{
+			if (!b.node || b.rootCol < 0) {
+				return;
+			}
+			blankRow[b.rootCol] = blankRow[b.rootCol].padEnd(
+				Math.max(blankRow[b.rootCol].length, 5 + b.node.name.length + b.node.origName.length)
+			)
+		});
+		const grid = Array.from({ length: this.gridTracker.lastRow }, () => [...blankRow]);
+		const getSiblings = (branch: GridTree) => this.visitedNodes[branch.node?.sources[0]]?.branches || [];
+		const getPrefix = (branch: GridTree) => branch.rootCol === 0 ? ">[" // root
+			: (getSiblings(branch).length === 1 ? "-[" // only branch
+				: (getSiblings(branch)[0] === branch ? "/[" // first branch
+					: (getSiblings(branch)[getSiblings(branch).length - 1] === branch ? "\\[" // last branch
+						: "|["))) // middle branch
+		const getSuffix = (branch: GridTree) => !branch.branches?.length ? "] " : "]-";
+		this.treeWalk(this.tree, (branch: GridTree) => {
+			if (!branch.node || branch.rootCol < 0) {
+				return;
+			}
+			let nodeStr = `${branch.node.name}:${branch.node.origName}`;
+			const maxNodeNameLength = blankRow[branch.rootCol].length - 4;
+			nodeStr = nodeStr.padStart(nodeStr.length + Math.floor((maxNodeNameLength - nodeStr.length) / 2));
+			grid[branch.rootRow][branch.rootCol] = `${getPrefix(branch)}${nodeStr.padEnd(maxNodeNameLength)}${getSuffix(branch)}`;
+		});
 
-		const grid = Array.from({ length: this.height }, () => Array(this.width).fill('.'));
+		const rows = grid.map(line => line.join(''));
+		const border = Array(rows[0]?.length || 0).fill("-").join("");
 
-		for (const leaf of Object.values(this.tree.leaves)) {
-			grid[Math.round(leaf.node.y)][Math.round(leaf.node.x)] = leaf.node.name;
+		const omittedConnections = [];
+		this.treeWalk(this.tree, (branch) => {
+			if (!branch.node || branch.rootCol <= 0) {
+				return;
+			}
+			omittedConnections.push(...(branch.node.sources || []).filter((src, ind) => !!ind).map(src => `${src} -> ${branch.node.name}`));
+		});
+		if (omittedConnections.length){
+			omittedConnections.unshift("Secondary connections (not displayed):");
 		}
 
-		grid.forEach(line => console.log(line.join('')));
+		return [`${label} Diagram:` ,border, ...rows, border,...omittedConnections].join('\n');
 	}
 
-	/**
-	 * Retrieves the node by name
-	 *
-	 * @param {string} name
-	 * @returns {GraphNode}
-	 * @throws {Error} if the node is not found
-	 */
 	public getNode(name: string): GraphNode {
 		const node = this.nodes.find(node => node.name === name);
 		if (!node) {
@@ -188,161 +322,4 @@ export class Graph {
 
 		return node;
 	}
-
-	/**
-	 * Get the leaf by name
-	 *
-	 * @param {string} name
-	 * @returns {Leaf | null}
-	 */
-	public getLeaf(name: string): Leaf {
-		const leaf = this.tree.leaves[name];
-		if (!leaf) {
-			throw new Error(`Leaf "${name}" not found`);
-		}
-
-		return leaf;
-	}
-
-	/**
-	 * Height of the graph
-	 *
-	 * Retrieve from here so you don't have to store a variable
-	 */
-	public getHeight() {
-		return this.height;
-	}
-
-	/**
-	 * Width of the graph
-	 *
-	 * Retrieve from here so you don't have to store a variable
-	 */
-	public getWidth() {
-		return this.width;
-	}
-
-	/**
-	 * Node spacing
-	 *
-	 * Retrieve from here so you don't have to store a variable
-	 */
-	public getNodeSpacing() {
-		return this.nodeSpacing;
-	}
-
-	/**
-	 * Check if a node is already at the given position
-	 *
-	 * @param {number} x
-	 * @param {number} y
-	 */
-	private hasOverlap(x: number, y: number) {
-		for (const leaf of Object.values(this.tree.leaves)) {
-			if (Math.round(leaf.node.x) === Math.round(x) && Math.round(leaf.node.y) === Math.round(y)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Builds the tree
-	 *
-	 * Calculates the x and y positions of each leaf
-	 *
-	 * @param {GraphNode} origin - The node to start building the tree from
-	 * @param {Set<GraphNode>} visited - The set of visited nodes
-	 * @param {number} x - The x position of the new node
-	 * @param {number} y - The y position of the new node
-	 */
-	private buildTree(
-		origin: GraphNode,
-		visited: Set<GraphNode> = new Set<GraphNode>(),
-		x: number = this.nodeSpacing,
-		y: number = this.height / 2
-	) {
-		while (this.hasOverlap(x, y)) {
-			y += this.nodeSpacing;
-		}
-
-		origin.x = x;
-		origin.y = y;
-
-		let positions = {
-			x: x + this.nodeSpacing,
-			y: y
-		};
-
-		if (origin.targets.length > 1) {
-			positions.y -= this.nodeSpacing * (origin.targets.length - 1) / 2;
-		}
-
-		origin.targets.forEach(targetName => {
-			const target = this.getNode(targetName);
-
-			if (!this.tree.leaves[target.name]) {
-				this.tree.leaves[target.name] = {
-					node: target,
-					leaves: []
-				};
-			}
-
-			const targetLeaf = this.getLeaf(target.name);
-			this.getLeaf(origin.name).leaves.push(targetLeaf);
-
-			// LPS (`Loop Prevention System`)
-			if (visited.has(target)) return;
-			visited.add(target);
-
-			this.buildTree(targetLeaf.node, visited, positions.x, positions.y);
-			positions.y += this.nodeSpacing;
-		});
-	}
-
-	/**
-	 * Calculates all the positions of the tree leaves
-	 *
-	 * If this method is called multiple times, it will only calculate the positions once
-	 */
-	private calculatePositions() {
-		if (this.calculated) return;
-
-		for (const node of this.nodes) {
-			this.tree.leaves[node.name] = {
-				node,
-				leaves: []
-			};
-		}
-
-		const visited = new Set<GraphNode>();
-		const spacedOutY = this.height / (this.tree.startNodes.length + 1);
-		const positions = { x: this.nodeSpacing, y: spacedOutY };
-
-		for (const name of this.tree.startNodes) {
-			const startNode = this.getNode(name);
-			this.buildTree(startNode, visited, positions.x, positions.y);
-
-			positions.y += spacedOutY;
-		}
-
-		this.calculated = true;
-
-		for (const leaf of Object.values(this.tree.leaves)) {
-			if (this.tree.startNodes.includes(leaf.node.name)) {
-				continue;
-			}
-
-			if (leaf.node.x === undefined || leaf.node.y === undefined) {
-				const nodes = Object.values(this.tree.leaves).map(l => {
-					return { node: l.node, leaves: l.leaves.map(le => le.node.name) };
-				});
-				console.log(JSON.stringify(nodes, null, 2));
-
-				throw new Error(`Node "${leaf.node.name}" has no position, seems like one of the nodes is not connected which would make your wf unusable, check your targets. Above should be a log of all the leaves.`);
-			}
-		}
-	}
-
-
 }
