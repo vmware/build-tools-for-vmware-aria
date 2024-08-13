@@ -60,33 +60,33 @@ interface GridTracker {
  * Example:
 ```
 const nodes = [
-    // First Start
-    { name: "A", targets: ["B"] },
-    { name: "B", targets: ["C"] },
-    { name: "C", targets: ["G", "D"] },
-    { name: "D", targets: ["E"] },
-    { name: "E", targets: ["C", "F"] },
-    { name: "F", targets: ["O"] },
-    { name: "G", targets: ["H"] },
-    { name: "H", targets: ["I"] },
-    { name: "I", targets: ["J", "K", "L", "M"] },
-    { name: "J", targets: [] },
-    { name: "K", targets: [] },
-    { name: "L", targets: [] },
-    { name: "M", targets: [] },
-    { name: "O", targets: ["P"] },
-    { name: "P", targets: ["Q"] },
-    { name: "Q", targets: [] },
+	// First Start
+	{ name: "A", targets: ["B"] },
+	{ name: "B", targets: ["C"] },
+	{ name: "C", targets: ["G", "D"] },
+	{ name: "D", targets: ["E"] },
+	{ name: "E", targets: ["C", "F"] },
+	{ name: "F", targets: ["O"] },
+	{ name: "G", targets: ["H"] },
+	{ name: "H", targets: ["I"] },
+	{ name: "I", targets: ["J", "K", "L", "M"] },
+	{ name: "J", targets: [] },
+	{ name: "K", targets: [] },
+	{ name: "L", targets: [] },
+	{ name: "M", targets: [] },
+	{ name: "O", targets: ["P"] },
+	{ name: "P", targets: ["Q"] },
+	{ name: "Q", targets: [] },
 
-    // Second start
-    { name: "S", targets: ["T"] },
-    { name: "T", targets: ["U", "W", "D"] },
-    { name: "U", targets: [] },
-    { name: "W", targets: [] },
+	// Second start
+	{ name: "S", targets: ["T"] },
+	{ name: "T", targets: ["U", "W", "D"] },
+	{ name: "U", targets: [] },
+	{ name: "W", targets: [] },
 
-    // Third Start is no longer supported
-    // { name: "X", targets: ["Y"] },
-    // { name: "Y", targets: [] },
+	// Third Start is no longer supported
+	// { name: "X", targets: ["Y"] },
+	// { name: "Y", targets: [] },
 ];
 
 const graph = new Graph(nodes.map(n => ({...n, origName: n.name})), ["A", "S"]);
@@ -145,14 +145,14 @@ export class Graph {
 			throw new Error(`Number of starting nodes must be 1 (Root element) or 2 (Root element, Default Error Handler element)!`)
 		}
 		// auto-insert start node (will be on left-most column as Default Error Handler, if present)
-		this.nodes.unshift({name: Graph.START, origName: "Start", targets:[startNodeNames[0]]});
+		this.nodes.unshift({ name: Graph.START, origName: "Start", targets: [startNodeNames[0]] });
 		this.startNodeNames[0] = Graph.START;
 
 		this.populateNodeSources();
 		this.buildGridTree();
 		if (!this.compact) {
 			this.gridTracker.lastRow--; // compensate for extra row
-        }
+		}
 	}
 
 	// Validates starting nodes and populates sources. First encountered defines tree structure, others are secondary.
@@ -204,9 +204,9 @@ export class Graph {
 		if (!tree.branches?.length) { // leaf (no children); put on lastRow and increment it for the next leaf
 			tree.rootRow = this.gridTracker.lastRow++;
 
-		    if (!this.compact) {
-			    this.gridTracker.lastRow++; // extra row
-            }
+			if (!this.compact) {
+				this.gridTracker.lastRow++; // extra row
+			}
 			tree.branches = null;
 		} else { // has children - put on row approximately between the first and last child's;
 			tree.rootRow = Math.floor((tree.branches[0].rootRow + tree.branches[tree.branches.length - 1].rootRow) / 2); //tree.branches[0].rootRow;//
@@ -224,18 +224,18 @@ export class Graph {
 	/**
 	 * (Re-)calculates x and y coordinates of all nodes based on their branch root's row and column.
 	 *
-	 * @param {number} [nodeSpacing = 5] - The spacing between the nodes
-	 * @param {number} [height = 100] - The max height of the graph
-	 * @param {number} [width = 100] - The max width of the graph
+	 * @param {number} [nodeSpacing = 120] - The horizontal spacing between the nodes (vertical spacing is half of it)
+	 * @param {number} [height = 600] - The max height of the graph
+	 * @param {number} [width = 6000] - The max width of the graph
 	 * @param {boolean} [throwOutOfBoundsError = false] - whether to throw an Error when the dimentions exceed the given maximum values (true)
 	 * or only logs the error on the console (false)
-	 * @returns the graph with recalculated node coordinates
+	 * @returns the graph with recalculated node coordinates as per horizonatal and vertical spacing, with initial offset - half the node spacing.
 	 * @throws Error when throwOutOfBoundsError = true and the dimentions exceed the given maximum values
 	 */
 	setDimensions(
-		nodeSpacing: number = 5,
-		height: number = 100,
-		width: number = 100,
+		nodeSpacing: number = 120,
+		height: number = 600,
+		width: number = 6000,
 		throwOutOfBoundsError = false
 	): this {
 		const gridDimensions = [this.gridTracker.lastCol, this.gridTracker.lastRow].map(d => nodeSpacing * (d + 1));
@@ -251,7 +251,7 @@ export class Graph {
 		this.treeWalk(this.tree, t => {
 			if (t.node) {
 				t.node.x = Math.round(nodeSpacing * (0.5 + t.rootCol));
-				t.node.y = Math.round(nodeSpacing * (0.5 + t.rootRow));
+				t.node.y = Math.round(nodeSpacing / 2 * (1 + t.rootRow));
 			}
 		});
 
@@ -269,9 +269,9 @@ export class Graph {
 	 *
 	 * @WARN: Used for debugging purposes
 	 */
-	public draw(label: string = "Workflow"): string {
+	public draw(label: string = "Workflow diagram"): this {
 		const blankRow: string[] = Array.from({ length: this.gridTracker.lastCol }, () => "");
-		this.treeWalk(this.tree, (b) =>{
+		this.treeWalk(this.tree, (b) => {
 			if (!b.node || b.rootCol < 0) {
 				return;
 			}
@@ -307,11 +307,12 @@ export class Graph {
 			}
 			omittedConnections.push(...(branch.node.sources || []).filter((src, ind) => !!ind).map(src => `${src} -> ${branch.node.name}`));
 		});
-		if (omittedConnections.length){
+		if (omittedConnections.length) {
 			omittedConnections.unshift("Secondary connections (not displayed):");
 		}
 
-		return [`${label} Diagram:` ,border, ...rows, border,...omittedConnections].join('\n');
+		console.debug([label, border, ...rows, border, ...omittedConnections].join('\n'));
+		return this;
 	}
 
 	public getNode(name: string): GraphNode {
