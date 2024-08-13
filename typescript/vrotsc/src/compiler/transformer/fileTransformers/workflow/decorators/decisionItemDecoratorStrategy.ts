@@ -21,6 +21,7 @@ import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { SourceFilePrinter, WrapperSourceFilePrinter } from "./helpers/sourceFile";
 import { GraphNode } from "./helpers/graph";
+import { formatPosition } from "../helpers/formatPosition";
 
 /**
  * Responsible for printing out decision items.
@@ -40,6 +41,7 @@ import { GraphNode } from "./helpers/graph";
  </workflow-item>
  */
 export default class DecisionItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
+    private readonly OFFSET: [number, number] = [0, -10];
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new WrapperSourceFilePrinter()) { }
 
 	getDecoratorType(): WorkflowItemType {
@@ -147,7 +149,7 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y], this.OFFSET)).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

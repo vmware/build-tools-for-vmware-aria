@@ -19,6 +19,7 @@ import { getDecoratorProps } from "../../../helpers/node";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { buildItemParameterBindings, InputOutputBindings } from "./helpers/presentation";
 import { GraphNode } from "./helpers/graph";
+import { formatPosition } from "../helpers/formatPosition";
 
 /**
  * Responsible for printing out the workflow end item.
@@ -35,6 +36,7 @@ import { GraphNode } from "./helpers/graph";
  * ```
  */
 export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
+    public static get END_ITEM_OFFSET(): [number, number] { return [40, -10]; }
 	/**
 	 * Return XML tag for the end workflow item.
 	 *
@@ -125,7 +127,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y], EndItemDecoratorStrategy.END_ITEM_OFFSET)).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

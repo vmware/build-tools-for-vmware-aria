@@ -19,6 +19,7 @@ import { getDecoratorProps } from "../../../helpers/node";
 import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { GraphNode } from "./helpers/graph";
+import { formatPosition } from "../helpers/formatPosition";
 
 /**
  * Responsible for printing out a default error handler
@@ -36,6 +37,7 @@ import { GraphNode } from "./helpers/graph";
 export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
 
 	public readonly isNotTargetable = true;
+    private readonly OFFSET: [number, number] = [40, -10];
 
 	/**
 	 * Return XML tag for the error handler workflow item.
@@ -123,7 +125,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y], this.OFFSET)).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append("</error-handler>").appendLine();
 		stringBuilder.unindent();
