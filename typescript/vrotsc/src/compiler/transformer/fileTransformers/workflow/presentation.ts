@@ -18,10 +18,14 @@ import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 import { findItemByName } from "./helpers/findItemByName";
 import { Graph } from "./decorators/helpers/graph";
 import { DEFAULT_END_ITEM_NAME } from "./helpers/findTargetItem";
+import { formatPosition } from "./helpers/formatPosition";
+import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
 const LARGEST_INT32 = 2147483647;
+
+const START_ITEM_OFFSET: [number, number] = [40, -10];
 
 /**
  * This will print the workflow in XML format
@@ -53,14 +57,13 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 
 	try {
 		graph = getGraph(workflow);
-		console.debug(`'${workflow.name}' diagram:\n${graph.draw()}`);
 	} catch (e) {
 		throw new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.
 						Original Error: ${e.message}`);
 	}
 
 	const startNode = graph.getNode(Graph.START);
-	stringBuilder.append(`<position x="${startNode.x}" y="${startNode.y}" />`).appendLine();
+	stringBuilder.append(formatPosition([startNode.x, startNode.y], START_ITEM_OFFSET)).appendLine();
 	buildParameters("input", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Input));
 	buildParameters("output", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Output));
 	buildAttributes(workflow.parameters.filter(p => p.isAttribute));
@@ -138,7 +141,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	function buildEndItem(x: number, y: number) {
 		stringBuilder.append(`<workflow-item name="${DEFAULT_END_ITEM_NAME}" type="end" end-mode="0">`).appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y], EndItemDecoratorStrategy.END_ITEM_OFFSET)).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 	}
@@ -300,8 +303,9 @@ function getGraph(workflow: WorkflowDescriptor) {
 
 	return new Graph(nodes, startNodes)
 		.setDimensions(
-			100,
-			1000,
+			120,
+			1200,
 			LARGEST_INT32
-		);
+		)
+		.draw(workflow.name);
 }
