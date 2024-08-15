@@ -14,41 +14,49 @@
  */
 
 /**
- * The node holds information about its position
+ * The node holds information about its position and linked nodes
  */
 export interface GraphNode {
+	/** Workfrow item name (item#). Required. */
 	name: string;
+	/** Workfrow item original name (method name). Required. */
 	origName: string;
-	x?: number;
-	y?: number;
+	/** Item names (item#) of linked workflow elements. Required. */
 	targets: string[];
+	/** Canvas X coordinate (calculated) */
+	x?: number;
+	/** Canvas Y coordinate (calculated) */
+	y?: number;
+	/**
+	 * Names of nodes that have the current node name as target (calculated)
+	 * First one is the primary source, which defines the tree structure.
+	 */
 	sources?: string[];
+	/** Names of target nodes for which the current node is the primary source (calculated) */
+	branches?: string[];
+	/** Grid row (calculated) */
+	row?: number;
+	/** Grid column (calculated) */
+	col?: number;
 }
 
 /**
- * Tree representation with grid coordinates for its elements.
- * Holds a {@link GraphNode} with its grid row and column, and an array of Tree branches for its children.
- */
-interface GridTree {
-	node: GraphNode;
-	branches: GridTree[];
-	rootRow?: number;
-	rootCol?: number;
-}
-
-/**
- * Tracks the position within {@link GridTree} currently being populated.
- * After building the tree, holds the dimensions of the grid.
+ * Holds the dimensions of the grid.
+ * Tracks the grid position while the Graph is being populated.
  */
 interface GridTracker {
-	lastRow: number; // last reached row; only increments
-	lastCol: number; // last reached col
-	currentCol?: number; // tracks tree level during recursion
+	/** Last reached row index per column. Length of array is total № of columns */
+	lastRowIndPerCol: number[];
+	/** Total number of rows */
+	totalRows: number;
+	/** Tracks tree level (current column) during recursion */
+	currentCol?: number;
 }
 
 /**
  * Wrapper for an array of {@link GraphNode}s (with names and targets),
- * which on initialization populates the nodes' canvas positions (x,y)
+ * which on initialization populates the nodes' canvas positions (x,y),
+ * grid positions (row, col) and related nodes (sources, branches)
  * to reflect a tree graph structure with grid coordinates, in which:
  * - the root of the tree will be the default Start node
  * - the root node targets will be its children
@@ -62,41 +70,32 @@ interface GridTracker {
  * - the first node from the root targets will be placed at col 1
  * - the remaining root node targets will be displayed at column 0 as secondary root elements.
  *   This adjustment will be reflected in the columns of their branches
- * Node coordinates will [x,y] be calculated based on grid coordinates and node spacing:
- * - x: [initial offset] + [node column ] * [horizontal spacing];
- * - y: [initial offset] + [node row ] * [vertical spacing];
- * where:
- * - [horizontal spacing] is the horizontal distance between adjacent nodes (as points, in canvas units)
- *   See param nodeSpacing.
- * - [vertical spacing] = [initial offset] = 0.5 * [horizonatal spacing]
+ * Node coordinates will [x,y] be calculated based on grid coordinates, node spacing and initial offset.
  * Example:
 ```
 const nodes = [
 	{name: "start", origName: "Start", targets: ["item6","item9"]}, // default start; targets the root and default error handler items
-	{name: "item1" origName: "decisionElement", targets: ["waitForEvent", "prepareItems"]},
-	{name: "item2", origName: "prepareItems", targets: ["callOtherWf"]},
-	{name: "item3", origName: "callOtherWf", targets: ["print"]},
-	{name: "item4", origName: "print", targets: ["end"]},
-	{name: "item5", origName: "execute", targets: ["decisionElement"]},
-	{name: "item6", origName: "prepare", targets: ["execute"]}, // root item
-	{name: "item7", origName: "waitForEvent", targets: ["execute"]},
+	{name: "item1", origName: "decisionElement", targets: ["item7", "item2"]},
+	{name: "item2", origName: "prepareItems", targets: ["item3"]},
+	{name: "item3", origName: "callOtherWf", targets: ["item4"]},
+	{name: "item4", origName: "print", targets: ["item0"]},
+	{name: "item5", origName: "execute", targets: ["item1"]},
+	{name: "item6", origName: "prepare", targets: ["item5"]}, // root item
+	{name: "item7", origName: "waitForEvent", targets: ["item5"]},
 	{name: "item8", origName: "workflowEnd", targets: []}, // secondary end
-	{name: "item9", origName: "defaultErrorHandler", targets: ["workflowEnd"]}, // default error handler (secondary start)
-	{name: "item0", origName: "End0", targets: [""]}, // default end
+	{name: "item9", origName: "defaultErrorHandler", targets: ["item8"]}, // default error handler (secondary start)
+	{name: "item0", origName: "End0", targets: []}, // default end
 ]
 
-new Graph(nodes).draw();
+new Graph(nodes).build().calculateCanvasPositions().draw();
 ```
-*
-* Will output diagram of the type (compact, secondary links not displayed):
-*
+* Will output diagram of the type:
 ```
 Workflow diagram
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 																							/[item7:waitForEvent]
 >[       start:Start       ]--[  item6:prepare  ]--[item5:execute]--[item1:decisionElement]-
 																							\[item2:prepareItems]--[item3:callOtherWf]--[item4:print]--[item0:End0]
-
 >[item9:defaultErrorHandler]--[item8:workflowEnd]
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Secondary connections (not displayed):
@@ -108,57 +107,86 @@ export class Graph {
 	public static readonly START = "start";
 
 	/**
-	 * Will hold the calculated tree.
-	 * Tree root is the Start node, its children will be calculated recursively
-	 * based on (visited) node targets (see {@link buildGridTree}).
-	 */
-	private readonly tree: GridTree;
-
-	/**
 	 * Will hold grid dimensions after the tree is calculated;
 	 * used during tree calculation to track current row/column index.
 	 */
-	private readonly gridTracker: GridTracker = { currentCol: 0, lastRow: 0, lastCol: 0 };
+	private gridTracker: GridTracker;
 
 	/**
 	 * Record of all visited nodes during tree calculation. Object keys are the node names.
-	 * Will hold all connected nodes at the end of tree calculation.
+	 * Will hold all connected nodes at the end of tree calculation or be set to null on failure.
 	 */
-	private readonly visitedNodes: Record<string, GridTree> = {};
+	private visitedNodes: Record<string, GraphNode>;
 
 	/**
 	 * @param {GraphNode[]} nodes - List of the nodes that will be used to build the tree.
 	 * Must contain a Start node with name={@link START 'start'} with at least one target node.
 	 * The first target will be displayed as its child.
-	 * Any remaining targets will be displayed as secondary starting elements (at the same level as the default Start)
-	 * @param {number} [nodeSpacing = 120] - horizontal spacing in canvas units between adjacent nodes (vertical spacing is half)
-	 * @param {[number, number]} [maxGridDimensions = [10, 50]] - maximum number of grid rows and columns
+	 * Note: Any remaining targets will be displayed as secondary starting elements (at the same level as the default Start)
 	 */
-	constructor(
-		private readonly nodes: GraphNode[],
-		public readonly nodeSpacing: number = 120,
-		maxGridDimensions: [number, number] = [10, 50]
-	) {
-		this.tree = { node: this.getNode(Graph.START), branches: [] };
+	constructor(public readonly nodes: GraphNode[] = []) { }
 
+	/**
+	 * Populates node sources and branches based on targets.
+	 * First encountered source defines tree structure, others are secondary.
+	 * Calculates grid dimensions.
+	 * @throws Error if a targeted node doesn't exist
+	 * @throws Error if there are disconnected nodes
+	 */
+	public build(): this {
+		this.gridTracker = { currentCol: 0, lastRowIndPerCol: [], totalRows: 0 };
+		this.visitedNodes = {};
 		this.populateNodeSources();
-		this.buildGridTree(this.tree);
-		this.gridTracker.lastRow--; // compensate for extra row
+		try {
+			this.buildGraphNode(this.getNode(Graph.START));
+		} catch (err) {
+			this.visitedNodes = null;
+			throw err;
+		}
 
-		// set node x/y based on rows and colums:
-		const gridDimensions = this.getDimensions();
+		return this;
+	}
+
+	/**
+	 * Calculates node canvas positions.
+	 * @param {[number, number]} [nodeSpacing = [100, 50]] - horizontal and vertical spacing in canvas units between adjacent nodes
+	 * @param {[number, number]} [initialOffset = [0, 20]] - horizontal and vertical initial offset in canvas units
+	 * @param {[number, number]} [maxGridDimensions = [10, 50]] - maximum number of grid rows and columns
+	 * @returns {GraphNode} the Graph with updated node positions, where:
+	 * node.x = node.col * nodeSpacing[0] + initialOffset[0]
+	 * node.y = node.row * nodeSpacing[1] + initialOffset[1]
+	 * @throws Error if grid isn't built
+	 * @throws Error if grid exceeds the maximum size
+	 */
+	public calculateCanvasPositions(
+		nodeSpacing: [number, number] = [100, 50],
+		initialOffset: [number, number] = [0, 20],
+		maxGridDimensions: [number, number] = [10, 50]
+	): this {
+		if (!this.visitedNodes) {
+			throw new Error(`The graph needs to be built first!`);
+		}
+
+		const gridDimensions = [this.gridTracker.totalRows, this.gridTracker.lastRowIndPerCol.length];
 		if (gridDimensions[0] > maxGridDimensions[0] || gridDimensions[1] > maxGridDimensions[1]) {
 			throw new Error(`Grid dimensions ${gridDimensions} exceed the allowed number of rows/colums ${maxGridDimensions}!`);
 		}
-		this.treeWalk(this.tree, t => {
-			t.node.x = Math.round(nodeSpacing * (0.5 + t.rootCol));
-			t.node.y = Math.round(nodeSpacing / 2 * (1 + t.rootRow));
+		this.nodes.forEach(node => {
+			node.x = nodeSpacing[0] * node.col + initialOffset[0];
+			node.y = nodeSpacing[1] * node.row + initialOffset[1];
 		});
+
+		return this;
 	}
 
-	// Validates starting nodes and populates sources. First encountered defines tree structure, others are secondary.
-	populateNodeSources(): void {
+	/**
+	 * Populates node sources based on all node targets.
+	 * @throws Error if a targeted node doesn't exist
+	 * @throws Error if there are disconnected nodes
+	 */
+	private populateNodeSources() {
 		this.nodes?.forEach(node => {
+			node.branches = [];
 			node.sources = this.nodes.filter(n => n.targets?.indexOf(node.name) > -1).map(n => n.name);
 		});
 		const unlinkedNodes = this.nodes.filter(n => !n.sources?.length && n.name !== Graph.START);
@@ -167,61 +195,70 @@ export class Graph {
 		}
 	}
 
-	buildGridTree(tree: GridTree): void {
-		tree.node.targets.map(t => this.getNode(t)) // throws
-			.filter(node => node.name === Graph.START || tree.node.name === node.sources[0])
-			.forEach(node => {
-				if (!(node.name in this.visitedNodes)) {
-					// secondary start nodes will be placed in col. 0:
-					const colIncrement = this.tree.node.targets.indexOf(node.name) > 0 ? 0 : 1;
-					try {
-						this.gridTracker.currentCol += colIncrement;
-						this.gridTracker.lastCol = Math.max(this.gridTracker.currentCol + 1, this.gridTracker.lastCol);
-						const branch: GridTree = { node, branches: [] };
-						this.visitedNodes[node.name] = branch;
-						tree.branches.push(branch);
-						this.buildGridTree(branch); // depth-first
-					} finally {
-						this.gridTracker.currentCol -= colIncrement;
-					}
+	/**
+	 * Populates the branches for the node based on its targets.
+	 * Called recursively for each branch before calculating the node's grid position
+	 * (Rows and columns will be populated from leaves to root - depth first).
+	 * Uses gridTracker.currentCol to track node column and the level of recursion
+	 * @param {GraphNode} treeNode - node to recursively update.
+	 */
+	protected buildGraphNode(treeNode: GraphNode): void {
+		treeNode.targets.map(t => this.getNode(t)) // throws
+			.filter(branch => !(branch.name in this.visitedNodes) && branch.sources[0] === treeNode.name)
+			.forEach(branch => {
+				// secondary start nodes will be placed in col. 0:
+				const colIncrement = this.getNode(Graph.START).targets.indexOf(branch.name) > 0 ? 0 : 1;
+				try {
+					this.gridTracker.currentCol += colIncrement;
+					this.visitedNodes[branch.name] = branch;
+					treeNode.branches.push(branch.name);
+					this.buildGraphNode(branch); // depth-first
+				} finally {
+					this.gridTracker.currentCol -= colIncrement;
 				}
 			});
-		// Rows and columns will be populated from leaves to root (depth first).
-		this.calculateGridPosition(tree);
-	}
 
-	private calculateGridPosition(tree: GridTree) {
-		tree.rootCol = Math.max(tree.rootCol || 0, this.gridTracker.currentCol);
-		if (!tree.branches?.length) { // leaf (no children); put on lastRow and increment it for the next leaf
-			tree.rootRow = this.gridTracker.lastRow++;
-			this.gridTracker.lastRow++; // extra row
-			tree.branches = null;
-		}
-		else if (tree.node.name === Graph.START) { // start node is on same row as first branch
-			tree.rootRow = tree.branches[0].rootRow;
-		}
-		else { // branch has children - put on row approximately between the first and last child's;
-			tree.rootRow = Math.floor((tree.branches[0].rootRow + tree.branches[tree.branches.length - 1].rootRow) / 2);
-			// in case of back reference on the same row - avoid arrows crossing intermediate node(s)
-			while (tree.node.sources.find((root, ind) => {
-				const visitedNode = !ind ? null : this.visitedNodes[root];
-				return visitedNode?.rootRow === tree.rootRow && visitedNode.rootCol > tree.rootCol + 1;
-			})) {
-				tree.rootRow++;
-				this.gridTracker.lastRow = Math.max(this.gridTracker.lastRow, tree.rootRow);
-			}
-		}
+		treeNode.col = this.gridTracker.currentCol;
+		this.calculateGridRow(treeNode);
 	}
 
 	/**
-	 * @returns {[number, number]} - number of rows and columns in the grid
+	 * Calculates a node's grid row:
+	 * If the node is leaf (no children) - puts it on the last free row (with 1 row for spacing between sibling nodes).
+	 * If the node has children, the row is the average of the first and list child's.
+	 * While there is a successor node on the same row back-referencing it, it is moved to the next row.
+	 * @param {GraphNode} treeNode - node whose grid position is being updated
 	 */
-	getDimensions(): [number, number] {
-		return [this.gridTracker.lastRow, this.gridTracker.lastCol];
+	private calculateGridRow(treeNode: GraphNode) {
+		if (!treeNode.branches?.length) { // leaf (no children); put on lastRow and increment it for the next leaf
+			treeNode.row = this.getNextRow(treeNode.col);
+			treeNode.branches = null;
+		}
+		else if (treeNode.name === Graph.START) { // start node is on same row as first branch
+			treeNode.row = this.getNode(treeNode.branches[0]).row;
+		}
+		else { // branch has children - put on row approximately between the first and last child's;
+			treeNode.row = Math.floor((this.getNode(treeNode.branches[0]).row + this.getNode(treeNode.branches[treeNode.branches.length - 1]).row) / 2);
+			// in case of a node on the same row back referencing this one - avoid arrows crossing intermediate node(s)
+			while (
+				treeNode.sources.find((src, ind) => !!ind && (src in this.visitedNodes)  // visited, but not parent
+					&& this.getNode(src).row === treeNode.row && this.getNode(src).col > treeNode.col + 1) // further than next col on same row
+			) {
+				treeNode.row++;
+			}
+		}
+		this.gridTracker.lastRowIndPerCol[treeNode.col] = treeNode.row;
+		this.gridTracker.totalRows = Math.max(this.gridTracker.totalRows, 1 + treeNode.row);
 	}
 
+	/**
+	 * Finds a node with the given name. Checks visited nodes first.
+	 * @param {string} name
+	 * @returns {GraphNode}
+	 * @throws Error if the Graph contains no node with the given name.
+	 */
 	public getNode(name: string): GraphNode {
-		const node = this.nodes.find(node => node.name === name);
+		const node = this.visitedNodes[name] || this.nodes.find(node => node.name === name);
 		if (!node) {
 			throw new Error(`Node "${name}" not found`);
 		}
@@ -235,45 +272,61 @@ export class Graph {
 	 * @WARN: Used for debugging purposes
 	 */
 	public draw(label: string = "Workflow diagram"): this {
-		const blankRow: string[] = Array.from({ length: this.gridTracker.lastCol }, () => "");
-		this.treeWalk(this.tree, (b) => {
-			blankRow[b.rootCol] = blankRow[b.rootCol].padEnd(
-				Math.max(blankRow[b.rootCol].length, 5 + b.node.name.length + b.node.origName.length)
+		// blank grid
+		const blankRow: string[] = Array.from(this.gridTracker.lastRowIndPerCol, () => "");
+		this.nodes.forEach((node) => {
+			blankRow[node.col] = blankRow[node.col].padEnd(
+				Math.max(blankRow[node.col].length, 5 + node.name.length + node.origName.length)
 			)
 		});
-		const grid = Array.from({ length: this.gridTracker.lastRow }, () => [...blankRow]);
-		const getSiblings = (branch: GridTree) => this.visitedNodes[branch.node?.sources[0]]?.branches || [];
-		const getPrefix = (branch: GridTree) => branch.rootCol === 0 ? ">[" // root
-			: (branch.rootCol === 1 || getSiblings(branch).length === 1 ? "-[" // only branch (incl. from start)
-				: (getSiblings(branch)[0] === branch ? "/[" // first branch
-					: (getSiblings(branch)[getSiblings(branch).length - 1] === branch ? "\\[" // last branch
+		const grid = Array.from({ length: this.gridTracker.totalRows }, () => [...blankRow]);
+
+		// helper functions
+		const getSiblings = (branch: GraphNode) => this.getNode(branch.sources[0])?.branches || [];
+		const getPrefix = (branch: GraphNode) => branch.col === 0 ? ">[" // root
+			: (branch.col === 1 || getSiblings(branch).length === 1 ? "-[" // only branch (incl. from start)
+				: (getSiblings(branch)[0] === branch.name ? "/[" // first branch
+					: (getSiblings(branch)[getSiblings(branch).length - 1] === branch.name ? "\\[" // last branch
 						: "|["))) // middle branch
-		const getSuffix = (branch: GridTree) => !branch.branches?.length ? "] " : "]-";
-		this.treeWalk(this.tree, (branch: GridTree) => {
-			let nodeStr = `${branch.node.name}:${branch.node.origName}`;
-			const maxNodeNameLength = blankRow[branch.rootCol].length - 4;
+		const getSuffix = (branch: GraphNode) => !branch.branches?.length ? "] " : "]-";
+
+		// populate grid
+		this.nodes.forEach((branch: GraphNode) => {
+			let nodeStr = `${branch.name}:${branch.origName}`;
+			const maxNodeNameLength = blankRow[branch.col].length - 4;
 			nodeStr = nodeStr.padStart(nodeStr.length + Math.floor((maxNodeNameLength - nodeStr.length) / 2));
-			grid[branch.rootRow][branch.rootCol] = `${getPrefix(branch)}${nodeStr.padEnd(maxNodeNameLength)}${getSuffix(branch)}`;
+			grid[branch.row][branch.col] = `${getPrefix(branch)}${nodeStr.padEnd(maxNodeNameLength)}${getSuffix(branch)}`;
 		});
 
-		const rows = grid.map(line => line.join(''));
-		const border = Array(rows[0]?.length || 0).fill("-").join("");
-
-		const omittedConnections = [];
-		this.treeWalk(this.tree, (branch) => {
-			omittedConnections.push(...(branch.node.sources || []).filter((src, ind) => !!ind).map(src => `${src} -> ${branch.node.name}`));
-		});
+		// connections not shown
+		const omittedConnections = this.nodes
+			.map(node => node.sources.filter((src, ind) => !!ind).map(src => `${src} -> ${node.name}`))
+			.reduce((res, arr) => [...res, ...arr], []);
 		if (omittedConnections.length) {
 			omittedConnections.unshift("Secondary connections (not displayed):");
 		}
 
+
+		// print grid with label, border and omitted connections
+		const rows = grid.map(line => line.join(''));
+		const border = Array(rows[0]?.length || 0).fill("-").join("");
 		console.debug([label, border, ...rows, border, ...omittedConnections].join('\n'));
 		return this;
 	}
 
-	private treeWalk(tree: GridTree, fnPre: (t: GridTree) => void, fnPost: (t: GridTree) => void = (t) => { }) {
-		fnPre(tree);
-		tree.branches?.forEach(branch => this.treeWalk(branch, fnPre, fnPost));
-		fnPost(tree);
+	/**
+	 * Calculates the next available row for a leaf node.
+	 * Checks visited nodes up to its column (+ additional spacing).
+	 * Returns the row following the maximum row of the checked nodes (+ additional spacing)
+	 * @param {number} col - leaf node column
+	 * @param {number} [additional = 1] - additional spacing in rows/columns
+	 * @returns {number} row to place the leaf node on
+	 */
+	private getNextRow(col: number, additional: number = 1): number {
+		const currentInd = this.gridTracker.lastRowIndPerCol.reduce(
+			(res, val, ind) => Math.max(res, ind > col + additional || typeof val === "undefined" ? -1 : val),
+			-1
+		);
+		return currentInd < 0 ? 0 : (1 + additional + currentInd);
 	}
 }
