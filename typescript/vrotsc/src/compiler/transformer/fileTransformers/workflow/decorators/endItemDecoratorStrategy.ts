@@ -36,7 +36,8 @@ import { formatPosition } from "../helpers/formatPosition";
  * ```
  */
 export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-    public static get END_ITEM_OFFSET(): [number, number] { return [40, -10]; }
+	/** Adjustment to canvas [x,y] coordinates to compensate for item icon anchor position */
+	public static get END_ITEM_OFFSET(): [number, number] { return [40, -10]; }
 	/**
 	 * Return XML tag for the end workflow item.
 	 *

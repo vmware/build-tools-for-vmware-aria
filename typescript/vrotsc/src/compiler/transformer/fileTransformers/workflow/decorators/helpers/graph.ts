@@ -47,169 +47,161 @@ interface GridTracker {
 }
 
 /**
- * Tree representation of a (part of) workflow diagram with grid coordinates for its elements.
- * Holds a {@link GraphNode} with its grid row and column, and an array of Tree branches for its children.
- * When complete:
- * - the root of the tree will be an empty node (not to be displayed)
- * - its children will be the start nodes (Start, [Default Error Handler])
+ * Wrapper for an array of {@link GraphNode}s (with names and targets),
+ * which on initialization populates the nodes' canvas positions (x,y)
+ * to reflect a tree graph structure with grid coordinates, in which:
+ * - the root of the tree will be the default Start node
+ * - the root node targets will be its children
  * - branches represent node targets in order, unless already visited (when targeted by multiple sources)
- * - leaves (branches without children) represent workflow End elements
- * Coordinates represent row and column within a grid, where:
+ * - leaves (branches without children) represent workflow End elements (or all their targets were already visited)
+ * - the tree structure is defined by each node's primary source (first node from the array to target it)
+ * Grid coordinates represent row and column within a grid, where:
  * - row 0 is the coordinate for the first encountered leaf when building from the root (depth-first)
  * - rows increase by 2 for each encountered leaf (leaving a blank row)
+ * - root is at column 0, same row as its first target node
+ * - the first node from the root targets will be placed at col 1
+ * - the remaining root node targets will be displayed at column 0 as secondary root elements.
+ *   This adjustment will be reflected in the columns of their branches
+ * Node coordinates will [x,y] be calculated based on grid coordinates and node spacing:
+ * - x: [initial offset] + [node column ] * [horizontal spacing];
+ * - y: [initial offset] + [node row ] * [vertical spacing];
+ * where:
+ * - [horizontal spacing] is the horizontal distance between adjacent nodes (as points, in canvas units)
+ *   See param nodeSpacing.
+ * - [vertical spacing] = [initial offset] = 0.5 * [horizonatal spacing]
  * Example:
 ```
 const nodes = [
-	// First Start
-	{ name: "A", targets: ["B"] },
-	{ name: "B", targets: ["C"] },
-	{ name: "C", targets: ["G", "D"] },
-	{ name: "D", targets: ["E"] },
-	{ name: "E", targets: ["C", "F"] },
-	{ name: "F", targets: ["O"] },
-	{ name: "G", targets: ["H"] },
-	{ name: "H", targets: ["I"] },
-	{ name: "I", targets: ["J", "K", "L", "M"] },
-	{ name: "J", targets: [] },
-	{ name: "K", targets: [] },
-	{ name: "L", targets: [] },
-	{ name: "M", targets: [] },
-	{ name: "O", targets: ["P"] },
-	{ name: "P", targets: ["Q"] },
-	{ name: "Q", targets: [] },
+	{name: "start", origName: "Start", targets: ["item6","item9"]}, // default start; targets the root and default error handler items
+	{name: "item1" origName: "decisionElement", targets: ["waitForEvent", "prepareItems"]},
+	{name: "item2", origName: "prepareItems", targets: ["callOtherWf"]},
+	{name: "item3", origName: "callOtherWf", targets: ["print"]},
+	{name: "item4", origName: "print", targets: ["end"]},
+	{name: "item5", origName: "execute", targets: ["decisionElement"]},
+	{name: "item6", origName: "prepare", targets: ["execute"]}, // root item
+	{name: "item7", origName: "waitForEvent", targets: ["execute"]},
+	{name: "item8", origName: "workflowEnd", targets: []}, // secondary end
+	{name: "item9", origName: "defaultErrorHandler", targets: ["workflowEnd"]}, // default error handler (secondary start)
+	{name: "item0", origName: "End0", targets: [""]}, // default end
+]
 
-	// Second start
-	{ name: "S", targets: ["T"] },
-	{ name: "T", targets: ["U", "W", "D"] },
-	{ name: "U", targets: [] },
-	{ name: "W", targets: [] },
-
-	// Third Start is no longer supported
-	// { name: "X", targets: ["Y"] },
-	// { name: "Y", targets: [] },
-];
-
-const graph = new Graph(nodes.map(n => ({...n, origName: n.name})), ["A", "S"]);
-
-console.log('\n' + graph.draw() + '\n');
-
+new Graph(nodes).draw();
 ```
 *
 * Will output diagram of the type (compact, secondary links not displayed):
 *
 ```
-			   /[D]--[E]--[F]--[O]--[P]--[Q]
->[A]--[B]--[C]-				  /[J]
-			   \[G]--[H]--[I]-|[K]
-							  |[L]
-							  \[M]
->[S]--[T]-/[U]
-		  \[W]
+Workflow diagram
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+																							/[item7:waitForEvent]
+>[       start:Start       ]--[  item6:prepare  ]--[item5:execute]--[item1:decisionElement]-
+																							\[item2:prepareItems]--[item3:callOtherWf]--[item4:print]--[item0:End0]
+
+>[item9:defaultErrorHandler]--[item8:workflowEnd]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Secondary connections (not displayed):
+item7 -> item5
 ```
  */
 export class Graph {
-	/** Name of start node (added automatically, used to calculate start element position) */
-	public static START = "start";
+	/** Name of the Default Start node */
+	public static readonly START = "start";
 
 	/**
 	 * Will hold the calculated tree.
-	 * Tree root is an empty node, its children will be the start nodes, their children will be
-	 * calculated recursively based on (visited) node targets (see {@link buildGridTree}).
+	 * Tree root is the Start node, its children will be calculated recursively
+	 * based on (visited) node targets (see {@link buildGridTree}).
 	 */
-	private tree: GridTree = { node: null, branches: [] };
+	private readonly tree: GridTree;
+
 	/**
 	 * Will hold grid dimensions after the tree is calculated;
 	 * used during tree calculation to track current row/column index.
 	 */
-	private gridTracker: GridTracker = { currentCol: -1, lastRow: 0, lastCol: 0 };
+	private readonly gridTracker: GridTracker = { currentCol: 0, lastRow: 0, lastCol: 0 };
+
 	/**
 	 * Record of all visited nodes during tree calculation. Object keys are the node names.
 	 * Will hold all connected nodes at the end of tree calculation.
 	 */
-	private visitedNodes: Record<string, GridTree> = {};
+	private readonly visitedNodes: Record<string, GridTree> = {};
 
 	/**
-	 * @param {GraphNode[]} nodes - List of the nodes that will be used to build the tree
-	 * @param {string[]} startNodeNames - List of the names of the nodes that will be used as the start of the tree
-	 * @param {boolean} [compact = false] - If false, adds an additional row between leaf nodes
+	 * @param {GraphNode[]} nodes - List of the nodes that will be used to build the tree.
+	 * Must contain a Start node with name={@link START 'start'} with at least one target node.
+	 * The first target will be displayed as its child.
+	 * Any remaining targets will be displayed as secondary starting elements (at the same level as the default Start)
+	 * @param {number} [nodeSpacing = 120] - horizontal spacing in canvas units between adjacent nodes (vertical spacing is half)
+	 * @param {[number, number]} [maxGridDimensions = [10, 50]] - maximum number of grid rows and columns
 	 */
 	constructor(
-		private nodes: GraphNode[],
-		private startNodeNames: string[],
-		private compact = false
+		private readonly nodes: GraphNode[],
+		public readonly nodeSpacing: number = 120,
+		maxGridDimensions: [number, number] = [10, 50]
 	) {
-		if (!this.nodes?.length || this.nodes.find(n => !n?.name || !Array.isArray(n?.targets))) {
-			throw new Error(`Invalid nodes: ${JSON.stringify(this.nodes)}`);
-		}
-		if (!this.startNodeNames?.length || this.startNodeNames.length > 2) {
-			throw new Error(`Number of starting nodes must be 1 (Root element) or 2 (Root element, Default Error Handler element)!`)
-		}
-		// auto-insert start node (will be on left-most column as Default Error Handler, if present)
-		this.nodes.unshift({ name: Graph.START, origName: "Start", targets: [startNodeNames[0]] });
-		this.startNodeNames[0] = Graph.START;
+		this.tree = { node: this.getNode(Graph.START), branches: [] };
 
 		this.populateNodeSources();
-		this.buildGridTree();
-		if (!this.compact) {
-			this.gridTracker.lastRow--; // compensate for extra row
+		this.buildGridTree(this.tree);
+		this.gridTracker.lastRow--; // compensate for extra row
+
+		// set node x/y based on rows and colums:
+		const gridDimensions = this.getDimensions();
+		if (gridDimensions[0] > maxGridDimensions[0] || gridDimensions[1] > maxGridDimensions[1]) {
+			throw new Error(`Grid dimensions ${gridDimensions} exceed the allowed number of rows/colums ${maxGridDimensions}!`);
 		}
+		this.treeWalk(this.tree, t => {
+			t.node.x = Math.round(nodeSpacing * (0.5 + t.rootCol));
+			t.node.y = Math.round(nodeSpacing / 2 * (1 + t.rootRow));
+		});
 	}
 
 	// Validates starting nodes and populates sources. First encountered defines tree structure, others are secondary.
 	populateNodeSources(): void {
 		this.nodes?.forEach(node => {
-			node.targets = Array.from(new Set(node.targets));
 			node.sources = this.nodes.filter(n => n.targets?.indexOf(node.name) > -1).map(n => n.name);
 		});
-		const invalidStartNodes = this.startNodeNames.filter(name => {
-			const n = this.getNode(name);
-			return !n || n.sources?.length || n.targets?.length !== 1;
-		}).join();
-		if (invalidStartNodes) {
-			throw new Error(`Invalid start nodes: ${invalidStartNodes}. Verify the nodes exist, `
-				+ `have exactly 1 target each and are not targeted by other nodes: ${JSON.stringify(this.nodes)}!`);
-		}
-		const unlinkedNodes = this.nodes.filter(n => !n.sources?.length && this.startNodeNames.indexOf(n.name) < 0);
+		const unlinkedNodes = this.nodes.filter(n => !n.sources?.length && n.name !== Graph.START);
 		if (unlinkedNodes.length) {
-			throw new Error(`There are disconnected nodes: ${unlinkedNodes.map(n => n.name).join()}! `
-				+ `Check node targets: ${JSON.stringify(this.nodes)}`)
+			throw new Error(`There are disconnected nodes: ${unlinkedNodes.map(n => `${n.name}(${n.origName})`).join()}!`);
 		}
 	}
 
-	buildGridTree(
-		tree: GridTree = this.tree,
-		targets: string[] = this.startNodeNames
-	): void {
-		targets.map(t => this.getNode(t)) // throws
-			.filter(node => !tree.node || tree.node.name === node.sources[0])
+	buildGridTree(tree: GridTree): void {
+		tree.node.targets.map(t => this.getNode(t)) // throws
+			.filter(node => node.name === Graph.START || tree.node.name === node.sources[0])
 			.forEach(node => {
 				if (!(node.name in this.visitedNodes)) {
+					// secondary start nodes will be placed in col. 0:
+					const colIncrement = this.tree.node.targets.indexOf(node.name) > 0 ? 0 : 1;
 					try {
-						this.gridTracker.currentCol++;
+						this.gridTracker.currentCol += colIncrement;
 						this.gridTracker.lastCol = Math.max(this.gridTracker.currentCol + 1, this.gridTracker.lastCol);
 						const branch: GridTree = { node, branches: [] };
 						this.visitedNodes[node.name] = branch;
 						tree.branches.push(branch);
-						this.buildGridTree(branch, node.targets); // depth-first
+						this.buildGridTree(branch); // depth-first
 					} finally {
-						this.gridTracker.currentCol--;
+						this.gridTracker.currentCol -= colIncrement;
 					}
 				}
 			});
-		if (!tree.node) { // tree root's empty node won't be displayed
-			return;
-		}
 		// Rows and columns will be populated from leaves to root (depth first).
+		this.calculateGridPosition(tree);
+	}
+
+	private calculateGridPosition(tree: GridTree) {
 		tree.rootCol = Math.max(tree.rootCol || 0, this.gridTracker.currentCol);
 		if (!tree.branches?.length) { // leaf (no children); put on lastRow and increment it for the next leaf
 			tree.rootRow = this.gridTracker.lastRow++;
-
-			if (!this.compact) {
-				this.gridTracker.lastRow++; // extra row
-			}
+			this.gridTracker.lastRow++; // extra row
 			tree.branches = null;
-		} else { // has children - put on row approximately between the first and last child's;
-			tree.rootRow = Math.floor((tree.branches[0].rootRow + tree.branches[tree.branches.length - 1].rootRow) / 2); //tree.branches[0].rootRow;//
+		}
+		else if (tree.node.name === Graph.START) { // start node is on same row as first branch
+			tree.rootRow = tree.branches[0].rootRow;
+		}
+		else { // branch has children - put on row approximately between the first and last child's;
+			tree.rootRow = Math.floor((tree.branches[0].rootRow + tree.branches[tree.branches.length - 1].rootRow) / 2);
 			// in case of back reference on the same row - avoid arrows crossing intermediate node(s)
 			while (tree.node.sources.find((root, ind) => {
 				const visitedNode = !ind ? null : this.visitedNodes[root];
@@ -222,46 +214,19 @@ export class Graph {
 	}
 
 	/**
-	 * (Re-)calculates x and y coordinates of all nodes based on their branch root's row and column.
-	 *
-	 * @param {number} [nodeSpacing = 120] - The horizontal spacing between the nodes (vertical spacing is half of it)
-	 * @param {number} [height = 600] - The max height of the graph
-	 * @param {number} [width = 6000] - The max width of the graph
-	 * @param {boolean} [throwOutOfBoundsError = false] - whether to throw an Error when the dimentions exceed the given maximum values (true)
-	 * or only logs the error on the console (false)
-	 * @returns the graph with recalculated node coordinates as per horizonatal and vertical spacing, with initial offset - half the node spacing.
-	 * @throws Error when throwOutOfBoundsError = true and the dimentions exceed the given maximum values
+	 * @returns {[number, number]} - number of rows and columns in the grid
 	 */
-	setDimensions(
-		nodeSpacing: number = 120,
-		height: number = 600,
-		width: number = 6000,
-		throwOutOfBoundsError = false
-	): this {
-		const gridDimensions = [this.gridTracker.lastCol, this.gridTracker.lastRow].map(d => nodeSpacing * (d + 1));
-		const canvasDimensions = [width, height];
-		if (gridDimensions[0] > canvasDimensions[0] || gridDimensions[1] > canvasDimensions[1]) {
-			const err = `Grid dimensions ${gridDimensions} exceed canvas size ${canvasDimensions}!`;
-			if (throwOutOfBoundsError) {
-				throw new Error(err);
-			} else {
-				console.error(err);
-			}
-		}
-		this.treeWalk(this.tree, t => {
-			if (t.node) {
-				t.node.x = Math.round(nodeSpacing * (0.5 + t.rootCol));
-				t.node.y = Math.round(nodeSpacing / 2 * (1 + t.rootRow));
-			}
-		});
-
-		return this;
+	getDimensions(): [number, number] {
+		return [this.gridTracker.lastRow, this.gridTracker.lastCol];
 	}
 
-	private treeWalk(tree: GridTree, fnPre: (t: GridTree) => void, fnPost: (t: GridTree) => void = (t) => { }) {
-		fnPre(tree);
-		tree.branches?.forEach(branch => this.treeWalk(branch, fnPre, fnPost));
-		fnPost(tree);
+	public getNode(name: string): GraphNode {
+		const node = this.nodes.find(node => node.name === name);
+		if (!node) {
+			throw new Error(`Node "${name}" not found`);
+		}
+
+		return node;
 	}
 
 	/**
@@ -272,9 +237,6 @@ export class Graph {
 	public draw(label: string = "Workflow diagram"): this {
 		const blankRow: string[] = Array.from({ length: this.gridTracker.lastCol }, () => "");
 		this.treeWalk(this.tree, (b) => {
-			if (!b.node || b.rootCol < 0) {
-				return;
-			}
 			blankRow[b.rootCol] = blankRow[b.rootCol].padEnd(
 				Math.max(blankRow[b.rootCol].length, 5 + b.node.name.length + b.node.origName.length)
 			)
@@ -282,15 +244,12 @@ export class Graph {
 		const grid = Array.from({ length: this.gridTracker.lastRow }, () => [...blankRow]);
 		const getSiblings = (branch: GridTree) => this.visitedNodes[branch.node?.sources[0]]?.branches || [];
 		const getPrefix = (branch: GridTree) => branch.rootCol === 0 ? ">[" // root
-			: (getSiblings(branch).length === 1 ? "-[" // only branch
+			: (branch.rootCol === 1 || getSiblings(branch).length === 1 ? "-[" // only branch (incl. from start)
 				: (getSiblings(branch)[0] === branch ? "/[" // first branch
 					: (getSiblings(branch)[getSiblings(branch).length - 1] === branch ? "\\[" // last branch
 						: "|["))) // middle branch
 		const getSuffix = (branch: GridTree) => !branch.branches?.length ? "] " : "]-";
 		this.treeWalk(this.tree, (branch: GridTree) => {
-			if (!branch.node || branch.rootCol < 0) {
-				return;
-			}
 			let nodeStr = `${branch.node.name}:${branch.node.origName}`;
 			const maxNodeNameLength = blankRow[branch.rootCol].length - 4;
 			nodeStr = nodeStr.padStart(nodeStr.length + Math.floor((maxNodeNameLength - nodeStr.length) / 2));
@@ -302,9 +261,6 @@ export class Graph {
 
 		const omittedConnections = [];
 		this.treeWalk(this.tree, (branch) => {
-			if (!branch.node || branch.rootCol <= 0) {
-				return;
-			}
 			omittedConnections.push(...(branch.node.sources || []).filter((src, ind) => !!ind).map(src => `${src} -> ${branch.node.name}`));
 		});
 		if (omittedConnections.length) {
@@ -315,12 +271,9 @@ export class Graph {
 		return this;
 	}
 
-	public getNode(name: string): GraphNode {
-		const node = this.nodes.find(node => node.name === name);
-		if (!node) {
-			throw new Error(`Node "${name}" not found`);
-		}
-
-		return node;
+	private treeWalk(tree: GridTree, fnPre: (t: GridTree) => void, fnPost: (t: GridTree) => void = (t) => { }) {
+		fnPre(tree);
+		tree.branches?.forEach(branch => this.treeWalk(branch, fnPre, fnPost));
+		fnPost(tree);
 	}
 }

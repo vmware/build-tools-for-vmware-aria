@@ -35,9 +35,44 @@ import { formatPosition } from "../helpers/formatPosition";
  * ```
  */
 export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
+	/** Adjustment to canvas [x,y] coordinates to compensate for item icon anchor position */
+	private static readonly OFFSET: [number, number] = [40, -10];
+
+	/**
+	 * Extracts the name of thedefault error handler in an Array to be added to the start node names of a Graph.
+	 * @param {WorkflowItemDescriptor[]} items - workflow items
+	 * @param {GraphNode[]} nodes - graph nodes mapped to the WF items, with name=item# and targets populated.
+	 * @returns {string[]} an array containing the node name (item#) of the default error handler. Empty if there is none.
+	 * @throws Error if there are more than 1 Default Error Handler items
+	 * @throws Error if the Default Error Handler item is a target of another node
+	 * @throws Error if the Default Error Handler has more than 1 target or the target node cannot be found
+	 * (e.g. the default "end" node)
+	 */
+	public static getDefaultErrorHandlerNodes(items: WorkflowItemDescriptor[], nodes: GraphNode[]): string[] {
+		const errorHandlerItems = items
+			.map((item, i) => item.strategy.getCanvasType() !== "error-handler" ? null : `item${i + 1}`)
+			.filter(item => !!item);
+		if (errorHandlerItems.length > 1) {
+			throw new Error(`Cannot have more than 1 Default Error Handler element: `
+				+ `${nodes.filter(n => errorHandlerItems.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`)}!`);
+		}
+		if (!errorHandlerItems.length) {
+			return [];
+		}
+		const errorHandlerItem = errorHandlerItems[0];
+		const nodesTargetingEh = nodes.filter(n => n.targets.indexOf(errorHandlerItem) > -1).map(n => `${n.name}(${n.origName})`);
+		if (nodesTargetingEh.length) {
+			throw new Error(`Default error handler element cannot be targeted by others: ${nodesTargetingEh}!`);
+		}
+		const ehNode = nodes.find(n => n.name === errorHandlerItem);
+		const nodesTargetedByEh = nodes.filter(n => ehNode.targets?.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`);
+		if (nodesTargetedByEh.length !== 1) {
+			throw new Error(`Default error handler element must have exactly one target element: ${nodesTargetedByEh}!`);
+		}
+		return [errorHandlerItem]
+	}
 
 	public readonly isNotTargetable = true;
-    private readonly OFFSET: [number, number] = [40, -10];
 
 	/**
 	 * Return XML tag for the error handler workflow item.
@@ -125,7 +160,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(formatPosition([x, y], this.OFFSET)).appendLine();
+		stringBuilder.append(formatPosition([x, y], DefaultErrorHandlerDecoratorStrategy.OFFSET)).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append("</error-handler>").appendLine();
 		stringBuilder.unindent();

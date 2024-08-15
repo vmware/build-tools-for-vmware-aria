@@ -20,6 +20,7 @@ import { Graph } from "./decorators/helpers/graph";
 import { DEFAULT_END_ITEM_NAME } from "./helpers/findTargetItem";
 import { formatPosition } from "./helpers/formatPosition";
 import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
+import DefaultErrorHandlerDecoratorStrategy from "./decorators/defaultErrorHandlerDecoratorStrategy";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -280,32 +281,26 @@ function buildOutput(output: string[]): string {
 /**
  * Returns the graph for all the nodes.
  *
- * Will insert the `rootItem` by default as a start node an search for other start nodes
+ * Inserts nodes for the default Start and End workflow elements (not actual WF items).
+ * Will insert the `rootItem` (or first node, if not explicitly annotated)
+ * and any secondary start nodes (e.g. Default Error Handler) as targets of the default Start node.
+ * Secondary start nodes will be placed at the same level (column) as the default Start node.
  *
- * Will insert the default `end` node as well as the others require it but it's not an actual workflow item
+ * Remaining items are placed acording to their targets.
  */
 function getGraph(workflow: WorkflowDescriptor) {
-	// start node
-	const startNodes = [`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`];
-	const nodes = workflow.items.map((item, i) => {
-		switch (item.strategy.getCanvasType()) {
-			case "error-handler":
-				startNodes.push(`item${i + 1}`);
-				break;
-			default:
-				break;
-		}
-
-		return item.strategy.getGraphNode(item, i + 1);
-	});
-	// end node
+	const nodes = workflow.items.map((item, i) => item.strategy.getGraphNode(item, i + 1));
+	// default end node
 	nodes.push({ name: DEFAULT_END_ITEM_NAME, origName: "End0", targets: [] });
+	// default start node with targets - root element, default error handler (secondary start - if any)
+	nodes.unshift({
+		name: Graph.START,
+		origName: "Start",
+		targets: [
+			`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`,
+			...DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNodes(workflow.items, nodes)
+		]
+	});
 
-	return new Graph(nodes, startNodes)
-		.setDimensions(
-			120,
-			1200,
-			LARGEST_INT32
-		)
-		.draw(workflow.name);
+	return new Graph(nodes).draw(workflow.name);
 }
