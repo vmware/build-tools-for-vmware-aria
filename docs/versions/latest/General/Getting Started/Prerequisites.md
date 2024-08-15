@@ -17,7 +17,7 @@ Prerequisites for installation of Build Tools for VMware Aria.
 ### Prerequisites
 
 - [vRealize Developer Tools](https://github.com/vmware/vrealize-developer-tools) (Optional)
-- Java 21
+- Java 17
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 - NodeJS 16.x.x (use `nvm` if possible) [official downloads](https://nodejs.org/en/download/releases/)
 - Development vRealize Automation Tenant configured with development vRealize Orchestrator

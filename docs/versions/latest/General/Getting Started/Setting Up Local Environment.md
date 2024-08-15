@@ -30,7 +30,7 @@ Here you will learn the needed steps on how to configure your environment
 - Build Tools for VMware Aria Platform
   - [Build Tools for VMware Aria Platform](Setting%20Up%20Artifactory.md) ready to use
   - Workstation can access Build Tools for VMware Aria Platform services
-- Java 21
+- Java 17
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 
 ### Configuration

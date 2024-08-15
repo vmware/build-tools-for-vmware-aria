@@ -24,7 +24,7 @@
 	<properties>
 		<main.basedir>${project.basedir}</main.basedir>
 		<revision>2.41.1-SNAPSHOT</revision>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
 
 	<licenses>
