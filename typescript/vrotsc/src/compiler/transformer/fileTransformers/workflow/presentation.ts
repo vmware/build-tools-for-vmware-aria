@@ -16,7 +16,7 @@ import { WorkflowDescriptor, WorkflowParameter, WorkflowParameterType } from "..
 import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 import { findItemByName } from "./helpers/findItemByName";
-import { Graph } from "./decorators/helpers/graph";
+import { Graph, GraphNode } from "./decorators/helpers/graph";
 import { DEFAULT_END_ITEM_NAME } from "./helpers/findTargetItem";
 import { formatPosition } from "./helpers/formatPosition";
 import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
@@ -54,14 +54,7 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		stringBuilder.append(`<description><![CDATA[${workflow.description}]]></description>`).appendLine();
 	}
 
-	let graph: Graph;
-
-	try {
-		graph = getGraph(workflow);
-	} catch (e) {
-		throw new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.
-						Original Error: ${e.message}`);
-	}
+	const graph: Graph = getGraph(workflow);
 
 	const startNode = graph.getNode(Graph.START);
 	stringBuilder.append(formatPosition([startNode.x, startNode.y], START_ITEM_OFFSET)).appendLine();
@@ -287,20 +280,37 @@ function buildOutput(output: string[]): string {
  * Secondary start nodes will be placed at the same level (column) as the default Start node.
  *
  * Remaining items are placed acording to their targets.
+ * @param {WorkflowDescriptor} workflow
+ * @returns {Graph}
+ * @throws Error when there are targets missing or misspelled or when a secondary start node is targeted.
  */
-function getGraph(workflow: WorkflowDescriptor) {
-	const nodes = workflow.items.map((item, i) => item.strategy.getGraphNode(item, i + 1));
-	// default end node
-	nodes.push({ name: DEFAULT_END_ITEM_NAME, origName: "End0", targets: [] });
-	// default start node with targets - root element, default error handler (secondary start - if any)
-	nodes.unshift({
-		name: Graph.START,
-		origName: "Start",
-		targets: [
-			`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`,
-			...DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNodes(workflow.items, nodes)
-		]
-	});
+function getGraph(workflow: WorkflowDescriptor): Graph {
+	let nodes: GraphNode[];
+	let error;
+	try {
+		nodes = workflow.items.map((item, i) => item.strategy.getGraphNode(item, i + 1));
+		// default end node
+		nodes.push({ name: DEFAULT_END_ITEM_NAME, origName: "End0", targets: [] });
+		// default start node with target - root element
+		const startNode = {
+			name: Graph.START,
+			origName: "Start",
+			targets: [`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`]
+		};
+		nodes.unshift(startNode);
+		// adding default error handler (if any) as target of the Default start node (secondary start node)
+		startNode.targets.push(...DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNodes(workflow.items, nodes));
 
-	return new Graph(nodes).draw(workflow.name);
+		return new Graph(nodes)
+			.build()
+			.calculateCanvasPositions()
+			.draw(workflow.name);
+	} catch (e) {
+		throw error = new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.
+						Original Error: ${e.message}`);
+	} finally {
+		if (error) {
+			console.debug(workflow.name + " graph nodes:\n" + JSON.stringify(nodes));
+		}
+	}
 }
