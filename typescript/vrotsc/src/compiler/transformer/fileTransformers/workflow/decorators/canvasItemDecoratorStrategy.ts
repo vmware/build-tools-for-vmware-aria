@@ -46,7 +46,12 @@ export default interface CanvasItemDecoratorStrategy {
 	 */
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode;
 
-	/** If true, the item cannot be a target */
+	/**
+	 * When true, the Workflow element cannot be targeted by other items.
+	 * Being targeted explocitly should result in an Error,
+	 * while being targeted implicitly (by a previous element without a specified target)
+	 * should instead redirect the flow towards the default End item.
+	 */
 	readonly isNotTargetable?: boolean;
 }
 

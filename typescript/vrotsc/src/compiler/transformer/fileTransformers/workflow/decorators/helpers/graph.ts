@@ -169,7 +169,7 @@ export class Graph {
 
 		const gridDimensions = [this.gridTracker.totalRows, this.gridTracker.lastRowIndPerCol.length];
 		if (gridDimensions[0] > maxGridDimensions[0] || gridDimensions[1] > maxGridDimensions[1]) {
-			throw new Error(`Grid dimensions ${gridDimensions} exceed the allowed number of rows/colums ${maxGridDimensions}!`);
+			throw new Error(`Grid dimensions [${gridDimensions}] exceed the allowed number of rows/colums [${maxGridDimensions}]!`);
 		}
 		this.nodes.forEach(node => {
 			node.x = nodeSpacing[0] * node.col + initialOffset[0];
@@ -183,26 +183,43 @@ export class Graph {
 	 * Populates node sources based on all node targets.
 	 * @throws Error if a targeted node doesn't exist
 	 * @throws Error if there are disconnected nodes
+	 * @throws Error if there is a node that targets itself.
 	 */
 	private populateNodeSources() {
+		const unlinkedNodes: string[] = [];
+		const selfTargetingNodes: string[] = [];
 		this.nodes?.forEach(node => {
+			const nodeDesc = `${node.name}(${node.origName})`;
 			node.branches = [];
 			node.sources = this.nodes.filter(n => n.targets?.indexOf(node.name) > -1).map(n => n.name);
+			if (node.targets.indexOf(node.name) > -1) {
+				selfTargetingNodes.push(nodeDesc);
+			}
+			if (!node.sources?.length && node.name !== Graph.START) {
+				unlinkedNodes.push(nodeDesc);
+			}
 		});
-		const unlinkedNodes = this.nodes.filter(n => !n.sources?.length && n.name !== Graph.START);
+		const errors = []
+		if (selfTargetingNodes.length) {
+			errors.push(`Nodes cannot target themselves: [${selfTargetingNodes}]!`);
+		}
 		if (unlinkedNodes.length) {
-			throw new Error(`There are disconnected nodes: ${unlinkedNodes.map(n => `${n.name}(${n.origName})`).join()}!`);
+			errors.push(`There are disconnected nodes: [${unlinkedNodes}]!`);
+		}
+		if (errors.length) {
+			throw new Error(errors.join("\n"));
 		}
 	}
 
 	/**
 	 * Populates the branches for the node based on its targets.
 	 * Called recursively for each branch before calculating the node's grid position
-	 * (Rows and columns will be populated from leaves to root - depth first).
+	 * (Columns will be populated immediately. Rows will be populated from leaves to root - depth first).
 	 * Uses gridTracker.currentCol to track node column and the level of recursion
 	 * @param {GraphNode} treeNode - node to recursively update.
 	 */
 	protected buildGraphNode(treeNode: GraphNode): void {
+		treeNode.col = this.gridTracker.currentCol;
 		treeNode.targets.map(t => this.getNode(t)) // throws
 			.filter(branch => !(branch.name in this.visitedNodes) && branch.sources[0] === treeNode.name)
 			.forEach(branch => {
@@ -218,7 +235,6 @@ export class Graph {
 				}
 			});
 
-		treeNode.col = this.gridTracker.currentCol;
 		this.calculateGridRow(treeNode);
 	}
 
@@ -272,6 +288,10 @@ export class Graph {
 	 * @WARN: Used for debugging purposes
 	 */
 	public draw(label: string = "Workflow diagram"): this {
+		if (!this.visitedNodes) {
+			throw new Error(`The graph needs to be built first!`);
+		}
+
 		// blank grid
 		const blankRow: string[] = Array.from(this.gridTracker.lastRowIndPerCol, () => "");
 		this.nodes.forEach((node) => {
@@ -310,7 +330,7 @@ export class Graph {
 		// print grid with label, border and omitted connections
 		const rows = grid.map(line => line.join(''));
 		const border = Array(rows[0]?.length || 0).fill("-").join("");
-		console.debug([label, border, ...rows, border, ...omittedConnections].join('\n'));
+		console.debug([label, border, ...rows, border, ...omittedConnections, ""].join('\n'));
 		return this;
 	}
 

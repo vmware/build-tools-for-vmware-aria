@@ -22,36 +22,37 @@ export const DEFAULT_END_ITEM_NAME = "item0";
  *
  * @param target The name of the target item (optional)
  * @param pos The position of the current item in the workflow.
- *  If target isn't specified, the element in the next position will be targeted (if applicable)
+ *  If target isn't specified, the element in the next position will be targeted.
  * @param item The current item. Used to get the list of all items in the workflow.
  * @returns The name of the target item:
  * If the `item.target` is "end", it will return {@link DEFAULT_END_ITEM_NAME}
- * If the `item.target` is defined, it will return the item with the given name, throw if not found/not targetable
- * If the `item.target` is null/undefined, it will return the next item in the workflow,
+ * If the `item.target` is defined, it will return the item with the given name, throw if not found
+ * If the `item.target` is null/undefined, it will return the next item in the workflow
  * or {@link DEFAULT_END_ITEM_NAME} when there is no such item or it cannot be targeted
- * @throws if the specified target is invalid (missing, not targetable)
+ * If the resulting element cannot be targeted:
+ * - if explicitly targeted (target != null), logs a WARNING before returning the resulting element.
+ * - if not explicitly targeted, returns {@link DEFAULT_END_ITEM_NAME} instead and logs a corresponding DEBUG level message;
+ * @throws Error if the specified target is missing.
  */
 export function findTargetItem(target: any, pos: number, item: WorkflowItemDescriptor): string {
 	const wfItems = item.parent.items;
 	const nextInd = target == null ? pos + 1 : findItemByName(wfItems, target);
-	const nextItem = nextInd && nextInd <= wfItems.length ? wfItems[nextInd - 1] : null;
+	const nextItem = wfItems[nextInd - 1];
+	const isExplicitTarget = target != null && target !== "end";
 	if (!nextItem) {
-		return handleTargetError(target,
-			`Could not find next item [${target == null ? nextInd - 1 : target}] in: [${wfItems.map(i => i.name)}]`);
+		if (!isExplicitTarget) {
+			return DEFAULT_END_ITEM_NAME;
+		}
+		throw new Error(`Could not find next workflow element after '${item.name}': `
+			+ `there is no element [${target == null ? nextInd - 1 : target}] in: [${wfItems.map(i => i.name)}]`);
 	}
 	if (nextItem.strategy.isNotTargetable) {
-		return handleTargetError(target,
-			`${item.name} cannot target ${nextItem.name} with type ${nextItem.strategy.getCanvasType()}`);
+		const errMsg = `'${item.name}' cannot target '${nextItem.name}' with type '${nextItem.strategy.getCanvasType()}'`;
+		if (!isExplicitTarget) {
+			console.debug(`${errMsg}. Targeting the default end element (${DEFAULT_END_ITEM_NAME}) instead.`);
+			return DEFAULT_END_ITEM_NAME;
+		}
+		console.warn(`${errMsg}!`);
 	}
 	return `item${nextInd}`;
-}
-
-function handleTargetError(target, errMsg: string, debug: boolean = false): string {
-	if (target != null && target !== "end") {
-		throw new Error(`${errMsg}!`);
-	}
-	if (debug) {
-		console.debug(`${errMsg}. Targeting the default end element (${DEFAULT_END_ITEM_NAME}) instead.`);
-	}
-	return DEFAULT_END_ITEM_NAME;
 }

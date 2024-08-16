@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { WorkflowDescriptor, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
+import { WorkflowDescriptor, WorkflowItemDescriptor, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
 import { FileTransformationContext, XmlElement, XmlNode } from "../../../../types";
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 import { findItemByName } from "./helpers/findItemByName";
@@ -285,10 +285,12 @@ function buildOutput(output: string[]): string {
  * @throws Error when there are targets missing or misspelled or when a secondary start node is targeted.
  */
 function getGraph(workflow: WorkflowDescriptor): Graph {
-	let nodes: GraphNode[];
-	let error;
-	try {
-		nodes = workflow.items.map((item, i) => item.strategy.getGraphNode(item, i + 1));
+	let errors = [];
+	const nodes: GraphNode[] = workflow.items.map((item, i) => getGraphNode(item, i, errors));
+	if (errors.length) {
+		errors.unshift("Failed to create graph nodes for:");
+	}
+	else try {
 		// default end node
 		nodes.push({ name: DEFAULT_END_ITEM_NAME, origName: "End0", targets: [] });
 		// default start node with target - root element
@@ -306,11 +308,28 @@ function getGraph(workflow: WorkflowDescriptor): Graph {
 			.calculateCanvasPositions()
 			.draw(workflow.name);
 	} catch (e) {
-		throw error = new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.
-						Original Error: ${e.message}`);
-	} finally {
-		if (error) {
-			console.debug(workflow.name + " graph nodes:\n" + JSON.stringify(nodes));
-		}
+		errors = [e.message || e];
+	}
+	if (errors.length) {
+		throw new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.`
+			+ `\nOriginal Error: ${errors.join("\n")}\nGraph nodes:\n${JSON.stringify(nodes, null, 4)}`);
+	}
+}
+
+/**
+ * Attempts to build a GraphNode for the given workflow element.
+ * On failure, returns null and adds to the errors array
+ * an error message of the type "item#(item.name): error"
+ * @param {WorkflowItemDescriptor} item - workflow element
+ * @param {number} i - position of the WF element
+ * @param {string[]} errors - array to populate with errors
+ * @returns {GraphNode}
+ */
+function getGraphNode(item: WorkflowItemDescriptor<any>, i: number, errors: any[]): GraphNode {
+	try {
+		return item.strategy.getGraphNode(item, i + 1);
+	} catch (e) {
+		errors.push(`item${i + 1}(${item.name}): ${e}`);
+		return null;
 	}
 }

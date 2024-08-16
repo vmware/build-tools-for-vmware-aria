@@ -54,24 +54,27 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 			.filter(item => !!item);
 		if (errorHandlerItems.length > 1) {
 			throw new Error(`Cannot have more than 1 Default Error Handler element: `
-				+ `${nodes.filter(n => errorHandlerItems.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`)}!`);
+				+ `[${nodes.filter(n => errorHandlerItems.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`)}]!`);
 		}
 		if (!errorHandlerItems.length) {
 			return [];
 		}
 		const errorHandlerItem = errorHandlerItems[0];
-		const nodesTargetingEh = nodes.filter(n => n.targets.indexOf(errorHandlerItem) > -1).map(n => `${n.name}(${n.origName})`);
+		const nodesTargetingEh = nodes
+			.filter(n => n.targets.indexOf(errorHandlerItem) > -1 && n.name !== errorHandlerItem) // self-targeting handled in graph
+			.map(n => `${n.name}(${n.origName})`);
 		if (nodesTargetingEh.length) {
 			throw new Error(`Default error handler element cannot be targeted by others: ${nodesTargetingEh}!`);
 		}
-		const ehNode = nodes.find(n => n.name === errorHandlerItem);
-		const nodesTargetedByEh = nodes.filter(n => ehNode.targets?.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`);
+		const ehNodeTargets = nodes.find(n => n.name === errorHandlerItem)?.targets || [];
+		const nodesTargetedByEh = nodes.filter(n => ehNodeTargets.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`);
 		if (nodesTargetedByEh.length !== 1) {
-			throw new Error(`Default error handler element must have exactly one target element: ${nodesTargetedByEh}!`);
+			throw new Error(`Default error handler element must have exactly one target element: [${nodesTargetedByEh}]!`);
 		}
 		return [errorHandlerItem]
 	}
 
+	/** Marks the element type as not targetable by other elements (see in {@link findTargetItem}) */
 	public readonly isNotTargetable = true;
 
 	/**
