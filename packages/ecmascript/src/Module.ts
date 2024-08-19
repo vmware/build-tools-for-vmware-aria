@@ -130,6 +130,24 @@ const MODULE_ERROR_HANDLER_KEY = "__onError";
  * - slashes (/) and backslashes(\) can be used interchangeably
  * Note - use of '-' and capital letters is not limited, despite not being recommended.
  * Using non-capturing groups (?:) to reduce overhead.
+ * Example:
+ * - matches:
+	package -> can be a single word
+	my.package_3 -> digits and underscores, '.' as separator
+	./my/package -> relative path at same folder, '/' as separator
+	../my.package -> relative path with 1 step back
+	..\..\my.package.com -> supports backslashes - need to be escaped in string!
+ * - matches, but not by convention (mix of separators, use of '-', capital letters, names consisting entirely of digits/allowed special characters)
+	../still\working._.BUT/not-recommended.333
+ * - does not match:
+	not#working! -> disallowed special characters
+	not/working/ -> separator at end
+	.not.working -> separator at start
+	not//working
+	still..not\working -> adjacent separators within
+	./../not.working -> combining same folder and parent folder relative path indicators
+	not/./working 
+	not/../working -> relative path indicators within
  */
 const IMPORT_PATH_REGEX = /^(?:(?:\.\.\/|\.\.\\)+|\.\/|\.\\)?(?:[\w-]+[.\/\\])*[\w-]+$/g;
 
@@ -140,6 +158,21 @@ const IMPORT_PATH_REGEX = /^(?:(?:\.\.\/|\.\.\\)+|\.\/|\.\\)?(?:[\w-]+[.\/\\])*[
  * - may not start or end with '.'
  * Note - use of '-' and capital letters is not limited, despite not being recommended.
  * Using non-capturing group (?:) to reduce overhead.
+ * Example:
+ * - matches:
+	my.package_3.com // only dot separators
+ * - matches, but not recommended:
+	still_working._.BUT.not-recommended.333 -> capital letters, names consisting entirely of digits/allowed special characters
+	package -> single-word package
+ * - does not match:
+	not#working! -> disallowed special characters
+	does/not\match -> separators other than '.'
+	not.working. -> separator at end
+	.not.working -> separator at start
+	not..working -> duplicate separator
+	./../not.working
+	not/../working
+	not/./working -> any relative path indicators
  */
 const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 
@@ -178,7 +211,6 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 		return this;
 	};
 
-	/** @deprecated - unused and not part of {@link ModuleExport} */
 	Export.prototype.from = function (moduleName: string, ...specifiers: (string | [string, string])[]) {
 		let importNames: string[] = [];
 		let exportNames: string[] = [];
