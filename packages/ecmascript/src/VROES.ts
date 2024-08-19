@@ -30,8 +30,8 @@
  *
  * @param	{String} name
  */
- function formatName(name:string) {
-	return name.replace(/([^\\\/]+$)/, function ( match ){
+function formatName(name: string) {
+	return name.replace(/([^\\\/]+$)/, function (match) {
 		const repeatingDots = /([.]).*(\1)/g
 		return repeatingDots.test(match) ? match : match.replace(/[.]([^.]*)$/, '_$1');
 	}).replace(/[\\\/]/g, ".");
@@ -53,16 +53,17 @@
 		vroes.export = Module.export;
 		vroes.load = Module.load;
 		vroes.class = Module.import("default").from(`${moduleName}.Class`);
+		vroes.setModuleErrorHandler = Module.setModuleErrorHandler;
 
 		vroes.require = function (name: string) {
-			return Module.import("*").from(formatName( name ));
+			return Module.import("*").from(formatName(name));
 		};
 
 		vroes.importLazy = function (name: string) {
 			const result: any = {};
 			Object.defineProperty(result, "_", {
 				get: () => {
-					return result.__lazyAction__ || (result.__lazyAction__ = Module.import("*").from(formatName( name )))
+					return result.__lazyAction__ || (result.__lazyAction__ = Module.import("*").from(formatName(name)))
 				},
 				enumerable: true,
 				configurable: true

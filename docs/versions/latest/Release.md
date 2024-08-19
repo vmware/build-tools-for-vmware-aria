@@ -59,6 +59,38 @@ License plugin `<excludes>` uses hardcoded value defined in the `base-package` -
 
 The default value of license plugin's `<excludes>` configuration can be overwritten by providing `<license.excludes>` property in a projects `pom.xml` -> `<properties>` tag.
 
+### Change default return Object of `Array.from()` Method to be empty array
+
+#### Previous Behavior
+
+In case the object type of the array-like Object does not match any of the expected types (e.g. is a Number) the default case of `Array.from()` returns a clone of the object. This does not match the desired behaviour according to the official documentation.
+
+```js
+Array.from(10) // Output: 10
+```
+
+#### Current Behavior
+In case the object type of the array-like Object does not match any of the expected types (e.g. is a Number) the default case of `Array.from()` returns an empty array.
+
+```js
+Array.from(10) // Output: []
+```
+
+### *VROES.import from invalid package throws Unknown error*
+
+Fixed an issue with VROES.import() in ecmascript Module.
+
+#### Previous Behavior
+
+VROES import from an invalid module path resulted in Unknown error.
+The Unknown error could not be caught in a try/catch block and was not shown in the logs.
+
+#### New Behavior
+
+VROES import from a missing/invalid module path, or import of non-existing elements of a valid module,
+result in more detailed errors in the logs. No exceptions are thrown by default (as per the existing behaviour)
+but there is an option to alter the error handling behaviour via an optional parameter in import.from().
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
