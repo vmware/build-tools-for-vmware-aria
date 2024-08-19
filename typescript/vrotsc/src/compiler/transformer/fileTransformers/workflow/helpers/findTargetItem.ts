@@ -31,25 +31,26 @@ import { findItemByName } from "./findItemByName";
  * If the resulting element cannot be targeted:
  * - if explicitly targeted (target != null), logs a WARNING before returning the resulting element.
  * - if not explicitly targeted, returns the default end item name instead and logs a corresponding DEBUG level message;
- * @throws Error if the specified target is missing.
+ * Logs an Error in the console if the specified target is missing.
  */
 export function findTargetItem(target: any, pos: number, item: WorkflowItemDescriptor): string {
 	const DEFAULT_END_ITEM_NAME = Graph.DEFAULT_END.name;
+	const defaultErrMsg = `Targeting the default end element (${DEFAULT_END_ITEM_NAME}) instead.`;
 	const wfItems = item.parent.items;
 	const nextInd = target == null ? pos + 1 : findItemByName(wfItems, target);
 	const nextItem = wfItems[nextInd - 1];
 	const isExplicitTarget = target != null && target !== "end";
 	if (!nextItem) {
-		if (!isExplicitTarget) {
-			return DEFAULT_END_ITEM_NAME;
+		if (isExplicitTarget) {
+			console.error(`Could not find next workflow element after '${item.name}': there is no element `
+				+ `[${target == null ? nextInd - 1 : target}] in: [${wfItems.map(i => i.name)}]. ${defaultErrMsg}`);
 		}
-		throw new Error(`Could not find next workflow element after '${item.name}': `
-			+ `there is no element [${target == null ? nextInd - 1 : target}] in: [${wfItems.map(i => i.name)}]`);
+		return DEFAULT_END_ITEM_NAME;
 	}
 	if (nextItem.strategy.isNotTargetable) {
 		const errMsg = `'${item.name}' cannot target '${nextItem.name}' with type '${nextItem.strategy.getCanvasType()}'`;
 		if (!isExplicitTarget) {
-			console.debug(`${errMsg}. Targeting the default end element (${DEFAULT_END_ITEM_NAME}) instead.`);
+			console.debug(`${errMsg}. ${defaultErrMsg}`);
 			return DEFAULT_END_ITEM_NAME;
 		}
 		console.warn(`${errMsg}!`);
