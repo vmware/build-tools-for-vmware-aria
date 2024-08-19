@@ -511,6 +511,7 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 
 		return specifiers.map(name => (name === "*" ? importedModule : importedModule[name]));
 	}
+	(Module as any).extractImports = extractImports;
 
 	return Module;
 });

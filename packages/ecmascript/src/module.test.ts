@@ -167,6 +167,29 @@ describe("Module", () => {
 		validPathsWithBase.forEach(path => it(`should construct package name form relative path '${path[0]}' and base '${path[1]}'`, () => {
 			expect(testedFn(path[0], path[1])).toEqual(path[2]);
 		}));
+	});
+
+	describe('extractImports', () => {
+		const testedFn: (specifiers: string[], importedModule: any) => any[] = ESModule.extractImports;
+		it(`should throw cummulative error for invalid import specifiers`, () => {
+			expect(() => testedFn([null, undefined, "", "whatever", "Class", "default", "*", "Class"], modules["com.vmware.pscoe.library.class"]))
+				.toThrowError("Some of the specified elements for import are invalid:\n" +
+					"[0]: 'null'\n" +
+					"[1]: 'undefined'\n" +
+					"[2]: ''\n" +
+					"[3]: 'whatever' (module contains no such action or namespace)\n" +
+					"[7]: 'Class' (duplicate)");
+		})
+		it("should not throw when the specifiers are valid", () => {
+			let res;
+			expect(() => res = testedFn(["Class", "default", "*"], modules["com.vmware.pscoe.library.class"])).not.toThrow();
+			expect(Array.isArray(res)).toBeTrue();
+			expect(res[0]).toEqual(modules["com.vmware.pscoe.library.class"]["Class"]); // Class
+			expect(res[1]).not.toBeDefined(); // no default
+			expect(res[2]?.["actionDescriptions"]).toEqual([{ name: "Class" }, { name: "name" }]); // Class
+			expect(res[2]?.["Class"]).toEqual(modules["com.vmware.pscoe.library.class"]["Class"]); // Class
+			expect(res[2]?.["name"]).toEqual("com.vmware.pscoe.library.class"); // Class
+		})
 	})
 
 	it("import class", () => {
