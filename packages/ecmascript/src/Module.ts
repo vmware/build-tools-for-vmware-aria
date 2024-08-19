@@ -22,21 +22,8 @@ const GLOBAL = System.getContext() || (function () {
  */
 export type ModuleErrorHandler = (error: string | Error) => void;
 
-/** Predefined {@link ModuleErrorHandler error handler options} for use in {@link Module.setModuleErrorHandler} */
-enum DefaultModuleErrorHandlers {
-	/** [Default] Creates a System ERROR level log entry for the error. */
-	SYS_ERROR,
-	/** Creates a System WARNING level log entry for the error. */
-	SYS_WARN,
-	/** Creates a System INFO level log entry for the error. */
-	SYS_INFO,
-	/** Creates a System DEBUG level log entry for the error. */
-	SYS_DEBUG,
-	/** Ignores the error. */
-	SILENT,
-	/** Rethtows the error without handling it. */
-	THROW_ERROR
-}
+/** Default module error handling function. Logs a System Error. */
+export const DEFAULT_MODULE_ERROR_HANDLER: ModuleErrorHandler = (error) => System.error(error?.toString());
 
 export interface ModuleConstructor extends Function {
 	/**
@@ -68,12 +55,10 @@ export interface ModuleConstructor extends Function {
 
 	/**
 	 * Changes the active {@link ModuleErrorHandler} used in the import and load operations
-	 * @param {DefaultModuleErrorHandlers | ModuleErrorHandler} eh - can be:
-	 * - a custom module {@link ModuleErrorHandler error handler function}
-	 * - one of the predefined {@link DefaultModuleErrorHandlers} options
+	 * @param {ModuleErrorHandler} eh - a custom module {@link ModuleErrorHandler error handler function}
 	 * Default is {@link DefaultModuleErrorHandlers.SYS_ERROR}
 	 */
-	setModuleErrorHandler(eh: DefaultModuleErrorHandlers | ModuleErrorHandler): void;
+	setModuleErrorHandler(eh: ModuleErrorHandler): void;
 }
 
 export interface ModuleDescriptor {
@@ -136,18 +121,6 @@ export interface ModuleElementList {
  * Key of the Module attribute that holds the last set error handler via {@link Module.setModuleErrorHandler}.
  */
 const MODULE_ERROR_HANDLER_KEY = "__onError";
-
-/**
- * Predefined handlers for errors on loading/importing a module or action - see {@link DefaultModuleErrorHandlers}
- */
-const ModuleErrorHandlers = {
-	[DefaultModuleErrorHandlers.SYS_ERROR]: error => System.error(error?.toString()),
-	[DefaultModuleErrorHandlers.SYS_WARN]: error => System.warn(error?.toString()),
-	[DefaultModuleErrorHandlers.SYS_INFO]: error => System.log(error?.toString()),
-	[DefaultModuleErrorHandlers.SYS_DEBUG]: error => System.debug(error?.toString()),
-	[DefaultModuleErrorHandlers.SILENT]: error => { },
-	[DefaultModuleErrorHandlers.THROW_ERROR]: error => { throw (typeof error === "string" ? new Error(error) : error); }
-} as const;
 
 /**
  * Regular expression for validating a path for action/module import:
@@ -259,7 +232,7 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 		return moduleInfo ? createModule(moduleInfo) : onError(`Failed to load module '${name}'!`);
 	};
 
-	Module.setModuleErrorHandler = function (eh: DefaultModuleErrorHandlers | ModuleErrorHandler) {
+	Module.setModuleErrorHandler = function (eh: ModuleErrorHandler) {
 		Module[MODULE_ERROR_HANDLER_KEY] = eh;
 	};
 
@@ -413,15 +386,12 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 	/**
 	 * Helper function to handle errors when loading/importing an action or module.
 	 * Invokes the error handler set via {@link Module.setModuleErrorHandler} or, if not set,
-	 * via the {@link DefaultModuleErrorHandlers.SYS_ERROR default error handler}.
+	 * via the {@link DEFAULT_MODULE_ERROR_HANDLER}.
 	 * @param {string | Error} err - error (message)
-	 * @returns NULL, unless the error handler rethrows the error.
+	 * @returns NULL, unless the custom error handler rethrows the error.
 	 */
 	function onError(error): null {
-		let eh: ModuleErrorHandler | DefaultModuleErrorHandlers = Module[MODULE_ERROR_HANDLER_KEY];
-		if (typeof eh !== "function") {
-			eh = ModuleErrorHandlers[eh] || ModuleErrorHandlers[DefaultModuleErrorHandlers.SYS_ERROR];
-		}
+		let eh: ModuleErrorHandler = Module[MODULE_ERROR_HANDLER_KEY] || DEFAULT_MODULE_ERROR_HANDLER;
 		eh(error);
 		return null;
 	}

@@ -2,13 +2,13 @@ declare var VROES: VROES;
 
 declare type ModuleErrorHandler = (error: string | Error) => null;
 
-declare enum DefaultModuleErrorHandlers { SYS_ERROR, SYS_WARN, SYS_INFO, SYS_DEBUG, SILENT, THROW_ERROR }
+declare const DEFAULT_MODULE_ERROR_HANDLER: ModuleErrorHandler;
 
 declare interface VROES {
 	import(...specifiers: string[]): VROESModuleImport;
 	export(): VROESModuleExport;
 	load(path: string): VROESModuleDescriptor;
-	setModuleErrorHandler(eh: DefaultModuleErrorHandlers | ModuleErrorHandler): void;
+	setModuleErrorHandler(eh: ModuleErrorHandler): void;
 }
 
 declare interface VROESModuleDescriptor {
