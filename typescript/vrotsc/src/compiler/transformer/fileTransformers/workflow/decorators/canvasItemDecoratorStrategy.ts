@@ -17,41 +17,41 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { GraphNode } from "./helpers/graph";
 
 export default interface CanvasItemDecoratorStrategy {
-	/**
-	 * Returns the type of the decorator
-	 */
-	getDecoratorType(): WorkflowItemType;
+    /**
+     * Returns the type of the decorator
+     */
+    getDecoratorType(): WorkflowItemType;
 
-	/**
-	 * This will be the type of the canvas item.
-	 */
-	getCanvasType(): string;
+    /**
+     * This will be the type of the canvas item.
+     */
+    getCanvasType(): string;
 
-	/**
-	 * Registers the arguments from the decorator to the workflowInfo
-	 */
-	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: ts.Decorator): void;
+    /**
+     * Registers the arguments from the decorator to the workflowInfo
+     */
+    registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: ts.Decorator): void;
 
-	/**
-	 * Only items that have scripts should return something here.
-	 *
-	 * The rest can return an empty string.
-	 */
-	printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile, itemInfo: WorkflowItemDescriptor): string;
+    /**
+     * Only items that have scripts should return something here.
+     *
+     * The rest can return an empty string.
+     */
+    printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile, itemInfo: WorkflowItemDescriptor): string;
 
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string;
+    printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string;
 
-	/**
-	 * Returns the Node representation of the item
-	 */
-	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode;
+    /**
+     * Returns the Node representation of the item
+     */
+    getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode;
 
-	/**
-	 * When true, the Workflow element cannot be targeted by other items.
-	 * Being targeted explocitly should result in an Error,
-	 * while being targeted implicitly (by a previous element without a specified target)
-	 * should instead redirect the flow towards the default End item.
-	 */
-	readonly isNotTargetable?: boolean;
+    /**
+     * When true, the Workflow element cannot be targeted by other items.
+     * Being targeted explicitly should result in an Error,
+     * while being targeted implicitly (by a previous element without a specified target)
+     * should instead redirect the flow towards the default End item.
+     */
+    readonly isNotTargetable?: boolean;
 }
 

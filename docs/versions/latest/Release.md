@@ -83,9 +83,8 @@ There was no option to preview WF schema structure before pushing to the environ
 
 The items in the schema are aligned in rows and columns with the snap-grid.
 Validating that Default error handler (if present) is only one and not targeted by other elements.
-Aggregated rror is thrown when a target doesn't match a WF element.
-Aggregated error is thrown when there are elements that target themselves or are isolated
-(not targeted by any other element or the default start element).
+Aggregated error is thrown when a target doesn't match a WF element.
+Aggregated error is thrown when there are elements that target themselves or are isolated (not targeted by any other element or the default start element).
 The WF schema structure can be previewed in the logs when building.
 
 #### Related issues
