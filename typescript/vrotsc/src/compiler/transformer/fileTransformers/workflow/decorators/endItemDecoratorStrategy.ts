@@ -36,8 +36,6 @@ import { formatPosition } from "../helpers/formatPosition";
  * ```
  */
 export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	/** Adjustment to canvas [x,y] coordinates to compensate for item icon anchor position */
-	public static get END_ITEM_OFFSET(): [number, number] { return [40, -10]; }
 	/**
 	 * Return XML tag for the end workflow item.
 	 *
@@ -91,7 +89,8 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		return {
 			name: `item${pos}`,
 			origName: itemInfo.name,
-			targets: []
+			targets: [],
+			offset: [40, -10]
 		};
 	}
 
@@ -128,7 +127,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(formatPosition([x, y], EndItemDecoratorStrategy.END_ITEM_OFFSET)).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

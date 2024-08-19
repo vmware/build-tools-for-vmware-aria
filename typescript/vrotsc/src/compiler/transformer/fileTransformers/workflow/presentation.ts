@@ -17,16 +17,10 @@ import { FileTransformationContext, XmlElement, XmlNode } from "../../../../type
 import { StringBuilderClass } from "../../../../utilities/stringBuilder";
 import { findItemByName } from "./helpers/findItemByName";
 import { Graph, GraphNode } from "./decorators/helpers/graph";
-import { DEFAULT_END_ITEM_NAME } from "./helpers/findTargetItem";
 import { formatPosition } from "./helpers/formatPosition";
-import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
 import DefaultErrorHandlerDecoratorStrategy from "./decorators/defaultErrorHandlerDecoratorStrategy";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
-
-const LARGEST_INT32 = 2147483647;
-
-const START_ITEM_OFFSET: [number, number] = [40, -10];
 
 /**
  * This will print the workflow in XML format
@@ -56,14 +50,12 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 
 	const graph: Graph = getGraph(workflow);
 
-	const startNode = graph.getNode(Graph.START);
-	stringBuilder.append(formatPosition([startNode.x, startNode.y], START_ITEM_OFFSET)).appendLine();
+	const startNode = graph.getStartNode();
+	stringBuilder.append(formatPosition([startNode.x, startNode.y])).appendLine();
 	buildParameters("input", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Input));
 	buildParameters("output", workflow.parameters.filter(p => !p.isAttribute && p.parameterType & WorkflowParameterType.Output));
 	buildAttributes(workflow.parameters.filter(p => p.isAttribute));
-
-	const defaultEndNode = graph.getNode(DEFAULT_END_ITEM_NAME);
-	buildEndItem(defaultEndNode.x, defaultEndNode.y);
+	buildEndItem(graph.getDefaultEndNode());
 
 	workflow.items.forEach((item, i) => {
 		const pos = i + 1;
@@ -132,10 +124,10 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		stringBuilder.append(` conf-key="${key}" `);
 	}
 
-	function buildEndItem(x: number, y: number) {
-		stringBuilder.append(`<workflow-item name="${DEFAULT_END_ITEM_NAME}" type="end" end-mode="0">`).appendLine();
+	function buildEndItem(endNode: GraphNode) {
+		stringBuilder.append(`<workflow-item name="${endNode.name}" type="end" end-mode="0">`).appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(formatPosition([x, y], EndItemDecoratorStrategy.END_ITEM_OFFSET)).appendLine();
+		stringBuilder.append(formatPosition([endNode.x, endNode.y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 	}
@@ -286,24 +278,15 @@ function buildOutput(output: string[]): string {
  */
 function getGraph(workflow: WorkflowDescriptor): Graph {
 	let errors = [];
-	const nodes: GraphNode[] = workflow.items.map((item, i) => getGraphNode(item, i, errors));
-	if (errors.length) {
-		errors.unshift("Failed to create graph nodes for:");
-	}
-	else try {
-		// default end node
-		nodes.push({ name: DEFAULT_END_ITEM_NAME, origName: "End0", targets: [] });
-		// default start node with target - root element
-		const startNode = {
-			name: Graph.START,
-			origName: "Start",
-			targets: [`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`]
-		};
-		nodes.unshift(startNode);
+	let graph = new Graph(workflow.items.map((item, i) => getGraphNode(item, i, errors)));
+	try {
+		const startNode = graph.getStartNode();
+		// default start node target - the root element or first one
+		startNode.targets.push(`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`);
 		// adding default error handler (if any) as target of the Default start node (secondary start node)
-		startNode.targets.push(...DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNodes(workflow.items, nodes));
+		startNode.targets.push(...DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNodes(workflow.items, graph.nodes));
 
-		return new Graph(nodes)
+		return graph
 			.build()
 			.calculateCanvasPositions()
 			.draw(workflow.name);
@@ -312,7 +295,7 @@ function getGraph(workflow: WorkflowDescriptor): Graph {
 	}
 	if (errors.length) {
 		throw new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.`
-			+ `\nOriginal Error: ${errors.join("\n")}\nGraph nodes:\n${JSON.stringify(nodes, null, 4)}`);
+			+ `\nOriginal Error: ${errors.join("\n")}\nGraph nodes:\n${JSON.stringify(graph.nodes, null, 4)}`);
 	}
 }
 

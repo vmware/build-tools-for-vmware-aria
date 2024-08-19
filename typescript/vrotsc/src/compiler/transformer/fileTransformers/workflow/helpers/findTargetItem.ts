@@ -13,9 +13,8 @@
  * #L%
  */
 import { WorkflowItemDescriptor } from "../../../../decorators";
+import { Graph } from "../decorators/helpers/graph";
 import { findItemByName } from "./findItemByName";
-
-export const DEFAULT_END_ITEM_NAME = "item0";
 
 /**
  * Helper function to find the target item for the given item
@@ -25,16 +24,17 @@ export const DEFAULT_END_ITEM_NAME = "item0";
  *  If target isn't specified, the element in the next position will be targeted.
  * @param item The current item. Used to get the list of all items in the workflow.
  * @returns The name of the target item:
- * If the `item.target` is "end", it will return {@link DEFAULT_END_ITEM_NAME}
+ * If the `item.target` is "end", it will return the default end item name (see {@link Graph.DEFAULT_END})
  * If the `item.target` is defined, it will return the item with the given name, throw if not found
  * If the `item.target` is null/undefined, it will return the next item in the workflow
- * or {@link DEFAULT_END_ITEM_NAME} when there is no such item or it cannot be targeted
+ * or the default end item name when there is no such item or it cannot be targeted
  * If the resulting element cannot be targeted:
  * - if explicitly targeted (target != null), logs a WARNING before returning the resulting element.
- * - if not explicitly targeted, returns {@link DEFAULT_END_ITEM_NAME} instead and logs a corresponding DEBUG level message;
+ * - if not explicitly targeted, returns the default end item name instead and logs a corresponding DEBUG level message;
  * @throws Error if the specified target is missing.
  */
 export function findTargetItem(target: any, pos: number, item: WorkflowItemDescriptor): string {
+	const DEFAULT_END_ITEM_NAME = Graph.DEFAULT_END.name;
 	const wfItems = item.parent.items;
 	const nextInd = target == null ? pos + 1 : findItemByName(wfItems, target);
 	const nextItem = wfItems[nextInd - 1];

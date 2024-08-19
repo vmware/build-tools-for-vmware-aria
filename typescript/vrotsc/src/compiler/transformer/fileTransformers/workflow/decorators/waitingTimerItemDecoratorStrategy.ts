@@ -39,8 +39,6 @@ import { formatPosition } from "../helpers/formatPosition";
  * ```
  */
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	/** Adjustment to canvas [x,y] coordinates to compensate for item icon anchor position */
-	private static readonly OFFSET: [number, number] = [40, -10];
 
 	getCanvasType(): string {
 		return "waiting-timer";
@@ -81,7 +79,8 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
-			]
+			],
+			offset: [40, -10]
 		};
 
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
@@ -135,7 +134,7 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(formatPosition([x, y], WaitingTimerItemDecoratorStrategy.OFFSET)).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

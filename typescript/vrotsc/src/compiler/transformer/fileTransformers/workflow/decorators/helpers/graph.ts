@@ -38,6 +38,8 @@ export interface GraphNode {
 	row?: number;
 	/** Grid column (calculated) */
 	col?: number;
+	/** Offset to compensate for schema element icon anchor position */
+	offset?: [number, number];
 }
 
 /**
@@ -103,8 +105,8 @@ item7 -> item5
 ```
  */
 export class Graph {
-	/** Name of the Default Start node */
-	public static readonly START = "start";
+	static get DEFAULT_START(): GraphNode { return { name: "start", origName: "Start", targets: [], offset: [40, -10] } };
+	static get DEFAULT_END(): GraphNode { return { name: "item0", origName: "End0", targets: [], offset: [40, -10] } };
 
 	/**
 	 * Will hold grid dimensions after the tree is calculated;
@@ -118,13 +120,18 @@ export class Graph {
 	 */
 	private visitedNodes: Record<string, GraphNode>;
 
+	/** Graph nodes for processing, including default Start and End */
+	public readonly nodes: GraphNode[];
+
 	/**
 	 * @param {GraphNode[]} nodes - List of the nodes that will be used to build the tree.
-	 * Must contain a Start node with name={@link START 'start'} with at least one target node.
-	 * The first target will be displayed as its child.
-	 * Note: Any remaining targets will be displayed as secondary starting elements (at the same level as the default Start)
+	 * Default {@link getStartNode Start} and {@link getDefaultEndNode End} nodes will be added.
+	 * Note: At least one target must be added to the default start node to be displayed as its child.
+	 * Targets added further will be displayed as secondary starting elements at the same level as the default Start.
 	 */
-	constructor(public readonly nodes: GraphNode[] = []) { }
+	constructor(nodes: GraphNode[] = []) {
+		this.nodes = [Graph.DEFAULT_START, ...nodes, Graph.DEFAULT_END];
+	}
 
 	/**
 	 * Populates node sources and branches based on targets.
@@ -138,7 +145,7 @@ export class Graph {
 		this.visitedNodes = {};
 		this.populateNodeSources();
 		try {
-			this.buildGraphNode(this.getNode(Graph.START));
+			this.buildGraphNode(this.getStartNode());
 		} catch (err) {
 			this.visitedNodes = null;
 			throw err;
@@ -172,8 +179,9 @@ export class Graph {
 			throw new Error(`Grid dimensions [${gridDimensions}] exceed the allowed number of rows/colums [${maxGridDimensions}]!`);
 		}
 		this.nodes.forEach(node => {
-			node.x = nodeSpacing[0] * node.col + initialOffset[0];
-			node.y = nodeSpacing[1] * node.row + initialOffset[1];
+			const offset = !node.offset ? initialOffset : [initialOffset[0] + node.offset[0], initialOffset[1] + node.offset[1]];
+			node.x = nodeSpacing[0] * node.col + offset[0];
+			node.y = nodeSpacing[1] * node.row + offset[1];
 		});
 
 		return this;
@@ -195,7 +203,7 @@ export class Graph {
 			if (node.targets.indexOf(node.name) > -1) {
 				selfTargetingNodes.push(nodeDesc);
 			}
-			if (!node.sources?.length && node.name !== Graph.START) {
+			if (!node.sources?.length && node.name !== Graph.DEFAULT_START.name) {
 				unlinkedNodes.push(nodeDesc);
 			}
 		});
@@ -224,7 +232,7 @@ export class Graph {
 			.filter(branch => !(branch.name in this.visitedNodes) && branch.sources[0] === treeNode.name)
 			.forEach(branch => {
 				// secondary start nodes will be placed in col. 0:
-				const colIncrement = this.getNode(Graph.START).targets.indexOf(branch.name) > 0 ? 0 : 1;
+				const colIncrement = this.getStartNode().targets.indexOf(branch.name) > 0 ? 0 : 1;
 				try {
 					this.gridTracker.currentCol += colIncrement;
 					this.visitedNodes[branch.name] = branch;
@@ -250,7 +258,7 @@ export class Graph {
 			treeNode.row = this.getNextRow(treeNode.col);
 			treeNode.branches = null;
 		}
-		else if (treeNode.name === Graph.START) { // start node is on same row as first branch
+		else if (treeNode.name === Graph.DEFAULT_START.name) { // start node is on same row as first branch
 			treeNode.row = this.getNode(treeNode.branches[0]).row;
 		}
 		else { // branch has children - put on row approximately between the first and last child's;
@@ -274,12 +282,22 @@ export class Graph {
 	 * @throws Error if the Graph contains no node with the given name.
 	 */
 	public getNode(name: string): GraphNode {
-		const node = this.visitedNodes[name] || this.nodes.find(node => node.name === name);
+		const node = this.visitedNodes?.[name] || this.nodes.find(node => node.name === name);
 		if (!node) {
 			throw new Error(`Node "${name}" not found`);
 		}
 
 		return node;
+	}
+
+	/** @returns {GraphNode} Default Start node (tree root - not an actual item) */
+	getStartNode(): GraphNode {
+		return this.getNode(Graph.DEFAULT_START.name);
+	}
+
+	/** @returns {GraphNode} Default End node (item0) */
+	getDefaultEndNode() {
+		return this.getNode(Graph.DEFAULT_END.name);
 	}
 
 	/**

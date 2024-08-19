@@ -15,11 +15,10 @@
 /**
  * Formats the position of a WF element for XML output
  * @param {[number, number]} position
- * @param {[number, number]} [offset = [0, 0]]
  * @returns {string} <position x="${formattedPosX}" y="${formattedPosY}" />
  * where the coordinates are X and Y rounded to .0
  */
-export function formatPosition(position: [number, number], offset: [number, number] = [0,0]): string {
-	const coords = position.map((num, ind) => Math.round((num || 0) + (offset?.[ind] || 0) ).toString() + ".0");
+export function formatPosition(position: [number, number]): string {
+	const coords = position.map((num) => Math.round(num || 0).toString() + ".0");
 	return `<position x="${coords[0]}" y="${coords[1]}" />`;
 }

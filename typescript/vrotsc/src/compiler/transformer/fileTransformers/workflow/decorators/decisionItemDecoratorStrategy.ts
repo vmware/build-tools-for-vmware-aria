@@ -41,8 +41,6 @@ import { formatPosition } from "../helpers/formatPosition";
  </workflow-item>
  */
 export default class DecisionItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	/** Adjustment to canvas [x,y] coordinates to compensate for item icon anchor position */
-	private static readonly OFFSET: [number, number] = [0, -10];
 
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new WrapperSourceFilePrinter()) { }
 
@@ -90,7 +88,8 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 				findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)
-			]
+			],
+			offset: [0, -10]
 		};
 
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
@@ -151,7 +150,7 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(formatPosition([x, y], DecisionItemDecoratorStrategy.OFFSET)).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

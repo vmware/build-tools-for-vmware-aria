@@ -35,8 +35,6 @@ import { formatPosition } from "../helpers/formatPosition";
  * ```
  */
 export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	/** Adjustment to canvas [x,y] coordinates to compensate for item icon anchor position */
-	private static readonly OFFSET: [number, number] = [40, -10];
 
 	/**
 	 * Extracts the name of thedefault error handler in an Array to be added to the start node names of a Graph.
@@ -126,7 +124,8 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 		return {
 			name: `item${pos}`,
 			origName: itemInfo.name,
-			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+			targets: [findTargetItem(itemInfo.target, pos, itemInfo)],
+			offset: [40, -10]
 		};
 	}
 
@@ -163,7 +162,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(formatPosition([x, y], DefaultErrorHandlerDecoratorStrategy.OFFSET)).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append("</error-handler>").appendLine();
 		stringBuilder.unindent();
