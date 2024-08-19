@@ -119,6 +119,56 @@ describe("Module", () => {
 		});
 	});
 
+	describe("constructAbsolutePath", () => {
+		const testedFn: (path: string, base: string) => string = ESModule.constructAbsolutePath;
+		const invalidPaths = [
+			"not#working!", // disallowed special characters
+			"not/working/", // separator at end
+			".not.working", // separator at start
+			"not//working",
+			"still..not\\working", // adjacent separators within
+			"./../not.working", // combining same folder and parent folder relative path indicators
+			"not/./working",
+			"not/../working", // relative path indicators within
+		]
+		invalidPaths.forEach(invalidPath => it(`should throw on invalid path '${invalidPath}'`, () => {
+			expect(() => testedFn(invalidPath, "valid.base.path")).toThrowError(`Path is invalid!`);
+		}));
+		const invalidBasePaths = [
+			"not#working!", // disallowed special characters
+			"does/not\\match", // separators other than '.'
+			"not.working.", // separator at end
+			".not.working", // separator at start
+			"not..working", // duplicate separator
+			"./../not.working",
+			"not/../working",
+			"not/./working", // any relative path indicators
+		]
+		invalidBasePaths.forEach(invalidBasePath => it(`should throw on invalid base path '${invalidBasePath}'`, () => {
+			expect(() => testedFn("valid.path", invalidBasePath)).toThrowError(`Base path is invalid: '${invalidBasePath}'!`);
+		}));
+		const validPathsWithoutBase: [path: string, expected: string][] = [
+			["some/path", "some.path"],
+			["some\\other\\path", "some.other.path"],
+			["and\\another/path", "and.another.path"],
+		];
+		validPathsWithoutBase.forEach(path => it(`should return the cleaned path '${path[1]}' when base is not provided`, () => {
+			[null, undefined, ""].forEach(missingBasePath => expect(testedFn(path[0], missingBasePath)).toEqual(path[1]));
+		}));
+		const validPathsWithBase: [path: string, base: string, expected: string][] = [
+			["my/package\\name", "my.base.path", "my.base.path.my.package.name"],
+			["./my.package\\name", "my.base.path", "my.base.path.my.package.name"],
+			["../my.package\\name", "my.base.path", "my.base.my.package.name"],
+			["../../my.package\\name", "my.base.path", "my.my.package.name"],
+		];
+		validPathsWithBase.forEach(path => it(`should throw on too many steps back in relative path for '${path[1]}'`, () => {
+			expect(() => testedFn("../../../sth", path[1])).toThrowError(`Too many steps back for base path '${path[1]}'!`);
+		}));
+		validPathsWithBase.forEach(path => it(`should construct package name form relative path '${path[0]}' and base '${path[1]}'`, () => {
+			expect(testedFn(path[0], path[1])).toEqual(path[2]);
+		}));
+	})
+
 	it("import class", () => {
 		var Class = ESModule.import("default").from("com.vmware.pscoe.library.class.Class");
 		expect(Class).toBeDefined();

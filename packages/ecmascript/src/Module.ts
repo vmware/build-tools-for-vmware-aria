@@ -473,6 +473,7 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 		}
 		return `${base}.${path}`;
 	}
+	(Module as any).constructAbsolutePath = constructAbsolutePath;
 
 	/**
 	 * Extracts the imports as objects from the module as an array.
