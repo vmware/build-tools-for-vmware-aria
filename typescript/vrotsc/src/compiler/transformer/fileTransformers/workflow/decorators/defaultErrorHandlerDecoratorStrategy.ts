@@ -48,7 +48,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 			.filter(item => !!item);
 		const res = errorHandlerItems.shift() || null;
 		if (errorHandlerItems.length) {
-			console.warn(`There are more than 1 Default Error Handler elements. Using ${res} and ignoring the remaining [${errorHandlerItems}]!`);
+			throw new Error(`There are more than 1 Default Error Handler elements. Using ${res} and ignoring the remaining [${errorHandlerItems}]!`);
 		}
 		return res;
 	}
