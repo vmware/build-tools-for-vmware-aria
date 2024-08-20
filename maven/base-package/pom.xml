@@ -44,6 +44,7 @@
         <license.canUpdateCopyright>true</license.canUpdateCopyright>
         <license.canUpdateDescription>true</license.canUpdateDescription>
         <license.includes>**/*.js,**/*.ts</license.includes>
+        <license.excludes>**/*.json,**/*.ftl,**/resources/**/*.*,**/archetype-resources/**/*.*</license.excludes>
     </properties>
     <profiles>
         <profile>
@@ -110,6 +111,7 @@
                             <canUpdateCopyright>${license.canUpdateCopyright}</canUpdateCopyright>
                             <canUpdateDescription>${license.canUpdateDescription}</canUpdateDescription>
                             <includes>${license.includes}</includes>
+                            <excludes>${license.excludes}</excludes>
                             <aggregate>true</aggregate>
                             <excludedArtifacts>maven-surefire-plugin</excludedArtifacts>
                             <extraExtensions>
@@ -119,8 +121,6 @@
                                 <psd>properties</psd>
                                 <psm>properties</psm>
                             </extraExtensions>
-                            <excludes>
-                                **/*.json,**/*.ftl,**/resources/**/*.*,**/archetype-resources/**/*.*</excludes>
                         </configuration>
                         <executions>
                             <execution>
