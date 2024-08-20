@@ -39,18 +39,17 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	/**
 	 * Extracts the name (item#) of the Default error handler Workflow item.
 	 * @param {WorkflowItemDescriptor[]} items - workflow items
-	 * @returns {string} node name (item#) of the first encountered default error handler element, or NULL if there is none.
-	 * Logs a Warning if there are more than 1 Default Error Handler items
+	 * @returns {string} node name (item#) of the found Default error handler element, or NULL if there is none.
+	 * @throws Error if there are more than 1 Default Error Handler items
 	 */
 	public static getDefaultErrorHandlerNode(items: WorkflowItemDescriptor[]): string {
 		const errorHandlerItems = items
 			.map((item, i) => item.strategy.getCanvasType() !== "error-handler" ? null : `item${i + 1}`)
 			.filter(item => !!item);
-		const res = errorHandlerItems.shift() || null;
-		if (errorHandlerItems.length) {
-			throw new Error(`There are more than 1 Default Error Handler elements. Using ${res} and ignoring the remaining [${errorHandlerItems}]!`);
+		if (errorHandlerItems.length > 1) {
+			throw new Error(`There are more than 1 Default Error Handler elements: [${errorHandlerItems}]!`);
 		}
-		return res;
+		return errorHandlerItems.shift() || null;
 	}
 
 	/** Marks the element type as not targetable by other elements (see in {@link findTargetItem}) */
