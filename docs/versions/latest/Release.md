@@ -96,18 +96,16 @@ but there is an option to alter the error handling behaviour via an optional par
 #### Previous Behavior
 
 In the schema of Typescript workflows with multiple elements, the element icons were not aligned with the snap-grid.
-There was no validation of Default error handler elements (number, being targeted by others).
+There was no validation of Default error handler elements.
 Misspelled targets were silently redirected to the default End element.
-There was no validation for self-targeting or disconnected items.
-There was no option to preview WF schema structure before pushing to the environment.
+There was no validation for self-targeting or isolated items.
 
 #### Current Behavior
 
 The items in the schema are aligned in rows and columns with the snap-grid.
-Validating that Default error handler (if present) is only one and not targeted by other elements.
-Aggregated error is thrown when a target doesn't match a WF element.
-Aggregated error is thrown when there are elements that target themselves or are isolated (not targeted by any other element or the default start element).
-The WF schema structure can be previewed in the logs when building.
+Validating that Default error handler (if present) is only one.
+A warning is logged when a target doesn't match a WF element.
+An error is thrown when an elements targets itself or is isolated (not targeted by any other element or the default start element).
 
 #### Related issues
 
