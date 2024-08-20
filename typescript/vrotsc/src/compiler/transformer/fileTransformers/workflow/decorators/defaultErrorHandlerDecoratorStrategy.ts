@@ -18,7 +18,7 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { getDecoratorProps } from "../../../helpers/node";
 import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { GraphNode } from "./helpers/graph";
+import { Graph, GraphNode } from "./helpers/graph";
 import { formatPosition } from "../helpers/formatPosition";
 
 /**
@@ -37,39 +37,20 @@ import { formatPosition } from "../helpers/formatPosition";
 export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
 
 	/**
-	 * Extracts the name of thedefault error handler in an Array to be added to the start node names of a Graph.
+	 * Extracts the name (item#) of the Default error handler Workflow item.
 	 * @param {WorkflowItemDescriptor[]} items - workflow items
-	 * @param {GraphNode[]} nodes - graph nodes mapped to the WF items, with name=item# and targets populated.
-	 * @returns {string[]} an array containing the node name (item#) of the default error handler. Empty if there is none.
-	 * @throws Error if there are more than 1 Default Error Handler items
-	 * @throws Error if the Default Error Handler item is a target of another node
-	 * @throws Error if the Default Error Handler has more than 1 target or the target node cannot be found
-	 * (e.g. the default "end" node)
+	 * @returns {string} node name (item#) of the first encountered default error handler element, or NULL if there is none.
+	 * Logs a Warning if there are more than 1 Default Error Handler items
 	 */
-	public static getDefaultErrorHandlerNodes(items: WorkflowItemDescriptor[], nodes: GraphNode[]): string[] {
+	public static getDefaultErrorHandlerNode(items: WorkflowItemDescriptor[]): string {
 		const errorHandlerItems = items
 			.map((item, i) => item.strategy.getCanvasType() !== "error-handler" ? null : `item${i + 1}`)
 			.filter(item => !!item);
-		if (errorHandlerItems.length > 1) {
-			throw new Error(`Cannot have more than 1 Default Error Handler element: `
-				+ `[${nodes.filter(n => errorHandlerItems.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`)}]!`);
+		const res = errorHandlerItems.shift() || null;
+		if (errorHandlerItems.length) {
+			console.warn(`There are more than 1 Default Error Handler elements. Using ${res} and ignoring the remaining [${errorHandlerItems}]!`);
 		}
-		if (!errorHandlerItems.length) {
-			return [];
-		}
-		const errorHandlerItem = errorHandlerItems[0];
-		const nodesTargetingEh = nodes
-			.filter(n => n.targets.indexOf(errorHandlerItem) > -1 && n.name !== errorHandlerItem) // self-targeting handled in graph
-			.map(n => `${n.name}(${n.origName})`);
-		if (nodesTargetingEh.length) {
-			throw new Error(`Default error handler element cannot be targeted by others: ${nodesTargetingEh}!`);
-		}
-		const ehNodeTargets = nodes.find(n => n.name === errorHandlerItem)?.targets || [];
-		const nodesTargetedByEh = nodes.filter(n => ehNodeTargets.indexOf(n.name) > -1).map(n => `${n.name}(${n.origName})`);
-		if (nodesTargetedByEh.length !== 1) {
-			throw new Error(`Default error handler element must have exactly one target element: [${nodesTargetedByEh}]!`);
-		}
-		return [errorHandlerItem]
+		return res;
 	}
 
 	/** Marks the element type as not targetable by other elements (see in {@link findTargetItem}) */
@@ -125,7 +106,17 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 			name: `item${pos}`,
 			origName: itemInfo.name,
 			targets: [findTargetItem(itemInfo.target, pos, itemInfo)],
-			offset: [40, -10]
+			offset: [40, -10],
+			validator: (node) => {
+				const nodeDescr = `Default error handler ${node.name}(${node.origName})`;
+				const nodesTargetingEh = node.sources?.filter(s => s !== Graph.DEFAULT_START.name);
+				if (nodesTargetingEh?.length) {
+					throw new Error(`${nodeDescr} cannot be targeted by other workflow items (${nodesTargetingEh})!`);
+				}
+				if (node.targets.length !== 1) {
+					throw new Error(`${nodeDescr} must have exactly one target element!`);
+				}
+			}
 		};
 	}
 

@@ -280,15 +280,21 @@ function getGraph(workflow: WorkflowDescriptor): Graph {
 	const graph = new Graph(workflow.items.map((item, i) => item.strategy.getGraphNode(item, i + 1)));
 	try {
 		const startNode = graph.getStartNode();
+		let rootItemIndex = findItemByName(workflow.items, workflow.rootItem);
+		if (!rootItemIndex && workflow.items.length) {
+			rootItemIndex = 1;
+		}
 		// default start node target - the root element or first one
-		startNode.targets.push(`item${findItemByName(workflow.items, workflow.rootItem) || "1"}`);
-		// adding default error handler (if any) as target of the Default start node (secondary start node)
-		startNode.targets.push(...DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNodes(workflow.items, graph.nodes));
+		startNode.targets.push(`item${rootItemIndex}`);
+		// adding first encountered default error handler (if any) as target of the Default start node (secondary start node)
+		const defaultErrorHandler = DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNode(workflow.items);
+		if (defaultErrorHandler) {
+			startNode.targets.push(defaultErrorHandler);
+		}
 
 		return graph
 			.build()
-			.calculateCanvasPositions()
-			.draw(workflow.name);
+			.calculateCanvasPositions(); // draw() for debug
 	} catch (e) {
 		throw new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.`
 			+ `\nOriginal Error: ${e}\nGraph nodes:\n${JSON.stringify(graph.nodes, null, 4)}`);

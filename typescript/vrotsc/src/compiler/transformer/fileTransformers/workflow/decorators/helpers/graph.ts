@@ -12,7 +12,22 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-
+/** Function to validate a node's sources/targets after they have been populated */
+export type GraphNodeValidator = (node: GraphNode) => void;
+/**
+ * Default function to validate a node.
+ * @param {GraphNode} node - the validated node.
+ * @throws Error if the node targets itself.
+ * @throws Error if the node is isolated (has no sources and is not the default Start node).
+ */
+const DEFAULT_GRAPH_NODE_VALIDATOR: GraphNodeValidator = (node) => {
+	if (node.targets.indexOf(node.name) >= 0) {
+		throw new Error(`Node ${node.name}(${node.origName}) cannot target itself!`);
+	}
+	if (node.name !== Graph.DEFAULT_START.name && !node.sources?.length) {
+		throw new Error(`Node ${node.name}(${node.origName}) is isolated!`);
+	}
+}
 /**
  * The node holds information about its position and linked nodes
  */
@@ -40,6 +55,8 @@ export interface GraphNode {
 	col?: number;
 	/** Offset to compensate for schema element icon anchor position */
 	offset?: [number, number];
+	/** Function to validate a node's sources/targets after they have been populated */
+	validator?: GraphNodeValidator;
 }
 
 /**
@@ -194,29 +211,16 @@ export class Graph {
 	 * @throws Error if there is a node that targets itself.
 	 */
 	private populateNodeSources() {
-		const unlinkedNodes: string[] = [];
-		const selfTargetingNodes: string[] = [];
 		this.nodes?.forEach(node => {
-			const nodeDesc = `${node.name}(${node.origName})`;
 			node.branches = [];
 			node.sources = this.nodes.filter(n => n.targets?.indexOf(node.name) > -1).map(n => n.name);
-			if (node.targets.indexOf(node.name) > -1) {
-				selfTargetingNodes.push(nodeDesc);
-			}
-			if (!node.sources?.length && node.name !== Graph.DEFAULT_START.name) {
-				unlinkedNodes.push(nodeDesc);
-			}
+			const oldValidator = node.validator;
+			node.validator = typeof oldValidator != "function" ? DEFAULT_GRAPH_NODE_VALIDATOR : ((node) => {
+				DEFAULT_GRAPH_NODE_VALIDATOR(node);
+				oldValidator(node);
+			});
 		});
-		const errors = []
-		if (selfTargetingNodes.length) {
-			errors.push(`Nodes cannot target themselves: [${selfTargetingNodes}]!`);
-		}
-		if (unlinkedNodes.length) {
-			errors.push(`There are disconnected nodes: [${unlinkedNodes}]!`);
-		}
-		if (errors.length) {
-			throw new Error(errors.join("\n"));
-		}
+		this.nodes?.forEach(node => node.validator(node));
 	}
 
 	/**
