@@ -18,7 +18,7 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { getDecoratorProps } from "../../../helpers/node";
 import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { Graph, GraphNode } from "./helpers/graph";
+import { GraphNode } from "./helpers/graph";
 import { formatPosition } from "../helpers/formatPosition";
 
 /**
@@ -106,17 +106,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 			name: `item${pos}`,
 			origName: itemInfo.name,
 			targets: [findTargetItem(itemInfo.target, pos, itemInfo)],
-			offset: [40, -10],
-			validator: (node) => {
-				const nodeDescr = `Default error handler ${node.name}(${node.origName})`;
-				const nodesTargetingEh = node.sources?.filter(s => s !== Graph.DEFAULT_START.name);
-				if (nodesTargetingEh?.length) {
-					throw new Error(`${nodeDescr} cannot be targeted by other workflow items (${nodesTargetingEh})!`);
-				}
-				if (node.targets.length !== 1) {
-					throw new Error(`${nodeDescr} must have exactly one target element!`);
-				}
-			}
+			offset: [40, -10]
 		};
 	}
 

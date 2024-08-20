@@ -206,7 +206,6 @@ export class Graph {
 
 	/**
 	 * Populates node sources based on all node targets.
-	 * @throws Error if a targeted node doesn't exist
 	 * @throws Error if there are disconnected nodes
 	 * @throws Error if there is a node that targets itself.
 	 */
@@ -214,13 +213,8 @@ export class Graph {
 		this.nodes?.forEach(node => {
 			node.branches = [];
 			node.sources = this.nodes.filter(n => n.targets?.indexOf(node.name) > -1).map(n => n.name);
-			const oldValidator = node.validator;
-			node.validator = typeof oldValidator != "function" ? DEFAULT_GRAPH_NODE_VALIDATOR : ((node) => {
-				DEFAULT_GRAPH_NODE_VALIDATOR(node);
-				oldValidator(node);
-			});
 		});
-		this.nodes?.forEach(node => node.validator(node));
+		this.nodes?.forEach(node => DEFAULT_GRAPH_NODE_VALIDATOR(node));
 	}
 
 	/**
