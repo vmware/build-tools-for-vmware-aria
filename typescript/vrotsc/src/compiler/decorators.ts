@@ -199,17 +199,43 @@ export interface PolyglotDescriptor {
 
 
 /////////////////////////////////// Policy Template Decorator ///////////////////////////////////
-
 export interface PolicyTemplateDescriptor {
 	id: string;
 	name: string;
 	description?: string;
 	path: string;
-	tag: string;
-	type: string;
+	tag?: string;
+	type?: string;
 	version: string;
 	schedule?: PolicyTemplateScheduleDescriptor;
 	events: PolicyTemplateEventDescriptor[];
+	templateVersion?: string;
+	variables?: Record<string, PolicyAttribute>;
+	elements?: Record<string, PolicyElement>;
+}
+
+export interface PolicyElement {
+	type: string;
+	events?: Record<string, string | PolicyWorkflowInfo>;
+	schedule?: PolicyTemplateScheduleDescriptor;
+}
+
+export interface PolicyWorkflowInfo {
+	workflowId: string;
+	bindings?: Record<string, WorkflowBindingInfo>;
+}
+
+interface WorkflowBindingInfo {
+	type: string;
+	variable: string;
+}
+
+export interface PolicyAttribute {
+	type: string,
+	value?: any;
+	description?: string;
+	configId?: string;
+	configKey?: string;
 }
 
 export interface PolicyTemplateScheduleDescriptor {
