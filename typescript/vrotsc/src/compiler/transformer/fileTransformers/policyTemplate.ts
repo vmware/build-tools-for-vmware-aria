@@ -152,7 +152,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	 */
 	function registerPolicyTemplateItem(policyTemplateInfo: PolicyTemplateDescriptor, methodNode: ts.MethodDeclaration): void {
 		const eventInfo: PolicyTemplateEventDescriptor = {
-			type: getEventType(methodNode),
+			type: getEventType(getPropertyName(methodNode.name)),
 			sourceText: undefined,
 		};
 
@@ -178,12 +178,11 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	/**
 	 * Determines the event type based on the method name.
 	 *
-	 * @param {ts.MethodDeclaration} methodNode - The method node.
-	 * @returns {string} The event type.
+	 * @param {string} eventType - the event type / method node name.
+	 * @returns {string} The event type with proper casing.
 	 */
-	function getEventType(methodNode: ts.MethodDeclaration): string {
-		let eventType = getPropertyName(methodNode.name);
-		switch (eventType.toLowerCase()) {
+	function getEventType(eventType: string): string {
+		switch (eventType?.toLowerCase()) {
 			case "oninit":
 				return "OnInit";
 			case "onexit":
@@ -648,29 +647,6 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			});
 		}
 
-		function getEventType(eventType: string): string {
-			switch (eventType.toLowerCase()) {
-				case "oninit":
-					return "OnInit"
-				case "onexit":
-					return "OnExit";
-				case "onexecute":
-					return "OnExecute";
-				case "onmessage":
-					return "OnMessage";
-				case "ontrap":
-					return "OnTrap";
-				case "ontrapall":
-					return "OnTrapAll";
-				case "onconnect":
-					return "OnConnect";
-				case "ondisconnect":
-					return "OnDisconnect";
-				default:
-					throw new Error(`PolicyTemplate event type '${eventType}' is not supported.`);
-			}
-		}
-
 		function printElements(elements: Record<string, PolicyElement>) {
 			Object.keys(elements).forEach(elementName => {
 				printElement(elementName, elements[elementName]);
@@ -720,8 +696,12 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 				stringBuilder.append(`<event type="${event}" kind="trigger" active="false">`).appendLine();
 				stringBuilder.indent();
 				if (typeof events[event] === "string") {
-					let sourceText = policyTemplate.events.find(e => e.type === events[event]).sourceText;
-					stringBuilder.append(`<script encoded="false"><![CDATA[${sourceText}]]></script>`).appendLine();
+					const eventType = getEventType(events[event] as string);
+					const foundEventForType = policyTemplate.events.find(e => getEventType(e.type) === eventType);
+					if (!foundEventForType) {
+						console.warn(`Could not find event with type '${events[event]}' in: ${JSON.stringify(policyTemplate.events, null, 4)}`)
+					}
+					stringBuilder.append(`<script encoded="false"><![CDATA[${foundEventForType?.sourceText || ''}]]></script>`).appendLine();
 				} else {
 					printWorkflowInfo(events[event] as PolicyWorkflowInfo);
 				}
