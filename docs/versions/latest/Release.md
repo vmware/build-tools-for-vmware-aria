@@ -91,6 +91,27 @@ VROES import from a missing/invalid module path, or import of non-existing eleme
 result in more detailed errors in the logs. No exceptions are thrown by default (as per the existing behaviour)
 but there is an option to alter the error handling behaviour via an optional parameter in import.from().
 
+### Improvements to Item presentation structure in Workflow Schema
+
+#### Previous Behavior
+
+In the schema of Typescript workflows with multiple elements, the element icons were not aligned with the snap-grid.
+There was no validation of Default error handler elements.
+Misspelled targets were silently redirected to the default End element.
+There was no validation for self-targeting or isolated items.
+
+#### Current Behavior
+
+The items in the schema are aligned in rows and columns with the snap-grid.
+Validating that Default error handler (if present) is only one.
+A warning is logged when a target doesn't match a WF element.
+An error is thrown when an elements targets itself or is isolated (not targeted by any other element or the default start element).
+
+#### Related issues
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/383>
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/318>
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

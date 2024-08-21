@@ -18,7 +18,6 @@ import { Workflow, Out, In, Item, ActionItem } from "vrotsc-annotations";
 })
 export class Example {
 	@ActionItem({
-		target: "printActionResult",
 		scriptModule: "com.vmware.pscoe.onboarding.sgenov.actions/test"
 	})
 	public callTestAction(@In first: number, @In second: number, @Out actionResult: ActionResult) {

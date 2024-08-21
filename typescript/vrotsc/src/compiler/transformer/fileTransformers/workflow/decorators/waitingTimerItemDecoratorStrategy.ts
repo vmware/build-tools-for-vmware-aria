@@ -20,6 +20,7 @@ import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { GraphNode } from "./helpers/graph";
+import { formatPosition } from "../helpers/formatPosition";
 
 /**
  * Responsible for printing out the waiting timer item
@@ -38,6 +39,7 @@ import { GraphNode } from "./helpers/graph";
  * ```
  */
 export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
+
 	getCanvasType(): string {
 		return "waiting-timer";
 	}
@@ -74,9 +76,11 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
-			]
+			],
+			offset: [40, -10]
 		};
 
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
@@ -130,7 +134,7 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

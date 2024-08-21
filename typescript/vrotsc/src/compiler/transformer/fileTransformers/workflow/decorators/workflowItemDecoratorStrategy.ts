@@ -20,6 +20,7 @@ import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { GraphNode } from "./helpers/graph";
+import { formatPosition } from "../helpers/formatPosition";
 
 /**
  *
@@ -82,6 +83,7 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 			]
@@ -140,7 +142,7 @@ export default class WorkflowItemDecoratorStrategy implements CanvasItemDecorato
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

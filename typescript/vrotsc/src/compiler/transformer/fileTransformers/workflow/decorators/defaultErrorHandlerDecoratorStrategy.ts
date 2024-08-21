@@ -19,6 +19,7 @@ import { getDecoratorProps } from "../../../helpers/node";
 import { findTargetItem } from "../helpers/findTargetItem";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { GraphNode } from "./helpers/graph";
+import { formatPosition } from "../helpers/formatPosition";
 
 /**
  * Responsible for printing out a default error handler
@@ -34,6 +35,25 @@ import { GraphNode } from "./helpers/graph";
  * ```
  */
 export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
+
+	/**
+	 * Extracts the name (item#) of the Default error handler Workflow item.
+	 * @param {WorkflowItemDescriptor[]} items - workflow items
+	 * @returns {string} node name (item#) of the found Default error handler element, or NULL if there is none.
+	 * @throws Error if there are more than 1 Default Error Handler items
+	 */
+	public static getDefaultErrorHandlerNode(items: WorkflowItemDescriptor[]): string {
+		const errorHandlerItems = items
+			.map((item, i) => item.strategy.getCanvasType() !== "error-handler" ? null : `item${i + 1}`)
+			.filter(item => !!item);
+		if (errorHandlerItems.length > 1) {
+			throw new Error(`There are more than 1 Default Error Handler elements: [${errorHandlerItems}]!`);
+		}
+		return errorHandlerItems.shift() || null;
+	}
+
+	/** Marks the element type as not targetable by other elements (see in {@link findTargetItem}) */
+	public readonly isNotTargetable = true;
 
 	/**
 	 * Return XML tag for the error handler workflow item.
@@ -83,7 +103,9 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		return {
 			name: `item${pos}`,
-			targets: [findTargetItem(itemInfo.target, pos, itemInfo)]
+			origName: itemInfo.name,
+			targets: [findTargetItem(itemInfo.target, pos, itemInfo)],
+			offset: [40, -10]
 		};
 	}
 
@@ -120,7 +142,7 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append("</error-handler>").appendLine();
 		stringBuilder.unindent();

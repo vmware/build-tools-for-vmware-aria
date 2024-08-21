@@ -21,9 +21,12 @@ import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { SourceFilePrinter, WrapperSourceFilePrinter } from "./helpers/sourceFile";
 import { GraphNode } from "./helpers/graph";
+import { formatPosition } from "../helpers/formatPosition";
 
 /**
- * Responsible for printing out decision items
+ * Responsible for printing out decision items.
+ * Note: Decision element in UI supports "else" instead of "exception".
+ * Any exceptions that occur in the condition script are thrown and may be captured in a Default Error Handler element for further handling.
  *
  * @example
  <workflow-item name="item3" out-name="item4" type="custom-condition" alt-out-name="item2">
@@ -38,6 +41,7 @@ import { GraphNode } from "./helpers/graph";
  </workflow-item>
  */
 export default class DecisionItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
+
 	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new WrapperSourceFilePrinter()) { }
 
 	getDecoratorType(): WorkflowItemType {
@@ -80,10 +84,12 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = {
 			name: `item${pos}`,
+			origName: itemInfo.name,
 			targets: [
 				findTargetItem(itemInfo.target, pos, itemInfo),
 				findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)
-			]
+			],
+			offset: [0, -10]
 		};
 
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
@@ -144,7 +150,7 @@ export default class DecisionItemDecoratorStrategy implements CanvasItemDecorato
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(`<position x="${x}" y="${y}" />`).appendLine();
+		stringBuilder.append(formatPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 
