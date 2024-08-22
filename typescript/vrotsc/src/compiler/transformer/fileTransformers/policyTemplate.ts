@@ -40,10 +40,12 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
 	const policyTemplates: PolicyTemplateDescriptor[] = [];
 	const eventSourceFiles: ts.SourceFile[] = [];
+	const SUPPORTED_EVENTS: Record<string, string> =
+		["OnInit", "OnExit", "OnExecute", "OnMessage", "OnTrap", "OnTrapAll", "OnConnect", "OnDisconnect"]
+			.reduce((res, event) => { res[event.toLowerCase()] = event; return res; }, {});
 
-	sourceFile.statements.filter(n => n.kind === ts.SyntaxKind.ClassDeclaration).forEach(classNode => {
-		registerPolicyTemplateClass(classNode as ts.ClassDeclaration);
-	});
+	sourceFile.statements.filter(n => n.kind === ts.SyntaxKind.ClassDeclaration)
+		.forEach(classNode => registerPolicyTemplateClass(classNode as ts.ClassDeclaration));
 	eventSourceFiles.forEach(sf => context.sourceFiles.push(sf));
 
 	return function transform() {
@@ -119,17 +121,11 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			variables: {},
 			elements: {}
 		};
-		const decorators = ts.getDecorators(classNode);
-		if (decorators?.length) {
-			decorators.filter(decoratorNode => {
-				const callExpNode = decoratorNode.expression as ts.CallExpression;
-				if (callExpNode && callExpNode.expression.kind === ts.SyntaxKind.Identifier) {
-					return (<ts.Identifier>callExpNode.expression).text === "PolicyTemplate";
-				}
-			}).forEach(decoratorNode => {
-				populatePolicyTemplateInfoFromDecorator(policyTemplateInfo, <ts.CallExpression>decoratorNode.expression);
-			});
-		}
+		ts.getDecorators(classNode)
+			?.map(decoratorNode => (decoratorNode.expression as ts.CallExpression))
+			.filter(callExpNode => callExpNode?.expression?.kind === ts.SyntaxKind.Identifier
+				&& getText(callExpNode.expression) === "PolicyTemplate")
+			.forEach(callExpNode => populatePolicyTemplateInfoFromDecorator(policyTemplateInfo, callExpNode));
 
 		classNode.members
 			.filter(member => member.kind === ts.SyntaxKind.MethodDeclaration)
@@ -182,26 +178,11 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	 * @returns {string} The event type with proper casing.
 	 */
 	function getEventType(eventType: string): string {
-		switch (eventType?.toLowerCase()) {
-			case "oninit":
-				return "OnInit";
-			case "onexit":
-				return "OnExit";
-			case "onexecute":
-				return "OnExecute";
-			case "onmessage":
-				return "OnMessage";
-			case "ontrap":
-				return "OnTrap";
-			case "ontrapall":
-				return "OnTrapAll";
-			case "onconnect":
-				return "OnConnect";
-			case "ondisconnect":
-				return "OnDisconnect";
-			default:
-				throw new Error(`PolicyTemplate event type '${eventType}' is not supported.`);
+		const res = SUPPORTED_EVENTS[eventType?.toLowerCase()];
+		if (!res) {
+			throw new Error(`PolicyTemplate event type '${eventType}' is not supported.`);
 		}
+		return res;
 	}
 
 	/**
@@ -218,7 +199,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		if (methodNode.parameters.length) {
 			const variableDeclarations: ts.VariableDeclaration[] = [];
 			methodNode.parameters.forEach(paramNode => {
-				const paramName = (<ts.Identifier>paramNode.name).text;
+				const paramName = getText(paramNode.name);
 				variableDeclarations.push(ts.factory.createVariableDeclaration(
 					paramName,
 					undefined,
@@ -244,44 +225,16 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	 */
 	function populatePolicyTemplateInfoFromDecorator(policyTemplateInfo: PolicyTemplateDescriptor, decoratorCallExp: ts.CallExpression): void {
 		const objLiteralNode = decoratorCallExp.arguments[0] as ts.ObjectLiteralExpression;
-		if (objLiteralNode) {
-			objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
-				const propName = getPropertyName(property.name);
+		objLiteralNode?.properties
+			.map((property: ts.PropertyAssignment) => [getPropertyName(property.name), property.initializer] as [string, ts.ObjectLiteralExpression])
+			.forEach(([propName, initializer]) => {
 				switch (propName) {
-					case "id": {
-						policyTemplateInfo.id = (<ts.StringLiteral>property.initializer).text;
-						break;
-					}
-					case "name": {
-						policyTemplateInfo.name = (<ts.StringLiteral>property.initializer).text;
-						break;
-					}
-					case "description": {
-						policyTemplateInfo.description = (<ts.StringLiteral>property.initializer).text;
-						break;
-					}
-					case "path": {
-						policyTemplateInfo.path = (<ts.StringLiteral>property.initializer).text;
-						break;
-					}
-					case "type": {
-						policyTemplateInfo.type = (<ts.StringLiteral>property.initializer).text;
-						break;
-					}
-					case "version": {
-						policyTemplateInfo.version = (<ts.StringLiteral>(property.initializer)).text;
-						break;
-					}
-					case "templateVersion": {
-						policyTemplateInfo.templateVersion = (<ts.StringLiteral>(property.initializer)).text;
-						break;
-					}
 					case "variables": {
-						buildPolicyVariables(policyTemplateInfo, <ts.ObjectLiteralExpression>property.initializer);
+						buildPolicyVariables(policyTemplateInfo, initializer);
 						break;
 					}
 					case "elements": {
-						buildPolicyElements(policyTemplateInfo, <ts.ObjectLiteralExpression>property.initializer);
+						buildPolicyElements(policyTemplateInfo, initializer);
 						break;
 					}
 					case "schedule": {
@@ -290,19 +243,22 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 							when: undefined,
 							timezone: undefined,
 						};
-						(<ts.ObjectLiteralExpression>property.initializer).properties
+						initializer.properties
 							.filter((property: ts.PropertyAssignment) => !!property.initializer && ts.isStringLiteral(property.initializer))
 							.forEach((property: ts.PropertyAssignment) => {
-								policyTemplateInfo.schedule[getPropertyName(property.name)] = (<ts.StringLiteral>(property.initializer)).text;
+								policyTemplateInfo.schedule[getPropertyName(property.name)] = getText(property.initializer);
 							});
 						break;
 					}
 					default: {
-						throw new Error(`PolicyTemplate attribute '${propName}' is not supported.`);
+						if (!(propName in policyTemplateInfo)) {
+							throw new Error(`PolicyTemplate attribute '${propName}' is not supported.`);
+						}
+						policyTemplateInfo[propName] = getText(initializer);
+						break;
 					}
 				}
 			});
-		}
 	}
 
 	function buildPolicyElements(policyInfo: PolicyTemplateDescriptor, objLiteralNode: ts.ObjectLiteralExpression): void {
@@ -319,7 +275,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			let name = getPropertyName(property.name);
 			switch (name) {
 				case "type": {
-					elementInfo.type = (<ts.StringLiteral>property.initializer).text;
+					elementInfo.type = getText(property.initializer);
 					break;
 				}
 				case "events": {
@@ -340,19 +296,8 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		elementInfo.schedule = { periode: "", when: "", timezone: "" };
 		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			let name = getPropertyName(property.name);
-			switch (name) {
-				case "periode": {
-					elementInfo.schedule.periode = (<ts.StringLiteral>property.initializer).text;
-					break;
-				}
-				case "when": {
-					elementInfo.schedule.when = (<ts.StringLiteral>property.initializer).text;
-					break;
-				}
-				case "timezone": {
-					elementInfo.schedule.timezone = (<ts.StringLiteral>property.initializer).text;
-					break;
-				}
+			if (name in elementInfo.schedule) {
+				elementInfo.schedule[name] = getText(property.initializer);
 			}
 		})
 	}
@@ -363,7 +308,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			let name = getPropertyName(property.name);
 
 			if (property.initializer.kind === ts.SyntaxKind.StringLiteral) {
-				events[name] = (<ts.StringLiteral>property.initializer).text;
+				events[name] = getText(property.initializer);
 			} else if (property.initializer.kind === ts.SyntaxKind.ObjectLiteralExpression) {
 				events[name] = buildWorkflowInfo(property.initializer as ts.ObjectLiteralExpression);
 			}
@@ -376,14 +321,14 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			let name = getPropertyName(property.name);
 			if (name === "workflowId") {
-				workflowInfo.workflowId = (<ts.StringLiteral>property.initializer).text;
+				workflowInfo.workflowId = getText(property.initializer);
 			} else if (name === "bindings") {
 				(property.initializer as ts.ObjectLiteralExpression).properties.forEach((bindings: ts.PropertyAssignment) => {
 					let bindingName = getPropertyName(bindings.name);
 					workflowInfo.bindings[bindingName] = { type: "", variable: "" };
 					(bindings.initializer as ts.ObjectLiteralExpression).properties.forEach(((binding: ts.PropertyAssignment) => {
 						let key = getPropertyName(binding.name);
-						workflowInfo.bindings[bindingName][key] = (<ts.StringLiteral>binding.initializer).text;
+						workflowInfo.bindings[bindingName][key] = getText(binding.initializer);
 					}))
 				});
 			}
@@ -398,7 +343,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			let variableInfo: PolicyAttribute = { type: "Any", value: null, description: null, configId: null, configKey: null };
 			switch (property.initializer.kind) {
 				case ts.SyntaxKind.StringLiteral: {
-					variableInfo.value = (<ts.StringLiteral>property.initializer).text;
+					variableInfo.value = getText(property.initializer);
 					variableInfo.type = "string";
 					break;
 				}
@@ -425,16 +370,10 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		let result: PolicyAttribute = { type: "Any", value: null, description: null, configId: null, configKey: null };
 		exp.properties.forEach((property: ts.PropertyAssignment) => {
 			let name = getPropertyName(property.name);
-			if (name == "type") {
-				result.type = (<ts.StringLiteral>property.initializer).text;
-			} else if (name == "configId") {
-				result.configId = (<ts.StringLiteral>property.initializer).text;
-			} else if (name == "configKey") {
-				result.configKey = (<ts.StringLiteral>property.initializer).text;
-			} else if (name == "value") {
+			if (name == "value") {
 				result.value = getValue(property.initializer);
-			} else if (name == "description") {
-				result.description = (<ts.StringLiteral>property.initializer).text;
+			} else if (name in result) {
+				result[name] = getText(property.initializer);
 			}
 		});
 		return result;
@@ -461,38 +400,36 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	 * @param literal
 	 */
 	function getValue(literal: ts.Node) {
-		if (literal) {
-			switch (literal.kind) {
-				case ts.SyntaxKind.NoSubstitutionTemplateLiteral:
-				case ts.SyntaxKind.StringLiteral: {
-					return (<ts.StringLiteral>(literal)).text;
-				}
-				case ts.SyntaxKind.NumericLiteral: {
-					return parseInt((<ts.NumericLiteral>literal).text);
-				}
-				case ts.SyntaxKind.TrueKeyword: {
-					return true;
-				}
-				case ts.SyntaxKind.FalseKeyword: {
-					return false;
-				}
-				case ts.SyntaxKind.ArrayLiteralExpression: {
-					return (<ts.ArrayLiteralExpression>literal).elements.map(element => getValue(element)).filter(element => element !== null);
-				}
-				case ts.SyntaxKind.ObjectLiteralExpression: {
-					const resultingObjectLiteral = {};
-					(<ts.ObjectLiteralExpression>literal).properties.forEach((property: ts.PropertyAssignment) => {
-						const key = property.getChildAt(0).getText()
-						const value = getValue(property.initializer);
-						if (value !== null)
-							resultingObjectLiteral[key] = value;
-					});
+		switch (literal?.kind) {
+			case ts.SyntaxKind.NoSubstitutionTemplateLiteral:
+			case ts.SyntaxKind.StringLiteral: {
+				return getText(literal);
+			}
+			case ts.SyntaxKind.NumericLiteral: {
+				return parseInt(getText(literal));
+			}
+			case ts.SyntaxKind.TrueKeyword: {
+				return true;
+			}
+			case ts.SyntaxKind.FalseKeyword: {
+				return false;
+			}
+			case ts.SyntaxKind.ArrayLiteralExpression: {
+				return (<ts.ArrayLiteralExpression>literal).elements.map(element => getValue(element)).filter(element => element !== null);
+			}
+			case ts.SyntaxKind.ObjectLiteralExpression: {
+				const resultingObjectLiteral = {};
+				(<ts.ObjectLiteralExpression>literal).properties.forEach((property: ts.PropertyAssignment) => {
+					const key = property.getChildAt(0).getText()
+					const value = getValue(property.initializer);
+					if (value !== null)
+						resultingObjectLiteral[key] = value;
+				});
 
-					return resultingObjectLiteral;
-				}
-				default: {
-					return null;
-				}
+				return resultingObjectLiteral;
+			}
+			default: {
+				return null;
 			}
 		}
 	}
@@ -553,10 +490,10 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			if (ele.name === "script") {
 				stringBuilder.append(`<![CDATA[${policyTemplate.events[scriptIndex++].sourceText}]]>`);
 			}
-			else if (ele.name === "description" && xmlLevel === 1 && policyTemplate.description != null) {
+			else if (ele.name === "description" && xmlLevel === 1 && policyTemplate.description) {
 				stringBuilder.append(`<![CDATA[${policyTemplate.description}]]>`);
 			}
-			else if (ele?.children?.length) {
+			else if (ele.children?.length) {
 				xmlLevel++;
 				(ele.children || []).forEach(childNode => {
 					mergeNode(childNode);
@@ -739,38 +676,37 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 				+ ` type="${variable.type}"`
 				+ ` name="${name}"`
 				+ ` read-only="false"`);
-			if (variable.configId !== null) {
-				if (variable.configKey === null || !variable.configKey) {
+			if (variable.configId) {
+				if (!variable.configKey) {
 					throw new Error(`Configuration Key is not set for variable: ${name}`);
 				}
 				stringBuilder.append(` conf-id="${variable.configId}"`
 					+ ` conf-key="${variable.configKey}"`);
 			}
-
-			if ((variable.configId === null && variable.value !== null) || variable.description !== null) {
-				stringBuilder.append(`>`).appendLine();
-				stringBuilder.indent();
-				if (variable.description !== null) {
-					stringBuilder.append(`<description><![CDATA[${variable.description}]]></description>`);
-				}
-				if (variable.configId === null && variable.value !== null) {
-					if (variable.value != null && variable.type.indexOf("Array/") === 0) {
-						variable.value = printAttributeArrayValue(variable.value, variable.type);
-					}
-
-					if (variable.value != null && variable.type.indexOf("CompositeType(") === 0) {
-						variable.value = printAttributeCompositeValue(variable.value, variable.type);
-					}
-					else {
-						stringBuilder.append(`<value encoded="n"><![CDATA[${variable.value}]]></value>`).appendLine();
-					}
-				}
-				stringBuilder.appendLine();
-				stringBuilder.unindent();
-				stringBuilder.append(`</attribute>`).appendLine();
-			} else {
+			const hasValue = !variable.configId && variable.value != null;
+			if (!variable.description && !hasValue) {
 				stringBuilder.append(` />`).appendLine();
+				return;
 			}
+
+			stringBuilder.append(`>`).appendLine();
+			stringBuilder.indent();
+			if (variable.description) {
+				stringBuilder.append(`<description><![CDATA[${variable.description}]]></description>`);
+			}
+			if (hasValue) {
+				if (variable.type.indexOf("Array/") === 0) {
+					variable.value = printAttributeArrayValue(variable.value, variable.type);
+				}
+
+				if (variable.type.indexOf("CompositeType(") === 0) {
+					variable.value = printAttributeCompositeValue(variable.value, variable.type);
+				}
+				stringBuilder.append(`<value encoded="n"><![CDATA[${variable.value}]]></value>`).appendLine();
+			}
+			stringBuilder.appendLine();
+			stringBuilder.unindent();
+			stringBuilder.append(`</attribute>`).appendLine();
 		}
 
 		/**
@@ -789,14 +725,9 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		 */
 		function printAttributeArrayValue(value: Array<any>, type: string) {
 			type = type.replace("Array/", "");
-			let output = "#{";
+			const output = value.map(element => `#${type}#${element}#`).join(";");
 
-			value.forEach(element => {
-				output += "#" + type + "#" + element + "#;";
-			});
-
-			output = output.slice(0, -1) + "}#";
-			return output;
+			return `#{${output}}#"`;
 		}
 
 		/**
@@ -817,31 +748,13 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		 * @private
 		 */
 		function printAttributeCompositeValue(compositeValue: any, compositeType: string) {
-			let output = "#[";
+			const output = Object.entries(compositeValue).map(([key, value]) => (Array.isArray(value)
+				? [key, "Array", printAttributeArrayValue(value as any[], getArrayTypeFromCompositeType(compositeType, key))]
+				: [key, typeof value, value]))
+				.map(([key, valueType, value]) => `#${key}#=#${valueType}#${value}#`)
+				.join("+");
 
-			for (let [key, value] of Object.entries(compositeValue)) {
-				const isArray = Array.isArray(value);
-
-				if (isArray) {
-					const valueType = getArrayTypeFromCompositeType(compositeType, key);
-
-					if (valueType === null) {
-						throw new Error(`Composite Type Array is in invalid format for ${key}!`);
-					}
-
-					value = `Array#${printAttributeArrayValue(value as [], valueType)}`;
-				}
-				else {
-					value = `${typeof value}#${value}`;
-				}
-
-				output += `#${key}#=#${value}#+`;
-			}
-
-			// Cut the last +
-			output = output.slice(0, -1) + "]#";
-
-			return output;
+			return `#[${output}]#`;
 		}
 
 		/**
@@ -856,9 +769,16 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		 * @private
 		 */
 		function getArrayTypeFromCompositeType(compositeType: string, key: string): string | null {
-			const result = compositeType.match(new RegExp(`${key}:(Array\\/[^,)]+)`));
+			const result = compositeType.match(new RegExp(`${key}:(Array\\/[^,)]+)`))?.[1];
+			if (!result) {
+				throw new Error(`Composite Type Array is in invalid format for ${key}!`);
+			}
 
-			return result === null ? null : result[1];
+			return result;
 		}
+	}
+
+	function getText(node: any) {
+		return node?.text;
 	}
 }
