@@ -17,7 +17,7 @@ import { Writable } from "stream";
 export enum ActionType {
 	UNKNOWN = 'unknown',
 	VRO = 'vro',
-	ABX = 'abx',
+	ABX = 'abx'
 }
 
 // This section contains a list of supported runtimes for actions. Adding a new runtime requires updating this section and this section only.
@@ -38,7 +38,7 @@ export enum ActionRuntime {
 
 	ABX_NODEJS = 'nodejs',
 	ABX_POWERSHELL = 'powershell',
-	ABX_PYTHON = 'python',
+	ABX_PYTHON = 'python'
 }
 
 // After adding a new runtime, add it to the appropriate list below.
@@ -60,9 +60,9 @@ export const VroPythonActionRuntimes = [
 	ActionRuntime.VRO_PYTHON_310
 ];
 
-export const NodeJsActionRuntimes = VroNodeJsActionRuntimes.concat(...[ActionRuntime.ABX_NODEJS]);
-export const PowershellActionRuntimes = VroPowershellActionRuntimes.concat(...[ActionRuntime.ABX_POWERSHELL]);
-export const PythonActionRuntimes = VroPythonActionRuntimes.concat(...[ActionRuntime.ABX_PYTHON]);
+export const NodeJsActionRuntimes = VroNodeJsActionRuntimes.concat(ActionRuntime.ABX_NODEJS);
+export const PowershellActionRuntimes = VroPowershellActionRuntimes.concat(ActionRuntime.ABX_POWERSHELL);
+export const PythonActionRuntimes = VroPythonActionRuntimes.concat(ActionRuntime.ABX_PYTHON);
 
 // END OF RUNTIME DEFINITIONS
 
@@ -79,11 +79,11 @@ export const MappedAbxRuntimes = {
 export type ActionRuntimeType = typeof NodeJsActionRuntimes[number] | typeof PowershellActionRuntimes[number] | typeof PythonActionRuntimes[number];
 
 export type PackageDefinition = {
-	[key: string]: any,
-	name: string,
-	description: string,
-	version: string,
-	files?: Array<string>,
+	[key: string]: any;
+	name: string;
+	description: string;
+	version: string;
+	files?: Array<string>;
 };
 
 export type PlatformDefinition = PackageDefinition & {
@@ -125,11 +125,11 @@ export type PackagerOptions = {
 	vro: string,
 	skipVro: boolean,
 	env: string | null,
-	outputStream?: Writable,
+	outputStream?: Writable;
 };
 
 export type BundleFileset = {
-	files: Array<string>,
+	files: Array<string>;
 	baseDir: string;
 };
 
@@ -146,15 +146,15 @@ export enum Events {
 }
 
 export type ActionOptions = PackagerOptions & {
-	// workspace: string,      Inherited: Project root directory
-	// bundle: string,         Inherited: bundle file name
-	mixed: boolean,         // true if multiple actions may exist
-	polyglotJson: string,   // Full path to the file containing platform options for the current action
-	actionBase: string,     // Directory where polyglot.json, tsconfig.json, requirements.txt are located
-	outBase: string,        // Directory under which the out files and dependencies are to be copied to
-	src: string,            // Relative path from workspace to the action source directory
-	// out: string,            Inherited: Relative path from workspace to the out directory
-	actionType: string,     // The type of action to be compiled. Either `vro` or `abx`
+	// workspace: string;      Inherited: Project root directory
+	// bundle: string;         Inherited: bundle file name
+	mixed: boolean;         // true if multiple actions may exist
+	polyglotJson: string;   // Full path to the file containing platform options for the current action
+	actionBase: string;     // Directory where polyglot.json, tsconfig.json, requirements.txt are located
+	outBase: string;        // Directory under which the out files and dependencies are to be copied to
+	src: string;            // Relative path from workspace to the action source directory
+	// out: string;            Inherited: Relative path from workspace to the out directory
+	actionType: string;     // The type of action to be compiled. Either `vro` or `abx`
 	actionRuntime: string;   // One of: `nodejs`, `python`, `powershell`
 };
 
