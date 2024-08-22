@@ -39,6 +39,13 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Added new polyglot runtimes*
+
+The following runtimes have been added to the polyglot archetype:
+
+- `node:18`
+- `node:20`
+
 ### *Exclude Javascript and Typescript test files during license header generation*
 
 #### Previous Behavior
