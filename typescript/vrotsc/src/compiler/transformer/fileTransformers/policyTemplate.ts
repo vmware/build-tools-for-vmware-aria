@@ -225,15 +225,19 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	 */
 	function populatePolicyTemplateInfoFromDecorator(policyTemplateInfo: PolicyTemplateDescriptor, decoratorCallExp: ts.CallExpression): void {
 		const objLiteralNode = decoratorCallExp.arguments[0] as ts.ObjectLiteralExpression;
+		let v2Attributes = [];
+		let hasType = false;
 		objLiteralNode?.properties
 			.map((property: ts.PropertyAssignment) => [getPropertyName(property.name), property.initializer] as [string, ts.ObjectLiteralExpression])
 			.forEach(([propName, initializer]) => {
 				switch (propName) {
 					case "variables": {
+						v2Attributes.push(propName);
 						buildPolicyVariables(policyTemplateInfo, initializer);
 						break;
 					}
 					case "elements": {
+						v2Attributes.push(propName);
 						buildPolicyElements(policyTemplateInfo, initializer);
 						break;
 					}
@@ -250,6 +254,8 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 							});
 						break;
 					}
+					case "type":
+						hasType = true; // no break!
 					default: {
 						if (!(propName in policyTemplateInfo)) {
 							throw new Error(`PolicyTemplate attribute '${propName}' is not supported.`);
@@ -259,6 +265,13 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 					}
 				}
 			});
+		if (policyTemplateInfo.templateVersion === "v1" && v2Attributes.length) {
+			throw new Error(`The following Policy Template attributes are not supported for the (default) template version "v1": [${v2Attributes}].`
+				+ ` Use templateVersion: "v2" instead.`)
+		}
+		if (policyTemplateInfo.templateVersion === "v2" && hasType) {
+			throw new Error(`The "type" Policy Template attribute is no longer supported for template version "v2".  Use "elements" instead.`)
+		}
 	}
 
 	function buildPolicyElements(policyInfo: PolicyTemplateDescriptor, objLiteralNode: ts.ObjectLiteralExpression): void {
@@ -636,7 +649,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 					const eventType = getEventType(events[event] as string);
 					const foundEventForType = policyTemplate.events.find(e => getEventType(e.type) === eventType);
 					if (!foundEventForType) {
-						console.warn(`Could not find event with type '${events[event]}' in: ${JSON.stringify(policyTemplate.events, null, 4)}`)
+						throw new Error(`Could not find event with type '${events[event]}' in: ${JSON.stringify(policyTemplate.events, null, 4)}`)
 					}
 					stringBuilder.append(`<script encoded="false"><![CDATA[${foundEventForType?.sourceText || ''}]]></script>`).appendLine();
 				} else {

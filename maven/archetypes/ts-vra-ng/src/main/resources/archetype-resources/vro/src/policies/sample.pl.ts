@@ -3,6 +3,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
 @PolicyTemplate({
 	name: "Sample Policy",
 	path: "MyOrg/MyProject",
+	templateVersion: "v2",
 	variables: {
 		sample: {
 			type: "string",

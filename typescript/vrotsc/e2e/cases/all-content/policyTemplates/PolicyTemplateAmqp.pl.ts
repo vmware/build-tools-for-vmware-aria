@@ -3,7 +3,6 @@ import { PolicyTemplate } from "vrotsc-annotations";
 @PolicyTemplate({
 	name: "Policy Template Amqp",
 	path: "MyOrg/MyProject",
-	type: "AMQP:Subscription",
 	templateVersion: "v2",
 	elements: {
 		AMQPSubscription: {
