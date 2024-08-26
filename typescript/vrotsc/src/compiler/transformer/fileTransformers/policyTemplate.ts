@@ -27,6 +27,7 @@ import { getPropertyName } from "../helpers/node";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
 import { PolicyTemplateDescriptor, PolicyTemplateEventDescriptor, PolicyTemplateScheduleDescriptor, PolicyWorkflowInfo, PolicyAttribute, PolicyElement } from "../../decorators";
 import { prepareHeaderEmitter } from "../codeTransformers/header";
+import { getAttributeVersionValidator } from "../helpers/getAttributeVersionValidator";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -37,6 +38,8 @@ const xmldoc: typeof import("xmldoc") = require("xmldoc");
  * @returns {Function} The transform function.
  */
 export function getPolicyTemplateTransformer(file: FileDescriptor, context: FileTransformationContext) {
+	const TEMPLATE_VERSIONS = ["v1", "v2"];
+	const DEFAULT_TEMPLATE_VERSION = TEMPLATE_VERSIONS[0];
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
 	const policyTemplates: PolicyTemplateDescriptor[] = [];
 	const eventSourceFiles: ts.SourceFile[] = [];
@@ -117,7 +120,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			type: "AMQP:Subscription",
 			version: "1.0.0",
 			events: [],
-			templateVersion: "v1",
+			templateVersion: DEFAULT_TEMPLATE_VERSION,
 			variables: {},
 			elements: {}
 		};
@@ -225,23 +228,23 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	 */
 	function populatePolicyTemplateInfoFromDecorator(policyTemplateInfo: PolicyTemplateDescriptor, decoratorCallExp: ts.CallExpression): void {
 		const objLiteralNode = decoratorCallExp.arguments[0] as ts.ObjectLiteralExpression;
-		let v2Attributes = [];
-		let hasType = false;
+		const versionValidator = getAttributeVersionValidator("Policy Template", TEMPLATE_VERSIONS);
 		objLiteralNode?.properties
 			.map((property: ts.PropertyAssignment) => [getPropertyName(property.name), property.initializer] as [string, ts.ObjectLiteralExpression])
 			.forEach(([propName, initializer]) => {
 				switch (propName) {
 					case "variables": {
-						v2Attributes.push(propName);
+						versionValidator.push(propName, TEMPLATE_VERSIONS[1]);
 						buildPolicyVariables(policyTemplateInfo, initializer);
 						break;
 					}
 					case "elements": {
-						v2Attributes.push(propName);
+						versionValidator.push(propName, TEMPLATE_VERSIONS[1]);
 						buildPolicyElements(policyTemplateInfo, initializer);
 						break;
 					}
 					case "schedule": {
+						versionValidator.push(propName, null, DEFAULT_TEMPLATE_VERSION, "use elements instead");
 						policyTemplateInfo.schedule = {
 							periode: undefined,
 							when: undefined,
@@ -255,7 +258,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 						break;
 					}
 					case "type":
-						hasType = true; // no break!
+						versionValidator.push(propName, null, DEFAULT_TEMPLATE_VERSION, "use elements instead"); // no break!
 					default: {
 						if (!(propName in policyTemplateInfo)) {
 							throw new Error(`PolicyTemplate attribute '${propName}' is not supported.`);
@@ -265,13 +268,8 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 					}
 				}
 			});
-		if (policyTemplateInfo.templateVersion === "v1" && v2Attributes.length) {
-			throw new Error(`The following Policy Template attributes are not supported for the (default) template version "v1": [${v2Attributes}].`
-				+ ` Use templateVersion: "v2" instead.`)
-		}
-		if (policyTemplateInfo.templateVersion === "v2" && hasType) {
-			throw new Error(`The "type" Policy Template attribute is no longer supported for template version "v2".  Use "elements" instead.`)
-		}
+		// delayed validation until all attributes (incl. current template version) are known:
+		versionValidator.validate(policyTemplateInfo.templateVersion, policyTemplateInfo.templateVersion === DEFAULT_TEMPLATE_VERSION);
 	}
 
 	function buildPolicyElements(policyInfo: PolicyTemplateDescriptor, objLiteralNode: ts.ObjectLiteralExpression): void {
@@ -542,7 +540,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		if (policyTemplate.description) {
 			stringBuilder.append(`<description><![CDATA[${policyTemplate.description}]]></description>`).appendLine();
 		}
-		if (policyTemplate.templateVersion === "v1") {
+		if (policyTemplate.templateVersion === DEFAULT_TEMPLATE_VERSION) {
 			if (policyTemplate.schedule) {
 				buildScheduledItem(policyTemplate.schedule);
 			}
