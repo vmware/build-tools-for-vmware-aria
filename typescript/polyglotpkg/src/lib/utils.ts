@@ -31,7 +31,7 @@ const logger = createLogger();
  * @param pkg
  */
 export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionType): ActionRuntime {
-	const isAbx = actionType === ActionType.ABX || (!actionType && !pkg.vro);
+	const isAbx = actionType === ActionType.ABX || !pkg.vro;
 	const runtime = pkg.platform.runtime;
 
 	if (!isAbx) {
