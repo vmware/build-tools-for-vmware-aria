@@ -16,12 +16,10 @@ import { Decorator, MethodDeclaration, SourceFile } from "typescript";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import { findTargetItem } from "../helpers/findTargetItem";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
-import { ScheduledWorkflowItemSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
+import { ScheduledWorkflowItemSourceFilePrinter } from "./helpers/sourceFile";
 import { GraphNode } from "./helpers/graph";
-import { formatPosition } from "../helpers/formatPosition";
+import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
 
 /**
  *
@@ -54,20 +52,23 @@ scheduledTask = workflowToLaunch.schedule(workflowParameters, workflowScheduleDa
   </workflow-item>
  * ```
  */
-export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new ScheduledWorkflowItemSourceFilePrinter()) { }
+export default class ScheduledWorkflowItemDecoratorStrategy extends BaseItemDecoratorStrategy {
+	public constructor() {
+		super();
+		this.sourceFilePrinter = new ScheduledWorkflowItemSourceFilePrinter();
+	}
 
 	/**
 	 * @returns The type of canvas item
 	 */
-	getCanvasType(): string {
+	public getCanvasType(): string {
 		return "task";
 	}
 
 	/**
 	 * @returns The type of decorator
 	 */
-	getDecoratorType(): WorkflowItemType {
+	public getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.ScheduledWorkflow;
 	}
 
@@ -83,7 +84,7 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	 * @returns void
 	 * @throws Error if an unsupported attribute is found
 	 */
-	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
+	public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		const decoratorProperties = getDecoratorProps(decoratorNode);
 		if (!decoratorProperties?.length) {
 			return;
@@ -110,28 +111,9 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	}
 
 	/**
-	 * @see CanvasItemDecoratorStrategy.getGraphNode
-	 */
-	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		const node: GraphNode = {
-			name: `item${pos}`,
-			origName: itemInfo.name,
-			targets: [
-				findTargetItem(itemInfo.target, pos, itemInfo),
-			]
-		};
-
-		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			node.targets.push(findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
-		}
-
-		return node;
-	}
-
-	/**
 	 * There is no need to print the source file for the workflow item
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
 		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
 	}
 
@@ -147,12 +129,11 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 	 *
 	 * @returns The string representation of the item
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
-		const stringBuilder = new StringBuilderClass("", "");
-
+	public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		this.validateNeededParameters(itemInfo);
 
-		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
+		const stringBuilder = new StringBuilderClass("", "");
+		const targetItem = super.findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItem === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
@@ -163,15 +144,12 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 			+ ` type="${this.getCanvasType()}"`
 			+ ` launched-workflow-id="${itemInfo.canvasItemPolymorphicBag.linkedItem}" `
 		);
-
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
+			stringBuilder.append(` catch-name="${super.findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
 		}
-
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
 			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
-
 		stringBuilder.append(">");
 
 		stringBuilder.indent();
@@ -180,7 +158,7 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
 		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(formatPosition([x, y])).appendLine();
+		stringBuilder.append(super.formatItemPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 
@@ -210,7 +188,6 @@ export default class ScheduledWorkflowItemDecoratorStrategy implements CanvasIte
 		});
 
 		const outputs = itemInfo.output;
-
 		if (outputs.length && outputs.length !== 1 && !outputs.includes("scheduledTask")) {
 			throw new Error(`Decorator ${this.getDecoratorType()} has an invalid output: ${outputs}, expected: scheduledTask`);
 		}

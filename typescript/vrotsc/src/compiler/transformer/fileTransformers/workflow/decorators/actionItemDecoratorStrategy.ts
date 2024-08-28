@@ -16,12 +16,9 @@ import { Decorator, MethodDeclaration, SourceFile } from "typescript";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import { findTargetItem } from "../helpers/findTargetItem";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
-import { ActionItemSourceFilePrinter, SourceFilePrinter } from "./helpers/sourceFile";
-import { GraphNode } from "./helpers/graph";
-import { formatPosition } from "../helpers/formatPosition";
+import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
+import { InputOutputBindings } from "./helpers/presentation";
+import { ActionItemSourceFilePrinter } from "./helpers/sourceFile";
 
 /**
  *
@@ -46,18 +43,22 @@ actionResult = System.getModule("com.vmware.stef").PrintStef(a,b);
 	</workflow-item>
  * ```
  */
-export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	constructor(private readonly sourceFilePrinter: SourceFilePrinter = new ActionItemSourceFilePrinter()) { }
+export default class ActionItemDecoratorStrategy extends BaseItemDecoratorStrategy {
 
-	getCanvasType(): string {
+	public constructor() {
+		super();
+        this.sourceFilePrinter = new ActionItemSourceFilePrinter();
+    }
+
+	public getCanvasType(): string {
 		return "task";
 	}
 
-	getDecoratorType(): WorkflowItemType {
+	public getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.Action;
 	}
 
-	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
+	public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		const decoratorProperties = getDecoratorProps(decoratorNode);
 		if (!decoratorProperties?.length) {
 			return;
@@ -84,28 +85,9 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 	}
 
 	/**
-	 * @see CanvasItemDecoratorStrategy.getGraphNode
-	 */
-	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		const node: GraphNode = {
-			name: `item${pos}`,
-			origName: itemInfo.name,
-			targets: [
-				findTargetItem(itemInfo.target, pos, itemInfo),
-			]
-		};
-
-		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			node.targets.push(findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
-		}
-
-		return node;
-	}
-
-	/**
 	 * There is no need to print the source file for the workflow item
 	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
 		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
 	}
 
@@ -122,12 +104,11 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 	 *
 	 * @returns The string representation of the item
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
+	public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		this.validateNeededParameters(itemInfo);
-
-		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
+		const targetItem = super.findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItem === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
@@ -138,23 +119,20 @@ export default class ActionItemDecoratorStrategy implements CanvasItemDecoratorS
 			+ ` type="${this.getCanvasType()}"`
 			+ ` script-module="${itemInfo.canvasItemPolymorphicBag.scriptModule}"`
 		);
-
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
+			stringBuilder.append(` catch-name="${super.findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
 		}
-
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
 			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
-
 		stringBuilder.append(">");
 		stringBuilder.indent();
-		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
 
+		stringBuilder.append(`<script encoded="false"><![CDATA[${itemInfo.sourceText}]]></script>`).appendLine();
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(formatPosition([x, y])).appendLine();
+		stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS))
+		stringBuilder.append(super.formatItemPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

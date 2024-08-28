@@ -271,7 +271,7 @@ function buildOutput(output: string[]): string {
  * and any secondary start nodes (e.g. Default Error Handler) as targets of the default Start node.
  * Secondary start nodes will be placed at the same level (column) as the default Start node.
  *
- * Remaining items are placed acording to their targets.
+ * Remaining items are placed according to their targets.
  * @param {WorkflowDescriptor} workflow
  * @returns {Graph}
  * @throws Error when there are targets missing or misspelled or when a secondary start node is targeted.
@@ -287,7 +287,7 @@ function getGraph(workflow: WorkflowDescriptor): Graph {
 		// default start node target - the root element or first one
 		startNode.targets.push(`item${rootItemIndex}`);
 		// adding first encountered default error handler (if any) as target of the Default start node (secondary start node)
-		const defaultErrorHandler = DefaultErrorHandlerDecoratorStrategy.getDefaultErrorHandlerNode(workflow.items);
+		const defaultErrorHandler = new DefaultErrorHandlerDecoratorStrategy().getDefaultErrorHandlerNode(workflow.items);
 		if (defaultErrorHandler) {
 			startNode.targets.push(defaultErrorHandler);
 		}
