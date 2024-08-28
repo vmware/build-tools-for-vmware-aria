@@ -90,7 +90,9 @@ export function createProgram(options: ProgramOptions): Program {
 				),
 		};
 
-		files.map(file => transformerFactoryMap[file.type](file, context)).forEach(transform => transform());
+		files.map(file => (transformerFactoryMap[file.type] && transformerFactoryMap[file.type](file, context))
+			|| (() => { throw new Error(`Cannot transform file '${file?.filePath}' - unsupported file type!`) }))
+			.forEach(transform => transform());
 
 		generateIndexTypes(context);
 
@@ -195,6 +197,15 @@ export function createProgram(options: ProgramOptions): Program {
 	function getFileType(filePath: string, fileSet: Record<string, boolean>): FileType {
 		filePath = filePath.toLowerCase();
 
+		if (filePath.endsWith(".wf")) {
+			throw new Error(`'.wf' is not a valid Workflow file extension. Use '.wf.ts' or '.wf.xml'.`)
+		}
+		if (filePath.endsWith(".pl")) {
+			throw new Error(`'.pl' is not a valid Policy Template file extension. Use '.pl.ts' or '.pl.xml'.`)
+		}
+		if (filePath.endsWith(".conf")) {
+			throw new Error(`'.conf' is not a valid Configuration Element file extension. Use '.conf.ts' or '.conf.yaml'.`)
+		}
 		if (filePath.endsWith(".wf.ts")) {
 			return FileType.Workflow;
 		}
