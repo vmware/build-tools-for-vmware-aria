@@ -17,17 +17,18 @@ import { DiagnosticCategory, FileTransformationContext } from "../../../../types
 import { PolyglotDescriptor, WorkflowDescriptor, WorkflowItemDescriptor, WorkflowItemType, WorkflowParameter, WorkflowParameterType } from "../../../decorators";
 import { getDecoratorNames, getIdentifierTextOrNull, getPropertyName } from "../../helpers/node";
 import { getVroType } from "../../helpers/vro";
-import CanvasItemDecoratorStrategy from "./decorators/canvasItemDecoratorStrategy";
+import ActionItemDecoratorStrategy from "./decorators/actionItemDecoratorStrategy";
+import AsyncWorkflowItemDecoratorStrategy from "./decorators/asyncWorkflowItemDecoratorStrategy";
+import CanvasItemDecoratorStrategy from "./decorators/base/canvasItemDecoratorStrategy";
 import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
 import DefaultErrorHandlerDecoratorStrategy from "./decorators/defaultErrorHandlerDecoratorStrategy";
 import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
 import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
+import ScheduledWorkflowItemDecoratorStrategy from "./decorators/scheduledWorkflowItemDecoratorStrategy";
+import UserInteractionDecoratorStrategy from "./decorators/userInteractionDecoratorStrategy";
 import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDecoratorStrategy";
 import WorkflowItemDecoratorStrategy from "./decorators/workflowItemDecoratorStrategy";
-import ScheduledWorkflowItemDecoratorStrategy from "./decorators/scheduledWorkflowItemDecoratorStrategy";
-import AsyncWorkflowItemDecoratorStrategy from "./decorators/asyncWorkflowItemDecoratorStrategy";
-import ActionItemDecoratorStrategy from "./decorators/actionItemDecoratorStrategy";
 
 /**
  * Fetches details from the decorators for the methods and adds the information to the Descriptors
@@ -97,6 +98,8 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 			return new AsyncWorkflowItemDecoratorStrategy();
 		case WorkflowItemType.DefaultErrorHandler:
 			return new DefaultErrorHandlerDecoratorStrategy();
+		case WorkflowItemType.UserInteractionItem:
+			return new UserInteractionDecoratorStrategy();
 		case WorkflowItemType.End:
 			return new EndItemDecoratorStrategy();
 		default:
