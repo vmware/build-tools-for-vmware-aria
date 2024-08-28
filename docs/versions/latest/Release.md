@@ -112,6 +112,21 @@ An error is thrown when an elements targets itself or is isolated (not targeted 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/383>
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/318>
 
+### Better errors for Policy Template, Workflow and Configuration files with incorrect extensions
+
+#### Previous Behavior
+
+A non-descriptive error was thrown when a Policy Template, Workflow or Configuration file was missing either .ts or its respective file extension prefix (.pl, .wf, .conf).
+
+#### Current Behavior
+
+A more specific error is thrown when a file ends in .pl, .wf, .conf, with instructions to add the omitted extension (.ts / .xml / .yaml).
+A more specific error is thrown when a .ts file contains a PolicyTemplate, Workflow or Configuration decorator without the corresponding file extension prefix (.pl, .wf, .conf).
+
+#### Related issues
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/301>
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
