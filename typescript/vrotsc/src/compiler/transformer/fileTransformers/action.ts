@@ -23,11 +23,14 @@ import { remediateTypeScript } from "../codeTransformers/remediate";
 import { transformModuleSystem } from "../codeTransformers/modules";
 import { canCreateDeclarationForFile } from "../metaTransformers/declaration";
 import { addHeaderComment } from "../helpers/source";
+import { checkActionForMisplacedClassDecorators } from "../helpers/checkActionForMisplacedClassDecorators";
 
 // @TODO: Take a look at this
 
 export function getActionTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
+	sourceFile.statements.filter(n => n.kind === ts.SyntaxKind.ClassDeclaration)
+		.forEach(classNode => checkActionForMisplacedClassDecorators(classNode as ts.ClassDeclaration));
 	context.sourceFiles.push(sourceFile);
 
 	return function transform() {
@@ -77,7 +80,7 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 
 	function createActionClosure(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext): ts.SourceFile {
 		const statements: ts.Statement[] = [];
-        const { factory } = ctx;
+		const { factory } = ctx;
 
 		if (ctx.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) {
 			// Copy all statements preceeding the action closure
@@ -94,13 +97,13 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 			const updatedExpStatement = factory.updateExpressionStatement(expStatement,
 				factory.updateParenthesizedExpression(parenExpression,
 					factory.updateFunctionExpression(funcExpression,
-                            /* modifiers */ undefined,
-                            /* asteriskToken */ undefined,
-                            /* name */ undefined,
-                            /* typeParameters */ undefined,
-                            /* parameters */ funcExpression.parameters,
-                            /* type */ undefined,
-                            /* body */ factory.updateBlock(funcExpression.body, funcStatements),
+							/* modifiers */ undefined,
+							/* asteriskToken */ undefined,
+							/* name */ undefined,
+							/* typeParameters */ undefined,
+							/* parameters */ funcExpression.parameters,
+							/* type */ undefined,
+							/* body */ factory.updateBlock(funcExpression.body, funcStatements),
 					)));
 			statements.push(updatedExpStatement);
 		}
@@ -113,18 +116,18 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 			let closureStatement = factory.createExpressionStatement(
 				factory.createParenthesizedExpression(
 					factory.createFunctionExpression(
-                            /*modifiers*/ undefined,
-                            /*asteriskToken*/ undefined,
-                            /*name*/ undefined,
-                            /*typeParameters*/ undefined,
-                            /*parameters*/ undefined,
-                            /*modifiers*/ undefined,
-                            /*body*/ factory.createBlock(sourceFile.statements, true))));
+							/*modifiers*/ undefined,
+							/*asteriskToken*/ undefined,
+							/*name*/ undefined,
+							/*typeParameters*/ undefined,
+							/*parameters*/ undefined,
+							/*modifiers*/ undefined,
+							/*body*/ factory.createBlock(sourceFile.statements, true))));
 			closureStatement = ts.addSyntheticLeadingComment(
 				closureStatement,
 				ts.SyntaxKind.MultiLineCommentTrivia,
 				"*\n * @return {Any}\n ",
-                    /*hasTrailingNewLine*/ true);
+					/*hasTrailingNewLine*/ true);
 			statements.push(closureStatement);
 		}
 
