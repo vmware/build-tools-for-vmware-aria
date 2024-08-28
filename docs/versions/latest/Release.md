@@ -112,6 +112,42 @@ An error is thrown when an elements targets itself or is isolated (not targeted 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/383>
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/318>
 
+### Add missing classes to `o11n-plugin-aria` and add missing methods to the existing classes
+
+#### Previous Behavior
+
+Many classes are missing completely compared with vRO API and some existing classes were missing some methods
+
+#### Current Behavior
+
+The following classes were added to `o11n-plugin-aria`:
+
+- VraEntitiesFinder
+- VraFabricNetwork
+- VraFlavorProfile
+- VraFlavorMapping
+- VraFabricFlavor
+- VraStorageProfile
+- VraProject
+- VraUser
+- VraZoneAssignment
+- VraProjectResourceMetadata
+- VraImageProfile
+- VraImageMapping
+- VraImageMappingDescription
+- VraDiskSnapshot
+- VraSnapshot
+- VraNetworkProfile
+- VraNetwork
+- VraNetworkInterface
+- VraMachine
+- VraSaltConfiguration
+- VraMachineBootConfig
+
+#### Related issue
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
+
 ### Better errors for Policy Template, Workflow and Configuration files with incorrect extensions
 
 #### Previous Behavior
