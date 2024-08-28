@@ -939,73 +939,93 @@ declare class VraDiskAttachmentSpecification {
 	constructor();
 
 	/**
-     * @param key
-     * @param diskAttachmentPropertiesItem
-     */
-	putDiskAttachmentPropertiesItem(key: string, diskAttachmentPropertiesItem: string): VraDiskAttachmentSpecification
+	 * @param key
+	 * @param diskAttachmentPropertiesItem
+	 */
+	putDiskAttachmentPropertiesItem(
+		key: string,
+		diskAttachmentPropertiesItem: string
+	): VraDiskAttachmentSpecification;
 }
 
 declare class VraDiskService {
 	constructor();
 
 	/**
-     * @param genericRestClient
-     */
-	setGenericRestClient(genericRestClient: VraGenericRestClient): void
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
 
 	/**
 	 * Create a BlockDevice in Synchronous manner
-     * @param blockDeviceSpecification
-     */
-	createBlockDevice(blockDeviceSpecification: VraBlockDeviceSpecification): VraBlockDevice
+	 * @param blockDeviceSpecification
+	 */
+	createBlockDevice(
+		blockDeviceSpecification: VraBlockDeviceSpecification
+	): VraBlockDevice;
 
 	/**
-     * Resize a BlockDevice in an asynchronous manner.
-     * @param diskId
+	 * Resize a BlockDevice in an asynchronous manner.
+	 * @param diskId
 	 * @param capacityInGB
-     */
-	resizeBlockDevice(diskId: string, capacityInGB: number): VraRequestTracker
+	 */
+	resizeBlockDevice(diskId: string, capacityInGB: number): VraRequestTracker;
 
 	/**
-     * Delete a BlockDevice in an asynchronous manner.
-     * @param diskId
+	 * Delete a BlockDevice in an asynchronous manner.
+	 * @param diskId
 	 * @param purge
 	 * @param forceDelete
-     */
-	deleteBlockDevice(diskId: string, purge: boolean, forceDelete: boolean): VraRequestTracker
+	 */
+	deleteBlockDevice(
+		diskId: string,
+		purge: boolean,
+		forceDelete: boolean
+	): VraRequestTracker;
 
 	/**
-     * Create a BlockDevice in an asynchronous manner
+	 * Create a BlockDevice in an asynchronous manner
 	 * @param blockDeviceSpecification
-     */
-	createBlockDeviceAsync(blockDeviceSpecification: VraBlockDeviceSpecification): VraRequestTracker
+	 */
+	createBlockDeviceAsync(
+		blockDeviceSpecification: VraBlockDeviceSpecification
+	): VraRequestTracker;
 
 	/**
 	 * Create a BlockDevice Snapshot in an asynchronous manner.
 	 * @param diskId
 	 * @param diskSnapshotSpecification
 	 */
-	createBlockDeviceSnapshot(diskId: string, diskSnapshotSpecification: VraDiskSnapshotSpecification): VraRequestTracker
+	createBlockDeviceSnapshot(
+		diskId: string,
+		diskSnapshotSpecification: VraDiskSnapshotSpecification
+	): VraRequestTracker;
 
 	/**
-     * Revert a BlockDevice Snapshot in an asynchronous manner.
-     * @param diskId
-     * @param snapshotId
-     */
-	revertBlockDeviceSnapshot(diskId: string, snapshotId: string): VraRequestTracker
-
-	/**
-     * Promote a BlockDevice in an asynchronous manner. Second day promote operation on disk. Applicable for vSphere Block Devices only
-     * @param diskId
-     */
-	promoteBlockDevice(diskId: string): VraRequestTracker
-
-	/**
-     * Delete a BlockDevice Snapshot in an asynchronous manner.
-     * @param diskId
+	 * Revert a BlockDevice Snapshot in an asynchronous manner.
+	 * @param diskId
 	 * @param snapshotId
-     */
-	deleteBlockDeviceSnapshot(diskId: string, snapshotId: string): VraRequestTracker
+	 */
+	revertBlockDeviceSnapshot(
+		diskId: string,
+		snapshotId: string
+	): VraRequestTracker;
+
+	/**
+	 * Promote a BlockDevice in an asynchronous manner. Second day promote operation on disk. Applicable for vSphere Block Devices only
+	 * @param diskId
+	 */
+	promoteBlockDevice(diskId: string): VraRequestTracker;
+
+	/**
+	 * Delete a BlockDevice Snapshot in an asynchronous manner.
+	 * @param diskId
+	 * @param snapshotId
+	 */
+	deleteBlockDeviceSnapshot(
+		diskId: string,
+		snapshotId: string
+	): VraRequestTracker;
 }
 
 /**
@@ -1018,13 +1038,1151 @@ declare class VraDiskSnapshotSpecification {
 	constructor();
 
 	/**
-     * @param key
-     * @param customPropertiesItem
-     */
-	putSnapshotPropertiesItem(key: string, customPropertiesItem: string): VraDiskSnapshotSpecification
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putSnapshotPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraDiskSnapshotSpecification;
 
 	/**
-     * @param tagsItem
-     */
-	addTagsItem(tagsItem: VraTag): VraDiskSnapshotSpecification
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraDiskSnapshotSpecification;
+}
+
+/**
+ * VMware Aria Automation Entity finder to search for an entity
+ */
+declare class VraEntitiesFinder {
+	/**
+	 * Get all tags.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getTags(vRAHost: VraHost, filter: string): VraTag[];
+
+	/**
+	 * Get CloudZone for a given zone id.
+	 * @param vRAHost
+	 * @param zoneId
+	 */
+	getCloudZone(vRAHost: VraHost, zoneId: string): VraZone;
+
+	/**
+	 * Get all FabricNetwork for a given Host.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getFabricNetworks(vRAHost: VraHost, filter: string): VraFabricNetwork[];
+
+	/**
+	 * Get all CloudZones for the given Host.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getCloudZones(vRAHost: VraHost, filter: string): VraZone[];
+
+	/**
+	 * Get all FlavorProfile objects for a given Host.
+	 * @param vRAHost
+	 */
+	getFlavorProfiles(vRAHost: VraHost): VraFlavorProfile[];
+
+	/**
+	 * Get StorageProfile by ID.
+	 * @param vRAHost
+	 * @param id
+	 */
+	getStorageProfile(vRAHost: VraHost, id: string): VraStorageProfile;
+
+	/**
+	 * Get vSphere Cloud Account By Id.
+	 * @param vRAHost
+	 * @param vsphereCloudAccountId
+	 */
+	getVsphereCloudAccount(
+		vRAHost: VraHost,
+		vsphereCloudAccountId: string
+	): VraCloudAccountVsphere;
+
+	/**
+	 * Retrieves a project by id for the given Host.
+	 * @param vRAHost
+	 * @param id
+	 */
+	getProject(vRAHost: VraHost, id: string): VraProject;
+
+	/**
+	 * Get FabricNetwork by ID.
+	 * @param vRAHost
+	 * @param id
+	 * @param select
+	 */
+	getFabricNetwork(
+		vRAHost: VraHost,
+		id: string,
+		select: string
+	): VraFabricNetwork;
+
+	/**
+	 * Get project resource metadata by a given project id.
+	 * @param vRAHost
+	 * @param id
+	 */
+	getProjectResourceMetadata(
+		vRAHost: VraHost,
+		id: string
+	): VraProjectResourceMetadata;
+
+	/**
+	 * Get all Data Collectors/Cloud Proxies.
+	 * @param vRAHost
+	 * @param isDisabledDataCollector
+	 */
+	getDataCollectors(
+		vRAHost: VraHost,
+		isDisabledDataCollector: boolean
+	): VraDataCollector[];
+
+	/**
+	 * Get all image mapping keys for a given Host.
+	 * @param vRAHost
+	 */
+	getAllImageMapping(vRAHost: VraHost): string[];
+
+	/**
+	 * Get NSX-V Cloud Account by Id.
+	 * @param vRAHost
+	 * @param id
+	 */
+	getNsxVCloudAccount(vRAHost: VraHost, id: string): VraCloudAccountNsxV;
+
+	/**
+	 * Get ImageProfile by ID.
+	 * @param vRAHost
+	 * @param id
+	 */
+	getImageProfile(vRAHost: VraHost, id: string): VraImageProfile;
+
+	/**
+	 * Get all image reference keys for a given Host and Image.
+	 * @param vRAHost
+	 * @param image
+	 */
+	getAllImageReferencesByImage(vRAHost: VraHost, image: string): string[];
+
+	/**
+	 * Get all RequestTracker objects.
+	 * @param vRAHost
+	 */
+	getRequestTrackers(vRAHost: VraHost): VraRequestTracker[];
+
+	/**
+	 * Get all NSX-V Cloud Account.
+	 * @param vRAHost
+	 */
+	getNsxVCloudAccounts(vRAHost: VraHost): VraCloudAccountNsxV[];
+
+	/**
+	 * Get vSphere Cloud Account Regions/DataCenter.
+	 * @param vRAHost
+	 * @param cloudAccountVsphereSpecification
+	 */
+	getVsphereCloudAccountRegions(
+		vRAHost: VraHost,
+		cloudAccountVsphereSpecification: VraCloudAccountVsphereSpecification
+	): VraCloudAccountRegions;
+
+	/**
+	 * Get all BlockDevice/Disk snapshots for a given BlockDevice/Disk Id.
+	 * @param vRAHost
+	 * @param blockDeviceId
+	 */
+	getBlockDeviceSnapshots(
+		vRAHost: VraHost,
+		blockDeviceId: string
+	): VraDiskSnapshot[];
+
+	/**
+	 * Get all ImageProfile objects for a given Host.
+	 * @param vRAHost
+	 */
+	getImageProfiles(vRAHost: VraHost): VraImageProfile[];
+
+	/**
+	 * Get Block Device/Disk Snapshot details for given Block Device Id.
+	 * @param vRAHost
+	 * @param blockDeviceId
+	 * @param snapshotId
+	 */
+	getBlockDeviceSnapshot(
+		vRAHost: VraHost,
+		blockDeviceId: string,
+		snapshotId: string
+	): VraDiskSnapshot;
+
+	/**
+	 * Get Machine Snapshot details for given Machine ID and Snapshot ID.
+	 * @param vRAHost
+	 * @param machineId
+	 * @param snapshotId
+	 */
+	getMachineSnapshot(
+		vRAHost: VraHost,
+		machineId: string,
+		snapshotId: string
+	): VraSnapshot;
+
+	/**
+	 * Get NetworkProfile by ID.
+	 * @param vRAHost
+	 * @param id
+	 */
+	getNetworkProfile(vRAHost: VraHost, id: string): VraNetworkProfile;
+
+	/**
+	 * Get all Machine objects for a given Host.
+	 * @param vRAHost
+	 * @param machineId
+	 */
+	getMachineDisksByMachineId(
+		vRAHost: VraHost,
+		machineId: string
+	): VraBlockDevice[];
+
+	/**
+	 * Get Available BlockDevices for a given Host.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getAvailableBlockDevices(
+		vRAHost: VraHost,
+		filter: string
+	): VraBlockDevice[];
+
+	/**
+	 * Get all Networks.
+	 * @param vRAHost
+	 */
+	getNetworks(vRAHost: VraHost): VraNetwork[];
+
+	/**
+	 * Get Machine Disk by ID for a specific machine.
+	 * @param vRAHost
+	 * @param machineId
+	 * @param diskId
+	 */
+	getMachineDisk(
+		vRAHost: VraHost,
+		machineId: string,
+		diskId: string
+	): VraBlockDevice;
+
+	/**
+	 * Get tags by key.
+	 * @param vRAHost
+	 * @param key
+	 * @param filter
+	 */
+	getTagsByKey(vRAHost: VraHost, key: string, filter: string): VraTag[];
+
+	/**
+	 * Get all vSphere Cloud Accounts.
+	 * @param vRAHost
+	 */
+	getVsphereCloudAccounts(vRAHost: VraHost): VraCloudAccountVsphere[];
+
+	/**
+	 * Get all flavor mapping keys for a given Host.
+	 * @param vRAHost
+	 */
+	getAllFlavorMapping(vRAHost: VraHost): string[];
+
+	/**
+	 * Get Machine Network Interface details for given Machine ID and Network Interface ID.
+	 * @param vRAHost
+	 * @param machineId
+	 * @param networkInterfaceId
+	 */
+	getMachineNetworkInterface(
+		vRAHost: VraHost,
+		machineId: string,
+		networkInterfaceId: string
+	): VraNetworkInterface;
+
+	/**
+	 * Get machine by ID.
+	 * @param vRAHost
+	 * @param Id
+	 * @param select
+	 */
+	getMachine(vRAHost: VraHost, id: string, select: string): VraMachine;
+
+	/**
+	 * Get all Snapshots for a given Machine
+	 * @param vRAHost
+	 * @param machineId
+	 */
+	getMachineSnapshots(vRAHost: VraHost, machineId: string): VraSnapshot[];
+
+	/**
+	 * Get Cloud Account - Vsphere, NSXT, NXTV, AWS, Azure, GCP etc by ID.
+	 * @param vRAHost
+	 * @param id
+	 * @param select
+	 */
+	getCloudAccount(
+		vRAHost: VraHost,
+		id: string,
+		select: string
+	): VraCloudAccount;
+
+	/**
+	 * Get all Machines for a given Host.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getMachines(vRAHost: VraHost, filter: string): VraMachine[];
+
+	/**
+	 * Get RequestTracker object for a given request id.
+	 * @param vRAHost
+	 * @param requestTrackerId
+	 */
+	getRequestTracker(
+		vRAHost: VraHost,
+		requestTrackerId: string
+	): VraRequestTracker;
+
+	/**
+	 * Get all NSX-T Cloud Account.
+	 * @param vRAHost
+	 */
+	getNsxTCloudAccounts(vRAHost: VraHost): VraCloudAccountNsxT[];
+
+	/**
+	 * Get all projects with specified paging parameters for the given Host.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getProjects(vRAHost: VraHost, filter: string): VraProject[];
+
+	/**
+	 * Get all Network Interfaces for a given Machine.
+	 * @param vRAHost
+	 * @param machineId
+	 */
+	getMachineNetworkInterfaces(
+		vRAHost: VraHost,
+		machineId: string
+	): VraNetworkInterface[];
+
+	/**
+	 * Get NSX-T Cloud Account by Id.
+	 * @param vRAHost
+	 * @param Id
+	 */
+	getNsxTCloudAccount(vRAHost: VraHost, id: string): VraCloudAccountNsxT;
+
+	/**
+	 * Get CloudZone Region by given Zone.
+	 * @param vRAHost
+	 * @param zone
+	 */
+	getCloudZoneRegionByZone(vRAHost: VraHost, zone: VraZone): VraRegion;
+
+	/**
+	 * Get all NetworkProfile objects for a given Host.
+	 * @param vRAHost
+	 */
+	getNetworkProfiles(VraHost: VraHost): VraNetworkProfile[];
+
+	/**
+	 * Get CloudZone Region by given region Id.
+	 * @param vRAHost
+	 * @param regionId
+	 */
+	getCloudZoneRegion(vRAHost: VraHost, regionId: string): VraRegion;
+
+	/**
+	 * Get Tag Object by String Key and value.
+	 * @param vRAHost
+	 * @param key
+	 * @param value
+	 */
+	getTag(vRAHost: VraHost, key: string, value: string): VraTag;
+
+	/**
+	 * Get all StorageProfile objects for a given Host.
+	 * @param vRAHost
+	 */
+	getStorageProfiles(vRAHost: VraHost): VraStorageProfile[];
+
+	/**
+	 * Get all Cloud zone Region.
+	 * @param vRAHost
+	 */
+	getCloudZoneRegions(vRAHost: VraHost): VraRegion[];
+
+	/**
+	 * Get Data Collector/Cloud Proxy by Id.
+	 * @param vRAHost
+	 * @param dataCollectorId
+	 */
+	getDataCollector(
+		vRAHost: VraHost,
+		dataCollectorId: string
+	): VraDataCollector;
+
+	/**
+	 * Get all flavor references for a given Host and flavor.
+	 * @param vRAHost
+	 * @param flavor
+	 */
+	getAllFlavorReferencesByFlavor(vRAHost: VraHost, flavor: string): string[];
+
+	/**
+	 * Get BlockDevice by ID.
+	 * @param vRAHost
+	 * @param Id
+	 */
+	getBlockDevice(vRAHost: VraHost, id: string): VraBlockDevice;
+
+	/**
+	 * Get all Cloud Accounts - Vsphere, NSXT, NXTV, AWS, Azure, GCP etc.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getCloudAccounts(vRAHost: VraHost, filter: string): VraCloudAccount[];
+
+	/**
+	 * Get all BlockDevice for a given Host.
+	 * @param vRAHost
+	 * @param filter
+	 */
+	getBlockDevices(vRAHost: VraHost, filter: string): VraBlockDevice[];
+
+	/**
+	 * Get FlavorProfile by ID.
+	 * @param vRAHost
+	 * @param id
+	 */
+	getFlavorProfile(vRAHost: VraHost, id: string): VraFlavorProfile;
+
+	/**
+	 * Get Network for a given Network Id.
+	 * @param vRAHost
+	 * @param networkId
+	 */
+	getNetwork(vRAHost: VraHost, networkId: string): VraNetwork;
+}
+
+declare class VraFabricNetwork {
+	owner: string;
+	cloudAccountIdsExtension: string;
+	linksExtension: string;
+	externalRegionId: string;
+	externalId: string;
+	description: string;
+	orgId: string;
+	tags: Object[];
+	cloudAccountIds: Object[];
+	ipv6Cidr: string;
+	createdAt: string;
+	isDefault: boolean;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	tagsExtension: string;
+	isPublic: boolean;
+	cidr: string;
+	id: string;
+	updatedAt: string;
+	customPropertiesExtension: string;
+
+	constructor();
+
+	/**
+	 * Get all Fabric Network Tags by Key.
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraFabricNetwork;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraFabricNetwork;
+
+	/**
+	 * @param cloudAccountIdsItem
+	 */
+	addCloudAccountIdsItem(cloudAccountIdsItem: string): VraFabricNetwork;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraFabricNetwork;
+}
+
+declare class VraFlavorProfile {
+	owner: string;
+	flavorMappings: VraFlavorMapping;
+	linksExtension: string;
+	externalRegionId: string;
+	flavorMappingsExtension: string;
+	readonly displayName: string;
+	cloudAccountId: string;
+	description: string;
+	orgId: string;
+	createdAt: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	id: string;
+	updatedAt: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+
+	putLinksItem(key: string, linksItem: VraHref): VraFlavorProfile;
+}
+
+/**
+ * Describes a flavor mapping between a global fabric flavor key and fabric flavor.<br>**HATEOAS** links:<br>**region** - Region - Region for the mapping.
+ */
+declare class VraFlavorMapping {
+	externalRegionId: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param mappingItem
+	 */
+	putMappingItem(key: string, mappingItem: VraFabricFlavor): VraFlavorMapping;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraFlavorMapping;
+}
+
+declare class VraFabricFlavor {
+	bootDiskSizeInMB: number;
+	memoryInMB: number;
+	name: string;
+	storageType: string;
+	dataDiskMaxCount: number;
+	id: string;
+	dataDiskSizeInMB: number;
+	networkType: string;
+	cpuCount: number;
+
+	constructor();
+}
+
+/**
+ * Represents a structure that holds details of storage profile linked to a cloud zone / region.**HATEOAS** links:<br>**region** - Region - Region for the profile.<br>**self** - StorageProfile - Self link to this storage profile.<br>**datastore** - FabricVsphereDatastore - Datastore of this storage profile.<br>**storage-policy** - FabricVsphereStoragePolicy - vSphere storage policy for this profile.<br> **storage-account** - FabricAzureStorageAccount - Azure storage account for this profile.<br>
+ */
+declare class VraStorageProfile {
+	owner: string;
+	linksExtension: string;
+	supportsEncryption: boolean;
+	externalRegionId: string;
+	cloudAccountId: string;
+	description: string;
+	orgId: string;
+	tags: Object[];
+	createdAt: string;
+	diskPropertiesExtension: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	tagsExtension: string;
+	defaultItem: boolean;
+	id: string;
+	updatedAt: string;
+
+	constructor();
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraStorageProfile;
+
+	/**
+	 * Indicates if a storage profile is default profile or not.
+	 */
+	isDefaultItem(): boolean;
+
+	/**
+	 * Indicates whether this storage profile supports encryption or not.
+	 */
+	isSupportsEncryption(): boolean;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraStorageProfile;
+
+	/**
+	 * @param key
+	 * @param diskPropertiesItem
+	 */
+	putDiskPropertiesItem(
+		key: string,
+		diskPropertiesItem: string
+	): VraStorageProfile;
+}
+
+declare class VraProject {
+	owner: string;
+	viewersExtension: string;
+	linksExtension: string;
+	constraintsExtension: string;
+	zonesExtension: string;
+	operationTimeout: number;
+	description: string;
+	zones: Object[];
+	orgId: string;
+	memberExtension: string;
+	createdAt: string;
+	viewers: Object[];
+	machineNamingTemplate: string;
+	sharedResources: boolean;
+	members: Object[];
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	placementPolicy: string;
+	id: string;
+	administratorsExtension: string;
+	administrators: Object[];
+	updatedAt: string;
+	customPropertiesExtension: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraProject;
+
+	/**
+	 * @param membersItem
+	 */
+	addMembersItem(membersItem: VraUser): VraProject;
+
+	/**
+	 * @param viewersItem
+	 */
+	addViewersItem(viewersItem: VraUser): VraProject;
+
+	/**
+	 * @param zonesItem
+	 */
+	addZonesItem(zonesItem: VraZoneAssignment): VraProject;
+
+	/**
+	 * @param administratorsItem
+	 */
+	addAdministratorsItem(administratorsItem: VraUser): VraProject;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraProject;
+
+	/**
+	 * @param key
+	 * @param constraintsItem
+	 */
+	putConstraintsItem(
+		key: string,
+		constraintsItem: VraConstraint[]
+	): VraProject;
+}
+
+/**
+ * A representation of a user.
+ */
+declare class VraUser {
+	type: string;
+	email: string;
+
+	constructor();
+}
+
+declare class VraZoneAssignment {
+	allocatedCpu: number;
+	storageLimitGB: number;
+	allocatedStorageGB: number;
+	allocatedInstancesCount: number;
+	cpuLimit: number;
+	memoryLimitMB: number;
+	allocatedMemoryMB: number;
+	zoneId: string;
+	maxNumberInstances: number;
+	priority: number;
+
+	constructor();
+}
+
+/**
+ * Represents the resource metadata associated with a project
+ */
+declare class VraProjectResourceMetadata {
+	readonly internalIdString: string;
+	host: VraHost;
+	tags: Object[];
+
+	constructor();
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraProjectResourceMetadata;
+}
+
+/**
+ * Represents a structure that holds a list of image mappings defined for the particular region.<br>**HATEOAS** links:<br>**region** - Region - Region for the profile.<br>**self** - ImageProfile - Self link to this image profile
+ */
+declare class VraImageProfile {
+	owner: string;
+	linksExtension: string;
+	externalRegionId: string;
+	imageMappings: VraImageMapping;
+	readonly displayName: string;
+	cloudAccountId: string;
+	description: string;
+	orgId: string;
+	imageMappingsExtension: string;
+	createdAt: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	id: string;
+	updatedAt: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraImageProfile;
+}
+
+/**
+ * Describes an image mapping between image key and fabric image.<br>**HATEOAS** links:<br>**region** - Region - Region for the mapping.
+ */
+declare class VraImageMapping {
+	externalRegionId: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraImageMapping;
+
+	/**
+	 * @param key
+	 * @param mappingItem
+	 */
+	putMappingItem(
+		key: string,
+		mappingItem: VraImageMappingDescription
+	): VraImageMapping;
+}
+
+declare class VraImageMappingDescription {
+	owner: string;
+	cloudConfig: string;
+	osFamily: string;
+	externalRegionId: string;
+	description: string;
+	externalId: string;
+	isPrivate: boolean;
+	constraints: Object[];
+	orgId: string;
+	cloudAccountIds: Object[];
+	createdAt: string;
+	name: string;
+	id: string;
+	updatedAt: string;
+
+	constructor();
+
+	/**
+	 * @param constraintsItem
+	 */
+	addConstraintsItem(
+		constraintsItem: VraConstraint
+	): VraImageMappingDescription;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraImageMappingDescription;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraImageMappingDescription;
+
+	/**
+	 * @param cloudAccountIdsItem
+	 */
+	addCloudAccountIdsItem(
+		cloudAccountIdsItem: string
+	): VraImageMappingDescription;
+}
+
+/**
+ * Represents a disk snapshot
+ */
+declare class VraDiskSnapshot {
+	owner: string;
+	createdAt: string;
+	linksExtension: string;
+	readonly internalIdString: string;
+	name: string;
+	snapshotPropertiesExtension: string;
+	host: VraHost;
+	id: string;
+	orgId: string;
+	updatedAt: string;
+	desc: string;
+	tags: Object[];
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraDiskSnapshot;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraDiskSnapshot;
+
+	/**
+	 * @param key
+	 * @param snapshotPropertiesItem
+	 */
+	putSnapshotPropertiesItem(
+		key: string,
+		snapshotPropertiesItem: string
+	): VraDiskSnapshot;
+}
+
+declare class VraSnapshot {
+	owner: string;
+	createdAt: string;
+	linksExtension: string;
+	isCurrent: boolean;
+	readonly displayName: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	description: string;
+	id: string;
+	orgId: string;
+	updatedAt: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraSnapshot;
+}
+
+declare class VraNetworkProfile {
+	owner: string;
+	linksExtension: string;
+	externalRegionId: string;
+	cloudAccountId: string;
+	description: string;
+	isolationNetworkDomainCIDR: string;
+	orgId: string;
+	tags: Object[];
+	createdAt: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	tagsExtension: string;
+	id: string;
+	isolatedNetworkCIDRPrefix: number;
+	updatedAt: string;
+	customPropertiesExtension: string;
+
+	constructor();
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraNetworkProfile;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraNetworkProfile;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraNetworkProfile;
+}
+
+/**
+ * The network object is an opaque reference to a logical network that network interfaces are attached to.<br> Based on settings specified by your cloud administrator, it may be a reference to an existing network, or be backed by an on-demand network created for isolation, or a security group that will be attached to machines as part of provisioning.<br> Networks are a limited resource, when it is not needed it should be deleted.<br>**HATEOAS** links:<br>**self** - Network - Self link to this network
+ */
+declare class VraNetwork {
+	owner: string;
+	cloudAccountIdsExtension: string;
+	linksExtension: string;
+	externalZoneId: string;
+	externalRegionId: string;
+	externalId: string;
+	description: string;
+	orgId: string;
+	tags: Object[];
+	cloudAccountIds: Object[];
+	createdAt: string;
+	provisioningStatus: string;
+	deploymentId: string;
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	tagsExtension: string;
+	cidr: string;
+	id: string;
+	projectId: string;
+	updatedAt: string;
+	customPropertiesExtension: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraNetwork;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraNetwork;
+
+	/**
+	 * @param cloudAccountIdsItem
+	 */
+	addCloudAccountIdsItem(cloudAccountIdsItem: string): VraNetwork;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraNetwork;
+}
+
+declare class VraNetworkInterface {
+	owner: string;
+	addresses: Object[];
+	externalRegionId: string;
+	externalId: string;
+	description: string;
+	deviceIndex: number;
+	orgId: string;
+	tags: Object[];
+	cloudAccountIds: Object[];
+	createdAt: string;
+	securityGroupIds: Object[];
+	readonly internalIdString: string;
+	name: string;
+	host: VraHost;
+	id: string;
+	updatedAt: string;
+
+	constructor();
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraNetworkInterface;
+
+	/**
+	 * @param addressesItem
+	 */
+	addAddressesItem(addressesItem: string): VraNetworkInterface;
+
+	/**
+	 * @param cloudAccountIdsItem
+	 */
+	addCloudAccountIdsItem(cloudAccountIdsItem: string): VraNetworkInterface;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraNetworkInterface;
+
+	/**
+	 * @param securityGroupIdsItem
+	 */
+	addSecurityGroupIdsItem(securityGroupIdsItem: string): VraNetworkInterface;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraNetworkInterface;
+}
+
+/**
+ * Represents a cloud agnostic machine.<br>**HATEOAS** links:<br>**operations** - array[String] - Supported operations for the machine.<br>**network-interfaces** - array[NetworkInterface] - Network interfaces for the machine.<br>**disks** - array[MachineDisk] - disks for the machine.<br>**deployment** - Deployment - Deployment that this machine is part of.<br>**cloud-accounts** - array[CloudAccount] - Cloud accounts where this machine is provisioned.<br>**self** - Machine - Self link to this machine
+ */
+declare class VraMachine {
+	externalZoneId: string;
+	externalRegionId: string;
+	description: string;
+	orgId: string;
+	cloudAccountIds: Object[];
+	createdAt: string;
+	hostname: string;
+	provisioningStatus: string;
+	deploymentId: string;
+	readonly internalIdString: string;
+	host: VraHost;
+	id: string;
+	updatedAt: string;
+	owner: string;
+	cloudAccountIdsExtension: string;
+	linksExtension: string;
+	address: string;
+	externalId: string;
+	tags: Object[];
+	saltConfiguration: VraSaltConfiguration;
+	bootConfig: VraMachineBootConfig;
+	name: string;
+	machinePowerState: string;
+	tagsExtension: string;
+	projectId: string;
+	customPropertiesExtension: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraMachine;
+
+	/**
+	 * @param cloudAccountIdsItem
+	 */
+	addCloudAccountIdsItem(cloudAccountIdsItem: string): VraMachine;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraMachine;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraMachine;
+}
+
+declare class VraSaltConfiguration {
+	installerFileName: string;
+	masterId: string;
+	saltEnvironment: string;
+	pillarEnvironment: string;
+	stateFiles: Object[];
+	minionId: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param additionalAuthParamsItem
+	 */
+	putAdditionalAuthParamsItem(
+		key: string,
+		additionalAuthParamsItem: string
+	): VraSaltConfiguration;
+
+	/**
+	 * @param stateFilesItem
+	 */
+	addStateFilesItem(stateFilesItem: string): VraSaltConfiguration;
+
+	/**
+	 * @param key
+	 * @param additionalMinionParamsItem
+	 */
+	putAdditionalMinionParamsItem(
+		key: string,
+		additionalMinionParamsItem: string
+	): VraSaltConfiguration;
+
+	/**
+	 * @param key
+	 * @param variablesItem
+	 */
+	putVariablesItem(key: string, variablesItem: string): VraSaltConfiguration;
+}
+
+/**
+ * Machine boot config that will be passed to the instance that can be used to perform common automated configuration tasks and even run scripts after the instance starts.
+ */
+declare class VraMachineBootConfig {
+	content: string;
+
+	constructor();
 }
