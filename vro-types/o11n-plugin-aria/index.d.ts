@@ -1065,10 +1065,10 @@ declare class VraEntitiesFinder {
 
 	/**
 	 * Get CloudZone for a given zone id.
-	 *@param vRAHost
-	 * @param filter
+	 * @param vRAHost
+	 * @param zoneId
 	 */
-	getCloudZone(vRAHost: VraHost, filter: string): VraZone;
+	getCloudZone(vRAHost: VraHost, zoneId: string): VraZone;
 
 	/**
 	 * Get all FabricNetwork for a given Host.
@@ -1352,7 +1352,7 @@ declare class VraEntitiesFinder {
 	 * @param requestTrackerId
 	 */
 	getRequestTracker(
-		vRAHo: VraHost,
+		vRAHost: VraHost,
 		requestTrackerId: string
 	): VraRequestTracker;
 
@@ -1384,10 +1384,7 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param Id
 	 */
-	getNsxTCloudAccount(
-		vRAHost: VraHost,
-		machineId: string
-	): VraCloudAccountNsxT;
+	getNsxTCloudAccount(vRAHost: VraHost, id: string): VraCloudAccountNsxT;
 
 	/**
 	 * Get CloudZone Region by given Zone.
@@ -1545,7 +1542,7 @@ declare class VraFlavorProfile {
 	description: string;
 	orgId: string;
 	createdAt: string;
-	internalIdString: string;
+	readonly internalIdString: string;
 	name: string;
 	host: VraHost;
 	id: string;
@@ -1900,7 +1897,7 @@ declare class VraDiskSnapshot {
 	 * @param key
 	 * @param snapshotPropertiesItem
 	 */
-	putCustomPropertiesItem(
+	putSnapshotPropertiesItem(
 		key: string,
 		snapshotPropertiesItem: string
 	): VraDiskSnapshot;
