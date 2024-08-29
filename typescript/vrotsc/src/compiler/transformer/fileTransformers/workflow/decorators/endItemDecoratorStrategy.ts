@@ -85,12 +85,11 @@ export default class EndItemDecoratorStrategy extends BaseItemDecoratorStrategy 
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
 	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		return {
-			name: `item${pos}`,
-			origName: itemInfo.name,
-			targets: [],
-			offset: [40, -10]
-		};
+		const node: GraphNode = super.getGraphNode(itemInfo, pos, [40, -10]);
+		// end item should have no targets
+		node.targets = [];
+
+		return node;
 	}
 
 	/**

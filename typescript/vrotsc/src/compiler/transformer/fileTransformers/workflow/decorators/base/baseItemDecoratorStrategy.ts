@@ -22,6 +22,8 @@ import { InputOutputBindings, buildItemParameterBindings } from "../helpers/pres
 import { DefaultSourceFilePrinter, SourceFilePrinter } from "../helpers/sourceFile";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 
+const DEFAULT_OFFSET = 3;
+
 /**
  *
  * Abstract canvas item decorator item strategy.
@@ -63,7 +65,7 @@ export default abstract class BaseItemDecoratorStrategy implements CanvasItemDec
      * @param x position on X axis that will be used for UI display
      * @param y position on Y axis that will be used for UI display
      *
-     * @returns The string representation of the item
+     * @returns an empty string (no source code is printed). Descendent classes should print source code if component supports it.
      */
     public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
         return "";

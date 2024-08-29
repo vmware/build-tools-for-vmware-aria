@@ -18,7 +18,6 @@ import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators
 import { getDecoratorProps } from "../../../helpers/node";
 import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
 import { ScheduledWorkflowItemSourceFilePrinter } from "./helpers/sourceFile";
-import { GraphNode } from "./helpers/graph";
 import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
 
 /**

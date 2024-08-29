@@ -359,13 +359,6 @@ interface VroUserInteractionItemConfiguration {
 	target: string;
 }
 
-interface AuthorizedEntity {
-	name: string,
-	type: "LdapGroup" | "Array/LdapUser" | "Array/LdapGroup",
-	exportName: string,
-	values?: any[]
-}
-
 interface VroUserInteractionItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | VroUserInteractionItemConfiguration, descriptor?: TypedPropertyDescriptor<Function>): void;

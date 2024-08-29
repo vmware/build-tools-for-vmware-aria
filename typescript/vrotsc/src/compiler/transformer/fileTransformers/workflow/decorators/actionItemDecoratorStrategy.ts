@@ -26,10 +26,10 @@ import { ActionItemSourceFilePrinter } from "./helpers/sourceFile";
  * @example
  * ```xml
 <workflow-item name="item3" out-name="item4" type="task"
-		script-module="com.vmware.stef/PrintStef">
-		<display-name><![CDATA[PrintStef]]></display-name>
+		script-module="com.vmware.print/PrintItem">
+		<display-name><![CDATA[PritItem]]></display-name>
 		<script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.stef").PrintStef(a,b);
+actionResult = System.getModule("com.vmware.action").printItem(a,b);
 ]]></script>
 		<in-binding>
 			<bind name="a" type="number" export-name="a" />
