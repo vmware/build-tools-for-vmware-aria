@@ -172,7 +172,6 @@ Special output is needed for the ScheduledWorkflowItem.
 
 This is a meta decorator. Add this to whichever function you want to be the entry point of the workflow.
 
-
 #### `@AsyncWorkflowItem`
 
 ##### Supported Parameters
@@ -180,7 +179,6 @@ This is a meta decorator. Add this to whichever function you want to be the entr
 - `@AsyncWorkflowItem({target: "", linkedItem: "" })`
   - `target` - The name of the next in line item.
   - `linkedItem` - The ID of the workflow to call
-
 
 ##### Outputs
 
@@ -384,14 +382,15 @@ Those inputs are optional.
 
 - `security_assignees` (type `Array/LdapUser`) - Any user from this array of users will be authorized to fill in this form.
 - `security_assignee_groups` (type `Array/LdapGroup`) - Any user member of any of the groups will be authorized to fill in this form.
-- `security_group` (type  `LdapGroup`) - Any user member of this group will be authorized to fill in this form.
-- `timeout_date` (type  `Date`) - If not null, this input item will wait until date and will continue workflow execution.
+- `security_group` (type `LdapGroup`) - Any user member of this group will be authorized to fill in this form.
+- `timeout_date` (type `Date`) - If not null, this input item will wait until date and will continue workflow execution.
 
 Note that those parameters should match also the input parameters of the workflow.
 
 ##### Known Limitations for the Input Parameters
 
 The names of the variables in the additional method decorators should be as following:
+
 - `security_assignees` - for the security assignees parameter.
 - `security_assignee_groups` - for the security assignee group parameter.
 - `security_group` - for the security group parameter.
@@ -404,12 +403,19 @@ You can specify multiple output variables that would hold the answer of the user
 #### Example Workflow
 
 ```ts
-import { Workflow, In, Out, Item, RootItem, UserInteractionItem } from "vrotsc-annotations";
+import {
+  Workflow,
+  In,
+  Out,
+  Item,
+  RootItem,
+  UserInteractionItem,
+} from "vrotsc-annotations";
 
 @Workflow({
   name: "User Interaction",
   path: "VMware/PSCoE",
-  description: "Adding user interaction parameters"
+  description: "Adding user interaction parameters",
 })
 export class UserInteractionWorkflow {
   @Item({ target: "userInteraction1Enter", exception: "" })
@@ -419,17 +425,25 @@ export class UserInteractionWorkflow {
   }
 
   @UserInteractionItem({
-    target: "userInteraction2Enter"
+    target: "userInteraction2Enter",
   })
   public userInteraction1Enter() {
     System.log(`Start user interaction 1`);
   }
 
   @UserInteractionItem({
-    target: "userInteractionExit"
+    target: "userInteractionExit",
   })
-	public userInteraction2Enter(@In security_assignees: LdapUser[], @In security_assignee_groups: LdapGroup[], @In security_group: LdapGroup, @In timeout_date?: Date, @In userInteractionAnswer?: string) {
-    System.log(`User interaction component answered with '${userInteractionAnswer}'`);
+  public userInteraction2Enter(
+    @In security_assignees: LdapUser[],
+    @In security_assignee_groups: LdapGroup[],
+    @In security_group: LdapGroup,
+    @In timeout_date?: Date,
+    @In userInteractionAnswer?: string
+  ) {
+    System.log(
+      `User interaction component answered with '${userInteractionAnswer}'`
+    );
   }
 
   @Item({ target: "end" })
