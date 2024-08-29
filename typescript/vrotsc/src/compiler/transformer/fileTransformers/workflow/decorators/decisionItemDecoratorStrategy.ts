@@ -21,6 +21,7 @@ import { GraphNode } from "./helpers/graph";
 import { InputOutputBindings } from "./helpers/presentation";
 import { WrapperSourceFilePrinter } from "./helpers/sourceFile";
 
+
 /**
  * Responsible for printing out decision items.
  * Note: Decision element in UI supports "else" instead of "exception".
@@ -82,18 +83,11 @@ export default class DecisionItemDecoratorStrategy extends BaseItemDecoratorStra
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
 	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		const node: GraphNode = {
-			name: `item${pos}`,
-			origName: itemInfo.name,
-			targets: [
-				super.findTargetItem(itemInfo.target, pos, itemInfo),
-				super.findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)
-			],
-			offset: [0, -10]
-		};
-		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			node.targets.push(super.findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
-		}
+		const node: GraphNode = super.getGraphNode(itemInfo, pos, [0, -10]);
+		node.targets = [
+			super.findTargetItem(itemInfo.target, pos, itemInfo),
+			super.findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)
+		];
 
 		return node;
 	}

@@ -72,7 +72,7 @@ export default class UserInteractionDecoratorStrategy extends BaseItemDecoratorS
 		return WorkflowItemType.UserInteractionItem;
 	}
 
-	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number, offset?: [number, number]): GraphNode {
+	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		this.itemPosition = pos;
 		return super.getGraphNode(itemInfo, pos);
 	}

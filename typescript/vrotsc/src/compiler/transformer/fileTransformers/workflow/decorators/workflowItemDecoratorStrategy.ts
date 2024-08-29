@@ -25,7 +25,7 @@ import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
  * @example
  * ```xml
  <workflow-item name="item1" out-name="item2" throw-bind-name="" type="link" linked-workflow-id="72676355-8293-4758-bdeb-18d2896e8318">
-	<display-name><![CDATA[Stef]]></display-name>
+	<display-name><![CDATA[WfItem]]></display-name>
 	<in-binding>
 	  <bind name="test" type="string" export-name="test"/>
 	  <bind name="secureString" type="SecureString" export-name="secureString"/>

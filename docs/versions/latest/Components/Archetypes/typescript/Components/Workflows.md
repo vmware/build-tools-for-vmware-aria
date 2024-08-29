@@ -14,6 +14,7 @@ How to use Aria Orchestrator Workflows and available decorators.
    - [`@DecisionItem`](#decisionitem)
    - [`@RootItem`](#rootitem)
    - [`@DefaultErrorHandler`](#defaulterrorhandler)
+   - [`@UserInteractionWorkflowItem`](#userinteractionworkflowitem)
    - [`@WorkflowEndItem`](#workflowenditem)
 4. [Example Workflow](#example-workflow)
 
@@ -205,7 +206,6 @@ In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorat
 
 There is a requirement to have only one output, and it will be of type `ActionResult`.
 
-
 ### Example Workflow
 
 ```ts
@@ -364,5 +364,77 @@ export class HandleNetworkConfigurationBackup {
   public workflowEnd() {
     // NOOP
   }
+}
+```
+
+### `@UserInteractionWorkflowItem`
+
+The decorator is used to specify an user interaction workflow item.
+
+##### Supported Parameters
+
+- `target` - The name of the next in line item. Same as `@Item`.
+
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+
+###### Inputs
+
+If you need to specify certain access limitation for the user interaction component you can specify them with `@In` decorators.
+Those inputs are optional.
+
+- `security_assignees` (type `Array/LdapUser`) - Any user from this array of users will be authorized to fill in this form.
+- `security_assignee_groups` (type `Array/LdapGroup`) - Any user member of any of the groups will be authorized to fill in this form.
+- `security_group` (type  `LdapGroup`) - Any user member of this group will be authorized to fill in this form.
+- `timeout_date` (type  `Date`) - If not null, this input item will wait until date and will continue workflow execution.
+
+Note that those parameters should match also the input parameters of the workflow.
+
+###### Known Limitations for the Input Parameters
+
+The names of the variables in the additional method decorators should be as following:
+- `security_assignees` - for the security assignees parameter.
+- `security_assignee_groups` - for the security assignee group parameter.
+- `security_group` - for the security group parameter.
+- `timeout_date` - for the timeout date parameter.
+
+###### Outputs
+
+There is a requirement to have only one output.
+
+### Example Workflow
+
+```ts
+import { Workflow, In, Out, Item, RootItem, UserInteractionItem } from "vrotsc-annotations";
+
+@Workflow({
+	name: "User Interaction",
+	path: "VMware/PSCoE",
+	description: "Adding user interaction parameters"
+})
+export class UserInteractionWorkflow {
+	@Item({ target: "userInteraction1Enter", exception: "" })
+	@RootItem()
+	public start() {
+		System.log("Starting workflow");
+	}
+
+	@UserInteractionItem({
+		target: "userInteraction2Enter"
+	})
+	public userInteraction1Enter() {
+		System.log(`Start user interaction 1`);
+	}
+
+	@UserInteractionItem({
+		target: "userInteractionExit"
+	})
+	public userInteraction2Enter(@In security_assignees: LdapUser[], @In security_assignee_groups: LdapGroup[], @In security_group: LdapGroup, @In timeout_date?: Date, @In userInteractionAnswer?: string) {
+		System.log(`User interaction component answered with '${userInteractionAnswer}'`);
+	}
+
+	@Item({ target: "end" })
+	public userInteractionExit(@Out timeoutDate: Date) {
+		System.log(`User Interaction exit on ${timeoutDate?.toUTCString()}`);
+	}
 }
 ```

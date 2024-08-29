@@ -1,17 +1,9 @@
-import { Workflow, In, Out, Item, RootItem, UserInteractionItem, AuthorizedEntity } from "vrotsc-annotations";
+import { Workflow, In, Out, Item, RootItem, UserInteractionItem } from "vrotsc-annotations";
 
 @Workflow({
 	name: "User Interaction",
 	path: "VMware/PSCoE",
-	description: "Adding user interaction parameters",
-	attributes: {
-		timeoutDate: {
-			type: "Date"
-		},
-		first: {
-			type: "number"
-		}
-	}
+	description: "Adding user interaction parameters"
 })
 export class UserInteractionWorkflow {
 	@Item({ target: "userInteraction1Enter", exception: "" })
@@ -30,8 +22,8 @@ export class UserInteractionWorkflow {
 	@UserInteractionItem({
 		target: "userInteractionExit"
 	})	
-	public userInteraction2Enter(@In security_assignees: AuthorizedEntity[], @In security_assignee_groups: AuthorizedEntity[], @In security_group: AuthorizedEntity, @In timeout_date?: Date, @Out result?: string) {
-		System.log(`Start user interaction 2`);
+	public userInteraction2Enter(@In security_assignees: LdapUser[], @In security_assignee_groups: LdapGroup[], @In security_group: LdapGroup, @In timeout_date?: Date, @In userInteractionAnswer?: string) {
+		System.log(`User interaction component answered with '${userInteractionAnswer}'`);
 	}
 
 	@Item({ target: "end" })
