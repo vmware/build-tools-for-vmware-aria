@@ -152,12 +152,12 @@ The following classes were added to `o11n-plugin-aria`:
 
 #### Previous Behavior
 
-A non-descriptive error was thrown when a Policy Template, Workflow or Configuration file was missing either .ts or its respective file extension prefix (.pl, .wf, .conf).
+A non-descriptive error was thrown when a typescript Policy Template, Workflow or Configuration file was missing either .ts or its respective file extension prefix (.pl, .wf, .conf).
 
 #### Current Behavior
 
-A more specific error is thrown when a file ends in .pl, .wf, .conf, with instructions to add the omitted extension (.ts / .xml / .yaml).
-A more specific error is thrown when a .ts file contains a PolicyTemplate, Workflow or Configuration decorator without the corresponding file extension prefix (.pl, .wf, .conf).
+A more specific error is thrown when a file ends in .pl, .wf, .conf and contains a corresponding typescript decorator (@PolicyTemplate, @Workflow, @Configuration), with instructions to add the omitted .ts extension.
+A more specific error is thrown when a .ts file contains a @PolicyTemplate, @Workflow or @Configuration decorator without the corresponding file extension prefix (.pl, .wf, .conf).
 
 #### Related issues
 
