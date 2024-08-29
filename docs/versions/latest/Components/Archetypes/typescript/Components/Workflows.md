@@ -371,13 +371,13 @@ export class HandleNetworkConfigurationBackup {
 
 The decorator is used to specify an user interaction workflow item.
 
-##### Supported Parameters
+#### Supported Parameters
 
 - `target` - The name of the next in line item. Same as `@Item`.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
-###### Inputs
+#### Inputs
 
 If you need to specify certain access limitation for the user interaction component you can specify them with `@In` decorators.
 Those inputs are optional.
@@ -397,44 +397,44 @@ The names of the variables in the additional method decorators should be as foll
 - `security_group` - for the security group parameter.
 - `timeout_date` - for the timeout date parameter.
 
-###### Outputs
+#### Outputs
 
-There is a requirement to have only one output.
+You can specify multiple output variables that would hold the answer of the user interaction components.
 
-### Example Workflow
+#### Example Workflow
 
 ```ts
 import { Workflow, In, Out, Item, RootItem, UserInteractionItem } from "vrotsc-annotations";
 
 @Workflow({
-	name: "User Interaction",
-	path: "VMware/PSCoE",
-	description: "Adding user interaction parameters"
+  name: "User Interaction",
+  path: "VMware/PSCoE",
+  description: "Adding user interaction parameters"
 })
 export class UserInteractionWorkflow {
-	@Item({ target: "userInteraction1Enter", exception: "" })
-	@RootItem()
-	public start() {
-		System.log("Starting workflow");
-	}
+  @Item({ target: "userInteraction1Enter", exception: "" })
+  @RootItem()
+  public start() {
+    System.log("Starting workflow");
+  }
 
-	@UserInteractionItem({
-		target: "userInteraction2Enter"
-	})
-	public userInteraction1Enter() {
-		System.log(`Start user interaction 1`);
-	}
+  @UserInteractionItem({
+    target: "userInteraction2Enter"
+  })
+  public userInteraction1Enter() {
+    System.log(`Start user interaction 1`);
+  }
 
-	@UserInteractionItem({
-		target: "userInteractionExit"
-	})
+  @UserInteractionItem({
+    target: "userInteractionExit"
+  })
 	public userInteraction2Enter(@In security_assignees: LdapUser[], @In security_assignee_groups: LdapGroup[], @In security_group: LdapGroup, @In timeout_date?: Date, @In userInteractionAnswer?: string) {
-		System.log(`User interaction component answered with '${userInteractionAnswer}'`);
-	}
+    System.log(`User interaction component answered with '${userInteractionAnswer}'`);
+  }
 
-	@Item({ target: "end" })
-	public userInteractionExit(@Out timeoutDate: Date) {
-		System.log(`User Interaction exit on ${timeoutDate?.toUTCString()}`);
-	}
+  @Item({ target: "end" })
+  public userInteractionExit(@Out timeoutDate: Date) {
+    System.log(`User Interaction exit on ${timeoutDate?.toUTCString()}`);
+  }
 }
 ```
