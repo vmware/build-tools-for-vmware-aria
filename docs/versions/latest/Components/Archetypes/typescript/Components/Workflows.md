@@ -389,7 +389,7 @@ Those inputs are optional.
 
 Note that those parameters should match also the input parameters of the workflow.
 
-###### Known Limitations for the Input Parameters
+##### Known Limitations for the Input Parameters
 
 The names of the variables in the additional method decorators should be as following:
 - `security_assignees` - for the security assignees parameter.
