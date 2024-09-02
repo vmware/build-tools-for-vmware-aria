@@ -84,10 +84,7 @@ export default class DecisionItemDecoratorStrategy extends BaseItemDecoratorStra
 	 */
 	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
 		const node: GraphNode = super.getGraphNode(itemInfo, pos, [0, -10]);
-		node.targets = [
-			super.findTargetItem(itemInfo.target, pos, itemInfo),
-			super.findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo)
-		];
+		node.targets.push(super.findTargetItem((itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForDecision).else, pos, itemInfo));
 
 		return node;
 	}
