@@ -371,9 +371,9 @@ The decorator is used to specify an user interaction workflow item.
 
 #### Supported Parameters
 
-- `target` - The name of the next in line item. Same as `@Item`.
+- `target` - The name of the target to that user interaction workflow item is connected to. You can specify another user interaction workflow item as a target, thus chaining multiple user interaction components.
 
-In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
+In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators.
 
 #### Inputs
 
@@ -382,8 +382,8 @@ Those inputs are optional.
 
 - `security_assignees` (type `Array/LdapUser`) - Any user from this array of users will be authorized to fill in this form.
 - `security_assignee_groups` (type `Array/LdapGroup`) - Any user member of any of the groups will be authorized to fill in this form.
-- `security_group` (type `LdapGroup`) - Any user member of this group will be authorized to fill in this form.
-- `timeout_date` (type `Date`) - If not null, this input item will wait until date and will continue workflow execution.
+- `security_group` (type  `LdapGroup`) - Any user member of this group will be authorized to fill in this form.
+- `timeout_date` (type  `Date`) - If not null, this input item will wait until date and will continue workflow execution.
 
 Note that those parameters should match also the input parameters of the workflow.
 

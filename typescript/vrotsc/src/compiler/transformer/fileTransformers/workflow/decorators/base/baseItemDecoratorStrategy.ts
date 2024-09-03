@@ -22,8 +22,6 @@ import { InputOutputBindings, buildItemParameterBindings } from "../helpers/pres
 import { DefaultSourceFilePrinter, SourceFilePrinter } from "../helpers/sourceFile";
 import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
 
-const DEFAULT_OFFSET = 3;
-
 /**
  *
  * Abstract canvas item decorator item strategy.
@@ -57,6 +55,17 @@ export default abstract class BaseItemDecoratorStrategy implements CanvasItemDec
      * @returns type of the workflow element.
      */
     public abstract getDecoratorType(): WorkflowItemType;
+
+    /**
+     * Prints out the item
+     * @param itemInfo The item to print
+     * @param pos The position of the item in the workflow
+     * @param x position on X axis that will be used for UI display
+     * @param y position on Y axis that will be used for UI display
+     *
+     * @returns The string representation of the item
+     */
+    public abstract printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string;
 
     /**
      * Prints the source code of the item.
@@ -124,17 +133,6 @@ export default abstract class BaseItemDecoratorStrategy implements CanvasItemDec
 
         return node;
     }
-
-    /**
-     * Prints out the item
-     * @param itemInfo The item to print
-     * @param pos The position of the item in the workflow
-     * @param x position on X axis that will be used for UI display
-     * @param y position on Y axis that will be used for UI display
-     *
-     * @returns The string representation of the item
-     */
-    public abstract printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string;
 
     protected buildParameterBindings(itemInfo: WorkflowItemDescriptor, bindingsType: InputOutputBindings): string {
         return buildItemParameterBindings(itemInfo, bindingsType);

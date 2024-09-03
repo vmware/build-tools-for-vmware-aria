@@ -226,11 +226,11 @@ export class Graph {
 	 */
 	protected buildGraphNode(treeNode: GraphNode): void {
 		treeNode.col = this.gridTracker.currentCol;
-		treeNode.targets.map(t => this.getNode(t)) // throws
+		treeNode.targets.map(target => this.getNode(target)) // throws
 			.filter(branch => !(branch.name in this.visitedNodes) && branch.sources[0] === treeNode.name)
 			.forEach(branch => {
 				// secondary start nodes will be placed in col. 0:
-				const colIncrement = this.getStartNode().targets.indexOf(branch.name) > 0 ? 0 : 1;
+				const colIncrement = this.getStartNode()?.targets?.includes(branch.name, 1) ? 0 : 1;
 				try {
 					this.gridTracker.currentCol += colIncrement;
 					this.visitedNodes[branch.name] = branch;
@@ -289,12 +289,12 @@ export class Graph {
 	}
 
 	/** @returns {GraphNode} Default Start node (tree root - not an actual item) */
-	getStartNode(): GraphNode {
+	public getStartNode(): GraphNode {
 		return this.getNode(Graph.DEFAULT_START.name);
 	}
 
 	/** @returns {GraphNode} Default End node (item0) */
-	getDefaultEndNode() {
+	public getDefaultEndNode(): GraphNode {
 		return this.getNode(Graph.DEFAULT_END.name);
 	}
 

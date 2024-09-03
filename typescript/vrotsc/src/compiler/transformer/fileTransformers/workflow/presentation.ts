@@ -294,7 +294,7 @@ function getGraph(workflow: WorkflowDescriptor): Graph {
 
 		return graph
 			.build()
-			.calculateCanvasPositions(); // draw() for debug
+			.calculateCanvasPositions(); //.draw() you can use draw() for debug
 	} catch (e) {
 		throw new Error(`Error while building graph for workflow "${workflow.name}". Please check the workflow for any missing target items.`
 			+ `\nOriginal Error: ${e}\nGraph nodes:\n${JSON.stringify(graph.nodes, null, 4)}`);
