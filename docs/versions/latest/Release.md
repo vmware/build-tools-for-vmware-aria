@@ -148,6 +148,20 @@ The following classes were added to `o11n-plugin-aria`:
 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/347>
 
+### Better errors for Policy Template, Workflow and Configuration files with incorrect extensions
+
+#### Previous Behavior
+
+A non-descriptive error was thrown when a typescript Policy Template, Workflow or Configuration file was missing either .ts or its respective file extension prefix (.pl, .wf, .conf).
+
+#### Current Behavior
+
+A more specific error is thrown when a file ends in .pl, .wf, .conf and contains a corresponding typescript decorator (@PolicyTemplate, @Workflow, @Configuration), with instructions to add the omitted .ts extension.
+A more specific error is thrown when a .ts file contains a @PolicyTemplate, @Workflow or @Configuration decorator without the corresponding file extension prefix (.pl, .wf, .conf).
+
+#### Related issues
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/301>
 
 ## Upgrade procedure
 
