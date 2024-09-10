@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * bsc-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,11 +48,11 @@ public class BasicPackageMojo extends AbstractMojo {
 		getLog().info("Target package file: " + pkgFile.getAbsolutePath());
 		File srcDir = new File(project.getBasedir(), "src");
 		Package pkg = PackageFactory.getInstance(PackageType.BASIC, pkgFile);
-        
+		
 		try {
 			getLog().info("Packaging basic bundle from: " + srcDir.getAbsolutePath());
 			new PackageManager(pkg).pack(srcDir);
-	        project.getArtifact().setFile(pkgFile);
+			project.getArtifact().setFile(pkgFile);
 		} catch (IOException e) {
 			throw new MojoExecutionException(e, "Error creating basic package bundle", "Error creating basic package");
 		}

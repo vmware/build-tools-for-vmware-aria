@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * cs-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import java.io.File;
 import java.util.Properties;
@@ -54,7 +53,7 @@ public class PullMojo extends AbstractIacMojo {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 		Package pkg = PackageFactory.getInstance(PackageType.CS, pkgInfoProvider.getSourceDirectory());
 		try {
-            PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForCs());
+			PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForCs());
 			store.exportPackage(pkg, new File(project.getBasedir(), "content.yaml"), dryrun);
 		} catch (ConfigurationException e) {
 			getLog().error(e);
