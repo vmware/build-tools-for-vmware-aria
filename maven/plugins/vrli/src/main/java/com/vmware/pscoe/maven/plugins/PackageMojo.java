@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * vrli-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,21 +40,21 @@ public class PackageMojo extends AbstractMojo {
 	private MavenProject project;
 
 	@Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 		
 		getLog().info("basedir " + project.getBasedir());
 		File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtention());
 		getLog().info("Target VRLI package file " + pkgFile.getAbsolutePath());
 		
-        Package pkg = PackageFactory.getInstance(PackageType.VRLI, pkgFile);
+		Package pkg = PackageFactory.getInstance(PackageType.VRLI, pkgFile);
 		try {
 			getLog().info("Packaging VRLI bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());
 			new PackageManager(pkg).pack(pkgInfoProvider.getSourceDirectory());
-	        project.getArtifact().setFile(pkgFile);
+			project.getArtifact().setFile(pkgFile);
 		} catch (IOException e) {
-            String message = String.format("Error creating VRLI bundle: %s", e.getMessage());
-            throw new MojoExecutionException(e, message, message);
+			String message = String.format("Error creating VRLI bundle: %s", e.getMessage());
+			throw new MojoExecutionException(e, message, message);
 		}
 	}
 
