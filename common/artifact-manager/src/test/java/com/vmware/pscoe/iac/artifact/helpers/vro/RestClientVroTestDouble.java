@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.helpers.vro;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,8 @@ package com.vmware.pscoe.iac.artifact.helpers.vro;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.helpers.vro;
+
 import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
 
@@ -26,13 +26,13 @@ public class RestClientVroTestDouble extends RestClientVro {
 		super(configuration, restTemplate);
 	}
 
-    @Override
+	@Override
 	public Properties getInputParametersTypes(String workflowId){
 		return super.getInputParametersTypes(workflowId);
 	}
 
-    @Override
-    public String buildParametersJson(Properties params, Properties inputParametersTypes) {
+	@Override
+	public String buildParametersJson(Properties params, Properties inputParametersTypes) {
 		return super.buildParametersJson(params, inputParametersTypes);
 	}
 }

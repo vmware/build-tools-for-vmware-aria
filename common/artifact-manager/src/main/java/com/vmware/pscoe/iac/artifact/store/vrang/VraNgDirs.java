@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,20 +12,22 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
+
 
 public final class VraNgDirs {
 	/**
 	 * entitlements folder name.
 	 */
-    public static final String DIR_ENTITLEMENTS = "entitlements";
+	public static final String DIR_ENTITLEMENTS = "entitlements";
 	/**
 	 * property-groups folder name.
 	 */
-    public static final String DIR_PROPERTY_GROUPS = "property-groups";
+	public static final String DIR_PROPERTY_GROUPS = "property-groups";
 	/**
 	 * catalog-items folder name.
 	 */
-    public static final String DIR_CATALOG_ITEMS = "catalog-items";
+	public static final String DIR_CATALOG_ITEMS = "catalog-items";
 	/**
 	 * policies folder name.
 	 */
@@ -35,39 +35,39 @@ public final class VraNgDirs {
 	/**
 	 * content-sources folder name.
 	 */
-    public static final String DIR_CONTENT_SOURCES = "content-sources";
+	public static final String DIR_CONTENT_SOURCES = "content-sources";
 	/**
 	 * blueprints folder name.
 	 */
-    public static final String DIR_BLUEPRINTS = "blueprints";
+	public static final String DIR_BLUEPRINTS = "blueprints";
 	/**
 	 * subscriptions folder name.
 	 */
-    public static final String DIR_SUBSCRIPTIONS = "subscriptions";
+	public static final String DIR_SUBSCRIPTIONS = "subscriptions";
 	/**
 	 * regions folder name.
 	 */
-    public static final String DIR_REGIONS = "regions";
+	public static final String DIR_REGIONS = "regions";
 	/**
 	 * flavor-mappings folder name.
 	 */
-    public static final String DIR_FLAVOR_MAPPINGS = "flavor-mappings";
+	public static final String DIR_FLAVOR_MAPPINGS = "flavor-mappings";
 	/**
 	 * image-mappings folder name.
 	 */
-    public static final String DIR_IMAGE_MAPPINGS = "image-mappings";
+	public static final String DIR_IMAGE_MAPPINGS = "image-mappings";
 	/**
 	 * storage-profiles folder name.
 	 */
-    public static final String DIR_STORAGE_PROFILES = "storage-profiles";
+	public static final String DIR_STORAGE_PROFILES = "storage-profiles";
 	/**
 	 * resource-actions folder name.
 	 */
-    public static final String DIR_RESOURCE_ACTIONS = "resource-actions";
+	public static final String DIR_RESOURCE_ACTIONS = "resource-actions";
 	/**
 	 * custom-resources folder name.
 	 */
-    public static final String DIR_CUSTOM_RESOURCES = "custom-resources";
+	public static final String DIR_CUSTOM_RESOURCES = "custom-resources";
 
 	/**
 	 * Hiding constructor of utility class.

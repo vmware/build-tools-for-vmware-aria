@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.helpers.stubs;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.helpers.stubs;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -29,7 +28,7 @@ import java.util.Map;
 
 public class AbxActionMockBuilder {
 
-    private static final String DESCRIPTION = "Find Tags Action";
+	private static final String DESCRIPTION = "Find Tags Action";
 	private static final String RUNTIME = "python";
 	private static final String NAME = "nic.abx";	
 	private static final String ENTRYPOINT = "handler.handler";
@@ -38,9 +37,9 @@ public class AbxActionMockBuilder {
 	public static final Integer TIMEOUT = 350;
 	private static final Boolean SHARED = true;
 
-    public static AbxAction buildAbxAction() throws IOException {
+	public static AbxAction buildAbxAction() throws IOException {
 
-        AbxAction abxAction = Mockito.mock(AbxAction.class);
+		AbxAction abxAction = Mockito.mock(AbxAction.class);
 		abxAction.description = DESCRIPTION;
 
 		abxAction.platform = new Platform();
@@ -55,9 +54,9 @@ public class AbxActionMockBuilder {
 		when(abxAction.getBundleAsB64()).thenReturn(null);		
 
 		return abxAction;
-    }
+	}
 
-    public static Map<String, Object> buildAbxActionMap() {
+	public static Map<String, Object> buildAbxActionMap() {
 
 		Map<String, Object> result = new LinkedHashMap<>();
 		result.put("actionType", "SCRIPT");
@@ -72,5 +71,5 @@ public class AbxActionMockBuilder {
 
 		return result;
 	}
-    
+	
 }

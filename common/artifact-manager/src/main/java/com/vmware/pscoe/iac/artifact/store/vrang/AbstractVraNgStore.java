@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
@@ -111,29 +110,29 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 	protected abstract void exportStoreContent( List<String> itemNames );
 
 
-    protected String getVroTargetIntegrationEndpointLink() throws ConfigurationException {
-        String integrationName = this.config.getVroIntegration();
-        VraNgIntegration targetIntegration = this.restClient.getVraWorkflowIntegration(integrationName);
-        if (targetIntegration != null && !StringUtils.isEmpty(targetIntegration.getName())) {
-            return targetIntegration.getEndpointConfigurationLink();
-        } else {
-            // fetch the default vra integration
-            VraNgIntegration defaultIntegration = VraNgIntegrationUtils.getInstance()
-                    .getDefaultVraIntegration(this.restClient);
+	protected String getVroTargetIntegrationEndpointLink() throws ConfigurationException {
+		String integrationName = this.config.getVroIntegration();
+		VraNgIntegration targetIntegration = this.restClient.getVraWorkflowIntegration(integrationName);
+		if (targetIntegration != null && !StringUtils.isEmpty(targetIntegration.getName())) {
+			return targetIntegration.getEndpointConfigurationLink();
+		} else {
+			// fetch the default vra integration
+			VraNgIntegration defaultIntegration = VraNgIntegrationUtils.getInstance()
+					.getDefaultVraIntegration(this.restClient);
 
-            if (!StringUtils.isEmpty(defaultIntegration.getName())) {
-                logger.warn("Unable to find integration '{}' on host '{}' setting default integration to '{}'",
-                        integrationName, this.config.getHost(), defaultIntegration.getName());
-                return defaultIntegration.getEndpointConfigurationLink();
-            } else {
-                // After try for search for vRO integration if we can't find the right one we
-                // interrupt the process
-                throw new ConfigurationException(String.format(
-                        "Unable to find integration '%s' on host '%s' and the default integration '%s' is not configured on it",
-                        integrationName, this.config.getHost(), VraNgIntegrationUtils.DEFAULT_INTEGRATION_NAME));
-            }
-        }
-    }
+			if (!StringUtils.isEmpty(defaultIntegration.getName())) {
+				logger.warn("Unable to find integration '{}' on host '{}' setting default integration to '{}'",
+						integrationName, this.config.getHost(), defaultIntegration.getName());
+				return defaultIntegration.getEndpointConfigurationLink();
+			} else {
+				// After try for search for vRO integration if we can't find the right one we
+				// interrupt the process
+				throw new ConfigurationException(String.format(
+						"Unable to find integration '%s' on host '%s' and the default integration '%s' is not configured on it",
+						integrationName, this.config.getHost(), VraNgIntegrationUtils.DEFAULT_INTEGRATION_NAME));
+			}
+		}
+	}
 	protected File[] filterBasedOnConfiguration(File itemFolder, FilenameFilter filter) {
 		return itemFolder.listFiles(filter);
 	}

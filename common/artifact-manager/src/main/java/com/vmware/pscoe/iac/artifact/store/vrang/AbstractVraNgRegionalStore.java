@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
@@ -32,12 +31,12 @@ import java.util.stream.Collectors;
  * When nothing (null) is given, all items from the store are exported
  */
 public abstract class AbstractVraNgRegionalStore {
-    protected RestClientVraNg restClient;
-    protected Package vraNgPackage;
-    protected VraNgPackageDescriptor vraNgPackageDescriptor;
-    protected Logger logger;
+	protected RestClientVraNg restClient;
+	protected Package vraNgPackage;
+	protected VraNgPackageDescriptor vraNgPackageDescriptor;
+	protected Logger logger;
 
-    private void ini(
+	private void ini(
 		RestClientVraNg restClient,
 		Package vraNgPackage,
 		VraNgPackageDescriptor vraNgPackageDescriptor
