@@ -211,38 +211,6 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 		return this;
 	};
 
-	Export.prototype.from = function (moduleName: string, ...specifiers: (string | [string, string])[]) {
-		let importNames: string[] = [];
-		let exportNames: string[] = [];
-
-		specifiers.forEach(specifier => {
-			if (Array.isArray(specifier)) {
-				exportNames.push(specifier[0]);
-				importNames.push(specifier[1]);
-			}
-			else {
-				exportNames.push(specifier);
-				importNames.push(specifier);
-			}
-		});
-
-		let values = loadActionOrModule(moduleName);
-
-		for (let i = 0; i < importNames.length; i++) {
-			let importName = importNames[i];
-			if (importName == "*") {
-				for (let propName in values) {
-					this.elements[propName] = values && values[propName];
-				}
-			}
-			else {
-				this.elements[exportNames[i]] = values && values[importName];
-			}
-		}
-
-		return this;
-	};
-
 	Export.prototype.build = function () {
 		return this.elements;
 	};
