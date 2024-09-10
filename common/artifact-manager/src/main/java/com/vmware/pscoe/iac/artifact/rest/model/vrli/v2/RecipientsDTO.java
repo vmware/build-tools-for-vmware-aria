@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest.model.vrli.v2;
-
 /*-
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest.model.vrli.v2;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.model.vrli.v2;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

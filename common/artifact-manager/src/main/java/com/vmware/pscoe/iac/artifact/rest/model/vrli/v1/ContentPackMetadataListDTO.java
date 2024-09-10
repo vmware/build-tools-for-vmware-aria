@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest.model.vrli.v1;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest.model.vrli.v1;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.model.vrli.v1;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -31,31 +30,31 @@ import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackDTO;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "contentPackMetadataList" })
 public class ContentPackMetadataListDTO implements Serializable {
-    private static final long serialVersionUID = 7183649262190355333L;
+	private static final long serialVersionUID = 7183649262190355333L;
 
-    @JsonProperty("contentPackMetadataList")
-    private List<ContentPackDTO> contentPackMetadataList;
+	@JsonProperty("contentPackMetadataList")
+	private List<ContentPackDTO> contentPackMetadataList;
 
-    @JsonIgnore
-    private transient Map<String, Object> additionalProperties = new HashMap<>();
+	@JsonIgnore
+	private transient Map<String, Object> additionalProperties = new HashMap<>();
 
-    @JsonProperty("contentPackMetadataList")
-    public List<ContentPackDTO> getContentPackMetadataList() {
-        return contentPackMetadataList;
-    }
+	@JsonProperty("contentPackMetadataList")
+	public List<ContentPackDTO> getContentPackMetadataList() {
+		return contentPackMetadataList;
+	}
 
-    @JsonProperty("contentPackMetadataList")
-    public void setContentPackMetadataList(List<ContentPackDTO> contentPackMetadataList) {
-        this.contentPackMetadataList = contentPackMetadataList;
-    }
+	@JsonProperty("contentPackMetadataList")
+	public void setContentPackMetadataList(List<ContentPackDTO> contentPackMetadataList) {
+		this.contentPackMetadataList = contentPackMetadataList;
+	}
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
+	@JsonAnyGetter
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
 
-    @JsonAnySetter
-    public void setAdditionalProperties(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+	@JsonAnySetter
+	public void setAdditionalProperties(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
 }

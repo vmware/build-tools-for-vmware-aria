@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -56,30 +55,30 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 
 public final class RestClientFactory {
-  	/**
-     * IGNORE_SSL_CERTIFICATE_VERIFICATION: Indicates whether to ignore SSL certificate verification.
-     */
+	/**
+	 * IGNORE_SSL_CERTIFICATE_VERIFICATION: Indicates whether to ignore SSL certificate verification.
+	 */
 	public static final String IGNORE_SSL_CERTIFICATE_VERIFICATION = "vrealize.ssl.ignore.certificate";
 
-    /**
-     * IGNORE_SSL_HOSTNAME_VERIFICATION: Indicates whether to ignore SSL hostname verification.
-     */
+	/**
+	 * IGNORE_SSL_HOSTNAME_VERIFICATION: Indicates whether to ignore SSL hostname verification.
+	 */
 	public static final String IGNORE_SSL_HOSTNAME_VERIFICATION = "vrealize.ssl.ignore.hostname";
 
-    /**
-     * CONNECTION_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to establish a connection.
-     */
+	/**
+	 * CONNECTION_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to establish a connection.
+	 */
 	public static final String CONNECTION_TIMEOUT = "vrealize.connection.timeout";
 
-    /**
-     * SOCKET_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to wait for a response from the server.
-     */
+	/**
+	 * SOCKET_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to wait for a response from the server.
+	 */
 	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
 
 	/**
 	* This logger is used to log messages and exceptions related to the creation and usage of REST clients.
  	*/
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientFactory.class);
 
 	/**
 	 * The number of milliseconds in a second.
@@ -96,49 +95,49 @@ public final class RestClientFactory {
 	 */
 	private static final Integer STATUS_CODE_2XX_RANGE_END = 299;
 
-    private RestClientFactory() {
-        throw new IllegalStateException("Cannot instantiate the factory class: RestClientFactory");
-    }
+	private RestClientFactory() {
+		throw new IllegalStateException("Cannot instantiate the factory class: RestClientFactory");
+	}
 
-    private static boolean ignoreCertificate() {
-        return Boolean.parseBoolean(System.getProperty(IGNORE_SSL_CERTIFICATE_VERIFICATION));
-    }
+	private static boolean ignoreCertificate() {
+		return Boolean.parseBoolean(System.getProperty(IGNORE_SSL_CERTIFICATE_VERIFICATION));
+	}
 
-    private static boolean ignoreHostname() {
-        return Boolean.parseBoolean(System.getProperty(IGNORE_SSL_HOSTNAME_VERIFICATION));
-    }
+	private static boolean ignoreHostname() {
+		return Boolean.parseBoolean(System.getProperty(IGNORE_SSL_HOSTNAME_VERIFICATION));
+	}
 
-    private static Integer getConnectionTimeout() {
-        Integer retVal = parseTimeoutValue(System.getProperty(CONNECTION_TIMEOUT), TimeoutType.CONNECTION);
-        if (retVal == null) {
-            return Configuration.DEFAULT_CONNECTION_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
-        }
-        return retVal;
-    }
+	private static Integer getConnectionTimeout() {
+		Integer retVal = parseTimeoutValue(System.getProperty(CONNECTION_TIMEOUT), TimeoutType.CONNECTION);
+		if (retVal == null) {
+			return Configuration.DEFAULT_CONNECTION_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
+		}
+		return retVal;
+	}
 
-    private static Integer getSocketTimeout() {
-        Integer retVal = parseTimeoutValue(System.getProperty(SOCKET_TIMEOUT), TimeoutType.SOCKET);
-        if (retVal == null) {
-            return Configuration.DEFAULT_SOCKET_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
-        }
-        return retVal;
-    }
+	private static Integer getSocketTimeout() {
+		Integer retVal = parseTimeoutValue(System.getProperty(SOCKET_TIMEOUT), TimeoutType.SOCKET);
+		if (retVal == null) {
+			return Configuration.DEFAULT_SOCKET_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
+		}
+		return retVal;
+	}
 
-    private static Integer parseTimeoutValue(String value, TimeoutType type) {
-        if (StringUtils.isEmpty(value)) {
-            return null;
-        }
-        try {
-            return Integer.parseInt(value) * TO_MILISECONDS_MULTIPLIER;
-        } catch (NumberFormatException e) {
-            LOGGER.warn("Unable to parse {} timeout value '{}', error: '{}'", type, value, e.getMessage());
-        }
-        return null;
-    }
+	private static Integer parseTimeoutValue(String value, TimeoutType type) {
+		if (StringUtils.isEmpty(value)) {
+			return null;
+		}
+		try {
+			return Integer.parseInt(value) * TO_MILISECONDS_MULTIPLIER;
+		} catch (NumberFormatException e) {
+			LOGGER.warn("Unable to parse {} timeout value '{}', error: '{}'", type, value, e.getMessage());
+		}
+		return null;
+	}
 
-    private static RestTemplate getInsecureRestTemplate() {
-        return RestClientFactory.getInsecureRestTemplate(null);
-    }
+	private static RestTemplate getInsecureRestTemplate() {
+		return RestClientFactory.getInsecureRestTemplate(null);
+	}
 
 	private static RestTemplate getInsecureRestTemplate(HttpHost proxy) {
 		SSLContext sslContext;
@@ -159,20 +158,20 @@ public final class RestClientFactory {
 		}
 
 		if (proxy != null) {
-		    httpClientBuilder.setProxy(proxy);
-		    LOGGER.info("Will use proxy {}", proxy.toURI());
-        }
+			httpClientBuilder.setProxy(proxy);
+			LOGGER.info("Will use proxy {}", proxy.toURI());
+		}
 
-        RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(getConnectionTimeout())
-                .setSocketTimeout(getSocketTimeout())
-                .build();
-        httpClientBuilder.setDefaultRequestConfig(config);
+		RequestConfig config = RequestConfig.custom()
+				.setConnectTimeout(getConnectionTimeout())
+				.setSocketTimeout(getSocketTimeout())
+				.build();
+		httpClientBuilder.setDefaultRequestConfig(config);
 
-        CloseableHttpClient httpClient = httpClientBuilder.build();
-        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
-        restTemplate.getMessageConverters()
-            .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+		CloseableHttpClient httpClient = httpClientBuilder.build();
+		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
+		restTemplate.getMessageConverters()
+			.add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 		restTemplate.setErrorHandler(new ResponseErrorHandler() {
 
 			@Override
@@ -180,24 +179,24 @@ public final class RestClientFactory {
 				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN || response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
 			}
 
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-                StringBuilder messageBuilder = new StringBuilder();
-                HttpHeaders headers = response.getHeaders();
-                messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText()).append("\n");
-                messageBuilder.append(headers.keySet().stream().map(
-                    (String k) -> headers.get(k).stream().map(
-                        h -> k + ": " + h
-                    ).collect(Collectors.joining("\n"))
-                ).collect(Collectors.joining("\n")));
-                if (response.getBody() != null && ! response.getBody().equals("")) {
-                    messageBuilder.append("\n\n");
-                    String message = org.apache.commons.io.IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);
-                    messageBuilder.append(message);
-                }
+			@Override
+			public void handleError(ClientHttpResponse response) throws IOException {
+				StringBuilder messageBuilder = new StringBuilder();
+				HttpHeaders headers = response.getHeaders();
+				messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText()).append("\n");
+				messageBuilder.append(headers.keySet().stream().map(
+					(String k) -> headers.get(k).stream().map(
+						h -> k + ": " + h
+					).collect(Collectors.joining("\n"))
+				).collect(Collectors.joining("\n")));
+				if (response.getBody() != null && ! response.getBody().equals("")) {
+					messageBuilder.append("\n\n");
+					String message = org.apache.commons.io.IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);
+					messageBuilder.append(message);
+				}
 
-                throw new HttpClientErrorException(response.getStatusCode(), "Invalid/Unreachable FQDN or IP address: " + messageBuilder.toString());
-            }
+				throw new HttpClientErrorException(response.getStatusCode(), "Invalid/Unreachable FQDN or IP address: " + messageBuilder.toString());
+			}
 
 		});
 
@@ -215,7 +214,7 @@ public final class RestClientFactory {
 	public static RestClientVro getClientVroNg(ConfigurationVroNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
-        RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVro(configuration, restTemplate);
@@ -233,7 +232,7 @@ public final class RestClientFactory {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		RestClientRequestInterceptor<ConfigurationVro> interceptor;
 
-        LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
+		LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
 		switch (configuration.getAuth()) {
 		case VRA:
 			interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
@@ -261,18 +260,18 @@ public final class RestClientFactory {
 	public static RestClientVrops getClientVrops(ConfigurationVrops configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
-        RestClientRequestInterceptor<ConfigurationVrops> interceptor;
-        switch (configuration.getAuthProvider()) {
-            case BASIC:
-                interceptor = new RestClientVropsBasicAuthInterceptor(configuration, restTemplate);
-                break;
-            case AUTH_N:
-                interceptor = new RestClientVropsAuthNInterceptor(configuration, restTemplate);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported authentication provider, supported providers: BASIC, AUTH_N");
-        }
-        restTemplate.getInterceptors().add(interceptor);
+		RestClientRequestInterceptor<ConfigurationVrops> interceptor;
+		switch (configuration.getAuthProvider()) {
+			case BASIC:
+				interceptor = new RestClientVropsBasicAuthInterceptor(configuration, restTemplate);
+				break;
+			case AUTH_N:
+				interceptor = new RestClientVropsAuthNInterceptor(configuration, restTemplate);
+				break;
+			default:
+				throw new UnsupportedOperationException("Unsupported authentication provider, supported providers: BASIC, AUTH_N");
+		}
+		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVrops(configuration, restTemplate);
 	}
@@ -290,8 +289,8 @@ public final class RestClientFactory {
 
 		// Default Authentication is Basic
 		// When other authentication mechanisms are introduced and interceptor
-        // has to be instantiated based on the configuration property
-        RestClientRequestInterceptor<ConfigurationVra> interceptor = new RestClientVraCafeAuthNInterceptor(configuration, restTemplate);
+		// has to be instantiated based on the configuration property
+		RestClientRequestInterceptor<ConfigurationVra> interceptor = new RestClientVraCafeAuthNInterceptor(configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVra(configuration, restTemplate);
@@ -308,7 +307,7 @@ public final class RestClientFactory {
 	public static RestClientVraNg getClientVraNg(ConfigurationVraNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 
-        RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVraNg(configuration, restTemplate);
@@ -331,7 +330,7 @@ public final class RestClientFactory {
 		// vCD API version is passed to Content-Type headers.
 		// No authentication is required to obtain API version
 		String apiVersion = versionRestClient.getVersion();
-        RestClientRequestInterceptor<ConfigurationVcd> interceptor = new RestClientVcdBasicAuthInterceptor(configuration, restTemplate, apiVersion);
+		RestClientRequestInterceptor<ConfigurationVcd> interceptor = new RestClientVcdBasicAuthInterceptor(configuration, restTemplate, apiVersion);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVcd(configuration, restTemplate);
@@ -348,7 +347,7 @@ public final class RestClientFactory {
 	public static RestClientVrliV1 getClientVrliV1(ConfigurationVrli configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
-        RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVrliV1(configuration, restTemplate);
@@ -375,17 +374,17 @@ public final class RestClientFactory {
  * An enumeration of the different types of timeouts that can be configured for a connection.
  */
 public enum TimeoutType {
-    /**
-     * The connection timeout type.
-     * This represents the maximum time in milliseconds to wait for a connection to be established before giving up.
-     */
-    CONNECTION,
+	/**
+	 * The connection timeout type.
+	 * This represents the maximum time in milliseconds to wait for a connection to be established before giving up.
+	 */
+	CONNECTION,
 
-    /**
-     * The socket timeout type.
-     * This represents the maximum time in milliseconds to wait for data to be received after a connection has been established before giving up.
-     */
-    SOCKET
+	/**
+	 * The socket timeout type.
+	 * This represents the maximum time in milliseconds to wait for data to be received after a connection has been established before giving up.
+	 */
+	SOCKET
 }
 	
 	/**

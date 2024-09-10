@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang.objectmapping;
-
 /*
  * #%L
  * artifact-manager
@@ -14,46 +12,47 @@ package com.vmware.pscoe.iac.artifact.model.vrang.objectmapping;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang.objectmapping;
 
 import java.util.List;
 
 public class VraNgCloudRegionProfile {
 
-    private String cloudAccountId;
-    private String regionId;
-    private String regionType;
-    private List<String> tags;
+	private String cloudAccountId;
+	private String regionId;
+	private String regionType;
+	private List<String> tags;
 
-    public String getCloudAccountId() {
-        return cloudAccountId;
-    }
+	public String getCloudAccountId() {
+		return cloudAccountId;
+	}
 
-    public List<String> getTags() {
-        return tags;
-    }
+	public List<String> getTags() {
+		return tags;
+	}
 
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
 
-    public String getRegionId() {
-        return regionId;
-    }
+	public String getRegionId() {
+		return regionId;
+	}
 
-    public void setRegionId(String regionId) {
-        this.regionId = regionId;
-    }
+	public void setRegionId(String regionId) {
+		this.regionId = regionId;
+	}
 
-    public String getRegionType() {
-        return regionType;
-    }
+	public String getRegionType() {
+		return regionType;
+	}
 
-    public void setRegionType(String regionType) {
-        this.regionType = regionType;
-    }
+	public void setRegionType(String regionType) {
+		this.regionType = regionType;
+	}
 
-    public void setCloudAccountId(String cloudAccountId) {
-        this.cloudAccountId = cloudAccountId;
-    }
+	public void setCloudAccountId(String cloudAccountId) {
+		this.cloudAccountId = cloudAccountId;
+	}
 
 }
