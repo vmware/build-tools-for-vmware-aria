@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,33 +12,34 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 public class VraNgFlavorMapping {
 
-    private final String name;
-    private final String json;
+	private final String name;
+	private final String json;
 
-    public VraNgFlavorMapping(String name, String json) {
-        this.name = name;
-        this.json = json;
-    }
+	public VraNgFlavorMapping(String name, String json) {
+		this.name = name;
+		this.json = json;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public String getJson() {
-        return this.json;
-    }
+	public String getJson() {
+		return this.json;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
 
-        VraNgFlavorMapping other = (VraNgFlavorMapping) obj;
-        return this.name.equals(other.getName());
-    }
+		VraNgFlavorMapping other = (VraNgFlavorMapping) obj;
+		return this.name.equals(other.getName());
+	}
 
 }

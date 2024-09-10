@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact;
 
 import java.io.File;
 import java.util.List;
@@ -43,12 +42,12 @@ public interface PackageStore<T extends PackageDescriptor> {
 	/**
 	 * The package to import.
 	 */
-    String PACKAGE_IMPORT = "Package | IMPORT | %s";
+	String PACKAGE_IMPORT = "Package | IMPORT | %s";
 
 	/**
 	 * The package to export.
 	 */
-    String PACKAGE_EXPORT = "Package | EXPORT | %s";
+	String PACKAGE_EXPORT = "Package | EXPORT | %s";
 
 	/**
 	 * The package to merge.
@@ -59,7 +58,7 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * Download the packages.
 	 * @return the downloaded packages
 	 */
-    List<Package> getPackages();
+	List<Package> getPackages();
 
 	/**
 	 * Exports all packages.
@@ -67,7 +66,7 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * @param dryrun whether it should be dry run
 	 * @return the exported packages
 	 */
-    List<Package> exportAllPackages(List<Package> pkg, boolean dryrun);
+	List<Package> exportAllPackages(List<Package> pkg, boolean dryrun);
 
 	/**
 	 * Imports all packages.
@@ -96,7 +95,7 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * @param dryrun whether it should be dry run
 	 * @return the deleted package
 	 */
-    List<Package> deletePackage(Package pkg, boolean lastVersion, boolean oldVersions,  boolean dryrun);
+	List<Package> deletePackage(Package pkg, boolean lastVersion, boolean oldVersions,  boolean dryrun);
 
 	/**
 	 * Deletes all the packages.
@@ -106,7 +105,7 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * @param dryrun whether it should be dry run
 	 * @return the deleted packages
 	 */
-    List<Package> deleteAllPackages(List<Package> vroPackages, boolean lastVersion, boolean oldVersions, boolean dryrun);
+	List<Package> deleteAllPackages(List<Package> vroPackages, boolean lastVersion, boolean oldVersions, boolean dryrun);
 
 	/**
 	 * Exports a package.
@@ -115,7 +114,7 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * @param dryrun whether it should be dry run
 	 * @return the exported package
 	 */
-    Package exportPackage(Package pkg, T packageDescriptor, boolean dryrun);
+	Package exportPackage(Package pkg, T packageDescriptor, boolean dryrun);
 
 	/**
 	 * Exports a package.
@@ -123,7 +122,7 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * @param dryrun whether it should be a dry run
 	 * @return the exported package
 	 */
-    Package exportPackage(Package pkg, boolean dryrun);
+	Package exportPackage(Package pkg, boolean dryrun);
 
 	/**
 	 * Exports a package.
@@ -132,7 +131,7 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * @param dryrun whether it should be dry run
 	 * @return the exported package
 	 */
-    Package exportPackage(Package pkg, File exportDescriptor, boolean dryrun);
+	Package exportPackage(Package pkg, File exportDescriptor, boolean dryrun);
 
 	/**
 	 * Imports a package.
@@ -141,11 +140,11 @@ public interface PackageStore<T extends PackageDescriptor> {
 	 * @param mergePackages whether to merge the packages
 	 * @return the imported package
 	 */
-    Package importPackage(Package pkg, boolean dryrun, boolean mergePackages);
+	Package importPackage(Package pkg, boolean dryrun, boolean mergePackages);
 
 	/**
 	 * Gets product version.
 	 * @return the version of the product
 	 */
-    Version getProductVersion();
+	Version getProductVersion();
 }

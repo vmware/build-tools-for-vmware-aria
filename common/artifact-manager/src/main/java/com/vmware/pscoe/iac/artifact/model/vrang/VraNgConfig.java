@@ -1,6 +1,4 @@
 
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -15,6 +13,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,18 +26,18 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "workflows" })
 public class VraNgConfig implements Serializable {
-    private static final long serialVersionUID = -346336798765081423L;
+	private static final long serialVersionUID = -346336798765081423L;
 
-    @JsonProperty("workflows")
-    private List<VraNgWorkflow> workflows = new ArrayList<>();
+	@JsonProperty("workflows")
+	private List<VraNgWorkflow> workflows = new ArrayList<>();
 
-    @JsonProperty("workflows")
-    public List<VraNgWorkflow> getWorkflows() {
-        return workflows;
-    }
+	@JsonProperty("workflows")
+	public List<VraNgWorkflow> getWorkflows() {
+		return workflows;
+	}
 
-    @JsonProperty("workflows")
-    public void setWorkflows(List<VraNgWorkflow> workflows) {
-        this.workflows = workflows;
-    }
+	@JsonProperty("workflows")
+	public void setWorkflows(List<VraNgWorkflow> workflows) {
+		this.workflows = workflows;
+	}
 }

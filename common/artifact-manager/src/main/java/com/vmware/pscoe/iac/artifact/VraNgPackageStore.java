@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact;
-
 /*
  * #%L
  * artifact-manager
@@ -18,6 +16,7 @@ package com.vmware.pscoe.iac.artifact;
  * LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact;
 
 import java.io.File;
 import java.io.IOException;
