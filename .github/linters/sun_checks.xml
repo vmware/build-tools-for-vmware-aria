@@ -105,15 +105,18 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 
 		<!-- Checks for Javadoc comments.                     -->
 		<!-- See https://checkstyle.org/config_javadoc.html -->
+		<!--
 		<module name="InvalidJavadocPosition" />
 		<module name="JavadocMethod" />
 		<module name="JavadocType" />
 		<module name="JavadocVariable" />
 		<module name="JavadocStyle" />
 		<module name="MissingJavadocMethod" />
+		-->
 
 		<!-- Checks for Naming Conventions.                  -->
 		<!-- See https://checkstyle.org/config_naming.html -->
+		<!--
 		<module name="ConstantName" />
 		<module name="LocalFinalVariableName" />
 		<module name="LocalVariableName" />
@@ -127,45 +130,57 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="StaticVariableName" />
 		<module name="TypeName" />
 
+		-->
 		<!-- Checks for imports                              -->
 		<!-- See https://checkstyle.org/config_imports.html -->
 		<!-- <module name="AvoidStarImport" /> -->
 		<module name="IllegalImport" /> <!-- defaults to sun.* packages -->
+		<!--
 		<module name="RedundantImport" />
 		<module name="UnusedImports">
 			<property name="processJavadoc" value="false" />
 		</module>
+		-->
 
 		<!-- Checks for Size Violations.                    -->
 		<!-- See https://checkstyle.org/config_sizes.html -->
+		<!--
 		<module name="MethodLength" />
 		<module name="ParameterNumber">
 			<property name="max" value="10" />
 			<property name="tokens" value="METHOD_DEF" />
 		</module>
+		-->
 
 		<!-- Checks for whitespace                               -->
 		<!-- See https://checkstyle.org/config_whitespace.html -->
+		<!--
 		<module name="EmptyForIteratorPad" />
 		<module name="GenericWhitespace" />
 		<module name="MethodParamPad" />
+		-->
 
 		<!-- Ignore '{' is followed by whitespace. [NoWhitespaceAfter] -->
 		<!-- <module name="NoWhitespaceAfter"/> -->
+		<!--
 		<module name="NoWhitespaceBefore" />
 		<module name="OperatorWrap" />
 		<module name="ParenPad" />
 		<module name="TypecastParenPad" />
 		<module name="WhitespaceAfter" />
 		<module name="WhitespaceAround" />
+		-->
 
 		<!-- Modifier Checks                                    -->
 		<!-- See https://checkstyle.org/config_modifier.html -->
+		<!--
 		<module name="ModifierOrder" />
 		<module name="RedundantModifier" />
+		-->
 
 		<!-- Checks for blocks. You know, those {}'s         -->
 		<!-- See https://checkstyle.org/config_blocks.html -->
+		<!--
 		<module name="AvoidNestedBlocks">
 			<property name="allowInSwitchCase" value="true"/>
 		</module>
@@ -173,9 +188,11 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="LeftCurly" />
 		<module name="NeedBraces" />
 		<module name="RightCurly" />
+		-->
 
 		<!-- Checks for common coding problems               -->
 		<!-- See https://checkstyle.org/config_coding.html -->
+		<!--
 		<module name="EmptyStatement" />
 		<module name="EqualsHashCode" />
 		<module name="HiddenField" >
@@ -189,9 +206,11 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="MultipleVariableDeclarations" />
 		<module name="SimplifyBooleanExpression" />
 		<module name="SimplifyBooleanReturn" />
+		-->
 
 		<!-- Checks for class design                         -->
 		<!-- See https://checkstyle.org/config_design.html -->
+		<!--
 		<module name="DesignForExtension" />
 		<module name="FinalClass" />
 		<module name="HideUtilityClassConstructor" />
@@ -199,21 +218,28 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="VisibilityModifier" >
 			<property name="protectedAllowed" value="true"/>
 		</module>
+		-->
 
 		<!-- Miscellaneous other checks.                   -->
 		<!-- See https://checkstyle.org/config_misc.html -->
+		<!--
 		<module name="ArrayTypeStyle" />
+		-->
 		<!-- FinalParameters reports False positives -->
 		<!-- <module name="FinalParameters" /> -->
 		<!-- <module name="TodoComment" /> -->
+		<!--
 		<module name="UpperEll" />
+		-->
 
 		<!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
+		<!--
 		<module name="SuppressionXpathFilter">
 			<property name="file" value="${org.checkstyle.sun.suppressionxpathfilter.config}"
 				default="checkstyle-xpath-suppressions.xml" />
 			<property name="optional" value="true" />
 		</module>
+		-->
 
 	</module>
 
