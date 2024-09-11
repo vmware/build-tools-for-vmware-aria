@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * vcd-ng-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,15 +50,15 @@ public class VcdNgPackageMojo extends AbstractMojo {
 		
 		Path zipBundle = Paths.get(directory.getAbsolutePath(), "bundle", "plugin.zip");
 
-        String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
+		String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
 		
-        ArrayList<String> nodeBuildArgs = new ArrayList<>();
-        nodeBuildArgs.add(npmExec);
-        nodeBuildArgs.add("run");
-        nodeBuildArgs.add("build");
-        if (!getLog().isDebugEnabled()) {
-            nodeBuildArgs.add("--silent");
-        }
+		ArrayList<String> nodeBuildArgs = new ArrayList<>();
+		nodeBuildArgs.add(npmExec);
+		nodeBuildArgs.add("run");
+		nodeBuildArgs.add("build");
+		if (!getLog().isDebugEnabled()) {
+			nodeBuildArgs.add("--silent");
+		}
 
 		new ProcessExecutor()
 			.name("Packaging project")
@@ -68,17 +67,17 @@ public class VcdNgPackageMojo extends AbstractMojo {
 			.execute(getLog());
 
 		if(!java.nio.file.Files.exists(zipBundle)) {
-        	throw new RuntimeException(String.format(
+			throw new RuntimeException(String.format(
 				"Unable to find packaged files %s. Please check npm output with -X option.", 
 				zipBundle.toString()));
-        }
+		}
 		
-        try {
-            Files.move(zipBundle, pkgFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            project.getArtifact().setFile(pkgFile);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Could not package project.", e);
-        } 
+		try {
+			Files.move(zipBundle, pkgFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			project.getArtifact().setFile(pkgFile);
+		} catch (IOException e) {
+			throw new MojoExecutionException("Could not package project.", e);
+		} 
 	}
 
 }

@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.configuration;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.configuration;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.configuration;
 
 import java.util.Properties;
 
@@ -25,42 +24,42 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public final class ConfigurationVra extends ConfigurationWithRefreshToken {
 
-    // Important - when modify properties refer to comments in @Configuration
+	// Important - when modify properties refer to comments in @Configuration
 	public static final String TENANT = "tenant";
 
 	public static final String REFRESH_TOKEN = "refresh.token";
 
 	private final Logger logger = LoggerFactory.getLogger(Configuration.class);;
 
-    /**
-     * vRA Package Import content conflict resolution mode
-     */
+	/**
+	 * vRA Package Import content conflict resolution mode
+	 */
 	public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
 
-    private ConfigurationVra(Properties props) {
-        super(PackageType.VRA, props);
-    }
+	private ConfigurationVra(Properties props) {
+		super(PackageType.VRA, props);
+	}
 
-    public String getPackageImportOverwriteMode() {
-        return this.properties.getProperty(PACKAGE_IMPORT_OVERWRITE_MODE, "SKIP,OVERWRITE");
-    }
+	public String getPackageImportOverwriteMode() {
+		return this.properties.getProperty(PACKAGE_IMPORT_OVERWRITE_MODE, "SKIP,OVERWRITE");
+	}
 
-    public String getTenant() {
-        return this.properties.getProperty(TENANT);
-    }
+	public String getTenant() {
+		return this.properties.getProperty(TENANT);
+	}
 
 	@Override
 	public String getRefreshToken() {
 		return this.properties.getProperty(REFRESH_TOKEN);
 	}
 
-    @Override
-    public String getUsername() {
-        String username = this.properties.getProperty(USERNAME);
-        return username;
-    }
+	@Override
+	public String getUsername() {
+		String username = this.properties.getProperty(USERNAME);
+		return username;
+	}
 
-    @Override
+	@Override
 	public void validate(boolean domainOptional) throws ConfigurationException {
 		logger.info("Checking if exists refresh token");
 		boolean useRefreshTokenForAuth = !StringUtils.isEmpty(this.getRefreshToken());
@@ -83,9 +82,9 @@ public final class ConfigurationVra extends ConfigurationWithRefreshToken {
 		}
 	}
 
-    public static ConfigurationVra fromProperties(Properties props) throws ConfigurationException {
-    	ConfigurationVra config = new ConfigurationVra(props);
-    	config.validate(false);
-    	return config;
-    }
+	public static ConfigurationVra fromProperties(Properties props) throws ConfigurationException {
+		ConfigurationVra config = new ConfigurationVra(props);
+		config.validate(false);
+		return config;
+	}
 }

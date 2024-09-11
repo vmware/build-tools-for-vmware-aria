@@ -1,6 +1,4 @@
 
-package com.vmware.pscoe.iac.artifact.rest.model.vrli.v2;
-
 /*
  * #%L
  * artifact-manager
@@ -15,6 +13,7 @@ package com.vmware.pscoe.iac.artifact.rest.model.vrli.v2;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.model.vrli.v2;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,13 +26,13 @@ import java.io.Serializable;
 	"info", "recommendation", "contentPackNamespace", "contentPackName", "recipients", "stats", "ownerUuid",
 	"ownerName", "query" })
 public class AlertDTO implements Serializable {
-    private static final long serialVersionUID = 1913969984744233760L;
+	private static final long serialVersionUID = 1913969984744233760L;
 
-    @JsonProperty("id")
-    private String id;
+	@JsonProperty("id")
+	private String id;
 
-    @JsonProperty("enabled")
-    private boolean enabled;
+	@JsonProperty("enabled")
+	private boolean enabled;
 
 	@JsonProperty("type")
 	private String type;

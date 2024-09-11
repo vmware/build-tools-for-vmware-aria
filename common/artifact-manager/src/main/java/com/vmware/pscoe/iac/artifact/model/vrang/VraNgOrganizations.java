@@ -1,6 +1,4 @@
 
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -15,6 +13,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,18 +25,18 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"items"})
 public class VraNgOrganizations implements Serializable {
-    private static final long serialVersionUID = -3313748896114761975L;
+	private static final long serialVersionUID = -3313748896114761975L;
 
-    @JsonProperty("items")
-    private List<VraNgOrganization> items;
+	@JsonProperty("items")
+	private List<VraNgOrganization> items;
 
-    @JsonProperty("items")
-    public List<VraNgOrganization> getItems() {
-        return items;
-    }
+	@JsonProperty("items")
+	public List<VraNgOrganization> getItems() {
+		return items;
+	}
 
-    @JsonProperty("items")
-    public void setItems(List<VraNgOrganization> items) {
-        this.items = items;
-    }
+	@JsonProperty("items")
+	public void setItems(List<VraNgOrganization> items) {
+		this.items = items;
+	}
 }

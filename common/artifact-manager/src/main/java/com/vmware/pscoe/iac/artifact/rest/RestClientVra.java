@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -107,13 +106,13 @@ public class RestClientVra extends RestClientVraPrimitive {
 	}
 
 	public Package importPackage(Package filesystemVroPackage, boolean dryRun) {
-	    VraPackageDescriptor descriptor = null;
-	    try {
-		    VraPackageContent content = this.importPackagePrimitive(filesystemVroPackage, dryRun);
-		    descriptor = VraPackageDescriptor.getInstance(content);
-		    // Required for package clean up procedures
-		    // vRA does not create package when importing it
-		    return this.createPackage(filesystemVroPackage, descriptor);
+		VraPackageDescriptor descriptor = null;
+		try {
+			VraPackageContent content = this.importPackagePrimitive(filesystemVroPackage, dryRun);
+			descriptor = VraPackageDescriptor.getInstance(content);
+			// Required for package clean up procedures
+			// vRA does not create package when importing it
+			return this.createPackage(filesystemVroPackage, descriptor);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
@@ -176,34 +175,34 @@ public class RestClientVra extends RestClientVraPrimitive {
 	}
 	
 	public Package deletePackage(Package pkg, boolean withContent, boolean dryrun){
-	    if(withContent) {
-	        VraPackageContent pkgContents = super.getPackageContentPrimitive(pkg);
-	        pkgContents.getContent().stream().forEach(c -> super.deleteContentPrimitive(c, dryrun));
-	    }
-	    if(!dryrun) {
-	        super.deletePackagePrimitive(pkg);
-	    }
-        return pkg;
-    }
+		if(withContent) {
+			VraPackageContent pkgContents = super.getPackageContentPrimitive(pkg);
+			pkgContents.getContent().stream().forEach(c -> super.deleteContentPrimitive(c, dryrun));
+		}
+		if(!dryrun) {
+			super.deletePackagePrimitive(pkg);
+		}
+		return pkg;
+	}
 	
 	public void deleteContentPrimitive(Content content, boolean dryrun) {
-	    super.deleteContentPrimitive(content, dryrun);
+		super.deleteContentPrimitive(content, dryrun);
 	}
   
-    public VraPackageContent getPackageContentPrimitive(Package pkg) {
-        return super.getPackageContentPrimitive(pkg);
+	public VraPackageContent getPackageContentPrimitive(Package pkg) {
+		return super.getPackageContentPrimitive(pkg);
 	}
 	
 	public String getBlueprintCustomForm(String bpId) {
-        return super.getBlueprintCustomFormPrimitive(bpId);
-    }
-    
-    public List<Map<String, String>> getPackageContents(String pkgId) {
-        return super.getPackageContentsPrimitive(pkgId);
+		return super.getBlueprintCustomFormPrimitive(bpId);
+	}
+	
+	public List<Map<String, String>> getPackageContents(String pkgId) {
+		return super.getPackageContentsPrimitive(pkgId);
 	}
 	
 	public List<Map<String, Object>> getWorkflowSubscriptions() {
-        return super.getWorkflowSubscriptionsPrimitive();
+		return super.getWorkflowSubscriptionsPrimitive();
 	}
 	
 	public void importSubscription(String subscriptionName, String jsonBody) {
@@ -228,7 +227,7 @@ public class RestClientVra extends RestClientVraPrimitive {
 	}
 
 	public List<Map<String, Object>> getGlobalPropertyGroups() {
-        return super.getGlobalPropertyGroupsPrimitive();
+		return super.getGlobalPropertyGroupsPrimitive();
 	}
 
 	public void importGlobalPropertyGroup(String propertyGroupName, String jsonBody) {
@@ -239,8 +238,8 @@ public class RestClientVra extends RestClientVraPrimitive {
 		}
 	}
 
-    public Map<String, Object> getCatalogItemByName(String catalogItemName) {
-        return getCatalogItemByNamePrimitive(catalogItemName);
+	public Map<String, Object> getCatalogItemByName(String catalogItemName) {
+		return getCatalogItemByNamePrimitive(catalogItemName);
 	}
 	
 	public void setCatalogItem(Map<String, Object> catalogItem) {
@@ -252,11 +251,11 @@ public class RestClientVra extends RestClientVraPrimitive {
 	}
 
 	public Map<String, Object> getCatalogServiceByName(String serviceName) {
-        return getCatalogServiceByNamePrimitive(serviceName);
+		return getCatalogServiceByNamePrimitive(serviceName);
 	}
 
 	public Map<String, Object> getIcon(String iconId) {
-        return getIconPrimitive(iconId);
+		return getIconPrimitive(iconId);
 	}
 	
 	public void setIcon(Map<String, Object> icon) {

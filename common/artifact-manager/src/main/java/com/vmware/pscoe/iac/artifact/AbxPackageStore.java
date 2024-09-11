@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.model.Package;
@@ -69,7 +68,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	 * @return abx package content to return
 	 */
 	@Override
-    protected final AbxPackageContent getPackageContent(final Package pkg) {
+	protected final AbxPackageContent getPackageContent(final Package pkg) {
 		throw new NotImplementedException("Not implemented");
 	}
 
@@ -77,8 +76,8 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	 *
 	 * @return received packages
 	 */
-    @Override
-    public final List<Package> getPackages() {
+	@Override
+	public final List<Package> getPackages() {
 		throw new NotImplementedException("Not implemented");
 	}
 
@@ -90,9 +89,9 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	 * @return the deleted package
 	 */
 	@Override
-    protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
-        throw new NotImplementedException("Not implemented");
-    }
+	protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
+		throw new NotImplementedException("Not implemented");
+	}
 
 	/**
 	 *
@@ -100,9 +99,9 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	 * @param dryrun whether it should be dry run
 	 */
 	@Override
-    protected final void deleteContent(final Content content, final boolean dryrun) {
-        throw new NotImplementedException("Not implemented");
-    }
+	protected final void deleteContent(final Content content, final boolean dryrun) {
+		throw new NotImplementedException("Not implemented");
+	}
 
 	/**
 	 *
@@ -175,7 +174,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	 */
 	@Override
 	public final Package exportPackage(final Package abxPackage, final boolean dryrun) {
-	    File abxPackageFile = new File(abxPackage.getFilesystemPath());
+		File abxPackageFile = new File(abxPackage.getFilesystemPath());
 		return this.exportPackage(abxPackage, abxPackageFile, dryrun);
 	}
 
@@ -189,24 +188,24 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	@Override
 	public final Package exportPackage(final Package abxPackage, final File abxPackageDescriptorParent, final boolean dryrun) {
 		AbxPackageDescriptor abxPackageDescriptor = AbxPackageDescriptor.getInstance(abxPackageDescriptorParent);
-        return exportPackage(abxPackage, abxPackageDescriptor, dryrun);
+		return exportPackage(abxPackage, abxPackageDescriptor, dryrun);
 	}
 
-    /**
-     * Main handler for exporting abx package based on package.json file.
-     * @param pkg abx package
-     * @param packageDescriptor abx package descriptor file
-     * @param dryrun whether it should be dry run
-     * @return package
-     */
-    @Override
-    public final Package exportPackage(final Package pkg, final AbxPackageDescriptor packageDescriptor, final boolean dryrun) {
-        logger.info(String.format(PackageStore.PACKAGE_EXPORT, pkg));
+	/**
+	 * Main handler for exporting abx package based on package.json file.
+	 * @param pkg abx package
+	 * @param packageDescriptor abx package descriptor file
+	 * @param dryrun whether it should be dry run
+	 * @return package
+	 */
+	@Override
+	public final Package exportPackage(final Package pkg, final AbxPackageDescriptor packageDescriptor, final boolean dryrun) {
+		logger.info(String.format(PackageStore.PACKAGE_EXPORT, pkg));
 
 		logger.warn("ABX content pull is not supported yet");
 
-        return pkg;
-    }
+		return pkg;
+	}
 
 	/**
 	 * Main handler for importing abx package.
@@ -221,7 +220,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 		File tmp;
 		try {
 			tmp = Files.createTempDirectory("iac-package-import").toFile();
-            logger.info("Created temp dir {}", tmp.getAbsolutePath());
+			logger.info("Created temp dir {}", tmp.getAbsolutePath());
 			new PackageManager(abxPackage).unpack(tmp);
 		} catch (IOException e) {
 			logger.error("Unable to extract package '{}' in temporary directory.", abxPackage.getFQName());

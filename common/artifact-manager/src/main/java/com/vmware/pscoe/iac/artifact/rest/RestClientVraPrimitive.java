@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,19 +91,19 @@ public class RestClientVraPrimitive extends RestClient {
 	/**
 	 * param SERVICE_PROPERTY_GROUP.
 	 */
-    private final String SERVICE_PROPERTY_GROUP = "/properties-service/api/propertygroups";
+	private final String SERVICE_PROPERTY_GROUP = "/properties-service/api/propertygroups";
 	/**
 	 * param SERVICE_XAAS_OPERATION.
 	 */
-    private final String SERVICE_XAAS_OPERATION = "/advanced-designer-service/api/resourceOperations";
+	private final String SERVICE_XAAS_OPERATION = "/advanced-designer-service/api/resourceOperations";
 	/**
 	 * param SERVICE_XAAS_BLUEPRINT.
 	 */
-    private final String SERVICE_XAAS_BLUEPRINT = "/advanced-designer-service/api/tenants/%s/blueprints";
+	private final String SERVICE_XAAS_BLUEPRINT = "/advanced-designer-service/api/tenants/%s/blueprints";
 	/**
 	 * param SERVICE_XAAS_TYPE.
 	 */
-    private final String SERVICE_XAAS_TYPE = "/advanced-designer-service/api/tenants/%s/types";
+	private final String SERVICE_XAAS_TYPE = "/advanced-designer-service/api/tenants/%s/types";
 	/**
 	 * param SERVICE_CONTENT.
 	 */
@@ -140,25 +139,25 @@ public class RestClientVraPrimitive extends RestClient {
 		this.configuration = configuration;
 		this.restTemplate = restTemplate;
 	}
-    
+	
 	/**
 	 * @return Configuration
 	 */
 	@Override
-    protected Configuration getConfiguration() {
-        return this.configuration;
-    }
-    
+	protected Configuration getConfiguration() {
+		return this.configuration;
+	}
+	
 	/**
 	 * @return String
 	 */
 	@Override
-    public String getVersion() {
-        URI url = getURI(getURIBuilder().setPath("identity/api/about"));
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+	public String getVersion() {
+		URI url = getURI(getURIBuilder().setPath("identity/api/about"));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
-        return JsonPath.parse(response.getBody()).read("$.productVersion");
-    }
+		return JsonPath.parse(response.getBody()).read("$.productVersion");
+	}
 
 	/**
 	 * @param url
@@ -349,7 +348,7 @@ public class RestClientVraPrimitive extends RestClient {
 			return new Gson().fromJson(response.getBody(), JsonPrimitive.class).getAsString();
 		} catch (RuntimeException e) {
 			if (e.getMessage().contains("404")) {
-			    logger.info("Custom form for Blueprint '{}' not found.", bpId);
+				logger.info("Custom form for Blueprint '{}' not found.", bpId);
 				return null;
 			} else {
 				throw new RuntimeException(e);
@@ -745,70 +744,70 @@ public class RestClientVraPrimitive extends RestClient {
 	 * @param dryrun dry run or not
 	 */
 	protected void deleteContentPrimitive(final Content<VraPackageContent.ContentType> content, final boolean dryrun) {
-        String deletePath = null;
-        
-        switch (content.getType()) {
-            case XAAS_BLUEPRINT: deletePath = String.format(SERVICE_XAAS_BLUEPRINT, configuration.getTenant()); break;
-            case XAAS_RESOURCE_TYPE: deletePath = String.format(SERVICE_XAAS_TYPE, configuration.getTenant()); break;
-            case XAAS_RESOURCE_MAPPING: deletePath = String.format(SERVICE_XAAS_TYPE, configuration.getTenant()); break;
-            case XAAS_RESOURCE_ACTION: deletePath = SERVICE_XAAS_OPERATION; break;
-            case COMPOSITE_BLUEPRINT: deletePath = BLUEPRINT_PACKAGE; break;
-            case SOFTWARE_COMPONENT: deletePath = SERVICE_SOFTWARE; break;
-            case PROPERTY_GROUP: deletePath = SERVICE_PROPERTY_GROUP; break;
+		String deletePath = null;
+		
+		switch (content.getType()) {
+			case XAAS_BLUEPRINT: deletePath = String.format(SERVICE_XAAS_BLUEPRINT, configuration.getTenant()); break;
+			case XAAS_RESOURCE_TYPE: deletePath = String.format(SERVICE_XAAS_TYPE, configuration.getTenant()); break;
+			case XAAS_RESOURCE_MAPPING: deletePath = String.format(SERVICE_XAAS_TYPE, configuration.getTenant()); break;
+			case XAAS_RESOURCE_ACTION: deletePath = SERVICE_XAAS_OPERATION; break;
+			case COMPOSITE_BLUEPRINT: deletePath = BLUEPRINT_PACKAGE; break;
+			case SOFTWARE_COMPONENT: deletePath = SERVICE_SOFTWARE; break;
+			case PROPERTY_GROUP: deletePath = SERVICE_PROPERTY_GROUP; break;
 			case PROPERTY_DICTIONARY: deletePath = SERVICE_PROPERETY_DEFINITION; break;
 			case WORKFLOW_SUBSCRIPTION: deletePath = String.format(SERVICE_WORKFLOW_SUBSCRIPTION, configuration.getTenant()); break;
 			case GLOBAL_PROPERTY_DEFINITION: deletePath = SERVICE_PROPERETY_DEFINITION; break;
 			case GLOBAL_PROPERTY_GROUP: deletePath = SERVICE_PROPERTY_GROUP; break;
 			default: break;
-        }
-        
-        URI url = getURI(getURIBuilder().setPath(String.format("%s/%s", deletePath, content.getId())));
-        if (!dryrun) {
-            restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
-        }
-    }
+		}
+		
+		URI url = getURI(getURIBuilder().setPath(String.format("%s/%s", deletePath, content.getId())));
+		if (!dryrun) {
+			restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+		}
+	}
 
 	/**
 	 * @param pkg vra package
 	 * @return VraPackageContent
 	 */
 	protected VraPackageContent getPackageContentPrimitive(final Package pkg) {
-        URI url = getURI(getURIBuilder().setPath(String.format("%s/%s/contents", SERVICE_PACKAGE, pkg.getId())));
+		URI url = getURI(getURIBuilder().setPath(String.format("%s/%s/contents", SERVICE_PACKAGE, pkg.getId())));
 
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);     
-        JsonElement root = JsonParser.parseString(response.getBody());
-        List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
-        if (root.isJsonObject()) {
-            root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
-                JsonObject ob = o.getAsJsonObject();
-                content.add(new Content<>(
-                    VraPackageContent.ContentType.getInstance(ob.get("contentTypeId").getAsString()),
-                    ob.get("contentId").getAsString(),
-                    ob.get("name").getAsString()));
-            });
-        }
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);     
+		JsonElement root = JsonParser.parseString(response.getBody());
+		List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
+		if (root.isJsonObject()) {
+			root.getAsJsonObject().getAsJsonArray("content").forEach(o -> {
+				JsonObject ob = o.getAsJsonObject();
+				content.add(new Content<>(
+					VraPackageContent.ContentType.getInstance(ob.get("contentTypeId").getAsString()),
+					ob.get("contentId").getAsString(),
+					ob.get("name").getAsString()));
+			});
+		}
 
-        return new VraPackageContent(content);
-    }
+		return new VraPackageContent(content);
+	}
 
 	/**
 	 * @param packageImportedResponse package import response
 	 * @return VraPackageContent
 	 */
 	private VraPackageContent getPackageContentPrimitive(final String packageImportedResponse) {
-        JsonElement root = JsonParser.parseString(packageImportedResponse);
-        
-        List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
-        if (root.isJsonObject()) {
-            root.getAsJsonObject().getAsJsonArray("operationResults").forEach(o -> {
-                JsonObject ob = o.getAsJsonObject();
-                content.add(new Content<>(
-                    VraPackageContent.ContentType.getInstance(ob.get("contentTypeId").getAsString()),
-                    ob.get("contentId").getAsString(),
-                    ob.get("contentName").getAsString()));
-            });
-        }
+		JsonElement root = JsonParser.parseString(packageImportedResponse);
+		
+		List<Content<VraPackageContent.ContentType>> content = new ArrayList<>();
+		if (root.isJsonObject()) {
+			root.getAsJsonObject().getAsJsonArray("operationResults").forEach(o -> {
+				JsonObject ob = o.getAsJsonObject();
+				content.add(new Content<>(
+					VraPackageContent.ContentType.getInstance(ob.get("contentTypeId").getAsString()),
+					ob.get("contentId").getAsString(),
+					ob.get("contentName").getAsString()));
+			});
+		}
 
-        return new VraPackageContent(content);
-    }
+		return new VraPackageContent(content);
+	}
 }

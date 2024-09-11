@@ -1,6 +1,3 @@
-
-package com.vmware.pscoe.iac.artifact.rest.model.vrops;
-
 /*
  * #%L
  * artifact-manager
@@ -15,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest.model.vrops;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.model.vrops;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,142 +31,142 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "adapter-kind" })
 public class AdapterKindDTO implements Serializable {
-    private static final long serialVersionUID = 1068047698436844558L;
+	private static final long serialVersionUID = 1068047698436844558L;
 
-    @JsonProperty("adapter-kind")
-    private List<AdapterKind> adapterKind = new ArrayList<>();
+	@JsonProperty("adapter-kind")
+	private List<AdapterKind> adapterKind = new ArrayList<>();
 
-    @JsonIgnore
-    private transient Map<String, Object> additionalProperties = new HashMap<>();
+	@JsonIgnore
+	private transient Map<String, Object> additionalProperties = new HashMap<>();
 
-    @JsonProperty("adapter-kind")
-    public List<AdapterKind> getAdapterKind() {
-        return adapterKind;
-    }
+	@JsonProperty("adapter-kind")
+	public List<AdapterKind> getAdapterKind() {
+		return adapterKind;
+	}
 
-    @JsonProperty("adapter-kind")
-    public void setAdapterKind(List<AdapterKind> adapterKind) {
-        this.adapterKind = adapterKind;
-    }
+	@JsonProperty("adapter-kind")
+	public void setAdapterKind(List<AdapterKind> adapterKind) {
+		this.adapterKind = adapterKind;
+	}
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
+	@JsonAnyGetter
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
 
-    @JsonAnySetter
-    public void setAdditionalProperties(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+	@JsonAnySetter
+	public void setAdditionalProperties(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonPropertyOrder({ "key", "name", "description", "adapterKindType", "describeVersion", "identifiers", "resourceKinds", "links" })
-    @JsonIgnoreProperties({ "links" })
-    public static class AdapterKind implements Serializable {
-        private static final long serialVersionUID = -6414593808503585818L;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonPropertyOrder({ "key", "name", "description", "adapterKindType", "describeVersion", "identifiers", "resourceKinds", "links" })
+	@JsonIgnoreProperties({ "links" })
+	public static class AdapterKind implements Serializable {
+		private static final long serialVersionUID = -6414593808503585818L;
 
-        @JsonProperty("key")
-        private String key;
+		@JsonProperty("key")
+		private String key;
 
-        @JsonProperty("name")
-        private String name;
+		@JsonProperty("name")
+		private String name;
 
-        @JsonProperty("description")
-        private String description;
+		@JsonProperty("description")
+		private String description;
 
-        @JsonProperty("adapterKindType")
-        private String adapterKindType;
+		@JsonProperty("adapterKindType")
+		private String adapterKindType;
 
-        @JsonProperty("describeVersion")
-        private Integer describeVersion;
+		@JsonProperty("describeVersion")
+		private Integer describeVersion;
 
-        @JsonProperty("identifiers")
-        private List<Object> identifiers = new ArrayList<>();
+		@JsonProperty("identifiers")
+		private List<Object> identifiers = new ArrayList<>();
 
-        @JsonProperty("resourceKinds")
-        private List<String> resourceKinds = new ArrayList<>();
+		@JsonProperty("resourceKinds")
+		private List<String> resourceKinds = new ArrayList<>();
 
-        @JsonIgnore
-        private transient Map<String, Object> additionalProperties = new HashMap<>();
+		@JsonIgnore
+		private transient Map<String, Object> additionalProperties = new HashMap<>();
 
-        @JsonProperty("key")
-        public String getKey() {
-            return key;
-        }
+		@JsonProperty("key")
+		public String getKey() {
+			return key;
+		}
 
-        @JsonProperty("key")
-        public void setKey(String key) {
-            this.key = key;
-        }
+		@JsonProperty("key")
+		public void setKey(String key) {
+			this.key = key;
+		}
 
-        @JsonProperty("name")
-        public String getName() {
-            return name;
-        }
+		@JsonProperty("name")
+		public String getName() {
+			return name;
+		}
 
-        @JsonProperty("name")
-        public void setName(String name) {
-            this.name = name;
-        }
+		@JsonProperty("name")
+		public void setName(String name) {
+			this.name = name;
+		}
 
-        @JsonProperty("description")
-        public String getDescription() {
-            return description;
-        }
+		@JsonProperty("description")
+		public String getDescription() {
+			return description;
+		}
 
-        @JsonProperty("description")
-        public void setDescription(String description) {
-            this.description = description;
-        }
+		@JsonProperty("description")
+		public void setDescription(String description) {
+			this.description = description;
+		}
 
-        @JsonProperty("adapterKindType")
-        public String getAdapterKindType() {
-            return adapterKindType;
-        }
+		@JsonProperty("adapterKindType")
+		public String getAdapterKindType() {
+			return adapterKindType;
+		}
 
-        @JsonProperty("adapterKindType")
-        public void setAdapterKindType(String adapterKindType) {
-            this.adapterKindType = adapterKindType;
-        }
+		@JsonProperty("adapterKindType")
+		public void setAdapterKindType(String adapterKindType) {
+			this.adapterKindType = adapterKindType;
+		}
 
-        @JsonProperty("describeVersion")
-        public Integer getDescribeVersion() {
-            return describeVersion;
-        }
+		@JsonProperty("describeVersion")
+		public Integer getDescribeVersion() {
+			return describeVersion;
+		}
 
-        @JsonProperty("describeVersion")
-        public void setDescribeVersion(Integer describeVersion) {
-            this.describeVersion = describeVersion;
-        }
+		@JsonProperty("describeVersion")
+		public void setDescribeVersion(Integer describeVersion) {
+			this.describeVersion = describeVersion;
+		}
 
-        @JsonProperty("identifiers")
-        public List<Object> getIdentifiers() {
-            return identifiers;
-        }
+		@JsonProperty("identifiers")
+		public List<Object> getIdentifiers() {
+			return identifiers;
+		}
 
-        @JsonProperty("identifiers")
-        public void setIdentifiers(List<Object> identifiers) {
-            this.identifiers = identifiers;
-        }
+		@JsonProperty("identifiers")
+		public void setIdentifiers(List<Object> identifiers) {
+			this.identifiers = identifiers;
+		}
 
-        @JsonProperty("resourceKinds")
-        public List<String> getResourceKinds() {
-            return resourceKinds;
-        }
+		@JsonProperty("resourceKinds")
+		public List<String> getResourceKinds() {
+			return resourceKinds;
+		}
 
-        @JsonProperty("resourceKinds")
-        public void setResourceKinds(List<String> resourceKinds) {
-            this.resourceKinds = resourceKinds;
-        }
+		@JsonProperty("resourceKinds")
+		public void setResourceKinds(List<String> resourceKinds) {
+			this.resourceKinds = resourceKinds;
+		}
 
-        @JsonAnyGetter
-        public Map<String, Object> getAdditionalProperties() {
-            return this.additionalProperties;
-        }
+		@JsonAnyGetter
+		public Map<String, Object> getAdditionalProperties() {
+			return this.additionalProperties;
+		}
 
-        @JsonAnySetter
-        public void setAdditionalProperties(String name, Object value) {
-            this.additionalProperties.put(name, value);
-        }
-    }
+		@JsonAnySetter
+		public void setAdditionalProperties(String name, Object value) {
+			this.additionalProperties.put(name, value);
+		}
+	}
 }

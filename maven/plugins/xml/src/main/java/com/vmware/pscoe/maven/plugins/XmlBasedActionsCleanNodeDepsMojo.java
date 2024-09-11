@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * o11n-xml-package-maven-plugin
@@ -14,11 +12,10 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import org.apache.maven.plugins.annotations.*;
 
-
 @Mojo(name = "clean", defaultPhase = LifecyclePhase.CLEAN)
 public class XmlBasedActionsCleanNodeDepsMojo extends CleanNodeDepsMojo {
-   
 }

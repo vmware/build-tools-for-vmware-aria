@@ -1,8 +1,3 @@
-/** 
- * Package
- */
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -17,6 +12,10 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+/** 
+ * Package
+ */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,7 +41,7 @@ import java.util.stream.Collectors;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_RESOURCE_ACTIONS;
 
 public class VraNgResourceActionStore extends AbstractVraNgStore {
-		
+
 	/**
 	 * Separator for the Resource Type and the Resource Action Name. Used so we can have unique names even if we have
 	 * 	two resource actions of same name with different types. You can have a resource action with __ in the name
@@ -50,10 +49,10 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	 */
 	private static final String RESOURCE_ACTION_SEPARATOR	= "__";
 
-    /**
-     * Import Content.
-     * @param sourceDirectory source directory
-    */
+	/**
+	 * Import Content.
+	 * @param sourceDirectory source directory
+	*/
 	public void importContent(final File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory", DIR_RESOURCE_ACTIONS);
 		File folder = Paths.get(sourceDirectory.getPath(), DIR_RESOURCE_ACTIONS).toFile();
@@ -140,134 +139,134 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 		});
 	}
 
-    /**
-     * Sanitize ResourceAction json from unnecessary elements that prevent store or
-     * publish later the content.
-     * @param resourceActionJsonElement Resource Action Json Element
-     */
-    private void sanitizeResourceActionJsonElement(final JsonObject resourceActionJsonElement) {
+	/**
+	 * Sanitize ResourceAction json from unnecessary elements that prevent store or
+	 * publish later the content.
+	 * @param resourceActionJsonElement Resource Action Json Element
+	 */
+	private void sanitizeResourceActionJsonElement(final JsonObject resourceActionJsonElement) {
 
-        // leaving orgId in the JSON prevents pushing to different vRA organizations
-        // orgId is optional when importing in vRA, so it can be safely removed
-        resourceActionJsonElement.remove("orgId");
+		// leaving orgId in the JSON prevents pushing to different vRA organizations
+		// orgId is optional when importing in vRA, so it can be safely removed
+		resourceActionJsonElement.remove("orgId");
 
-        logger.debug("Removing id property from formDefinition element ...");
-        String formDefinitionItemName = "formDefinition";
-        String formDefinitionIdName = "id";
-        // When create new resource action, formDefinition element do not have to
-        // contain id property. See IAC-400.
-        resourceActionJsonElement.getAsJsonObject(formDefinitionItemName).remove(formDefinitionIdName);
-    }
+		logger.debug("Removing id property from formDefinition element ...");
+		String formDefinitionItemName = "formDefinition";
+		String formDefinitionIdName = "id";
+		// When create new resource action, formDefinition element do not have to
+		// contain id property. See IAC-400.
+		resourceActionJsonElement.getAsJsonObject(formDefinitionItemName).remove(formDefinitionIdName);
+	}
 
-    /**
-     * Save a resource action to a JSON file.
-     * 
-     * @param pkg                source package
-     * @param resourceActionName source resource action name
-     * @param resourceActionJson source resource action json
-     * @return Resoruce Action File
-     */
-    private File storeResourceActionOnFilesystem(final Package pkg, final String resourceActionName, final String resourceActionJson) {
-        File store = new File(pkg.getFilesystemPath());
-        File resourceAction = Paths.get(store.getPath(), DIR_RESOURCE_ACTIONS, resourceActionName + ".json").toFile();
-        resourceAction.getParentFile().mkdirs();
+	/**
+	 * Save a resource action to a JSON file.
+	 * 
+	 * @param pkg                source package
+	 * @param resourceActionName source resource action name
+	 * @param resourceActionJson source resource action json
+	 * @return Resoruce Action File
+	 */
+	private File storeResourceActionOnFilesystem(final Package pkg, final String resourceActionName, final String resourceActionJson) {
+		File store = new File(pkg.getFilesystemPath());
+		File resourceAction = Paths.get(store.getPath(), DIR_RESOURCE_ACTIONS, resourceActionName + ".json").toFile();
+		resourceAction.getParentFile().mkdirs();
 
-        try {
-            Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-            final JsonObject resourceActionJsonElement = gson.fromJson(resourceActionJson, JsonObject.class);
+		try {
+			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			final JsonObject resourceActionJsonElement = gson.fromJson(resourceActionJson, JsonObject.class);
 
-            this.sanitizeResourceActionJsonElement(resourceActionJsonElement);
+			this.sanitizeResourceActionJsonElement(resourceActionJsonElement);
 
-            String resourceActionJSON = gson.toJson(resourceActionJsonElement);
-            logger.info("Created file {}", Files.write(Paths.get(resourceAction.getPath()),
-                    resourceActionJSON.getBytes(), StandardOpenOption.CREATE));
-        } catch (IOException e) {
-            logger.error("Unable to store resource action {} {}", resourceActionName, resourceAction.getPath());
-            throw new RuntimeException("Unable to store resource action.", e);
-        }
+			String resourceActionJSON = gson.toJson(resourceActionJsonElement);
+			logger.info("Created file {}", Files.write(Paths.get(resourceAction.getPath()),
+					resourceActionJSON.getBytes(), StandardOpenOption.CREATE));
+		} catch (IOException e) {
+			logger.error("Unable to store resource action {} {}", resourceActionName, resourceAction.getPath());
+			throw new RuntimeException("Unable to store resource action.", e);
+		}
 
-        return resourceAction;
-    }
+		return resourceAction;
+	}
 
-    /**
-     * Import resource actions from a file.
-     * 
-     * @param jsonFile file of the resource action
-     */
-    private void importResourceAction(final File jsonFile) {
-        String resourceActionName = "";
-        try {
-            resourceActionName = FilenameUtils.removeExtension(jsonFile.getName());
-            logger.info("Importing resource action {}...", resourceActionName);
-            String resourceActionJson = FileUtils.readFileToString(jsonFile, "UTF-8");
+	/**
+	 * Import resource actions from a file.
+	 * 
+	 * @param jsonFile file of the resource action
+	 */
+	private void importResourceAction(final File jsonFile) {
+		String resourceActionName = "";
+		try {
+			resourceActionName = FilenameUtils.removeExtension(jsonFile.getName());
+			logger.info("Importing resource action {}...", resourceActionName);
+			String resourceActionJson = FileUtils.readFileToString(jsonFile, "UTF-8");
 
-            Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-            final JsonObject resourceActionJsonElement = gson.fromJson(resourceActionJson, JsonObject.class);
+			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			final JsonObject resourceActionJsonElement = gson.fromJson(resourceActionJson, JsonObject.class);
 
-            this.sanitizeResourceActionJsonElement(resourceActionJsonElement);
+			this.sanitizeResourceActionJsonElement(resourceActionJsonElement);
 
-            this.populateVroEndpoint(resourceActionJsonElement);
+			this.populateVroEndpoint(resourceActionJsonElement);
 
-		    VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, resourceActionJsonElement, "projectId");
+			VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, resourceActionJsonElement, "projectId");
 
-            // Get resource action id property and use it to try to delete existing one
-            // resource action
-            String resourceActionId = resourceActionJsonElement.get("id").getAsString();
-            resourceActionJson = gson.toJson(resourceActionJsonElement);
-            // Let's try to delete resource action first before import it.
-            try {
-                logger.info("Deleting resource action '{}' ('{}') if exists ...", resourceActionName, resourceActionId);
-                restClient.deleteResourceAction(resourceActionName, resourceActionId);
-            } catch (RuntimeException e) {
-                logger.error("Delete resource action '{}' ('{}') failed. Error: {}", resourceActionName,
-                        resourceActionId, e);
-            }
+			// Get resource action id property and use it to try to delete existing one
+			// resource action
+			String resourceActionId = resourceActionJsonElement.get("id").getAsString();
+			resourceActionJson = gson.toJson(resourceActionJsonElement);
+			// Let's try to delete resource action first before import it.
+			try {
+				logger.info("Deleting resource action '{}' ('{}') if exists ...", resourceActionName, resourceActionId);
+				restClient.deleteResourceAction(resourceActionName, resourceActionId);
+			} catch (RuntimeException e) {
+				logger.error("Delete resource action '{}' ('{}') failed. Error: {}", resourceActionName,
+						resourceActionId, e);
+			}
 
-            String resultResourceActionJson = restClient.importResourceAction(resourceActionName, resourceActionJson);
-            JsonObject resultJsonObject = updateFormInfoOnTopOfResult(
-                    gson.fromJson(resultResourceActionJson, JsonObject.class), resourceActionJsonElement);
-            restClient.importResourceAction(resourceActionName, gson.toJson(resultJsonObject));
+			String resultResourceActionJson = restClient.importResourceAction(resourceActionName, resourceActionJson);
+			JsonObject resultJsonObject = updateFormInfoOnTopOfResult(
+					gson.fromJson(resultResourceActionJson, JsonObject.class), resourceActionJsonElement);
+			restClient.importResourceAction(resourceActionName, gson.toJson(resultJsonObject));
 
-        } catch (ConfigurationException e) {
-            logger.error("Error importing resource action {}...", resourceActionName);
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading from file: " + jsonFile.getPath(), e);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error executing POST to server: ", e);
-        }
-    }
-    /**
-     * Populate Vro Endpoint.
-     * 
-     * @param resourceActionJsonElement file of the resource action
-     */
-    private void populateVroEndpoint(final JsonObject resourceActionJsonElement) throws ConfigurationException {
-        String runnableItemName = "runnableItem";
-        String endpointLinkName = "endpointLink";
+		} catch (ConfigurationException e) {
+			logger.error("Error importing resource action {}...", resourceActionName);
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException("Error reading from file: " + jsonFile.getPath(), e);
+		} catch (RuntimeException e) {
+			throw new RuntimeException("Error executing POST to server: ", e);
+		}
+	}
+	/**
+	 * Populate Vro Endpoint.
+	 * 
+	 * @param resourceActionJsonElement file of the resource action
+	 */
+	private void populateVroEndpoint(final JsonObject resourceActionJsonElement) throws ConfigurationException {
+		String runnableItemName = "runnableItem";
+		String endpointLinkName = "endpointLink";
 
-        // remove endpointLink from the runnable item, it will be populated automaticaly
-        resourceActionJsonElement.getAsJsonObject(runnableItemName).remove(endpointLinkName);
+		// remove endpointLink from the runnable item, it will be populated automaticaly
+		resourceActionJsonElement.getAsJsonObject(runnableItemName).remove(endpointLinkName);
 
-        // add the updated endpointLink fetched from the target
-        // environment/configuration
-        resourceActionJsonElement.getAsJsonObject(runnableItemName).addProperty(endpointLinkName,
-                this.getVroTargetIntegrationEndpointLink());
-    }
+		// add the updated endpointLink fetched from the target
+		// environment/configuration
+		resourceActionJsonElement.getAsJsonObject(runnableItemName).addProperty(endpointLinkName,
+				this.getVroTargetIntegrationEndpointLink());
+	}
 
-    /**
-     * Update Form Info On Top Of Result.
-     * 
-     * @param resultJsonObject file of the resource action
-     * @param sourceJsonObject file of the resource action
-     * @return Json Object
-     */
-    private JsonObject updateFormInfoOnTopOfResult(final JsonObject resultJsonObject, final JsonObject sourceJsonObject) {
+	/**
+	 * Update Form Info On Top Of Result.
+	 * 
+	 * @param resultJsonObject file of the resource action
+	 * @param sourceJsonObject file of the resource action
+	 * @return Json Object
+	 */
+	private JsonObject updateFormInfoOnTopOfResult(final JsonObject resultJsonObject, final JsonObject sourceJsonObject) {
 
-        String newFormId = resultJsonObject.getAsJsonObject("formDefinition").getAsJsonPrimitive("id").getAsString();
-        JsonObject sourceForm = sourceJsonObject.getAsJsonObject("formDefinition");
-        sourceForm.addProperty("id", newFormId);
-        resultJsonObject.add("formDefinition", sourceForm);
-        return resultJsonObject;
-    }
+		String newFormId = resultJsonObject.getAsJsonObject("formDefinition").getAsJsonPrimitive("id").getAsString();
+		JsonObject sourceForm = sourceJsonObject.getAsJsonObject("formDefinition");
+		sourceForm.addProperty("id", newFormId);
+		resultJsonObject.add("formDefinition", sourceForm);
+		return resultJsonObject;
+	}
 }

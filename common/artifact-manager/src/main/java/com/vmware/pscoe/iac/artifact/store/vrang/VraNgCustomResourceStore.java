@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -307,7 +306,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 				JsonObject actionJson = action.getAsJsonObject();
 				String name = actionJson.get("name").getAsString();
 				Pattern pattern = Pattern.compile("[^a-zA-Z0-9:\\-_.]");
-        		Matcher matcher = pattern.matcher(name);
+				Matcher matcher = pattern.matcher(name);
 
 				if (
 					matcher.find()
