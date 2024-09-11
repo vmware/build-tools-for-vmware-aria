@@ -163,6 +163,21 @@ A more specific error is thrown when a .ts file contains a @PolicyTemplate, @Wor
 
 <https://github.com/vmware/build-tools-for-vmware-aria/issues/301>
 
+### Fix vGPU property in VcVirtualDeviceBackingInfo class
+
+#### Previous Behavior
+
+The vgpu property in VcVirtualDeviceBackingInfo should be optional, because this class is referenced in other backing classes, which are not related to GPUs.
+
+#### Current Behavior
+
+The vgpu property set to optional.
+Duplicated `constructor()` was removed.
+
+#### Related issues
+
+<https://github.com/vmware/build-tools-for-vmware-aria/issues/406>
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
