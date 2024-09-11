@@ -143,6 +143,37 @@ The following classes were added to `o11n-plugin-aria`:
 - VraMachine
 - VraSaltConfiguration
 - VraMachineBootConfig
+- VraMachineBootConfigSettings
+- VraMachineResult
+- VraMachineService
+- VraUpdateMachineSpecification
+- VraSnapshotSpecification
+- VraMachineSpecification
+- VraRemoteAccessSpecification
+- VraMachinesFolder
+- VraNetworkProfileResult
+- VraNetworkProfileService
+- VraNetworkService
+- VraNetworkSpecification
+- VraProjectResourceMetadataSpecification
+- VraProjectResult
+- VraProjectService
+- VraProjectSpecification
+- VraRegionResult
+- VraRequestTrackerResult
+- VraStorageProfileResult
+- VraStorageProfileService
+- VraTagResult
+- VraTagsService
+- VraZoneAssignmentSpecification
+- VraZoneResult
+- VraFabricNetworkResult
+- VraFlavorProfileResult
+- VraFlavorProfileService
+- VraHostManager
+- VraImageProfileResult
+- VraImageProfileService
+- VraInfrastructure
 
 #### Related issue
 
