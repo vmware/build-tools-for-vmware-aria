@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model;
-
 /*
  * #%L
  * artifact-manager
@@ -14,42 +12,43 @@ package com.vmware.pscoe.iac.artifact.model;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model;
 
 public enum PackageType {
-    VRO("package", "vro"), 
-    VRA("vra", "vra"), 
-    VRANG("vra-ng", "vra-ng"), 
-    VCDNG("vcd-ng", "vcd-ng"), 
-    VROPS("vrops", "vrops"),
-    VRLI("vrli", "vrli"),
-    ABX("abx", "abx"),
-    BASIC("bsc", "bsc"),
-    CS("cs", "cs");
+	VRO("package", "vro"), 
+	VRA("vra", "vra"), 
+	VRANG("vra-ng", "vra-ng"), 
+	VCDNG("vcd-ng", "vcd-ng"), 
+	VROPS("vrops", "vrops"),
+	VRLI("vrli", "vrli"),
+	ABX("abx", "abx"),
+	BASIC("bsc", "bsc"),
+	CS("cs", "cs");
 
-    private final String packageContainer;
-    private final String packageExtension;
-    
+	private final String packageContainer;
+	private final String packageExtension;
+	
 
-    PackageType(String packageExtension, String packageContainer) {
-        this.packageContainer = packageContainer;
-        this.packageExtension = packageExtension;
-    }
+	PackageType(String packageExtension, String packageContainer) {
+		this.packageContainer = packageContainer;
+		this.packageExtension = packageExtension;
+	}
 
-    public String getPackageContainer() {
-        return packageContainer;
-    }
+	public String getPackageContainer() {
+		return packageContainer;
+	}
 
-    public String getPackageExtention() {
-        return packageExtension;
-    }
+	public String getPackageExtention() {
+		return packageExtension;
+	}
 
-    public static PackageType fromExtension(String packageFileExtension) {
-        for (PackageType type : PackageType.values()) {
-            if (type.packageExtension.equalsIgnoreCase(packageFileExtension)) {
-                return type;
-            }
-        }
-        return null;
-    }
+	public static PackageType fromExtension(String packageFileExtension) {
+		for (PackageType type : PackageType.values()) {
+			if (type.packageExtension.equalsIgnoreCase(packageFileExtension)) {
+				return type;
+			}
+		}
+		return null;
+	}
 
 }

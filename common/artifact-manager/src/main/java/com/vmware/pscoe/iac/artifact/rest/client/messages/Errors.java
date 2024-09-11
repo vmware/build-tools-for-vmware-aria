@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest.client.messages;
-
 /*-
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest.client.messages;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.client.messages;
 
 public class Errors {
 	public static final String MAP_ALERT_DATA_ERROR = "Unable to map alert data";

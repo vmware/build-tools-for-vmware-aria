@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest.model;
-
 /*
  * #%L
  * artifact-manager
@@ -14,33 +12,34 @@ package com.vmware.pscoe.iac.artifact.rest.model;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.model;
 
 import java.util.List;
 
 public class VraPackageDTO {
 
-    // "{\"name\" : \"Demo3\", \"description\" : \"Demo1 Description\", \"contents\" : [\"5c46fe1f-20a6-471a-bd92-6d9458baad00\"] }"
+	// "{\"name\" : \"Demo3\", \"description\" : \"Demo1 Description\", \"contents\" : [\"5c46fe1f-20a6-471a-bd92-6d9458baad00\"] }"
 
-    private final String name;
-    private final String description;
-    private final List<String> contents;
+	private final String name;
+	private final String description;
+	private final List<String> contents;
 
-    public VraPackageDTO(String name, List<String> contents) {
-        this.name = name;
-        this.description = "Managed by IaaC for vRealize";
-        this.contents = contents;
-    }
+	public VraPackageDTO(String name, List<String> contents) {
+		this.name = name;
+		this.description = "Managed by IaaC for vRealize";
+		this.contents = contents;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public List<String> getContents() {
-        return contents;
-    }
+	public List<String> getContents() {
+		return contents;
+	}
 
 }

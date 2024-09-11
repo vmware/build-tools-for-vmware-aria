@@ -1,5 +1,3 @@
-package com.vmware.pscoe.o11n.project;
-
 /*
  * #%L
  * o11n-project
@@ -14,9 +12,10 @@ package com.vmware.pscoe.o11n.project;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.o11n.project;
 
 public class ProjectTreeMismatchException extends RuntimeException {
-    public ProjectTreeMismatchException(String message) {
-        super(message);
-    }
+	public ProjectTreeMismatchException(String message) {
+		super(message);
+	}
 }

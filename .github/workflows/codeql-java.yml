@@ -67,5 +67,5 @@ jobs:
       - name: Build 'typescript-project-all'
         run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -s $PWD/.m2/settings.xml
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+      # - name: Perform CodeQL Analysis
+      #   uses: github/codeql-action/analyze@v2

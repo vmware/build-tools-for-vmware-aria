@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.cs;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.cs;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.cs;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,104 +40,104 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CsStoreHelper {
-    private final static Logger logger = LoggerFactory.getLogger(CsStoreHelper.class);
+	private final static Logger logger = LoggerFactory.getLogger(CsStoreHelper.class);
 
-    public static void addVarsToExtractionContext(String content, CsPackageDescriptor descriptor) {
+	public static void addVarsToExtractionContext(String content, CsPackageDescriptor descriptor) {
 
-        Set<String> allMatches = new LinkedHashSet<String>();
-        Matcher m = Pattern
-                .compile("\\$\\{var\\.(.*?)\\}")
-                .matcher(content);
-        while (m.find()) {
-            allMatches.add(m.group(1));
-        }
-        List<String> newVars = allMatches.stream()
-                .filter(el -> !descriptor.getVariable().contains(el))
-                .collect(Collectors.toList());
-        if (newVars.size() > 0) {
-            descriptor.getVariable().addAll(newVars);
-        }
+		Set<String> allMatches = new LinkedHashSet<String>();
+		Matcher m = Pattern
+				.compile("\\$\\{var\\.(.*?)\\}")
+				.matcher(content);
+		while (m.find()) {
+			allMatches.add(m.group(1));
+		}
+		List<String> newVars = allMatches.stream()
+				.filter(el -> !descriptor.getVariable().contains(el))
+				.collect(Collectors.toList());
+		if (newVars.size() > 0) {
+			descriptor.getVariable().addAll(newVars);
+		}
 
-    }
+	}
 
-    public static void sanitizeDefaultProperties(JsonObject obj) {
-        String[] myIntArray = {"id", "project", "_link", "_createdBy", "_updatedBy", "_updateTimeInMicros", "_createTimeInMicros", "_projectId"};
-        Arrays.stream(myIntArray).forEach(obj::remove);
-    }
+	public static void sanitizeDefaultProperties(JsonObject obj) {
+		String[] myIntArray = {"id", "project", "_link", "_createdBy", "_updatedBy", "_updateTimeInMicros", "_createTimeInMicros", "_projectId"};
+		Arrays.stream(myIntArray).forEach(obj::remove);
+	}
 
-    public static Optional<JsonObject> findObjectByName(List<JsonObject> objects, String name) {
-        return objects
-                .stream()
-                .filter(ex -> ex.get("name").getAsString().equals(name))
-                .findFirst();
-    }
-
-
-
-    public static void storeToYamlFile(String path, String subPath, String name, String jsonString) {
-        File store = new File(path);
-        File file = Paths.get(store.getPath(), subPath, name + ".yaml").toFile();
-        file.getParentFile().mkdirs();
-        try {
-            JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
-            YAMLMapper yamlMapper = new YAMLMapper();
-            yamlMapper.setSerializationInclusion(Include.NON_NULL);
-            String yamlString = yamlMapper.writeValueAsString(jsonNodeTree);
-            // StringWriter writer = new StringWriter();
-            // writer.write(triggerYaml);
-            Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.WRITE,
-                    StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            logger.error("Unable to store file {} {}", name, file.getPath());
-            throw new RuntimeException("Unable to store file.", e);
-        }
-    }
-
-    public static void storeToYamlFile(String path, String subPath, String name, Object obj) {
+	public static Optional<JsonObject> findObjectByName(List<JsonObject> objects, String name) {
+		return objects
+				.stream()
+				.filter(ex -> ex.get("name").getAsString().equals(name))
+				.findFirst();
+	}
 
 
-        File store = new File(path);
-        File file = Paths.get(store.getPath(), subPath, name + ".yaml").toFile();
-        file.getParentFile().mkdirs();
-        try {
-            YAMLMapper yamlMapper = new YAMLMapper();
-            yamlMapper.setSerializationInclusion(Include.NON_NULL);
-            yamlMapper.enable(Feature.LITERAL_BLOCK_STYLE);
-            String yamlString = yamlMapper.writeValueAsString(obj);
-            // StringWriter writer = new StringWriter();
-            // writer.write(triggerYaml);
-            Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.WRITE,
-                    StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            logger.error("Unable to store file {} {}", name, file.getPath());
-            throw new RuntimeException("Unable to store file.", e);
-        }
-    }
 
-    public static String loadFromYamlFile(File file) {
-        YAMLMapper yaml = new YAMLMapper();
-        try (FileInputStream stream = new FileInputStream(file)) {
-            ObjectNode yamlContent = (ObjectNode) yaml.readTree(stream);
-            ObjectMapper jsonMapper = new ObjectMapper();
-            jsonMapper.setSerializationInclusion(Include.NON_NULL);
-            String json = jsonMapper.writeValueAsString(yamlContent);
-            return json;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to import trigger.", e);
-        }
-    }
+	public static void storeToYamlFile(String path, String subPath, String name, String jsonString) {
+		File store = new File(path);
+		File file = Paths.get(store.getPath(), subPath, name + ".yaml").toFile();
+		file.getParentFile().mkdirs();
+		try {
+			JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
+			YAMLMapper yamlMapper = new YAMLMapper();
+			yamlMapper.setSerializationInclusion(Include.NON_NULL);
+			String yamlString = yamlMapper.writeValueAsString(jsonNodeTree);
+			// StringWriter writer = new StringWriter();
+			// writer.write(triggerYaml);
+			Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
+					StandardOpenOption.CREATE,
+					StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException e) {
+			logger.error("Unable to store file {} {}", name, file.getPath());
+			throw new RuntimeException("Unable to store file.", e);
+		}
+	}
 
-    public static <T> T loadFromYamlFile(File varFile, Class<T> clazz) {
-        System.out.println(varFile.getAbsolutePath());
-        try {
-            YAMLMapper yamlMapper = new YAMLMapper();
-            return yamlMapper.readValue(varFile, clazz);
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Error while reading file '%s'", varFile.getPath()));
-        }
-    }
+	public static void storeToYamlFile(String path, String subPath, String name, Object obj) {
+
+
+		File store = new File(path);
+		File file = Paths.get(store.getPath(), subPath, name + ".yaml").toFile();
+		file.getParentFile().mkdirs();
+		try {
+			YAMLMapper yamlMapper = new YAMLMapper();
+			yamlMapper.setSerializationInclusion(Include.NON_NULL);
+			yamlMapper.enable(Feature.LITERAL_BLOCK_STYLE);
+			String yamlString = yamlMapper.writeValueAsString(obj);
+			// StringWriter writer = new StringWriter();
+			// writer.write(triggerYaml);
+			Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
+					StandardOpenOption.CREATE,
+					StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException e) {
+			logger.error("Unable to store file {} {}", name, file.getPath());
+			throw new RuntimeException("Unable to store file.", e);
+		}
+	}
+
+	public static String loadFromYamlFile(File file) {
+		YAMLMapper yaml = new YAMLMapper();
+		try (FileInputStream stream = new FileInputStream(file)) {
+			ObjectNode yamlContent = (ObjectNode) yaml.readTree(stream);
+			ObjectMapper jsonMapper = new ObjectMapper();
+			jsonMapper.setSerializationInclusion(Include.NON_NULL);
+			String json = jsonMapper.writeValueAsString(yamlContent);
+			return json;
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to import trigger.", e);
+		}
+	}
+
+	public static <T> T loadFromYamlFile(File varFile, Class<T> clazz) {
+		System.out.println(varFile.getAbsolutePath());
+		try {
+			YAMLMapper yamlMapper = new YAMLMapper();
+			return yamlMapper.readValue(varFile, clazz);
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error while reading file '%s'", varFile.getPath()));
+		}
+	}
 }

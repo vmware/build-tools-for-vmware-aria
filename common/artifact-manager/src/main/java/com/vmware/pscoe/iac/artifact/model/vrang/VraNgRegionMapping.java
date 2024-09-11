@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,24 +23,24 @@ import org.apache.commons.lang3.NotImplementedException;
 
 public class VraNgRegionMapping {
 
-    private VraNgCloudAccountTag cloudAccountTags;
+	private VraNgCloudAccountTag cloudAccountTags;
 
-    public VraNgRegionMapping() {
-        super();
-        this.cloudAccountTags = new VraNgCloudAccountTag();
-    }
+	public VraNgRegionMapping() {
+		super();
+		this.cloudAccountTags = new VraNgCloudAccountTag();
+	}
 
-    public VraNgRegionMapping(VraNgCloudAccountTag cloudAccountTags) {
-        this.cloudAccountTags = cloudAccountTags;
-    }
+	public VraNgRegionMapping(VraNgCloudAccountTag cloudAccountTags) {
+		this.cloudAccountTags = cloudAccountTags;
+	}
 
-    public VraNgCloudAccountTag getCloudAccountTags() {
-        return this.cloudAccountTags;
-    }
+	public VraNgCloudAccountTag getCloudAccountTags() {
+		return this.cloudAccountTags;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        throw new NotImplementedException("Not implemented");
-    }
+	@Override
+	public boolean equals(Object obj) {
+		throw new NotImplementedException("Not implemented");
+	}
 
 }

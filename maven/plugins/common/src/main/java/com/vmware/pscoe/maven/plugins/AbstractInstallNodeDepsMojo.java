@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * common
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -34,7 +33,7 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 	 * The external project that is built with VMware Aria Build Tools.
 	 */
 	@Parameter(defaultValue = "${project}")
-    private MavenProject project;
+	private MavenProject project;
 
 	/**
 	 * Boolean indicating whether the Node dependencies must be installed.
@@ -48,11 +47,11 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 	private static final int MAX_NUMBER_OF_CMD_DEPS = 7000;
 
 
-    @Override
-    public final void execute() throws MojoExecutionException, MojoFailureException {
-        boolean allTgzLibsResolved = true;
+	@Override
+	public final void execute() throws MojoExecutionException, MojoFailureException {
+		boolean allTgzLibsResolved = true;
 		int commandLength = 0;
-        File nodeModules = new File(project.getBasedir(), "node_modules");
+		File nodeModules = new File(project.getBasedir(), "node_modules");
 		if (skipInstallNodeDeps) {
 			if (nodeModules.exists()) {
 				getLog().info("Skipping the Dependency installation");
@@ -64,32 +63,32 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 			}
 		}
 
-        if (!nodeModules.exists()) {
-            getLog().debug("node_modules doesn't exists. Creating it...");
-            nodeModules.mkdirs();
-        }
+		if (!nodeModules.exists()) {
+			getLog().debug("node_modules doesn't exists. Creating it...");
+			nodeModules.mkdirs();
+		}
 		
-        List<String> deps = new LinkedList<>();
+		List<String> deps = new LinkedList<>();
 
-        for (Object o : project.getArtifacts()) {
-            Artifact a = (Artifact) o;
-            if ("tgz".equals(a.getType())) {
+		for (Object o : project.getArtifacts()) {
+			Artifact a = (Artifact) o;
+			if ("tgz".equals(a.getType())) {
 				
-                deps.add(a.getFile().getAbsolutePath());
-                allTgzLibsResolved = allTgzLibsResolved && a.isResolved();
-            }
-        }
+				deps.add(a.getFile().getAbsolutePath());
+				allTgzLibsResolved = allTgzLibsResolved && a.isResolved();
+			}
+		}
 
-        if (!allTgzLibsResolved) {
-            getLog().debug("Not All .tgz plugins resolved. Executing 'mvn dependency:go-offline' first");
+		if (!allTgzLibsResolved) {
+			getLog().debug("Not All .tgz plugins resolved. Executing 'mvn dependency:go-offline' first");
 			List<String> goOfflineCmds = new LinkedList<>();
 
 			goOfflineCmds.add("mvn");
 			goOfflineCmds.add("dependency:go-offline");
 			executeProcess(goOfflineCmds, "Going Offline");
-        }
+		}
 
-        getLog().debug("Dependencies length:  " + deps.stream().mapToInt(String::length).sum());
+		getLog().debug("Dependencies length:  " + deps.stream().mapToInt(String::length).sum());
 
 		List<List<String>> dependencies = new LinkedList<List<String>>();
 		int size = 0;
@@ -113,7 +112,7 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 		String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
 
 		for (List<String> dependency: dependencies) {
-            getLog().debug("Dependency size: " + dependency.size());
+			getLog().debug("Dependency size: " + dependency.size());
 			dependency.add(0, npmExec);
 			dependency.add(1, "install");
 			if (!getLog().isDebugEnabled()) {
@@ -121,11 +120,11 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 			}
 
 			String depString = String.join(",", dependency);
-            getLog().debug("Dependency as string: " + depString);
+			getLog().debug("Dependency as string: " + depString);
 
 			executeProcess(dependency, "Dependency Installation");
 		}
-    }
+	}
 
 	/**
 	 * This method is used to execute the dependencies.

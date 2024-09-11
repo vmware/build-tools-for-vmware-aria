@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,34 +12,35 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 public class VraNgBlueprint {
 
-    private String id;
-    private String name;
-    private String content;
-    private String description;
-    private Boolean requestScopeOrg;
+	private String id;
+	private String name;
+	private String content;
+	private String description;
+	private Boolean requestScopeOrg;
 
-    public VraNgBlueprint(String id, String name, String content, String description, Boolean requestScopeOrg) {
-        this.id = id;
-        this.name = name;
-        this.content = content;
-        this.description = description;
-        this.requestScopeOrg = requestScopeOrg;
-    }
+	public VraNgBlueprint(String id, String name, String content, String description, Boolean requestScopeOrg) {
+		this.id = id;
+		this.name = name;
+		this.content = content;
+		this.description = description;
+		this.requestScopeOrg = requestScopeOrg;
+	}
 
-    public String getId() {
-        return this.id;
-    }
+	public String getId() {
+		return this.id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getName() {
+		return this.name;
+	}
 
 	public String getContent() {
 		return this.content;
@@ -52,20 +51,20 @@ public class VraNgBlueprint {
 	}
 
 	public String getDescription() {
-        return this.description;
-    }
+		return this.description;
+	}
 
-    public Boolean getRequestScopeOrg() {
-        return this.requestScopeOrg;
-    }
+	public Boolean getRequestScopeOrg() {
+		return this.requestScopeOrg;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
 
-        VraNgBlueprint other = (VraNgBlueprint) obj;
-        return this.id.equals(other.getId());
-    }
+		VraNgBlueprint other = (VraNgBlueprint) obj;
+		return this.id.equals(other.getId());
+	}
 }

@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * vrealize-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import java.util.Arrays;
 
@@ -35,53 +34,53 @@ import org.apache.maven.project.MavenProject;
 
 @Mojo(name = "release", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class ReleaseMojo extends AbstractIacMojo {
-    @Parameter(defaultValue = "${project}")
-    private MavenProject project;
+	@Parameter(defaultValue = "${project}")
+	private MavenProject project;
 
-    @Parameter(required = false, property = "dryrun", defaultValue = "false")
-    private boolean dryrun;
+	@Parameter(required = false, property = "dryrun", defaultValue = "false")
+	private boolean dryrun;
 
-    @Parameter(required = false, property = "vrang.contentType", defaultValue = "all")
-    private String contentType;
+	@Parameter(required = false, property = "vrang.contentType", defaultValue = "all")
+	private String contentType;
 
-    @Parameter(required = false, property = "vrang.contentNames")
-    private String[] contentNames;
+	@Parameter(required = false, property = "vrang.contentNames")
+	private String[] contentNames;
 
-    @Parameter(required = true, property = "vrang.version")
-    private String version;
+	@Parameter(required = true, property = "vrang.version")
+	private String version;
 
-    @Parameter(required = false, property = "vrang.releaseIfNotUpdated", defaultValue = "false")
-    private boolean releaseIfNotUpdated;
+	@Parameter(required = false, property = "vrang.releaseIfNotUpdated", defaultValue = "false")
+	private boolean releaseIfNotUpdated;
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        super.execute();
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
 
-        final String artifactType = project.getArtifact().getType();
-        final PackageType packageType = PackageType.fromExtension(artifactType);
+		final String artifactType = project.getArtifact().getType();
+		final PackageType packageType = PackageType.fromExtension(artifactType);
 
-        try {
+		try {
 
-            if (PackageType.VRANG == packageType) {
+			if (PackageType.VRANG == packageType) {
 
-                RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
-                VraNgReleaseManager releaseManager = new VraNgReleaseManager(restClient);
-                releaseManager.releaseContent(this.contentType, Arrays.asList(this.contentNames), this.version, this.releaseIfNotUpdated);
+				RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
+				VraNgReleaseManager releaseManager = new VraNgReleaseManager(restClient);
+				releaseManager.releaseContent(this.contentType, Arrays.asList(this.contentNames), this.version, this.releaseIfNotUpdated);
 
-            } else if (PackageType.ABX == packageType) {
+			} else if (PackageType.ABX == packageType) {
 
-                RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
-                AbxReleaseManager releaseManager = new AbxReleaseManager(restClient);
-                releaseManager.releaseContent(this.version, project.getBasedir());
+				RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
+				AbxReleaseManager releaseManager = new AbxReleaseManager(restClient);
+				releaseManager.releaseContent(this.version, project.getBasedir());
 
-            } else {
-                getLog().warn(String.format("Skipping release because of unsupported artifact type '%s'", artifactType));
-            }
+			} else {
+				getLog().warn(String.format("Skipping release because of unsupported artifact type '%s'", artifactType));
+			}
 
-        } catch (ConfigurationException e) {
-            getLog().error(e);
-            throw new MojoExecutionException(e, "Error processing configuration", "Error processing configuration");
-        }
-    }
+		} catch (ConfigurationException e) {
+			getLog().error(e);
+			throw new MojoExecutionException(e, "Error processing configuration", "Error processing configuration");
+		}
+	}
 
 }

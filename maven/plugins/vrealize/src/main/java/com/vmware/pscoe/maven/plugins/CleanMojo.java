@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * vrealize-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import java.io.File;
 import java.util.Optional;
@@ -36,28 +35,28 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 @Mojo(name = "clean", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class CleanMojo extends AbstractIacMojo {
-    @Parameter(defaultValue = "${project}")
-    private MavenProject project;
+	@Parameter(defaultValue = "${project}")
+	private MavenProject project;
 
-    @Parameter(required = false, property = "dryrun", defaultValue = "false")
-    private boolean dryrun;
+	@Parameter(required = false, property = "dryrun", defaultValue = "false")
+	private boolean dryrun;
 
-    @Parameter(required = true, property = "includeDependencies", defaultValue = "true")
-    private boolean includeDependencies;
-    
-    @Parameter(required = false, property = "cleanUpLastVersion", defaultValue = "false")
-    private boolean cleanUpLastVersion;
-    
-    @Parameter(required = false, property = "cleanUpOldVersions", defaultValue = "true")
-    private boolean cleanUpOldVersions;
+	@Parameter(required = true, property = "includeDependencies", defaultValue = "true")
+	private boolean includeDependencies;
+	
+	@Parameter(required = false, property = "cleanUpLastVersion", defaultValue = "false")
+	private boolean cleanUpLastVersion;
+	
+	@Parameter(required = false, property = "cleanUpOldVersions", defaultValue = "true")
+	private boolean cleanUpOldVersions;
 
-    private void deleteArtifact(Artifact a) throws MojoExecutionException {
-        PackageType pkgType = PackageType.fromExtension(a.getType());
-        String artifactFile = String.format("%s.%s-%s.package", a.getGroupId(), a.getArtifactId(), a.getVersion());
-        if (pkgType != null) {
-            getLog().info("Package: " + artifactFile);
-            getLog().info("Package type: " + pkgType.toString());
-            com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(pkgType, new File(artifactFile));
+	private void deleteArtifact(Artifact a) throws MojoExecutionException {
+		PackageType pkgType = PackageType.fromExtension(a.getType());
+		String artifactFile = String.format("%s.%s-%s.package", a.getGroupId(), a.getArtifactId(), a.getVersion());
+		if (pkgType != null) {
+			getLog().info("Package: " + artifactFile);
+			getLog().info("Package type: " + pkgType.toString());
+			com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(pkgType, new File(artifactFile));
 			try {
 				PackageStore store = getConfigurationForType(PackageType.fromExtension(a.getType()))
 					.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
@@ -70,25 +69,25 @@ public class CleanMojo extends AbstractIacMojo {
 				getLog().error(e);
 				throw new MojoExecutionException(e, "Error processing configuration", "Error processing configuration");
 			}
-        }
-    }
+		}
+	}
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        super.execute();
-        final String artifactType = project.getArtifact().getType();
-        final PackageType packageType = PackageType.fromExtension(artifactType);
-        if (packageType == null) {
-            getLog().warn(String.format("Skipping clean up because of unsupported artifact type '%s'", artifactType));
-            return;
-        }
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
+		final String artifactType = project.getArtifact().getType();
+		final PackageType packageType = PackageType.fromExtension(artifactType);
+		if (packageType == null) {
+			getLog().warn(String.format("Skipping clean up because of unsupported artifact type '%s'", artifactType));
+			return;
+		}
 
-        if (includeDependencies) {
-            for (Object o : project.getArtifacts()) {
-                deleteArtifact((Artifact) o);
-            }
-        }
-        deleteArtifact(project.getArtifact());
-    }
+		if (includeDependencies) {
+			for (Object o : project.getArtifacts()) {
+				deleteArtifact((Artifact) o);
+			}
+		}
+		deleteArtifact(project.getArtifact());
+	}
 
 }

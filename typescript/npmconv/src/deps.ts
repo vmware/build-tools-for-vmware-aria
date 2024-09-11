@@ -1,25 +1,3 @@
-import * as npm from "npm";
-import * as t from "./types";
-import * as fs from "fs-extra";
-import * as path from 'path';
-
-export class NpmProxy {
-	constructor() {}
-
-	async init() {
-		return new Promise((resolve, reject) => {
-			console.debug("Initializing npm config...");
-			npm.load({ color: true }, (err, result) => {
-				err ? reject(err) : resolve(result);
-			});
-		});
-	}
-
-	async view(packageName: string): Promise<any> {
-		const response = await new Promise((resolve, reject) => 
-			npm.commands.view([packageName], 
-				(err, res) => err ? reject(err) : resolve(res)));
-
 /*
  * #%L
  * npmconv
@@ -34,6 +12,28 @@ export class NpmProxy {
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+import * as npm from "npm";
+import * as t from "./types";
+import * as fs from "fs-extra";
+import * as path from 'path';
+
+export class NpmProxy {
+	constructor() { }
+
+	async init() {
+		return new Promise((resolve, reject) => {
+			console.debug("Initializing npm config...");
+			npm.load({ color: true }, (err, result) => {
+				err ? reject(err) : resolve(result);
+			});
+		});
+	}
+
+	async view(packageName: string): Promise<any> {
+		const response = await new Promise((resolve, reject) =>
+			npm.commands.view([packageName],
+				(err, res) => err ? reject(err) : resolve(res)));
+
 		return Object.keys(response).map(key => {
 			// strip the root level
 			return response[key];
@@ -49,8 +49,8 @@ export class NpmProxy {
 	}
 
 	async install(toDir: string): Promise<string[]> {
-		const resp = await new Promise((resolve, reject) => 
-			npm.commands.install([toDir], 
+		const resp = await new Promise((resolve, reject) =>
+			npm.commands.install([toDir],
 				(err, res) => err ? reject(err) : resolve(res)));
 
 		return (<Array<Array<string>>>resp).map(entry => {
@@ -123,7 +123,7 @@ export class DependenciesMapper {
 		if (isScoped) {
 			const [scope, nameVer] = npmRef.split('/');
 			const [npmName, npmVer] = nameVer.split("@");
-			return  { name: `${scope}/${npmName}`, version: npmVer };
+			return { name: `${scope}/${npmName}`, version: npmVer };
 		} else {
 			const [npmName, npmVer] = npmRef.split("@");
 			return { name: npmName, version: npmVer };
