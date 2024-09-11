@@ -2323,7 +2323,7 @@ declare class VraMachineService {
 	 * @param machineId
 	 */
 	attachMachineDisk(
-		attachMachineDisk: VraDiskAttachmentSpecification,
+		attachmentSpecification: VraDiskAttachmentSpecification,
 		machineId: string
 	): VraRequestTracker;
 
