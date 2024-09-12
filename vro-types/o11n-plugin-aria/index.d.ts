@@ -2186,3 +2186,677 @@ declare class VraMachineBootConfig {
 
 	constructor();
 }
+
+declare class VraMachineBootConfigSettings {
+	phoneHomeShouldWait: boolean;
+	phoneHomeFailOnTimeout: boolean;
+	phoneHomeTimeoutSeconds: number;
+
+	constructor();
+}
+
+declare class VraMachineResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraMachineService {
+	constructor();
+
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+
+	/**
+	 * Create a Machine in Synchronous manner
+	 * @param machineSpecification
+	 */
+	createMachine(machineSpecification: VraMachineSpecification): VraMachine;
+
+	/**
+	 * Shutdown a Machine
+	 * @param id
+	 */
+	shutDown(id: string): VraRequestTracker;
+
+	/**
+	 * Delete a Machine in an asynchronous manner
+	 * @param machine
+	 * @param forceDelete
+	 */
+	deleteMachine(machine: VraMachine, forceDelete: boolean): VraRequestTracker;
+
+	/**
+	 * Resets a Machine
+	 * @param id
+	 */
+	reset(id: string): VraRequestTracker;
+
+	/**
+	 * Resize a Machine.
+	 * @param id
+	 * @param name
+	 * @param cpuCount
+	 * @param memoryInMB
+	 * @param coreCount
+	 * @param rebootMachine
+	 */
+	resize(
+		id: string,
+		name: string,
+		cpuCount: string,
+		memoryInMB: string,
+		coreCount: string,
+		rebootMachine: boolean
+	): VraRequestTracker;
+
+	/**
+	 * Reboot a Machine
+	 * @param id
+	 */
+	reboot(id: string): VraRequestTracker;
+
+	/**
+	 * Power-on a Machine
+	 * @param id
+	 */
+	powerOn(id: string): VraRequestTracker;
+
+	/**
+	 * Revert Machine Snapshot.
+	 * @param machineId
+	 * @param snapshotId
+	 */
+	revertMachineSnapshot(
+		machineId: string,
+		snapshotId: string
+	): VraRequestTracker;
+
+	/**
+	 * Power-off a Machine
+	 * @param id
+	 */
+	powerOff(id: string): VraRequestTracker;
+
+	/**
+	 * Create a Machine in an asynchronous manner
+	 * @param machineSpecification
+	 */
+	createMachineAsync(
+		machineSpecification: VraMachineSpecification
+	): VraRequestTracker;
+
+	/**
+	 * Create Machine Snapshot.
+	 * @param machineId
+	 * @param snapshotSpecification
+	 */
+	createMachineSnapshot(
+		machineId: string,
+		snapshotSpecification: VraSnapshotSpecification
+	): VraRequestTracker;
+
+	/**
+	 * Update a Machine
+	 * @param machine
+	 * @param updateMachineSpecification
+	 */
+	updateMachine(
+		machine: VraMachine,
+		updateMachineSpecification: VraUpdateMachineSpecification
+	): VraMachine;
+
+	/**
+	 * Detach Disk from machine
+	 * @param machineId
+	 * @param diskId
+	 */
+	detachMachineDisk(machineId: string, diskId: string): VraRequestTracker;
+
+	/**
+	 * Attach machine disk to a machine.
+	 * @param attachMachineDisk
+	 * @param machineId
+	 */
+	attachMachineDisk(
+		attachmentSpecification: VraDiskAttachmentSpecification,
+		machineId: string
+	): VraRequestTracker;
+
+	/**
+	 * Delete Machine Snapshot.
+	 * @param machineId
+	 * @param snapshotId
+	 */
+	deleteMachineSnapshot(
+		machineId: string,
+		snapshotId: string
+	): VraRequestTracker;
+}
+
+declare class VraUpdateMachineSpecification {
+	description: string;
+	tags: Object[];
+
+	constructor();
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraUpdateMachineSpecification;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraUpdateMachineSpecification;
+}
+
+declare class VraSnapshotSpecification {
+	owner: string;
+	createdAt: string;
+	snapshotMemory: boolean;
+	name: string;
+	description: string;
+	id: string;
+	orgId: string;
+	updatedAt: string;
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraSnapshotSpecification;
+
+	/**
+	 * @param key
+	 * @param linksItem
+	 */
+	putLinksItem(key: string, linksItem: VraHref): VraSnapshotSpecification;
+}
+
+declare class VraMachineSpecification {
+	image: string;
+	disks: Object[];
+	imageDiskConstraints: Object[];
+	description: string;
+	constraints: Object[];
+	machineCount: number;
+	tags: Object[];
+	flavor: string;
+	saltConfiguration: VraSaltConfiguration;
+	bootConfigSettings: VraMachineBootConfigSettings;
+	deploymentId: string;
+	bootConfig: VraMachineBootConfig;
+	nics: Object[];
+	name: string;
+	flavorRef: string;
+	remoteAccess: VraRemoteAccessSpecification;
+	imageRef: string;
+	projectId: string;
+
+	constructor();
+
+	/**
+	 * @param nicsItem
+	 */
+	addNicsItem(
+		nicsItem: VraNetworkInterfaceSpecification
+	): VraMachineSpecification;
+
+	/**
+	 * @param imageDiskConstraintsItem
+	 */
+	addImageDiskConstraintsItem(
+		imageDiskConstraintsItem: VraConstraint
+	): VraMachineSpecification;
+
+	/**
+	 * @param constraintsItem
+	 */
+	addConstraintsItem(constraintsItem: VraConstraint): VraMachineSpecification;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraMachineSpecification;
+
+	/**
+	 * @param disksItem
+	 */
+	addDisksItem(
+		disksItem: VraDiskAttachmentSpecification
+	): VraMachineSpecification;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraMachineSpecification;
+}
+
+/**
+ * Represents a specification for machine's remote access settings.
+ */
+declare class VraRemoteAccessSpecification {
+	password: string;
+	sshKey: string;
+	keyPair: string;
+	authentication: string;
+	username: string;
+
+	constructor();
+}
+
+declare class VraMachinesFolder {
+	name: string;
+
+	constructor();
+}
+
+/**
+ * State object representing a query result of network profiles.
+ */
+declare class VraNetworkProfileResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraNetworkProfileService {
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+}
+
+declare class VraNetworkService {
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+
+	/**
+	 * Delete a network in an asynchronous manner.
+	 * @param networkId
+	 * @param forceDelete
+	 */
+	deleteNetwork(networkId: string, forceDelete: boolean): VraRequestTracker;
+
+	/**
+	 * Create a network Provision a new network based on the passed in constraints. The network should be destroyed after the machine is destroyed to free up resources.
+	 * @param networkSpecification
+	 */
+	createNetwork(
+		networkSpecification: VraNetworkSpecification
+	): VraRequestTracker;
+}
+
+/**
+ * Specification for a cloud network
+ */
+declare class VraNetworkSpecification {
+	deploymentId: string;
+	outboundAccess: boolean;
+	name: string;
+	description: string;
+	createGateway: boolean;
+	constraints: Object[];
+	projectId: string;
+	tags: Object[];
+
+	constructor();
+
+	/**
+	 * @param constraintsItem
+	 */
+	addConstraintsItem(constraintsItem: VraConstraint): VraNetworkSpecification;
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraNetworkSpecification;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraNetworkSpecification;
+}
+
+declare class VraProjectResourceMetadataSpecification {
+	tags: Object[];
+
+	constructor();
+
+	/**
+	 * @param tagsItem
+	 */
+	addTagsItem(tagsItem: VraTag): VraProjectResourceMetadataSpecification;
+}
+
+declare class VraProjectResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraProjectService {
+	constructor();
+
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+
+	/**
+	 * Update project resource metadata by a given project id.
+	 * @param id
+	 * @param projectResourceMetadataSpecification
+	 */
+	updateProjectResourceMetadata(
+		id: string,
+		projectResourceMetadataSpecification: VraProjectResourceMetadataSpecification
+	): VraProject;
+
+	/**
+	 * Updates a project by id.
+	 * @param id
+	 * @param projectSpecification
+	 */
+	updateProject(
+		id: string,
+		projectSpecification: VraProjectSpecification
+	): VraProject;
+
+	/**
+	 * Deletes a project with a given Project object.
+	 * @param project
+	 */
+	deleteProject(project: VraProject): void;
+
+	/**
+	 * Creates a project.
+	 * @param request
+	 */
+	createProject(request: VraProjectSpecification): VraProject;
+
+	/**
+	 * Deletes a project with a given id.
+	 * @param id
+	 */
+	deleteProjectById(id: string): void;
+}
+
+/**
+ * Represents a specification for a project.
+ */
+declare class VraProjectSpecification {
+	viewers: Object[];
+	machineNamingTemplate: string;
+	sharedResources: boolean;
+	operationTimeout: number;
+	members: Object[];
+	zoneAssignmentConfigurations: Object[];
+	name: string;
+	placementPolicy: string;
+	description: string;
+	administrators: Object[];
+
+	constructor();
+
+	/**
+	 * @param key
+	 * @param constraintsItem
+	 */
+	putConstraintsItem(
+		key: string,
+		constraintsItem: VraConstraint[]
+	): VraProjectSpecification;
+
+	/**
+	 * @param zoneAssignmentConfigurationsItem
+	 */
+	addZoneAssignmentConfigurationsItem(
+		zoneAssignmentConfigurationsItem: VraZoneAssignmentSpecification
+	): VraProjectSpecification;
+
+	/**
+	 * @param membersItem
+	 */
+	addMembersItem(membersItem: VraUser): VraProjectSpecification;
+
+	/**
+	 * @param viewersItem
+	 */
+	addViewersItem(viewersItem: VraUser): VraProjectSpecification;
+
+	/**
+	 * @param administratorsItem
+	 */
+	addAdministratorsItem(administratorsItem: VraUser): VraProjectSpecification;
+
+	/**
+	 * @param key
+	 * @param customPropertiesItem
+	 */
+	putCustomPropertiesItem(
+		key: string,
+		customPropertiesItem: string
+	): VraProjectSpecification;
+}
+
+/**
+ * State object representing a query result of regions.
+ */
+declare class VraRegionResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraRequestTrackerResult {
+	readonly numberOfElements: number;
+	readonly internalIdString: string;
+	host: VraHost;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+/**
+ * State object representing a query result of storage profiles.
+ */
+declare class VraStorageProfileResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraStorageProfileService {
+	constructor();
+
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+}
+
+/**
+ * State object representing a query result of tags.
+ */
+declare class VraTagResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraTagsService {
+	constructor();
+
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+}
+
+declare class VraZoneAssignmentSpecification {
+	storageLimitGB: number;
+	cpuLimit: number;
+	memoryLimitMB: number;
+	zoneId: string;
+	maxNumberInstances: number;
+	priority: number;
+
+	constructor();
+}
+
+declare class VraZoneResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+/**
+ * State object representing a query result of fabric networks.
+ */
+declare class VraFabricNetworkResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+/**
+ * State object representing a query result of flavor profiles.
+ */
+declare class VraFlavorProfileResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraFlavorProfileService {
+	constructor();
+
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+}
+
+/**
+ * HostManager provides all the CRUD operations for VMware Aria Automation Plugin along with Generic Rest Client support.
+ */
+declare class VraHostManager {
+	readonly defaultHostData: VraHost; 
+
+	/**
+	 * Save Automation Host object.
+	 * @param props
+	 */
+	save(props: Object): string;
+
+	/**
+	 * Update Automation Host object.
+	 * @param props
+	 * @param host
+	 */
+	update(props: Object, host: VraHost): void;
+
+	/**
+	 * Creates a dynamic Automation Host.
+	 * @param properties
+	 */
+	createHost(properties: Object): VraHost;
+
+	/**
+	 * Creates a temporary host with the current user host and credentials.
+	 */
+	createHostForCurrentUser(): VraHost;
+
+	/**
+	 * Get All Automation Host by ConnectionType.
+	 * @param connectionType
+	 */
+	findHostsByType(connectionType: string): VraHost[];
+
+	/**
+	 * Delete Automation Host.
+	 * @param host
+	 */
+	delete(host: VraHost): void;
+
+	/**
+	 * Validate Automation Host.
+	 * @param host
+	 */
+	validate(host: VraHost): boolean;
+
+	/**
+	 * Get Automation Host by Sid.
+	 * @param sid
+	 */
+	getHostBySid(sid: string): VraHost;
+}
+
+/**
+ * State object representing a query result of image profiles.
+ */
+declare class VraImageProfileResult {
+	readonly numberOfElements: number;
+	readonly content: Object[];
+	readonly totalElements: number;
+
+	constructor();
+}
+
+declare class VraImageProfileService {
+	constructor();
+
+	/**
+	 * @param genericRestClient
+	 */
+	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+}
+
+declare class VraInfrastructure {
+	readonly displayName;
+	name: string;
+
+	constructor();
+}
