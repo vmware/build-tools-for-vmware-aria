@@ -2783,7 +2783,7 @@ declare class VraFlavorProfileService {
  * HostManager provides all the CRUD operations for VMware Aria Automation Plugin along with Generic Rest Client support.
  */
 declare class VraHostManager {
-	readonly defaultHostData;
+	readonly defaultHostData: VraHost; 
 
 	/**
 	 * Save Automation Host object.
@@ -2796,7 +2796,7 @@ declare class VraHostManager {
 	 * @param props
 	 * @param host
 	 */
-	update(props: Object, host: VraHost): string;
+	update(props: Object, host: VraHost): void;
 
 	/**
 	 * Creates a dynamic Automation Host.
@@ -2806,7 +2806,6 @@ declare class VraHostManager {
 
 	/**
 	 * Creates a temporary host with the current user host and credentials.
-	 * @param id
 	 */
 	createHostForCurrentUser(): VraHost;
 
