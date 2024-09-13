@@ -5,26 +5,26 @@ services:
     restart: always
     networks:
       infranet:
-        ipv4_address: 172.18.0.10
+        ipv4_address: 172.19.0.10
     ports:
       - 80:80 # Web Interface
     hostname: "infra.corp.local"
     volumes:
       - "./nginx:/etc/nginx/"
   nexus:
-    image: klo2k/nexus3 # Mac
-    #image: sonatype/nexus3 # Linux
+    image: sonatype/nexus3 # Linux
+    #image: klo2k/nexus3 # Mac
     container_name: nexus
     hostname: "nexus.corp.local"
     environment:
       NEXUS_CONTEXT: nexus
     networks:
       infranet:
-        ipv4_address: 172.18.0.11
+        ipv4_address: 172.19.0.11
     extra_hosts:
-      - "gitlab.corp.local:172.18.0.12"
+      - "gitlab.corp.local:172.19.0.12"
     ports:
-     - 8081:8081 # Web Interface
+     - 8081:8081 # Web Interfac
     volumes:
       - "nexus-data:/var/sonatype/work"
     restart: always
@@ -34,8 +34,8 @@ services:
         soft: 32000
         hard: 40000
   gitlab:
-    image: yrzr/gitlab-ce-arm64v8 # Mac
-    #image: gitlab/gitlab-ce # Linux
+    image: gitlab/gitlab-ce # Linux
+    #image: yrzr/gitlab-ce-arm64v8 # Mac
     container_name: gitlab-ce
     restart: always
     environment:
@@ -43,9 +43,9 @@ services:
         external_url 'http://infra.corp.local/gitlab'
     networks:
       infranet:
-        ipv4_address: 172.18.0.12
+        ipv4_address: 172.19.0.12
     extra_hosts:
-      - "infra.corp.local:172.18.0.10"
+      - "infra.corp.local:172.19.0.10"
     ports:
       - 8082:80 # Web Interface
       - 8022:22 # SSH
@@ -61,11 +61,11 @@ services:
     hostname: "gitlab-runner.corp.local"
     networks:
       infranet:
-        ipv4_address: 172.18.0.13
+        ipv4_address: 172.19.0.13
     extra_hosts:
-      - "infra.corp.local:172.18.0.10"
-      - "nexus.corp.local:172.18.0.11"
-      - "gitlab.corp.local:172.18.0.12"
+      - "infra.corp.local:172.19.0.10"
+      - "nexus.corp.local:172.19.0.11"
+      - "gitlab.corp.local:172.19.0.12"
     ports:
       - 2811:2811
     volumes:
@@ -85,4 +85,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.18.0.0/24
+        - subnet: 172.19.0.0/24

@@ -25,7 +25,7 @@ This file serves as a guide to create a minimal infrastructure example using con
     - [yrzr/gitlab-ce-arm64v8](yrzr/gitlab-ce-arm64v8) for M1+ Mac.
 - [gitlab/gitlab-runner](https://hub.docker.com/r/gitlab/gitlab-runner)
 
-Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Aria Build Tools](../README.md) project.
+Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](../README.md) project.
 
 We will also be guiding you through configuring the applications and setting up a new project and building it end-to-end.
 
@@ -35,17 +35,19 @@ Please contribute back to this document if you find out of date contents or have
 
 ## Installation
 Before proceeding, make sure you have the following installed on your system:
-- [Docker](https://www.docker.com/get-started/) - Important to configure the docker host to automatically start after reboot and add docker to PATH.
+- [Docker Engine](https://docs.docker.com/engine/install/) - Important to configure the docker host to automatically start after reboot and add docker to PATH.
     ```
     systemctl start docker
     systemctl enable docker
     export PATH=$PATH:~/.docker/bin
     ```
-- [Docker Compose](https://docs.docker.com/compose/install/#install-compose) - Should be bundled with `Docker Desktop`.
+- [Docker Compose](https://docs.docker.com/compose/install)
 - [Open JDK 17](https://openjdk.org/install/)
-- [Maven](https://maven.apache.org/index.html)
-- [NodeJS 14.21.03](https://nodejs.org/en/download/package-manager)
+- [Maven](https://maven.apache.org/)
+- [NodeJS 14.21.03](https://nodejs.org/en/download/package-manager) - Use the nvm version for your OS.
 - [npm 6.14.18](https://nodejs.org/en/download/package-manager) - Should be bundled with `NodeJS`.
+
+For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
 
 ## Validation
 Validate all of the prerequisites are available in the Terminal:
@@ -57,7 +59,7 @@ mvn -v
 java --version
 ```
 
-The latest versions used to test this guide are as follows:
+The latest versions used to test this guide on Ubuntu are as follows:
 ```
 Docker version 27.0.3
 NodeJS version 14.21.3
@@ -82,7 +84,7 @@ To get started, follow the steps below:
 
 2. Navigate to the `infrastructure` folder:
     ```
-    cd infrastructure
+    cd build-tools-for-vmware-aria/infrastructure
     ```
 
 3. Create the custom Maven GitLab Runner image by executing:
@@ -93,13 +95,23 @@ To get started, follow the steps below:
 4. Open the [docker-compose.yml](docker-compose.yml) file:
     - Depending on your host OS uncomment the `image` property under the `gitlab` and `nexus` services either tagged with `# Mac` or `# Linux`.
     - `OPTIONAL` Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](./nginx/conf.d/main.conf).
+    
+5. Add the nginx container and the docker internal host endpoints to your `hosts` file.  
+    - Docker provides an internal DNS server in user-defined networks (infranet) to resolve container names to their internal IP addresses. Since your nginx and GitLab services are part of the infranet network, they can communicate using their Docker defined hostnames.
 
-5. Run the [docker-compose.yml](docker-compose.yml) file:
+    - We are going to be accessing the containers from the nginx reverse proxy. For this you need to manually edit the /etc/hosts file on your host machine:
+
+    - Add the following records to the `/etc/hosts` file.
+        ```
+        127.0.0.1 infra.corp.local
+        ```
+
+6. Run the [docker-compose.yml](docker-compose.yml) file:
     ```bash
     docker compose up -d
     ```
 
-6. Validate the containers are created:
+7. Validate the containers are created:
     ```bash
     docker ps
     ```
@@ -113,27 +125,11 @@ To get started, follow the steps below:
     17ba02a491e8   gitlab/gitlab-runner     "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes             0.0.0.0:2811->2811/tcp                                gitlab-runner
     ```
 
-7. Wait until all containers are up and running, which might take a few minutes:
-    - nginx - [localhost](http://localhost)
-    - Nexus - [localhost:8081](http://localhost:8081)
-    - GitLab - [localhost:8082](http://localhost:8082)
-    - GitLab Runner - [localhost:2811](http://localhost:2811) (*no http web interface*)
-
-8. Add the nginx container endpoint to your `hosts` file.  
-    - Docker provides an internal DNS server in user-defined networks (infranet) to resolve container names to their internal IP addresses. Since your nginx and GitLab services are part of the infranet network, they can communicate using their Docker defined hostnames.
-
-    - We are going to be accessing the containers from the nginx reverse proxy. For this you need to manually edit the /etc/hosts file on your host machine:
-
-    - Add the following records to the `/etc/hosts` file.
-        ```
-        127.0.0.1    infra.corp.local
-        ```
-
-    - You should now be able to access the containers via:
-        - nginx - [infra.corp.local](http://infra.corp.local)
-        - Nexus - [infra.corp.local/nexus](http://infra.corp.local/nexus)
-        - GitLab - [infra.corp.local/gitlab](http://infra.corp.local/gitlab)
-        - GitLab Runner - [infra.corp.local/gitlab-runner](http://infra.corp.local/gitlab-runner) (*no http web interface*)
+8. Wait until all containers are up and running, which might take a few minutes:
+    - nginx - [infra.corp.local](http://infra.corp.local)
+    - Nexus - [infra.corp.local/nexus](http://infra.corp.local/nexus)
+    - GitLab - [infra.corp.local/gitlab](http://infra.corp.local/gitlab)
+    - GitLab Runner - [infra.corp.local/gitlab-runner](http://infra.corp.local/gitlab-runner) (*no http web interface*)
 
 # Application Setup
 
