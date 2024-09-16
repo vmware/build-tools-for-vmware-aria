@@ -39,6 +39,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Fixed bug with exports
+
+#### Previous Behavior
+
+Running a workflow resulted in ERROR (com.vmware.pscoe.library.ecmascript/Module) Error in (Dynamic Script Module name : Module#18) ReferenceError: "exports" is not defined.
+
+#### New Behavior
+
+The bug in Module.ts is fixed and an error is no longer thrown.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
