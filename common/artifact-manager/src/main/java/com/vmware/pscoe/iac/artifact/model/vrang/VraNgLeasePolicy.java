@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import com.google.gson.JsonObject;
 
@@ -22,44 +21,44 @@ import com.google.gson.JsonObject;
 */
 public class VraNgLeasePolicy {
 
-    /**
-     * Unique identifier for the policy.
-     */
+	/**
+	 * Unique identifier for the policy.
+	 */
 	private String id;
 
-    /**
-     * Name of the policy.
-     */
+	/**
+	 * Name of the policy.
+	 */
 	private String name;
 
-    /**
-     * Unique identifier for the policy type.
-     */
+	/**
+	 * Unique identifier for the policy type.
+	 */
 	private String typeId;
 
-    /**
-     * Unique identifier for the project.
-     */
+	/**
+	 * Unique identifier for the project.
+	 */
 	private String projectId;
 
-    /**
-     * Unique identifier for the organization.
-     */
+	/**
+	 * Unique identifier for the organization.
+	 */
 	private String orgId;
 
-    /**
-     * Enforcement type for the policy.
-     */
+	/**
+	 * Enforcement type for the policy.
+	 */
 	private String enforcementType;
 
-    /**
-     * Description of the policy.
-     */
+	/**
+	 * Description of the policy.
+	 */
 	private String description;
 
-    /**
-     * Definition of the policy.
-     */
+	/**
+	 * Definition of the policy.
+	 */
 	private JsonObject definition;
 	/**
 	 * Criteria of the policy.

@@ -1,3 +1,17 @@
+/*-
+ * #%L
+ * polyglotpkg
+ * %%
+ * Copyright (C) 2023 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import { Logger } from 'winston';
 
 import { PackagerOptions, ActionType, ActionRuntime, Events, NodeJsActionRuntimes, PythonActionRuntimes, PowershellActionRuntimes } from "./lib/model";
@@ -22,21 +36,6 @@ export class Packager extends EventEmitter {
 		// Collect list of actions included in the project
 		const projectActions = await getProjectActions(this.options, <ActionType>this.options.env);
 
-		/*-
-		 * #%L
-		 * polyglotpkg
-		 * %%
-		 * Copyright (C) 2023 - 2024 VMware
-		 * %%
-		 * Build Tools for VMware Aria
-		 * Copyright 2023 VMware, Inc.
-		 *
-		 * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
-		 *
-		 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
-		 * #L%
-		 */
-
 		// Loop all actions found and execute the packager for each of them
 		for (var i = 0; i < projectActions.length; i++) {
 			const actionType = projectActions[i].actionType;
@@ -60,7 +59,6 @@ export class Packager extends EventEmitter {
 				case PythonActionRuntimes.includes(actionRuntime as ActionRuntime):
 					strategy = new PythonStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
 					break;
-
 				default:
 					throw new Error(`Action runtime ${actionRuntime} is not yet supported`);
 			}

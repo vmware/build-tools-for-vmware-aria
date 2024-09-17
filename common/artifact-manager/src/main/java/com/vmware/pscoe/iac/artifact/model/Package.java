@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model;
-
 /*
  * #%L
  * artifact-manager
@@ -14,32 +12,33 @@ package com.vmware.pscoe.iac.artifact.model;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model;
 
 public final class Package implements Comparable<Package> {
 	/**
 	 * The package type.
 	 */
-    private final PackageType type;
+	private final PackageType type;
 
 	/**
 	 * The package id.
 	 */
-    private final String id;
+	private final String id;
 
 	/**
 	 * The package name.
 	 */
-    private final String name;
+	private final String name;
 
 	/**
 	 * The package version.
 	 */
-    private final String version;
+	private final String version;
 
 	/**
 	 * The package file system path.
 	 */
-    private String filesystemPath;
+	private String filesystemPath;
 
 	/**
 	 *
@@ -49,96 +48,96 @@ public final class Package implements Comparable<Package> {
 	 * @param packageVersion The package version
 	 * @param packageFilesystemPath The package file system path
 	 */
-    protected Package(final PackageType packageType, final String packageId, final String packageName, final String packageVersion, final String packageFilesystemPath) {
-        this.type = packageType;
-        this.id = packageId;
-        this.name = packageName;
-        this.version = packageVersion;
-        this.filesystemPath = packageFilesystemPath;
-    }
+	protected Package(final PackageType packageType, final String packageId, final String packageName, final String packageVersion, final String packageFilesystemPath) {
+		this.type = packageType;
+		this.id = packageId;
+		this.name = packageName;
+		this.version = packageVersion;
+		this.filesystemPath = packageFilesystemPath;
+	}
 
 	/**
 	 *
 	 * @return returns the package type
 	 */
-    public PackageType getType() {
-        return type;
-    }
+	public PackageType getType() {
+		return type;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getVersion() {
-        return version;
-    }
+	public String getVersion() {
+		return version;
+	}
 
-    public String getFilesystemPath() {
-        return filesystemPath;
-    }
+	public String getFilesystemPath() {
+		return filesystemPath;
+	}
 
 	public void setFilesystemPath(String filesystemPath) {
 		this.filesystemPath = filesystemPath;
 	}
 
-    public boolean hasVersionQualifier() {
-        return this.version != null && this.version.length() > 0;
-    }
+	public boolean hasVersionQualifier() {
+		return this.version != null && this.version.length() > 0;
+	}
 
-    public boolean isSnapshot() {
-        return this.hasVersionQualifier() && this.version.toUpperCase().endsWith("-SNAPSHOT");
-    }
+	public boolean isSnapshot() {
+		return this.hasVersionQualifier() && this.version.toUpperCase().endsWith("-SNAPSHOT");
+	}
 
-    public String getFQName() {
-        return name + (hasVersionQualifier() ? "-" + version : "");
-    }
+	public String getFQName() {
+		return name + (hasVersionQualifier() ? "-" + version : "");
+	}
 
-    @Override
-    public int compareTo(Package b) {
-        Package a = this;
+	@Override
+	public int compareTo(Package b) {
+		Package a = this;
 
-        if (b == null) {
-            throw new NullPointerException("Object to be compared is Null.");
-        }
+		if (b == null) {
+			throw new NullPointerException("Object to be compared is Null.");
+		}
 
-        if (!a.getClass().equals(b.getClass()) || !a.name.equals(b.name)) {
-            throw new ClassCastException("Cannot compare the versions of packages with different names.");
-        }
+		if (!a.getClass().equals(b.getClass()) || !a.name.equals(b.name)) {
+			throw new ClassCastException("Cannot compare the versions of packages with different names.");
+		}
 
-        if (a.version == null && b.version == null) {
-            return 0;
-        }
+		if (a.version == null && b.version == null) {
+			return 0;
+		}
 
-        if (a.version == null) {
-            return -1;
-        }
+		if (a.version == null) {
+			return -1;
+		}
 
-        if (b.version == null) {
-            return 1;
-        }
-        
-        return new Version(a.version).compareTo(new Version(b.version));
-    }
+		if (b.version == null) {
+			return 1;
+		}
+		
+		return new Version(a.version).compareTo(new Version(b.version));
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
-        return this.toString().equals(obj.toString());
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
+		return this.toString().equals(obj.toString());
+	}
 
-    @Override
-    public String toString() {
-        if (hasVersionQualifier()) {
-            return getName() + "-" + getVersion() + "." + type.getPackageExtention();
-        } else {
-            return getName() + "." + type.getPackageExtention();
-        }
-    }
+	@Override
+	public String toString() {
+		if (hasVersionQualifier()) {
+			return getName() + "-" + getVersion() + "." + type.getPackageExtention();
+		} else {
+			return getName() + "." + type.getPackageExtention();
+		}
+	}
 
 }

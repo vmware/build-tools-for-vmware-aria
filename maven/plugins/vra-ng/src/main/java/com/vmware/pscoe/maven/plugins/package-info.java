@@ -1,8 +1,3 @@
-/**
- * This module is about vra-ng pull operation.
- */
-package com.vmware.pscoe.maven.plugins;
-
 /*-
  * #%L
  * vra-ng-package-maven-plugin
@@ -17,3 +12,8 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+
+/**
+ * This module is about vra-ng pull operation.
+ */
+package com.vmware.pscoe.maven.plugins;

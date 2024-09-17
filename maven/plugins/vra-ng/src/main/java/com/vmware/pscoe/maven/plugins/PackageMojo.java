@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * vra-ng-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import com.vmware.pscoe.iac.artifact.PackageManager;
 import com.vmware.pscoe.iac.artifact.model.Package;
@@ -41,14 +40,14 @@ public class PackageMojo extends AbstractMojo {
 	private MavenProject project;
 
 	@Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 		
 		getLog().info("basedir " + project.getBasedir());
 		File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.VRANG.getPackageExtention());
 		getLog().info("Target vRA NG package file " + pkgFile.getAbsolutePath());
 		
-        Package pkg = PackageFactory.getInstance(PackageType.VRANG, pkgFile);
+		Package pkg = PackageFactory.getInstance(PackageType.VRANG, pkgFile);
 		try {
 
 			getLog().info("Packaging vRA NG bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());
@@ -61,10 +60,10 @@ public class PackageMojo extends AbstractMojo {
 				mgr.addTextFileToExistingZip(contentFile, Paths.get("."));
 			}
 
-	        project.getArtifact().setFile(pkgFile);
+			project.getArtifact().setFile(pkgFile);
 		} catch (IOException e) {
-            String message = String.format("Error creating vRA NG bundle: %s", e.getMessage());
-            throw new MojoExecutionException(e, message, message);
+			String message = String.format("Error creating vRA NG bundle: %s", e.getMessage());
+			throw new MojoExecutionException(e, message, message);
 		}
 	}
 

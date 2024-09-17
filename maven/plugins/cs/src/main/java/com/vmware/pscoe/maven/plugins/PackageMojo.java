@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * cs-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,28 +32,28 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project.build.directory}", readonly = true)
-    private File directory;
+	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
+	private File directory;
 
-    @Parameter(defaultValue = "${project}")
-    private MavenProject project;
+	@Parameter(defaultValue = "${project}")
+	private MavenProject project;
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 
-        getLog().info("basedir " + project.getBasedir());
-        File pkgFile = new File(directory,
-                pkgInfoProvider.getPackageName() + "." + PackageType.CS.getPackageExtention());
-        getLog().info("Target CS package file " + pkgFile.getAbsolutePath());
+		getLog().info("basedir " + project.getBasedir());
+		File pkgFile = new File(directory,
+				pkgInfoProvider.getPackageName() + "." + PackageType.CS.getPackageExtention());
+		getLog().info("Target CS package file " + pkgFile.getAbsolutePath());
 
-        com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(PackageType.CS, pkgFile);
-        try {
-            getLog().info("Packaging CS bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());
-            new PackageManager(pkg).pack(pkgInfoProvider.getSourceDirectory());
-            project.getArtifact().setFile(pkgFile);
-        } catch (IOException e) {
-            throw new MojoExecutionException(e, "Error creating CS bundle", "Error creating CS bundle");
-        }
-    }
+		com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(PackageType.CS, pkgFile);
+		try {
+			getLog().info("Packaging CS bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());
+			new PackageManager(pkg).pack(pkgInfoProvider.getSourceDirectory());
+			project.getArtifact().setFile(pkgFile);
+		} catch (IOException e) {
+			throw new MojoExecutionException(e, "Error creating CS bundle", "Error creating CS bundle");
+		}
+	}
 
 }

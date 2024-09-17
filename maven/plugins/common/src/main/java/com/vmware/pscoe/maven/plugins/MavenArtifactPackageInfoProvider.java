@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * common
@@ -14,33 +12,34 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import org.apache.maven.artifact.Artifact;
 
 public class MavenArtifactPackageInfoProvider implements PackageInfoProvider {
-    private Artifact artifact;
+	private Artifact artifact;
 
-    public MavenArtifactPackageInfoProvider(Artifact artifact) {
-        this.artifact = artifact;
-    }
+	public MavenArtifactPackageInfoProvider(Artifact artifact) {
+		this.artifact = artifact;
+	}
 
-    @Override
-    public String getPackageName() {
-        return String.format("%s.%s-%s", artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
-    }
+	@Override
+	public String getPackageName() {
+		return String.format("%s.%s-%s", artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
+	}
 
-    @Override
-    public String getVersion() {
-        return artifact.getVersion();
-    }
+	@Override
+	public String getVersion() {
+		return artifact.getVersion();
+	}
 
-    @Override
-    public String getDescription() {
-        return null;
-    }
+	@Override
+	public String getDescription() {
+		return null;
+	}
 
-    @Override
-    public void setDescription(String description) {
-        // no need of implementation
-    }
+	@Override
+	public void setDescription(String description) {
+		// no need of implementation
+	}
 }

@@ -1,15 +1,3 @@
-
-
-const TSCONF_PREFIX_CHARS = ["@", "-"];
-
-
-function isJsObject(obj) {
-	return typeof obj === "object" && !Array.isArray(obj);
-}
-
-export default function tscfgmerge(archetypeTsconfig?: any, packageTsconfig?: any, mergeTsconfig?: any): any {
-	let mergedValue = undefined;
-
 /*
  * #%L
  * npmconv
@@ -24,6 +12,16 @@ export default function tscfgmerge(archetypeTsconfig?: any, packageTsconfig?: an
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+
+const TSCONF_PREFIX_CHARS = ["@", "-"];
+
+function isJsObject(obj) {
+	return typeof obj === "object" && !Array.isArray(obj);
+}
+
+export default function tscfgmerge(archetypeTsconfig?: any, packageTsconfig?: any, mergeTsconfig?: any): any {
+	let mergedValue = undefined;
+
 	let keysHandled = undefined;
 
 	if (isJsObject(packageTsconfig)) {

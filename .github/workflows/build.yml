@@ -157,7 +157,7 @@ jobs:
           tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
         with:
           name: ${{ env.ARTIFACT_FILE_NAME }}

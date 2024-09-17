@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,12 +73,12 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 	 * @param vraExtentions the vRA extensions
 	 * @param vraProductVersion the vRA product version
 	 */
-    protected VraPackageStore(final RestClientVra vraRestClient, final List<Strategy> vraStrategies, final List<PackageStoreExtention<VraPackageDescriptor>> vraExtentions, final Version vraProductVersion) {
-        this.restClient = vraRestClient;
-        this.strategies = vraStrategies;
-        this.extentions = vraExtentions;
-        super.setProductVersion(vraProductVersion);
-    }
+	protected VraPackageStore(final RestClientVra vraRestClient, final List<Strategy> vraStrategies, final List<PackageStoreExtention<VraPackageDescriptor>> vraExtentions, final Version vraProductVersion) {
+		this.restClient = vraRestClient;
+		this.strategies = vraStrategies;
+		this.extentions = vraExtentions;
+		super.setProductVersion(vraProductVersion);
+	}
 
 	/**
 	 * Gets the packages.
@@ -177,7 +176,7 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 		logger.info(String.format(PackageStore.PACKAGE_EXPORT, vraPackage));
 		Package pkg = restClient.exportPackage(vraPackage, dryrun);
 		for (PackageStoreExtention<VraPackageDescriptor> e : extentions) {
-		    e.exportPackage(pkg, null, dryrun);
+			e.exportPackage(pkg, null, dryrun);
 		}
 
 		return pkg;
@@ -200,7 +199,7 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 		}
 
 		for (PackageStoreExtention<VraPackageDescriptor> e : extentions) {
-		    e.exportPackage(resultVraPackage, vraPackageDescriptor, dryrun);
+			e.exportPackage(resultVraPackage, vraPackageDescriptor, dryrun);
 		}
 
 		return resultVraPackage;
@@ -230,10 +229,10 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 		}
 
 		for (PackageStoreExtention<VraPackageDescriptor> e : extentions) {
-            e.importPackage(resultVraPackage, dryrun);
-        }
+			e.importPackage(resultVraPackage, dryrun);
+		}
 
-        return resultVraPackage;
+		return resultVraPackage;
 	}
 
 	/**
@@ -265,9 +264,9 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 	 * @return the deleted package
 	 */
 	@Override
-    protected Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
-        return restClient.deletePackage(pkg, withContent, dryrun);
-    }
+	protected Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
+		return restClient.deletePackage(pkg, withContent, dryrun);
+	}
 
 	/**
 	 * Gets the vRA package content.
@@ -275,9 +274,9 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 	 * @return the package content
 	 */
 	@Override
-    protected final VraPackageContent getPackageContent(final Package pkg) {
-        return restClient.getPackageContentPrimitive(pkg);
-    }
+	protected final VraPackageContent getPackageContent(final Package pkg) {
+		return restClient.getPackageContentPrimitive(pkg);
+	}
 
 	/**
 	 * Deletes conent.
@@ -285,7 +284,7 @@ public class VraPackageStore extends GenericPackageStore<VraPackageDescriptor> {
 	 * @param dryrun whether it should be dry run
 	 */
 	@Override
-    protected final void deleteContent(final Content content, final boolean dryrun) {
-        restClient.deleteContentPrimitive(content, dryrun);
-    }
+	protected final void deleteContent(final Content content, final boolean dryrun) {
+		restClient.deleteContentPrimitive(content, dryrun);
+	}
 }

@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrli;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.model.vrli;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrli;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageContent;
 
 public class VrliPackageContent extends PackageContent<VrliPackageContent.ContentType> {
 	public enum ContentType implements PackageContent.ContentType {
-        ALERT, CONTENT_PACK
+		ALERT, CONTENT_PACK
 	}
 
 	public VrliPackageContent(List<Content<ContentType>> content) {
