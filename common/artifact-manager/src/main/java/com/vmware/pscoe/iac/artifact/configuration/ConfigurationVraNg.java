@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 /**
-* Important - when modify properties refer to comments in @Configuration.
-*/
+ * Important - when modify properties refer to comments in @Configuration.
+ */
 public class ConfigurationVraNg extends Configuration {
 
 	/**
@@ -107,16 +107,14 @@ public class ConfigurationVraNg extends Configuration {
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getPackageImportOverwriteMode() {
 		return this.properties.getProperty(PACKAGE_IMPORT_OVERWRITE_MODE, "SKIP,OVERWRITE");
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getAuthHost() {
@@ -127,72 +125,63 @@ public class ConfigurationVraNg extends Configuration {
 		}
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getProjectId() {
 		return this.properties.getProperty(PROJECT_ID);
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getDataCollectionDelaySeconds() {
 		return this.properties.getProperty(DATA_COLLECTION_DELAY_SECONDS);
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getProjectName() {
 		return this.properties.getProperty(PROJECT_NAME);
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getOrgId() {
 		return this.properties.getProperty(ORGANIZATION_ID);
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getOrgName() {
 		return this.properties.getProperty(ORGANIZATION_NAME);
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getVroIntegration() {
 		return this.properties.getProperty(VRO_INTEGRATION);
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getRefreshToken() {
 		return this.properties.getProperty(REFRESH_TOKEN);
 	}
 
-	
-	/** 
+	/**
 	 * @return String
 	 */
 	public String getCloudProxyName() {
 		return this.properties.getProperty(CLOUD_PROXY_NAME);
 	}
 
-	
-	/** 
+	/**
 	 * @return Integer
 	 */
 	public Integer getImportTimeout() {
@@ -206,8 +195,7 @@ public class ConfigurationVraNg extends Configuration {
 		}
 	}
 
-	
-	/** 
+	/**
 	 * @return HttpHost
 	 */
 	public HttpHost getProxy() {
@@ -219,18 +207,17 @@ public class ConfigurationVraNg extends Configuration {
 		return HttpHost.create(proxy);
 	}
 
-	
-	/** 
+	/**
 	 * @return boolean
 	 */
 	public boolean getUnreleaseBlueprintVersions() {
 		return Boolean.parseBoolean(this.properties.getProperty(UNRELEASE_BLUEPRINT_VERSIONS, "true"));
 	}
 
-	
-	/** 
+	/**
 	 * @param domainOptional is doamin optional indicator
-	 * @throws ConfigurationException throws configuration exception if validation fails
+	 * @throws ConfigurationException throws configuration exception if validation
+	 *                                fails
 	 */
 	@Override
 	public void validate(boolean domainOptional) throws ConfigurationException {
@@ -269,21 +256,22 @@ public class ConfigurationVraNg extends Configuration {
 	 * Shows deprecation warnings for different flags.
 	 */
 	public void deprecationWarnings() {
-		String[] deprecatedFlags = new String[]{
-			"bp.ignore.versions",
-			"bp.release"
+		String[] deprecatedFlags = new String[] {
+				"bp.ignore.versions",
+				"bp.release"
 		};
 
-		for (String flag: deprecatedFlags) {
-			this.logger.warn("%s has been deprecated, it is ignored. Consult the releases %s for more information", flag, "https://github.com/vmware/build-tools-for-vmware-aria/releases");
+		for (String flag : deprecatedFlags) {
+			this.logger.warn("%s has been deprecated, it is ignored. Consult the releases %s for more information",
+					flag, "https://github.com/vmware/build-tools-for-vmware-aria/releases");
 		}
 	}
 
-	
-	/** 
+	/**
 	 * @param props form properties
 	 * @return ConfigurationVraNg
-	 * @throws ConfigurationException throws configuration exception if validation fails
+	 * @throws ConfigurationException throws configuration exception if validation
+	 *                                fails
 	 */
 	public static ConfigurationVraNg fromProperties(Properties props) throws ConfigurationException {
 		ConfigurationVraNg config = new ConfigurationVraNg(props);

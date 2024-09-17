@@ -31,16 +31,19 @@ public class RestClientVroBasicAuthNInterceptor extends RestClientRequestInterce
 		super(configuration, restTemplate);
 	}
 
-	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
+			throws IOException {
 		try {
 			String username = this.getConfiguration().getUsername();
 
-			// Basic authentication could work with user without domain thus handling this case here.
+			// Basic authentication could work with user without domain thus handling this
+			// case here.
 			if (!StringUtils.isEmpty(this.getConfiguration().getDomain()) && !username.contains("@")) {
 				username += "@" + this.getConfiguration().getDomain();
 			}
 
-			return new BasicAuthorizationInterceptor(username, this.getConfiguration().getPassword()).intercept(request, body, execution);
+			return new BasicAuthorizationInterceptor(username, this.getConfiguration().getPassword()).intercept(request,
+					body, execution);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

@@ -32,7 +32,8 @@ public abstract class RestClient {
 		URIBuilder uriBuilder = new URIBuilder().setScheme("https").setHost(getConfiguration().getHost());
 		int port = getConfiguration().getPort();
 		if (port != 443) {
-			// set the port only if not default, otherwise vRA Cloud complains about invalid Host header
+			// set the port only if not default, otherwise vRA Cloud complains about invalid
+			// Host header
 			uriBuilder = uriBuilder.setPort(port);
 		}
 

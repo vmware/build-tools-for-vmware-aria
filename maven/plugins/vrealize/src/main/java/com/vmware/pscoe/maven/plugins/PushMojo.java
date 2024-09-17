@@ -54,24 +54,30 @@ public class PushMojo extends AbstractIacMojo {
 	private List<String> filesChanged;
 
 	private static Package packageFromArtifact(Artifact artifact) {
-		return PackageFactory.getInstance(PackageType.fromExtension(artifact.getType()), artifact.getFile(), new MavenArtifactPackageInfoProvider(artifact).getPackageName());
+		return PackageFactory.getInstance(PackageType.fromExtension(artifact.getType()), artifact.getFile(),
+				new MavenArtifactPackageInfoProvider(artifact).getPackageName());
 	}
 
 	private void importArtifacts(Collection<Artifact> allArtifacts) throws MojoExecutionException {
-		Map<String, List<Artifact>> artifactsByType = allArtifacts.stream().collect(Collectors.groupingBy(Artifact::getType));
-		
+		Map<String, List<Artifact>> artifactsByType = allArtifacts.stream()
+				.collect(Collectors.groupingBy(Artifact::getType));
+
 		for (Map.Entry<String, List<Artifact>> type : artifactsByType.entrySet()) {
 			PackageType pkgType = PackageType.fromExtension(type.getKey());
 			if (pkgType == null) {
 				continue;
 			}
 			try {
-				List<Package> packages = artifactsByType.get(type.getKey()).stream().map(PushMojo::packageFromArtifact).collect(Collectors.toList());
+				List<Package> packages = artifactsByType.get(type.getKey()).stream().map(PushMojo::packageFromArtifact)
+						.collect(Collectors.toList());
 				PackageStore<?> store = getConfigurationForType(PackageType.fromExtension(type.getKey()))
-						.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration))).orElseThrow(() -> new ConfigurationException(
-								"Unable to find PackageStore based on configuration. Make sure there is configuration for type: " + pkgType.name()));
+						.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
+						.orElseThrow(() -> new ConfigurationException(
+								"Unable to find PackageStore based on configuration. Make sure there is configuration for type: "
+										+ pkgType.name()));
 
-				boolean mergePackages = filesChanged.size() != 0; // it means that only a few files was selected to create the package
+				boolean mergePackages = filesChanged.size() != 0; // it means that only a few files was selected to
+																	// create the package
 				this.getLog().info("Merge Package vrealize PushMojo: " + mergePackages);
 				store.importAllPackages(packages, dryrun, mergePackages);
 			} catch (ConfigurationException e) {
@@ -94,7 +100,8 @@ public class PushMojo extends AbstractIacMojo {
 			return;
 		}
 		if (project.getArtifact().getFile() == null) {
-			throw new MojoExecutionException("You need to have the package goal as well when pushing vRealize projects.");
+			throw new MojoExecutionException(
+					"You need to have the package goal as well when pushing vRealize projects.");
 		}
 
 		LinkedList<Artifact> artifacts = new LinkedList<>();

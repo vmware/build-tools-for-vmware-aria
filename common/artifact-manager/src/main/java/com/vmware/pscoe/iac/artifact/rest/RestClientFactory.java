@@ -56,28 +56,33 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 
 public final class RestClientFactory {
 	/**
-	 * IGNORE_SSL_CERTIFICATE_VERIFICATION: Indicates whether to ignore SSL certificate verification.
+	 * IGNORE_SSL_CERTIFICATE_VERIFICATION: Indicates whether to ignore SSL
+	 * certificate verification.
 	 */
 	public static final String IGNORE_SSL_CERTIFICATE_VERIFICATION = "vrealize.ssl.ignore.certificate";
 
 	/**
-	 * IGNORE_SSL_HOSTNAME_VERIFICATION: Indicates whether to ignore SSL hostname verification.
+	 * IGNORE_SSL_HOSTNAME_VERIFICATION: Indicates whether to ignore SSL hostname
+	 * verification.
 	 */
 	public static final String IGNORE_SSL_HOSTNAME_VERIFICATION = "vrealize.ssl.ignore.hostname";
 
 	/**
-	 * CONNECTION_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to establish a connection.
+	 * CONNECTION_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for
+	 * the client to establish a connection.
 	 */
 	public static final String CONNECTION_TIMEOUT = "vrealize.connection.timeout";
 
 	/**
-	 * SOCKET_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the client to wait for a response from the server.
+	 * SOCKET_TIMEOUT: Indicates the maximum time (in milliseconds) allowed for the
+	 * client to wait for a response from the server.
 	 */
 	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
 
 	/**
-	* This logger is used to log messages and exceptions related to the creation and usage of REST clients.
- 	*/
+	 * This logger is used to log messages and exceptions related to the creation
+	 * and usage of REST clients.
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientFactory.class);
 
 	/**
@@ -171,31 +176,33 @@ public final class RestClientFactory {
 		CloseableHttpClient httpClient = httpClientBuilder.build();
 		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
 		restTemplate.getMessageConverters()
-			.add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+				.add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 		restTemplate.setErrorHandler(new ResponseErrorHandler() {
 
 			@Override
 			public boolean hasError(ClientHttpResponse response) throws IOException {
-				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN || response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
+				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN
+						|| response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
 			}
 
 			@Override
 			public void handleError(ClientHttpResponse response) throws IOException {
 				StringBuilder messageBuilder = new StringBuilder();
 				HttpHeaders headers = response.getHeaders();
-				messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText()).append("\n");
+				messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText())
+						.append("\n");
 				messageBuilder.append(headers.keySet().stream().map(
-					(String k) -> headers.get(k).stream().map(
-						h -> k + ": " + h
-					).collect(Collectors.joining("\n"))
-				).collect(Collectors.joining("\n")));
-				if (response.getBody() != null && ! response.getBody().equals("")) {
+						(String k) -> headers.get(k).stream().map(
+								h -> k + ": " + h).collect(Collectors.joining("\n")))
+						.collect(Collectors.joining("\n")));
+				if (response.getBody() != null && !response.getBody().equals("")) {
 					messageBuilder.append("\n\n");
 					String message = org.apache.commons.io.IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);
 					messageBuilder.append(message);
 				}
 
-				throw new HttpClientErrorException(response.getStatusCode(), "Invalid/Unreachable FQDN or IP address: " + messageBuilder.toString());
+				throw new HttpClientErrorException(response.getStatusCode(),
+						"Invalid/Unreachable FQDN or IP address: " + messageBuilder.toString());
 			}
 
 		});
@@ -204,28 +211,35 @@ public final class RestClientFactory {
 	}
 
 	/**
-	 * The function returns a RestClientVro object with a configured RestTemplate and
+	 * The function returns a RestClientVro object with a configured RestTemplate
+	 * and
 	 * RestClientVraNgAuthNInterceptor.
 	 * 
-	 * @param configuration The configuration parameter is an object of type ConfigurationVroNg. It is used
-	 * to provide the necessary configuration settings for the RestClientVroNg class.
+	 * @param configuration The configuration parameter is an object of type
+	 *                      ConfigurationVroNg. It is used
+	 *                      to provide the necessary configuration settings for the
+	 *                      RestClientVroNg class.
 	 * @return The method is returning an instance of the RestClientVro class.
 	 */
 	public static RestClientVro getClientVroNg(ConfigurationVroNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
-		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
+				configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVro(configuration, restTemplate);
 	}
 
 	/**
-	 * The function `getClientVro` returns a `RestClientVro` object based on the provided
+	 * The function `getClientVro` returns a `RestClientVro` object based on the
+	 * provided
 	 * `ConfigurationVro` object and authentication strategy.
 	 * 
-	 * @param configuration The "configuration" parameter is an object of type ConfigurationVro. It
-	 * contains the necessary configuration settings for creating the RestClientVro object.
+	 * @param configuration The "configuration" parameter is an object of type
+	 *                      ConfigurationVro. It
+	 *                      contains the necessary configuration settings for
+	 *                      creating the RestClientVro object.
 	 * @return The method is returning an instance of the RestClientVro class.
 	 */
 	public static RestClientVro getClientVro(ConfigurationVro configuration) {
@@ -234,14 +248,14 @@ public final class RestClientFactory {
 
 		LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
 		switch (configuration.getAuth()) {
-		case VRA:
-			interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
-			break;
-		case BASIC:
-			interceptor = new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
-			break;
-		default:
-			throw new UnsupportedOperationException("Unsupported authentication provider");
+			case VRA:
+				interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
+				break;
+			case BASIC:
+				interceptor = new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
+				break;
+			default:
+				throw new UnsupportedOperationException("Unsupported authentication provider");
 		}
 		restTemplate.getInterceptors().add(interceptor);
 
@@ -249,12 +263,16 @@ public final class RestClientFactory {
 	}
 
 	/**
-	 * The function `getClientVrops` returns a `RestClientVrops` object based on the provided
+	 * The function `getClientVrops` returns a `RestClientVrops` object based on the
+	 * provided
 	 * `ConfigurationVrops` object and authentication provider.
 	 * 
-	 * @param configuration The `configuration` parameter is an object of type `ConfigurationVrops`. It
-	 * contains the configuration settings for the vRealize Operations (vROps) REST client. This includes
-	 * information such as the vROps server URL, authentication provider, and credentials.
+	 * @param configuration The `configuration` parameter is an object of type
+	 *                      `ConfigurationVrops`. It
+	 *                      contains the configuration settings for the vRealize
+	 *                      Operations (vROps) REST client. This includes
+	 *                      information such as the vROps server URL, authentication
+	 *                      provider, and credentials.
 	 * @return The method is returning an instance of the RestClientVrops class.
 	 */
 	public static RestClientVrops getClientVrops(ConfigurationVrops configuration) {
@@ -269,7 +287,8 @@ public final class RestClientFactory {
 				interceptor = new RestClientVropsAuthNInterceptor(configuration, restTemplate);
 				break;
 			default:
-				throw new UnsupportedOperationException("Unsupported authentication provider, supported providers: BASIC, AUTH_N");
+				throw new UnsupportedOperationException(
+						"Unsupported authentication provider, supported providers: BASIC, AUTH_N");
 		}
 		restTemplate.getInterceptors().add(interceptor);
 
@@ -277,11 +296,14 @@ public final class RestClientFactory {
 	}
 
 	/**
-	 * The function getClientVra returns a RestClientVra object with a configured RestTemplate and
+	 * The function getClientVra returns a RestClientVra object with a configured
+	 * RestTemplate and
 	 * authentication interceptor.
 	 * 
-	 * @param configuration The configuration parameter is an object of type ConfigurationVra. It contains
-	 * the necessary information and settings required to configure the RestClientVra object.
+	 * @param configuration The configuration parameter is an object of type
+	 *                      ConfigurationVra. It contains
+	 *                      the necessary information and settings required to
+	 *                      configure the RestClientVra object.
 	 * @return The method is returning an instance of the RestClientVra class.
 	 */
 	public static RestClientVra getClientVra(ConfigurationVra configuration) {
@@ -290,37 +312,46 @@ public final class RestClientFactory {
 		// Default Authentication is Basic
 		// When other authentication mechanisms are introduced and interceptor
 		// has to be instantiated based on the configuration property
-		RestClientRequestInterceptor<ConfigurationVra> interceptor = new RestClientVraCafeAuthNInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVra> interceptor = new RestClientVraCafeAuthNInterceptor(
+				configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVra(configuration, restTemplate);
 	}
 
 	/**
-	 * The function returns a RestClientVraNg object with a configured RestTemplate and
+	 * The function returns a RestClientVraNg object with a configured RestTemplate
+	 * and
 	 * RestClientVraNgAuthNInterceptor.
 	 * 
-	 * @param configuration The "configuration" parameter is an instance of the ConfigurationVraNg class.
-	 * It contains the necessary information and settings for creating the RestClientVraNg object.
+	 * @param configuration The "configuration" parameter is an instance of the
+	 *                      ConfigurationVraNg class.
+	 *                      It contains the necessary information and settings for
+	 *                      creating the RestClientVraNg object.
 	 * @return The method is returning an instance of the RestClientVraNg class.
 	 */
 	public static RestClientVraNg getClientVraNg(ConfigurationVraNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 
-		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
+				configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVraNg(configuration, restTemplate);
 	}
 
 	/**
-	 * The function getClientVcd returns a RestClientVcd object with the specified configuration and
+	 * The function getClientVcd returns a RestClientVcd object with the specified
+	 * configuration and
 	 * authentication.
 	 * 
-	 * @param configuration The "configuration" parameter is an object of type ConfigurationVcd. It
-	 * contains the necessary configuration settings for connecting to a vCloud Director (vCD) instance.
-	 * This could include information such as the vCD server URL, credentials, and any other required
-	 * settings.
+	 * @param configuration The "configuration" parameter is an object of type
+	 *                      ConfigurationVcd. It
+	 *                      contains the necessary configuration settings for
+	 *                      connecting to a vCloud Director (vCD) instance.
+	 *                      This could include information such as the vCD server
+	 *                      URL, credentials, and any other required
+	 *                      settings.
 	 * @return The method is returning an instance of the RestClientVcd class.
 	 */
 	public static RestClientVcd getClientVcd(ConfigurationVcd configuration) {
@@ -330,74 +361,88 @@ public final class RestClientFactory {
 		// vCD API version is passed to Content-Type headers.
 		// No authentication is required to obtain API version
 		String apiVersion = versionRestClient.getVersion();
-		RestClientRequestInterceptor<ConfigurationVcd> interceptor = new RestClientVcdBasicAuthInterceptor(configuration, restTemplate, apiVersion);
+		RestClientRequestInterceptor<ConfigurationVcd> interceptor = new RestClientVcdBasicAuthInterceptor(
+				configuration, restTemplate, apiVersion);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVcd(configuration, restTemplate);
 	}
 
 	/**
-	 * The function returns a RestClientVrliV1 object with a configured RestTemplate and
+	 * The function returns a RestClientVrliV1 object with a configured RestTemplate
+	 * and
 	 * RestClientVrliAuthInterceptor.
 	 * 
-	 * @param configuration The "configuration" parameter is an object of type ConfigurationVrli. It is
-	 * used to provide the necessary configuration settings for the RestClientVrliV1 class.
+	 * @param configuration The "configuration" parameter is an object of type
+	 *                      ConfigurationVrli. It is
+	 *                      used to provide the necessary configuration settings for
+	 *                      the RestClientVrliV1 class.
 	 * @return The method is returning an instance of the RestClientVrliV1 class.
 	 */
 	public static RestClientVrliV1 getClientVrliV1(ConfigurationVrli configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
-		RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration,
+				restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVrliV1(configuration, restTemplate);
 	}
 
 	/**
-	 * The function returns a RestClientVrliV2 object with a configured RestTemplate and
+	 * The function returns a RestClientVrliV2 object with a configured RestTemplate
+	 * and
 	 * RestClientVrliAuthInterceptor.
 	 * 
-	 * @param configuration The configuration parameter is an object of type ConfigurationVrli. It contains
-	 * the necessary information and settings required to establish a connection with the VRli API.
+	 * @param configuration The configuration parameter is an object of type
+	 *                      ConfigurationVrli. It contains
+	 *                      the necessary information and settings required to
+	 *                      establish a connection with the VRli API.
 	 * @return The method is returning an instance of the RestClientVrliV2 class.
 	 */
 	public static RestClientVrliV2 getClientVrliV2(ConfigurationVrli configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
 
-		RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVrli> interceptor = new RestClientVrliAuthInterceptor(configuration,
+				restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVrliV2(configuration, restTemplate);
 	}
 
-/**
- * An enumeration of the different types of timeouts that can be configured for a connection.
- */
-public enum TimeoutType {
 	/**
-	 * The connection timeout type.
-	 * This represents the maximum time in milliseconds to wait for a connection to be established before giving up.
+	 * An enumeration of the different types of timeouts that can be configured for
+	 * a connection.
 	 */
-	CONNECTION,
+	public enum TimeoutType {
+		/**
+		 * The connection timeout type.
+		 * This represents the maximum time in milliseconds to wait for a connection to
+		 * be established before giving up.
+		 */
+		CONNECTION,
 
-	/**
-	 * The socket timeout type.
-	 * This represents the maximum time in milliseconds to wait for data to be received after a connection has been established before giving up.
-	 */
-	SOCKET
-}
-	
+		/**
+		 * The socket timeout type.
+		 * This represents the maximum time in milliseconds to wait for data to be
+		 * received after a connection has been established before giving up.
+		 */
+		SOCKET
+	}
+
 	/**
 	 * The function returns a RestClientCs object with a configured RestTemplate and
 	 * RestClientRequestInterceptor.
 	 * 
-	 * @param configuration An object of type ConfigurationCs, which contains the configuration settings
-	 * for the RestClientCs.
+	 * @param configuration An object of type ConfigurationCs, which contains the
+	 *                      configuration settings
+	 *                      for the RestClientCs.
 	 * @return The method is returning an instance of the RestClientCs class.
 	 */
 	public static RestClientCs getClientCs(ConfigurationCs configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
-		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
+				configuration, restTemplate);
 		restTemplate.getInterceptors().add(interceptor);
 		return new RestClientCs(configuration, restTemplate);
 	}

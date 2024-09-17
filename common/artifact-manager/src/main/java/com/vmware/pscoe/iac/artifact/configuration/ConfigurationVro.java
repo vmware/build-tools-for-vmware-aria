@@ -46,7 +46,7 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	public static final String PACKAGE_EXPORT_VERSION_HISTORY = "packageExportVersionHistory";
 	public static final String PACKAGE_EXPORT_CONFIGURATION_ATTRIBUTE_VALUES = "packageExportConfigurationAttributeValues";
 	public static final String PACKAGE_EXPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES = "packageExportConfigSecureStringAttributeValues";
-	public static final String PACKAGE_EXPORT_GLOBAL_TAGS= "packageExportGlobalTags";
+	public static final String PACKAGE_EXPORT_GLOBAL_TAGS = "packageExportGlobalTags";
 
 	public static final String PACKAGE_EXPORT_AS_ZIP = "packgeExportAsZip";
 
@@ -108,9 +108,9 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 
 	public boolean isEmbeddedVro8() {
 		final String embeddedValue = this.properties.getProperty(EMBEDDED);
-		try{
+		try {
 			return StringUtils.isEmpty(embeddedValue) ? false : Boolean.parseBoolean(embeddedValue);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException("Embedded Value is not a boolean.");
 		}
 	}
@@ -122,9 +122,9 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 
 	public int getAuthPort() {
 		final String authPort = this.properties.getProperty(AUTH_PORT);
-		try{
+		try {
 			return StringUtils.isEmpty(authPort) ? this.getPort() : Integer.parseInt(authPort);
-		}catch(NumberFormatException e){
+		} catch (NumberFormatException e) {
 			throw new RuntimeException("Port is not a number");
 		}
 	}
@@ -145,10 +145,10 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	}
 
 	@Override
-	public void validate(boolean domainOptional) throws ConfigurationException{
+	public void validate(boolean domainOptional) throws ConfigurationException {
 		logger.info("Checking if exists refresh token");
 		boolean useRefreshTokenForAuth = !StringUtils.isEmpty(this.getRefreshToken());
-		if(useRefreshTokenForAuth)
+		if (useRefreshTokenForAuth)
 			logger.info(String.format("Refresh token in config for vro is: %s", this.getRefreshToken()));
 		else
 			logger.info("Refresh token not detected using BASIC Authentication");
@@ -157,10 +157,11 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 
 	public static ConfigurationVro fromProperties(Properties props) throws ConfigurationException {
 		ConfigurationVro config = new ConfigurationVro(props);
- 
+
 		boolean hasVroTenant = !StringUtils.isEmpty(config.getTenant());
 		if (hasVroTenant && config.getAuth() != AuthProvider.VRA) {
-			throw new ConfigurationException("vRO configuration validation error! Multi-tenancy requires 'vra' authentication!");
+			throw new ConfigurationException(
+					"vRO configuration validation error! Multi-tenancy requires 'vra' authentication!");
 		}
 
 		config.validate(!hasVroTenant);
