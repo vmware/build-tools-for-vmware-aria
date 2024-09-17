@@ -75,7 +75,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;

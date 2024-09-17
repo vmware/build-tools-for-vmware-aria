@@ -17,7 +17,8 @@ package com.vmware.pscoe.iac.artifact.helpers.vrang;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
-import org.apache.http.client.utils.URIBuilder;
+
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
 
