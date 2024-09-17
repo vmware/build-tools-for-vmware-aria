@@ -20,7 +20,7 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;

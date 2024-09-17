@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.configuration;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;

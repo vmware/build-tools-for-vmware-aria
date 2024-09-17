@@ -14,10 +14,11 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration;
 
+import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpHost;
+import org.apache.hc.core5.http.HttpHost;
 import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -135,7 +136,11 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 			return null;
 		}
 
-		return HttpHost.create(proxy);
+		try {
+			return HttpHost.create(proxy);
+		} catch (URISyntaxException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		}
 	}
 
 	@Override

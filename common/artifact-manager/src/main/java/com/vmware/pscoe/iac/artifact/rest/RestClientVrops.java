@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -882,7 +882,7 @@ public class RestClientVrops extends RestClient {
 					customGroupName, e.getMessage()), e);
 		}
 
-		HttpStatus status = response.getStatusCode();
+		HttpStatus status = HttpStatus.valueOf(response.getStatusCode().value());
 		if (HttpMethod.POST.equals(method)) {
 			if (HttpStatus.BAD_REQUEST.equals(status)) {
 				throw new RuntimeException(String
@@ -960,7 +960,7 @@ public class RestClientVrops extends RestClient {
 							customGroupType, e.getMessage()));
 		}
 
-		HttpStatus status = response.getStatusCode();
+		HttpStatus status = HttpStatus.valueOf(response.getStatusCode().value());
 		if (HttpStatus.BAD_REQUEST.equals(status)) {
 			throw new RuntimeException(String.format(
 					"Error creating custom group type %s: Validation error in the group data", customGroupType));

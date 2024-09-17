@@ -14,10 +14,11 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration;
 
+import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.apache.http.HttpHost;
 import org.springframework.util.StringUtils;
+import org.apache.hc.core5.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,8 +204,11 @@ public class ConfigurationVraNg extends Configuration {
 		if (StringUtils.isEmpty(proxy)) {
 			return null;
 		}
-
-		return HttpHost.create(proxy);
+		try {
+			return HttpHost.create(proxy);
+		} catch (URISyntaxException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		}
 	}
 
 	/**

@@ -19,7 +19,7 @@ import java.io.IOException;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,8 +42,8 @@ public class RestClientVroBasicAuthNInterceptor extends RestClientRequestInterce
 				username += "@" + this.getConfiguration().getDomain();
 			}
 
-			return new BasicAuthorizationInterceptor(username, this.getConfiguration().getPassword()).intercept(request,
-					body, execution);
+			return new BasicAuthenticationInterceptor(username, this.getConfiguration().getPassword())
+					.intercept(request, body, execution);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
