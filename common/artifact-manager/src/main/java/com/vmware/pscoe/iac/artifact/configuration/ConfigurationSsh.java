@@ -80,7 +80,9 @@ public final class ConfigurationSsh extends Configuration {
 			InetAddress.getByName(host);
 		} catch (UnknownHostException uhe) {
 			throw new ConfigurationException(
-					String.format("Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s", HOST, host, uhe.getMessage()));
+					String.format(
+							"Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s",
+							HOST, host, uhe.getMessage()));
 		}
 	}
 

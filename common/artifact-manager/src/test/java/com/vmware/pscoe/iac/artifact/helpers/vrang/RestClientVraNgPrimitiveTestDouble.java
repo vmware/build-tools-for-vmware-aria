@@ -143,7 +143,8 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	/**
 	 * getAllStorageProfilesByRegionPrimitive.
 	 *
-	 * @return storageProfilesByRegionPrimitive Map<String, List<VraNgStorageProfile>>
+	 * @return storageProfilesByRegionPrimitive Map<String,
+	 *         List<VraNgStorageProfile>>
 	 */
 	@Override
 	public Map<String, List<VraNgStorageProfile>> getAllStorageProfilesByRegionPrimitive() {
@@ -190,7 +191,7 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 		return super.getContentSharingPolicyPrimitive(policyId);
 	}
 
-	/** 
+	/**
 	 * importCustomResourcePrimitive.
 	 *
 	 * @param customResourceJson String
@@ -216,23 +217,25 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	public List<VraNgCloudAccount> getAllCloudAccounts() throws URISyntaxException {
 		return super.getAllCloudAccounts();
 	}
-	
+
 	/**
 	 * testGetCatalogItemsForProjectPrimitive.
+	 * 
 	 * @param project project for that catalog items should be returned.
 	 *
 	 * @return entity List<VraNgCatalogItem>
-	 */	
+	 */
 	public List<VraNgCatalogItem> testGetCatalogItemsForProjectPrimitive(final String project) {
 		return super.getCatalogItemsForProjectPrimitive(project);
 	}
-	
+
 	/**
 	 * testGetCatalogItemByBlueprintNamePrimitive.
+	 * 
 	 * @param bpName blueprint name.
 	 *
 	 * @return entity VraNgCatalogItem
-	 */	
+	 */
 	public VraNgCatalogItem testGetCatalogItemByBlueprintNamePrimitive(final String bpName) {
 		return super.getCatalogItemByBlueprintNamePrimitive(bpName);
 	}
