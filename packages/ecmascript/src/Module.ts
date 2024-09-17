@@ -12,18 +12,12 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-const GLOBAL = System.getContext() || (function () {
-	return this;
-}).call(null);
 
 /**
  * Function to handle errors when loading/importing an action or module.
  * @param {string | Error} err - error (message)
  */
 export type ModuleErrorHandler = (error: string | Error) => void;
-
-/** Default module error handling function. Logs a System Error. */
-export const DEFAULT_MODULE_ERROR_HANDLER: ModuleErrorHandler = (error) => System.error(error?.toString());
 
 export interface ModuleConstructor extends Function {
 	/**
@@ -116,6 +110,17 @@ export interface ModuleExport {
 export interface ModuleElementList {
 	[name: string]: any;
 }
+
+////////////////////////////// CONSTANTS //////////////////////////////
+// N.B.: DO NOT export constants or enums (ONLY types / interfaces) - will cause error on WF execution due to misplaced "exports"!
+
+/** Global context. */
+const GLOBAL = System.getContext() || (function () {
+	return this;
+}).call(null);
+
+/** Default module error handling function. Logs a System Error. */
+const DEFAULT_MODULE_ERROR_HANDLER: ModuleErrorHandler = (error) => System.error(error?.toString());
 
 /**
  * Key of the Module attribute that holds the last set error handler via {@link Module.setModuleErrorHandler}.
