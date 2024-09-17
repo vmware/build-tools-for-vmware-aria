@@ -1338,25 +1338,31 @@ declare interface WorkflowInput {
 /**
  * ZipWriter
  */
-declare interface ZipWriter {
+declare class ZipWriter {
+  /**
+   * Creates an instance of ZipWriter.
+   * @param {string} file - full path of the file
+   * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
+   */
+  constructor (file: string)
 	/**
 	 * Add a string element to the specified zip file
-	 * @param entryName
-	 * @param content
-	 * @param encoding
+	 * @param {string} entryName
+	 * @param {string} content
+	 * @param {string} encoding
 	 */
-	addContent(entryName: any, content: any, encoding: any): void;
+	addContent(entryName: string, content: string, encoding?: string): void;
 	/**
 	 * Write the element to the Zip File
 	 */
 	writeZip(): void;
 	/**
 	 * Add mime attachement to the specified zip file
-	 * @param mimeAttachment
+	 * @param {MimeAttachment} mimeAttachment
 	 */
-	addMimeAttachment(mimeAttachment: any): void;
+	addMimeAttachment(mimeAttachment: MimeAttachment): void;
 	/**
-	 * Reinitializes the length to 0 and sets the file-pointer in the very begining of the file.
+	 * Reinitializes the length to 0 and sets the file-pointer in the very start of the file.
 	 */
 	clean(): void;
 }

@@ -28,6 +28,10 @@
 
 ## Improvements
 
+### types:ZipWriter
+
+updated definition of ZipWriter from interface to class with constructor
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
