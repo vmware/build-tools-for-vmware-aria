@@ -111,8 +111,11 @@ public class PushMojo extends AbstractIacMojo {
 			}
 		}
 		artifacts.addLast(project.getArtifact());
-
-		importArtifacts(artifacts);
+		try {
+			importArtifacts(artifacts);
+		} catch (ConfigurationException e) {
+			throw new MojoExecutionException("Failed to import artifacts", e);
+		}
 	}
 
 	private void printFilesSelected() {
