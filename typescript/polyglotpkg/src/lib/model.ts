@@ -70,6 +70,7 @@ export const PythonActionRuntimes = VroPythonActionRuntimes.concat(ActionRuntime
  * Holds a list of ABX runtimes and their corresponding VRO runtimes.
  * Used to replace VRO runtimes with ABX runtimes if abx project is detected.
  */
+//@TODO: [MAJOR] Remove the concatenation of the ABX runtime from the list of VRO runtimes when we do a majro version bump.
 export const MappedAbxRuntimes = {
 	[ActionRuntime.ABX_NODEJS]: VroNodeJsActionRuntimes.concat([ActionRuntime.ABX_NODEJS]),
 	[ActionRuntime.ABX_POWERSHELL]: VroPowershellActionRuntimes.concat([ActionRuntime.ABX_POWERSHELL]),
