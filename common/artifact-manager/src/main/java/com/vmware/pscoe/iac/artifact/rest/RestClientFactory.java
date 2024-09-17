@@ -27,13 +27,17 @@ import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliAuthIntercep
 import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV1;
 import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV2;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -112,20 +116,20 @@ public final class RestClientFactory {
 		return Boolean.parseBoolean(System.getProperty(IGNORE_SSL_HOSTNAME_VERIFICATION));
 	}
 
-	private static Integer getConnectionTimeout() {
-		Integer retVal = parseTimeoutValue(System.getProperty(CONNECTION_TIMEOUT), TimeoutType.CONNECTION);
-		if (retVal == null) {
-			return Configuration.DEFAULT_CONNECTION_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
+	private static Timeout getConnectionTimeout() {
+		Integer retValMillis = parseTimeoutValue(System.getProperty(CONNECTION_TIMEOUT), TimeoutType.CONNECTION);
+		if (retValMillis == null) {
+			retValMillis = Configuration.DEFAULT_CONNECTION_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
 		}
-		return retVal;
+		return Timeout.ofMilliseconds(retValMillis);
 	}
 
-	private static Integer getSocketTimeout() {
+	private static Timeout getSocketTimeout() {
 		Integer retVal = parseTimeoutValue(System.getProperty(SOCKET_TIMEOUT), TimeoutType.SOCKET);
 		if (retVal == null) {
-			return Configuration.DEFAULT_SOCKET_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
+			retVal = Configuration.DEFAULT_SOCKET_TIMEOUT * TO_MILISECONDS_MULTIPLIER;
 		}
-		return retVal;
+		return Timeout.ofMilliseconds(retVal);
 	}
 
 	private static Integer parseTimeoutValue(String value, TimeoutType type) {
@@ -153,25 +157,36 @@ public final class RestClientFactory {
 		}
 
 		HttpClientBuilder httpClientBuilder = HttpClients.custom();
-		if (ignoreCertificate()) {
-			httpClientBuilder.setSSLContext(sslContext);
-			LOGGER.warn("SSL: You are now ignoring certificate verification.");
+
+		PoolingHttpClientConnectionManagerBuilder connectionManagerBuilder = PoolingHttpClientConnectionManagerBuilder
+				.create();
+
+		if (ignoreCertificate() || ignoreHostname()) {
+			SSLConnectionSocketFactoryBuilder socketConfig = SSLConnectionSocketFactoryBuilder.create();
+			if (ignoreCertificate()) {
+				socketConfig.setSslContext(sslContext);
+				LOGGER.warn("SSL: You are now ignoring certificate verification.");
+			}
+			if (ignoreHostname()) {
+				socketConfig.setHostnameVerifier(new NoopHostnameVerifier());
+				LOGGER.warn("SSL: You are now ignoring hostname verification.");
+			}
+			// setTlsVersions?
+			connectionManagerBuilder.setSSLSocketFactory(socketConfig.build());
 		}
-		if (ignoreHostname()) {
-			httpClientBuilder.setSSLHostnameVerifier(new NoopHostnameVerifier());
-			LOGGER.warn("SSL: You are now ignoring hostname verification.");
-		}
+
+		httpClientBuilder.setConnectionManager(connectionManagerBuilder
+				.setDefaultConnectionConfig(ConnectionConfig.custom()
+						.setSocketTimeout(getSocketTimeout())
+						.setConnectTimeout(getConnectionTimeout())
+						.build())
+				// setPoolConcurrencyPolicy, setConnPoolPolicy?
+				.build());
 
 		if (proxy != null) {
-			httpClientBuilder.setProxy(proxy);
+			httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
 			LOGGER.info("Will use proxy {}", proxy.toURI());
 		}
-
-		RequestConfig config = RequestConfig.custom()
-				.setConnectTimeout(getConnectionTimeout())
-				.setSocketTimeout(getSocketTimeout())
-				.build();
-		httpClientBuilder.setDefaultRequestConfig(config);
 
 		CloseableHttpClient httpClient = httpClientBuilder.build();
 		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
