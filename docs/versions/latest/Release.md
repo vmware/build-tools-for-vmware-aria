@@ -26,6 +26,13 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Added new polyglot runtimes*
+
+The following runtimes have been added to the polyglot archetype:
+
+- `node:18`
+- `node:20`
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
