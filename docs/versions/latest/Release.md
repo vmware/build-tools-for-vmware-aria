@@ -30,7 +30,7 @@
 
 ### Update ZipWriter class interface
 
-updated definition of ZipWriter from interface to class with constructor
+Added constructor to ZipWriter class interface. Updated input parameter types of ZipWriter functions.
 
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
