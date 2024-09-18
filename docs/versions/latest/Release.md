@@ -35,6 +35,10 @@ The following runtimes have been added to the polyglot archetype:
 
 ## Improvements
 
+### Update ZipWriter class interface
+
+Added constructor to ZipWriter class interface. Updated input parameter types of ZipWriter functions.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
