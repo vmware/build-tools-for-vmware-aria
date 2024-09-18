@@ -28,7 +28,7 @@
 
 ## Improvements
 
-### types:ZipWriter
+### Update ZipWriter class interface
 
 updated definition of ZipWriter from interface to class with constructor
 
