@@ -1344,7 +1344,7 @@ declare class ZipWriter {
    * @param {string} file - full path of the file
    * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
    */
-  constructor (file: string)
+  constructor (file: string);
 	/**
 	 * Add a string element to the specified zip file
 	 * @param {string} entryName
