@@ -25,13 +25,15 @@ import org.springframework.http.MediaType;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 
 public abstract class RestClient {
+	/** Default HTTPS port */
+	private static final int DEFAULT_HTTPS_PORT = 443;
 
 	protected abstract Configuration getConfiguration();
 
 	protected URIBuilder getURIBuilder() {
 		URIBuilder uriBuilder = new URIBuilder().setScheme("https").setHost(getConfiguration().getHost());
 		int port = getConfiguration().getPort();
-		if (port != 443) {
+		if (port != DEFAULT_HTTPS_PORT) {
 			// set the port only if not default, otherwise vRA Cloud complains about invalid
 			// Host header
 			uriBuilder = uriBuilder.setPort(port);

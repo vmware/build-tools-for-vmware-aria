@@ -153,11 +153,12 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	public void validate(boolean domainOptional) throws ConfigurationException {
 		logger.info("Checking if exists refresh token");
 		boolean useRefreshTokenForAuth = !StringUtils.isEmpty(this.getRefreshToken());
-		if (useRefreshTokenForAuth)
+		if (useRefreshTokenForAuth) {
 			logger.info(String.format("Refresh token in config for vro is: %s", this.getRefreshToken()));
-		else
+		} else {
 			logger.info("Refresh token not detected using BASIC Authentication");
-		super.validate(domainOptional, useRefreshTokenForAuth);
+			super.validate(domainOptional, useRefreshTokenForAuth);
+		}
 	}
 
 	public static ConfigurationVro fromProperties(Properties props) throws ConfigurationException {

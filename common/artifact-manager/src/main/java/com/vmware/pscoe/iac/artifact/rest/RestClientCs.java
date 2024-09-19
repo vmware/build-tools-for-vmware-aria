@@ -142,9 +142,8 @@ public class RestClientCs extends RestClient {
 	public Variable getProjectVariableByName(String variableName) {
 		Gson gson = new Gson();
 		logger.info("Get variable  " + variableName);
-		String projectName = this.getProjectName();
 		URI url = getURI(getURIBuilder()
-				.setPath(MessageFormat.format(VARIABLE_PROJECT_NAME_PATH, projectName, variableName)));
+				.setPath(MessageFormat.format(VARIABLE_PROJECT_NAME_PATH, getProjectName(), variableName)));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 		logger.debug("Body: " + response.getBody());

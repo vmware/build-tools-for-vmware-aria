@@ -18,7 +18,6 @@ import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
@@ -26,6 +25,8 @@ import org.springframework.util.StringUtils;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationVrops extends ConfigurationWithRefreshToken {
+	/** 0x0FFFF = 65535 */
+	private static final int MAX_PORT_VAL = 0x0FFFF;
 	// Important - when modify properties refer to comments in @Configuration
 	public static final String VROPS_DASHBOARD_USER = "dashboardUser";
 	public static final String VROPS_REST_USER = "restUser";
@@ -150,12 +151,12 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 				throw new ConfigurationException(
 						String.format("The vrops %s value %s is not valid since it should be between %d and %d",
 								SSH_PORT,
-								getSshPort(), 0, 0x0FFFF));
+								getSshPort(), 0, MAX_PORT_VAL));
 			}
 			if (!checkPort(getHttpPort())) {
 				throw new ConfigurationException(
 						String.format("The vrops %s value %s is not valid since it should be between %d and %d", PORT,
-								getHttpPort(), 0, 0x0FFFF));
+								getHttpPort(), 0, MAX_PORT_VAL));
 			}
 		} catch (RuntimeException e) {
 			throw new ConfigurationException(
@@ -179,7 +180,7 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 	}
 
 	private boolean checkPort(int port) {
-		return port > 0 && port < 0x0FFFF;
+		return port > 0 && port < MAX_PORT_VAL;
 	}
 
 	public enum AuthProvider {
