@@ -13,7 +13,7 @@
  * #L%
  */
 import * as ts from "typescript";
-import { FileDescriptor, FileTransformationContext, ScriptTransformationContext, HierarchyFacts } from "../../../types";
+import { FileDescriptor, FileTransformationContext, ScriptTransformationContext } from "../../../types";
 import { system } from "../../../system/system";
 import { transformSourceFile } from "../scripts/scripts";
 import { collectFactsBefore } from "../metaTransformers/facts";
@@ -22,8 +22,7 @@ import { transformShimsBefore, transformShims } from "../codeTransformers/shims"
 import { remediateTypeScript } from "../codeTransformers/remediate";
 import { transformModuleSystem } from "../codeTransformers/modules";
 import { canCreateDeclarationForFile } from "../metaTransformers/declaration";
-import { addHeaderComment } from "../helpers/source";
-import { checkActionForMisplacedClassDecorators } from "../helpers/checkActionForMisplacedClassDecorators";
+import { checkActionForMisplacedClassDecorators, handleActionClosure } from "../helpers/actionTransformHelper";
 
 // @TODO: Take a look at this
 
@@ -34,32 +33,28 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 	context.sourceFiles.push(sourceFile);
 
 	return function transform() {
-		const [sourceText, typeDefText, mapText] = transformSourceFile(
-			sourceFile,
-			context,
-			{
-				before: [
-					collectFactsBefore,
-					collectNamespaces,
-					transformShimsBefore,
-				],
-				after: [
-					transformShims,
-					transformNamespaces,
-					remediateTypeScript,
-					transformModuleSystem,
-					createActionClosure,
-				],
-			});
+		const transformers = {
+			before: [
+				collectFactsBefore,
+				collectNamespaces,
+				transformShimsBefore,
+			],
+			after: [
+				transformShims,
+				transformNamespaces,
+				remediateTypeScript,
+				transformModuleSystem,
+				(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext) => handleActionClosure(sourceFile, ctx, context.emitHeader),
+			],
+		};
+		const [sourceText, typeDefText, mapText] = transformSourceFile(sourceFile, context, transformers);
 
 		// Test helpers should be excluded
 		const isHelper = file.relativeFilePath.match(/\.helper\.[tj]s$/);
 		const outputDir = isHelper ? context.outputs.testHelpers : context.outputs.actions;
 
-		let targetFilePath = system.changeFileExt(
-			system.resolvePath(outputDir, file.relativeFilePath),
-			".js",
-			[".js", ".ts"]);
+		const resolvedPath = system.resolvePath(outputDir, file.relativeFilePath);
+		let targetFilePath = system.changeFileExt(resolvedPath, ".js", [".js", ".ts"]);
 
 		if (isHelper) {
 			targetFilePath = system.changeFileExt(targetFilePath, "_helper.js", [".helper.js"]);
@@ -77,64 +72,4 @@ export function getActionTransformer(file: FileDescriptor, context: FileTransfor
 			context.writeFile(targetMapFilePath, mapText);
 		}
 	};
-
-	function createActionClosure(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext): ts.SourceFile {
-		const statements: ts.Statement[] = [];
-		const { factory } = ctx;
-
-		if (ctx.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) {
-			// Copy all statements preceeding the action closure
-			const actionClosureIndex = sourceFile.statements.length - 1;
-			const expStatement = sourceFile.statements[actionClosureIndex] as ts.ExpressionStatement;
-			const parenExpression = expStatement.expression as ts.ParenthesizedExpression;
-			const funcExpression = parenExpression.expression as ts.FunctionExpression;
-			const funcStatements: ts.Statement[] = [];
-			funcStatements.push(...sourceFile.statements.slice(0, actionClosureIndex));
-			funcStatements.push(...funcExpression.body.statements);
-			if (context.emitHeader) {
-				addHeaderComment(funcStatements);
-			}
-			const updatedExpStatement = factory.updateExpressionStatement(expStatement,
-				factory.updateParenthesizedExpression(parenExpression,
-					factory.updateFunctionExpression(funcExpression,
-							/* modifiers */ undefined,
-							/* asteriskToken */ undefined,
-							/* name */ undefined,
-							/* typeParameters */ undefined,
-							/* parameters */ funcExpression.parameters,
-							/* type */ undefined,
-							/* body */ factory.updateBlock(funcExpression.body, funcStatements),
-					)));
-			statements.push(updatedExpStatement);
-		}
-		else {
-			if (context.emitHeader) {
-				addHeaderComment(<ts.Statement[]><unknown>sourceFile.statements);
-			}
-
-			// Wrap statements in an action closure
-			let closureStatement = factory.createExpressionStatement(
-				factory.createParenthesizedExpression(
-					factory.createFunctionExpression(
-							/*modifiers*/ undefined,
-							/*asteriskToken*/ undefined,
-							/*name*/ undefined,
-							/*typeParameters*/ undefined,
-							/*parameters*/ undefined,
-							/*modifiers*/ undefined,
-							/*body*/ factory.createBlock(sourceFile.statements, true))));
-			closureStatement = ts.addSyntheticLeadingComment(
-				closureStatement,
-				ts.SyntaxKind.MultiLineCommentTrivia,
-				"*\n * @return {Any}\n ",
-					/*hasTrailingNewLine*/ true);
-			statements.push(closureStatement);
-		}
-
-		return factory.updateSourceFile(
-			sourceFile,
-			ts.setTextRange(
-				factory.createNodeArray(statements),
-				sourceFile.statements));
-	}
 }
