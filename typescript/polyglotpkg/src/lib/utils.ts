@@ -18,7 +18,18 @@ import fs from 'fs-extra';
 import which from 'which';
 import path from 'path';
 import { spawn } from 'child_process';
-import { ActionType, ActionRuntime, AbxActionDefinition, VroActionDefinition, PackageDefinition, PlatformDefinition, ProjectActions, ActionOptions, PackagerOptions } from './model';
+import {
+	ActionType,
+	ActionRuntime,
+	AbxActionDefinition,
+	VroActionDefinition,
+	PackageDefinition,
+	PlatformDefinition,
+	ProjectActions,
+	ActionOptions,
+	PackagerOptions,
+	MappedAbxRuntimes,
+} from './model';
 import createLogger from './logger';
 
 const logger = createLogger();
@@ -26,51 +37,44 @@ const logger = createLogger();
 /**
  * Determine the action runtime based on the action manifest or
  * the action handler if runtime is not specified.
+ *
+ * If the action type is ABX, the runtime is determined based on the given runtime. Runtimes of the same type are mapped.
+ *
+ * @TODO: This needs to be deprecated in favor of the runtime being correctly specific in the manifest. That however is a breaking change.
+ *          new Issue created for this to be discussed: https://github.com/vmware/build-tools-for-vmware-aria/issues/391
+ *
  * @param pkg
  */
 export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionType): ActionRuntime {
+	const isAbx = actionType === ActionType.ABX || !pkg.vro;
+	const runtime = pkg.platform.runtime;
 
-	if (actionType) {
-		switch (pkg.platform.runtime) {
-			case "node:12":
-			case 'nodejs':
-				return actionType === ActionType.ABX ? ActionRuntime.ABX_NODEJS : ActionRuntime.VRO_NODEJS_12;
-			case 'node:14':
-				return actionType === ActionType.ABX ? ActionRuntime.ABX_NODEJS : ActionRuntime.VRO_NODEJS_14;
-			case "powercli:11-powershell-6.2":
-			case "powershell":
-				return actionType === ActionType.ABX ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_11_PS_62;
-			case "powercli:12-powershell-7.1":
-				return actionType === ActionType.ABX ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_12_PS_71;
-			case "python:3.7":
-				return actionType === ActionType.ABX ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_37;
-			case "python:3.10":
-			case "python":
-				return actionType === ActionType.ABX ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_310;
-			default:
-				return pkg.platform.runtime;
+	// @TODO: This needs to be deprecated in favor of the runtime being correctly specific in the manifest. Do so during the next major release.
+	// ===========================================================
+	if (runtime === ActionRuntime.ABX_NODEJS) {
+		return isAbx ? ActionRuntime.ABX_NODEJS : ActionRuntime.VRO_NODEJS_12;
+	}
+
+	if (runtime === ActionRuntime.ABX_POWERSHELL) {
+		return isAbx ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_11_PS_62;
+	}
+
+	if (runtime === ActionRuntime.ABX_PYTHON) {
+		return isAbx ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_37;
+	}
+	// ===========================================================
+
+	if (!isAbx) {
+		return runtime;
+	}
+
+	for (const [key, value] of Object.entries(MappedAbxRuntimes)) {
+		if (value.includes(runtime)) {
+			return key as ActionRuntime;
 		}
 	}
 
-	switch (pkg.platform.runtime) {
-		case "powercli:12-powershell-7.1":
-			return pkg.vro ? ActionRuntime.VRO_POWERCLI_12_PS_71 : ActionRuntime.ABX_POWERSHELL;
-		case "node:14":
-			return pkg.vro ? ActionRuntime.VRO_NODEJS_14 : ActionRuntime.ABX_NODEJS;
-		case "node:12":
-		case "nodejs":
-			return pkg.vro ? ActionRuntime.VRO_NODEJS_12 : ActionRuntime.ABX_NODEJS;
-		case "powercli:11-powershell-6.2":
-		case 'powershell':
-			return pkg.vro ? ActionRuntime.VRO_POWERCLI_11_PS_62 : ActionRuntime.ABX_POWERSHELL;
-		case 'python:3.7':
-			return pkg.vro ? ActionRuntime.VRO_PYTHON_37 : ActionRuntime.ABX_PYTHON;
-		case 'python:3.10':
-		case 'python':
-			return pkg.vro ? ActionRuntime.VRO_PYTHON_310 : ActionRuntime.ABX_PYTHON;
-		default:
-			return pkg.platform.runtime;
-	}
+	return runtime;
 }
 
 /**
@@ -177,15 +181,15 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			out: 'out',
 			actionRuntime: await determineRuntime(pkgObj, actionType),
 			actionType: await determineActionType(pkgObj, actionType)
-		}
-		return [projectAction]
+		};
+		return [projectAction];
 	}
 
-	let projectActions: ProjectActions = []
-	const projectBasePath: string = path.resolve(options.workspace)
+	let projectActions: ProjectActions = [];
+	const projectBasePath: string = path.resolve(options.workspace);
 	// Loop all actions found
 	for (var i = 0; i < plg.length; i++) {
-		let actionBasePath: string = path.dirname(plg[i])
+		let actionBasePath: string = path.dirname(plg[i]);
 		if (actionBasePath.includes('template-')) {
 			// Ignore folders starting with "template-"
 			continue;
@@ -193,7 +197,7 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 
 		const actionFolder: string = path.relative(path.join(projectBasePath, 'src'), actionBasePath);
 		// To separate out files of multiple actions out and polyglot-cache are created under project_root/out/action_name
-		const outBasePath: string = path.join(options.workspace, 'out', actionFolder)
+		const outBasePath: string = path.join(options.workspace, 'out', actionFolder);
 		// To separate bundle.zip files of multiple actions they are created under project_root/dist/action_name/dist
 		const bundleZipPath: string = path.resolve('.', 'dist', actionFolder, 'dist', 'bundle.zip');
 		const plgObj = await fs.readJSONSync(plg[i]);
@@ -209,10 +213,10 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			out: path.relative(projectBasePath, path.join(outBasePath, 'out')),
 			actionRuntime: await determineRuntime(plgObj, actionType),
 			actionType: await determineActionType(plgObj, actionType)
-		}
-		projectActions.push(projectAction)
+		};
+		projectActions.push(projectAction);
 	}
-	return projectActions
+	return projectActions;
 }
 
 /**
@@ -226,7 +230,7 @@ export async function createPackageJsonForABX(options: ActionOptions, isMixed: b
 	}
 	const bundlePkg = isMixed ? { ...projectPkg, ...polyglotPkg } : projectPkg;
 	const actionDistPkgPath = path.join(options.workspace, 'dist', isMixed ? path.basename(options.actionBase) : "", 'package.json');
-	await fs.writeJsonSync(actionDistPkgPath, bundlePkg);
+	fs.writeJsonSync(actionDistPkgPath, bundlePkg);
 }
 
 /**

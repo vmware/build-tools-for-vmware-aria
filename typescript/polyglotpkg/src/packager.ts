@@ -14,7 +14,7 @@
  */
 import { Logger } from 'winston';
 
-import { PackagerOptions, ActionType, ActionRuntime, Events } from "./lib/model";
+import { PackagerOptions, ActionType, ActionRuntime, Events, NodeJsActionRuntimes, PythonActionRuntimes, PowershellActionRuntimes } from "./lib/model";
 import { createPackageJsonForABX, getProjectActions } from './lib/utils';
 import { IStrategy } from './strategies/base';
 import { NodejsStrategy } from './strategies/nodejs';
@@ -25,7 +25,6 @@ import createLogger from './lib/logger';
 import { EventEmitter } from 'events';
 
 export class Packager extends EventEmitter {
-
 	private readonly logger: Logger;
 
 	constructor(private readonly options: PackagerOptions) {
@@ -34,7 +33,6 @@ export class Packager extends EventEmitter {
 	}
 
 	async packageProject() {
-
 		// Collect list of actions included in the project
 		const projectActions = await getProjectActions(this.options, <ActionType>this.options.env);
 
@@ -51,28 +49,21 @@ export class Packager extends EventEmitter {
 
 			let strategy: IStrategy;
 
-			switch (actionRuntime) {
-				case ActionRuntime.ABX_NODEJS:
-				case ActionRuntime.VRO_NODEJS_12:
-				case ActionRuntime.VRO_NODEJS_14:
+			switch (true) {
+				case NodeJsActionRuntimes.includes(actionRuntime as ActionRuntime):
 					strategy = new NodejsStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
-					await strategy.packageProject();
 					break;
-				case ActionRuntime.ABX_PYTHON:
-				case ActionRuntime.VRO_PYTHON_310:
-				case ActionRuntime.VRO_PYTHON_37:
-					strategy = new PythonStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
-					await strategy.packageProject();
-					break;
-				case ActionRuntime.ABX_POWERSHELL:
-				case ActionRuntime.VRO_POWERCLI_11_PS_62:
-				case ActionRuntime.VRO_POWERCLI_12_PS_71:
+				case PowershellActionRuntimes.includes(actionRuntime as ActionRuntime):
 					strategy = new PowershellStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
-					await strategy.packageProject();
+					break;
+				case PythonActionRuntimes.includes(actionRuntime as ActionRuntime):
+					strategy = new PythonStrategy(this.logger, projectActions[i], (e: Events) => this.emit(e));
 					break;
 				default:
 					throw new Error(`Action runtime ${actionRuntime} is not yet supported`);
 			}
+
+			await strategy.packageProject();
 
 			// Prepare input files for vRO packaging
 			if (!this.options.skipVro && actionType === ActionType.VRO) {
@@ -84,10 +75,7 @@ export class Packager extends EventEmitter {
 			if (actionType === ActionType.ABX) {
 				await createPackageJsonForABX(projectActions[i], projectActions[i].mixed);
 			}
-
 		}
-
-
 	}
 
 }
