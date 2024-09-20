@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration;
 
-public class ConfigurationException extends Exception {
+public class ConfigurationException extends RuntimeException {
 
 	public ConfigurationException(String message, Throwable parentException) {
 		super(message, parentException);

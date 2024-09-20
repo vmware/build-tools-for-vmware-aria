@@ -75,7 +75,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgWorkflowContentSource;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -264,7 +264,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * VRA_CLOUD_HOSTS.
 	 */
-	private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com", "api.mgmt.cloud.vmware.com");
+	private static final List<String> VRA_CLOUD_HOSTS = Arrays.asList("console.cloud.vmware.com",
+			"api.mgmt.cloud.vmware.com");
 	/**
 	 * VRA_CLOUD_VERSION.
 	 */
@@ -336,7 +337,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Not found error returned by vRA.
 	 */
-	private static final String NOT_FOUND_ERROR = "404 Not Found";	
+	private static final String NOT_FOUND_ERROR = "404 Not Found";
 	/**
 	 * isVraAbove812.
 	 */
@@ -382,7 +383,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 
 		URI url = getURI(getURIBuilder().setPath(API_VERSION));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
 		LOGGER.info("Detected API Version {}", this.apiVersion);
 
@@ -404,7 +406,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			// available
 			this.productVersion = new Version(VRA_CLOUD_VERSION);
 		} else {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			this.productVersion = new Version(JsonPath.parse(response.getBody()).read("$.version"));
 		}
 
@@ -434,20 +437,24 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Using project id defined in configuration: {}", configuration.getProjectId());
 			this.projectId = this.getProjectIdPrimitive(configuration.getProjectId());
 			if (this.projectId == null) {
-				throw new RuntimeException(String.format("Project id '%s' could not be found on target system", configuration.getProjectId()));
+				throw new RuntimeException(String.format("Project id '%s' could not be found on target system",
+						configuration.getProjectId()));
 			}
 
 			return this.projectId;
 		}
 		String projectName = configuration.getProjectName();
 		if (StringUtils.isEmpty(projectName)) {
-			throw new RuntimeException("Either project name or project id must be supplied to the vRA NG configuration.");
+			throw new RuntimeException(
+					"Either project name or project id must be supplied to the vRA NG configuration.");
 		}
 		this.projectId = this.getProjectIdPrimitive(projectName);
 		if (this.projectId == null) {
-			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system", configuration.getProjectName()));
+			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system",
+					configuration.getProjectName()));
 		}
-		LOGGER.info("Using project name defined in the configuration '{}', project id: '{}'", projectName, this.projectId);
+		LOGGER.info("Using project name defined in the configuration '{}', project id: '{}'", projectName,
+				this.projectId);
 
 		return projectId;
 	}
@@ -493,7 +500,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param iconId      iconId
 	 * @return list of response entities
 	 */
-	protected ResponseEntity<String> patchCatalogItemIconPrimitive(final VraNgCatalogItem catalogItem, final String iconId) {
+	protected ResponseEntity<String> patchCatalogItemIconPrimitive(final VraNgCatalogItem catalogItem,
+			final String iconId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ITEM_ICON_UPDATE + "/" + catalogItem.getId()));
 		Map<String, Object> map = new HashMap<>();
 		map.put("iconId", iconId);
@@ -588,7 +596,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public VraNgBlueprint getBlueprintPrimitive(final String id) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + id));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		return new Gson().fromJson(response.getBody(), VraNgBlueprint.class);
 	}
@@ -601,10 +610,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return String
 	 */
 	public String getBlueprintVersionContentPrimitive(final String blueprintId, final String version) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version).addParameter("orderBy",
-				"updatedAt DESC"));
+		URI url = getURI(getURIBuilder()
+				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version)
+				.addParameter("orderBy",
+						"updatedAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -628,10 +640,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return String
 	 */
 	public String getBlueprintVersionsContent(final String blueprintId) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS).addParameter("$top", "1000")
+		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
+				.addParameter("$top", "1000")
 				.addParameter("orderBy", "createdAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -654,7 +668,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return true if blueprint version present
 	 */
 	public Boolean isBlueprintVersionPresentPrimitive(final String blueprintId, final String version) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version));
+		URI url = getURI(getURIBuilder()
+				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version));
 
 		try {
 			restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
@@ -672,7 +687,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param version     Blueprint Version
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
-	public void releaseBlueprintVersionPrimitive(final String blueprintId, final String version) throws URISyntaxException {
+	public void releaseBlueprintVersionPrimitive(final String blueprintId, final String version)
+			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS));
 
 		Map<String, Object> map = new LinkedHashMap<>();
@@ -690,15 +706,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param versionId   Blueprint versionId
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
-	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId) throws URISyntaxException {
+	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId)
+			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(
-				SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + versionId + "/" + SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
+				SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + versionId + "/"
+						+ SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
 
 		try {
 			this.postJsonPrimitive(url, HttpMethod.POST, "");
 		} catch (HttpClientErrorException e) {
 			throw new RuntimeException(
-					String.format("Error ocurred during when unreleasing version %s for blueprint %s. Message: %s", versionId, blueprintId, e.getMessage()));
+					String.format("Error ocurred during when unreleasing version %s for blueprint %s. Message: %s",
+							versionId, blueprintId, e.getMessage()));
 		}
 	}
 
@@ -710,7 +729,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param versionDetails versionDetails
 	 * @throws URISyntaxException exception
 	 */
-	public void createBlueprintVersionPrimitive(final String blueprintId, final Map<String, Object> versionDetails) throws URISyntaxException {
+	public void createBlueprintVersionPrimitive(final String blueprintId, final Map<String, Object> versionDetails)
+			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS));
 		this.postJsonPrimitive(url, HttpMethod.POST, this.getJsonString(versionDetails));
 	}
@@ -757,9 +777,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Blueprint Version.
 	 */
 	public String getBlueprintLastUpdatedVersionPrimitive(final String blueprintId) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS).addParameter("orderBy", "updatedAt DESC"));
+		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
+				.addParameter("orderBy", "updatedAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -784,9 +806,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		final String statusReleased = "RELEASED";
 
-		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS).addParameter("status", statusReleased));
+		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
+				.addParameter("status", statusReleased));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -842,8 +866,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String projectIdentifier = getProjectId();
 		params.put("projectId", projectIdentifier);
 		return this.getPagedContent(SERVICE_CONTENT_SOURCE, params).stream()
-				.filter(jsonOb -> VraNgContentSourceType.BLUEPRINT.toString().equals(jsonOb.get("typeId").getAsString()))
-				.map(jsonOb -> gson.fromJson(jsonOb, VraNgContentSource.class)).filter(contentSource -> contentSource.getProjectId().equals(projectIdentifier))
+				.filter(jsonOb -> VraNgContentSourceType.BLUEPRINT.toString()
+						.equals(jsonOb.get("typeId").getAsString()))
+				.map(jsonOb -> gson.fromJson(jsonOb, VraNgContentSource.class))
+				.filter(contentSource -> contentSource.getProjectId().equals(projectIdentifier))
 				.findFirst().orElse(null);
 	}
 
@@ -873,7 +899,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param projects List of projects
 	 * @return list of VraNg Content Source objects.
 	 */
-	protected Map<String, List<VraNgContentSourceBase>> getContentSourcesForProjectsPrimitive(final List<String> projects) {
+	protected Map<String, List<VraNgContentSourceBase>> getContentSourcesForProjectsPrimitive(
+			final List<String> projects) {
 		Map<String, List<VraNgContentSourceBase>> retVal = new HashMap<>();
 		for (String project : projects) {
 			List<VraNgContentSourceBase> contentSources = this.getContentSourcesForProjectPrimitive(project);
@@ -928,7 +955,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param sourceId   Srouce ID
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
-	public void importCustomFormPrimitive(final VraNgCustomForm customForm, final String sourceId) throws URISyntaxException {
+	public void importCustomFormPrimitive(final VraNgCustomForm customForm, final String sourceId)
+			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM));
 
 		String customFormFormat = CUSTOM_FORM_DEFAULT_FORMAT; // Some vro versions don't specify the format. Assuming
@@ -959,7 +987,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param subscriptionJson subscription json
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
-	protected void importSubscriptionPrimitive(final String subscriptionName, final String subscriptionJson) throws URISyntaxException {
+	protected void importSubscriptionPrimitive(final String subscriptionName, final String subscriptionJson)
+			throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_SUBSCRIPTION).build();
 
 		this.postJsonPrimitive(url, HttpMethod.POST, subscriptionJson);
@@ -1014,7 +1043,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		List<VraNgCloudAccount> retVal = new ArrayList<>();
 
 		URI url = getURIBuilder().setPath(SERVICE_CLOUD_ACCOUNT).setParameter("apiVersion", this.getVersion()).build();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		if (!root.isJsonObject()) {
@@ -1034,7 +1064,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			if (orgId.getAsString().equals(organizationId)) {
 				List<String> tags = this.getTags(tagsElement);
 				List<String> regionIds = this.getRegions(linksElement);
-				retVal.add(new VraNgCloudAccount(id.getAsString(), name.getAsString(), type.getAsString(), regionIds, tags));
+				retVal.add(new VraNgCloudAccount(id.getAsString(), name.getAsString(), type.getAsString(), regionIds,
+						tags));
 			}
 		});
 
@@ -1049,7 +1080,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgCloudAccount getCloudAccountPrimitive(final String id) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CLOUD_ACCOUNT + "/" + id));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		if (root.isJsonObject()) {
@@ -1077,7 +1109,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgRegion getRegionPrimitive(final String id) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_REGION + "/" + id));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		if (root.isJsonObject()) {
@@ -1098,7 +1131,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected VraNgSecret getSecretPrimitive(final String name) {
 		String queryString = String.format("$filter=name eq '%s' and projectId eq '%s'", name, getProjectId());
 		URI url = getURI(getURIBuilder().setPath(SERVICE_SECRET).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 		JsonObject ob = root.getAsJsonObject();
@@ -1147,7 +1181,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		JsonObject typeObj = result.get("type").getAsJsonObject();
 		// additional sanity check
 		if (typeObj == null) {
-			throw new RuntimeException(String.format("Unable to extract catalog item type for blueprint '%s'", blueprintName));
+			throw new RuntimeException(
+					String.format("Unable to extract catalog item type for blueprint '%s'", blueprintName));
 		}
 		VraNgCatalogItemType type = new Gson().fromJson(typeObj, VraNgCatalogItemType.class);
 
@@ -1163,14 +1198,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return combined results
 	 */
 	private List<JsonObject> getPagedContent(final String path, final Map<String, String> paramsMap) {
-		URIBuilder uriBuilder = getURIBuilder().setPath(String.format(path)).setParameter("page", "0").setParameter("size", String.valueOf(PAGE_SIZE));
+		URIBuilder uriBuilder = getURIBuilder().setPath(String.format(path)).setParameter("page", "0")
+				.setParameter("size", String.valueOf(PAGE_SIZE));
 
 		// add arbitrary parameters
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
 			uriBuilder.setParameter(entry.getKey(), entry.getValue());
 		}
 		URI uri = getURI(uriBuilder);
-		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		if (response == null) {
 			return Collections.emptyList();
 		}
@@ -1206,8 +1243,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	private List<JsonObject> getTotalElements(final String path, final Map<String, String> paramsMap) {
 
-		URIBuilder uriBuilder = getURIBuilder().setPath(String.format(path)).setParameter("$top", String.valueOf(PAGE_SIZE)).setParameter("$skip",
-				String.valueOf(0));
+		URIBuilder uriBuilder = getURIBuilder().setPath(String.format(path))
+				.setParameter("$top", String.valueOf(PAGE_SIZE)).setParameter("$skip",
+						String.valueOf(0));
 
 		// add arbitrary parameters
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
@@ -1220,7 +1258,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		Integer numberOfElements = 0;
 		do {
 			uriBuilder.setParameter("$skip", String.valueOf(PAGE_SIZE * (page)));
-			ResponseEntity<String> response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET,
+					getDefaultHttpEntity(), String.class);
 
 			JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -1249,7 +1288,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected VraNgWorkflowContentSource getVraWorkflowContentSourcePrimitive(final String id) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE + "/" + id));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		if (StringUtils.isEmpty(response.getBody())) {
 			return null;
 		}
@@ -1271,7 +1311,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgContentSourceBase getContentSourcePrimitive(final String id) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE + "/" + id));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 		if (!root.isJsonObject()) {
 			return null;
@@ -1293,9 +1334,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		LOGGER.debug("Fetching catalog entitlement for project '{}'", project);
 
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).addParameter("projectId", project));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-		VraNgCatalogEntitlementDto[] entitlements = gson.fromJson(response.getBody(), VraNgCatalogEntitlementDto[].class);
+		VraNgCatalogEntitlementDto[] entitlements = gson.fromJson(response.getBody(),
+				VraNgCatalogEntitlementDto[].class);
 		return entitlements;
 	}
 
@@ -1318,9 +1361,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.collect(Collectors.groupingBy(el -> el.getDefinition().get("name"), Collectors.toList()));
 		return allEntitlements.values().stream().map(entitlementsGroup -> {
 			VraNgCatalogEntitlementDto modelEntitlement = entitlementsGroup.get(0);
-			List<String> projectIds = entitlementsGroup.stream().map(ent -> ent.getProjectId()).collect(Collectors.toList());
+			List<String> projectIds = entitlementsGroup.stream().map(ent -> ent.getProjectId())
+					.collect(Collectors.toList());
 
-			VraNgCatalogEntitlement entitlement = new VraNgCatalogEntitlement(modelEntitlement.getId(), null, modelEntitlement.getDefinition().get("name"),
+			VraNgCatalogEntitlement entitlement = new VraNgCatalogEntitlement(modelEntitlement.getId(), null,
+					modelEntitlement.getDefinition().get("name"),
 					projectIds, VraNgCatalogEntitlementType.fromString(modelEntitlement.getDefinition().get("type")),
 					VraNgContentSourceType.fromString(modelEntitlement.getDefinition().get("sourceType")));
 			String iconId = modelEntitlement.getDefinition().get("iconId");
@@ -1339,7 +1384,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param project     - project id of where to share the entitlement definition.
 	 * @throws URISyntaxException exception, RuntimeException
 	 */
-	protected void createCatalogEntitlementPrimitive(final VraNgCatalogEntitlement entitlement, final String project) throws URISyntaxException {
+	protected void createCatalogEntitlementPrimitive(final VraNgCatalogEntitlement entitlement, final String project)
+			throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).build();
 
 		// prepare payload
@@ -1363,12 +1409,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 		try {
 			response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 		} catch (HttpClientErrorException e) {
-			throw new RuntimeException(String.format("Error ocurred during creating of catalog entitlement. Message: %s", e.getMessage()));
+			throw new RuntimeException(
+					String.format("Error ocurred during creating of catalog entitlement. Message: %s", e.getMessage()));
 		}
 
 		if (!HttpStatus.CREATED.equals(response.getStatusCode())) {
-			throw new RuntimeException(String.format("Error ocurred during creating of catalog entitlement. HTTP Status code %s : ( %s )",
-					response.getStatusCodeValue(), response.getBody()));
+			throw new RuntimeException(
+					String.format("Error ocurred during creating of catalog entitlement. HTTP Status code %s : ( %s )",
+							response.getStatusCodeValue(), response.getBody()));
 		}
 	}
 
@@ -1382,7 +1430,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String path = SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId + "/versions";
 		URI url = getURI(getURIBuilder().setPath(path));
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			JsonElement root = JsonParser.parseString(response.getBody());
 			if (root.isJsonObject()) {
 				return root.getAsJsonObject().getAsJsonArray("content");
@@ -1402,9 +1451,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param formId     form id
 	 * @return customForm VraNgCustomForm
 	 */
-	protected VraNgCustomForm fetchRequestFormPrimitive(final String sourceType, final String sourceId, final String formId) {
+	protected VraNgCustomForm fetchRequestFormPrimitive(final String sourceType, final String sourceId,
+			final String formId) {
 		final String formType = "requestForm";
-		URI url = getURI(getURIBuilder().setPath(FETCH_REQUEST_FORM).setParameter("formType", formType).setParameter("sourceId", sourceId)
+		URI url = getURI(getURIBuilder().setPath(FETCH_REQUEST_FORM).setParameter("formType", formType)
+				.setParameter("sourceId", sourceId)
 				.setParameter("sourceType", sourceType).setParameter("formId", formId));
 		Map<String, Object> map = new HashMap<>();
 		map.put("type", "object");
@@ -1430,11 +1481,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgCustomForm getCustomFormByTypeAndSourcePrimitive(final String sourceType, final String sourceId) {
 		final String formType = "requestForm";
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE).setParameter("formType", formType).setParameter("sourceId", sourceId)
+		URI url = getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE)
+				.setParameter("formType", formType).setParameter("sourceId", sourceId)
 				.setParameter("sourceType", sourceType));
 
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			JsonElement root = JsonParser.parseString(response.getBody());
 			if (root.isJsonObject()) {
 				return new Gson().fromJson(root.getAsJsonObject(), VraNgCustomForm.class);
@@ -1504,7 +1557,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getFlavorProfileById(final String id) throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + id).setParameter("apiVersion", this.getVersion()).build();
+		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + id)
+				.setParameter("apiVersion", this.getVersion()).build();
 
 		return restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 	}
@@ -1518,7 +1572,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected Map<String, List<VraNgFlavorMapping>> getAllFlavorMappingsByRegionPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_FLAVORS));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -1554,7 +1609,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected Map<String, List<String>> getAllFlavorProfilesByRegionPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -1609,7 +1665,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param flavorMappings    list of flavor mappings
 	 * @throws URISyntaxException exception
 	 */
-	protected void createFlavorPrimitive(final String regionId, final String flavorProfileName, final List<VraNgFlavorMapping> flavorMappings)
+	protected void createFlavorPrimitive(final String regionId, final String flavorProfileName,
+			final List<VraNgFlavorMapping> flavorMappings)
 			throws URISyntaxException {
 
 		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE).setParameter("apiVersion", this.getVersion()).build();
@@ -1639,8 +1696,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void updateFlavorPrimitive(final String flavorProfileId, final List<VraNgFlavorMapping> flavorMappings)
 			throws URISyntaxException, UnexpectedException {
 
-		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + flavorProfileId).setParameter("apiVersion", this.getVersion()).build();
-		List<VraNgFlavorMapping> flavorMappingsToImport = this.getFlavorMappingsToImport(flavorProfileId, flavorMappings);
+		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE + "/" + flavorProfileId)
+				.setParameter("apiVersion", this.getVersion()).build();
+		List<VraNgFlavorMapping> flavorMappingsToImport = this.getFlavorMappingsToImport(flavorProfileId,
+				flavorMappings);
 
 		if (flavorMappingsToImport.size() == 0) {
 			return;
@@ -1671,7 +1730,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException  exception
 	 * @throws UnexpectedException exception
 	 */
-	private List<VraNgFlavorMapping> getFlavorMappingsToImport(final String flavorProfileId, final List<VraNgFlavorMapping> flavorMappings)
+	private List<VraNgFlavorMapping> getFlavorMappingsToImport(final String flavorProfileId,
+			final List<VraNgFlavorMapping> flavorMappings)
 			throws JsonSyntaxException, URISyntaxException, UnexpectedException {
 		ResponseEntity<String> flavorProfileById = this.getFlavorProfileById(flavorProfileId);
 
@@ -1687,9 +1747,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// all, so we're
 		// checking if it exists, and if not - defining the variable with a default
 		// value
-		flavorProfileObject.has("flavorMappings") && flavorProfileObject.get("flavorMappings").getAsJsonObject().has("mapping"))
-				? (this.getFlavorMappings(flavorProfileObject.get("flavorMappings").getAsJsonObject().get("mapping").getAsJsonObject()))
-				: new ArrayList<>();
+		flavorProfileObject.has("flavorMappings")
+				&& flavorProfileObject.get("flavorMappings").getAsJsonObject().has("mapping"))
+						? (this.getFlavorMappings(flavorProfileObject.get("flavorMappings").getAsJsonObject()
+								.get("mapping").getAsJsonObject()))
+						: new ArrayList<>();
 
 		List<VraNgFlavorMapping> flavorMappingsToImport = new ArrayList<>(flavorMappings);
 		flavorMappingsOnServer.forEach(fm -> {
@@ -1713,7 +1775,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	protected ResponseEntity<String> getImageProfileById(final String id) throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + id).setParameter("apiVersion", this.getVersion()).build();
+		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + id)
+				.setParameter("apiVersion", this.getVersion()).build();
 
 		return restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 	}
@@ -1727,7 +1790,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected Map<String, List<VraNgImageMapping>> getAllImageMappingsByRegionPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IMAGES));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -1762,7 +1826,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return true if valid else false.
 	 */
 	protected boolean jsonObjectValid(final JsonObject ob) {
-		boolean jsonObjectValid = ob.has("mapping") && ob.has("_links") && ob.get("mapping").getAsJsonObject().keySet().isEmpty()
+		boolean jsonObjectValid = ob.has("mapping") && ob.has("_links")
+				&& ob.get("mapping").getAsJsonObject().keySet().isEmpty()
 				&& ob.get("_links").getAsJsonObject().keySet().isEmpty();
 
 		LOGGER.debug(String.format("JSON object is valid: %s", jsonObjectValid));
@@ -1777,7 +1842,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected Map<String, List<String>> getAllImageProfilesByRegionPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IMAGE_PROFILE));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -1833,7 +1899,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param imageMappings    list of image mappings
 	 * @throws URISyntaxException exception
 	 */
-	protected void createImageProfilePrimitive(final String regionId, final String imageProfileName, final List<VraNgImageMapping> imageMappings)
+	protected void createImageProfilePrimitive(final String regionId, final String imageProfileName,
+			final List<VraNgImageMapping> imageMappings)
 			throws URISyntaxException {
 
 		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE).setParameter("apiVersion", this.getVersion()).build();
@@ -1863,7 +1930,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected void updateImageProfilePrimitive(final String imageProfileId, final List<VraNgImageMapping> imageMappings)
 			throws URISyntaxException, UnexpectedException {
 
-		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + imageProfileId).setParameter("apiVersion", this.getVersion()).build();
+		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE + "/" + imageProfileId)
+				.setParameter("apiVersion", this.getVersion()).build();
 		List<VraNgImageMapping> imageMappingsToImport = this.getImageMappingsToImport(imageProfileId, imageMappings);
 
 		if (imageMappingsToImport.size() == 0) {
@@ -1894,7 +1962,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException  exception
 	 * @throws UnexpectedException exception
 	 */
-	private List<VraNgImageMapping> getImageMappingsToImport(final String imageProfileId, final List<VraNgImageMapping> imageMappings)
+	private List<VraNgImageMapping> getImageMappingsToImport(final String imageProfileId,
+			final List<VraNgImageMapping> imageMappings)
 			throws JsonSyntaxException, URISyntaxException, UnexpectedException {
 		ResponseEntity<String> response = this.getImageProfileById(imageProfileId);
 
@@ -1910,9 +1979,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// all, so we're
 		// checking if it exists, and if not - defining the variable with a default
 		// value
-		imageProfileObject.has("imageMappings") && imageProfileObject.get("imageMappings").getAsJsonObject().has("mapping"))
-				? (this.getImageMappings(imageProfileObject.get("imageMappings").getAsJsonObject().get("mapping").getAsJsonObject()))
-				: new ArrayList<>();
+		imageProfileObject.has("imageMappings")
+				&& imageProfileObject.get("imageMappings").getAsJsonObject().has("mapping"))
+						? (this.getImageMappings(imageProfileObject.get("imageMappings").getAsJsonObject()
+								.get("mapping").getAsJsonObject()))
+						: new ArrayList<>();
 
 		List<VraNgImageMapping> imageMappingsToImport = new ArrayList<>(imageMappings);
 		imageMappingsOnServer.forEach(im -> {
@@ -1937,7 +2008,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected Map<String, List<VraNgStorageProfile>> getAllStorageProfilesByRegionPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -1981,7 +2053,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param profile   storage profile
 	 * @throws URISyntaxException exception
 	 */
-	protected void updateStorageProfilePrimitive(final String profileId, final VraNgStorageProfile profile) throws URISyntaxException {
+	protected void updateStorageProfilePrimitive(final String profileId, final VraNgStorageProfile profile)
+			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_STORAGE_PROFILE + "/" + profileId));
 		this.putJsonPrimitive(url, profile.getJson());
 	}
@@ -2012,7 +2085,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgStorageProfile getSpecificProfilePrimitive(final String targetPool, final String profileId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + targetPool + "/" + profileId));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 		JsonObject ob = root.getAsJsonObject();
@@ -2054,8 +2128,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		List<VraNgPropertyGroup> propertyGroups = new ArrayList<>();
 
 		while (hasMore) {
-			URI url = getURI(getURIBuilder().setPath(SERVICE_GET_PROPERTY_GROUPS).addParameter("$skip", String.valueOf(elementsToSkip)));
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			URI url = getURI(getURIBuilder().setPath(SERVICE_GET_PROPERTY_GROUPS).addParameter("$skip",
+					String.valueOf(elementsToSkip)));
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			JsonElement jsonElement = JsonParser.parseString(response.getBody());
 			hasMore = jsonElement.getAsJsonObject().get("last").toString().equals("false");
 			JsonArray content = jsonElement.getAsJsonObject().get("content").getAsJsonArray();
@@ -2067,7 +2143,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 				// Accept all if null or filter if given
 				if (nameFilter == null || propertyGroupName.contains(nameFilter)) {
-					propertyGroups.add(new VraNgPropertyGroup(propertyGroupName, StringUtils.strip(propertyGroupObject.get("id").toString(), "\""),
+					propertyGroups.add(new VraNgPropertyGroup(propertyGroupName,
+							StringUtils.strip(propertyGroupObject.get("id").toString(), "\""),
 							propertyGroupObject.toString()));
 				}
 			}
@@ -2104,7 +2181,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param profile     storage profile
 	 * @throws URISyntaxException exception
 	 */
-	protected void updateSpecificProfilePrimitive(final String patchTarget, final String profileId, final VraNgStorageProfile profile)
+	protected void updateSpecificProfilePrimitive(final String patchTarget, final String profileId,
+			final VraNgStorageProfile profile)
 			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + patchTarget + "/" + profileId));
 		this.postJsonPrimitive(url, HttpMethod.PATCH, profile.getJson());
@@ -2119,7 +2197,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected String getFabricEntityNamePrimitive(final String fabricUrl) {
 		URI url = getURI(getURIBuilder().setPath(fabricUrl));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -2139,7 +2218,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected String getFabricEntityIdPrimitive(final String fabricType, final String fabricName) {
 		String queryString = String.format("$filter=name eq '%s'", fabricName);
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + fabricType).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 		JsonObject ob = root.getAsJsonObject();
@@ -2171,22 +2251,26 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return null;
 		}
 
-		URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost()).setPath(SERVICE_VRA_ORGANIZATIONS).setParameter("expand", "1");
+		URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost()).setPath(SERVICE_VRA_ORGANIZATIONS)
+				.setParameter("expand", "1");
 
 		URI url;
 		Optional<VraNgOrganization> result = null;
 		try {
 			url = uriBuilder.build();
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			VraNgOrganizations organizations = gson.fromJson(response.getBody(), VraNgOrganizations.class);
 			result = organizations.getItems().stream().filter(vraNgOrganization -> {
 				return vraNgOrganization.getName().equalsIgnoreCase(organizationName);
 			}).findFirst();
 		} catch (URISyntaxException e) {
-			throw new RuntimeException(String.format("Unable to build REST URI to fetch organization name %s : %s", organizationName, e.getMessage()));
+			throw new RuntimeException(String.format("Unable to build REST URI to fetch organization name %s : %s",
+					organizationName, e.getMessage()));
 		} catch (Exception error) {
-			throw new RuntimeException("Organization not found by the provided name. Error message: " + error.getMessage(), error);
+			throw new RuntimeException(
+					"Organization not found by the provided name. Error message: " + error.getMessage(), error);
 		}
 		return result.isPresent() ? result.get() : null;
 	}
@@ -2203,14 +2287,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		VraNgOrganization org = null;
 		try {
-			URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost()).setPath(SERVICE_VRA_ORGANIZATION + organizationId);
+			URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost())
+					.setPath(SERVICE_VRA_ORGANIZATION + organizationId);
 			URI url;
 			try {
 				url = uriBuilder.build();
 			} catch (URISyntaxException e) {
-				throw new RuntimeException(String.format("Unable to build REST URI to fetch organization with ID %s : %s", organizationId, e.getMessage()));
+				throw new RuntimeException(
+						String.format("Unable to build REST URI to fetch organization with ID %s : %s", organizationId,
+								e.getMessage()));
 			}
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			org = gson.fromJson(response.getBody(), VraNgOrganization.class);
 
@@ -2236,7 +2324,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// for compatibility with both 8.0 and 8.1 the query string should combine both
 		String queryString = String.format("expand=true&$filter=name eq '%s' or endpointType eq '%s'", name, name);
 		URI url = getURI(getURIBuilder().setPath(SERVICE_VRA_INTEGRATIONS).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 		VraNgIntegration retVal = new VraNgIntegration();
@@ -2276,7 +2365,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected List<VraNgIntegration> getVraWorkflowIntegrationsPrimitive() {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_VRA_INTEGRATIONS).setCustomQuery("expand=true"));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		List<VraNgIntegration> retVal = new ArrayList<>();
 		JsonElement root = JsonParser.parseString(response.getBody());
@@ -2385,7 +2475,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			ResponseEntity<String> resp2 = this.postJsonPrimitive(url, HttpMethod.POST, returnedCr.toString());
 			if (!resp2.getStatusCode().is2xxSuccessful()) {
-				throw new RuntimeException(String.format("Unable to import additionalActions for %s", originalCr.get("displayName").getAsString()));
+				throw new RuntimeException(String.format("Unable to import additionalActions for %s",
+						originalCr.get("displayName").getAsString()));
 			}
 		}
 	}
@@ -2426,7 +2517,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			JsonElement name = ob.get("name");
 			JsonElement resourceType = ob.get("resourceType");
 			String json = ob.toString();
-			resourceActions.put(id.getAsString(), new VraNgResourceAction(id.getAsString(), name.getAsString(), json, resourceType.getAsString()));
+			resourceActions.put(id.getAsString(),
+					new VraNgResourceAction(id.getAsString(), name.getAsString(), json, resourceType.getAsString()));
 		}
 
 		return resourceActions;
@@ -2502,7 +2594,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected AbxConstant getAbxConstantPrimitive(final String name) {
 		String queryString = String.format("$filter=name eq '%s'", name);
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_CONSTANT).setCustomQuery(queryString));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 		JsonObject ob = root.getAsJsonObject();
@@ -2547,7 +2640,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws IOException        throws IO exception incase of invalid json
 	 *                            response
 	 */
-	public String updateAbxActionPrimitive(final String id, final AbxAction action) throws URISyntaxException, IOException {
+	public String updateAbxActionPrimitive(final String id, final AbxAction action)
+			throws URISyntaxException, IOException {
 		URI url = getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + id).build();
 
 		Map<String, Object> map = createAbxActionMap(action);
@@ -2564,10 +2658,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Abx Action Version
 	 */
 	public AbxActionVersion getAbxLastUpdatedVersionPrimitive(final String actionId) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/versions").addParameter("projectId", getProjectId())
+		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/versions")
+				.addParameter("projectId", getProjectId())
 				.addParameter("orderBy", "createdMillis DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		JsonElement root = JsonParser.parseString(response.getBody());
 
@@ -2590,7 +2686,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Abx Action Version
 	 */
 	public AbxActionVersion createAbxVersionPrimitive(final String actionId, final String version) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/versions").addParameter("projectId", getProjectId()));
+		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/versions")
+				.addParameter("projectId", getProjectId()));
 
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("name", version);
@@ -2608,7 +2705,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return Abx Action Version
 	 */
 	public AbxActionVersion releaseAbxVersionPrimitive(final String actionId, final String versionId) {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/release").addParameter("projectId", getProjectId()));
+		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/release")
+				.addParameter("projectId", getProjectId()));
 
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("version", versionId);
@@ -2636,7 +2734,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		LOGGER.debug("Extracting data: {}", ob);
 
-		String regionHref = ob.get("_links").getAsJsonObject().get("region").getAsJsonObject().get("href").getAsString();
+		String regionHref = ob.get("_links").getAsJsonObject().get("region").getAsJsonObject().get("href")
+				.getAsString();
 
 		return regionHref.substring(regionHref.lastIndexOf('/') + 1);
 	}
@@ -2648,7 +2747,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return cloud account id
 	 */
 	private String getLinkCloudAccountId(final JsonObject ob) {
-		String regionHref = ob.get("_links").getAsJsonObject().get("cloud-account").getAsJsonObject().get("href").getAsString();
+		String regionHref = ob.get("_links").getAsJsonObject().get("cloud-account").getAsJsonObject().get("href")
+				.getAsString();
 
 		return regionHref.substring(regionHref.lastIndexOf('/') + 1);
 	}
@@ -2699,7 +2799,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (action.platform.provider != null && Arrays.stream(providers).anyMatch(action.platform.provider::equals)) {
 			map.put("provider", action.platform.provider);
 		} else if (action.platform.provider != null) {
-			throw new RuntimeException("Faas provider name is not correct. Possible values are: " + String.join(",", providers));
+			throw new RuntimeException(
+					"Faas provider name is not correct. Possible values are: " + String.join(",", providers));
 		}
 
 		return map;
@@ -2746,7 +2847,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public VraNgContentSourceBase getContentSourceByName(final String contentSourceName) {
 		List<VraNgContentSourceBase> contentSources = this.getContentSources();
 
-		return contentSources.stream().filter(contentSource -> contentSource.getName().equalsIgnoreCase(contentSourceName)).findFirst().orElse(null);
+		return contentSources.stream()
+				.filter(contentSource -> contentSource.getName().equalsIgnoreCase(contentSourceName)).findFirst()
+				.orElse(null);
 	}
 
 	/**
@@ -2774,7 +2877,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public boolean isVraAbove81() {
 		return productVersion.getMajorVersion() != null && productVersion.getMajorVersion() >= VRA_VERSION_MAJOR
-				&& this.productVersion.getMinorVersion() != null && this.productVersion.getMinorVersion() >= VRA_VERSION_MINOR;
+				&& this.productVersion.getMinorVersion() != null
+				&& this.productVersion.getMinorVersion() >= VRA_VERSION_MINOR;
 	}
 
 	/**
@@ -2822,7 +2926,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE)).collect(Collectors.toList());
+				.filter(policy -> policy.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
+				.collect(Collectors.toList());
 		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 
 		return results;
@@ -2842,7 +2947,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
 				.filter(p -> p.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
-				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId())).findFirst().orElse(null);
+				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId())).findFirst()
+				.orElse(null);
 		if (policy == null) {
 			throw new Error("Cannot find Content Sharing Policy by name" + name);
 		} else {
@@ -2860,7 +2966,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		VraNgContentSharingPolicy csPolicy = new VraNgContentSharingPolicy();
 		URI url = getURI(getURIBuilder().setPath(String.format(SERVICE_POLICIES + "/%s", policyId)));
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			JsonElement root = JsonParser.parseString(response.getBody());
 			if (!root.isJsonObject()) {
 				return null;
@@ -2888,7 +2995,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param csPolicy policy data to create
 	 */
-	protected void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy) throws URISyntaxException {
+	protected void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
+			throws URISyntaxException {
 		VraNgContentSharingPolicy existingPolicy = this.getContentSharingPolicyPrimitive(csPolicy.getId());
 		// if the policy does not exist remove its id in order to be created, otherwise
 		// update it
@@ -2917,13 +3025,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(RESOURCE_QUOTA_POLICY_TYPE)).collect(Collectors.toList());
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(RESOURCE_QUOTA_POLICY_TYPE))
+					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 
 		} else {
-			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.10.x or newer."));
+			throw (new UnsupportedOperationException(
+					"Policy import/export supported in VRA Versions  8.10.x or newer."));
 		}
 	}
 
@@ -2932,14 +3042,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param rqPolicy policy data to create
 	 */
-	public void createResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy) throws URISyntaxException, UnsupportedOperationException {
+	public void createResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
+			throws URISyntaxException, UnsupportedOperationException {
 		if (this.isVraAbove810) {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(rqPolicy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
 			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
-			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.10.x or newer."));
+			throw (new UnsupportedOperationException(
+					"Policy import/export supported in VRA Versions  8.10.x or newer."));
 		}
 	}
 
@@ -2953,10 +3065,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		if (this.isVraAbove810) {
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			return new Gson().fromJson(response.getBody(), VraNgResourceQuotaPolicy.class);
 		} else {
-			throw (new UnsupportedOperationException("Policy import/export supported in VRA Versions  8.10.x or newer."));
+			throw (new UnsupportedOperationException(
+					"Policy import/export supported in VRA Versions  8.10.x or newer."));
 		}
 	}
 	// =================================================
@@ -2978,7 +3092,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgDay2ActionsPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(DAY2_ACTION_POLICY_TYPE)).collect(Collectors.toList());
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(DAY2_ACTION_POLICY_TYPE))
+					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
@@ -3012,7 +3127,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected VraNgDay2ActionsPolicy getDay2ActionsPolicyPrimitive(final String policyId) {
 		if (this.isVraAbove810) {
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			return new Gson().fromJson(response.getBody(), VraNgDay2ActionsPolicy.class);
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
@@ -3038,7 +3154,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(LEASE_POLICY_TYPE)).collect(Collectors.toList());
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(LEASE_POLICY_TYPE))
+					.collect(Collectors.toList());
 
 			LOGGER.debug("Lease Policies found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
@@ -3057,7 +3174,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (this.isVraAbove810) {
 
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			return new Gson().fromJson(response.getBody(), VraNgLeasePolicy.class);
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
@@ -3089,7 +3207,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param policy policy data to create
 	 */
-	public void createDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy) throws URISyntaxException {
+	public void createDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
+			throws URISyntaxException {
 		if (this.isVraAbove810) {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(policy);
@@ -3110,7 +3229,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (this.isVraAbove810) {
 
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			return new Gson().fromJson(response.getBody(), VraNgDeploymentLimitPolicy.class);
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
@@ -3133,7 +3253,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgDeploymentLimitPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(DEPLOYMENT_LIMIT_POLICY_TYPE)).collect(Collectors.toList());
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(DEPLOYMENT_LIMIT_POLICY_TYPE))
+					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
@@ -3171,7 +3292,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected VraNgApprovalPolicy getApprovalPolicyPrimitive(final String policyId) {
 		if (isVraAbove810) {
 			URI url = getURI(getURIBuilder().setPath(SERVICE_POLICIES + "/" + policyId));
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			return new Gson().fromJson(response.getBody(), VraNgApprovalPolicy.class);
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
@@ -3195,7 +3317,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			// filter here for older vRA versions.
 			List<VraNgApprovalPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(APPROVAL_POLICY_TYPE)).collect(Collectors.toList());
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(APPROVAL_POLICY_TYPE))
+					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
