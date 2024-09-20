@@ -3,13 +3,13 @@
 ## Contents
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
-    * [Installation](#installation)
-    * [Validation](#validation)
+  - [Installation](#installation)
+   [Validation](#validation)
 - [Running the Infrastructure](#running-the-infrastructure)
 - [Application Setup](#application-setup)
-    * [GitLab](#gitlab)
-    * [GitLab Runner](#gitlab-runner)
-    * [Nexus](#nexus)
+  - [GitLab](#gitlab)
+  - [GitLab Runner](#gitlab-runner)
+  - [Nexus](#nexus)
 - [Environment Setup](#environment-setup)
 - [Project Setup](#project-setup)
 - [Conclusion](#conclusion)
@@ -19,11 +19,11 @@ This file serves as a guide to create a minimal infrastructure example using con
 
 - [nginx](https://hub.docker.com/_/nginx)
 - `Nexus`
-    * [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/) for Linux.
-    * [klo2k/nexus3](https://hub.docker.com/r/klo2k/nexus3) for M1+ Mac.
+  - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/) for Linux.
+  - [klo2k/nexus3](https://hub.docker.com/r/klo2k/nexus3) for M1+ Mac.
 - `GitLab`
-    * [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) for Linux.
-    * [yrzr/gitlab-ce-arm64v8](yrzr/gitlab-ce-arm64v8) for M1+ Mac.
+  - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) for Linux.
+  - [yrzr/gitlab-ce-arm64v8](yrzr/gitlab-ce-arm64v8) for M1+ Mac.
 - [gitlab/gitlab-runner](https://hub.docker.com/r/gitlab/gitlab-runner)
 
 Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](../README.md) project.
