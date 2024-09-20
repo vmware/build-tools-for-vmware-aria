@@ -186,21 +186,6 @@ To get started, follow the steps below:
     - A `Maven Central` mirror under `mirrors` with id `nexus`.
     - A profile under `profiles` with id `nexus` with `releases` and `snapshots` repositories.
     - A profile under `profiles` with id `packaging`.
-    
-3. Get back to the root of this repository:
-    ```
-    cd ..
-    ```
-4. Execute the following:
-    ```
-    mvn clean install -f common/keystore-example/pom.xml
-    mvn clean install -f maven/npmlib/pom.xml 
-    mvn clean install -f pom.xml 
-    mvn clean install -f maven/base-package/pom.xml
-    mvn clean install -f packages/pom.xml
-    mvn clean install -f maven/typescript-project-all/pom.xml
-    mvn clean install -f maven/repository/pom.xml
-    ```
 
 # Project Setup
 1. Create a repository called `demo` at [http://infra.corp.local/gitlab/projects/new#blank_project](http://infra.corp.local/gitlab/projects/new#blank_project).
@@ -210,7 +195,7 @@ To get started, follow the steps below:
     ```
     mvn archetype:generate -DinteractiveMode=false -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes -DarchetypeArtifactId=package-ts-vra-ng-archetype -DarchetypeVersion=<VERSION> -DgroupId=local.corp -DartifactId=demo -DlicenseTechnicalPreview=false -DoutputDirectory=../
     ```
-    where `<VERSION>` is the last released version or any specific version you want, i.e. `2.41.0`.
+    where `<VERSION>` is the last released version or any specific version you want, i.e. `2.42.0`.
 
     You might also want to change the specific archetype to best fit your specific use-case. Check out the archetype templates available at [com.vmware.pscoe.o11n.archetypes](https://central.sonatype.com/namespace/com.vmware.pscoe.o11n.archetypes).
 5. Validate the command generates the appropriate project files.

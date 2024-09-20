@@ -1,14 +1,72 @@
-.iac-component .card-img {
-    margin: 25px;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
-
-.clr-icon.clr-clarity-logo {
-    background-image: url(../images/vmware-logo.png);
-    height: 36px;
-    width: 120px !important;
-    margin-right: 11px;
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
 }
-
-pre {
-    padding:10px;
+header {
+    background: #333;
+    color: #fff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #77aaff 3px solid;
+}
+header a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+header ul {
+    padding: 0;
+    list-style: none;
+}
+header li {
+    float: left;
+    display: inline;
+    padding: 0 20px 0 20px;
+}
+header #branding {
+    float: left;
+}
+header #branding h1 {
+    margin: 0;
+}
+header nav {
+    float: right;
+    margin-top: 10px;
+}
+.content {
+    padding: 20px;
+    background: #fff;
+    margin-top: 20px;
+}
+.content h2 {
+    color: #333;
+}
+.content ul {
+    list-style: none;
+    padding: 0;
+}
+.content ul li {
+    padding: 10px;
+    background: #f4f4f4;
+    margin-bottom: 10px;
+}
+.content ul li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
 }
