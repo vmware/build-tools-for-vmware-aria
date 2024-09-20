@@ -1,28 +1,29 @@
-# Contents
+# Minimal Infrastructure
+
+## Contents
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Validation](#validation)
+    * [Installation](#installation)
+    * [Validation](#validation)
 - [Running the Infrastructure](#running-the-infrastructure)
 - [Application Setup](#application-setup)
-    - [GitLab](#gitlab)
-    - [GitLab Runner](#gitlab-runner)
-    - [Nexus](#nexus)
+    * [GitLab](#gitlab)
+    * [GitLab Runner](#gitlab-runner)
+    * [Nexus](#nexus)
 - [Environment Setup](#environment-setup)
 - [Project Setup](#project-setup)
 - [Conclusion](#conclusion)
 
-# Introduction
-
+## Introduction
 This file serves as a guide to create a minimal infrastructure example using containers. We will be using [Docker Compose](https://docs.docker.com/compose/) to orchestrate the following containers:
 
 - [nginx](https://hub.docker.com/_/nginx)
 - `Nexus`
-    - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/) for Linux.
-    - [klo2k/nexus3](https://hub.docker.com/r/klo2k/nexus3) for M1+ Mac.
+    * [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/) for Linux.
+    * [klo2k/nexus3](https://hub.docker.com/r/klo2k/nexus3) for M1+ Mac.
 - `GitLab`
-    - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) for Linux.
-    - [yrzr/gitlab-ce-arm64v8](yrzr/gitlab-ce-arm64v8) for M1+ Mac.
+    * [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) for Linux.
+    * [yrzr/gitlab-ce-arm64v8](yrzr/gitlab-ce-arm64v8) for M1+ Mac.
 - [gitlab/gitlab-runner](https://hub.docker.com/r/gitlab/gitlab-runner)
 
 Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](../README.md) project.
@@ -31,12 +32,12 @@ We will also be guiding you through configuring the applications and setting up 
 
 Please contribute back to this document if you find out of date contents or have other ways to improve it.
 
-# Prerequisites
+## Prerequisites
 
-## Installation
+### Installation
 Before proceeding, make sure you have the following installed on your system:
 - [Docker Engine](https://docs.docker.com/engine/install/) - Important to configure the docker host to automatically start after reboot and add docker to PATH.
-    ```
+    ```bash
     systemctl start docker
     systemctl enable docker
     export PATH=$PATH:~/.docker/bin
@@ -49,9 +50,9 @@ Before proceeding, make sure you have the following installed on your system:
 
 For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
 
-## Validation
+### Validation
 Validate all of the prerequisites are available in the Terminal:
-```
+```bash
 docker -v
 node -v
 npm -v
@@ -60,7 +61,7 @@ java --version
 ```
 
 The latest versions used to test this guide on Ubuntu are as follows:
-```
+```text
 Docker version 27.0.3
 NodeJS version 14.21.3
 npm version 6.14.18
@@ -73,36 +74,36 @@ openjdk 17.0.12 2024-07-16
 OpenJDK Runtime Environment (build 17.0.12+7-Ubuntu-1ubuntu220.04)
 OpenJDK 64-Bit Server VM (build 17.0.12+7-Ubuntu-1ubuntu220.04, mixed mode, sharing)
 ```
-# Running the Infrastructure
 
+## Running the Infrastructure
 To get started, follow the steps below:
 
 1. Clone the repository containing the existing resources:
-    ```
+    ```bash
     git clone https://github.com/vmware/build-tools-for-vmware-aria.git
     ```
 
 2. Navigate to the `infrastructure` folder:
-    ```
+    ```bash
     cd build-tools-for-vmware-aria/infrastructure
     ```
 
 3. Create the custom Maven GitLab Runner image by executing:
-    ```
+    ```bash
     docker build -t gitlab-runner ./gitlab-runner
     ```
 
 4. Open the [docker-compose.yml](docker-compose.yml) file:
-    - Depending on your host OS uncomment the `image` property under the `gitlab` and `nexus` services either tagged with `# Mac` or `# Linux`.
+    - Depending on your host OS uncomment the `image` property under the `gitlab` and `nexus` services either tagged with `## Mac` or `## Linux`.
     - `OPTIONAL` Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](./nginx/conf.d/main.conf).
-    
+
 5. Add the nginx container and the docker internal host endpoints to your `hosts` file.  
     - Docker provides an internal DNS server in user-defined networks (infranet) to resolve container names to their internal IP addresses. Since your nginx and GitLab services are part of the infranet network, they can communicate using their Docker defined hostnames.
 
     - We are going to be accessing the containers from the nginx reverse proxy. For this you need to manually edit the /etc/hosts file on your host machine:
 
     - Add the following records to the `/etc/hosts` file.
-        ```
+        ```text
         127.0.0.1 infra.corp.local
         ```
 
@@ -117,7 +118,7 @@ To get started, follow the steps below:
     ```
 
    The results should look something like this:
-    ```
+    ```text
     CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS                   PORTS                                                 NAMES
     eec4f06c5e88   nginx                    "/docker-entrypoint.…"   5 minutes ago   Up 5 minutes             0.0.0.0:80->80/tcp                                    nginx
     dc46763483f0   klo2k/nexus3             "/__cacert_entrypoin…"   5 minutes ago   Up 5 minutes             0.0.0.0:8081->8081/tcp                                nexus
@@ -131,32 +132,32 @@ To get started, follow the steps below:
     - GitLab - [infra.corp.local/gitlab](http://infra.corp.local/gitlab)
     - GitLab Runner - [infra.corp.local/gitlab-runner](http://infra.corp.local/gitlab-runner) (*no http web interface*)
 
-# Application Setup
+## Application Setup
 
-## GitLab
+### GitLab
 1. Grab the GitLab `root` password:
-    ```
+    ```bash
     sudo docker exec -it gitlab-ce grep 'Password:' /etc/gitlab/initial_root_password
     ```
     *This file will be deleted 24 hours after a container restart*
 
 2. Login at [http://infra.corp.local/gitlab/users/sign_in](http://infra.corp.local/gitlab/users/sign_in) with:
-    ```
+    ```text
     account: root
     password: *password from previous step*
     ```
 3. Change the root user password at [http://infra.corp.local/gitlab/admin/users/root/edit](http://infra.corp.local/gitlab/admin/users/root/edit)
 
-## GitLab Runner
+### GitLab Runner
 1. Go to [http://infra.corp.local/gitlab/admin/runners](http://infra.corp.local/gitlab/admin/runners)
 2. Click on `New instance runner`
 3. Enter any tag, for instance `maven` and optionally select `Run untagged jobs` and press `Create runner`
 4. Copy the code snippet in `Step 1`, which contains your AUTH_TOKEN and should look something like the following:
-    ```
+    ```bash
     gitlab-runner register --url http://infra.corp.local/gitlab --token <AUTH_TOKEN>
     ```
 5. Append it to `docker exec -it gitlab-runner` and execute on your host:
-    ```
+    ```bash
     docker exec -it gitlab-runner gitlab-runner register --url http://infra.corp.local/gitlab --token <AUTH_TOKEN>
     ```
 6. Follow the setup process by providing the following:
@@ -165,13 +166,13 @@ To get started, follow the steps below:
     - Enter an executor - input `shell` and press Enter
 7. Go back to [http://infra.corp.local/gitlab/admin/runners](http://infra.corp.local/gitlab/admin/runners) and validate the runner is `Online`
 
-## Nexus
+### Nexus
 1. Grab the Nexus `admin` password:
-    ```
+    ```bash
     docker exec nexus sh -c 'cat /nexus-data/admin.password && echo'
     ```
 2. Login at [http://infra.corp.local/nexus/](http://infra.corp.local/nexus/) with:
-    ```
+    ```text
     account: admin
     password: *password from previous step*
     ```
@@ -179,7 +180,7 @@ To get started, follow the steps below:
     - Enter new `admin` password
     - Disable anonymous access
 
-# Environment Setup
+## Environment Setup
 1. Follow the [Getting Started](../docs/versions/latest/General/Getting%20Started/) guides to setup your local environment.
 2. Edit your local `~/.m2/settings.xml` by using the repository provided [settings.xml](/infrastructure/.m2/settings.xml). It should contain:
     - A nexus server authentication under `servers` with id `nexus` with your Nexus username and password.
@@ -188,30 +189,30 @@ To get started, follow the steps below:
     - A profile under `profiles` with id `packaging`.
 
     You can also copy it directly from the example [settings.xml](/infrastructure/.m2/settings.xml):
-    ```
+    ```bash
     mkdir -p ~/.m2
     cp .m2/settings.xml ~/.m2/settings.xml
     ```
 
-# Project Setup
+## Project Setup
 1. Create a repository called `demo` at [http://infra.corp.local/gitlab/projects/new#blank_project](http://infra.corp.local/gitlab/projects/new#blank_project).
 2. Setup your local git environment and follow the `Command line instructions` listed in your new repo to clone it.
 3. Open a terminal and `cd` to the repository directory.
 4. Generate a project by running:
-    ```
+    ```bash
     mvn archetype:generate -DinteractiveMode=false -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes -DarchetypeArtifactId=package-ts-vra-ng-archetype -DarchetypeVersion=<VERSION> -DgroupId=local.corp -DartifactId=demo -DlicenseTechnicalPreview=false -DoutputDirectory=../
     ```
     where `<VERSION>` is the last released version or any specific version you want, i.e. `2.42.0`.
- 
+
     You might also want to change the specific archetype to best fit your specific use-case. Check out the archetype templates available at [com.vmware.pscoe.o11n.archetypes](https://central.sonatype.com/namespace/com.vmware.pscoe.o11n.archetypes), some of them might need additional dependencies like `Powershell` or `Python`.
 5. Validate the command generates the appropriate project files.
 6. Validate you can build and test the project locally:
-    ```
+    ```bash
     mvn clean package
     mvn test
     ```
     You might need to comment out the following passage:
-    ```
+    ```text
     <dependency>
         <groupId>local.corp</groupId>
         <artifactId>vro</artifactId>
@@ -222,7 +223,7 @@ To get started, follow the steps below:
     in `vra`'s `pom.xml` in order to successfully build and test.
 
 7. Configure the GitLab pipeline by creating a new file in the root of the repository named `.gitlab-ci.yml`:
-    ```
+    ```yml
     stages:
       - setup
       - build
@@ -289,8 +290,8 @@ To get started, follow the steps below:
 10. You can continue by:
     - following the [Bundle Installer Guide](../docs/archive/doc/markdown/use-bundle-isntaller.md) to push your package to your `Aria` instance manually.
     - adding a new `profile` in the [settings.xml](./.m2/settings.xml) for your `Aria` instance and then executing `mvn package vrealize:push -P<NEW_PROFILE_NAME>` which will push your changes directly to a life environment. Follow the [Push](../docs/archive/doc/markdown/use-workstation-vra-ng-project.md#Push) section of your specific archetype documentation at [docs/archive/doc/markdown](../docs/archive/doc/markdown/).
-        
-# Conclusion
+
+## Conclusion
 This concludes the setup. You now have a fully operational end-to-end architecture to support the [Build Tools for Aria](../README.md), create, build and push projects and run pipelines that produce install bundles.
 
 *This is not intended as a production environment, but as an educational sandbox. You should setup your proper and persistent development and production environments in a similar fashion.*
