@@ -45,7 +45,7 @@ Before proceeding, make sure you have the following installed on your system:
 - [Docker Compose](https://docs.docker.com/compose/install)
 - [Open JDK 17](https://openjdk.org/install/)
 - [Maven](https://maven.apache.org/)
-- [NodeJS 14.21.03](https://nodejs.org/en/download/package-manager) - Use the nvm version for your OS.
+- [NodeJS 14.21.03](https://nodejs.org/en/download/package-manager) - Recommended to use [nvm](https://github.com/nvm-sh/nvm) to manage Node versions.
 - [npm 6.14.18](https://nodejs.org/en/download/package-manager) - Should be bundled with `NodeJS`.
 
 For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
