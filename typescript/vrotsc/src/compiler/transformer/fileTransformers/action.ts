@@ -13,7 +13,7 @@
  * #L%
  */
 import * as ts from "typescript";
-import { FileDescriptor, FileTransformationContext, ScriptTransformationContext } from "../../../types";
+import { FileDescriptor, FileTransformationContext, ScriptTransformationContext, HierarchyFacts, ScriptTransformers } from "../../../types";
 import { system } from "../../../system/system";
 import { transformSourceFile } from "../scripts/scripts";
 import { collectFactsBefore } from "../metaTransformers/facts";
@@ -22,54 +22,157 @@ import { transformShimsBefore, transformShims } from "../codeTransformers/shims"
 import { remediateTypeScript } from "../codeTransformers/remediate";
 import { transformModuleSystem } from "../codeTransformers/modules";
 import { canCreateDeclarationForFile } from "../metaTransformers/declaration";
-import { checkActionForMisplacedClassDecorators, handleActionClosure } from "../helpers/actionTransformHelper";
+import { checkActionForMisplacedClassDecorators } from "../helpers/checkActionForMisplacedClassDecorators";
+import { addHeaderComment } from "../helpers/source";
 
-// @TODO: Take a look at this
-
+/**
+ * Returns Action file transformer
+ * @param {FileDescriptor} file
+ * @param {FileTransformationContext} context
+ * @returns {Function} Function to transform action script
+ */
 export function getActionTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
 	sourceFile.statements.filter(n => n.kind === ts.SyntaxKind.ClassDeclaration)
 		.forEach(classNode => checkActionForMisplacedClassDecorators(classNode as ts.ClassDeclaration));
 	context.sourceFiles.push(sourceFile);
 
-	return function transform() {
-		const transformers = {
-			before: [
-				collectFactsBefore,
-				collectNamespaces,
-				transformShimsBefore,
-			],
-			after: [
-				transformShims,
-				transformNamespaces,
-				remediateTypeScript,
-				transformModuleSystem,
-				(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext) => handleActionClosure(sourceFile, ctx, context.emitHeader),
-			],
-		};
-		const [sourceText, typeDefText, mapText] = transformSourceFile(sourceFile, context, transformers);
+	return () => transform(file, context, sourceFile);
+}
 
-		// Test helpers should be excluded
-		const isHelper = file.relativeFilePath.match(/\.helper\.[tj]s$/);
-		const outputDir = isHelper ? context.outputs.testHelpers : context.outputs.actions;
+/**
+ * Function to transform an Action source file. Excludes test helpers (.helper.ts/js)
+ * @param {FileDescriptor} file
+ * @param {FileTransformationContext} context
+ * @param {ts.SourceFile} sourceFile
+ */
+function transform(file: FileDescriptor, context: FileTransformationContext, sourceFile: ts.SourceFile) {
+	const transformers = buildTransformers(context.emitHeader);
+	const [sourceText, typeDefText, mapText] = transformSourceFile(sourceFile, context, transformers);
 
-		const resolvedPath = system.resolvePath(outputDir, file.relativeFilePath);
-		let targetFilePath = system.changeFileExt(resolvedPath, ".js", [".js", ".ts"]);
+	const isHelper = file.relativeFilePath.match(/\.helper\.[tj]s$/);
+	const outputDir = isHelper ? context.outputs.testHelpers : context.outputs.actions;
 
-		if (isHelper) {
-			targetFilePath = system.changeFileExt(targetFilePath, "_helper.js", [".helper.js"]);
-		}
+	const resolvedPath = system.resolvePath(outputDir, file.relativeFilePath);
+	let targetFilePath = system.changeFileExt(resolvedPath, ".js", [".js", ".ts"]);
 
-		context.writeFile(targetFilePath, sourceText);
+	if (isHelper) {
+		targetFilePath = system.changeFileExt(targetFilePath, "_helper.js", [".helper.js"]);
+	}
 
-		if (typeDefText && canCreateDeclarationForFile(file, context.rootDir)) {
-			const targetDtsFilePath = system.changeFileExt(system.resolvePath(context.outputs.types, file.relativeFilePath), ".d.ts");
-			context.writeFile(targetDtsFilePath, typeDefText);
-		}
+	context.writeFile(targetFilePath, sourceText);
 
-		if (mapText) {
-			const targetMapFilePath = system.changeFileExt(system.resolvePath(context.outputs.maps, file.relativeFilePath), ".js.map");
-			context.writeFile(targetMapFilePath, mapText);
-		}
+	if (typeDefText && canCreateDeclarationForFile(file, context.rootDir)) {
+		const targetDtsFilePath = system.changeFileExt(system.resolvePath(context.outputs.types, file.relativeFilePath), ".d.ts");
+		context.writeFile(targetDtsFilePath, typeDefText);
+	}
+
+	if (mapText) {
+		const targetMapFilePath = system.changeFileExt(system.resolvePath(context.outputs.maps, file.relativeFilePath), ".js.map");
+		context.writeFile(targetMapFilePath, mapText);
+	}
+}
+
+/**
+ * Builds action script transformers
+ * @param {boolean} emitHeader - whether to add a header comment
+ * @returns {ScriptTransformers}
+ */
+function buildTransformers(emitHeader: boolean): ScriptTransformers {
+	return {
+		before: [
+			collectFactsBefore,
+			collectNamespaces,
+			transformShimsBefore,
+		],
+		after: [
+			transformShims,
+			transformNamespaces,
+			remediateTypeScript,
+			transformModuleSystem,
+			(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext) => handleActionClosure(sourceFile, ctx, emitHeader),
+		],
 	};
+}
+
+/**
+ * Wraps an Action in a closure function or, if it already is a closure, updates it.
+ * @param {ts.SourceFile} sourceFile action source file
+ * @param {ScriptTransformationContext} ctx - script transformation context
+ * @param {boolean} emitHeader - whether to add a header comment
+ * @returns {ts.SourceFile}
+ */
+export function handleActionClosure(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext, emitHeader: boolean): ts.SourceFile {
+	const statements: ts.Statement[] = [];
+	const sourceFileStatements = sourceFile.statements;
+	const factory = ctx.factory;
+
+	if (ctx.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) {
+		updateActionClosure(sourceFileStatements, factory, statements, emitHeader);
+	}
+	else {
+		createActionClosure(sourceFileStatements, factory, statements, emitHeader);
+	}
+
+	let nodeArray = factory.createNodeArray(statements);
+	nodeArray = ts.setTextRange(nodeArray, sourceFileStatements);
+	return factory.updateSourceFile(sourceFile, nodeArray);
+}
+
+/**
+ * Copies all statements preceeding the action closure
+ * @param {ts.Statement[]} sourceFileStatements - statements from the source file
+ * @param {ts.NodeFactory} factory - node factory (from the script transformation context)
+ * @param {ts.Statement[]} statements - array of statements to populate
+ * @param {boolean} emitHeader - whether to add a header comment
+ */
+function updateActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, factory: ts.NodeFactory, statements: ts.Statement[], emitHeader: boolean) {
+	const actionClosureIndex = sourceFileStatements.length - 1;
+	const expStatement = sourceFileStatements[actionClosureIndex] as ts.ExpressionStatement;
+	const parenExpression = expStatement.expression as ts.ParenthesizedExpression;
+	const funcExpression = parenExpression.expression as ts.FunctionExpression;
+	const funcStatements: ts.Statement[] = sourceFileStatements.slice(0, actionClosureIndex).concat(funcExpression.body.statements);
+	if (emitHeader) {
+		addHeaderComment(funcStatements);
+	}
+	const block = factory.updateBlock(funcExpression.body, funcStatements);
+	const updatedFnExpr = factory.updateFunctionExpression(funcExpression,
+		undefined, // ts.Modifier[],
+		undefined, // ts.AsteriskToken,
+		undefined,// ts.Identifier,
+		undefined, // ts.TypeParameterDeclaration[],
+		funcExpression.parameters,// ts.ParameterDeclaration[],
+		undefined, // ts.TypeNode,
+		block // ts.Block
+	);
+	const parenthesizedExpr = factory.updateParenthesizedExpression(parenExpression, updatedFnExpr);
+	const updatedExpr = factory.updateExpressionStatement(expStatement, parenthesizedExpr);
+	statements.push(updatedExpr);
+}
+
+/**
+ * Wrap statements in a new action closure
+ * @param {ts.Statement[]} sourceFileStatements - statements from the source file
+ * @param {ts.NodeFactory} factory - node factory (from the script transformation context)
+ * @param {ts.Statement[]} statements - array of statements to populate
+ * @param {boolean} emitHeader - whether to add a header comment
+ */
+function createActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, factory: ts.NodeFactory, statements: ts.Statement[], emitHeader: boolean) {
+	if (emitHeader) {
+		addHeaderComment(<ts.Statement[]><unknown>sourceFileStatements);
+	}
+	const block = factory.createBlock(sourceFileStatements, true);
+	const fnExpr = factory.createFunctionExpression(
+		undefined, // ts.Modifier[],
+		undefined, // ts.AsteriskToken,
+		undefined,// ts.Identifier,
+		undefined, // ts.TypeParameterDeclaration[],
+		undefined,// ts.ParameterDeclaration[],
+		undefined, // ts.TypeNode,
+		block // ts.Block
+	);
+	const parentesizedExpr = factory.createParenthesizedExpression(fnExpr);
+	let closureStatement = factory.createExpressionStatement(parentesizedExpr);
+	const stmt = ts.addSyntheticLeadingComment(closureStatement, ts.SyntaxKind.MultiLineCommentTrivia, "*\n * @return {Any}\n ", true); //hasTrailingNewLine
+	statements.push(stmt);
 }
