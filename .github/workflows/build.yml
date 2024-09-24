@@ -4,9 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - "**" # trigger the workflow on any branch push event
-    paths:
-      - "**" # trigger the workflow on any file change
+      - "main" # trigger the workflow for main branch
   workflow_dispatch:
 
 jobs:
