@@ -103,30 +103,24 @@ function buildTransformers(emitHeader: boolean): ScriptTransformers {
  * @returns {ts.SourceFile}
  */
 export function handleActionClosure(sourceFile: ts.SourceFile, ctx: ScriptTransformationContext, emitHeader: boolean): ts.SourceFile {
-	const statements: ts.Statement[] = [];
-	const sourceFileStatements = sourceFile.statements;
-	const factory = ctx.factory;
+	const statements: ts.Statement[] = (ctx.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure)
+		? updateActionClosure(sourceFile.statements, ctx.factory, emitHeader)
+		: createActionClosure(sourceFile.statements, ctx.factory, emitHeader);
 
-	if (ctx.file.hierarchyFacts & HierarchyFacts.ContainsActionClosure) {
-		updateActionClosure(sourceFileStatements, factory, statements, emitHeader);
-	}
-	else {
-		createActionClosure(sourceFileStatements, factory, statements, emitHeader);
-	}
+	let nodeArray = ctx.factory.createNodeArray(statements);
+	nodeArray = ts.setTextRange(nodeArray, sourceFile.statements);
 
-	let nodeArray = factory.createNodeArray(statements);
-	nodeArray = ts.setTextRange(nodeArray, sourceFileStatements);
-	return factory.updateSourceFile(sourceFile, nodeArray);
+	return ctx.factory.updateSourceFile(sourceFile, nodeArray);
 }
 
 /**
  * Copies all statements preceeding the action closure
  * @param {ts.Statement[]} sourceFileStatements - statements from the source file
  * @param {ts.NodeFactory} factory - node factory (from the script transformation context)
- * @param {ts.Statement[]} statements - array of statements to populate
  * @param {boolean} emitHeader - whether to add a header comment
+ * @return {ts.Statement[]} populated array of statements
  */
-function updateActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, factory: ts.NodeFactory, statements: ts.Statement[], emitHeader: boolean) {
+function updateActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, factory: ts.NodeFactory, emitHeader: boolean): ts.Statement[] {
 	const actionClosureIndex = sourceFileStatements.length - 1;
 	const expStatement = sourceFileStatements[actionClosureIndex] as ts.ExpressionStatement;
 	const parenExpression = expStatement.expression as ts.ParenthesizedExpression;
@@ -146,18 +140,18 @@ function updateActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, f
 		block // ts.Block
 	);
 	const parenthesizedExpr = factory.updateParenthesizedExpression(parenExpression, updatedFnExpr);
-	const updatedExpr = factory.updateExpressionStatement(expStatement, parenthesizedExpr);
-	statements.push(updatedExpr);
+
+	return [factory.updateExpressionStatement(expStatement, parenthesizedExpr)];
 }
 
 /**
  * Wrap statements in a new action closure
  * @param {ts.Statement[]} sourceFileStatements - statements from the source file
  * @param {ts.NodeFactory} factory - node factory (from the script transformation context)
- * @param {ts.Statement[]} statements - array of statements to populate
  * @param {boolean} emitHeader - whether to add a header comment
+ * @return {ts.Statement[]} populated array of statements
  */
-function createActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, factory: ts.NodeFactory, statements: ts.Statement[], emitHeader: boolean) {
+function createActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, factory: ts.NodeFactory, emitHeader: boolean): ts.Statement[] {
 	if (emitHeader) {
 		addHeaderComment(<ts.Statement[]><unknown>sourceFileStatements);
 	}
@@ -173,6 +167,6 @@ function createActionClosure(sourceFileStatements: ts.NodeArray<ts.Statement>, f
 	);
 	const parentesizedExpr = factory.createParenthesizedExpression(fnExpr);
 	let closureStatement = factory.createExpressionStatement(parentesizedExpr);
-	const stmt = ts.addSyntheticLeadingComment(closureStatement, ts.SyntaxKind.MultiLineCommentTrivia, "*\n * @return {Any}\n ", true); //hasTrailingNewLine
-	statements.push(stmt);
+
+	return [ts.addSyntheticLeadingComment(closureStatement, ts.SyntaxKind.MultiLineCommentTrivia, "*\n * @return {Any}\n ", true)]; //hasTrailingNewLine
 }
