@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 Question
-    url: https://bit.ly/vmware-vrdt-slack
-    about: Please ask and answer questions in our Slack channel.
+    url: https://github.com/vmware/build-tools-for-vmware-aria/discussions
+    about: Please ask and answer questions in our GitHub Discussions.
