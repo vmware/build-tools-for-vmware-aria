@@ -14,10 +14,11 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration;
 
+import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpHost;
+import org.apache.hc.core5.http.HttpHost;
 import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -46,7 +47,7 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	public static final String PACKAGE_EXPORT_VERSION_HISTORY = "packageExportVersionHistory";
 	public static final String PACKAGE_EXPORT_CONFIGURATION_ATTRIBUTE_VALUES = "packageExportConfigurationAttributeValues";
 	public static final String PACKAGE_EXPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES = "packageExportConfigSecureStringAttributeValues";
-	public static final String PACKAGE_EXPORT_GLOBAL_TAGS= "packageExportGlobalTags";
+	public static final String PACKAGE_EXPORT_GLOBAL_TAGS = "packageExportGlobalTags";
 
 	public static final String PACKAGE_EXPORT_AS_ZIP = "packgeExportAsZip";
 
@@ -108,9 +109,9 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 
 	public boolean isEmbeddedVro8() {
 		final String embeddedValue = this.properties.getProperty(EMBEDDED);
-		try{
+		try {
 			return StringUtils.isEmpty(embeddedValue) ? false : Boolean.parseBoolean(embeddedValue);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException("Embedded Value is not a boolean.");
 		}
 	}
@@ -122,9 +123,9 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 
 	public int getAuthPort() {
 		final String authPort = this.properties.getProperty(AUTH_PORT);
-		try{
+		try {
 			return StringUtils.isEmpty(authPort) ? this.getPort() : Integer.parseInt(authPort);
-		}catch(NumberFormatException e){
+		} catch (NumberFormatException e) {
 			throw new RuntimeException("Port is not a number");
 		}
 	}
@@ -135,7 +136,11 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 			return null;
 		}
 
-		return HttpHost.create(proxy);
+		try {
+			return HttpHost.create(proxy);
+		} catch (URISyntaxException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		}
 	}
 
 	@Override
@@ -145,22 +150,24 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	}
 
 	@Override
-	public void validate(boolean domainOptional) throws ConfigurationException{
+	public void validate(boolean domainOptional) throws ConfigurationException {
 		logger.info("Checking if exists refresh token");
 		boolean useRefreshTokenForAuth = !StringUtils.isEmpty(this.getRefreshToken());
-		if(useRefreshTokenForAuth)
+		if (useRefreshTokenForAuth) {
 			logger.info(String.format("Refresh token in config for vro is: %s", this.getRefreshToken()));
-		else
+		} else {
 			logger.info("Refresh token not detected using BASIC Authentication");
-		super.validate(domainOptional, useRefreshTokenForAuth);
+			super.validate(domainOptional, useRefreshTokenForAuth);
+		}
 	}
 
 	public static ConfigurationVro fromProperties(Properties props) throws ConfigurationException {
 		ConfigurationVro config = new ConfigurationVro(props);
- 
+
 		boolean hasVroTenant = !StringUtils.isEmpty(config.getTenant());
 		if (hasVroTenant && config.getAuth() != AuthProvider.VRA) {
-			throw new ConfigurationException("vRO configuration validation error! Multi-tenancy requires 'vra' authentication!");
+			throw new ConfigurationException(
+					"vRO configuration validation error! Multi-tenancy requires 'vra' authentication!");
 		}
 
 		config.validate(!hasVroTenant);

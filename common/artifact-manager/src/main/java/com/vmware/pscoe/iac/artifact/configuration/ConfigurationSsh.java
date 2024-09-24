@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -80,7 +80,9 @@ public final class ConfigurationSsh extends Configuration {
 			InetAddress.getByName(host);
 		} catch (UnknownHostException uhe) {
 			throw new ConfigurationException(
-					String.format("Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s", HOST, host, uhe.getMessage()));
+					String.format(
+							"Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s",
+							HOST, host, uhe.getMessage()));
 		}
 	}
 

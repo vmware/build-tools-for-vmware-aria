@@ -21,11 +21,12 @@
  *   - Nested loops
  *   - Multiple nested loops
  *   - Multiple nested loops with multiple lines
+ *   - Comments
  *
  * Does not work for:
  *  - `for each (var n in Object.values(x)) {` or other complex expressions
  */
-const FOR_EACH_REGEX = /for each\s*\(\s*var\s+(\w+)\s+in\s+(\w+)\s*\)\s*\{\s*([\s\S]*?)\s*\}/;
+const FOR_EACH_REGEX = /^(?!\s*(\/\/|\/\*|\*\/|\*)).*for each\s*\(\s*var\s+(\w+)\s+in\s+(\w+)\s*\)\s*\{\s*([\s\S]*?)\s*\}/;
 
 /**
  * Structure of the transformed code

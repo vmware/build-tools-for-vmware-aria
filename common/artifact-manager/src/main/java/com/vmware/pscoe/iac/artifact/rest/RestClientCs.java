@@ -35,7 +35,7 @@ import com.vmware.pscoe.iac.artifact.rest.model.cs.CustomIntegrationVersion;
 import com.vmware.pscoe.iac.artifact.rest.model.cs.Endpoint;
 import com.vmware.pscoe.iac.artifact.rest.model.cs.Variable;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -93,7 +93,8 @@ public class RestClientCs extends RestClient {
 		URI url = getURI(getURIBuilder()
 				.setPath(GET_PROJECT_INFO)
 				.setParameter("$filter", constraint));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement jsonObj = JsonParser.parseString(response.getBody());
 		JsonArray projectJsonArray = jsonObj.getAsJsonObject().get("content").getAsJsonArray();
 		if (projectJsonArray.size() != 1) {
@@ -116,7 +117,6 @@ public class RestClientCs extends RestClient {
 		return cloudProxyId;
 	}
 
-
 	public RestTemplate getRestTemplate() {
 		return restTemplate;
 	}
@@ -132,20 +132,20 @@ public class RestClientCs extends RestClient {
 			return this.apiVersion;
 		}
 		URI url = getURI(getURIBuilder().setPath(API_VERSION));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
 		logger.info("Detected API Version " + this.apiVersion);
 		return this.apiVersion;
 	}
 
-
 	public Variable getProjectVariableByName(String variableName) {
 		Gson gson = new Gson();
 		logger.info("Get variable  " + variableName);
-		String projectName = this.getProjectName();
 		URI url = getURI(getURIBuilder()
-				.setPath(MessageFormat.format(VARIABLE_PROJECT_NAME_PATH, projectName, variableName)));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+				.setPath(MessageFormat.format(VARIABLE_PROJECT_NAME_PATH, getProjectName(), variableName)));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		logger.debug("Body: " + response.getBody());
 		return gson.fromJson(response.getBody(), Variable.class);
 	}
@@ -163,7 +163,8 @@ public class RestClientCs extends RestClient {
 
 	public String updateVariable(Variable var) {
 		logger.info("Importing pipeline " + var.getName());
-		URI url = getURI(getURIBuilder().setPath(MessageFormat.format(VARIABLE_PROJECT_NAME_PATH, getProjectName(), var.getName())));
+		URI url = getURI(getURIBuilder()
+				.setPath(MessageFormat.format(VARIABLE_PROJECT_NAME_PATH, getProjectName(), var.getName())));
 		HttpEntity<String> entity = getJsonEntity(var);
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 		logger.debug("Body: " + response.getBody());
@@ -192,7 +193,8 @@ public class RestClientCs extends RestClient {
 
 	public String updateEndpoint(Endpoint var) {
 		logger.info("Update endpoint: {}  ", var.getName());
-		URI url = getURI(getURIBuilder().setPath(MessageFormat.format(ENDPOINT_UPDATE_PATH, getProjectName(), var.getName())));
+		URI url = getURI(
+				getURIBuilder().setPath(MessageFormat.format(ENDPOINT_UPDATE_PATH, getProjectName(), var.getName())));
 		HttpEntity<String> entity = getJsonEntity(var);
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 		logger.debug("Body: " + response.getBody());
@@ -240,7 +242,8 @@ public class RestClientCs extends RestClient {
 	public void deleteCustomIntegration(String id) {
 		logger.info("Delete custom integration" + id);
 		URI url = getURI(getURIBuilder().setPath(CUSTOM_INTEGRATION_PATH + "/" + id));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(),
+				String.class);
 		logger.debug("Body: " + response.getBody());
 	}
 
@@ -254,7 +257,6 @@ public class RestClientCs extends RestClient {
 		return gson.fromJson(response.getBody(), CustomIntegrationVersion.class);
 	}
 
-
 	public CustomIntegrationVersion updateCustomIntegration(CustomIntegrationVersion ci) {
 		logger.info("Update Custom Integration: " + ci.getName());
 		URI url = getURI(getURIBuilder().setPath(CUSTOM_INTEGRATION_PATH + "/" + ci.getId()));
@@ -267,7 +269,8 @@ public class RestClientCs extends RestClient {
 	}
 
 	public Object createCustomIntegrationVersion(String id, CustomIntegrationVersion version) {
-		logger.info(String.format("Create Custom Integration Version: %s : %s ", version.getName(), version.getVersion()));
+		logger.info(
+				String.format("Create Custom Integration Version: %s : %s ", version.getName(), version.getVersion()));
 		URI url = getURI(getURIBuilder().setPath(MessageFormat.format(CUSTOM_INTEGRATION_VERSION_PATH, id)));
 
 		HttpEntity<String> entity = getJsonEntity(version);
@@ -303,7 +306,6 @@ public class RestClientCs extends RestClient {
 		return requestForPath(getURI(getURIBuilder().setPath(PIPELINE_PATH)), HttpMethod.POST, var);
 	}
 
-
 	public List<JsonObject> getProjectGitWebhooks() {
 		logger.info("Get git Webhooks for project");
 		return getPagedResult(GIT_PATH, getProjectFilterParam());
@@ -325,7 +327,6 @@ public class RestClientCs extends RestClient {
 		return requestForPath(getURI(getURIBuilder().setPath(GIT_PATH)), HttpMethod.POST, var);
 	}
 
-
 	public List<JsonObject> getProjectDockerWebhooks() {
 		logger.info("Get git Webhooks for project");
 		return getPagedResult(DOCKER_PATH, getProjectFilterParam());
@@ -346,7 +347,6 @@ public class RestClientCs extends RestClient {
 		logger.info("Create Docker Webhook: {}", name);
 		return requestForPath(getURI(getURIBuilder().setPath(DOCKER_PATH)), HttpMethod.POST, var);
 	}
-
 
 	public List<JsonObject> getProjectGerritListeners() {
 		logger.info("Get Gerrit Listener for project");
@@ -390,7 +390,6 @@ public class RestClientCs extends RestClient {
 		return requestForPath(getURI(getURIBuilder().setPath(GERRIT_TRIGGER_PATH)), HttpMethod.POST, var);
 	}
 
-
 	private void initCloudProxyId() {
 		if (StringUtils.isEmpty(configuration.getCloudProxyName())) {
 			return;
@@ -433,7 +432,8 @@ public class RestClientCs extends RestClient {
 					.setParameter("$skip", (PAGE_SIZE * page + ""));
 			parameters.forEach((key, value) -> builder.setParameter(key, value));
 			URI url = getURI(builder);
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			logger.debug("Body: " + response.getBody());
 			JsonObject root = JsonParser.parseString(response.getBody()).getAsJsonObject();
 			root.get("documents").getAsJsonObject()
@@ -459,7 +459,6 @@ public class RestClientCs extends RestClient {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		return new HttpEntity<String>(gson.toJson(body), headers);
 	}
-
 
 	private URI getProjectNameUrl(String path, String name) {
 		return getURI(getURIBuilder().setPath(MessageFormat.format(path, getProjectName(), name)));

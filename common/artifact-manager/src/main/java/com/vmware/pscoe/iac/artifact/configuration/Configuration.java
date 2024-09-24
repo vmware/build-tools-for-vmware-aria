@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.configuration;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -100,7 +100,8 @@ public abstract class Configuration {
 	protected Properties properties;
 
 	/**
-	 * Default flag for the default import strategy. It is currently set to false for backwards compatibility.
+	 * Default flag for the default import strategy. It is currently set to false
+	 * for backwards compatibility.
 	 */
 	private static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = false;
 
@@ -146,7 +147,8 @@ public abstract class Configuration {
 	 */
 	public String getUsername() {
 		String username = this.properties.getProperty(USERNAME);
-		return !StringUtils.hasLength(username) ? username : (username.indexOf("@") > 0 ? username.substring(0, username.lastIndexOf("@")) : username);
+		return !StringUtils.hasLength(username) ? username
+				: (username.indexOf("@") > 0 ? username.substring(0, username.lastIndexOf("@")) : username);
 	}
 
 	/**
@@ -156,7 +158,8 @@ public abstract class Configuration {
 	 */
 	public String getDomain() {
 		String username = this.properties.getProperty(USERNAME);
-		return !StringUtils.hasLength(username) ? username : (username.indexOf("@") > 0 ? username.substring(username.lastIndexOf("@") + 1) : null);
+		return !StringUtils.hasLength(username) ? username
+				: (username.indexOf("@") > 0 ? username.substring(username.lastIndexOf("@") + 1) : null);
 	}
 
 	/**
@@ -200,7 +203,8 @@ public abstract class Configuration {
 	 * @param useRefreshTokenForAuthentication if the refresh token should be used
 	 *                                         for authentication
 	 */
-	public void validate(boolean domainOptional, boolean useRefreshTokenForAuthentication) throws ConfigurationException {
+	public void validate(boolean domainOptional, boolean useRefreshTokenForAuthentication)
+			throws ConfigurationException {
 		StringBuilder message = new StringBuilder();
 		if (!StringUtils.hasLength(getHost())) {
 			message.append("Hostname ");

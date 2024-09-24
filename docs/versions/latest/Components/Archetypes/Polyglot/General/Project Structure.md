@@ -57,13 +57,15 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
 
 - `node:12`
 - `node:14`
+- `node:18`
+- `node:20`
 - `powercli:11-powershell-6.2`
 - `powercli:12-powershell-7.1`
 - `python:3.7`
 - `python:3.10`
-- `nodejs`
-- `powershell`
-- `python`
+- `nodejs` - For ABX projects only
+- `powershell` - For ABX projects only
+- `python` - For ABX projects only
 
 ##### `protocolType`
 
