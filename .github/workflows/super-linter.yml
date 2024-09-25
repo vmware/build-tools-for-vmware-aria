@@ -1,6 +1,5 @@
 name: Super-Linter
 on:
-  push:
   pull_request:
   workflow_dispatch:
 
