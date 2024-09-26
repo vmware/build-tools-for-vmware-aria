@@ -1,12 +1,12 @@
+import rollupCommonjs from "@rollup/plugin-commonjs";
+import { nodeResolve as rollupNodeResolve } from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
+import * as ansiColors from "ansi-colors";
 import * as childProcess from "child_process";
-import * as path from "path";
 import * as fs from "fs-extra";
 import * as gulp from "gulp";
-import * as ansiColors from "ansi-colors";
+import * as path from "path";
 import { rollup } from "rollup";
-import { nodeResolve as rollupNodeResolve } from "@rollup/plugin-node-resolve";
-import rollupCommonjs from "@rollup/plugin-commonjs";
-import { terser as rollupTerser } from "rollup-plugin-terser";
 
 const ROLLUP_IGNORE = [
     "iconv-lite",
@@ -46,7 +46,7 @@ gulp.task("bundle", async done => {
                 ignore: ROLLUP_IGNORE,
                 sourceMap: false,
             }),
-            rollupTerser()
+            terser()
         ]
     });
 
