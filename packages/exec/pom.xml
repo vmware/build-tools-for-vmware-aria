@@ -23,4 +23,13 @@
 	<scm>
 		<developerConnection>${scmDeveloperConnection}</developerConnection>
 	</scm>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+		</plugins>
+	</build>
 </project>
