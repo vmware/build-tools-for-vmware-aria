@@ -48,7 +48,7 @@
 		"jszip": "3.8.0",
 		"minimist": "1.2.6",
 		"rimraf": "3.0.2",
-		"rollup": "2.67.2",
+		"rollup": "3.29.5",
 		"rollup-plugin-terser": "7.0.2",
 		"ts-node": "10.5.0",
 		"typescript": "4.5.5",
