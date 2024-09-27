@@ -119,6 +119,9 @@ const GLOBAL = System.getContext() || (function () {
 	return this;
 }).call(null);
 
+/** Default module error handling function. Logs a System Error. */
+const DEFAULT_MODULE_ERROR_HANDLER: ModuleErrorHandler = (error) => System.error(error?.toString());
+
 /**
  * Key of the Module attribute that holds the last set error handler via {@link Module.setModuleErrorHandler}.
  */
@@ -388,12 +391,12 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 	/**
 	 * Helper function to handle errors when loading/importing an action or module.
 	 * Invokes the error handler set via {@link Module.setModuleErrorHandler} or, if not set,
-	 * a default error handler will be invoked (log a system error message).
+	 * via the {@link DEFAULT_MODULE_ERROR_HANDLER}.
 	 * @param {string | Error} err - error (message)
 	 * @returns NULL, unless the custom error handler rethrows the error.
 	 */
 	function onError(error): null {
-		let eh: ModuleErrorHandler = Module[MODULE_ERROR_HANDLER_KEY] || function(error) { System.error(error?.toString()); }
+		let eh: ModuleErrorHandler = Module[MODULE_ERROR_HANDLER_KEY] || DEFAULT_MODULE_ERROR_HANDLER;
 		eh(error);
 		return null;
 	}
