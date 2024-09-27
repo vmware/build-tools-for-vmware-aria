@@ -104,87 +104,12 @@ jobs:
 
           echo "testing end"
 
-      - name: Set MVN_BUILD_COMMAND
+      - name: Test contain 17
+        if: ${{ contains(env.IAC_VERSION, '-SNAPSHOT') }}
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            MVN_BUILD_COMMAND="install deploy"
-          else
-            MVN_BUILD_COMMAND="install"
-          fi
-          echo "MVN_BUILD_COMMAND is $MVN_BUILD_COMMAND"
-          echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
- 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          echo "we have 17 in contains test"
 
-      - name: Build 'iac' - parent IAC project ONLY
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml -pl .
-      - name: Build 'keystore-example'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml   
-      - name: Build 'npmlib'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-      - name: Build 'iac'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-      - name: Build 'base-package'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/base-package/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-      - name: Build 'packages'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f packages/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-      - name: Build 'typescript-project-all'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/typescript-project-all/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-      - name: Build 'repository'
-        run: mvn clean package -f maven/repository/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
-
-      - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
-        uses: actions/checkout@v3
-        with:
-          repository: vmware-samples/build-tools-for-vmware-aria-samples
-          ref: main
-          path: build-tools-for-vmware-aria-samples
-
-      - name: Use Node.js ${{ matrix.node_vmware_samples }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node_vmware_samples }}
-
-      - name: Build vmware-samples/build-tools-for-vmware-aria-samples project repository
+      - name: Test contain 21
+        if: ${{ contains(env.IAC_VERSION, '-SNAPSHOT') }}
         run: |
-          pushd build-tools-for-vmware-aria-samples/
-          ./switch_parent_version.sh ${{ env.IAC_VERSION }}
-          mvn clean package install -Pbundle-with-installer --batch-mode -s ../.m2/settings.xml
-          popd
-          rm -rf build-tools-for-vmware-aria-samples/
-
-      - name: Set artifact file name
-        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
-        run: echo "ARTIFACT_FILE_NAME=build-tools-for-vmware-aria-${{ env.IAC_VERSION }}-${{ github.run_number }}" >> $GITHUB_ENV
-
-      - name: Package all artifacts
-        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
-        run: |
-          cp maven/repository/target/iac-maven-repository.zip .
-          tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt"
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
-        with:
-          name: ${{ env.ARTIFACT_FILE_NAME }}
-          path: ${{ env.ARTIFACT_FILE_NAME }}.zip
-
-  results:
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    name: Build Results
-    needs: [build]
-    steps:
-      - run: exit 1
-        if: >-
-          ${{
-               contains(needs.*.result, 'failure')
-            || contains(needs.*.result, 'cancelled')
-          }}
+          echo "we have 21 in contains test"
