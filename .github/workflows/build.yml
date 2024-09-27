@@ -89,16 +89,16 @@ jobs:
       - name: Test
         run: |
           echo "testing start"
-          if [ "${{ matrix.java }}" = "17" ]; then
-            echo "is 17"
+          if [ "${{ matrix.java }}" = "17" && "${{ matrix.node }}" = "16.20.2"]; then
+            echo "first is 17"
           else
-            echo "is not 17"
+            echo "first is not 17"
           fi
 
-          if [ "${{ matrix.java }}" = "21" && 0 == 0 ]; then
-            echo "is 21"
+          if [ "${{ matrix.java }}" = "21" && "${{ matrix.node }}" = "16.20.2" ]; then
+            echo "second is 21"
           else
-            echo "is not 21"
+            echo "second is not 21"
           fi
 
           echo "testing end"
