@@ -88,15 +88,13 @@ jobs:
 
       - name: Test
         run: |
+          echo "testing start"
           if [ "${{ matrix.java }}" = "17" ]; then
             echo "is 17"
           else
             echo "is not 17"
 
-          if [ "${{ matrix.java }}" = "21" && 0 == 0 ]; then
-            echo "is 17"
-          else
-            echo "is not 17"
+          echo "testing end"
 
       - name: Set MVN_BUILD_COMMAND
         run: |
