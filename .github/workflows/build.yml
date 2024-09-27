@@ -90,10 +90,7 @@ jobs:
         run: |
           echo "testing start"
 
-          echo "not contain ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}"
-          echo "contain ${{ contains(env.IAC_VERSION, '-SNAPSHOT') }}"
-
-          if [ "${{ contains(env.IAC_VERSION, '-SNAPSHOT')" ] && [ "${{ matrix.java }}" = "17" ]; then
+          if [ "${{ matrix.node }}" = "16.20.2" ] && [ "${{ matrix.java }}" = "17" ]; then
             echo "first is 17"
           else
             echo "first is not 17"
