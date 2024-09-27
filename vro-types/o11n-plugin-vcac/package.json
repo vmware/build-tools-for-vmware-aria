@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-vcac",
-  "version": "2.43.0",
+  "version": "2.43.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
