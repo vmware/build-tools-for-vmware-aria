@@ -265,6 +265,7 @@ interface VroWorkflowDefaultErrorHandlerMethodDecorator {
 
 interface VroWorkflowDefaultErrorHandlerConfiguration {
 	target?: string;
+	exceptionBinding?: string;
 }
 
 // ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
