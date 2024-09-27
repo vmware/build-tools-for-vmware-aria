@@ -12,7 +12,7 @@ import { Workflow, RootItem, In, Out, Err, Item, DefaultErrorHandler, WorkflowEn
 })
 export class HandleDefaultError {
 
-	@RootItem()
+	@RootItem({ target: "workflowEnd" })
 	public initiateWorkflow() {
 		System.log("Initiating workflow execution");
 	}
@@ -32,7 +32,8 @@ export class HandleDefaultError {
 	}
 
 	@DefaultErrorHandler({
-		target: "processError"
+		target: "processError",
+		exceptionBinding: "errorMessage"
 	})
 	public defaultErrorHandler(@Out @Err errorMessage: string) {
 		// NOOP

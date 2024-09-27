@@ -71,7 +71,9 @@ export default class DefaultErrorHandlerDecoratorStrategy extends BaseItemDecora
 				case "target":
 					itemInfo.target = propValue;
 					break;
-
+				case "exceptionBinding":
+					itemInfo.canvasItemPolymorphicBag.exceptionBinding = propValue;
+					break;
 				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
 			}
