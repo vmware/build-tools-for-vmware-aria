@@ -93,6 +93,13 @@ jobs:
             echo "is 17"
           else
             echo "is not 17"
+          fi
+
+          if [ "${{ matrix.java }}" = "21" && 0 == 0 ]; then
+            echo "is 21"
+          else
+            echo "is not 21"
+          fi
 
           echo "testing end"
 
