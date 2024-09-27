@@ -89,13 +89,17 @@ jobs:
       - name: Test
         run: |
           echo "testing start"
-          if [ "${{ matrix.java }}" = "17" && "${{ matrix.node }}" = "16.20.2"]; then
+
+          echo "not contain ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}"
+          echo "contain ${{ contains(env.IAC_VERSION, '-SNAPSHOT') }}"
+
+          if [ "${{ contains(env.IAC_VERSION, '-SNAPSHOT')" ] && [ "${{ matrix.java }}" = "17" ]; then
             echo "first is 17"
           else
             echo "first is not 17"
           fi
 
-          if [ "${{ matrix.java }}" = "21" && "${{ matrix.node }}" = "16.20.2" ]; then
+          if [ "${{ matrix.java }}" = "21" ] && [ "${{ matrix.node }}" = "16.20.2" ]; then
             echo "second is 21"
           else
             echo "second is not 21"
