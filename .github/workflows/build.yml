@@ -113,3 +113,8 @@ jobs:
         if: ${{ contains(env.IAC_VERSION, '-SNAPSHOT') }} && ${{ matrix.java == 21 }}
         run: |
           echo "we have 21 in contains test"
+
+      - name: Just java 17
+        if: ${{ matrix.java == 17 }}
+        run: |
+          echo "we have 17 without contains test"
