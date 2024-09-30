@@ -88,7 +88,7 @@ jobs:
 
       - name: Set MVN_BUILD_COMMAND
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ matrix.java }}" = "17" ]; then
             MVN_BUILD_COMMAND="install deploy"
           else
             MVN_BUILD_COMMAND="install"
@@ -119,6 +119,7 @@ jobs:
       - name: Build 'typescript-project-all'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/typescript-project-all/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'repository'
+        if: ${{ matrix.java == 17 }}
         run: mvn clean package -f maven/repository/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
 
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
@@ -142,18 +143,18 @@ jobs:
           rm -rf build-tools-for-vmware-aria-samples/
 
       - name: Set artifact file name
-        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
+        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == 17 }}
         run: echo "ARTIFACT_FILE_NAME=build-tools-for-vmware-aria-${{ env.IAC_VERSION }}-${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Package all artifacts
-        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
+        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == 17 }}
         run: |
           cp maven/repository/target/iac-maven-repository.zip .
           tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') }}
+        if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == 17 }}
         with:
           name: ${{ env.ARTIFACT_FILE_NAME }}
           path: ${{ env.ARTIFACT_FILE_NAME }}.zip
