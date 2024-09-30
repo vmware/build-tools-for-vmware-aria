@@ -12,15 +12,12 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { Decorator } from "typescript";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
-import { getDecoratorProps } from "../../../helpers/node";
-import { findTargetItem } from "../helpers/findTargetItem";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { InputOutputBindings, buildItemParameterBindings } from "./helpers/presentation";
+import { InputOutputBindings } from "./helpers/presentation";
 import { GraphNode } from "./helpers/graph";
-import { formatPosition } from "../helpers/formatPosition";
+import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
 
 /**
  * Responsible for printing out the waiting timer item
@@ -38,62 +35,22 @@ import { formatPosition } from "../helpers/formatPosition";
  </workflow-item>
  * ```
  */
-export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
+export default class WaitingTimerItemDecoratorStrategy extends BaseItemDecoratorStrategy {
 
-	getCanvasType(): string {
+	public getCanvasType(): string {
 		return "waiting-timer";
 	}
 
-	getDecoratorType(): WorkflowItemType {
+	public getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.WaitingTimer;
-	}
-
-	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		const decoratorProperties = getDecoratorProps(decoratorNode);
-		if (!decoratorProperties?.length) {
-			return;
-		}
-		decoratorProperties.forEach((propTuple) => {
-			const [propName, propValue] = propTuple;
-			switch (propName) {
-				case "target":
-					itemInfo.target = propValue;
-					break;
-
-				case "exception":
-					itemInfo.canvasItemPolymorphicBag.exception = propValue;
-					break;
-
-				default:
-					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-			}
-		});
 	}
 
 	/**
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
-	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		const node: GraphNode = {
-			name: `item${pos}`,
-			origName: itemInfo.name,
-			targets: [
-				findTargetItem(itemInfo.target, pos, itemInfo),
-			],
-			offset: [40, -10]
-		};
-
-		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			node.targets.push(findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo));
-		}
-
-		return node;
+	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return super.getGraphNode(itemInfo, pos, [40, -10]);
 	}
-
-	/**
-	 * There is no need to print the source file for a waiting timer item
-	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints the waiting timer to the workflow file
@@ -107,10 +64,10 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 	 *
 	 * @returns The string representation of the item
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
+	public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const targetItem = findTargetItem(itemInfo.target, pos, itemInfo);
+		const targetItem = super.findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItem === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
@@ -120,21 +77,18 @@ export default class WaitingTimerItemDecoratorStrategy implements CanvasItemDeco
 			+ ` out-name="${targetItem}"`
 			+ ` type="${this.getCanvasType()}" `
 		);
-
 		if (itemInfo.canvasItemPolymorphicBag.exception) {
-			stringBuilder.append(` catch-name="${findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
+			stringBuilder.append(` catch-name="${super.findTargetItem(itemInfo.canvasItemPolymorphicBag.exception, pos, itemInfo)}" `);
 		}
-
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
 			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
-
 		stringBuilder.append(">");
 
 		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(formatPosition([x, y])).appendLine();
+		stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
+		stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(super.formatItemPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 

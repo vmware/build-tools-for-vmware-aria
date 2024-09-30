@@ -13,12 +13,21 @@
  * #L%
  */
 import * as ts from "typescript";
-import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
-import { GraphNode } from "./helpers/graph";
+
+import { GraphNode } from "../helpers/graph";
+import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../../decorators";
 
 export default interface CanvasItemDecoratorStrategy {
     /**
-     * Returns the type of the decorator
+     * When true, the Workflow element cannot be targeted by other items.
+     * Being targeted explicitly should result in an Error,
+     * while being targeted implicitly (by a previous element without a specified target)
+     * should instead redirect the flow towards the default End item.
+     */
+    readonly isNotTargetable?: boolean;
+
+    /**
+     * Returns the type of the decorator.
      */
     getDecoratorType(): WorkflowItemType;
 
@@ -28,7 +37,7 @@ export default interface CanvasItemDecoratorStrategy {
     getCanvasType(): string;
 
     /**
-     * Registers the arguments from the decorator to the workflowInfo
+     * Registers the arguments from the decorator to the workflowInfo.
      */
     registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: ts.Decorator): void;
 
@@ -39,19 +48,13 @@ export default interface CanvasItemDecoratorStrategy {
      */
     printSourceFile(methodNode: ts.MethodDeclaration, sourceFile: ts.SourceFile, itemInfo: WorkflowItemDescriptor): string;
 
+    /**
+     * Print out the XML representation of the canvas item.
+     */
     printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string;
 
     /**
-     * Returns the Node representation of the item
+     * Returns the Node representation of the item.
      */
     getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode;
-
-    /**
-     * When true, the Workflow element cannot be targeted by other items.
-     * Being targeted explicitly should result in an Error,
-     * while being targeted implicitly (by a previous element without a specified target)
-     * should instead redirect the flow towards the default End item.
-     */
-    readonly isNotTargetable?: boolean;
 }
-

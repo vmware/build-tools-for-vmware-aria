@@ -14,18 +14,19 @@
  */
 import { Decorator, MethodDeclaration, SourceFile, isIdentifier, isPrivateIdentifier } from "typescript";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
+import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
 import { GraphNode } from "./helpers/graph";
 
-export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
-	getDecoratorType(): WorkflowItemType {
+export default class RootItemDecoratorStrategy extends BaseItemDecoratorStrategy {
+
+	public getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.RootItem;
 	}
 
 	/**
 	 * This function should NOT register the itemType in the itemInfo object, as it's not a real item type.
 	 */
-	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
+	public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		const methodNode = decoratorNode.parent as MethodDeclaration;
 
 		if (!isIdentifier(methodNode.name) && !isPrivateIdentifier(methodNode.name)) {
@@ -38,12 +39,23 @@ export default class RootItemDecoratorStrategy implements CanvasItemDecoratorStr
 	/**
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
-	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode { this.throwDoNotCallError(); }
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return this.throwDoNotCallError(); }
-	getCanvasType(): string { return this.throwDoNotCallError(); }
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string { return this.throwDoNotCallError(); }
+	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		this.throwDoNotCallError();
+	}
+
+	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+		return this.throwDoNotCallError();
+	}
+
+	public getCanvasType(): string {
+		return this.throwDoNotCallError();
+	}
+
+	public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
+		return this.throwDoNotCallError();
+	}
 
 	private throwDoNotCallError(): never {
-		throw new Error("Method should not be called. RootItem is a meta decorator.");
+		throw new Error("Method should not be called as the RootItem is a meta decorator.");
 	}
 }

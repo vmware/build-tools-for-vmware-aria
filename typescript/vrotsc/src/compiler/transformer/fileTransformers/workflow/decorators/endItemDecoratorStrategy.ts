@@ -12,14 +12,13 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { Decorator } from "typescript";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
-import { buildItemParameterBindings, InputOutputBindings } from "./helpers/presentation";
+import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
 import { GraphNode } from "./helpers/graph";
-import { formatPosition } from "../helpers/formatPosition";
+import { InputOutputBindings } from "./helpers/presentation";
 
 /**
  * Responsible for printing out the workflow end item.
@@ -35,13 +34,13 @@ import { formatPosition } from "../helpers/formatPosition";
   </workflow-item>
  * ```
  */
-export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStrategy {
+export default class EndItemDecoratorStrategy extends BaseItemDecoratorStrategy {
 	/**
 	 * Return XML tag for the end workflow item.
 	 *
 	 * @returns XML tag name.
 	 */
-	getCanvasType(): string {
+	public getCanvasType(): string {
 		return "end";
 	}
 
@@ -50,7 +49,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	 *
 	 * @returns type of the workflow element.
 	 */
-	getDecoratorType(): WorkflowItemType {
+	public getDecoratorType(): WorkflowItemType {
 		return WorkflowItemType.End;
 	}
 
@@ -60,7 +59,7 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	 * @param itemInfo item info for that properties should be fetched.
 	 * @param decoratorNode decorator node handle.
 	 */
-	registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
+	public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
 		const decoratorProperties = getDecoratorProps(decoratorNode);
 		if (!decoratorProperties?.length) {
 			return;
@@ -85,19 +84,13 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	/**
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
-	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		return {
-			name: `item${pos}`,
-			origName: itemInfo.name,
-			targets: [],
-			offset: [40, -10]
-		};
-	}
+	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		const node: GraphNode = super.getGraphNode(itemInfo, pos, [40, -10]);
+		// end item should have no targets
+		node.targets = [];
 
-	/**
-	 * There is no need to print the source file for the workflow item.
-	 */
-	printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
+		return node;
+	}
 
 	/**
 	 * Prints out the end item.
@@ -109,25 +102,23 @@ export default class EndItemDecoratorStrategy implements CanvasItemDecoratorStra
 	 *
 	 * @returns The string representation of the item.
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
+	public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
 		const endMode = itemInfo?.canvasItemPolymorphicBag?.endMode ?? 0;
 		const businessStatus = itemInfo?.canvasItemPolymorphicBag?.businessStatus;
 
 		stringBuilder.append(`<workflow-item name="item${pos}" type="end" end-mode="${endMode}" `);
-
 		if (itemInfo.canvasItemPolymorphicBag.exceptionBinding) {
 			stringBuilder.append(` throw-bind-name="${itemInfo.canvasItemPolymorphicBag.exceptionBinding}" `);
 		}
-
 		if (businessStatus) {
 			stringBuilder.append(`business-status="${businessStatus}" `);
 		}
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.appendContent(buildItemParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
-		stringBuilder.append(formatPosition([x, y])).appendLine();
+		stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
+		stringBuilder.append(super.formatItemPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append(`</workflow-item>`).appendLine();
 
