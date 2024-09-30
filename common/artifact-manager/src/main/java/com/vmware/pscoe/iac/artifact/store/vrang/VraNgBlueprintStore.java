@@ -70,8 +70,27 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 * ============================
 	 */
 
+	/**
+	 * This will delete all blueprints that are in the `content.yaml` file.
+	 *
+	 * @TODO: Make it so it will delete all if a config flag is set and
+	 *        blueprintNames === null
+	 */
 	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+		List<VraNgBlueprint> serverBlueprints = this.restClient.getAllBlueprints();
+		List<String> blueprintNames = this.getItemListFromDescriptor();
+
+		if (blueprintNames == null) {
+			logger.info("No blueprint names found in descriptor. Skipping deletion.");
+			return;
+		}
+
+		for (VraNgBlueprint bp : serverBlueprints) {
+			if (blueprintNames.contains(bp.getName())) {
+				logger.info("Deleting blueprint '{}'", bp.getName());
+				this.restClient.deleteBlueprint(bp.getId());
+			}
+		}
 	}
 
 	/**

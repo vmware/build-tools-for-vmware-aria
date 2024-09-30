@@ -751,6 +751,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
+	 * Delete Blueprint by id.
+	 *
+	 * @param bpId Blueprint ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 */
+	public void deleteBlueprintPrimitive(final String bpId) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + bpId).build();
+
+		restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+	}
+
+	/**
 	 * Update Blueprint with Blueprint Object.
 	 *
 	 * @param blueprint Blueprint Object

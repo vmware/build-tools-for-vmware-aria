@@ -145,6 +145,20 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * Deletes a blueprint.
+	 *
+	 * @param bpId blueprint id
+	 * @throws RuntimeException if the blueprint could not be deleted
+	 */
+	public void deleteBlueprint(final String bpId) {
+		try {
+			deleteBlueprintPrimitive(bpId);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete Blueprint with id '%s'.", bpId));
+		}
+	}
+
+	/**
 	 * Updates the blueprint.
 	 * 
 	 * @param blueprint vra blueprint
