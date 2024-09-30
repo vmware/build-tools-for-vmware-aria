@@ -109,8 +109,18 @@ jobs:
         run: |
           echo "we have 17 in contains test"
 
+      - name: Test contain 17 str
+        if: ${{ contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == "17" }}
+        run: |
+          echo "we have 17 in contains test"          
+
       - name: Test contain 21
         if: ${{ contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == 21 }}
+        run: |
+          echo "we have 21 in contains test"
+
+      - name: Test contain 21 string
+        if: ${{ contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == "21" }}
         run: |
           echo "we have 21 in contains test"
 
