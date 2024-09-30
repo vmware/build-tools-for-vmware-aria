@@ -14,7 +14,7 @@
  */
 /////////////////////////////////// Configuration Decorator ///////////////////////////////////
 
-import CanvasItemDecoratorStrategy from "./transformer/fileTransformers/workflow/decorators/canvasItemDecoratorStrategy";
+import CanvasItemDecoratorStrategy from "./transformer/fileTransformers/workflow/decorators/base/canvasItemDecoratorStrategy";
 
 /**
 * Describes the configuration element.
@@ -178,6 +178,12 @@ export enum WorkflowItemType {
 	 * It can target a workflow item or workflow end and accepts input and output bindings.
 	 */
 	DefaultErrorHandler = "DefaultErrorHandler",
+	/**
+	 * This item type represents a user interaction component.
+	 *
+	 * It can target a workflow item or workflow end and accepts input and output bindings.
+	 */
+	UserInteractionItem = "UserInteractionItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////

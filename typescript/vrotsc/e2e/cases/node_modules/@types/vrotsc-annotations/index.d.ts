@@ -23,6 +23,7 @@ interface VroAttribute {
 	type: string;
 	bind?: boolean;
 	value?: any;
+	exportName?: string;
 }
 
 interface Type<T> extends Function { new(...args: any[]): T; }
@@ -264,6 +265,7 @@ interface VroWorkflowDefaultErrorHandlerMethodDecorator {
 
 interface VroWorkflowDefaultErrorHandlerConfiguration {
 	target?: string;
+	exceptionBinding?: string;
 }
 
 // ---------------------------------------------- Workflow Canvas End Item ------------------------------------------------
@@ -345,6 +347,23 @@ interface VroActionItemMethodDecorator {
 	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
+// ---------------------------------------------- User Interaction Canvas Item ------------------------------------------------
+
+export declare const UserInteractionItem: VroUserInteractionItemDecorator;
+
+interface VroUserInteractionItemDecorator {
+	(obj?: VroUserInteractionItemConfiguration): VroUserInteractionItemMethodDecorator;
+	new(obj?: VroUserInteractionItemConfiguration): VroUserInteractionItemConfiguration;
+}
+
+interface VroUserInteractionItemConfiguration {
+	target: string;
+}
+
+interface VroUserInteractionItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | VroUserInteractionItemConfiguration, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
 export declare const Polyglot: VroPolyglotDecorator;

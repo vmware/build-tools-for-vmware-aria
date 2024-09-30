@@ -12,7 +12,7 @@ import { Workflow, RootItem, DefaultErrorHandler, Err } from "vrotsc-annotations
 })
 export class HandleDefaultError {
 
-	@RootItem()
+	@RootItem({ target: "end" })
 	public initiateWorkflow() {
 		// NOOP
 	}
