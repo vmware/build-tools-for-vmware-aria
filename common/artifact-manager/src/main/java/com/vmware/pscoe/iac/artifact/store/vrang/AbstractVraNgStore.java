@@ -17,6 +17,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
@@ -37,7 +38,7 @@ import java.util.List;
  * items are exported
  * When nothing (null) is given, all items from the store are exported
  */
-public abstract class AbstractVraNgStore implements IVraNgStore {
+public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implements IVraNgStore {
 	protected RestClientVraNg restClient;
 	protected Package vraNgPackage;
 	// initialize the vraNgPackageDescriptor to avoid NPE

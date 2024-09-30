@@ -27,7 +27,7 @@ import java.util.List;
  * scope of one or more project, thus enabling users that belong to the project
  * to be able to request those catalog items.
  */
-public class VraNgCatalogEntitlement {
+public class VraNgCatalogEntitlement implements Identifiable {
 
 	// {
 	// "definition": {
@@ -58,14 +58,16 @@ public class VraNgCatalogEntitlement {
 		this.sourceType = sourceType;
 	}
 
-	public VraNgCatalogEntitlement(String name, List<String> projects, VraNgCatalogEntitlementType type, VraNgContentSourceType sourceType) {
+	public VraNgCatalogEntitlement(String name, List<String> projects, VraNgCatalogEntitlementType type,
+			VraNgContentSourceType sourceType) {
 		this.name = name;
 		this.type = type;
 		this.sourceType = sourceType;
 		this.projects = projects;
 	}
 
-	public VraNgCatalogEntitlement(String id, String sourceId, String name, VraNgCatalogEntitlementType type, VraNgContentSourceType sourceType) {
+	public VraNgCatalogEntitlement(String id, String sourceId, String name, VraNgCatalogEntitlementType type,
+			VraNgContentSourceType sourceType) {
 		this.id = id;
 		this.sourceId = sourceId;
 		this.name = name;
@@ -73,7 +75,8 @@ public class VraNgCatalogEntitlement {
 		this.sourceType = sourceType;
 	}
 
-	public VraNgCatalogEntitlement(String id, String sourceId, String name, List<String> projects, VraNgCatalogEntitlementType type,
+	public VraNgCatalogEntitlement(String id, String sourceId, String name, List<String> projects,
+			VraNgCatalogEntitlementType type,
 			VraNgContentSourceType sourceType) {
 		this.id = id;
 		this.sourceId = sourceId;
@@ -103,7 +106,7 @@ public class VraNgCatalogEntitlement {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * Get the iconId of the entitlement.
 	 * 
@@ -113,7 +116,7 @@ public class VraNgCatalogEntitlement {
 		return this.iconId;
 	}
 
-	 /**
+	/**
 	 * Set the id of the entitlement.
 	 * 
 	 * @param iconId - iconId of the entitlement

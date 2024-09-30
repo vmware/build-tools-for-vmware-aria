@@ -14,9 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudAccountTag;
 
 import org.apache.commons.lang3.NotImplementedException;

@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgProject {
+public class VraNgProject implements Identifiable {
 	private final String id;
 	private final String name;
 
@@ -31,4 +31,3 @@ public class VraNgProject {
 		return this.name;
 	}
 }
-

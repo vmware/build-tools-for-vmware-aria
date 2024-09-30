@@ -19,7 +19,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class VraNgContentSourceBase {
+public class VraNgContentSourceBase implements Identifiable {
 
 	@JsonProperty("id")
 	protected String id;
@@ -92,6 +92,7 @@ public class VraNgContentSourceBase {
 	public void setLastImportErrors(List<String> lastImportErrors) {
 		this.lastImportErrors = lastImportErrors;
 	}
+
 	@JsonIgnore
 	public VraNgContentSourceType getType() {
 		return VraNgContentSourceType.fromString(this.typeId);

@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgBlueprint {
+public class VraNgBlueprint implements Identifiable {
 
 	private String id;
 	private String name;

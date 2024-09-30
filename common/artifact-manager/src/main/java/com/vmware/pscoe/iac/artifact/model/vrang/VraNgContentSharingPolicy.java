@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 /**
 
 */
-public class VraNgContentSharingPolicy {
+public class VraNgContentSharingPolicy implements Identifiable {
 	/**
 	 * Id of the Content Sharing Policy.
 	 */
@@ -79,8 +79,10 @@ public class VraNgContentSharingPolicy {
 	 * @param scope           scope
 	 * @param organization    organization name
 	 */
-	public VraNgContentSharingPolicy(final String id, final String name, final String typeId, final String projectId, final String orgId,
-			final String enforcementType, final String description, final VraNgDefinition definition, final String scope, final String organization) {
+	public VraNgContentSharingPolicy(final String id, final String name, final String typeId, final String projectId,
+			final String orgId,
+			final String enforcementType, final String description, final VraNgDefinition definition,
+			final String scope, final String organization) {
 		this.id = id;
 		this.name = name;
 		this.typeId = typeId;

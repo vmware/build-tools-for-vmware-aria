@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgSubscription {
+public class VraNgSubscription implements Identifiable {
 
 	private final String id;
 	private final String name;

@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgCustomResource {
+public class VraNgCustomResource implements Identifiable {
 
 	private final String id;
 	private final String name;

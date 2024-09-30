@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "name", "version", "integration" })
-public class VraNgWorkflow implements Serializable {
+public class VraNgWorkflow implements Serializable, Identifiable {
 	private static final long serialVersionUID = 2298605860128696224L;
 
 	@JsonProperty("id")

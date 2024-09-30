@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
+import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
@@ -50,29 +51,12 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgApprovalPolicyStore.class);
 
-	/**
-	 * This will delete all of the approvalPolicies that are present in the
-	 * `content.yaml`
-	 *
-	 * If the policy does not exist on the server, then nothing will happen.
-	 * 
-	 * @TODO: Make it so no definition means delete everything if a flag is set
-	 */
-	public void deleteContent() {
-		List<VraNgApprovalPolicy> serverPolicies = this.restClient.getApprovalPolicies();
-		List<String> policyNames = this.getItemListFromDescriptor();
+	protected List<VraNgApprovalPolicy> getAllServerContents() {
+		return this.restClient.getApprovalPolicies();
+	}
 
-		if (policyNames == null) {
-			logger.info("No policy names found in descriptor. Skipping deletion.");
-			return;
-		}
-
-		for (VraNgApprovalPolicy policy : serverPolicies) {
-			if (policyNames.contains(policy.getName())) {
-				logger.info("Deleting approval policy '{}'", policy.getName());
-				this.restClient.deleteApprovalPolicy(policy.getId());
-			}
-		}
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteApprovalPolicy(resId);
 	}
 
 	/**
