@@ -300,7 +300,7 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 
 		VraNgTypeStoreFactory storeFactory = VraNgTypeStoreFactory.withConfig(restClient, pkg, config, descriptor);
 
-		for (VraNgPackageContent.ContentType type : VraNgTypeStoreFactory.getImportOrder()) {
+		for (VraNgPackageContent.ContentType type : VraNgTypeStoreFactory.getDeleteOrder()) {
 			logger.info("Currently deleting: {}", type.getTypeValue());
 			storeFactory.getStoreForType(type).deleteContent();
 		}
