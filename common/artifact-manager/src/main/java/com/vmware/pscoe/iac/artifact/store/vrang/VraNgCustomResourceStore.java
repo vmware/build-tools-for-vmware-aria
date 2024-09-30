@@ -84,6 +84,10 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		this.currentOrganizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 	}
 
+	public void deleteContent() {
+		throw new RuntimeException("Not implemented");
+	}
+
 	/**
 	 * Used to fetch the store's data from the package descriptor.
 	 *

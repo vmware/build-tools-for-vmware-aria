@@ -74,6 +74,10 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		this.projects = this.restClient.getProjects();
 	}
 
+	public void deleteContent() {
+		throw new RuntimeException("Not implemented");
+	}
+
 	/**
 	 * Used to fetch the store's data from the package descriptor.
 	 *
@@ -89,40 +93,41 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent() {
-		Map<String, VraNgSubscription> subscriptionsOnServer	= this.getAllSubscriptions();
+		Map<String, VraNgSubscription> subscriptionsOnServer = this.getAllSubscriptions();
 
 		for (String subscriptionId : subscriptionsOnServer.keySet()) {
 			storeSubscriptionOnFilesystem(
-				vraNgPackage,
-				subscriptionsOnServer.get(subscriptionId).getName(),
-				subscriptionsOnServer.get(subscriptionId).getJson()
-			);
+					vraNgPackage,
+					subscriptionsOnServer.get(subscriptionId).getName(),
+					subscriptionsOnServer.get(subscriptionId).getJson());
 		}
 	}
 
 	/**
 	 * Exports all subscription names that match the filter.
 	 *
-	 * @param	subscriptionNames - filter
+	 * @param subscriptionNames - filter
 	 */
 	@Override
 	protected void exportStoreContent(List<String> subscriptionNames) {
 		Map<String, VraNgSubscription> subscriptionsOnServer = this.getAllSubscriptions();
 
 		Map<String, String> namesToIdsOnServer = subscriptionsOnServer.keySet().stream()
-			.collect(Collectors.toMap(subscriptionId -> subscriptionsOnServer.get(subscriptionId).getName(), subscriptionId -> subscriptionId));
+				.collect(Collectors.toMap(subscriptionId -> subscriptionsOnServer.get(subscriptionId).getName(),
+						subscriptionId -> subscriptionId));
 
 		for (String subscriptionName : subscriptionNames) {
-			// Check the export the content.yaml Subscriptions and try to find them on the server
+			// Check the export the content.yaml Subscriptions and try to find them on the
+			// server
 			if (!namesToIdsOnServer.containsKey(subscriptionName)) {
-				throw new IllegalStateException("Subscription with name [" + subscriptionName + "] doesn't exist on the remote");
+				throw new IllegalStateException(
+						"Subscription with name [" + subscriptionName + "] doesn't exist on the remote");
 			}
 			String subscriptionId = namesToIdsOnServer.get(subscriptionName);
 			storeSubscriptionOnFilesystem(
-				vraNgPackage,
-				subscriptionName,
-				subscriptionsOnServer.get(subscriptionId).getJson()
-			);
+					vraNgPackage,
+					subscriptionName,
+					subscriptionsOnServer.get(subscriptionId).getJson());
 		}
 	}
 
@@ -138,13 +143,14 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 			logger.info("Subscription Dir not found.");
 			return;
 		}
-		File[] files = this.filterBasedOnConfiguration(folder, new CustomFolderFileFilter(this.getItemListFromDescriptor()));
+		File[] files = this.filterBasedOnConfiguration(folder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 		if (files == null || files.length == 0) {
 			logger.info("Could not find any Subscriptions.");
 			return;
 		}
 		logger.info("Found subscriptions. Importing...");
-		
+
 		final Map<String, VraNgSubscription> allSubscriptions = this.getAllSubscriptions();
 		for (File file : files) {
 			importSubscription(file, allSubscriptions);
@@ -179,7 +185,6 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	private Map<String, VraNgSubscription> getAllSubscriptions() {
 		return this.restClient.getAllSubscriptions();
 	}
-
 
 	private void importSubscription(File jsonFile, final Map<String, VraNgSubscription> allSubscriptions) {
 		try {
@@ -221,7 +226,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		subscriptionJsonElement.remove("runnableName");
 		subscriptionJsonElement.addProperty("runnableId", actions.get(0).id);
 	}
-		
+
 	private String generateId(JsonObject subscriptionJsonElement, Map<String, VraNgSubscription> allSubscriptions) {
 		String subscriptionId = subscriptionJsonElement.get("id").getAsString();
 		String subscriptionName = subscriptionJsonElement.get("name").getAsString();
@@ -230,14 +235,17 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 			subscriptionId = subscriptionId.replaceAll("^[\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}-", "");
 			if (allSubscriptions.get(subscriptionId) == null
 					|| !JsonParser.parseString(allSubscriptions.get(subscriptionId).getJson()).getAsJsonObject()
-							.get("orgId").getAsString().equals(currentOrganizationId)) {            
+							.get("orgId").getAsString().equals(currentOrganizationId)) {
 				subscriptionId = this.currentOrganizationId + "-" + subscriptionId;
-				logger.debug("Generating new subscription ID '{}' because subscription exists in different organization.", subscriptionId);
+				logger.debug(
+						"Generating new subscription ID '{}' because subscription exists in different organization.",
+						subscriptionId);
 
 			}
 		} else {
 			subscriptionId = this.currentOrganizationId + "-" + "sub_" + subscriptionName.hashCode();
-			logger.debug("Subscription Id is missing. Generate id from organization id and name hashcode: " + subscriptionId);
+			logger.debug("Subscription Id is missing. Generate id from organization id and name hashcode: "
+					+ subscriptionId);
 		}
 		return subscriptionId;
 	}
@@ -264,15 +272,15 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 
 		JsonElement runnableIdElement = subscriptionJsonElement.get("runnableId");
 		List<AbxAction> actions = restClient.getAllAbxActions().stream()
-			.filter(a -> a.id.equals(runnableIdElement.getAsString()))
-			.collect(Collectors.toList());
+				.filter(a -> a.id.equals(runnableIdElement.getAsString()))
+				.collect(Collectors.toList());
 
 		if (actions.size() == 0) {
 			throw new RuntimeException("Abx actions with the specified Id can not be found");
 		}
-		
+
 		subscriptionJsonElement.remove("runnableId");
-		subscriptionJsonElement.addProperty("runnableName", actions.get(0).name);        
+		subscriptionJsonElement.addProperty("runnableName", actions.get(0).name);
 	}
 
 	private void substituteProjects(JsonObject content) {

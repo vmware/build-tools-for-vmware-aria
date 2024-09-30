@@ -33,7 +33,8 @@ import java.util.List;
 /**
  * Abstract class that unify the way the content is exported for all subclasses
  * When no item ([]) is given, nothing is exported
- * When a list of specific items ([item1, item2]) are given, only the given items are exported
+ * When a list of specific items ([item1, item2]) are given, only the given
+ * items are exported
  * When nothing (null) is given, all items from the store are exported
  */
 public abstract class AbstractVraNgStore implements IVraNgStore {
@@ -45,7 +46,7 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 	protected Logger logger;
 
 	private void ini(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
-					 VraNgPackageDescriptor vraNgPackageDescriptor) {
+			VraNgPackageDescriptor vraNgPackageDescriptor) {
 		this.restClient = restClient;
 		this.vraNgPackage = vraNgPackage;
 		this.vraNgPackageDescriptor = vraNgPackageDescriptor;
@@ -53,13 +54,13 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 	}
 
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
-					 VraNgPackageDescriptor vraNgPackageDescriptor) {
+			VraNgPackageDescriptor vraNgPackageDescriptor) {
 		this.ini(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
-					 VraNgPackageDescriptor vraNgPackageDescriptor, Logger logger) {
+			VraNgPackageDescriptor vraNgPackageDescriptor, Logger logger) {
 		this.ini(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 		this.logger = logger;
 	}
@@ -67,27 +68,27 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 	/**
 	 * The main export method. It unifies the way the vRA NG Stores are exported.
 	 * When no item ([]) is given, nothing is exported
-	 * When a list of specific items ([item1, item2]) are given, only the given items are exported
+	 * When a list of specific items ([item1, item2]) are given, only the given
+	 * items are exported
 	 * When nothing (null) is given, all items from the store are exported
 	 * 
-	 * In Sub-classes the abstract methods getItemListFromDescriptor, exportStoreContent should be overwritten
+	 * In Sub-classes the abstract methods getItemListFromDescriptor,
+	 * exportStoreContent should be overwritten
 	 */
 	public void exportContent() {
-		List<String> itemNames	= this.getItemListFromDescriptor();
+		List<String> itemNames = this.getItemListFromDescriptor();
 
-		logger.info( "Currently exporting: {}", this.getClass().getSimpleName() );
+		logger.info("Currently exporting: {}", this.getClass().getSimpleName());
 
-		if ( itemNames == null ) {
-			logger.info( "Nothing/null passed exporting everything" );
+		if (itemNames == null) {
+			logger.info("Nothing/null passed exporting everything");
 			this.exportStoreContent();
 
-		}
-		else if ( ! itemNames.isEmpty() ) {
-			logger.info( "Exporting filtered items: {}", itemNames );
-			this.exportStoreContent( itemNames );
-		}
-		else {
-			logger.info( "Empty array is passed, not exporting anything" );
+		} else if (!itemNames.isEmpty()) {
+			logger.info("Exporting filtered items: {}", itemNames);
+			this.exportStoreContent(itemNames);
+		} else {
+			logger.info("Empty array is passed, not exporting anything");
 		}
 	}
 
@@ -105,10 +106,10 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 
 	/**
 	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * 
 	 * @param itemNames list of names
 	 */
-	protected abstract void exportStoreContent( List<String> itemNames );
-
+	protected abstract void exportStoreContent(List<String> itemNames);
 
 	protected String getVroTargetIntegrationEndpointLink() throws ConfigurationException {
 		String integrationName = this.config.getVroIntegration();
@@ -133,7 +134,9 @@ public abstract class AbstractVraNgStore implements IVraNgStore {
 			}
 		}
 	}
+
 	protected File[] filterBasedOnConfiguration(File itemFolder, FilenameFilter filter) {
 		return itemFolder.listFiles(filter);
 	}
+
 }

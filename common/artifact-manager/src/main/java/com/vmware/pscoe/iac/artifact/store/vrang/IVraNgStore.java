@@ -21,4 +21,5 @@ public interface IVraNgStore {
 
 	void exportContent();
 
+	void deleteContent();
 }

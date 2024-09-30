@@ -31,13 +31,18 @@ import org.yaml.snakeyaml.Yaml;
 
 public class VraNgRegionalContentStore extends AbstractVraNgStore {
 
+	public void deleteContent() {
+		throw new RuntimeException("Not implemented");
+	}
+
 	@Override
 	public void importContent(File sourceDirectory) {
 		importRegionalContent(sourceDirectory);
 	}
 
 	/**
-	 * The regionalContent exports all flavor mapping, image mapping and storage profile in partucular region
+	 * The regionalContent exports all flavor mapping, image mapping and storage
+	 * profile in partucular region
 	 */
 	@Override
 	public void exportContent() {
@@ -77,9 +82,9 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 	 * package manifest. This includes: * flavor mappings * image mappings * storage
 	 * profiles
 	 * 
-	 * @param regionMapping          region mapping structure describing the regions
-	 *                               (cloud zones) that have related exportable
-	 *                               content defined in the package manifest.
+	 * @param regionMapping region mapping structure describing the regions
+	 *                      (cloud zones) that have related exportable
+	 *                      content defined in the package manifest.
 	 */
 	private void exportRegionalContent(VraNgRegionMapping regionMapping) {
 
@@ -91,31 +96,33 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 						.isIntersecting(cloudAccount.getTags(), new ArrayList<String>(Arrays.asList(exportTag))))
 				.collect(Collectors.toList());
 
-		logger.info("Found {} cloud accounts from which to export regional content (image mappings, flavor mappings, storage profiles) based on tag {}",
+		logger.info(
+				"Found {} cloud accounts from which to export regional content (image mappings, flavor mappings, storage profiles) based on tag {}",
 				cloudAccounts.size(), exportTag);
 
 		// no need to export regional content when no exportable cloud accounts are
 		// found
 		if (cloudAccounts.isEmpty()) {
-			logger.info("No cloud accounts found based on export tag {}. Skipping export of regional content (image mappings, flavor mappings, storage profiles)",
-				exportTag);
+			logger.info(
+					"No cloud accounts found based on export tag {}. Skipping export of regional content (image mappings, flavor mappings, storage profiles)",
+					exportTag);
 			return;
 		}
 
 		// export flavor mappings
 		VraNgFlavorMappingStore flavorMappingStore = new VraNgFlavorMappingStore();
-		flavorMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
-		flavorMappingStore.exportContent( cloudAccounts );
+		flavorMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
+		flavorMappingStore.exportContent(cloudAccounts);
 
 		// export image mappings
 		VraNgImageMappingStore imageMappingStore = new VraNgImageMappingStore();
-		imageMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
-		imageMappingStore.exportContent( cloudAccounts );
+		imageMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
+		imageMappingStore.exportContent(cloudAccounts);
 
 		// export storage profiles
 		VraNgStorageProfileStore storageProfileStore = new VraNgStorageProfileStore();
-		storageProfileStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
-		storageProfileStore.exportContent( cloudAccounts );
+		storageProfileStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
+		storageProfileStore.exportContent(cloudAccounts);
 	}
 
 	/**
@@ -159,17 +166,17 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 
 			// flavor mappings
 			VraNgFlavorMappingStore flavorMappingStore = new VraNgFlavorMappingStore();
-			flavorMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
+			flavorMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 			flavorMappingStore.importContent(sourceDirectory, importTags);
 
 			// image mappings
 			VraNgImageMappingStore imageMappingStore = new VraNgImageMappingStore();
-			imageMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
+			imageMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 			imageMappingStore.importContent(sourceDirectory, importTags);
 
 			// storage profiles
 			VraNgStorageProfileStore storageProfileStore = new VraNgStorageProfileStore();
-			storageProfileStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
+			storageProfileStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 			storageProfileStore.importContent(sourceDirectory, importTags);
 
 		} catch (FileNotFoundException e) {

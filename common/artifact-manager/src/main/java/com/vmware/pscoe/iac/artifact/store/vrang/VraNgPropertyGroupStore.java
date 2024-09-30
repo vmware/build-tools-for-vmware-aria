@@ -67,6 +67,10 @@ public final class VraNgPropertyGroupStore extends AbstractVraNgStore {
 		this.projectId = this.restClient.getProjectId();
 	}
 
+	public void deleteContent() {
+		throw new RuntimeException("Not implemented");
+	}
+
 	/**
 	 * Imports all content in content.yaml.
 	 * WIll do nothing if property group dir does not exist

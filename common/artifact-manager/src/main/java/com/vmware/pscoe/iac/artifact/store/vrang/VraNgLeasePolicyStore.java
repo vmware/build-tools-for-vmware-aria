@@ -36,7 +36,6 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 
-
 public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	/**
 	 * Suffix used for all of the resources saved by this store.
@@ -51,8 +50,13 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgLeasePolicy.class);
 
+	public void deleteContent() {
+		throw new RuntimeException("Not implemented");
+	}
+
 	/**
 	 * Imports content.
+	 * 
 	 * @param sourceDirectory the directory.
 	 */
 	@Override
@@ -82,8 +86,9 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 
 		logger.info("Found Lease Policies. Importing...");
 		for (File policyFile : leasePolicyFiles) {
-			//exclude hidden files e.g. .DS_Store
-			//exclude files that do not end with a '.json' extension as defined in CUSTOM_RESOURCE_SUFFIX
+			// exclude hidden files e.g. .DS_Store
+			// exclude files that do not end with a '.json' extension as defined in
+			// CUSTOM_RESOURCE_SUFFIX
 			String filename = policyFile.getName();
 			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
 				this.handleLeasePolicyImport(policyFile);
@@ -99,10 +104,12 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 
 		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
-		//if the policy has a project property, replace it with current project id.
-		//if the policy does not have a project property - replacing it will change the policy,
+		// if the policy has a project property, replace it with current project id.
+		// if the policy does not have a project property - replacing it will change the
+		// policy,
 		// so do not replace a null or blank value.
-		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank()) && !policy.getOrgId().equals(organizationId)) {
+		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank())
+				&& !policy.getOrgId().equals(organizationId)) {
 			logger.debug("Replacing policy projectId with projectId from configuration.");
 			policy.setProjectId(this.restClient.getProjectId());
 		}
@@ -159,7 +166,8 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Exports all the content for the given project based on the names in content.yaml.
+	 * Exports all the content for the given project based on the names in
+	 * content.yaml.
 	 * 
 	 * @param itemNames Item names for export
 	 */
@@ -180,13 +188,16 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	/**
 	 * Store Lease policy in JSON file.
 	 *
-	 * @param policyFolderPath   the subfolder where the policy will be stored.
-	 * @param policy the policy object to store
-	 * @param currentPoliciesOnFileSystem  a map of file names and policies, already present in the folder, used to avoid duplicate file names.
+	 * @param policyFolderPath            the subfolder where the policy will be
+	 *                                    stored.
+	 * @param policy                      the policy object to store
+	 * @param currentPoliciesOnFileSystem a map of file names and policies, already
+	 *                                    present in the folder, used to avoid
+	 *                                    duplicate file names.
 	 */
 	private void storeLeasePolicyOnFilesystem(final Path policyFolderPath,
-											  final VraNgLeasePolicy policy,
-											  Map<String, VraNgLeasePolicy> currentPoliciesOnFileSystem) {
+			final VraNgLeasePolicy policy,
+			Map<String, VraNgLeasePolicy> currentPoliciesOnFileSystem) {
 		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
 		logger.info("Storing lease  policy '{}', to file '{}", policy.getName(), policyFile.getPath());
 
@@ -197,7 +208,7 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 			logger.info("Created Lease file {}",
 					Files.write(Paths.get(policyFile.getPath()),
 							gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
-			//after write, put currently policy on the map for the next iteration
+			// after write, put currently policy on the map for the next iteration
 			String fileName = policyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
 			currentPoliciesOnFileSystem.put(fileName, policy);
 		} catch (IOException e) {
@@ -209,27 +220,32 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		}
 
 	}
+
 	/**
-	 * @param policyFolderPath the correct subfolder path for the policy type.
-	 * @param policy the policy that is exported.
-	 * @param currentPoliciesOnFileSystem  all the other policies currently in the folder.
+	 * @param policyFolderPath            the correct subfolder path for the policy
+	 *                                    type.
+	 * @param policy                      the policy that is exported.
+	 * @param currentPoliciesOnFileSystem all the other policies currently in the
+	 *                                    folder.
 	 * @return the file where to store the policy.
 	 */
 
-	private File getPolicyFile(Path policyFolderPath, VraNgLeasePolicy policy, Map<String, VraNgLeasePolicy> currentPoliciesOnFileSystem) {
+	private File getPolicyFile(Path policyFolderPath, VraNgLeasePolicy policy,
+			Map<String, VraNgLeasePolicy> currentPoliciesOnFileSystem) {
 		String filename = policy.getName();
 		String policyName = policy.getName();
 		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
 			throw new IllegalArgumentException("Invalid filename " + filename);
 		}
-		//see if filename already exists in map.
+		// see if filename already exists in map.
 		int index = 1;
 		boolean match = false;
 		while (!match) {
-			//logger.debug("File name {}, index {} , name with Index {};", filename, index, filenameWithIndex);
+			// logger.debug("File name {}, index {} , name with Index {};", filename, index,
+			// filenameWithIndex);
 
 			if (currentPoliciesOnFileSystem.containsKey(filename)) {
-				//check if policy is our policy from previous run or a different one.
+				// check if policy is our policy from previous run or a different one.
 				if (policy.getId().equals(currentPoliciesOnFileSystem.get(filename).getId())) {
 					match = true;
 				} else {
@@ -245,21 +261,23 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		logger.debug("Final Filename is {}, for policy with name {}", filename, policy.getName());
 
 		File policyFile = Paths.get(
-			String.valueOf(policyFolderPath),
-			filename + CUSTOM_RESOURCE_SUFFIX).toFile();
+				String.valueOf(policyFolderPath),
+				filename + CUSTOM_RESOURCE_SUFFIX).toFile();
 		return policyFile;
 	}
 
 	/**
-	 * Read the filesystem where policies will be stored, make a map of pre existing files there, to avoid duplication and/or unintentional overwriting.
+	 * Read the filesystem where policies will be stored, make a map of pre existing
+	 * files there, to avoid duplication and/or unintentional overwriting.
+	 * 
 	 * @param policyFolderPath get actual path where policies should be stored.
 	 * @return a map of filenames and policies, found in the path.
 	 */
 	private Map<String, VraNgLeasePolicy> getCurrentPoliciesOnFileSystem(Path policyFolderPath) {
 
-		//First make sure path exists and is a folder.
+		// First make sure path exists and is a folder.
 		if (!policyFolderPath.toFile().isDirectory()
-			&& !policyFolderPath.toFile().mkdirs()) {
+				&& !policyFolderPath.toFile().mkdirs()) {
 			logger.warn("Could not create folder: {}", policyFolderPath.toFile().getAbsolutePath());
 		}
 
@@ -268,7 +286,7 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 
 		for (File policyFile : policyFiles) {
 			String fileNameWithExt = policyFile.getName();
-			//exclude hidden files e.g. .DS_Store
+			// exclude hidden files e.g. .DS_Store
 			if (!fileNameWithExt.startsWith(".")) {
 				String fileName = fileNameWithExt.replace(CUSTOM_RESOURCE_SUFFIX, "");
 				currentPoliciesOnFileSystem.put(fileName, this.jsonFileToVraNgLeasePolicy(policyFile));
@@ -279,17 +297,18 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 
 	/**
 	 * Calculate lease policies sub-folder absolute filesystem path.
+	 * 
 	 * @return the lease policies sub-folder absolute filesystem path.
 	 */
 	private Path getPolicyFolderPath() {
 		File store = new File(vraNgPackage.getFilesystemPath());
 
 		Path policyFolderPath = Paths.get(
-			store.getPath(),
-			VraNgDirs.DIR_POLICIES,
-			LEASE_POLICY);
+				store.getPath(),
+				VraNgDirs.DIR_POLICIES,
+				LEASE_POLICY);
 		if (!policyFolderPath.toFile().isDirectory()
-			&& !policyFolderPath.toFile().mkdirs()) {
+				&& !policyFolderPath.toFile().mkdirs()) {
 			logger.warn("Could not create folder: {}", policyFolderPath.getFileName());
 		}
 		return policyFolderPath;

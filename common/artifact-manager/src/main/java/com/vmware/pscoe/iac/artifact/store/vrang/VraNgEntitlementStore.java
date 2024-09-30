@@ -54,10 +54,15 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	private static final String PROJECTS_DELIMITER = ",";
 
 	@Override
-	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config, VraNgPackageDescriptor vraNgPackageDescriptor) {
+	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
+			VraNgPackageDescriptor vraNgPackageDescriptor) {
 		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 		this.projects = this.restClient.getProjects();
 		this.configuredProjectId = this.restClient.getProjectId();
+	}
+
+	public void deleteContent() {
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
@@ -90,7 +95,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	 *
 	 * @param catalogEntitlementNames list of entitlement names to export
 	 */
-	protected void exportStoreContent( List<String> catalogEntitlementNames ) {
+	protected void exportStoreContent(List<String> catalogEntitlementNames) {
 		List<VraNgCatalogEntitlement> allEntitlements = this.restClient.getAllCatalogEntitlements();
 		catalogEntitlementNames.forEach(name -> {
 			// find the catalog entitlement by name on the target system (must be shared
@@ -120,13 +125,16 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		logger.debug("Storing entitlement {}", entitlement.getName());
 
 		Map<String, String> data = new LinkedHashMap<String, String>();
-		data.put("id", entitlement.getId() != null ? entitlement.getId(): "");
-		data.put("name", entitlement.getName()!= null ? entitlement.getName() : "");
-		data.put("type", entitlement.getType() != null ?entitlement.getType().toString(): VraNgCatalogEntitlementType.DEFAULT.toString());
-		data.put("sourceType", entitlement.getSourceType() != null ? entitlement.getSourceType().toString(): VraNgContentSourceType.UNKNOWN.toString());
+		data.put("id", entitlement.getId() != null ? entitlement.getId() : "");
+		data.put("name", entitlement.getName() != null ? entitlement.getName() : "");
+		data.put("type", entitlement.getType() != null ? entitlement.getType().toString()
+				: VraNgCatalogEntitlementType.DEFAULT.toString());
+		data.put("sourceType", entitlement.getSourceType() != null ? entitlement.getSourceType().toString()
+				: VraNgContentSourceType.UNKNOWN.toString());
 		data.put("projectId", entitlement.getProjects().stream().collect(Collectors.joining(PROJECTS_DELIMITER)));
-		data.put("projectName", entitlement.getProjects().stream().map(this::projectIdToName).collect(Collectors.joining(PROJECTS_DELIMITER)));
-		data.put( "iconId", entitlement.getIconId() == null ? null : entitlement.getIconId() );
+		data.put("projectName", entitlement.getProjects().stream().map(this::projectIdToName)
+				.collect(Collectors.joining(PROJECTS_DELIMITER)));
+		data.put("iconId", entitlement.getIconId() == null ? null : entitlement.getIconId());
 
 		DumperOptions options = new DumperOptions();
 		options.setExplicitStart(true);
@@ -170,7 +178,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 				.orElse(null);
 	}
 
- 	/**
+	/**
 	 * Import all catalog entitlements from a package.
 	 *
 	 * @param sourceDirectory temporary directory containing the files
@@ -184,7 +192,8 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		}
 		// collect local state - entitlement files
 		// Check if there are any blueprints to import
-		File[] localList = this.filterBasedOnConfiguration(entitlementsFolder, new CustomFolderFileFilter(this.getItemListFromDescriptor()));
+		File[] localList = this.filterBasedOnConfiguration(entitlementsFolder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 		if (localList == null || localList.length == 0) {
 			logger.info("No Catalog Entitlements available - skip import");
 			return;
@@ -246,7 +255,8 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 					.fromString(yamlContent.getOrDefault("sourceType", "").toString());
 			// project name takes precedence over project id
 			List<String> projects = StringUtils.isNotEmpty(projectName)
-					? Arrays.stream(projectName.split(",")).map(this::projectNameToId).filter(prjId -> prjId != null).collect(Collectors.toList())
+					? Arrays.stream(projectName.split(",")).map(this::projectNameToId).filter(prjId -> prjId != null)
+							.collect(Collectors.toList())
 					: Arrays.asList(projectId.split(PROJECTS_DELIMITER));
 
 			return new VraNgCatalogEntitlement(id, null, name, projects, entitlementType, sourceType);
@@ -305,18 +315,20 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		for (String project : entitlement.getProjects()) {
 			String projectName = this.projectIdToName(project);
 			if (!this.contentSources.containsKey(project)) {
-				logger.warn("No catalog source could be found for entitlement '{}' and project '{}'", entitlement.getName(), projectName);
+				logger.warn("No catalog source could be found for entitlement '{}' and project '{}'",
+						entitlement.getName(), projectName);
 				continue;
 			}
 			List<VraNgContentSourceBase> contentSourcesPerProject = contentSources.get(project);
 			if (contentSourcesPerProject != null) {
 				// Definition for contentSourcesPerProject.contains(entitlement.getName())
-				boolean entitlementNotExists = contentSourcesPerProject.stream().
-						noneMatch(contentSource -> contentSource.getName().equalsIgnoreCase(entitlement.getName()));
+				boolean entitlementNotExists = contentSourcesPerProject.stream()
+						.noneMatch(contentSource -> contentSource.getName().equalsIgnoreCase(entitlement.getName()));
 				logger.debug("Entitlement not exists: {}", entitlementNotExists);
 
 				if (entitlementNotExists) {
-					throw new RuntimeException(String.format("The entitlement %s don't exists.", entitlement.getName()));
+					throw new RuntimeException(
+							String.format("The entitlement %s don't exists.", entitlement.getName()));
 				}
 				logger.debug("contentSourcesPerProject list size: {}", contentSourcesPerProject.size());
 
@@ -325,7 +337,8 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 						entitlement.setId(null);
 						entitlement.setSourceId(contentSource.getId());
 						this.restClient.createCatalogEntitlement(entitlement, project);
-						logger.info("Imported catalog source entitlement '{}' for project '{}'", entitlement.getName(), projectName);
+						logger.info("Imported catalog source entitlement '{}' for project '{}'", entitlement.getName(),
+								projectName);
 					}
 				}
 			}
