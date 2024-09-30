@@ -84,8 +84,12 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		this.currentOrganizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 	}
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgCustomResource> getAllServerContents() {
+		return this.restClient.getAllCustomResources().values().stream().collect(Collectors.toList());
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePolicy(resId);
 	}
 
 	/**

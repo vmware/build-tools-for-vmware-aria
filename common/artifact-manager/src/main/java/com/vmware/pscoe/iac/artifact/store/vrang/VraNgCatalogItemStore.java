@@ -122,8 +122,12 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 */
 	private final Map<String, ArrayList<VraNgCatalogItem>> itemsMap = new HashMap<String, ArrayList<VraNgCatalogItem>>();
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgCatalogItem> getAllServerContents() {
+		return this.restClient.getCatalogItemsForProject(this.restClient.getProjectId());
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteBlueprint(resId);
 	}
 
 	// =================================================

@@ -50,8 +50,12 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgResourceQuotaPolicyStore.class);
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgResourceQuotaPolicy> getAllServerContents() {
+		return this.restClient.getResourceQuotaPolicies();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePolicy(resId);
 	}
 
 	/**

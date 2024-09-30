@@ -50,8 +50,12 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgLeasePolicy.class);
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgLeasePolicy> getAllServerContents() {
+		return this.restClient.getLeasePolicies();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePolicy(resId);
 	}
 
 	/**

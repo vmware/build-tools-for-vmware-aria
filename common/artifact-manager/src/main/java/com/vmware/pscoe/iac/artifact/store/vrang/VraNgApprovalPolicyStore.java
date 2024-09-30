@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
@@ -56,7 +55,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	}
 
 	protected void deleteResourceById(String resId) {
-		this.restClient.deleteApprovalPolicy(resId);
+		this.restClient.deletePolicy(resId);
 	}
 
 	/**

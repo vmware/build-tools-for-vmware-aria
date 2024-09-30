@@ -61,8 +61,12 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		this.configuredProjectId = this.restClient.getProjectId();
 	}
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgCatalogEntitlement> getAllServerContents() {
+		return this.restClient.getAllCatalogEntitlements();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteCatalogEntitlement(resId);
 	}
 
 	@Override

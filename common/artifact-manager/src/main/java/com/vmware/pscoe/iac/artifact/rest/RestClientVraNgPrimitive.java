@@ -1007,6 +1007,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
+	 * Deletes a sub
+	 */
+	protected void deleteSubscriptionPrimitive(final String subscriptionId) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_SUBSCRIPTION + "/" + subscriptionId).build();
+		restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+	}
+
+	/**
 	 * Retrieve All Subscriptions.
 	 *
 	 * @param filter filter
@@ -1387,6 +1395,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return entitlement;
 		}).collect(Collectors.toList());
 
+	}
+
+	/**
+	 * Deletes a catalog entitlement
+	 */
+	protected void deleteCatalogEntitlementPrimitive(final String entitlementId) {
+		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS + "/" + entitlementId));
+		restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -2116,6 +2132,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected List<VraNgPropertyGroup> getAllPropertyGroupsPrimitive() {
 		return this.getAllPropertyGroupsPrimitive(null);
+	}
+
+	/**
+	 * Deletes a PG
+	 *
+	 * @param {String} pgId - the PG ID
+	 * @throws URISyntaxException in case of erros while forming the URI
+	 */
+	protected void deletePropertyGroupPrimitive(String pgId) throws URISyntaxException {
+		String deleteURL = String.format(SERVICE_GET_PROPERTY_GROUPS + "/%s", pgId);
+		URI url = getURIBuilder().setPath(deleteURL).build();
+		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 	}
 
 	/**
@@ -3296,22 +3324,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Deletes an Approval Policy.
-	 *
-	 * @param policyId policy id
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
-	 */
-	public void deleteApprovalPolicyPrimitive(final String policyId) throws URISyntaxException {
-		if (isVraAbove810) {
-			String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
-			URI url = getURI(getURIBuilder().setPath(deleteURL));
-			restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
-		} else {
-			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions  8.10.x or newer.");
-		}
-	}
-
-	/**
 	 * Retrieve Approval Policy based on Id.
 	 *
 	 * @param policyId policy id
@@ -3351,8 +3363,20 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions 8.10.x or newer.");
 		}
+	}
 
+	/**
+	 * Delete a policy by id
+	 */
+	protected void deletePolicyPrimitive(String policyId) {
+		if (isVraAbove810) {
+			String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
+			URI url = getURI(getURIBuilder().setPath(deleteURL));
+			restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+		} else {
+			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions 8.10.x or newer.");
+		}
 	}
 }

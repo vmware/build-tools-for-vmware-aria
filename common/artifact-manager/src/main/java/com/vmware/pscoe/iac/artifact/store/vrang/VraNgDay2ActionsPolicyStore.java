@@ -49,8 +49,12 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgDay2ActionsPolicyStore.class);
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgDay2ActionsPolicy> getAllServerContents() {
+		return this.restClient.getDay2ActionsPolicies();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePolicy(resId);
 	}
 
 	/**

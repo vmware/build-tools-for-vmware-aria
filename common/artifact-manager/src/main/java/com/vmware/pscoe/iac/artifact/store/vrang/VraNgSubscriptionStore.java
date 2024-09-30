@@ -74,8 +74,12 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		this.projects = this.restClient.getProjects();
 	}
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgSubscription> getAllServerContents() {
+		return this.restClient.getAllSubscriptions().values().stream().collect(Collectors.toList());
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteSubscription(resId);
 	}
 
 	/**

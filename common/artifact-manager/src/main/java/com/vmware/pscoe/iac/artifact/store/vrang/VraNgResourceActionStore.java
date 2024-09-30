@@ -51,8 +51,15 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	 */
 	private static final String RESOURCE_ACTION_SEPARATOR = "__";
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgResourceAction> getAllServerContents() {
+		return this.restClient.getAllResourceActions().values().stream().collect(Collectors.toList());
+	}
+
+	/**
+	 * The deleteResourecAction takes in name just for logging purposes...
+	 */
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteResourceAction(resId, resId);
 	}
 
 	/**

@@ -63,8 +63,12 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgContentSharingPolicyStore.class);
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgContentSharingPolicy> getAllServerContents() {
+		return this.restClient.getContentSharingPolicies();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePolicy(resId);
 	}
 
 	/**

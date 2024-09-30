@@ -67,8 +67,12 @@ public final class VraNgPropertyGroupStore extends AbstractVraNgStore {
 		this.projectId = this.restClient.getProjectId();
 	}
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgPropertyGroup> getAllServerContents() {
+		return this.restClient.getPropertyGroups();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePropertyGroup(resId);
 	}
 
 	/**

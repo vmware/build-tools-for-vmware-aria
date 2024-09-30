@@ -50,8 +50,12 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgDeploymentLimitPolicyStore.class);
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgDeploymentLimitPolicy> getAllServerContents() {
+		return this.restClient.getDeploymentLimitPolicies();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePolicy(resId);
 	}
 
 	/**

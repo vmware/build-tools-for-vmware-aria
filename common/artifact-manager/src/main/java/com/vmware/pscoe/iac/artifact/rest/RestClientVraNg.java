@@ -346,6 +346,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE'");
 	}
 
+	public void deleteSubscription(final String subscriptionId) {
+		try {
+			deleteSubscriptionPrimitive(subscriptionId);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete Subscription with id '%s'.", subscriptionId), e);
+		}
+	}
+
 	/**
 	 * getSubscriptionsByName.
 	 *
@@ -733,6 +741,15 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
+	public void deletePropertyGroup(final String propertyGroupId) {
+		try {
+			this.deletePropertyGroupPrimitive(propertyGroupId);
+		} catch (Exception e) {
+			logger.error("Error deleting property group '{}': {}", propertyGroupId, e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * createPropertyGroup.
 	 *
@@ -984,6 +1001,15 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getAllCatalogEntitlementsPrimitive();
 		} catch (Exception e) {
 			logger.error("Error fetching all catalog entitlements: {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void deleteCatalogEntitlement(final String entitlementId) {
+		try {
+			this.deleteCatalogEntitlementPrimitive(entitlementId);
+		} catch (Exception e) {
+			logger.error("Error deleting catalog entitlement '{}': {}", entitlementId, e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -1279,6 +1305,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	// POLICIES
 	// =================================================
 
+	public void deletePolicy(final String policyId) {
+		try {
+			deletePolicyPrimitive(policyId);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete policy with id '%s'.", policyId), e);
+		}
+	}
+
 	/**
 	 * getContentSharingPolicyIds.
 	 * 
@@ -1521,20 +1555,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
-		}
-	}
-
-	/**
-	 * deleteApprovalPolicy.
-	 *
-	 * @param policy policy to be deleted.
-	 */
-	public void deleteApprovalPolicy(final String policyId) {
-		try {
-			deleteApprovalPolicyPrimitive(policyId);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not delete Approval policy with id '%s'.", policyId), e);
 		}
 	}
 

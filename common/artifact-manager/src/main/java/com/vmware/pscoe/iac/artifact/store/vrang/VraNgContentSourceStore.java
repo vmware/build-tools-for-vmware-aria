@@ -56,8 +56,12 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 				: new VraNgIntegration();
 	}
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	protected List<VraNgContentSourceBase> getAllServerContents() {
+		return this.restClient.getContentSourcesForProject(this.restClient.getProjectId());
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteContentSource(resId);
 	}
 
 	@Override

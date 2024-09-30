@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegionMapping;
 
@@ -31,8 +32,17 @@ import org.yaml.snakeyaml.Yaml;
 
 public class VraNgRegionalContentStore extends AbstractVraNgStore {
 
+	// Not implemented, because this needs refactoring
 	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	protected <T extends Identifiable> List<T> getAllServerContents() {
+		return null;
+	}
+
+	@Override
+	protected void deleteResourceById(String resId) {
 	}
 
 	@Override

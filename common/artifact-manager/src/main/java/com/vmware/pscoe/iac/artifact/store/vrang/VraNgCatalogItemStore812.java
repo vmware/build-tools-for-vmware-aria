@@ -45,10 +45,6 @@ import java.util.ArrayList;
  */
 public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
-	}
-
 	// =================================================
 	// CATALOG ITEMS EXPORT
 	// =================================================
