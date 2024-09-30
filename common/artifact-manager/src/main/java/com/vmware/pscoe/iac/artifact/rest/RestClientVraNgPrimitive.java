@@ -3284,6 +3284,22 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
+	 * Deletes an Approval Policy.
+	 *
+	 * @param policyId policy id
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 */
+	public void deleteApprovalPolicyPrimitive(final String policyId) throws URISyntaxException {
+		if (isVraAbove810) {
+			String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
+			URI url = getURI(getURIBuilder().setPath(deleteURL));
+			restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+		} else {
+			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions  8.10.x or newer.");
+		}
+	}
+
+	/**
 	 * Retrieve Approval Policy based on Id.
 	 *
 	 * @param policyId policy id

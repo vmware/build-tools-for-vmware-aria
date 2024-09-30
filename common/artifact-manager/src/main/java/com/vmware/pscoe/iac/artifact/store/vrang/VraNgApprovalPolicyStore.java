@@ -50,8 +50,29 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgApprovalPolicyStore.class);
 
+	/**
+	 * This will delete all of the approvalPolicies that are present in the
+	 * `content.yaml`
+	 *
+	 * If the policy does not exist on the server, then nothing will happen.
+	 * 
+	 * @TODO: Make it so no definition means delete everything if a flag is set
+	 */
 	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
+		List<VraNgApprovalPolicy> serverPolicies = this.restClient.getApprovalPolicies();
+		List<String> policyNames = this.getItemListFromDescriptor();
+
+		if (policyNames == null) {
+			logger.info("No policy names found in descriptor. Skipping deletion.");
+			return;
+		}
+
+		for (VraNgApprovalPolicy policy : serverPolicies) {
+			if (policyNames.contains(policy.getName())) {
+				logger.info("Deleting approval policy '{}'", policy.getName());
+				this.restClient.deleteApprovalPolicy(policy.getId());
+			}
+		}
 	}
 
 	/**

@@ -71,7 +71,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * Constructor for RestClientVraNg.
 	 * 
 	 * @param configuration configuration vra
-	 * @param restTemplate rest template
+	 * @param restTemplate  rest template
 	 */
 	protected RestClientVraNg(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
 		super(configuration, restTemplate);
@@ -114,7 +114,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * Patch a catalog item.
 	 * 
 	 * @param catalogItem catalog item
-	 * @param iconId icon id
+	 * @param iconId      icon id
 	 * @return ResponseEntity
 	 */
 	public ResponseEntity<String> patchCatalogItemIcon(final VraNgCatalogItem catalogItem, final String iconId) {
@@ -191,7 +191,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * getBlueprintVersionContent.
 	 * 
 	 * @param blueprintId blueprint id
-	 * @param version version
+	 * @param version     version
 	 * @return content
 	 */
 	public String getBlueprintVersionContent(final String blueprintId, final String version) {
@@ -221,7 +221,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * isBlueprintVersionPresent.
 	 * 
 	 * @param blueprintId blueprint id
-	 * @param version version
+	 * @param version     version
 	 * @return boolean
 	 */
 	public Boolean isBlueprintVersionPresent(final String blueprintId, final String version) {
@@ -251,7 +251,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * releaseBlueprintVersion.
 	 *
 	 * @param blueprintId blueprint id
-	 * @param version version
+	 * @param version     version
 	 */
 	public void releaseBlueprintVersion(final String blueprintId, final String version) {
 		try {
@@ -266,7 +266,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * releaseBlueprintVersion.
 	 *
 	 * @param blueprintId blueprint id
-	 * @param versionId version id
+	 * @param versionId   version id
 	 */
 	public void unreleaseBlueprintVersion(final String blueprintId, final String versionId) {
 		try {
@@ -356,7 +356,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * getSubscriptionsByOrgIdAndName.
 	 *
 	 * @param orgId org id
-	 * @param name subscription name
+	 * @param name  subscription name
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgIdAndName(final String orgId, final String name) {
@@ -465,9 +465,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createFlavor.
 	 *
-	 * @param regionId region id
+	 * @param regionId          region id
 	 * @param flavorProfileName flavor name
-	 * @param flavorMappings flavor mappings
+	 * @param flavorMappings    flavor mappings
 	 */
 	public void createFlavor(final String regionId, final String flavorProfileName,
 			final List<VraNgFlavorMapping> flavorMappings) {
@@ -481,7 +481,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateFlavor.
 	 *
-	 * @param flavorId flavor id
+	 * @param flavorId       flavor id
 	 * @param flavorMappings flavor mappings
 	 */
 	public void updateFlavor(final String flavorId, final List<VraNgFlavorMapping> flavorMappings) {
@@ -525,8 +525,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createImageProfile.
 	 *
-	 * @param regionId region id
-	 * @param profileName profile name
+	 * @param regionId      region id
+	 * @param profileName   profile name
 	 * @param imageMappings image mappings
 	 */
 	public void createImageProfile(final String regionId, final String profileName,
@@ -541,7 +541,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateImageProfile.
 	 *
-	 * @param profileId profile id
+	 * @param profileId     profile id
 	 * @param imageMappings image mappings
 	 */
 	public void updateImageProfile(final String profileId, final List<VraNgImageMapping> imageMappings) {
@@ -573,7 +573,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * updateStorageProfile.
 	 *
 	 * @param profileId profile id
-	 * @param profile vra storage profile 
+	 * @param profile   vra storage profile
 	 */
 	public void updateStorageProfile(final String profileId, final VraNgStorageProfile profile) {
 		try {
@@ -607,7 +607,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * getSpecificStorageProfile.
 	 *
 	 * @param targetPool target pool
-	 * @param profileId storage profile id
+	 * @param profileId  storage profile id
 	 * @return storageProfile
 	 */
 	public VraNgStorageProfile getSpecificStorageProfile(final String targetPool, final String profileId) {
@@ -623,8 +623,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * updateSpecificProfile.
 	 *
 	 * @param patchTarget patch target
-	 * @param profileId storage profile id
-	 * @param profile storage profile
+	 * @param profileId   storage profile id
+	 * @param profile     storage profile
 	 */
 	public void updateSpecificProfile(final String patchTarget, final String profileId,
 			final VraNgStorageProfile profile) {
@@ -842,7 +842,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCustomFormByTypeAndSource.
 	 *
-	 * @param type source type
+	 * @param type     source type
 	 * @param sourceId source id
 	 * @return customForm
 	 */
@@ -872,9 +872,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * fetchRequestForm.
 	 *
-	 * @param type source type
+	 * @param type     source type
 	 * @param sourceId source id
-	 * @param formId form id
+	 * @param formId   form id
 	 * @return customForm
 	 */
 	public VraNgCustomForm fetchRequestForm(final String type, final String sourceId, final String formId) {
@@ -949,7 +949,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * importCustomForm.
 	 *
 	 * @param customForm vra custom form
-	 * @param sourceId source id
+	 * @param sourceId   source id
 	 */
 	public void importCustomForm(final VraNgCustomForm customForm, final String sourceId) {
 		try {
@@ -978,7 +978,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * createCatalogEntitlement.
 	 *
 	 * @param entitlement catalog entitlement
-	 * @param project project id
+	 * @param project     project id
 	 */
 	public void createCatalogEntitlement(final VraNgCatalogEntitlement entitlement, final String project) {
 		try {
@@ -1087,7 +1087,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * deleteCustomResource.
 	 * 
 	 * @param customResourceName custom resource name
-	 * @param customResourceId custom resource id
+	 * @param customResourceId   custom resource id
 	 */
 	public void deleteCustomResource(final String customResourceName, final String customResourceId) {
 		try {
@@ -1139,7 +1139,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * deleteResourceAction.
 	 * 
 	 * @param resourceActionName resource action name
-	 * @param resourceActionId resource action id
+	 * @param resourceActionId   resource action id
 	 */
 	public void deleteResourceAction(final String resourceActionName, final String resourceActionId) {
 		try {
@@ -1173,7 +1173,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * updateAbxAction.
 	 * 
 	 * @param actionId action id
-	 * @param action action
+	 * @param action   action
 	 * @return actionId
 	 */
 	public String updateAbxAction(final String actionId, final AbxAction action) {
@@ -1203,7 +1203,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createAbxVersion.
 	 * 
-	 * @param action abx action
+	 * @param action  abx action
 	 * @param version version
 	 * @return abxVersion
 	 */
@@ -1219,7 +1219,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * releaseAbxVersion.
 	 * 
-	 * @param action action 
+	 * @param action    action
 	 * @param versionId version id
 	 * @return version
 	 */
@@ -1288,7 +1288,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			this.createContentSharingPolicyPrimitive(csPolicy);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
 		}
 	}
 
@@ -1308,7 +1309,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-
+	 * 
 	 * getResourceQuotaPolicyIds.
 	 * 
 	 * @return policies
@@ -1336,7 +1337,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 	/**
 	 * createResourceQuotaPolicy.
@@ -1396,7 +1396,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
-
 	/**
 	 * getDay2ActionsPolicies.
 	 *
@@ -1421,7 +1420,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			createDay2ActionsPolicyPrimitive(d2aPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(
-				String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
+					String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
 		}
 	}
 
@@ -1439,6 +1438,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(e);
 		}
 	}
+
 	/**
 	 * getDeploymentLimitPolicies.
 	 *
@@ -1463,7 +1463,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			createDeploymentLimitPolicyPrimitive(policy);
 		} catch (Exception e) {
 			throw new RuntimeException(
-				String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
+					String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
 		}
 	}
 
@@ -1499,14 +1499,28 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createApprovalPolicy.
 	 *
-	 * @param policy  policy to be created or updated.
+	 * @param policy policy to be created or updated.
 	 */
 	public void createApprovalPolicy(final VraNgApprovalPolicy policy) {
 		try {
 			createApprovalPolicyPrimitive(policy);
 		} catch (Exception e) {
 			throw new RuntimeException(
-				String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
+					String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
+		}
+	}
+
+	/**
+	 * deleteApprovalPolicy.
+	 *
+	 * @param policy policy to be deleted.
+	 */
+	public void deleteApprovalPolicy(final String policyId) {
+		try {
+			deleteApprovalPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not delete Approval policy with id '%s'.", policyId), e);
 		}
 	}
 
