@@ -39,6 +39,25 @@
 [//]: # (Optional But highly recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Restored missing 'exec' module
+
+The error when running an Action in VRDT UI was resolved by restoring the 'exec' module in 'packages'.
+
+#### Previous Behavior
+
+In VS Code with the vRealize Developer Tools plugin installed, when the 'Run vRO Action' command was issued via the UI kebab menu of a JS/TS Action, an error appeared in the OUTPUT of the type:
+
+```log
+# Running getVmWithTag.js
+# An error occurred: Could not import exec package into vRO: Command 'mvn dependency:copy -Dartifact=com.vmware.pscoe.o11n:exec::package -DoutputDirectory="/Users/user/Library/Application Support/Code/User/globalStorage/vmware-pscoe.vrealize-developer-tools" -Dmdep.stripVersion=true ' exited with code 1
+```
+
+The 'com.vmware.pscoe.o11n:exec' package was missing when building the build tools.
+
+#### New Behavior
+
+The 'com.vmware.pscoe.o11n:exec' package is no longer missing when built. The error above no longer appears when running an Action via VRDT UI.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
