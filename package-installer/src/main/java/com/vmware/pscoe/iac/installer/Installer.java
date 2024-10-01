@@ -1200,6 +1200,8 @@ public final class Installer {
 		}
 		if (input.anyTrue(Option.VRANG_IMPORT)) {
 			readVrangImportProperties(input);
+		} else {
+			userInput(input, Option.VRANG_DELETE_CONTENT, "Clean up Aria Automation content?", true);
 		}
 		if (input.anyTrue(Option.CS_IMPORT)) {
 			readCsImportProperties(input);

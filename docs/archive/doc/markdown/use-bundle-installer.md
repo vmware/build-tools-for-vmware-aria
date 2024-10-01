@@ -100,6 +100,7 @@ vrang_proxy_required
 vrang_proxy  
 vrang_port
 vrang_auth_with_refresh_token
+vrang_delete_content # can be used to delete all content from the vRA8 environment specified in the content.yaml
 vrang_refresh_token
 vrang_username
 vrang_password
