@@ -84,12 +84,25 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		this.currentOrganizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 	}
 
+	/**
+	 * Gets all the custom resources from the server.
+	 *
+	 * @return {List} of all custom resources on the server
+	 */
 	protected List<VraNgCustomResource> getAllServerContents() {
 		return this.restClient.getAllCustomResources().values().stream().collect(Collectors.toList());
 	}
 
+	/**
+	 * Deletes a custom resource by its ID.
+	 *
+	 * NOTE: The `deleteCustomResource` asks for both the name and the id, however
+	 * the name is used only for logging
+	 *
+	 * @param {String} resId - The resource ID to delete
+	 */
 	protected void deleteResourceById(String resId) {
-		this.restClient.deletePolicy(resId);
+		this.restClient.deleteCustomResource(resId, resId);
 	}
 
 	/**

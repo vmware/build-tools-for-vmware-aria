@@ -127,7 +127,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	}
 
 	protected void deleteResourceById(String resId) {
-		this.restClient.deleteBlueprint(resId);
+		this.restClient.deleteCatalogItem(resId);
 	}
 
 	// =================================================
