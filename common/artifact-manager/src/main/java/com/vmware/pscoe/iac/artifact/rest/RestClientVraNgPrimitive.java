@@ -756,10 +756,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param bpId Blueprint ID
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
-	public void deleteBlueprintPrimitive(final String bpId) throws URISyntaxException {
+	public ResponseEntity<String> deleteBlueprintPrimitive(final String bpId) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + bpId).build();
 
-		restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -1009,9 +1009,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Deletes a sub
 	 */
-	protected void deleteSubscriptionPrimitive(final String subscriptionId) throws URISyntaxException {
+	protected ResponseEntity<String> deleteSubscriptionPrimitive(final String subscriptionId)
+			throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_SUBSCRIPTION + "/" + subscriptionId).build();
-		restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -1400,9 +1401,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Deletes a catalog entitlement
 	 */
-	protected void deleteCatalogEntitlementPrimitive(final String entitlementId) {
+	protected ResponseEntity<String> deleteCatalogEntitlementPrimitive(final String entitlementId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS + "/" + entitlementId));
-		restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -2140,10 +2141,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param {String} pgId - the PG ID
 	 * @throws URISyntaxException in case of erros while forming the URI
 	 */
-	protected void deletePropertyGroupPrimitive(String pgId) throws URISyntaxException {
+	protected ResponseEntity<String> deletePropertyGroupPrimitive(String pgId) throws URISyntaxException {
 		String deleteURL = String.format(SERVICE_GET_PROPERTY_GROUPS + "/%s", pgId);
 		URI url = getURIBuilder().setPath(deleteURL).build();
-		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 	}
 
 	/**
@@ -2527,10 +2528,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param customResourceId Resource Action JSON
 	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
 	 */
-	protected void deleteCustomResourcePrimitive(final String customResourceId) throws URISyntaxException {
+	protected ResponseEntity<String> deleteCustomResourcePrimitive(final String customResourceId)
+			throws URISyntaxException {
 		String deleteURL = String.format(SERVICE_CUSTOM_RESOURCES + "/%s", customResourceId);
 		URI url = getURIBuilder().setPath(deleteURL).build();
-		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 	}
 
 	// =================================================
@@ -2586,14 +2588,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param resourceActionId Resource Action ID to delete
 	 */
-	protected void deleteResourceActionPrimitive(final String resourceActionId) {
+	protected ResponseEntity<String> deleteResourceActionPrimitive(final String resourceActionId) {
 		String deleteURL = String.format(SERVICE_RESOURCE_ACTIONS + "/%s", resourceActionId);
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, RestClient.getDefaultHttpEntity(), String.class);
 	}
 
 	// =================================================
@@ -2897,17 +2896,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param contentSourceId Content Source ID to delete.
 	 */
-	public void deleteContentSource(final String contentSourceId) {
+	public ResponseEntity<String> deleteContentSource(final String contentSourceId) {
 		if (StringUtils.isEmpty(contentSourceId)) {
-			return;
+			return null;
 		}
+
 		String deleteURL = String.format(SERVICE_CONTENT_SOURCE + "/%s", contentSourceId);
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-		restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, RestClient.getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -3370,11 +3367,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Delete a policy by id
 	 */
-	protected void deletePolicyPrimitive(String policyId) {
+	protected ResponseEntity<String> deletePolicyPrimitive(String policyId) {
 		if (isVraAbove810) {
 			String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
 			URI url = getURI(getURIBuilder().setPath(deleteURL));
-			restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+			return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 		} else {
 			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions 8.10.x or newer.");
 		}
