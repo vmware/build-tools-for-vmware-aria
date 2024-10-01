@@ -943,6 +943,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
+	 * Deletes a catalog item by id.
+	 */
+	protected ResponseEntity<String> deleteCatalogItemPrimitive(final String catalogItemId) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId).build();
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+	}
+
+	/**
 	 * Retrieve Catalog items For Projects.
 	 *
 	 * @param projects List of Projects
