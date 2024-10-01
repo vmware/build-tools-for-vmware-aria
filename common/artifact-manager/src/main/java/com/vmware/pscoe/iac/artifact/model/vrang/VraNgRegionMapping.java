@@ -18,23 +18,48 @@ import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudAccount
 
 import org.apache.commons.lang3.NotImplementedException;
 
+/**
+ * This class is used to map the region to the cloud account tags.
+ */
 public class VraNgRegionMapping {
 
+	/**
+	 * @param cloudAccountTags The cloud account tags to be set
+	 */
 	private VraNgCloudAccountTag cloudAccountTags;
 
+	/**
+	 * Default constructor.
+	 */
 	public VraNgRegionMapping() {
 		super();
 		this.cloudAccountTags = new VraNgCloudAccountTag();
 	}
 
+	/**
+	 * Constructor with cloud account tags.
+	 * 
+	 * @param cloudAccountTags The cloud account tags to be set
+	 */
 	public VraNgRegionMapping(VraNgCloudAccountTag cloudAccountTags) {
 		this.cloudAccountTags = cloudAccountTags;
 	}
 
+	/**
+	 * Get the cloud account tags.
+	 * 
+	 * @return The cloud account tags
+	 */
 	public VraNgCloudAccountTag getCloudAccountTags() {
 		return this.cloudAccountTags;
 	}
 
+	/**
+	 * Check if the object is equal to this object.
+	 *
+	 * @param obj The object to compare
+	 * @return True if the object is equal to this object, false otherwise
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		throw new NotImplementedException("Not implemented");

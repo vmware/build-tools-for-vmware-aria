@@ -263,7 +263,7 @@ enum Option {
 			ConfigurationVraNg.UNRELEASE_BLUEPRINT_VERSIONS),
 
 	/**
-	 * VRANG delete last version.A
+	 * VRANG delete last version.
 	 * This will result in the environment being cleaned up
 	 */
 	VRANG_DELETE_CONTENT(
@@ -1194,14 +1194,15 @@ public final class Installer {
 		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty();
 		if (hasVraNgPackages) {
 			userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
+			if (!input.anyTrue(Option.VRANG_IMPORT)) {
+				userInput(input, Option.VRANG_DELETE_CONTENT, "Clean up Aria Automation content?", true);
+			}
 		}
-		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT)) {
+		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT, Option.VRANG_DELETE_CONTENT)) {
 			readVrangProperties(input);
 		}
 		if (input.anyTrue(Option.VRANG_IMPORT)) {
 			readVrangImportProperties(input);
-		} else {
-			userInput(input, Option.VRANG_DELETE_CONTENT, "Clean up Aria Automation content?", true);
 		}
 		if (input.anyTrue(Option.CS_IMPORT)) {
 			readCsImportProperties(input);

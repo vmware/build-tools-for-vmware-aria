@@ -51,12 +51,19 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	 */
 	private static final String RESOURCE_ACTION_SEPARATOR = "__";
 
+	/**
+	 * Get all server contents.
+	 *
+	 * @return list of resource actions
+	 */
 	protected List<VraNgResourceAction> getAllServerContents() {
 		return this.restClient.getAllResourceActions().values().stream().collect(Collectors.toList());
 	}
 
 	/**
 	 * The deleteResourecAction takes in name just for logging purposes...
+	 *
+	 * @param resId resource id
 	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteResourceAction(resId, resId);

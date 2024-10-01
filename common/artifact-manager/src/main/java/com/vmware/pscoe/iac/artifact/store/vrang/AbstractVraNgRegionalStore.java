@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 /**
  * Abstract class that unify the way the content is exported for all sub-classes
- * that are based on regional stores
+ * that are based on regional stores.
  * When no item ([]) is given, nothing is exported
  * When a list of specific items ([item1, itme2]) are given, only the given
  * itmes are exported
@@ -37,11 +37,30 @@ import java.util.stream.Collectors;
  * regional content is being refactored soon (hopefully)
  */
 public abstract class AbstractVraNgRegionalStore {
+	/**
+	 * @param restClient
+	 */
 	protected RestClientVraNg restClient;
+	/**
+	 * @param vraNgPackage
+	 */
 	protected Package vraNgPackage;
+	/**
+	 * @param vraNgPackageDescriptor
+	 */
 	protected VraNgPackageDescriptor vraNgPackageDescriptor;
+	/**
+	 * @param logger
+	 */
 	protected Logger logger;
 
+	/**
+	 * Initialize the class with the required parameters.
+	 * 
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param vraNgPackageDescriptor
+	 */
 	private void ini(
 			RestClientVraNg restClient,
 			Package vraNgPackage,
@@ -51,6 +70,13 @@ public abstract class AbstractVraNgRegionalStore {
 		this.vraNgPackageDescriptor = vraNgPackageDescriptor;
 	}
 
+	/**
+	 * Initialize the class with the required parameters.
+	 * 
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param vraNgPackageDescriptor
+	 */
 	public void init(
 			RestClientVraNg restClient,
 			Package vraNgPackage,
@@ -59,6 +85,14 @@ public abstract class AbstractVraNgRegionalStore {
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
+	/**
+	 * Initialize the class with the required parameters.
+	 * 
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param vraNgPackageDescriptor
+	 * @param logger
+	 */
 	public void init(
 			RestClientVraNg restClient,
 			Package vraNgPackage,
@@ -102,21 +136,21 @@ public abstract class AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of items
 	 */
 	protected abstract List<String> getItemListFromDescriptor();
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 * 
 	 * @param cloudAccounts list of cloud accounts
 	 */
 	protected abstract void exportStoreContent(List<VraNgCloudAccount> cloudAccounts);
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 * 
 	 * @param cloudAccounts list of cloud accounts
 	 * @param itemNames     list of names

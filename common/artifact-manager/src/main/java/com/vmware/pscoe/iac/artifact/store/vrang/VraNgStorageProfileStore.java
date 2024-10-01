@@ -15,16 +15,12 @@
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudRegionProfile;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.minidev.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,20 +33,21 @@ import java.util.stream.Collectors;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_STORAGE_PROFILES;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
 
+/**
+ * Storage profile store.
+ */
 public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
-
+	/**
+	 * @param logger
+	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgStorageProfileStore.class);
-
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
-	}
 
 	// =================================================
 	// STORAGE PROFILES EXPORT
 	// =================================================
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of storage profiles
 	 */
@@ -60,7 +57,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 *
 	 * @param cloudAccounts list of cloud accounts
 	 */
@@ -99,7 +96,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 *
 	 * @param cloudAccounts           list of cloud accounts
 	 * @param storageProfilesToExport list of storage profiles
@@ -138,12 +135,16 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 		});
 	}
 
+	/**
+	 * Profile type enumeration.
+	 */
 	enum ProfileType {
 		VSPHERE, AZURE, AWS, UNKNOWN
 	}
 
 	/**
-	 * Save an storage profile to a JSON file
+	 * 
+	 * Save an storage profile to a JSON file.
 	 * 
 	 * @param sourceDir      source directory
 	 * @param profileDirName region directory
@@ -251,7 +252,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	// =================================================
 
 	/**
-	 * Import all storage profiles from a package
+	 * Import all storage profiles from a package.
 	 * 
 	 * @param sourceDirectory temporary directory containing the files
 	 * @param importTags      list of tags
@@ -411,7 +412,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	 * Create API-compliant JSON payload from local storage profile
 	 * for patching cloud-specific storage profiles.
 	 * 
-	 * @param profile local storage profile
+	 * @param regionId the region id
+	 * @param profile  local storage profile
 	 * @return storage profile with updated payload
 	 */
 	private Map.Entry<String, VraNgStorageProfile> getPatchPayload(String regionId, VraNgStorageProfile profile) {

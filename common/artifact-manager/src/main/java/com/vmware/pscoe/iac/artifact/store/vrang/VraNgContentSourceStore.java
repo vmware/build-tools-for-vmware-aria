@@ -39,12 +39,33 @@ import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgIntegrationUtils;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Content Source Store.
+ */
 public class VraNgContentSourceStore extends AbstractVraNgStore {
+	/**
+	 * @param projectId
+	 */
 	private String projectId;
+	/**
+	 * @param utils
+	 */
 	private VrangContentSourceUtils utils;
+	/**
+	 * @param existingSources
+	 */
 	private VraNgIntegration configuredIntegration;
+	/**
+	 * @param existingSources
+	 */
 	private List<VraNgContentSourceBase> existingSources = null;
 
+	/**
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param config
+	 * @param vraNgPackageDescriptor
+	 */
 	@Override
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor) {
@@ -56,14 +77,24 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 				: new VraNgIntegration();
 	}
 
+	/**
+	 * @return a list of all the content sources for the current project on the
+	 *         server
+	 */
 	protected List<VraNgContentSourceBase> getAllServerContents() {
 		return this.restClient.getContentSourcesForProject(this.restClient.getProjectId());
 	}
 
+	/**
+	 * @param resId is the id of a content source that we want to delete
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteContentSource(resId);
 	}
 
+	/**
+	 * @param sourceDirectory is the directory where the content sources are stored
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory", VraNgDirs.DIR_CONTENT_SOURCES);
@@ -85,7 +116,7 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of content sources
 	 */
@@ -106,9 +137,9 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Exports filtered content sources from service broker
+	 * Exports filtered content sources from service broker.
 	 * If the content source is a VRO_WORKFLOW then it is checked if it has unique
-	 * workflow names.sssss
+	 * workflow names.
 	 *
 	 * @param contentSourceNames list of names
 	 */
@@ -133,7 +164,7 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Checks for duplicate workflows in the given content sources
+	 * Checks for duplicate workflows in the given content sources.
 	 *
 	 * @param contentSources - Content sources to check
 	 */
@@ -154,6 +185,11 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		return contentSources;
 	}
 
+	/**
+	 * Imports a content source from a file.
+	 *
+	 * @param contentSourceFile - File to import
+	 */
 	void importFile(File contentSourceFile) {
 		try (JsonReader reader = new JsonReader(new FileReader(contentSourceFile.getPath()))) {
 			JsonObject jsonObj = JsonParser.parseReader(reader).getAsJsonObject();
@@ -180,6 +216,11 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Prepares a workflow content source for import.
+	 *
+	 * @param contentSource - Content source to prepare
+	 */
 	public void prepareWorkflowContentSource(VraNgWorkflowContentSource contentSource) {
 		VraNgIntegration defaultIntegration = VraNgIntegrationUtils.getInstance()
 				.getDefaultVraIntegration(this.restClient);
@@ -234,12 +275,26 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		this.deleteBeforeCreation(contentSource.getId());
 	}
 
+	/**
+	 * Sets the integration on a workflow.
+	 *
+	 * @param workflow          - Workflow to set integration on
+	 * @param targetIntegration - Integration to set
+	 */
+
 	private void setIntegration(VraNgWorkflow workflow, VraNgIntegration targetIntegration) {
 		workflow.getIntegration().setEndpointConfigurationLink(targetIntegration.getEndpointConfigurationLink());
 		workflow.getIntegration().setEndpointUri(targetIntegration.getEndpointUri());
 		workflow.getIntegration().setName(targetIntegration.getName());
 	}
 
+	/**
+	 * Gets the workflow ids from a content source.
+	 *
+	 * @param contentSource - Content source to get workflow ids from
+	 *
+	 * @return List<String>
+	 */
 	private List<String> getWfIds(VraNgWorkflowContentSource contentSource) {
 		return contentSource
 				.getConfig()
@@ -255,6 +310,8 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	 * A set will return false when doing Set.add if the item already exists
 	 *
 	 * https://docs.oracle.com/javase/8/docs/api/java/util/Set.html#add-E-
+	 *
+	 * @param contentSource - Content source to check
 	 *
 	 * @return ArrayList<String>
 	 */
@@ -273,6 +330,11 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		return duplicates;
 	}
 
+	/**
+	 * Prepares a project content source for import.
+	 *
+	 * @param contentSource - Content source to prepare
+	 */
 	public void prepareProjectContentSource(VraNgContentSource contentSource) {
 		Map<String, String> config = new HashMap<>();
 		config.put("sourceProjectId", this.projectId);
@@ -287,6 +349,11 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		contentSource.setId(newId);
 	}
 
+	/**
+	 * Deletes a content source before creating it.
+	 *
+	 * @param contentSourceId - Content source id to delete
+	 */
 	protected void deleteBeforeCreation(String contentSourceId) {
 		if (contentSourceId != null) {
 			// VRA version 8.0 complains with message 'content source already exists' if try
@@ -299,6 +366,14 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Gets all existing content sources filtered by type.
+	 *
+	 * @param type  - Type to filter by
+	 * @param clazz - Class to cast to
+	 *
+	 * @return Stream<T>
+	 */
 	private <T> Stream<T> getExistingSourcesFilteredByType(VraNgContentSourceType type, Class<T> clazz) {
 		return this.fetchAllContentSources(null).stream().filter(src -> src.getType().equals(type)).map(clazz::cast);
 	}

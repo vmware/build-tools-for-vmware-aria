@@ -38,13 +38,34 @@ import java.util.List;
  * When nothing (null) is given, all items from the store are exported
  */
 public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implements IVraNgStore {
+	/**
+	 * @param restClient
+	 */
 	protected RestClientVraNg restClient;
+	/**
+	 * @param vraNgPackage
+	 */
 	protected Package vraNgPackage;
 	// initialize the vraNgPackageDescriptor to avoid NPE
+	/**
+	 * @param vraNgPackageDescriptor
+	 */
 	protected VraNgPackageDescriptor vraNgPackageDescriptor = new VraNgPackageDescriptor();
+	/**
+	 * @param config
+	 */
 	protected ConfigurationVraNg config;
+	/**
+	 * @param logger
+	 */
 	protected Logger logger;
 
+	/**
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param config
+	 * @param vraNgPackageDescriptor
+	 */
 	private void ini(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor) {
 		this.restClient = restClient;
@@ -53,12 +74,25 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 		this.config = config;
 	}
 
+	/**
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param config
+	 * @param vraNgPackageDescriptor
+	 */
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor) {
 		this.ini(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
+	/**
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param config
+	 * @param vraNgPackageDescriptor
+	 * @param logger
+	 */
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor, Logger logger) {
 		this.ini(restClient, vraNgPackage, config, vraNgPackageDescriptor);
@@ -93,24 +127,28 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of items
 	 */
 	protected abstract List<String> getItemListFromDescriptor();
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 */
 	protected abstract void exportStoreContent();
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 * 
 	 * @param itemNames list of names
 	 */
 	protected abstract void exportStoreContent(List<String> itemNames);
 
+	/**
+	 * @return the endpoint link of the target integration
+	 * @throws ConfigurationException
+	 */
 	protected String getVroTargetIntegrationEndpointLink() throws ConfigurationException {
 		String integrationName = this.config.getVroIntegration();
 		VraNgIntegration targetIntegration = this.restClient.getVraWorkflowIntegration(integrationName);
@@ -135,6 +173,13 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 		}
 	}
 
+	/**
+	 * Filter the files based on the given filter.
+	 * 
+	 * @param itemFolder
+	 * @param filter
+	 * @return array of filtered files
+	 */
 	protected File[] filterBasedOnConfiguration(File itemFolder, FilenameFilter filter) {
 		return itemFolder.listFiles(filter);
 	}

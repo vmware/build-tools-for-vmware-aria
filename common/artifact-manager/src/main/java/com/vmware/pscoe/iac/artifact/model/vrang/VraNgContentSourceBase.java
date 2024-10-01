@@ -19,97 +19,175 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Base class for all content sources
+ */
 public class VraNgContentSourceBase implements Identifiable {
 
 	@JsonProperty("id")
+	/**
+	 * @param id the id to set
+	 */
 	protected String id;
 
 	@JsonProperty("name")
+	/**
+	 * @param name the name to set
+	 */
 	protected String name;
 
 	@JsonProperty("description")
+	/**
+	 * @param description the description to set
+	 */
 	protected String description;
 
 	@JsonProperty("typeId")
+	/**
+	 * @param typeId the typeId to set
+	 */
 	protected String typeId;
 
 	@JsonProperty("itemsImported")
+	/**
+	 * @param itemsImported the itemsImported to set
+	 */
 	protected int itemsImported;
 
 	@JsonProperty("itemsFound")
+	/**
+	 * @param itemsFound the itemsFound to set
+	 */
 	protected int itemsFound;
 
 	@JsonProperty("lastImportErrors")
+	/**
+	 * @param lastImportErrors the lastImportErrors to set
+	 */
 	protected transient List<String> lastImportErrors = new ArrayList<>();
 
 	@JsonProperty("global")
+	/**
+	 * @param global the global to set
+	 */
 	protected boolean global;
 
+	/**
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return the typeId
+	 */
 	public String getTypeId() {
 		return typeId;
 	}
 
+	/**
+	 * @param typeId the typeId to set
+	 */
 	public void setTypeId(String typeId) {
 		this.typeId = typeId;
 	}
 
+	/**
+	 * @return the itemsImported
+	 */
 	public Integer getItemsFound() {
 		return itemsFound;
 	}
 
+	/**
+	 * @param itemsFound the itemsFound to set
+	 */
 	public void setItemsFound(Integer itemsFound) {
 		this.itemsFound = itemsFound;
 	}
 
+	/**
+	 * @return the itemsImported
+	 */
 	public Integer getItemsImported() {
 		return itemsImported;
 	}
 
+	/**
+	 * @param itemsImported the itemsImported to set
+	 */
 	public void setItemsImported(Integer itemsImported) {
 		this.itemsImported = itemsImported;
 	}
 
+	/**
+	 * @return the lastImportErrors
+	 */
 	public List<String> getLastImportErrors() {
 		return lastImportErrors;
 	}
 
+	/**
+	 * @param lastImportErrors the lastImportErrors to set
+	 */
 	public void setLastImportErrors(List<String> lastImportErrors) {
 		this.lastImportErrors = lastImportErrors;
 	}
 
 	@JsonIgnore
+	/**
+	 * @return the type
+	 */
 	public VraNgContentSourceType getType() {
 		return VraNgContentSourceType.fromString(this.typeId);
 	}
 
+	/**
+	 * @return the description
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * @param description the description to set
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * @return the global
+	 */
 	public boolean isGlobal() {
 		return global;
 	}
 
+	/**
+	 * @param global the global to set
+	 */
 	public void setGlobal(boolean global) {
 		this.global = global;
 	}

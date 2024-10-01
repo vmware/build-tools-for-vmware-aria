@@ -14,19 +14,38 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
+/**
+ * Represents a VraNgProject.
+ */
 public class VraNgProject implements Identifiable {
+	/**
+	 * @param id the project id
+	 */
 	private final String id;
+	/**
+	 * @param name the project name
+	 */
 	private final String name;
 
+	/**
+	 * @param id   the project id
+	 * @param name the project name
+	 */
 	public VraNgProject(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
+	/**
+	 * @return the project id
+	 */
 	public String getId() {
 		return this.id;
 	}
 
+	/**
+	 * @return the project name
+	 */
 	public String getName() {
 		return this.name;
 	}

@@ -46,6 +46,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
+/**
+ * Blueprint store implementation for vRA NG.
+ */
 public class VraNgBlueprintStore extends AbstractVraNgStore {
 
 	/*
@@ -76,7 +79,9 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Deletes a Blueprint By ID
+	 * Deletes a Blueprint By ID.
+	 *
+	 * @param resId resource ID
 	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteBlueprint(resId);

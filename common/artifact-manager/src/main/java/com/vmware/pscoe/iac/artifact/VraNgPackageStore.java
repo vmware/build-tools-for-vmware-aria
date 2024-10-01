@@ -279,7 +279,7 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 	// =================================================== Full Delete
 
 	/**
-	 * Fully deletes a package
+	 * Fully deletes a package.
 	 * 
 	 * @param pkg         the package to delete
 	 * @param withContent whether to delete the package with its content

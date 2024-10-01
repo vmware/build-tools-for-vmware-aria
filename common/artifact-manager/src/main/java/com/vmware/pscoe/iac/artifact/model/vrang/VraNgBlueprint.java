@@ -14,14 +14,44 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
+/**
+ * Represents a VRA NG Blueprint
+ */
 public class VraNgBlueprint implements Identifiable {
-
+	/**
+	 * @param id The id of the blueprint
+	 */
 	private String id;
+
+	/**
+	 * @param name The name of the blueprint
+	 */
 	private String name;
+
+	/**
+	 * @param content The content of the blueprint
+	 */
 	private String content;
+
+	/**
+	 * @param description The description of the blueprint
+	 */
 	private String description;
+
+	/**
+	 * @param requestScopeOrg Whether the blueprint should be scoped to the
+	 *                        request's organization
+	 */
 	private Boolean requestScopeOrg;
 
+	/**
+	 * @param id              The id of the blueprint
+	 * @param name            The name of the blueprint
+	 * @param content         The content of the blueprint
+	 * @param description     The description of the blueprint
+	 * @param requestScopeOrg Whether the blueprint should be scoped to the
+	 *                        request's organization
+	 */
 	public VraNgBlueprint(String id, String name, String content, String description, Boolean requestScopeOrg) {
 		this.id = id;
 		this.name = name;
@@ -30,34 +60,58 @@ public class VraNgBlueprint implements Identifiable {
 		this.requestScopeOrg = requestScopeOrg;
 	}
 
+	/**
+	 * @return The id of the blueprint
+	 */
 	public String getId() {
 		return this.id;
 	}
 
+	/**
+	 * @param id The id of the blueprint
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return The name of the blueprint
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * @return The content of the blueprint
+	 */
 	public String getContent() {
 		return this.content;
 	}
 
+	/**
+	 * @param content The content of the blueprint
+	 */
 	public void setContent(String content) {
 		this.content = content;
 	}
 
+	/**
+	 * @return The description of the blueprint
+	 */
 	public String getDescription() {
 		return this.description;
 	}
 
+	/**
+	 * @return the requestScopeOrg
+	 */
 	public Boolean getRequestScopeOrg() {
 		return this.requestScopeOrg;
 	}
 
+	/**
+	 * @return if the object is equal to another object
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || !this.getClass().equals(obj.getClass())) {

@@ -46,13 +46,39 @@ import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
+/**
+ * Store for VRA NG entitlements.
+ */
 public class VraNgEntitlementStore extends AbstractVraNgStore {
+	/**
+	 * @param list of projects
+	 */
 	private List<VraNgProject> projects;
+	/**
+	 * @param configured project id
+	 */
 	private String configuredProjectId;
+	/**
+	 * @param content sources
+	 */
 	private Map<String, List<VraNgContentSourceBase>> contentSources;
+	/**
+	 * @param catalog items
+	 */
 	private Map<String, List<VraNgCatalogItem>> catalogItems;
+	/**
+	 * @param projects delimiter
+	 */
 	private static final String PROJECTS_DELIMITER = ",";
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param restClient             the rest client
+	 * @param vraNgPackage           the package
+	 * @param config                 the configuration
+	 * @param vraNgPackageDescriptor the package descriptor
+	 */
 	@Override
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor) {
@@ -61,21 +87,32 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		this.configuredProjectId = this.restClient.getProjectId();
 	}
 
+	/**
+	 * Export all entitlements from the server
+	 *
+	 * @return list of entitlements
+	 */
 	protected List<VraNgCatalogEntitlement> getAllServerContents() {
 		return this.restClient.getAllCatalogEntitlements();
 	}
 
+	/**
+	 * @param resId the id of the resource
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteCatalogEntitlement(resId);
 	}
 
+	/**
+	 * Import content from a source directory to Aria
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		this.importCatalogEntitlements(sourceDirectory);
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of entitlements
 	 */
@@ -164,6 +201,11 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Convert project id to project name.
+	 *
+	 * @param id the id of the project
+	 */
 	private String projectIdToName(String id) {
 		return this.projects
 				.stream()
@@ -173,6 +215,11 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 				.orElse(null);
 	}
 
+	/**
+	 * Convert project name to project id.
+	 *
+	 * @param name the name of the project
+	 */
 	private String projectNameToId(String name) {
 		return this.projects
 				.stream()
@@ -236,11 +283,11 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Deserialize YAML representation of a catalog entitlement
+	 * Deserialize YAML representation of a catalog entitlement.
 	 *
 	 * @param yamlFile source entitlement file
 	 * @return an entitlement representation
-	 * @throws FileNotFoundException
+	 * @throws RuntimeException
 	 */
 	private VraNgCatalogEntitlement readCatalogEntitlementFromYaml(File yamlFile) {
 		Yaml yaml = new Yaml();
@@ -269,6 +316,11 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Import a catalog entitlement.
+	 *
+	 * @param entitlement the entitlement to import
+	 */
 	private void importCatalogEntitlement(VraNgCatalogEntitlement entitlement) {
 		/*
 		 * Reconcile remote state using the following rules: 1. If an entitlement with
@@ -313,6 +365,11 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Import content source entitlement.
+	 *
+	 * @param entitlement the entitlement to import
+	 */
 	private void importContentSourceEntitlement(VraNgCatalogEntitlement entitlement) {
 		// fetch existing content sources
 
@@ -350,6 +407,11 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 
 	}
 
+	/**
+	 * Import catalog item entitlement.
+	 *
+	 * @param entitlement the entitlement to import
+	 */
 	private void importCatalogItemEntitlement(VraNgCatalogEntitlement entitlement) {
 		// fetch existing catalog items
 

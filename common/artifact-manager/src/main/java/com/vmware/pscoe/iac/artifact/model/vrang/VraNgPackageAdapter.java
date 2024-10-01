@@ -23,17 +23,23 @@ import java.nio.file.Paths;
 import com.vmware.pscoe.iac.artifact.model.Package;
 
 /**
- * An adapter used to extract information from a package
+ * An adapter used to extract information from a package.
  */
 public class VraNgPackageAdapter {
+	/**
+	 * @param pkg the package to adapt
+	 */
 	private Package pkg;
 
+	/**
+	 * @param pkg the package to adapt
+	 */
 	public VraNgPackageAdapter(final Package pkg) {
 		this.pkg = pkg;
 	}
 
 	/**
-	 * This will return a descriptor for the given package
+	 * This will return a descriptor for the given package.
 	 *
 	 * The descriptor class is used to extract what kind of data is stored in the
 	 * `content.yaml`

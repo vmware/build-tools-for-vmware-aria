@@ -74,10 +74,18 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		this.projects = this.restClient.getProjects();
 	}
 
+	/**
+	 * @return all subscriptions from the server
+	 */
 	protected List<VraNgSubscription> getAllServerContents() {
 		return this.restClient.getAllSubscriptions().values().stream().collect(Collectors.toList());
 	}
 
+	/**
+	 * Deletes the subscription by its id.
+	 *
+	 * @param resId - id of the subscription
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteSubscription(resId);
 	}

@@ -37,17 +37,19 @@ import java.util.Set;
 
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
 
+/**
+ * Utility class for regional content management.
+ */
 public class VraNgRegionalContentUtils {
 
+	/**
+	 * @param logger
+	 */
 	private static Logger logger = LoggerFactory.getLogger(VraNgRegionalContentUtils.class);
-
-	public void deleteContent() {
-		throw new RuntimeException("Not implemented");
-	}
 
 	/**
 	 * Create the cloud region profile file containing mapping for region tags and
-	 * region id
+	 * region id.
 	 * 
 	 * @param cloudAccount                 cloud account
 	 * @param regionId                     region id
@@ -106,7 +108,7 @@ public class VraNgRegionalContentUtils {
 	}
 
 	/**
-	 * Create a new JSON object containing only set of keys
+	 * Create a new JSON object containing only set of keys.
 	 * 
 	 * @param ob           original JSON object
 	 * @param keysToKeep   list of keys to keep

@@ -44,20 +44,62 @@ public class VraNgCatalogEntitlement implements Identifiable {
 	// "projectId": "string"
 	// }
 
+	/**
+	 * @param id - id of the entitlement
+	 */
 	private String id;
+
+	/**
+	 * @param name - name of the entitlement
+	 */
 	private String name;
+
+	/**
+	 * @param type - type of the entitlement
+	 */
 	private VraNgCatalogEntitlementType type;
+
+	/**
+	 * @param sourceType - source type of the entitlement
+	 */
 	private VraNgContentSourceType sourceType;
+
+	/**
+	 * @param sourceId - source id of the entitlement
+	 */
 	private String sourceId;
+
+	/**
+	 * @param iconId - iconId of the entitlement
+	 */
 	private String iconId;
+
+	/**
+	 * @param projects - the projects associated with the entitlement.
+	 */
 	private List<String> projects = new ArrayList<>();
 
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param name       - name of the entitlement
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
 	public VraNgCatalogEntitlement(String name, VraNgCatalogEntitlementType type, VraNgContentSourceType sourceType) {
 		this.name = name;
 		this.type = type;
 		this.sourceType = sourceType;
 	}
 
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param name       - name of the entitlement
+	 * @param projects   - the projects associated with the entitlement.
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
 	public VraNgCatalogEntitlement(String name, List<String> projects, VraNgCatalogEntitlementType type,
 			VraNgContentSourceType sourceType) {
 		this.name = name;
@@ -66,6 +108,15 @@ public class VraNgCatalogEntitlement implements Identifiable {
 		this.projects = projects;
 	}
 
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param id         - id of the entitlement
+	 * @param sourceId   - source id of the entitlement
+	 * @param name       - name of the entitlement
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
 	public VraNgCatalogEntitlement(String id, String sourceId, String name, VraNgCatalogEntitlementType type,
 			VraNgContentSourceType sourceType) {
 		this.id = id;
@@ -75,6 +126,16 @@ public class VraNgCatalogEntitlement implements Identifiable {
 		this.sourceType = sourceType;
 	}
 
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param id         - id of the entitlement
+	 * @param sourceId   - source id of the entitlement
+	 * @param name       - name of the entitlement
+	 * @param projects   - the projects associated with the entitlement.
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
 	public VraNgCatalogEntitlement(String id, String sourceId, String name, List<String> projects,
 			VraNgCatalogEntitlementType type,
 			VraNgContentSourceType sourceType) {
@@ -86,6 +147,9 @@ public class VraNgCatalogEntitlement implements Identifiable {
 		this.projects = projects;
 	}
 
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 */
 	public VraNgCatalogEntitlement() {
 	}
 

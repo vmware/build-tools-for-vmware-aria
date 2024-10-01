@@ -22,11 +22,14 @@ import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 
 public abstract class AbstractVraNgDeleteStore {
+	/**
+	 * @param logger
+	 */
 	protected Logger logger;
 
 	/**
 	 * This will delete all of the approvalPolicies that are present in the
-	 * `content.yaml`
+	 * `content.yaml`.
 	 *
 	 * If the policy does not exist on the server, then nothing will happen.
 	 * 
@@ -51,7 +54,7 @@ public abstract class AbstractVraNgDeleteStore {
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of items
 	 */

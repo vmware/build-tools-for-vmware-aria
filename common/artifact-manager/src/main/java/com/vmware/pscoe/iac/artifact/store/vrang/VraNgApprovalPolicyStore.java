@@ -36,6 +36,9 @@ import java.util.List;
 
 import java.util.Map;
 
+/**
+ * Store for Approval Policies.
+ */
 public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Suffix used for all of the resources saved by this store.
@@ -51,7 +54,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	private final Logger logger = LoggerFactory.getLogger(VraNgApprovalPolicyStore.class);
 
 	/**
-	 * Retrieves all approval policies from the server
+	 * Retrieves all approval policies from the server.
 	 *
 	 * Used for deletion
 	 *

@@ -53,7 +53,7 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Gets all the resource quotas from the server.
 	 *
-	 * @return {List} of the quotas
+	 * @return List of the quotas
 	 */
 	protected List<VraNgResourceQuotaPolicy> getAllServerContents() {
 		return this.restClient.getResourceQuotaPolicies();
@@ -61,6 +61,8 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 
 	/**
 	 * Deletes the resource quota policy by id.
+	 *
+	 * @param resId the id of the policy to delete.
 	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);

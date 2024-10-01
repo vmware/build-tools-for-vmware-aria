@@ -15,10 +15,8 @@
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudRegionProfile;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -35,10 +33,19 @@ import java.util.stream.Collectors;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_IMAGE_MAPPINGS;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
 
+/**
+ * Store for image mappings in vRA NG.
+ */
 public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
+	/**
+	 * @param logger
+	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgImageMappingStore.class);
 
+	/**
+	 * Unused as regional content needs refactoring.
+	 */
 	public void deleteContent() {
 		throw new RuntimeException("Not implemented");
 	}
@@ -48,7 +55,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	// =================================================
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of image mappings
 	 */
@@ -58,7 +65,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 *
 	 * @param cloudAccounts list of cloud accounts
 	 */
@@ -97,7 +104,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 *
 	 * @param cloudAccounts         list of cloud accounts
 	 * @param imageMappingsToExport list of image mappings
@@ -138,7 +145,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Save an image mapping to a JSON file
+	 * Save an image mapping to a JSON file.
 	 * 
 	 * @param sourceDir      source directory
 	 * @param profileDirName region directory
@@ -162,7 +169,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Create a new VraNgImageMapping with serializable payload
+	 * Create a new VraNgImageMapping with serializable payload.
 	 * 
 	 * @param mapping image mapping
 	 * @return new VraNgStorageProfile
@@ -224,7 +231,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Create a list of image mappings from JSON file representation
+	 * Create a list of image mappings from JSON file representation.
 	 * 
 	 * @param imageMappingsDir directory containing the image mappings for the
 	 *                         region

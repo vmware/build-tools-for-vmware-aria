@@ -122,10 +122,16 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 */
 	private final Map<String, ArrayList<VraNgCatalogItem>> itemsMap = new HashMap<String, ArrayList<VraNgCatalogItem>>();
 
+	/**
+	 * @return list of all the catalog items for a given project on the server
+	 */
 	protected List<VraNgCatalogItem> getAllServerContents() {
 		return this.restClient.getCatalogItemsForProject(this.restClient.getProjectId());
 	}
 
+	/**
+	 * @param resId is the resource id of the catalog item to delete
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteCatalogItem(resId);
 	}

@@ -30,21 +30,40 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegionMapping;
 
 import org.yaml.snakeyaml.Yaml;
 
+/**
+ * This class is responsible for managing the regional content in vRA NG.
+ */
 public class VraNgRegionalContentStore extends AbstractVraNgStore {
 
-	// Not implemented, because this needs refactoring
+	/**
+	 * Need refactoring, intentionally left empty.
+	 */
 	public void deleteContent() {
 	}
 
+	/**
+	 * Unused, it's for `deleteContent` method.
+	 */
 	@Override
 	protected <T extends Identifiable> List<T> getAllServerContents() {
 		return null;
 	}
 
+	/**
+	 * Unused, it's for `deleteContent` method.
+	 *
+	 * @param resId the id of the resource to delete
+	 */
 	@Override
 	protected void deleteResourceById(String resId) {
 	}
 
+	/**
+	 * Import region-specific content based on region mapping defined in the
+	 * package.
+	 *
+	 * @param sourceDirectory temporary directory containing the files
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		importRegionalContent(sourceDirectory);
@@ -52,7 +71,7 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 
 	/**
 	 * The regionalContent exports all flavor mapping, image mapping and storage
-	 * profile in partucular region
+	 * profile in partucular region.
 	 */
 	@Override
 	public void exportContent() {
@@ -65,7 +84,7 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Unused because the class overwrites directly exportContent
+	 * Unused because the class overwrites directly exportContent.
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -73,14 +92,16 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Unused because the class overwrites directly exportContent
+	 * Unused because the class overwrites directly exportContent.
 	 */
 	@Override
 	protected void exportStoreContent() {
 	}
 
 	/**
-	 * Unused because the class overwrites directly exportContent
+	 * Unused because the class overwrites directly exportContent.
+	 *
+	 * @param itemNames the list of items to export
 	 */
 	@Override
 	protected void exportStoreContent(List<String> itemNames) {
@@ -90,7 +111,7 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 	/**
 	 * Export region-specific content based on region mappings defined in the
 	 * package manifest. This includes: * flavor mappings * image mappings * storage
-	 * profiles
+	 * profiles.
 	 * 
 	 * @param regionMapping region mapping structure describing the regions
 	 *                      (cloud zones) that have related exportable
@@ -192,7 +213,5 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 		} catch (FileNotFoundException e) {
 			logger.info("content.yaml is not part of the package. Skipping import of regional content...");
 		}
-
 	}
-
 }

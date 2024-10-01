@@ -17,12 +17,9 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudRegionProfile;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -42,10 +39,19 @@ import java.util.stream.Collectors;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_FLAVOR_MAPPINGS;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
 
+/**
+ * Store for flavor mappings.
+ */
 public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore {
 
+	/**
+	 * @param logger
+	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgFlavorMappingStore.class);
 
+	/**
+	 * Unused as regional mapping needs refactoring.
+	 */
 	public void deleteContent() {
 		throw new RuntimeException("Not implemented");
 	}
@@ -55,7 +61,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore {
 	// =================================================
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of flavor mappings
 	 */
@@ -65,7 +71,9 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
+	 *
+	 * @param cloudAccounts list of cloud accounts
 	 */
 	@Override
 	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts) {
@@ -99,7 +107,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 *
 	 * @param cloudAccounts          list of cloud accounts
 	 * @param flavorMappingsToExport list of flavor mappings
@@ -138,7 +146,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Save a flavor mapping to a JSON file
+	 * Save a flavor mapping to a JSON file.
 	 * 
 	 * @param sourceDir      source directory
 	 * @param profileDirName region directory

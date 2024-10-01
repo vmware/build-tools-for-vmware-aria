@@ -16,11 +16,16 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  */
 
 /**
- * Interface that makes a Aria automation resource identifiable via getName and
- * getId
+ * Interface that makes a Aria automation resource identifiable.
  */
 public interface Identifiable {
+	/**
+	 * @return the name of the resource
+	 */
 	String getName();
 
+	/**
+	 * @return the id of the resource
+	 */
 	String getId();
 }
