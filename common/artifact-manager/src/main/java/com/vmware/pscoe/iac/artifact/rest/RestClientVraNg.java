@@ -152,7 +152,11 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteBlueprint(final String bpId) {
 		try {
-			deleteBlueprintPrimitive(bpId);
+			ResponseEntity<String> res = deleteBlueprintPrimitive(bpId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete blueprint with id '{}'", bpId);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not delete Blueprint with id '%s'.", bpId));
 		}
@@ -348,7 +352,11 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	public void deleteSubscription(final String subscriptionId) {
 		try {
-			deleteSubscriptionPrimitive(subscriptionId);
+			ResponseEntity<String> res = deleteSubscriptionPrimitive(subscriptionId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete subscription with id '{}'", subscriptionId);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not delete Subscription with id '%s'.", subscriptionId), e);
 		}
@@ -727,6 +735,19 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
+	public void deleteCatalogItem(final String catalogItemId) {
+		try {
+			ResponseEntity<String> res = this.deleteCatalogItemPrimitive(catalogItemId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete catalog item with id '{}'", catalogItemId);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting catalog item '{}': {}", catalogItemId, e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * getPropertyGroups.
 	 *
@@ -743,7 +764,11 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	public void deletePropertyGroup(final String propertyGroupId) {
 		try {
-			this.deletePropertyGroupPrimitive(propertyGroupId);
+			ResponseEntity<String> res = this.deletePropertyGroupPrimitive(propertyGroupId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete property group with id '{}'", propertyGroupId);
+			}
 		} catch (Exception e) {
 			logger.error("Error deleting property group '{}': {}", propertyGroupId, e.getMessage());
 			throw new RuntimeException(e);
@@ -1007,7 +1032,11 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	public void deleteCatalogEntitlement(final String entitlementId) {
 		try {
-			this.deleteCatalogEntitlementPrimitive(entitlementId);
+			ResponseEntity<String> res = this.deleteCatalogEntitlementPrimitive(entitlementId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete catalog entitlement with id '{}'", entitlementId);
+			}
 		} catch (Exception e) {
 			logger.error("Error deleting catalog entitlement '{}': {}", entitlementId, e.getMessage());
 			throw new RuntimeException(e);
@@ -1131,9 +1160,11 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteCustomResource(final String customResourceName, final String customResourceId) {
 		try {
-			deleteCustomResourcePrimitive(customResourceId);
-		} catch (HttpClientErrorException httpClientErrorException) {
-			throw httpClientErrorException;
+			ResponseEntity<String> res = deleteCustomResourcePrimitive(customResourceId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete custom resource with id '{}'", customResourceId);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not delete custom resource with name '%s' (id:%s).",
 					customResourceName, customResourceId), e);
@@ -1183,7 +1214,11 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteResourceAction(final String resourceActionName, final String resourceActionId) {
 		try {
-			deleteResourceActionPrimitive(resourceActionId);
+			ResponseEntity<String> res = deleteResourceActionPrimitive(resourceActionId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete resource action with id '{}'", resourceActionId);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not delete resource action with name '%s' and id '%s'.",
 					resourceActionName, resourceActionId), e);
@@ -1307,7 +1342,12 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	public void deletePolicy(final String policyId) {
 		try {
-			deletePolicyPrimitive(policyId);
+			logger.info("Deleting policy with id '{}'", policyId);
+			ResponseEntity<String> res = deletePolicyPrimitive(policyId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Error deleting policy with id '{}'. Response: {}", policyId, res);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not delete policy with id '%s'.", policyId), e);
 		}
