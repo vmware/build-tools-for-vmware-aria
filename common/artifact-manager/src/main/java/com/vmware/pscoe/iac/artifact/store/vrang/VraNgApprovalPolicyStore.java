@@ -64,7 +64,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Deletes an approval policy by id.
 	 *
-	 * @param {String} resId - the approval policy id
+	 * @param resId - the approval policy id
 	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);

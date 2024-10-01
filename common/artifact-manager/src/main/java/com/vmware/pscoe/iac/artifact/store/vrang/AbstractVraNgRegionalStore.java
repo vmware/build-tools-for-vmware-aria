@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
  * itmes are exported
  * When nothing (null) is given, all items from the store are exported
  *
- * @TODO: should "extends AbstractVraNgDeleteStore", but not doing it now since
- *        regional content is being refactored soon (hopefully)
+ * TODO: should "extends AbstractVraNgDeleteStore", but not doing it now since
+ * regional content is being refactored soon (hopefully)
  */
 public abstract class AbstractVraNgRegionalStore {
 	protected RestClientVraNg restClient;

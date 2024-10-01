@@ -944,6 +944,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Deletes a catalog item by id.
+	 *
+	 * @param catalogItemId catalogItemId
 	 */
 	protected ResponseEntity<String> deleteCatalogItemPrimitive(final String catalogItemId) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId).build();
@@ -1016,6 +1018,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Deletes a sub
+	 *
+	 * @param subscriptionId subscriptionId
 	 */
 	protected ResponseEntity<String> deleteSubscriptionPrimitive(final String subscriptionId)
 			throws URISyntaxException {
@@ -1408,6 +1412,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Deletes a catalog entitlement
+	 *
+	 * @param entitlementId entitlementId
 	 */
 	protected ResponseEntity<String> deleteCatalogEntitlementPrimitive(final String entitlementId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS + "/" + entitlementId));
@@ -2146,7 +2152,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Deletes a PG
 	 *
-	 * @param {String} pgId - the PG ID
+	 * @param pgId - the PG ID
 	 * @throws URISyntaxException in case of erros while forming the URI
 	 */
 	protected ResponseEntity<String> deletePropertyGroupPrimitive(String pgId) throws URISyntaxException {
@@ -3373,7 +3379,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Delete a policy by id
+	 * Delete a policy by id.
+	 *
+	 * @param policyId policy id
 	 */
 	protected ResponseEntity<String> deletePolicyPrimitive(String policyId) {
 		if (isVraAbove810) {

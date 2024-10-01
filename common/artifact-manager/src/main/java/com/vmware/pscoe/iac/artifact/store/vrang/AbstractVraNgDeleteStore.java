@@ -30,7 +30,7 @@ public abstract class AbstractVraNgDeleteStore {
 	 *
 	 * If the policy does not exist on the server, then nothing will happen.
 	 * 
-	 * @TODO: Make it so no definition means delete everything if a flag is set
+	 * TODO: Make it so no definition means delete everything if a flag is set
 	 */
 	public void deleteContent() {
 		Logger logger = LoggerFactory.getLogger(this.getClass());

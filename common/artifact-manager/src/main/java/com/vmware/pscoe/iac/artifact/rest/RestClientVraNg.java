@@ -152,6 +152,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteBlueprint(final String bpId) {
 		try {
+			logger.info("Deleting blueprint with id '{}'", bpId);
 			ResponseEntity<String> res = deleteBlueprintPrimitive(bpId);
 
 			if (!res.getStatusCode().is2xxSuccessful()) {
@@ -350,8 +351,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE'");
 	}
 
+	/**
+	 * Deletes a subscription.
+	 *
+	 * @param subscriptionId subscription id
+	 */
 	public void deleteSubscription(final String subscriptionId) {
 		try {
+			logger.info("Deleting subscription with id '{}'", subscriptionId);
 			ResponseEntity<String> res = deleteSubscriptionPrimitive(subscriptionId);
 
 			if (!res.getStatusCode().is2xxSuccessful()) {
@@ -735,8 +742,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
+	/**
+	 * Deletes a catalog item.
+	 *
+	 * @param catalogItemId catalog item id
+	 */
 	public void deleteCatalogItem(final String catalogItemId) {
 		try {
+			logger.info("Deleting catalog item with id '{}'", catalogItemId);
 			ResponseEntity<String> res = this.deleteCatalogItemPrimitive(catalogItemId);
 
 			if (!res.getStatusCode().is2xxSuccessful()) {
@@ -762,8 +775,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
+	/**
+	 * Deletes a property group.
+	 *
+	 * @param propertyGroupId property group id
+	 */
 	public void deletePropertyGroup(final String propertyGroupId) {
 		try {
+			logger.info("Deleting property group with id '{}'", propertyGroupId);
 			ResponseEntity<String> res = this.deletePropertyGroupPrimitive(propertyGroupId);
 
 			if (!res.getStatusCode().is2xxSuccessful()) {
@@ -1030,8 +1049,14 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
+	/**
+	 * Deletes a catalog entitlement.
+	 *
+	 * @param entitlementId catalog entitlement id
+	 */
 	public void deleteCatalogEntitlement(final String entitlementId) {
 		try {
+			logger.info("Deleting catalog entitlement with id '{}'", entitlementId);
 			ResponseEntity<String> res = this.deleteCatalogEntitlementPrimitive(entitlementId);
 
 			if (!res.getStatusCode().is2xxSuccessful()) {
@@ -1160,6 +1185,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteCustomResource(final String customResourceName, final String customResourceId) {
 		try {
+			logger.info("Deleting custom resource with id '{}'", customResourceId);
 			ResponseEntity<String> res = deleteCustomResourcePrimitive(customResourceId);
 
 			if (!res.getStatusCode().is2xxSuccessful()) {
@@ -1214,6 +1240,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteResourceAction(final String resourceActionName, final String resourceActionId) {
 		try {
+			logger.info("Deleting resource action with id '{}'", resourceActionId);
 			ResponseEntity<String> res = deleteResourceActionPrimitive(resourceActionId);
 
 			if (!res.getStatusCode().is2xxSuccessful()) {
@@ -1340,6 +1367,11 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	// POLICIES
 	// =================================================
 
+	/**
+	 * Delete policy.
+	 *
+	 * @param policyId policy id
+	 */
 	public void deletePolicy(final String policyId) {
 		try {
 			logger.info("Deleting policy with id '{}'", policyId);

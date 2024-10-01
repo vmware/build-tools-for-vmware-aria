@@ -99,7 +99,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	 * NOTE: The `deleteCustomResource` asks for both the name and the id, however
 	 * the name is used only for logging
 	 *
-	 * @param {String} resId - The resource ID to delete
+	 * @param resId - The resource ID to delete
 	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteCustomResource(resId, resId);
