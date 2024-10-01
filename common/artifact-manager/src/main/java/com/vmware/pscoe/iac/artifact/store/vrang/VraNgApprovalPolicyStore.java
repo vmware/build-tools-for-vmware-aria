@@ -50,10 +50,22 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgApprovalPolicyStore.class);
 
+	/**
+	 * Retrieves all approval policies from the server
+	 *
+	 * Used for deletion
+	 *
+	 * @return A List of approval policies
+	 */
 	protected List<VraNgApprovalPolicy> getAllServerContents() {
 		return this.restClient.getApprovalPolicies();
 	}
 
+	/**
+	 * Deletes an approval policy by id.
+	 *
+	 * @param {String} resId - the approval policy id
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
@@ -143,10 +155,8 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			logger.debug("Descriptor policy is null");
 			return null;
 		} else {
-			logger.debug("Found items {}", this.vraNgPackageDescriptor.getPolicy().getApproval());
 			return this.vraNgPackageDescriptor.getPolicy().getApproval();
 		}
 	}

@@ -50,10 +50,20 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgDeploymentLimitPolicyStore.class);
 
+	/**
+	 * Get all the deployment limit policies from the server.
+	 *
+	 * @return list of all deployment limit policies.
+	 */
 	protected List<VraNgDeploymentLimitPolicy> getAllServerContents() {
 		return this.restClient.getDeploymentLimitPolicies();
 	}
 
+	/**
+	 * Delete a deployment limit policy by its id.
+	 *
+	 * @param resId the id of the policy to delete.
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
@@ -139,10 +149,8 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit());
 			return this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit();
 		}
 	}

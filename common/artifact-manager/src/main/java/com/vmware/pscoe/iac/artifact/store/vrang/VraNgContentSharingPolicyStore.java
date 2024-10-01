@@ -63,10 +63,20 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgContentSharingPolicyStore.class);
 
+	/**
+	 * Get all the content sharing policies from the server.
+	 *
+	 * @return list of content sharing policies.
+	 */
 	protected List<VraNgContentSharingPolicy> getAllServerContents() {
 		return this.restClient.getContentSharingPolicies();
 	}
 
+	/**
+	 * Delete the content sharing policy by id.
+	 *
+	 * @param resId the id of the policy to delete.
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
@@ -120,10 +130,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			logger.debug("Descriptor policy is null");
 			return null;
 		} else {
-			logger.debug("Found items {}", this.vraNgPackageDescriptor.getPolicy().getContentSharing());
 			return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
 		}
 	}

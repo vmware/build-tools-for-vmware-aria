@@ -64,10 +64,20 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 */
 	private static final String BP_CONTENT_FILE_NAME = "content.yaml";
 
+	/**
+	 * Gets all blueprints on the server.
+	 *
+	 * Used during deletion.
+	 *
+	 * @return {List} of all blueprints
+	 */
 	protected List<VraNgBlueprint> getAllServerContents() {
 		return this.restClient.getAllBlueprints();
 	}
 
+	/**
+	 * Deletes a Blueprint By ID
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deleteBlueprint(resId);
 	}

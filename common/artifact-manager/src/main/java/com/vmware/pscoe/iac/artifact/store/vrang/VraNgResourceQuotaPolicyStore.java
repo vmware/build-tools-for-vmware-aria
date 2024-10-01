@@ -50,10 +50,18 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgResourceQuotaPolicyStore.class);
 
+	/**
+	 * Gets all the resource quotas from the server.
+	 *
+	 * @return {List} of the quotas
+	 */
 	protected List<VraNgResourceQuotaPolicy> getAllServerContents() {
 		return this.restClient.getResourceQuotaPolicies();
 	}
 
+	/**
+	 * Deletes the resource quota policy by id.
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
@@ -159,10 +167,8 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	@Override
 	protected List<String> getItemListFromDescriptor() {
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getResourceQuota());
 			return this.vraNgPackageDescriptor.getPolicy().getResourceQuota();
 		}
 	}

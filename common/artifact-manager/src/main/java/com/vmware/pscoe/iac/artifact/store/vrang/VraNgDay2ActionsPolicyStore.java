@@ -49,10 +49,20 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgDay2ActionsPolicyStore.class);
 
+	/**
+	 * Get all day 2 actions policies from the server.
+	 *
+	 * @return list of day 2 actions policies
+	 */
 	protected List<VraNgDay2ActionsPolicy> getAllServerContents() {
 		return this.restClient.getDay2ActionsPolicies();
 	}
 
+	/**
+	 * Delete a day 2 actions policy by id.
+	 *
+	 * @param resId the id of the day 2 actions policy to delete
+	 */
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
@@ -138,12 +148,9 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
-
 		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			logger.info("Descriptor policy is null");
 			return null;
 		} else {
-			logger.info("Found items {}", this.vraNgPackageDescriptor.getPolicy().getDay2Actions());
 			return this.vraNgPackageDescriptor.getPolicy().getDay2Actions();
 		}
 	}
