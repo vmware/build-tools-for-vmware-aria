@@ -14,10 +14,22 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeExclude;
+
 /**
- * Represents a VRA NG Blueprint
+ * Represents a VRA NG Blueprint.
  */
 public class VraNgBlueprint implements Identifiable {
+	/**
+	 * @param Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
+	/**
+	 * @param Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
+
 	/**
 	 * @param id The id of the blueprint
 	 */
@@ -120,5 +132,22 @@ public class VraNgBlueprint implements Identifiable {
 
 		VraNgBlueprint other = (VraNgBlueprint) obj;
 		return this.id.equals(other.getId());
+	}
+
+	/**
+	 * Using `id` should be enough here, as `id`s in Aria are unique. Adding more
+	 * details for extra uniquieness.
+	 *
+	 * @return the hashcode numerical repesentation of the object
+	 */
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder()
+				.append(id)
+				.append(name)
+				.append(content)
+				.append(description)
+				.append(requestScopeOrg)
+				.toHashCode();
 	}
 }
