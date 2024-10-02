@@ -56,7 +56,7 @@ export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionTyp
 	}
 
 	if (runtime === ActionRuntime.ABX_POWERSHELL) {
-		return isAbx ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_13_PS_74;
+		return isAbx ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_11_PS_62;
 	}
 
 	if (runtime === ActionRuntime.ABX_PYTHON) {

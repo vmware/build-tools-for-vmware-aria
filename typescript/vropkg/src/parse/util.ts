@@ -124,7 +124,7 @@ export function getScriptRuntime(runtime: string): t.VroScriptRuntime {
 	switch (lang) {
 		case t.Lang.javascript: defaultVersion = ""; break;
 		case t.Lang.node: defaultVersion = "12"; break;
-		case t.Lang.powercli: defaultVersion = "13-powershell-7.4"; break;
+		case t.Lang.powercli: defaultVersion = "11-powershell-6.2"; break;
 		case t.Lang.python: defaultVersion = "3.7"; break;
 		default: throw new Error(`Unsupported runtime language "${langString}". Only supported languages are "javascript", "node", "powercli" and "python".`);
 	};
