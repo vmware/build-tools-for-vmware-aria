@@ -142,7 +142,7 @@ public class VraNgBlueprint implements Identifiable {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder()
+		return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
 				.append(id)
 				.append(name)
 				.append(content)

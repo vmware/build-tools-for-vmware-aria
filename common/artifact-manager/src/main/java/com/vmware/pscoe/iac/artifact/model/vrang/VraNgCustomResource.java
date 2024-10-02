@@ -14,10 +14,22 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
- * This class represents a custom resource in vRA NG
+ * This class represents a custom resource in vRA NG.
  */
 public class VraNgCustomResource implements Identifiable {
+	/**
+	 * @param Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
+
+	/**
+	 * @param Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
+
 	/**
 	 * @param id the id of the custom resource
 	 */
@@ -69,7 +81,7 @@ public class VraNgCustomResource implements Identifiable {
 
 	/**
 	 * @param obj the object to compare
-	 * @return - if the custom resource is equal to another object
+	 * @return a flag if the custom resource is equal to another object
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -81,4 +93,15 @@ public class VraNgCustomResource implements Identifiable {
 		return this.id.equals(other.getId());
 	}
 
+	/**
+	 * @return the hash code of the custom resource
+	 */
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
+				.append(id)
+				.append(name)
+				.append(json)
+				.toHashCode();
+	}
 }
