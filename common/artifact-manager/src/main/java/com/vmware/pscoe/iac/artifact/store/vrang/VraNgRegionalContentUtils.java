@@ -40,7 +40,12 @@ import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
 /**
  * Utility class for regional content management.
  */
-public class VraNgRegionalContentUtils {
+public final class VraNgRegionalContentUtils {
+	/**
+	 * Private constructor to prevent instantiation as this is a utility class.
+	 */
+	private VraNgRegionalContentUtils() {
+	}
 
 	/**
 	 * @param logger
@@ -100,6 +105,13 @@ public class VraNgRegionalContentUtils {
 		return !intersection.isEmpty();
 	}
 
+	/**
+	 * Get cloud region profile from the directory.
+	 * 
+	 * @param cloudRegionProfileDir directory containing the cloud region profile
+	 * @return cloud region profile
+	 * @throws IOException if the file cannot be read
+	 */
 	public static VraNgCloudRegionProfile getCloudRegionProfile(File cloudRegionProfileDir) throws IOException {
 		File regionProfile = Paths.get(cloudRegionProfileDir.getPath(), "src-region-profile.json").toFile();
 		String regionProfileContent = FileUtils.readFileToString(regionProfile, "UTF-8");

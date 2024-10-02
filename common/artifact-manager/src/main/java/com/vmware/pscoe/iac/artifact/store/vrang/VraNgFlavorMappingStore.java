@@ -215,7 +215,7 @@ public class VraNgFlavorMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Create a list of flavor mappings from JSON file representation
+	 * Create a list of flavor mappings from JSON file representation.
 	 * 
 	 * @param flavorMappingsDir directory containing the flavor mappings for the
 	 *                          region

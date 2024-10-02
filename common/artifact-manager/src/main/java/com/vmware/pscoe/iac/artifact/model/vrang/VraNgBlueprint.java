@@ -15,7 +15,6 @@
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 /**
  * Represents a VRA NG Blueprint.

@@ -37,6 +37,12 @@ import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
  * Storage profile store.
  */
 public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
+
+	/**
+	 * Index representing the position of the fabric in the storage profile.
+	 */
+	private final int FABRIC_INDEX = 3;
+
 	/**
 	 * @param logger
 	 */
@@ -136,10 +142,25 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Profile type enumeration.
+	 * Enum representing different types of storage profiles.
 	 */
 	enum ProfileType {
-		VSPHERE, AZURE, AWS, UNKNOWN
+		/**
+		 * VSPHERE profile type.
+		 */
+		VSPHERE,
+		/**
+		 * Azure profile type.
+		 */
+		AZURE,
+		/**
+		 * AWS profile type.
+		 */
+		AWS,
+		/**
+		 * Unknown profile type.
+		 */
+		UNKNOWN
 	}
 
 	/**
@@ -173,7 +194,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	 * A specific storage profile is a cloud account-specific profile
 	 * representation.
 	 * 
-	 * @param profile storage profile
+	 * @param profile      storage profile
+	 * @param cloudAccount cloud account
 	 * @return storage profile
 	 */
 	private VraNgStorageProfile convertToSpecificProfile(VraNgStorageProfile profile, VraNgCloudAccount cloudAccount) {
@@ -217,7 +239,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 							.get("href").getAsString();
 					String datastoreName = this.restClient.getFabricEntityName(datastoreHref);
 					datastore.put("name", datastoreName);
-					datastore.put("fabric", datastoreHref.split("/")[3]);
+					datastore.put("fabric", datastoreHref.split("/")[FABRIC_INDEX]);
 					cleanOb.add("_datastore", gson.toJsonTree(datastore));
 				}
 
@@ -229,7 +251,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 							.get("href").getAsString();
 					String storagePolicyName = this.restClient.getFabricEntityName(storagePolicyHref);
 					storagePolicy.put("name", storagePolicyName);
-					storagePolicy.put("fabric", storagePolicyHref.split("/")[3]);
+					storagePolicy.put("fabric", storagePolicyHref.split("/")[FABRIC_INDEX]);
 					cleanOb.add("_storagePolicy", gson.toJsonTree(storagePolicy));
 				}
 				break;
@@ -238,6 +260,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 			case AWS:
 			case AZURE:
 			case UNKNOWN:
+			default:
 				logger.warn("Unsupported storage profile type '{}'", profileType);
 				break;
 		}
@@ -351,7 +374,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Create a list of storage profiles from JSON file representation
+	 * Create a list of storage profiles from JSON file representation.
 	 * 
 	 * @param storageProfilesDir directory containing the image mappings for the
 	 *                           region
@@ -374,7 +397,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Extract profile id
+	 * Extract profile id.
 	 * 
 	 * @param profile storage profile
 	 * @return id
@@ -447,6 +470,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 			case AWS:
 			case AZURE:
 			case UNKNOWN:
+			default:
 				logger.warn("Unsupported storage profile type '{}'", profileType);
 				break;
 		}
@@ -464,7 +488,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	// =================================================
 
 	/**
-	 * Resolve fabric entity id from JSON object
+	 * Resolve fabric entity id from JSON object.
 	 * 
 	 * @param ob JSON object
 	 * @return id
@@ -478,7 +502,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Determine profile type from storage profile
+	 * Determine profile type from storage profile.
 	 * 
 	 * @param profile storage profile
 	 * @return profile type
@@ -501,7 +525,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Determine profile type from cloud account
+	 * Determine profile type from cloud account.
 	 * 
 	 * @param cloudAccount cloud account
 	 * @return profile type
@@ -520,7 +544,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Determine profile type from cloud region
+	 * Determine profile type from cloud region.
 	 * 
 	 * @param cloudRegion cloud region
 	 * @return profile type

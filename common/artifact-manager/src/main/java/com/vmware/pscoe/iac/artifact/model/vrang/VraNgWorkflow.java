@@ -38,31 +38,31 @@ public class VraNgWorkflow implements Serializable, Identifiable {
 	private static final long serialVersionUID = 2298605860128696224L;
 
 	/**
-	 * @param id default id
+	 * default id.
 	 */
 	@JsonProperty("id")
 	private String id;
 
 	/**
-	 * @param name default name
+	 * default name.
 	 */
 	@JsonProperty("name")
 	private String name;
 
 	/**
-	 * @param version default version
+	 * default version.
 	 */
 	@JsonProperty("version")
 	private String version;
 
 	/**
-	 * @param integration default integration
+	 * default integration.
 	 */
 	@JsonProperty("integration")
 	private VraNgIntegration integration;
 
 	/**
-	 * @param additionalProperties default additionalProperties
+	 * default additionalProperties.
 	 */
 	@JsonIgnore
 	private transient Map<String, Object> additionalProperties = new HashMap<>();
@@ -140,7 +140,8 @@ public class VraNgWorkflow implements Serializable, Identifiable {
 	}
 
 	/**
-	 * @param additionalProperties the additionalProperties to set
+	 * @param name  the name
+	 * @param value the value
 	 */
 	@JsonAnySetter
 	public void setAdditionalProperty(String name, Object value) {

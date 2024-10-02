@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
 import java.io.File;
 
 /**
- * Interface for VRA NG Store
+ * Interface for VRA NG Store.
  */
 public interface IVraNgStore {
 	/**
@@ -28,12 +28,12 @@ public interface IVraNgStore {
 	void importContent(File sourceDirectory);
 
 	/**
-	 * Export content to `src/...`
+	 * Export content to `src/...`.
 	 */
 	void exportContent();
 
 	/**
-	 * Delete content from the server based on the `content.yaml`
+	 * Delete content from the server based on the `content.yaml`.
 	 */
 	void deleteContent();
 }

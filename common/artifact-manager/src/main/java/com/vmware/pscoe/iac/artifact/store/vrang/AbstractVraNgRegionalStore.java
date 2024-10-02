@@ -38,19 +38,19 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractVraNgRegionalStore {
 	/**
-	 * @param restClient
+	 * the restClient.
 	 */
 	protected RestClientVraNg restClient;
 	/**
-	 * @param vraNgPackage
+	 * the vraNgPackage.
 	 */
 	protected Package vraNgPackage;
 	/**
-	 * @param vraNgPackageDescriptor
+	 * the vraNgPackageDescriptor.
 	 */
 	protected VraNgPackageDescriptor vraNgPackageDescriptor;
 	/**
-	 * @param logger
+	 * the logger.
 	 */
 	protected Logger logger;
 

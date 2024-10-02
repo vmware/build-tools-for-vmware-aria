@@ -167,6 +167,7 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	 * Checks for duplicate workflows in the given content sources.
 	 *
 	 * @param contentSources - Content sources to check
+	 * @return the content sources
 	 */
 	private List<VraNgContentSourceBase> validateNoDuplicateWf(List<VraNgContentSourceBase> contentSources) {
 		for (VraNgContentSourceBase contentSource : contentSources) {
@@ -371,7 +372,7 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	 *
 	 * @param type  - Type to filter by
 	 * @param clazz - Class to cast to
-	 *
+	 * @param <T>   - Type to cast to
 	 * @return Stream<T>
 	 */
 	private <T> Stream<T> getExistingSourcesFilteredByType(VraNgContentSourceType type, Class<T> clazz) {

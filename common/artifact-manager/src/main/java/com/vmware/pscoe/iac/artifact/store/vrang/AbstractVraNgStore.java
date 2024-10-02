@@ -31,7 +31,8 @@ import java.io.FilenameFilter;
 import java.util.List;
 
 /**
- * Abstract class that unify the way the content is exported for all subclasses
+ * Abstract class that unify the way the content is exported for all subclasses.
+ *
  * When no item ([]) is given, nothing is exported
  * When a list of specific items ([item1, item2]) are given, only the given
  * items are exported
@@ -39,24 +40,24 @@ import java.util.List;
  */
 public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implements IVraNgStore {
 	/**
-	 * @param restClient
+	 * the restClient.
 	 */
 	protected RestClientVraNg restClient;
 	/**
-	 * @param vraNgPackage
+	 * the vraNgPackage.
 	 */
 	protected Package vraNgPackage;
 	// initialize the vraNgPackageDescriptor to avoid NPE
 	/**
-	 * @param vraNgPackageDescriptor
+	 * vraNgPackageDescriptor the vraNgPackageDescriptor.
 	 */
 	protected VraNgPackageDescriptor vraNgPackageDescriptor = new VraNgPackageDescriptor();
 	/**
-	 * @param config
+	 * the config.
 	 */
 	protected ConfigurationVraNg config;
 	/**
-	 * @param logger
+	 * the logger.
 	 */
 	protected Logger logger;
 

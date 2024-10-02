@@ -19,7 +19,6 @@ import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementT
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_ENTITLEMENTS;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -88,7 +87,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Export all entitlements from the server
+	 * Export all entitlements from the server.
 	 *
 	 * @return list of entitlements
 	 */
@@ -104,7 +103,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Import content from a source directory to Aria
+	 * Import content from a source directory to Aria.
 	 */
 	@Override
 	public void importContent(File sourceDirectory) {
@@ -205,6 +204,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	 * Convert project id to project name.
 	 *
 	 * @param id the id of the project
+	 * @return the name of the project
 	 */
 	private String projectIdToName(String id) {
 		return this.projects
@@ -219,6 +219,7 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 	 * Convert project name to project id.
 	 *
 	 * @param name the name of the project
+	 * @return the id of the project
 	 */
 	private String projectNameToId(String name) {
 		return this.projects
@@ -305,12 +306,12 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 			VraNgContentSourceType sourceType = VraNgContentSourceType
 					.fromString(yamlContent.getOrDefault("sourceType", "").toString());
 			// project name takes precedence over project id
-			List<String> projects = StringUtils.isNotEmpty(projectName)
+			List<String> filteredProjects = StringUtils.isNotEmpty(projectName)
 					? Arrays.stream(projectName.split(",")).map(this::projectNameToId).filter(prjId -> prjId != null)
 							.collect(Collectors.toList())
 					: Arrays.asList(projectId.split(PROJECTS_DELIMITER));
 
-			return new VraNgCatalogEntitlement(id, null, name, projects, entitlementType, sourceType);
+			return new VraNgCatalogEntitlement(id, null, name, filteredProjects, entitlementType, sourceType);
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading entitlement files", e);
 		}

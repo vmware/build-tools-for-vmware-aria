@@ -26,24 +26,25 @@ import java.util.List;
  * set of catalog items, or entire catalog sources to be visible within the
  * scope of one or more project, thus enabling users that belong to the project
  * to be able to request those catalog items.
+ *
+ * Example:
+ *
+ * {
+ * "definition": {
+ * "description": "string",
+ * "iconId": "string",
+ * "id": "string",
+ * "name": "string",
+ * "numItems": 0,
+ * "sourceName": "string",
+ * "sourceType": "string",
+ * "type": "string"
+ * },
+ * "id": "string",
+ * "projectId": "string"
+ * }
  */
 public class VraNgCatalogEntitlement implements Identifiable {
-
-	// {
-	// "definition": {
-	// "description": "string",
-	// "iconId": "string",
-	// "id": "string",
-	// "name": "string",
-	// "numItems": 0,
-	// "sourceName": "string",
-	// "sourceType": "string",
-	// "type": "string"
-	// },
-	// "id": "string",
-	// "projectId": "string"
-	// }
-
 	/**
 	 * @param id - id of the entitlement
 	 */
@@ -238,6 +239,9 @@ public class VraNgCatalogEntitlement implements Identifiable {
 		return this.sourceType;
 	}
 
+	/**
+	 * @param sourceType is the source type to set
+	 */
 	public void setSourceType(VraNgContentSourceType sourceType) {
 		this.sourceType = sourceType;
 	}
@@ -256,10 +260,10 @@ public class VraNgCatalogEntitlement implements Identifiable {
 	 * Set source id of the entitlement. This is used when a new entitlement is
 	 * being created.
 	 * 
-	 * @param id source id
+	 * @param sourceId source id
 	 */
-	public void setSourceId(String id) {
-		this.sourceId = id;
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
 	}
 
 	/**

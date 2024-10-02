@@ -20,56 +20,56 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Base class for all content sources
+ * Base class for all content sources.
  */
 public class VraNgContentSourceBase implements Identifiable {
 
-	@JsonProperty("id")
 	/**
-	 * @param id the id to set
+	 * the id to set.
 	 */
+	@JsonProperty("id")
 	protected String id;
 
-	@JsonProperty("name")
 	/**
-	 * @param name the name to set
+	 * the name to set.
 	 */
+	@JsonProperty("name")
 	protected String name;
 
-	@JsonProperty("description")
 	/**
-	 * @param description the description to set
+	 * the description to set.
 	 */
+	@JsonProperty("description")
 	protected String description;
 
-	@JsonProperty("typeId")
 	/**
-	 * @param typeId the typeId to set
+	 * the typeId to set.
 	 */
+	@JsonProperty("typeId")
 	protected String typeId;
 
-	@JsonProperty("itemsImported")
 	/**
-	 * @param itemsImported the itemsImported to set
+	 * the itemsImported to set.
 	 */
+	@JsonProperty("itemsImported")
 	protected int itemsImported;
 
-	@JsonProperty("itemsFound")
 	/**
-	 * @param itemsFound the itemsFound to set
+	 * the itemsFound to set.
 	 */
+	@JsonProperty("itemsFound")
 	protected int itemsFound;
 
-	@JsonProperty("lastImportErrors")
 	/**
-	 * @param lastImportErrors the lastImportErrors to set
+	 * the lastImportErrors to set.
 	 */
+	@JsonProperty("lastImportErrors")
 	protected transient List<String> lastImportErrors = new ArrayList<>();
 
-	@JsonProperty("global")
 	/**
-	 * @param global the global to set
+	 * the global to set.
 	 */
+	@JsonProperty("global")
 	protected boolean global;
 
 	/**
@@ -156,10 +156,10 @@ public class VraNgContentSourceBase implements Identifiable {
 		this.lastImportErrors = lastImportErrors;
 	}
 
-	@JsonIgnore
 	/**
 	 * @return the type
 	 */
+	@JsonIgnore
 	public VraNgContentSourceType getType() {
 		return VraNgContentSourceType.fromString(this.typeId);
 	}
