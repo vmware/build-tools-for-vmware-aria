@@ -26,6 +26,16 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add new Powershell and PowerCLI runtime options*
+
+The following have been added:
+
+```
+- `powercli:12-powershell-7.4`
+- `powercli:13-powershell-7.4`
+- `powershell:7.4`
+```
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
