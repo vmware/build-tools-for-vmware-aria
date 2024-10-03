@@ -30,7 +30,7 @@
 
 The following have been added:
 
-```
+```text
 - `powercli:12-powershell-7.4`
 - `powercli:13-powershell-7.4`
 - `powershell:7.4`
