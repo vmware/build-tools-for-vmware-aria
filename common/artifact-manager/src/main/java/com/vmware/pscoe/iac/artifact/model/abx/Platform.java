@@ -27,7 +27,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "runtime", "action", "tags", "entrypoint", "base", "memoryLimitMb", "timeoutSec", "provider" })
+@JsonPropertyOrder({ "runtime", "runtimeVersion", "action", "tags", "entrypoint", "base", "memoryLimitMb", "timeoutSec",
+		"provider" })
 public class Platform {
 	@JsonProperty("runtime")
 	private String runtime;
@@ -57,101 +58,204 @@ public class Platform {
 	private String provider;
 
 	@JsonIgnore
-	private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
+	private Map<String, Object> additionalProperties = new LinkedHashMap<>();
 
+	/**
+	 * getRuntime().
+	 * 
+	 * @return runtime.
+	 */
 	@JsonProperty("runtime")
 	public String getRuntime() {
 		return runtime;
 	}
 
+	/**
+	 * setRuntime().
+	 * 
+	 * @param runtime to be set.
+	 */
 	@JsonProperty("runtime")
 	public void setRuntime(String runtime) {
 		this.runtime = runtime;
 	}
 
+	/**
+	 * getRuntimeVersion().
+	 * 
+	 * @return runtime.
+	 */
+	@JsonProperty("runtimeVersion")
 	public String getRuntimeVersion() {
 		return runtimeVersion;
 	}
 
+	/**
+	 * setRuntimeVersion().
+	 * 
+	 * @param runtimeVersion to be set.
+	 */
+	@JsonProperty("runtimeVersion")
 	public void setRuntimeVersion(String runtimeVersion) {
 		this.runtimeVersion = runtimeVersion;
 	}
 
+	/**
+	 * getAction().
+	 * 
+	 * @return action.
+	 */
 	@JsonProperty("action")
 	public String getAction() {
 		return action;
 	}
 
+	/**
+	 * setAction().
+	 * 
+	 * @param action to be set.
+	 */
 	@JsonProperty("action")
 	public void setAction(String action) {
 		this.action = action;
 	}
 
+	/**
+	 * getTags().
+	 * 
+	 * @return tags.
+	 */
 	@JsonProperty("tags")
 	public List<Object> getTags() {
 		return tags;
 	}
 
+	/**
+	 * setTags().
+	 * 
+	 * @param tags to be set.
+	 */
 	@JsonProperty("tags")
 	public void setTags(List<Object> tags) {
 		this.tags = tags;
 	}
 
+	/**
+	 * getEntrypoint().
+	 * 
+	 * @return entrypoint.
+	 */
 	@JsonProperty("entrypoint")
 	public String getEntrypoint() {
 		return entrypoint;
 	}
 
+	/**
+	 * setEntrypoint().
+	 * 
+	 * @param entrypoint to be set.
+	 */
 	@JsonProperty("entrypoint")
 	public void setEntrypoint(String entrypoint) {
 		this.entrypoint = entrypoint;
 	}
 
+	/**
+	 * getBase().
+	 * 
+	 * @return base.
+	 */
 	@JsonProperty("base")
 	public String getBase() {
 		return base;
 	}
 
+	/**
+	 * setBase().
+	 * 
+	 * @param base to be set.
+	 */
 	@JsonProperty("base")
 	public void setBase(String base) {
 		this.base = base;
 	}
 
+	/**
+	 * getMemoryLimitMb().
+	 * 
+	 * @return memoryLimitMb.
+	 */
 	@JsonProperty("memoryLimitMb")
 	public Integer getMemoryLimitMb() {
 		return memoryLimitMb;
 	}
 
+	/**
+	 * setMemoryLimitMb().
+	 * 
+	 * @param memoryLimitMb to be set.
+	 */
 	@JsonProperty("memoryLimitMb")
 	public void setMemoryLimitMb(Integer memoryLimitMb) {
 		this.memoryLimitMb = memoryLimitMb;
 	}
 
+	/**
+	 * getTimeoutSec().
+	 * 
+	 * @return timeoutSec.
+	 */
 	@JsonProperty("timeoutSec")
 	public Integer getTimeoutSec() {
 		return timeoutSec;
 	}
 
+	/**
+	 * setTimeoutSec().
+	 * 
+	 * @param timeoutSec to be set.
+	 */
 	@JsonProperty("timeoutSec")
 	public void setTimeoutSec(Integer timeoutSec) {
 		this.timeoutSec = timeoutSec;
 	}
 
+	/**
+	 * getProvider().
+	 * 
+	 * @return timeoutSec.
+	 */
 	@JsonProperty("provider")
 	public String getProvider() {
 		return provider;
 	}
 
+	/**
+	 * setProvider().
+	 * 
+	 * @param provider to be set.
+	 */
 	@JsonProperty("provider")
 	public void setProvider(String provider) {
 		this.provider = provider;
 	}
 
+	/**
+	 * getAdditionalProperties().
+	 * 
+	 * @return additionalProperties.
+	 */
 	@JsonAnyGetter
 	public Map<String, Object> getAdditionalProperties() {
 		return this.additionalProperties;
 	}
 
+	/**
+	 * setAdditionalProperty().
+	 * 
+	 * @param name  to be set.
+	 * @param value to be set.
+	 */
 	@JsonAnySetter
 	public void setAdditionalProperty(String name, Object value) {
 		this.additionalProperties.put(name, value);

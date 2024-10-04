@@ -51,9 +51,9 @@ public class PackageMojo extends AbstractMojo {
 	 *
 	 * This function is enhanced to support alternative folder structure:
 	 * project_root/ dist/ action_name/ package.json dist/ bundle.zip The program
-	 * searches for sub-directories of project_root/dist that contain package.json and
-	 * dist/ If found, every such directory is treated as separate artifact source.
-	 * If none found, project_root is used as artifact source.
+	 * searches for sub-directories of project_root/dist that contain package.json
+	 * and dist/ If found, every such directory is treated as separate artifact
+	 * source. If none found, project_root is used as artifact source.
 	 *
 	 * maven does not support multiple artifacts. To work around this, all artifacts
 	 * created except the last one are added to the project as dependencies.
@@ -70,7 +70,7 @@ public class PackageMojo extends AbstractMojo {
 		getBundlesList(project.getBasedir(), packageName, dirList, packageNameList);
 
 		int index = 0;
-		for (File directory : dirList) {
+		for (File dir : dirList) {
 			if (index > 0) {
 				Artifact depArtifact = ArtifactUtils.copyArtifact(project.getArtifact());
 				depArtifact.setScope("system");
@@ -82,7 +82,7 @@ public class PackageMojo extends AbstractMojo {
 			getLog().info("ABX action name " + newPackageName);
 
 			MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-			File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
+			File pkgFile = new File(dir, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
 			Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
 			try {
 				this.preparePackageFile(pkg, directory, new File(pkgFile.getAbsolutePath()));

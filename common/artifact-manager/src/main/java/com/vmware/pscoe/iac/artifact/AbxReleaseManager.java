@@ -37,10 +37,21 @@ public class AbxReleaseManager {
 	private final Logger logger = LoggerFactory.getLogger(AbxReleaseManager.class);
 	private RestClientVraNg restClient;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param restClient rest client to use for releasing.
+	 */
 	public AbxReleaseManager(RestClientVraNg restClient) {
 		this.restClient = restClient;
 	}
 
+	/**
+	 * Release content of an action based on version.
+	 * 
+	 * @param version version to release (if set to 'auto', version will be incremented automatically).
+	 * @param baseDir base directory to use.
+	 */
 	public void releaseContent(String version, File baseDir) {
 		logger.info("Creating package descriptor from: {}", baseDir.getAbsolutePath());
 		AbxPackageDescriptor abxDescriptor = AbxPackageDescriptor.getInstance(baseDir);
@@ -75,9 +86,9 @@ public class AbxReleaseManager {
 		AbxActionVersion latestVersion = this.restClient.getAbxLastUpdatedVersion(actionOnServer);
 		String nextVersion;
 		if (latestVersion != null) {
-			logger.debug("Latest version: {}", latestVersion.name);
-			logger.debug("Latest version id: {}", latestVersion.id);
-			nextVersion = this.getNextVersion(latestVersion.name);
+			logger.debug("Latest version: {}", latestVersion.getName());
+			logger.debug("Latest version id: {}", latestVersion.getId());
+			nextVersion = this.getNextVersion(latestVersion.getName());
 		} else {
 			logger.info("No previous version found. Creating initial version");
 			nextVersion = this.getNextVersion(null);
@@ -97,8 +108,8 @@ public class AbxReleaseManager {
 		logger.info("Creating abx action version {}", version);
 		AbxActionVersion newVersion = this.restClient.createAbxVersion(actionOnServer, version);
 
-		logger.info("Releasing abx action version {}", newVersion.name);
-		this.restClient.releaseAbxVersion(actionOnServer, newVersion.id);
+		logger.info("Releasing abx action version {}", newVersion.getName());
+		this.restClient.releaseAbxVersion(actionOnServer, newVersion.getId());
 
 		logger.info("Version successfully released");
 	}

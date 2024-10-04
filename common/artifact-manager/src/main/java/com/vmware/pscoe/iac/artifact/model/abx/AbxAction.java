@@ -82,137 +82,303 @@ public class AbxAction {
 	@JsonIgnore
 	private byte[] bundle = new byte[] {};
 
+	/**
+	 * getId().
+	 * 
+	 * @return id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * setId().
+	 * 
+	 * @param id.
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * getName().
+	 * 
+	 * @return platform action value or the name of the action.
+	 */
 	public String getName() {
 		return (this.platform != null && this.platform.getAction() != null) ? this.platform.getAction() : this.name;
 	}
 
+	/**
+	 * setName().
+	 * 
+	 * @param name.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * getVersion().
+	 * 
+	 * @return version.
+	 */
 	public String getVersion() {
 		return version;
 	}
 
+	/**
+	 * setVersion().
+	 * 
+	 * @param version.
+	 */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
+	/**
+	 * getDescription().
+	 * 
+	 * @return description.
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * setDescription().
+	 * 
+	 * @param description.
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * getPrivate().
+	 * 
+	 * @return private flag of the action.
+	 */
 	@JsonProperty("private")
 	public Boolean getPrivate() {
 		return _private;
 	}
 
+	/**
+	 * setPrivate().
+	 * 
+	 * @param _private flag to be set.
+	 */
 	@JsonProperty("private")
 	public void setPrivate(Boolean _private) {
 		this._private = _private;
 	}
 
+	/**
+	 * getScripts().
+	 * 
+	 * @return scripts of the action.
+	 */
 	public Scripts getScripts() {
 		return scripts;
 	}
 
+	/**
+	 * setScripts().
+	 * 
+	 * @param scripts.
+	 */
 	public void setScripts(Scripts scripts) {
 		this.scripts = scripts;
 	}
 
+	/**
+	 * getKeywords().
+	 * 
+	 * @return keywords of the action.
+	 */
 	public List<String> getKeywords() {
 		return keywords;
 	}
 
+	/**
+	 * setKeywords().
+	 * 
+	 * @param keywords.
+	 */
 	public void setKeywords(List<String> keywords) {
 		this.keywords = keywords;
 	}
 
+	/**
+	 * getAuthor().
+	 * 
+	 * @return author of the action.
+	 */
 	public String getAuthor() {
 		return author;
 	}
 
+	/**
+	 * setAuthor().
+	 * 
+	 * @param author.
+	 */
 	public void setAuthor(String author) {
 		this.author = author;
 	}
 
+	/**
+	 * getAuthor().
+	 * 
+	 * @return license of the action.
+	 */
 	public String getLicense() {
 		return license;
 	}
 
+	/**
+	 * setLicense().
+	 * 
+	 * @param license.
+	 */
 	public void setLicense(String license) {
 		this.license = license;
 	}
 
+	/**
+	 * getDevDependencies().
+	 * 
+	 * @return devDependencies of the action.
+	 */
 	public DevDependencies getDevDependencies() {
 		return devDependencies;
 	}
 
+	/**
+	 * setDevDependencies().
+	 * 
+	 * @param devDependencies.
+	 */
 	public void setDevDependencies(DevDependencies devDependencies) {
 		this.devDependencies = devDependencies;
 	}
 
+	/**
+	 * getDependencies().
+	 * 
+	 * @return dependencies of the action.
+	 */
 	public Dependencies getDependencies() {
 		return dependencies;
 	}
 
+	/**
+	 * setDependencies().
+	 * 
+	 * @param dependencies.
+	 */
 	public void setDependencies(Dependencies dependencies) {
 		this.dependencies = dependencies;
 	}
 
+	/**
+	 * getPlatform().
+	 * 
+	 * @return platform of the action.
+	 */
 	public Platform getPlatform() {
 		return platform;
 	}
 
+	/**
+	 * setPlatform().
+	 * 
+	 * @param platform.
+	 */
 	public void setPlatform(Platform platform) {
 		this.platform = platform;
 	}
 
+	/**
+	 * getAbx().
+	 * 
+	 * @return abx back end of the action.
+	 */
 	public Abx getAbx() {
 		return abx;
 	}
 
+	/**
+	 * setAbx().
+	 * 
+	 * @param abx.
+	 */
 	public void setAbx(Abx abx) {
 		this.abx = abx;
 	}
 
+	/**
+	 * getFiles().
+	 * 
+	 * @return files of the action.
+	 */
 	public List<String> getFiles() {
 		return files;
 	}
 
+	/**
+	 * setFiles().
+	 * 
+	 * @param files.
+	 */
 	public void setFiles(List<String> files) {
 		this.files = files;
 	}
 
+	/**
+	 * getBundle().
+	 * 
+	 * @return bundle data of the action (stores the dependency file content).
+	 */
 	public byte[] getBundle() {
 		return this.bundle;
 	}
 
+	/**
+	 * setBundle().
+	 * 
+	 * @param bundle byte array of the bundle file contents.
+	 */
 	public void setBundle(byte[] bundle) {
 		this.bundle = bundle;
 	}
 
+	/**
+	 * getBundleAsBase64().
+	 * 
+	 * @return the base 64 encoded content of the bundle data of the action.
+	 */
 	public String getBundleAsBase64() throws IOException {
 		return Base64.getEncoder().encodeToString(this.bundle);
 	}
 
+	/**
+	 * getAdditionalProperties().
+	 * 
+	 * @return additionalProperties of the action.
+	 */
 	@JsonAnyGetter
 	public Map<String, Object> getAdditionalProperties() {
 		return this.additionalProperties;
 	}
 
+	/**
+	 * setAdditionalProperty().
+	 * 
+	 * @param name.
+	 * @param value.
+	 */
 	@JsonAnySetter
 	public void setAdditionalProperty(String name, Object value) {
 		this.additionalProperties.put(name, value);
@@ -221,25 +387,46 @@ public class AbxAction {
 	public static class DevDependencies {
 		@JsonProperty("run-script-os")
 		private String runScriptOs;
-		
+
 		@JsonIgnore
 		private Map<String, Object> additionalProperties = new LinkedHashMap<>();
 
+		/**
+		 * getRunScriptOs().
+		 * 
+		 * @return runScriptOs of the action dependency.
+		 */
 		@JsonProperty("run-script-os")
 		public String getRunScriptOs() {
 			return runScriptOs;
 		}
 
+		/**
+		 * setRunScriptOs().
+		 * 
+		 * @param runScriptOs.
+		 */
 		@JsonProperty("run-script-os")
 		public void setRunScriptOs(String runScriptOs) {
 			this.runScriptOs = runScriptOs;
 		}
 
+		/**
+		 * getAdditionalProperties().
+		 * 
+		 * @return additionalProperties of the action dependency.
+		 */
 		@JsonAnyGetter
 		public Map<String, Object> getAdditionalProperties() {
 			return this.additionalProperties;
 		}
 
+		/**
+		 * setAdditionalProperty().
+		 * 
+		 * @param name.
+		 * @param value.
+		 */
 		@JsonAnySetter
 		public void setAdditionalProperty(String name, Object value) {
 			this.additionalProperties.put(name, value);
@@ -267,61 +454,122 @@ public class AbxAction {
 		@JsonIgnore
 		private Map<String, Object> additionalProperties = new LinkedHashMap<>();
 
+		/**
+		 * getBuild().
+		 * 
+		 * @return build of the action script.
+		 */
 		@JsonProperty("build")
 		public String getBuild() {
 			return build;
 		}
 
+		/**
+		 * setBuild().
+		 * 
+		 * @param build.
+		 */
 		@JsonProperty("build")
 		public void setBuild(String build) {
 			this.build = build;
 		}
 
+		/**
+		 * getClean().
+		 * 
+		 * @return clean of the action script.
+		 */
 		@JsonProperty("clean")
 		public String getClean() {
 			return clean;
 		}
 
+		/**
+		 * setClean().
+		 * 
+		 * @param clean.
+		 */
 		@JsonProperty("clean")
 		public void setClean(String clean) {
 			this.clean = clean;
 		}
 
+		/**
+		 * getCleanWin32().
+		 * 
+		 * @return cleanWin32 of the action script.
+		 */
 		@JsonProperty("clean:win32")
 		public String getCleanWin32() {
 			return cleanWin32;
 		}
 
+		/**
+		 * setCleanWin32().
+		 * 
+		 * @param cleanWin32.
+		 */
 		@JsonProperty("clean:win32")
 		public void setCleanWin32(String cleanWin32) {
 			this.cleanWin32 = cleanWin32;
 		}
 
+		/**
+		 * getCleanDefault().
+		 * 
+		 * @return cleanDefault of the action script.
+		 */
 		@JsonProperty("clean:default")
 		public String getCleanDefault() {
 			return cleanDefault;
 		}
 
+		/**
+		 * cleanDefault().
+		 * 
+		 * @param cleanDefault.
+		 */
 		@JsonProperty("clean:default")
 		public void setCleanDefault(String cleanDefault) {
 			this.cleanDefault = cleanDefault;
 		}
 
+		/**
+		 * getTest().
+		 * 
+		 * @return test of the action script.
+		 */
 		@JsonProperty("test")
 		public String getTest() {
 			return test;
 		}
 
+		/**
+		 * setTest().
+		 * 
+		 * @param test.
+		 */
 		@JsonProperty("test")
 		public void setTest(String test) {
 			this.test = test;
 		}
 
+		/**
+		 * getAdditionalProperties().
+		 * 
+		 * @return additionalProperties of the action script.
+		 */
 		@JsonAnyGetter
 		public Map<String, Object> getAdditionalProperties() {
 			return this.additionalProperties;
 		}
 
+		/**
+		 * setAdditionalProperty().
+		 * 
+		 * @param name.
+		 * @param value.
+		 */
 		@JsonAnySetter
 		public void setAdditionalProperty(String name, Object value) {
 			this.additionalProperties.put(name, value);
@@ -340,31 +588,62 @@ public class AbxAction {
 		@JsonIgnore
 		private Map<String, Object> additionalProperties = new LinkedHashMap<>();
 
+		/**
+		 * getVmwarePscoePolyglotpkg.
+		 * 
+		 * @return vmwarePscoePolyglotpkg of the dependency.
+		 */
 		@JsonProperty("@vmware-pscoe/polyglotpkg")
 		public String getVmwarePscoePolyglotpkg() {
 			return vmwarePscoePolyglotpkg;
 		}
 
+		/**
+		 * setVmwarePscoePolyglotpkg().
+		 * 
+		 * @param vmwarePscoePolyglotpkg.
+		 */
 		@JsonProperty("@vmware-pscoe/polyglotpkg")
 		public void setVmwarePscoePolyglotpkg(String vmwarePscoePolyglotpkg) {
 			this.vmwarePscoePolyglotpkg = vmwarePscoePolyglotpkg;
 		}
 
+		/**
+		 * getVmwarePscoeVropkg().
+		 * 
+		 * @return vmwarePscoeVropkg of the dependency.
+		 */
 		@JsonProperty("@vmware-pscoe/vropkg")
 		public String getVmwarePscoeVropkg() {
 			return vmwarePscoeVropkg;
 		}
 
+		/**
+		 * setVmwarePscoeVropkg().
+		 * 
+		 * @param vmwarePscoeVropkg.
+		 */
 		@JsonProperty("@vmware-pscoe/vropkg")
 		public void setVmwarePscoeVropkg(String vmwarePscoeVropkg) {
 			this.vmwarePscoeVropkg = vmwarePscoeVropkg;
 		}
 
+		/**
+		 * getAdditionalProperties().
+		 * 
+		 * @return additionalProperties of the dependency.
+		 */
 		@JsonAnyGetter
 		public Map<String, Object> getAdditionalProperties() {
 			return this.additionalProperties;
 		}
 
+		/**
+		 * setAdditionalProperty().
+		 * 
+		 * @param name.
+		 * @param value.
+		 */
 		@JsonAnySetter
 		public void setAdditionalProperty(String name, Object value) {
 			this.additionalProperties.put(name, value);

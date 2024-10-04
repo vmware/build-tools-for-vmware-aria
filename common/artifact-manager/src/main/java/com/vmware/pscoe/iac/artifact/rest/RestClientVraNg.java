@@ -358,9 +358,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgIdAndName(final String orgId, final String name) {
-		String query = SUBSCRIPTION_BASE_QUERY + 
-            " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId) + 
-            " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name);
+		String query = SUBSCRIPTION_BASE_QUERY
+           +  " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId) 
+           +  " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name);
 		return getAllSubscriptionsPrimitive(query);
 	}
 

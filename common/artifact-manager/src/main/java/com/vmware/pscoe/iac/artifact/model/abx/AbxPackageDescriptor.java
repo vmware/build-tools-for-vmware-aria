@@ -30,14 +30,33 @@ public class AbxPackageDescriptor extends PackageDescriptor {
 	private static final String BUNDLE = "bundle.zip";
 	private AbxAction action;
 
+	/**
+	 * getAction() return the ABX action.
+	 * 
+	 * @return abx action of the descriptor.
+	 */
 	public AbxAction getAction() {
 		return this.action;
 	}
 
+	/**
+	 * setAction() set the ABX action
+	 * 
+	 * @param action action to be set.
+	 */
 	public void setAction(AbxAction action) {
 		this.action = action;
 	}
 
+	/**
+	 * getInstance() return the instance of the package descriptor with populated
+	 * action data and bundle file.
+	 * @param filesystemPath path to where the package.json resides. 
+	 * @return AbxPackageDescriptor instance of the descriptor with parsed abx
+	 *         action data and bundle file.
+	 * @throws RuntimeException if the package.json file cannot be read or parsed or
+	 *                          if the bundle file cannot be read.
+	 */
 	public static AbxPackageDescriptor getInstance(File filesystemPath) {
 		AbxPackageDescriptor pd = new AbxPackageDescriptor();
 
