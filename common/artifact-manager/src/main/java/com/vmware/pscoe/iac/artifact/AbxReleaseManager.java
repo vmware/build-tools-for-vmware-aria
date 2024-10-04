@@ -36,6 +36,9 @@ import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 public class AbxReleaseManager {
 	private final Logger logger = LoggerFactory.getLogger(AbxReleaseManager.class);
 	private RestClientVraNg restClient;
+	private static final int NEXT_VER_GROUP_1 = 1;
+	private static final int NEXT_VER_GROUP_2 = 2;
+	private static final int NEXT_VER_GROUP_3 = 3;
 
 	/**
 	 * Constructor.
@@ -134,20 +137,20 @@ public class AbxReleaseManager {
 		Matcher majorMinorPatch = Pattern.compile("([0-9]+)\\.([0-9]+)\\.([0-9]+)").matcher(version);
 		if (majorMinorPatch.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR.PATCH from {} with incrementable segment '{}'", version,
-					majorMinorPatch.group(3));
+					majorMinorPatch.group(NEXT_VER_GROUP_3));
 			// increment the patch segment
-			return majorMinorPatch.group(1) + "." + majorMinorPatch.group(2) + "."
-					+ (Integer.parseInt(majorMinorPatch.group(3)) + 1);
+			return majorMinorPatch.group(NEXT_VER_GROUP_1) + "." + majorMinorPatch.group(NEXT_VER_GROUP_2) + "."
+					+ (Integer.parseInt(majorMinorPatch.group(NEXT_VER_GROUP_3)) + 1);
 		} else if (majorMinor.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR from '{}' with incrementable segment '{}'", version,
-					majorMinor.group(2));
+					majorMinor.group(NEXT_VER_GROUP_2));
 			// increment the minor segment
-			return majorMinor.group(1) + "." + (Integer.parseInt(majorMinor.group(2)) + 1);
+			return majorMinor.group(NEXT_VER_GROUP_1) + "." + (Integer.parseInt(majorMinor.group(NEXT_VER_GROUP_2)) + 1);
 		} else if (major.matches()) {
 			logger.debug("Detected version pattern MAJOR from '{}' with incrementable segment '{}'", version,
 					major.group(1));
 			// increment the major segment
-			return Integer.toString(Integer.parseInt(major.group(1)) + 1);
+			return Integer.toString(Integer.parseInt(major.group(NEXT_VER_GROUP_1)) + 1);
 		} else {
 			logger.debug("Could not determine version pattern from {}", version);
 			return getDateVersion();

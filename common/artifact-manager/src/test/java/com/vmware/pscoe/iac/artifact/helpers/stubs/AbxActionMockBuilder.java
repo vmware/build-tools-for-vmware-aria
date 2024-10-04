@@ -33,6 +33,9 @@ public class AbxActionMockBuilder {
 	private static final String ENTRYPOINT = "handler.handler";
 	private static final Boolean SHARED = true;
 
+	private AbxActionMockBuilder() {
+	}
+
 	public static AbxAction buildAbxAction() throws IOException {
 		AbxAction abxAction = new AbxAction();
 

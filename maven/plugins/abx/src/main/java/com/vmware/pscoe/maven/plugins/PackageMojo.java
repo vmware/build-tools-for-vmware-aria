@@ -79,14 +79,14 @@ public class PackageMojo extends AbstractMojo {
 			String newPackageName = packageNameList.get(index);
 			project.getArtifact().setArtifactId(newPackageName);
 			project.setName(newPackageName);
-			getLog().info("ABX action name " + newPackageName);
+			getLog().info("ABX action name '" + newPackageName + "'");
 
 			MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 			File pkgFile = new File(dir, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
 			Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
 			try {
-				this.preparePackageFile(pkg, directory, new File(pkgFile.getAbsolutePath()));
-				getLog().info("Target ABX package file " + project.getArtifact().getFile().getAbsolutePath());
+				this.preparePackageFile(pkg, dir, new File(pkgFile.getAbsolutePath()));
+				getLog().info("Target ABX package file '" + project.getArtifact().getFile().getAbsolutePath() + "'");
 			} catch (MojoExecutionException e) {
 				throw e;
 			}
@@ -129,20 +129,20 @@ public class PackageMojo extends AbstractMojo {
 		}
 	}
 
-	private void preparePackageFile(Package pkg, File directory, File targetPackageFile) throws MojoExecutionException {
+	private void preparePackageFile(Package pkg, File dir, File targetPackageFile) throws MojoExecutionException {
 		try {
 			PackageManager mgr = new PackageManager(pkg);
 			// add everything from the dist directory
-			File distFile = new File(directory, "dist");
+			File distFile = new File(dir, "dist");
 			if (distFile.exists()) {
 				// multi-artifact ABX project
 				mgr.pack(distFile);
 			} else {
 				// single artifact ABX project
-				mgr.pack(new File(directory, "."));
+				mgr.pack(new File(dir, "."));
 			}
 			// add package.json
-			File packageJsonFile = new File(directory, "package.json");
+			File packageJsonFile = new File(dir, "package.json");
 			mgr.addTextFileToExistingZip(packageJsonFile, Paths.get("."));
 			project.getArtifact().setFile(targetPackageFile);
 		} catch (IOException e) {

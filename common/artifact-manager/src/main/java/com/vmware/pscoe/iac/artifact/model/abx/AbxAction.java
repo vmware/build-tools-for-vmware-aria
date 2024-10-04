@@ -45,7 +45,7 @@ public class AbxAction {
 	private String description;
 
 	@JsonProperty("private")
-	private Boolean _private;
+	private Boolean prvt;
 
 	@JsonProperty("scripts")
 	private Scripts scripts;
@@ -161,17 +161,17 @@ public class AbxAction {
 	 */
 	@JsonProperty("private")
 	public Boolean getPrivate() {
-		return _private;
+		return prvt;
 	}
 
 	/**
 	 * setPrivate().
 	 * 
-	 * @param _private flag to be set.
+	 * @param pvt flag to be set.
 	 */
 	@JsonProperty("private")
-	public void setPrivate(Boolean _private) {
-		this._private = _private;
+	public void setPrivate(Boolean pvt) {
+		this.prvt = pvt;
 	}
 
 	/**
@@ -376,12 +376,12 @@ public class AbxAction {
 	/**
 	 * setAdditionalProperty().
 	 * 
-	 * @param name.
+	 * @param nm.
 	 * @param value.
 	 */
 	@JsonAnySetter
-	public void setAdditionalProperty(String name, Object value) {
-		this.additionalProperties.put(name, value);
+	public void setAdditionalProperty(String nm, Object value) {
+		this.additionalProperties.put(nm, value);
 	}
 
 	public static class DevDependencies {
@@ -424,12 +424,12 @@ public class AbxAction {
 		/**
 		 * setAdditionalProperty().
 		 * 
-		 * @param name.
+		 * @param nm.
 		 * @param value.
 		 */
 		@JsonAnySetter
-		public void setAdditionalProperty(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperty(String nm, Object value) {
+			this.additionalProperties.put(nm, value);
 		}
 	}
 
@@ -567,12 +567,12 @@ public class AbxAction {
 		/**
 		 * setAdditionalProperty().
 		 * 
-		 * @param name.
+		 * @param nm.
 		 * @param value.
 		 */
 		@JsonAnySetter
-		public void setAdditionalProperty(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperty(String nm, Object value) {
+			this.additionalProperties.put(nm, value);
 		}
 	}
 
@@ -641,12 +641,12 @@ public class AbxAction {
 		/**
 		 * setAdditionalProperty().
 		 * 
-		 * @param name.
+		 * @param nm.
 		 * @param value.
 		 */
 		@JsonAnySetter
-		public void setAdditionalProperty(String name, Object value) {
-			this.additionalProperties.put(name, value);
+		public void setAdditionalProperty(String nm, Object value) {
+			this.additionalProperties.put(nm, value);
 		}
 	}
 }
