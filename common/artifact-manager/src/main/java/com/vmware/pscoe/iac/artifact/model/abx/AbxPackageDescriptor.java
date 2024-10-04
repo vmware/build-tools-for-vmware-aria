@@ -14,22 +14,21 @@
  */
 package com.vmware.pscoe.iac.artifact.model.abx;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 
 public class AbxPackageDescriptor extends PackageDescriptor {
-
-	private AbxAction action;
-
 	private static final String PACKAGE_JSON = "package.json";
 	private static final String BUNDLE = "bundle.zip";
+	private AbxAction action;
 
 	public AbxAction getAction() {
 		return this.action;
@@ -40,23 +39,23 @@ public class AbxPackageDescriptor extends PackageDescriptor {
 	}
 
 	public static AbxPackageDescriptor getInstance(File filesystemPath) {
-
-		Logger logger = LoggerFactory.getLogger(AbxPackageDescriptor.class);
-
 		AbxPackageDescriptor pd = new AbxPackageDescriptor();
 
 		String packageJsonPath = filesystemPath.getPath() + File.separator + AbxPackageDescriptor.PACKAGE_JSON;
-
-		try (JsonReader reader = new JsonReader(new FileReader(packageJsonPath))) {
-			AbxAction action = new Gson().fromJson(reader, AbxAction.class);
-			logger.info("Action definition: " + new Gson().toJson(action));
-			action.setBundle(new File(filesystemPath, AbxPackageDescriptor.BUNDLE));
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			AbxAction action = mapper.readValue(FileUtils.readFileToString(new File(packageJsonPath), Charset.defaultCharset()), AbxAction.class);
+			File bundleFile = new File(filesystemPath, AbxPackageDescriptor.BUNDLE);
+			action.setBundle(Files.readAllBytes(Paths.get(bundleFile.getAbsolutePath())));
 			pd.setAction(action);
 		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading from file: %s", filesystemPath.getPath()), e);
+			throw new RuntimeException(String.format("Error reading from file: %s", packageJsonPath), e);
+		} catch (JsonIOException | JsonSyntaxException e) {
+			throw new RuntimeException(String.format("Error parsing contents of file: %s", packageJsonPath), e);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("General error processing file: %s", packageJsonPath), e);
 		}
 
 		return pd;
 	}
-
 }

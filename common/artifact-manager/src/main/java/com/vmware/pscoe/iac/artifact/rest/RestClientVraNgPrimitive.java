@@ -298,6 +298,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * RESOURCE_QUOTA_POLICY_TYPE.
 	 */
 	private static final String RESOURCE_QUOTA_POLICY_TYPE = "com.vmware.policy.resource.quota";
+	
+	/**
+	 * MAX_BLUEPRINTS_RETRIEVAL_COUNT.
+	 */	
+	private static final String MAX_BLUEPRINTS_RETRIEVAL_COUNT = "1000";
 	/**
 	 * configuration.
 	 */
@@ -383,8 +388,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 
 		URI url = getURI(getURIBuilder().setPath(API_VERSION));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-				String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
 		LOGGER.info("Detected API Version {}", this.apiVersion);
 
@@ -406,8 +410,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			// available
 			this.productVersion = new Version(VRA_CLOUD_VERSION);
 		} else {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-					String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 			this.productVersion = new Version(JsonPath.parse(response.getBody()).read("$.version"));
 		}
 
@@ -437,24 +440,20 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Using project id defined in configuration: {}", configuration.getProjectId());
 			this.projectId = this.getProjectIdPrimitive(configuration.getProjectId());
 			if (this.projectId == null) {
-				throw new RuntimeException(String.format("Project id '%s' could not be found on target system",
-						configuration.getProjectId()));
+				throw new RuntimeException(String.format("Project id '%s' could not be found on target system", configuration.getProjectId()));
 			}
 
 			return this.projectId;
 		}
 		String projectName = configuration.getProjectName();
 		if (StringUtils.isEmpty(projectName)) {
-			throw new RuntimeException(
-					"Either project name or project id must be supplied to the vRA NG configuration.");
+			throw new RuntimeException("Either project name or project id must be supplied to the vRA NG configuration.");
 		}
 		this.projectId = this.getProjectIdPrimitive(projectName);
 		if (this.projectId == null) {
-			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system",
-					configuration.getProjectName()));
+			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system", configuration.getProjectName()));
 		}
-		LOGGER.info("Using project name defined in the configuration '{}', project id: '{}'", projectName,
-				this.projectId);
+		LOGGER.info("Using project name defined in the configuration '{}', project id: '{}'", projectName, this.projectId);
 
 		return projectId;
 	}
@@ -596,8 +595,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public VraNgBlueprint getBlueprintPrimitive(final String id) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + id));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-				String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 
 		return new Gson().fromJson(response.getBody(), VraNgBlueprint.class);
 	}
@@ -612,12 +610,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public String getBlueprintVersionContentPrimitive(final String blueprintId, final String version) {
 		URI url = getURI(getURIBuilder()
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version)
-				.addParameter("orderBy",
-						"updatedAt DESC"));
+				.addParameter("orderBy", "updatedAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-				String.class);
-
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		String content = "";
@@ -641,12 +636,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public String getBlueprintVersionsContent(final String blueprintId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
-				.addParameter("$top", "1000")
-				.addParameter("orderBy", "createdAt DESC"));
+				.addParameter("$top", MAX_BLUEPRINTS_RETRIEVAL_COUNT).addParameter("orderBy", "createdAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-				String.class);
-
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		String content = "";
@@ -685,7 +677,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprintId Blueprint ID
 	 * @param version     Blueprint Version
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	public void releaseBlueprintVersionPrimitive(final String blueprintId, final String version)
 			throws URISyntaxException {
@@ -704,13 +696,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprintId Blueprint ID
 	 * @param versionId   Blueprint versionId
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder().setPath(
-				SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + versionId + "/"
-						+ SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
+		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS
+				+ "/" + versionId + "/" + SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
 
 		try {
 			this.postJsonPrimitive(url, HttpMethod.POST, "");
@@ -755,7 +746,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param blueprint Blueprint Object
 	 * @return Blueprint ID.
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	public String updateBlueprintPrimitive(final VraNgBlueprint blueprint) throws URISyntaxException {
 
@@ -869,8 +860,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.filter(jsonOb -> VraNgContentSourceType.BLUEPRINT.toString()
 						.equals(jsonOb.get("typeId").getAsString()))
 				.map(jsonOb -> gson.fromJson(jsonOb, VraNgContentSource.class))
-				.filter(contentSource -> contentSource.getProjectId().equals(projectIdentifier))
-				.findFirst().orElse(null);
+				.filter(contentSource -> contentSource.getProjectId().equals(projectIdentifier)).findFirst()
+				.orElse(null);
 	}
 
 	/**
@@ -952,8 +943,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Import Custom Form.
 	 *
 	 * @param customForm VraNg Custom Form
-	 * @param sourceId   Srouce ID
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @param sourceId   Source ID
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	public void importCustomFormPrimitive(final VraNgCustomForm customForm, final String sourceId)
 			throws URISyntaxException {
@@ -984,8 +975,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Import Subscriptions.
 	 *
 	 * @param subscriptionName subscription name
-	 * @param subscriptionJson subscription json
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @param subscriptionJson subscription JSON
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	protected void importSubscriptionPrimitive(final String subscriptionName, final String subscriptionJson)
 			throws URISyntaxException {
@@ -1037,7 +1028,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retrieve All Cloud Accounts.
 	 *
 	 * @return List of Cloud accounts.
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	protected List<VraNgCloudAccount> getAllCloudAccounts() throws URISyntaxException {
 		List<VraNgCloudAccount> retVal = new ArrayList<>();
@@ -1194,7 +1185,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * given path until the final page has been reached.
 	 *
 	 * @param path      URL path
-	 * @param paramsMap any number of query paramters
+	 * @param paramsMap any number of query parameters
 	 * @return combined results
 	 */
 	private List<JsonObject> getPagedContent(final String path, final Map<String, String> paramsMap) {
@@ -1238,14 +1229,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Retriever for paged content based on totalElements and numberOfElements.
 	 *
 	 * @param path      URL path
-	 * @param paramsMap any number of query paramters
+	 * @param paramsMap any number of query parameters
 	 * @return combined results
 	 */
 	private List<JsonObject> getTotalElements(final String path, final Map<String, String> paramsMap) {
 
 		URIBuilder uriBuilder = getURIBuilder().setPath(String.format(path))
-				.setParameter("$top", String.valueOf(PAGE_SIZE)).setParameter("$skip",
-						String.valueOf(0));
+				.setParameter("$top", String.valueOf(PAGE_SIZE)).setParameter("$skip", String.valueOf(0));
 
 		// add arbitrary parameters
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
@@ -1365,8 +1355,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 					.collect(Collectors.toList());
 
 			VraNgCatalogEntitlement entitlement = new VraNgCatalogEntitlement(modelEntitlement.getId(), null,
-					modelEntitlement.getDefinition().get("name"),
-					projectIds, VraNgCatalogEntitlementType.fromString(modelEntitlement.getDefinition().get("type")),
+					modelEntitlement.getDefinition().get("name"), projectIds,
+					VraNgCatalogEntitlementType.fromString(modelEntitlement.getDefinition().get("type")),
 					VraNgContentSourceType.fromString(modelEntitlement.getDefinition().get("sourceType")));
 			String iconId = modelEntitlement.getDefinition().get("iconId");
 			if (iconId != null) {
@@ -1416,7 +1406,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (!HttpStatus.CREATED.equals(response.getStatusCode())) {
 			throw new RuntimeException(
 					String.format("Error ocurred during creating of catalog entitlement. HTTP Status code %s : ( %s )",
-							response.getStatusCodeValue(), response.getBody()));
+							response.getStatusCode(), response.getBody()));
 		}
 	}
 
@@ -1455,8 +1445,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			final String formId) {
 		final String formType = "requestForm";
 		URI url = getURI(getURIBuilder().setPath(FETCH_REQUEST_FORM).setParameter("formType", formType)
-				.setParameter("sourceId", sourceId)
-				.setParameter("sourceType", sourceType).setParameter("formId", formId));
+				.setParameter("sourceId", sourceId).setParameter("sourceType", sourceType)
+				.setParameter("formId", formId));
 		Map<String, Object> map = new HashMap<>();
 		map.put("type", "object");
 		try {
@@ -1481,9 +1471,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgCustomForm getCustomFormByTypeAndSourcePrimitive(final String sourceType, final String sourceId) {
 		final String formType = "requestForm";
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE)
-				.setParameter("formType", formType).setParameter("sourceId", sourceId)
-				.setParameter("sourceType", sourceType));
+		URI url = getURI(
+				getURIBuilder().setPath(SERVICE_CUSTOM_FORM_BY_SOURCE_AND_TYPE).setParameter("formType", formType)
+						.setParameter("sourceId", sourceId).setParameter("sourceType", sourceType));
 
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
@@ -1666,8 +1656,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	protected void createFlavorPrimitive(final String regionId, final String flavorProfileName,
-			final List<VraNgFlavorMapping> flavorMappings)
-			throws URISyntaxException {
+			final List<VraNgFlavorMapping> flavorMappings) throws URISyntaxException {
 
 		URI url = getURIBuilder().setPath(SERVICE_FLAVOR_PROFILE).setParameter("apiVersion", this.getVersion()).build();
 
@@ -1900,8 +1889,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	protected void createImageProfilePrimitive(final String regionId, final String imageProfileName,
-			final List<VraNgImageMapping> imageMappings)
-			throws URISyntaxException {
+			final List<VraNgImageMapping> imageMappings) throws URISyntaxException {
 
 		URI url = getURIBuilder().setPath(SERVICE_IMAGE_PROFILE).setParameter("apiVersion", this.getVersion()).build();
 
@@ -2182,8 +2170,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @throws URISyntaxException exception
 	 */
 	protected void updateSpecificProfilePrimitive(final String patchTarget, final String profileId,
-			final VraNgStorageProfile profile)
-			throws URISyntaxException {
+			final VraNgStorageProfile profile) throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/" + patchTarget + "/" + profileId));
 		this.postJsonPrimitive(url, HttpMethod.PATCH, profile.getJson());
 	}
@@ -2209,7 +2196,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Retreive Fabric Entity ID.
+	 * Retrieve Fabric Entity ID.
 	 *
 	 * @param fabricType fabric type
 	 * @param fabricName fabric name
@@ -2449,10 +2436,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * When importing a custom resource with additionalActions, we first need to
 	 * remove them due to a vRA8 limitations. When creating a CR with
-	 * additionalActions, we create the CR first then we apply the same json but
+	 * additionalActions, we create the CR first then we apply the same JSON but
 	 * with additionalActions added.
 	 *
-	 * @param customResourceJson String containing the raw json content of the
+	 * @param customResourceJson String containing the raw JSON content of the
 	 *                           custom resource
 	 * @throws URISyntaxException exception in case of incorrect URI
 	 */
@@ -2485,7 +2472,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Delete Custom Resource.
 	 *
 	 * @param customResourceId Resource Action JSON
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	protected void deleteCustomResourcePrimitive(final String customResourceId) throws URISyntaxException {
 		String deleteURL = String.format(SERVICE_CUSTOM_RESOURCES + "/%s", customResourceId);
@@ -2529,7 +2516,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param resourceActionJson Resource Action JSON
 	 * @return Resource Action
-	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	protected String importResourceActionPrimitive(final String resourceActionJson) throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_RESOURCE_ACTIONS).build();
@@ -2551,7 +2538,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 	}
@@ -2575,8 +2562,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			String prjId = ob.get("projectId").getAsString();
 			if (getProjectId().equals(prjId)) {
 				AbxAction action = new AbxAction();
-				action.id = ob.get("id").getAsString();
-				action.name = ob.get("name").getAsString();
+				action.setId(ob.get("id").getAsString());
+				action.setName(ob.get("name").getAsString());
 				actions.add(action);
 			}
 		});
@@ -2627,7 +2614,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		String jsonBody = this.getJsonString(map);
 		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-		return new Gson().fromJson(response.getBody(), AbxAction.class).id;
+		return new Gson().fromJson(response.getBody(), AbxAction.class).getId();
 	}
 
 	/**
@@ -2648,7 +2635,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		String jsonBody = this.getJsonString(map);
 		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.PUT, jsonBody);
-		return new Gson().fromJson(response.getBody(), AbxAction.class).id;
+		return new Gson().fromJson(response.getBody(), AbxAction.class).getId();
 	}
 
 	/**
@@ -2659,8 +2646,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public AbxActionVersion getAbxLastUpdatedVersionPrimitive(final String actionId) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_ABX_ACTIONS + "/" + actionId + "/versions")
-				.addParameter("projectId", getProjectId())
-				.addParameter("orderBy", "createdMillis DESC"));
+				.addParameter("projectId", getProjectId()).addParameter("orderBy", "createdMillis DESC"));
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
@@ -2770,7 +2756,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 *
 	 * @param action Abx Action.
 	 * @return Object
-	 * @throws IOException throws IO exception incase Faas provider name is not
+	 * @throws IOException throws IO exception in case FaaS provider name is not
 	 *                     correct
 	 */
 	protected Map<String, Object> createAbxActionMap(final AbxAction action) throws IOException {
@@ -2780,27 +2766,29 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		map.put("actionType", "SCRIPT");
 		map.put("name", action.getName());
-		map.put("description", action.description);
+		map.put("description", action.getDescription());
 		map.put("projectId", getProjectId());
-		map.put("runtime", action.platform.runtime);
-		map.put("entrypoint", action.platform.entrypoint);
-		map.put("inputs", action.abx.inputs);
-		map.put("compressedContent", action.getBundleAsB64());
-		map.put("shared", action.abx.shared);
+		map.put("runtime", action.getPlatform().getRuntime());
+		map.put("entrypoint", action.getPlatform().getEntrypoint());
+		map.put("inputs", action.getAbx().getInputs());
+		map.put("compressedContent", action.getBundleAsBase64());
+		map.put("shared", action.getAbx().getShared());
+		map.put("runtimeVersion", action.getPlatform().getRuntimeVersion());
 
-		if (action.platform.timeoutSec != null && action.platform.timeoutSec > 0) {
-			map.put("timeoutSeconds", action.platform.timeoutSec);
+		if (action.getPlatform().getTimeoutSec() != null && action.getPlatform().getTimeoutSec() > 0) {
+			map.put("timeoutSeconds", action.getPlatform().getTimeoutSec());
 		}
 
-		if (action.platform.memoryLimitMb != null && action.platform.memoryLimitMb > 0) {
-			map.put("memoryInMB", action.platform.memoryLimitMb);
+		if (action.getPlatform().getMemoryLimitMb() != null && action.getPlatform().getMemoryLimitMb() > 0) {
+			map.put("memoryInMB", action.getPlatform().getMemoryLimitMb());
 		}
 
-		if (action.platform.provider != null && Arrays.stream(providers).anyMatch(action.platform.provider::equals)) {
-			map.put("provider", action.platform.provider);
-		} else if (action.platform.provider != null) {
-			throw new RuntimeException(
-					"Faas provider name is not correct. Possible values are: " + String.join(",", providers));
+		if (action.getPlatform().getProvider() != null) {
+			if (Arrays.stream(providers).anyMatch(action.getPlatform().getProvider()::equals)) {
+				map.put("provider", action.getPlatform().getProvider());
+			} else {
+				throw new RuntimeException("Faas provider name is not correct. Possible values are: " + String.join(",", providers));
+			}
 		}
 
 		return map;
@@ -2814,7 +2802,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	private ResponseEntity<String> postJsonPrimitive(final URI url, final HttpMethod method, final String jsonBody) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
 		LOGGER.debug("Executing method {} on URI {} with entity {} ", method, url, entity);
 		return restTemplate.exchange(url, method, entity, String.class);
@@ -2822,7 +2810,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	private ResponseEntity<String> putJsonPrimitive(final URI url, final String jsonBody) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
 
 		return restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
@@ -2865,7 +2853,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 	}

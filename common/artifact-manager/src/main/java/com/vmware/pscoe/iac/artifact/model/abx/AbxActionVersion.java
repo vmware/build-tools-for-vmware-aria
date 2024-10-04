@@ -15,7 +15,6 @@
 package com.vmware.pscoe.iac.artifact.model.abx;
 
 public class AbxActionVersion {
-
 	public String id;
 	public String name;
 
@@ -26,5 +25,4 @@ public class AbxActionVersion {
 	public String getName() {
 		return this.name;
 	}
-
 }

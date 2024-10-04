@@ -24,13 +24,14 @@
 	"dependencies": {},
 	"platform": {
 		"runtime": "",
+		"runtimeVersion": "",
 		"action": "findTags",
 		"tags": [],
 		"entrypoint": "handler.handler",
 		"base": "out",
 		"memoryLimitMb": 300,
 		"timeoutSec": 600,
-		"provider": ""
+		"provider": "on-prem"
 	},
 	"abx": {
 		"shared": true,
