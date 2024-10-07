@@ -49,6 +49,22 @@ The following have been added:
 [//]: # (Optional But highly recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+
+### Pushing Fails when Pushing ABX action
+
+Fixed problem with pushing ABX actions from a project created by the ABX archetype.
+
+#### Previous Behavior
+
+When pushing ABX actions from a project created by the ABX archetype it fails with the following error:
+
+```log
+[ERROR] Failed to execute goal com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:push (default-cli) on project abx-project-1: You need to have the package goal as well when pushing vRealize projects.
+```
+#### New Behavior
+
+Pushing of ABX action now works with ABX actions created by the ABX archetype. Furthermore the `runtimeVersion` property was added to the `package.json` file where you can specify the runtime version where the action will be executed at. If not specified the lowest available runtime version will be used (i.e. for `node.js` action the default runtime version is `14.0` that is deprecated). With the new property you can workaround deprecated runtimes.
+
 ### Restored missing 'exec' module
 
 The error when running an Action in VRDT UI was resolved by restoring the 'exec' module in 'packages'.
