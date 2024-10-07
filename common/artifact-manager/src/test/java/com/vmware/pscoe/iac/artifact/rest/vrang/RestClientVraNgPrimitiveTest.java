@@ -42,7 +42,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.internal.util.StringUtil;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -50,7 +49,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -72,6 +70,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
+@SuppressWarnings("unchecked")
 class RestClientVraNgPrimitiveTest {
 	/**
 	 * HTTPS_PORT.
@@ -139,12 +138,7 @@ class RestClientVraNgPrimitiveTest {
 		final int pageSize = 500;
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, page));
 		List<VraNgProject> projects = restClient.testGetProjectsPrimitive();
@@ -152,7 +146,7 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, projects.size());
 	}
-	
+
 	@Test
 	void testGetCatalogItemsByProjectEmptyFirstPage() {
 		// GIVEN
@@ -162,19 +156,14 @@ class RestClientVraNgPrimitiveTest {
 		final String projectId = "project 3";
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
 						pageSize, page));
 		List<VraNgCatalogItem> catalogItems = restClient.testGetCatalogItemsForProjectPrimitive(projectId);
 
 		// THEN
 		assertEquals(totalElements, catalogItems.size());
-	}	
+	}
 
 	@Test
 	void testGetCatalogItemPerBlueprintNameSingleElementPage() {
@@ -185,12 +174,7 @@ class RestClientVraNgPrimitiveTest {
 		final String catalogItemName = "catalog item 0";
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
 						pageSize, page));
 		VraNgCatalogItem catalogItem = restClient.testGetCatalogItemByBlueprintNamePrimitive(catalogItemName);
@@ -207,12 +191,7 @@ class RestClientVraNgPrimitiveTest {
 		int page = 0;
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, page));
 		List<VraNgProject> projects = restClient.testGetProjectsPrimitive();
@@ -220,7 +199,7 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, projects.size());
 	}
-	
+
 	@Test
 	void testGetCatalogItemsForProjectFirstNonEmptyFirstPage() {
 		// GIVEN
@@ -230,12 +209,7 @@ class RestClientVraNgPrimitiveTest {
 		final String projectId = "project 3";
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
 						pageSize, page));
 		List<VraNgCatalogItem> catalogItems = restClient.testGetCatalogItemsForProjectPrimitive(projectId);
@@ -243,7 +217,7 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, catalogItems.size());
 	}
-	
+
 	@Test
 	void testGetCatalogItemPerBlueprintNameNonEmptyFirstPage() {
 		// GIVEN
@@ -253,19 +227,14 @@ class RestClientVraNgPrimitiveTest {
 		final String catalogItemName = "catalog item 0";
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
 						pageSize, page));
 		VraNgCatalogItem catalogItem = restClient.testGetCatalogItemByBlueprintNamePrimitive(catalogItemName);
 
 		// THEN
 		assertEquals(catalogItem.getName(), catalogItemName);
-	}	
+	}
 
 	@Test
 	void testGetProjectsPrimitiveFirstPageEdgeCase() {
@@ -275,12 +244,7 @@ class RestClientVraNgPrimitiveTest {
 		int page = 0;
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, page));
 		List<VraNgProject> projects = restClient.testGetProjectsPrimitive();
@@ -288,7 +252,7 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, projects.size());
 	}
-	
+
 	@Test
 	void testCatalogItemsPerProjectFirstPageEdgeCase() {
 		// GIVEN
@@ -298,12 +262,7 @@ class RestClientVraNgPrimitiveTest {
 		final String projectId = "project 3";
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
 						pageSize, page));
 		List<VraNgCatalogItem> catalogItems = restClient.testGetCatalogItemsForProjectPrimitive(projectId);
@@ -311,7 +270,7 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(totalElements, catalogItems.size());
 	}
-	
+
 	@Test
 	void testCatalogItemsPerBlueprintNameFirstPageEdgeCase() {
 		// GIVEN
@@ -321,19 +280,14 @@ class RestClientVraNgPrimitiveTest {
 		final String catalogItemName = "catalog item 0";
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						any(URI.class),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedCatalogItemsResponse(totalElements,
 						pageSize, page));
 		VraNgCatalogItem catalogItem = restClient.testGetCatalogItemByBlueprintNamePrimitive(catalogItemName);
 
 		// THEN
 		assertEquals(catalogItem.getName(), catalogItemName);
-	}	
+	}
 
 	@Test
 	void testGetProjectsPrimitiveSecondPageWithSingleElement() throws URISyntaxException {
@@ -344,25 +298,17 @@ class RestClientVraNgPrimitiveTest {
 		int secondPage = 1;
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						eq(new URI(
-								String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
-										pageSize, (pageSize * firstPage)))),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(
+				eq(new URI(String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
+						pageSize, (pageSize * firstPage)))),
+				any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, firstPage));
 
-		when(
-				restTemplate.exchange(
-						eq(new URI(
-								String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
-										pageSize, (pageSize * secondPage)))),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(
+				eq(new URI(String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
+						pageSize, (pageSize * secondPage)))),
+				any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, secondPage));
 		List<VraNgProject> projects = restClient.testGetProjectsPrimitive();
@@ -380,25 +326,17 @@ class RestClientVraNgPrimitiveTest {
 		int secondPage = 1;
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						eq(new URI(
-								String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
-										pageSize, (pageSize * firstPage)))),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(
+				eq(new URI(String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
+						pageSize, (pageSize * firstPage)))),
+				any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, firstPage));
 
-		when(
-				restTemplate.exchange(
-						eq(new URI(
-								String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
-										pageSize, (pageSize * secondPage)))),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(
+				eq(new URI(String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
+						pageSize, (pageSize * secondPage)))),
+				any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, secondPage));
 		List<VraNgProject> projects = restClient.testGetProjectsPrimitive();
@@ -416,25 +354,17 @@ class RestClientVraNgPrimitiveTest {
 		int secondPage = 1;
 
 		// WHEN
-		when(
-				restTemplate.exchange(
-						eq(new URI(
-								String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
-										pageSize, (pageSize * firstPage)))),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(
+				eq(new URI(String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
+						pageSize, (pageSize * firstPage)))),
+				any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, firstPage));
 
-		when(
-				restTemplate.exchange(
-						eq(new URI(
-								String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
-										pageSize, (pageSize * secondPage)))),
-						any(HttpMethod.class),
-						any(HttpEntity.class),
-						any(Class.class)))
+		when(restTemplate.exchange(
+				eq(new URI(String.format("https://vra-l-01a.corp.local/iaas/api/projects?%%24top=%d&%%24skip=%d",
+						pageSize, (pageSize * secondPage)))),
+				any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(RestClientVraNgPrimitiveTestResponseProvider.getPaginatedProjectResponse(totalElements,
 						pageSize, secondPage));
 		List<VraNgProject> projects = restClient.testGetProjectsPrimitive();
@@ -445,15 +375,7 @@ class RestClientVraNgPrimitiveTest {
 
 	@Test
 	void testImportCustomFormPrimitiveAlwaysCustomFormFormatNull() {
-		VraNgCustomForm parameter = new VraNgCustomForm(
-				"id",
-				"name",
-				"form",
-				"styles",
-				"VRO",
-				"VRO",
-				"VRO",
-				"OK",
+		VraNgCustomForm parameter = new VraNgCustomForm("id", "name", "form", "styles", "VRO", "VRO", "VRO", "OK",
 				null);
 		String sourceId = "sourceId";
 
@@ -464,15 +386,7 @@ class RestClientVraNgPrimitiveTest {
 
 	@Test
 	void testImportCustomFormPrimitiveAlwaysCustomFormFormatNotNull() {
-		VraNgCustomForm parameter = new VraNgCustomForm(
-				"id",
-				"name",
-				"form",
-				"styles",
-				"VRO",
-				"VRO",
-				"VRO",
-				"OK",
+		VraNgCustomForm parameter = new VraNgCustomForm("id", "name", "form", "styles", "VRO", "VRO", "VRO", "OK",
 				"JSON");
 		String sourceId = "sourceId";
 
@@ -506,12 +420,9 @@ class RestClientVraNgPrimitiveTest {
 	@Test
 	void testGetAllImageMappingsByRegionPrimitiveShouldBeEmpty() {
 		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/iaas/api/images"));
-		when(
-				this.restTemplate.exchange(uri, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
-						String.class))
-				.thenReturn(
-						new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
+		when(this.restTemplate.exchange(uri, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
 
 		Assertions.assertDoesNotThrow(() -> {
 			this.restClient.getAllImageMappingsByRegionPrimitive();
@@ -521,12 +432,9 @@ class RestClientVraNgPrimitiveTest {
 	@Test
 	void testGetAllFlavorProfilesByRegionPrimitiveShouldBeEmpty() {
 		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/iaas/api/flavor-profiles"));
-		when(
-				this.restTemplate.exchange(uri, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
-						String.class))
-				.thenReturn(
-						new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
+		when(this.restTemplate.exchange(uri, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
 
 		Assertions.assertDoesNotThrow(() -> {
 			this.restClient.getAllFlavorProfilesByRegionPrimitive();
@@ -536,12 +444,9 @@ class RestClientVraNgPrimitiveTest {
 	@Test
 	void testGetAllStorageProfilesByRegionPrimitiveShouldBeEmpty() {
 		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/iaas/api/storage-profiles"));
-		when(
-				this.restTemplate.exchange(uri, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
-						String.class))
-				.thenReturn(
-						new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
+		when(this.restTemplate.exchange(uri, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
 
 		Assertions.assertDoesNotThrow(() -> {
 			this.restClient.getAllStorageProfilesByRegionPrimitive();
@@ -551,12 +456,9 @@ class RestClientVraNgPrimitiveTest {
 	@Test
 	void testGetAllImageProfilesByRegionPrimitiveShouldBeEmpty() {
 		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/iaas/api/image-profiles"));
-		when(
-				this.restTemplate.exchange(uri, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
-						String.class))
-				.thenReturn(
-						new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
+		when(this.restTemplate.exchange(uri, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
 
 		Assertions.assertDoesNotThrow(() -> {
 			this.restClient.getAllImageProfilesByRegionPrimitive();
@@ -566,12 +468,9 @@ class RestClientVraNgPrimitiveTest {
 	@Test
 	void testGetAllFlavorMappingsByRegionPrimitiveShouldBeEmpty() {
 		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/iaas/api/flavors"));
-		when(
-				this.restTemplate.exchange(uri, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
-						String.class))
-				.thenReturn(
-						new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
+		when(this.restTemplate.exchange(uri, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>("{\"content\":[{\"mapping\":{},\"_links\":{}}]}", HttpStatus.OK));
 
 		Assertions.assertDoesNotThrow(() -> {
 			this.restClient.getAllFlavorMappingsByRegionPrimitive();
@@ -585,15 +484,12 @@ class RestClientVraNgPrimitiveTest {
 		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/properties/api/property-groups"));
 		ArgumentCaptor<URI> argCaptorUri = ArgumentCaptor.forClass(URI.class);
 		ArgumentCaptor<HttpMethod> argCaptorMethod = ArgumentCaptor.forClass(HttpMethod.class);
-		ArgumentCaptor<HttpEntity> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
+		ArgumentCaptor<HttpEntity<String>> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
 
 		restClient.createPropertyGroupPrimitive(pg);
 
-		verify(restTemplate, times(1)).exchange(
-				argCaptorUri.capture(),
-				argCaptorMethod.capture(),
-				argCaptorEntity.capture(),
-				any(Class.class));
+		verify(restTemplate, times(1)).exchange(argCaptorUri.capture(), argCaptorMethod.capture(),
+				argCaptorEntity.capture(), any(Class.class));
 
 		assertEquals(uri, argCaptorUri.getValue());
 		assertEquals(HttpMethod.POST, argCaptorMethod.getValue());
@@ -608,15 +504,12 @@ class RestClientVraNgPrimitiveTest {
 				.getURI(restClient.getURIBuilder().setPath("/properties/api/property-groups/" + pg.getId()));
 		ArgumentCaptor<URI> argCaptorUri = ArgumentCaptor.forClass(URI.class);
 		ArgumentCaptor<HttpMethod> argCaptorMethod = ArgumentCaptor.forClass(HttpMethod.class);
-		ArgumentCaptor<HttpEntity> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
+		ArgumentCaptor<HttpEntity<String>> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
 
 		restClient.updatePropertyGroupPrimitive(pg);
 
-		verify(restTemplate, times(1)).exchange(
-				argCaptorUri.capture(),
-				argCaptorMethod.capture(),
-				argCaptorEntity.capture(),
-				any(Class.class));
+		verify(restTemplate, times(1)).exchange(argCaptorUri.capture(), argCaptorMethod.capture(),
+				argCaptorEntity.capture(), any(Class.class));
 
 		assertEquals(uri, argCaptorUri.getValue());
 		assertEquals(HttpMethod.PUT, argCaptorMethod.getValue());
@@ -634,19 +527,14 @@ class RestClientVraNgPrimitiveTest {
 
 		ArgumentCaptor<URI> argCaptorUri = ArgumentCaptor.forClass(URI.class);
 		ArgumentCaptor<HttpMethod> argCaptorMethod = ArgumentCaptor.forClass(HttpMethod.class);
-		ArgumentCaptor<HttpEntity> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
+		ArgumentCaptor<HttpEntity<String>> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
 
-		ResponseEntity response = Mockito.mock(ResponseEntity.class);
+		ResponseEntity<String> response = Mockito.mock(ResponseEntity.class);
 		when(response.getStatusCode()).thenReturn(HttpStatus.valueOf(HTTP_SUCCESS_CODE));
 		when(response.getBody()).thenReturn(mockCustomResource.getJson());
 
-		when(
-				restTemplate.exchange(
-						argCaptorUri.capture(),
-						argCaptorMethod.capture(),
-						argCaptorEntity.capture(),
-						any(Class.class)))
-				.thenReturn(response);
+		when(restTemplate.exchange(argCaptorUri.capture(), argCaptorMethod.capture(), argCaptorEntity.capture(),
+				any(Class.class))).thenReturn(response);
 
 		// WHEN
 		restClient.importCustomResourcePrimitive(mockCustomResource.getJson());
@@ -659,13 +547,11 @@ class RestClientVraNgPrimitiveTest {
 				.build();
 
 		// First time we expect the same CR without any `additionalActions`
-		assertEquals(
-				JsonParser.parseString(expectedMockCustomResource.getJson()).getAsJsonObject(),
+		assertEquals(JsonParser.parseString(expectedMockCustomResource.getJson()).getAsJsonObject(),
 				JsonParser.parseString(argCaptorEntity.getAllValues().get(0).getBody().toString()).getAsJsonObject());
 
 		// Second time we expect the CR with the `additionalActions` back
-		assertEquals(
-				JsonParser.parseString(mockCustomResource.getJson()).getAsJsonObject(),
+		assertEquals(JsonParser.parseString(mockCustomResource.getJson()).getAsJsonObject(),
 				JsonParser.parseString(argCaptorEntity.getAllValues().get(1).getBody().toString()).getAsJsonObject());
 	}
 
@@ -681,27 +567,20 @@ class RestClientVraNgPrimitiveTest {
 
 		ArgumentCaptor<URI> argCaptorUri = ArgumentCaptor.forClass(URI.class);
 		ArgumentCaptor<HttpMethod> argCaptorMethod = ArgumentCaptor.forClass(HttpMethod.class);
-		ArgumentCaptor<HttpEntity> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
+		ArgumentCaptor<HttpEntity<String>> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
 
-		ResponseEntity response = Mockito.mock(ResponseEntity.class);
+		ResponseEntity<String> response = Mockito.mock(ResponseEntity.class);
 		when(response.getStatusCode()).thenReturn(HttpStatus.valueOf(HTTP_SUCCESS_CODE));
 		when(response.getBody()).thenReturn(mockCustomResource.getJson());
 
-		when(
-				restTemplate.exchange(
-						argCaptorUri.capture(),
-						argCaptorMethod.capture(),
-						argCaptorEntity.capture(),
-						any(Class.class)))
-				.thenReturn(response);
+		when(restTemplate.exchange(argCaptorUri.capture(), argCaptorMethod.capture(), argCaptorEntity.capture(),
+				any(Class.class))).thenReturn(response);
 
 		// WHEN
 		restClient.importCustomResourcePrimitive(mockCustomResource.getJson());
 
 		// THEN
-		verify(
-				restTemplate,
-				times(1)).exchange(any(), any(), any(), any(Class.class));
+		verify(restTemplate, times(1)).exchange(any(), any(), any(), any(Class.class));
 
 		assertEquals(expectedUri, argCaptorUri.getValue());
 		assertEquals(HttpMethod.POST, argCaptorMethod.getValue());
@@ -710,8 +589,7 @@ class RestClientVraNgPrimitiveTest {
 				.build();
 
 		// First time we expect the same CR without any `additionalActions`
-		assertEquals(
-				JsonParser.parseString(expectedMockCustomResource.getJson()).getAsJsonObject(),
+		assertEquals(JsonParser.parseString(expectedMockCustomResource.getJson()).getAsJsonObject(),
 				JsonParser.parseString(argCaptorEntity.getValue().getBody().toString()).getAsJsonObject());
 	}
 
@@ -727,26 +605,20 @@ class RestClientVraNgPrimitiveTest {
 
 		ArgumentCaptor<URI> argCaptorUri = ArgumentCaptor.forClass(URI.class);
 		ArgumentCaptor<HttpMethod> argCaptorMethod = ArgumentCaptor.forClass(HttpMethod.class);
-		ArgumentCaptor<HttpEntity> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
+		ArgumentCaptor<HttpEntity<String>> argCaptorEntity = ArgumentCaptor.forClass(HttpEntity.class);
 
-		ResponseEntity response = Mockito.mock(ResponseEntity.class);
+		ResponseEntity<String> response = Mockito.mock(ResponseEntity.class);
 		when(response.getStatusCode()).thenReturn(HttpStatus.valueOf(HTTP_SUCCESS_CODE))
 				.thenReturn(HttpStatus.valueOf(HTTP_BAD_REQUEST_CODE));
 		when(response.getBody()).thenReturn(mockCustomResource.getJson());
 
-		when(
-				restTemplate.exchange(
-						argCaptorUri.capture(),
-						argCaptorMethod.capture(),
-						argCaptorEntity.capture(),
-						any(Class.class)))
-				.thenReturn(response);
+		when(restTemplate.exchange(argCaptorUri.capture(), argCaptorMethod.capture(), argCaptorEntity.capture(),
+				any(Class.class))).thenReturn(response);
 
 		// WHEN
-		Exception exception = assertThrows(
-				RuntimeException.class, () -> {
-					restClient.importCustomResourcePrimitive(mockCustomResource.getJson());
-				});
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			restClient.importCustomResourcePrimitive(mockCustomResource.getJson());
+		});
 
 		// THEN
 		assertTrue(exception.getMessage().contains("Unable to import additionalActions for Avi Load Balancer L3DSR"));
@@ -758,13 +630,11 @@ class RestClientVraNgPrimitiveTest {
 				.build();
 
 		// First time we expect the same CR without any `additionalActions`
-		assertEquals(
-				JsonParser.parseString(expectedMockCustomResource.getJson()).getAsJsonObject(),
+		assertEquals(JsonParser.parseString(expectedMockCustomResource.getJson()).getAsJsonObject(),
 				JsonParser.parseString(argCaptorEntity.getAllValues().get(0).getBody().toString()).getAsJsonObject());
 
 		// Second time we expect the CR with the `additionalActions` back
-		assertEquals(
-				JsonParser.parseString(mockCustomResource.getJson()).getAsJsonObject(),
+		assertEquals(JsonParser.parseString(mockCustomResource.getJson()).getAsJsonObject(),
 				JsonParser.parseString(argCaptorEntity.getAllValues().get(1).getBody().toString()).getAsJsonObject());
 	}
 
@@ -782,7 +652,6 @@ class RestClientVraNgPrimitiveTest {
 	}
 
 	private static Stream<Arguments> abxActionArgs() throws IOException {
-
 		List<Arguments> arguments = new ArrayList<Arguments>();
 
 		Map<String, Object> expectedResult = AbxActionMockBuilder.buildAbxActionMap();
@@ -794,33 +663,37 @@ class RestClientVraNgPrimitiveTest {
 		// Memory Limit equal to zero
 		abxAction = AbxActionMockBuilder.buildAbxAction();
 		expectedResult = AbxActionMockBuilder.buildAbxActionMap();
-		abxAction.platform.memoryLimitMb = 0;
+		abxAction.getPlatform().setMemoryLimitMb(0);
 		arguments.add(Arguments.of(expectedResult, abxAction));
 
 		// Memory Limit Greater Than zero
 		abxAction = AbxActionMockBuilder.buildAbxAction();
 		expectedResult = AbxActionMockBuilder.buildAbxActionMap();
-		abxAction.platform.memoryLimitMb = AbxActionMockBuilder.MEMORY_LIMIT;
+		abxAction.getPlatform().setMemoryLimitMb(AbxActionMockBuilder.MEMORY_LIMIT);
 		expectedResult.put("memoryInMB", AbxActionMockBuilder.MEMORY_LIMIT);
 		arguments.add(Arguments.of(expectedResult, abxAction));
 
 		// Timeout equal to zero
 		abxAction = AbxActionMockBuilder.buildAbxAction();
 		expectedResult = AbxActionMockBuilder.buildAbxActionMap();
-		abxAction.platform.timeoutSec = 0;
+
+		abxAction.getPlatform().setTimeoutSec(0);
 		arguments.add(Arguments.of(expectedResult, abxAction));
 
 		// Timeout greater than zero
 		abxAction = AbxActionMockBuilder.buildAbxAction();
 		expectedResult = AbxActionMockBuilder.buildAbxActionMap();
-		abxAction.platform.timeoutSec = AbxActionMockBuilder.TIMEOUT;
+
+		abxAction.getPlatform().setTimeoutSec(AbxActionMockBuilder.TIMEOUT);
 		expectedResult.put("timeoutSeconds", AbxActionMockBuilder.TIMEOUT);
 		arguments.add(Arguments.of(expectedResult, abxAction));
 
 		// Faas Provider Name Is Correct
 		abxAction = AbxActionMockBuilder.buildAbxAction();
 		expectedResult = AbxActionMockBuilder.buildAbxActionMap();
-		abxAction.platform.provider = AbxActionMockBuilder.FAAS_PROVIDER;
+
+		abxAction.getPlatform().setProvider(AbxActionMockBuilder.FAAS_PROVIDER);
+
 		expectedResult.put("provider", AbxActionMockBuilder.FAAS_PROVIDER);
 		arguments.add(Arguments.of(expectedResult, abxAction));
 
@@ -830,12 +703,11 @@ class RestClientVraNgPrimitiveTest {
 	@Test
 	void testCreateAbxActionMapThrownExceptionWhenFaasProviderNameIsNotCorrect() throws IOException {
 		AbxAction abxAction = AbxActionMockBuilder.buildAbxAction();
-		abxAction.platform.provider = "Non-existent provider";
+		abxAction.getPlatform().setProvider("Non-existent provider");
 
-		Exception exception = assertThrows(
-				RuntimeException.class, () -> {
-					restClient.createAbxActionMap(abxAction);
-				});
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			restClient.createAbxActionMap(abxAction);
+		});
 
 		assertTrue(exception.getMessage().contains("Faas provider name is not correct"));
 	}
@@ -848,21 +720,17 @@ class RestClientVraNgPrimitiveTest {
 		URI uri2 = restClient.getURI(restClient.getURIBuilder()
 				.setPath("/catalog/api/admin/sources" + "/" + "d0624893-4932-46a7-8e25-fab1e4109c2e"));
 
-		when(
-				this.restTemplate.exchange(uri, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(), String.class))
-				.thenReturn(
-						new ResponseEntity<>(
-								"{\"id\":\"679daee9-d63d-4ce2-9ee1-d4336861fe87\",\"name\":\"CsPolicy\",\"description\":\"Testing\",\"typeId\":\"com.vmware.policy.catalog.entitlement\",\"enforcementType\":\"HARD\",\"orgId\":\"27aaf31d-d9af-4c48-9736-eb9c9faa4ae8\",\"projectId\":\"c3f029f9-a97c-4df6-bdc4-c0e4b91aa18e\",\"definition\":{\"entitledUsers\":[{\"items\":[{\"id\":\"d0624893-4932-46a7-8e25-fab1e4109c2e\",\"type\":\"CATALOG_SOURCE_IDENTIFIER\"}],\"userType\":\"USER\",\"principals\":[{\"type\":\"PROJECT\",\"referenceId\":\"\"}]}]},\"createdAt\":\"2023-02-14T13:58:53.964473Z\",\"createdBy\":\"configurationadmin\",\"lastUpdatedAt\":\"2023-02-23T11:34:17.898581Z\",\"lastUpdatedBy\":\"configurationadmin\"}",
-								HttpStatus.OK));
+		when(this.restTemplate.exchange(uri, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>(
+						"{\"id\":\"679daee9-d63d-4ce2-9ee1-d4336861fe87\",\"name\":\"CsPolicy\",\"description\":\"Testing\",\"typeId\":\"com.vmware.policy.catalog.entitlement\",\"enforcementType\":\"HARD\",\"orgId\":\"27aaf31d-d9af-4c48-9736-eb9c9faa4ae8\",\"projectId\":\"c3f029f9-a97c-4df6-bdc4-c0e4b91aa18e\",\"definition\":{\"entitledUsers\":[{\"items\":[{\"id\":\"d0624893-4932-46a7-8e25-fab1e4109c2e\",\"type\":\"CATALOG_SOURCE_IDENTIFIER\"}],\"userType\":\"USER\",\"principals\":[{\"type\":\"PROJECT\",\"referenceId\":\"\"}]}]},\"createdAt\":\"2023-02-14T13:58:53.964473Z\",\"createdBy\":\"configurationadmin\",\"lastUpdatedAt\":\"2023-02-23T11:34:17.898581Z\",\"lastUpdatedBy\":\"configurationadmin\"}",
+						HttpStatus.OK));
 
-		when(
-				this.restTemplate.exchange(uri2, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(), String.class))
-				.thenReturn(
-						new ResponseEntity<>(
-								"{\"id\":\"d0624893-4932-46a7-8e25-fab1e4109c2e\",\"name\":\"Contentsource\",\"description\":\"Testing\",\"typeId\":\"com.vmw.vro.workflow\"}",
-								HttpStatus.OK));
+		when(this.restTemplate.exchange(uri2, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>(
+						"{\"id\":\"d0624893-4932-46a7-8e25-fab1e4109c2e\",\"name\":\"Contentsource\",\"description\":\"Testing\",\"typeId\":\"com.vmw.vro.workflow\"}",
+						HttpStatus.OK));
 
 		// START TEST
 		VraNgContentSharingPolicy csPolicy = restClient
@@ -877,15 +745,15 @@ class RestClientVraNgPrimitiveTest {
 	@Test
 	void testGetCloudAccountTags() throws URISyntaxException {
 		// GIVEN
-		URI uri = restClient.getURI(restClient.getURIBuilder().setPath("/iaas/api/cloud-accounts").setParameter("apiVersion", ""));
+		URI uri = restClient
+				.getURI(restClient.getURIBuilder().setPath("/iaas/api/cloud-accounts").setParameter("apiVersion", ""));
 
 		// WHEN
-		when(
-				this.restTemplate.exchange(uri, HttpMethod.GET,
-						RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
-						String.class))
-				.thenReturn(
-						new ResponseEntity<>("{\"content\":[{\"id\":\"\",\"name\":\"vc-l-01a\",\"cloudAccountType\":\"vsphere\",\"orgId\":\"mockOrg\",\"_links\":{},\"tags\":[{\"key\":\"env\",\"value\":\"dev\"},{\"key\":\"::::\",\"value\":\"\"},{\"key\":\"env_DEV::::\",\"value\":\"\"},{\"key\":\"env_DEV\",\"value\":\"\"}]}]}", HttpStatus.OK));
+		when(this.restTemplate.exchange(uri, HttpMethod.GET, RestClientVraNgPrimitiveTestDouble.getDefaultHttpEntity(),
+				String.class))
+				.thenReturn(new ResponseEntity<>(
+						"{\"content\":[{\"id\":\"\",\"name\":\"vc-l-01a\",\"cloudAccountType\":\"vsphere\",\"orgId\":\"mockOrg\",\"_links\":{},\"tags\":[{\"key\":\"env\",\"value\":\"dev\"},{\"key\":\"::::\",\"value\":\"\"},{\"key\":\"env_DEV::::\",\"value\":\"\"},{\"key\":\"env_DEV\",\"value\":\"\"}]}]}",
+						HttpStatus.OK));
 
 		List<VraNgCloudAccount> cloudAccounts = this.restClient.getAllCloudAccounts();
 		String actual = cloudAccounts.stream().map(e -> e.getTags().toString()).reduce("", String::concat);
@@ -894,5 +762,5 @@ class RestClientVraNgPrimitiveTest {
 		// THEN
 		assertEquals(expected, actual);
 	}
-	
+
 }

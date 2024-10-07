@@ -15,16 +15,24 @@
 package com.vmware.pscoe.iac.artifact.model.abx;
 
 public class AbxActionVersion {
+	private String id;
+	private String name;
 
-	public String id;
-	public String name;
-
+	/**
+	 * getId().
+	 * 
+	 * @return getId of the constant.
+	 */
 	public String getId() {
 		return this.id;
 	}
 
+	/**
+	 * getName().
+	 * 
+	 * @return name of the constant.
+	 */
 	public String getName() {
 		return this.name;
 	}
-
 }
