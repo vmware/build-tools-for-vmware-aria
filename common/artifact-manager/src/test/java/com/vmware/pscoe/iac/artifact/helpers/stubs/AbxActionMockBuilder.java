@@ -22,7 +22,7 @@ import com.vmware.pscoe.iac.artifact.model.abx.Abx;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.Platform;
 
-public class AbxActionMockBuilder {
+public final class AbxActionMockBuilder {
 	public static final String FAAS_PROVIDER = "aws";
 	public static final Integer MEMORY_LIMIT = 150;
 	public static final Integer TIMEOUT = 350;
