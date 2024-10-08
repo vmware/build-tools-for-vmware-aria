@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,14 +25,17 @@ import org.springframework.http.MediaType;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 
 public abstract class RestClient {
+	/** Default HTTPS port */
+	private static final int DEFAULT_HTTPS_PORT = 443;
 
 	protected abstract Configuration getConfiguration();
 
 	protected URIBuilder getURIBuilder() {
 		URIBuilder uriBuilder = new URIBuilder().setScheme("https").setHost(getConfiguration().getHost());
 		int port = getConfiguration().getPort();
-		if (port != 443) {
-			// set the port only if not default, otherwise vRA Cloud complains about invalid Host header
+		if (port != DEFAULT_HTTPS_PORT) {
+			// set the port only if not default, otherwise vRA Cloud complains about invalid
+			// Host header
 			uriBuilder = uriBuilder.setPort(port);
 		}
 

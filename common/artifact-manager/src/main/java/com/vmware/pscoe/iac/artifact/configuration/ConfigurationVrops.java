@@ -18,14 +18,15 @@ import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationVrops extends ConfigurationWithRefreshToken {
+	/** 0x0FFFF = 65535 */
+	private static final int MAX_PORT_VAL = 0x0FFFF;
 	// Important - when modify properties refer to comments in @Configuration
 	public static final String VROPS_DASHBOARD_USER = "dashboardUser";
 	public static final String VROPS_REST_USER = "restUser";
@@ -53,8 +54,10 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 		try {
 			return Integer.parseInt(properties.getProperty(PORT));
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("Vrops property \"" + PORT + "\" with value \"" + properties.getProperty(PORT) + "\" is not a port number: "
-					+ e.getLocalizedMessage() + ". Please specify the port number which the vROps web UI listens on as vrops property \"" + PORT
+			throw new RuntimeException("Vrops property \"" + PORT + "\" with value \"" + properties.getProperty(PORT)
+					+ "\" is not a port number: "
+					+ e.getLocalizedMessage()
+					+ ". Please specify the port number which the vROps web UI listens on as vrops property \"" + PORT
 					+ "\" in your settings.xml.");
 		}
 	}
@@ -63,8 +66,11 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 		try {
 			return Integer.parseInt(properties.getProperty(SSH_PORT));
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("Vrops property \"" + SSH_PORT + "\" with value \"" + properties.getProperty(SSH_PORT) + "\" is not a port number: "
-					+ e.getLocalizedMessage() + ". Please specify the port number which the vROps appliance SSH Service listens on as vrops property \"" + SSH_PORT
+			throw new RuntimeException("Vrops property \"" + SSH_PORT + "\" with value \""
+					+ properties.getProperty(SSH_PORT) + "\" is not a port number: "
+					+ e.getLocalizedMessage()
+					+ ". Please specify the port number which the vROps appliance SSH Service listens on as vrops property \""
+					+ SSH_PORT
 					+ "\" in your settings.xml.");
 		}
 	}
@@ -97,27 +103,32 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 
 	public AuthProvider getAuthProvider() {
 		final String authProvider = properties.getProperty(VROPS_REST_AUTH_PROVIDER);
-		return StringUtils.isEmpty(authProvider) ? DEFAULT_AUTH_PROVIDER : AuthProvider.valueOf(authProvider.toUpperCase());
+		return StringUtils.isEmpty(authProvider) ? DEFAULT_AUTH_PROVIDER
+				: AuthProvider.valueOf(authProvider.toUpperCase());
 	}
 
 	@Override
 	public void validate(boolean domainOptional) throws ConfigurationException {
 		if (StringUtils.isEmpty(getHost())) {
-			throw new ConfigurationException("Configuration validation failed. Empty vROps host. Please make sure you have defined the vrops property '"
-					+ HOST + "'. You may define that in maven 'settings.xml'.");
+			throw new ConfigurationException(
+					"Configuration validation failed. Empty vROps host. Please make sure you have defined the vrops property '"
+							+ HOST + "'. You may define that in maven 'settings.xml'.");
 		}
 
 		if (StringUtils.isEmpty(getVropsDashboardUser())) {
 			throw new ConfigurationException("Configuration validation failed. Empty vROps Dashboard user. "
-					+ "Please make sure you have defined the vrops property '" + VROPS_DASHBOARD_USER + "'. You may define that in maven 'settings.xml'.");
+					+ "Please make sure you have defined the vrops property '" + VROPS_DASHBOARD_USER
+					+ "'. You may define that in maven 'settings.xml'.");
 		}
 		if (StringUtils.isEmpty(getVropsRestUser())) {
 			throw new ConfigurationException("Configuration validation failed. Empty vROps REST  user. "
-					+ "Please make sure you have defined the vrops property '" + VROPS_REST_USER + "'. You may define that in maven 'settings.xml'.");
+					+ "Please make sure you have defined the vrops property '" + VROPS_REST_USER
+					+ "'. You may define that in maven 'settings.xml'.");
 		}
 
 		if (StringUtils.isEmpty(getDomain()) && !domainOptional) {
-			throw new ConfigurationException("Domain (in vrops username) is empty and domain optional flag is 'false'. Username format should be <userowname>@<domain>.");
+			throw new ConfigurationException(
+					"Domain (in vrops username) is empty and domain optional flag is 'false'. Username format should be <userowname>@<domain>.");
 		}
 
 		try {
@@ -131,27 +142,32 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 			InetAddress.getByName(host);
 		} catch (UnknownHostException uhe) {
 			throw new ConfigurationException(
-					String.format("Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s", HOST, host, uhe.getMessage()));
+					String.format(
+							"Configuration validation failed. The vrops %s value %s is not valid host / IP address of the server. %s",
+							HOST, host, uhe.getMessage()));
 		}
 		try {
 			if (!checkPort(getSshPort())) {
 				throw new ConfigurationException(
-						String.format("The vrops %s value %s is not valid since it should be between %d and %d", SSH_PORT,
-								getSshPort(), 0, 0x0FFFF));
+						String.format("The vrops %s value %s is not valid since it should be between %d and %d",
+								SSH_PORT,
+								getSshPort(), 0, MAX_PORT_VAL));
 			}
 			if (!checkPort(getHttpPort())) {
 				throw new ConfigurationException(
 						String.format("The vrops %s value %s is not valid since it should be between %d and %d", PORT,
-								getHttpPort(), 0, 0x0FFFF));
+								getHttpPort(), 0, MAX_PORT_VAL));
 			}
 		} catch (RuntimeException e) {
-			throw new ConfigurationException(String.format("Vrops configuration validation failed. Invalid port number: %s", e.getMessage()));
+			throw new ConfigurationException(
+					String.format("Vrops configuration validation failed. Invalid port number: %s", e.getMessage()));
 		}
 
 		String restPass = getVropsRestPassword();
 		if (restPass == null || restPass.trim().length() == 0) {
-			throw new ConfigurationException("Configuration validation failed. Empty vROps REST User Password. Please make sure you have defined the vrops property \""
-					+ VROPS_REST_PASSWORD + "\". You may define that in maven 'settings.xml'.");
+			throw new ConfigurationException(
+					"Configuration validation failed. Empty vROps REST User Password. Please make sure you have defined the vrops property \""
+							+ VROPS_REST_PASSWORD + "\". You may define that in maven 'settings.xml'.");
 		}
 	}
 
@@ -164,7 +180,7 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 	}
 
 	private boolean checkPort(int port) {
-		return port > 0 && port < 0x0FFFF;
+		return port > 0 && port < MAX_PORT_VAL;
 	}
 
 	public enum AuthProvider {

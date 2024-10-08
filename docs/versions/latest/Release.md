@@ -21,84 +21,68 @@
 
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (Optional But highly recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### *Added new polyglot runtimes*
+### *Add new Powershell and PowerCLI runtime options*
 
-The following runtimes have been added to the polyglot archetype:
+The following have been added:
 
-- `node:18`
-- `node:20`
+```text
+- `powercli:12-powershell-7.4`
+- `powercli:13-powershell-7.4`
+- `powershell:7.4`
+```
 
 ## Improvements
 
-### Update ZipWriter class interface
-
-Added constructor to ZipWriter class interface. Updated input parameter types of ZipWriter functions.
-
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
+[//]: # (Optional But highly recommended)
 [//]: # (#### Previous Behavior)
 [//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
+[//]: # (Optional But highly recommended)
 [//]: # (#### New Behavior)
 [//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (Optional But highly recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### `for each` transformer does not respect comments
 
-We have a transformer in `vropkg` as a way to automatically convert 'Aria Orchestrator' supported `for each` loops to normal `for` loops.
+### Pushing Fails when Pushing ABX action
 
-#### Previous Behavior
-
-The transformer did not respect comments and would remove them.
-
-```js
-// for each (var i in [1, 2, 3]) { }
-/*
-
-for each (var i in [1, 2, 3]) { }
-
-*/
-
-/* for each (var i in [1, 2, 3]) { } */
-```
-
-Would all get transformed and the comments would be removed.
-
-#### New Behavior
-
-The transformer now respects comments and will not remove them.
-
-```js
-// for each (var i in [1, 2, 3]) { }
-/*
-
-for (var i in [1, 2, 3]) { }
-
-*/
-
-/* for (var i in [1, 2, 3]) { } */
-```
-
-The comments will be preserved and no transformation will be done.
-
-> Our overall recommendation would be to avoid writing `for each` loops in comments in the first place.
-
-### Fixed bug with exports
+Fixed problem with pushing ABX actions from a project created by the ABX archetype.
 
 #### Previous Behavior
 
-Running a workflow resulted in ERROR (com.vmware.pscoe.library.ecmascript/Module) Error in (Dynamic Script Module name : Module#18) ReferenceError: "exports" is not defined.
+When pushing ABX actions from a project created by the ABX archetype it fails with the following error:
+
+```log
+[ERROR] Failed to execute goal com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:push (default-cli) on project abx-project-1: You need to have the package goal as well when pushing vRealize projects.
+```
+#### New Behavior
+
+Pushing of ABX action now works with ABX actions created by the ABX archetype. Furthermore the `runtimeVersion` property was added to the `package.json` file where you can specify the runtime version where the action will be executed at. If not specified the lowest available runtime version will be used (i.e. for `node.js` action the default runtime version is `14.0` that is deprecated). With the new property you can workaround deprecated runtimes.
+
+### Restored missing 'exec' module
+
+The error when running an Action in VRDT UI was resolved by restoring the 'exec' module in 'packages'.
+
+#### Previous Behavior
+
+In VS Code with the vRealize Developer Tools plugin installed, when the 'Run vRO Action' command was issued via the UI kebab menu of a JS/TS Action, an error appeared in the OUTPUT of the type:
+
+```log
+# Running getVmWithTag.js
+# An error occurred: Could not import exec package into vRO: Command 'mvn dependency:copy -Dartifact=com.vmware.pscoe.o11n:exec::package -DoutputDirectory="/Users/user/Library/Application Support/Code/User/globalStorage/vmware-pscoe.vrealize-developer-tools" -Dmdep.stripVersion=true ' exited with code 1
+```
+
+The 'com.vmware.pscoe.o11n:exec' package was missing when building the build tools.
 
 #### New Behavior
 
-The bug in Module.ts is fixed and an error is no longer thrown.
+The 'com.vmware.pscoe.o11n:exec' package is no longer missing when built. The error above no longer appears when running an Action via VRDT UI.
 
 ## Upgrade procedure
 
