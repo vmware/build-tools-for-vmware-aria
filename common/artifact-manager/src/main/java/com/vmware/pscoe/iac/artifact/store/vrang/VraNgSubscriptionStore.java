@@ -58,7 +58,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	private List<VraNgProject> projects;
 
 	/**
-	 * Contains Id of the main proect.
+	 * Contains Id of the main project.
 	 */
 	private String configProjectId;
 
@@ -144,7 +144,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Immports all subscriptions from the source directory.
+	 * Imports all subscriptions from the source directory.
 	 * 
 	 * @param sourceDirectory - directory with the subscriptions.
 	 */
@@ -228,15 +228,14 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		}
 		JsonElement runnableNameElement = subscriptionJsonElement.get("runnableName");
 		List<AbxAction> actions = restClient.getAllAbxActions().stream()
-				.filter(a -> a.name.equals(runnableNameElement.getAsString()))
-				.collect(Collectors.toList());
+				.filter(a -> a.getName().equals(runnableNameElement.getAsString())).collect(Collectors.toList());
 
 		if (actions.size() == 0) {
 			throw new RuntimeException("Abx actions with the specified Name can not be found");
 		}
 
 		subscriptionJsonElement.remove("runnableName");
-		subscriptionJsonElement.addProperty("runnableId", actions.get(0).id);
+		subscriptionJsonElement.addProperty("runnableId", actions.get(0).getId());
 	}
 
 	private String generateId(JsonObject subscriptionJsonElement, Map<String, VraNgSubscription> allSubscriptions) {
@@ -284,7 +283,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 
 		JsonElement runnableIdElement = subscriptionJsonElement.get("runnableId");
 		List<AbxAction> actions = restClient.getAllAbxActions().stream()
-				.filter(a -> a.id.equals(runnableIdElement.getAsString()))
+				.filter(a -> a.getId().equals(runnableIdElement.getAsString()))
 				.collect(Collectors.toList());
 
 		if (actions.size() == 0) {
@@ -292,7 +291,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		}
 
 		subscriptionJsonElement.remove("runnableId");
-		subscriptionJsonElement.addProperty("runnableName", actions.get(0).name);
+		subscriptionJsonElement.addProperty("runnableName", actions.get(0).getName());
 	}
 
 	private void substituteProjects(JsonObject content) {
@@ -313,10 +312,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 				JsonArray newProjectIdElements = new JsonArray();
 				newProjectIdElements.add(configProjectId);
 				projectNamesElement.getAsJsonArray().forEach(el -> projectNames.add(el.getAsString()));
-				projectNames.stream()
-						.distinct()
-						.map(this::projectNameToId)
-						.filter(Objects::nonNull)
+				projectNames.stream().distinct().map(this::projectNameToId).filter(Objects::nonNull)
 						.forEach(id -> newProjectIdElements.add(id));
 
 				constraintJsonObject.add("projectId", newProjectIdElements);
@@ -326,9 +322,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 				List<String> projectIds = new ArrayList<>();
 				projectIds.add(this.configProjectId);
 				projectIdElement.getAsJsonArray().forEach(el -> projectIds.add(el.getAsString()));
-				projectIds.stream()
-						.distinct()
-						.filter(this::isProjectIdPresent)
+				projectIds.stream().distinct().filter(this::isProjectIdPresent)
 						.forEach(id -> newProjectIdElements.add(id));
 				constraintJsonObject.remove("projectId");
 				constraintJsonObject.add("projectId", newProjectIdElements);
@@ -337,26 +331,16 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	}
 
 	private String projectIdToName(String projectId) {
-		return projects
-				.stream()
-				.filter(prj -> prj.getId().equals(projectId))
-				.map(prj -> prj.getName())
-				.findFirst()
+		return projects.stream().filter(prj -> prj.getId().equals(projectId)).map(prj -> prj.getName()).findFirst()
 				.orElse(null);
 	}
 
 	private Boolean isProjectIdPresent(String projectId) {
-		return projects
-				.stream()
-				.anyMatch(prj -> prj.getId().equals(projectId));
+		return projects.stream().anyMatch(prj -> prj.getId().equals(projectId));
 	}
 
 	private String projectNameToId(String name) {
-		return projects
-				.stream()
-				.filter(prj -> prj.getName().equals(name))
-				.map(prj -> prj.getId())
-				.findFirst()
+		return projects.stream().filter(prj -> prj.getName().equals(name)).map(prj -> prj.getId()).findFirst()
 				.orElse(null);
 	}
 }

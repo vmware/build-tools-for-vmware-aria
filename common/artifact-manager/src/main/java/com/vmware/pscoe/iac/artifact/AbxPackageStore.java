@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	/**
 	 *
 	 * @param restClientVraNg vRA Rest Client
-	 * @param abxConfig abx configuration
+	 * @param abxConfig       abx configuration
 	 */
 	protected AbxPackageStore(final RestClientVraNg restClientVraNg, final ConfigurationAbx abxConfig) {
 		this.restClient = restClientVraNg;
@@ -83,9 +82,9 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 
 	/**
 	 *
-	 * @param pkg package to delete
+	 * @param pkg         package to delete
 	 * @param withContent whether to delete it with content
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun      whether it should be dry run
 	 * @return the deleted package
 	 */
 	@Override
@@ -96,7 +95,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	/**
 	 *
 	 * @param content the content to delete
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun  whether it should be dry run
 	 */
 	@Override
 	protected final void deleteContent(final Content content, final boolean dryrun) {
@@ -106,7 +105,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	/**
 	 *
 	 * @param abxPackages the axb packages to export
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun      whether it should be dry run
 	 * @return the exported packages
 	 */
 	@Override
@@ -131,26 +130,28 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 
 	/**
 	 *
-	 * @param pkg the packages to import
-	 * @param dryrun whether it should be dry run
+	 * @param pkg          the packages to import
+	 * @param dryrun       whether it should be dry run
 	 * @param enableBackup whether to enable backup of package import
 	 * @return the imported packages
 	 */
 	@Override
-	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun,
+			final boolean enableBackup) {
 		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
 	/**
 	 *
-	 * @param abxPackages the abx packages to import
-	 * @param dryrun whether it should be dry run
+	 * @param abxPackages   the abx packages to import
+	 * @param dryrun        whether it should be dry run
 	 * @param mergePackages whether to merge the packages
-	 * @param enableBackup whether to enable backup of package import
+	 * @param enableBackup  whether to enable backup of package import
 	 * @return the imported packages
 	 */
 	@Override
-	public final List<Package> importAllPackages(final List<Package> abxPackages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
+	public final List<Package> importAllPackages(final List<Package> abxPackages, final boolean dryrun,
+			final boolean mergePackages, final boolean enableBackup) {
 		this.validateFilesystem(abxPackages);
 
 		List<Package> sourceEndpointPackages = abxPackages;
@@ -169,7 +170,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	/**
 	 *
 	 * @param abxPackage the abx package to export
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun     whether it should be dry run
 	 * @return the exported package
 	 */
 	@Override
@@ -180,26 +181,29 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 
 	/**
 	 *
-	 * @param abxPackage the abx package to export
+	 * @param abxPackage                 the abx package to export
 	 * @param abxPackageDescriptorParent the parent of the abx package descriptor
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun                     whether it should be dry run
 	 * @return the exported package
 	 */
 	@Override
-	public final Package exportPackage(final Package abxPackage, final File abxPackageDescriptorParent, final boolean dryrun) {
+	public final Package exportPackage(final Package abxPackage, final File abxPackageDescriptorParent,
+			final boolean dryrun) {
 		AbxPackageDescriptor abxPackageDescriptor = AbxPackageDescriptor.getInstance(abxPackageDescriptorParent);
 		return exportPackage(abxPackage, abxPackageDescriptor, dryrun);
 	}
 
 	/**
 	 * Main handler for exporting abx package based on package.json file.
-	 * @param pkg abx package
+	 * 
+	 * @param pkg               abx package
 	 * @param packageDescriptor abx package descriptor file
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun            whether it should be dry run
 	 * @return package
 	 */
 	@Override
-	public final Package exportPackage(final Package pkg, final AbxPackageDescriptor packageDescriptor, final boolean dryrun) {
+	public final Package exportPackage(final Package pkg, final AbxPackageDescriptor packageDescriptor,
+			final boolean dryrun) {
 		logger.info(String.format(PackageStore.PACKAGE_EXPORT, pkg));
 
 		logger.warn("ABX content pull is not supported yet");
@@ -209,8 +213,9 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 
 	/**
 	 * Main handler for importing abx package.
+	 * 
 	 * @param abxPackage ABX package
-	 * @param dryrun dryrun flag
+	 * @param dryrun     dryrun flag
 	 * @return package
 	 */
 	@Override
@@ -236,42 +241,49 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 
 	/**
 	 * Add ABX action constants to the payload.
+	 * 
 	 * @param actionToImport ABX action to import
 	 */
 	protected final void addActionConstantsToPayload(final AbxAction actionToImport) {
-		if (actionToImport.abx.inputConstants != null && actionToImport.abx.inputConstants.length > 0) {
-			logger.debug("Number of definied constants: " + actionToImport.abx.inputConstants.length);
-			for (String name : actionToImport.abx.inputConstants) {
-				AbxConstant abxConstant = this.restClient.getAbxConstant(name);
-				if (abxConstant == null) {
-					throw new RuntimeException("Unable to find action constant with name: " + name);
-				}
-				actionToImport.abx.inputs.put(String.format("secret:%s", abxConstant.id), "");
+		if (actionToImport.getAbx().getInputConstants() == null
+				|| actionToImport.getAbx().getInputConstants().isEmpty()) {
+			return;
+		}
+
+		logger.debug("Number of definied constants: " + actionToImport.getAbx().getInputConstants().size());
+		for (String name : actionToImport.getAbx().getInputConstants()) {
+			AbxConstant abxConstant = this.restClient.getAbxConstant(name);
+			if (abxConstant == null) {
+				throw new RuntimeException("Unable to find action constant with name: " + name);
 			}
+			actionToImport.getAbx().getInputs().put(String.format("secret:%s", abxConstant.id), "");
 		}
 	}
 
 	/**
 	 * Add secrets to the payload.
+	 * 
 	 * @param actionToImport ABX action to import
 	 */
 	protected final void addSecretsToPayload(final AbxAction actionToImport) {
-		if (actionToImport.abx.inputSecrets != null && actionToImport.abx.inputSecrets.length > 0) {
-			logger.debug("Number of definied secrets: " + actionToImport.abx.inputSecrets.length);
-			for (String name : actionToImport.abx.inputSecrets) {
-				VraNgSecret secret = this.restClient.getSecret(name);
-				if (secret == null) {
-					throw new RuntimeException("Unable to find secret with name: " + name);
-				}
-				actionToImport.abx.inputs.put(String.format("psecret:%s", secret.id), "");
+		if (actionToImport.getAbx().getInputSecrets() == null || actionToImport.getAbx().getInputSecrets().isEmpty()) {
+			return;
+		}
+
+		logger.debug("Number of definied secrets: " + actionToImport.getAbx().getInputSecrets().size());
+		for (String name : actionToImport.getAbx().getInputSecrets()) {
+			VraNgSecret secret = this.restClient.getSecret(name);
+			if (secret == null) {
+				throw new RuntimeException("Unable to find secret with name: " + name);
 			}
+			actionToImport.getAbx().getInputs().put(String.format("psecret:%s", secret.id), "");
 		}
 	}
 
 	/**
 	 *
 	 * @param pkgDescriptor the abx package descriptor
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun        whether it should be dry run
 	 */
 	private void importAction(final AbxPackageDescriptor pkgDescriptor, final boolean dryrun) {
 
@@ -283,19 +295,15 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 		// Build payload
 		AbxAction actionToImport = pkgDescriptor.getAction();
 
-		if (actionToImport.abx.inputs == null) {
-			actionToImport.abx.inputs = new HashMap<>();
-		}
-
 		addSecretsToPayload(actionToImport);
 		addActionConstantsToPayload(actionToImport);
 
 		// Issue REST request
 		if (abxActionsOnServerByName.containsKey(actionToImport.getName())) {
 			AbxAction actionToUpdate = abxActionsOnServerByName.get(actionToImport.getName());
-			logger.info("Updating action: {} ({})", actionToImport.getName(), actionToUpdate.id);
+			logger.info("Updating action: {} ({})", actionToImport.getName(), actionToUpdate.getId());
 			if (!dryrun) {
-				this.restClient.updateAbxAction(actionToUpdate.id, actionToImport);
+				this.restClient.updateAbxAction(actionToUpdate.getId(), actionToImport);
 			} else {
 				logger.info("Dryrun has been set to 'true'. Skipping actual update...");
 			}

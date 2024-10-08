@@ -62,6 +62,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 
 public class RestClientVraNg extends RestClientVraNgPrimitive {
+	private static final String SUBSCRIPTION_BASE_QUERY = "type ne 'SUBSCRIBABLE'";
+	private static final String SUBSCRIPTION_QUERY_PARAM = "%s eq '%s'";
+
 	/**
 	 * logger.
 	 */
@@ -348,7 +351,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getAllSubscriptions() {
-		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE'");
+		return getAllSubscriptionsPrimitive(SUBSCRIPTION_BASE_QUERY);
 	}
 
 	/**
@@ -376,7 +379,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByName(final String name) {
-		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE' and name eq '" + name + "'");
+		return getAllSubscriptionsPrimitive(
+				SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name));
 	}
 
 	/**
@@ -386,7 +390,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgId(final String orgId) {
-		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE' and orgId eq '" + orgId + "'");
+		return getAllSubscriptionsPrimitive(
+				SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId));
 	}
 
 	/**
@@ -397,8 +402,10 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgIdAndName(final String orgId, final String name) {
-		return getAllSubscriptionsPrimitive(
-				"type ne 'SUBSCRIBABLE' and orgId eq '" + orgId + "' and name eq '" + name + "'");
+		String query = SUBSCRIPTION_BASE_QUERY
+				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId)
+				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name);
+		return getAllSubscriptionsPrimitive(query);
 	}
 
 	// =================================================
@@ -1227,8 +1234,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return importResourceActionPrimitive(resourceActionJson);
 		} catch (Exception e) {
 			throw new RuntimeException(
-					String.format("Could not import resource action with name '%s'.", resourceActionName),
-					e);
+					String.format("Could not import resource action with name '%s'.", resourceActionName), e);
 		}
 	}
 
@@ -1295,7 +1301,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public AbxActionVersion getAbxLastUpdatedVersion(final AbxAction action) {
 		try {
-			return getAbxLastUpdatedVersionPrimitive(action.id);
+			return getAbxLastUpdatedVersionPrimitive(action.getId());
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not get latest version of ABX action with name '%s'.", action.getName()), e);
@@ -1311,7 +1317,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public AbxActionVersion createAbxVersion(final AbxAction action, final String version) {
 		try {
-			return createAbxVersionPrimitive(action.id, version);
+			return createAbxVersionPrimitive(action.getId(), version);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create version of ABX action with name '%s'.", action.getName()), e);
@@ -1327,7 +1333,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public AbxActionVersion releaseAbxVersion(final AbxAction action, final String versionId) {
 		try {
-			return releaseAbxVersionPrimitive(action.id, versionId);
+			return releaseAbxVersionPrimitive(action.getId(), versionId);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not release version of ABX action with name '%s'.", action.getName()), e);
