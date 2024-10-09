@@ -16,21 +16,21 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import com.google.gson.JsonObject;
 
-public final class VraNgDeploymentLimitPolicy {
+public final class VraNgDeploymentLimitPolicy implements Identifiable {
 	/**
 	 * Id of the Policy.
 	 */
 	private String id;
 	/**
-	 * Name of the  Policy.
+	 * Name of the Policy.
 	 */
 	private String name;
 	/**
-	 * TypeId of the  Policy.
+	 * TypeId of the Policy.
 	 */
 	private String typeId;
 	/**
-	 * ProjectId of the  Policy.
+	 * ProjectId of the Policy.
 	 */
 	private String projectId;
 	/**
@@ -42,10 +42,9 @@ public final class VraNgDeploymentLimitPolicy {
 	 */
 	private String enforcementType;
 	/**
-	 * Description of the  Policy.
+	 * Description of the Policy.
 	 */
 	private String description;
-
 
 	/**
 	 * Scope Criteria of the Policy.
@@ -56,7 +55,7 @@ public final class VraNgDeploymentLimitPolicy {
 	 */
 	private JsonObject criteria;
 	/**
-	 * Definition  Policy.
+	 * Definition Policy.
 	 */
 	private JsonObject definition;
 
@@ -70,14 +69,15 @@ public final class VraNgDeploymentLimitPolicy {
 	 * @param orgIdIn           organizationId of the policy.
 	 * @param enforcementTypeIn enforcement type of the policy.
 	 * @param descriptionIn     description of the policy.
-	 * @param definitionIn      actual policy definition - different structure for every policy type.
+	 * @param definitionIn      actual policy definition - different structure for
+	 *                          every policy type.
 	 * @param criteriaIn        criteria of the policy.
 	 * @param scopeCriteriaIn   scope criteria of the policy.
 	 */
 	public VraNgDeploymentLimitPolicy(final String idIn, final String nameIn, final String typeIdIn,
-									  final String projectIdIn, final String orgIdIn,
-									  final String enforcementTypeIn, final String descriptionIn,
-									  final JsonObject definitionIn, final JsonObject criteriaIn, final JsonObject scopeCriteriaIn) {
+			final String projectIdIn, final String orgIdIn,
+			final String enforcementTypeIn, final String descriptionIn,
+			final JsonObject definitionIn, final JsonObject criteriaIn, final JsonObject scopeCriteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;

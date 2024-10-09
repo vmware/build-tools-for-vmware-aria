@@ -44,82 +44,56 @@ public class PackageMojo extends AbstractMojo {
 	private MavenProject project;
 
 	/**
-	 * The function is extended with support for multiple ABX bundles in a single project
-	 * The ABX package consists of package.json and bundle.zip files
-	 * They are taken from project_root/package.json and project_root/dist/bundle.zip
-	 * The format does not support multiple actions
+	 * The function is extended with support for multiple ABX bundles in a single
+	 * project The ABX package consists of package.json and bundle.zip files They
+	 * are taken from project_root/package.json and project_root/dist/bundle.zip The
+	 * format does not support multiple actions
 	 *
 	 * This function is enhanced to support alternative folder structure:
-	 *   project_root/
-	 *     dist/
-	 *       action_name/
-	 *         package.json
-	 *         dist/
-	 *           bundle.zip
-	 * The program searches for subfolders of project_root/dist that contain package.json and dist/
-	 * If found, every such directory is treated as separate artifact source.
-	 * If none found, project_root is used as artifact source.
+	 * project_root/ dist/ action_name/ package.json dist/ bundle.zip The program
+	 * searches for sub-directories of project_root/dist that contain package.json
+	 * and dist/ If found, every such directory is treated as separate artifact
+	 * source. If none found, project_root is used as artifact source.
 	 *
-	 * maven does not support multiple artifacts.
-	 * To work around this, all artifacts created except the last one are added to the project as dependencies.
+	 * maven does not support multiple artifacts. To work around this, all artifacts
+	 * created except the last one are added to the project as dependencies.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() throws MojoExecutionException {
-		File distDir = new File(project.getBasedir(), "dist");
 		String packageName = project.getName();
 		List<File> dirList = new ArrayList<>();
 		List<String> packageNameList = new ArrayList<>();
 		List<Artifact> depArtifacts = new ArrayList<>();
 
 		// Prepare list of artifact root folders
-		getBundlesList(distDir, packageName, dirList, packageNameList);
+		getBundlesList(project.getBasedir(), packageName, dirList, packageNameList);
 
-		for (int i = 0; i < dirList.size(); i++) {
-			// Add the previous artifact to dependencies list
-			if (i > 0) {
+		int index = 0;
+		for (File dir : dirList) {
+			if (index > 0) {
 				Artifact depArtifact = ArtifactUtils.copyArtifact(project.getArtifact());
 				depArtifact.setScope("system");
 				depArtifacts.add(depArtifact);
 			}
-
-			// Change project according to the current bundle
-			File newBaseDir = dirList.get(i);
-			String newPackageName = packageNameList.get(i);
+			String newPackageName = packageNameList.get(index);
 			project.getArtifact().setArtifactId(newPackageName);
 			project.setName(newPackageName);
-			getLog().info("ABX action name " + newPackageName);
+			getLog().info("ABX action name '" + newPackageName + "'");
 
 			MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-
-			File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
-			getLog().info("Target ABX package file " + pkgFile.getAbsolutePath());
-
+			File pkgFile = new File(dir, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
 			Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
-
 			try {
-				PackageManager mgr = new PackageManager(pkg);
-
-				// add everything from the dist dir
-				File distFile = new File(newBaseDir, "dist");
-				if(distFile.exists()){
-					// multi artifact ABX project
-					mgr.pack(distFile);
-				} else {
-					// single artifact ABX project
-					mgr.pack(new File(newBaseDir, "."));
-				}
-
-				// add package.json
-				File packageJsonFile = new File(newBaseDir, "package.json");
-				mgr.addTextFileToExistingZip(packageJsonFile, Paths.get("."));
-
-				project.getArtifact().setFile(pkgFile);
-
-			} catch (IOException e) {
-				String message = String.format("Error creating ABX bundle: %s", e.getMessage());
-				throw new MojoExecutionException(e, message, message);
+				this.preparePackageFile(pkg, dir, new File(pkgFile.getAbsolutePath()));
+				getLog().info("Target ABX package file '" + project.getArtifact().getFile().getAbsolutePath() + "'");
+			} catch (MojoExecutionException e) {
+				throw e;
 			}
+
+			index++;
 		}
+
 		// Add dependency artifacts to the project
 		for (Artifact artifact : depArtifacts) {
 			project.getDependencyArtifacts().add(artifact);
@@ -127,8 +101,9 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	/**
-	 * Method checks for subfolders of a given directory that contain a file package.json and a subfolder dist
-	 * If no results are found, the list is populated with input data
+	 * Method checks for sub-directories of a given directory that contain a file
+	 * package.json and a sub-directory dist If no results are found, the list is
+	 * populated with input data
 	 */
 	private void getBundlesList(File dir, String packageName, List<File> dirList, List<String> packageNameList) {
 		if (dir == null || !dir.exists() || !dir.isDirectory()) {
@@ -139,6 +114,7 @@ public class PackageMojo extends AbstractMojo {
 			if (file.isDirectory()) {
 				File packageJson = new File(file, "package.json");
 				if (packageJson.exists() && !packageJson.isDirectory()) {
+					// multi-artifact ABX project
 					File distSubfolder = new File(file, "dist");
 					if (distSubfolder.exists() && distSubfolder.isDirectory()) {
 						dirList.add(file);
@@ -150,6 +126,28 @@ public class PackageMojo extends AbstractMojo {
 		if (dirList.isEmpty()) {
 			dirList.add(dir);
 			packageNameList.add(packageName);
+		}
+	}
+
+	private void preparePackageFile(Package pkg, File dir, File targetPackageFile) throws MojoExecutionException {
+		try {
+			PackageManager mgr = new PackageManager(pkg);
+			// add everything from the dist directory
+			File distFile = new File(dir, "dist");
+			if (distFile.exists()) {
+				// multi-artifact ABX project
+				mgr.pack(distFile);
+			} else {
+				// single artifact ABX project
+				mgr.pack(new File(dir, "."));
+			}
+			// add package.json
+			File packageJsonFile = new File(dir, "package.json");
+			mgr.addTextFileToExistingZip(packageJsonFile, Paths.get("."));
+			project.getArtifact().setFile(targetPackageFile);
+		} catch (IOException e) {
+			String message = String.format("Error creating ABX bundle: %s", e.getMessage());
+			throw new MojoExecutionException(e, message, message);
 		}
 	}
 }

@@ -1,13 +1,13 @@
-import * as childProcess from "child_process";
-import * as gulp from "gulp";
-import * as path from "path";
-import * as fs from "fs-extra";
-import * as ansiColors from "ansi-colors";
-import { rollup } from "rollup";
-import { nodeResolve as rollupNodeResolve } from "@rollup/plugin-node-resolve";
 import rollupCommonjs from "@rollup/plugin-commonjs";
-import { terser as rollupTerser } from "rollup-plugin-terser";
+import { nodeResolve as rollupNodeResolve } from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
+import * as ansiColors from "ansi-colors";
+import * as childProcess from "child_process";
+import * as fs from "fs-extra";
+import * as gulp from "gulp";
 import Jasmine from "jasmine";
+import * as path from "path";
+import { rollup } from "rollup";
 
 const ROLLUP_IGNORE = [];
 
@@ -45,7 +45,7 @@ gulp.task("bundle", async done => {
                 ignoreDynamicRequires: true,
                 sourceMap: false,
             }),
-            rollupTerser()
+            terser()
         ]
     });
 

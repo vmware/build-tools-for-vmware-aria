@@ -43,16 +43,37 @@ import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_RESOURCE_A
 public class VraNgResourceActionStore extends AbstractVraNgStore {
 
 	/**
-	 * Separator for the Resource Type and the Resource Action Name. Used so we can have unique names even if we have
-	 * 	two resource actions of same name with different types. You can have a resource action with __ in the name
-	 * 	but not Source name with it.
+	 * Separator for the Resource Type and the Resource Action Name. Used so we can
+	 * have unique names even if we have
+	 * two resource actions of same name with different types. You can have a
+	 * resource action with __ in the name
+	 * but not Source name with it.
 	 */
-	private static final String RESOURCE_ACTION_SEPARATOR	= "__";
+	private static final String RESOURCE_ACTION_SEPARATOR = "__";
+
+	/**
+	 * Get all server contents.
+	 *
+	 * @return list of resource actions
+	 */
+	protected List<VraNgResourceAction> getAllServerContents() {
+		return this.restClient.getAllResourceActions().values().stream().collect(Collectors.toList());
+	}
+
+	/**
+	 * The deleteResourecAction takes in name just for logging purposes...
+	 *
+	 * @param resId resource id
+	 */
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteResourceAction(resId, resId);
+	}
 
 	/**
 	 * Import Content.
+	 * 
 	 * @param sourceDirectory source directory
-	*/
+	 */
 	public void importContent(final File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory", DIR_RESOURCE_ACTIONS);
 		File folder = Paths.get(sourceDirectory.getPath(), DIR_RESOURCE_ACTIONS).toFile();
@@ -60,7 +81,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 			logger.warn("Resource Actions Dir not found.");
 			return;
 		}
-		File[] files = this.filterBasedOnConfiguration(folder, new CustomFolderFileFilter(this.getItemListFromDescriptor()));
+		File[] files = this.filterBasedOnConfiguration(folder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 		if (files == null || files.length == 0) {
 			logger.warn("Could not find any resource actions.");
 			return;
@@ -87,14 +109,13 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent() {
-		Map<String, VraNgResourceAction> resourceActionOnServer	= this.restClient.getAllResourceActions();
+		Map<String, VraNgResourceAction> resourceActionOnServer = this.restClient.getAllResourceActions();
 
 		for (String resourceActionId : resourceActionOnServer.keySet()) {
 			storeResourceActionOnFilesystem(
-				vraNgPackage,
-				resourceActionOnServer.get(resourceActionId) .getName(),
-				resourceActionOnServer.get(resourceActionId).getJson()
-			);
+					vraNgPackage,
+					resourceActionOnServer.get(resourceActionId).getName(),
+					resourceActionOnServer.get(resourceActionId).getJson());
 		}
 	}
 
@@ -112,19 +133,17 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 			String[] nameParts = complexName.split(RESOURCE_ACTION_SEPARATOR, 2);
 			if (nameParts.length != 2) {
 				throw new RuntimeException(
-					String.format(
-						"Incorrect resourceAction name convention. Use: RESOURCE_TYPE__RESOURCE_ACTION_NAME, actual %s",
-						complexName
-					)
-				);
+						String.format(
+								"Incorrect resourceAction name convention. Use: RESOURCE_TYPE__RESOURCE_ACTION_NAME, actual %s",
+								complexName));
 			}
 
-			String resourceType		= nameParts[0];
-			String resourceActionName	= nameParts[1];
+			String resourceType = nameParts[0];
+			String resourceActionName = nameParts[1];
 
 			VraNgResourceAction serverResourceAction = serverResourceActions.stream()
 					.filter(ra -> resourceActionName.equals(ra.getName())
-						&& resourceType.equals(ra.getResourceType()))
+							&& resourceType.equals(ra.getResourceType()))
 					.findAny()
 					.orElse(null);
 
@@ -142,6 +161,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	/**
 	 * Sanitize ResourceAction json from unnecessary elements that prevent store or
 	 * publish later the content.
+	 * 
 	 * @param resourceActionJsonElement Resource Action Json Element
 	 */
 	private void sanitizeResourceActionJsonElement(final JsonObject resourceActionJsonElement) {
@@ -166,7 +186,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	 * @param resourceActionJson source resource action json
 	 * @return Resoruce Action File
 	 */
-	private File storeResourceActionOnFilesystem(final Package pkg, final String resourceActionName, final String resourceActionJson) {
+	private File storeResourceActionOnFilesystem(final Package pkg, final String resourceActionName,
+			final String resourceActionJson) {
 		File store = new File(pkg.getFilesystemPath());
 		File resourceAction = Paths.get(store.getPath(), DIR_RESOURCE_ACTIONS, resourceActionName + ".json").toFile();
 		resourceAction.getParentFile().mkdirs();
@@ -207,7 +228,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
 			this.populateVroEndpoint(resourceActionJsonElement);
 
-			VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, resourceActionJsonElement, "projectId");
+			VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, resourceActionJsonElement,
+					"projectId");
 
 			// Get resource action id property and use it to try to delete existing one
 			// resource action
@@ -236,6 +258,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 			throw new RuntimeException("Error executing POST to server: ", e);
 		}
 	}
+
 	/**
 	 * Populate Vro Endpoint.
 	 * 
@@ -261,7 +284,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	 * @param sourceJsonObject file of the resource action
 	 * @return Json Object
 	 */
-	private JsonObject updateFormInfoOnTopOfResult(final JsonObject resultJsonObject, final JsonObject sourceJsonObject) {
+	private JsonObject updateFormInfoOnTopOfResult(final JsonObject resultJsonObject,
+			final JsonObject sourceJsonObject) {
 
 		String newFormId = resultJsonObject.getAsJsonObject("formDefinition").getAsJsonPrimitive("id").getAsString();
 		JsonObject sourceForm = sourceJsonObject.getAsJsonObject("formDefinition");

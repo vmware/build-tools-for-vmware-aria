@@ -46,12 +46,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
+/**
+ * Blueprint store implementation for vRA NG.
+ */
 public class VraNgBlueprintStore extends AbstractVraNgStore {
 
-	/* ============================
+	/*
+	 * ============================
 	 * Static properties
-	 ============================ */
-
+	 * ============================
+	 */
 
 	/**
 	 * The file name where all the details for the BP will be stored.
@@ -63,9 +67,31 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	 */
 	private static final String BP_CONTENT_FILE_NAME = "content.yaml";
 
-	/* ============================
+	/**
+	 * Gets all blueprints on the server.
+	 *
+	 * Used during deletion.
+	 *
+	 * @return {List} of all blueprints
+	 */
+	protected List<VraNgBlueprint> getAllServerContents() {
+		return this.restClient.getAllBlueprints();
+	}
+
+	/**
+	 * Deletes a Blueprint By ID.
+	 *
+	 * @param resId resource ID
+	 */
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteBlueprint(resId);
+	}
+
+	/*
+	 * ============================
 	 * Publicly available interface
-	 ============================ */
+	 * ============================
+	 */
 
 	/**
 	 * Importing content into vRA target environment.
@@ -81,7 +107,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		}
 
 		// Check if there are any blueprints to import
-		File[] localBpList = this.filterBasedOnConfiguration(bpFolder, new CustomFolderFolderFilter(this.getItemListFromDescriptor()));
+		File[] localBpList = this.filterBasedOnConfiguration(bpFolder,
+				new CustomFolderFolderFilter(this.getItemListFromDescriptor()));
 
 		if (localBpList == null || localBpList.length == 0) {
 			logger.info("No blueprints available - skip import");
@@ -89,14 +116,15 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		}
 
 		Map<String, VraNgBlueprint> bpsOnServerByName = this.getAllBlueprints().stream()
-			.collect(Collectors.toMap(
-				VraNgBlueprint::getName,
-				item -> item,
-				(existing, replacement) -> {
-					throw new IllegalStateException("Blueprint with the same name found in the project, this is not supported in BTVA: (" + existing.getName() + ")");
-				},
-				LinkedHashMap::new
-			));
+				.collect(Collectors.toMap(
+						VraNgBlueprint::getName,
+						item -> item,
+						(existing, replacement) -> {
+							throw new IllegalStateException(
+									"Blueprint with the same name found in the project, this is not supported in BTVA: ("
+											+ existing.getName() + ")");
+						},
+						LinkedHashMap::new));
 
 		// Iterating blueprints by folder
 		for (File bpDir : localBpList) {
@@ -104,9 +132,11 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		}
 	}
 
-	/* ==============
+	/*
+	 * ==============
 	 * Export logic
-	 ============== */
+	 * ==============
+	 */
 
 	/**
 	 * Used to fetch the store's data from the package descriptor.
@@ -144,7 +174,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		for (String blueprintName : blueprintNames) {
 			// Check the export the content.yaml BPs and try to find them on the server
 			if (!blueprintNamesOnServer.contains(blueprintName)) {
-				throw new IllegalStateException("Blueprints with name [" + blueprintName + "] doesn't exist on the remote");
+				throw new IllegalStateException(
+						"Blueprints with name [" + blueprintName + "] doesn't exist on the remote");
 			}
 			storeBlueprintsOnFilesystem(vraNgPackage, blueprintsOnServer.get(blueprintName));
 		}
@@ -153,14 +184,16 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	/**
 	 * Fetches blueprints from the server.
 	 * Checks if there are duplicated blueprints in vRA and ignores them.
-	 * If there are blueprintNames provided, they will be used to check for duplicates as well
+	 * If there are blueprintNames provided, they will be used to check for
+	 * duplicates as well
 	 *
 	 * @param blueprintsBucket - Set of blueprint names
 	 * @return Map<String, VraNgBlueprint>
 	 */
 	private Map<String, VraNgBlueprint> fetchBlueprintsOnServer(final Set<String> blueprintsBucket) {
 		// Check if there are duplicates in project
-		// If content.yaml has blueprints contained multiple times in project, error is thrown
+		// If content.yaml has blueprints contained multiple times in project, error is
+		// thrown
 		// Otherwise duplicates are reported without errors
 		Map<String, VraNgBlueprint> blueprintsOnServer = new HashMap<>();
 
@@ -190,7 +223,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		logger.debug("Exporting '{}'", bpName);
 
 		// Creating the blueprint folder
-		String bpFolderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_BLUEPRINTS, bpName).toString();
+		String bpFolderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_BLUEPRINTS, bpName)
+				.toString();
 		File bpFolder = new File(bpFolderPath);
 		if (!bpFolder.exists()) {
 			bpFolder.mkdirs();
@@ -207,7 +241,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		byte[] detailsContent = gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class)).getBytes();
 		logger.debug("Creating details file: " + detailsFileName);
 		try {
-			logger.debug("Created file: {}", Files.write(Paths.get(detailsFileName), detailsContent, StandardOpenOption.CREATE));
+			logger.debug("Created file: {}",
+					Files.write(Paths.get(detailsFileName), detailsContent, StandardOpenOption.CREATE));
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -217,24 +252,30 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		logger.debug("Creating content file: " + contentFileName);
 		try {
 			byte[] contentBytes = blueprint.getContent().getBytes();
-			logger.debug("Created file: {}", Files.write(Paths.get(contentFileName), contentBytes, StandardOpenOption.CREATE));
+			logger.debug("Created file: {}",
+					Files.write(Paths.get(contentFileName), contentBytes, StandardOpenOption.CREATE));
 		} catch (Exception e) {
 			logger.error("Unable to store blueprint content file {} {}", bpName, contentFileName);
 			throw new RuntimeException("Unable to store blueprint.", e);
 		}
 	}
 
-	/* ==============
+	/*
+	 * ==============
 	 * Import logic
-	 ============== */
+	 * ==============
+	 */
 
 	/**
-	 * Handling import of a single blueprint - reading files from a directory, it's name would match
-	 * the blueprint name and contain files describing its details, content and versions.
+	 * Handling import of a single blueprint - reading files from a directory, it's
+	 * name would match
+	 * the blueprint name and contain files describing its details, content and
+	 * versions.
 	 *
-	 * @param bpDir blueprint folder
+	 * @param bpDir             blueprint folder
 	 * @param bpsOnServerByName existing blueprints from the server
-	 * @throws IllegalStateException if blueprint folder name mismatch with the name from details.json
+	 * @throws IllegalStateException if blueprint folder name mismatch with the name
+	 *                               from details.json
 	 */
 	private void handleBlueprintImport(final File bpDir, final Map<String, VraNgBlueprint> bpsOnServerByName) {
 		String bpName = bpDir.getName();
@@ -242,9 +283,12 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		VraNgBlueprint bp = loadBlueprintFromFilesystem(bpDir);
 		String bpID;
 
-		// Check the blueprint folder name(bpName) with the name from details.json(bp.getName())
+		// Check the blueprint folder name(bpName) with the name from
+		// details.json(bp.getName())
 		if (!Objects.equals(bp.getName(), bpName)) {
-			throw new IllegalStateException(String.format("Mismatch between the blueprint folder name and the name from details.json. (%s, %s)", bpName, bp.getName()));
+			throw new IllegalStateException(
+					String.format("Mismatch between the blueprint folder name and the name from details.json. (%s, %s)",
+							bpName, bp.getName()));
 		}
 
 		// Check if the blueprint exists
@@ -266,19 +310,23 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		VraNgReleaseManager releaseManager = new VraNgReleaseManager(this.restClient);
 		releaseManager.releaseNextVersion(bp);
 		if (this.config.getUnreleaseBlueprintVersions()) {
-			// Sleep so versions can be ordered correctly. Milliseconds parsing in JAVA is not very good, so we are
+			// Sleep so versions can be ordered correctly. Milliseconds parsing in JAVA is
+			// not very good, so we are
 			// forcing a one second difference between versions
 			try {
 				TimeUnit.SECONDS.sleep(1L);
-			} catch (InterruptedException ignored) { }
+			} catch (InterruptedException ignored) {
+			}
 
 			this.unreleaseOldVersions(bp);
 		}
 	}
 
-	/* ==============
+	/*
+	 * ==============
 	 * Helper methods
-	 ============== */
+	 * ==============
+	 */
 
 	/**
 	 * Read contents from a file - return as string value.
@@ -289,7 +337,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	private String readFileToString(final File file) {
 		try {
 			return Files.readAllLines(Paths.get(file.getPath()), StandardCharsets.UTF_8).stream()
-				.collect(Collectors.joining(System.lineSeparator())).toString();
+					.collect(Collectors.joining(System.lineSeparator())).toString();
 		} catch (IOException e) {
 			logger.error("Unable to read blueprint {}", file.getPath());
 			throw new RuntimeException("Unable to read blueprint.", e);
@@ -330,7 +378,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * A helper method that will unrelease all versions of the blueprint outside of the latest one.
+	 * A helper method that will unrelease all versions of the blueprint outside of
+	 * the latest one.
 	 *
 	 * @param blueprint blueprint to unrelease all versions from orderedVersions
 	 */
@@ -340,7 +389,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		JsonArray versionsArray = gson.fromJson(versionsJSON, JsonArray.class);
 
-		// Order the array, since id may be not in order... (due to previous Aria versions, use createdAt as a source of order)
+		// Order the array, since id may be not in order... (due to previous Aria
+		// versions, use createdAt as a source of order)
 		versionsArray = this.getVersionsInCorrectOrder(versionsArray);
 
 		// Remove the latest one, we don't want to unrelease that one
@@ -349,7 +399,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		try {
 			versionsArray.forEach(version -> {
 				logger.debug("Unreleasing version: %s", version.getAsJsonObject().get("id").getAsString());
-				this.restClient.unreleaseBlueprintVersion(blueprint.getId(), version.getAsJsonObject().get("id").getAsString());
+				this.restClient.unreleaseBlueprintVersion(blueprint.getId(),
+						version.getAsJsonObject().get("id").getAsString());
 			});
 		} catch (NullPointerException npe) {
 			logger.error("There was an error while processingv versions: %s", npe);
@@ -357,27 +408,30 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * A helper method that will order the versions JsonArray returned by id, so when importing they are imported in the correct order
+	 * A helper method that will order the versions JsonArray returned by id, so
+	 * when importing they are imported in the correct order
 	 * and when importing or creating a new version no errors are thrown.
 	 *
 	 * @param versionsArray versions
 	 * @return orderedVersions
 	 */
 	private JsonArray getVersionsInCorrectOrder(final JsonArray versionsArray) {
-		// Create an ArrayList from the JsonArray, so we can compare the elements via Collections
+		// Create an ArrayList from the JsonArray, so we can compare the elements via
+		// Collections
 		ArrayList<JsonElement> newList = new ArrayList<>();
 		JsonArray orderedVersions = new JsonArray();
 
 		try {
 			versionsArray.forEach(newList::add);
 
-			// Implementing a custom comparator for the Versions based on createdAt, so we can guarantee the order of export and therefore import.
+			// Implementing a custom comparator for the Versions based on createdAt, so we
+			// can guarantee the order of export and therefore import.
 			newList.sort((one, two) -> {
 				// Extract the createdAt attribute and remove the start and end quote from it
 				String creationDateOne = one.getAsJsonObject().get("createdAt").toString()
-					.replaceAll("^\"|\"$", "");
+						.replaceAll("^\"|\"$", "");
 				String creationDateTwo = two.getAsJsonObject().get("createdAt").toString()
-					.replaceAll("^\"|\"$", "");
+						.replaceAll("^\"|\"$", "");
 
 				// Date is returned in ISO-8601, e.g. "2022-08-22T14:17:00.073876Z";
 				return Instant.parse(creationDateOne).compareTo(Instant.parse(creationDateTwo));

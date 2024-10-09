@@ -22,11 +22,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageAdapter;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
@@ -274,8 +276,10 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 		return vraNgPackage;
 	}
 
+	// =================================================== Full Delete
+
 	/**
-	 * Deletes a package.
+	 * Fully deletes a package.
 	 * 
 	 * @param pkg         the package to delete
 	 * @param withContent whether to delete the package with its content
@@ -284,12 +288,33 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 	 */
 	@Override
 	protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
-		throw new UnsupportedOperationException(
-				"deletePackage: Cloud Automation Services does not provide native support for packages.");
+		VraNgPackageAdapter adapter = new VraNgPackageAdapter(pkg);
+
+		VraNgPackageDescriptor descriptor;
+
+		try {
+			descriptor = adapter.getDescriptor();
+		} catch (IOException e) {
+			throw new RuntimeException("Unable to get descriptor for package " + pkg.getFQName(), e);
+		}
+
+		VraNgTypeStoreFactory storeFactory = VraNgTypeStoreFactory.withConfig(restClient, pkg, config, descriptor);
+
+		for (VraNgPackageContent.ContentType type : VraNgTypeStoreFactory.getDeleteOrder()) {
+			logger.info("Currently deleting: {}", type.getTypeValue());
+			storeFactory.getStoreForType(type).deleteContent();
+		}
+
+		return pkg;
 	}
 
 	/**
 	 * Deletes a package.
+	 *
+	 * This is a direct call to `deletePackage`. Normally as it stands, versioning
+	 * is not supported in Aria Automation.
+	 * This function may not even be callable with the current logic as
+	 * `getPackageContent` is called before `deletePackage`, but leaving it as is
 	 * 
 	 * @param pkg         the package to delete
 	 * @param lastVersion whether it should delete the last version
@@ -300,9 +325,10 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 	@Override
 	public final List<Package> deletePackage(final Package pkg, final boolean lastVersion, final boolean oldVersions,
 			final boolean dryrun) {
-		throw new UnsupportedOperationException(
-				"deletePackage(List): Cloud Automation Services does not provide native support for packages.");
+		return Collections.singletonList(this.deletePackage(pkg, true, dryrun));
 	}
+
+	// ================================================== Partial Deletes
 
 	/**
 	 *
@@ -324,6 +350,6 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 	@Override
 	protected final void deleteContent(final Content content, final boolean dryrun) {
 		throw new UnsupportedOperationException(
-				"deleteContent: Cloud Automation Services does not provide native support for packages.");
+				"deleteContent: Cloud Automation Services does not provide native support for packages, content cannot be deleted");
 	}
 }

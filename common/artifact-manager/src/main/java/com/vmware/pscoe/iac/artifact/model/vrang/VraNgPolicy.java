@@ -24,7 +24,7 @@ public final class VraNgPolicy {
 	/**
 	 * Logger instance for this class.
 	 */
-	private final Logger logger  = LoggerFactory.getLogger(VraNgPolicy .class);
+	private final Logger logger = LoggerFactory.getLogger(VraNgPolicy.class);
 	/**
 	 * List of content sharing policy names.
 	 */
@@ -65,14 +65,16 @@ public final class VraNgPolicy {
 
 	/**
 	 * Constructor.
-	 * @param contentSharing list of content sharing policy names.
-	 * @param resourceQuota list of resource quota policy names.
-	 * @param day2Actions list of day 2 actions policy names.
-	 * @param lease list of lease policy names.
-	 * @param approval list of approval policy names.
+	 * 
+	 * @param contentSharing  list of content sharing policy names.
+	 * @param resourceQuota   list of resource quota policy names.
+	 * @param day2Actions     list of day 2 actions policy names.
+	 * @param lease           list of lease policy names.
+	 * @param approval        list of approval policy names.
 	 * @param deploymentLimit list of deployment limit policy names.
 	 */
-	public VraNgPolicy(List<String> contentSharing, List<String> resourceQuota, List<String> day2Actions, List<String> lease, List<String> approval, List<String> deploymentLimit) {
+	public VraNgPolicy(List<String> contentSharing, List<String> resourceQuota, List<String> day2Actions,
+			List<String> lease, List<String> approval, List<String> deploymentLimit) {
 		logger.debug("Parametrized constructor {}", VraNgPolicy.class);
 		logger.debug("content sharing in {}", contentSharing);
 		logger.debug("resource quota in {}", resourceQuota);
@@ -90,46 +92,57 @@ public final class VraNgPolicy {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return list of content sharing policy names.
 	 */
 	public List<String> getContentSharing() {
-		logger.debug("getContentSharing{}",  this.contentSharing);
+		logger.debug("getContentSharing{}", this.contentSharing);
 		return this.contentSharing;
 	}
+
 	/**
 	 * Getter.
+	 * 
 	 * @return list of resource quota policy names.
 	 */
 	public List<String> getResourceQuota() {
 		logger.debug("getResourceQuota{}", this.resourceQuota);
 		return this.resourceQuota;
 	}
+
 	/**
 	 * Getter.
+	 * 
 	 * @return list of day 2 actions policy names.
 	 */
 	public List<String> getDay2Actions() {
 		logger.debug("getDay2Actions{}", this.day2Actions);
 		return this.day2Actions;
 	}
+
 	/**
 	 * Getter.
+	 * 
 	 * @return list of lease policy names.
 	 */
 	public List<String> getLease() {
 		logger.debug("lease{}", this.lease);
 		return this.lease;
 	}
+
 	/**
 	 * Getter.
+	 * 
 	 * @return list of approval policy names.
 	 */
 	public List<String> getApproval() {
 		logger.debug("approval{}", this.approval);
 		return this.approval;
 	}
+
 	/**
 	 * Getter.
+	 * 
 	 * @return list of deployment limit policy names.
 	 */
 	public List<String> getDeploymentLimit() {

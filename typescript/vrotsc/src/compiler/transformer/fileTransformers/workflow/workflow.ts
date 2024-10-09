@@ -28,6 +28,10 @@ import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMeth
 import { mergeWorkflowXml, printPolyglotCode, printWorkflowXml } from "./presentation";
 
 import * as ts from "typescript";
+import UserInteractionDecoratorStrategy from "./decorators/userInteractionDecoratorStrategy";
+
+const defaultUserInteractionJson = '{"schema":{},"layout":{"pages":[]},"itemId":"{{itemId}}"}';
+const userInteractionFormFileNameTemplate = "{{workflowName}}_input_form_{{itemId}}.form.json";
 
 /**
  * Workflow transformer is responsible from transforming a TypeScript `wf.ts` file into a vRO workflow.
@@ -48,39 +52,58 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 
 	actionSourceFiles.forEach(sourceFile => context.sourceFiles.push(sourceFile));
 
-	return function () {
+	return function() {
 		transpileActionItems(workflows, actionSourceFiles, context, file);
-
 		workflows.forEach(workflowInfo => {
-			const targetFilePath = system.changeFileExt(
-				system.resolvePath(context.outputs.workflows, workflowInfo.path, workflowInfo.name),
-				"",
-				[".wf.ts"]);
-
-			const xmlTemplateFilePath = system.changeFileExt(file.filePath, ".xml");
-			const xmlTemplate = system.fileExists(xmlTemplateFilePath) ? system.readFile(xmlTemplateFilePath).toString() : undefined;
-
-			context.writeFile(
-				`${targetFilePath}.xml`,
-				xmlTemplate
-					? mergeWorkflowXml(workflowInfo, xmlTemplate)
-					: printWorkflowXml(workflowInfo, context)
-			);
-
-			context.writeFile(`${targetFilePath}.element_info.xml`, printElementInfo({
-				categoryPath: workflowInfo.path.replace(/(\\|\/)/g, "."),
-				name: workflowInfo.name,
-				type: "Workflow",
-				id: workflowInfo.id,
-			}));
-
-			const workflowFormFilePath = system.changeFileExt(file.filePath, ".form.json");
-			const workflowJsonForm = system.fileExists(workflowFormFilePath) ? system.readFile(workflowFormFilePath).toString() : undefined;
-			if (workflowJsonForm) {
-				context.writeFile(`${targetFilePath}.form.json`, workflowJsonForm);
-			}
+			generateWorkflowXmlAndForms(workflowInfo);
 		});
 	};
+
+	/**
+	 * Handles generating workflow xml files and form json files.
+	 *
+	 * @param workflowInfo The workflow descriptor object.
+	 * @returns void
+	 */
+	function generateWorkflowXmlAndForms(workflowInfo: WorkflowDescriptor): void {
+		const targetFilePath = system.changeFileExt(
+			system.resolvePath(context.outputs.workflows, workflowInfo.path, workflowInfo.name),
+			"",
+			[".wf.ts"]);
+
+		const xmlTemplateFilePath = system.changeFileExt(file.filePath, ".xml");
+		const xmlTemplate = system.fileExists(xmlTemplateFilePath) ? system.readFile(xmlTemplateFilePath).toString() : undefined;
+
+		context.writeFile(
+			`${targetFilePath}.xml`,
+			xmlTemplate
+				? mergeWorkflowXml(workflowInfo, xmlTemplate)
+				: printWorkflowXml(workflowInfo, context)
+		);
+
+		context.writeFile(`${targetFilePath}.element_info.xml`, printElementInfo({
+			categoryPath: workflowInfo.path.replace(/(\\|\/)/g, "."),
+			name: workflowInfo.name,
+			type: "Workflow",
+			id: workflowInfo.id,
+		}));
+
+		const workflowFormFilePath = system.changeFileExt(file.filePath, ".form.json");
+		const workflowJsonForm = system.fileExists(workflowFormFilePath) ? system.readFile(workflowFormFilePath).toString() : undefined;
+		if (workflowJsonForm) {
+			context.writeFile(`${targetFilePath}.form.json`, workflowJsonForm);
+		}
+		// attach the custom interaction component form json file (if any)
+		workflowInfo.items?.forEach(item => {
+			const isCustomInteractionComponent = item.strategy instanceof UserInteractionDecoratorStrategy;
+			if (isCustomInteractionComponent) {
+				const itemId = (item.strategy as UserInteractionDecoratorStrategy).getItemId();
+				const fileName = userInteractionFormFileNameTemplate.replace("{{workflowName}}", workflowInfo.name).replace("{{itemId}}", itemId);
+				const path = system.resolvePath(context.outputs.workflows, workflowInfo.path);
+				context.writeFile(system.resolvePath(path, fileName), defaultUserInteractionJson.replace("{{itemId}}", itemId));
+			}
+		});
+	}
 
 	/**
 	 * Handles parsing the decorators of a class node and registering the information in the workflowInfo object.

@@ -12,14 +12,12 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { Decorator, MethodDeclaration, SourceFile } from "typescript";
+import { Decorator } from "typescript";
 import { StringBuilderClass } from "../../../../../utilities/stringBuilder";
 import { WorkflowItemDescriptor, WorkflowItemType } from "../../../../decorators";
 import { getDecoratorProps } from "../../../helpers/node";
-import { findTargetItem } from "../helpers/findTargetItem";
-import CanvasItemDecoratorStrategy from "./canvasItemDecoratorStrategy";
+import BaseItemDecoratorStrategy from "./base/baseItemDecoratorStrategy";
 import { GraphNode } from "./helpers/graph";
-import { formatPosition } from "../helpers/formatPosition";
 
 /**
  * Responsible for printing out a default error handler
@@ -34,24 +32,7 @@ import { formatPosition } from "../helpers/formatPosition";
 	</workflow-item>
  * ```
  */
-export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemDecoratorStrategy {
-
-	/**
-	 * Extracts the name (item#) of the Default error handler Workflow item.
-	 * @param {WorkflowItemDescriptor[]} items - workflow items
-	 * @returns {string} node name (item#) of the found Default error handler element, or NULL if there is none.
-	 * @throws Error if there are more than 1 Default Error Handler items
-	 */
-	public static getDefaultErrorHandlerNode(items: WorkflowItemDescriptor[]): string {
-		const errorHandlerItems = items
-			.map((item, i) => item.strategy.getCanvasType() !== "error-handler" ? null : `item${i + 1}`)
-			.filter(item => !!item);
-		if (errorHandlerItems.length > 1) {
-			throw new Error(`There are more than 1 Default Error Handler elements: [${errorHandlerItems}]!`);
-		}
-		return errorHandlerItems.shift() || null;
-	}
-
+export default class DefaultErrorHandlerDecoratorStrategy extends BaseItemDecoratorStrategy {
 	/** Marks the element type as not targetable by other elements (see in {@link findTargetItem}) */
 	public readonly isNotTargetable = true;
 
@@ -90,7 +71,9 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 				case "target":
 					itemInfo.target = propValue;
 					break;
-
+				case "exceptionBinding":
+					itemInfo.canvasItemPolymorphicBag.exceptionBinding = propValue;
+					break;
 				default:
 					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
 			}
@@ -100,19 +83,9 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	/**
 	 * @see CanvasItemDecoratorStrategy.getGraphNode
 	 */
-	getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		return {
-			name: `item${pos}`,
-			origName: itemInfo.name,
-			targets: [findTargetItem(itemInfo.target, pos, itemInfo)],
-			offset: [40, -10]
-		};
+	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+		return super.getGraphNode(itemInfo, pos, [40, -10]);
 	}
-
-	/**
-	 * There is no need to print the source file for the default error handler.
-	 */
-	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string { return ""; }
 
 	/**
 	 * Prints out the default handler item. Note that it needs to be connected with an end item and
@@ -125,14 +98,13 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 	 *
 	 * @returns The string representation of the item.
 	 */
-	printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
+	public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
 		const stringBuilder = new StringBuilderClass("", "");
 
-		const targetItemName = findTargetItem(itemInfo.target, pos, itemInfo);
+		const targetItemName = super.findTargetItem(itemInfo.target, pos, itemInfo);
 		if (targetItemName === null) {
 			throw new Error(`Unable to find target item for ${this.getDecoratorType()} item`);
 		}
-		//
 		// it is important that the name of the error handler should be the same as the pointing target item name
 		stringBuilder.append(`<error-handler name="${targetItemName}" `);
 
@@ -142,11 +114,27 @@ export default class DefaultErrorHandlerDecoratorStrategy implements CanvasItemD
 
 		stringBuilder.append(">").appendLine();
 		stringBuilder.indent();
-		stringBuilder.append(formatPosition([x, y])).appendLine();
+		stringBuilder.append(super.formatItemPosition([x, y])).appendLine();
 		stringBuilder.unindent();
 		stringBuilder.append("</error-handler>").appendLine();
 		stringBuilder.unindent();
 
 		return stringBuilder.toString();
+	}
+
+	/**
+	 * Extracts the name (item#) of the Default error handler Workflow item.
+	 * @param {WorkflowItemDescriptor[]} items - workflow items
+	 * @returns {string} node name (item#) of the found Default error handler element, or NULL if there is none.
+	 * @throws Error if there are more than 1 Default Error Handler items
+	 */
+	public getDefaultErrorHandlerNode(items: WorkflowItemDescriptor[]): string {
+		const errorHandlerItems = items
+			.map((item, i) => item.strategy.getCanvasType() !== "error-handler" ? null : `item${i + 1}`)
+			.filter(item => !!item);
+		if (errorHandlerItems.length > 1) {
+			throw new Error(`There are more than 1 Default Error Handler elements: [${errorHandlerItems}]!`);
+		}
+		return errorHandlerItems.shift() || null;
 	}
 }

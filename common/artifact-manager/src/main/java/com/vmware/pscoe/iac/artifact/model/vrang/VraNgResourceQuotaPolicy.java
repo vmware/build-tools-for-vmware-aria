@@ -16,9 +16,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import com.google.gson.JsonObject;
 
-public final class VraNgResourceQuotaPolicy {
-
-
+public final class VraNgResourceQuotaPolicy implements Identifiable {
 	/**
 	 * Id of the Resource Quota Policy.
 	 */
@@ -48,7 +46,6 @@ public final class VraNgResourceQuotaPolicy {
 	 */
 	private String description;
 
-
 	/**
 	 * Scope of the Resource Quota Policy.
 	 */
@@ -57,7 +54,6 @@ public final class VraNgResourceQuotaPolicy {
 	 * Definition of the Resource Quota Policy.
 	 */
 	private JsonObject definition;
-
 
 	/**
 	 * Constructor VraNgResourceQuotaPolicy.
@@ -79,9 +75,9 @@ public final class VraNgResourceQuotaPolicy {
 	 * @param criteriaIn        scopeCriteria
 	 */
 	public VraNgResourceQuotaPolicy(final String idIn, final String nameIn, final String typeIdIn,
-									final String projectIdIn, final String orgIdIn,
-									final String enforcementTypeIn, final String descriptionIn,
-									final JsonObject definitionIn, final JsonObject criteriaIn) {
+			final String projectIdIn, final String orgIdIn,
+			final String enforcementTypeIn, final String descriptionIn,
+			final JsonObject definitionIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;
