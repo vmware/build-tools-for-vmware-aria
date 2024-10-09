@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*-
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -21,6 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 
+/**
+ * The purpose of this class is to provide a way to delete content from the
+ * store that is universal to all VRA NG stores.
+ */
 public abstract class AbstractVraNgDeleteStore {
 	/**
 	 * This will delete all of the approvalPolicies that are present in the
@@ -53,7 +56,20 @@ public abstract class AbstractVraNgDeleteStore {
 	 */
 	protected abstract List<String> getItemListFromDescriptor();
 
+	/**
+	 * This will retrieve all the content for the store type and return it.
+	 *
+	 * What is being returned is entirely up to the implementation. You may want to
+	 * filter and return by some filter.
+	 *
+	 * @return list of all content
+	 */
 	protected abstract <T extends Identifiable> List<T> getAllServerContents();
 
+	/**
+	 * This will delete a resource by its ID.
+	 *
+	 * @param resId the ID of the resource to delete
+	 */
 	protected abstract void deleteResourceById(String resId);
 }
