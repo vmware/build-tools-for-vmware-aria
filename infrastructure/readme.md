@@ -231,13 +231,15 @@ To get started, follow the steps below:
       - install
 
     variables:
+      LOCAL_REPO: >-
+        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository    
       BUILD_OPTS: >-
         -Dhttps.protocols=TLSv1.2
-        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+        $LOCAL_REPO
         -DskipTests=true
       DEPLOY_OPTS: >-
         -Dhttps.protocols=TLSv1.2
-        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+        $LOCAL_REPO
         -DskipTests=true
         -Dbuild.number=$CI_PIPELINE_IID
         -Dsurefire.useSystemClassLoader=false
@@ -250,13 +252,13 @@ To get started, follow the steps below:
     dynamic_variables:
       stage: setup
       script:
-        - echo "GROUP_ID=$(mvn help:evaluate -Dexpression=project.groupId -q -DforceStdout)" >> build.env
-        - echo "ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> build.env
-        - echo "PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> build.env
-      ## artifacts:
-        ## expire_in: 3 hours
-        ## reports:
-          ## dotenv: build.env
+        - echo "GROUP_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.groupId -q -DforceStdout)" >> build.env
+        - echo "ARTIFACT_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.artifactId -q -DforceStdout)" >> build.env
+        - echo "PROJECT_VERSION=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.version -q -DforceStdout)" >> build.env
+      artifacts:
+        expire_in: 3 hours
+        reports:
+          dotenv: build.env
 
     build:
       stage: build
@@ -266,7 +268,7 @@ To get started, follow the steps below:
     test:
       stage: test
       script:
-        - mvn -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository test
+        - mvn $LOCAL_REPO test
 
     install:
       stage: install
