@@ -46,6 +46,10 @@ The following have been added:
 - `powershell:7.4`
 ```
 
+### *Added code coverage build step*
+
+The build will now fail if the code coverage goes below 25%
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
