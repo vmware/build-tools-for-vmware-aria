@@ -122,6 +122,20 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 */
 	private final Map<String, ArrayList<VraNgCatalogItem>> itemsMap = new HashMap<String, ArrayList<VraNgCatalogItem>>();
 
+	/**
+	 * @return list of all the catalog items for a given project on the server
+	 */
+	protected List<VraNgCatalogItem> getAllServerContents() {
+		return this.restClient.getCatalogItemsForProject(this.restClient.getProjectId());
+	}
+
+	/**
+	 * @param resId is the resource id of the catalog item to delete
+	 */
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteCatalogItem(resId);
+	}
+
 	// =================================================
 	// CATALOG ITEMS EXPORT
 	// =================================================
@@ -260,7 +274,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Stores the forms under {{catalog_item_dir}}/forms
 	 *
 	 * @param serverPackage server package
-	 * @param catalogItem catalog item
+	 * @param catalogItem   catalog item
 	 *
 	 * @return VraNgCustomForm
 	 */
@@ -283,7 +297,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 					catalogItem.getSourceName());
 			return null;
 		}
-		
+
 		File store = new File(serverPackage.getFilesystemPath());
 		File customFormFile = Paths.get(
 				store.getPath(),
@@ -304,7 +318,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			// write form metadata file
-			// in a format (VraNgCustomFormAndData) suitable to be stored in a source code repository.
+			// in a format (VraNgCustomFormAndData) suitable to be stored in a source code
+			// repository.
 			VraNgCustomFormAndData repoForm = new VraNgCustomFormAndData(form);
 			logger.info("Created custom form metadata file {}",
 					Files.write(Paths.get(customFormFile.getPath()), gson.toJson(repoForm).getBytes(),
@@ -556,12 +571,13 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Import a custom form given the catalog item.
 	 * ( form Id is extracted from the item and the fs is queried )
 	 *
-	 * @param catalogItem catalog item
+	 * @param catalogItem       catalog item
 	 * @param catalogItemFolder catalog item folder
 	 */
 	protected void importCustomForm(final VraNgCatalogItem catalogItem, final File catalogItemFolder) {
 		String formName = getName(catalogItem) + CUSTOM_RESOURCE_SUFFIX;
-		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX + CUSTOM_RESOURCE_SUFFIX;
+		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX
+				+ CUSTOM_RESOURCE_SUFFIX;
 		File customFormFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formName).toFile();
 		File customFormDataFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formDataName).toFile();
 
@@ -573,11 +589,13 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		}
 		// from < 8.12 to 8.12
 		if (customForm.getSourceId() != null) {
-			customForm.setSourceId(customForm.getSourceId().split(CATALOG_ITEM_BLUEPRINT_VERSION_SOURCE_ID_SEPARATOR, 2)[0]);
+			customForm.setSourceId(
+					customForm.getSourceId().split(CATALOG_ITEM_BLUEPRINT_VERSION_SOURCE_ID_SEPARATOR, 2)[0]);
 		}
 		// from < 8.12 to 8.12
 		if (catalogItem.getType().equals(VraNgContentSourceType.BLUEPRINT)) {
-			// if the source type is not 'com.vmw.vro.workflow' then set default source type to 'com.vmw.blueprint'
+			// if the source type is not 'com.vmw.vro.workflow' then set default source type
+			// to 'com.vmw.blueprint'
 			if (customForm.getSourceType() == null || !customForm.getSourceType().equals(WORKFLOW_CUSTOM_FORM_TYPE)) {
 				customForm.setSourceType(DEFAULT_CUSTOM_FORM_TYPE);
 			}
@@ -667,10 +685,10 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 */
 	protected VraNgCustomForm jsonFileToVraCustomForm(final File jsonFormFile, final File jsonFormDataFile) {
 		logger.debug("Converting custom form file to VraNgCustomForm. Name: '{}'", jsonFormFile.getName());
-		
-		VraNgCustomFormAndData repoForm;	// As read from the file system (the repo)
-		VraNgCustomForm restForm;			// in a form suitable for usage in a REST API Call.
-		
+
+		VraNgCustomFormAndData repoForm; // As read from the file system (the repo)
+		VraNgCustomForm restForm; // in a form suitable for usage in a REST API Call.
+
 		try (JsonReader reader = new JsonReader(new FileReader(jsonFormFile.getPath()))) {
 			repoForm = new Gson().fromJson(reader, VraNgCustomFormAndData.class);
 			restForm = new VraNgCustomForm(repoForm);

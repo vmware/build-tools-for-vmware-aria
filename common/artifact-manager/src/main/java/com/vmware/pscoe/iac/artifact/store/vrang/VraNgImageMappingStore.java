@@ -15,10 +15,8 @@
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudRegionProfile;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -35,16 +33,29 @@ import java.util.stream.Collectors;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_IMAGE_MAPPINGS;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
 
+/**
+ * Store for image mappings in vRA NG.
+ */
 public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
+	/**
+	 * @param logger
+	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgImageMappingStore.class);
+
+	/**
+	 * Unused as regional content needs refactoring.
+	 */
+	public void deleteContent() {
+		throw new RuntimeException("Not implemented");
+	}
 
 	// =================================================
 	// IMAGE MAPPINGS EXPORT
 	// =================================================
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of image mappings
 	 */
@@ -54,7 +65,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 *
 	 * @param cloudAccounts list of cloud accounts
 	 */
@@ -65,9 +76,9 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 		cloudAccounts.forEach(cloudAccount -> {
 
 			List<String> regionsInCloudAccount = cloudAccount.getRegionIds()
-				.stream()
-				.filter(imagesByRegionId::containsKey)
-				.collect(Collectors.toList());
+					.stream()
+					.filter(imagesByRegionId::containsKey)
+					.collect(Collectors.toList());
 
 			logger.debug("Exporting image mappings from cloud account {}", cloudAccount.getName());
 
@@ -76,26 +87,26 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir,
+						profileDirName);
 
 				List<VraNgImageMapping> imageMappings = imagesByRegionId.get(regionId)
-					.stream()
-					.map(this::prepareMappingSerialization)
-					.collect(Collectors.toList());
+						.stream()
+						.map(this::prepareMappingSerialization)
+						.collect(Collectors.toList());
 
-					logger.info("Image mappings to export: {}", 
-					imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
+				logger.info("Image mappings to export: {}",
+						imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
 
-				imageMappings.forEach(imageMapping ->
-					this.exportToFileSystem(sourceDir, profileDirName, imageMapping));
+				imageMappings.forEach(imageMapping -> this.exportToFileSystem(sourceDir, profileDirName, imageMapping));
 			});
 		});
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 *
-	 * @param cloudAccounts list of cloud accounts
+	 * @param cloudAccounts         list of cloud accounts
 	 * @param imageMappingsToExport list of image mappings
 	 */
 	@Override
@@ -105,9 +116,9 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 		cloudAccounts.forEach(cloudAccount -> {
 
 			List<String> regionsInCloudAccount = cloudAccount.getRegionIds()
-				.stream()
-				.filter(imagesByRegionId::containsKey)
-				.collect(Collectors.toList());
+					.stream()
+					.filter(imagesByRegionId::containsKey)
+					.collect(Collectors.toList());
 
 			logger.debug("Exporting image mappings from cloud account {}", cloudAccount.getName());
 
@@ -116,39 +127,41 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir,
+						profileDirName);
 
 				List<VraNgImageMapping> imageMappings = imagesByRegionId.get(regionId)
-					.stream()
-					.filter(im -> imageMappingsToExport.contains(im.getName()))
-					.map(this::prepareMappingSerialization)
-					.collect(Collectors.toList());
+						.stream()
+						.filter(im -> imageMappingsToExport.contains(im.getName()))
+						.map(this::prepareMappingSerialization)
+						.collect(Collectors.toList());
 
-				logger.info("Image mappings to export: {}", 
-					imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
+				logger.info("Image mappings to export: {}",
+						imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
 
-				imageMappings.forEach(imageMapping ->
-					this.exportToFileSystem(sourceDir, profileDirName, imageMapping));
+				imageMappings.forEach(imageMapping -> this.exportToFileSystem(sourceDir, profileDirName, imageMapping));
 			});
 		});
 	}
 
 	/**
-	 * Save an image mapping to a JSON file
-	 * @param sourceDir source directory
+	 * Save an image mapping to a JSON file.
+	 * 
+	 * @param sourceDir      source directory
 	 * @param profileDirName region directory
-	 * @param imageMapping image mapping
+	 * @param imageMapping   image mapping
 	 */
 	private void exportToFileSystem(File sourceDir, String profileDirName, VraNgImageMapping imageMapping) {
-		File imageMappingFile =
-				Paths.get(sourceDir.getPath(), DIR_REGIONS, profileDirName, DIR_IMAGE_MAPPINGS, imageMapping.getName() + ".json").toFile();
+		File imageMappingFile = Paths.get(sourceDir.getPath(), DIR_REGIONS, profileDirName, DIR_IMAGE_MAPPINGS,
+				imageMapping.getName() + ".json").toFile();
 
 		imageMappingFile.getParentFile().mkdirs();
 
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			String imageJson = gson.toJson(gson.fromJson(imageMapping.getJson(), JsonObject.class));
-			logger.info("Created file {}", Files.write(Paths.get(imageMappingFile.getPath()), imageJson.getBytes(), StandardOpenOption.CREATE));
+			logger.info("Created file {}", Files.write(Paths.get(imageMappingFile.getPath()), imageJson.getBytes(),
+					StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store image mapping {} {}", imageMapping.getName(), imageMappingFile.getPath());
 			throw new RuntimeException("Unable to store image mapping.", e);
@@ -156,7 +169,8 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Create a new VraNgImageMapping with serializable payload
+	 * Create a new VraNgImageMapping with serializable payload.
+	 * 
 	 * @param mapping image mapping
 	 * @return new VraNgStorageProfile
 	 */
@@ -166,8 +180,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 		JsonObject ob = root.getAsJsonObject();
 
 		JsonObject cleanedOb = VraNgRegionalContentUtils.cleanJson(ob, null, Arrays.asList(
-				"_links", "id", "externalRegionId"
-		));
+				"_links", "id", "externalRegionId"));
 
 		return new VraNgImageMapping(mapping.getName(), cleanedOb.toString());
 
@@ -179,8 +192,9 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
 	/**
 	 * Import all image profiles from a package.
+	 * 
 	 * @param sourceDirectory temporary directory containing the files
-	 * @param importTags list of tags
+	 * @param importTags      list of tags
 	 */
 	public void importContent(File sourceDirectory, List<String> importTags) {
 		File regionsFolder = Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();
@@ -198,10 +212,12 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 		// list all directories in the regions folder
 		Arrays.asList(regionsFolder.listFiles(File::isDirectory)).forEach(regionProfileDir -> {
 			try {
-				VraNgCloudRegionProfile cloudRegionProfile = VraNgRegionalContentUtils.getCloudRegionProfile(regionProfileDir);
+				VraNgCloudRegionProfile cloudRegionProfile = VraNgRegionalContentUtils
+						.getCloudRegionProfile(regionProfileDir);
 				cloudAccounts
 						.stream()
-						.filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(), importTags))
+						.filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(),
+								importTags))
 						.filter(cloudAccount -> cloudAccount.getType().equals(cloudRegionProfile.getRegionType()))
 						.forEach(cloudAccount -> cloudAccount.getRegionIds()
 								.forEach(regionId -> this.importImageProfilesInRegion(
@@ -215,8 +231,10 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Create a list of image mappings from JSON file representation
-	 * @param imageMappingsDir directory containing the image mappings for the region
+	 * Create a list of image mappings from JSON file representation.
+	 * 
+	 * @param imageMappingsDir directory containing the image mappings for the
+	 *                         region
 	 * @return list of image mappings
 	 */
 	private List<VraNgImageMapping> getImageMappingsFromFileSystem(File imageMappingsDir) {
@@ -236,10 +254,13 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Import image mappings in a cloud region (cloud zone). If an image profile already exists,
-	 * update it with a new mapping, otherwise create an image profile with a single mapping inside.
-	 * @param regionId region id
-	 * @param regionProfileDir region directory
+	 * Import image mappings in a cloud region (cloud zone). If an image profile
+	 * already exists,
+	 * update it with a new mapping, otherwise create an image profile with a single
+	 * mapping inside.
+	 * 
+	 * @param regionId              region id
+	 * @param regionProfileDir      region directory
 	 * @param imageProfilesByRegion list of existing image profiles on server
 	 */
 	private void importImageProfilesInRegion(
@@ -247,13 +268,15 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 
 		File imageMappingsDir = Paths.get(regionProfileDir.getPath(), DIR_IMAGE_MAPPINGS).toFile();
 		if (!imageMappingsDir.exists()) {
-			logger.debug("Image mappings directory {} does not exist in region {}. Skipping...", DIR_IMAGE_MAPPINGS, regionId);
+			logger.debug("Image mappings directory {} does not exist in region {}. Skipping...", DIR_IMAGE_MAPPINGS,
+					regionId);
 			return;
 		}
 		List<VraNgImageMapping> imageMappings = this.getImageMappingsFromFileSystem(imageMappingsDir);
 
 		logger.info("Creating/updating {} image mappings: {}",
-			imageMappings.size(), imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
+				imageMappings.size(),
+				imageMappings.stream().map(VraNgImageMapping::getName).collect(Collectors.toList()));
 
 		if (imageProfilesByRegion.containsKey(regionId)) {
 			this.updateImageProfilesWithMappings(imageProfilesByRegion.get(regionId), imageMappings);
@@ -285,6 +308,7 @@ public class VraNgImageMappingStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Create API-compliant JSON payload from local image mapping
 	 * for creating/updating image profiles.
+	 * 
 	 * @param mapping local image mapping
 	 * @return image mapping with updated payload
 	 */

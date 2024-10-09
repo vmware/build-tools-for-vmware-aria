@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 /**
 
 */
-public class VraNgLeasePolicy {
+public class VraNgLeasePolicy implements Identifiable {
 
 	/**
 	 * Unique identifier for the policy.
@@ -69,21 +69,22 @@ public class VraNgLeasePolicy {
 	 */
 	private JsonObject scopeCriteria;
 
-
 	/**
-	* Constructs a new instance of the VraNgLeasePolicy with the given parameters.
-	*
-	* @param idIn The unique identifier for the lease policy.
-	* @param nameIn The name of the lease policy
-	* @param typeIdIn The unique for the lease policy.
-	* @param projectIdIn The unique for the project associated with the lease policy
-	* @param orgIdIn The unique identifier for the organization associated with the lease policy.
-	* @param enforcementTypeIn The type of enforcement for the lease policy.
-	* @param descriptionIn A description of the lease policy.
-	* @param definitionIn The definition of the lease policy.
-	* @param criteriaIn  the criteria of the lease policy.
-	 * @param scopeCriteriaIn    the scope criteria of the lease policy
-	*/
+	 * Constructs a new instance of the VraNgLeasePolicy with the given parameters.
+	 *
+	 * @param idIn              The unique identifier for the lease policy.
+	 * @param nameIn            The name of the lease policy
+	 * @param typeIdIn          The unique for the lease policy.
+	 * @param projectIdIn       The unique for the project associated with the lease
+	 *                          policy
+	 * @param orgIdIn           The unique identifier for the organization
+	 *                          associated with the lease policy.
+	 * @param enforcementTypeIn The type of enforcement for the lease policy.
+	 * @param descriptionIn     A description of the lease policy.
+	 * @param definitionIn      The definition of the lease policy.
+	 * @param criteriaIn        the criteria of the lease policy.
+	 * @param scopeCriteriaIn   the scope criteria of the lease policy
+	 */
 	public VraNgLeasePolicy(final String idIn, final String nameIn, final String typeIdIn,
 			final String projectIdIn, final String orgIdIn,
 			final String enforcementTypeIn, final String descriptionIn,
@@ -101,46 +102,46 @@ public class VraNgLeasePolicy {
 	}
 
 	/**
-	* Returns the unique identifier for this lease policy.
-	*
-	* @return The unique identifier for this lease policy.
-	*/
+	 * Returns the unique identifier for this lease policy.
+	 *
+	 * @return The unique identifier for this lease policy.
+	 */
 	public String getId() {
 		return id;
 	}
 
 	/**
-	* Sets the unique identifier for this lease policy.
-	*
-	* @param idIn The new unique identifier for this lease policy.
-	*/
+	 * Sets the unique identifier for this lease policy.
+	 *
+	 * @param idIn The new unique identifier for this lease policy.
+	 */
 	public void setId(final String idIn) {
 		this.id = idIn;
 	}
 
 	/**
-	* Returns the name of this lease policy.
-	*
-	* @return The name of this lease policy.
-	*/
+	 * Returns the name of this lease policy.
+	 *
+	 * @return The name of this lease policy.
+	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	* Sets the name of this lease policy to the given value.
-	*
-	* @param nameIn The new name for this lease policy.
-	*/
+	 * Sets the name of this lease policy to the given value.
+	 *
+	 * @param nameIn The new name for this lease policy.
+	 */
 	public void setName(final String nameIn) {
 		this.name = nameIn;
 	}
 
 	/**
-	* Returns the project ID associated with this lease policy.
-	*
-	* @return The project ID as a string.
-	*/
+	 * Returns the project ID associated with this lease policy.
+	 *
+	 * @return The project ID as a string.
+	 */
 	public String getProjectId() {
 		return this.projectId;
 	}
@@ -261,6 +262,5 @@ public class VraNgLeasePolicy {
 	public void setCriteria(final JsonObject criteriaIn) {
 		this.criteria = criteriaIn;
 	}
-
 
 }

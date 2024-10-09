@@ -26,6 +26,16 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *`vrealize:clean` support for vra-ng*
+
+The `vrealize:clean` command now supports the `vra-ng` profile.
+
+> [!WARNING]
+> It does NOT support regional resource deletion as those are expected to be refactored in the future.
+
+Also a new flag is added to the installer `vrang_delete_content` that will default to `false` if not set. If this flag is set, the environment will be cleaned.
+The installer will also prompt you if you want to delete the content if you select false to importing the content.
+
 ### *Add new Powershell and PowerCLI runtime options*
 
 The following have been added:

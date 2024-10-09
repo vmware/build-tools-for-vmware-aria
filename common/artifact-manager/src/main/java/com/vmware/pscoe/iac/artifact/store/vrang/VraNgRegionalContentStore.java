@@ -24,20 +24,54 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegionMapping;
 
 import org.yaml.snakeyaml.Yaml;
 
+/**
+ * This class is responsible for managing the regional content in vRA NG.
+ */
 public class VraNgRegionalContentStore extends AbstractVraNgStore {
 
+	/**
+	 * Need refactoring, intentionally left empty.
+	 */
+	public void deleteContent() {
+	}
+
+	/**
+	 * Unused, it's for `deleteContent` method.
+	 */
+	@Override
+	protected <T extends Identifiable> List<T> getAllServerContents() {
+		return null;
+	}
+
+	/**
+	 * Unused, it's for `deleteContent` method.
+	 *
+	 * @param resId the id of the resource to delete
+	 */
+	@Override
+	protected void deleteResourceById(String resId) {
+	}
+
+	/**
+	 * Import region-specific content based on region mapping defined in the
+	 * package.
+	 *
+	 * @param sourceDirectory temporary directory containing the files
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		importRegionalContent(sourceDirectory);
 	}
 
 	/**
-	 * The regionalContent exports all flavor mapping, image mapping and storage profile in partucular region
+	 * The regionalContent exports all flavor mapping, image mapping and storage
+	 * profile in partucular region.
 	 */
 	@Override
 	public void exportContent() {
@@ -50,7 +84,7 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Unused because the class overwrites directly exportContent
+	 * Unused because the class overwrites directly exportContent.
 	 */
 	@Override
 	protected List<String> getItemListFromDescriptor() {
@@ -58,14 +92,16 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Unused because the class overwrites directly exportContent
+	 * Unused because the class overwrites directly exportContent.
 	 */
 	@Override
 	protected void exportStoreContent() {
 	}
 
 	/**
-	 * Unused because the class overwrites directly exportContent
+	 * Unused because the class overwrites directly exportContent.
+	 *
+	 * @param itemNames the list of items to export
 	 */
 	@Override
 	protected void exportStoreContent(List<String> itemNames) {
@@ -75,11 +111,11 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 	/**
 	 * Export region-specific content based on region mappings defined in the
 	 * package manifest. This includes: * flavor mappings * image mappings * storage
-	 * profiles
+	 * profiles.
 	 * 
-	 * @param regionMapping          region mapping structure describing the regions
-	 *                               (cloud zones) that have related exportable
-	 *                               content defined in the package manifest.
+	 * @param regionMapping region mapping structure describing the regions
+	 *                      (cloud zones) that have related exportable
+	 *                      content defined in the package manifest.
 	 */
 	private void exportRegionalContent(VraNgRegionMapping regionMapping) {
 
@@ -91,31 +127,33 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 						.isIntersecting(cloudAccount.getTags(), new ArrayList<String>(Arrays.asList(exportTag))))
 				.collect(Collectors.toList());
 
-		logger.info("Found {} cloud accounts from which to export regional content (image mappings, flavor mappings, storage profiles) based on tag {}",
+		logger.info(
+				"Found {} cloud accounts from which to export regional content (image mappings, flavor mappings, storage profiles) based on tag {}",
 				cloudAccounts.size(), exportTag);
 
 		// no need to export regional content when no exportable cloud accounts are
 		// found
 		if (cloudAccounts.isEmpty()) {
-			logger.info("No cloud accounts found based on export tag {}. Skipping export of regional content (image mappings, flavor mappings, storage profiles)",
-				exportTag);
+			logger.info(
+					"No cloud accounts found based on export tag {}. Skipping export of regional content (image mappings, flavor mappings, storage profiles)",
+					exportTag);
 			return;
 		}
 
 		// export flavor mappings
 		VraNgFlavorMappingStore flavorMappingStore = new VraNgFlavorMappingStore();
-		flavorMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
-		flavorMappingStore.exportContent( cloudAccounts );
+		flavorMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
+		flavorMappingStore.exportContent(cloudAccounts);
 
 		// export image mappings
 		VraNgImageMappingStore imageMappingStore = new VraNgImageMappingStore();
-		imageMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
-		imageMappingStore.exportContent( cloudAccounts );
+		imageMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
+		imageMappingStore.exportContent(cloudAccounts);
 
 		// export storage profiles
 		VraNgStorageProfileStore storageProfileStore = new VraNgStorageProfileStore();
-		storageProfileStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
-		storageProfileStore.exportContent( cloudAccounts );
+		storageProfileStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
+		storageProfileStore.exportContent(cloudAccounts);
 	}
 
 	/**
@@ -159,23 +197,21 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 
 			// flavor mappings
 			VraNgFlavorMappingStore flavorMappingStore = new VraNgFlavorMappingStore();
-			flavorMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
+			flavorMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 			flavorMappingStore.importContent(sourceDirectory, importTags);
 
 			// image mappings
 			VraNgImageMappingStore imageMappingStore = new VraNgImageMappingStore();
-			imageMappingStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
+			imageMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 			imageMappingStore.importContent(sourceDirectory, importTags);
 
 			// storage profiles
 			VraNgStorageProfileStore storageProfileStore = new VraNgStorageProfileStore();
-			storageProfileStore.init( restClient, vraNgPackage, vraNgPackageDescriptor );
+			storageProfileStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 			storageProfileStore.importContent(sourceDirectory, importTags);
 
 		} catch (FileNotFoundException e) {
 			logger.info("content.yaml is not part of the package. Skipping import of regional content...");
 		}
-
 	}
-
 }

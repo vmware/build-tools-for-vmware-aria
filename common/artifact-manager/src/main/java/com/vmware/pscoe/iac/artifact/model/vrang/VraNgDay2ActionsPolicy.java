@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import com.google.gson.JsonObject;
 
-public final class VraNgDay2ActionsPolicy {
+public final class VraNgDay2ActionsPolicy implements Identifiable {
 
 	/**
 	 * Id of the Day 2 Actions Policy.
@@ -70,14 +70,15 @@ public final class VraNgDay2ActionsPolicy {
 	 * @param orgIdIn           organizationId of the policy.
 	 * @param enforcementTypeIn enforcement type of the policy.
 	 * @param descriptionIn     description of the policy.
-	 * @param definitionIn      actual policy definition - different structure for every policy type.
+	 * @param definitionIn      actual policy definition - different structure for
+	 *                          every policy type.
 	 * @param criteriaIn        scope criteria of the policy.
-	 * @param scopeCriteriaIn        scope criteria of the policy.
+	 * @param scopeCriteriaIn   scope criteria of the policy.
 	 */
 	public VraNgDay2ActionsPolicy(final String idIn, final String nameIn, final String typeIdIn,
-								  final String projectIdIn, final String orgIdIn,
-								  final String enforcementTypeIn, final String descriptionIn,
-								  final JsonObject definitionIn, final JsonObject scopeCriteriaIn, final JsonObject criteriaIn) {
+			final String projectIdIn, final String orgIdIn,
+			final String enforcementTypeIn, final String descriptionIn,
+			final JsonObject definitionIn, final JsonObject scopeCriteriaIn, final JsonObject criteriaIn) {
 		this.id = idIn;
 		this.name = nameIn;
 		this.typeId = typeIdIn;

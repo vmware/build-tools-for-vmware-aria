@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 /**
  * Service Broker catalog item.
  */
-public class VraNgCatalogItem {
+public class VraNgCatalogItem implements Identifiable {
 	/**
 	 * sourceId.
 	 */
@@ -54,11 +54,11 @@ public class VraNgCatalogItem {
 	/**
 	 * Constructor function.
 	 * 
-	 * @param idIn Id input variable
-	 * @param sourceIdIn source input variable
-	 * @param nameIn name input variable
+	 * @param idIn         Id input variable
+	 * @param sourceIdIn   source input variable
+	 * @param nameIn       name input variable
 	 * @param sourceNameIn source name input variable
-	 * @param typeIn type input variable
+	 * @param typeIn       type input variable
 	 */
 	public VraNgCatalogItem(
 			final String idIn,
@@ -140,6 +140,7 @@ public class VraNgCatalogItem {
 
 	/**
 	 * Setter for iconId.
+	 * 
 	 * @param iconIdIn icon id value
 	 */
 	public void setIconId(final String iconIdIn) {
@@ -157,6 +158,7 @@ public class VraNgCatalogItem {
 
 	/**
 	 * Setter for icon extension.
+	 * 
 	 * @param iconExtensionIn icon extension value
 	 */
 	public void setIconExtension(final String iconExtensionIn) {
@@ -183,6 +185,7 @@ public class VraNgCatalogItem {
 
 	/**
 	 * Setter for formId.
+	 * 
 	 * @param formIdIn String
 	 */
 	public void setFormId(final String formIdIn) {

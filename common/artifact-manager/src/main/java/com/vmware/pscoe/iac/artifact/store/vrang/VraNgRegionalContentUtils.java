@@ -37,20 +37,35 @@ import java.util.Set;
 
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
 
-public class VraNgRegionalContentUtils {
+/**
+ * Utility class for regional content management.
+ */
+public final class VraNgRegionalContentUtils {
+	/**
+	 * Private constructor to prevent instantiation as this is a utility class.
+	 */
+	private VraNgRegionalContentUtils() {
+	}
 
+	/**
+	 * @param logger
+	 */
 	private static Logger logger = LoggerFactory.getLogger(VraNgRegionalContentUtils.class);
 
 	/**
-	 * Create the cloud region profile file containing mapping for region tags and region id
-	 * @param cloudAccount cloud account
-	 * @param regionId region id
-	 * @param srcDir containing directory
-	 * @param cloudRegionProfileFolderName folder name for the region with region-specific content
+	 * Create the cloud region profile file containing mapping for region tags and
+	 * region id.
+	 * 
+	 * @param cloudAccount                 cloud account
+	 * @param regionId                     region id
+	 * @param srcDir                       containing directory
+	 * @param cloudRegionProfileFolderName folder name for the region with
+	 *                                     region-specific content
 	 */
-	public static void createCloudRegionProfileFile(VraNgCloudAccount cloudAccount, String regionId, File srcDir, String cloudRegionProfileFolderName) {
-		File cloudRegionProfile =
-				Paths.get(srcDir.getPath(), DIR_REGIONS, cloudRegionProfileFolderName, "src-region-profile.json").toFile();
+	public static void createCloudRegionProfileFile(VraNgCloudAccount cloudAccount, String regionId, File srcDir,
+			String cloudRegionProfileFolderName) {
+		File cloudRegionProfile = Paths
+				.get(srcDir.getPath(), DIR_REGIONS, cloudRegionProfileFolderName, "src-region-profile.json").toFile();
 
 		cloudRegionProfile.getParentFile().mkdirs();
 
@@ -75,6 +90,7 @@ public class VraNgRegionalContentUtils {
 	/**
 	 * Check whether two lists of strings are intersecting, i.e. have
 	 * at least one common element.
+	 * 
 	 * @param list1 first list
 	 * @param list2 second list
 	 * @return true if lists are intersecting
@@ -89,6 +105,13 @@ public class VraNgRegionalContentUtils {
 		return !intersection.isEmpty();
 	}
 
+	/**
+	 * Get cloud region profile from the directory.
+	 * 
+	 * @param cloudRegionProfileDir directory containing the cloud region profile
+	 * @return cloud region profile
+	 * @throws IOException if the file cannot be read
+	 */
 	public static VraNgCloudRegionProfile getCloudRegionProfile(File cloudRegionProfileDir) throws IOException {
 		File regionProfile = Paths.get(cloudRegionProfileDir.getPath(), "src-region-profile.json").toFile();
 		String regionProfileContent = FileUtils.readFileToString(regionProfile, "UTF-8");
@@ -97,9 +120,10 @@ public class VraNgRegionalContentUtils {
 	}
 
 	/**
-	 * Create a new JSON object containing only set of keys
-	 * @param ob original JSON object
-	 * @param keysToKeep list of keys to keep
+	 * Create a new JSON object containing only set of keys.
+	 * 
+	 * @param ob           original JSON object
+	 * @param keysToKeep   list of keys to keep
 	 * @param keysToRemove list of keys to remove
 	 * @return cleaned JSON object
 	 */

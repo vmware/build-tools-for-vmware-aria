@@ -39,22 +39,62 @@ import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgIntegrationUtils;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Content Source Store.
+ */
 public class VraNgContentSourceStore extends AbstractVraNgStore {
+	/**
+	 * @param projectId
+	 */
 	private String projectId;
+	/**
+	 * @param utils
+	 */
 	private VrangContentSourceUtils utils;
+	/**
+	 * @param existingSources
+	 */
 	private VraNgIntegration configuredIntegration;
+	/**
+	 * @param existingSources
+	 */
 	private List<VraNgContentSourceBase> existingSources = null;
 
+	/**
+	 * @param restClient
+	 * @param vraNgPackage
+	 * @param config
+	 * @param vraNgPackageDescriptor
+	 */
 	@Override
-	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config, VraNgPackageDescriptor vraNgPackageDescriptor) {
+	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
+			VraNgPackageDescriptor vraNgPackageDescriptor) {
 		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
-		this.utils					= new VrangContentSourceUtils(restClient, vraNgPackage);
-		this.projectId				= this.restClient.getProjectId();
-		this.configuredIntegration	= !StringUtils.isEmpty(this.config.getVroIntegration())
-									? this.restClient.getVraWorkflowIntegration(this.config.getVroIntegration())
-									: new VraNgIntegration();
+		this.utils = new VrangContentSourceUtils(restClient, vraNgPackage);
+		this.projectId = this.restClient.getProjectId();
+		this.configuredIntegration = !StringUtils.isEmpty(this.config.getVroIntegration())
+				? this.restClient.getVraWorkflowIntegration(this.config.getVroIntegration())
+				: new VraNgIntegration();
 	}
 
+	/**
+	 * @return a list of all the content sources for the current project on the
+	 *         server
+	 */
+	protected List<VraNgContentSourceBase> getAllServerContents() {
+		return this.restClient.getContentSourcesForProject(this.restClient.getProjectId());
+	}
+
+	/**
+	 * @param resId is the id of a content source that we want to delete
+	 */
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteContentSource(resId);
+	}
+
+	/**
+	 * @param sourceDirectory is the directory where the content sources are stored
+	 */
 	@Override
 	public void importContent(File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory", VraNgDirs.DIR_CONTENT_SOURCES);
@@ -64,7 +104,8 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 			return;
 		}
 		// Check if there are any blueprints to import
-		File[] localList = this.filterBasedOnConfiguration(contentSourceFolder, new CustomFolderFileFilter(this.getItemListFromDescriptor()));
+		File[] localList = this.filterBasedOnConfiguration(contentSourceFolder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 		if (localList == null || localList.length == 0) {
 			logger.info("No Content Source available - skip import");
 			return;
@@ -75,7 +116,7 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of content sources
 	 */
@@ -86,18 +127,19 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 
 	/**
 	 * Exports all content sources from service broker.
-	 * Passing null to exportStoreContent and by extension to fetchAllContentSources will not apply a filter to the
-	 * 	content sources.
+	 * Passing null to exportStoreContent and by extension to fetchAllContentSources
+	 * will not apply a filter to the
+	 * content sources.
 	 */
 	@Override
 	protected void exportStoreContent() {
-		this.exportStoreContent( null );
+		this.exportStoreContent(null);
 	}
 
 	/**
-	 * Exports filtered content sources from service broker
+	 * Exports filtered content sources from service broker.
 	 * If the content source is a VRO_WORKFLOW then it is checked if it has unique
-	 * workflow names.sssss
+	 * workflow names.
 	 *
 	 * @param contentSourceNames list of names
 	 */
@@ -122,20 +164,21 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Checks for duplicate workflows in the given content sources
+	 * Checks for duplicate workflows in the given content sources.
 	 *
-	 * @param	contentSources - Content sources to check
+	 * @param contentSources - Content sources to check
+	 * @return the content sources
 	 */
-	private List<VraNgContentSourceBase> validateNoDuplicateWf( List<VraNgContentSourceBase> contentSources ) {
-		for ( VraNgContentSourceBase contentSource: contentSources ) {
-			if ( contentSource.getType() == VraNgContentSourceType.VRO_WORKFLOW ) {
-				ArrayList<String> duplicateWorkflows	= getDuplicateWorkflows( ( VraNgWorkflowContentSource ) contentSource );
+	private List<VraNgContentSourceBase> validateNoDuplicateWf(List<VraNgContentSourceBase> contentSources) {
+		for (VraNgContentSourceBase contentSource : contentSources) {
+			if (contentSource.getType() == VraNgContentSourceType.VRO_WORKFLOW) {
+				ArrayList<String> duplicateWorkflows = getDuplicateWorkflows(
+						(VraNgWorkflowContentSource) contentSource);
 
-				if ( duplicateWorkflows.size() > 0 ) {
+				if (duplicateWorkflows.size() > 0) {
 					throw new RuntimeException(
-						"Cannot have workflows with the same name in one content source. Problematic Workflows: "
-							+ String.join( ", ", duplicateWorkflows )
-					);
+							"Cannot have workflows with the same name in one content source. Problematic Workflows: "
+									+ String.join(", ", duplicateWorkflows));
 				}
 			}
 		}
@@ -143,6 +186,11 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		return contentSources;
 	}
 
+	/**
+	 * Imports a content source from a file.
+	 *
+	 * @param contentSourceFile - File to import
+	 */
 	void importFile(File contentSourceFile) {
 		try (JsonReader reader = new JsonReader(new FileReader(contentSourceFile.getPath()))) {
 			JsonObject jsonObj = JsonParser.parseReader(reader).getAsJsonObject();
@@ -158,7 +206,8 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 					this.prepareProjectContentSource((VraNgContentSource) contentSource);
 					break;
 				default:
-					logger.info("Skipping import of content source {}. Type {} is not handled!", contentSource.getName(), contentSource.getType());
+					logger.info("Skipping import of content source {}. Type {} is not handled!",
+							contentSource.getName(), contentSource.getType());
 					return;
 			}
 			this.utils.syncContentSource(contentSource, this.config.getImportTimeout());
@@ -168,28 +217,33 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Prepares a workflow content source for import.
+	 *
+	 * @param contentSource - Content source to prepare
+	 */
 	public void prepareWorkflowContentSource(VraNgWorkflowContentSource contentSource) {
 		VraNgIntegration defaultIntegration = VraNgIntegrationUtils.getInstance()
-			.getDefaultVraIntegration(this.restClient);
+				.getDefaultVraIntegration(this.restClient);
 
-		ArrayList<String> duplicateWorkflows	= getDuplicateWorkflows( contentSource );
+		ArrayList<String> duplicateWorkflows = getDuplicateWorkflows(contentSource);
 
-		if ( duplicateWorkflows.size() > 0 ) {
+		if (duplicateWorkflows.size() > 0) {
 			throw new RuntimeException(
-				"Cannot have workflows with the same name in one content source. Problematic Workflows: "
-					+ String.join( ", ", duplicateWorkflows )
-			);
+					"Cannot have workflows with the same name in one content source. Problematic Workflows: "
+							+ String.join(", ", duplicateWorkflows));
 		}
 
 		List<String> wfIds = getWfIds(contentSource);
-		// Find same content source by comparing id or name or workflows ids in order list
+		// Find same content source by comparing id or name or workflows ids in order
+		// list
 		String newId = this.getExistingSourcesFilteredByType(contentSource.getType(), VraNgWorkflowContentSource.class)
-			.filter(existingCS -> existingCS.getName().equals(contentSource.getName())
-				|| existingCS.getId().equals(contentSource.getId())
-				|| getWfIds(existingCS).equals(wfIds))
-			.map(existingCS -> existingCS.getId())
-			.findFirst()
-			.orElse("");
+				.filter(existingCS -> existingCS.getName().equals(contentSource.getName())
+						|| existingCS.getId().equals(contentSource.getId())
+						|| getWfIds(existingCS).equals(wfIds))
+				.map(existingCS -> existingCS.getId())
+				.findFirst()
+				.orElse("");
 		contentSource.setId(newId);
 
 		for (VraNgWorkflow workflow : contentSource.getConfig().getWorkflows()) {
@@ -200,26 +254,34 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 				setIntegration(workflow, configuredIntegration);
 				continue;
 			}
-			VraNgIntegration workflowIntegration = this.restClient.getVraWorkflowIntegration(workflow.getIntegration().getName());
+			VraNgIntegration workflowIntegration = this.restClient
+					.getVraWorkflowIntegration(workflow.getIntegration().getName());
 			if (!StringUtils.isEmpty(workflowIntegration.getName())) {
 				setIntegration(workflow, workflowIntegration);
 				continue;
 			}
 			if (!StringUtils.isEmpty(defaultIntegration.getName())) {
 				logger.warn("Unable to find integration '{}' on host '{}' setting default integration to '{}'",
-					workflow.getIntegration().getName(), this.config.getHost(), defaultIntegration.getName());
+						workflow.getIntegration().getName(), this.config.getHost(), defaultIntegration.getName());
 				setIntegration(workflow, defaultIntegration);
 				continue;
 			}
 
 			logger.warn(
-				"Unable to find all of the following integrations on host '{}' configured : '{}' , resource: '{}' , default : '{}' ",
-				this.config.getHost(), this.config.getVroIntegration(), workflow.getIntegration().getName(),
-				VraNgIntegrationUtils.DEFAULT_INTEGRATION_NAME);
+					"Unable to find all of the following integrations on host '{}' configured : '{}' , resource: '{}' , default : '{}' ",
+					this.config.getHost(), this.config.getVroIntegration(), workflow.getIntegration().getName(),
+					VraNgIntegrationUtils.DEFAULT_INTEGRATION_NAME);
 		}
 
 		this.deleteBeforeCreation(contentSource.getId());
 	}
+
+	/**
+	 * Sets the integration on a workflow.
+	 *
+	 * @param workflow          - Workflow to set integration on
+	 * @param targetIntegration - Integration to set
+	 */
 
 	private void setIntegration(VraNgWorkflow workflow, VraNgIntegration targetIntegration) {
 		workflow.getIntegration().setEndpointConfigurationLink(targetIntegration.getEndpointConfigurationLink());
@@ -227,14 +289,21 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		workflow.getIntegration().setName(targetIntegration.getName());
 	}
 
+	/**
+	 * Gets the workflow ids from a content source.
+	 *
+	 * @param contentSource - Content source to get workflow ids from
+	 *
+	 * @return List<String>
+	 */
 	private List<String> getWfIds(VraNgWorkflowContentSource contentSource) {
 		return contentSource
-			.getConfig()
-			.getWorkflows()
-			.stream()
-			.map(integration -> integration.getId())
-			.sorted()
-			.collect(Collectors.toList());
+				.getConfig()
+				.getWorkflows()
+				.stream()
+				.map(integration -> integration.getId())
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -243,40 +312,53 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	 *
 	 * https://docs.oracle.com/javase/8/docs/api/java/util/Set.html#add-E-
 	 *
-	 * @return	ArrayList<String>
+	 * @param contentSource - Content source to check
+	 *
+	 * @return ArrayList<String>
 	 */
 	private ArrayList<String> getDuplicateWorkflows(VraNgWorkflowContentSource contentSource) {
-		ArrayList<String> duplicates	= new ArrayList<>();
-		Set<String> items				= new HashSet<>();
-		List<VraNgWorkflow> workflows	= contentSource.getConfig().getWorkflows();
+		ArrayList<String> duplicates = new ArrayList<>();
+		Set<String> items = new HashSet<>();
+		List<VraNgWorkflow> workflows = contentSource.getConfig().getWorkflows();
 
-		for ( VraNgWorkflow workflow: workflows ) {
-			String workflowName	= workflow.getName();
-			if ( ! items.add( workflowName ) ) {
-				duplicates.add( workflowName );
+		for (VraNgWorkflow workflow : workflows) {
+			String workflowName = workflow.getName();
+			if (!items.add(workflowName)) {
+				duplicates.add(workflowName);
 			}
 		}
 
 		return duplicates;
 	}
 
+	/**
+	 * Prepares a project content source for import.
+	 *
+	 * @param contentSource - Content source to prepare
+	 */
 	public void prepareProjectContentSource(VraNgContentSource contentSource) {
 		Map<String, String> config = new HashMap<>();
 		config.put("sourceProjectId", this.projectId);
 		contentSource.setConfig(config);
 		contentSource.setProjectId(this.projectId);
-		String newId = this.fetchAllContentSources( null )
-			.stream()
-			.filter(existingCS -> existingCS.getType().equals(contentSource.getType()))
-			.map(existingCS -> existingCS.getId())
-			.findFirst()
-			.orElse("");
+		String newId = this.fetchAllContentSources(null)
+				.stream()
+				.filter(existingCS -> existingCS.getType().equals(contentSource.getType()))
+				.map(existingCS -> existingCS.getId())
+				.findFirst()
+				.orElse("");
 		contentSource.setId(newId);
 	}
 
+	/**
+	 * Deletes a content source before creating it.
+	 *
+	 * @param contentSourceId - Content source id to delete
+	 */
 	protected void deleteBeforeCreation(String contentSourceId) {
 		if (contentSourceId != null) {
-			// VRA version 8.0 complains with message 'content source already exists' if try to update it
+			// VRA version 8.0 complains with message 'content source already exists' if try
+			// to update it
 			// that's why delete content source prior updating it if VRA is 8.0
 			// VRA version 8.1 and newer does update the content source without complaining
 			if (!this.restClient.isVraAbove81()) {
@@ -285,34 +367,45 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 		}
 	}
 
+	/**
+	 * Gets all existing content sources filtered by type.
+	 *
+	 * @param type  - Type to filter by
+	 * @param clazz - Class to cast to
+	 * @param <T>   - Type to cast to
+	 * @return Stream<T>
+	 */
 	private <T> Stream<T> getExistingSourcesFilteredByType(VraNgContentSourceType type, Class<T> clazz) {
-		return this.fetchAllContentSources( null ).stream().filter(src -> src.getType().equals(type)).map(clazz::cast);
+		return this.fetchAllContentSources(null).stream().filter(src -> src.getType().equals(type)).map(clazz::cast);
 	}
 
 	/**
 	 * Gets all the content sources on the server.
 	 * This will filter content sources that are not of the configured project id.
-	 * If the content source is not associated with a project, it will be fetched as well.
-	 * Passing contentSourceNames will mean that only they will be fetched. Passing null means all are accepted.
-	 * The reason why we need 2 streams and 2 filters is since we want to cache ALL existing sources but we want the filter to be
-	 * 	dynamic.
+	 * If the content source is not associated with a project, it will be fetched as
+	 * well.
+	 * Passing contentSourceNames will mean that only they will be fetched. Passing
+	 * null means all are accepted.
+	 * The reason why we need 2 streams and 2 filters is since we want to cache ALL
+	 * existing sources but we want the filter to be
+	 * dynamic.
 	 *
-	 * @param	contentSourceNames - names to filter for or null for accept all
+	 * @param contentSourceNames - names to filter for or null for accept all
 	 *
-	 * @return	List<VraNgContentSourceBase>
+	 * @return List<VraNgContentSourceBase>
 	 */
-	private List<VraNgContentSourceBase> fetchAllContentSources( List<String> contentSourceNames ) {
-		if ( this.existingSources == null ) {
-			this.existingSources	= this.restClient
-				.getContentSourcesForProject( this.projectId )
-				.stream()
-				.filter( src -> this.utils.isForSameOrNoneProject( src, this.projectId ) )
-				.collect( Collectors.toList() );
+	private List<VraNgContentSourceBase> fetchAllContentSources(List<String> contentSourceNames) {
+		if (this.existingSources == null) {
+			this.existingSources = this.restClient
+					.getContentSourcesForProject(this.projectId)
+					.stream()
+					.filter(src -> this.utils.isForSameOrNoneProject(src, this.projectId))
+					.collect(Collectors.toList());
 		}
 
 		return this.existingSources
-			.stream()
-			.filter( src -> contentSourceNames == null || contentSourceNames.contains( src.getName() ) )
-			.collect( Collectors.toList() );
+				.stream()
+				.filter(src -> contentSourceNames == null || contentSourceNames.contains(src.getName()))
+				.collect(Collectors.toList());
 	}
 }

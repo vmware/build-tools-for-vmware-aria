@@ -52,7 +52,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
 
 	actionSourceFiles.forEach(sourceFile => context.sourceFiles.push(sourceFile));
 
-	return function () {
+	return function() {
 		transpileActionItems(workflows, actionSourceFiles, context, file);
 		workflows.forEach(workflowInfo => {
 			generateWorkflowXmlAndForms(workflowInfo);

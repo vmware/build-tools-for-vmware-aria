@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 /**
  * Holds raw data for the property group and name to use as an identifier.
  */
-public class VraNgPropertyGroup {
+public class VraNgPropertyGroup implements Identifiable {
 
 	/**
 	 * Project Id JSON key.
