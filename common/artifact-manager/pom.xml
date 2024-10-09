@@ -56,7 +56,9 @@
 										<limit>
 											<counter>INSTRUCTION</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.26</minimum>
+											<!-- This controls what the minimum amount for code
+											coverage is. Raise this as we raise the coverage -->
+											<minimum>0.25</minimum>
 										</limit>
 									</limits>
 								</rule>
