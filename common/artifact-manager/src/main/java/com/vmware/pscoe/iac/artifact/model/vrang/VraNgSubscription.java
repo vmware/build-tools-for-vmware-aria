@@ -78,7 +78,7 @@ public class VraNgSubscription implements Identifiable {
 	}
 
 	/**
-	 * Cjecks if the subscription is equal to another object.
+	 * Checks if the subscription is equal to another object.
 	 *
 	 * @param obj The object to compare.
 	 * @return True if the subscription is equal to the object, false otherwise.
