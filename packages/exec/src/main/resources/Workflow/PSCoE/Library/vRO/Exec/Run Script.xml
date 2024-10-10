@@ -36,8 +36,8 @@
 	try {
 		eval(script);
 	} catch (e) {
-		Server.error(e.message);
-		System.error(e.message);
+		output += "[" + new Date().toISOString() + "] [error] " + (e.message || e) + "\n";
+		throw e;
 	}]]></script>
     <in-binding>
       <bind name="script" type="string" export-name="script"/>
