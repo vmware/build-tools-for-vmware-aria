@@ -19,7 +19,6 @@ import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.CloudAccountMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.FlavorMappingMockBuilder;
-import com.vmware.pscoe.iac.artifact.helpers.stubs.ImageMappingMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.RegionMappingMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.StorageProfileMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
@@ -27,7 +26,6 @@ import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegionMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
@@ -49,10 +47,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class VraNgRegionalContentStoreTest {
 	@Rule
-	public TemporaryFolder tempFolder	= new TemporaryFolder();
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	protected VraNgRegionalContentStore store;
 	protected RestClientVraNg restClient;
@@ -65,49 +62,48 @@ public class VraNgRegionalContentStoreTest {
 	void init() {
 		try {
 			tempFolder.create();
-		}
-		catch ( IOException e ) {
-			throw new RuntimeException( "Could not create a temp folder" );
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create a temp folder");
 		}
 
-		fsMocks					= new FsMocks( tempFolder.getRoot() );
-		store					= new VraNgRegionalContentStore();
-		restClient				= Mockito.mock( RestClientVraNg.class );
-		pkg						= PackageFactory.getInstance( PackageType.VRANG, tempFolder.getRoot() );
-		config					= Mockito.mock( ConfigurationVraNg.class );
-		vraNgPackageDescriptor	= Mockito.mock( VraNgPackageDescriptor.class );
+		fsMocks = new FsMocks(tempFolder.getRoot());
+		store = new VraNgRegionalContentStore();
+		restClient = Mockito.mock(RestClientVraNg.class);
+		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
+		config = Mockito.mock(ConfigurationVraNg.class);
+		vraNgPackageDescriptor = Mockito.mock(VraNgPackageDescriptor.class);
 
-		store.init( restClient, pkg, config, vraNgPackageDescriptor );
-		System.out.println( "==========================================================" );
-		System.out.println( "START" );
-		System.out.println( "==========================================================" );
+		store.init(restClient, pkg, config, vraNgPackageDescriptor);
+		System.out.println("==========================================================");
+		System.out.println("START");
+		System.out.println("==========================================================");
 	}
 
 	@AfterEach
 	void tearDown() {
 		tempFolder.delete();
 
-		System.out.println( "==========================================================" );
-		System.out.println( "END" );
-		System.out.println( "==========================================================" );
+		System.out.println("==========================================================");
+		System.out.println("END");
+		System.out.println("==========================================================");
 	}
 
 	@Test
 	void testExportContentWithNoRegionMapping() {
-		//GIVEN
+		// GIVEN
 		when(vraNgPackageDescriptor.getRegionMapping()).thenReturn(null);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, never()).getCloudAccounts();
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
 
 	@Test
 	void testExportContentWithRegionMappingButWithNoExportTag() {
-		//GIVEN
+		// GIVEN
 		RegionMappingMockBuilder builder = new RegionMappingMockBuilder();
 		VraNgRegionMapping mockedRegionalMapping = builder.setExportTag(null).build();
 		when(vraNgPackageDescriptor.getRegionMapping()).thenReturn(mockedRegionalMapping);
@@ -118,18 +114,18 @@ public class VraNgRegionalContentStoreTest {
 		tags.add("env:dev");
 		mockedCloudAccounts.add(cloudAccountBuilder.setTags(tags).build());
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, times(1)).getCloudAccounts();
 
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
-	
+
 	@Test
 	void testExportContentWithRegionMappingButWithEmptyExportTag() {
-		//GIVEN
+		// GIVEN
 		RegionMappingMockBuilder regionsBuilder = new RegionMappingMockBuilder();
 		VraNgRegionMapping mockedRegionalMapping = Mockito.spy(regionsBuilder.setExportTag("").build());
 		when(vraNgPackageDescriptor.getRegionMapping()).thenReturn(mockedRegionalMapping);
@@ -142,18 +138,18 @@ public class VraNgRegionalContentStoreTest {
 
 		when(restClient.getCloudAccounts()).thenReturn(mockedCloudAccounts);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, times(1)).getCloudAccounts();
 		verify(mockedRegionalMapping, times(1)).getCloudAccountTags();
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
 
 	@Test
 	void testExportContentWithRegionMappingButWithExportTagButNoCloudAccountsMapped() {
-		//GIVEN
+		// GIVEN
 		RegionMappingMockBuilder builder = new RegionMappingMockBuilder();
 		VraNgRegionMapping mockedRegionalMapping = Mockito.spy(builder.setExportTag("env:dev").build());
 
@@ -165,39 +161,38 @@ public class VraNgRegionalContentStoreTest {
 
 		when(restClient.getCloudAccounts()).thenReturn(mockedCloudAccounts);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, times(1)).getCloudAccounts();
 		verify(mockedRegionalMapping, times(1)).getCloudAccountTags();
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
 
-
-
 	@Test
-	void testExportContentWithRegionMappingWithExportTagAndWithCloudAccountsMapped() throws IOException{
-		//GIVEN
+	void testExportContentWithRegionMappingWithExportTagAndWithCloudAccountsMapped() throws IOException {
+		// GIVEN
 
-		//RegionMappping
+		// RegionMappping
 		RegionMappingMockBuilder builder = new RegionMappingMockBuilder();
 		VraNgRegionMapping mockedRegionalMapping = Mockito.spy(builder.setExportTag("env:dev").build());
 
 		when(vraNgPackageDescriptor.getRegionMapping()).thenReturn(mockedRegionalMapping);
 
-		//CloudAccounts
+		// CloudAccounts
 		CloudAccountMockBuilder cloudAccountBuilder = new CloudAccountMockBuilder();
 		List<VraNgCloudAccount> mockedCloudAccounts = new ArrayList<VraNgCloudAccount>();
 		List<String> tags = new ArrayList<String>();
 		tags.add("env:dev");
 		List<String> regionIds = new ArrayList<String>();
 		regionIds.add("mockedRegionId1");
-		mockedCloudAccounts.add(cloudAccountBuilder.setName("mockedAccountName").setTags(tags).setRegionIds(regionIds).build());
+		mockedCloudAccounts
+				.add(cloudAccountBuilder.setName("mockedAccountName").setTags(tags).setRegionIds(regionIds).build());
 
 		when(restClient.getCloudAccounts()).thenReturn(mockedCloudAccounts);
 
-		//FlavorMapping
+		// FlavorMapping
 		FlavorMappingMockBuilder flavorBuilder = new FlavorMappingMockBuilder();
 		flavorBuilder.setName("smallMock");
 
@@ -212,20 +207,7 @@ public class VraNgRegionalContentStoreTest {
 		when(restClient.getAllFlavorMappingsByRegion()).thenReturn(mockedFlavorsByRegion);
 		when(vraNgPackageDescriptor.getFlavorMapping()).thenReturn(flavorMappingNames);
 
-
-		//ImageMapping
-		ImageMappingMockBuilder imageBuilder = new ImageMappingMockBuilder();
-		imageBuilder.setName("Ubuntu");
-
-		Map<String, List<VraNgImageMapping>> mockedImagesByRegion = new HashMap<String, List<VraNgImageMapping>>();
-		List<VraNgImageMapping> imageMappings = new ArrayList<VraNgImageMapping>();
-		imageMappings.add(imageBuilder.build());
-		mockedImagesByRegion.put("mockedRegionId1", imageMappings);
-
-		when( vraNgPackageDescriptor.getImageMapping()).thenReturn(null);
-		when(restClient.getAllImageMappingsByRegion()).thenReturn(mockedImagesByRegion);
-
-		//StorageProfile
+		// StorageProfile
 		StorageProfileMockBuilder storageBuilder = new StorageProfileMockBuilder();
 		VraNgStorageProfile storageProfile = storageBuilder.setName("smallStorageMock").build();
 
@@ -234,86 +216,79 @@ public class VraNgRegionalContentStoreTest {
 		storageProfiles.add(storageProfile);
 		mockStorageProfilesByRegionId.put("mockedRegionId1", storageProfiles);
 
-
-		when( vraNgPackageDescriptor.getStorageProfile()).thenReturn(null);
+		when(vraNgPackageDescriptor.getStorageProfile()).thenReturn(null);
 		when(restClient.getAllStorageProfilesByRegion()).thenReturn(mockStorageProfilesByRegionId);
-		when(restClient.getSpecificStorageProfile( anyString(), anyString())).thenReturn(storageProfile);
-		when(restClient.getFabricEntityName( anyString() )).thenReturn("mockedFabricEntity");
+		when(restClient.getSpecificStorageProfile(anyString(), anyString())).thenReturn(storageProfile);
+		when(restClient.getFabricEntityName(anyString())).thenReturn("mockedFabricEntity");
 
-
-		//TEST
+		// TEST
 		store.exportContent();
-		
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, times(1)).getCloudAccounts();
 		verify(restClient, times(1)).getAllFlavorMappingsByRegion();
 		verify(mockedRegionalMapping, times(1)).getCloudAccountTags();
 		assertEquals(mockedRegionalMapping.getCloudAccountTags().getExportTag(), "env:dev");
-		
-		File regionsFolder = new File (tempFolder.getRoot().getPath() + "/regions");
+
+		File regionsFolder = new File(tempFolder.getRoot().getPath() + "/regions");
 
 		// VERIFY Flavor
-		String[] expectedFlavorMappingFolder	= { "mockedAccountName~mockedRegionId1"  };
-		String[] expectedFlavorMappingFiles	    = { "smallMock.json" };
-		verify(restClient, times( 1 ) ).getAllFlavorMappingsByRegion();
-		// generated folder regions/{cloudaccountname~regionId}/flavor-mapping/{flavormapping name}.json
+		String[] expectedFlavorMappingFolder = { "mockedAccountName~mockedRegionId1" };
+		String[] expectedFlavorMappingFiles = { "smallMock.json" };
+		verify(restClient, times(1)).getAllFlavorMappingsByRegion();
+		// generated folder
+		// regions/{cloudaccountname~regionId}/flavor-mapping/{flavormapping name}.json
 
-		AssertionsHelper.assertFolderContainsFiles( regionsFolder, expectedFlavorMappingFolder  );
+		AssertionsHelper.assertFolderContainsFiles(regionsFolder, expectedFlavorMappingFolder);
 
-		File flavorMappingFolder = new File(regionsFolder.getPath() + "/mockedAccountName~mockedRegionId1/flavor-mappings" );
-		AssertionsHelper.assertFolderContainsFiles( flavorMappingFolder, expectedFlavorMappingFiles );
-
-		//VERIFY Image
-		String[] expectedImageMappingFolder		= { "mockedAccountName~mockedRegionId1"  };
-		String[] expectedImageMappingFiles	    = { "Ubuntu.json" };
-
-		verify(restClient, times( 1 ) ).getAllImageMappingsByRegion();
-		// generated folder regions/{cloudaccountname~regionId}/image-mapping/{imagemapping name}.json
-		AssertionsHelper.assertFolderContainsFiles( regionsFolder, expectedImageMappingFolder  );
-
-		File imageMappingFolder = new File(regionsFolder.getPath() + "/mockedAccountName~mockedRegionId1/image-mappings" );
-		AssertionsHelper.assertFolderContainsFiles( imageMappingFolder, expectedImageMappingFiles );
+		File flavorMappingFolder = new File(
+				regionsFolder.getPath() + "/mockedAccountName~mockedRegionId1/flavor-mappings");
+		AssertionsHelper.assertFolderContainsFiles(flavorMappingFolder, expectedFlavorMappingFiles);
 
 		// VERIFY Storage
-		String[] expectedStorageProfilesFolder	= { "mockedAccountName~mockedRegionId1"  };
-		String[] expectedStorageProfilesFiles	    = { "smallStorageMock.json" };
-		String[] expectedProfileFiles = { "src-region-profile.json", "storage-profiles", "image-mappings", "flavor-mappings" };
+		String[] expectedStorageProfilesFolder = { "mockedAccountName~mockedRegionId1" };
+		String[] expectedStorageProfilesFiles = { "smallStorageMock.json" };
+		String[] expectedProfileFiles = { "src-region-profile.json", "storage-profiles", "flavor-mappings" };
 
-		verify(restClient, times( 1 ) ).getAllStorageProfilesByRegion();
-		// generated folder regions/{cloudaccountname~regionId}/storage-profiles/{storage-profiles name}.json
-		AssertionsHelper.assertFolderContainsFiles( regionsFolder, expectedStorageProfilesFolder  );
+		verify(restClient, times(1)).getAllStorageProfilesByRegion();
+		// generated folder
+		// regions/{cloudaccountname~regionId}/storage-profiles/{storage-profiles
+		// name}.json
+		AssertionsHelper.assertFolderContainsFiles(regionsFolder, expectedStorageProfilesFolder);
 
-		File storageProfilesFolder = new File(regionsFolder.getPath() + "/mockedAccountName~mockedRegionId1/storage-profiles" );
-		AssertionsHelper.assertFolderContainsFiles( storageProfilesFolder, expectedStorageProfilesFiles );
+		File storageProfilesFolder = new File(
+				regionsFolder.getPath() + "/mockedAccountName~mockedRegionId1/storage-profiles");
+		AssertionsHelper.assertFolderContainsFiles(storageProfilesFolder, expectedStorageProfilesFiles);
 
-		// regions/mockedAccountName~mockedRegionId1/src-region-profile.json 
-		File profileFolder = new File(regionsFolder.getPath() + "/mockedAccountName~mockedRegionId1" );
-		AssertionsHelper.assertFolderContainsFiles( profileFolder, expectedProfileFiles );
+		// regions/mockedAccountName~mockedRegionId1/src-region-profile.json
+		File profileFolder = new File(regionsFolder.getPath() + "/mockedAccountName~mockedRegionId1");
+		AssertionsHelper.assertFolderContainsFiles(profileFolder, expectedProfileFiles);
 	}
 
 	@Test
-	void testExportContentWithRegionMappingWithExportTagAndWithCloudAccountsMappedButFilterOnEmptyItems() throws IOException{
-		//GIVEN
+	void testExportContentWithRegionMappingWithExportTagAndWithCloudAccountsMappedButFilterOnEmptyItems()
+			throws IOException {
+		// GIVEN
 
-		//RegionMappping
+		// RegionMappping
 		RegionMappingMockBuilder builder = new RegionMappingMockBuilder();
 		VraNgRegionMapping mockedRegionalMapping = Mockito.spy(builder.setExportTag("env:dev").build());
 
 		when(vraNgPackageDescriptor.getRegionMapping()).thenReturn(mockedRegionalMapping);
 
-		//CloudAccounts
+		// CloudAccounts
 		CloudAccountMockBuilder cloudAccountBuilder = new CloudAccountMockBuilder();
 		List<VraNgCloudAccount> mockedCloudAccounts = new ArrayList<VraNgCloudAccount>();
 		List<String> tags = new ArrayList<String>();
 		tags.add("env:dev");
 		List<String> regionIds = new ArrayList<String>();
 		regionIds.add("mockedRegionId1");
-		mockedCloudAccounts.add(cloudAccountBuilder.setName("mockedAccountName").setTags(tags).setRegionIds(regionIds).build());
+		mockedCloudAccounts
+				.add(cloudAccountBuilder.setName("mockedAccountName").setTags(tags).setRegionIds(regionIds).build());
 
 		when(restClient.getCloudAccounts()).thenReturn(mockedCloudAccounts);
 
-		//FlavorMapping
+		// FlavorMapping
 		FlavorMappingMockBuilder flavorBuilder = new FlavorMappingMockBuilder();
 		flavorBuilder.setName("smallMock");
 
@@ -322,24 +297,10 @@ public class VraNgRegionalContentStoreTest {
 		flavorMappings.add(flavorBuilder.build());
 		mockedFlavorsByRegion.put("mockedRegionId1", flavorMappings);
 
-
 		when(restClient.getAllFlavorMappingsByRegion()).thenReturn(mockedFlavorsByRegion);
 		when(vraNgPackageDescriptor.getFlavorMapping()).thenReturn(new ArrayList<>());
 
-
-		//ImageMapping
-		ImageMappingMockBuilder imageBuilder = new ImageMappingMockBuilder();
-		imageBuilder.setName("Ubuntu");
-
-		Map<String, List<VraNgImageMapping>> mockedImagesByRegion = new HashMap<String, List<VraNgImageMapping>>();
-		List<VraNgImageMapping> imageMappings = new ArrayList<VraNgImageMapping>();
-		imageMappings.add(imageBuilder.build());
-		mockedImagesByRegion.put("mockedRegionId1", imageMappings);
-
-		when( vraNgPackageDescriptor.getImageMapping()).thenReturn(new ArrayList<>());
-		when(restClient.getAllImageMappingsByRegion()).thenReturn(mockedImagesByRegion);
-
-		//StorageProfile
+		// StorageProfile
 		StorageProfileMockBuilder storageBuilder = new StorageProfileMockBuilder();
 		VraNgStorageProfile storageProfile = storageBuilder.setName("smallStorageMock").build();
 
@@ -348,28 +309,24 @@ public class VraNgRegionalContentStoreTest {
 		storageProfiles.add(storageProfile);
 		mockStorageProfilesByRegionId.put("mockedRegionId1", storageProfiles);
 
-
-		when( vraNgPackageDescriptor.getStorageProfile()).thenReturn(new ArrayList<>());
+		when(vraNgPackageDescriptor.getStorageProfile()).thenReturn(new ArrayList<>());
 		when(restClient.getAllStorageProfilesByRegion()).thenReturn(mockStorageProfilesByRegionId);
-		when(restClient.getSpecificStorageProfile( anyString(), anyString())).thenReturn(storageProfile);
-		when(restClient.getFabricEntityName( anyString() )).thenReturn("mockedFabricEntity");
+		when(restClient.getSpecificStorageProfile(anyString(), anyString())).thenReturn(storageProfile);
+		when(restClient.getFabricEntityName(anyString())).thenReturn("mockedFabricEntity");
 
-
-		//TEST
+		// TEST
 		store.exportContent();
-		
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, times(1)).getCloudAccounts();
 		verify(restClient, never()).getAllFlavorMappingsByRegion();
 		verify(mockedRegionalMapping, times(1)).getCloudAccountTags();
 		assertEquals(mockedRegionalMapping.getCloudAccountTags().getExportTag(), "env:dev");
-		
-		verify(restClient, never() ).getAllFlavorMappingsByRegion();
-		verify(restClient, never() ).getAllImageMappingsByRegion();
-		verify(restClient, never() ).getAllStorageProfilesByRegion();
 
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		verify(restClient, never()).getAllFlavorMappingsByRegion();
+		verify(restClient, never()).getAllStorageProfilesByRegion();
+
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
 
 }

@@ -49,7 +49,6 @@ subscription: []
 flavor-mapping:
   - small
   - medium
-image-mapping: []
 storage-profile: []
 region-mapping:
   cloud-account-tags:

@@ -145,11 +145,6 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 		flavorMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 		flavorMappingStore.exportContent(cloudAccounts);
 
-		// export image mappings
-		VraNgImageMappingStore imageMappingStore = new VraNgImageMappingStore();
-		imageMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
-		imageMappingStore.exportContent(cloudAccounts);
-
 		// export storage profiles
 		VraNgStorageProfileStore storageProfileStore = new VraNgStorageProfileStore();
 		storageProfileStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
@@ -199,11 +194,6 @@ public class VraNgRegionalContentStore extends AbstractVraNgStore {
 			VraNgFlavorMappingStore flavorMappingStore = new VraNgFlavorMappingStore();
 			flavorMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
 			flavorMappingStore.importContent(sourceDirectory, importTags);
-
-			// image mappings
-			VraNgImageMappingStore imageMappingStore = new VraNgImageMappingStore();
-			imageMappingStore.init(restClient, vraNgPackage, vraNgPackageDescriptor);
-			imageMappingStore.importContent(sourceDirectory, importTags);
 
 			// storage profiles
 			VraNgStorageProfileStore storageProfileStore = new VraNgStorageProfileStore();
