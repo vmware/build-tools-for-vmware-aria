@@ -1,247 +1,301 @@
-# Build Tools for VMware Aria
+# Minimal Infrastructure
 
-**Build Tools for VMware Aria** provides set of infrastructure components supporting source control, artifact managment, build system and wiki to the vRrealize engineers.
+## Contents
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+   [Validation](#validation)
+- [Running the Infrastructure](#running-the-infrastructure)
+- [Application Setup](#application-setup)
+  - [GitLab](#gitlab)
+  - [GitLab Runner](#gitlab-runner)
+  - [Nexus](#nexus)
+- [Environment Setup](#environment-setup)
+- [Project Setup](#project-setup)
+- [Conclusion](#conclusion)
 
-## Table of Contents
-1. [Photon](#Photon)
-2. [NGINX](#NGINX)
-3. [Installation](#Installation)
-4. [Uninstallation](#Uninstallation)
-5. [GitLab CE](#GitLab)
-6. [JFrog Artifactory OSS](#Artifactory)
+## Introduction
+This file serves as a guide to create a minimal infrastructure example using containers. We will be using [Docker Compose](https://docs.docker.com/compose/) to orchestrate the following containers:
 
-## Platform Requirements
+- [nginx](https://hub.docker.com/_/nginx)
+- `Nexus`
+  - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/) for Linux.
+  - [klo2k/nexus3](https://hub.docker.com/r/klo2k/nexus3) for M1+ Mac.
+- `GitLab`
+  - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) for Linux.
+  - [yrzr/gitlab-ce-arm64v8](yrzr/gitlab-ce-arm64v8) for M1+ Mac.
+- [gitlab/gitlab-runner](https://hub.docker.com/r/gitlab/gitlab-runner)
 
-* Platform Server
-    - Hardware
-        - CPU Cores 4
-        - Memory 8 GB
-        - Storage 40 GB
-    - Operating System
-        - Photon OS
-    - Software
-        - Docker
-            - GitLab CE (Docker Container)
-            - GitLab Runner (Docker Container)
-            - Artifactory OSS (Docker Container)
-            - Nginx (Docker Container)
-    - Firewall
-        - Inbound
-            - 80
-            - 443
-        - Outbound
-            - vRSCLM:[443:80]
-            - vRA:[443:80]
-            - vRO:[443:80]
+Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](../README.md) project.
 
-* Development Workstation
-    - Could be developer laptop, desktop or jumphost
-    - Firewall
-        - Outbound
-            - Build Tools for VMware Aria Server:[80, 443]
-            - vRSCLM:[443:80]
-            - vRA:[443:80]
-            - vRO:[443:80]
+We will also be guiding you through configuring the applications and setting up a new project and building it end-to-end.
 
+Please contribute back to this document if you find out of date contents or have other ways to improve it.
 
-## Photon
-PhotonOS is an open source minimalist Linux container host optimized for cloud-native applications, cloud platforms
-and VMware infrastructure. Photon OS provides a secure run-time environment for efficiently running containers.
+## Prerequisites
 
-### Requirements
-Preprovisioned [Photon OS 2.0](https://vmware.github.io/photon/) with the following software packages pre-installed:
-* [Docker-compose](https://docs.docker.com/compose/install/#install-compose) (>= 1.18.0)
-  * It is important to configure docker host to automatically start after reboot
-    ```
+### Installation
+Before proceeding, make sure you have the following installed on your system:
+- [Docker Engine](https://docs.docker.com/engine/install/) - Important to configure the docker host to automatically start after reboot and add docker to PATH.
+    ```bash
     systemctl start docker
     systemctl enable docker
+    export PATH=$PATH:~/.docker/bin
     ```
-* NPM (>= 5.3.0)
-* ZIP, UNZIP and TAR (```tdnf install zip unzip tar```)
-* Preconfigured networking
-* Resolvable hostnames for GitLab, Artifactory, CI Runner (check **Install**) section)
-* Temporary access to internet during the installation
-* Propper resource sizing based on the load (number of users, projects, pipelines, artifacts, etc)
+- [Docker Compose](https://docs.docker.com/compose/install)
+- [Open JDK 17](https://openjdk.org/install/)
+- [Maven](https://maven.apache.org/)
+- [NodeJS 14.21.03](https://nodejs.org/en/download/package-manager) - Recommended to use [nvm](https://github.com/nvm-sh/nvm) to manage Node versions.
+- [npm 6.14.18](https://nodejs.org/en/download/package-manager) - Should be bundled with `NodeJS`.
 
-## NGINX
-NGINX is a web server that is used as a reverse proxy that exposes all of the needed services to the outside world.
-The use of NGINX reverse proxy simplifies service management configuration, adds security and central SSL management (SSL termination occurs on the proxy) and provides unified access logging and a simple user portal. Certain caching performance benefits may also apply even with default configuration.
+For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
 
-The default configured ports for NGINX are **80/443**.
-
-### NGINX and Network Configuration
-The default NGINX configuration file can be found in **nginx/conf.d/nginx.conf**.
-
-The networking stack is constructed as follows:
-Docker network **infranet 172.18.0.0/24**:
-* 172.18.0.10 - NGINX proxy server
-* 172.18.0.11 - gitlab.corp.local (GitLab CE)
-* 172.18.0.12 - gitlab-runner.corp.local (GitLab CI Runner)
-* 172.18.0.13 - artifactory.corp.local (JFrog Artifactory)
-
-On the internal network, the vRA IaaC Web Portal will respond to **infra.corp.local**.
-The services are available on the following URLs:
-* [Gitlab](http://infra.corp.local/gitlab)
-* [Artifactory](http://infra.corp.local/artifactory)
-* [VSCode Extension](http://infra.corp.local/vscode)
-* [vRo Extension](http://infra.corp.local/vro)
-* [Help](http://infra.corp.local/help)
-
-The NGINX reverse proxy is used in this situation to forward the traffic to the specified container. None of the services and their corresponding ports are exposed to the outside world - they "live" inside the Docker container network.
-
-The hostnames and IPs are fully configurable. If the hostnames or IPs change you should update **etc/hosts** file, **docker-compose.yml** and the NGINX config file located in ``nginx/conf.d/nginx.conf`` as they use and inject the hostnames and IP addresses into the containers internal DNS resolver.
-
-## Installation
-
-### Infrastructure Folder Contents
-The infrastructure package contains the following items:
-* **etc** folder: contains the needed configuration files for various services
-* **nginx** folder: contains the needed files for the NGINX web server
-* **docker-compose.yml** file that is used to describe the Docker services
-* **iac-for-vrealize-configurator.sh** bootstrap script for the infrastructure
-
-### Installation Instructions
-1. Deploy the package into the PhotonOS appliance.
-2. Open the **docker-compose.yml** file and locate the following string: ``infra.corp.local:<DOCKER_HOST_IP>``
-3. Change the value of **<DOCKER_HOST_IP>** with the IP address of the Docker host.
-3.1 In case Photon OS needs to use http proxy add on top of the **docker-compose.yml** file the following line  ``` ARG http_proxy=<proxy>```. This will make the proxy available during the build phase but not container runtime.
-4. Navigate to the installation script ```iac-for-vrealize-configurator.sh``` located at: ```/path/to/package/infrastructure/```
-5. Assign execution permissions to the script
-6. Execute the script with the following options: ```iac-for-vrealize-configurator.sh --install```. This will trigger the installation process.
-7. If the script finishes succesfully execute the following command to validate if all docker containers have started: ```docker ps```
-8. There should be containers named **nginx, gitlab-ce, gitlab-runner, artifactory**
-9. Some of the services (for example the GitLab portal) require couple of minutes for starting so they would not be imidiatelly available after the startup procedure.
-10. You can check the log file of the installer located in:   ```/var/log/vmware/iac-for-vrealize/iac-for-vrealize-configurator.log```
-
-## GitLab CE
-When you first open the GitLab you will be prompted to set a password for the **root** account.
-After that you will be able to login as root, create users, groups, repositories and manage the portal.
-
-### Register GitLab CI Runner
-1. Login with administrator privileges in Gitlab
-2. Navigate to **Admin Area > Runners**
-3. Copy the registration token for the runners
-4. Login to the PhotonOS Docker host and execute the following command:
-```docker exec -it gitlab-runner gitlab-runner register```
-5. Follow the instruction to register the runner with the Gitlab instance
-6. When prompted with **Please enter the executor** use **shell** as a type of runner
-7. Use the internal gitlab URL, e.g. http://infra.corp.local/gitlab by default
-
-## JFrog Artifactory OSS
-JFrog Artifactory is a Universal Repository Manager supporting all major packaging formats, build tools and CI servers.
-
-### Create Default Password and Maven Repo
-When you first open JFrog Artifactory you will be prompted to create a password for the default **admin** user and a default repo.
-Choose **Maven** as a type of repo to create and Artifactory will create the default Maven repositories.
-
-### Configuring JFrog CLI for artifact deployment
-
-* JFrog CLI will already be installed by the installation script.
-* Run the command ``jfrog rt config`` to initiate the initial configuration of the CLI and follow the steps:
-  * ``Artifactory server ID:`` - Leave this empty
-  * ``Artifactory URL`` - Provide the internal artifactory url, e.g. http://infra.corp.local/artifactory by default
-  * ``API key (leave empty for basic authentication):`` - Either enter an API key for authentication or leave empty
-  * ``User: `` - Enter user for basic authentication (default user **admin**)
-  * ``Password: `` - Enter password for basic authentication (password configured in **Create Default Password**)
-
-### Uploading toolchain artifacts to Artifactory
-_Note that the libs-release, libs-snapshot etc. are the default Maven repositories created by JFrog's **Quick Setup** shown at 
-first login. This guide assumes that this **Quick Setup** has been executed._
-1. Create a local repository in artifactory to contain the toolchain artifacts, e.g. **pscoe-local** and add it to the virtual release repository (e.g. **libs-release**) 
-3. Unzip **iac-maven-repository.zip** found at **artifacts/maven/** path relative to the root of the toolchain bundle to a folder, e.g. **import/**
-4. Go to the directory where you have unzipped the archive. Your working directory should contain the "com" folder and the **archetype-catalog.xml** file, e.g.:
+### Validation
+Validate all of the prerequisites are available in the Terminal:
 ```bash
-root@photon-G6H8GzV2j [ ~/toolchain/import ]# ls
-archetype-catalog.xml  com
-```
-5. Then, run the following command ``jfrog rt u --recursive=true --flat=false ./ pscoe-local``, where **pscoe-local** should be the name of the repository you've created at step #1.
-6. Examine the output of the command. It should look something similar to this:
-```
-Uploading artifact: /path/to/artifact/some-artifact.jar
-{
-  "status": "success",
-  "totals": {
-    "success": 1,
-    "failure": 0
-  }
-}
+docker -v
+node -v
+npm -v
+mvn -v
+java --version
 ```
 
-## Upload vRO artifacts to Artifactory
-First you need access to a vRO appliance to get the vRO dependencies for the toolchain in your artifactory.
-1. Get all vRO artifacts on the local machine. Run: 
-```
-wget --no-check-certificate --recursive --no-parent --reject "index.html*" https://<vro_ip>:<vro_port>/vco-repo/com/
-wget --no-check-certificate --recursive --no-parent --reject "index.html*" https://<vro_ip>:<vro_port>/vco-repo/com/vmware/o11n/mojo/pkg/
-wget --no-check-certificate --recursive --no-parent --reject "index.html*" https://<vro_ip>:<vro_port>/vco-repo/com/vmware/o11n/pkg
-```
-2. Create a new local repository (e.g. **vro-local**) and add it to the virtual release repository (e.g. **libs-release**).
-3. Navigate to the root folder of the downloaded repository on the local filesystem - at the same level as the **com** directory. E.g.:
-```bash
-root@photon-G6H8GzV2j [ ~/192.168.71.1/vco-repo ]# ls
-com
-```
-4. Import the vro artifacts to the selected repository, for example: 
-```
-jfrog rt u --recursive true --flat false ./ vro-local
+The latest versions used to test this guide on Ubuntu are as follows:
+```text
+Docker version 27.0.3
+NodeJS version 14.21.3
+npm version 6.14.18
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Javaversion: 17.0.12, vendor:Ubuntu,runtime: /usr/lib/jvm/java-17-openjdk-arm64
+Default locale:en_US, platform encoding:ANSI_X3.4-1968
+OS name: "linux",version: "6.6.32-linuxkit",arch:"aarch64", family: "unix"
+openjdk 17.0.12 2024-07-16
+OpenJDK Runtime Environment (build 17.0.12+7-Ubuntu-1ubuntu220.04)
+OpenJDK 64-Bit Server VM (build 17.0.12+7-Ubuntu-1ubuntu220.04, mixed mode, sharing)
 ```
 
-### Configure permissions for local cache for the Anonymous user
-1. Login into Artifactory with admin privileges
-2. Navigate to **Admin > Permissions**
-3. Click the **New** button
-4. Add a name for the permissions (for example: Anonymous Cache)
-5. Add all repositories into the **Selected Repositories** list view
-6. Skip the groups section
-7. On the **Users** section add **Anonymous** user
-8. Give **Deploy/Cache, Annotate, Read** permissions
-9. Click **Save & Finish**
+## Running the Infrastructure
+To get started, follow the steps below:
 
-## Managing the Docker services
-The services are managed with docker-compose.
+1. Clone the repository containing the existing resources:
+    ```bash
+    git clone https://github.com/vmware/build-tools-for-vmware-aria.git
+    ```
 
-Initial startup is trigered from the installation script with the command: ```docker-compose up -d```.
-This will kickstart the creation of the containers and will boot them up.
+2. Navigate to the `infrastructure` folder:
+    ```bash
+    cd build-tools-for-vmware-aria/infrastructure
+    ```
 
-After that you can use the following management commands (executed from the directory of the docker-compose file):
-* ```docker-compose start``` - will start all containers for all services in the docker-compose file
-* ```docker-compose stop``` - will stop all containers for all services in the docker-compose file
-* ```docker-compose restart```- will restart all containers for all services in the docker-compose file
+3. Create the custom Maven GitLab Runner image by executing:
+    ```bash
+    docker build -t gitlab-runner ./gitlab-runner
+    ```
 
-* ```docker-compose up -d``` - this will recreate all Docker containers
-* ```docker-compose down``` - this will stop all containers and delete them
+4. Open the [docker-compose.yml](docker-compose.yml) file:
+    - Depending on your host OS uncomment the `image` property under the `gitlab` and `nexus` services either tagged with `## Mac` or `## Linux`.
+    - `OPTIONAL` Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](./nginx/conf.d/main.conf).
 
-## Uninstalling the solution
-To uninstall the solution run the following command:
-```../infrastructure/iac-for-vrealize-configurator.sh --clean```
+5. Add the nginx container and the docker internal host endpoints to your `hosts` file.  
+    - Docker provides an internal DNS server in user-defined networks (infranet) to resolve container names to their internal IP addresses. Since your nginx and GitLab services are part of the infranet network, they can communicate using their Docker defined hostnames.
 
-This will remove:
-* All running containers for the solution - NGINX, GitLab, GitLab CI Runner, Artifactory
-* Docker network **infranet**
-* JFrog CLI
-* Custom configuration from **/etc/hosts** file
+    - We are going to be accessing the containers from the nginx reverse proxy. For this you need to manually edit the /etc/hosts file on your host machine:
 
-No persistent container data is deleted - if you want to fully delete all data you should
-delete the files located in the following locations:
+    - Add the following records to the `/etc/hosts` file.
+        ```text
+        127.0.0.1 infra.corp.local
+        ```
 
-NGINX:
-* ./nginx/conf.d
-* ./nginx/vhost.d
-* ./nginx/html
-* ./nginx/certs
-* ./nginx/proxy.conf
-* /var/log/nginx
+6. Run the [docker-compose.yml](docker-compose.yml) file:
+    ```bash
+    docker compose up -d
+    ```
 
-GitLab:
-* /srv/gitlab/config
-* /srv/gitlab/logs
-* /srv/gitlab/data
+7. Validate the containers are created:
+    ```bash
+    docker ps
+    ```
 
-GitLab Runner:
-* /srv/gitlab-runner/config
+   The results should look something like this:
+    ```text
+    CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS                   PORTS                                                 NAMES
+    eec4f06c5e88   nginx                    "/docker-entrypoint.…"   5 minutes ago   Up 5 minutes             0.0.0.0:80->80/tcp                                    nginx
+    dc46763483f0   klo2k/nexus3             "/__cacert_entrypoin…"   5 minutes ago   Up 5 minutes             0.0.0.0:8081->8081/tcp                                nexus
+    42630f6121ad   yrzr/gitlab-ce-arm64v8   "/assets/wrapper"        5 minutes ago   Up 5 minutes             0.0.0.0:8022->22/tcp, 0.0.0.0:8082->80/tcp            gitlab-ce
+    17ba02a491e8   gitlab/gitlab-runner     "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes             0.0.0.0:2811->2811/tcp                                gitlab-runner
+    ```
 
-Artifactory:
-* /data/artifactory
+8. Wait until all containers are up and running, which might take a few minutes:
+    - nginx - [infra.corp.local](http://infra.corp.local)
+    - Nexus - [infra.corp.local/nexus](http://infra.corp.local/nexus)
+    - GitLab - [infra.corp.local/gitlab](http://infra.corp.local/gitlab)
+    - GitLab Runner - [infra.corp.local/gitlab-runner](http://infra.corp.local/gitlab-runner) (*no http web interface*)
 
-# Next step
-- Configure developer **[Build Tools for VMware Aria Workstation](./setup-workstation.md)**
+## Application Setup
+
+### GitLab
+1. Grab the GitLab `root` password:
+    ```bash
+    sudo docker exec -it gitlab-ce grep 'Password:' /etc/gitlab/initial_root_password
+    ```
+    *This file will be deleted 24 hours after a container restart*
+
+2. Login at [http://infra.corp.local/gitlab/users/sign_in](http://infra.corp.local/gitlab/users/sign_in) with:
+    ```text
+    account: root
+    password: *password from previous step*
+    ```
+3. Change the root user password at [http://infra.corp.local/gitlab/admin/users/root/edit](http://infra.corp.local/gitlab/admin/users/root/edit)
+
+### GitLab Runner
+1. Go to [http://infra.corp.local/gitlab/admin/runners](http://infra.corp.local/gitlab/admin/runners)
+2. Click on `New instance runner`
+3. Enter any tag, for instance `maven` and optionally select `Run untagged jobs` and press `Create runner`
+4. Copy the code snippet in `Step 1`, which contains your AUTH_TOKEN and should look something like the following:
+    ```bash
+    gitlab-runner register --url http://infra.corp.local/gitlab --token <AUTH_TOKEN>
+    ```
+5. Append it to `docker exec -it gitlab-runner` and execute on your host:
+    ```bash
+    docker exec -it gitlab-runner gitlab-runner register --url http://infra.corp.local/gitlab --token <AUTH_TOKEN>
+    ```
+6. Follow the setup process by providing the following:
+    - GitLab instance URL: leave `default` and press Enter
+    - Enter a name for the runner: input `Maven` or leave `default` and press Enter
+    - Enter an executor - input `shell` and press Enter
+7. Go back to [http://infra.corp.local/gitlab/admin/runners](http://infra.corp.local/gitlab/admin/runners) and validate the runner is `Online`
+
+### Nexus
+1. Grab the Nexus `admin` password:
+    ```bash
+    docker exec nexus sh -c 'cat /nexus-data/admin.password && echo'
+    ```
+2. Login at [http://infra.corp.local/nexus/](http://infra.corp.local/nexus/) with:
+    ```text
+    account: admin
+    password: *password from previous step*
+    ```
+3. Follow the initial setup wizard instructions:
+    - Enter new `admin` password
+    - Disable anonymous access
+
+## Environment Setup
+1. Follow the [Getting Started](../docs/versions/latest/General/Getting%20Started/) guides to setup your local environment.
+2. Edit your local `~/.m2/settings.xml` by using the repository provided [settings.xml](/infrastructure/.m2/settings.xml). It should contain:
+    - A nexus server authentication under `servers` with id `nexus` with your Nexus username and password.
+    - A `Maven Central` mirror under `mirrors` with id `nexus`.
+    - A profile under `profiles` with id `nexus` with `releases` and `snapshots` repositories.
+    - A profile under `profiles` with id `packaging`.
+
+    You can also copy it directly from the example [settings.xml](/infrastructure/.m2/settings.xml):
+    ```bash
+    mkdir -p ~/.m2
+    cp .m2/settings.xml ~/.m2/settings.xml
+    ```
+
+## Project Setup
+1. Create a repository called `demo` at [http://infra.corp.local/gitlab/projects/new#blank_project](http://infra.corp.local/gitlab/projects/new#blank_project).
+2. Setup your local git environment and follow the `Command line instructions` listed in your new repo to clone it.
+3. Open a terminal and `cd` to the repository directory.
+4. Generate a project by running:
+    ```bash
+    mvn archetype:generate -DinteractiveMode=false -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes -DarchetypeArtifactId=package-ts-vra-ng-archetype -DarchetypeVersion=<VERSION> -DgroupId=local.corp -DartifactId=demo -DlicenseTechnicalPreview=false -DoutputDirectory=../
+    ```
+    where `<VERSION>` is the last released version or any specific version you want, i.e. `2.42.0`.
+
+    You might also want to change the specific archetype to best fit your specific use-case. Check out the archetype templates available at [com.vmware.pscoe.o11n.archetypes](https://central.sonatype.com/namespace/com.vmware.pscoe.o11n.archetypes), some of them might need additional dependencies like `Powershell` or `Python`.
+5. Validate the command generates the appropriate project files.
+6. Validate you can build and test the project locally:
+    ```bash
+    mvn clean package
+    mvn test
+    ```
+    You might need to comment out the following passage:
+    ```text
+    <dependency>
+        <groupId>local.corp</groupId>
+        <artifactId>vro</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <type>package</type>
+    </dependency>
+    ```
+    in `vra`'s `pom.xml` in order to successfully build and test.
+
+7. Configure the GitLab pipeline by creating a new file in the root of the repository named `.gitlab-ci.yml`:
+    ```yml
+    stages:
+      - setup
+      - build
+      - test
+      - install
+
+    variables:
+      LOCAL_REPO: >-
+        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository    
+      BUILD_OPTS: >-
+        -Dhttps.protocols=TLSv1.2
+        $LOCAL_REPO
+        -DskipTests=true
+      DEPLOY_OPTS: >-
+        -Dhttps.protocols=TLSv1.2
+        $LOCAL_REPO
+        -DskipTests=true
+        -Dbuild.number=$CI_PIPELINE_IID
+        -Dsurefire.useSystemClassLoader=false
+        -Pbundle-with-installer
+        -DoutputDirectory=target
+        -DartifactName=artifact.zip
+        -U
+        --batch-mode
+
+    dynamic_variables:
+      stage: setup
+      script:
+        - echo "GROUP_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.groupId -q -DforceStdout)" >> build.env
+        - echo "ARTIFACT_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.artifactId -q -DforceStdout)" >> build.env
+        - echo "PROJECT_VERSION=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.version -q -DforceStdout)" >> build.env
+      artifacts:
+        expire_in: 3 hours
+        reports:
+          dotenv: build.env
+
+    build:
+      stage: build
+      script:
+        - mvn $BUILD_OPTS clean package
+
+    test:
+      stage: test
+      script:
+        - mvn $LOCAL_REPO test
+
+    install:
+      stage: install
+      needs: ["dynamic_variables"]
+      script:
+        - mvn $DEPLOY_OPTS clean package
+      artifacts:
+        paths:
+          - vra/target/*.zip
+          - vro/target/*.zip
+        name: "$GROUP_ID.$ARTIFACT_ID-$PROJECT_VERSION-$CI_PIPELINE_IID"
+        expire_in: 1 month
+    ```
+    *For more information about the GitLab pipelines, see the pipeline documentation at [https://docs.gitlab.com/ee/ci/](https://docs.gitlab.com/ee/ci/)*
+
+8. Commit and push your git repository changes
+9. Validate `GitLab` runs the pipelines successfully:
+    - Head to [http://infra.corp.local/gitlab/root/demo/-/pipelines](http://infra.corp.local/gitlab/root/demo/-/pipelines) and wait for all of the `setup`, `build`, `test` and `install` steps to run successfully on the the pipeline run you just triggered by pushing in Step #8.
+    - After done, check that you can see the `install:archive` artifact from the successful pipeline outputs (*download button on the right side of the run*) or by going to the artifacts page at [http://infra.corp.local/gitlab/root/demo/-/artifacts](http://infra.corp.local/gitlab/root/demo/-/artifacts)
+    - Pressing the `install:archive` artifact or downloading the *.zip* directly should start a download of the `local.corp.demo-1.0.0-SNAPSHOT-1.zip` install bundle.
+10. You can continue by:
+    - following the [Bundle Installer Guide](../docs/archive/doc/markdown/use-bundle-isntaller.md) to push your package to your `Aria` instance manually.
+    - adding a new `profile` in the [settings.xml](./.m2/settings.xml) for your `Aria` instance and then executing `mvn package vrealize:push -P<NEW_PROFILE_NAME>` which will push your changes directly to a life environment. Follow the [Push](../docs/archive/doc/markdown/use-workstation-vra-ng-project.md#Push) section of your specific archetype documentation at [docs/archive/doc/markdown](../docs/archive/doc/markdown/).
+
+## Conclusion
+This concludes the setup. You now have a fully operational end-to-end architecture to support the [Build Tools for Aria](../README.md), create, build and push projects and run pipelines that produce install bundles.
+
+*This is not intended as a production environment, but as an educational sandbox. You should setup your proper and persistent development and production environments in a similar fashion.*
+
+***Please contribute to keeping this up to date!***

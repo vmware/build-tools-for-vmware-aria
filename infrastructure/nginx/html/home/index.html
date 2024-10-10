@@ -1,88 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Build Tools for VMware Aria</title>
-    <link rel="stylesheet" href="node_modules/@clr/ui/clr-ui.min.css">
-    <link rel="stylesheet" href="node_modules/@clr/icons/clr-icons.min.css">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-<script type="text/javascript" src="scripts/indexPage.js"></script>
-<clr-main-container class="main-container">
-    <clr-header class="header">
-        <div class="branding">
-            <a href="#" class="nav-link">
-                <span class="clr-icon clr-clarity-logo">
-                </span>
-                <span class="title">Build Tools for VMware Aria</span>
-            </a>
-        </div>
-        <div class="header-nav" [clr-nav-level]="1">
-            <a class="nav-link active" href="#"><span
-                    class="nav-text">Home</span></a>
-            <a class="nav-link" href="help.html"><span
-                    class="nav-text">Help</span></a>
-        </div>
-        <div class="header-actions">
-        </div>
-    </clr-header>
-    <div class="content-container">
-        <div class="content-area">
-            <div class="row">
-                <div class="col-lg-2 iac-component">
-                    <a href="/gitlab" class="card clickable">
-                        <div class="card-img">
-                            <img src="images/gitlab.png">
-                        </div>
-                        <div class="card-block">
-                            <p class="card-text">
-                                GitLab
-                            </p>
-                        </div>
-                    </a>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Infrastructure</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <div id="branding">
+                    <h1>Infrastructure Summary</h1>
                 </div>
-                <div class="col-lg-2 iac-component">
-                    <a href="/artifactory" class="card clickable">
-                        <div class="card-img">
-                            <img src="images/artifactory.png">
-                        </div>
-                        <div class="card-block">
-                            <p class="card-text">
-                                JFrog Artifactory
-                            </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-2 iac-component">
-                    <a href="https://marketplace.visualstudio.com/items?itemName=vmware-pscoe.vrealize-developer-tools" class="card clickable" target="_blank">
-                        <div class="card-img">
-                            <img src="images/vscode-icon.png">
-                        </div>
-                        <div class="card-block">
-                            <p class="card-text">
-                                VSCode Extension
-                            </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-2 iac-component">
-                    <a href="" class="card clickable" id="vroFile">
-                        <div class="card-img">
-                            <img src="images/vro-logo.jpg">
-                        </div>
-                        <div class="card-block">
-                            <p class="card-text">
-                                vRO Plugin
-                            </p>
-                        </div>
-                    </a>
-                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#apps">Applications</a></li>
+                        <li><a href="#links">Links</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="content">
+                <h2>About</h2>
+                <p>You can follow <a href="https://github.com/vmware/build-tools-for-vmware-aria/tree/main" target="_blank">Build Tools for VMware Aria</a>'s <a href="https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/readme.md" target="_blank">Infrastructure Setup Guide</a> which provides instructions for setting up and running a series of containerized applications within a corporate infrastructure. It includes details on the specific Docker images used, the commands to start the containers, and the ports they map to on the host machine. The applications mentioned include Nginx, Nexus, GitLab, and GitLab Runner, each serving a different purpose within the development and deployment pipeline.</p>
+                <p>The document outlines the steps required to ensure all containers are up and running, providing specific URLs for accessing the web interfaces of Nginx, Nexus, and GitLab. It emphasizes the importance of waiting for all containers to be fully operational before proceeding with further setup or usage. This ensures that the infrastructure is correctly initialized and ready for use.</p>
+                <p>Additionally, the <a href="https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/readme.md" target="_blank">README</a> includes sections dedicated to the setup and configuration of individual applications, such as GitLab. These sections contain more detailed instructions on configuring and managing each application, ensuring that users can effectively utilize the infrastructure for their development and deployment needs.</p>
+
+                <h2 id="apps">Containerized Applications</h2>
+                <ul>
+                    <li><a href="http://infra.corp.local" target="_blank">http://infra.corp.local</a></li>
+                    <li><a href="http://infra.corp.local/nexus" target="_blank">http://infra.corp.local/nexus</a></li>
+                    <li><a href="http://infra.corp.local/gitlab" target="_blank">http://infra.corp.local/gitlab</a></li>
+                    <li><a href="http://infra.corp.local/gitlab-runner" target="_blank">http://infra.corp.local/gitlab-runner</a></li>
+                    <!-- Add more applications as needed -->
+                </ul>
+
+                <h2 id="links">Useful Links</h2>
+                <ul>
+                    <li><a href="http://infra.corp.local/gitlab/admin/users/root/edit" target="_blank">Change GitLab Root Password</a></li>
+                    <li><a href="http://infra.corp.local/gitlab/admin/runners" target="_blank">Runners</a></li>
+                    <li><a href="http://infra.corp.local/gitlab/projects/new#blank_project" target="_blank">New Repository</a></li>
+                    <li><a href="http://infra.corp.local/gitlab/root/demo/-/pipelines" target="_blank">Pipeline Runs</a></li>
+                    <li><a href="http://infra.corp.local/gitlab/root/demo/-/artifacts" target="_blank">Artifacts</a></li>
+                    <!-- Add more useful links as needed -->
+                </ul>
             </div>
         </div>
-    </div>
-</clr-main-container>
-</body>
+
+        <footer>
+            <p>Build Tools for VMware Aria 2024</p>
+        </footer>
+    </body>
 </html>
