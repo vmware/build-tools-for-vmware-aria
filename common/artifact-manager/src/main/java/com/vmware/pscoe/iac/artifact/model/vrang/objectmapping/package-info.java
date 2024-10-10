@@ -13,6 +13,7 @@
  * #L%
  */
 /**
- * Represents cloud account details.
+ * Represents cloud account details, used by the vra-ng descriptor to JSON
+ * decode
  */
 package com.vmware.pscoe.iac.artifact.model.vrang.objectmapping;
