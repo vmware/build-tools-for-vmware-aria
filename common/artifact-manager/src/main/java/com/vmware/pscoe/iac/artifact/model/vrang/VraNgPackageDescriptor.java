@@ -30,6 +30,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
+import com.vmware.pscoe.iac.artifact.model.vrang.descriptors.VraNgPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.descriptors.VraNgRegionMapping;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,6 +96,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return propertyGroup list.
 	 */
 	public List<String> getPropertyGroup() {
@@ -101,14 +105,16 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param propertyGroup input values.
 	 */
 	public void setPropertyGroup(List<String> propertyGroup) {
-		this.propertyGroup	= propertyGroup;
+		this.propertyGroup = propertyGroup;
 	}
 
 	/**
 	 * Getter.
+	 * 
 	 * @return blueprints.
 	 */
 
@@ -118,6 +124,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param blueprint input values.
 	 */
 	public void setBlueprint(List<String> blueprint) {
@@ -126,6 +133,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return catalogItems.
 	 */
 	public List<String> getCatalogItem() {
@@ -134,6 +142,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param catalogItem input values.
 	 */
 	public void setCatalogItem(List<String> catalogItem) {
@@ -142,6 +151,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return subscriptions.
 	 */
 	public List<String> getSubscription() {
@@ -150,6 +160,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param subscription input values.
 	 */
 	public void setSubscription(List<String> subscription) {
@@ -158,6 +169,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return flavor mappings.
 	 */
 	public List<String> getFlavorMapping() {
@@ -166,6 +178,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param flavorMapping input values.
 	 */
 	public void setFlavorMapping(List<String> flavorMapping) {
@@ -174,6 +187,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return image mappings.
 	 */
 	public List<String> getImageMapping() {
@@ -182,6 +196,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param imageMapping input values.
 	 */
 	public void setImageMapping(List<String> imageMapping) {
@@ -190,6 +205,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return storage profiles.
 	 */
 	public List<String> getStorageProfile() {
@@ -198,6 +214,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param storageProfile input values.
 	 */
 	public void setStorageProfile(List<String> storageProfile) {
@@ -206,6 +223,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return region mappings.
 	 */
 	public VraNgRegionMapping getRegionMapping() {
@@ -214,6 +232,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param regionMapping input values.
 	 */
 	public void setRegionMapping(VraNgRegionMapping regionMapping) {
@@ -222,6 +241,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return catalog entitlements.
 	 */
 	public List<String> getCatalogEntitlement() {
@@ -230,6 +250,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param catalogEntitlement input values.
 	 */
 	public void setCatalogEntitlement(List<String> catalogEntitlement) {
@@ -238,6 +259,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return policy container.
 	 */
 	public VraNgPolicy getPolicy() {
@@ -246,6 +268,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param policy input value.
 	 */
 	public void setPolicy(VraNgPolicy policy) {
@@ -255,6 +278,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return customResources.
 	 */
 	public List<String> getCustomResource() {
@@ -263,6 +287,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param customResource input values.
 	 */
 	public void setCustomResource(List<String> customResource) {
@@ -271,6 +296,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return resource actions.
 	 */
 	public List<String> getResourceAction() {
@@ -279,6 +305,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param resourceAction input values.
 	 */
 	public void setResourceAction(List<String> resourceAction) {
@@ -287,6 +314,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return Content sources.
 	 */
 	public List<String> getContentSource() {
@@ -295,6 +323,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 	/**
 	 * Setter.
+	 * 
 	 * @param contentSource input values.
 	 */
 	public void setContentSource(List<String> contentSource) {
@@ -341,20 +370,22 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	}
 
 	/**
-	 * List of values, filtered by  type.isNativeContent().
+	 * List of values, filtered by type.isNativeContent().
+	 * 
 	 * @return list
 	 */
 	public boolean hasNativeContent() {
 		return Arrays.stream(VraNgPackageMemberType.values())
-			.filter(type -> type.isNativeContent())
-			.anyMatch(type -> {
-				List<String> memberNames = this.getMembersForType(type);
-				return memberNames != null && !memberNames.isEmpty();
-			});
+				.filter(type -> type.isNativeContent())
+				.anyMatch(type -> {
+					List<String> memberNames = this.getMembersForType(type);
+					return memberNames != null && !memberNames.isEmpty();
+				});
 	}
 
 	/**
 	 * Create a VraNgPackageDescriptor instance from file.
+	 * 
 	 * @param filesystemPath the file
 	 * @return VraNgPackageDescriptor instance
 	 */
@@ -368,12 +399,14 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 
 			return pkgDescriptor;
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to load vRA Package Descriptor[" + filesystemPath.getAbsolutePath() + "]", e);
+			throw new RuntimeException(
+					"Unable to load vRA Package Descriptor[" + filesystemPath.getAbsolutePath() + "]", e);
 		}
 	}
 
 	/**
-	 *  Create a VraNgPackageDescriptor instance from VraNgPackageContent instance.
+	 * Create a VraNgPackageDescriptor instance from VraNgPackageContent instance.
+	 * 
 	 * @param content the package content instance
 	 * @return VraNgPackageDescriptor instance
 	 */
@@ -399,11 +432,11 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 		pd.contentSource = map.get(VraNgPackageContent.ContentType.CONTENT_SOURCE);
 		pd.catalogItem = map.get(VraNgPackageContent.ContentType.CATALOG_ITEM);
 		pd.propertyGroup = map.get(VraNgPackageContent.ContentType.PROPERTY_GROUP);
-		//pd.policy = map.get(VraNgPackageContent.ContentType.POLICY);
+		// pd.policy = map.get(VraNgPackageContent.ContentType.POLICY);
 
 		// System.out.println("REGION MAPPINGS ------");
 		// map.get(VraNgPackageContent.ContentType.REGION_MAPPING).forEach(e -> {
-		//     System.out.println(e);
+		// System.out.println(e);
 		// });
 		// pd.regionMapping = map.get(VraNgPackageContent.ContentType.REGION_MAPPING);
 

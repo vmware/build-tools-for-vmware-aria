@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.vrang.Identifiable;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegionMapping;
+import com.vmware.pscoe.iac.artifact.model.vrang.descriptors.VraNgRegionMapping;
 
 import org.yaml.snakeyaml.Yaml;
 
