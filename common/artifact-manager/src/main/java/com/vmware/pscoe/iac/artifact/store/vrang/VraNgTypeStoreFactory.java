@@ -22,6 +22,7 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.APPROVAL_POLICY;
@@ -33,6 +34,7 @@ import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.Cont
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.CUSTOM_RESOURCE;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.DAY2_ACTIONS_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.DEPLOYMENT_LIMIT_POLICY;
+import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.IMAGE_MAPPING;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.LEASE_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.PROPERTY_GROUP;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.REGION_MAPPING;
@@ -57,6 +59,7 @@ public class VraNgTypeStoreFactory {
 			BLUEPRINT,
 			SUBSCRIPTION,
 			REGION_MAPPING,
+			IMAGE_MAPPING,
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			CONTENT_SHARING_POLICY,
@@ -88,6 +91,7 @@ public class VraNgTypeStoreFactory {
 			BLUEPRINT,
 			SUBSCRIPTION,
 			REGION_MAPPING,
+			IMAGE_MAPPING,
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			CONTENT_SHARING_POLICY,
@@ -124,6 +128,7 @@ public class VraNgTypeStoreFactory {
 			CONTENT_SOURCE,
 			SUBSCRIPTION,
 			REGION_MAPPING,
+			IMAGE_MAPPING,
 
 			// Must be deleted before the following
 			BLUEPRINT,
@@ -242,6 +247,8 @@ public class VraNgTypeStoreFactory {
 				return new VraNgEntitlementStore();
 			case CUSTOM_RESOURCE:
 				return new VraNgCustomResourceStore();
+			case IMAGE_MAPPING:
+				return new VraNgImageMappingStore();
 			case RESOURCE_ACTION:
 				return new VraNgResourceActionStore();
 			case CONTENT_SHARING_POLICY:
