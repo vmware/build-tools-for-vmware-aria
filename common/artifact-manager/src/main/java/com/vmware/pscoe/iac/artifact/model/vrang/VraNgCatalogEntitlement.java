@@ -26,46 +26,100 @@ import java.util.List;
  * set of catalog items, or entire catalog sources to be visible within the
  * scope of one or more project, thus enabling users that belong to the project
  * to be able to request those catalog items.
+ *
+ * Example:
+ *
+ * {
+ * "definition": {
+ * "description": "string",
+ * "iconId": "string",
+ * "id": "string",
+ * "name": "string",
+ * "numItems": 0,
+ * "sourceName": "string",
+ * "sourceType": "string",
+ * "type": "string"
+ * },
+ * "id": "string",
+ * "projectId": "string"
+ * }
  */
-public class VraNgCatalogEntitlement {
-
-	// {
-	// "definition": {
-	// "description": "string",
-	// "iconId": "string",
-	// "id": "string",
-	// "name": "string",
-	// "numItems": 0,
-	// "sourceName": "string",
-	// "sourceType": "string",
-	// "type": "string"
-	// },
-	// "id": "string",
-	// "projectId": "string"
-	// }
-
+public class VraNgCatalogEntitlement implements Identifiable {
+	/**
+	 * @param id - id of the entitlement
+	 */
 	private String id;
+
+	/**
+	 * @param name - name of the entitlement
+	 */
 	private String name;
+
+	/**
+	 * @param type - type of the entitlement
+	 */
 	private VraNgCatalogEntitlementType type;
+
+	/**
+	 * @param sourceType - source type of the entitlement
+	 */
 	private VraNgContentSourceType sourceType;
+
+	/**
+	 * @param sourceId - source id of the entitlement
+	 */
 	private String sourceId;
+
+	/**
+	 * @param iconId - iconId of the entitlement
+	 */
 	private String iconId;
+
+	/**
+	 * @param projects - the projects associated with the entitlement.
+	 */
 	private List<String> projects = new ArrayList<>();
 
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param name       - name of the entitlement
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
 	public VraNgCatalogEntitlement(String name, VraNgCatalogEntitlementType type, VraNgContentSourceType sourceType) {
 		this.name = name;
 		this.type = type;
 		this.sourceType = sourceType;
 	}
 
-	public VraNgCatalogEntitlement(String name, List<String> projects, VraNgCatalogEntitlementType type, VraNgContentSourceType sourceType) {
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param name       - name of the entitlement
+	 * @param projects   - the projects associated with the entitlement.
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
+	public VraNgCatalogEntitlement(String name, List<String> projects, VraNgCatalogEntitlementType type,
+			VraNgContentSourceType sourceType) {
 		this.name = name;
 		this.type = type;
 		this.sourceType = sourceType;
 		this.projects = projects;
 	}
 
-	public VraNgCatalogEntitlement(String id, String sourceId, String name, VraNgCatalogEntitlementType type, VraNgContentSourceType sourceType) {
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param id         - id of the entitlement
+	 * @param sourceId   - source id of the entitlement
+	 * @param name       - name of the entitlement
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
+	public VraNgCatalogEntitlement(String id, String sourceId, String name, VraNgCatalogEntitlementType type,
+			VraNgContentSourceType sourceType) {
 		this.id = id;
 		this.sourceId = sourceId;
 		this.name = name;
@@ -73,7 +127,18 @@ public class VraNgCatalogEntitlement {
 		this.sourceType = sourceType;
 	}
 
-	public VraNgCatalogEntitlement(String id, String sourceId, String name, List<String> projects, VraNgCatalogEntitlementType type,
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 * 
+	 * @param id         - id of the entitlement
+	 * @param sourceId   - source id of the entitlement
+	 * @param name       - name of the entitlement
+	 * @param projects   - the projects associated with the entitlement.
+	 * @param type       - type of the entitlement
+	 * @param sourceType - source type of the entitlement
+	 */
+	public VraNgCatalogEntitlement(String id, String sourceId, String name, List<String> projects,
+			VraNgCatalogEntitlementType type,
 			VraNgContentSourceType sourceType) {
 		this.id = id;
 		this.sourceId = sourceId;
@@ -83,6 +148,9 @@ public class VraNgCatalogEntitlement {
 		this.projects = projects;
 	}
 
+	/**
+	 * Constructor for VraNgCatalogEntitlement.
+	 */
 	public VraNgCatalogEntitlement() {
 	}
 
@@ -103,7 +171,7 @@ public class VraNgCatalogEntitlement {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * Get the iconId of the entitlement.
 	 * 
@@ -113,7 +181,7 @@ public class VraNgCatalogEntitlement {
 		return this.iconId;
 	}
 
-	 /**
+	/**
 	 * Set the id of the entitlement.
 	 * 
 	 * @param iconId - iconId of the entitlement
@@ -171,6 +239,9 @@ public class VraNgCatalogEntitlement {
 		return this.sourceType;
 	}
 
+	/**
+	 * @param sourceType is the source type to set
+	 */
 	public void setSourceType(VraNgContentSourceType sourceType) {
 		this.sourceType = sourceType;
 	}
@@ -189,10 +260,10 @@ public class VraNgCatalogEntitlement {
 	 * Set source id of the entitlement. This is used when a new entitlement is
 	 * being created.
 	 * 
-	 * @param id source id
+	 * @param sourceId source id
 	 */
-	public void setSourceId(String id) {
-		this.sourceId = id;
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
 	}
 
 	/**

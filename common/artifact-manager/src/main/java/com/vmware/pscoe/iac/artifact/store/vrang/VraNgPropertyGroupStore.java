@@ -67,6 +67,14 @@ public final class VraNgPropertyGroupStore extends AbstractVraNgStore {
 		this.projectId = this.restClient.getProjectId();
 	}
 
+	protected List<VraNgPropertyGroup> getAllServerContents() {
+		return this.restClient.getPropertyGroups();
+	}
+
+	protected void deleteResourceById(String resId) {
+		this.restClient.deletePropertyGroup(resId);
+	}
+
 	/**
 	 * Imports all content in content.yaml.
 	 * WIll do nothing if property group dir does not exist
