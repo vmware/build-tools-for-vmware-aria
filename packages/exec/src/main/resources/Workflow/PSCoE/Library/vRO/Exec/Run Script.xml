@@ -4,7 +4,6 @@
   <position y="50.0" x="100.0"/>
   <input>
     <param name="script" type="string"/>
-    <param name="printInOutput" type="boolean"/>
   </input>
   <output>
     <param name="output" type="string"/>
@@ -16,32 +15,31 @@
     <display-name><![CDATA[Scriptable task]]></display-name>
     <script encoded="false"><![CDATA[output = "";
 	
-	function wrap(original, severity) {
+	function wrap(original, severity, origin) {
 		return function(message) {
 			var timestamp = new Date().toISOString();
-			output += "[" + timestamp + "] [" + severity + "] " + message + "\n";
+			output += "[" + timestamp + "] [" + origin + "] [" + severity + "] " + message + "\n";
 			original(message);
 		}	
 	}
 	
-	System.debug = wrap(System.debug, "debug");
-	System.log = wrap(System.log, "info");
-	System.warn = wrap(System.warn, "warning");
-	System.error = wrap(System.error, "error");
+	System.debug = wrap(System.debug, "debug", "system");
+	System.log = wrap(System.log, "info", "system");
+	System.warn = wrap(System.warn, "warning", "system");
+	System.error = wrap(System.error, "error", "system");
 	
-	Server.log = wrap(Server.log, "info");
-	Server.warn = wrap(Server.warn, "warning");
-	Server.error = wrap(Server.error, "error");
+	Server.log = wrap(Server.log, "info", "server");
+	Server.warn = wrap(Server.warn, "warning", "server");
+	Server.error = wrap(Server.error, "error", "server");
 	
 	try {
 		eval(script);
 	} catch (e) {
-		output += "[" + new Date().toISOString() + "] [error] " + (e.message || e) + "\n";
+		output += "[" + new Date().toISOString() + "] [ERROR] " + (e.message || e) + "\n";
 		throw e;
 	}]]></script>
     <in-binding>
       <bind name="script" type="string" export-name="script"/>
-      <bind name="printInOutput" type="boolean" export-name="printInOutput"/>
     </in-binding>
     <out-binding>
       <bind name="output" type="string" export-name="output"/>
@@ -53,9 +51,6 @@
       <desc><![CDATA[script]]></desc>
       <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
       <p-qual name="textInput" type="void"><![CDATA[__NULL__]]></p-qual>
-    </p-param>
-    <p-param name="printInOutput">
-      <desc><![CDATA[printInOutput]]></desc>
     </p-param>
   </presentation>
 </workflow>
