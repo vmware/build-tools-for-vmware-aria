@@ -35,7 +35,6 @@ import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.Cont
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.DEPLOYMENT_LIMIT_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.LEASE_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.PROPERTY_GROUP;
-import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.REGION_MAPPING;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.RESOURCE_ACTION;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
 import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent.ContentType.SUBSCRIPTION;
@@ -56,7 +55,6 @@ public class VraNgTypeStoreFactory {
 			RESOURCE_ACTION,
 			BLUEPRINT,
 			SUBSCRIPTION,
-			REGION_MAPPING,
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			CONTENT_SHARING_POLICY,
@@ -87,7 +85,6 @@ public class VraNgTypeStoreFactory {
 			RESOURCE_ACTION,
 			BLUEPRINT,
 			SUBSCRIPTION,
-			REGION_MAPPING,
 			CATALOG_ENTITLEMENT,
 			CATALOG_ITEM,
 			CONTENT_SHARING_POLICY,
@@ -123,7 +120,6 @@ public class VraNgTypeStoreFactory {
 			CATALOG_ITEM,
 			CONTENT_SOURCE,
 			SUBSCRIPTION,
-			REGION_MAPPING,
 
 			// Must be deleted before the following
 			BLUEPRINT,
@@ -236,8 +232,6 @@ public class VraNgTypeStoreFactory {
 				return new VraNgBlueprintStore();
 			case SUBSCRIPTION:
 				return new VraNgSubscriptionStore();
-			case REGION_MAPPING:
-				return new VraNgRegionalContentStore();
 			case CATALOG_ENTITLEMENT:
 				return new VraNgEntitlementStore();
 			case CUSTOM_RESOURCE:

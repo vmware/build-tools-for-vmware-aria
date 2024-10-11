@@ -44,14 +44,6 @@
 blueprint:
   - Volume
 subscription: []
-flavor-mapping:
-  - small
-  - medium
-storage-profile: []
-region-mapping:
-  cloud-account-tags:
-    export-tag: "env:dev"
-    import-tags: ["env:dev", "env:test"]
 catalog-item: []
 custom-resource: []
 resource-action: []

@@ -17,10 +17,6 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 public enum VraNgPackageMemberType {
 	BLUEPRINT("blueprint"),
 	SUBSCRIPTION("subscription"),
-	FLAVOR_PROFILE("flavor-profile"),
-	IMAGE_PROFILE("image-profile"),
-	STORAGE_PROFILE("storage-profile"),
-	REGION_MAPPING("region-mapping"),
 	CATALOG_ENTITLEMENT("catalog-entitlement"),
 	CUSTOM_RESOURCE("custom-resource"),
 	RESOURCE_ACTION("resource-action"),
