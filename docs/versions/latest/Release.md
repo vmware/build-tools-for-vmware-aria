@@ -98,6 +98,80 @@ The 'com.vmware.pscoe.o11n:exec' package was missing when building the build too
 
 The 'com.vmware.pscoe.o11n:exec' package is no longer missing when built. The error above no longer appears when running an Action via VRDT UI.
 
+### Enabled System and Server level logging in the Run Script Workflow
+
+The 'Run Script' XML Workflow in the 'exec' module is used by the 'vRealize Developer Tools' plugin to perform the 'Run vRo Action' command (accessible in VScode via the ... menu at the top-right corner of the editor for JS and TS files). The command is supported to run JS Actions - function closures without parameters or a return statement.
+
+#### Previous Behavior
+
+The System and Server level logs were not displayed in the vRealize developer tools OUTPUT console for Orchestrator versions above 7.3, regardless of the Vradev log level selected in the plugin settings.
+
+Example output:
+```log
+# Running actionSamplePrintSth.js
+# vRO Version: 8.14.0
+# Execution ID: 6cee80ee-48cf-4198-8f28-8a82705e576f
+
+
+# Completed after 0m 1s
+```
+
+#### New Behavior
+
+With Vradev log configured to 'off' in the vRealize Developer Tools plugin settings, the output is unchanged.
+
+Example output with Vradev log level 'info':
+```log
+# Running actionSamplePrintSth.js
+# vRO Version: 8.14.0
+# Execution ID: e23cdb94-9937-43e4-b9fc-a6a1995743de
+
+[2024-10-10 18:01:46.362 +0300] [server] [info] Server.log printing something
+[2024-10-10 18:01:46.364 +0300] [system] [info] System.log printing something
+[2024-10-10 18:01:46.369 +0300] [server] [warning] Server.warn printing something
+[2024-10-10 18:01:46.371 +0300] [system] [warning] System.warn printing something
+[2024-10-10 18:01:46.376 +0300] [server] [error] Server.error printing something
+[2024-10-10 18:01:46.378 +0300] [system] [error] System.error printing something
+[2024-10-10 18:01:46.382 +0300] [system] [info] Testing duplicate logs (same message from System/Server):
+[2024-10-10 18:01:46.384 +0300] [system] [info] Testing duplicate logs (same message from System/Server):
+[2024-10-10 18:01:46.392 +0300] [system] [info] S.log printing something
+[2024-10-10 18:01:46.394 +0300] [system] [info] S.log printing something
+[2024-10-10 18:01:46.398 +0300] [system] [warning] S.warn printing something
+[2024-10-10 18:01:46.402 +0300] [system] [warning] S.warn printing something
+[2024-10-10 18:01:46.408 +0300] [system] [error] S.error printing something
+[2024-10-10 18:01:46.409 +0300] [system] [error] S.error printing something
+[2024-10-10 18:01:46.414 +0300] [system] [error] S.error printing something before error
+[2024-10-10 18:01:46.416 +0300] [system] [error] S.error printing something before error
+[2024-10-10 18:01:46.423 +0300] [system] [error] Error in (Workflow:Run Script / Scriptable task (item1)#24) Error: THIS IS THE ERROR!
+```
+
+Example output with Vradev log level 'info' (notice the additional System debug entry):
+```log
+# Running actionSamplePrintSth.js
+# vRO Version: 8.14.0
+# Execution ID: f61e30a4-b158-464f-90c8-d83317d30e39
+
+[2024-10-10 17:47:21.642 +0300] [system] [debug] System.debug printing something
+[2024-10-10 17:47:21.649 +0300] [server] [info] Server.log printing something
+[2024-10-10 17:47:21.650 +0300] [system] [info] System.log printing something
+[2024-10-10 17:47:21.654 +0300] [server] [warning] Server.warn printing something
+[2024-10-10 17:47:21.655 +0300] [system] [warning] System.warn printing something
+[2024-10-10 17:47:21.659 +0300] [server] [error] Server.error printing something
+[2024-10-10 17:47:21.660 +0300] [system] [error] System.error printing something
+[2024-10-10 17:47:21.663 +0300] [system] [info] Testing duplicate logs (same message from System/Server):
+[2024-10-10 17:47:21.664 +0300] [system] [info] Testing duplicate logs (same message from System/Server):
+[2024-10-10 17:47:21.665 +0300] [system] [debug] S.debug printing something
+[2024-10-10 17:47:21.667 +0300] [system] [info] S.log printing something
+[2024-10-10 17:47:21.668 +0300] [system] [info] S.log printing something
+[2024-10-10 17:47:21.672 +0300] [system] [warning] S.warn printing something
+[2024-10-10 17:47:21.673 +0300] [system] [warning] S.warn printing something
+[2024-10-10 17:47:21.677 +0300] [system] [error] S.error printing something
+[2024-10-10 17:47:21.678 +0300] [system] [error] S.error printing something
+[2024-10-10 17:47:21.685 +0300] [system] [error] S.error printing something before error
+[2024-10-10 17:47:21.686 +0300] [system] [error] S.error printing something before error
+[2024-10-10 17:47:21.693 +0300] [system] [error] Error in (Workflow:Run Script / Scriptable task (item1)#24) Error: THIS IS THE ERROR!
+```
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
