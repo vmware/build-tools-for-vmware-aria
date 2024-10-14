@@ -50,7 +50,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVra;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
@@ -308,30 +307,6 @@ public final class RestClientFactory {
 		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVrops(configuration, restTemplate);
-	}
-
-	/**
-	 * The function getClientVra returns a RestClientVra object with a configured
-	 * RestTemplate and
-	 * authentication interceptor.
-	 * 
-	 * @param configuration The configuration parameter is an object of type
-	 *                      ConfigurationVra. It contains
-	 *                      the necessary information and settings required to
-	 *                      configure the RestClientVra object.
-	 * @return The method is returning an instance of the RestClientVra class.
-	 */
-	public static RestClientVra getClientVra(ConfigurationVra configuration) {
-		RestTemplate restTemplate = getInsecureRestTemplate();
-
-		// Default Authentication is Basic
-		// When other authentication mechanisms are introduced and interceptor
-		// has to be instantiated based on the configuration property
-		RestClientRequestInterceptor<ConfigurationVra> interceptor = new RestClientVraCafeAuthNInterceptor(
-				configuration, restTemplate);
-		restTemplate.getInterceptors().add(interceptor);
-
-		return new RestClientVra(configuration, restTemplate);
 	}
 
 	/**

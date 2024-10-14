@@ -14,7 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration;
 
-import com.vmware.pscoe.iac.artifact.model.PackageType;
 import org.springframework.util.StringUtils;
 
 import java.util.Properties;
@@ -33,6 +32,7 @@ public final class ConfigurationVroNg extends ConfigurationVraNg implements Conf
 	// Important - when modify properties refer to comments in @Configuration
 	public static final String ORGANIZATION_ID = "org.id";
 	public static final String REFRESH_TOKEN = "refresh.token";
+
 	/**
 	 * vRA Package Import content conflict resolution mode
 	 */
@@ -57,7 +57,7 @@ public final class ConfigurationVroNg extends ConfigurationVraNg implements Conf
 			message.append("Port ");
 		}
 
-		if (StringUtils.isEmpty(getRefreshToken()) && StringUtils.isEmpty(super.getUsername())){
+		if (StringUtils.isEmpty(getRefreshToken()) && StringUtils.isEmpty(super.getUsername())) {
 			message.append("Refresh token or Username ");
 		}
 
