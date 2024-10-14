@@ -44,9 +44,6 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	@Parameter(required = false, property = "vro", defaultValue = "${vro.*}")
 	private Map<String, String> vro;
 
-	@Parameter(required = false, property = "vra", defaultValue = "${vra.*}")
-	private Map<String, String> vra;
-
 	@Parameter(required = false, property = "vrang", defaultValue = "${vrang.*}")
 	private Map<String, String> vrang;
 
@@ -61,7 +58,6 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
 	@Parameter(required = false, property = "ssh", defaultValue = "${ssh.*}")
 	private Map<String, String> ssh;
-	
 
 	@Parameter(required = true, property = "ignoreSslCertificate", defaultValue = "false")
 	private boolean ignoreSslCertificate;
@@ -69,14 +65,15 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	@Parameter(required = true, property = "ignoreSslHostname", defaultValue = "false")
 	private boolean ignoreSslHostname;
 
-	@Parameter(required = false, property = "connectionTimeout",  defaultValue = "${vrealize.connection.timeout}")
+	@Parameter(required = false, property = "connectionTimeout", defaultValue = "${vrealize.connection.timeout}")
 	private int connectionTimeout;
 
 	@Parameter(required = false, property = "socketTimeout", defaultValue = "${vrealize.socket.timeout}")
 	private int socketTimeout;
 
 	protected void processSslSystemProperties() {
-		System.setProperty(RestClientFactory.IGNORE_SSL_CERTIFICATE_VERIFICATION, Boolean.toString(ignoreSslCertificate));
+		System.setProperty(RestClientFactory.IGNORE_SSL_CERTIFICATE_VERIFICATION,
+				Boolean.toString(ignoreSslCertificate));
 		System.setProperty(RestClientFactory.IGNORE_SSL_HOSTNAME_VERIFICATION, Boolean.toString(ignoreSslHostname));
 	}
 
@@ -103,15 +100,6 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
-	protected ConfigurationVra getConfigurationForVra() throws ConfigurationException {
-		Optional<Configuration> configuration = getConfigurationForType(PackageType.VRA);
-		if (configuration.isPresent()) {
-			return (ConfigurationVra) configuration.get();
-		} else {
-			throw new ConfigurationException("Invalid or incomplete vRO configuration.");
-		}
-	}
-
 	protected ConfigurationVraNg getConfigurationForVraNg() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VRANG);
 		if (configuration.isPresent()) {
@@ -122,8 +110,10 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	}
 
 	/**
-	 * Retrieve ABX configuration for ABX interaction. The configuration structure is
+	 * Retrieve ABX configuration for ABX interaction. The configuration structure
+	 * is
 	 * defined in the Artifact Manager project.
+	 * 
 	 * @return ABX configuration
 	 * @throws ConfigurationException
 	 */
@@ -165,13 +155,15 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
 	protected ConfigurationSsh getConfigurationForSsh() throws ConfigurationException {
 		Optional<Configuration> configuration = Optional
-				.ofNullable(ConfigurationSsh.fromProperties(getConfigurationProperties(PackageType.BASIC, ssh, "ssh.")));
+				.ofNullable(
+						ConfigurationSsh.fromProperties(getConfigurationProperties(PackageType.BASIC, ssh, "ssh.")));
 		if (configuration.isPresent()) {
 			return (ConfigurationSsh) configuration.get();
 		} else {
 			throw new ConfigurationException("Invalid or incomplete SSH configuration.");
 		}
 	}
+
 	protected ConfigurationCs getConfigurationForCs() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.CS);
 		if (configuration.isPresent()) {
@@ -186,9 +178,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	}
 
 	protected Optional<Configuration> getConfigurationForType(PackageType type) throws ConfigurationException {
-		if (PackageType.VRA == type) {
-			return Optional.ofNullable(ConfigurationVra.fromProperties(getConfigurationProperties(type, vra, "vra.")));
-		} else if (PackageType.VRO == type) {
+		if (PackageType.VRO == type) {
 			return Optional.ofNullable(ConfigurationVro.fromProperties(getConfigurationProperties(type, vro, "vro.")));
 		} else if (PackageType.VCDNG == type) {
 			return Optional.ofNullable(ConfigurationVcd.fromProperties(getConfigurationProperties(type, vcd, "vcd.")));
@@ -199,14 +189,16 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 			return Optional
 					.ofNullable(ConfigurationVraNg.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
 		} else if (PackageType.ABX == type) {
-			// Intentionally parse vrang.* configuration properties for ABX as they are common with regular vRA configurations.
+			// Intentionally parse vrang.* configuration properties for ABX as they are
+			// common with regular vRA configurations.
 			return Optional
 					.ofNullable(ConfigurationAbx.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
 		} else if (PackageType.VRLI == type) {
 			return Optional
 					.ofNullable(ConfigurationVrli.fromProperties(getConfigurationProperties(type, vrli, "vrli.")));
 		} else if (PackageType.CS == type) {
-			return Optional.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
+			return Optional
+					.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
 		} else {
 			return Optional.empty();
 		}

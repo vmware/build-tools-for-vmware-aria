@@ -1,38 +1,38 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.vmware.pscoe.archetypes</groupId>
-        <artifactId>base-archetype</artifactId>
-        <version>${revision}</version>
-    </parent>
-    <groupId>com.vmware.pscoe.o11n.archetypes</groupId>
-    <artifactId>package-vrealize-archetype</artifactId>
-    <packaging>maven-archetype</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vmware.pscoe.archetypes</groupId>
+		<artifactId>base-archetype</artifactId>
+		<version>${revision}</version>
+	</parent>
+	<groupId>com.vmware.pscoe.o11n.archetypes</groupId>
+	<artifactId>package-vrealize-archetype</artifactId>
+	<packaging>maven-archetype</packaging>
 	<properties>
 		<main.basedir>${project.parent.parent.basedir}</main.basedir>
 	</properties>
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>archetype-resources/vro/actions/pom.xml</include>
-                    <include>archetype-resources/vro/workflows/pom.xml</include>
-                    <include>archetype-resources/vra/pom.xml</include>
-                    <include>archetype-resources/pom.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>archetype-resources/vro/actions/pom.xml</exclude>
-                    <exclude>archetype-resources/vro/workflows/pom.xml</exclude>
-                    <exclude>archetype-resources/vra/pom.xml</exclude>
-                    <exclude>archetype-resources/pom.xml</exclude>
-                </excludes>
-            </resource>
-        </resources>
-    </build>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>archetype-resources/vro/actions/pom.xml</include>
+					<include>archetype-resources/vro/workflows/pom.xml</include>
+					<include>archetype-resources/pom.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>archetype-resources/vro/actions/pom.xml</exclude>
+					<exclude>archetype-resources/vro/workflows/pom.xml</exclude>
+					<exclude>archetype-resources/pom.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
 </project>
