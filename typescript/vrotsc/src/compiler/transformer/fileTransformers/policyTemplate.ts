@@ -38,8 +38,9 @@ const xmldoc: typeof import("xmldoc") = require("xmldoc");
  * @returns {Function} The transform function.
  */
 export function getPolicyTemplateTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	const TEMPLATE_VERSIONS = ["v1", "v2"];
-	const DEFAULT_TEMPLATE_VERSION = TEMPLATE_VERSIONS[0];
+	const V1 = "v1";
+	const V2 = "v2";
+	const TEMPLATE_VERSIONS = [V1, V2];
 	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
 	const policyTemplates: PolicyTemplateDescriptor[] = [];
 	const eventSourceFiles: ts.SourceFile[] = [];
@@ -120,7 +121,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			type: "AMQP:Subscription",
 			version: "1.0.0",
 			events: [],
-			templateVersion: DEFAULT_TEMPLATE_VERSION,
+			templateVersion: V1,
 			variables: {},
 			elements: {}
 		};
@@ -234,17 +235,17 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			.forEach(([propName, initializer]) => {
 				switch (propName) {
 					case "variables": {
-						versionValidator.push(propName, TEMPLATE_VERSIONS[1]);
+						versionValidator.push(propName, V2);
 						buildPolicyVariables(policyTemplateInfo, initializer);
 						break;
 					}
 					case "elements": {
-						versionValidator.push(propName, TEMPLATE_VERSIONS[1]);
+						versionValidator.push(propName, V2);
 						buildPolicyElements(policyTemplateInfo, initializer);
 						break;
 					}
 					case "schedule": {
-						versionValidator.push(propName, null, DEFAULT_TEMPLATE_VERSION, "use elements instead");
+						versionValidator.push(propName, null, V1, "use elements instead");
 						policyTemplateInfo.schedule = {
 							periode: undefined,
 							when: undefined,
@@ -258,7 +259,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 						break;
 					}
 					case "type":
-						versionValidator.push(propName, null, DEFAULT_TEMPLATE_VERSION, "use elements instead"); // no break!
+						versionValidator.push(propName, null, V1, "use elements instead"); // no break!
 					default: {
 						if (!(propName in policyTemplateInfo)) {
 							throw new Error(`PolicyTemplate attribute '${propName}' is not supported.`);
@@ -269,7 +270,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 				}
 			});
 		// delayed validation until all attributes (incl. current template version) are known:
-		versionValidator.validate(policyTemplateInfo.templateVersion, policyTemplateInfo.templateVersion === DEFAULT_TEMPLATE_VERSION);
+		versionValidator.validate(policyTemplateInfo.templateVersion);
 	}
 
 	function buildPolicyElements(policyInfo: PolicyTemplateDescriptor, objLiteralNode: ts.ObjectLiteralExpression): void {
@@ -310,7 +311,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			if (name in elementInfo.schedule) {
 				elementInfo.schedule[name] = getText(property.initializer);
 			}
-		})
+		});
 	}
 
 	function buildPolicyElementEvents(elementInfo: PolicyElement, objLiteralNode: ts.ObjectLiteralExpression) {
@@ -340,10 +341,10 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 					(bindings.initializer as ts.ObjectLiteralExpression).properties.forEach(((binding: ts.PropertyAssignment) => {
 						let key = getPropertyName(binding.name);
 						workflowInfo.bindings[bindingName][key] = getText(binding.initializer);
-					}))
+					}));
 				});
 			}
-		})
+		});
 		return workflowInfo;
 	}
 
@@ -431,7 +432,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			case ts.SyntaxKind.ObjectLiteralExpression: {
 				const resultingObjectLiteral = {};
 				(<ts.ObjectLiteralExpression>literal).properties.forEach((property: ts.PropertyAssignment) => {
-					const key = property.getChildAt(0).getText()
+					const key = property.getChildAt(0).getText();
 					const value = getValue(property.initializer);
 					if (value !== null)
 						resultingObjectLiteral[key] = value;
@@ -540,7 +541,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		if (policyTemplate.description) {
 			stringBuilder.append(`<description><![CDATA[${policyTemplate.description}]]></description>`).appendLine();
 		}
-		if (policyTemplate.templateVersion === DEFAULT_TEMPLATE_VERSION) {
+		if (policyTemplate.templateVersion === V1) {
 			if (policyTemplate.schedule) {
 				buildScheduledItem(policyTemplate.schedule);
 			}
@@ -598,7 +599,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 		function printElements(elements: Record<string, PolicyElement>) {
 			Object.keys(elements).forEach(elementName => {
 				printElement(elementName, elements[elementName]);
-			})
+			});
 		}
 
 		function printElement(name: string, element: PolicyElement) {
@@ -647,7 +648,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 					const eventType = getEventType(events[event] as string);
 					const foundEventForType = policyTemplate.events.find(e => getEventType(e.type) === eventType);
 					if (!foundEventForType) {
-						throw new Error(`Could not find event with type '${events[event]}' in: ${JSON.stringify(policyTemplate.events, null, 4)}`)
+						throw new Error(`Could not find event with type '${events[event]}' in: ${JSON.stringify(policyTemplate.events, null, 4)}`);
 					}
 					stringBuilder.append(`<script encoded="false"><![CDATA[${foundEventForType?.sourceText || ''}]]></script>`).appendLine();
 				} else {
@@ -655,7 +656,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 				}
 				stringBuilder.unindent();
 				stringBuilder.append(`</event>`).appendLine();
-			})
+			});
 		}
 
 		function printWorkflowInfo(workflowInfo: PolicyWorkflowInfo) {
@@ -668,7 +669,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 					stringBuilder.append(`<bind name="${name}"`
 						+ ` type = "${workflowInfo.bindings[name].type}"`
 						+ ` export-name="${workflowInfo.bindings[name].variable}" />`);
-				})
+				});
 				stringBuilder.unindent();
 				stringBuilder.append(`</in-bindings>`);
 				stringBuilder.unindent();
