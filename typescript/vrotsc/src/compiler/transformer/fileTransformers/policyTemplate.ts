@@ -256,7 +256,7 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 						initializer.properties
 							.filter((property: ts.PropertyAssignment) => !!property.initializer && ts.isStringLiteral(property.initializer))
 							.forEach((property: ts.PropertyAssignment) => {
-								policyTemplateInfo.schedule[propName] = getText(property.initializer);
+								policyTemplateInfo.schedule[getPropertyName(property.name)] = getText(property.initializer);
 							});
 						break;
 					}
