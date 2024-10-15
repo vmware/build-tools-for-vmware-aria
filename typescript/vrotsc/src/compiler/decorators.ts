@@ -213,7 +213,7 @@ export interface PolicyTemplateDescriptor {
 	version: string;
 	schedule?: PolicyTemplateScheduleDescriptor;
 	events: PolicyTemplateEventDescriptor[];
-	templateVersion?: string;
+	templateVersion: string;
 	variables?: Record<string, PolicyAttribute>;
 	elements?: Record<string, PolicyElement>;
 }

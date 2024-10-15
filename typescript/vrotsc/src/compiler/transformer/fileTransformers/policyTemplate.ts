@@ -118,10 +118,10 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			name: classNode.name.text,
 			path: undefined,
 			tag: undefined,
-			type: "AMQP:Subscription",
+			type: "",
 			version: "1.0.0",
 			events: [],
-			templateVersion: V1,
+			templateVersion: "",
 			variables: {},
 			elements: {}
 		};
@@ -224,6 +224,8 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 	/**
 	 * This function processes a single decorator to fill in the policy template descriptor.
 	 *
+	 * If the templateVersion is not defined, will throw
+	 *
 	 * @param {PolicyTemplateDescriptor} policyTemplateInfo - The policy template info.
 	 * @param {ts.CallExpression} decoratorCallExp - The decorator call expression.
 	 */
@@ -254,10 +256,14 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 						initializer.properties
 							.filter((property: ts.PropertyAssignment) => !!property.initializer && ts.isStringLiteral(property.initializer))
 							.forEach((property: ts.PropertyAssignment) => {
-								policyTemplateInfo.schedule[getPropertyName(property.name)] = getText(property.initializer);
+								policyTemplateInfo.schedule[propName] = getText(property.initializer);
 							});
 						break;
 					}
+					// The default will technicall work, but we want to explicitly have this here for readability
+					case "templateVersion":
+						policyTemplateInfo.templateVersion = getText(initializer);
+						break;
 					case "type":
 						versionValidator.push(propName, null, V1, "use elements instead"); // no break!
 					default: {
@@ -269,6 +275,11 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 					}
 				}
 			});
+
+		if (policyTemplateInfo.templateVersion === "") {
+			throw new Error(`PolicyTemplate attribute 'templateVersion' is required.`);
+		}
+
 		// delayed validation until all attributes (incl. current template version) are known:
 		versionValidator.validate(policyTemplateInfo.templateVersion);
 	}
