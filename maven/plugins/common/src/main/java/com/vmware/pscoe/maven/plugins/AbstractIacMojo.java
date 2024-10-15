@@ -71,17 +71,29 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	@Parameter(required = false, property = "socketTimeout", defaultValue = "${vrealize.socket.timeout}")
 	private int socketTimeout;
 
+	/**
+	 * Process the SSL system properties.
+	 */
 	protected void processSslSystemProperties() {
 		System.setProperty(RestClientFactory.IGNORE_SSL_CERTIFICATE_VERIFICATION,
 				Boolean.toString(ignoreSslCertificate));
 		System.setProperty(RestClientFactory.IGNORE_SSL_HOSTNAME_VERIFICATION, Boolean.toString(ignoreSslHostname));
 	}
 
+	/**
+	 * Process the other system properties.
+	 */
 	protected void processOtherSystemProperties() {
 		System.setProperty(RestClientFactory.CONNECTION_TIMEOUT, String.valueOf(connectionTimeout));
 		System.setProperty(RestClientFactory.SOCKET_TIMEOUT, String.valueOf(socketTimeout));
 	}
 
+	/**
+	 * Overwrite properties from command line.
+	 * 
+	 * @param props
+	 * @param prefix
+	 */
 	protected void overwriteFromCmdLine(Properties props, String prefix) {
 		for (Object o : System.getProperties().keySet()) {
 			String key = o.toString();
@@ -91,6 +103,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve vRO configuration for vRO interaction.
+	 * 
+	 * @return vRO configuration
+	 * @throws ConfigurationException
+	 */
 	protected ConfigurationVro getConfigurationForVro() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VRO);
 		if (configuration.isPresent()) {
@@ -100,6 +118,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve vRA ng configuration for vRA ng interaction.
+	 * 
+	 * @return vRA ng configuration
+	 * @throws ConfigurationException
+	 */
 	protected ConfigurationVraNg getConfigurationForVraNg() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VRANG);
 		if (configuration.isPresent()) {
@@ -126,6 +150,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve vRLI configuration for vRLI interaction.
+	 * 
+	 * @return vRLI configuration
+	 * @throws ConfigurationException
+	 */
 	protected ConfigurationVrli getConfigurationForVrli() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VRLI);
 		if (configuration.isPresent()) {
@@ -135,6 +165,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve vCD configuration for vCD interaction.
+	 * 
+	 * @return vCD configuration
+	 * @throws ConfigurationException
+	 */
 	protected ConfigurationVcd getConfigurationForVcd() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCDNG);
 		if (configuration.isPresent()) {
@@ -144,6 +180,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve vROPS configuration for vROPS interaction.
+	 * 
+	 * @return vROPS configuration
+	 * @throws ConfigurationException
+	 */
 	protected ConfigurationVrops getConfigurationForVrops() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VROPS);
 		if (configuration.isPresent()) {
@@ -153,6 +195,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve SSH configuration for SSH interaction.
+	 * 
+	 * @return SSH configuration
+	 * @throws ConfigurationException
+	 */
 	protected ConfigurationSsh getConfigurationForSsh() throws ConfigurationException {
 		Optional<Configuration> configuration = Optional
 				.ofNullable(
@@ -164,6 +212,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve CS configuration for CS interaction.
+	 * 
+	 * @return CS configuration
+	 * @throws ConfigurationException
+	 */
 	protected ConfigurationCs getConfigurationForCs() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.CS);
 		if (configuration.isPresent()) {
@@ -173,10 +227,22 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve vRO rest client for vRO interaction.
+	 * 
+	 * @return vRO rest client
+	 * @throws ConfigurationException
+	 */
 	protected RestClientVro getVroRestClient() throws ConfigurationException {
 		return RestClientFactory.getClientVro(getConfigurationForVro());
 	}
 
+	/**
+	 * Retrieve vRA ng rest client for vRA ng interaction.
+	 * 
+	 * @return vRA ng rest client
+	 * @throws ConfigurationException
+	 */
 	protected Optional<Configuration> getConfigurationForType(PackageType type) throws ConfigurationException {
 		if (PackageType.VRO == type) {
 			return Optional.ofNullable(ConfigurationVro.fromProperties(getConfigurationProperties(type, vro, "vro.")));
@@ -204,6 +270,14 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		}
 	}
 
+	/**
+	 * Retrieve configuration properties for a given package type.
+	 * 
+	 * @param type
+	 * @param map
+	 * @param prefix
+	 * @return
+	 */
 	private Properties getConfigurationProperties(PackageType type, Map<String, String> map, String prefix) {
 		Properties props = new Properties();
 		getLog().info("Reading config for type : " + type);
@@ -219,16 +293,30 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		return props;
 	}
 
+	/**
+	 * Overwrite configuration properties for a given package type.
+	 * 
+	 * @param type
+	 * @param props
+	 */
 	protected void overwriteConfigurationPropertiesForType(PackageType type, Properties props) {
 		props.setProperty(Configuration.CONNECTION_TIMEOUT, Configuration.DEFAULT_CONNECTION_TIMEOUT.toString());
 		props.setProperty(Configuration.SOCKET_TIMEOUT, Configuration.DEFAULT_SOCKET_TIMEOUT.toString());
 	}
 
+	/**
+	 * Execute the mojo.
+	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		this.processSslSystemProperties();
 		this.processOtherSystemProperties();
 	}
 
+	/**
+	 * Overwrite server credentials from settings.xml.
+	 * 
+	 * @param props
+	 */
 	private void overwriteServerCredentials(Properties props) {
 		Optional<String> serverId = Optional.ofNullable(props.getProperty("serverId"));
 		String host = props.getProperty(Configuration.HOST);
@@ -238,6 +326,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		});
 	}
 
+	/**
+	 * Get server from settings.xml.
+	 * 
+	 * @param serverId
+	 * @return
+	 */
 	private Optional<Server> getServer(String serverId) {
 		return Optional.ofNullable(settings.getServer(serverId)).map(server -> {
 			SettingsDecryptionRequest request = new DefaultSettingsDecryptionRequest(server);
