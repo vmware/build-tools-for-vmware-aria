@@ -18,11 +18,11 @@ The possible options are `v1` and `v2` (you can also see this in the definitions
 
 ```ts
 @PolicyTemplate({
-	name: "Sample Policy",
-	path: "MyOrg/MyProject",
-	templateVersion: "v2", // This is now mandatory
-	variables: { /* ... */ },
-	elements: { /* ... */}
+  name: "Sample Policy",
+  path: "MyOrg/MyProject",
+  templateVersion: "v2", // This is now mandatory
+  variables: { /* ... */ },
+  elements: { /* ... */}
 })
 ```
 
