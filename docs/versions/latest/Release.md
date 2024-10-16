@@ -84,6 +84,10 @@ The 'com.vmware.pscoe.o11n:exec' package was missing when building the build too
 
 The 'com.vmware.pscoe.o11n:exec' package is no longer missing when built. The error above no longer appears when running an Action via VRDT UI.
 
+### Add `VcStorageQueryManager` type definition
+
+Added type definition for the `VcStorageQueryManager` class and it's related methods
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
