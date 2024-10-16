@@ -58,7 +58,7 @@ export const VroPowershellActionRuntimes = [
 	ActionRuntime.VRO_POWERCLI_12_PS_71,
 	ActionRuntime.VRO_POWERCLI_12_PS_74,
 	ActionRuntime.VRO_POWERCLI_13_PS_74,
-  ActionRuntime.VRO_POWERSHELL_74
+	ActionRuntime.VRO_POWERSHELL_74
 ];
 
 export const VroPythonActionRuntimes = [
@@ -66,9 +66,9 @@ export const VroPythonActionRuntimes = [
 	ActionRuntime.VRO_PYTHON_310
 ];
 
-export const NodeJsActionRuntimes = VroNodeJsActionRuntimes.concat(ActionRuntime.ABX_NODEJS);
-export const PowershellActionRuntimes = VroPowershellActionRuntimes.concat(ActionRuntime.ABX_POWERSHELL);
-export const PythonActionRuntimes = VroPythonActionRuntimes.concat(ActionRuntime.ABX_PYTHON);
+export const NodeJsActionRuntimes = VroNodeJsActionRuntimes;
+export const PowershellActionRuntimes = VroPowershellActionRuntimes;
+export const PythonActionRuntimes = VroPythonActionRuntimes;
 
 // END OF RUNTIME DEFINITIONS
 

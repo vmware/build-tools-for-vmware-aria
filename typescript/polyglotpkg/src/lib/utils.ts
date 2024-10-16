@@ -40,29 +40,11 @@ const logger = createLogger();
  *
  * If the action type is ABX, the runtime is determined based on the given runtime. Runtimes of the same type are mapped.
  *
- * @TODO: This needs to be deprecated in favor of the runtime being correctly specific in the manifest. That however is a breaking change.
- *          new Issue created for this to be discussed: https://github.com/vmware/build-tools-for-vmware-aria/issues/391
- *
  * @param pkg
  */
 export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionType): ActionRuntime {
 	const isAbx = actionType === ActionType.ABX || !pkg.vro;
 	const runtime = pkg.platform.runtime;
-
-	// @TODO: This needs to be deprecated in favor of the runtime being correctly specific in the manifest. Do so during the next major release.
-	// ===========================================================
-	if (runtime === ActionRuntime.ABX_NODEJS) {
-		return isAbx ? ActionRuntime.ABX_NODEJS : ActionRuntime.VRO_NODEJS_12;
-	}
-
-	if (runtime === ActionRuntime.ABX_POWERSHELL) {
-		return isAbx ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_11_PS_62;
-	}
-
-	if (runtime === ActionRuntime.ABX_PYTHON) {
-		return isAbx ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_37;
-	}
-	// ===========================================================
 
 	if (!isAbx) {
 		return runtime;
