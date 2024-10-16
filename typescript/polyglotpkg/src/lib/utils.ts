@@ -20,7 +20,6 @@ import path from 'path';
 import { spawn } from 'child_process';
 import {
 	ActionType,
-	ActionRuntime,
 	AbxActionDefinition,
 	VroActionDefinition,
 	PackageDefinition,
@@ -28,36 +27,10 @@ import {
 	ProjectActions,
 	ActionOptions,
 	PackagerOptions,
-	MappedAbxRuntimes,
 } from './model';
 import createLogger from './logger';
 
 const logger = createLogger();
-
-/**
- * Determine the action runtime based on the action manifest or
- * the action handler if runtime is not specified.
- *
- * If the action type is ABX, the runtime is determined based on the given runtime. Runtimes of the same type are mapped.
- *
- * @param pkg
- */
-export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionType): ActionRuntime {
-	const isAbx = actionType === ActionType.ABX || !pkg.vro;
-	const runtime = pkg.platform.runtime;
-
-	if (!isAbx) {
-		return runtime;
-	}
-
-	for (const [key, value] of Object.entries(MappedAbxRuntimes)) {
-		if (value.includes(runtime)) {
-			return key as ActionRuntime;
-		}
-	}
-
-	return runtime;
-}
 
 /**
  * Determine the action type based on the action manifest.
@@ -161,8 +134,8 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			outBase: options.workspace,    // create out and polyglot-cache subfolders in project_root
 			src: 'src',
 			out: 'out',
-			actionRuntime: await determineRuntime(pkgObj, actionType),
-			actionType: await determineActionType(pkgObj, actionType)
+			actionRuntime: pkgObj.platform.runtime,
+			actionType: determineActionType(pkgObj, actionType)
 		};
 		return [projectAction];
 	}
@@ -182,7 +155,7 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 		const outBasePath: string = path.join(options.workspace, 'out', actionFolder);
 		// To separate bundle.zip files of multiple actions they are created under project_root/dist/action_name/dist
 		const bundleZipPath: string = path.resolve('.', 'dist', actionFolder, 'dist', 'bundle.zip');
-		const plgObj = await fs.readJSONSync(plg[i]);
+		const pkgObj = await fs.readJSONSync(plg[i]);
 		let projectAction: ActionOptions =
 		{
 			...options,
@@ -193,8 +166,8 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			outBase: outBasePath,
 			src: path.relative(projectBasePath, actionBasePath),
 			out: path.relative(projectBasePath, path.join(outBasePath, 'out')),
-			actionRuntime: await determineRuntime(plgObj, actionType),
-			actionType: await determineActionType(plgObj, actionType)
+			actionRuntime: pkgObj.platform.runtime,
+			actionType: determineActionType(pkgObj, actionType)
 		};
 		projectActions.push(projectAction);
 	}

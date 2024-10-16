@@ -66,21 +66,12 @@ export const VroPythonActionRuntimes = [
 	ActionRuntime.VRO_PYTHON_310
 ];
 
-export const NodeJsActionRuntimes = VroNodeJsActionRuntimes;
-export const PowershellActionRuntimes = VroPowershellActionRuntimes;
-export const PythonActionRuntimes = VroPythonActionRuntimes;
+// Runtime arrays used to determine which strategy should be used
+export const NodeJsActionRuntimes = VroNodeJsActionRuntimes.concat(ActionRuntime.ABX_NODEJS);
+export const PowershellActionRuntimes = VroPowershellActionRuntimes.concat(ActionRuntime.ABX_POWERSHELL);
+export const PythonActionRuntimes = VroPythonActionRuntimes.concat(ActionRuntime.ABX_PYTHON);
 
 // END OF RUNTIME DEFINITIONS
-
-/**
- * Holds a list of ABX runtimes and their corresponding VRO runtimes.
- * Used to replace VRO runtimes with ABX runtimes if abx project is detected.
- */
-export const MappedAbxRuntimes = {
-	[ActionRuntime.ABX_NODEJS]: VroNodeJsActionRuntimes,
-	[ActionRuntime.ABX_POWERSHELL]: VroPowershellActionRuntimes,
-	[ActionRuntime.ABX_PYTHON]: VroPythonActionRuntimes
-};
 
 export type ActionRuntimeType = typeof NodeJsActionRuntimes[number] | typeof PowershellActionRuntimes[number] | typeof PythonActionRuntimes[number];
 
