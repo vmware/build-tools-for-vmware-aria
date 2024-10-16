@@ -55,6 +55,8 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
 
 ##### `runtime`
 
+###### VRO:
+
 - `node:12`
 - `node:14`
 - `node:18`
@@ -66,9 +68,12 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
 - `powershell:7.4`
 - `python:3.7`
 - `python:3.10`
-- `nodejs` - For ABX projects only
-- `powershell` - For ABX projects only
-- `python` - For ABX projects only
+
+###### ABX:
+
+- `nodejs`
+- `powershell`
+- `python`
 
 ##### `protocolType`
 
