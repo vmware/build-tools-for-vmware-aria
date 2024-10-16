@@ -14,7 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.vrang;
 
-import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 
@@ -31,10 +30,7 @@ import java.util.Map;
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
 
@@ -90,27 +86,6 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	}
 
 	/**
-	 * jsonObjectValid.
-	 *
-	 * @param ob JsonObject
-	 * @return isValid boolean
-	 */
-	@Override
-	public boolean jsonObjectValid(final JsonObject ob) {
-		return super.jsonObjectValid(ob);
-	}
-
-	/**
-	 * getAllImageMappingsByRegionPrimitive.
-	 *
-	 * @return imageMappingsByRegionPrimitive Map<String, List<VraNgImageMapping>>
-	 */
-	@Override
-	public Map<String, List<VraNgImageMapping>> getAllImageMappingsByRegionPrimitive() {
-		return super.getAllImageMappingsByRegionPrimitive();
-	}
-
-	/**
 	 * getURIBuilder.
 	 *
 	 * @return urlBuilder URIBuilder
@@ -132,37 +107,6 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	}
 
 	/**
-	 * getAllFlavorProfilesByRegionPrimitive.
-	 *
-	 * @return flavorProfilesByRegionPrimitive Map<String, List<String>>
-	 */
-	@Override
-	public Map<String, List<String>> getAllFlavorProfilesByRegionPrimitive() {
-		return super.getAllFlavorProfilesByRegionPrimitive();
-	}
-
-	/**
-	 * getAllStorageProfilesByRegionPrimitive.
-	 *
-	 * @return storageProfilesByRegionPrimitive Map<String,
-	 *         List<VraNgStorageProfile>>
-	 */
-	@Override
-	public Map<String, List<VraNgStorageProfile>> getAllStorageProfilesByRegionPrimitive() {
-		return super.getAllStorageProfilesByRegionPrimitive();
-	}
-
-	/**
-	 * getAllImageProfilesByRegionPrimitive.
-	 *
-	 * @return imageProfilesByRegionPrimitive Map<String, List<String>>
-	 */
-	@Override
-	public Map<String, List<String>> getAllImageProfilesByRegionPrimitive() {
-		return super.getAllImageProfilesByRegionPrimitive();
-	}
-
-	/**
 	 * createAbxActionMap.
 	 *
 	 * @param action AbxAction
@@ -171,15 +115,6 @@ public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive
 	@Override
 	public Map<String, Object> createAbxActionMap(final AbxAction action) throws IOException {
 		return super.createAbxActionMap(action);
-	}
-
-	/**
-	 * getAllFlavorMappingsByRegionPrimitive.
-	 *
-	 * @return mappingsByRegionPrimitive Map<String, List<VraNgFlavorMapping>>
-	 */
-	public Map<String, List<VraNgFlavorMapping>> getAllFlavorMappingsByRegionPrimitive() {
-		return super.getAllFlavorMappingsByRegionPrimitive();
 	}
 
 	/**
