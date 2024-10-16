@@ -298,10 +298,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * RESOURCE_QUOTA_POLICY_TYPE.
 	 */
 	private static final String RESOURCE_QUOTA_POLICY_TYPE = "com.vmware.policy.resource.quota";
-	
+
 	/**
 	 * MAX_BLUEPRINTS_RETRIEVAL_COUNT.
-	 */	
+	 */
 	private static final String MAX_BLUEPRINTS_RETRIEVAL_COUNT = "1000";
 	/**
 	 * configuration.
@@ -388,7 +388,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 
 		URI url = getURI(getURIBuilder().setPath(API_VERSION));
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
 		LOGGER.info("Detected API Version {}", this.apiVersion);
 
@@ -410,7 +411,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			// available
 			this.productVersion = new Version(VRA_CLOUD_VERSION);
 		} else {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			this.productVersion = new Version(JsonPath.parse(response.getBody()).read("$.version"));
 		}
 
@@ -440,20 +442,24 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Using project id defined in configuration: {}", configuration.getProjectId());
 			this.projectId = this.getProjectIdPrimitive(configuration.getProjectId());
 			if (this.projectId == null) {
-				throw new RuntimeException(String.format("Project id '%s' could not be found on target system", configuration.getProjectId()));
+				throw new RuntimeException(String.format("Project id '%s' could not be found on target system",
+						configuration.getProjectId()));
 			}
 
 			return this.projectId;
 		}
 		String projectName = configuration.getProjectName();
 		if (StringUtils.isEmpty(projectName)) {
-			throw new RuntimeException("Either project name or project id must be supplied to the vRA NG configuration.");
+			throw new RuntimeException(
+					"Either project name or project id must be supplied to the vRA NG configuration.");
 		}
 		this.projectId = this.getProjectIdPrimitive(projectName);
 		if (this.projectId == null) {
-			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system", configuration.getProjectName()));
+			throw new RuntimeException(String.format("Project id for project '%s' could not be found on target system",
+					configuration.getProjectName()));
 		}
-		LOGGER.info("Using project name defined in the configuration '{}', project id: '{}'", projectName, this.projectId);
+		LOGGER.info("Using project name defined in the configuration '{}', project id: '{}'", projectName,
+				this.projectId);
 
 		return projectId;
 	}
@@ -595,7 +601,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public VraNgBlueprint getBlueprintPrimitive(final String id) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + id));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 
 		return new Gson().fromJson(response.getBody(), VraNgBlueprint.class);
 	}
@@ -612,7 +619,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 				.setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS + "/" + version)
 				.addParameter("orderBy", "updatedAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		String content = "";
@@ -638,7 +646,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS)
 				.addParameter("$top", MAX_BLUEPRINTS_RETRIEVAL_COUNT).addParameter("orderBy", "createdAt DESC"));
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		String content = "";
@@ -739,6 +748,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String jsonBody = this.getJsonString(map);
 		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 		return new Gson().fromJson(response.getBody(), VraNgBlueprint.class).getId();
+	}
+
+	/**
+	 * Delete Blueprint by id.
+	 *
+	 * @param bpId Blueprint ID
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @return the response
+	 */
+	public ResponseEntity<String> deleteBlueprintPrimitive(final String bpId) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + bpId).build();
+
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -922,6 +944,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
+	 * Deletes a catalog item by id.
+	 *
+	 * @param catalogItemId catalogItemId
+	 * @return the response
+	 */
+	protected ResponseEntity<String> deleteCatalogItemPrimitive(final String catalogItemId) throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_CATALOG_ADMIN_ITEMS + "/" + catalogItemId).build();
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+	}
+
+	/**
 	 * Retrieve Catalog items For Projects.
 	 *
 	 * @param projects List of Projects
@@ -983,6 +1016,18 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURIBuilder().setPath(SERVICE_SUBSCRIPTION).build();
 
 		this.postJsonPrimitive(url, HttpMethod.POST, subscriptionJson);
+	}
+
+	/**
+	 * Deletes a sub.
+	 *
+	 * @param subscriptionId subscriptionId
+	 * @return the response
+	 */
+	protected ResponseEntity<String> deleteSubscriptionPrimitive(final String subscriptionId)
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_SUBSCRIPTION + "/" + subscriptionId).build();
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -1365,6 +1410,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return entitlement;
 		}).collect(Collectors.toList());
 
+	}
+
+	/**
+	 * Deletes a catalog entitlement.
+	 *
+	 * @param entitlementId entitlementId
+	 * @return the response
+	 */
+	protected ResponseEntity<String> deleteCatalogEntitlementPrimitive(final String entitlementId) {
+		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS + "/" + entitlementId));
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -2095,6 +2151,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
+	 * Deletes a PG.
+	 *
+	 * @param pgId - the PG ID
+	 * @throws URISyntaxException in case of erros while forming the URI
+	 * @return the response
+	 */
+	protected ResponseEntity<String> deletePropertyGroupPrimitive(String pgId) throws URISyntaxException {
+		String deleteURL = String.format(SERVICE_GET_PROPERTY_GROUPS + "/%s", pgId);
+		URI url = getURIBuilder().setPath(deleteURL).build();
+		return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+	}
+
+	/**
 	 * Returns a list of all property groups This will keep on making requests until
 	 * all the groups are retrieved. If the nameFilter is null, all will be
 	 * accepted, otherwise only property group names that contain the filter will be
@@ -2472,12 +2541,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Delete Custom Resource.
 	 *
 	 * @param customResourceId Resource Action JSON
-	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
+	 * @throws URISyntaxException throws URI syntax exception incase of invalid URI
+	 * @return the response
 	 */
-	protected void deleteCustomResourcePrimitive(final String customResourceId) throws URISyntaxException {
+	protected ResponseEntity<String> deleteCustomResourcePrimitive(final String customResourceId)
+			throws URISyntaxException {
 		String deleteURL = String.format(SERVICE_CUSTOM_RESOURCES + "/%s", customResourceId);
 		URI url = getURIBuilder().setPath(deleteURL).build();
-		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 	}
 
 	// =================================================
@@ -2532,15 +2603,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Delete Resource Action.
 	 *
 	 * @param resourceActionId Resource Action ID to delete
+	 * @return the response
 	 */
-	protected void deleteResourceActionPrimitive(final String resourceActionId) {
+	protected ResponseEntity<String> deleteResourceActionPrimitive(final String resourceActionId) {
 		String deleteURL = String.format(SERVICE_RESOURCE_ACTIONS + "/%s", resourceActionId);
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, RestClient.getDefaultHttpEntity(), String.class);
 	}
 
 	// =================================================
@@ -2787,7 +2856,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			if (Arrays.stream(providers).anyMatch(action.getPlatform().getProvider()::equals)) {
 				map.put("provider", action.getPlatform().getProvider());
 			} else {
-				throw new RuntimeException("Faas provider name is not correct. Possible values are: " + String.join(",", providers));
+				throw new RuntimeException(
+						"Faas provider name is not correct. Possible values are: " + String.join(",", providers));
 			}
 		}
 
@@ -2844,18 +2914,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Delete Content Source.
 	 *
 	 * @param contentSourceId Content Source ID to delete.
+	 * @return the response
 	 */
-	public void deleteContentSource(final String contentSourceId) {
+	public ResponseEntity<String> deleteContentSource(final String contentSourceId) {
 		if (StringUtils.isEmpty(contentSourceId)) {
-			return;
+			return null;
 		}
+
 		String deleteURL = String.format(SERVICE_CONTENT_SOURCE + "/%s", contentSourceId);
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+		return restTemplate.exchange(url, HttpMethod.DELETE, RestClient.getDefaultHttpEntity(), String.class);
 	}
 
 	/**
@@ -3311,8 +3380,23 @@ public class RestClientVraNgPrimitive extends RestClient {
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions 8.10.x or newer.");
 		}
+	}
 
+	/**
+	 * Delete a policy by id.
+	 *
+	 * @param policyId policy id
+	 * @return the response
+	 */
+	protected ResponseEntity<String> deletePolicyPrimitive(String policyId) {
+		if (isVraAbove810) {
+			String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
+			URI url = getURI(getURIBuilder().setPath(deleteURL));
+			return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+		} else {
+			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions 8.10.x or newer.");
+		}
 	}
 }

@@ -64,7 +64,7 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 public class RestClientVraNg extends RestClientVraNgPrimitive {
 	private static final String SUBSCRIPTION_BASE_QUERY = "type ne 'SUBSCRIBABLE'";
 	private static final String SUBSCRIPTION_QUERY_PARAM = "%s eq '%s'";
-		
+
 	/**
 	 * logger.
 	 */
@@ -108,7 +108,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return uploadIconPrimitive(iconFile);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not upload icon file '%s'.", iconFile.getAbsolutePath()), e);
+			throw new RuntimeException(String.format("Could not upload icon file '%s'.", iconFile.getAbsolutePath()),
+					e);
 		}
 	}
 
@@ -141,7 +142,27 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return createBlueprintPrimitive(blueprint);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create Blueprint with name '%s'.", blueprint.getName()), e);
+			throw new RuntimeException(String.format("Could not create Blueprint with name '%s'.", blueprint.getName()),
+					e);
+		}
+	}
+
+	/**
+	 * Deletes a blueprint.
+	 *
+	 * @param bpId blueprint id
+	 * @throws RuntimeException if the blueprint could not be deleted
+	 */
+	public void deleteBlueprint(final String bpId) {
+		try {
+			logger.info("Deleting blueprint with id '{}'", bpId);
+			ResponseEntity<String> res = deleteBlueprintPrimitive(bpId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete blueprint with id '{}'", bpId);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete Blueprint with id '%s'.", bpId));
 		}
 	}
 
@@ -155,7 +176,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return updateBlueprintPrimitive(blueprint);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not update Blueprint with name '%s'.", blueprint.getName()), e);
+			throw new RuntimeException(String.format("Could not update Blueprint with name '%s'.", blueprint.getName()),
+					e);
 		}
 	}
 
@@ -182,7 +204,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getBlueprintLastUpdatedVersionPrimitive(blueprintId);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not fetch Blueprint last version for id '%s'.", blueprintId), e);
+			throw new RuntimeException(
+					String.format("Could not fetch Blueprint last version for id '%s'.", blueprintId), e);
 		}
 	}
 
@@ -197,7 +220,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getBlueprintVersionContentPrimitive(blueprintId, version);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not fetch Blueprint content with version '%s' and id '%s'.", blueprintId, version), e);
+			throw new RuntimeException(String.format("Could not fetch Blueprint content with version '%s' and id '%s'.",
+					blueprintId, version), e);
 		}
 	}
 
@@ -331,13 +355,32 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * Deletes a subscription.
+	 *
+	 * @param subscriptionId subscription id
+	 */
+	public void deleteSubscription(final String subscriptionId) {
+		try {
+			logger.info("Deleting subscription with id '{}'", subscriptionId);
+			ResponseEntity<String> res = deleteSubscriptionPrimitive(subscriptionId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete subscription with id '{}'", subscriptionId);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete Subscription with id '%s'.", subscriptionId), e);
+		}
+	}
+
+	/**
 	 * getSubscriptionsByName.
 	 *
 	 * @param name subscription name
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByName(final String name) {
-		return getAllSubscriptionsPrimitive(SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name));
+		return getAllSubscriptionsPrimitive(
+				SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name));
 	}
 
 	/**
@@ -347,7 +390,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgId(final String orgId) {
-		return getAllSubscriptionsPrimitive(SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId));
+		return getAllSubscriptionsPrimitive(
+				SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId));
 	}
 
 	/**
@@ -359,8 +403,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgIdAndName(final String orgId, final String name) {
 		String query = SUBSCRIPTION_BASE_QUERY
-           +  " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId) 
-           +  " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name);
+				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId)
+				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name);
 		return getAllSubscriptionsPrimitive(query);
 	}
 
@@ -579,8 +623,10 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			updateStorageProfilePrimitive(profileId, profile);
 		} catch (Exception e) {
-			logger.debug("Could not update Storage Profile with name '{}' and id '{}' using payload\n{}", profile.getName(), profileId, profile.getJson());
-			throw new RuntimeException(String.format("Could not update Storage Profile with name '%s'.", profile.getName()), e);
+			logger.debug("Could not update Storage Profile with name '{}' and id '{}' using payload\n{}",
+					profile.getName(), profileId, profile.getJson());
+			throw new RuntimeException(
+					String.format("Could not update Storage Profile with name '%s'.", profile.getName()), e);
 		}
 	}
 
@@ -594,8 +640,10 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return createStorageProfilePrimitive(profile);
 		} catch (Exception e) {
-			logger.debug("Could not create Storage Profile with name '{}' using payload\n{}", profile.getName(), profile.getJson());
-			throw new RuntimeException(String.format("Could not create Storage Profile with name '%s'.", profile.getName()), e);
+			logger.debug("Could not create Storage Profile with name '{}' using payload\n{}", profile.getName(),
+					profile.getJson());
+			throw new RuntimeException(
+					String.format("Could not create Storage Profile with name '%s'.", profile.getName()), e);
 		}
 	}
 
@@ -627,8 +675,10 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			updateSpecificProfilePrimitive(patchTarget, profileId, profile);
 		} catch (Exception e) {
-			logger.debug("Could not update Storage Profile with name '{}' and id '{}' using payload\n{}", profile.getName(), profileId, profile.getJson());
-			throw new RuntimeException(String.format("Could not update Storage Profile with name '%s'.", profile.getName()), e);
+			logger.debug("Could not update Storage Profile with name '{}' and id '{}' using payload\n{}",
+					profile.getName(), profileId, profile.getJson());
+			throw new RuntimeException(
+					String.format("Could not update Storage Profile with name '%s'.", profile.getName()), e);
 		}
 	}
 
@@ -679,7 +729,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getCatalogItemByBlueprintNamePrimitive(blueprintName);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not get catalog item by blueprint name '%s'.", blueprintName), e);
+			throw new RuntimeException(
+					String.format("Could not get catalog item by blueprint name '%s'.", blueprintName), e);
 		}
 	}
 
@@ -699,6 +750,25 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * Deletes a catalog item.
+	 *
+	 * @param catalogItemId catalog item id
+	 */
+	public void deleteCatalogItem(final String catalogItemId) {
+		try {
+			logger.info("Deleting catalog item with id '{}'", catalogItemId);
+			ResponseEntity<String> res = this.deleteCatalogItemPrimitive(catalogItemId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete catalog item with id '{}'", catalogItemId);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting catalog item '{}': {}", catalogItemId, e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * getPropertyGroups.
 	 *
 	 * @return propertyGroup
@@ -713,6 +783,25 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * Deletes a property group.
+	 *
+	 * @param propertyGroupId property group id
+	 */
+	public void deletePropertyGroup(final String propertyGroupId) {
+		try {
+			logger.info("Deleting property group with id '{}'", propertyGroupId);
+			ResponseEntity<String> res = this.deletePropertyGroupPrimitive(propertyGroupId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete property group with id '{}'", propertyGroupId);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting property group '{}': {}", propertyGroupId, e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * createPropertyGroup.
 	 *
 	 * @param propertyGroup vra property group
@@ -721,7 +810,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			this.createPropertyGroupPrimitive(propertyGroup);
 		} catch (Exception e) {
-			logger.error("Error importing property group {}. Create operation has failed with error: {}", propertyGroup.getName(), e.getMessage());
+			logger.error("Error importing property group {}. Create operation has failed with error: {}",
+					propertyGroup.getName(), e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -735,7 +825,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			this.updatePropertyGroupPrimitive(propertyGroup);
 		} catch (Exception e) {
-			logger.error("Error importing property group {}. Update operation has failed with error: {}", propertyGroup.getName(), e.getMessage());
+			logger.error("Error importing property group {}. Update operation has failed with error: {}",
+					propertyGroup.getName(), e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -750,7 +841,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getCatalogItemsForProjectsPrimitive(projects);
 		} catch (Exception e) {
-			logger.error("Error fetching catalog items for projects '{}' : {}", projects.stream().collect(Collectors.joining(", ")), e.getMessage());
+			logger.error("Error fetching catalog items for projects '{}' : {}",
+					projects.stream().collect(Collectors.joining(", ")), e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -840,7 +932,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getCustomFormByTypeAndSourcePrimitive(type, sourceId);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not get custom form by type '%s' and source '%s'.", type, sourceId, e));
+			throw new RuntimeException(
+					String.format("Could not get custom form by type '%s' and source '%s'.", type, sourceId, e));
 		}
 	}
 
@@ -870,7 +963,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.fetchRequestFormPrimitive(type, sourceId, formId);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not get custom form by type '%s', source '%s' and formId '$s'.", type, sourceId, formId, e));
+			throw new RuntimeException(String.format(
+					"Could not get custom form by type '%s', source '%s' and formId '$s'.", type, sourceId, formId, e));
 		}
 	}
 
@@ -958,6 +1052,25 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getAllCatalogEntitlementsPrimitive();
 		} catch (Exception e) {
 			logger.error("Error fetching all catalog entitlements: {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Deletes a catalog entitlement.
+	 *
+	 * @param entitlementId catalog entitlement id
+	 */
+	public void deleteCatalogEntitlement(final String entitlementId) {
+		try {
+			logger.info("Deleting catalog entitlement with id '{}'", entitlementId);
+			ResponseEntity<String> res = this.deleteCatalogEntitlementPrimitive(entitlementId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete catalog entitlement with id '{}'", entitlementId);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting catalog entitlement '{}': {}", entitlementId, e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -1066,7 +1179,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		} catch (HttpClientErrorException httpClientErrorException) {
 			throw httpClientErrorException;
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not import custom resource with name '%s'.", customResourceName), e);
+			throw new RuntimeException(
+					String.format("Could not import custom resource with name '%s'.", customResourceName), e);
 		}
 	}
 
@@ -1078,11 +1192,15 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteCustomResource(final String customResourceName, final String customResourceId) {
 		try {
-			deleteCustomResourcePrimitive(customResourceId);
-		} catch (HttpClientErrorException httpClientErrorException) {
-			throw httpClientErrorException;
+			logger.info("Deleting custom resource with id '{}'", customResourceId);
+			ResponseEntity<String> res = deleteCustomResourcePrimitive(customResourceId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete custom resource with id '{}'", customResourceId);
+			}
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not delete custom resource with name '%s' (id:%s).", customResourceName, customResourceId), e);
+			throw new RuntimeException(String.format("Could not delete custom resource with name '%s' (id:%s).",
+					customResourceName, customResourceId), e);
 		}
 	}
 
@@ -1115,7 +1233,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return importResourceActionPrimitive(resourceActionJson);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not import resource action with name '%s'.", resourceActionName), e);
+			throw new RuntimeException(
+					String.format("Could not import resource action with name '%s'.", resourceActionName), e);
 		}
 	}
 
@@ -1127,9 +1246,15 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void deleteResourceAction(final String resourceActionName, final String resourceActionId) {
 		try {
-			deleteResourceActionPrimitive(resourceActionId);
+			logger.info("Deleting resource action with id '{}'", resourceActionId);
+			ResponseEntity<String> res = deleteResourceActionPrimitive(resourceActionId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete resource action with id '{}'", resourceActionId);
+			}
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not delete resource action with name '%s' and id '%s'.", resourceActionName, resourceActionId), e);
+			throw new RuntimeException(String.format("Could not delete resource action with name '%s' and id '%s'.",
+					resourceActionName, resourceActionId), e);
 		}
 	}
 
@@ -1147,7 +1272,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return createAbxActionPrimitive(action);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create ABX action with name '%s'.", action.getName()), e);
+			throw new RuntimeException(String.format("Could not create ABX action with name '%s'.", action.getName()),
+					e);
 		}
 	}
 
@@ -1162,7 +1288,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return updateAbxActionPrimitive(actionId, action);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not update ABX action with name '%s'.", action.getName()), e);
+			throw new RuntimeException(String.format("Could not update ABX action with name '%s'.", action.getName()),
+					e);
 		}
 	}
 
@@ -1176,7 +1303,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return getAbxLastUpdatedVersionPrimitive(action.getId());
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not get latest version of ABX action with name '%s'.", action.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not get latest version of ABX action with name '%s'.", action.getName()), e);
 		}
 	}
 
@@ -1191,7 +1319,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return createAbxVersionPrimitive(action.getId(), version);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create version of ABX action with name '%s'.", action.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create version of ABX action with name '%s'.", action.getName()), e);
 		}
 	}
 
@@ -1206,7 +1335,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return releaseAbxVersionPrimitive(action.getId(), versionId);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not release version of ABX action with name '%s'.", action.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not release version of ABX action with name '%s'.", action.getName()), e);
 		}
 	}
 
@@ -1244,6 +1374,24 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	// =================================================
 
 	/**
+	 * Delete policy.
+	 *
+	 * @param policyId policy id
+	 */
+	public void deletePolicy(final String policyId) {
+		try {
+			logger.info("Deleting policy with id '{}'", policyId);
+			ResponseEntity<String> res = deletePolicyPrimitive(policyId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Error deleting policy with id '{}'. Response: {}", policyId, res);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete policy with id '%s'.", policyId), e);
+		}
+	}
+
+	/**
 	 * getContentSharingPolicyIds.
 	 * 
 	 * @return policies
@@ -1266,7 +1414,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			this.createContentSharingPolicyPrimitive(csPolicy);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
 		}
 	}
 
@@ -1324,7 +1473,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			createResourceQuotaPolicyPrimitive(rqPolicy);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
 		}
 	}
 
@@ -1337,7 +1487,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			createLeasePolicyPrimitive(csPolicy);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
 		}
 	}
 
@@ -1394,7 +1545,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			createDay2ActionsPolicyPrimitive(d2aPolicy);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
 		}
 	}
 
@@ -1436,7 +1588,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			createDeploymentLimitPolicyPrimitive(policy);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
 		}
 	}
 
@@ -1478,7 +1631,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			createApprovalPolicyPrimitive(policy);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
+			throw new RuntimeException(
+					String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
 		}
 	}
 

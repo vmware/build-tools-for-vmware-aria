@@ -109,6 +109,42 @@ public class VraNgTypeStoreFactory {
 	}
 
 	/**
+	 * DELETE_ORDER.
+	 */
+	private static final VraNgPackageContent.ContentType[] DELETE_ORDER = {
+			// Can be deleted in any order
+			APPROVAL_POLICY,
+			CONTENT_SHARING_POLICY,
+			LEASE_POLICY,
+			RESOURCE_QUOTA_POLICY,
+			DAY2_ACTIONS_POLICY,
+			DEPLOYMENT_LIMIT_POLICY,
+			CATALOG_ENTITLEMENT,
+			CATALOG_ITEM,
+			CONTENT_SOURCE,
+			SUBSCRIPTION,
+			REGION_MAPPING,
+
+			// Must be deleted before the following
+			BLUEPRINT,
+
+			// The following
+			RESOURCE_ACTION,
+			PROPERTY_GROUP,
+			CUSTOM_RESOURCE,
+	};
+
+	/**
+	 * getDeleteOrder.
+	 * {@link VraNgTypeStoreFactory#DELETE_ORDER}
+	 *
+	 * @return VraNgPackageContent.ContentType[] DELETE_ORDER
+	 */
+	public static VraNgPackageContent.ContentType[] getDeleteOrder() {
+		return DELETE_ORDER;
+	}
+
+	/**
 	 * restClient.
 	 */
 	private final RestClientVraNg restClient;
@@ -131,9 +167,9 @@ public class VraNgTypeStoreFactory {
 	/**
 	 * Constructor function.
 	 *
-	 * @param restClientNg rest client 
+	 * @param restClientNg rest client
 	 * @param vraPackageNg vra package
-	 * @param configNg vra config
+	 * @param configNg     vra config
 	 * @param descriptorNg vra descriptor
 	 */
 	protected VraNgTypeStoreFactory(
@@ -150,10 +186,10 @@ public class VraNgTypeStoreFactory {
 	/**
 	 * Factory method to create.
 	 *
-	 * @param restClient rest client
+	 * @param restClient   rest client
 	 * @param vraNgPackage vra package
-	 * @param config config vra
-	 * @param descriptor package descriptor
+	 * @param config       config vra
+	 * @param descriptor   package descriptor
 	 * @return VraNgTypeStoreFactory
 	 */
 	public static VraNgTypeStoreFactory withConfig(
@@ -171,7 +207,7 @@ public class VraNgTypeStoreFactory {
 	 * @return IVraNgStore
 	 */
 	public IVraNgStore getStoreForType(
-		final VraNgPackageContent.ContentType type) {
+			final VraNgPackageContent.ContentType type) {
 		AbstractVraNgStore store = VraNgTypeStoreFactory.selectStore(restClient, type);
 		store.init(restClient, vraNgPackage, config, descriptor);
 		return store;

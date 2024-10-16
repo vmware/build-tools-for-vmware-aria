@@ -15,16 +15,12 @@
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.vrang.*;
 import com.vmware.pscoe.iac.artifact.model.vrang.objectmapping.VraNgCloudRegionProfile;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.minidev.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,8 +33,19 @@ import java.util.stream.Collectors;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_STORAGE_PROFILES;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_REGIONS;
 
+/**
+ * Storage profile store.
+ */
 public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 
+	/**
+	 * Index representing the position of the fabric in the storage profile.
+	 */
+	private final int FABRIC_INDEX = 3;
+
+	/**
+	 * @param logger
+	 */
 	private final Logger logger = LoggerFactory.getLogger(VraNgStorageProfileStore.class);
 
 	// =================================================
@@ -46,7 +53,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	// =================================================
 
 	/**
-	 * Used to fetch the store's data from the package descriptor
+	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return list of storage profiles
 	 */
@@ -56,19 +63,20 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is empty
+	 * Called when the List returned from getItemListFromDescriptor is empty.
 	 *
 	 * @param cloudAccounts list of cloud accounts
 	 */
 	@Override
 	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts) {
-		Map<String, List<VraNgStorageProfile>> storageProfilesByRegionId = this.restClient.getAllStorageProfilesByRegion();
+		Map<String, List<VraNgStorageProfile>> storageProfilesByRegionId = this.restClient
+				.getAllStorageProfilesByRegion();
 
 		cloudAccounts.forEach(cloudAccount -> {
 			List<String> regionsInCloudAccount = cloudAccount.getRegionIds()
-				.stream()
-				.filter(storageProfilesByRegionId::containsKey)
-				.collect(Collectors.toList());
+					.stream()
+					.filter(storageProfilesByRegionId::containsKey)
+					.collect(Collectors.toList());
 
 			logger.debug("Exporting storage profiles from cloud account {}", cloudAccount.getName());
 
@@ -76,16 +84,17 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 				// create region directory
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-			   
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
+
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir,
+						profileDirName);
 
 				List<VraNgStorageProfile> storageProfiles = storageProfilesByRegionId.get(regionId)
-					.stream()
-					.map(profile -> convertToSpecificProfile(profile, cloudAccount))
-					.collect(Collectors.toList());
-					
-				logger.info("Storage profiles to export: {}", 
-					storageProfiles.stream().map(VraNgStorageProfile::getName).collect(Collectors.toList()));
+						.stream()
+						.map(profile -> convertToSpecificProfile(profile, cloudAccount))
+						.collect(Collectors.toList());
+
+				logger.info("Storage profiles to export: {}",
+						storageProfiles.stream().map(VraNgStorageProfile::getName).collect(Collectors.toList()));
 
 				storageProfiles.forEach(sp -> this.exportToFileSystem(sourceDir, profileDirName, sp));
 			});
@@ -93,20 +102,21 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Called when the List returned from getItemListFromDescriptor is not empty
+	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 *
-	 * @param	cloudAccounts list of cloud accounts
-	 * @param	storageProfilesToExport list of storage profiles
+	 * @param cloudAccounts           list of cloud accounts
+	 * @param storageProfilesToExport list of storage profiles
 	 */
 	@Override
-	protected void exportStoreContent( List<VraNgCloudAccount> cloudAccounts, List<String> storageProfilesToExport ) {
-		Map<String, List<VraNgStorageProfile>> storageProfilesByRegionId = this.restClient.getAllStorageProfilesByRegion();
+	protected void exportStoreContent(List<VraNgCloudAccount> cloudAccounts, List<String> storageProfilesToExport) {
+		Map<String, List<VraNgStorageProfile>> storageProfilesByRegionId = this.restClient
+				.getAllStorageProfilesByRegion();
 
 		cloudAccounts.forEach(cloudAccount -> {
 			List<String> regionsInCloudAccount = cloudAccount.getRegionIds()
-				.stream()
-				.filter(storageProfilesByRegionId::containsKey)
-				.collect(Collectors.toList());
+					.stream()
+					.filter(storageProfilesByRegionId::containsKey)
+					.collect(Collectors.toList());
 
 			logger.debug("Exporting storage profiles from cloud account {}", cloudAccount.getName());
 
@@ -114,53 +124,78 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 				// create region directory
 				String profileDirName = cloudAccount.getName() + "~" + regionId;
 				File sourceDir = new File(vraNgPackage.getFilesystemPath());
-				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir, profileDirName);
-
+				VraNgRegionalContentUtils.createCloudRegionProfileFile(cloudAccount, regionId, sourceDir,
+						profileDirName);
 
 				List<VraNgStorageProfile> storageProfiles = storageProfilesByRegionId.get(regionId)
-					.stream()
-					.filter(sp -> storageProfilesToExport.contains(sp.getName()))
-					.map(profile -> convertToSpecificProfile(profile, cloudAccount))
-					.collect(Collectors.toList());
+						.stream()
+						.filter(sp -> storageProfilesToExport.contains(sp.getName()))
+						.map(profile -> convertToSpecificProfile(profile, cloudAccount))
+						.collect(Collectors.toList());
 
-				logger.info("Storage profiles to export: {}", 
-					storageProfiles.stream().map(VraNgStorageProfile::getName).collect(Collectors.toList()));
+				logger.info("Storage profiles to export: {}",
+						storageProfiles.stream().map(VraNgStorageProfile::getName).collect(Collectors.toList()));
 
 				storageProfiles.forEach(sp -> this.exportToFileSystem(sourceDir, profileDirName, sp));
 			});
 		});
 	}
 
+	/**
+	 * Enum representing different types of storage profiles.
+	 */
 	enum ProfileType {
-		VSPHERE, AZURE, AWS, UNKNOWN
+		/**
+		 * VSPHERE profile type.
+		 */
+		VSPHERE,
+		/**
+		 * Azure profile type.
+		 */
+		AZURE,
+		/**
+		 * AWS profile type.
+		 */
+		AWS,
+		/**
+		 * Unknown profile type.
+		 */
+		UNKNOWN
 	}
 
 	/**
-	 * Save an storage profile to a JSON file
-	 * @param sourceDir source directory
+	 * 
+	 * Save an storage profile to a JSON file.
+	 * 
+	 * @param sourceDir      source directory
 	 * @param profileDirName region directory
 	 * @param storageProfile storage profile
 	 */
 	private void exportToFileSystem(File sourceDir, String profileDirName, VraNgStorageProfile storageProfile) {
-		File storageProfileFile =
-				Paths.get(sourceDir.getPath(), DIR_REGIONS, profileDirName, DIR_STORAGE_PROFILES, storageProfile.getName() + ".json").toFile();
+		File storageProfileFile = Paths.get(sourceDir.getPath(), DIR_REGIONS, profileDirName, DIR_STORAGE_PROFILES,
+				storageProfile.getName() + ".json").toFile();
 
 		storageProfileFile.getParentFile().mkdirs();
 
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			String profileJson = gson.toJson(gson.fromJson(storageProfile.getJson(), JsonObject.class));
-			logger.info("Created file {}", Files.write(Paths.get(storageProfileFile.getPath()), profileJson.getBytes(), StandardOpenOption.CREATE));
+			logger.info("Created file {}", Files.write(Paths.get(storageProfileFile.getPath()), profileJson.getBytes(),
+					StandardOpenOption.CREATE));
 		} catch (IOException e) {
-			logger.error("Unable to store storage profile {} {}", storageProfile.getName(), storageProfileFile.getPath());
+			logger.error("Unable to store storage profile {} {}", storageProfile.getName(),
+					storageProfileFile.getPath());
 			throw new RuntimeException("Unable to store storage profile.", e);
 		}
 	};
 
 	/**
 	 * Convert an abstract storage profile to specific storage profile.
-	 * A specific storage profile is a cloud account-specific profile representation.
-	 * @param profile storage profile
+	 * A specific storage profile is a cloud account-specific profile
+	 * representation.
+	 * 
+	 * @param profile      storage profile
+	 * @param cloudAccount cloud account
 	 * @return storage profile
 	 */
 	private VraNgStorageProfile convertToSpecificProfile(VraNgStorageProfile profile, VraNgCloudAccount cloudAccount) {
@@ -181,17 +216,19 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 		JsonObject diskProperties = ob.has("diskProperties") ? ob.get("diskProperties").getAsJsonObject() : null;
 
 		ProfileType profileType = getProfileType(cloudAccount);
-		// First check if the disk is a First Class Disk and based on that omit writing diskMode, so we can execute create/patch commands
+		// First check if the disk is a First Class Disk and based on that omit writing
+		// diskMode, so we can execute create/patch commands
 		switch (profileType) {
 			case VSPHERE:
-				if(diskProperties != null && diskProperties.has("diskType") && diskProperties != null && diskProperties.get("diskType").getAsString().equals("firstClass")) {
+				if (diskProperties != null && diskProperties.has("diskType") && diskProperties != null
+						&& diskProperties.get("diskType").getAsString().equals("firstClass")) {
 					cleanOb = VraNgRegionalContentUtils.cleanJson(cleanOb, Arrays.asList(
-						"supportsEncryption", "sharesLevel", "description", "tags",
-						"shares", "provisioningType", "diskType", "limitIops", "name", "defaultItem"), null);
+							"supportsEncryption", "sharesLevel", "description", "tags",
+							"shares", "provisioningType", "diskType", "limitIops", "name", "defaultItem"), null);
 				} else {
 					cleanOb = VraNgRegionalContentUtils.cleanJson(cleanOb, Arrays.asList(
-						"supportsEncryption", "sharesLevel", "description", "diskMode", "tags",
-						"shares", "provisioningType", "diskType", "limitIops", "name", "defaultItem"), null);
+							"supportsEncryption", "sharesLevel", "description", "diskMode", "tags",
+							"shares", "provisioningType", "diskType", "limitIops", "name", "defaultItem"), null);
 				}
 
 				// create datastore fabric link
@@ -202,7 +239,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 							.get("href").getAsString();
 					String datastoreName = this.restClient.getFabricEntityName(datastoreHref);
 					datastore.put("name", datastoreName);
-					datastore.put("fabric", datastoreHref.split("/")[3]);
+					datastore.put("fabric", datastoreHref.split("/")[FABRIC_INDEX]);
 					cleanOb.add("_datastore", gson.toJsonTree(datastore));
 				}
 
@@ -214,7 +251,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 							.get("href").getAsString();
 					String storagePolicyName = this.restClient.getFabricEntityName(storagePolicyHref);
 					storagePolicy.put("name", storagePolicyName);
-					storagePolicy.put("fabric", storagePolicyHref.split("/")[3]);
+					storagePolicy.put("fabric", storagePolicyHref.split("/")[FABRIC_INDEX]);
 					cleanOb.add("_storagePolicy", gson.toJsonTree(storagePolicy));
 				}
 				break;
@@ -223,6 +260,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 			case AWS:
 			case AZURE:
 			case UNKNOWN:
+			default:
 				logger.warn("Unsupported storage profile type '{}'", profileType);
 				break;
 		}
@@ -237,9 +275,10 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	// =================================================
 
 	/**
-	 * Import all storage profiles from a package
+	 * Import all storage profiles from a package.
+	 * 
 	 * @param sourceDirectory temporary directory containing the files
-	 * @param importTags list of tags
+	 * @param importTags      list of tags
 	 */
 	public void importContent(File sourceDirectory, List<String> importTags) {
 		File regionsFolder = Paths.get(sourceDirectory.getPath(), DIR_REGIONS).toFile();
@@ -250,15 +289,18 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 
 		List<VraNgCloudAccount> cloudAccounts = this.restClient.getCloudAccounts();
 
-		Map<String, List<VraNgStorageProfile>> storageProfilesByRegion = this.restClient.getAllStorageProfilesByRegion();
+		Map<String, List<VraNgStorageProfile>> storageProfilesByRegion = this.restClient
+				.getAllStorageProfilesByRegion();
 
 		// list all directories in the regions folder
 		Arrays.asList(regionsFolder.listFiles(File::isDirectory)).forEach(regionProfileDir -> {
 			try {
-				VraNgCloudRegionProfile cloudRegionProfile = VraNgRegionalContentUtils.getCloudRegionProfile(regionProfileDir);
+				VraNgCloudRegionProfile cloudRegionProfile = VraNgRegionalContentUtils
+						.getCloudRegionProfile(regionProfileDir);
 				cloudAccounts
 						.stream()
-						.filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(), importTags))
+						.filter(cloudAccount -> VraNgRegionalContentUtils.isIntersecting(cloudAccount.getTags(),
+								importTags))
 						.filter(cloudAccount -> cloudAccount.getType().equals(cloudRegionProfile.getRegionType()))
 						.forEach(cloudAccount -> cloudAccount.getRegionIds()
 								.forEach(regionId -> this.importInRegion(
@@ -274,15 +316,19 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 
 	/**
 	 * Import storage profiles in a cloud region (cloud zone).
-	 * @param regionId region id
+	 * 
+	 * @param regionId         region id
 	 * @param regionProfileDir region directory
-	 * @param remoteProfiles list of existing storage profiles on server grouped by region
+	 * @param remoteProfiles   list of existing storage profiles on server grouped
+	 *                         by region
 	 */
-	private void importInRegion(String regionId, File regionProfileDir, Map<String, List<VraNgStorageProfile>> remoteProfiles) {
+	private void importInRegion(String regionId, File regionProfileDir,
+			Map<String, List<VraNgStorageProfile>> remoteProfiles) {
 
 		File storageProfilesDir = Paths.get(regionProfileDir.getPath(), DIR_STORAGE_PROFILES).toFile();
 		if (!storageProfilesDir.exists()) {
-			logger.debug("Storage profiles directory {} does not exist in region {}. Skipping...", DIR_STORAGE_PROFILES, regionId);
+			logger.debug("Storage profiles directory {} does not exist in region {}. Skipping...", DIR_STORAGE_PROFILES,
+					regionId);
 			return;
 		}
 
@@ -299,8 +345,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 		}
 
 		logger.info("Creating/updating {} storage profiles: {}",
-			localProfiles.size(), localProfiles.stream().map(VraNgStorageProfile::getName).collect(Collectors.toList()));
-
+				localProfiles.size(),
+				localProfiles.stream().map(VraNgStorageProfile::getName).collect(Collectors.toList()));
 
 		localProfiles.forEach(localProfile -> {
 
@@ -315,7 +361,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 				profileId = this.restClient.createStorageProfile(getUpsertPayload(regionId, localProfile));
 			}
 
-			// Update specific profile. A specific profile is a storage profile representation
+			// Update specific profile. A specific profile is a storage profile
+			// representation
 			// under a specific cloud account type.
 			Map.Entry<String, VraNgStorageProfile> patchProfile = getPatchPayload(regionId, localProfile);
 			String patchTarget = patchProfile.getKey();
@@ -327,8 +374,10 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Create a list of storage profiles from JSON file representation
-	 * @param storageProfilesDir directory containing the image mappings for the region
+	 * Create a list of storage profiles from JSON file representation.
+	 * 
+	 * @param storageProfilesDir directory containing the image mappings for the
+	 *                           region
 	 * @return list of storage profiles
 	 */
 	private List<VraNgStorageProfile> getStorageProfilesFromFileSystem(File storageProfilesDir) {
@@ -348,7 +397,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Extract profile id
+	 * Extract profile id.
+	 * 
 	 * @param profile storage profile
 	 * @return id
 	 */
@@ -360,16 +410,19 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Create API-compliant JSON payload from local storage profile
 	 * for creating/updating storage profiles.
+	 * 
 	 * @param regiondId region id
-	 * @param profile local storage profile
+	 * @param profile   local storage profile
 	 * @return storage profile with updated payload
 	 */
 	private VraNgStorageProfile getUpsertPayload(String regiondId, VraNgStorageProfile profile) {
 		JsonElement root = new JsonParser().parse(profile.getJson());
 		JsonObject ob = root.getAsJsonObject();
 
-		// create simple storage profile which will be updated later with cloud account-specific properties
-		JsonObject cleanedOb = VraNgRegionalContentUtils.cleanJson(ob, Arrays.asList("name", "description", "tags"), null);
+		// create simple storage profile which will be updated later with cloud
+		// account-specific properties
+		JsonObject cleanedOb = VraNgRegionalContentUtils.cleanJson(ob, Arrays.asList("name", "description", "tags"),
+				null);
 		cleanedOb.addProperty("regionId", regiondId);
 
 		Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
@@ -381,7 +434,9 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	/**
 	 * Create API-compliant JSON payload from local storage profile
 	 * for patching cloud-specific storage profiles.
-	 * @param profile local storage profile
+	 * 
+	 * @param regionId the region id
+	 * @param profile  local storage profile
 	 * @return storage profile with updated payload
 	 */
 	private Map.Entry<String, VraNgStorageProfile> getPatchPayload(String regionId, VraNgStorageProfile profile) {
@@ -390,7 +445,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 
 		ob.addProperty("regionId", regionId);
 
-		String patchTarget =  "storage-profiles";
+		String patchTarget = "storage-profiles";
 		ProfileType profileType = getProfileType(profile);
 		switch (profileType) {
 			case VSPHERE:
@@ -415,6 +470,7 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 			case AWS:
 			case AZURE:
 			case UNKNOWN:
+			default:
 				logger.warn("Unsupported storage profile type '{}'", profileType);
 				break;
 		}
@@ -432,7 +488,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	// =================================================
 
 	/**
-	 * Resolve fabric entity id from JSON object
+	 * Resolve fabric entity id from JSON object.
+	 * 
 	 * @param ob JSON object
 	 * @return id
 	 */
@@ -445,7 +502,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Determine profile type from storage profile
+	 * Determine profile type from storage profile.
+	 * 
 	 * @param profile storage profile
 	 * @return profile type
 	 */
@@ -467,7 +525,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Determine profile type from cloud account
+	 * Determine profile type from cloud account.
+	 * 
 	 * @param cloudAccount cloud account
 	 * @return profile type
 	 */
@@ -485,7 +544,8 @@ public class VraNgStorageProfileStore extends AbstractVraNgRegionalStore {
 	}
 
 	/**
-	 * Determine profile type from cloud region
+	 * Determine profile type from cloud region.
+	 * 
 	 * @param cloudRegion cloud region
 	 * @return profile type
 	 */

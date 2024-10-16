@@ -17,10 +17,29 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * VraNgContentSource.
+ */
 public class VraNgContentSource extends VraNgContentSourceBase {
+	/**
+	 * The project Id.
+	 */
 	protected String projectId;
+
+	/**
+	 * The configuration map.
+	 */
 	protected Map<String, String> config;
 
+	/**
+	 * @param id            the id
+	 * @param name          the name
+	 * @param typeId        the type id
+	 * @param projectId     the project id
+	 * @param itemsFound    the items found
+	 * @param itemsImported the items imported
+	 * @param importErrors  the import errors
+	 */
 	public VraNgContentSource(String id, String name, VraNgContentSourceType typeId,
 			String projectId, Integer itemsFound, Integer itemsImported,
 			List<String> importErrors) {
@@ -33,6 +52,14 @@ public class VraNgContentSource extends VraNgContentSourceBase {
 		this.lastImportErrors = importErrors;
 	}
 
+	/**
+	 * @param id            the id
+	 * @param name          the name
+	 * @param typeId        the type id
+	 * @param projectId     the project id
+	 * @param itemsFound    the items found
+	 * @param itemsImported the items imported
+	 */
 	public VraNgContentSource(String id, String name, VraNgContentSourceType typeId,
 			String projectId, Integer itemsFound, Integer itemsImported) {
 		this.id = id;
@@ -43,18 +70,30 @@ public class VraNgContentSource extends VraNgContentSourceBase {
 		this.itemsImported = itemsImported;
 	}
 
+	/**
+	 * @return the project id
+	 */
 	public String getProjectId() {
 		return this.projectId;
 	}
 
+	/**
+	 * @param projectId the project id
+	 */
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
+	/**
+	 * @return the config
+	 */
 	public Map<String, String> getConfig() {
 		return config;
 	}
 
+	/**
+	 * @param config the config
+	 */
 	public void setConfig(Map<String, String> config) {
 		this.config = config;
 	}

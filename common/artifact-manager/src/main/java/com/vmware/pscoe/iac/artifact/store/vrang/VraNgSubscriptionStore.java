@@ -75,6 +75,22 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 	}
 
 	/**
+	 * @return all subscriptions from the server
+	 */
+	protected List<VraNgSubscription> getAllServerContents() {
+		return this.restClient.getAllSubscriptions().values().stream().collect(Collectors.toList());
+	}
+
+	/**
+	 * Deletes the subscription by its id.
+	 *
+	 * @param resId - id of the subscription
+	 */
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteSubscription(resId);
+	}
+
+	/**
 	 * Used to fetch the store's data from the package descriptor.
 	 *
 	 * @return a list of subscriptions
@@ -92,7 +108,9 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		Map<String, VraNgSubscription> subscriptionsOnServer = this.getAllSubscriptions();
 
 		for (String subscriptionId : subscriptionsOnServer.keySet()) {
-			storeSubscriptionOnFilesystem(vraNgPackage, subscriptionsOnServer.get(subscriptionId).getName(),
+			storeSubscriptionOnFilesystem(
+					vraNgPackage,
+					subscriptionsOnServer.get(subscriptionId).getName(),
 					subscriptionsOnServer.get(subscriptionId).getJson());
 		}
 	}
@@ -118,7 +136,9 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 						"Subscription with name [" + subscriptionName + "] doesn't exist on the remote");
 			}
 			String subscriptionId = namesToIdsOnServer.get(subscriptionName);
-			storeSubscriptionOnFilesystem(vraNgPackage, subscriptionName,
+			storeSubscriptionOnFilesystem(
+					vraNgPackage,
+					subscriptionName,
 					subscriptionsOnServer.get(subscriptionId).getJson());
 		}
 	}
@@ -263,7 +283,8 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 
 		JsonElement runnableIdElement = subscriptionJsonElement.get("runnableId");
 		List<AbxAction> actions = restClient.getAllAbxActions().stream()
-				.filter(a -> a.getId().equals(runnableIdElement.getAsString())).collect(Collectors.toList());
+				.filter(a -> a.getId().equals(runnableIdElement.getAsString()))
+				.collect(Collectors.toList());
 
 		if (actions.size() == 0) {
 			throw new RuntimeException("Abx actions with the specified Id can not be found");

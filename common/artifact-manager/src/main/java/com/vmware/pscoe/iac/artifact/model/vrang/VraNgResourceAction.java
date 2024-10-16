@@ -17,7 +17,7 @@
  */
 package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgResourceAction {
+public class VraNgResourceAction implements Identifiable {
 
 	/**
 	 * Prime Number 17.
@@ -61,12 +61,13 @@ public class VraNgResourceAction {
 	/**
 	 * Creates a new Resource Action.
 	 * 
-	 * @param identifier           Resource Action id
+	 * @param identifier         Resource Action id
 	 * @param actionName         Resource Action name
 	 * @param jsonString         Resource Action json
 	 * @param actionResourceType Resource Action Resource Type
 	 */
-	public VraNgResourceAction(final String identifier, final String actionName, final String jsonString, final String actionResourceType) {
+	public VraNgResourceAction(final String identifier, final String actionName, final String jsonString,
+			final String actionResourceType) {
 		this.id = identifier;
 		this.name = actionName;
 		this.json = jsonString;

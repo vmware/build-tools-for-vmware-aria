@@ -75,15 +75,15 @@ enum Option {
 	 * timeouts.
 	 */
 	CONNECTION_TIMEOUT(
-		"http_connection_timeout",
-		Configuration.CONNECTION_TIMEOUT),
+			"http_connection_timeout",
+			Configuration.CONNECTION_TIMEOUT),
 
 	/**
 	 * Socket timeout.
 	 */
 	SOCKET_TIMEOUT(
-		"http_socket_timeout",
-		Configuration.SOCKET_TIMEOUT),
+			"http_socket_timeout",
+			Configuration.SOCKET_TIMEOUT),
 
 	/**
 	 * Configurations.
@@ -123,7 +123,7 @@ enum Option {
 	VRA_IMPORT_OLD_VERSIONS(
 			"vra_import_old_versions",
 			ConfigurationVra.IMPORT_OLD_VERSIONS),
-   
+
 	/**
 	 * Skip VRA import old versions.
 	 */
@@ -131,12 +131,12 @@ enum Option {
 			"skip_vra_import_old_versions",
 			StringUtils.EMPTY),
 	/**
-	 *  VRA import overwrite mode.
+	 * VRA import overwrite mode.
 	 */
 	VRA_IMPORT_OVERWRITE_MODE(
 			"vra_import_overwrite_mode",
 			ConfigurationVra.PACKAGE_IMPORT_OVERWRITE_MODE),
-	
+
 	/**
 	 * VRO force import latest package versions.
 	 */
@@ -183,14 +183,14 @@ enum Option {
 	 * VRANG data collection delay in seconds.
 	 */
 	VRANG_DATA_COLLECTION_DELAY_SECONDS(
-		"vrang_data.collection.delay.seconds",
-		ConfigurationVraNg.DATA_COLLECTION_DELAY_SECONDS),
+			"vrang_data.collection.delay.seconds",
+			ConfigurationVraNg.DATA_COLLECTION_DELAY_SECONDS),
 	/**
 	 * VRANG org Id.
 	 */
 	VRANG_ORGANIZATION_ID(
-		"vrang_org_id",
-		ConfigurationVraNg.ORGANIZATION_ID),
+			"vrang_org_id",
+			ConfigurationVraNg.ORGANIZATION_ID),
 	/**
 	 * VRANG org name.
 	 */
@@ -213,8 +213,8 @@ enum Option {
 	 * VRANG refresh token.
 	 */
 	VRANG_REFRESH_TOKEN(
-		"vrang_refresh_token",
-		ConfigurationVraNg.REFRESH_TOKEN),
+			"vrang_refresh_token",
+			ConfigurationVraNg.REFRESH_TOKEN),
 	/**
 	 * VRANG username.
 	 */
@@ -262,6 +262,13 @@ enum Option {
 			"vrang_bp_unrelease_versions",
 			ConfigurationVraNg.UNRELEASE_BLUEPRINT_VERSIONS),
 
+	/**
+	 * VRANG delete last version.
+	 * This will result in the environment being cleaned up
+	 */
+	VRANG_DELETE_CONTENT(
+			"vrang_delete_content",
+			ConfigurationVraNg.DELETE_CONTENT),
 
 	/**
 	 * VRLI server.
@@ -406,7 +413,7 @@ enum Option {
 	 * VRO refresh token.
 	 */
 	VRO_REFRESH_TOKEN(
-		"vro_refresh_token",
+			"vro_refresh_token",
 			ConfigurationVro.REFRESH_TOKEN),
 	/**
 	 * VRO auth.
@@ -568,8 +575,8 @@ enum Option {
 	 * VRO enable backup.
 	 */
 	VRO_ENABLE_BACKUP(
-		"vro_enable_backup",
-		StringUtils.EMPTY),
+			"vro_enable_backup",
+			StringUtils.EMPTY),
 
 	/**
 	 * VCD import packages.
@@ -593,8 +600,8 @@ enum Option {
 	 * ssh import packages.
 	 */
 	SSH_IMPORT(
-		"ssh_import_packages",
-		StringUtils.EMPTY),
+			"ssh_import_packages",
+			StringUtils.EMPTY),
 	/**
 	 * VRO import old versions.
 	 */
@@ -704,7 +711,6 @@ enum Option {
 			"abx_import_packages",
 			StringUtils.EMPTY);
 
-
 	/**
 	 * Option name.
 	 */
@@ -793,7 +799,8 @@ class Input extends Properties {
 				try {
 					if (key.toString().endsWith("password") && value.startsWith(Input.PASS_PREFIX)) {
 						String decoded = value.substring(Input.PASS_PREFIX.length());
-						decoded = new String(Base64.getDecoder().decode(decoded.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+						decoded = new String(Base64.getDecoder().decode(decoded.getBytes(StandardCharsets.UTF_8)),
+								StandardCharsets.UTF_8);
 						value = decoded;
 					}
 				} catch (IllegalArgumentException invalidBase64) {
@@ -815,7 +822,8 @@ class Input extends Properties {
 			Object key = keys.nextElement();
 			String value = super.getProperty("" + key);
 			if (key.toString().endsWith("password")) {
-				value = Input.PASS_PREFIX + new String(Base64.getEncoder().encode(value.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+				value = Input.PASS_PREFIX + new String(
+						Base64.getEncoder().encode(value.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 			}
 			props.setProperty("" + key, value);
 		}
@@ -828,7 +836,7 @@ class Input extends Properties {
 	}
 
 	public Properties getMappings(final String prefix) {
-		return getMappings(new String[] {prefix});
+		return getMappings(new String[] { prefix });
 	}
 
 	public Properties getMappings(final String[] prefixes) {
@@ -837,7 +845,8 @@ class Input extends Properties {
 			String prefix = prefixes[i];
 			for (Option option : Option.values()) {
 				boolean doMap = super.get(option.getName()) != null;
-				doMap = doMap && (prefix != null && option.getName().startsWith(prefix) || option.getName().startsWith("ignore_"));
+				doMap = doMap && (prefix != null && option.getName().startsWith(prefix)
+						|| option.getName().startsWith("ignore_"));
 				doMap = doMap && option.getMapping() != null && !option.getMapping().trim().equals(StringUtils.EMPTY);
 				if (doMap) {
 					mappings.put(option.getMapping(), super.get(option.getName()));
@@ -927,11 +936,11 @@ public final class Installer {
 		}
 	}
 
-/**
- *
- * @param args
- * @throws ConfigurationException
- */
+	/**
+	 *
+	 * @param args
+	 * @throws ConfigurationException
+	 */
 	public static void main(final String[] args) throws ConfigurationException {
 		Input input = new Input();
 		if (args.length > 0) {
@@ -946,36 +955,47 @@ public final class Installer {
 		if (input.allTrue(Option.VRO_IMPORT, Option.VRO_EMBEDDED)) {
 			String[] arr = { ConfigurationPrefix.VRO.getValue(), ConfigurationPrefix.VRANG.getValue() };
 			PackageStoreFactory.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(arr)))
-					.importAllPackages(getFilesystemPackages(PackageType.VRO), false, input.allTrue(Option.VRO_ENABLE_BACKUP));
+					.importAllPackages(getFilesystemPackages(PackageType.VRO), false,
+							input.allTrue(Option.VRO_ENABLE_BACKUP));
 		} else if (input.allTrue(Option.VRO_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())))
-					.importAllPackages(getFilesystemPackages(PackageType.VRO), false, input.allTrue(Option.VRO_ENABLE_BACKUP));
+			PackageStoreFactory
+					.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())))
+					.importAllPackages(getFilesystemPackages(PackageType.VRO), false,
+							input.allTrue(Option.VRO_ENABLE_BACKUP));
 		}
 
-		boolean vroEnableBackup = false; //the backup will be possible only for vRO packages
+		boolean vroEnableBackup = false; // the backup will be possible only for vRO packages
 
 		if (input.allTrue(Option.VRA_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(ConfigurationPrefix.VRA.getValue())))
+			PackageStoreFactory
+					.getInstance(ConfigurationVra.fromProperties(input.getMappings(ConfigurationPrefix.VRA.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VRA), false, vroEnableBackup);
 		}
 
 		if (input.allTrue(Option.CS_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationCs.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationCs.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.CS), false, vroEnableBackup);
 		}
 
 		if (input.allTrue(Option.ABX_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationAbx.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationAbx.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.ABX), false, vroEnableBackup);
 		}
 
 		if (input.allTrue(Option.VRANG_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VRANG), false, vroEnableBackup);
 		}
 
 		if (input.allTrue(Option.VCD_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationVcd.fromProperties(input.getMappings(ConfigurationPrefix.VCD.getValue())))
+			PackageStoreFactory
+					.getInstance(ConfigurationVcd.fromProperties(input.getMappings(ConfigurationPrefix.VCD.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VCDNG), false, vroEnableBackup);
 		}
 
@@ -983,9 +1003,11 @@ public final class Installer {
 			PackageStore<?> packageStore = null;
 			if (input.allTrue(Option.VRO_EMBEDDED)) {
 				String[] prefixes = { ConfigurationPrefix.VRO.getValue(), ConfigurationPrefix.VRANG.getValue() };
-				packageStore = PackageStoreFactory.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(prefixes)));
+				packageStore = PackageStoreFactory
+						.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(prefixes)));
 			} else {
-				packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
+				packageStore = PackageStoreFactory.getInstance(
+						ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
 			}
 			packageStore.deleteAllPackages(getFilesystemPackages(PackageType.VRO), true, false, false);
 		}
@@ -994,9 +1016,11 @@ public final class Installer {
 			PackageStore<?> packageStore = null;
 			if (input.allTrue(Option.VRO_EMBEDDED)) {
 				String[] prefixes = { ConfigurationPrefix.VRO.getValue(), ConfigurationPrefix.VRANG.getValue() };
-				packageStore = PackageStoreFactory.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(prefixes)));
+				packageStore = PackageStoreFactory
+						.getInstance(ConfigurationVroNg.fromProperties(input.getMappings(prefixes)));
 			} else {
-				packageStore = PackageStoreFactory.getInstance(ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
+				packageStore = PackageStoreFactory.getInstance(
+						ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
 			}
 			packageStore.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
 		}
@@ -1025,13 +1049,23 @@ public final class Installer {
 					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
 		}
 
+		if (input.allTrue(Option.VRANG_DELETE_CONTENT)) {
+			String[] prefixes = { ConfigurationPrefix.VRANG.getValue() };
+			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(prefixes)))
+					.deleteAllPackages(getFilesystemPackages(PackageType.VRANG), true, false, false);
+		}
+
 		if (input.allTrue(Option.VROPS_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationVrops.fromProperties(input.getMappings(ConfigurationPrefix.VROPS.getValue())))
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationVrops.fromProperties(input.getMappings(ConfigurationPrefix.VROPS.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VROPS), false, vroEnableBackup);
 		}
 
 		if (input.allTrue(Option.VRLI_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationVrli.fromProperties(input.getMappings(ConfigurationPrefix.VRLI.getValue())))
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationVrli.fromProperties(input.getMappings(ConfigurationPrefix.VRLI.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VRLI), false, vroEnableBackup);
 		}
 
@@ -1041,7 +1075,8 @@ public final class Installer {
 		}
 
 		if (input.allTrue(Option.SSH_IMPORT)) {
-			PackageStoreFactory.getInstance(ConfigurationSsh.fromProperties(input.getMappings(ConfigurationPrefix.SSH.getValue())))
+			PackageStoreFactory
+					.getInstance(ConfigurationSsh.fromProperties(input.getMappings(ConfigurationPrefix.SSH.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.BASIC), false, vroEnableBackup);
 		}
 
@@ -1049,14 +1084,15 @@ public final class Installer {
 			try {
 				runWorkflow(input);
 			} catch (RuntimeException e) {
-			   input.getText().getTextTerminal().println("Error executing workflow: " + e.getMessage());
-			   System.exit(EXIT_WF_EXEC_FAILED_CODE);
+				input.getText().getTextTerminal().println("Error executing workflow: " + e.getMessage());
+				System.exit(EXIT_WF_EXEC_FAILED_CODE);
 			}
 		}
 		System.exit(EXIT_SUCCESS_CODE);
 	}
 
-	private static void userInput(final Input input, final Option param, final String prompt, final boolean defaultValue) {
+	private static void userInput(final Input input, final Option param, final String prompt,
+			final boolean defaultValue) {
 		userInput(input, param, prompt, Boolean.valueOf(defaultValue), Boolean.class, false);
 	}
 
@@ -1064,7 +1100,8 @@ public final class Installer {
 		userInput(input, param, prompt, (String) null, String.class, false);
 	}
 
-	private static void userInput(final Input input, final Option param, final String prompt, final String defaultValue) {
+	private static void userInput(final Input input, final Option param, final String prompt,
+			final String defaultValue) {
 		userInput(input, param, prompt, defaultValue, String.class, false);
 	}
 
@@ -1076,13 +1113,15 @@ public final class Installer {
 		userInput(input, param, prompt, null, String.class, true);
 	}
 
-	private static void userInput(final Input input, final Option param, final String prompt, final Object defaultValue, final Class<?> type, final boolean password) {
+	private static void userInput(final Input input, final Option param, final String prompt, final Object defaultValue,
+			final Class<?> type, final boolean password) {
 		String value = input.get(param);
 		if (value != null) {
 			return;
 		}
 		if (type == Boolean.class) {
-			input.put(param, input.getText().newBooleanInputReader().withDefaultValue(((Boolean) defaultValue).booleanValue()).read(prompt));
+			input.put(param, input.getText().newBooleanInputReader()
+					.withDefaultValue(((Boolean) defaultValue).booleanValue()).read(prompt));
 			return;
 		}
 		if (type == String.class) {
@@ -1091,7 +1130,8 @@ public final class Installer {
 				return;
 			}
 			if (defaultValue != null) {
-				input.put(param, input.getText().newStringInputReader().withDefaultValue((String) defaultValue).read(prompt));
+				input.put(param,
+						input.getText().newStringInputReader().withDefaultValue((String) defaultValue).read(prompt));
 				return;
 			}
 			input.put(param, input.getText().newStringInputReader().read(prompt));
@@ -1099,11 +1139,14 @@ public final class Installer {
 		}
 
 		if (type == Integer.class) {
-			input.put(param, input.getText().newIntInputReader().withDefaultValue(((Integer) defaultValue).intValue()).read(prompt));
+			input.put(param, input.getText().newIntInputReader().withDefaultValue(((Integer) defaultValue).intValue())
+					.read(prompt));
 			return;
 		}
-		throw new IllegalStateException("Error while searching for user input to read the value of param \"" + param + "\", (Prompt: " + prompt
-					+ "), expecting an user entry of type \"" + type.getName() + "\". Unsupported entry type. Supported entry types are Boolean and String and Integer.");
+		throw new IllegalStateException(
+				"Error while searching for user input to read the value of param \"" + param + "\", (Prompt: " + prompt
+						+ "), expecting an user entry of type \"" + type.getName()
+						+ "\". Unsupported entry type. Supported entry types are Boolean and String and Integer.");
 	}
 
 	private static void loadInputInteractiveMode(final Input input) {
@@ -1123,9 +1166,9 @@ public final class Installer {
 		// common properties (i.e. timeouts)
 		readCommonProperties(input);
 
-		//  +------------------------------
-		//  |  vRealize Automation
-		//  +------------------------------
+		// +------------------------------
+		// | vRealize Automation
+		// +------------------------------
 		boolean hasVraPackages = !getFilesystemPackages(PackageType.VRA).isEmpty();
 		if (hasVraPackages) {
 			userInput(input, Option.VRA_IMPORT, "Import vRA packages?", true);
@@ -1134,24 +1177,28 @@ public final class Installer {
 				readVraImportProperties(input);
 				userInput(input, Option.VRA_DELETE_OLD_VERSIONS, "Clean up old vRA package versions?", true);
 				userInput(input, Option.VRA_DELETE_LAST_VERSION, "Clean up last vRA package version?", true);
-				userInput(input, Option.VRA_DELETE_INCLUDE_DEPENDENCIES, "Clean up vRA dependent packages as well?", true);
+				userInput(input, Option.VRA_DELETE_INCLUDE_DEPENDENCIES, "Clean up vRA dependent packages as well?",
+						true);
 			}
 		}
-		//  +-------------------------------------
-		//  |  vRealize Code Stream Automation (New Generation)
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | vRealize Code Stream Automation (New Generation)
+		// +-------------------------------------
 		boolean hasCsPackages = !getFilesystemPackages(PackageType.CS).isEmpty();
 		if (hasCsPackages) {
 			userInput(input, Option.CS_IMPORT, "Import Code Stream packages?", true);
 		}
-		//  +-------------------------------------
-		//  |  vRealize Automation (New Generation)
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | vRealize Automation (New Generation)
+		// +-------------------------------------
 		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty();
 		if (hasVraNgPackages) {
 			userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
+			if (!input.anyTrue(Option.VRANG_IMPORT)) {
+				userInput(input, Option.VRANG_DELETE_CONTENT, "Clean up Aria Automation content?", true);
+			}
 		}
-		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT)) {
+		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT, Option.VRANG_DELETE_CONTENT)) {
 			readVrangProperties(input);
 		}
 		if (input.anyTrue(Option.VRANG_IMPORT)) {
@@ -1160,9 +1207,9 @@ public final class Installer {
 		if (input.anyTrue(Option.CS_IMPORT)) {
 			readCsImportProperties(input);
 		}
-		//  +-------------------------------------
-		//  |  vRealize Orchestrator
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | vRealize Orchestrator
+		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.VRO).isEmpty()) {
 			userInput(input, Option.VRO_IMPORT, "Import vRO packages?", true);
 			if (input.anyTrue(Option.VRO_IMPORT)) {
@@ -1188,59 +1235,61 @@ public final class Installer {
 			}
 			readVroWorkflowProperties(input);
 		}
-		//  +-------------------------------------
-		//  |  vCloud Director (New Generation)
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | vCloud Director (New Generation)
+		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.VCDNG).isEmpty()) {
 			userInput(input, Option.VCD_IMPORT, "Import vCD packages?", true);
 		}
 		if (input.anyTrue(Option.VCD_IMPORT)) {
 			readVcdImportProperties(input);
 		}
-		//  +-------------------------------------
-		//  |  vROps
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | vROps
+		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.VROPS).isEmpty()) {
 			userInput(input, Option.VROPS_IMPORT, "Run vROps import?", true);
 		}
 		if (input.anyTrue(Option.VROPS_IMPORT)) {
 			readVropsImportProperties(input);
 		}
-		//  +-------------------------------------
-		//  |  vRLI
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | vRLI
+		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.VRLI).isEmpty()) {
 			userInput(input, Option.VRLI_IMPORT, "Run vRLI import?", true);
 		}
 		if (input.anyTrue(Option.VRLI_IMPORT)) {
 			readVrliImportProperties(input);
 		}
-		//  +-------------------------------------
-		//  |  vRLI
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | vRLI
+		// +-------------------------------------
 		if (input.anyTrue(Option.VCD_IMPORT, Option.VCD_DELETE_OLD_VERSIONS)) {
 			readVcdProperties(input);
 		}
-		//  +-------------------------------------
-		//  |  SSH
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | SSH
+		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.BASIC).isEmpty()) {
 			userInput(input, Option.SSH_IMPORT, "Run SSH import?", true);
 		}
 		if (input.anyTrue(Option.SSH_IMPORT)) {
 			readSshImportProperties(input);
 		}
-		//  +-------------------------------------
-		//  |  Store Properties for reusage
-		//  +-------------------------------------
+		// +-------------------------------------
+		// | Store Properties for reusage
+		// +-------------------------------------
 		boolean isStoring = true;
 		String location = "environment.properties";
 		File propsLocation = new File(location);
 		propsLocation = new File(propsLocation.getAbsolutePath());
 		isStoring = input.getText().newBooleanInputReader().withDefaultValue(true).read("Store Configuration?");
 		if (isStoring) {
-			if (propsLocation.exists() || propsLocation.isDirectory() || propsLocation.getParentFile() == null || !propsLocation.getParentFile().canWrite()) {
-				input.getText().getTextTerminal().println("Cannot store in \"" + propsLocation.getAbsolutePath() + "\". Please select alternative location.");
+			if (propsLocation.exists() || propsLocation.isDirectory() || propsLocation.getParentFile() == null
+					|| !propsLocation.getParentFile().canWrite()) {
+				input.getText().getTextTerminal().println("Cannot store in \"" + propsLocation.getAbsolutePath()
+						+ "\". Please select alternative location.");
 				location = input.getText().newStringInputReader().withDefaultValue(location).read("Location");
 			}
 			input.store(location);
@@ -1251,9 +1300,11 @@ public final class Installer {
 
 	private static void readCommonProperties(final Input input) {
 		input.getText().getTextTerminal().println("HTTP Common Properties:");
-		userInput(input, Option.CONNECTION_TIMEOUT, "  HTTP connection timeout", Configuration.DEFAULT_CONNECTION_TIMEOUT.toString());
+		userInput(input, Option.CONNECTION_TIMEOUT, "  HTTP connection timeout",
+				Configuration.DEFAULT_CONNECTION_TIMEOUT.toString());
 		Validate.timeout(input.get(Option.CONNECTION_TIMEOUT), input.getText());
-		userInput(input, Option.SOCKET_TIMEOUT, "  HTTP socket timeout", Configuration.DEFAULT_SOCKET_TIMEOUT.toString());
+		userInput(input, Option.SOCKET_TIMEOUT, "  HTTP socket timeout",
+				Configuration.DEFAULT_SOCKET_TIMEOUT.toString());
 		Validate.timeout(input.get(Option.SOCKET_TIMEOUT), input.getText());
 	}
 
@@ -1263,7 +1314,8 @@ public final class Installer {
 		if (input.get(Option.CONNECTION_TIMEOUT) != null) {
 			System.setProperty(Option.CONNECTION_TIMEOUT.getMapping(), input.get(Option.CONNECTION_TIMEOUT));
 		} else {
-			System.setProperty(Option.CONNECTION_TIMEOUT.getMapping(), Configuration.DEFAULT_CONNECTION_TIMEOUT.toString());
+			System.setProperty(Option.CONNECTION_TIMEOUT.getMapping(),
+					Configuration.DEFAULT_CONNECTION_TIMEOUT.toString());
 		}
 		if (input.get(Option.SOCKET_TIMEOUT) != null) {
 			System.setProperty(Option.SOCKET_TIMEOUT.getMapping(), input.get(Option.SOCKET_TIMEOUT));
@@ -1278,8 +1330,10 @@ public final class Installer {
 		Validate.host(input.get(Option.VRO_SERVER), input.getText());
 		userInput(input, Option.VRO_PORT, "  vRO Port", HTTPS_PORT);
 		Validate.port(Integer.valueOf(input.get(Option.VRO_PORT)), input.getText());
-		Validate.hostAndPort(input.get(Option.VRO_SERVER), Integer.valueOf(input.get(Option.VRO_PORT)), input.getText());
-		if (!input.getText().newBooleanInputReader().withDefaultValue(true).read("  Is single tenant environment (Y/N)?")) {
+		Validate.hostAndPort(input.get(Option.VRO_SERVER), Integer.valueOf(input.get(Option.VRO_PORT)),
+				input.getText());
+		if (!input.getText().newBooleanInputReader().withDefaultValue(true)
+				.read("  Is single tenant environment (Y/N)?")) {
 			userInput(input, Option.VRO_TENANT, "  vRO Tenant", "vsphere.local");
 		}
 		userInput(input, Option.VRO_USERNAME, "  vRO Username[@Domain]", "administrator@vsphere.local");
@@ -1292,7 +1346,8 @@ public final class Installer {
 			userInput(input, Option.VRO_AUTHHOST, "    Authorization Host FQDN", input.get(Option.VRO_SERVER));
 			userInput(input, Option.VRO_AUTHPORT, "    Authorization Port", input.get(Option.VRO_PORT));
 		} else {
-			Validate.vroauth(input.get(Option.VRO_SERVER), Integer.valueOf(input.get(Option.VRO_PORT)), input.get(Option.VRO_USERNAME), input.get(Option.VRO_PASSWORD),
+			Validate.vroauth(input.get(Option.VRO_SERVER), Integer.valueOf(input.get(Option.VRO_PORT)),
+					input.get(Option.VRO_USERNAME), input.get(Option.VRO_PASSWORD),
 					input.getText());
 		}
 	}
@@ -1302,7 +1357,8 @@ public final class Installer {
 		userInput(input, Option.VRO_RUN_WORKFLOW_ID, "  Workflow ID:", (String) null);
 		userInput(input, Option.VRO_RUN_WORKFLOW_INPUT_FILE_PATH, "  Workflow Input File Path");
 		userInput(input, Option.VRO_RUN_WORKFLOW_OUTPUT_FILE, "  Workflow Output File Path");
-		userInput(input, Option.VRO_RUN_WORKFLOW_ERR_FILE, "  Workflow Error File Path", Option.VRO_RUN_WORKFLOW_OUTPUT_FILE + ".err");
+		userInput(input, Option.VRO_RUN_WORKFLOW_ERR_FILE, "  Workflow Error File Path",
+				Option.VRO_RUN_WORKFLOW_OUTPUT_FILE + ".err");
 		userInput(input, Option.VRO_RUN_WORKFLOW_TIMEOUT, "  Workflow Execution Timeout", VRO_RUN_WORKFLOW_TIMEOUT);
 	}
 
@@ -1312,11 +1368,13 @@ public final class Installer {
 		Validate.host(input.get(Option.VRA_SERVER), input.getText());
 		userInput(input, Option.VRA_PORT, "  vRA Port", HTTPS_PORT);
 		Validate.port(Integer.valueOf(input.get(Option.VRA_PORT)), input.getText());
-		Validate.hostAndPort(input.get(Option.VRA_SERVER), Integer.valueOf(input.get(Option.VRA_PORT)), input.getText());
+		Validate.hostAndPort(input.get(Option.VRA_SERVER), Integer.valueOf(input.get(Option.VRA_PORT)),
+				input.getText());
 		userInput(input, Option.VRA_TENANT, "  vRA Tenant", "vsphere.local");
 		userInput(input, Option.VRA_USERNAME, "  vRA Username@Domain", "configurationadmin@vsphere.local");
 		passInput(input, Option.VRA_PASSWORD, "  vRA Password");
 	}
+
 	private static void readVroEmbeddedInVrangProperties(final Input input, final boolean needCspHost) {
 		input.getText().getTextTerminal().println("vRealize Automation NG Configuration:");
 		userInput(input, Option.VRANG_SERVER, "  vRA FQDN:");
@@ -1324,7 +1382,8 @@ public final class Installer {
 
 		userInput(input, Option.VRANG_PORT, "  vRA Port", HTTPS_PORT);
 		Validate.port(Integer.valueOf(input.get(Option.VRANG_PORT)), input.getText());
-		Validate.hostAndPort(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)), input.getText());
+		Validate.hostAndPort(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)),
+				input.getText());
 
 		if (needCspHost) {
 			userInput(input, Option.VRANG_CSP_SERVER, "  Authentication CSP FQDN:", input.get(Option.VRANG_SERVER));
@@ -1332,21 +1391,28 @@ public final class Installer {
 		userInput(input, Option.VRANG_AUTH_WITH_REFRESH_TOKEN, "  Authenticate with refresh token?:", false);
 		if (input.allTrue(Option.VRANG_AUTH_WITH_REFRESH_TOKEN)) {
 			userInput(input, Option.VRANG_REFRESH_TOKEN, "    vRA Refresh Token");
-			Validate.token(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)), input.get(Option.VRANG_REFRESH_TOKEN), input.getText());
+			Validate.token(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)),
+					input.get(Option.VRANG_REFRESH_TOKEN), input.getText());
 		} else {
 			userInput(input, Option.VRANG_USERNAME, "    vRA Username");
 			passInput(input, Option.VRANG_PASSWORD, "    vRA Password");
-			Validate.vrang(needCspHost ? input.get(Option.VRANG_CSP_SERVER) : input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)),
+			Validate.vrang(needCspHost ? input.get(Option.VRANG_CSP_SERVER) : input.get(Option.VRANG_SERVER),
+					Integer.valueOf(input.get(Option.VRANG_PORT)),
 					input.get(Option.VRANG_USERNAME), input.get(Option.VRANG_PASSWORD), input.getText());
 		}
 	}
+
 	private static void readVrangProperties(final Input input) {
 		readVroEmbeddedInVrangProperties(input, true);
 		userInput(input, Option.VRANG_PROJECT_NAME, "  Project name");
-		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VRANG_PROJECT_NAME), input.getText());
-		userInput(input, Option.VRANG_PROJECT_ID, "  Project ID (Optional if you supplied project name)", validated.projectId);
-		userInput(input, Option.VRANG_ORGANIZATION_NAME, "  Organization Name (Optional if you supplied organization ID)", validated.org);
-		userInput(input, Option.VRANG_ORGANIZATION_ID, "  Organization ID (Optional if you supplied organization Name)", validated.orgId);
+		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VRANG_PROJECT_NAME),
+				input.getText());
+		userInput(input, Option.VRANG_PROJECT_ID, "  Project ID (Optional if you supplied project name)",
+				validated.projectId);
+		userInput(input, Option.VRANG_ORGANIZATION_NAME,
+				"  Organization Name (Optional if you supplied organization ID)", validated.org);
+		userInput(input, Option.VRANG_ORGANIZATION_ID, "  Organization ID (Optional if you supplied organization Name)",
+				validated.orgId);
 		userInput(input, Option.VRANG_PROXY_REQUIRED, "  Use proxy server for vRA? (Optional)", false);
 		if (input.allTrue(Option.VRANG_PROXY_REQUIRED)) {
 			userInput(input, Option.VRANG_PROXY, "    VRA proxy server");
@@ -1363,10 +1429,13 @@ public final class Installer {
 
 	private static void readVroImportProperties(final Input input) {
 		input.getText().getTextTerminal().println("vRealize Orchestrator Import Configuration:");
-		userInput(input, Option.SKIP_VRO_IMPORT_OLD_VERSIONS, "  Skip import of Packages where Filesystem.version < Server.version?", true);
+		userInput(input, Option.SKIP_VRO_IMPORT_OLD_VERSIONS,
+				"  Skip import of Packages where Filesystem.version < Server.version?", true);
 		input.put(Option.VRO_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VRO_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
-		userInput(input, Option.VRO_IMPORT_CONFIGURATION_ATTRIBUTE_VALUES, "  Import Configuration Elements Values?", false);
-		userInput(input, Option.VRO_IMPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES, "  Import Configuration Elements Secure String Values?", false);
+		userInput(input, Option.VRO_IMPORT_CONFIGURATION_ATTRIBUTE_VALUES, "  Import Configuration Elements Values?",
+				false);
+		userInput(input, Option.VRO_IMPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES,
+				"  Import Configuration Elements Secure String Values?", false);
 		userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "  Force import latest versions of packages?", false);
 	}
 
@@ -1381,8 +1450,10 @@ public final class Installer {
 		input.getText().getTextTerminal().println("vRealize Automation 8 Import Configuration:");
 		userInput(input, Option.VRANG_IMPORT_OVERWRITE_MODE, "  vRA8 Import Mode", "SKIP,OVERWRITE");
 		userInput(input, Option.VRANG_VRO_INTEGRATION_NAME, "  vRA8 integration name", "embedded-VRO");
-		userInput(input, Option.VRANG_IMPORT_TIMEOUT, "  vRA8 Import timeout", ConfigurationVraNg.DEFAULT_IMPORT_TIMEOUT);
-		userInput(input, Option.VRANG_DATA_COLLECTION_DELAY_SECONDS, "  vRA's vRO Data Collection delay in seconds.", VRANG_DATA_COLLECTION_DELAY_SECONDS);
+		userInput(input, Option.VRANG_IMPORT_TIMEOUT, "  vRA8 Import timeout",
+				ConfigurationVraNg.DEFAULT_IMPORT_TIMEOUT);
+		userInput(input, Option.VRANG_DATA_COLLECTION_DELAY_SECONDS, "  vRA's vRO Data Collection delay in seconds.",
+				VRANG_DATA_COLLECTION_DELAY_SECONDS);
 	}
 
 	private static void readCsImportProperties(final Input input) {
@@ -1440,7 +1511,8 @@ public final class Installer {
 	}
 
 	private static List<Package> getFilesystemPackages(final PackageType type) {
-		// We use app.repo instead of user.dir as result it returns the correct path to application directory
+		// We use app.repo instead of user.dir as result it returns the correct path to
+		// application directory
 		// even in the case when we run the installer outside the application directory
 		// https://www.mojohaus.org/appassembler/appassembler-maven-plugin/usage-script.html
 		File repoDir = new File(System.getProperty("app.repo"));
@@ -1454,7 +1526,8 @@ public final class Installer {
 			return new ArrayList<>();
 		}
 		if (!containerDir.isDirectory()) {
-			throw new RuntimeException(String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
+			throw new RuntimeException(
+					String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
 		}
 
 		List<File> packages = new ArrayList<>();
@@ -1471,7 +1544,9 @@ public final class Installer {
 		String wfInputFilePath = input.get(Option.VRO_RUN_WORKFLOW_INPUT_FILE_PATH);
 		String wfOutputFilePath = input.get(Option.VRO_RUN_WORKFLOW_OUTPUT_FILE);
 		String wfErrFilePath = input.get(Option.VRO_RUN_WORKFLOW_ERR_FILE);
-		wfErrFilePath = StringUtils.isEmpty(wfErrFilePath) && !StringUtils.isEmpty(wfOutputFilePath) ? wfOutputFilePath + ".err" : "workflow.err";
+		wfErrFilePath = StringUtils.isEmpty(wfErrFilePath) && !StringUtils.isEmpty(wfOutputFilePath)
+				? wfOutputFilePath + ".err"
+				: "workflow.err";
 		String wfTimeout = input.get(Option.VRO_RUN_WORKFLOW_TIMEOUT);
 
 		Properties wfInput = new Properties();
@@ -1487,8 +1562,10 @@ public final class Installer {
 			} else {
 				prefixes.add(ConfigurationPrefix.VRO.getValue());
 			}
-			RestClientVro client = RestClientFactory.getClientVro(ConfigurationVro.fromProperties(input.getMappings(prefixes.toArray(new String[0]))));
-			WorkflowExecution workflowExecutionResult = new VroWorkflowExecutor(client).executeWorkflow(wfID, wfInput, Integer.parseInt(wfTimeout));
+			RestClientVro client = RestClientFactory
+					.getClientVro(ConfigurationVro.fromProperties(input.getMappings(prefixes.toArray(new String[0]))));
+			WorkflowExecution workflowExecutionResult = new VroWorkflowExecutor(client).executeWorkflow(wfID, wfInput,
+					Integer.parseInt(wfTimeout));
 
 			JsonObject wfOutputJson = new JsonObject();
 			for (String key : workflowExecutionResult.getOutput().stringPropertyNames()) {
@@ -1499,21 +1576,28 @@ public final class Installer {
 			Files.write(Paths.get(wfOutputFilePath), gson.toJson(wfOutputJson).getBytes(), StandardOpenOption.CREATE);
 			// write the workflow error in a workflow error file (if any)
 			if (!StringUtils.isEmpty(workflowExecutionResult.getError())) {
-				Files.write(Paths.get(wfErrFilePath), workflowExecutionResult.getError().getBytes(), StandardOpenOption.CREATE);
+				Files.write(Paths.get(wfErrFilePath), workflowExecutionResult.getError().getBytes(),
+						StandardOpenOption.CREATE);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+			throw new RuntimeException(
+					"Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
 		} catch (JsonSyntaxException e) {
-			throw new RuntimeException("Unable to parse input / output file data: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+			throw new RuntimeException("Unable to parse input / output file data: " + e.getClass().getName() + " : "
+					+ e.getLocalizedMessage(), e);
 		} catch (WorkflowExecutionException e) {
 			try {
 				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(), StandardOpenOption.CREATE);
 			} catch (IOException e1) {
-				throw new RuntimeException("Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+				throw new RuntimeException(
+						"Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(),
+						e);
 			}
-			throw new RuntimeException("Workflow execution failed: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+			throw new RuntimeException(
+					"Workflow execution failed: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
 		} catch (Exception e) {
-			throw new RuntimeException("General error during workflow execution: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+			throw new RuntimeException("General error during workflow execution: " + e.getClass().getName() + " : "
+					+ e.getLocalizedMessage(), e);
 		}
 	}
 }

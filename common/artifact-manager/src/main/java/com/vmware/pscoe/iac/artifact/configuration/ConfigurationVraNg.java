@@ -42,6 +42,11 @@ public class ConfigurationVraNg extends Configuration {
 	 */
 	public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
 	/**
+	 * param DELETE_CONTENT. If this is set, the environment will be cleaned up
+	 * based on the content.yaml
+	 */
+	public static final String DELETE_CONTENT = "delete.content";
+	/**
 	 * param PROJECT_NAME.
 	 */
 	public static final String PROJECT_NAME = "project.name";
@@ -180,6 +185,13 @@ public class ConfigurationVraNg extends Configuration {
 	 */
 	public String getCloudProxyName() {
 		return this.properties.getProperty(CLOUD_PROXY_NAME);
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public boolean getDeleteContent() {
+		return Boolean.parseBoolean(this.properties.getProperty(DELETE_CONTENT, "false"));
 	}
 
 	/**

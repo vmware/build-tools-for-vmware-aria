@@ -44,6 +44,7 @@ import java.util.ArrayList;
  * the same
  */
 public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
+
 	// =================================================
 	// CATALOG ITEMS EXPORT
 	// =================================================
@@ -54,12 +55,13 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	 * Stores the forms under {{catalog_item_dir}}/forms
 	 *
 	 * @param serverPackage server package
-	 * @param catalogItem catalog item
+	 * @param catalogItem   catalog item
 	 *
 	 * @return VraNgCustomForm
 	 */
 	@Override
-	protected VraNgCustomForm storeCustomFormOnFileSystem(final Package serverPackage, final VraNgCatalogItem catalogItem) {
+	protected VraNgCustomForm storeCustomFormOnFileSystem(final Package serverPackage,
+			final VraNgCatalogItem catalogItem) {
 		logger.info(this.getClass().toString());
 		VraNgContentSourceBase contentSource = this.restClient.getContentSource(catalogItem.getSourceId());
 		if (contentSource == null) {
@@ -177,20 +179,22 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	// =================================================
 
 	/**
-	 * Import a custom form given the catalog item. 
+	 * Import a custom form given the catalog item.
 	 * ( form Id is extracted from the item and the fs is queried )
 	 *
-	 * @param catalogItem catalog item
+	 * @param catalogItem       catalog item
 	 * @param catalogItemFolder catalog item folder
 	 */
 	@Override
 	protected void importCustomForm(final VraNgCatalogItem catalogItem, final File catalogItemFolder) {
 		String formName = getName(catalogItem) + CUSTOM_RESOURCE_SUFFIX;
-		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX + CUSTOM_RESOURCE_SUFFIX;
+		String formDataName = getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX
+				+ CUSTOM_RESOURCE_SUFFIX;
 		File customFormFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formName).toFile();
 		File customFormDataFile = Paths.get(catalogItemFolder.getPath(), CUSTOM_FORMS_SUBDIR, formDataName).toFile();
 
-		logger.info("Importing custom form: '{}'' with type '{}'", customFormFile.getAbsolutePath(), catalogItem.getType());
+		logger.info("Importing custom form: '{}'' with type '{}'", customFormFile.getAbsolutePath(),
+				catalogItem.getType());
 		VraNgCustomForm customForm = this.jsonFileToVraCustomForm(customFormFile, customFormDataFile);
 		// wait 250 ms between each custom form import in order catalog item to be
 		// retrievable by the VRA REST API
@@ -207,7 +211,8 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 					}
 				}
 				String newFormName = catalogItem.getId() + CATALOG_ITEM_BLUEPRINT_VERSION_NAME_SEPARATOR + versionName;
-				String newSourceId = catalogItem.getId() + CATALOG_ITEM_BLUEPRINT_VERSION_SOURCE_ID_SEPARATOR + versionName;
+				String newSourceId = catalogItem.getId() + CATALOG_ITEM_BLUEPRINT_VERSION_SOURCE_ID_SEPARATOR
+						+ versionName;
 				// normalize here to accommodate < 8.12 to >=8.12
 				customForm.setSourceId(newSourceId);
 				customForm.setSourceType(BLUEPRINT_VERSION);
