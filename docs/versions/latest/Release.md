@@ -218,4 +218,6 @@ You don't need to migrate projects if they are `abx` based. `nodejs` is the corr
 
 ### *Polyglot projects using vro runtimes for abx projects need to be migrated*
 
-1. Take a look at the documentation for the available runtimes,
+1. Take a look at the documentation for the available runtimes
+2. Correctly set the `vro` runtime you want to use instead of the `abx`
+3. `nodejs`, `powershell` or `python` only
