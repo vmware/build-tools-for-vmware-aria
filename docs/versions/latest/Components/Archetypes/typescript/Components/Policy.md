@@ -44,6 +44,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
     name: "Policy Template Amqp",
     path: "MyOrg/MyProject",
     type: "AMQP:Subscription",
+    templateVersion: "v1"
 })
 export class PolicyTemplateAmqp {
     onMessage(self: AMQPSubscription, event: any) {
