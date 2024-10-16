@@ -102,7 +102,7 @@ The 'com.vmware.pscoe.o11n:exec' package is no longer missing when built. The er
 
 Added type definition for the `VcStorageQueryManager` class and it's related methods
 
-### Enabled System and Server level logging in the Run Script Workflow
+### Enable System and Server level logging in the Run Script Workflow
 
 The 'Run Script' XML Workflow in the 'exec' module is used by the 'vRealize Developer Tools' plugin to perform the 'Run vRo Action' command (accessible in VScode via the ... menu at the top-right corner of the editor for JS and TS files). The command is supported to run JS Actions - function closures without parameters or a return statement.
 
@@ -175,6 +175,23 @@ Example output with Vradev log level 'info' (notice the additional System debug 
 [2024-10-10 17:47:21.686 +0300] [system] [error] S.error printing something before error
 [2024-10-10 17:47:21.693 +0300] [system] [error] Error in (Workflow:Run Script / Scriptable task (item1)#24) Error: THIS IS THE ERROR!
 ```
+
+### Change `011n-plugin-vc` type declarations from interfaces to classes
+
+#### Previous Behavior
+
+Some vCenter plugin types were declared as interfaces which leads to TS transpilation errors:
+
+```log
+[INFO] Typescript transpilation started
+[INFO] src/workflows/TestWf.test.wf.ts:5:18 - error 'VcClusterComputeResource' only refers to a type, but is being used as a value here.
+[INFO] Found 1 errors.
+[INFO] Typescript transpilation finished
+```
+
+#### New Behavior
+
+All vCenter plugin types are now declared as classes instead of interfaces.
 
 ## Upgrade procedure
 
