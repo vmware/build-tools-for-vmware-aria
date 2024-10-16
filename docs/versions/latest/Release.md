@@ -98,6 +98,10 @@ The 'com.vmware.pscoe.o11n:exec' package was missing when building the build too
 
 The 'com.vmware.pscoe.o11n:exec' package is no longer missing when built. The error above no longer appears when running an Action via VRDT UI.
 
+### Add `VcStorageQueryManager` type definition
+
+Added type definition for the `VcStorageQueryManager` class and it's related methods
+
 ### Enabled System and Server level logging in the Run Script Workflow
 
 The 'Run Script' XML Workflow in the 'exec' module is used by the 'vRealize Developer Tools' plugin to perform the 'Run vRo Action' command (accessible in VScode via the ... menu at the top-right corner of the editor for JS and TS files). The command is supported to run JS Actions - function closures without parameters or a return statement.
