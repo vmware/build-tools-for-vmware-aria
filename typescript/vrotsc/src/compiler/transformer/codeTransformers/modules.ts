@@ -13,9 +13,9 @@
  * #L%
  */
 import * as ts from "typescript";
-import { ScriptTransformationContext, HierarchyFacts, FileType } from "../../../types";
+import { ScriptTransformationContext, HierarchyFacts } from "../../../types";
 import { NodeVisitor } from "../../visitor";
-import { SCRIPT_HELPER_MODULE, SCRIPT_VROES_VAR, SCRIPT_LAZY_IMPORT_NAME, SCRIPT_VRO_GLOBAL, SCRIPT_VROES_CACHE, SCRIPT_VRO_MODULE_PACKAGE, SCRIPT_VROES_MODULE } from "../helpers/VROES";
+import { SCRIPT_HELPER_MODULE, SCRIPT_VROES_VAR, SCRIPT_LAZY_IMPORT_NAME, SCRIPT_VRO_GLOBAL } from "../helpers/VROES";
 import { getIdentifierTextOrNull, hasModifier, isRequireCall, getStringTextOrNull } from "../helpers/node";
 import { system } from "../../../system/system";
 import { createModulePrologueStatements } from "./prologueStatements";
@@ -47,7 +47,7 @@ function createClosure(parent?: Closure): Closure {
 	const identifiers: Record<string, ClosureIdentifierType> = {};
 	const closure: Closure = {
 		parent,
-		getIdentifier: function (name: string): ClosureIdentifierType {
+		getIdentifier: function(name: string): ClosureIdentifierType {
 			if (name !== undefined && name !== null) {
 				let type = identifiers[name];
 				if (type === undefined && parent) {
@@ -56,12 +56,12 @@ function createClosure(parent?: Closure): Closure {
 				return type;
 			}
 		},
-		addIdentifier: function (name: string, type: ClosureIdentifierType): void {
+		addIdentifier: function(name: string, type: ClosureIdentifierType): void {
 			if (name !== undefined && name !== null) {
 				identifiers[name] = type;
 			}
 		},
-		newClosure: function (): Closure {
+		newClosure: function(): Closure {
 			return createClosure(closure);
 		}
 	};
