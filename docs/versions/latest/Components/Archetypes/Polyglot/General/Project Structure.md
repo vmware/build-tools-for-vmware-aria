@@ -55,7 +55,7 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
 
 ##### `runtime`
 
-###### VRO:
+###### VRO
 
 - `node:12`
 - `node:14`
@@ -69,7 +69,7 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
 - `python:3.7`
 - `python:3.10`
 
-###### ABX:
+###### ABX
 
 - `nodejs`
 - `powershell`
