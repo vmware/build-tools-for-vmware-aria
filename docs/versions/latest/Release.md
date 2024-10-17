@@ -191,7 +191,7 @@ Some vCenter plugin types were declared as interfaces which leads to TS transpil
 
 #### New Behavior
 
-All vCenter plugin types are now declared as classes instead of interfaces.
+All vCenter plugin types are now declared as classes instead of interfaces. Private constructors are added to all of them. `readonly` access modifier is added to `sdkConnection` property in class definitions where it was not provided and defined as `Read-only` in API Explorer.
 
 ## Upgrade procedure
 
