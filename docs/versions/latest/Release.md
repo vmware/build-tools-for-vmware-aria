@@ -201,19 +201,19 @@ A lot of type definitions had duplicate constructors,e.g.:
 
 ```typescript
 declare class VcHostDigestInfo {
-	dynamicProperty: VcDynamicProperty[];
-	digestValue: number[];
-	digestMethod: string;
-	objectName: string;
-	dynamicType: string;
-	constructor();
-	constructor();
-	/**
-	 * @param digestMethod 
-	 * @param digestValue 
-	 * @param objectName 
-	 */
-	constructor(digestMethod: string, digestValue: number[], objectName: string);
+ dynamicProperty: VcDynamicProperty[];
+ digestValue: number[];
+ digestMethod: string;
+ objectName: string;
+ dynamicType: string;
+ constructor();
+ constructor();
+ /**
+  * @param digestMethod 
+  * @param digestValue 
+  * @param objectName 
+ */
+ constructor(digestMethod: string, digestValue: number[], objectName: string);
 }
 ```
 
