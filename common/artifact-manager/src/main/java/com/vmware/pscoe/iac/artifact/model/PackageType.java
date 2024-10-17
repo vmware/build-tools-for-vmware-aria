@@ -15,10 +15,9 @@
 package com.vmware.pscoe.iac.artifact.model;
 
 public enum PackageType {
-	VRO("package", "vro"), 
-	VRA("vra", "vra"), 
-	VRANG("vra-ng", "vra-ng"), 
-	VCDNG("vcd-ng", "vcd-ng"), 
+	VRO("package", "vro"),
+	VRANG("vra-ng", "vra-ng"),
+	VCDNG("vcd-ng", "vcd-ng"),
 	VROPS("vrops", "vrops"),
 	VRLI("vrli", "vrli"),
 	ABX("abx", "abx"),
@@ -27,7 +26,6 @@ public enum PackageType {
 
 	private final String packageContainer;
 	private final String packageExtension;
-	
 
 	PackageType(String packageExtension, String packageContainer) {
 		this.packageContainer = packageContainer;

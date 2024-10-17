@@ -15,8 +15,17 @@
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 
-[//]: # (Features -> New Functionality)
+### *Deprecation of vRA 7 archetype*
 
+The vRA 7 Archetype and all related plugins/mojos/code is removed. As vRA 7 is Out Of Support, we won't manage it anymore.
+
+The suggested alternative is to use version 2.43.0 of the toolchain. That is the last version that will support vRA7
+
+### *Deprecation of vRA 7 types*
+
+The `o11n-plugin-vcac` and `o11n-plugin-vcacafe` types are also removed.
+
+[//]: # (Features -> New Functionality)
 ## Features
 
 [//]: # (### *Feature Name*)

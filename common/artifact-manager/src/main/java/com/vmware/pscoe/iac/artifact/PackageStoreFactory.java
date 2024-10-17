@@ -27,16 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.cli.CliManagerFactory;
 import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
-import com.vmware.pscoe.iac.artifact.extentions.PackageStoreExtention;
-import com.vmware.pscoe.iac.artifact.extentions.VraCatalogItemPackageStoreExtention;
-import com.vmware.pscoe.iac.artifact.extentions.VraCustomFormPackageStoreExtention;
-import com.vmware.pscoe.iac.artifact.extentions.VraGlobalPropertyDefinitionPackageStoreExtention;
-import com.vmware.pscoe.iac.artifact.extentions.VraGlobalPropertyGroupPackageStoreExtention;
-import com.vmware.pscoe.iac.artifact.extentions.VraIconPackageStoreExtention;
-import com.vmware.pscoe.iac.artifact.extentions.VraSubscriptionPackageStoreExtention;
 import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.model.vra.VraPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.vro.VroPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategyForceLatestVersions;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
@@ -55,13 +46,14 @@ public final class PackageStoreFactory {
 	/**
 	 * Logger instance.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(VraPackageStore.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PackageStoreFactory.class);
 
 	/**
 	 * Regarding the strategies, the following rules apply.
 	 * 
-	 * - If forceImportLatestVersions is set, the StrategyForceLatestVersions is used
-	 *   and the importOldVersions flag is ignored.
+	 * - If forceImportLatestVersions is set, the StrategyForceLatestVersions is
+	 * used
+	 * and the importOldVersions flag is ignored.
 	 *
 	 * @param configuration The configuration object.
 	 * @param <T>           The configuration type.
@@ -73,9 +65,10 @@ public final class PackageStoreFactory {
 
 		String version;
 
-		// @TODO: You should be able to select a strategy to use, this doesn't make much sense,
-		//   but we have no choice since we want to be backward compatible
-		if (configuration.isForceImportLatestVersions()) { 
+		// @TODO: You should be able to select a strategy to use, this doesn't make much
+		// sense,
+		// but we have no choice since we want to be backward compatible
+		if (configuration.isForceImportLatestVersions()) {
 			LOGGER.info("Using StrategyForceLatestVersions");
 			strategies.add(new StrategyForceLatestVersions());
 		} else if (!configuration.isImportOldVersions()) {
@@ -89,10 +82,8 @@ public final class PackageStoreFactory {
 			RestClientVro restClient = RestClientFactory.getClientVroNg(config);
 			version = restClient.getVersion();
 			LOGGER.info("Detecting vRO Server version '{}'.", version);
-			List<PackageStoreExtention<VroPackageDescriptor>> extentions = new ArrayList<>();
-			extentions.addAll(loadVroExtensions(version, config, restClient));
 
-			return new VroPackageStore(restClient, strategies, extentions, new Version(version));
+			return new VroPackageStore(restClient, strategies, new Version(version));
 		}
 
 		if (configuration instanceof ConfigurationVro) {
@@ -101,22 +92,8 @@ public final class PackageStoreFactory {
 			RestClientVro restClient = RestClientFactory.getClientVro(config);
 			version = restClient.getVersion();
 			LOGGER.info("Detecting vRO Server version '{}'.", version);
-			List<PackageStoreExtention<VroPackageDescriptor>> extentions = new ArrayList<>();
-			extentions.addAll(loadVroExtensions(version, config, restClient));
 
-			return new VroPackageStore(restClient, strategies, extentions, new Version(version));
-		}
-
-		if (configuration instanceof ConfigurationVra) {
-			LOGGER.info("Detected ConfigurationVra");
-			ConfigurationVra config = (ConfigurationVra) configuration;
-			RestClientVra restClient = RestClientFactory.getClientVra(config);
-			version = restClient.getVersion();
-			LOGGER.info("Detecting vRA Server version '{}'.", version);
-			List<PackageStoreExtention<VraPackageDescriptor>> extentions = new ArrayList<>();
-			extentions.addAll(loadVraExtensions(version, config, restClient));
-
-			return new VraPackageStore(restClient, strategies, extentions, new Version(version));
+			return new VroPackageStore(restClient, strategies, new Version(version));
 		}
 
 		if (configuration instanceof ConfigurationAbx) {
@@ -198,27 +175,4 @@ public final class PackageStoreFactory {
 		throw new RuntimeException(
 				"There is no PackageStore defined for Configuration Type " + configuration.getClass().getSimpleName());
 	}
-
-	private static List<PackageStoreExtention<VraPackageDescriptor>> loadVraExtensions(String vraVersion,
-			ConfigurationVra config, RestClientVra client) {
-		List<PackageStoreExtention<VraPackageDescriptor>> extentions = new ArrayList<>();
-
-		if (new Version(vraVersion).compareTo(new Version("7.4-SNAPSHOT")) >= 0) {
-			extentions.add(new VraCustomFormPackageStoreExtention(client));
-		}
-		extentions.add(new VraSubscriptionPackageStoreExtention(client));
-		extentions.add(new VraGlobalPropertyDefinitionPackageStoreExtention(client));
-		extentions.add(new VraGlobalPropertyGroupPackageStoreExtention(client));
-		extentions.add(new VraIconPackageStoreExtention(client));
-		extentions.add(new VraCatalogItemPackageStoreExtention(client));
-
-		return extentions;
-	}
-
-	private static List<PackageStoreExtention<VroPackageDescriptor>> loadVroExtensions(String vroVersion,
-			ConfigurationNg config, RestClientVro client) {
-		// No vRO extensions for now
-		return new ArrayList<>();
-	}
-
 }

@@ -1,7 +1,0 @@
-name: "Demo-0.0.2"
-productVersion: "7.3.0-SNAPSHOT"
-data:
-- locator: "composite-blueprint/yvm.yaml"
-  name: "yvm"
-  description: "yvm"
-exportTime: "2018-02-06T13:55:21.257Z"
