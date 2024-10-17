@@ -1,6 +1,4 @@
 
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -15,6 +13,7 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -27,73 +26,125 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * VraNgWorkflow is a model class.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "name", "version", "integration" })
-public class VraNgWorkflow implements Serializable {
-    private static final long serialVersionUID = 2298605860128696224L;
+public class VraNgWorkflow implements Serializable, Identifiable {
+	/**
+	 * @param serialVersionUID default serial version id
+	 */
+	private static final long serialVersionUID = 2298605860128696224L;
 
-    @JsonProperty("id")
-    private String id;
+	/**
+	 * default id.
+	 */
+	@JsonProperty("id")
+	private String id;
 
-    @JsonProperty("name")
-    private String name;
+	/**
+	 * default name.
+	 */
+	@JsonProperty("name")
+	private String name;
 
-    @JsonProperty("version")
-    private String version;
+	/**
+	 * default version.
+	 */
+	@JsonProperty("version")
+	private String version;
 
-    @JsonProperty("integration")
-    private VraNgIntegration integration;
+	/**
+	 * default integration.
+	 */
+	@JsonProperty("integration")
+	private VraNgIntegration integration;
 
-    @JsonIgnore
-    private transient Map<String, Object> additionalProperties = new HashMap<>();
+	/**
+	 * default additionalProperties.
+	 */
+	@JsonIgnore
+	private transient Map<String, Object> additionalProperties = new HashMap<>();
 
-    @JsonProperty("id")
-    public String getId() {
-        return id;
-    }
+	/**
+	 * @return id the id
+	 */
+	@JsonProperty("id")
+	public String getId() {
+		return id;
+	}
 
-    @JsonProperty("id")
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	@JsonProperty("id")
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    @JsonProperty("name")
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @return name
+	 */
+	@JsonProperty("name")
+	public String getName() {
+		return name;
+	}
 
-    @JsonProperty("name")
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @param name the name to set
+	 */
+	@JsonProperty("name")
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    @JsonProperty("version")
-    public String getVersion() {
-        return version;
-    }
+	/**
+	 * @return version
+	 */
+	@JsonProperty("version")
+	public String getVersion() {
+		return version;
+	}
 
-    @JsonProperty("version")
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	/**
+	 * @param version the version to set
+	 */
+	@JsonProperty("version")
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-    @JsonProperty("integration")
-    public VraNgIntegration getIntegration() {
-        return integration;
-    }
+	/**
+	 * @return integration
+	 */
+	@JsonProperty("integration")
+	public VraNgIntegration getIntegration() {
+		return integration;
+	}
 
-    @JsonProperty("integration")
-    public void setIntegration(VraNgIntegration integration) {
-        this.integration = integration;
-    }
+	/**
+	 * @param integration the integration to set
+	 */
+	@JsonProperty("integration")
+	public void setIntegration(VraNgIntegration integration) {
+		this.integration = integration;
+	}
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
+	/**
+	 * @return additionalProperties
+	 */
+	@JsonAnyGetter
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+	/**
+	 * @param name  the name
+	 * @param value the value
+	 */
+	@JsonAnySetter
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
 }

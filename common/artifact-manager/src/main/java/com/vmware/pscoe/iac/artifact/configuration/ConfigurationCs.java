@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.configuration;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.configuration;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.configuration;
 
 import java.util.Properties;
 
@@ -21,13 +20,13 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationCs extends ConfigurationVraNg {
 
-    private ConfigurationCs(Properties props) {
-        super(PackageType.CS, props);
-    }
+	private ConfigurationCs(Properties props) {
+		super(PackageType.CS, props);
+	}
 
-    public static ConfigurationCs fromProperties(Properties props) throws ConfigurationException {
-        ConfigurationCs config = new ConfigurationCs(props);
-        config.validate(false);
-        return config;
-    }
+	public static ConfigurationCs fromProperties(Properties props) throws ConfigurationException {
+		ConfigurationCs config = new ConfigurationCs(props);
+		config.validate(false);
+		return config;
+	}
 }

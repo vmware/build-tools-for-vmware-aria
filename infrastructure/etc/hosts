@@ -1,6 +1,0 @@
-# vRA IaaC START SECTION
-127.0.0.1       infra.corp.local
-172.18.0.11     gitlab.corp.local
-172.18.0.12     gitlab-runner.corp.local
-172.18.0.13     artifactory.corp.local
-# vRA IaaC END SECTION

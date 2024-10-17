@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +65,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	 */
 	@Override
 	public void init(final RestClientVraNg restClient, final Package vraNgPackage, final ConfigurationVraNg config,
-					final VraNgPackageDescriptor vraNgPackageDescriptor) {
+			final VraNgPackageDescriptor vraNgPackageDescriptor) {
 		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 		this.currentOrganizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 	}
@@ -80,9 +79,30 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	 */
 	@Override
 	public void init(final RestClientVraNg restClient, final Package vraNgPackage, final ConfigurationVraNg config,
-					 final VraNgPackageDescriptor vraNgPackageDescriptor, final Logger logger) {
+			final VraNgPackageDescriptor vraNgPackageDescriptor, final Logger logger) {
 		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor, logger);
 		this.currentOrganizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
+	}
+
+	/**
+	 * Gets all the custom resources from the server.
+	 *
+	 * @return {List} of all custom resources on the server
+	 */
+	protected List<VraNgCustomResource> getAllServerContents() {
+		return this.restClient.getAllCustomResources().values().stream().collect(Collectors.toList());
+	}
+
+	/**
+	 * Deletes a custom resource by its ID.
+	 *
+	 * NOTE: The `deleteCustomResource` asks for both the name and the id, however
+	 * the name is used only for logging
+	 *
+	 * @param resId - The resource ID to delete
+	 */
+	protected void deleteResourceById(String resId) {
+		this.restClient.deleteCustomResource(resId, resId);
 	}
 
 	/**
@@ -104,10 +124,9 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 		for (String customResourceId : customResourcesOnServer.keySet()) {
 			storeCustomResourceOnFilesystem(
-				vraNgPackage,
-				customResourcesOnServer.get(customResourceId).getName(),
-				customResourcesOnServer.get(customResourceId).getJson()
-			);
+					vraNgPackage,
+					customResourcesOnServer.get(customResourceId).getName(),
+					customResourcesOnServer.get(customResourceId).getJson());
 		}
 	}
 
@@ -119,23 +138,22 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	@Override
 	protected void exportStoreContent(final List<String> customResourcesToExport) {
 		Map<String, VraNgCustomResource> customResourcesOnServer = this.restClient.getAllCustomResources();
-		Set<VraNgCustomResource> serverCustomResources =
-			customResourcesOnServer.values().stream().collect(Collectors.toSet());
+		Set<VraNgCustomResource> serverCustomResources = customResourcesOnServer.values().stream()
+				.collect(Collectors.toSet());
 
 		customResourcesToExport.forEach(customResourceName -> {
 			VraNgCustomResource customResource = serverCustomResources.stream()
-				.filter(cr -> customResourceName.equals(cr.getName()))
-				.findAny()
-				.orElse(null);
+					.filter(cr -> customResourceName.equals(cr.getName()))
+					.findAny()
+					.orElse(null);
 			if (customResource == null) {
 				throw new IllegalStateException(
-					String.format("Custom Resource [%s] not found on the server.", customResourceName));
+						String.format("Custom Resource [%s] not found on the server.", customResourceName));
 			}
 			storeCustomResourceOnFilesystem(
-				vraNgPackage,
-				customResourceName,
-				customResource.getJson()
-			);
+					vraNgPackage,
+					customResourceName,
+					customResource.getJson());
 		});
 	}
 
@@ -149,7 +167,8 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 			return;
 		}
 		// Check if there are any blueprints to import
-		File[] localList = this.filterBasedOnConfiguration(customResourcesFolder, new CustomFolderFileFilter(this.getItemListFromDescriptor()));
+		File[] localList = this.filterBasedOnConfiguration(customResourcesFolder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 		if (localList == null || localList.length == 0) {
 			logger.info("No Custom Resource available - skip import");
 			return;
@@ -171,7 +190,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	 * @return custom resource file
 	 */
 	private File storeCustomResourceOnFilesystem(final Package vraNgPackage, final String customResourceName,
-												 final String customResourceJson) {
+			final String customResourceJson) {
 		File store = new File(vraNgPackage.getFilesystemPath());
 		File customResource = Paths.get(store.getPath(), DIR_CUSTOM_RESOURCES, customResourceName + ".json").toFile();
 		customResource.getParentFile().mkdirs();
@@ -184,13 +203,13 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 			customResourceJsonElement.remove("id");
 			logger.info("Custom Resource ID is removed. "
-				+ "Note that Custom Resource binding relies on Resource Type to "
-				+ "prevent unintentional deletitions in multi-tenant environments. "
-				+ "ID is a unique identifier for the entire vRA, not dependant on the tenant.");
+					+ "Note that Custom Resource binding relies on Resource Type to "
+					+ "prevent unintentional deletitions in multi-tenant environments. "
+					+ "ID is a unique identifier for the entire vRA, not dependant on the tenant.");
 
 			final String customResourceJsonString = gson.toJson(customResourceJsonElement);
 			logger.info("Created file {}", Files.write(Paths.get(customResource.getPath()),
-				customResourceJsonString.getBytes(), StandardOpenOption.CREATE));
+					customResourceJsonString.getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store custom resource {} {}", customResourceName, customResource.getPath());
 			throw new RuntimeException("Unable to store custom resource.", e);
@@ -201,9 +220,12 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 	/**
 	 * Import custom resource from a file.
-	 * In case custom resource with the same resource type already exists in the organization,
-	 * the same is deleted prior the import. Custom resource ID is removed to prevent the deletition
-	 * of existing custom resource with matching ID in another tenant in multi-tenant environments.
+	 * In case custom resource with the same resource type already exists in the
+	 * organization,
+	 * the same is deleted prior the import. Custom resource ID is removed to
+	 * prevent the deletition
+	 * of existing custom resource with matching ID in another tenant in
+	 * multi-tenant environments.
 	 *
 	 * @param jsonFile file of the resource action
 	 */
@@ -237,13 +259,13 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 			// There can only be just one custom resource of a given resource type.
 			if (existingObjectId != null) {
 				logger.info("Custom resource '{}' already exists and has ID '{}'", customResourceName,
-					existingObjectId);
+						existingObjectId);
 				logger.info("Trying to delete custom resource '{}' first.", customResourceName);
 				if (!tryDeleteCustomResource(customResourceName, existingObjectId, customResourceJsonElement)) {
 					couldNotDeleteCustomResource = true;
 					logger.error("Failed to update Custom Resource '{}'. "
 							+ "Could not delete the existing custom resource due to active deployments. ",
-						customResourceName);
+							customResourceName);
 					logger.warn("Will attempt to update Custom Resource '{}'", customResourceName);
 				}
 			}
@@ -253,9 +275,9 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 			JsonElement idElement = customResourceJsonElement.get("id");
 			if (idElement != null && idElement.isJsonPrimitive()) {
 				logger.warn("Provided Custom Resource ID is removed before import execution. "
-					+ "Custom Resource binding relies on Resource Type instead. "
-					+ "This is required due to the risk of unintentional deletition of Custom Resources "
-					+ "with matching IDs in multi-tenant environments.");
+						+ "Custom Resource binding relies on Resource Type instead. "
+						+ "This is required due to the risk of unintentional deletition of Custom Resources "
+						+ "with matching IDs in multi-tenant environments.");
 				customResourceJsonElement.remove("id");
 			}
 
@@ -279,12 +301,12 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 						+ "available in the whole vRA (one can use it in cloud template canvas regardless of organization), still it can be listed, updated or "
 						+ "deleted only from the organization it was created in. Please make sure the correct version of Custom Resource is already in place or "
 						+ "ask the administrator to delete it and then repeat the import. Original Error Message: %s",
-					customResourceName, resourceType, clientException.getMessage()));
+						customResourceName, resourceType, clientException.getMessage()));
 				return;
 			}
 
 			String message = String.format("Could not import custom resource with name '%s' : %s", customResourceName,
-				clientException.getMessage());
+					clientException.getMessage());
 			throw new RuntimeException(message, clientException);
 		} catch (ConfigurationException e) {
 			logger.error("Error importing custom resource {}...", customResourceName);
@@ -307,26 +329,25 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 				JsonObject actionJson = action.getAsJsonObject();
 				String name = actionJson.get("name").getAsString();
 				Pattern pattern = Pattern.compile("[^a-zA-Z0-9:\\-_.]");
-        		Matcher matcher = pattern.matcher(name);
+				Matcher matcher = pattern.matcher(name);
 
-				if (
-					matcher.find()
+				if (matcher.find()
 						|| name.startsWith("_")
 						|| name.endsWith("_")
 						|| name.startsWith(".")
 						|| name.endsWith(".")
-						|| name.contains(" ")
-				) {
-					throw new RuntimeException(String.format("Action's name: '%s' must not contain special symbols except . : -" 
-						+ "_and must not start or end with a dot or '_' and must not contain spaces.", name)
-					);
+						|| name.contains(" ")) {
+					throw new RuntimeException(String.format(
+							"Action's name: '%s' must not contain special symbols except . : -"
+									+ "_and must not start or end with a dot or '_' and must not contain spaces.",
+							name));
 				}
 			}
 		});
 	}
 
 	private boolean tryDeleteCustomResource(final String customResourceName, final String existingObjectId,
-											final JsonObject customResourceJsonElement) {
+			final JsonObject customResourceJsonElement) {
 		try {
 			restClient.deleteCustomResource(customResourceName, existingObjectId);
 			customResourceJsonElement.remove("id");
@@ -334,8 +355,9 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		} catch (HttpClientErrorException ex) {
 			if (isCustomResourceActiveAttached(ex)) {
 				// Do warn the user, but don't fail.
-				logger.debug("Cannot delete Custom Resource '{}', due to active deployments. Original Error Message: {}",
-					customResourceName, ex.getMessage());
+				logger.debug(
+						"Cannot delete Custom Resource '{}', due to active deployments. Original Error Message: {}",
+						customResourceName, ex.getMessage());
 				return false;
 			} else {
 				throw ex;
@@ -356,29 +378,31 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 			final JsonObject customResourceObject = gson.fromJson(json, JsonObject.class);
 			JsonElement resourceTypeElement = customResourceObject.get("resourceType");
 			if (resourceTypeElement != null && resourceTypeElement.isJsonPrimitive()
-				&& type.equals(resourceTypeElement.getAsString())) {
+					&& type.equals(resourceTypeElement.getAsString())) {
 				return id;
 			}
 		}
 		return null;
 	}
 
-	private static boolean isCustomResourceExistingInDifferentOrganization(final HttpClientErrorException clientException) {
-		HttpStatus status = clientException.getStatusCode();
+	private static boolean isCustomResourceExistingInDifferentOrganization(
+			final HttpClientErrorException clientException) {
+		HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
 		final String magicMessage = "Custom resource with the same resource type already exists! Use a different resource type name!";
 		String message = clientException.getMessage();
 		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
 	}
 
 	private static boolean isCustomResourceActiveAttached(final HttpClientErrorException clientException) {
-		HttpStatus status = clientException.getStatusCode();
+		HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
 		final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
 		String message = clientException.getMessage();
 		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
 	}
 
 	/**
-	 * In vRA versions 8.8.x+ the tenant needs to be present in the formDefinition, otherwise the import will fail.
+	 * In vRA versions 8.8.x+ the tenant needs to be present in the formDefinition,
+	 * otherwise the import will fail.
 	 *
 	 * @param customResourceJsonElement - The CR to update
 	 */
@@ -391,7 +415,8 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		// Remove foreach additional action the organization id and the
 		// formDefinition.id property
 
-		// Replace the tenant property in the formDefinition with the correct one from the configuration
+		// Replace the tenant property in the formDefinition with the correct one from
+		// the configuration
 		JsonArray additionalActionsArray = customResourceJsonElement.get("additionalActions").getAsJsonArray();
 		additionalActionsArray.forEach(action -> {
 			if (action != null) {
@@ -410,7 +435,9 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Fixes the organization id / tenant id in the given object with the one set in the configuration.
+	 * Fixes the organization id / tenant id in the given object with the one set in
+	 * the configuration.
+	 * 
 	 * @param jsonObject
 	 * @param key
 	 */
@@ -432,7 +459,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		JsonElement additionalActions = customResourceJsonElement.get("additionalActions");
 
 		// Iterate through the main actions and update endpointLink
-		for (String mainAct : new String[]{"create", "update", "delete"}) {
+		for (String mainAct : new String[] { "create", "update", "delete" }) {
 			if (mainActions.getAsJsonObject(mainAct) != null) {
 				mainActions.getAsJsonObject(mainAct).remove(endpointLinkName);
 				mainActions.getAsJsonObject(mainAct).addProperty(endpointLinkName, endpointLink);

@@ -1,7 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
-import com.google.gson.JsonArray;
-
 /*
  * #%L
  * artifact-manager
@@ -16,6 +12,9 @@ import com.google.gson.JsonArray;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
+
+import com.google.gson.JsonArray;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
@@ -497,9 +496,9 @@ public class VraNgCatalogItemStoreTest {
 
 		String[] expectedFormNames			= {
 			"contentSourceNameOne__catalogItemOne.json",
-	        "contentSourceNameOne__catalogItemOne__FormData.json",
+			"contentSourceNameOne__catalogItemOne__FormData.json",
 			"contentSourceNameOne__catalogItemTwo.json",
-	        "contentSourceNameOne__catalogItemTwo__FormData.json",
+			"contentSourceNameOne__catalogItemTwo__FormData.json",
 		};
 
 		String[] expectedIconNames			= {
@@ -635,9 +634,9 @@ public class VraNgCatalogItemStoreTest {
 
 		String[] expectedFormNames			= {
 			"contentSourceNameOne__catalogItemOne.json",
-            "contentSourceNameOne__catalogItemOne__FormData.json",
+			"contentSourceNameOne__catalogItemOne__FormData.json",
 			"contentSourceNameOne__catalogItemTwo.json",
-            "contentSourceNameOne__catalogItemTwo__FormData.json"
+			"contentSourceNameOne__catalogItemTwo__FormData.json"
 		};
 
 		String[] expectedIconNames			= {
@@ -907,9 +906,9 @@ public class VraNgCatalogItemStoreTest {
 		verify( restClient, times( 1 ) ).uploadIcon( any() );
 	}
 
-    @Test
-    void testImportContentWithoutAnIconAndWithForms() {
-        // GIVEN
+	@Test
+	void testImportContentWithoutAnIconAndWithForms() {
+		// GIVEN
 		List<String> mockCatalogItemNames = new ArrayList<>();
 		mockCatalogItemNames.add("contentSourceNameOne__catalogItemOne");
 		when(vraNgPackageDescriptor.getCatalogItem()).thenReturn(mockCatalogItemNames);
@@ -917,22 +916,22 @@ public class VraNgCatalogItemStoreTest {
 		CatalogItemMockBuilder catalogBuilderOne = new CatalogItemMockBuilder( "catalogItemOne", "contentSourceNameOne" );
 		VraNgCatalogItem catalogItem = catalogBuilderOne.setCustomFormId("formId").build();
 
-        List<VraNgCatalogItem> mockedCatalogItems = new ArrayList<>();
-        mockedCatalogItems.add( catalogItem );
+		List<VraNgCatalogItem> mockedCatalogItems = new ArrayList<>();
+		mockedCatalogItems.add( catalogItem );
 
-        fsMocks.catalogItemFsMocks().addCatalogItem( catalogItem );
-        fsMocks.catalogItemFsMocks().addCatalogItemForm( catalogItem );
-        when( restClient.getCatalogItemByBlueprintName( anyString() ) ).thenReturn( catalogItem );
-        when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
-        when( restClient.getCatalogItemsForProject( PROJECT_ID ) ).thenReturn( mockedCatalogItems );
-        doNothing().when( restClient ).importCustomForm( any(), anyString() );
+		fsMocks.catalogItemFsMocks().addCatalogItem( catalogItem );
+		fsMocks.catalogItemFsMocks().addCatalogItemForm( catalogItem );
+		when( restClient.getCatalogItemByBlueprintName( anyString() ) ).thenReturn( catalogItem );
+		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
+		when( restClient.getCatalogItemsForProject( PROJECT_ID ) ).thenReturn( mockedCatalogItems );
+		doNothing().when( restClient ).importCustomForm( any(), anyString() );
 
-        // START TEST
-        store.importContent( tempFolder.getRoot() );
+		// START TEST
+		store.importContent( tempFolder.getRoot() );
 
-        // VERIFY
-        verify( restClient, times( 1 ) ).importCustomForm( any(), anyString() );
-    }
+		// VERIFY
+		verify( restClient, times( 1 ) ).importCustomForm( any(), anyString() );
+	}
 
 	@Test
 	void testImportContentWithAnIconAndFormsWithVraAbove812() {

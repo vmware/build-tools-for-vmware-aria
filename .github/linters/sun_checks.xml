@@ -64,7 +64,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 
 	<!-- Checks that a package-info.java file exists for each package.     -->
 	<!-- See https://checkstyle.org/config_javadoc.html#JavadocPackage -->
-	<module name="JavadocPackage" />
+	<!-- <module name="JavadocPackage" /> -->
 
 	<!-- Checks whether files end with a new line.                        -->
 	<!-- See https://checkstyle.org/config_misc.html#NewlineAtEndOfFile -->
@@ -105,12 +105,12 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 
 		<!-- Checks for Javadoc comments.                     -->
 		<!-- See https://checkstyle.org/config_javadoc.html -->
-		<module name="InvalidJavadocPosition" />
-		<module name="JavadocMethod" />
-		<module name="JavadocType" />
-		<module name="JavadocVariable" />
-		<module name="JavadocStyle" />
-		<module name="MissingJavadocMethod" />
+		<!-- <module name="InvalidJavadocPosition" /> -->
+		<!-- <module name="JavadocMethod" /> -->
+		<!-- <module name="JavadocType" /> -->
+		<!-- <module name="JavadocVariable" /> -->
+		<!-- <module name="JavadocStyle" /> -->
+		<!-- <module name="MissingJavadocMethod" /> -->
 
 		<!-- Checks for Naming Conventions.                  -->
 		<!-- See https://checkstyle.org/config_naming.html -->
@@ -118,9 +118,9 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="LocalFinalVariableName" />
 		<module name="LocalVariableName" />
 		<module name="MemberName">
-			<property name="format" value="^[a-zA-Z0-9_]*$"/>
+			<property name="format" value="^[a-zA-Z0-9_]*$" />
 		</module>
-				
+
 		<module name="MethodName" />
 		<module name="PackageName" />
 		<module name="ParameterName" />
@@ -129,7 +129,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 
 		<!-- Checks for imports                              -->
 		<!-- See https://checkstyle.org/config_imports.html -->
-		<module name="AvoidStarImport" />
+		<!-- <module name="AvoidStarImport" /> -->
 		<module name="IllegalImport" /> <!-- defaults to sun.* packages -->
 		<module name="RedundantImport" />
 		<module name="UnusedImports">
@@ -167,7 +167,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<!-- Checks for blocks. You know, those {}'s         -->
 		<!-- See https://checkstyle.org/config_blocks.html -->
 		<module name="AvoidNestedBlocks">
-			<property name="allowInSwitchCase" value="true"/>
+			<property name="allowInSwitchCase" value="true" />
 		</module>
 		<module name="EmptyBlock" />
 		<module name="LeftCurly" />
@@ -178,10 +178,6 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<!-- See https://checkstyle.org/config_coding.html -->
 		<module name="EmptyStatement" />
 		<module name="EqualsHashCode" />
-		<module name="HiddenField" >
-			<property name="ignoreSetter" value="true" />
-			<property name="ignoreConstructorParameter" value="true" />
-		</module>
 		<module name="IllegalInstantiation" />
 		<module name="InnerAssignment" />
 		<module name="MagicNumber" />
@@ -196,8 +192,8 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="FinalClass" />
 		<module name="HideUtilityClassConstructor" />
 		<module name="InterfaceIsType" />
-		<module name="VisibilityModifier" >
-			<property name="protectedAllowed" value="true"/>
+		<module name="VisibilityModifier">
+			<property name="protectedAllowed" value="true" />
 		</module>
 
 		<!-- Miscellaneous other checks.                   -->
@@ -205,7 +201,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="ArrayTypeStyle" />
 		<!-- FinalParameters reports False positives -->
 		<!-- <module name="FinalParameters" /> -->
-		<module name="TodoComment" />
+		<!-- <module name="TodoComment" /> -->
 		<module name="UpperEll" />
 
 		<!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->

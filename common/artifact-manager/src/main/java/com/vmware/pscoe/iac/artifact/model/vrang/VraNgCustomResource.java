@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,39 +12,96 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgCustomResource {
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-    private final String id;
-    private final String name;
-    private final String json;
+/**
+ * This class represents a custom resource in vRA NG.
+ */
+public class VraNgCustomResource implements Identifiable {
+	/**
+	 * @param Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
 
-    public VraNgCustomResource(String id, String name, String json) {
-        this.id = id;
-        this.name = name;
-        this.json = json;
-    }
+	/**
+	 * @param Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
 
-    public String getId() {
-        return this.id;
-    }
+	/**
+	 * @param id the id of the custom resource
+	 */
+	private final String id;
 
-    public String getName() {
-        return this.name;
-    }
+	/**
+	 * @param name the name of the custom resource
+	 */
+	private final String name;
 
-    public String getJson() {
-        return this.json;
-    }
+	/**
+	 * @param json the json of the custom resource
+	 */
+	private final String json;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+	/**
+	 * Constructor.
+	 * 
+	 * @param id   the id of the custom resource
+	 * @param name the name of the custom resource
+	 * @param json the json of the custom resource
+	 */
+	public VraNgCustomResource(String id, String name, String json) {
+		this.id = id;
+		this.name = name;
+		this.json = json;
+	}
 
-        VraNgCustomResource other = (VraNgCustomResource) obj;
-        return this.id.equals(other.getId());
-    }
+	/**
+	 * @return the id of the custom resource
+	 */
+	public String getId() {
+		return this.id;
+	}
 
+	/**
+	 * @return the name of the custom resource
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @return the json of the custom resource
+	 */
+	public String getJson() {
+		return this.json;
+	}
+
+	/**
+	 * @param obj the object to compare
+	 * @return a flag if the custom resource is equal to another object
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
+
+		VraNgCustomResource other = (VraNgCustomResource) obj;
+		return this.id.equals(other.getId());
+	}
+
+	/**
+	 * @return the hash code of the custom resource
+	 */
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
+				.append(id)
+				.append(name)
+				.append(json)
+				.toHashCode();
+	}
 }

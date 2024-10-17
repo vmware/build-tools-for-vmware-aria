@@ -1,6 +1,5 @@
 name: Super-Linter
 on:
-  push:
   pull_request:
   workflow_dispatch:
 
@@ -19,7 +18,7 @@ jobs:
       - name: Setup Java Action
         uses: actions/setup-java@v3
         with:
-          java-version: "17"
+          java-version: "21"
           distribution: "temurin"
 
       - name: Super-Linter
@@ -32,4 +31,5 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_JAVASCRIPT_STANDARD: true
           VALIDATE_MARKDOWN: true
-          FILTER_REGEX_EXCLUDE: .*test/.*.js
+          # ignore js files under test and e2e folders
+          FILTER_REGEX_EXCLUDE: .*test/.*.js|e2e/.*\.js

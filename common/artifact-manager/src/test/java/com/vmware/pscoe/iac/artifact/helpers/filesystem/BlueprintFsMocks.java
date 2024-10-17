@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.helpers.filesystem;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -59,8 +58,18 @@ public class BlueprintFsMocks extends VraNgFsMock {
 	 * @param    blueprint - The blueprint to store
 	 */
 	public void addBlueprint(final VraNgBlueprint blueprint) {
-		File blueprintFolder = Paths.get(this.getWorkdir().getAbsolutePath(),
-			blueprint.getName()).toFile();
+		addBlueprint(blueprint, blueprint.getName());
+	}
+
+	/**
+	 * JSON encodes a blueprint and adds it to the blueprint directory.
+	 * This will also create the content.yaml based on the blueprint and alternatively accepts a versions' data containing
+	 * information about the versions.
+	 * @param blueprint - Blueprint to store
+	 * @param folderName - Blueprint folder name
+	 */
+	public void addBlueprint(final VraNgBlueprint blueprint, String folderName) {
+		File blueprintFolder = Paths.get(this.getWorkdir().getAbsolutePath(), folderName).toFile();
 
 		if (!blueprintFolder.exists()) {
 			if (!blueprintFolder.mkdirs()) {

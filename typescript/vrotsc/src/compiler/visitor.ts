@@ -1,65 +1,119 @@
-/*
+/*-
  * #%L
  * vrotsc
  * %%
- * Copyright (C) 2023 VMware
+ * Copyright (C) 2023 - 2024 VMware
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-namespace vrotsc {
-    const ts: typeof import("typescript") = require("typescript");
+import * as ts from 'typescript';
+import { Visitor } from '../types';
 
-    export function createVisitor(callback: ts.Visitor, context: ts.TransformationContext): Visitor {
-        const nodeHeritage: ts.Node[] = [];
+/**
+ * Class representing a NodeVisitor.
+ *
+ * Brief:
+ * This class is used to visit nodes in the TypeScript AST. It provides methods
+ * for visiting a single node, multiple nodes, and each child of a node. It also
+ * provides methods for getting the parent of a node and checking if a node has
+ * parents of certain kinds.
+ *
+ * Details:
+ * Visiting nodes in an Abstract Syntax Tree (AST) is a common technique used in compilers and interpreters for various purposes such as:
+ * 1. **Code Transformation**: By visiting each node, you can apply transformations to the code.
+ *      This is useful in scenarios like transpiling code from one language (or language version) to another, or optimizing the code for performance.
+ * 2. **Code Analysis**: Visiting nodes can be used to analyze the code for various
+ *      purposes like linting (checking for stylistic issues), type checking, finding references and dependencies, etc.
+ * 3. **Code Generation**: After all transformations and optimizations have been done,
+ *      a compiler needs to traverse the AST to generate the target code.
+ * In the context of TypeScript, visiting nodes is often used for transforming TypeScript code into
+ *      JavaScript code, performing type checking, and other static analyses.
+ */
+export class NodeVisitor implements Visitor {
+	private nodeHeritage: ts.Node[] = [];
 
-        return {
-            visitNode,
-            visitNodes,
-            visitEachChild,
-            getParent,
-            hasParents,
-        };
 
-        function visitNode(node: ts.Node): ts.VisitResult<ts.Node> {
-            nodeHeritage.push(node);
-            try {
-                const result = callback(node);
-                if (result !== undefined) {
-                    return result;
-                }
-                return ts.visitEachChild(node, visitNode, context);
-            }
-            finally {
-                nodeHeritage.pop();
-            }
-        }
+	/**
+	 * Creates a new NodeVisitor.
+	 *
+	 * @param {ts.Visitor} callback - The callback to be used when visiting nodes.
+	 * @param {ts.TransformationContext} context - The context for the transformation.
+	 */
+	constructor(private callback: ts.Visitor<ts.Node, ts.Node>, private context: ts.TransformationContext) { }
 
-        function visitNodes<T extends ts.Node>(nodes: ts.NodeArray<T> | undefined): ts.NodeArray<T> {
-            return ts.visitNodes(nodes, visitNode);
-        }
+	/**
+	 * Visits a single node in the AST.
+	 *
+	 * @param {T} node - The node to visit.
+	 * @returns {ts.VisitResult<T>} - The result of visiting the node.
+	 */
+	visitNode<T extends ts.Node>(node: T): ts.VisitResult<T> {
+		this.nodeHeritage.push(node);
+		try {
+			const result = this.callback(node);
+			if (result !== undefined) {
+				return result as any;
+			}
+			return ts.visitEachChild(node, this.visitNode.bind(this), this.context);
+		}
+		finally {
+			this.nodeHeritage.pop();
+		}
+	}
 
-        function visitEachChild<T extends ts.Node>(node: T): T {
-            return ts.visitEachChild(node, visitNode, context);
-        }
+	/**
+	 * Visits multiple nodes in the AST.
+	 *
+	 * @param {ts.NodeArray<T> | undefined} nodes - The nodes to visit.
+	 * @returns {ts.NodeArray<T>} - The result of visiting the nodes.
+	 */
+	visitNodes<T extends ts.Node>(nodes: ts.NodeArray<T> | undefined): ts.NodeArray<T> {
+		return ts.visitNodes(nodes, this.visitNode.bind(this)) as any;
+	}
 
-        function getParent(index?: number): ts.Node {
-            return nodeHeritage[nodeHeritage.length - 2 - (index || 0)];
-        }
+	/**
+	 * Visits each child of a node in the AST.
+	 *
+	 * @param {T} node - The node whose children to visit.
+	 * @returns {T} - The result of visiting the children.
+	 */
+	visitEachChild<T extends ts.Node>(node: T): T {
+		return ts.visitEachChild(node, this.visitNode.bind(this), this.context);
+	}
 
-        function hasParents(...kinds: ts.SyntaxKind[]): boolean {
-            for (let i = 0; i < kinds.length; i++) {
-                const parentNode = nodeHeritage[nodeHeritage.length - 2 + i];
-                if (!parentNode || parentNode.kind !== kinds[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
+	/**
+	 * Gets the parent of a node in the AST.
+	 *
+	 * @param {number} [index] - The index of the parent to get.
+	 * @returns {ts.Node} - The parent of the node.
+	 */
+	getParent(index?: number): ts.Node {
+		return this.nodeHeritage[this.nodeHeritage.length - 2 - (index || 0)];
+	}
+
+	/**
+	 * Checks if a node has parents of certain kinds.
+	 *
+	 * @param {...ts.SyntaxKind[]} kinds - The kinds of parents to check for.
+	 * @returns {boolean} - True if the node has parents of the specified kinds, false otherwise.
+	 */
+	hasParents(...kinds: ts.SyntaxKind[]): boolean {
+		for (let i = 0; i < kinds.length; i++) {
+			const parentNode = this.nodeHeritage[this.nodeHeritage.length - 2 + i];
+			if (!parentNode || parentNode.kind !== kinds[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+export function createVisitor(callback: ts.Visitor, context: ts.TransformationContext): Visitor {
+	return new NodeVisitor(callback, context);
 }

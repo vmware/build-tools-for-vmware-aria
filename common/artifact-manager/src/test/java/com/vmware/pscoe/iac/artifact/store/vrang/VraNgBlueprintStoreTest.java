@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,39 +12,42 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
- import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
- import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
- import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
- import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintMockBuilder;
- import com.vmware.pscoe.iac.artifact.model.Package;
- import com.vmware.pscoe.iac.artifact.model.PackageFactory;
- import com.vmware.pscoe.iac.artifact.model.PackageType;
- import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
- import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
- import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
- 
- import org.junit.Rule;
- import org.junit.jupiter.api.AfterEach;
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
- import org.junit.rules.TemporaryFolder;
- import org.mockito.Mockito;
- 
- import java.io.IOException;
- import java.text.ParseException;
- import java.util.ArrayList;
- import java.util.List;
- 
- import static org.junit.Assert.assertEquals;
- import static org.junit.Assert.assertThrows;
- 
- import static org.mockito.Mockito.when;
- import static org.mockito.Mockito.never;
- import static org.mockito.Mockito.verify;
- import static org.mockito.Mockito.times;
- import static org.mockito.Mockito.any;
- import static org.mockito.Mockito.anyString;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintMockBuilder;
+import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+
+import org.junit.Rule;
+import org.junit.internal.runners.statements.ExpectException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 
 /**
  * NOTE: This does not test duplicate names from one content source, since the Store is not responsible for that kind of logic.
@@ -241,6 +242,39 @@ public class VraNgBlueprintStoreTest {
 	}
 
 	@Test
+	void testImportContentWhenDuplicateBlueprintsExistOnServer() throws IOException, ParseException {
+		// GIVEN
+		List<String> blueprintNames = new ArrayList<>();
+		blueprintNames.add("nginx");
+
+		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
+
+		BlueprintMockBuilder builder = new BlueprintMockBuilder("nginx");
+		VraNgBlueprint blueprint = builder.build();
+
+		fsMocks.blueprintFsMocks().addBlueprint(blueprint);
+
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json"});
+
+		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
+		bluePrintsOnServer.add(blueprint);
+		bluePrintsOnServer.add(blueprint);
+
+		when(restClient.getAllBlueprints()).thenReturn(bluePrintsOnServer);
+
+		// START TEST
+		assertThrows(IllegalStateException.class, () -> {
+			store.importContent(tempFolder.getRoot());
+		});
+
+		// VERIFY
+		verify(restClient, never()).createBlueprint(any());
+		verify(restClient, never()).isBlueprintVersionPresent(any(), any());
+		verify(restClient, never()).releaseBlueprintVersion(any(), any());
+	}
+
+	@Test
 	void testImportContentForNonExistingBlueprintsInConfiguration() throws IOException, ParseException {
 		// GIVEN
 		List<String> blueprintNames = new ArrayList<>();
@@ -271,5 +305,26 @@ public class VraNgBlueprintStoreTest {
 
 		// VERIFY
 		verify(restClient, times(1)).createBlueprint(any());
+	}
+
+	@Test
+	void testImportContentWithDiffBlueprintFolderName() {
+		// GIVEN
+		List<String> blueprintNames = new ArrayList<>();
+		blueprintNames.add("nginx-blueprint-1");
+
+		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
+
+		// INSIDE THE details.json -> name
+		BlueprintMockBuilder builder = new BlueprintMockBuilder("nginx-blueprint");
+		VraNgBlueprint blueprint = builder.build();
+
+		fsMocks.blueprintFsMocks().addBlueprint(blueprint, "nginx-blueprint-1");
+
+		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
+		when(restClient.getAllBlueprints()).thenReturn(bluePrintsOnServer);
+
+		// START TEST & VERIFY EXCEPTION
+		assertThrows(IllegalStateException.class, () -> store.importContent(tempFolder.getRoot()));
 	}
 }

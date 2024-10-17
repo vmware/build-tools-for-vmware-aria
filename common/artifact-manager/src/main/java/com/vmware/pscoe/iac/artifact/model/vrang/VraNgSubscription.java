@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,39 +12,97 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgSubscription {
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-    private final String id;
-    private final String name;
-    private final String json;
+/**
+ * Represents a VRA NG Subscription.
+ */
+public class VraNgSubscription implements Identifiable {
+	/**
+	 * @param Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
 
-    public VraNgSubscription(String id, String name, String json) {
-        this.id = id;
-        this.name = name;
-        this.json = json;
-    }
+	/**
+	 * @param Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
 
-    public String getId() {
-        return this.id;
-    }
+	/**
+	 * @param id The ID of the subscription.
+	 */
+	private final String id;
 
-    public String getName() {
-        return this.name;
-    }
+	/**
+	 * @param name The name of the subscription.
+	 */
+	private final String name;
 
-    public String getJson() {
-        return this.json;
-    }
+	/**
+	 * @param json The JSON representation of the subscription.
+	 */
+	private final String json;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+	/**
+	 * @param id   The ID of the subscription.
+	 * @param name The name of the subscription.
+	 * @param json The JSON representation of the subscription.
+	 */
+	public VraNgSubscription(String id, String name, String json) {
+		this.id = id;
+		this.name = name;
+		this.json = json;
+	}
 
-        VraNgBlueprint other = (VraNgBlueprint) obj;
-        return this.id.equals(other.getId());
-    }
+	/**
+	 * @return The ID of the subscription.
+	 */
+	public String getId() {
+		return this.id;
+	}
+
+	/**
+	 * @return The name of the subscription.
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @return The JSON representation of the subscription.
+	 */
+	public String getJson() {
+		return this.json;
+	}
+
+	/**
+	 * Checks if the subscription is equal to another object.
+	 *
+	 * @param obj The object to compare.
+	 * @return True if the subscription is equal to the object, false otherwise.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
+
+		VraNgBlueprint other = (VraNgBlueprint) obj;
+		return this.id.equals(other.getId());
+	}
+
+	/**
+	 * @return the hashCode representation of the object
+	 */
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
+				.append(id)
+				.append(name)
+				.append(json)
+				.toHashCode();
+	}
 
 }

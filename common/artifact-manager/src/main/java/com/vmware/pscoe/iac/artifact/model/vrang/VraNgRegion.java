@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,33 +12,34 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 public class VraNgRegion {
 
-    private final String id;
-    private final String cloudAccountId;
+	private final String id;
+	private final String cloudAccountId;
 
-    public VraNgRegion(String id, String cloudAccountId) {
-        this.id = id;
-        this.cloudAccountId = cloudAccountId;
-    }
+	public VraNgRegion(String id, String cloudAccountId) {
+		this.id = id;
+		this.cloudAccountId = cloudAccountId;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getCloudAccountId() {
-        return cloudAccountId;
-    }
+	public String getCloudAccountId() {
+		return cloudAccountId;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
 
-        VraNgRegion other = (VraNgRegion) obj;
-        return this.id.equals(other.getId());
-    }
+		VraNgRegion other = (VraNgRegion) obj;
+		return this.id.equals(other.getId());
+	}
 
 }

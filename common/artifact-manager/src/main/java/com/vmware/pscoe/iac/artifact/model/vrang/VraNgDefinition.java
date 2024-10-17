@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*-
  * #%L
  * artifact-manager
@@ -14,17 +12,46 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import java.util.List;
 
 public class VraNgDefinition {
-	public List<VraNgEntitledUser> entitledUsers;
+	/**
+	 * entitledUsers for the Content Sharing Policy.
+	 */
+	private List<VraNgEntitledUser> entitledUsers;
 
+	/**
+	 * Default Constructor.
+	 */
 	public VraNgDefinition() {
-
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param entitledUsers list of the entitled users able to access the policy.
+	 */
 	public VraNgDefinition(List<VraNgEntitledUser> entitledUsers) {
+		this.entitledUsers = entitledUsers;
+	}
+
+	/**
+	 * Get the list of entitled users.
+	 * 
+	 * @return list of the entitled users.
+	 */
+	public List<VraNgEntitledUser> getEntitledUsers() {
+		return entitledUsers;
+	}
+
+	/**
+	 * Set the list of the entitled users.
+	 * 
+	 * @param entitledUsers - list of entitled users.
+	 */
+	public void setEntitledUsers(List<VraNgEntitledUser> entitledUsers) {
 		this.entitledUsers = entitledUsers;
 	}
 }

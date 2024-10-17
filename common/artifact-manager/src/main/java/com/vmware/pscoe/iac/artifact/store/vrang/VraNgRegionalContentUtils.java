@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -38,89 +37,113 @@ import java.util.Set;
 
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.*;
 
-public class VraNgRegionalContentUtils {
+/**
+ * Utility class for regional content management.
+ */
+public final class VraNgRegionalContentUtils {
+	/**
+	 * Private constructor to prevent instantiation as this is a utility class.
+	 */
+	private VraNgRegionalContentUtils() {
+	}
 
-    private static Logger logger = LoggerFactory.getLogger(VraNgRegionalContentUtils.class);
+	/**
+	 * @param logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(VraNgRegionalContentUtils.class);
 
-    /**
-     * Create the cloud region profile file containing mapping for region tags and region id
-     * @param cloudAccount cloud account
-     * @param regionId region id
-     * @param srcDir containing directory
-     * @param cloudRegionProfileFolderName folder name for the region with region-specific content
-     */
-    public static void createCloudRegionProfileFile(VraNgCloudAccount cloudAccount, String regionId, File srcDir, String cloudRegionProfileFolderName) {
-        File cloudRegionProfile =
-                Paths.get(srcDir.getPath(), DIR_REGIONS, cloudRegionProfileFolderName, "src-region-profile.json").toFile();
+	/**
+	 * Create the cloud region profile file containing mapping for region tags and
+	 * region id.
+	 * 
+	 * @param cloudAccount                 cloud account
+	 * @param regionId                     region id
+	 * @param srcDir                       containing directory
+	 * @param cloudRegionProfileFolderName folder name for the region with
+	 *                                     region-specific content
+	 */
+	public static void createCloudRegionProfileFile(VraNgCloudAccount cloudAccount, String regionId, File srcDir,
+			String cloudRegionProfileFolderName) {
+		File cloudRegionProfile = Paths
+				.get(srcDir.getPath(), DIR_REGIONS, cloudRegionProfileFolderName, "src-region-profile.json").toFile();
 
-        cloudRegionProfile.getParentFile().mkdirs();
+		cloudRegionProfile.getParentFile().mkdirs();
 
-        Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 
-        VraNgCloudRegionProfile cloudRegionProfileJson = new VraNgCloudRegionProfile();
-        cloudRegionProfileJson.setCloudAccountId(cloudAccount.getId());
-        cloudRegionProfileJson.setRegionId(regionId);
-        cloudRegionProfileJson.setTags(cloudAccount.getTags());
-        cloudRegionProfileJson.setRegionType(cloudAccount.getType());
+		VraNgCloudRegionProfile cloudRegionProfileJson = new VraNgCloudRegionProfile();
+		cloudRegionProfileJson.setCloudAccountId(cloudAccount.getId());
+		cloudRegionProfileJson.setRegionId(regionId);
+		cloudRegionProfileJson.setTags(cloudAccount.getTags());
+		cloudRegionProfileJson.setRegionType(cloudAccount.getType());
 
-        String regionJson = gson.toJson(cloudRegionProfileJson, VraNgCloudRegionProfile.class);
+		String regionJson = gson.toJson(cloudRegionProfileJson, VraNgCloudRegionProfile.class);
 
-        try {
-            logger.info("Created file {} ", Files.write(Paths.get(cloudRegionProfile.getPath()),
-                    regionJson.getBytes(), StandardOpenOption.CREATE));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		try {
+			logger.info("Created file {} ", Files.write(Paths.get(cloudRegionProfile.getPath()),
+					regionJson.getBytes(), StandardOpenOption.CREATE));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * Check whether two lists of strings are intersecting, i.e. have
-     * at least one common element.
-     * @param list1 first list
-     * @param list2 second list
-     * @return true if lists are intersecting
-     */
-    public static boolean isIntersecting(List<String> list1, List<String> list2) {
-        Set<String> set1 = new HashSet<String>(list1);
-        Set<String> set2 = new HashSet<String>(list2);
+	/**
+	 * Check whether two lists of strings are intersecting, i.e. have
+	 * at least one common element.
+	 * 
+	 * @param list1 first list
+	 * @param list2 second list
+	 * @return true if lists are intersecting
+	 */
+	public static boolean isIntersecting(List<String> list1, List<String> list2) {
+		Set<String> set1 = new HashSet<String>(list1);
+		Set<String> set2 = new HashSet<String>(list2);
 
-        Set<String> intersection = new HashSet<>(set1);
-        intersection.retainAll(set2);
+		Set<String> intersection = new HashSet<>(set1);
+		intersection.retainAll(set2);
 
-        return !intersection.isEmpty();
-    }
+		return !intersection.isEmpty();
+	}
 
-    public static VraNgCloudRegionProfile getCloudRegionProfile(File cloudRegionProfileDir) throws IOException {
-        File regionProfile = Paths.get(cloudRegionProfileDir.getPath(), "src-region-profile.json").toFile();
-        String regionProfileContent = FileUtils.readFileToString(regionProfile, "UTF-8");
+	/**
+	 * Get cloud region profile from the directory.
+	 * 
+	 * @param cloudRegionProfileDir directory containing the cloud region profile
+	 * @return cloud region profile
+	 * @throws IOException if the file cannot be read
+	 */
+	public static VraNgCloudRegionProfile getCloudRegionProfile(File cloudRegionProfileDir) throws IOException {
+		File regionProfile = Paths.get(cloudRegionProfileDir.getPath(), "src-region-profile.json").toFile();
+		String regionProfileContent = FileUtils.readFileToString(regionProfile, "UTF-8");
 
-        return new ObjectMapper().readValue(regionProfileContent, VraNgCloudRegionProfile.class);
-    }
+		return new ObjectMapper().readValue(regionProfileContent, VraNgCloudRegionProfile.class);
+	}
 
-    /**
-     * Create a new JSON object containing only set of keys
-     * @param ob original JSON object
-     * @param keysToKeep list of keys to keep
-     * @param keysToRemove list of keys to remove
-     * @return cleaned JSON object
-     */
-    public static JsonObject cleanJson(JsonObject ob, List<String> keysToKeep, List<String> keysToRemove) {
-        JsonObject cleanedOb = new JsonObject();
-        if (keysToKeep != null) {
-            keysToKeep.forEach(key -> {
-                if (ob.has(key)) {
-                    cleanedOb.add(key, ob.get(key));
-                }
-            });
-        }
-        if (keysToRemove != null) {
-            for (Map.Entry<String, JsonElement> entry : ob.entrySet()) {
-                if (!keysToRemove.contains(entry.getKey())) {
-                    cleanedOb.add(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-        return cleanedOb;
-    }
+	/**
+	 * Create a new JSON object containing only set of keys.
+	 * 
+	 * @param ob           original JSON object
+	 * @param keysToKeep   list of keys to keep
+	 * @param keysToRemove list of keys to remove
+	 * @return cleaned JSON object
+	 */
+	public static JsonObject cleanJson(JsonObject ob, List<String> keysToKeep, List<String> keysToRemove) {
+		JsonObject cleanedOb = new JsonObject();
+		if (keysToKeep != null) {
+			keysToKeep.forEach(key -> {
+				if (ob.has(key)) {
+					cleanedOb.add(key, ob.get(key));
+				}
+			});
+		}
+		if (keysToRemove != null) {
+			for (Map.Entry<String, JsonElement> entry : ob.entrySet()) {
+				if (!keysToRemove.contains(entry.getKey())) {
+					cleanedOb.add(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+		return cleanedOb;
+	}
 
 }

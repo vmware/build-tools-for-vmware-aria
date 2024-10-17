@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,104 +12,184 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class VraNgContentSourceBase {
+/**
+ * Base class for all content sources.
+ */
+public class VraNgContentSourceBase implements Identifiable {
 
-    @JsonProperty("id")
-    protected String id;
+	/**
+	 * the id to set.
+	 */
+	@JsonProperty("id")
+	protected String id;
 
-    @JsonProperty("name")
-    protected String name;
+	/**
+	 * the name to set.
+	 */
+	@JsonProperty("name")
+	protected String name;
 
-    @JsonProperty("description")
-    protected String description;
+	/**
+	 * the description to set.
+	 */
+	@JsonProperty("description")
+	protected String description;
 
-    @JsonProperty("typeId")
-    protected String typeId;
+	/**
+	 * the typeId to set.
+	 */
+	@JsonProperty("typeId")
+	protected String typeId;
 
-    @JsonProperty("itemsImported")
-    protected int itemsImported;
+	/**
+	 * the itemsImported to set.
+	 */
+	@JsonProperty("itemsImported")
+	protected int itemsImported;
 
-    @JsonProperty("itemsFound")
-    protected int itemsFound;
+	/**
+	 * the itemsFound to set.
+	 */
+	@JsonProperty("itemsFound")
+	protected int itemsFound;
 
-    @JsonProperty("lastImportErrors")
-    protected transient List<String> lastImportErrors = new ArrayList<>();
+	/**
+	 * the lastImportErrors to set.
+	 */
+	@JsonProperty("lastImportErrors")
+	protected transient List<String> lastImportErrors = new ArrayList<>();
 
-    @JsonProperty("global")
-    protected boolean global;
+	/**
+	 * the global to set.
+	 */
+	@JsonProperty("global")
+	protected boolean global;
 
-    public String getId() {
-        return id;
-    }
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getTypeId() {
-        return typeId;
-    }
+	/**
+	 * @return the typeId
+	 */
+	public String getTypeId() {
+		return typeId;
+	}
 
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
-    }
+	/**
+	 * @param typeId the typeId to set
+	 */
+	public void setTypeId(String typeId) {
+		this.typeId = typeId;
+	}
 
-    public Integer getItemsFound() {
-        return itemsFound;
-    }
+	/**
+	 * @return the itemsImported
+	 */
+	public Integer getItemsFound() {
+		return itemsFound;
+	}
 
-    public void setItemsFound(Integer itemsFound) {
-        this.itemsFound = itemsFound;
-    }
+	/**
+	 * @param itemsFound the itemsFound to set
+	 */
+	public void setItemsFound(Integer itemsFound) {
+		this.itemsFound = itemsFound;
+	}
 
-    public Integer getItemsImported() {
-        return itemsImported;
-    }
+	/**
+	 * @return the itemsImported
+	 */
+	public Integer getItemsImported() {
+		return itemsImported;
+	}
 
-    public void setItemsImported(Integer itemsImported) {
-        this.itemsImported = itemsImported;
-    }
+	/**
+	 * @param itemsImported the itemsImported to set
+	 */
+	public void setItemsImported(Integer itemsImported) {
+		this.itemsImported = itemsImported;
+	}
 
-    public List<String> getLastImportErrors() {
-        return lastImportErrors;
-    }
+	/**
+	 * @return the lastImportErrors
+	 */
+	public List<String> getLastImportErrors() {
+		return lastImportErrors;
+	}
 
-    public void setLastImportErrors(List<String> lastImportErrors) {
-        this.lastImportErrors = lastImportErrors;
-    }
-    @JsonIgnore
-    public VraNgContentSourceType getType() {
-        return VraNgContentSourceType.fromString(this.typeId);
-    }
+	/**
+	 * @param lastImportErrors the lastImportErrors to set
+	 */
+	public void setLastImportErrors(List<String> lastImportErrors) {
+		this.lastImportErrors = lastImportErrors;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * @return the type
+	 */
+	@JsonIgnore
+	public VraNgContentSourceType getType() {
+		return VraNgContentSourceType.fromString(this.typeId);
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    public boolean isGlobal() {
-        return global;
-    }
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setGlobal(boolean global) {
-        this.global = global;
-    }
+	/**
+	 * @return the global
+	 */
+	public boolean isGlobal() {
+		return global;
+	}
+
+	/**
+	 * @param global the global to set
+	 */
+	public void setGlobal(boolean global) {
+		this.global = global;
+	}
 
 }

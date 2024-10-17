@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.configuration;
-
 /*
  * #%L
  * artifact-manager
@@ -14,33 +12,23 @@ package com.vmware.pscoe.iac.artifact.configuration;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.configuration;
 
-import org.apache.commons.logging.Log;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.logging.Logger;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 class ConfigurationVropsTest {
-
-	private ConfigurationVrops configurationVrops;
 	protected Properties properties;
 	protected ConfigurationVrops mockedInstance;
+	private ConfigurationVrops configurationVrops;
 
 	@BeforeEach
 	void init() throws UnknownHostException {
-
 		this.properties = new Properties();
 		this.properties.setProperty("host", "localhost");
 		this.properties.setProperty("port", "443");
@@ -55,7 +43,6 @@ class ConfigurationVropsTest {
 
 		this.mockedInstance = Mockito.mock(ConfigurationVrops.class);
 		when(mockedInstance.getHost()).thenReturn(null);
-
 	}
 
 	@Test

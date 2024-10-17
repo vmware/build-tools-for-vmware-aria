@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="98568979-76ed-4a4a-854b-1e730e2ef4f1" version="1.1.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Run Script]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="script" type="string"/>
+  </input>
+  <output>
+    <param name="output" type="string"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[output = "";
+	
+	function wrap(original, severity, origin) {
+		return function(message) {
+			var timestamp = new Date().toISOString();
+			output += "[" + timestamp + "] [" + origin + "] [" + severity + "] " + message + "\n";
+			original(message);
+		}	
+	}
+	
+	System.debug = wrap(System.debug, "debug", "system");
+	System.log = wrap(System.log, "info", "system");
+	System.warn = wrap(System.warn, "warning", "system");
+	System.error = wrap(System.error, "error", "system");
+	
+	Server.log = wrap(Server.log, "info", "server");
+	Server.warn = wrap(Server.warn, "warning", "server");
+	Server.error = wrap(Server.error, "error", "server");
+	
+	try {
+		eval(script);
+	} catch (e) {
+		output += "[" + new Date().toISOString() + "] [ERROR] " + (e.message || e) + "\n";
+		throw e;
+	}]]></script>
+    <in-binding>
+      <bind name="script" type="string" export-name="script"/>
+    </in-binding>
+    <out-binding>
+      <bind name="output" type="string" export-name="output"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="script">
+      <desc><![CDATA[script]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual name="textInput" type="void"><![CDATA[__NULL__]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

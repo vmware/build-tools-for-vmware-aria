@@ -1,8 +1,3 @@
-/**
- * Package.
- */
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -17,8 +12,12 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+/**
+ * Package.
+ */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
-public class VraNgResourceAction {
+public class VraNgResourceAction implements Identifiable {
 
 	/**
 	 * Prime Number 17.
@@ -62,12 +61,13 @@ public class VraNgResourceAction {
 	/**
 	 * Creates a new Resource Action.
 	 * 
-	 * @param identifier           Resource Action id
+	 * @param identifier         Resource Action id
 	 * @param actionName         Resource Action name
 	 * @param jsonString         Resource Action json
 	 * @param actionResourceType Resource Action Resource Type
 	 */
-	public VraNgResourceAction(final String identifier, final String actionName, final String jsonString, final String actionResourceType) {
+	public VraNgResourceAction(final String identifier, final String actionName, final String jsonString,
+			final String actionResourceType) {
 		this.id = identifier;
 		this.name = actionName;
 		this.json = jsonString;

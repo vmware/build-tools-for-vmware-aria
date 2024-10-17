@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
@@ -22,6 +21,7 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.PropertyGroupMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
@@ -68,6 +68,15 @@ public class VraNgPropertyGroupStoreTest {
 		pkg						= PackageFactory.getInstance( PackageType.VRANG, tempFolder.getRoot() );
 		config					= Mockito.mock( ConfigurationVraNg.class );
 		vraNgPackageDescriptor	= Mockito.mock( VraNgPackageDescriptor.class );
+
+		VraNgOrganization org = new VraNgOrganization();
+		org.setId("b2c558c8-f20c-4da6-9bc3-d7561f64df16");
+		org.setName("VIDM-L-01A");
+
+		when(config.getOrgId()).thenReturn("b2c558c8-f20c-4da6-9bc3-d7561f64df16");
+		when(config.getOrgName()).thenReturn("VIDM-L-01A");
+		when(restClient.getOrganizationById("b2c558c8-f20c-4da6-9bc3-d7561f64df16")).thenReturn(org);
+		when(restClient.getOrganizationByName("VIDM-L-01A")).thenReturn(org);
 
 		System.out.println( "==========================================================" );
 		System.out.println( "START" );

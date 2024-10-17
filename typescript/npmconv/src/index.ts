@@ -1,3 +1,17 @@
+/*
+ * #%L
+ * npmconv
+ * %%
+ * Copyright (C) 2023 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
 import * as glob from "glob";
 
 import * as path from "path";
@@ -25,7 +39,7 @@ export class NpmConverter {
 
 	private npm: NpmProxy;
 
-	constructor(public readonly opts: t.NpmConverterConfig) {}
+	constructor(public readonly opts: t.NpmConverterConfig) { }
 
 	private async getNpmHandle() {
 		if (!this.npm) {
@@ -48,20 +62,6 @@ export class NpmConverter {
 
 			console.log("Fetching remote package info...");
 
-/*
- * #%L
- * npmconv
- * %%
- * Copyright (C) 2023 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
 			this.packRep = await npm.view(this.opts.source.packageName + (this.opts.source.packageVersion ? `@${this.opts.source.packageVersion}` : ""));
 			console.debug(`package representation: ${JSON.stringify(this.packRep)}`);
 			console.debug(`repository: ${JSON.stringify(this.packRep.repository)}`);
@@ -113,7 +113,7 @@ export class NpmConverter {
 			directMappedDeps = mappedDeps;
 
 			if (!this.opts.output.skipUnmappedNpmDeps) {
-				
+
 				// Try to resolve unmapped dependencies
 				if (unmappedDeps.length > 0 && depsMapper.defaultMvnGroupId) {
 					console.debug(`Following dependencies were not mapped: ${JSON.stringify(unmappedDeps)}`);

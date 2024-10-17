@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.model.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,11 +12,12 @@ package com.vmware.pscoe.iac.artifact.model.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.model.vrang;
 
 /**
 
 */
-public class VraNgContentSharingPolicy {
+public class VraNgContentSharingPolicy implements Identifiable {
 	/**
 	 * Id of the Content Sharing Policy.
 	 */
@@ -35,6 +34,14 @@ public class VraNgContentSharingPolicy {
 	 * ProjectId of the Content Sharing Policy.
 	 */
 	private String projectId;
+	/**
+	 * Scope of the content sharing policy. The scope is a project name.
+	 */
+	private String scope;
+	/**
+	 * Organization for the content sharing policy.
+	 */
+	private String organization;
 	/**
 	 * OrgId of the Content Sharing Policy.
 	 */
@@ -61,27 +68,31 @@ public class VraNgContentSharingPolicy {
 	/**
 	 * Constructor.
 	 * 
-	 * @param idIn              Id
-	 * @param nameIn            Name
-	 * @param typeIdIn          Typeid
-	 * @param projectIdIn       ProjectId
-	 * @param orgIdIn           OrgId
-	 * @param enforcementTypeIn enforcementType
-	 * @param descriptionIn     description
-	 * @param definitionIn      definition
+	 * @param id              Id
+	 * @param name            Name
+	 * @param typeId          Typeid
+	 * @param projectId       ProjectId
+	 * @param orgId           OrgId
+	 * @param enforcementType enforcementType
+	 * @param description     description
+	 * @param definition      definition
+	 * @param scope           scope
+	 * @param organization    organization name
 	 */
-	public VraNgContentSharingPolicy(final String idIn, final String nameIn, final String typeIdIn,
-			final String projectIdIn, final String orgIdIn,
-			final String enforcementTypeIn, final String descriptionIn,
-			final VraNgDefinition definitionIn) {
-		this.id = idIn;
-		this.name = nameIn;
-		this.typeId = typeIdIn;
-		this.projectId = projectIdIn;
-		this.orgId = orgIdIn;
-		this.enforcementType = enforcementTypeIn;
-		this.description = descriptionIn;
-		this.definition = definitionIn;
+	public VraNgContentSharingPolicy(final String id, final String name, final String typeId, final String projectId,
+			final String orgId,
+			final String enforcementType, final String description, final VraNgDefinition definition,
+			final String scope, final String organization) {
+		this.id = id;
+		this.name = name;
+		this.typeId = typeId;
+		this.projectId = projectId;
+		this.scope = scope;
+		this.orgId = orgId;
+		this.enforcementType = enforcementType;
+		this.description = description;
+		this.definition = definition;
+		this.organization = organization;
 	}
 
 	/**
@@ -139,6 +150,25 @@ public class VraNgContentSharingPolicy {
 	}
 
 	/**
+	 * Get the scope of the content policy which is a vRA project name.
+	 * 
+	 * @return content sharing scope project name.
+	 */
+	public String getScope() {
+		return scope;
+	}
+
+	/**
+	 * Set the scope of the content sharing policy (a vRA project name).
+	 * 
+	 * @param scope - scope of the content sharing policy (should be a vRA project
+	 *              name).
+	 */
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	/**
 	 * Get the id of the content sharing policy org.
 	 * 
 	 * @return content sharing policy org id
@@ -154,6 +184,24 @@ public class VraNgContentSharingPolicy {
 	 */
 	public void setOrgId(final String orgIdIn) {
 		this.orgId = orgIdIn;
+	}
+
+	/**
+	 * Get the organization name for the content sharing policy.
+	 *
+	 * @return organization name for the content sharing policy.
+	 */
+	public String getOrganization() {
+		return organization;
+	}
+
+	/**
+	 * Set the organization name for the content sharing policy.
+	 * 
+	 * @param organization - Organization name for the content sharing policy
+	 */
+	public void setOrganization(String organization) {
+		this.organization = organization;
 	}
 
 	/**

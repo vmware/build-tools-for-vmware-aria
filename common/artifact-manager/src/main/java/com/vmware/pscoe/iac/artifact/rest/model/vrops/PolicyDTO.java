@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest.model.vrops;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest.model.vrops;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.model.vrops;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +87,7 @@ public class PolicyDTO {
 	@JsonProperty("policy-summaries")
 	public void setPolicies(List<Policy> policies) {
 		this.policies = policies;
-	}	
+	}
 
 	/**
 	 * getAdditionalProperties().
@@ -114,7 +113,8 @@ public class PolicyDTO {
 	/**
 	 * Policy.
 	 */
-	@JsonPropertyOrder({ "id", "name", "defaultPolicy" })
+	@JsonPropertyOrder({ "id", "name", "defaultPolicy", "priority" })
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Policy {
 
 		/**
@@ -140,6 +140,12 @@ public class PolicyDTO {
 		 */
 		@JsonProperty("defaultPolicy")
 		private boolean defaultPolicy;
+
+		/**
+		 * priority.
+		 */
+		@JsonProperty("priority")
+		private Long priority;
 
 		/**
 		 * additionalProperties.
@@ -225,6 +231,26 @@ public class PolicyDTO {
 		@JsonProperty("defaultPolicy")
 		public void setDefaultPolicy(boolean defaultPolicy) {
 			this.defaultPolicy = defaultPolicy;
+		}
+
+		/**
+		 * getPriority().
+		 *
+		 * @return policy priority (if applicable).
+		 */
+		@JsonProperty("priority")
+		public Long getPriority() {
+			return priority;
+		}
+
+		/**
+		 * setPriority().
+		 *
+		 * @param priority set policy priority.
+		 */
+		@JsonProperty("priority")
+		public void setPriority(Long priority) {
+			this.priority = priority;
 		}
 
 		/**

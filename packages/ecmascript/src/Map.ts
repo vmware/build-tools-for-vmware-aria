@@ -14,7 +14,7 @@
  */
 
 export default class Map<K extends (string | number), V> {
-	private size = 0;
+	public size: number = 0;
 	private items: { [name: string]: any } = {};
 
 	constructor(values?: ReadonlyArray<[K, V]> | null) {
@@ -26,7 +26,7 @@ export default class Map<K extends (string | number), V> {
 		}
 	}
 
-	entries(): [any, any][] {
+	public entries(): [any, any][] {
 		let entries = [];
 
 		for (let key in this.items) {
@@ -36,7 +36,7 @@ export default class Map<K extends (string | number), V> {
 		return entries;
 	}
 
-	keys(): any[] {
+	public keys(): any[] {
 		let keys = [];
 
 		for (let key in this.items) {
@@ -46,7 +46,7 @@ export default class Map<K extends (string | number), V> {
 		return keys;
 	}
 
-	values(): any[] {
+	public values(): any[] {
 		let values = [];
 
 		for (let key in this.items) {
@@ -56,26 +56,28 @@ export default class Map<K extends (string | number), V> {
 		return values;
 	}
 
-	has(key): boolean {
+	public has(key: any): boolean {
 		return this.items.hasOwnProperty(key);
 	}
 
-	get(key): any {
+	public get(key: any): any {
 		return this.items[key];
 	}
 
-	set(key, value): any {
-		let exist = this.items.hasOwnProperty(key);
-		if (exist) {
-			this.size++;
-		}
-
+	public set(key: any, value: any): any {
+		let exist = this.has(key);
 		this.items[key] = value;
+
+		if (exist) {
+			return this;
+		}
+		this.size++;
+
 		return this;
 	}
 
-	delete(key): boolean {
-		let exist = this.items.hasOwnProperty(key);
+	public delete(key: any): boolean {
+		let exist = this.has(key);
 		if (exist) {
 			this.size--;
 			delete this.items[key];
@@ -84,14 +86,14 @@ export default class Map<K extends (string | number), V> {
 		return exist;
 	}
 
-	clear(): void {
+	public clear(): void {
 		this.size = 0;
 		this.items = {};
 	}
 
-	forEach(callbackfn: (value, key, map: Map<any, any>) => void): void {
+	public forEach(callbackFunction: (value: any, key: any, map: Map<any, any>) => void): void {
 		for (let key in this.items) {
-			callbackfn(this.items[key], key, this);
+			callbackFunction(this.items[key], key, this);
 		}
 	}
 }

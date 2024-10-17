@@ -13,7 +13,7 @@
  * #L%
  */
 export default class Set<T extends string | number> {
-	private size = 0;
+	public size: number = 0;
 	private items: { [name: string]: boolean } = {};
 
 	constructor(values?: ReadonlyArray<T> | null) {
@@ -25,7 +25,7 @@ export default class Set<T extends string | number> {
 		}
 	}
 
-	entries(): [any, any][] {
+	public entries(): [any, any][] {
 		let entries = [];
 
 		for (let value in this.items) {
@@ -35,11 +35,11 @@ export default class Set<T extends string | number> {
 		return entries;
 	}
 
-	keys(): any[] {
+	public keys(): any[] {
 		return this.values();
 	}
 
-	values(): any[] {
+	public values(): any[] {
 		let values = [];
 
 		for (let value in this.items) {
@@ -49,17 +49,24 @@ export default class Set<T extends string | number> {
 		return values;
 	}
 
-	has(value): boolean {
+	public has(value: any): boolean {
 		return this.items.hasOwnProperty(value);
 	}
 
-	add(value): any {
+	public add(value: any): any {
+		let exist = this.has(value);
 		this.items[value] = true;
+
+		if (exist) {
+			return this;
+		}
+		this.size++;
+
 		return this;
 	}
 
-	delete(value: any): boolean {
-		let exist = this.items.hasOwnProperty(value);
+	public delete(value: any): boolean {
+		let exist = this.has(value);
 		if (exist) {
 			this.size--;
 			delete this.items[value];
@@ -68,14 +75,14 @@ export default class Set<T extends string | number> {
 		return exist;
 	}
 
-	clear(): void {
+	public clear(): void {
 		this.size = 0;
 		this.items = {};
 	}
 
-	forEach(callbackfn: (value, value2, set: Set<any>) => void): void {
+	public forEach(callbackFunction: (value: any, value2: any, set: Set<any>) => void): void {
 		for (let value in this.items) {
-			callbackfn(value, value, this);
+			callbackFunction(value, value, this);
 		}
 	}
 }

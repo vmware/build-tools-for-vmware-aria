@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.store.vrang;
-
 /*
  * #%L
  * artifact-manager
@@ -14,12 +12,28 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import java.io.File;
 
+/**
+ * Interface for VRA NG Store.
+ */
 public interface IVraNgStore {
-    void importContent(File sourceDirectory);
+	/**
+	 * Import content from source directory.
+	 *
+	 * @param sourceDirectory
+	 */
+	void importContent(File sourceDirectory);
 
-    void exportContent();
+	/**
+	 * Export content to `src/...`.
+	 */
+	void exportContent();
 
+	/**
+	 * Delete content from the server based on the `content.yaml`.
+	 */
+	void deleteContent();
 }

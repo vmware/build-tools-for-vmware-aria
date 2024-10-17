@@ -21,27 +21,27 @@ By contributing to this project you agree to the [Developer Certificate of Origi
 
 ## Getting Started
 
-Looking for places to contribute to the codebase? You can start by looking through the [`help-wanted`](https://github.com/vmware/build-tools-for-vmware-aria/labels/status:help-wanted) issues.
+Looking for places to contribute to the codebase? You can start by looking through the [`triage/accepted`](https://github.com/vmware/build-tools-for-vmware-aria/issues?q=is%3Aissue+is%3Aopen+label%3Atriage%2Faccepted) issues or [`pr/need-help`](https://github.com/vmware/build-tools-for-vmware-aria/pulls?q=is%3Apr+is%3Aopen+label%3Apr%2Fneed-help) Pull Requests.
 
 ### Getting the code
 
-```
+``` shell
 git clone https://github.com/vmware/build-tools-for-vmware-aria.git
 ```
 
 ### Prerequisites
 
--   [Git](https://git-scm.com/)
--   [Node.js](https://nodejs.org/), `~14.17.1`
--   [Npm](https://www.npmjs.com), `~6.14.13`
--   [Maven](https://maven.apache.org/), `~3.8.6`
--   [JDK](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html), `1.8.0_xxx`
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/), `~14.17.1`
+- [Npm](https://www.npmjs.com), `~6.14.13`
+- [Maven](https://maven.apache.org/), `~3.8.6`
+- [JDK](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html), `1.8.0_xxx`
 
 
 ### Guides
 1. [Setting up local environment](docs/versions/latest/General/Getting%20Started/Setting%20Up%20Local%20Environment.md)
 2. [Setting up workstation](docs/archive/doc/markdown/setup-workstation.md)
-   - Publicly available: https://github.com/vmware/vrealize-developer-tools/wiki/Setup-Developer-Workstation
+   - vRealize-Developer-Tools [related documentation](https://github.com/vmware/vrealize-developer-tools/wiki/Setup-Developer-Workstation)
 3. Adding new functionalities - here are few guidelines that could be followed to ease the development process:
    - Read the ticket description to understand which is the mvn plugin that needs to be updated. All plugin executions (`mvn package`, `pull` and `push`) start from a `Mojo` class under the plugin's directory `/maven/plugins/PLUGIN-XXX/src/main/java/com/vmware/pscoe/maven/plugins/`.
      - Example: `PullMojo.java` under `/maven/plugins/vra-ng` will be executed when you do the `mvn pull` command in VMware Aria Automation 8 (vRA 8\) context.
@@ -66,15 +66,37 @@ When contributing, please refer to our [How to write documentation](./docs/Docum
 ## Contributing Code
 When adding new code make sure to cover the following mandatory points:
 
-1. Append information about the implemented functionality to [CHANGELOG.md](./CHANGELOG.md) and [Release.md](./docs/versions/latest/Release.md).
+1. Append information about the implemented functionality to [Release.md](./docs/versions/latest/Release.md).
 2. Satisfy the checklist in [PR template](./.github/pull_request_template.md)
-    -   If you skip any of the tasks from the checklist, add a comment explaining why that task might be irrelevant to your contribution.
+    - If you skip any of the tasks from the checklist, add a comment explaining why that task might be irrelevant to your contribution.
 3. Unit tests are mandatory.  
-    -   If adding unit tests is not viable - other options are to be explored.
-    -   If no unit tests are included justification should be provided.
-4. Include usage information based on [As-Built](./As-built-template.md) template.
+    - If adding unit tests is not viable - other options are to be explored.
+    - If no unit tests are included justification should be provided.
 
 :scroll:**NOTE!** When doing a Pull Request review make sure that all points mentioned above are covered before approving the PR.
+
+### Naming Convention For Branches
+
+When creating a branch, please follow the naming convention:
+
+Format: `<type>/<issueNumber>-<name>`
+
+Types can be:
+
+- `feature` / `feat` - for new features
+- `bugfix` / `fix` - for bug fixes
+- `hotfix` - for hotfixes
+- `docs` - for documentation changes
+- `style` - for changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- `refactor` - for changes that neither fixes a bug nor adds a feature
+- `test` - for adding missing tests or correcting existing tests
+- `chore` - for changes to the build process or auxiliary tools and libraries such as documentation generation
+
+If none of the above types fit, you should review your code, it probably encompasses more than one type and needs to be split into multiple branches. Exceptions can be made if given a good reason why.
+
+### Commits Message Convention
+
+When commiting to a branch, please follow the following convention: [Semantic Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ## Submitting a Pull Request
 
@@ -94,6 +116,42 @@ If you cannot find an existing issue that describes your bug or feature, create 
 
 ### Writing Good Issue Reports
 
--   File a single issue per problem and feature request. Do not enumerate multiple bugs or feature requests in the same issue.
--   Do not add your issue as a comment to an existing issue unless it's related. Many issues look similar, but have different causes.
--   When filing bugs, please follow the [bug template](./.github/ISSUE_TEMPLATE/bug_report.md) and include as much information as possible. The more information you can provide, the more likely someone will be successful at reproducing the issue and finding a fix.
+- File a single issue per problem and feature request. Do not enumerate multiple bugs or feature requests in the same issue.
+- Do not add your issue as a comment to an existing issue unless it's related. Many issues look similar, but have different causes.
+- When filing bugs, please follow the [bug template](./.github/ISSUE_TEMPLATE/bug_report.md) and include as much information as possible. The more information you can provide, the more likely someone will be successful at reproducing the issue and finding a fix.
+
+### Labels
+
+If you create a new issue, you should add a label to it `triage/needed`, then someone from the maintainers team will decide if that issue is relevant and if it will be done. If you don't add a label, then it will be up to the maintainers to do so, but your issue may take longer to be resolved.
+
+Overall before an issue is resolved, it should have a `triage`, `kind` and `version` labels.
+
+There are other labels that can be added optionally if you think they are relevant. Check down below for more information.
+
+#### Triaging Labels
+
+The main labels used for triaging are:
+
+- `triage/needed` - This label is used to mark issues that need to be triaged.
+- `triage/accepted` - This label is used to mark issues that are relevant and will be done.
+- `triage/rejected` - This label is used to mark issues that are not relevant and will not be done.
+
+There are others that can be used to convey different information, for more info check [the labels](https://github.com/vmware/build-tools-for-vmware-aria/labels?q=triage)
+
+#### Kind Labels
+
+The main labels used for kind are:
+
+- `kind/bug` - This label is used to mark issues that are bugs.
+- `kind/feature` - This label is used to mark issues that are feature requests.
+
+There are others that can be used to convey different information, for more info check [the labels](https://github.com/vmware/build-tools-for-vmware-aria/labels?q=kind)
+
+#### Version Labels
+
+The main labels used for version are:
+
+- `version/patch` - This label is used to mark issues that are patches.
+- `version/minor` - This label is used to mark issues that are minor versions.
+- `version/major` - This label is used to mark issues that are major versions.
+

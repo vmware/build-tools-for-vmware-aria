@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest;
-
 /*
  * #%L
  * artifact-manager
@@ -14,11 +12,12 @@ package com.vmware.pscoe.iac.artifact.rest;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,34 +25,37 @@ import org.springframework.http.MediaType;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 
 public abstract class RestClient {
+	/** Default HTTPS port */
+	private static final int DEFAULT_HTTPS_PORT = 443;
 
-    protected abstract Configuration getConfiguration();
+	protected abstract Configuration getConfiguration();
 
-    protected URIBuilder getURIBuilder() {
-        URIBuilder uriBuilder = new URIBuilder().setScheme("https").setHost(getConfiguration().getHost());
-        int port = getConfiguration().getPort();
-        if (port != 443) {
-            // set the port only if not default, otherwise vRA Cloud complains about invalid Host header
-            uriBuilder = uriBuilder.setPort(port);
-        }
+	protected URIBuilder getURIBuilder() {
+		URIBuilder uriBuilder = new URIBuilder().setScheme("https").setHost(getConfiguration().getHost());
+		int port = getConfiguration().getPort();
+		if (port != DEFAULT_HTTPS_PORT) {
+			// set the port only if not default, otherwise vRA Cloud complains about invalid
+			// Host header
+			uriBuilder = uriBuilder.setPort(port);
+		}
 
-        return uriBuilder;
-    }
+		return uriBuilder;
+	}
 
-    protected URI getURI(URIBuilder builder) {
-        try {
-            return builder.build();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	protected URI getURI(URIBuilder builder) {
+		try {
+			return builder.build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public abstract String getVersion();
+	public abstract String getVersion();
 
-    protected static HttpEntity<String> getDefaultHttpEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        return new HttpEntity<String>(headers);
-    }
+	protected static HttpEntity<String> getDefaultHttpEntity() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		return new HttpEntity<String>(headers);
+	}
 
 }

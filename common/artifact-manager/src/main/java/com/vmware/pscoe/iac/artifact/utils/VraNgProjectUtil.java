@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.utils;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.utils;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.utils;
 
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.google.gson.JsonObject;
@@ -21,7 +20,7 @@ import com.google.gson.JsonPrimitive;
 
 public final class VraNgProjectUtil {
 
-    private VraNgProjectUtil() { }
+	private VraNgProjectUtil() { }
 
 	/**
 	 * Fixes the project id in the given object with the one set in the configuration.
@@ -38,6 +37,6 @@ public final class VraNgProjectUtil {
 			customResourceJsonElement.add(projectIdKey, new JsonPrimitive(defaultProjectId));
 		} else {
 			customResourceJsonElement.remove(projectIdKey);
-        }
+		}
 	}
 }

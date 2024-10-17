@@ -17,39 +17,43 @@ import * as path from "path";
 import * as archiver from 'archiver';
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
-import { saveOptions, serialize, xmlOptions, complexActionComment, getActionXml} from "./util"
-import { exist, isDirectory} from "../util";
+import { serialize, xmlOptions, complexActionComment, getActionXml } from "./util"
+import { exist, isDirectory } from "../util";
 import { decode } from "../encoding";
+import { JSON_DEFAULT_IDENT, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, VRO_FORM_TEMPLATE, ZLIB_COMPRESS_LEVEL } from "../constants";
 
 const buildContext = (target: string) => {
     return {
         target: target,
-        elements: (category, name) => serializeTreeElementContext(path.join(target, category), name)
+        elements: (category: string, name: string) => serializeTreeElementContext(path.join(target, category), name)
     }
 }
 
-
 const serializeTreeElementContext = (target: string, elementName: string) => {
-
     const store = serialize(target);
-
     return {
         target: target,
-        data: (element: t.VroNativeElement, sourceFile : string, type : t.VroElementType) => {
-            if(type == t.VroElementType.ResourceElement){
-                return fs.copyFile(sourceFile, path.join(target, `${elementName}`))
-            } else if (type == t.VroElementType.ScriptModule) {
-                let elementXmlPath = path.join(target, `${elementName}.xml`)
-                let actionXml = getActionXml(element.id, element.name, element.description, element.action);
-                return fs.writeFile(elementXmlPath, actionXml);
+        data: (element: t.VroNativeElement, sourceFile: string, type: t.VroElementType) => {
+            switch (type) {
+                case t.VroElementType.ResourceElement: {
+                    return fs.copyFile(sourceFile, path.join(target, `${elementName}`));
+                }
+                case t.VroElementType.ScriptModule: {
+                    let elementXmlPath = path.join(target, `${elementName}.xml`)
+                    let actionXml = getActionXml(element.id, element.name, element.description, element.action);
+                    return fs.writeFile(elementXmlPath, actionXml);
+                }
+                default: {
+                    // Re-encode the content to UTF-8
+                    let buffer = fs.readFileSync(sourceFile);
+                    return fs.writeFile(path.join(target, `${elementName}.xml`), decode(buffer));
+                }
             }
-			// Re-encode the content to UTF-8
-			var buffer = fs.readFileSync(sourceFile);
-			return fs.writeFile(path.join(target, `${elementName}.xml`), decode(buffer));
         },
         bundle: (element: t.VroNativeElement, bundle: t.VroScriptBundle) => {
             if (bundle == null) {
-                return new Promise<void>((resolve, reject) => {}); // Empty promise that does nothing. Nothing needs to be done since bundle file does not exist.
+                // Empty promise that does nothing. Nothing needs to be done since bundle file does not exist.
+                return new Promise<void>((resolve, reject) => { });
             }
             let bundleFilePathSrc = bundle.contentPath;
             if (!exist(bundleFilePathSrc)) {
@@ -58,8 +62,8 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
             }
             let bundleFilePathDest = path.join(target, `${elementName}.bundle.zip`);
             if (isDirectory(bundleFilePathSrc)) {
-                var output = fs.createWriteStream(bundleFilePathDest);
-                var archive = archiver('zip', { zlib: { level: 9 } });
+                let output = fs.createWriteStream(bundleFilePathDest);
+                let archive = archiver('zip', { zlib: { level: ZLIB_COMPRESS_LEVEL } });
                 archive.directory(bundleFilePathSrc, false);
                 archive.pipe(output);
                 archive.finalize();
@@ -69,9 +73,20 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
         },
         info: store(`${elementName}.element_info.xml`),
         tags: store(`${elementName}.tags.xml`),
+        // if the object contains custom form then store it on the file system
         form: (element: t.VroNativeElement) => {
-            if(element.form) {
-                fs.writeFile(path.join(target, `${elementName}.form.json`), JSON.stringify(element.form, null, 4));
+            if (element.form?.data) {
+                const formFileName = VRO_FORM_TEMPLATE.replace("{{elementName}}", elementName);
+                fs.writeFile(path.join(target, formFileName), JSON.stringify(element.form?.data, null, JSON_DEFAULT_IDENT));
+            }
+        },
+        // if the object contains more forms (i.e. custom interaction enabled workflow) then store them on the file system
+        formItems: (element: t.VroNativeElement) => {
+            if (element.formItems && Array.isArray(element.formItems)) {
+                element.formItems.forEach((formItem: t.VroNativeFormElement) => {
+                    const customFormFileName = VRO_CUSTOM_FORMS_FILENAME_TEMPLATE.replace("{{elementName}}", elementName).replace("{{formName}}", formItem.name);
+                    fs.writeFile(path.join(target, customFormFileName), JSON.stringify(formItem.data, null, JSON_DEFAULT_IDENT));
+                });
             }
         }
     }
@@ -80,33 +95,32 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
 const serializeTreeElement = async (context: any, element: t.VroNativeElement): Promise<void[]> => {
     const xInfo = xmlbuilder.create("properties", xmlOptions);
     xInfo.dtd("", "http://java.sun.com/dtd/properties.dtd");
-	if (element?.type != t.VroElementType.ScriptModule) {
+    if (element?.type != t.VroElementType.ScriptModule) {
         xInfo.ele("comment").text(element?.comment);
     } else {
-    	xInfo.ele("comment").cdata(complexActionComment(element));
-	}
+        xInfo.ele("comment").cdata(complexActionComment(element));
+    }
+    const categoryPathKey = element.type == t.VroElementType.ScriptModule
+        ? element?.categoryPath
+        : element?.categoryPath.map(c => c.replace(/\./g, "/."))
+    let pathKey: string = categoryPathKey.join(".");
 
-    const categoryPathKay = element.type == t.VroElementType.ScriptModule
-        ? element.categoryPath
-        : element.categoryPath.map(c => c.replace(/\./g, "/."))
-    let pathKey : string = categoryPathKay.join(".");
+    const categoryPath = element.type == t.VroElementType.ScriptModule
+        ? element?.categoryPath.pop().split('.')
+        : element?.categoryPath;
 
-    const categoryPath    = element.type == t.VroElementType.ScriptModule
-        ? element.categoryPath.pop().split('.')
-        : element.categoryPath;
-
-	if (element.type == t.VroElementType.ResourceElement && element.attributes["version"]) {
-		xInfo.ele("entry").att("key", "version").text(element.attributes["version"]);
-	}
-	xInfo.ele("entry").att("key", "categoryPath").text(pathKey)
-	if (element.type == t.VroElementType.ResourceElement) {
+    if (element.type == t.VroElementType.ResourceElement && element.attributes["version"]) {
+        xInfo.ele("entry").att("key", "version").text(element.attributes["version"]);
+    }
+    xInfo.ele("entry").att("key", "categoryPath").text(pathKey)
+    if (element.type == t.VroElementType.ResourceElement) {
         xInfo.ele("entry").att("key", "mimetype").text(element.attributes["mimetype"]);
     }
-	xInfo.ele("entry").att("key", "name").text(element.name);
+    xInfo.ele("entry").att("key", "name").text(element.name);
     xInfo.ele("entry").att("key", "type").text(element.type.toString());
-	if (element.type == t.VroElementType.ResourceElement && element.attributes["description"]) {
-		xInfo.ele("entry").att("key", "description").text(element.attributes["description"]);
-	}
+    if (element.type == t.VroElementType.ResourceElement && element.attributes["description"]) {
+        xInfo.ele("entry").att("key", "description").text(element.attributes["description"]);
+    }
     xInfo.ele("entry").att("key", "id").text(element.id);
 
     const xTags = xmlbuilder.create("tags", xmlOptions);
@@ -124,7 +138,8 @@ const serializeTreeElement = async (context: any, element: t.VroNativeElement): 
         elementContext.bundle(element, element?.action?.bundle),
         elementContext.info(xInfo.end({ pretty: true })),
         elementContext.tags(xTags.end({ pretty: true })),
-        elementContext.form(element)
+        elementContext.form(element),
+        elementContext.formItems(element)
     ]);
 }
 

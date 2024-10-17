@@ -1,5 +1,3 @@
-package com.vmware.pscoe.maven.plugins;
-
 /*
  * #%L
  * o11n-actions-package-maven-plugin
@@ -14,6 +12,7 @@ package com.vmware.pscoe.maven.plugins;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.maven.plugins;
 
 import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
@@ -38,40 +37,40 @@ import java.nio.file.Path;
 @Mojo(name = "pull")
 public class JsBasedActionsPullMojo extends AbstractIacMojo {
 
-    @Parameter( property = "packageName" )
-    private String packageName;
+	@Parameter( property = "packageName" )
+	private String packageName;
 
 	@Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        super.execute();
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
 
-        final Path tempDir;
-        try {
-            tempDir = Files.createTempDirectory("vro-js-pull");
-        } catch (IOException e) {
-            throw new MojoExecutionException("Could not create a temp directory");
-        }
-        final PackageInfoProvider packageInfoProvider = new MavenProjectPackageInfoProvider(project);
-        final String pkgName = StringUtils.isBlank(packageName) ? packageInfoProvider.getPackageName() : packageName;
-        final File packageFile = tempDir.resolve(pkgName + "." + PackageType.VRO.getPackageExtention()).toFile();
-        final Package pkg = PackageFactory.getInstance(PackageType.VRO, packageFile);
+		final Path tempDir;
+		try {
+			tempDir = Files.createTempDirectory("vro-js-pull");
+		} catch (IOException e) {
+			throw new MojoExecutionException("Could not create a temp directory");
+		}
+		final PackageInfoProvider packageInfoProvider = new MavenProjectPackageInfoProvider(project);
+		final String pkgName = StringUtils.isBlank(packageName) ? packageInfoProvider.getPackageName() : packageName;
+		final File packageFile = tempDir.resolve(pkgName + "." + PackageType.VRO.getPackageExtention()).toFile();
+		final Package pkg = PackageFactory.getInstance(PackageType.VRO, packageFile);
 		// Get vRO package via REST API
-        try {
-            final PackageStore<?> packageStore = PackageStoreFactory.getInstance(getConfigurationForVro());
-            packageStore.exportPackage(pkg, false);
-        } catch (ConfigurationException e) {
-            throw new MojoExecutionException("Could not process the configuration", e);
-        }
+		try {
+			final PackageStore<?> packageStore = PackageStoreFactory.getInstance(getConfigurationForVro());
+			packageStore.exportPackage(pkg, false);
+		} catch (ConfigurationException e) {
+			throw new MojoExecutionException("Could not process the configuration", e);
+		}
 		// Delete all local files
-        final ProjectTree projectTree = new JsBasedActionsProjectTree(project.getBasedir().toPath(), true);
-        try {
-            projectTree.walk(new CleanProjectTree());
-        } catch (Exception e) {
-            throw new MojoExecutionException("Could not clean the project tree", e);
-        }
+		final ProjectTree projectTree = new JsBasedActionsProjectTree(project.getBasedir().toPath(), true);
+		try {
+			projectTree.walk(new CleanProjectTree());
+		} catch (Exception e) {
+			throw new MojoExecutionException("Could not clean the project tree", e);
+		}
 
 		// Convert flat (.pakcage file) to JS tree structure
 		String projectRoot = project.getBasedir().toPath().toString();
 		this.runVroPkg("flat", packageFile.getAbsolutePath(), "js", projectRoot);
-    }
+	}
 }

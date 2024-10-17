@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -27,6 +26,8 @@ import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
+
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
@@ -36,13 +37,17 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSource;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDeploymentLimitPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgFlavorMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgImageMapping;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgRegion;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgStorageProfile;
 import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
@@ -57,6 +62,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 
 public class RestClientVraNg extends RestClientVraNgPrimitive {
+	private static final String SUBSCRIPTION_BASE_QUERY = "type ne 'SUBSCRIBABLE'";
+	private static final String SUBSCRIPTION_QUERY_PARAM = "%s eq '%s'";
+
 	/**
 	 * logger.
 	 */
@@ -66,7 +74,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * Constructor for RestClientVraNg.
 	 * 
 	 * @param configuration configuration vra
-	 * @param restTemplate rest template
+	 * @param restTemplate  rest template
 	 */
 	protected RestClientVraNg(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
 		super(configuration, restTemplate);
@@ -109,7 +117,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * Patch a catalog item.
 	 * 
 	 * @param catalogItem catalog item
-	 * @param iconId icon id
+	 * @param iconId      icon id
 	 * @return ResponseEntity
 	 */
 	public ResponseEntity<String> patchCatalogItemIcon(final VraNgCatalogItem catalogItem, final String iconId) {
@@ -136,6 +144,25 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not create Blueprint with name '%s'.", blueprint.getName()),
 					e);
+		}
+	}
+
+	/**
+	 * Deletes a blueprint.
+	 *
+	 * @param bpId blueprint id
+	 * @throws RuntimeException if the blueprint could not be deleted
+	 */
+	public void deleteBlueprint(final String bpId) {
+		try {
+			logger.info("Deleting blueprint with id '{}'", bpId);
+			ResponseEntity<String> res = deleteBlueprintPrimitive(bpId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete blueprint with id '{}'", bpId);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete Blueprint with id '%s'.", bpId));
 		}
 	}
 
@@ -186,7 +213,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * getBlueprintVersionContent.
 	 * 
 	 * @param blueprintId blueprint id
-	 * @param version version
+	 * @param version     version
 	 * @return content
 	 */
 	public String getBlueprintVersionContent(final String blueprintId, final String version) {
@@ -216,7 +243,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * isBlueprintVersionPresent.
 	 * 
 	 * @param blueprintId blueprint id
-	 * @param version version
+	 * @param version     version
 	 * @return boolean
 	 */
 	public Boolean isBlueprintVersionPresent(final String blueprintId, final String version) {
@@ -246,7 +273,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * releaseBlueprintVersion.
 	 *
 	 * @param blueprintId blueprint id
-	 * @param version version
+	 * @param version     version
 	 */
 	public void releaseBlueprintVersion(final String blueprintId, final String version) {
 		try {
@@ -261,7 +288,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * releaseBlueprintVersion.
 	 *
 	 * @param blueprintId blueprint id
-	 * @param versionId version id
+	 * @param versionId   version id
 	 */
 	public void unreleaseBlueprintVersion(final String blueprintId, final String versionId) {
 		try {
@@ -324,7 +351,25 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getAllSubscriptions() {
-		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE'");
+		return getAllSubscriptionsPrimitive(SUBSCRIPTION_BASE_QUERY);
+	}
+
+	/**
+	 * Deletes a subscription.
+	 *
+	 * @param subscriptionId subscription id
+	 */
+	public void deleteSubscription(final String subscriptionId) {
+		try {
+			logger.info("Deleting subscription with id '{}'", subscriptionId);
+			ResponseEntity<String> res = deleteSubscriptionPrimitive(subscriptionId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete subscription with id '{}'", subscriptionId);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete Subscription with id '%s'.", subscriptionId), e);
+		}
 	}
 
 	/**
@@ -334,7 +379,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByName(final String name) {
-		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE' and name eq '" + name + "'");
+		return getAllSubscriptionsPrimitive(
+				SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name));
 	}
 
 	/**
@@ -344,19 +390,22 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgId(final String orgId) {
-		return getAllSubscriptionsPrimitive("type ne 'SUBSCRIBABLE' and orgId eq '" + orgId + "'");
+		return getAllSubscriptionsPrimitive(
+				SUBSCRIPTION_BASE_QUERY + " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId));
 	}
 
 	/**
 	 * getSubscriptionsByOrgIdAndName.
 	 *
 	 * @param orgId org id
-	 * @param name subscription name
+	 * @param name  subscription name
 	 * @return subscriptions
 	 */
 	public Map<String, VraNgSubscription> getSubscriptionsByOrgIdAndName(final String orgId, final String name) {
-		return getAllSubscriptionsPrimitive(
-				"type ne 'SUBSCRIBABLE' and orgId eq '" + orgId + "' and name eq '" + name + "'");
+		String query = SUBSCRIPTION_BASE_QUERY
+				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId)
+				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name);
+		return getAllSubscriptionsPrimitive(query);
 	}
 
 	// =================================================
@@ -460,9 +509,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createFlavor.
 	 *
-	 * @param regionId region id
+	 * @param regionId          region id
 	 * @param flavorProfileName flavor name
-	 * @param flavorMappings flavor mappings
+	 * @param flavorMappings    flavor mappings
 	 */
 	public void createFlavor(final String regionId, final String flavorProfileName,
 			final List<VraNgFlavorMapping> flavorMappings) {
@@ -476,7 +525,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateFlavor.
 	 *
-	 * @param flavorId flavor id
+	 * @param flavorId       flavor id
 	 * @param flavorMappings flavor mappings
 	 */
 	public void updateFlavor(final String flavorId, final List<VraNgFlavorMapping> flavorMappings) {
@@ -520,8 +569,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createImageProfile.
 	 *
-	 * @param regionId region id
-	 * @param profileName profile name
+	 * @param regionId      region id
+	 * @param profileName   profile name
 	 * @param imageMappings image mappings
 	 */
 	public void createImageProfile(final String regionId, final String profileName,
@@ -536,7 +585,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * updateImageProfile.
 	 *
-	 * @param profileId profile id
+	 * @param profileId     profile id
 	 * @param imageMappings image mappings
 	 */
 	public void updateImageProfile(final String profileId, final List<VraNgImageMapping> imageMappings) {
@@ -568,7 +617,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * updateStorageProfile.
 	 *
 	 * @param profileId profile id
-	 * @param profile vra storage profile 
+	 * @param profile   vra storage profile
 	 */
 	public void updateStorageProfile(final String profileId, final VraNgStorageProfile profile) {
 		try {
@@ -602,7 +651,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * getSpecificStorageProfile.
 	 *
 	 * @param targetPool target pool
-	 * @param profileId storage profile id
+	 * @param profileId  storage profile id
 	 * @return storageProfile
 	 */
 	public VraNgStorageProfile getSpecificStorageProfile(final String targetPool, final String profileId) {
@@ -618,8 +667,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * updateSpecificProfile.
 	 *
 	 * @param patchTarget patch target
-	 * @param profileId storage profile id
-	 * @param profile storage profile
+	 * @param profileId   storage profile id
+	 * @param profile     storage profile
 	 */
 	public void updateSpecificProfile(final String patchTarget, final String profileId,
 			final VraNgStorageProfile profile) {
@@ -701,6 +750,25 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * Deletes a catalog item.
+	 *
+	 * @param catalogItemId catalog item id
+	 */
+	public void deleteCatalogItem(final String catalogItemId) {
+		try {
+			logger.info("Deleting catalog item with id '{}'", catalogItemId);
+			ResponseEntity<String> res = this.deleteCatalogItemPrimitive(catalogItemId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete catalog item with id '{}'", catalogItemId);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting catalog item '{}': {}", catalogItemId, e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * getPropertyGroups.
 	 *
 	 * @return propertyGroup
@@ -710,6 +778,25 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getAllPropertyGroupsPrimitive();
 		} catch (Exception e) {
 			logger.error("Error fetching property groups: {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Deletes a property group.
+	 *
+	 * @param propertyGroupId property group id
+	 */
+	public void deletePropertyGroup(final String propertyGroupId) {
+		try {
+			logger.info("Deleting property group with id '{}'", propertyGroupId);
+			ResponseEntity<String> res = this.deletePropertyGroupPrimitive(propertyGroupId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete property group with id '{}'", propertyGroupId);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting property group '{}': {}", propertyGroupId, e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -837,7 +924,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCustomFormByTypeAndSource.
 	 *
-	 * @param type source type
+	 * @param type     source type
 	 * @param sourceId source id
 	 * @return customForm
 	 */
@@ -867,9 +954,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * fetchRequestForm.
 	 *
-	 * @param type source type
+	 * @param type     source type
 	 * @param sourceId source id
-	 * @param formId form id
+	 * @param formId   form id
 	 * @return customForm
 	 */
 	public VraNgCustomForm fetchRequestForm(final String type, final String sourceId, final String formId) {
@@ -944,7 +1031,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * importCustomForm.
 	 *
 	 * @param customForm vra custom form
-	 * @param sourceId source id
+	 * @param sourceId   source id
 	 */
 	public void importCustomForm(final VraNgCustomForm customForm, final String sourceId) {
 		try {
@@ -970,10 +1057,29 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * Deletes a catalog entitlement.
+	 *
+	 * @param entitlementId catalog entitlement id
+	 */
+	public void deleteCatalogEntitlement(final String entitlementId) {
+		try {
+			logger.info("Deleting catalog entitlement with id '{}'", entitlementId);
+			ResponseEntity<String> res = this.deleteCatalogEntitlementPrimitive(entitlementId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete catalog entitlement with id '{}'", entitlementId);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting catalog entitlement '{}': {}", entitlementId, e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * createCatalogEntitlement.
 	 *
 	 * @param entitlement catalog entitlement
-	 * @param project project id
+	 * @param project     project id
 	 */
 	public void createCatalogEntitlement(final VraNgCatalogEntitlement entitlement, final String project) {
 		try {
@@ -1082,13 +1188,16 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * deleteCustomResource.
 	 * 
 	 * @param customResourceName custom resource name
-	 * @param customResourceId custom resource id
+	 * @param customResourceId   custom resource id
 	 */
 	public void deleteCustomResource(final String customResourceName, final String customResourceId) {
 		try {
-			deleteCustomResourcePrimitive(customResourceId);
-		} catch (HttpClientErrorException httpClientErrorException) {
-			throw httpClientErrorException;
+			logger.info("Deleting custom resource with id '{}'", customResourceId);
+			ResponseEntity<String> res = deleteCustomResourcePrimitive(customResourceId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete custom resource with id '{}'", customResourceId);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not delete custom resource with name '%s' (id:%s).",
 					customResourceName, customResourceId), e);
@@ -1125,8 +1234,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return importResourceActionPrimitive(resourceActionJson);
 		} catch (Exception e) {
 			throw new RuntimeException(
-					String.format("Could not import resource action with name '%s'.", resourceActionName),
-					e);
+					String.format("Could not import resource action with name '%s'.", resourceActionName), e);
 		}
 	}
 
@@ -1134,11 +1242,16 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * deleteResourceAction.
 	 * 
 	 * @param resourceActionName resource action name
-	 * @param resourceActionId resource action id
+	 * @param resourceActionId   resource action id
 	 */
 	public void deleteResourceAction(final String resourceActionName, final String resourceActionId) {
 		try {
-			deleteResourceActionPrimitive(resourceActionId);
+			logger.info("Deleting resource action with id '{}'", resourceActionId);
+			ResponseEntity<String> res = deleteResourceActionPrimitive(resourceActionId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete resource action with id '{}'", resourceActionId);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Could not delete resource action with name '%s' and id '%s'.",
 					resourceActionName, resourceActionId), e);
@@ -1168,7 +1281,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * updateAbxAction.
 	 * 
 	 * @param actionId action id
-	 * @param action action
+	 * @param action   action
 	 * @return actionId
 	 */
 	public String updateAbxAction(final String actionId, final AbxAction action) {
@@ -1188,7 +1301,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public AbxActionVersion getAbxLastUpdatedVersion(final AbxAction action) {
 		try {
-			return getAbxLastUpdatedVersionPrimitive(action.id);
+			return getAbxLastUpdatedVersionPrimitive(action.getId());
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not get latest version of ABX action with name '%s'.", action.getName()), e);
@@ -1198,13 +1311,13 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * createAbxVersion.
 	 * 
-	 * @param action abx action
+	 * @param action  abx action
 	 * @param version version
 	 * @return abxVersion
 	 */
 	public AbxActionVersion createAbxVersion(final AbxAction action, final String version) {
 		try {
-			return createAbxVersionPrimitive(action.id, version);
+			return createAbxVersionPrimitive(action.getId(), version);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create version of ABX action with name '%s'.", action.getName()), e);
@@ -1214,13 +1327,13 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * releaseAbxVersion.
 	 * 
-	 * @param action action 
+	 * @param action    action
 	 * @param versionId version id
 	 * @return version
 	 */
 	public AbxActionVersion releaseAbxVersion(final AbxAction action, final String versionId) {
 		try {
-			return releaseAbxVersionPrimitive(action.id, versionId);
+			return releaseAbxVersionPrimitive(action.getId(), versionId);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not release version of ABX action with name '%s'.", action.getName()), e);
@@ -1261,6 +1374,24 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	// =================================================
 
 	/**
+	 * Delete policy.
+	 *
+	 * @param policyId policy id
+	 */
+	public void deletePolicy(final String policyId) {
+		try {
+			logger.info("Deleting policy with id '{}'", policyId);
+			ResponseEntity<String> res = deletePolicyPrimitive(policyId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Error deleting policy with id '{}'. Response: {}", policyId, res);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete policy with id '%s'.", policyId), e);
+		}
+	}
+
+	/**
 	 * getContentSharingPolicyIds.
 	 * 
 	 * @return policies
@@ -1281,7 +1412,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 */
 	public void createContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
 		try {
-			createContentSharingPolicyPrimitive(csPolicy);
+			this.createContentSharingPolicyPrimitive(csPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
@@ -1299,6 +1430,223 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getContentSharingPolicyPrimitive(policyId);
 		} catch (Exception e) {
 			logger.error("Error fetching content sharing policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * 
+	 * getResourceQuotaPolicyIds.
+	 * 
+	 * @return policies
+	 */
+	public List<VraNgResourceQuotaPolicy> getResourceQuotaPolicies() {
+		try {
+			return this.getAllResourceQuotaPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching resource quota policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getLeasePolicies.
+	 * 
+	 * @return lease policies
+	 */
+	public List<VraNgLeasePolicy> getLeasePolicies() {
+		try {
+			return this.getAllLeasePoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching lease policies", e.getMessage());
+
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createResourceQuotaPolicy.
+	 * 
+	 * @param rqPolicy resource quota policy
+	 */
+	public void createResourceQuotaPolicy(final VraNgResourceQuotaPolicy rqPolicy) {
+		try {
+			createResourceQuotaPolicyPrimitive(rqPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * createLeasePolicy.
+	 * 
+	 * @param csPolicy lease policy
+	 */
+	public void createLeasePolicy(final VraNgLeasePolicy csPolicy) {
+		try {
+			createLeasePolicyPrimitive(csPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * getResourceQuotaPolicy.
+	 * 
+	 * @param policyId resource quota policy id
+	 * @return policy
+	 */
+	public VraNgResourceQuotaPolicy getResourceQuotaPolicy(final String policyId) {
+		try {
+			return this.getResourceQuotaPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching resource quota policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getLeasePolicy.
+	 * 
+	 * @param policyId lease policy id
+	 * @return policy
+	 */
+	public VraNgLeasePolicy getLeasePolicy(final String policyId) {
+		try {
+			return this.getLeasePolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching lease policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getDay2ActionsPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgDay2ActionsPolicy> getDay2ActionsPolicies() {
+		try {
+			return this.getAllDay2ActionsPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching day 2 actions policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createDay2ActionsPolicy.
+	 *
+	 * @param d2aPolicy day 2 actions policy
+	 */
+	public void createDay2ActionsPolicy(final VraNgDay2ActionsPolicy d2aPolicy) {
+		try {
+			createDay2ActionsPolicyPrimitive(d2aPolicy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
+		}
+	}
+
+	/**
+	 * getDay2ActionsPolicy.
+	 *
+	 * @param policyId day 2 actions policy id
+	 * @return policy
+	 */
+	public VraNgDay2ActionsPolicy getDay2ActionsPolicy(final String policyId) {
+		try {
+			return this.getDay2ActionsPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching resource day 2 actions - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getDeploymentLimitPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgDeploymentLimitPolicy> getDeploymentLimitPolicies() {
+		try {
+			return this.getAllDeploymentLimitPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching deployemnt limit policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createDeploymentLimitPolicy.
+	 *
+	 * @param policy day 2 actions policy
+	 */
+	public void createDeploymentLimitPolicy(final VraNgDeploymentLimitPolicy policy) {
+		try {
+			createDeploymentLimitPolicyPrimitive(policy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
+		}
+	}
+
+	/**
+	 * getDeploymentLimitPolicy.
+	 *
+	 * @param policyId day 2 actions policy id
+	 * @return policy
+	 */
+	public VraNgDeploymentLimitPolicy getDeploymentLimitPolicy(final String policyId) {
+		try {
+			return this.getDeploymentLimitPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching deployment limit policy - {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * getApprovalPolicies.
+	 *
+	 * @return policies
+	 */
+	public List<VraNgApprovalPolicy> getApprovalPolicies() {
+		try {
+			return this.getAllApprovalPoliciesPrimitive();
+		} catch (Exception e) {
+			logger.error("Error fetching Approval policies", e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * createApprovalPolicy.
+	 *
+	 * @param policy policy to be created or updated.
+	 */
+	public void createApprovalPolicy(final VraNgApprovalPolicy policy) {
+		try {
+			createApprovalPolicyPrimitive(policy);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
+		}
+	}
+
+	/**
+	 * getApprovalPolicy.
+	 *
+	 * @param policyId policy id
+	 * @return policy
+	 */
+	public VraNgApprovalPolicy getApprovalPolicy(final String policyId) {
+		try {
+			return this.getApprovalPolicyPrimitive(policyId);
+		} catch (Exception e) {
+			logger.error("Error fetching approval policy - {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

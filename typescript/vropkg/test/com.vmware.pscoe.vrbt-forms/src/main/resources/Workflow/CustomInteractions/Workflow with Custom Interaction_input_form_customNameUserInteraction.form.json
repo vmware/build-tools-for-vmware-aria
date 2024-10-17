@@ -1,0 +1,68 @@
+{
+    "layout": {
+        "pages": [
+            {
+                "id": "customNameUserInteractionPage",
+                "sections": [
+                    {
+                        "id": "dropDown_Section",
+                        "fields": [
+                            {
+                                "id": "dropDown_1",
+                                "display": "dropDown",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                },
+                                "signpostPosition": "right-middle"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "stringInput_Section",
+                        "fields": [
+                            {
+                                "id": "stringInput_1",
+                                "display": "textField",
+                                "signpostPosition": "right-middle",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                }
+                            }
+                        ]
+                    }                    
+                ],
+                "title": "Custom Name User Interaction Page",
+                "state": {}
+            }
+        ]
+    },
+    "schema": {
+        "stringInput_1": {
+            "id": "stringInput_1",
+            "type": {
+                "dataType": "string"
+            },
+            "label": "Input String 1",
+            "constraints": {
+                "required": false
+            }
+        },        
+        "dropDown_1": {
+            "label": "Drop Down 1",
+            "placeholder": "",
+            "type": {
+                "dataType": "string"
+            },
+            "valueList": [
+                "Option 1\nOption 2\nOption 3"
+            ],
+            "constraints": {}
+        }
+    },
+    "options": {
+        "externalValidations": []
+    },
+    "itemId": "customNameUserInteraction"
+}

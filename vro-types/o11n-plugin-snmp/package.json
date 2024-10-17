@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-snmp",
-  "version": "2.36.1-SNAPSHOT",
+  "version": "2.43.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true

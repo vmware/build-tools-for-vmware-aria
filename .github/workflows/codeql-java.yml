@@ -1,7 +1,6 @@
 name: "CodeQL Java"
 
 on:
-  push:
   pull_request:
   workflow_dispatch:
 
@@ -26,7 +25,7 @@ jobs:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.7.0
         with:
-          java-version: '17'
+          java-version: '21'
           java-distribution: 'temurin' 
           maven-version: '3.9.2'
   

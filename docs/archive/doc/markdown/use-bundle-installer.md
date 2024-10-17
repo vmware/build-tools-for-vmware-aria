@@ -1,25 +1,31 @@
 # Build Tools for VMware Aria - Bundle Installer
 
 Before you continue with this section validate that all of the prerequisites are met.
+
 ## Prerequisites
+
 - Install and Configure [Build Tools for VMware Aria System](setup-workstation-maven.md)
 
-## Use
+## Usage
 
-When you package a vRO/vRA project with the ```-Pbundle-with-installer``` Maven profile, you will get an additional artifact ```***-bundle.zip``` that contains your project, all its dependencies (both vRA and vRO) plus the bundle installer CLI.
+When you package a vRO/vRA project with the `-Pbundle-with-installer` Maven profile, you will get an additional artifact `***-bundle.zip` that contains your project, all its dependencies (both vRA and vRO) plus the bundle installer CLI.
 
 You can extract the zip bundle and install all packages on a target environment.
 
-## Run the Installer
+### Run the Installer
+
 Open a terminal and navigate inside the extracted bundle directory. Run the following command:
+
 ```bash
 ./bin/installer
 ```
-The command above will run the ```installer``` script in interactive mode and walk you through a set of questions - credentials, flags, etc. Read the questions carefully - the defaults are set according to PS CoE's best practices.
 
-At the end of the interaction, before anything is done, you will be prompted to store all the answers to an ```environment.properties``` file on disk. This is helpful if you want to use the same answers for different bundles or you'd like to re-run it. All passwords in the file are encoded but you should still make sure that the file is well protected.
+The command above will run the `installer` script in interactive mode and walk you through a set of questions - credentials, flags, etc. Read the questions carefully - the defaults are set according to PS CoE's best practices.
 
-Following is a sample listing of an ```environment.properties``` file.
+At the end of the interaction, before anything is done, you will be prompted to store all the answers to an `environment.properties` file on disk. This is helpful if you want to use the same answers for different bundles or you'd like to re-run it. All passwords in the file are encoded but you should still make sure that the file is well protected.
+
+Following is a sample listing of an `environment.properties` file.
+
 ```bash
 # Example properties file
 $ cat environment.properties
@@ -34,7 +40,6 @@ vro_auth=basic
 vro_tenant=vsphere.local
 vro_username=administrator@vsphere.local
 vro_password={PASS}Vk13YXJlMSE\=    # Same as "VMware1\!"
-
 
 vro_import_old_versions=true
 vro_import_configuration_attribute_values=false
@@ -60,14 +65,16 @@ vra_import_packages=false
 vra_delete_old_versions=false
 ```
 
-To re-use the ```environment.properties``` file, you can pass its location as the only argument to the CLI command for running the ```installer``` script:
+To re-use the `environment.properties` file, you can pass its location as the only argument to the CLI command for running the `installer` script:
 
 ```bash
 ./bin/installer ./bin/environment.properties
 ```
-## List of Properties
 
-Following is an exhaustive list of properties that can be used with the ```installer``` script. The properties are grouped in sections and some of these properties are available only for specific project types that are available in the bundle (such as vRA, vRO, or vROps content) or specific vRealize Suite product versions (such as vRA7 or vRA8).
+### List of Properties
+
+Following is an exhaustive list of properties that can be used with the `installer` script. The properties are grouped in sections and some of these properties are available only for specific project types that are available in the bundle (such as vRA, vRO, or vROps content) or specific vRealize Suite product versions (such as vRA7 or vRA8).
+
 ```bash
 ######################
 ### CONFIGURATIONS ###
@@ -93,6 +100,7 @@ vrang_proxy_required
 vrang_proxy  
 vrang_port
 vrang_auth_with_refresh_token
+vrang_delete_content # can be used to delete all content from the vRA8 environment specified in the content.yaml
 vrang_refresh_token
 vrang_username
 vrang_password
@@ -211,6 +219,4 @@ vcd_delete_old_versions
 vcd_import_old_versions
 skip_vcd_import_old_versions
 vcd_import_overwrite_mode
-
 ```
-

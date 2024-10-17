@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.configuration;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.configuration;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.configuration;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import org.slf4j.Logger;
@@ -23,15 +22,15 @@ import java.util.Properties;
 
 public class ConfigurationAbx extends ConfigurationVraNg {
 
-    private final static Logger logger = LoggerFactory.getLogger(ConfigurationAbx.class);
+	private final static Logger logger = LoggerFactory.getLogger(ConfigurationAbx.class);
 
-    protected ConfigurationAbx(Properties props) {
-        super(PackageType.ABX, props);
-    }
+	protected ConfigurationAbx(Properties props) {
+		super(PackageType.ABX, props);
+	}
 
-    public static ConfigurationAbx fromProperties(Properties props) throws ConfigurationException {
-    	ConfigurationAbx config = new ConfigurationAbx(props);
-    	config.validate(false);
-    	return config;
-    }
+	public static ConfigurationAbx fromProperties(Properties props) throws ConfigurationException {
+		ConfigurationAbx config = new ConfigurationAbx(props);
+		config.validate(false);
+		return config;
+	}
 }

@@ -1,5 +1,3 @@
-package com.vmware.pscoe.iac.artifact.rest.model.sso;
-
 /*
  * #%L
  * artifact-manager
@@ -14,6 +12,7 @@ package com.vmware.pscoe.iac.artifact.rest.model.sso;
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
+package com.vmware.pscoe.iac.artifact.rest.model.sso;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,22 +20,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EndPointType {
 
-    @JsonProperty("protocol")
-    private String protocol;
+	@JsonProperty("protocol")
+	private String protocol;
 
-    @JsonProperty("typeId")
-    private String typeId;
+	@JsonProperty("typeId")
+	private String typeId;
 
-    public String getProtocol() {
-        return protocol;
-    }
+	public String getProtocol() {
+		return protocol;
+	}
 
-    public String getTypeId() {
-        return typeId;
-    }
+	public String getTypeId() {
+		return typeId;
+	}
 
-    @Override
-    public String toString() {
-        return "EndPointType{" + "protocol = '" + protocol + '\'' + ",typeId = '" + typeId + '\'' + "}";
-    }
+	@Override
+	public String toString() {
+		return "EndPointType{" + "protocol = '" + protocol + '\'' + ",typeId = '" + typeId + '\'' + "}";
+	}
 }
