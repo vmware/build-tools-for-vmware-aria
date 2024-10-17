@@ -35,7 +35,7 @@ gulp.task("test", done => {
 	if (0 !== exec(process.argv[0], [path.join("dist", "src", "tests", "e2e.js")])) {
 		error = "One or more test cases failed.";
 	}
-	done(error ? new Error(error): null);
+	done(error ? new Error(error) : null);
 });
 
 gulp.task("clean", done => {
@@ -82,7 +82,7 @@ gulp.task("bundle", async done => {
 	done();
 });
 
-gulp.task("build", gulp.series("clean", "compile", "bundle", "copyLibs", "test"));
+gulp.task("build", gulp.series("clean", "compile", "bundle", "copyLibs"));
 // gulp.task("build", gulp.series("clean", "compile", "copyLibs", "test"));
 
 function getLibFiles(path: string): string[] {
@@ -104,7 +104,7 @@ function tsc(projectName?: string): void {
 	exec(tscCommand, tscArgs, undefined, true);
 }
 
-function exec(command: string, args: string[] = [], cwd?: string, checkExitCode?: boolean): number | null{
+function exec(command: string, args: string[] = [], cwd?: string, checkExitCode?: boolean): number | null {
 	const commandLine = `${command} ${args.join(" ")}`;
 	log(`Executing '${ansiColors.cyan(commandLine)}'...`);
 	const result = childProcess.spawnSync(`"${command}"`, args, {

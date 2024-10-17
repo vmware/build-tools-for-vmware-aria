@@ -36,7 +36,7 @@ const yaml: typeof import("js-yaml") = require("js-yaml");
 * @param file The file to transform.
 */
 export function getConfigTypeScriptTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	return function () {
+	return function() {
 		// This visits the AST of the file
 		const sourceFile = ts.createSourceFile(
 			file.filePath,
@@ -67,6 +67,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 		};
 
 		const decorators = ts.getDecorators(classNode);
+		// Extract data from Class Decorator
 		if (decorators?.length) {
 			decorators
 				.filter(decoratorNode => {
@@ -79,6 +80,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 				});
 		}
 
+		// Extract Data from class properties
 		classNode.members
 			.filter(m => m.kind === ts.SyntaxKind.PropertyDeclaration)
 			.forEach((fieldNode: ts.PropertyDeclaration) => {
@@ -105,7 +107,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 	}
 
 	/**
-	* Fetches the configuration attribute information from the field node and populates the configuration information.
+	* Fetches the configuration attribute information from the class properties and populates the configuration information.
 	*
 	* Done after we've extracted the configuration information from the class decorator,
 	* we override some of the values so they make sense in Aria Orchestrator.
@@ -212,27 +214,36 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 	function populateConfigInfoWithConfigAttributes(configInfo: ConfigurationDescriptor, objLiteralNode: ts.ObjectLiteralExpression): void {
 		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			const name = getPropertyName(property.name);
+			console.log(`====================== Extracting information for ${name} ======================`);
 			let attrInfo: ConfigurationAttribute = { type: "Any", value: null, description: null };
+
+			console.log(`Kind is ${property.initializer.kind}`);
+
 			switch (property.initializer.kind) {
 				case ts.SyntaxKind.StringLiteral: {
 					let type: string = (<ts.StringLiteral>property.initializer).text;
 					attrInfo.type = type;
 					break;
 				}
-				case ts.SyntaxKind.ObjectLiteralExpression: {
+				case ts.SyntaxKind.ObjectLiteralExpression:
 					attrInfo = getAttrInfo(property.initializer as ts.ObjectLiteralExpression);
 					break;
-				}
 			};
 			let configAtt = configInfo.attributes[name] as ConfigurationAttribute;
 			if (configAtt) {
 				configAtt.type = attrInfo.type ?? configAtt.type;
 				configAtt.value = attrInfo.value ?? configAtt.value;
 				configAtt.description = attrInfo.description ?? configAtt.description;
+				console.error("Should not be here");
+				console.log(configAtt);
 			}
 			else {
 				configInfo.attributes[name] = attrInfo;
+				console.log("Attribute Info extracted:");
+				console.log(attrInfo);
 			}
+
+			console.log(`====================== Done extracting information for ${name} ======================`);
 		});
 	}
 
@@ -261,6 +272,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 		let result: ConfigurationAttribute = { type: "Any", value: null, description: null };
 		exp.properties.forEach((property: ts.PropertyAssignment) => {
 			let name = getPropertyName(property.name);
+			console.log(`Extracting information for ${name}`);
 			if (name == "type") {
 				result.type = (<ts.StringLiteral>property.initializer).text;
 			} else if (name == "value") {
@@ -294,6 +306,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 	 */
 	function getValue(literal: ts.Node) {
 		if (literal) {
+			console.log(`Extracting value for ${literal.kind}`);
 			switch (literal.kind) {
 				case ts.SyntaxKind.NoSubstitutionTemplateLiteral:
 				case ts.SyntaxKind.StringLiteral:
@@ -331,7 +344,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 * NOTE: From Stef, don't use this, let's use TypeScript instead.
 */
 export function getConfigYamlTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	return function () {
+	return function() {
 		const configInfo: ConfigurationDescriptor = yaml.safeLoad(system.readFile(file.filePath).toString());
 		configInfo.name = configInfo.name || system.changeFileExt(file.fileName, "");
 		configInfo.path = configInfo.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
