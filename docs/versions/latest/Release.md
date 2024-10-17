@@ -197,7 +197,7 @@ All vCenter plugin types are now declared as classes instead of interfaces. Priv
 
 #### Previous Behavior
 
-A lot of type definitions had duplicate constructors,e.g. 
+A lot of type definitions had duplicate constructors,e.g.:
 
 ```typescript
 declare class VcHostDigestInfo {
