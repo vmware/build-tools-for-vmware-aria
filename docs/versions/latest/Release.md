@@ -193,6 +193,33 @@ Some vCenter plugin types were declared as interfaces which leads to TS transpil
 
 All vCenter plugin types are now declared as classes instead of interfaces. Private constructors are added to all of them. `readonly` access modifier is added to `sdkConnection` property in class definitions where it was not provided and defined as `Read-only` in API Explorer.
 
+### Remove duplicate empty constructors in `011n-plugin-vc` type declarations
+
+#### Previous Behavior
+
+A lot of type definitions had duplicate constructors,e.g. 
+
+```typescript
+declare class VcHostDigestInfo {
+	dynamicProperty: VcDynamicProperty[];
+	digestValue: number[];
+	digestMethod: string;
+	objectName: string;
+	dynamicType: string;
+	constructor();
+	constructor();
+	/**
+	 * @param digestMethod 
+	 * @param digestValue 
+	 * @param objectName 
+	 */
+	constructor(digestMethod: string, digestValue: number[], objectName: string);
+}
+```
+
+#### New Behavior
+Duplicate constructors are removed.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
