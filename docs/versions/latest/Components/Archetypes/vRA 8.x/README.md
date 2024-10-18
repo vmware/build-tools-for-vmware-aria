@@ -10,9 +10,6 @@ Supported content:
 
 - `blueprint`
 - `subscription`
-- `flavor-mapping`
-- `image-mapping`
-- `storage-profile`
 - `custom-resource`
 - `catalog-entitlement`
 - `catalog-item`
