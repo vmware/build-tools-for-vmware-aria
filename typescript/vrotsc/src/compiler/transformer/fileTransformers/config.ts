@@ -76,6 +76,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 						return (<ts.Identifier>callExpNode.expression).text === "Configuration";
 					}
 				}).forEach(decoratorNode => {
+					console.log(`Found a decorator!!!!!!: ${((decoratorNode.expression as ts.CallExpression).expression as ts.Identifier).text}`);
 					populateConfigInfoFromDecorator(configInfo, <ts.CallExpression>decoratorNode.expression);
 				});
 		}
@@ -162,6 +163,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 		if (objLiteralNode) {
 			objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 				const propName = getPropertyName(property.name);
+				console.log(`Going through ${propName}`);
 				switch (propName) {
 					case "id":
 						configInfo.id = (<ts.StringLiteral>property.initializer).text;
@@ -212,6 +214,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 	* @returns The object literal node to extract the configuration attributes from.
 	*/
 	function populateConfigInfoWithConfigAttributes(configInfo: ConfigurationDescriptor, objLiteralNode: ts.ObjectLiteralExpression): void {
+		console.log(`Populating config info. Properties Length: ${objLiteralNode.properties.length}`);
 		objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 			const name = getPropertyName(property.name);
 			console.log(`====================== Extracting information for ${name} ======================`);
