@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-azure",
-  "version": "2.44.0",
+  "version": "2.44.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true

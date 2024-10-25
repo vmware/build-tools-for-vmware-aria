@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/vrotest",
-  "version": "2.44.0",
+  "version": "2.44.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "VMware Confidential",
   "description": "vRO Test Suite for NodeJS",
