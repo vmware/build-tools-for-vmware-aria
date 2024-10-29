@@ -17,6 +17,9 @@ import * as fs from "fs-extra";
 import * as pkg from "./package";
 import * as util from "./util";
 import * as constants from "./constants";
+import { JasmineBootstrapper } from "./test-frameworks/jasmine";
+import { UnitTestFrameworkBootstrapper } from "./test-frameworks/framework-bootstrapper";
+import { JestBootstrapper } from "./test-frameworks/jest";
 
 export interface BuildCommandFlags {
 	actions: string;
@@ -68,6 +71,7 @@ export default async function (flags: BuildCommandFlags) {
 	const modules: Record<string, ModuleDescriptor> = {};
 	const configurations: Record<string, ConfigCategory> = {};
 	const resources: Record<string, ResourceCategory> = {};
+    const frameworkBootstrapper = flags.testFrameworkPackage === "jest" ? new JestBootstrapper() : new JasmineBootstrapper();
 
 	await createFolderStruct();
 	await copyContent();
@@ -76,9 +80,10 @@ export default async function (flags: BuildCommandFlags) {
 	await loadPackages();
 	await buildMetadata();
 	await saveMetadata();
-	await createNodeProjectConfig();
-	await createJasmineConfig();
+	await createNodeProjectConfig(flags, frameworkBootstrapper);
+	await createUnitTestFrameworkConfig(flags, frameworkBootstrapper);
 	await createCoverageConfig();
+	await persistTestConfig();
 
 	async function createFolderStruct(): Promise<void> {
 		await Promise.all([
@@ -114,6 +119,7 @@ export default async function (flags: BuildCommandFlags) {
 			flags.helpers ? fs.pathExists(flags.helpers) : Promise.resolve(false),
 			flags["ts-src"] ? fs.pathExists(flags["ts-src"]) : Promise.resolve(false),
 		]);
+
 		await Promise.all([
 			actionsExist ? await fs.copy(flags.actions, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: jsFilesFilter }) : Promise.resolve(),
 			testHelpersExists ? await fs.copy(flags.testHelpers, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: jsFilesFilter }) : Promise.resolve(), // Put it in the same as the actions
@@ -317,39 +323,48 @@ export default async function (flags: BuildCommandFlags) {
 		]);
 	}
 
-	async function createNodeProjectConfig(): Promise<void> {
+	async function createNodeProjectConfig(
+        flags: BuildCommandFlags,
+        frameworkBootstrapper: UnitTestFrameworkBootstrapper
+    ): Promise<void> {
 		/**
 		 * Generate package.json file in the test folder in order to:
 		 * 1. Allow tests to be run outside of Build Tools for VMware Aria.
 		 * 2. Enable resolution of .nycrc file by the code coverage CLI.
+         * Do so in a manner that multiple unit testing frameworks are supported.
 		 */
+        // TODO: Set up tests runner /swc/ -> `npm i -D jest @swc/core @swc/jest` (https://swc.rs/docs/usage/jest)
+        // TODO: Load details from test config folder and merge with the current config
 		const projectJson = {
 			"name": "vro-test",
 			"version": "1.0.0",
-			"description": "",
+			"description": "Unit tests runtime-compatible package.",
 			"scripts": {
-				"test": "jasmine --config=./jasmine.json",
+                "test": frameworkBootstrapper.getTestScript(),
 				"test:coverage": "nyc npm run test && nyc report"
 			},
-			"devDependencies": {
-				"jasmine": "^4.0.2",
-				"nyc": "^15.1.0"
-			}
+			"devDependencies": {}
 		};
-		fs.writeFile(path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE), JSON.stringify(projectJson, null, 2));
+        // Using this specific version for backward compatibility
+        const nycPackageVersion = flags.nycPackageVersion || "^15.1.0";
+        const frameworkPackage = flags.testFrameworkPackage || frameworkBootstrapper.getFrameworkPackageName();
+        const frameworkVersion = flags.testFrameworkVersion || frameworkBootstrapper.getFrameworkVersion();
+        projectJson.devDependencies[frameworkPackage] = frameworkVersion;
+        projectJson.devDependencies["nyc"] = nycPackageVersion;
+
+		await fs.writeFile(path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE), JSON.stringify(projectJson, null, 2));
 	}
 
-	async function createJasmineConfig(): Promise<void> {
-		const jasmineConfig = {
-			spec_dir: "test",
-			spec_files: ["**/?(*.)+(spec|test).[jt]s?(x)"],
-			helpers: ["../helpers/*.js"],
-			failSpecWithNoExpectations: false,
-			stopSpecOnExpectationFailure: false,
-			stopOnSpecFailure: false,
-			random: false,
-		};
-		fs.writeFile(path.join(flags.output, constants.JASMINE_CONFIG_FILE), JSON.stringify(jasmineConfig, null, 2));
+	async function createUnitTestFrameworkConfig(
+        flags: BuildCommandFlags,
+        frameworkBootstrapper: UnitTestFrameworkBootstrapper
+    ): Promise<void> {
+        // TODO: Configure runner /swc/ -> `npm i -D jest @swc/core @swc/jest` (https://swc.rs/docs/usage/jest)
+        // TODO: Load details from test config folder and merge with the current config
+        const filePath = path.join(flags.output, frameworkBootstrapper.getConfigFilePath());
+        const helperFiles = fs.readdirSync(flags.helpers).map(file => `./helpers/${file}`);
+        const fileContent = JSON.stringify(frameworkBootstrapper.getConfigFileContent(helperFiles), null, 2);
+		await fs.writeFile(filePath, fileContent);
 	}
 
 	async function createCoverageConfig(): Promise<void> {
@@ -415,6 +430,35 @@ export default async function (flags: BuildCommandFlags) {
 				}
 			});
 		}
-		fs.writeFile(path.join(flags.output, constants.COVERAGE_CONFIG_FILE), JSON.stringify(covConfig, null, 2));
+		await fs.writeFile(path.join(flags.output, constants.COVERAGE_CONFIG_FILE), JSON.stringify(covConfig, null, 2));
 	}
+
+    async function persistTestConfig() {
+        const persistentConfigPath = path.join(flags.projectRoot, constants.PERSISTENT_TEST_CONFIG_PATH);
+        if (fs.pathExistsSync(persistentConfigPath)) {
+            fs.rmSync(persistentConfigPath, { recursive: true });
+        }
+        fs.mkdirSync(persistentConfigPath, { recursive: true });
+
+        const waitFor = [
+            constants.NODE_PROJECT_CONFIG_FILE,
+            constants.JASMINE_CONFIG_FILE,
+            constants.JEST_CONFIG_FILE,
+            constants.COVERAGE_CONFIG_FILE,
+        ].map(fileName => {
+            return new Promise(async (resolve) => {
+                const source = `${flags.output}/${fileName}`;
+                const copyTo = `${persistentConfigPath}/${fileName}`;
+                if (fs.existsSync(copyTo)) {
+                    fs.rmSync(copyTo);
+                }
+                if (fs.existsSync(source)) {
+                    fs.copyFileSync(source, copyTo);
+                    resolve(true);
+                }
+            });
+        });
+
+        await Promise.all(waitFor);
+    }
 }
