@@ -43,6 +43,7 @@ async function zipFolder(dir: string, targetPath: string): Promise<void> {
 }
 
 async function build(): Promise<void> {
+    // TODO: Add introduced properties for Jest support
 	await executeScript(outProjectPath, [
 		cliPath,
 		"build",
