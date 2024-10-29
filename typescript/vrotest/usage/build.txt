@@ -1,8 +1,13 @@
 Usage: vrotest build [options]
 
 Options:
+  --projectRoot                 Project root path. The tool will be able to work with files in the Maven project being built.
   --actions                     Path to the vRO JavaScript folder.
   --testHelpers                 Path to the vRO JavaScript test helpers folder.
+  --testFrameworkPackage        Unit test framework to use. Defaults to "jasmine". Will be added to the package.json file generated for the tests.
+  --testFrameworkVersion        Unit test framework version to use. If unset will use the latest. Will be added to the package.json file generated for the tests.
+  --runner                      Determines usage of a specific unit tests runner, e.g. swc for Jest (https://swc.rs/docs/usage/jest).
+  --nycPackageVersion           NYC package version.
   --tests                       Path to the folder containing all tests.
   --maps                        Path to the folder containing source maps when using TypeScript.
   --resources                   Path to the folder containing vRO resources.
