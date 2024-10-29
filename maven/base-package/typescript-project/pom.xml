@@ -98,8 +98,8 @@
 					</test>
 					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
 					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
-					<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
 					<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+					<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
