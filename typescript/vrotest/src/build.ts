@@ -20,6 +20,11 @@ import * as constants from "./constants";
 
 export interface BuildCommandFlags {
 	actions: string;
+	projectRoot: string;
+	testFrameworkPackage: string;
+	testFrameworkVersion: string;
+	runner: string;
+	nycPackageVersion: string;
 	testHelpers: string;
 	tests: string;
 	maps: string;

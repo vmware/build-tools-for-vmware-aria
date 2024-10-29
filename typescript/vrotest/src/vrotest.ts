@@ -61,8 +61,9 @@ function parseCommandLine(): RootCommandFlags {
 		boolean: ["help", "version", "instrument"],
 		string: [
 			"output", "actions", "testHelpers", "tests", "maps", "resources",
-			"configurations", "dependencies", "helpers", "output",
-			"ts-src", "ts-namespace", "coverage-thresholds", "coverage-reports", "per-file"
+			"configurations", "dependencies", "helpers", "output", "projectRoot",
+			"ts-src", "ts-namespace", "coverage-thresholds", "coverage-reports", "per-file",
+            "testFrameworkPackage", "testFrameworkVersion", "runner", "nycPackageVersion"
 		],
 		alias: {
 			"h": "help",

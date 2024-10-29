@@ -90,12 +90,22 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		cmd.add(getCliPath());
 		cmd.add("build");
 		addTestbedPaths(cmd, config);
+		cmd.add("--projectRoot");
+		cmd.add(projectRoot);
 		cmd.add("--dependencies");
 		cmd.add(Paths.get(projectRoot, DEP_ROOT_PATH).toString());
 		cmd.add("--helpers");
 		cmd.add(Paths.get(projectRoot, VRO_API_PATH).toString());
 		cmd.add("--output");
 		cmd.add(Paths.get(projectRoot, TESTBED_PATH).toString());
+		cmd.add("--testFrameworkPackage");
+		cmd.add(config.getFrameworkPackageName());
+		cmd.add("--testFrameworkVersion");
+		cmd.add(config.getFrameworkVersion());
+		cmd.add("--nycPackageVersion");
+		cmd.add(config.getNycPackageVersion());
+		cmd.add("--runner");
+		cmd.add(config.getTestsRunner());
 
 		if (config.isCoverageEnabled()) {
 			String coverageReports = String.join(",", config.getCoverageReports());
@@ -201,6 +211,10 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		private static final String COVERAGE_THRESHOLD_STMTS_ERROR = "coverage.thresholds.statements.error";
 		private static final String COVERAGE_THRESHOLD_STMTS_WARN = "coverage.thresholds.statements.warn";
 		private static final String COVERAGE_TEST_PERFILE = "coverage.perfile";
+		private static final String FRAMEWORK_PACKAGE_NAME = "framework.package";
+		private static final String FRAMEWORK_VERSION = "framework.version";
+		private static final String NYC_PACKAGE_VERSION = "nyc.package.version";
+		private static final String TESTS_RUNNER = "framework.runner";
 
 		private final Map<String, String> props;
 
@@ -273,6 +287,26 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		public Boolean isPerFileEnabled() {
 			String value = props.get(COVERAGE_TEST_PERFILE);
 			return value != null && Boolean.parseBoolean(value);
+		}
+
+		public String getFrameworkPackageName() {
+			String value = props.get(FRAMEWORK_PACKAGE_NAME);
+			return value != null ? value : "";
+		}
+
+		public String getFrameworkVersion() {
+			String value = props.get(FRAMEWORK_VERSION);
+			return value != null ? value : "";
+		}
+
+		public String getNycPackageVersion() {
+			String value = props.get(NYC_PACKAGE_VERSION);
+			return value != null ? value : "";
+		}
+
+		public String getTestsRunner() {
+			String value = props.get(TESTS_RUNNER);
+			return value != null ? value : "";
 		}
 	}
 }
