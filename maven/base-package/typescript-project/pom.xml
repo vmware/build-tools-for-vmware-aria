@@ -94,7 +94,6 @@
 						<framework.package>${test.framework.package}</framework.package>
 						<framework.version>${test.framework.version}</framework.version>
 						<framework.runner>${test.framework.runner}</framework.runner>
-						<nyc.package.version>${test.nyc.package.version}</nyc.package.version>
 					</test>
 					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
 					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>

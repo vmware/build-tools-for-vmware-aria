@@ -102,8 +102,6 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		cmd.add(config.getFrameworkPackageName());
 		cmd.add("--testFrameworkVersion");
 		cmd.add(config.getFrameworkVersion());
-		cmd.add("--nycPackageVersion");
-		cmd.add(config.getNycPackageVersion());
 		cmd.add("--runner");
 		cmd.add(config.getTestsRunner());
 
@@ -213,7 +211,6 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		private static final String COVERAGE_TEST_PERFILE = "coverage.perfile";
 		private static final String FRAMEWORK_PACKAGE_NAME = "framework.package";
 		private static final String FRAMEWORK_VERSION = "framework.version";
-		private static final String NYC_PACKAGE_VERSION = "nyc.package.version";
 		private static final String TESTS_RUNNER = "framework.runner";
 
 		private final Map<String, String> props;
@@ -296,11 +293,6 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 
 		public String getFrameworkVersion() {
 			String value = props.get(FRAMEWORK_VERSION);
-			return value != null ? value : "";
-		}
-
-		public String getNycPackageVersion() {
-			String value = props.get(NYC_PACKAGE_VERSION);
 			return value != null ? value : "";
 		}
 
