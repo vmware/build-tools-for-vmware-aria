@@ -12,10 +12,25 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-export interface UnitTestFrameworkBootstrapper {
-    getTestScript(): string;
-    getFrameworkPackageName(): string;
-    getFrameworkVersion(): string;
-    getConfigFilePath(): string;
-    getConfigFileContent(helpers: string[]): Object;
+export interface BuildCommandFlags {
+	actions: string;
+	projectRoot: string;
+	testFrameworkPackage: string;
+	testFrameworkVersion: string;
+	runner: string;
+	jasmineReportersVerion: string;
+	ansiColorsVersion: string;
+	testHelpers: string;
+	tests: string;
+	maps: string;
+	resources: string;
+	configurations: string;
+	dependencies: string;
+	helpers: string;
+	output: string;
+	"ts-src": string;
+	"ts-namespace": string;
+	"coverage-thresholds": string;
+	"coverage-reports": string;
+	"per-file": string;
 }

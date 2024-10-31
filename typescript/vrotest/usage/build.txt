@@ -7,6 +7,8 @@ Options:
   --testFrameworkPackage        Unit test framework to use. Defaults to "jasmine". Will be added to the package.json file generated for the tests.
   --testFrameworkVersion        Unit test framework version to use. If unset will use the latest. Will be added to the package.json file generated for the tests.
   --runner                      Determines usage of a specific unit tests runner, e.g. swc for Jest (https://swc.rs/docs/usage/jest).
+  --jasmineReportersVerion      Specifies the version of the Jasmine reporters package to use when running the tests using Jasmine (https://www.npmjs.com/package/jasmine-reporters).
+  --ansiColorsVersion           Specifies the version of the ansi-colors package to use when running the tests using Jasmine (https://www.npmjs.com/package/ansi-colors).
   --tests                       Path to the folder containing all tests.
   --maps                        Path to the folder containing source maps when using TypeScript.
   --resources                   Path to the folder containing vRO resources.

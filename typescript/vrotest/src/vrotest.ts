@@ -60,10 +60,10 @@ function parseCommandLine(): RootCommandFlags {
 	const cmdOptions = {
 		boolean: ["help", "version", "instrument"],
 		string: [
-			"output", "actions", "testHelpers", "tests", "maps", "resources",
-			"configurations", "dependencies", "helpers", "output", "projectRoot",
-			"ts-src", "ts-namespace", "coverage-thresholds", "coverage-reports", "per-file",
-            "testFrameworkPackage", "testFrameworkVersion", "runner"
+			"output", "actions", "testHelpers", "tests", "maps", "resources", "configurations",
+			"dependencies", "helpers", "output", "projectRoot", "ts-src", "ts-namespace",
+            "coverage-thresholds", "coverage-reports", "per-file", "testFrameworkPackage",
+            "testFrameworkVersion", "runner", "jasmineReportersVerion", "ansiColorsVersion"
 		],
 		alias: {
 			"h": "help",

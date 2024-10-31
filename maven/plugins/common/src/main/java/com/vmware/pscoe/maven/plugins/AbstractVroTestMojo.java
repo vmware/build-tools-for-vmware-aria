@@ -104,6 +104,10 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		cmd.add(config.getFrameworkVersion());
 		cmd.add("--runner");
 		cmd.add(config.getTestsRunner());
+		cmd.add("--jasmineReportersVerion");
+		cmd.add(config.getJasmineReportersVersion());
+		cmd.add("--ansiColorsVersion");
+		cmd.add(config.getAnsiColorsVersion());
 
 		if (config.isCoverageEnabled()) {
 			String coverageReports = String.join(",", config.getCoverageReports());
@@ -211,6 +215,8 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		private static final String COVERAGE_TEST_PERFILE = "coverage.perfile";
 		private static final String FRAMEWORK_PACKAGE_NAME = "framework.package";
 		private static final String FRAMEWORK_VERSION = "framework.version";
+		private static final String JASMINE_REPORTERS_VERSION = "framework.jasmine.reporters.version";
+		private static final String ANSI_COLORS_VERSION = "ansicolors.version";
 		private static final String TESTS_RUNNER = "framework.runner";
 
 		private final Map<String, String> props;
@@ -293,6 +299,16 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 
 		public String getFrameworkVersion() {
 			String value = props.get(FRAMEWORK_VERSION);
+			return value != null ? value : "";
+		}
+
+		public String getJasmineReportersVersion() {
+			String value = props.get(JASMINE_REPORTERS_VERSION);
+			return value != null ? value : "";
+		}
+
+		public String getAnsiColorsVersion() {
+			String value = props.get(ANSI_COLORS_VERSION);
 			return value != null ? value : "";
 		}
 

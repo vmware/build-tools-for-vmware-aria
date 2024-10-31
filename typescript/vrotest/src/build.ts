@@ -17,31 +17,9 @@ import * as fs from "fs-extra";
 import * as pkg from "./package";
 import * as util from "./util";
 import * as constants from "./constants";
-import { JasmineBootstrapper } from "./test-frameworks/jasmine";
-import { UnitTestFrameworkBootstrapper } from "./test-frameworks/framework-bootstrapper";
-import { JestBootstrapper } from "./test-frameworks/jest";
-
-export interface BuildCommandFlags {
-	actions: string;
-	projectRoot: string;
-	testFrameworkPackage: string;
-	testFrameworkVersion: string;
-	runner: string;
-	nycPackageVersion: string;
-	testHelpers: string;
-	tests: string;
-	maps: string;
-	resources: string;
-	configurations: string;
-	dependencies: string;
-	helpers: string;
-	output: string;
-	"ts-src": string;
-	"ts-namespace": string;
-	"coverage-thresholds": string;
-	"coverage-reports": string;
-	"per-file": string;
-}
+import { setUpJasmine } from "./test-frameworks/jasmine-bootstrapper";
+import { setUpJest } from "./test-frameworks/jest-bootstrapper";
+import { BuildCommandFlags } from "./types/build-command-flags";
 
 type ModuleDescriptor = Record<string, string>;
 
@@ -71,7 +49,16 @@ export default async function (flags: BuildCommandFlags) {
 	const modules: Record<string, ModuleDescriptor> = {};
 	const configurations: Record<string, ConfigCategory> = {};
 	const resources: Record<string, ResourceCategory> = {};
-    const frameworkBootstrapper = flags.testFrameworkPackage === "jest" ? new JestBootstrapper() : new JasmineBootstrapper();
+    const customTestsConfigPath = path.join(flags.projectRoot, constants.TEST_CONFIG_PATH);
+    const hasCustomTestsConfig = fs.pathExistsSync(customTestsConfigPath);
+    const setupFramework = hasCustomTestsConfig
+        ? undefined
+        : (
+            flags.testFrameworkPackage === "jest"
+                ? setUpJest
+                : setUpJasmine
+        )
+    ;
 
 	await createFolderStruct();
 	await copyContent();
@@ -80,10 +67,12 @@ export default async function (flags: BuildCommandFlags) {
 	await loadPackages();
 	await buildMetadata();
 	await saveMetadata();
-	await createNodeProjectConfig(flags, frameworkBootstrapper);
-	await createUnitTestFrameworkConfig(flags, frameworkBootstrapper);
-	await createCoverageConfig();
-	await persistTestConfig();
+    if (setupFramework) {
+        await setupFramework(flags);
+    } else {
+        await copyCustomConfig(customTestsConfigPath);
+    }
+    await createCoverageConfig();
 
 	async function createFolderStruct(): Promise<void> {
 		await Promise.all([
@@ -323,52 +312,14 @@ export default async function (flags: BuildCommandFlags) {
 		]);
 	}
 
-	async function createNodeProjectConfig(
-        flags: BuildCommandFlags,
-        frameworkBootstrapper: UnitTestFrameworkBootstrapper
-    ): Promise<void> {
-		/**
-		 * Generate package.json file in the test folder in order to:
-		 * 1. Allow tests to be run outside of Build Tools for VMware Aria.
-		 * 2. Enable resolution of .nycrc file by the code coverage CLI.
-         * Do so in a manner that multiple unit testing frameworks are supported.
-		 */
-        // TODO: Set up tests runner /swc/ -> `npm i -D jest @swc/core @swc/jest` (https://swc.rs/docs/usage/jest)
-        // TODO: Load details from test config folder and merge with the current config
-		const projectJson = {
-			"name": "vro-test",
-			"version": "1.0.0",
-			"description": "Unit tests runtime-compatible package.",
-			"scripts": {
-                "test": frameworkBootstrapper.getTestScript(),
-				"test:coverage": "nyc npm run test && nyc report"
-			},
-			"devDependencies": {}
-		};
-        // Using this specific version for backward compatibility
-        const nycPackageVersion = flags.nycPackageVersion || "^15.1.0";
-        const frameworkPackage = flags.testFrameworkPackage || frameworkBootstrapper.getFrameworkPackageName();
-        const frameworkVersion = flags.testFrameworkVersion || frameworkBootstrapper.getFrameworkVersion();
-        projectJson.devDependencies[frameworkPackage] = frameworkVersion;
-        projectJson.devDependencies["nyc"] = nycPackageVersion;
-
-		await fs.writeFile(path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE), JSON.stringify(projectJson, null, 2));
-	}
-
-	async function createUnitTestFrameworkConfig(
-        flags: BuildCommandFlags,
-        frameworkBootstrapper: UnitTestFrameworkBootstrapper
-    ): Promise<void> {
-        // TODO: Configure runner /swc/ -> `npm i -D jest @swc/core @swc/jest` (https://swc.rs/docs/usage/jest)
-        // TODO: Load details from test config folder and merge with the current config
-        const filePath = path.join(flags.output, frameworkBootstrapper.getConfigFilePath());
-        const helperFiles = fs.readdirSync(flags.helpers).map(file => `./helpers/${file}`);
-        const fileContent = JSON.stringify(frameworkBootstrapper.getConfigFileContent(helperFiles), null, 2);
-		await fs.writeFile(filePath, fileContent);
-	}
-
 	async function createCoverageConfig(): Promise<void> {
-		const thresholdsToken = flags["coverage-thresholds"];
+        const coverateFilePath = path.join(flags.output, constants.COVERAGE_CONFIG_FILE);
+        // Do not overwrite the file copied from the custom configuration provided in the project root.
+        if (fs.existsSync(coverateFilePath)) {
+            return;
+        }
+
+        const thresholdsToken = flags["coverage-thresholds"];
 		const perFile = flags["per-file"];
 		const covConfig: Record<string, any> = {
 			"all": true,
@@ -430,35 +381,16 @@ export default async function (flags: BuildCommandFlags) {
 				}
 			});
 		}
-		await fs.writeFile(path.join(flags.output, constants.COVERAGE_CONFIG_FILE), JSON.stringify(covConfig, null, 2));
+
+        await fs.writeFile(coverateFilePath, JSON.stringify(covConfig, null, 2));
 	}
 
-    async function persistTestConfig() {
-        const persistentConfigPath = path.join(flags.projectRoot, constants.PERSISTENT_TEST_CONFIG_PATH);
-        if (fs.pathExistsSync(persistentConfigPath)) {
-            fs.rmSync(persistentConfigPath, { recursive: true });
-        }
-        fs.mkdirSync(persistentConfigPath, { recursive: true });
-
-        const waitFor = [
-            constants.NODE_PROJECT_CONFIG_FILE,
-            constants.JASMINE_CONFIG_FILE,
-            constants.JEST_CONFIG_FILE,
-            constants.COVERAGE_CONFIG_FILE,
-        ].map(fileName => {
-            return new Promise(async (resolve) => {
-                const source = `${flags.output}/${fileName}`;
-                const copyTo = `${persistentConfigPath}/${fileName}`;
-                if (fs.existsSync(copyTo)) {
-                    fs.rmSync(copyTo);
-                }
-                if (fs.existsSync(source)) {
-                    fs.copyFileSync(source, copyTo);
-                    resolve(true);
-                }
-            });
-        });
-
-        await Promise.all(waitFor);
+    async function copyCustomConfig(customConfigPath: string) {
+        await Promise.all(fs.readdirSync(customConfigPath).map(fileName => {
+            const sourceFilePath = path.join(customConfigPath, fileName);
+            const destFilePath = path.join(flags.output, fileName);
+            return fs.copyFile(sourceFilePath, destFilePath);
+        }));
     }
+
 }
