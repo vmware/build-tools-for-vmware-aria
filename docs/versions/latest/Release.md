@@ -17,7 +17,7 @@
 
 ### *Deprecation of vRA 7 archetype*
 
-The vRA 7 Archetype and all related plugins/mojos/code is removed. As vRA 7 is Out Of Support, we won't manage it anymore.
+The vRA 7 Archetype and all related plugins/mojos/code are removed due to the fact that vRA 7 is Out Of Support.
 
 The suggested alternative is to use version 2.44.0 of the toolchain. That is the last version that supports vRA7
 
