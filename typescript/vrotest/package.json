@@ -23,13 +23,14 @@
     "npm": ">=6.14.0"
   },
   "dependencies": {
+    "browserslist": "4.21.4",
     "iconv-lite": "0.6.3",
-    "nyc": "15.1.0",
-    "browserslist": "4.21.4"
+    "nyc": "15.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "28.0.0",
     "@rollup/plugin-node-resolve": "15.3.0",
+    "@rollup/plugin-terser": "0.4.4",
     "@types/ansi-colors": "3.2.2",
     "@types/fs-extra": "9.0.13",
     "@types/gulp": "4.0.9",
@@ -39,7 +40,7 @@
     "@types/rollup": "0.54.0",
     "ansi-colors": "4.1.1",
     "charset-detector": "0.0.2",
-    "fast-xml-parser": "4.2.5",
+    "fast-xml-parser": "^4.2.5",
     "fs-extra": "10.0.0",
     "gulp": "5.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
@@ -49,12 +50,17 @@
     "minimist": "1.2.6",
     "rimraf": "3.0.2",
     "rollup": "3.29.5",
-    "@rollup/plugin-terser": "0.4.4",
+    "source-map": "^0.8.0-beta.0",
     "ts-node": "10.5.0",
-    "typescript": "4.5.5",
-    "source-map": "^0.8.0-beta.0"
+    "typescript": "4.5.5"
   },
   "bundledDependencies": [
+    "iconv-lite",
+    "jasmine",
+    "nyc",
+    "browserslist"
+  ],
+  "bundleDependencies": [
     "iconv-lite",
     "jasmine",
     "nyc",
