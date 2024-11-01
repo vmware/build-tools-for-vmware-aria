@@ -65,27 +65,6 @@ The catalog items in the vRA Service Broker consists of different type of conten
 
 Blueprint type catalog items have different versions that corelate to the released versions of the Blueprints. Only the current version of the latest blueprint version is targeted.
 
-### Regional Content
-
-The vRA 8.x philosophy is built around the concept of infrastructure definition capable of resource provisioning - compute, network, storage and other types of resources - that builds up an abstract model for resource description. This allows workload placement to happen dynamically based on various explicit or implicit rules. Part of this abstract model is the definition of various mappings and profiles that provide common higher-level definitions of underlying infrastructure objects. These definitions take the form of various mappings and profiles:
-
-- flavor mappings - common designation of compute resource t-shirt or other sizing
-- image mappings - common designation of VM images
-- storage profiles - a set of storage policies and configurations used for workload placement
-- network profiles - a set of network-related configurations used for network resource placement
-
-These abstractions are related to the regions within the cloud accounts and their capabilities. They utilize the various underlying resources which are automatically collected and organized into "fabrics" by vRA. As such, they contain information about resources in the various connected regions and for the purpose of this project are collectively called **regional content**.
-
-Exporting (pulling) and importing (pushing) of regional content is achieved using a mapping definition specified in the content manifest (content.yaml): `region-mappping`. It contains a set of mapping criteria used for exporting and importing of content. The vRA-NG package manager handles the `export-tag` and `import-tags` entries of the `cloud-account-tags` section of `region-mapping`.
-
-#### Export Regional Content
-
-When exporting regional content defined in the respective content categories - `image-mapping`, `flavor-mapping`, `storage-profile`, etc., the vRA-NG package manager takes into account the tag that is defined in the `export-tag` entry and exports content that is related to a cloud account(s) containing this tag. The content is stored in a directory within a unique regional directory bearing the name of the cloud account and the cloud zone id. The cloud account and zone combination are persisted for reference to the originating environment.
-
-#### Import Regional Content
-
-The vRA-NG package manager uses the `import-tags` entry from the content manifest (content.yaml) to (re)create regional content targeting cloud accounts that contain one or more of the import tags. The content is taken from all of the regional folders and regardless of its origin, it is imported to the target environment based on the `import-tags`, i.e. related to cloud accounts possessing one or more of the import tags list.
-
 [//]: # (Optional Section)
 [//]: # (## Previous:)
 

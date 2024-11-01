@@ -17,6 +17,12 @@
 
 [//]: # (Features -> New Functionality)
 
+### *Deprecated Regional Content*
+
+The Regional content supported in previous versions of Build Tools for Aria has been removed. Unfortunately that part of the build tools never functioned the way we wanted it to, and managing the "infrastructure" tab in Assembler is no longer something we want to do as it contradicts the principles behind the `vra-ng` archetype.
+
+As an alternative, we suggest you use some sort of install workflow to manage them.
+
 ## Features
 
 [//]: # (### *Feature Name*)

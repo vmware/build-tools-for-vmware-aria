@@ -68,15 +68,6 @@ catalog
             └── ABX Action.yaml       
         └── subscriptions
             └── subscription.json
-        └── regions
-            └── cloud-account-name~region-id
-                └── flavor-mappings
-                    └── small.json
-                └── image-mappings
-                    └── mapping.json
-                └── storage-profiles
-                    └── profile.json
-                └── src-region-profile.json
         └── custom-resources
             └── customResource.json
         └── resource-actions
