@@ -10,6 +10,22 @@
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
+### *Policy Templates's `templateVersion` is now mandatory*
+
+`@PolicyTemplate` decorators now **must** specify a `templateVersion`.
+
+The possible options are `v1` and `v2` (you can also see this in the definitions).
+
+```ts
+@PolicyTemplate({
+  name: "Sample Policy",
+  path: "MyOrg/MyProject",
+  templateVersion: "v2", // This is now mandatory
+  variables: { /* ... */ },
+  elements: { /* ... */}
+})
+```
+
 ## Deprecations
 
 [//]: # (### *Deprecation*)
@@ -47,4 +63,6 @@ As an alternative, we suggest you use some sort of install workflow to manage th
 
 ## Upgrade procedure
 
-[//]: # (Explain in details if something needs to be done)
+### *Migrate PolicyTemplates*
+
+Search your projects that use `@PolicyTemplate` decorator. The `templateVersion` property is now required. Check on top for possible values
