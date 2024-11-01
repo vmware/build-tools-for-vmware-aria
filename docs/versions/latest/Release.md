@@ -39,12 +39,42 @@ Now, however, you have to define the `runtime` correctly as `node:12` if you wan
 
 This applies for automatic fixes for `vro` and `abx` types.
 
+### *Policy Templates's `templateVersion` is now mandatory*
+
+`@PolicyTemplate` decorators now **must** specify a `templateVersion`.
+
+The possible options are `v1` and `v2` (you can also see this in the definitions).
+
+```ts
+@PolicyTemplate({
+  name: "Sample Policy",
+  path: "MyOrg/MyProject",
+  templateVersion: "v2", // This is now mandatory
+  variables: { /* ... */ },
+  elements: { /* ... */}
+})
+```
+
 ## Deprecations
 
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
 
-[//]: # (Features -> New Functionality)
+### *Deprecation of vRA 7 archetype*
+
+The vRA 7 Archetype and all related plugins/mojos/code are removed due to the fact that vRA 7 is Out Of Support.
+
+The suggested alternative is to use version 2.44.0 of the toolchain. That is the last version that supports vRA7
+
+### *Deprecation of vRA 7 types*
+
+The `o11n-plugin-vcac` and `o11n-plugin-vcacafe` types are also removed.
+
+### *Deprecated Regional Content*
+
+The Regional content supported in previous versions of Build Tools for Aria has been removed. Unfortunately that part of the build tools never functioned the way we wanted it to, and managing the "infrastructure" tab in Assembler is no longer something we want to do as it contradicts the principles behind the `vra-ng` archetype.
+
+As an alternative, we suggest you use some sort of install workflow to manage them.
 
 ## Features
 
@@ -70,8 +100,6 @@ This applies for automatic fixes for `vro` and `abx` types.
 
 ## Upgrade procedure
 
-[//]: # (Explain in details if something needs to be done)
-
 ### *Polyglot projects using `nodejs` as a runtime for a `vro` project need to be migrated*
 
 1. Look for all of your polyglot projects made for `vro`.
@@ -88,3 +116,7 @@ You don't need to migrate projects if they are `abx` based. `nodejs` is the corr
 1. Take a look at the documentation for the available runtimes
 2. Correctly set the `vro` runtime you want to use instead of the `abx`
 3. `nodejs`, `powershell` or `python` only
+
+### *Migrate PolicyTemplates*
+
+Search your projects that use `@PolicyTemplate` decorator. The `templateVersion` property is now required. Check on top for possible values
