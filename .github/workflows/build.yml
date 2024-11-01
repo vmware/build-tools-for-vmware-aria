@@ -125,7 +125,7 @@ jobs:
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
         uses: actions/checkout@v3
         with:
-          repository: Michaelpalacce/build-tools-for-vmware-aria-samples
+          repository: vmware-samples/build-tools-for-vmware-aria-samples
           ref: main
           path: build-tools-for-vmware-aria-samples
 
