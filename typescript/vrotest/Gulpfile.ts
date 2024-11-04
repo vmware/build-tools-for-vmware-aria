@@ -75,7 +75,7 @@ async function exec(command: string, args: string[] = [], cwd?: string, checkExi
         cwd: cwd || __dirname,
     });
     return await new Promise((resolve, reject) => {
-        proc.on("close", code => {
+        proc.on("close", (code: number) => {
             if (checkExitCode && code !== 0) {
                 reject(`Command "${commandLine}" exited with code ${code}`);
             }
