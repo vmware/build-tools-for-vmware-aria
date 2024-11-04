@@ -382,7 +382,7 @@ export default async function (flags: BuildCommandFlags) {
 			});
 		}
 
-        await fs.writeFile(coverateFilePath, JSON.stringify(covConfig, null, 2));
+        await fs.writeFile(coverageFilePath, JSON.stringify(covConfig, null, 2));
 	}
 
     async function copyCustomConfig(customConfigPath: string) {
