@@ -41,23 +41,23 @@ Supported properties:
 1. **Jasmine, custom version.**  
    Example of property values for working with the latest package versions:
    - ```xml
-    <test.framework.package>jasmine</test.framework.package>
-    <test.framework.version>latest</test.framework.version>
-    <test.framework.jasmine.reporters.version>latest</test.framework.jasmine.reporters.version>
-    <test.ansicolors.version>latest</test.ansicolors.version>
-    ```
+<test.framework.package>jasmine</test.framework.package>
+<test.framework.version>latest</test.framework.version>
+<test.framework.jasmine.reporters.version>latest</test.framework.jasmine.reporters.version>
+<test.ansicolors.version>latest</test.ansicolors.version>
+```
 1. **Jest, basic usage.**  
    Example of property values for working with the latest package versions:
    - ```xml
-    <test.framework.package>jest</test.framework.package>
-    ```
+<test.framework.package>jest</test.framework.package>
+```
 1. **Jest, custom version.**  
    Example of property values for working with the latest package versions:
    - ```xml
-    <test.framework.package>jest</test.framework.package>
-    <test.framework.version>latest</test.framework.version>
-    <test.framework.runner>swc</test.framework.runner>
-    ```
+<test.framework.package>jest</test.framework.package>
+<test.framework.version>latest</test.framework.version>
+<test.framework.runner>swc</test.framework.runner>
+```
 
 **Custom configuration**
 TypeScript project unit tests are triggered via `mvn clean test` or `mvn clean package -Pbundle-with-installer`. During this process a `target` folder is created. The actual tests folder is located at `target/vro-tests`. The user can copy any files from this folder to a `unit-tests.config` folder in the root project path. These files will be used in any next unit test runs.  
