@@ -36,7 +36,7 @@ Supported properties:
 - `test.ansicolors.version` - The `ansi-colors` npm package is used in the Jasmine reporters configured for the tests, optional, defaults to `^4.1.1` for backward compatibility if omitted.
 
 **Configuration examples**
-1. **Jasmine, backwards compatibility.**  
+1. **Jasmine, backwards compatiblе.**  
    No changes are needed. The configuration is fully aligned with the current behavior.
 1. **Jasmine, custom version.**  
    Example of property values for working with the latest package versions:
