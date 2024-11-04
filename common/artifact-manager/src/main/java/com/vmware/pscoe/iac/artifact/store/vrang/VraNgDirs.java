@@ -14,7 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
-
 public final class VraNgDirs {
 	/**
 	 * entitlements folder name.
@@ -45,22 +44,6 @@ public final class VraNgDirs {
 	 */
 	public static final String DIR_SUBSCRIPTIONS = "subscriptions";
 	/**
-	 * regions folder name.
-	 */
-	public static final String DIR_REGIONS = "regions";
-	/**
-	 * flavor-mappings folder name.
-	 */
-	public static final String DIR_FLAVOR_MAPPINGS = "flavor-mappings";
-	/**
-	 * image-mappings folder name.
-	 */
-	public static final String DIR_IMAGE_MAPPINGS = "image-mappings";
-	/**
-	 * storage-profiles folder name.
-	 */
-	public static final String DIR_STORAGE_PROFILES = "storage-profiles";
-	/**
 	 * resource-actions folder name.
 	 */
 	public static final String DIR_RESOURCE_ACTIONS = "resource-actions";
@@ -72,7 +55,9 @@ public final class VraNgDirs {
 	/**
 	 * Hiding constructor of utility class.
 	 * Linter quote:
-	 * Utility classes should not have a public or default constructor. [HideUtilityClassConstructor] .
+	 * Utility classes should not have a public or default constructor.
+	 * [HideUtilityClassConstructor] .
 	 */
-	private VraNgDirs() { };
+	private VraNgDirs() {
+	};
 }

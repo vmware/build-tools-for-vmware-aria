@@ -65,7 +65,7 @@ interface VroPolicyTemplate {
 	path?: string;
 	type?: VroPolicyTemplateType;
 	version?: string;
-	templateVersion?: "v1" | "v2";
+	templateVersion: "v1" | "v2";
 	variables?: {
 		[name: string]: string | PolicyAttribute;
 	};

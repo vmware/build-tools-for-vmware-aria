@@ -28,12 +28,11 @@ export interface AttributeVersionValidator {
 	/**
 	 * Validates the registered attribute versions against the current one
 	 * @param {string} currentVersion - version to validate against
-	 * @param {boolean} isDefault - whether it's the default version (for error handling)
 	 * @throws Error if currentVersion is not actually supported.
 	 * @throws Error with all unssupported (no longer supported, not yet supported) attributes+ details:
 	 * version they are supported from/to, deprecation reason (for attributes no longer supported)
 	 */
-	validate(currentVersion: string, isDefault?: boolean);
+	validate(currentVersion: string);
 }
 /**
  * Returns an attribute version validator instance
@@ -44,7 +43,7 @@ export interface AttributeVersionValidator {
  */
 export function getAttributeVersionValidator(validatedObjectName: string, supportedVersions: string[]): AttributeVersionValidator {
 	if (!supportedVersions?.length || supportedVersions.length > new Set(supportedVersions).size) {
-		throw new Error(`Invalid supported versions. The supported versions must be unique and in ascending order.`)
+		throw new Error(`Invalid supported versions. The supported versions must be unique and in ascending order.`);
 	}
 	const validatedProps: Record<string, [number, number, string]> = {};
 	function push(propName: string, supportedFromVersion: string, supportedToVersion?: string, deprecationReason: string = "") {
@@ -58,7 +57,7 @@ export function getAttributeVersionValidator(validatedObjectName: string, suppor
 			throw new Error(`Unsupported versions: [${unsupported}]. Must be one of [${supportedVersions}].`);
 		}
 	}
-	function validate(currentVersion: string, isDefault?: boolean) {
+	function validate(currentVersion: string) {
 		const currentVersionInd = supportedVersions.indexOf(currentVersion);
 		if (currentVersionInd < 0) {
 			throw new Error(`Unsupported version: [${currentVersion}]. Must be one of [${supportedVersions}].`);
@@ -74,7 +73,7 @@ export function getAttributeVersionValidator(validatedObjectName: string, suppor
 		});
 		if (unsupported.length) {
 			throw new Error(`The following attributes are not supported in ${validatedObjectName || ""}`
-				+ `${isDefault ? " default" : ""} version '${currentVersion}':\n${unsupported.join("\n")}`);
+				+ ` version '${currentVersion}':\n${unsupported.join("\n")}`);
 		}
 	}
 	return { push, validate };

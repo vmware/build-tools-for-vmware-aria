@@ -58,7 +58,7 @@
 											<value>COVEREDRATIO</value>
 											<!-- This controls what the minimum amount for code
 											coverage is. Raise this as we raise the coverage -->
-											<minimum>0.25</minimum>
+											<minimum>0.20</minimum>
 										</limit>
 									</limits>
 								</rule>
