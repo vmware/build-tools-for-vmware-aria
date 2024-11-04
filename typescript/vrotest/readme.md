@@ -37,23 +37,23 @@ Supported properties:
 
 **Configuration examples**
 1. **Jasmine, backwards compatiblе.**  
-   No changes are needed. The configuration is fully aligned with the current behavior.
+No changes are needed. The configuration is fully aligned with the current behavior.
 1. **Jasmine, custom version.**  
-   Example of property values for working with the latest package versions:
-   - ```xml
+Example of property values for working with the latest package versions:
+```xml
 <test.framework.package>jasmine</test.framework.package>
 <test.framework.version>latest</test.framework.version>
 <test.framework.jasmine.reporters.version>latest</test.framework.jasmine.reporters.version>
 <test.ansicolors.version>latest</test.ansicolors.version>
 ```
 1. **Jest, basic usage.**  
-   Example of property values for working with the latest package versions:
-   - ```xml
+Example of property values for working with the latest package versions:
+```xml
 <test.framework.package>jest</test.framework.package>
 ```
 1. **Jest, custom version.**  
-   Example of property values for working with the latest package versions:
-   - ```xml
+Example of property values for working with the latest package versions:
+```xml
 <test.framework.package>jest</test.framework.package>
 <test.framework.version>latest</test.framework.version>
 <test.framework.runner>swc</test.framework.runner>
