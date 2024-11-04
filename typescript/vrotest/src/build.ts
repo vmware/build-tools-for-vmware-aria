@@ -315,7 +315,7 @@ export default async function (flags: BuildCommandFlags) {
 	async function createCoverageConfig(): Promise<void> {
         const coverageFilePath = path.join(flags.output, constants.COVERAGE_CONFIG_FILE);
         // Do not overwrite the file copied from the custom configuration provided in the project root.
-        if (fs.existsSync(coverateFilePath)) {
+        if (fs.existsSync(coverageFilePath)) {
             return;
         }
 
