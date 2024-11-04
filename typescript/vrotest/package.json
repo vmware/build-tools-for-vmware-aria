@@ -54,12 +54,6 @@
     "ts-node": "10.5.0",
     "typescript": "4.5.5"
   },
-  "bundledDependencies": [
-    "iconv-lite",
-    "jasmine",
-    "nyc",
-    "browserslist"
-  ],
   "bundleDependencies": [
     "iconv-lite",
     "jasmine",
