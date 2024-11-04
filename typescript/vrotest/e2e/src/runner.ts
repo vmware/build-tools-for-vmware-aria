@@ -79,7 +79,7 @@ async function executeScript(cwd: string, args: string[]): Promise<void> {
 		cwd,
 		env: process.env,
 		shell: true,
-		stdio: "inherit",
+		stdio: "inherit"
 	});
 	await new Promise<void>((resolve, _) => {
 		proc.on("close", code => {
