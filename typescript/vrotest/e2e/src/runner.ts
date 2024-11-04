@@ -47,6 +47,8 @@ async function build(): Promise<void> {
 	await executeScript(outProjectPath, [
 		cliPath,
 		"build",
+		"--projectRoot",
+		outProjectPath,
 		"--actions",
 		"src",
 		"--tests",

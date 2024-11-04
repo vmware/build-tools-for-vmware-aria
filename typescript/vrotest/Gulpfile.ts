@@ -18,15 +18,14 @@ gulp.task("compile", async done => {
     done()
 });
 
-// TODO: Fix testing!
-// gulp.task("test", async done => {
-//     await tsc(path.join("e2e", "tsconfig.json"));
-//     let error = undefined;
-//     if (0 !== await exec(process.argv[0], [path.join("e2e", "build", "runner.js")])) {
-//         error = "One or more test cases failed.";
-//     }
-//     done(error);
-// });
+gulp.task("test", async done => {
+    await tsc(path.join("e2e", "tsconfig.json"));
+    let error;
+    if (0 !== await exec(process.argv[0], [path.join("e2e", "build", "runner.js")])) {
+        error = "One or more test cases failed.";
+    }
+    done(error);
+});
 
 gulp.task("clean", async done => {
     await fs.remove("build");
@@ -59,9 +58,7 @@ gulp.task("bundle", async done => {
     done();
 });
 
-// TODO: Fix testing!
-gulp.task("build", gulp.series("clean", "compile", "bundle"));
-// gulp.task("build", gulp.series("clean", "compile", "bundle", "test"));
+gulp.task("build", gulp.series("clean", "compile", "bundle", "test"));
 
 async function tsc(projectName: string): Promise<void> {
     const tscCommand = path.join("node_modules", ".bin", "tsc");
