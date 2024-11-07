@@ -41,7 +41,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: java
           
@@ -67,4 +67,4 @@ jobs:
         run: mvn -T 1C clean install -f maven/typescript-project-all/pom.xml -s $PWD/.m2/settings.xml
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
