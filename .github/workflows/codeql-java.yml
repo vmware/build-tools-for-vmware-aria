@@ -23,7 +23,7 @@ jobs:
           node-version: '16.20.2'
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.7.0
+        uses: s4u/setup-maven-action@v1.16.0
         with:
           java-version: '21'
           java-distribution: 'temurin' 
