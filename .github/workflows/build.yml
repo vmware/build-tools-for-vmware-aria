@@ -26,12 +26,12 @@ jobs:
           persist-credentials: false
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.7.0
+        uses: s4u/setup-maven-action@v1.16.0
         with:
           java-version: ${{ matrix.java }}
           java-distribution: "temurin"
@@ -130,7 +130,7 @@ jobs:
           path: build-tools-for-vmware-aria-samples
 
       - name: Use Node.js ${{ matrix.node_vmware_samples }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_vmware_samples }}
 
