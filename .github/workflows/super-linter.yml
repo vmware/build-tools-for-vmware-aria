@@ -22,7 +22,7 @@ jobs:
           distribution: "temurin"
 
       - name: Super-Linter
-        uses: github/super-linter@v5.0.0
+        uses: github/super-linter@v7
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
