@@ -263,7 +263,8 @@ public class ConfigurationVraNg extends Configuration {
 	public void deprecationWarnings() {
 		String[] deprecatedFlags = new String[] {
 				"bp.ignore.versions",
-				"bp.release"
+				"bp.release",
+				"project.id"
 		};
 
 		for (String flag : deprecatedFlags) {
