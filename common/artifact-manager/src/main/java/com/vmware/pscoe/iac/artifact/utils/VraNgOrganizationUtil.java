@@ -19,7 +19,7 @@ import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
 import org.apache.commons.lang3.StringUtils;
 
-public class VraNgOrganizationUtil {
+public final class VraNgOrganizationUtil {
 
 	private VraNgOrganizationUtil() {
 	}
