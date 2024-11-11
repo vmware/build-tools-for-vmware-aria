@@ -12,7 +12,7 @@
 
 ### *`vrang.project.id` has been removed in favor of `vrang.project.name`*
 
-Moving forward, `vrang.project.id` will not be accepted as part of the configuration. Instead, use `vrang.project.name`. 
+Moving forward, `vrang.project.id` will not be accepted as part of the configuration. Instead, use `vrang.project.name`.
 
 `project.name` is more flexible as it will automatically find out the `project.id`.
 
