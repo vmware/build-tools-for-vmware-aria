@@ -126,12 +126,6 @@ enum Option {
 			"vrang_data.collection.delay.seconds",
 			ConfigurationVraNg.DATA_COLLECTION_DELAY_SECONDS),
 	/**
-	 * VRANG org Id.
-	 */
-	VRANG_ORGANIZATION_ID(
-			"vrang_org_id",
-			ConfigurationVraNg.ORGANIZATION_ID),
-	/**
 	 * VRANG org name.
 	 */
 	VRANG_ORGANIZATION_NAME(
@@ -1269,9 +1263,7 @@ public final class Installer {
 		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VRANG_PROJECT_NAME),
 				input.getText());
 		userInput(input, Option.VRANG_ORGANIZATION_NAME,
-				"  Organization Name (Optional if you supplied organization ID)", validated.org);
-		userInput(input, Option.VRANG_ORGANIZATION_ID, "  Organization ID (Optional if you supplied organization Name)",
-				validated.orgId);
+				"  Organization Name", validated.org);
 		userInput(input, Option.VRANG_PROXY_REQUIRED, "  Use proxy server for vRA? (Optional)", false);
 		if (input.allTrue(Option.VRANG_PROXY_REQUIRED)) {
 			userInput(input, Option.VRANG_PROXY, "    VRA proxy server");
