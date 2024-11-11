@@ -403,12 +403,7 @@ public class RestClientCs extends RestClient {
 	}
 
 	/**
-	 * Update the project custom integration version.
-	 *
-	 * @param id      the custom integration id
-	 * @param version the custom integration version to update
-	 *
-	 * @return the response
+	 * Get the project pipelines.
 	 */
 	public List<JsonObject> getProjectPipelines() {
 		logger.info("Get Pipelines");
@@ -465,9 +460,9 @@ public class RestClientCs extends RestClient {
 	}
 
 	/**
-	 * Delete the project pipeline.
+	 * Get project git webhooks.
 	 *
-	 * @param name the pipeline name
+	 * @return the project git webhooks
 	 */
 	public List<JsonObject> getProjectGitWebhooks() {
 		logger.info("Get git Webhooks for project");
@@ -475,9 +470,11 @@ public class RestClientCs extends RestClient {
 	}
 
 	/**
-	 * Get the project git webhooks.
+	 * Get the project git webhook
 	 *
-	 * @return the project git webhooks
+	 * @param name the git webhook name
+	 *
+	 * @return the project git webhook
 	 */
 	public JsonObject getProjectGitWebhook(String name) {
 		logger.info("Get Git webhook: " + name);
