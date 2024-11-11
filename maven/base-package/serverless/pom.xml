@@ -227,7 +227,6 @@
 							<password>${vrang.password}</password>
 							<serverId>${vrang.serverId}</serverId>
 							<project.name>${vrang.project.name}</project.name>
-							<project.id>${vrang.project.id}</project.id>
 							<org.id>${vrang.org.id}</org.id>
 							<org.name>${vrang.org.name}</org.name>
 							<refresh.token>${vrang.refresh.token}</refresh.token>

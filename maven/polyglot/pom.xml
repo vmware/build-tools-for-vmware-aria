@@ -265,7 +265,6 @@
 							<username>${vrang.username}</username>
 							<password>${vrang.password}</password>
 							<serverId>${vrang.serverId}</serverId>
-							<project.id>${vrang.project.id}</project.id>
 							<project.name>${vrang.project.name}</project.name>
 							<org.id>${vrang.org.id}</org.id>
 							<org.name>${vrang.org.name}</org.name>
