@@ -86,9 +86,7 @@ public class RestClientCs extends RestClient {
 	}
 
 	private void initProjectNameAndId() {
-		String constraint = StringUtils.isNotEmpty(configuration.getProjectName())
-				? String.format("name eq '%s'", configuration.getProjectName())
-				: String.format("id eq '%s'", configuration.getProjectId());
+		String constraint = String.format("name eq '%s'", configuration.getProjectName());
 
 		URI url = getURI(getURIBuilder()
 				.setPath(GET_PROJECT_INFO)

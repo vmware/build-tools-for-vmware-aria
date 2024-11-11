@@ -34,10 +34,6 @@ public class ConfigurationVraNg extends Configuration {
 	 */
 	public static final String CSP_HOST = "csp.host";
 	/**
-	 * param PROJECT_ID.
-	 */
-	public static final String PROJECT_ID = "project.id";
-	/**
 	 * param DATA_COLLECTION_DELAY_SECONDS.
 	 */
 	public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
@@ -129,13 +125,6 @@ public class ConfigurationVraNg extends Configuration {
 		} else {
 			return this.properties.getProperty(CSP_HOST);
 		}
-	}
-
-	/**
-	 * @return String
-	 */
-	public String getProjectId() {
-		return this.properties.getProperty(PROJECT_ID);
 	}
 
 	/**
@@ -251,8 +240,8 @@ public class ConfigurationVraNg extends Configuration {
 			message.append("Port ");
 		}
 
-		if (StringUtils.isEmpty(getProjectId()) && StringUtils.isEmpty(getProjectName())) {
-			message.append("Project name/Project id ");
+		if (StringUtils.isEmpty(getProjectName())) {
+			message.append("Project name ");
 		}
 
 		if (StringUtils.isEmpty(getOrgId()) && StringUtils.isEmpty(getOrgName())) {

@@ -434,16 +434,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return this.projectId;
 		}
 
-		if (StringUtils.isNotEmpty(configuration.getProjectId())) {
-			LOGGER.debug("Using project id defined in configuration: {}", configuration.getProjectId());
-			this.projectId = this.getProjectIdPrimitive(configuration.getProjectId());
-			if (this.projectId == null) {
-				throw new RuntimeException(String.format("Project id '%s' could not be found on target system",
-						configuration.getProjectId()));
-			}
-
-			return this.projectId;
-		}
 		String projectName = configuration.getProjectName();
 		if (StringUtils.isEmpty(projectName)) {
 			throw new RuntimeException(
