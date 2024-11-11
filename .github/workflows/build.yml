@@ -21,17 +21,17 @@ jobs:
 
     steps:
       - name: Checkout vmware/build-tools-for-vmware-aria repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.7.0
+        uses: s4u/setup-maven-action@v1.16.0
         with:
           java-version: ${{ matrix.java }}
           java-distribution: "temurin"
@@ -123,14 +123,14 @@ jobs:
         run: mvn clean package -f maven/repository/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
 
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: vmware-samples/build-tools-for-vmware-aria-samples
           ref: main
           path: build-tools-for-vmware-aria-samples
 
       - name: Use Node.js ${{ matrix.node_vmware_samples }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_vmware_samples }}
 
