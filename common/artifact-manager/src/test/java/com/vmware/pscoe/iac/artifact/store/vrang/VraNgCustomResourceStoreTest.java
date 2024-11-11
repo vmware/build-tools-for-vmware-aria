@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
@@ -71,9 +70,9 @@ public class VraNgCustomResourceStoreTest {
 	protected FsMocks fsMocks;
 	protected VraNgOrganization org;
 
-	protected static String PROJECT_ID	= "projectId";
-	protected static String ORG_ID		= "orgId";
-	protected static String ORG_NAME	= "testOrg";
+	protected static String PROJECT_ID = "projectId";
+	protected static String ORG_ID = "orgId";
+	protected static String ORG_NAME = "testOrg";
 
 	@BeforeEach
 	void init() {
@@ -83,19 +82,20 @@ public class VraNgCustomResourceStoreTest {
 			throw new RuntimeException("Could not create a temp folder");
 		}
 
-		fsMocks 				= new FsMocks(tempFolder.getRoot());
-		store 					= new VraNgCustomResourceStore();
-		restClient 				= Mockito.mock(RestClientVraNg.class);
-		pkg 					= PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
-		config 					= Mockito.mock(ConfigurationVraNg.class);
-		vraNgPackageDescriptor 	= Mockito.mock(VraNgPackageDescriptor.class);
-		org					 	= Mockito.mock(VraNgOrganization.class);
+		fsMocks = new FsMocks(tempFolder.getRoot());
+		store = new VraNgCustomResourceStore();
+		restClient = Mockito.mock(RestClientVraNg.class);
+		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
+		config = Mockito.mock(ConfigurationVraNg.class);
+		vraNgPackageDescriptor = Mockito.mock(VraNgPackageDescriptor.class);
+		org = Mockito.mock(VraNgOrganization.class);
 
-		when( config.getOrgId() ).thenReturn( ORG_ID );
-		when( restClient.getOrganizationById(any()) ).thenReturn( org );
-		when( org.getId() ).thenReturn( ORG_ID );
-		when( org.getName() ).thenReturn( ORG_NAME );
-		when( org.getRefLink() ).thenReturn( "reflink" );
+		when(restClient.getOrganizationById(any())).thenReturn(org);
+		when(restClient.getOrganizationByName(any())).thenReturn(org);
+		when(config.getOrgName()).thenReturn(ORG_NAME);
+		when(org.getId()).thenReturn(ORG_ID);
+		when(org.getName()).thenReturn(ORG_NAME);
+		when(org.getRefLink()).thenReturn("reflink");
 
 		store.init(restClient, pkg, config, vraNgPackageDescriptor);
 		System.out.println("==========================================================");
@@ -113,7 +113,7 @@ public class VraNgCustomResourceStoreTest {
 	}
 
 	@Test
-	void testImportCustomResourcesWhenIdNotExistsInVroAndExistsInJson() throws IOException{
+	void testImportCustomResourcesWhenIdNotExistsInVroAndExistsInJson() throws IOException {
 		// GIVEN
 		List<String> list = new ArrayList<String>();
 		list.add("Avi Load Balancer L3DSR");
@@ -129,30 +129,31 @@ public class VraNgCustomResourceStoreTest {
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
 
-		// 'comparator' will be used for comparison between expected value 
+		// 'comparator' will be used for comparison between expected value
 		// and passed value in importCustomResource()
 		mockBuilder = new CustomResourceMockBuilder();
-		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
+		String comparator = mockBuilder.withoutIdInRawData().setOrgId(ORG_ID).removeFormDefinitionIds().build()
+				.getJson().toString();
 
-		when( restClient.getProjectId() ).thenReturn(PROJECT_ID);
-		when( restClient.getVraWorkflowIntegration( any()) ).thenReturn( vro );
-		when( restClient.getAllCustomResources() ).thenReturn( new HashMap<String, VraNgCustomResource>() );
-		doNothing().when( restClient ).importCustomResource( anyString(), anyString() );
-		doNothing().when( restClient ).deleteCustomResource( anyString(), anyString() );
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getVraWorkflowIntegration(any())).thenReturn(vro);
+		when(restClient.getAllCustomResources()).thenReturn(new HashMap<String, VraNgCustomResource>());
+		doNothing().when(restClient).importCustomResource(anyString(), anyString());
+		doNothing().when(restClient).deleteCustomResource(anyString(), anyString());
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
-		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
+		ArgumentCaptor<String> cr = ArgumentCaptor.forClass(String.class);
 
 		// VERIFY
-		verify( restClient, times( 3 ) ).getProjectId();
-		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
-		verify( restClient, times( 1 ) ).getAllCustomResources();
-		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
-		verify( restClient, never() ).deleteCustomResource( any(), anyString() );
+		verify(restClient, times(3)).getProjectId();
+		verify(restClient, times(1)).getVraWorkflowIntegration(any());
+		verify(restClient, times(1)).getAllCustomResources();
+		verify(restClient, times(1)).importCustomResource(any(), cr.capture());
+		verify(restClient, never()).deleteCustomResource(any(), anyString());
 
-		assertEquals( comparator, cr.getValue() );
+		assertEquals(comparator, cr.getValue());
 	}
 
 	@Test
@@ -173,45 +174,47 @@ public class VraNgCustomResourceStoreTest {
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
 
-		// 'comparator' will be used for comparison between expected value 
+		// 'comparator' will be used for comparison between expected value
 		// and passed value in importCustomResource()
-		mockBuilder	= new CustomResourceMockBuilder();
-		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
+		mockBuilder = new CustomResourceMockBuilder();
+		String comparator = mockBuilder.withoutIdInRawData().setOrgId(ORG_ID).removeFormDefinitionIds().build()
+				.getJson().toString();
 
-		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
-		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
-		when( restClient.getAllCustomResources() ).thenReturn( new HashMap<String, VraNgCustomResource>() );
-		doNothing().when( restClient ).importCustomResource( anyString(), anyString() );
-		doNothing().when( restClient ).deleteCustomResource( anyString(), anyString() );
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getVraWorkflowIntegration(any())).thenReturn(vro);
+		when(restClient.getAllCustomResources()).thenReturn(new HashMap<String, VraNgCustomResource>());
+		doNothing().when(restClient).importCustomResource(anyString(), anyString());
+		doNothing().when(restClient).deleteCustomResource(anyString(), anyString());
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
-		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
+		ArgumentCaptor<String> cr = ArgumentCaptor.forClass(String.class);
 
 		// VERIFY
-		verify( restClient, times( 3 ) ).getProjectId();
-		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
-		verify( restClient, times( 1 ) ).getAllCustomResources();
-		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
-		verify( restClient, never() ).deleteCustomResource( any(), anyString() );
+		verify(restClient, times(3)).getProjectId();
+		verify(restClient, times(1)).getVraWorkflowIntegration(any());
+		verify(restClient, times(1)).getAllCustomResources();
+		verify(restClient, times(1)).importCustomResource(any(), cr.capture());
+		verify(restClient, never()).deleteCustomResource(any(), anyString());
 
-		assertEquals( comparator, cr.getValue() );
+		assertEquals(comparator, cr.getValue());
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-							"AmpersandCharacter&",
-							"DollarCharacter$",
-							"_UnderscoreInfront",
-							"UnderscoreBehind_",
-							".DotInfront",
-							"DotBehind.",
-							" SpaceInfront",
-							"SpaceBehind ",
-							"Space InMiddle"
+			"AmpersandCharacter&",
+			"DollarCharacter$",
+			"_UnderscoreInfront",
+			"UnderscoreBehind_",
+			".DotInfront",
+			"DotBehind.",
+			" SpaceInfront",
+			"SpaceBehind ",
+			"Space InMiddle"
 	})
-	void testImportCustomResourcesWhenAdditionalActionNamesDoNotPassValidation(String wrongAdditionalActionName)  throws IOException{
+	void testImportCustomResourcesWhenAdditionalActionNamesDoNotPassValidation(String wrongAdditionalActionName)
+			throws IOException {
 		// GIVEN
 		List<String> list = new ArrayList<String>();
 		list.add("Avi Load Balancer L3DSR");
@@ -219,19 +222,21 @@ public class VraNgCustomResourceStoreTest {
 
 		// Create mock Custom Resource - should contain property 'id'
 		CustomResourceMockBuilder mockBuilder = new CustomResourceMockBuilder();
-		JsonArray additionalActions = JsonParser.parseString(mockBuilder.build().getJson()).getAsJsonObject().get("additionalActions").getAsJsonArray();
+		JsonArray additionalActions = JsonParser.parseString(mockBuilder.build().getJson()).getAsJsonObject()
+				.get("additionalActions").getAsJsonArray();
 		additionalActions.get(0).getAsJsonObject().addProperty("name", wrongAdditionalActionName);
-		VraNgCustomResource mockResource = mockBuilder.setAdditionalActions(additionalActions).setOrgId("WRONG").build();
+		VraNgCustomResource mockResource = mockBuilder.setAdditionalActions(additionalActions).setOrgId("WRONG")
+				.build();
 
 		// Create mock return value of getAllCustomResources().
 		// These represent the retrieved Custom Resources from the environment
 		// and are expected to contain property 'id'.
 		JsonElement mockResourceElement = JsonParser.parseString(mockResource.getJson());
 		JsonObject object = mockResourceElement.getAsJsonObject();
-		String id = object.get( "id" ).toString();
+		String id = object.get("id").toString();
 
 		HashMap<String, VraNgCustomResource> map = new HashMap<String, VraNgCustomResource>();
-		map.put( id, mockResource );
+		map.put(id, mockResource);
 
 		// Create mock vRO Integration
 		VraNgIntegration vro = new VraNgIntegration();
@@ -240,21 +245,20 @@ public class VraNgCustomResourceStoreTest {
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
 
-		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
-		when( config.getOrgId() ).thenReturn( ORG_ID );
-		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
-		when( restClient.getAllCustomResources() ).thenReturn( map );
-		doNothing().when( restClient ).importCustomResource( any(), anyString() );
-		doNothing().when( restClient ).deleteCustomResource( any(), anyString() );
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getVraWorkflowIntegration(any())).thenReturn(vro);
+		when(restClient.getAllCustomResources()).thenReturn(map);
+		doNothing().when(restClient).importCustomResource(any(), anyString());
+		doNothing().when(restClient).deleteCustomResource(any(), anyString());
 
 		// START TEST
-		assertThrows( RuntimeException.class, () -> {
+		assertThrows(RuntimeException.class, () -> {
 			store.importContent(tempFolder.getRoot());
 		});
 	}
 
 	@Test
-	void testImportCustomResourcesWhenIdExistsInVroAndInJson()  throws IOException{
+	void testImportCustomResourcesWhenIdExistsInVroAndInJson() throws IOException {
 		// GIVEN
 		List<String> list = new ArrayList<String>();
 		list.add("Avi Load Balancer L3DSR");
@@ -264,51 +268,52 @@ public class VraNgCustomResourceStoreTest {
 		CustomResourceMockBuilder mockBuilder = new CustomResourceMockBuilder();
 		VraNgCustomResource mockResource = mockBuilder.setOrgId("WRONG").build();
 
-		// Create mock return value of getAllCustomResources(). 
-		// These represent the retrieved Custom Resources from the environment 
+		// Create mock return value of getAllCustomResources().
+		// These represent the retrieved Custom Resources from the environment
 		// and are expected to contain property 'id'.
 		JsonElement mockResourceElement = JsonParser.parseString(mockResource.getJson());
 		JsonObject object = mockResourceElement.getAsJsonObject();
-		String id = object.get( "id" ).toString();
+		String id = object.get("id").toString();
 
 		HashMap<String, VraNgCustomResource> map = new HashMap<String, VraNgCustomResource>();
-		map.put( id, mockResource );
-		
+		map.put(id, mockResource);
+
 		// Create mock vRO Integration
 		VraNgIntegration vro = new VraNgIntegration();
 		vro.setEndpointConfigurationLink("dummy");
 		vro.setName("dummy_name");
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
-		
-		// 'comparator' will be used for comparison between expected value 
+
+		// 'comparator' will be used for comparison between expected value
 		// and passed value in importCustomResource()
 		mockBuilder = new CustomResourceMockBuilder();
-		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson();
+		String comparator = mockBuilder.withoutIdInRawData().setOrgId(ORG_ID).removeFormDefinitionIds().build()
+				.getJson();
 
-		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
-		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
-		when( restClient.getAllCustomResources() ).thenReturn( map );
-		doNothing().when( restClient ).importCustomResource( any(), anyString() );
-		doNothing().when( restClient ).deleteCustomResource( any(), anyString() );
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getVraWorkflowIntegration(any())).thenReturn(vro);
+		when(restClient.getAllCustomResources()).thenReturn(map);
+		doNothing().when(restClient).importCustomResource(any(), anyString());
+		doNothing().when(restClient).deleteCustomResource(any(), anyString());
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
-		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
+		ArgumentCaptor<String> cr = ArgumentCaptor.forClass(String.class);
 
 		// VERIFY
-		verify( restClient, times( 3 ) ).getProjectId();
-		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
-		verify( restClient, times( 1 ) ).getAllCustomResources();
-		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
-		verify( restClient, times( 1 ) ).deleteCustomResource( any(), anyString() );
+		verify(restClient, times(3)).getProjectId();
+		verify(restClient, times(1)).getVraWorkflowIntegration(any());
+		verify(restClient, times(1)).getAllCustomResources();
+		verify(restClient, times(1)).importCustomResource(any(), cr.capture());
+		verify(restClient, times(1)).deleteCustomResource(any(), anyString());
 
-		assertEquals( comparator, cr.getValue() );
+		assertEquals(comparator, cr.getValue());
 	}
 
 	@Test
-	void testImportCustomResourcesWhenIdExistsInVroAndHasDeployments()  throws IOException{
+	void testImportCustomResourcesWhenIdExistsInVroAndHasDeployments() throws IOException {
 		// GIVEN
 		List<String> list = new ArrayList<String>();
 		list.add("Avi Load Balancer L3DSR");
@@ -318,44 +323,46 @@ public class VraNgCustomResourceStoreTest {
 		CustomResourceMockBuilder mockBuilder = new CustomResourceMockBuilder();
 		VraNgCustomResource mockResource = mockBuilder.setOrgId("WRONG").build();
 
-		// Create mock return value of getAllCustomResources(). 
-		// These represent the retrieved Custom Resources from the environment 
+		// Create mock return value of getAllCustomResources().
+		// These represent the retrieved Custom Resources from the environment
 		// and are expected to contain property 'id'.
 		JsonElement mockResourceElement = JsonParser.parseString(mockResource.getJson());
 		JsonObject object = mockResourceElement.getAsJsonObject();
-		String id = object.get( "id" ).toString();
+		String id = object.get("id").toString();
 
 		HashMap<String, VraNgCustomResource> map = new HashMap<String, VraNgCustomResource>();
-		map.put( id, mockResource );
-		
+		map.put(id, mockResource);
+
 		// Create mock vRO Integration
 		VraNgIntegration vro = new VraNgIntegration();
 		vro.setEndpointConfigurationLink("dummy");
 		vro.setName("dummy_name");
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
-		
-		// 'comparator' will be used for comparison between expected value 
+
+		// 'comparator' will be used for comparison between expected value
 		// and passed value in importCustomResource()
 		mockBuilder = new CustomResourceMockBuilder();
-		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
+		String comparator = mockBuilder.withoutIdInRawData().setOrgId(ORG_ID).removeFormDefinitionIds().build()
+				.getJson().toString();
 
-		when( restClient.getProjectId() ).thenReturn( PROJECT_ID );
-		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn( vro );
-		when( restClient.getAllCustomResources() ).thenReturn( map );
-		doNothing().when( restClient ).importCustomResource( any(), anyString() );
-		doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Resource type cannot be deleted as there are active resources attached to it"))
-			.when( restClient ).deleteCustomResource( any(), anyString() );
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getVraWorkflowIntegration(any())).thenReturn(vro);
+		when(restClient.getAllCustomResources()).thenReturn(map);
+		doNothing().when(restClient).importCustomResource(any(), anyString());
+		doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Resource type cannot be deleted as there are active resources attached to it"))
+				.when(restClient).deleteCustomResource(any(), anyString());
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify( restClient, times( 3 ) ).getProjectId();
-		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
-		verify( restClient, times( 1 ) ).getAllCustomResources();
-		verify( restClient, times(1) ).importCustomResource( any(), anyString() );
-		verify( restClient, times( 1 ) ).deleteCustomResource( any(), anyString() );
+		verify(restClient, times(3)).getProjectId();
+		verify(restClient, times(1)).getVraWorkflowIntegration(any());
+		verify(restClient, times(1)).getAllCustomResources();
+		verify(restClient, times(1)).importCustomResource(any(), anyString());
+		verify(restClient, times(1)).deleteCustomResource(any(), anyString());
 	}
 
 	@Test
@@ -369,18 +376,17 @@ public class VraNgCustomResourceStoreTest {
 		CustomResourceMockBuilder mockBuilder = new CustomResourceMockBuilder();
 		VraNgCustomResource mockResource = mockBuilder.setOrgId("WRONG").withoutIdInRawData().build();
 
-
-		// Create mock return value of getAllCustomResources(). 
-		// These represent the retrieved Custom Resources from the environment 
+		// Create mock return value of getAllCustomResources().
+		// These represent the retrieved Custom Resources from the environment
 		// and are expected to contain property 'id'.
 		mockBuilder = new CustomResourceMockBuilder();
 		VraNgCustomResource mockResourceWithId = mockBuilder.setOrgId("WRONG").build();
 		JsonElement mockResourceElement = JsonParser.parseString(mockResourceWithId.getJson());
 		JsonObject object = mockResourceElement.getAsJsonObject();
-		String id = object.get( "id" ).toString();
+		String id = object.get("id").toString();
 
 		HashMap<String, VraNgCustomResource> map = new HashMap<String, VraNgCustomResource>();
-		map.put( id, mockResource );
+		map.put(id, mockResource);
 
 		// Create mock vRO Integration
 		VraNgIntegration vro = new VraNgIntegration();
@@ -388,35 +394,36 @@ public class VraNgCustomResourceStoreTest {
 		vro.setName("dummy_name");
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
-		
-		// 'comparator' will be used for comparison between expected value 
+
+		// 'comparator' will be used for comparison between expected value
 		// and passed value in importCustomResource()
 		mockBuilder = new CustomResourceMockBuilder();
-		String comparator = mockBuilder.withoutIdInRawData().setOrgId( ORG_ID ).removeFormDefinitionIds().build().getJson().toString();
+		String comparator = mockBuilder.withoutIdInRawData().setOrgId(ORG_ID).removeFormDefinitionIds().build()
+				.getJson().toString();
 
-		when( restClient.getProjectId() ).thenReturn(PROJECT_ID);
-		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn(vro);
-		when( restClient.getAllCustomResources() ).thenReturn(map);
-		doNothing().when( restClient ).importCustomResource( any(), anyString());
-		doNothing().when( restClient ).deleteCustomResource( any(), anyString() );
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getVraWorkflowIntegration(any())).thenReturn(vro);
+		when(restClient.getAllCustomResources()).thenReturn(map);
+		doNothing().when(restClient).importCustomResource(any(), anyString());
+		doNothing().when(restClient).deleteCustomResource(any(), anyString());
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
-		ArgumentCaptor<String> cr = ArgumentCaptor.forClass( String.class );
+		ArgumentCaptor<String> cr = ArgumentCaptor.forClass(String.class);
 
 		// VERIFY
-		verify( restClient, times( 3 ) ).getProjectId();
-		verify( restClient, times( 1 ) ).getVraWorkflowIntegration( any() );
-		verify( restClient, times( 1 ) ).getAllCustomResources();
-		verify( restClient, times( 1 ) ).importCustomResource( any(), cr.capture() );
-		verify( restClient, times( 1 ) ).deleteCustomResource( any(), anyString() );
+		verify(restClient, times(3)).getProjectId();
+		verify(restClient, times(1)).getVraWorkflowIntegration(any());
+		verify(restClient, times(1)).getAllCustomResources();
+		verify(restClient, times(1)).importCustomResource(any(), cr.capture());
+		verify(restClient, times(1)).deleteCustomResource(any(), anyString());
 
-		assertEquals( comparator, cr.getValue() );
+		assertEquals(comparator, cr.getValue());
 	}
 
 	@Test
-	void testImportCustomResourcesWhenNotInConfiguration () throws IOException {
+	void testImportCustomResourcesWhenNotInConfiguration() throws IOException {
 		// GIVEN
 		// Create mock Custom Resource - should not contain property 'id'
 		CustomResourceMockBuilder mockBuilder = new CustomResourceMockBuilder();
@@ -426,17 +433,17 @@ public class VraNgCustomResourceStoreTest {
 		list.add("name");
 		when(vraNgPackageDescriptor.getCustomResource()).thenReturn(list);
 
-		// Create mock return value of getAllCustomResources(). 
-		// These represent the retrieved Custom Resources from the environment 
+		// Create mock return value of getAllCustomResources().
+		// These represent the retrieved Custom Resources from the environment
 		// and are expected to contain property 'id'.
 		mockBuilder = new CustomResourceMockBuilder();
 		VraNgCustomResource mockResourceWithId = mockBuilder.setOrgId("WRONG").build();
 		JsonElement mockResourceElement = JsonParser.parseString(mockResourceWithId.getJson());
 		JsonObject object = mockResourceElement.getAsJsonObject();
-		String id = object.get( "id" ).toString();
+		String id = object.get("id").toString();
 
 		HashMap<String, VraNgCustomResource> map = new HashMap<String, VraNgCustomResource>();
-		map.put( id, mockResource );
+		map.put(id, mockResource);
 
 		// Create mock vRO Integration
 		VraNgIntegration vro = new VraNgIntegration();
@@ -444,45 +451,46 @@ public class VraNgCustomResourceStoreTest {
 		vro.setName("dummy_name");
 
 		fsMocks.customResourceFsMocks().addCustomResource(mockResource);
-		
-		// 'comparator' will be used for comparison between expected value 
+
+		// 'comparator' will be used for comparison between expected value
 		// and passed value in importCustomResource()
 		mockBuilder = new CustomResourceMockBuilder();
-		String comparator = mockBuilder.setOrgId( ORG_ID ).removeFormDefinitionIds().withoutIdInRawData().build().getJson().toString();
+		String comparator = mockBuilder.setOrgId(ORG_ID).removeFormDefinitionIds().withoutIdInRawData().build()
+				.getJson().toString();
 
-		when( restClient.getProjectId() ).thenReturn(PROJECT_ID);
-		when( restClient.getVraWorkflowIntegration(any()) ).thenReturn(vro);
-		when( restClient.getAllCustomResources() ).thenReturn(map);
-		doNothing().when( restClient ).importCustomResource( any(), anyString());
-		doNothing().when( restClient ).deleteCustomResource( any(), anyString() );
+		when(restClient.getProjectId()).thenReturn(PROJECT_ID);
+		when(restClient.getVraWorkflowIntegration(any())).thenReturn(vro);
+		when(restClient.getAllCustomResources()).thenReturn(map);
+		doNothing().when(restClient).importCustomResource(any(), anyString());
+		doNothing().when(restClient).deleteCustomResource(any(), anyString());
 
 		// START TEST
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify( restClient, never() ).importCustomResource( any(), anyString() );
+		verify(restClient, never()).importCustomResource(any(), anyString());
 	}
 
 	@Test
 	void testExportCustomResourcesRemovesIdOnSave() throws IOException {
 		// GIVEN
-		// Create mock Custom Resource 
-		CustomResourceMockBuilder	mockBuilder = new CustomResourceMockBuilder();
+		// Create mock Custom Resource
+		CustomResourceMockBuilder mockBuilder = new CustomResourceMockBuilder();
 		VraNgCustomResource mockResource = mockBuilder.setOrgId("orgId").build();
 		JsonElement mockResourceElement = JsonParser.parseString(mockResource.getJson());
 		JsonObject object = mockResourceElement.getAsJsonObject();
 		String name = mockResource.getName();
-		String id = object.get( "id" ).toString();
+		String id = object.get("id").toString();
 		String fileName = name.concat(".json");
 
 		mockBuilder = new CustomResourceMockBuilder();
 		String expectedFileContent = mockBuilder.setOrgId("orgId").withoutIdInRawData().build().getJson();
 
 		List<String> list = new ArrayList<String>();
-		list.add( name );
+		list.add(name);
 
 		HashMap<String, VraNgCustomResource> map = new HashMap<String, VraNgCustomResource>();
-		map.put( id, mockResource );
+		map.put(id, mockResource);
 
 		when(vraNgPackageDescriptor.getCustomResource()).thenReturn(list);
 		when(restClient.getAllCustomResources()).thenReturn(map);
@@ -491,36 +499,35 @@ public class VraNgCustomResourceStoreTest {
 		store.exportContent();
 
 		// VERIFY
-		verify( vraNgPackageDescriptor, times( 1 ) ).getCustomResource();
-		verify( restClient, times( 1 ) ).getAllCustomResources();
-		assertEquals( 1, Objects.requireNonNull(fsMocks.getTempFolderProjectPath().listFiles()).length );
-		assertEquals( expectedFileContent, getFileContent( fsMocks.getTempFolderProjectPath(), fileName ));
-		
-		String[] expectedFiles	= { fileName };
-		AssertionsHelper.assertFolderContainsFiles( fsMocks.getTempFolderProjectPath(), expectedFiles );
-	
+		verify(vraNgPackageDescriptor, times(1)).getCustomResource();
+		verify(restClient, times(1)).getAllCustomResources();
+		assertEquals(1, Objects.requireNonNull(fsMocks.getTempFolderProjectPath().listFiles()).length);
+		assertEquals(expectedFileContent, getFileContent(fsMocks.getTempFolderProjectPath(), fileName));
+
+		String[] expectedFiles = { fileName };
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedFiles);
+
 	}
 
-	
 	/**
 	 * Return content of a specific item in the given folder.
 	 * Throws if missing
 	 *
-	 * @param	folder -> the folder to search in
-	 * @param	itemName - The item name to search for
+	 * @param folder   -> the folder to search in
+	 * @param itemName - The item name to search for
 	 *
-	 * @return	File content as String
+	 * @return File content as String
 	 */
-	private String getFileContent( File folder, String itemName ) {
+	private String getFileContent(File folder, String itemName) {
 		File file = fsMocks.findItemByNameInFolder(folder, itemName);
-		try{			
-			String content = FileUtils.readFileToString( file, "UTF-8" );
-			if(content != null){
+		try {
+			String content = FileUtils.readFileToString(file, "UTF-8");
+			if (content != null) {
 				Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 				JsonObject customResourceJsonElement = gson.fromJson(content, JsonObject.class);
 				return customResourceJsonElement.toString();
 			}
-		}catch (IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Error reading from file: " + file.getPath(), e);
 		}
 		return "";
@@ -528,79 +535,82 @@ public class VraNgCustomResourceStoreTest {
 
 	@Test
 	void testExportContentWithNoCustomResources() {
-		//GIVEN 
-		when( vraNgPackageDescriptor.getCustomResource()).thenReturn(new ArrayList<String>());
+		// GIVEN
+		when(vraNgPackageDescriptor.getCustomResource()).thenReturn(new ArrayList<String>());
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
-		verify( restClient, never() ).getAllCustomResources();
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		// VERIFY
+		verify(restClient, never()).getAllCustomResources();
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
-	
 
 	@Test
 	void testExportContentWithAllCustomResources() throws IOException {
-		//GIVEN 
+		// GIVEN
 		Map<String, VraNgCustomResource> customResources = new HashMap<>();
-		CustomResourceMockBuilder	mockBuilder = new CustomResourceMockBuilder();
+		CustomResourceMockBuilder mockBuilder = new CustomResourceMockBuilder();
 
-		customResources.put( "Avi Load Balancer L3DSR", mockBuilder.setDisplayNameInRawData("Avi Load Balancer L3DSR").build());
+		customResources.put("Avi Load Balancer L3DSR",
+				mockBuilder.setDisplayNameInRawData("Avi Load Balancer L3DSR").build());
 
-		when( vraNgPackageDescriptor.getCustomResource()).thenReturn(null);
-		when( restClient.getAllCustomResources()).thenReturn( customResources );
+		when(vraNgPackageDescriptor.getCustomResource()).thenReturn(null);
+		when(restClient.getAllCustomResources()).thenReturn(customResources);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedCustomResource	= { "Avi Load Balancer L3DSR.json" };
+		String[] expectedCustomResource = { "Avi Load Balancer L3DSR.json" };
 
 		// VERIFY
-		AssertionsHelper.assertFolderContainsFiles( fsMocks.getTempFolderProjectPath(), expectedCustomResource );
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedCustomResource);
 	}
 
-
 	@Test
-	void testExportContentWithSpecificCustomResources() throws IOException{
-		//GIVEN 
+	void testExportContentWithSpecificCustomResources() throws IOException {
+		// GIVEN
 		Map<String, VraNgCustomResource> customResources = new HashMap<>();
 		CustomResourceMockBuilder mockBuider = new CustomResourceMockBuilder();
 
-		customResources.put( "Avi Load Balancer L3DSR", mockBuider.setDisplayNameInRawData("Avi Load Balancer L3DSR").build());
-		customResources.put( "Ngnix Load Balancer", mockBuider.setDisplayNameInRawData("Ngnix Load Balancer L3DSR").build());
+		customResources.put("Avi Load Balancer L3DSR",
+				mockBuider.setDisplayNameInRawData("Avi Load Balancer L3DSR").build());
+		customResources.put("Ngnix Load Balancer",
+				mockBuider.setDisplayNameInRawData("Ngnix Load Balancer L3DSR").build());
 
 		List<String> customResourceNames = new ArrayList<>();
 		customResourceNames.add("Avi Load Balancer L3DSR");
 
-		when( vraNgPackageDescriptor.getCustomResource()).thenReturn(customResourceNames);
-		when( restClient.getAllCustomResources()).thenReturn( customResources );
+		when(vraNgPackageDescriptor.getCustomResource()).thenReturn(customResourceNames);
+		when(restClient.getAllCustomResources()).thenReturn(customResources);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedCustomResource	= { "Avi Load Balancer L3DSR.json" };
+		String[] expectedCustomResource = { "Avi Load Balancer L3DSR.json" };
 
 		// VERIFY
-		AssertionsHelper.assertFolderContainsFiles( fsMocks.getTempFolderProjectPath(), expectedCustomResource );
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedCustomResource);
 	}
 
 	@Test
-	void testExportContentForNonExistingCustomResource() throws IOException{
-		//GIVEN 
+	void testExportContentForNonExistingCustomResource() throws IOException {
+		// GIVEN
 		Map<String, VraNgCustomResource> customResources = new HashMap<>();
 		CustomResourceMockBuilder mockBuider = new CustomResourceMockBuilder();
 
-		customResources.put( "Avi Load Balancer L3DSR", mockBuider.setDisplayNameInRawData("Avi Load Balancer L3DSR").build());
-		customResources.put( "Ngnix Load Balancer", mockBuider.setDisplayNameInRawData("Ngnix Load Balancer L3DSR").build());
+		customResources.put("Avi Load Balancer L3DSR",
+				mockBuider.setDisplayNameInRawData("Avi Load Balancer L3DSR").build());
+		customResources.put("Ngnix Load Balancer",
+				mockBuider.setDisplayNameInRawData("Ngnix Load Balancer L3DSR").build());
 
 		List<String> customResourceNames = new ArrayList<>();
 		customResourceNames.add("Not There");
 
-		when( vraNgPackageDescriptor.getCustomResource()).thenReturn(customResourceNames);
-		when( restClient.getAllCustomResources()).thenReturn( customResources );
+		when(vraNgPackageDescriptor.getCustomResource()).thenReturn(customResourceNames);
+		when(restClient.getAllCustomResources()).thenReturn(customResources);
 
-		//TEST
+		// TEST
 		assertThrows(IllegalStateException.class, () -> store.exportContent());
 	}
 
