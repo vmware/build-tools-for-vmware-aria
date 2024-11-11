@@ -74,7 +74,7 @@ export class NpmConverter {
 			console.log(`Cloning source repo from: ${gitRepo} to ${this.opts.source.directory}`);
 			await new Promise((resolve, reject) => {
 				dwonloadGit(`direct:${gitRepo}`, this.opts.source.directory, { clone: true }, err => {
-					err ? reject(err) : resolve();
+					err ? reject(err) : resolve(undefined);
 				});
 			});
 			console.debug("Cloning done.");

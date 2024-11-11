@@ -25,22 +25,22 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@types/command-line-args": "^5.0.0",
-    "@types/fs-extra": "^5.0.5",
+    "@types/command-line-args": "^5.2.3",
+    "which": "^2.0.2",
     "@types/glob": "^7.1.1",
-    "@types/gulp": "^4.0.6",
-    "@types/node": "^12.0.10",
+    "@types/gulp": "^4.0.17",
+    "@types/node": "^22.9.0",
     "@types/npm": "^2.0.30",
     "gulp": "^5.0.0",
-    "gulp-typescript": "^5.0.1",
-    "ts-node": "^8.0.3",
-    "typescript": "^3.3.4000"
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
-    "command-line-args": "^5.1.1",
-    "download-git-repo": "^2.0.0",
+    "command-line-args": "^6.0.1",
+    "download-git-repo": "^3.0.2",
     "fs-extra": "^7.0.1",
     "glob": "^7.1.4",
-    "npm": "^10.8.0"
+    "npm": "^9.9.3"
   }
 }
