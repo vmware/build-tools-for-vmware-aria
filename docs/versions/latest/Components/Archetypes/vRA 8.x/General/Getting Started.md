@@ -108,7 +108,6 @@ The following need to be added to the profile that you intend to use:
     <vrang.username>administrator</vrang.username>
     <vrang.password>someSecurePassword</vrang.password>
     <vrang.tenant>{tenant}</vrang.tenant>
-    <vrang.project.id>{project+id}</vrang.project.id>
     <vrang.project.name>{project+name}</vrang.project.name>
     <vrang.org.id>{organization+id}</vrang.org.id>
     <vrang.org.name>{org+name}</vrang.org.name>
