@@ -49,3 +49,8 @@ typescript/vrotsc-annotations/package-lock.json
 .flattened-pom.xml
 
 infrastructure/.m2/repository
+
+# Nix
+
+flake.nix
+flake.lock
