@@ -97,7 +97,7 @@ jobs:
           echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
  
       - name: Cache Maven dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
