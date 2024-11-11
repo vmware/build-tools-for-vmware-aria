@@ -10,6 +10,12 @@
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
+### *`vrang.project.id` has been removed in favor of `vrang.project.name`*
+
+Moving forward, `vrang.project.id` will not be accepted as part of the configuration. Instead, use `vrang.project.name`. 
+
+`project.name` is more flexible as it will automatically find out the `project.id`.
+
 ### *Polyglot projects will not try to fix mistakes due to issues with the manifest*
 
 Before, the `polyglot.json` could be defined like this:
@@ -120,3 +126,9 @@ You don't need to migrate projects if they are `abx` based. `nodejs` is the corr
 ### *Migrate PolicyTemplates*
 
 Search your projects that use `@PolicyTemplate` decorator. The `templateVersion` property is now required. Check on top for possible values
+
+### *Migrate away from `vrang.project.id`*
+
+1. Open your `settings.xml`. 
+2. Search for `vrang.project.id`.
+3. If found, replace it with the name of the project as seen in Aria
