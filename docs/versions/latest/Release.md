@@ -132,3 +132,7 @@ Search your projects that use `@PolicyTemplate` decorator. The `templateVersion`
 1. Open your `settings.xml`.
 2. Search for `vrang.project.id`.
 3. If found, replace it with the name of the project as seen in Aria
+
+### *Modify your `environment.properties` files if in use (installer)*
+
+1. If you have `environment.properties` that rely on `vrang_project_id`, they should be modified to use the `vrang_project_name`
