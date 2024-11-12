@@ -15,8 +15,8 @@
     "npmconv": "bin/npmconv"
   },
   "engines": {
-    "node": ">=16.15.1",
-    "npm": ">=6.14.0"
+    "node": ">=20.18.0",
+    "npm": ">=10.8.2"
   },
   "scripts": {
     "build": "gulp build-prod",
