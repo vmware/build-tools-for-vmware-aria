@@ -274,7 +274,7 @@ To get started, follow the steps below:
       stage: install
       needs: ["dynamic_variables"]
       script:
-        - mvn $DEPLOY_OPTS clean package
+        - mvn $DEPLOY_OPTS clean package deploy
       artifacts:
         paths:
           - vra/target/*.zip

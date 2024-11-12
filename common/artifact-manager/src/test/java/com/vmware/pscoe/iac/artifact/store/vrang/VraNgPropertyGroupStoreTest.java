@@ -44,7 +44,7 @@ import java.util.List;
 
 public class VraNgPropertyGroupStoreTest {
 	@Rule
-	public TemporaryFolder tempFolder	= new TemporaryFolder();
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	protected VraNgPropertyGroupStore store;
 	protected RestClientVraNg restClient;
@@ -57,185 +57,184 @@ public class VraNgPropertyGroupStoreTest {
 	void init() {
 		try {
 			tempFolder.create();
-		}
-		catch ( IOException e ) {
-			throw new RuntimeException( "Could not create a temp folder" );
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create a temp folder");
 		}
 
-		fsMocks					= new FsMocks( tempFolder.getRoot() );
-		store					= new VraNgPropertyGroupStore();
-		restClient				= Mockito.mock( RestClientVraNg.class );
-		pkg						= PackageFactory.getInstance( PackageType.VRANG, tempFolder.getRoot() );
-		config					= Mockito.mock( ConfigurationVraNg.class );
-		vraNgPackageDescriptor	= Mockito.mock( VraNgPackageDescriptor.class );
+		fsMocks = new FsMocks(tempFolder.getRoot());
+		store = new VraNgPropertyGroupStore();
+		restClient = Mockito.mock(RestClientVraNg.class);
+		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
+		config = Mockito.mock(ConfigurationVraNg.class);
+		vraNgPackageDescriptor = Mockito.mock(VraNgPackageDescriptor.class);
 
 		VraNgOrganization org = new VraNgOrganization();
 		org.setId("b2c558c8-f20c-4da6-9bc3-d7561f64df16");
 		org.setName("VIDM-L-01A");
 
-		when(config.getOrgId()).thenReturn("b2c558c8-f20c-4da6-9bc3-d7561f64df16");
 		when(config.getOrgName()).thenReturn("VIDM-L-01A");
 		when(restClient.getOrganizationById("b2c558c8-f20c-4da6-9bc3-d7561f64df16")).thenReturn(org);
 		when(restClient.getOrganizationByName("VIDM-L-01A")).thenReturn(org);
 
-		System.out.println( "==========================================================" );
-		System.out.println( "START" );
-		System.out.println( "==========================================================" );
+		System.out.println("==========================================================");
+		System.out.println("START");
+		System.out.println("==========================================================");
 	}
 
 	@AfterEach
 	void tearDown() {
 		tempFolder.delete();
 
-		System.out.println( "==========================================================" );
-		System.out.println( "END" );
-		System.out.println( "==========================================================" );
+		System.out.println("==========================================================");
+		System.out.println("END");
+		System.out.println("==========================================================");
 	}
 
 	@Test
-	void testExportContentWithAllPropertyGroups() throws IOException{
+	void testExportContentWithAllPropertyGroups() throws IOException {
 		// GIVEN
 		this.initStoreWithPropertyGroups(new ArrayList<String>(Arrays.asList("memory", "compute")));
-		
-		when( vraNgPackageDescriptor.getPropertyGroup() ).thenReturn( null );
+
+		when(vraNgPackageDescriptor.getPropertyGroup()).thenReturn(null);
 		// TEST
 		store.exportContent();
 
-		String[] expectedPropertyGroups	= { "memory.json", "compute.json" };
+		String[] expectedPropertyGroups = { "memory.json", "compute.json" };
 
 		// VERIFY
-		AssertionsHelper.assertFolderContainsFiles( fsMocks.getTempFolderProjectPath(), expectedPropertyGroups );
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedPropertyGroups);
 	}
 
 	@Test
 	void testExportContentWithAllPropertyGroupsButFilteringIsNone() throws IOException {
 		// GIVEN
 		this.initStoreWithPropertyGroups(new ArrayList<String>(Arrays.asList("memory")));
-		when( vraNgPackageDescriptor.getPropertyGroup() ).thenReturn( new ArrayList<>() );
+		when(vraNgPackageDescriptor.getPropertyGroup()).thenReturn(new ArrayList<>());
 
 		// TEST
 		store.exportContent();
 
-		String[] expectedPropertyGroups	= {};
+		String[] expectedPropertyGroups = {};
 
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
 
 	@Test
 	void testExportContentWithSpecificPropertyGroups() throws IOException {
 		// GIVEN
 		this.initStoreWithPropertyGroups(new ArrayList<String>(Arrays.asList("memory", "compute")));
-		
-		List<String> propertyGroupNames			= new ArrayList<>();
-		propertyGroupNames.add( "memory" );
-		List<VraNgPropertyGroup> propertyGroups	= new ArrayList<>();
+
+		List<String> propertyGroupNames = new ArrayList<>();
+		propertyGroupNames.add("memory");
+		List<VraNgPropertyGroup> propertyGroups = new ArrayList<>();
 
 		PropertyGroupMockBuilder memoryBuilder = new PropertyGroupMockBuilder();
-		propertyGroups.add( memoryBuilder.setName( "memory" ).build() );
+		propertyGroups.add(memoryBuilder.setName("memory").build());
 
 		PropertyGroupMockBuilder computeBuilder = new PropertyGroupMockBuilder();
-		propertyGroups.add( computeBuilder.setName( "compute" ).build() );
+		propertyGroups.add(computeBuilder.setName("compute").build());
 
-		when( vraNgPackageDescriptor.getPropertyGroup() ).thenReturn( propertyGroupNames );
+		when(vraNgPackageDescriptor.getPropertyGroup()).thenReturn(propertyGroupNames);
 
 		// TEST
 		store.exportContent();
 
-		String[] expectedPropertyGroups	= { "memory.json" };
+		String[] expectedPropertyGroups = { "memory.json" };
 
 		// VERIFY
-		AssertionsHelper.assertFolderContainsFiles( fsMocks.getTempFolderProjectPath(), expectedPropertyGroups );
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedPropertyGroups);
 	}
 
 	@Test
-	void testImportContentWithAllPropertyGroups() throws IOException{
+	void testImportContentWithAllPropertyGroups() throws IOException {
 		// GIVEN
-		when( vraNgPackageDescriptor.getPropertyGroup() ).thenReturn(null);
-	
+		when(vraNgPackageDescriptor.getPropertyGroup()).thenReturn(null);
+
 		this.initStoreWithPropertyGroups(new ArrayList<String>(Arrays.asList("memory", "compute")));
 
 		PropertyGroupMockBuilder memoryBuilder = new PropertyGroupMockBuilder();
-		fsMocks.propertyGroupFsMocks().addPropertyGroup( memoryBuilder.setName( "memory" ).build() );
+		fsMocks.propertyGroupFsMocks().addPropertyGroup(memoryBuilder.setName("memory").build());
 
 		PropertyGroupMockBuilder computeBuilder = new PropertyGroupMockBuilder();
-		fsMocks.propertyGroupFsMocks().addPropertyGroup( computeBuilder.setName( "compute" ).build() );
+		fsMocks.propertyGroupFsMocks().addPropertyGroup(computeBuilder.setName("compute").build());
 
 		// TEST
-		store.importContent( tempFolder.getRoot() );
+		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify( restClient, times( 1 ) ).getPropertyGroups();
-		verify( restClient, times( 2 ) ).updatePropertyGroup( any() );
+		verify(restClient, times(1)).getPropertyGroups();
+		verify(restClient, times(2)).updatePropertyGroup(any());
 	}
 
 	@Test
-	void testImportContentWithExistingPropertyGroup() throws IOException{
+	void testImportContentWithExistingPropertyGroup() throws IOException {
 		// GIVEN
-		when( vraNgPackageDescriptor.getPropertyGroup() ).thenReturn(null);
+		when(vraNgPackageDescriptor.getPropertyGroup()).thenReturn(null);
 
-		List<VraNgPropertyGroup> pgs = this.initStoreWithPropertyGroups(new ArrayList<String>(Collections.singletonList("memory")));
+		List<VraNgPropertyGroup> pgs = this
+				.initStoreWithPropertyGroups(new ArrayList<String>(Collections.singletonList("memory")));
 
 		PropertyGroupMockBuilder memoryBuilder = new PropertyGroupMockBuilder();
 		fsMocks.propertyGroupFsMocks().addPropertyGroup(
-			memoryBuilder.setPropertyInRawData("description", "SANITY_CHECK").setName( "memory" ).setId( "testImportContentWithExistingPropertyGroup" ).build()
-		);
+				memoryBuilder.setPropertyInRawData("description", "SANITY_CHECK").setName("memory")
+						.setId("testImportContentWithExistingPropertyGroup").build());
 
-		ArgumentCaptor<VraNgPropertyGroup> pgArgumentCaptor = ArgumentCaptor.forClass( VraNgPropertyGroup.class );
+		ArgumentCaptor<VraNgPropertyGroup> pgArgumentCaptor = ArgumentCaptor.forClass(VraNgPropertyGroup.class);
 
 		// TEST
-		store.importContent( tempFolder.getRoot() );
+		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify( restClient, times( 1 ) ).getPropertyGroups();
-		verify( restClient, times( 1 ) ).updatePropertyGroup( pgArgumentCaptor.capture() );
-		verify( restClient, never() ).createPropertyGroup( any() );
+		verify(restClient, times(1)).getPropertyGroups();
+		verify(restClient, times(1)).updatePropertyGroup(pgArgumentCaptor.capture());
+		verify(restClient, never()).createPropertyGroup(any());
 
 		System.out.println(pgArgumentCaptor.getValue().getRawData());
-		assertEquals( "mockedId", pgArgumentCaptor.getValue().getId() );
+		assertEquals("mockedId", pgArgumentCaptor.getValue().getId());
 		assertTrue(pgArgumentCaptor.getValue().getRawData().contains("SANITY_CHECK"));
 	}
 
 	@Test
-	void testImportContentWithNonExistingPropertyGroups() throws IOException{
+	void testImportContentWithNonExistingPropertyGroups() throws IOException {
 		// GIVEN
 		List<String> names = new ArrayList<>();
 		names.add("nonexisting");
-		when( vraNgPackageDescriptor.getPropertyGroup() ).thenReturn(names);
+		when(vraNgPackageDescriptor.getPropertyGroup()).thenReturn(names);
 
 		this.initStoreWithPropertyGroups(new ArrayList<String>());
 
 		PropertyGroupMockBuilder computeBuilder = new PropertyGroupMockBuilder();
-		fsMocks.propertyGroupFsMocks().addPropertyGroup( computeBuilder.setName( "nonexisting" ).build() );
+		fsMocks.propertyGroupFsMocks().addPropertyGroup(computeBuilder.setName("nonexisting").build());
 
 		// TEST
-		store.importContent( tempFolder.getRoot() );
+		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify( restClient, times( 1 ) ).getPropertyGroups();
-		verify( restClient, times( 1 ) ).createPropertyGroup( any() );
+		verify(restClient, times(1)).getPropertyGroups();
+		verify(restClient, times(1)).createPropertyGroup(any());
 	}
 
 	@Test
-	void testImportContentWithConfig() throws IOException{
+	void testImportContentWithConfig() throws IOException {
 		// GIVEN
 		List<String> names = new ArrayList<>();
 		names.add("memory");
-		when( vraNgPackageDescriptor.getPropertyGroup() ).thenReturn(names);
-	
+		when(vraNgPackageDescriptor.getPropertyGroup()).thenReturn(names);
+
 		this.initStoreWithPropertyGroups(new ArrayList<String>(Arrays.asList("memory", "compute")));
 
 		PropertyGroupMockBuilder memoryBuilder = new PropertyGroupMockBuilder();
-		fsMocks.propertyGroupFsMocks().addPropertyGroup( memoryBuilder.setName( "memory" ).build() );
+		fsMocks.propertyGroupFsMocks().addPropertyGroup(memoryBuilder.setName("memory").build());
 
 		PropertyGroupMockBuilder computeBuilder = new PropertyGroupMockBuilder();
-		fsMocks.propertyGroupFsMocks().addPropertyGroup( computeBuilder.setName( "compute" ).build() );
+		fsMocks.propertyGroupFsMocks().addPropertyGroup(computeBuilder.setName("compute").build());
 
 		// TEST
-		store.importContent( tempFolder.getRoot() );
+		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify( restClient, times( 1 ) ).getPropertyGroups();
-		verify( restClient, times( 1 ) ).updatePropertyGroup( any() );
+		verify(restClient, times(1)).getPropertyGroups();
+		verify(restClient, times(1)).updatePropertyGroup(any());
 	}
 
 	@Test
@@ -252,16 +251,17 @@ public class VraNgPropertyGroupStoreTest {
 		assertThrows(IllegalStateException.class, () -> store.exportContent());
 	}
 
-	private List<VraNgPropertyGroup> initStoreWithPropertyGroups(ArrayList<String> propertyGroupNames) throws IOException{
-		List<VraNgPropertyGroup> propertyGroups	= new ArrayList<>();
+	private List<VraNgPropertyGroup> initStoreWithPropertyGroups(ArrayList<String> propertyGroupNames)
+			throws IOException {
+		List<VraNgPropertyGroup> propertyGroups = new ArrayList<>();
 		for (String pgName : propertyGroupNames) {
 			PropertyGroupMockBuilder computeBuilder = new PropertyGroupMockBuilder();
-			propertyGroups.add( computeBuilder.setName( pgName ).build() );
+			propertyGroups.add(computeBuilder.setName(pgName).build());
 		}
 
-		when( restClient.getPropertyGroups() ).thenReturn( propertyGroups );
+		when(restClient.getPropertyGroups()).thenReturn(propertyGroups);
 
-		store.init( restClient, pkg, config, vraNgPackageDescriptor );
+		store.init(restClient, pkg, config, vraNgPackageDescriptor);
 
 		return propertyGroups;
 	}

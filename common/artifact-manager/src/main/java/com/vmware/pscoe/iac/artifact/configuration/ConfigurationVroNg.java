@@ -30,16 +30,11 @@ public final class ConfigurationVroNg extends ConfigurationVraNg implements Conf
 	}
 
 	// Important - when modify properties refer to comments in @Configuration
-	public static final String ORGANIZATION_ID = "org.id";
 	public static final String REFRESH_TOKEN = "refresh.token";
 
 	/**
 	 * vRA Package Import content conflict resolution mode
 	 */
-
-	public String getOrgId() {
-		return this.properties.getProperty(ORGANIZATION_ID);
-	}
 
 	public String getRefreshToken() {
 		return this.properties.getProperty(REFRESH_TOKEN);

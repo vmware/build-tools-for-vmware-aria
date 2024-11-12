@@ -120,23 +120,11 @@ enum Option {
 			"vrang_port",
 			Configuration.PORT),
 	/**
-	 * VRANG project Id.
-	 */
-	VRANG_PROJECT_ID(
-			"vrang_project.id",
-			ConfigurationVraNg.PROJECT_ID),
-	/**
 	 * VRANG data collection delay in seconds.
 	 */
 	VRANG_DATA_COLLECTION_DELAY_SECONDS(
 			"vrang_data.collection.delay.seconds",
 			ConfigurationVraNg.DATA_COLLECTION_DELAY_SECONDS),
-	/**
-	 * VRANG org Id.
-	 */
-	VRANG_ORGANIZATION_ID(
-			"vrang_org_id",
-			ConfigurationVraNg.ORGANIZATION_ID),
 	/**
 	 * VRANG org name.
 	 */
@@ -1274,12 +1262,8 @@ public final class Installer {
 		userInput(input, Option.VRANG_PROJECT_NAME, "  Project name");
 		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VRANG_PROJECT_NAME),
 				input.getText());
-		userInput(input, Option.VRANG_PROJECT_ID, "  Project ID (Optional if you supplied project name)",
-				validated.projectId);
 		userInput(input, Option.VRANG_ORGANIZATION_NAME,
-				"  Organization Name (Optional if you supplied organization ID)", validated.org);
-		userInput(input, Option.VRANG_ORGANIZATION_ID, "  Organization ID (Optional if you supplied organization Name)",
-				validated.orgId);
+				"  Organization Name", validated.org);
 		userInput(input, Option.VRANG_PROXY_REQUIRED, "  Use proxy server for vRA? (Optional)", false);
 		if (input.allTrue(Option.VRANG_PROXY_REQUIRED)) {
 			userInput(input, Option.VRANG_PROXY, "    VRA proxy server");
