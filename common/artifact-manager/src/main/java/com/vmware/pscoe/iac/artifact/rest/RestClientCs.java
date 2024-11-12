@@ -45,6 +45,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Rest client for Code Stream.
+ */
 public class RestClientCs extends RestClient {
 	private final Logger logger = LoggerFactory.getLogger(RestClientCs.class);
 
@@ -86,9 +89,7 @@ public class RestClientCs extends RestClient {
 	}
 
 	private void initProjectNameAndId() {
-		String constraint = StringUtils.isNotEmpty(configuration.getProjectName())
-				? String.format("name eq '%s'", configuration.getProjectName())
-				: String.format("id eq '%s'", configuration.getProjectId());
+		String constraint = String.format("name eq '%s'", configuration.getProjectName());
 
 		URI url = getURI(getURIBuilder()
 				.setPath(GET_PROJECT_INFO)
@@ -105,27 +106,57 @@ public class RestClientCs extends RestClient {
 
 	}
 
+	/**
+	 * Get the project name.
+	 *
+	 * @return the project name
+	 */
 	public String getProjectName() {
 		return this.projectName;
 	}
 
+	/**
+	 * Get the project id.
+	 *
+	 * @return the project id
+	 */
 	public String getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * Get the cloud proxy id.
+	 *
+	 * @return the cloud proxy id
+	 */
 	public String getCloudProxyId() {
 		return cloudProxyId;
 	}
 
+	/**
+	 * Get the rest template.
+	 *
+	 * @return the rest template
+	 */
 	public RestTemplate getRestTemplate() {
 		return restTemplate;
 	}
 
+	/**
+	 * Get the configuration.
+	 *
+	 * @return the configuration
+	 */
 	@Override
 	protected Configuration getConfiguration() {
 		return configuration;
 	}
 
+	/**
+	 * Get the API version.
+	 *
+	 * @return the API version
+	 */
 	@Override
 	public String getVersion() {
 		if (this.apiVersion != null && !this.apiVersion.isEmpty()) {
@@ -139,6 +170,13 @@ public class RestClientCs extends RestClient {
 		return this.apiVersion;
 	}
 
+	/**
+	 * Get the project variables.
+	 *
+	 * @param variableName the variable name
+	 *
+	 * @return the project variables
+	 */
 	public Variable getProjectVariableByName(String variableName) {
 		Gson gson = new Gson();
 		logger.info("Get variable  " + variableName);
@@ -150,6 +188,11 @@ public class RestClientCs extends RestClient {
 		return gson.fromJson(response.getBody(), Variable.class);
 	}
 
+	/**
+	 * Get the project variables.
+	 *
+	 * @return the project variables
+	 */
 	public List<Variable> getProjectVariables() {
 		logger.info("Get Variables");
 		Map<String, String> params = new LinkedHashMap<String, String>();
@@ -161,6 +204,13 @@ public class RestClientCs extends RestClient {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Update the project variable.
+	 *
+	 * @param var the variable to update
+	 *
+	 * @return the response
+	 */
 	public String updateVariable(Variable var) {
 		logger.info("Importing pipeline " + var.getName());
 		URI url = getURI(getURIBuilder()
@@ -171,6 +221,13 @@ public class RestClientCs extends RestClient {
 		return response.getBody();
 	}
 
+	/**
+	 * Create the project variable.
+	 *
+	 * @param var the variable to create
+	 *
+	 * @return the response
+	 */
 	public String createVariable(Variable var) {
 		logger.info("Importing variable " + var.getName());
 		URI url = getURI(getURIBuilder().setPath(VARIABLES_PATH));
@@ -180,6 +237,11 @@ public class RestClientCs extends RestClient {
 		return response.getBody();
 	}
 
+	/**
+	 * Get the project endpoints.
+	 *
+	 * @return the project endpoints
+	 */
 	public List<Endpoint> getProjectEndpoints() {
 		logger.info("Get Endpoints");
 		Map<String, String> params = new LinkedHashMap<String, String>();
@@ -191,6 +253,13 @@ public class RestClientCs extends RestClient {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Update the project endpoint.
+	 *
+	 * @param var the endpoint to update
+	 *
+	 * @return the response
+	 */
 	public String updateEndpoint(Endpoint var) {
 		logger.info("Update endpoint: {}  ", var.getName());
 		URI url = getURI(
@@ -201,6 +270,13 @@ public class RestClientCs extends RestClient {
 		return response.getBody();
 	}
 
+	/**
+	 * Create the project endpoint.
+	 *
+	 * @param var the endpoint to create
+	 *
+	 * @return the response
+	 */
 	public String createEndpoint(Endpoint var) {
 		logger.info("Create endpoint " + var.getName());
 		URI url = getURI(getURIBuilder().setPath(ENDPOINTS_PATH));
@@ -210,6 +286,13 @@ public class RestClientCs extends RestClient {
 		return response.getBody();
 	}
 
+	/**
+	 * Get the project custom integrations.
+	 *
+	 * @param ciName the custom integration name
+	 *
+	 * @return the project custom integrations
+	 */
 	public Optional<CustomIntegrationVersion> getCustomIntegrationByName(String ciName) {
 		logger.info("Get Custom Integration: " + ciName);
 		Map<String, String> params = new LinkedHashMap<String, String>();
@@ -221,6 +304,11 @@ public class RestClientCs extends RestClient {
 				.findFirst();
 	}
 
+	/**
+	 * Get the project custom integrations.
+	 *
+	 * @return the project custom integrations
+	 */
 	public List<CustomIntegrationVersion> getCustomIntegrations() {
 		logger.info("Get Custom Integrations");
 		List<JsonObject> result = getPagedResult(CUSTOM_INTEGRATION_PATH);
@@ -230,6 +318,13 @@ public class RestClientCs extends RestClient {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Get the project custom integrations.
+	 *
+	 * @param id the custom integration id
+	 *
+	 * @return the project custom integrations
+	 */
 	public List<CustomIntegrationVersion> getCustomIntegrationVersions(String id) {
 		logger.info("Get Custom Integration Versions for: " + id);
 		List<JsonObject> result = getPagedResult(MessageFormat.format(CUSTOM_INTEGRATION_VERSION_PATH, id));
@@ -239,6 +334,11 @@ public class RestClientCs extends RestClient {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Delete the project custom integration.
+	 *
+	 * @param id the custom integration id
+	 */
 	public void deleteCustomIntegration(String id) {
 		logger.info("Delete custom integration" + id);
 		URI url = getURI(getURIBuilder().setPath(CUSTOM_INTEGRATION_PATH + "/" + id));
@@ -247,6 +347,13 @@ public class RestClientCs extends RestClient {
 		logger.debug("Body: " + response.getBody());
 	}
 
+	/**
+	 * Create the project custom integration.
+	 *
+	 * @param ci the custom integration to create
+	 *
+	 * @return the response
+	 */
 	public CustomIntegrationVersion createCustomIntegration(CustomIntegrationVersion ci) {
 		logger.info("Create Custom Integration: " + ci.getName());
 		URI url = getURI(getURIBuilder().setPath(CUSTOM_INTEGRATION_PATH));
@@ -257,6 +364,13 @@ public class RestClientCs extends RestClient {
 		return gson.fromJson(response.getBody(), CustomIntegrationVersion.class);
 	}
 
+	/**
+	 * Update the project custom integration.
+	 *
+	 * @param ci the custom integration to update
+	 *
+	 * @return the response
+	 */
 	public CustomIntegrationVersion updateCustomIntegration(CustomIntegrationVersion ci) {
 		logger.info("Update Custom Integration: " + ci.getName());
 		URI url = getURI(getURIBuilder().setPath(CUSTOM_INTEGRATION_PATH + "/" + ci.getId()));
@@ -268,6 +382,14 @@ public class RestClientCs extends RestClient {
 		return gson.fromJson(response.getBody(), CustomIntegrationVersion.class);
 	}
 
+	/**
+	 * Create the project custom integration version.
+	 *
+	 * @param id      the custom integration id
+	 * @param version the custom integration version to create
+	 *
+	 * @return the response
+	 */
 	public Object createCustomIntegrationVersion(String id, CustomIntegrationVersion version) {
 		logger.info(
 				String.format("Create Custom Integration Version: %s : %s ", version.getName(), version.getVersion()));
@@ -280,110 +402,243 @@ public class RestClientCs extends RestClient {
 		return gson.fromJson(response.getBody(), CustomIntegrationVersion.class);
 	}
 
+	/**
+	 * Get the project pipelines.
+	 */
 	public List<JsonObject> getProjectPipelines() {
 		logger.info("Get Pipelines");
 		return getPagedResult(PIPELINE_PATH, getProjectFilterParam());
 	}
 
+	/**
+	 * Get the project pipelines.
+	 *
+	 * @return the project pipelines
+	 */
 	public JsonObject getProjectPipelineByName(String name) {
 		logger.info("Get pipeline: " + name);
 		return requestForPath(getProjectNameUrl(PIPELINE_UPDATE_PATH, name), HttpMethod.GET, null);
 	}
 
+	/**
+	 * Update the project pipeline.
+	 *
+	 * @param name the pipeline name
+	 * @param var  the pipeline to update
+	 *
+	 * @return the response
+	 */
 	public JsonObject updatePipeline(String name, JsonObject var) {
 		logger.info("Update pipeline: {}", name);
 		return requestForPath(getProjectNameUrl(PIPELINE_UPDATE_PATH, name), HttpMethod.PUT, var);
 	}
 
+	/**
+	 * Patch the project pipeline.
+	 *
+	 * @param name the pipeline name
+	 * @param var  the pipeline to patch
+	 *
+	 * @return the response
+	 */
 	public JsonObject patchPipeline(String name, JsonObject var) {
 		logger.info("PATCH pipeline: {}", name);
 		return requestForPath(getProjectNameUrl(PIPELINE_UPDATE_PATH, name), HttpMethod.PATCH, var);
 	}
 
+	/**
+	 * Create the project pipeline.
+	 *
+	 * @param var the pipeline to create
+	 *
+	 * @return the response
+	 */
 	public JsonObject createPipeline(JsonObject var) {
 		String name = var.get("name").getAsString();
 		logger.info("Create pipeline: {}", name);
 		return requestForPath(getURI(getURIBuilder().setPath(PIPELINE_PATH)), HttpMethod.POST, var);
 	}
 
+	/**
+	 * Get project git webhooks.
+	 *
+	 * @return the project git webhooks
+	 */
 	public List<JsonObject> getProjectGitWebhooks() {
 		logger.info("Get git Webhooks for project");
 		return getPagedResult(GIT_PATH, getProjectFilterParam());
 	}
 
+	/**
+	 * Get the project git webhook
+	 *
+	 * @param name the git webhook name
+	 *
+	 * @return the project git webhook
+	 */
 	public JsonObject getProjectGitWebhook(String name) {
 		logger.info("Get Git webhook: " + name);
 		return requestForPath(getProjectNameUrl(GIT_PROJECT_NAME_PATH, name), HttpMethod.GET, null);
 	}
 
+	/**
+	 * Update the project git webhook.
+	 *
+	 * @param name the git webhook name
+	 * @param var  the git webhook to update
+	 *
+	 * @return the response
+	 */
 	public JsonObject updateGitWebhook(String name, JsonObject var) {
 		logger.info("Update git Webhook: {}", name);
 		return requestForPath(getProjectNameUrl(GIT_PROJECT_NAME_PATH, name), HttpMethod.PUT, var);
 	}
 
+	/**
+	 * Create the project git webhook.
+	 *
+	 * @param var the git webhook to create
+	 *
+	 * @return the response
+	 */
 	public JsonObject createGitWebhook(JsonObject var) {
 		String name = var.get("name").getAsString();
 		logger.info("Create Git Webhook: {}", name);
 		return requestForPath(getURI(getURIBuilder().setPath(GIT_PATH)), HttpMethod.POST, var);
 	}
 
+	/**
+	 * Get the project docker webhooks.
+	 *
+	 * @return the project docker webhooks
+	 */
 	public List<JsonObject> getProjectDockerWebhooks() {
 		logger.info("Get git Webhooks for project");
 		return getPagedResult(DOCKER_PATH, getProjectFilterParam());
 	}
 
+	/**
+	 * Get the project docker webhooks.
+	 *
+	 * @return the project docker webhooks
+	 */
 	public JsonObject getProjectDockerWebhook(String name) {
 		logger.info("Get Docker webhook: " + name);
 		return requestForPath(getProjectNameUrl(DOCKER_PROJECT_NAME_PATH, name), HttpMethod.GET, null);
 	}
 
+	/**
+	 * Update the project docker webhook.
+	 *
+	 * @param name the docker webhook name
+	 * @param var  the docker webhook to update
+	 *
+	 * @return the response
+	 */
 	public JsonObject updateDockerWebhook(String name, JsonObject var) {
 		logger.info("Update Docker Webhook: {}", name);
 		return requestForPath(getProjectNameUrl(DOCKER_PROJECT_NAME_PATH, name), HttpMethod.PUT, var);
 	}
 
+	/**
+	 * Create the project docker webhook.
+	 *
+	 * @param var the docker webhook to create
+	 *
+	 * @return the response
+	 */
 	public JsonObject createDockerWebhook(JsonObject var) {
 		String name = var.get("name").getAsString();
 		logger.info("Create Docker Webhook: {}", name);
 		return requestForPath(getURI(getURIBuilder().setPath(DOCKER_PATH)), HttpMethod.POST, var);
 	}
 
+	/**
+	 * Get the project gerrit listeners.
+	 *
+	 * @return the project gerrit listeners
+	 */
 	public List<JsonObject> getProjectGerritListeners() {
 		logger.info("Get Gerrit Listener for project");
 		return getPagedResult(GERRIT_LISTENER_PATH, getProjectFilterParam());
 	}
 
+	/**
+	 * Get the project gerrit listeners.
+	 *
+	 * @return the project gerrit listeners
+	 */
 	public JsonObject getProjectGerritListener(String name) {
 		logger.info("Get  Gerrit Listener: " + name);
 		return requestForPath(getProjectNameUrl(GERRIT_LISTENER_PROJECT_NAME_PATH, name), HttpMethod.GET, null);
 	}
 
+	/**
+	 * Update the project gerrit listener.
+	 *
+	 * @param name the gerrit listener name
+	 * @param var  the gerrit listener to update
+	 *
+	 * @return the response
+	 */
 	public JsonObject updateGerritListener(String name, JsonObject var) {
 		logger.info("Update  Gerrit Listener: {}", name);
 		return requestForPath(getProjectNameUrl(GERRIT_LISTENER_PROJECT_NAME_PATH, name), HttpMethod.PUT, var);
 	}
 
+	/**
+	 * Create the project gerrit listener.
+	 *
+	 * @param var the gerrit listener to create
+	 *
+	 * @return the response
+	 */
 	public JsonObject createGerritListener(JsonObject var) {
 		String name = var.get("name").getAsString();
 		logger.info("Create  Gerrit Trigger: {}", name);
 		return requestForPath(getURI(getURIBuilder().setPath(GERRIT_LISTENER_PATH)), HttpMethod.POST, var);
 	}
 
+	/**
+	 * Get the project gerrit triggers.
+	 *
+	 * @return the project gerrit triggers
+	 */
 	public List<JsonObject> getProjectGerritTriggers() {
 		logger.info("Get Gerrit Triggers for project");
 		return getPagedResult(GERRIT_TRIGGER_PATH, getProjectFilterParam());
 	}
 
+	/**
+	 * Get the project gerrit triggers.
+	 *
+	 * @return the project gerrit triggers
+	 */
 	public JsonObject getProjectGerritTrigger(String name) {
 		logger.info("Get Gerrit Trigger: " + name);
 		return requestForPath(getProjectNameUrl(GERRIT_TRIGGER_PROJECT_NAME_PATH, name), HttpMethod.GET, null);
 	}
 
+	/**
+	 * Update the project gerrit trigger.
+	 *
+	 * @param name the gerrit trigger name
+	 * @param var  the gerrit trigger to update
+	 *
+	 * @return the response
+	 */
 	public JsonObject updateGerritTrigger(String name, JsonObject var) {
 		logger.info("Update  Gerrit Trigger: {}", name);
 		return requestForPath(getProjectNameUrl(GERRIT_TRIGGER_PROJECT_NAME_PATH, name), HttpMethod.PUT, var);
 	}
 
+	/**
+	 * Create the project gerrit trigger.
+	 *
+	 * @param var the gerrit trigger to create
+	 *
+	 * @return the response
+	 */
 	public JsonObject createGerritTrigger(JsonObject var) {
 		String name = var.get("name").getAsString();
 		logger.info("Create  Gerrit Trigger: {}", name);
@@ -418,6 +673,11 @@ public class RestClientCs extends RestClient {
 
 	}
 
+	/**
+	 * Get the project cloud proxy id.
+	 *
+	 * @return the project cloud proxy id
+	 */
 	public List<JsonObject> getPagedResult(String variablePath) {
 		return getPagedResult(variablePath, new LinkedHashMap<String, String>());
 	}
@@ -464,6 +724,11 @@ public class RestClientCs extends RestClient {
 		return getURI(getURIBuilder().setPath(MessageFormat.format(path, getProjectName(), name)));
 	}
 
+	/**
+	 * Get the project filter param.
+	 *
+	 * @return the project filter param
+	 */
 	Map<String, String> getProjectFilterParam() {
 		Map<String, String> params = new LinkedHashMap<String, String>();
 		params.put("$filter", String.format("project eq '%s'", getProjectName()));

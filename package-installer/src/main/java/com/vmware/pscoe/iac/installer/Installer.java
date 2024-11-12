@@ -120,12 +120,6 @@ enum Option {
 			"vrang_port",
 			Configuration.PORT),
 	/**
-	 * VRANG project Id.
-	 */
-	VRANG_PROJECT_ID(
-			"vrang_project.id",
-			ConfigurationVraNg.PROJECT_ID),
-	/**
 	 * VRANG data collection delay in seconds.
 	 */
 	VRANG_DATA_COLLECTION_DELAY_SECONDS(
@@ -1274,8 +1268,6 @@ public final class Installer {
 		userInput(input, Option.VRANG_PROJECT_NAME, "  Project name");
 		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VRANG_PROJECT_NAME),
 				input.getText());
-		userInput(input, Option.VRANG_PROJECT_ID, "  Project ID (Optional if you supplied project name)",
-				validated.projectId);
 		userInput(input, Option.VRANG_ORGANIZATION_NAME,
 				"  Organization Name (Optional if you supplied organization ID)", validated.org);
 		userInput(input, Option.VRANG_ORGANIZATION_ID, "  Organization ID (Optional if you supplied organization Name)",
