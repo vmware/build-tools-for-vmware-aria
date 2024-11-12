@@ -109,7 +109,6 @@ The following need to be added to the profile that you intend to use:
     <vrang.password>someSecurePassword</vrang.password>
     <vrang.tenant>{tenant}</vrang.tenant>
     <vrang.project.name>{project+name}</vrang.project.name>
-    <vrang.org.id>{organization+id}</vrang.org.id>
     <vrang.org.name>{org+name}</vrang.org.name>
     <vrang.refresh.token>{refresh+token}</vrang.refresh.token>
     <vrang.bp.unrelease.versions>true|false</vrang.bp.unrelease.versions>
@@ -128,4 +127,4 @@ credentials.
 
 #### Organizations
 
-The `vrang.org.id` needs to be passed, as vRA-ng targets only a single organization. However we can extract the `org.id` from the `org.name`. Meaning that in the end if `org.name` is present, you don't need to pass the `org.id`, however if `org.id` is passed, it will be taken with priority.
+`vrang.org.name` needs to be specified. The `vra-ng` project is scoped to a single organization.

@@ -70,6 +70,8 @@ public class VraNgSubscriptionStoreTest {
 	protected FsMocks fsMocks;
 	protected Gson gson;
 
+	protected static String ORG_NAME = "testOrg";
+
 	@BeforeEach
 	void init() {
 		try {
@@ -89,11 +91,11 @@ public class VraNgSubscriptionStoreTest {
 		// mock all rest calls in init
 		VraNgOrganization mockedOrg = new VraNgOrganization();
 		mockedOrg.setId("mockOrg");
-		when(config.getOrgId()).thenReturn("mockOrg");
 		when(restClient.getProjectId()).thenReturn("mockedProjectId");
 		when(restClient.getProjects()).thenReturn(new ArrayList<VraNgProject>());
 		when(restClient.getOrganizationById(anyString())).thenReturn(mockedOrg);
 		when(restClient.getOrganizationByName(anyString())).thenReturn(mockedOrg);
+		when(config.getOrgName()).thenReturn(ORG_NAME);
 
 		store.init(restClient, pkg, config, vraNgPackageDescriptor);
 		System.out.println("==========================================================");

@@ -47,10 +47,6 @@ public class ConfigurationVraNg extends Configuration {
 	 */
 	public static final String PROJECT_NAME = "project.name";
 	/**
-	 * param ORGANIZATION_ID.
-	 */
-	public static final String ORGANIZATION_ID = "org.id";
-	/**
 	 * param ORGANIZATION_NAME.
 	 */
 	public static final String ORGANIZATION_NAME = "org.name";
@@ -139,13 +135,6 @@ public class ConfigurationVraNg extends Configuration {
 	 */
 	public String getProjectName() {
 		return this.properties.getProperty(PROJECT_NAME);
-	}
-
-	/**
-	 * @return String
-	 */
-	public String getOrgId() {
-		return this.properties.getProperty(ORGANIZATION_ID);
 	}
 
 	/**
@@ -244,8 +233,8 @@ public class ConfigurationVraNg extends Configuration {
 			message.append("Project name ");
 		}
 
-		if (StringUtils.isEmpty(getOrgId()) && StringUtils.isEmpty(getOrgName())) {
-			message.append("Organization id and Organization Name ");
+		if (StringUtils.isEmpty(getOrgName())) {
+			message.append("Organization Name ");
 		}
 
 		if (StringUtils.isEmpty(getRefreshToken()) && StringUtils.isEmpty(super.getUsername())) {
@@ -264,7 +253,8 @@ public class ConfigurationVraNg extends Configuration {
 		String[] deprecatedFlags = new String[] {
 				"bp.ignore.versions",
 				"bp.release",
-				"project.id"
+				"project.id",
+				"org.id"
 		};
 
 		for (String flag : deprecatedFlags) {
