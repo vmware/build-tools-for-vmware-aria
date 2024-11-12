@@ -26,11 +26,10 @@
   },
   "devDependencies": {
     "@types/command-line-args": "^5.2.3",
-    "which": "^2.0.2",
-    "@types/glob": "^7.1.1",
+    "which": "^5.0.0",
     "@types/gulp": "^4.0.17",
     "@types/node": "^22.9.0",
-    "@types/npm": "^2.0.30",
+    "@types/npm": "^7.19.3",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "ts-node": "^10.9.2",
@@ -39,8 +38,8 @@
   "dependencies": {
     "command-line-args": "^6.0.1",
     "download-git-repo": "^3.0.2",
-    "fs-extra": "^7.0.1",
-    "glob": "^7.1.4",
-    "npm": "^9.9.3"
+    "fs-extra": "^11.2.0",
+    "glob": "^11.0.0",
+    "npm": "^10.9.0"
   }
 }

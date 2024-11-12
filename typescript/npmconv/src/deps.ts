@@ -23,7 +23,8 @@ export class NpmProxy {
 	async init() {
 		return new Promise((resolve, reject) => {
 			console.debug("Initializing npm config...");
-			npm.load({ color: true }, (err, result) => {
+			npm.config.defs.defaults.color = true;
+			npm.load((err, result) => {
 				err ? reject(err) : resolve(result);
 			});
 		});
