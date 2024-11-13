@@ -44,6 +44,12 @@ Build Tools for VMware Aria provides development and release management tools fo
 - maven: 3.8.7
 - jdk: 17
 
+To check if the dependencies are met, you can run:
+
+```sh
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/master/health.sh | bash
+```
+
 ## Support
 
 You can find detailed support statement [here](./SUPPORT.md)
