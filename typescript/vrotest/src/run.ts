@@ -51,11 +51,11 @@ export default async function (flags: RunCommandFlags): Promise<void> {
         });
     }
     else {
-        console.log("Installing node modules for the tests.");
-        childProc.execSync('npm install', { stdio: 'ignore' });
-        console.log("Installing node modules for the tests completed.");
-
         await util.withWorkingDir(testDir, async () => {
+            console.log("Installing node modules for the tests.");
+            childProc.execSync('npm install', { stdio: 'ignore' });
+            console.log("Installing node modules for the tests completed.");
+
             console.log("Starting unit tests.");
             var child = childProc.spawnSync("npm", [ "test" ], { encoding : 'utf8' });
             if (child.status === 0) {
