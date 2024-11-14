@@ -58,7 +58,7 @@ export function createProgram(options: ProgramOptions): Program {
 			[FileType.NativeContent]: getNativeContentTransformer,
 			[FileType.PolicyTemplate]: getPolicyTemplateTransformer,
 			[FileType.Resource]: getResourceTransformer,
-			[FileType.JasmineTest]: getTestTransformer,
+			[FileType.UnitTest]: getTestTransformer,
 			[FileType.Workflow]: getWorkflowTransformer,
 			[FileType.Saga]: getSagaTransformer,
 		};
@@ -208,7 +208,7 @@ export function createProgram(options: ProgramOptions): Program {
 			return FileType.TypeDef;
 		}
 		if (filePath.endsWith(".test.ts") || filePath.endsWith(".test.js")) {
-			return FileType.JasmineTest;
+			return FileType.UnitTest;
 		}
 		if (filePath.endsWith(".ts") || filePath.endsWith(".js")) {
 			return FileType.Action;

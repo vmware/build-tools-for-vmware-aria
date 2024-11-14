@@ -67,7 +67,7 @@ export enum FileType {
 	PolicyTemplate, // .pl.ts
 	ConfigurationTS, // .conf.ts
 	ConfigurationYAML, // .conf.yaml
-	JasmineTest, // .test.[ts|js]
+	UnitTest, // .test.[ts|js]
 	Resource, // * & ~FileType
 	NativeContent, // .xml && .element_info.xml
 	TypeDef, // .d.ts

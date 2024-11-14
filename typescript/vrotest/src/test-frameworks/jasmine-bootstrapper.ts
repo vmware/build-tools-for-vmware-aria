@@ -51,7 +51,7 @@ function buildJasmineConfigContent() {
 }
 
 function buildPackageJsonContent(
-    jasmineVersion: string,
+    frameworkVersion: string,
     projectRoot: string,
     jasmineReportersVerion: string,
     ansiColorsVersion: string
@@ -66,7 +66,7 @@ function buildPackageJsonContent(
         },
         "devDependencies": {
             "ansi-colors": ansiColorsVersion,
-            "jasmine": jasmineVersion,
+            "jasmine": frameworkVersion,
             "jasmine-reporters": jasmineReportersVerion
         }
     }, null, 2);

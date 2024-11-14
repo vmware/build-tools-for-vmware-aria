@@ -30,7 +30,7 @@ export async function setUpJest(flags: BuildCommandFlags) {
     await Promise.all(allFiles);
 }
 
-function buildPackageJsonContent(jasmineVersion: string, runner: string, projectRoot: string) {
+function buildPackageJsonContent(frameworkVersion: string, runner: string, projectRoot: string) {
     const projectDetails = extractProjectPomDetails(projectRoot);
     const content = {
         "name": projectDetails.name,
@@ -40,7 +40,7 @@ function buildPackageJsonContent(jasmineVersion: string, runner: string, project
             "test": "jest --config=jest.config.js"
         },
         "devDependencies": {
-            "jest": jasmineVersion,
+            "jest": frameworkVersion,
         }
     };
     if (runner === "swc") {
