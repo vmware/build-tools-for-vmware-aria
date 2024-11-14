@@ -29,7 +29,7 @@ export default async function (flags: RunCommandFlags): Promise<void> {
         if (!nodeModulesDir) {
             throw new Error(`Unable to find node_modules folder`);
         }
-        const nycPath = '"'+path.join(nodeModulesDir, "nyc", "bin", "nyc.js")+'"';
+        const nycPath = '"' + path.join(nodeModulesDir, "nyc", "bin", "nyc.js") + '"';
         const nodeCmd = `"${process.argv[0]}"`;
         const vroTestCmd = `"${process.argv[1]}"`;
         const args = [nycPath, nodeCmd, vroTestCmd, "run"];
