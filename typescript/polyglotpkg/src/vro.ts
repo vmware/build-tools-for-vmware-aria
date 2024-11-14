@@ -12,12 +12,12 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import fs from 'fs-extra';
 import path from 'path';
 import { v5 as uuidv5 } from 'uuid';
 import { Logger } from "winston";
 import { ActionOptions, VroActionDefinition } from "./lib/model";
 import { create as createXML } from 'xmlbuilder2';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 /**
  * Create vRO tree structure that can be later converted to a vRO package
@@ -39,26 +39,26 @@ export class VroTree {
 
 	async createTree() {
 		this.logger.info('Creating vRO tree structure...');
-		let actionDefintion = await fs.readJSONSync(this.options.polyglotJson) as VroActionDefinition;
+		let actionDefintion = JSON.parse(readFileSync(this.options.polyglotJson).toString("utf8")) as VroActionDefinition;
 		if (actionDefintion.platform.action === 'auto') {
 			actionDefintion.platform.action = this.actionDirectory;
 		}
 
 		// create structure
-		await fs.ensureDir(this.scriptModuleDir);
+		mkdirSync(this.scriptModuleDir, { recursive: true });
 
 		// check if the bundle is created
 		await this.checkFile(this.options.bundle);
 
-		await this.generatePOM(actionDefintion);
-		await this.generateAction(actionDefintion);
-		await this.generateMeta(actionDefintion);
-		await this.generateTags(actionDefintion);
-		await this.copyBundle(actionDefintion);
+		this.generatePOM(actionDefintion);
+		this.generateAction(actionDefintion);
+		this.generateMeta(actionDefintion);
+		this.generateTags(actionDefintion);
+		this.copyBundle(actionDefintion);
 
 	}
 
-	private async generatePOM(actionDefintion: VroActionDefinition) {
+	private generatePOM(actionDefintion: VroActionDefinition) {
 
 		const content = {
 			project: {
@@ -75,10 +75,10 @@ export class VroTree {
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8' }, content)
 		const xml = doc.end({ prettyPrint: true });
-		await fs.writeFile(path.join(this.treeDir, 'pom.xml'), xml);
+        writeFileSync(path.join(this.treeDir, 'pom.xml'), xml);
 	}
 
-	private async generateAction(actionDefintion: VroActionDefinition) {
+	private generateAction(actionDefintion: VroActionDefinition) {
 
 		const runtime = this.options.actionRuntime;
 
@@ -106,11 +106,11 @@ export class VroTree {
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8' }, content)
 		const xml = doc.end({ prettyPrint: true });
-		await fs.writeFile(path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.xml`), xml);
+		writeFileSync(path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.xml`), xml);
 
 	}
 
-	private async generateMeta(actionDefintion: VroActionDefinition) {
+	private generateMeta(actionDefintion: VroActionDefinition) {
 
 		const content = {
 			'properties': {
@@ -129,11 +129,11 @@ export class VroTree {
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8', standalone: false }, content);
 		const xml = doc.end({ prettyPrint: true });
-		await fs.writeFile(path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.element_info.xml`), xml);
+		writeFileSync(path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.element_info.xml`), xml);
 
 	}
 
-	private async generateTags(actionDefintion: VroActionDefinition) {
+	private generateTags(actionDefintion: VroActionDefinition) {
 
 		const content = {
 			'tags': {
@@ -143,13 +143,13 @@ export class VroTree {
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8' }, content);
 		const xml = doc.end({ prettyPrint: true });
-		await fs.writeFile(path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.tags.xml`), xml);
+		writeFileSync(path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.tags.xml`), xml);
 	}
 
-	private async copyBundle(actionDefintion: VroActionDefinition) {
+	private copyBundle(actionDefintion: VroActionDefinition) {
 		const source = this.options.bundle;
 		const dest = path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.bundle.zip`);
-		await fs.copyFile(source, dest);
+		copyFileSync(source, dest);
 	}
 
 	private getId(actionDefintion: VroActionDefinition) {
@@ -157,13 +157,13 @@ export class VroTree {
 	}
 
 	private async checkFile(filePath: string) {
-		let fileExists: boolean = fs.existsSync(filePath);
+		let fileExists: boolean = existsSync(filePath);
 		let timeout: number = 600000; // 10 minutes
 		const interval: number = 5000;
 
 		while (!fileExists) {
 			await new Promise(resolve => setTimeout(resolve, interval));
-			fileExists = fs.existsSync(filePath);
+			fileExists = existsSync(filePath);
 			this.logger.info(`File exists: ${fileExists}`);
 			timeout -= interval;
 			if (timeout <= 0) {

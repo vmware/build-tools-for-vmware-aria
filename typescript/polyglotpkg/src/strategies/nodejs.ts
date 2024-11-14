@@ -13,14 +13,14 @@
  * #L%
  */
 import ts from "typescript";
-import fs from 'fs-extra';
 import path from 'path';
-import globby from 'globby';
 
 import { Logger } from "winston";
 import { BaseStrategy } from "./base";
 import { getActionManifest, notUndefined, run } from "../lib/utils";
 import { ActionOptions, PackageDefinition, PlatformDefinition, Events } from "../lib/model";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
+import { findFiles } from "../lib/file-system";
 
 export class NodejsStrategy extends BaseStrategy {
 
@@ -31,10 +31,10 @@ export class NodejsStrategy extends BaseStrategy {
 	 */
 	async packageProject() {
 
-		const polyglotJson = await fs.readJSONSync(this.options.polyglotJson) as PlatformDefinition;
+		const polyglotJson = JSON.parse(readFileSync(this.options.polyglotJson).toString("utf8")) as PlatformDefinition;
 		const tsconfigPath = path.join(this.options.actionBase, "tsconfig.json");
 		const tmpTsconfigPath = this.options.mixed ? path.join(this.options.actionBase, "tsconfig.tmp.json") : tsconfigPath;
-		if (!fs.existsSync(tsconfigPath)) {
+		if (!existsSync(tsconfigPath)) {
 			throw new Error('Could not find tsconfig.json in the action root');
 		}
 
@@ -50,7 +50,7 @@ export class NodejsStrategy extends BaseStrategy {
 		this.phaseCb(Events.BUNDLE_END);
 		// Delete the temporary created tsconfig.json
 		if (this.options.mixed) {
-			await fs.removeSync(tmpTsconfigPath);
+			rmSync(tmpTsconfigPath, { recursive: true });
 		}
 	}
 
@@ -66,7 +66,7 @@ export class NodejsStrategy extends BaseStrategy {
 				patterns[i] = patterns[i].replace('%src', this.options.src).replace('%out', this.options.out).replace(/\\/g, '/');
 			}
 		} else {
-			patterns.push('!.*', '*.js');
+			patterns.push('*.js');
 
 			if (tsconfig.options.outDir) {
 				const outDir = path.relative(workspaceFolderPath, path.join(baseDir, tsconfig.options.outDir));
@@ -79,20 +79,20 @@ export class NodejsStrategy extends BaseStrategy {
 			}
 		}
 
-		const filesToBundle = await globby(patterns, {
-			cwd: workspaceFolderPath,
-			absolute: true
-		});
+        const filesToBundle = findFiles(patterns, {
+            path: workspaceFolderPath,
+            absolute: true
+        });
 
-		const depsToBundle = await globby(`**/*`, {
-			cwd: this.DEPENDENCY_TEMP_DIR,
-			absolute: true,
-		});
+        const depsToBundle = findFiles([ "**" ], {
+            path: this.DEPENDENCY_TEMP_DIR,
+            absolute: true
+        });
 
 		this.logger.info(`Packaging ${filesToBundle.length + depsToBundle.length} files into bundle ${this.options.bundle}...`);
 		const actionBase = polyglotJson.platform.base ? path.resolve(polyglotJson.platform.base) : this.options.outBase;
 		this.logger.info(`Action base: ${actionBase}`);
-		await this.zipFiles([
+		this.zipFiles([
 			{ files: filesToBundle, baseDir: actionBase },
 			{ files: depsToBundle, baseDir: this.DEPENDENCY_TEMP_DIR }
 		]);
@@ -128,7 +128,7 @@ export class NodejsStrategy extends BaseStrategy {
 	}
 
 	private readConfigFile(srcTsconfigPath: string, newTsconfigPath: string): ts.ParsedCommandLine {
-		let configFileText = fs.readFileSync(srcTsconfigPath).toString();
+		let configFileText = readFileSync(srcTsconfigPath).toString();
 		if (this.options.mixed) {
 			// The source directory of each action contain tsconfig.json
 			// It contains a %out placeholder to be replaced with a reference to action-specific out dir
@@ -136,7 +136,7 @@ export class NodejsStrategy extends BaseStrategy {
 			// The %out path is relative to the location and must be formatted as posix path
 			const newOut = path.relative(this.options.actionBase, path.join(path.resolve(this.options.workspace), this.options.out)).replace(/\\/g, '/');
 			configFileText = configFileText.replace(/%out/g, newOut);
-			fs.writeFileSync(newTsconfigPath, configFileText);
+			writeFileSync(newTsconfigPath, configFileText);
 		}
 		const result = ts.parseConfigFileTextToJson(newTsconfigPath, configFileText);
 		const configObject = result.config;
@@ -175,7 +175,7 @@ export class NodejsStrategy extends BaseStrategy {
 
 	private async installDependencies(polyglotJson: PlatformDefinition) {
 		const depsCacheDir = this.DEPENDENCY_TEMP_DIR;
-		await fs.ensureDir(depsCacheDir);
+		mkdirSync(depsCacheDir, { recursive: true });
 		const projectPkg = await getActionManifest(this.options.workspace) as PackageDefinition;
 		const depPkg = await getActionManifest(this.options.actionBase) as PackageDefinition;
 		const packageJson = { ...projectPkg, ...depPkg, ...polyglotJson };
@@ -195,12 +195,12 @@ export class NodejsStrategy extends BaseStrategy {
 
 		const deps = JSON.stringify(packageJson.dependencies);
 		const hash = this.getHash(deps);
-		const existingHash = await this.readDepsHash(depsCacheDir);
+		const existingHash = this.readDepsHash(depsCacheDir);
 		if (existingHash !== hash) {
 			this.logger.info(`Installing dependencies at ${depsCacheDir}`);
-			await fs.writeJsonSync(path.join(depsCacheDir, 'package.json'), packageJson);
+			writeFileSync(path.join(depsCacheDir, 'package.json'), JSON.stringify(packageJson, null, 2));
 			await run("npm", ["install", "--production"], depsCacheDir);
-			await this.writeDepsHash(deps);
+			this.writeDepsHash(deps);
 		} else {
 			this.logger.info("No change in dependencies. Skipping installation...");
 		}
