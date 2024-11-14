@@ -17,8 +17,6 @@ import * as fs from "fs-extra";
 import * as pkg from "./package";
 import * as util from "./util";
 import * as constants from "./constants";
-import { setUpJasmine } from "./test-frameworks/jasmine-bootstrapper";
-import { setUpJest } from "./test-frameworks/jest-bootstrapper";
 import { BuildCommandFlags } from "./types/build-command-flags";
 
 type ModuleDescriptor = Record<string, string>;
@@ -49,16 +47,6 @@ export default async function (flags: BuildCommandFlags) {
 	const modules: Record<string, ModuleDescriptor> = {};
 	const configurations: Record<string, ConfigCategory> = {};
 	const resources: Record<string, ResourceCategory> = {};
-    const customTestsConfigPath = path.join(flags.projectRoot, constants.TEST_CONFIG_PATH);
-    const hasCustomTestsConfig = fs.pathExistsSync(customTestsConfigPath);
-    const setupFramework = hasCustomTestsConfig
-        ? undefined
-        : (
-            flags.testFrameworkPackage === "jest"
-                ? setUpJest
-                : setUpJasmine
-        )
-    ;
 
 	await createFolderStruct();
 	await copyContent();
@@ -67,11 +55,7 @@ export default async function (flags: BuildCommandFlags) {
 	await loadPackages();
 	await buildMetadata();
 	await saveMetadata();
-    if (setupFramework) {
-        await setupFramework(flags);
-    } else {
-        await copyCustomConfig(customTestsConfigPath);
-    }
+	await configureTestFramework(flags);
     await createCoverageConfig();
 
 	async function createFolderStruct(): Promise<void> {
@@ -312,6 +296,61 @@ export default async function (flags: BuildCommandFlags) {
 		]);
 	}
 
+    async function configureTestFramework(flags: BuildCommandFlags) {
+        const customTestsConfigPath = path.join(flags.projectRoot, constants.TEST_CONFIG_PATH);
+
+        if (fs.pathExistsSync(customTestsConfigPath)) {
+            // Use use-defined unit tests bootstrapping configuration ("unit-tests.config/*")
+            await Promise.all(fs.readdirSync(customTestsConfigPath).map(fileName => {
+                const sourceFilePath = path.join(customTestsConfigPath, fileName);
+                const destFilePath = path.join(flags.output, fileName);
+                return fs.copy(sourceFilePath, destFilePath, { overwrite: true, recursive: true, errorOnExist: false });
+            }));
+        } else {
+            // Build configuration based on the framework selection
+            const templatesPath = path.join(constants.TEST_CONFIG_TEMPLATES_PATH, flags.testFrameworkPackage || "jasmine");
+            console.log("Copying templates...");
+            console.log(templatesPath);
+            console.log(path.resolve(templatesPath));
+            await Promise.all(fs.readdirSync(templatesPath).map(copyTarget => {
+                const sourceFilePath = path.join(templatesPath, copyTarget);
+                const destFilePath = path.join(flags.output, copyTarget);
+                return fs.copy(sourceFilePath, destFilePath, { overwrite: true, recursive: true, errorOnExist: false });
+            }));
+
+            const packageJsonPath = path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE);
+            const packageJsonContent = JSON.parse(fs.readFileSync(packageJsonPath).toString("utf8"));
+            const devDeps = packageJsonContent.devDependencies;
+
+            const projectDetails = util.extractProjectPomDetails(flags.projectRoot);
+            packageJsonContent.name = projectDetails.name;
+            packageJsonContent.version = projectDetails.version;
+
+            if (flags.testFrameworkPackage === "jest") {
+                devDeps.jest = flags.testFrameworkVersion || devDeps.jest;
+                if (flags.runner === "swc") {
+                    devDeps["@swc/core"] = "latest";
+                    devDeps["@swc/jest"] = "latest";
+                }
+
+                const setupFiles = fs.readdirSync(flags.helpers).map(file => `./helpers/${file}`);
+                const jestConfigPath = path.join(flags.output, constants.JEST_CONFIG_FILE);
+                const jestConfigContent = fs.readFileSync(jestConfigPath).toString("utf8");
+                fs.writeFileSync(jestConfigPath, jestConfigContent.replace("setupFiles: []", "setupFiles: " + JSON.stringify(setupFiles)));
+            } else {
+                devDeps["ansi-colors"] = flags.ansiColorsVersion || devDeps["ansi-colors"];
+                devDeps["jasmine"] = flags.testFrameworkVersion || devDeps["jasmine"];
+                devDeps["jasmine-reporters"] = flags.jasmineReportersVerion || devDeps["jasmine-reporters"];
+
+                const runFilePath = path.join(flags.output, constants.JASMINE_RUN_FILE);
+                const runFileContent = fs.readFileSync(runFilePath).toString("utf8");
+                fs.writeFileSync(runFilePath, runFileContent.replace("{TEST_RESULTS_PATH}", constants.TEST_RESULTS_PATH));
+            }
+
+            fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
+        }
+    }
+
 	async function createCoverageConfig(): Promise<void> {
         const coverageFilePath = path.join(flags.output, constants.COVERAGE_CONFIG_FILE);
         // Do not overwrite the file copied from the custom configuration provided in the project root.
@@ -384,13 +423,5 @@ export default async function (flags: BuildCommandFlags) {
 
         await fs.writeFile(coverageFilePath, JSON.stringify(covConfig, null, 2));
 	}
-
-    async function copyCustomConfig(customConfigPath: string) {
-        await Promise.all(fs.readdirSync(customConfigPath).map(fileName => {
-            const sourceFilePath = path.join(customConfigPath, fileName);
-            const destFilePath = path.join(flags.output, fileName);
-            return fs.copyFile(sourceFilePath, destFilePath);
-        }));
-    }
 
 }

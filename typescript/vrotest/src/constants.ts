@@ -27,4 +27,7 @@ export const NODE_PROJECT_CONFIG_FILE = "package.json";
 export const COVERAGE_CONFIG_FILE = ".nycrc";
 export const SOURCE_TEST_SUFFIXES = ["test.js", "tests.js"];
 export const TARGET_TEST_SUFFIX = ".test.js";
+export const JEST_CONFIG_FILE = "jest.config.js";
+export const JASMINE_RUN_FILE = "run-jasmine.js";
 export const TEST_CONFIG_PATH = "unit-tests.config";
+export const TEST_CONFIG_TEMPLATES_PATH = "node_modules/@vmware-pscoe/vrotest/test-framework-templates";
