@@ -12,8 +12,8 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import * as path from "path";
 import * as fs from "fs-extra";
+import { join, basename, dirname } from "path";
 import * as childProc from "child_process";
 import * as util from "./util";
 
@@ -29,7 +29,7 @@ export default async function (flags: RunCommandFlags): Promise<void> {
         if (!nodeModulesDir) {
             throw new Error(`Unable to find node_modules folder`);
         }
-        const nycPath = '"' + path.join(nodeModulesDir, "nyc", "bin", "nyc.js") + '"';
+        const nycPath = '"' + join(nodeModulesDir, "nyc", "bin", "nyc.js") + '"';
         const nodeCmd = `"${process.argv[0]}"`;
         const vroTestCmd = `"${process.argv[1]}"`;
         const args = [nycPath, nodeCmd, vroTestCmd, "run"];
@@ -72,13 +72,13 @@ export default async function (flags: RunCommandFlags): Promise<void> {
 async function findNodeModules(dir: string): Promise<string> {
     const NODE_MODULES_NAME = "node_modules";
     while (dir) {
-        if (path.basename(dir) === NODE_MODULES_NAME) {
+        if (basename(dir) === NODE_MODULES_NAME) {
             return dir;
         }
         if ((await fs.readdir(dir)).some(e => e === NODE_MODULES_NAME)) {
-            return path.join(dir, NODE_MODULES_NAME);
+            return join(dir, NODE_MODULES_NAME);
         }
-        dir = path.dirname(dir);
+        dir = dirname(dir);
     }
     return dir;
 }
