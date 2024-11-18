@@ -20,7 +20,7 @@ gulp.task("compile", async done => {
 
 gulp.task("test", async done => {
     await tsc(path.join("e2e", "tsconfig.json"));
-    let error;
+    let error: any = undefined;
     if (0 !== await exec(process.argv[0], [path.join("e2e", "build", "runner.js")])) {
         error = "One or more test cases failed.";
     }
