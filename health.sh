@@ -4,7 +4,8 @@
 MIN_NODE_VERSION="14"
 MAX_NODE_VERSION="16"
 MIN_MAVEN_VERSION="3.9"
-REQUIRED_JAVA_VERSION="17"
+MIN_JAVA_VERSION="17"
+MAX_JAVA_VERSION="21"
 
 # Color Codes
 GREEN="\033[0;32m"
@@ -20,7 +21,7 @@ version_ge() {
     printf '%s\n%s\n' "$2" "$1" | sort -C -V
 }
 
-# Check Node.js Version Range
+# Check Node.js Version Range (14.x to 16.x)
 check_node_version() {
     node_version=$(node -v 2>/dev/null | sed 's/v//')
     node_major_version=$(echo "$node_version" | cut -d. -f1)
@@ -36,7 +37,7 @@ check_node_version() {
     fi
 }
 
-# Check Maven Version
+# Check Maven Version (3.9.x or newer)
 check_maven_version() {
     maven_version=$(mvn -v 2>/dev/null | awk '/Apache Maven/ {print $3}')
 
@@ -51,7 +52,7 @@ check_maven_version() {
     fi
 }
 
-# Check Java Version
+# Check Java Version (must be between 17 and 21)
 check_java_version() {
     java_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
     java_major_version=$(echo "$java_version" | cut -d. -f1)
@@ -59,10 +60,10 @@ check_java_version() {
     if [ -z "$java_version" ]; then
         echo -e "${RED}✘ Java is not installed.${NC}"
         all_checks_passed=false
-    elif [ "$java_major_version" -eq "$REQUIRED_JAVA_VERSION" ]; then
-        echo -e "${GREEN}✔ Java version $java_version is correct (required: $REQUIRED_JAVA_VERSION).${NC}"
+    elif [ "$java_major_version" -ge "$MIN_JAVA_VERSION" ] && [ "$java_major_version" -le "$MAX_JAVA_VERSION" ]; then
+        echo -e "${GREEN}✔ Java version $java_version is within the required range ($MIN_JAVA_VERSION - $MAX_JAVA_VERSION).${NC}"
     else
-        echo -e "${RED}✘ Java version $java_version does not meet the required version ($REQUIRED_JAVA_VERSION).${NC}"
+        echo -e "${RED}✘ Java version $java_version is outside the required range ($MIN_JAVA_VERSION - $MAX_JAVA_VERSION).${NC}"
         all_checks_passed=false
     fi
 }
