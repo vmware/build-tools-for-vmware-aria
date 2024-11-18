@@ -47,7 +47,7 @@ Build Tools for VMware Aria provides development and release management tools fo
 To check if the dependencies are met, you can run:
 
 ```sh
-curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/master/health.sh | bash
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
 ```
 
 ## Support

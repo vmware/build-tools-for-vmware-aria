@@ -100,7 +100,7 @@ As an alternative, we suggest you use some sort of install workflow to manage th
 To check if the dependencies are met, you can now run:
 
 ```sh
-curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/master/health.sh | bash
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
 ```
 
 Works for Linux,Mac and Windows with Git Bash
