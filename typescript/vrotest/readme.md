@@ -35,7 +35,7 @@ Supported properties:
 - `test.framework.jasmine.reporters.version` - version of the Jasmine reporters package to use when using the `jasmine` option for the framework selection, optional, defaults to `^2.5.2` for backward compatibility if omitted.
 - `test.ansicolors.version` - The `ansi-colors` npm package is used in the Jasmine reporters configured for the tests, optional, defaults to `^4.1.1` for backward compatibility if omitted.
 
-**Configuration examples**
+#### Configuration examples
 1. **Jasmine, backwards compatiblе.**  
 No changes are needed. The configuration is fully aligned with the current behavior.
 1. **Jasmine, custom version.**  

@@ -118,7 +118,7 @@ Unit tests were locked to a specific version of Jasmine.
 There are two out-of-the-box options for test frameworks: Jasmine and Jest.  
 The default behavior will be fully backwards compatible. Optionally the user is able to specify which
 framework should be used as well as its version or even completely override how the unit tests are being ran.
-#### Relevant Documentation:
+#### Relevant Documentation
 More in-depth documentation is available in the [vrotest](./../../../typescript/vrotest/) component.
 
 [//]: # (### *Improvement Name* )
