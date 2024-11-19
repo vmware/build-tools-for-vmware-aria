@@ -309,9 +309,6 @@ export default async function (flags: BuildCommandFlags) {
         } else {
             // Build configuration based on the framework selection
             const templatesPath = path.join(constants.TEST_CONFIG_TEMPLATES_PATH, flags.testFrameworkPackage || "jasmine");
-            console.log("Copying templates...");
-            console.log(templatesPath);
-            console.log(path.resolve(templatesPath));
             await Promise.all(fs.readdirSync(templatesPath).map(copyTarget => {
                 const sourceFilePath = path.join(templatesPath, copyTarget);
                 const destFilePath = path.join(flags.output, copyTarget);
