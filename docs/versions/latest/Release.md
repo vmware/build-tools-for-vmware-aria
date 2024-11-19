@@ -110,6 +110,17 @@ Works for Linux,Mac and Windows with Git Bash
 
 ## Improvements
 
+### *Flexible unit tests setup*
+It is now possible to configure how the unit tests are being bootstrapped and executed.
+#### Previous Behavior
+Unit tests were locked to a specific version of Jasmine.
+#### New Behavior
+There are two out-of-the-box options for test frameworks: Jasmine and Jest.  
+The default behavior will be fully backwards compatible. Optionally the user is able to specify which
+framework should be used as well as its version or even completely override how the unit tests are being ran.
+#### Relevant Documentation
+More in-depth documentation is available in the [vrotest](./../../../typescript/vrotest/) component.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)

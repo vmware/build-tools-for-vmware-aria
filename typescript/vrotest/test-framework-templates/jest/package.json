@@ -1,0 +1,11 @@
+{
+  "name": "vro-test",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "Unit tests runtime-compatible package.",
+  "scripts": {
+    "test": "jest --config=jest.config.js"
+  },
+  "devDependencies": {
+    "jest": "latest"
+  }
+}

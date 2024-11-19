@@ -1,0 +1,13 @@
+{
+  "name": "vro-test",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "Unit tests runtime-compatible package.",
+  "scripts": {
+      "test": "node run-jasmine.js"
+  },
+  "devDependencies": {
+      "ansi-colors": "^4.1.1",
+      "jasmine": "^4.0.2",
+      "jasmine-reporters": "^2.5.2"
+  }
+}

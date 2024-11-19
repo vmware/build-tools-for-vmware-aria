@@ -20,7 +20,7 @@ gulp.task("compile", async done => {
 
 gulp.task("test", async done => {
     await tsc(path.join("e2e", "tsconfig.json"));
-    let error = undefined;
+    let error;
     if (0 !== await exec(process.argv[0], [path.join("e2e", "build", "runner.js")])) {
         error = "One or more test cases failed.";
     }
@@ -75,7 +75,7 @@ async function exec(command: string, args: string[] = [], cwd?: string, checkExi
         cwd: cwd || __dirname,
     });
     return await new Promise((resolve, reject) => {
-        proc.on("close", code => {
+        proc.on("close", (code: number) => {
             if (checkExitCode && code !== 0) {
                 reject(`Command "${commandLine}" exited with code ${code}`);
             }
