@@ -36,6 +36,7 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 	protected static final String VRO_API_PATH =
 			Paths.get("node_modules", "@vmware-pscoe", "vro-scripting-api", "lib").toString();
 	protected static final String TESTBED_PATH = Paths.get("target", "vro-tests").toString();
+	public static final int COVERAGE_TRESHOLDS_SIZE = 5;
 
 	@Parameter(defaultValue = "${project}")
 	protected MavenProject project;
@@ -163,7 +164,7 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 	 * @return The threshold values list.
 	 */
 	protected String buildCoverageThresholdToken(Configuration config) {
-		List<String> thresholds = new ArrayList<String>(5);
+		List<String> thresholds = new ArrayList<String>(COVERAGE_TRESHOLDS_SIZE);
 
 		Integer allError = config.getCoverageThresholdError();
 		Integer allWarn = config.getCoverageThresholdWarn();
