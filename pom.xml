@@ -23,7 +23,7 @@
 
 	<properties>
 		<main.basedir>${project.basedir}</main.basedir>
-		<revision>3.0.0</revision>
+		<revision>3.0.1-SNAPSHOT</revision>
 		<java.version>17</java.version>
 	</properties>
 
