@@ -51,7 +51,6 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVra;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
@@ -84,59 +83,6 @@ enum Option {
 	SOCKET_TIMEOUT(
 			"http_socket_timeout",
 			Configuration.SOCKET_TIMEOUT),
-
-	/**
-	 * Configurations.
-	 *
-	 * VRA server.
-	 */
-	VRA_SERVER(
-			"vra_server",
-			Configuration.HOST),
-	/**
-	 * VRA port.
-	 */
-	VRA_PORT(
-			"vra_port",
-			Configuration.PORT),
-	/**
-	 * VRA tenant.
-	 */
-	VRA_TENANT(
-			"vra_tenant",
-			ConfigurationVra.TENANT),
-	/**
-	 * VRA username.
-	 */
-	VRA_USERNAME(
-			"vra_username",
-			Configuration.USERNAME),
-	/**
-	 * VRA password.
-	 */
-	VRA_PASSWORD(
-			"vra_password",
-			Configuration.PASSWORD),
-	/**
-	 * VRA import old versions.
-	 */
-	VRA_IMPORT_OLD_VERSIONS(
-			"vra_import_old_versions",
-			ConfigurationVra.IMPORT_OLD_VERSIONS),
-
-	/**
-	 * Skip VRA import old versions.
-	 */
-	SKIP_VRA_IMPORT_OLD_VERSIONS(
-			"skip_vra_import_old_versions",
-			StringUtils.EMPTY),
-	/**
-	 * VRA import overwrite mode.
-	 */
-	VRA_IMPORT_OVERWRITE_MODE(
-			"vra_import_overwrite_mode",
-			ConfigurationVra.PACKAGE_IMPORT_OVERWRITE_MODE),
-
 	/**
 	 * VRO force import latest package versions.
 	 */
@@ -174,23 +120,11 @@ enum Option {
 			"vrang_port",
 			Configuration.PORT),
 	/**
-	 * VRANG project Id.
-	 */
-	VRANG_PROJECT_ID(
-			"vrang_project.id",
-			ConfigurationVraNg.PROJECT_ID),
-	/**
 	 * VRANG data collection delay in seconds.
 	 */
 	VRANG_DATA_COLLECTION_DELAY_SECONDS(
 			"vrang_data.collection.delay.seconds",
 			ConfigurationVraNg.DATA_COLLECTION_DELAY_SECONDS),
-	/**
-	 * VRANG org Id.
-	 */
-	VRANG_ORGANIZATION_ID(
-			"vrang_org_id",
-			ConfigurationVraNg.ORGANIZATION_ID),
 	/**
 	 * VRANG org name.
 	 */
@@ -378,7 +312,17 @@ enum Option {
 	VCD_IMPORT_OVERWRITE_MODE(
 			"vcd_import_overwrite_mode",
 			ConfigurationVcd.PACKAGE_IMPORT_OVERWRITE_MODE),
-
+	/**
+	 * Configurations.
+	 *
+	 * VRA server.
+	 *
+	 * Yes, this is still for `vra` which is deprecated. That being said it's being
+	 * used for some reason in the Installer
+	 */
+	VRA_SERVER(
+			"vra_server",
+			Configuration.HOST),
 	/**
 	 * VRO server.
 	 */
@@ -550,15 +494,6 @@ enum Option {
 	SSH_DIRECTORY(
 			"ssh_directory",
 			ConfigurationSsh.SSH_DIRECTORY),
-
-	/**
-	 * Operations.
-	 *
-	 * VRA import packages.
-	 */
-	VRA_IMPORT(
-			"vra_import_packages",
-			StringUtils.EMPTY),
 	/**
 	 * VRANG import packages.
 	 */
@@ -661,24 +596,6 @@ enum Option {
 	 */
 	VRO_RUN_WORKFLOW_TIMEOUT(
 			"vro_run_workflow_timeout",
-			StringUtils.EMPTY),
-	/**
-	 * VRA delete old versions.
-	 */
-	VRA_DELETE_OLD_VERSIONS(
-			"vra_delete_old_versions",
-			StringUtils.EMPTY),
-	/**
-	 * VRA delete last version.
-	 */
-	VRA_DELETE_LAST_VERSION(
-			"vra_delete_last_version",
-			StringUtils.EMPTY),
-	/**
-	 * VRA delete include dependencies.
-	 */
-	VRA_DELETE_INCLUDE_DEPENDENCIES(
-			"vra_delete_include_dependencies",
 			StringUtils.EMPTY),
 	/**
 	 * VRO delete old versions.
@@ -894,10 +811,6 @@ public final class Installer {
 
 	private enum ConfigurationPrefix {
 		/**
-		 * VRA.
-		 */
-		VRA("vra_"),
-		/**
 		 * VRANG.
 		 */
 		VRANG("vrang_"),
@@ -966,12 +879,6 @@ public final class Installer {
 
 		boolean vroEnableBackup = false; // the backup will be possible only for vRO packages
 
-		if (input.allTrue(Option.VRA_IMPORT)) {
-			PackageStoreFactory
-					.getInstance(ConfigurationVra.fromProperties(input.getMappings(ConfigurationPrefix.VRA.getValue())))
-					.importAllPackages(getFilesystemPackages(PackageType.VRA), false, vroEnableBackup);
-		}
-
 		if (input.allTrue(Option.CS_IMPORT)) {
 			PackageStoreFactory
 					.getInstance(
@@ -1023,30 +930,6 @@ public final class Installer {
 						ConfigurationVro.fromProperties(input.getMappings(ConfigurationPrefix.VRO.getValue())));
 			}
 			packageStore.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
-		}
-
-		if (input.allTrue(Option.VRA_DELETE_LAST_VERSION)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), true, false, false);
-		}
-
-		if (input.allTrue(Option.VRA_DELETE_OLD_VERSIONS)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
-		}
-
-		if (input.anyTrue(Option.VRA_DELETE_LAST_VERSION, Option.VRA_DELETE_INCLUDE_DEPENDENCIES)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), true, false, false);
-		}
-
-		if (input.anyTrue(Option.VRA_DELETE_OLD_VERSIONS, Option.VRA_DELETE_INCLUDE_DEPENDENCIES)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
 		}
 
 		if (input.allTrue(Option.VRANG_DELETE_CONTENT)) {
@@ -1166,21 +1049,6 @@ public final class Installer {
 		// common properties (i.e. timeouts)
 		readCommonProperties(input);
 
-		// +------------------------------
-		// | vRealize Automation
-		// +------------------------------
-		boolean hasVraPackages = !getFilesystemPackages(PackageType.VRA).isEmpty();
-		if (hasVraPackages) {
-			userInput(input, Option.VRA_IMPORT, "Import vRA packages?", true);
-			if (input.anyTrue(Option.VRA_IMPORT)) {
-				readVraProperties(input);
-				readVraImportProperties(input);
-				userInput(input, Option.VRA_DELETE_OLD_VERSIONS, "Clean up old vRA package versions?", true);
-				userInput(input, Option.VRA_DELETE_LAST_VERSION, "Clean up last vRA package version?", true);
-				userInput(input, Option.VRA_DELETE_INCLUDE_DEPENDENCIES, "Clean up vRA dependent packages as well?",
-						true);
-			}
-		}
 		// +-------------------------------------
 		// | vRealize Code Stream Automation (New Generation)
 		// +-------------------------------------
@@ -1362,19 +1230,6 @@ public final class Installer {
 		userInput(input, Option.VRO_RUN_WORKFLOW_TIMEOUT, "  Workflow Execution Timeout", VRO_RUN_WORKFLOW_TIMEOUT);
 	}
 
-	private static void readVraProperties(final Input input) {
-		input.getText().getTextTerminal().println("vRealize Automation Configuration:");
-		userInput(input, Option.VRA_SERVER, "  vRA FQDN:");
-		Validate.host(input.get(Option.VRA_SERVER), input.getText());
-		userInput(input, Option.VRA_PORT, "  vRA Port", HTTPS_PORT);
-		Validate.port(Integer.valueOf(input.get(Option.VRA_PORT)), input.getText());
-		Validate.hostAndPort(input.get(Option.VRA_SERVER), Integer.valueOf(input.get(Option.VRA_PORT)),
-				input.getText());
-		userInput(input, Option.VRA_TENANT, "  vRA Tenant", "vsphere.local");
-		userInput(input, Option.VRA_USERNAME, "  vRA Username@Domain", "configurationadmin@vsphere.local");
-		passInput(input, Option.VRA_PASSWORD, "  vRA Password");
-	}
-
 	private static void readVroEmbeddedInVrangProperties(final Input input, final boolean needCspHost) {
 		input.getText().getTextTerminal().println("vRealize Automation NG Configuration:");
 		userInput(input, Option.VRANG_SERVER, "  vRA FQDN:");
@@ -1407,12 +1262,8 @@ public final class Installer {
 		userInput(input, Option.VRANG_PROJECT_NAME, "  Project name");
 		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VRANG_PROJECT_NAME),
 				input.getText());
-		userInput(input, Option.VRANG_PROJECT_ID, "  Project ID (Optional if you supplied project name)",
-				validated.projectId);
 		userInput(input, Option.VRANG_ORGANIZATION_NAME,
-				"  Organization Name (Optional if you supplied organization ID)", validated.org);
-		userInput(input, Option.VRANG_ORGANIZATION_ID, "  Organization ID (Optional if you supplied organization Name)",
-				validated.orgId);
+				"  Organization Name", validated.org);
 		userInput(input, Option.VRANG_PROXY_REQUIRED, "  Use proxy server for vRA? (Optional)", false);
 		if (input.allTrue(Option.VRANG_PROXY_REQUIRED)) {
 			userInput(input, Option.VRANG_PROXY, "    VRA proxy server");
@@ -1437,13 +1288,6 @@ public final class Installer {
 		userInput(input, Option.VRO_IMPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES,
 				"  Import Configuration Elements Secure String Values?", false);
 		userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "  Force import latest versions of packages?", false);
-	}
-
-	private static void readVraImportProperties(final Input input) {
-		input.getText().getTextTerminal().println("vRealize Automation Import Configuration:");
-		userInput(input, Option.SKIP_VRA_IMPORT_OLD_VERSIONS, "  Skip Old Package Versions?", true);
-		input.put(Option.VRA_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VRA_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
-		userInput(input, Option.VRA_IMPORT_OVERWRITE_MODE, "  Import Mode", "SKIP,OVERWRITE");
 	}
 
 	private static void readVrangImportProperties(final Input input) {

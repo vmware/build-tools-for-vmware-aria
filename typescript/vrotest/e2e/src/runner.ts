@@ -11,8 +11,16 @@ const outTestPath = path.join(outPath, "vro-test");
 
 (async () => {
 	await prepare();
-	await build();
-	await run();
+	await runTests();
+	await runTests({ testFrameworkPackage: "jasmine" });
+	await runTests({ testFrameworkPackage: "jasmine", testFrameworkVersion: "5.4.0" });
+	await runTests({ testFrameworkPackage: "jasmine", testFrameworkVersion: "latest" });
+	await runTests({ testFrameworkPackage: "jest" });
+	await runTests({ testFrameworkPackage: "jest", testFrameworkVersion: "29.7.0" });
+	await runTests({ testFrameworkPackage: "jest", testFrameworkVersion: "latest" });
+	await runTests({ testFrameworkPackage: "jest", testFrameworkVersion: "29.7.0" });
+	await runTests({ testFrameworkPackage: "jest", testFrameworkVersion: "latest", runner: "swc" });
+	await runTests({ testFrameworkPackage: "jest", runner: "swc" });
 })();
 
 async function prepare(): Promise<void> {
@@ -42,10 +50,18 @@ async function zipFolder(dir: string, targetPath: string): Promise<void> {
 	}
 }
 
-async function build(): Promise<void> {
-	await executeScript(outProjectPath, [
+async function runTests(options = {}) {
+	await build(options);
+	await run();
+}
+
+async function build({ testFrameworkPackage, testFrameworkVersion, runner, jasmineReportersVerion, ansiColorsVersion }: any): Promise<void> {
+    // TODO: Add introduced properties for Jest support
+    const params = [
 		cliPath,
 		"build",
+		"--projectRoot",
+		outProjectPath,
 		"--actions",
 		"src",
 		"--tests",
@@ -62,7 +78,28 @@ async function build(): Promise<void> {
 		outTestPath,
 		"--coverage-reports",
 		"text,lcov",
-	]);
+    ];
+    if (testFrameworkPackage) {
+        params.push("--testFrameworkPackage");
+        params.push(testFrameworkPackage);
+    }
+    if (testFrameworkVersion) {
+        params.push("--testFrameworkVersion");
+        params.push(testFrameworkVersion);
+    }
+    if (runner) {
+        params.push("--runner");
+        params.push(runner);
+    }
+    if (jasmineReportersVerion) {
+        params.push("--jasmineReportersVerion");
+        params.push(jasmineReportersVerion);
+    }
+    if (ansiColorsVersion) {
+        params.push("--ansiColorsVersion");
+        params.push(ansiColorsVersion);
+    }
+	await executeScript(outProjectPath, params);
 }
 
 async function run(): Promise<void> {
@@ -78,7 +115,7 @@ async function executeScript(cwd: string, args: string[]): Promise<void> {
 		cwd,
 		env: process.env,
 		shell: true,
-		stdio: "inherit", 
+		stdio: "inherit"
 	});
 	await new Promise<void>((resolve, _) => {
 		proc.on("close", code => {

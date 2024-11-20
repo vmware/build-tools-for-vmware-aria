@@ -14,15 +14,17 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration;
 
-import com.vmware.pscoe.iac.artifact.configuration.fixtures.ConfigurationTestDouble;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import com.vmware.pscoe.iac.artifact.configuration.fixtures.ConfigurationTestDouble;
 
 class ConfigurationTest {
 	protected Properties properties;
@@ -49,7 +51,7 @@ class ConfigurationTest {
 
 	@ParameterizedTest
 	@MethodSource("importStrategyProvider")
-	public void testDefaultImportStrategy(Boolean actualStrategy, Boolean expectedStrategy) {
+	public void testDefaultImportStrategy(Boolean expectedStrategy) {
 		Properties properties = new Properties();
 		properties.setProperty("forceImportLatestVersions", "");
 		ConfigurationTestDouble configuration = new ConfigurationTestDouble(properties);
@@ -63,10 +65,11 @@ class ConfigurationTest {
 				arguments("configurationadmin@System Domain", "configurationadmin", "System Domain"),
 				arguments("configurationadmin@@System Domain", "configurationadmin@", "System Domain"),
 				arguments("configurationadmin@test@System Domain", "configurationadmin@test", "System Domain"),
-				arguments("configurationadmin@test@test2@System Domain", "configurationadmin@test@test2", "System Domain"));
+				arguments("configurationadmin@test@test2@System Domain", "configurationadmin@test@test2",
+						"System Domain"));
 	}
 
 	private static Stream<Arguments> importStrategyProvider() {
-		return Stream.of(arguments("", Boolean.FALSE));
+		return Stream.of(arguments(Boolean.FALSE));
 	}
 }

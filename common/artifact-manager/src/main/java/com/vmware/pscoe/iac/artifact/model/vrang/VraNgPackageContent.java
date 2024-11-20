@@ -19,14 +19,15 @@ import java.util.List;
 import com.vmware.pscoe.iac.artifact.model.PackageContent;
 
 /**
- * This class extends the PackageContent class and provides a list of content types specific to VraNg.
+ * This class extends the PackageContent class and provides a list of content
+ * types specific to VraNg.
  */
 public class VraNgPackageContent extends PackageContent<VraNgPackageContent.ContentType> {
-	
+
 	/**
 	 * This enum represents the various content types that a VraNgPackage can have.
 	 */
-	public enum ContentType implements PackageContent.ContentType { 
+	public enum ContentType implements PackageContent.ContentType {
 		/**
 		 * Content type for blueprints.
 		 */
@@ -35,22 +36,6 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
 		 * Content type for subscriptions.
 		 */
 		SUBSCRIPTION("subscription"),
-		/**
-		 * Content type for flavor mappings.
-		 */
-		FLAVOR_MAPPING("flavor-mapping"),
-		/**
-		 * Content type for image mappings.
-		 */
-		IMAGE_MAPPING("image-mapping"),
-		/**
-		 * Content type for storage profiles.
-		 */
-		STORAGE_PROFILE("storage-profile"),
-		/**
-		 * Content type for region mappings.
-		 */
-		REGION_MAPPING("region-mapping"),
 		/**
 		 * Content type for catalog entitlement.
 		 */
@@ -103,53 +88,53 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
 		 * Content type for approval policies.
 		 */
 		APPROVAL_POLICY("approval");
+
 		/**
 		 * PackageContent type.
 		 */
 		private final String type;
 
-		
-		/** 
+		/**
 		 * Constructor for ContentType.
 		 *
-		 * @param type  the type of the content. 
+		 * @param type the type of the content.
 		 */
 		ContentType(String type) {
 			this.type = type;
 		}
-		
-		/** 
+
+		/**
 		 * Gets the type value.
 		 *
 		 * @return the type value.
 		 */
-		public String getTypeValue() { 
+		public String getTypeValue() {
 			return this.type;
 		}
-		
-		/** 
+
+		/**
 		 * Returns the ContentType instance corresponding to the given type.
 		 *
-		 * @param type  the type of the content. 
+		 * @param type the type of the content.
 		 * @return the ContentType instance.
 		 */
-		public static ContentType getInstance(String type) { 
-			for (ContentType ct: ContentType.values()) {
+		public static ContentType getInstance(String type) {
+			for (ContentType ct : ContentType.values()) {
 				if (ct.getTypeValue().equalsIgnoreCase(type)) {
 					return ct;
 				}
 			}
 			return null;
 		}
-		
+
 	}
 
-	/** 
+	/**
 	 * Constructor for VraNgPackageContent.
 	 *
-	 * @param content  the content of the package. 
+	 * @param content the content of the package.
 	 */
-	public VraNgPackageContent(List<Content<ContentType>> content) { 
+	public VraNgPackageContent(List<Content<ContentType>> content) {
 		super(content);
 	}
 
