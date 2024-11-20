@@ -77,7 +77,7 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 			};
 			params.push(param);
 		} else if (element.type == "element" && element.name == "script") {
-			inline = getScriptInline(file, element, comment, this.lazy);
+			inline = getScriptInline(file, element, comment, false); // @TODO: check if lazy parameter is still relevant 
 		} else if (element.type == "element" && element.name == "runtime") {
 			runtime = element.val;
 		} else if (element.type == "element" && element.name == "entry-point") {

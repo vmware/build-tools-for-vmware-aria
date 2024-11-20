@@ -1,6 +1,6 @@
 import * as fs from "fs-extra";
 import * as gulp from "gulp";
-import * as jasmine from "gulp-jasmine";
+import jasmine from "gulp-jasmine";
 import * as tsc from "gulp-typescript";
 import * as path from 'path';
 import { execSync } from "child_process";

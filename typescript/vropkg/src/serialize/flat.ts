@@ -18,7 +18,7 @@ import * as path from "path";
 import * as winston from "winston";
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
-import * as uuidv5 from "uuid/v5";
+import {v5 as uuidv5} from "uuid";
 import * as s from "../security";
 import * as p from "../packaging"
 import { exist, isDirectory } from "../util";
