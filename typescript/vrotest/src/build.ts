@@ -17,23 +17,7 @@ import * as fs from "fs-extra";
 import * as pkg from "./package";
 import * as util from "./util";
 import * as constants from "./constants";
-
-export interface BuildCommandFlags {
-	actions: string;
-	testHelpers: string;
-	tests: string;
-	maps: string;
-	resources: string;
-	configurations: string;
-	dependencies: string;
-	helpers: string;
-	output: string;
-	"ts-src": string;
-	"ts-namespace": string;
-	"coverage-thresholds": string;
-	"coverage-reports": string;
-	"per-file": string;
-}
+import { BuildCommandFlags } from "./types/build-command-flags";
 
 type ModuleDescriptor = Record<string, string>;
 
@@ -71,9 +55,8 @@ export default async function (flags: BuildCommandFlags) {
 	await loadPackages();
 	await buildMetadata();
 	await saveMetadata();
-	await createNodeProjectConfig();
-	await createJasmineConfig();
-	await createCoverageConfig();
+	await configureTestFramework(flags);
+    await createCoverageConfig();
 
 	async function createFolderStruct(): Promise<void> {
 		await Promise.all([
@@ -109,6 +92,7 @@ export default async function (flags: BuildCommandFlags) {
 			flags.helpers ? fs.pathExists(flags.helpers) : Promise.resolve(false),
 			flags["ts-src"] ? fs.pathExists(flags["ts-src"]) : Promise.resolve(false),
 		]);
+
 		await Promise.all([
 			actionsExist ? await fs.copy(flags.actions, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: jsFilesFilter }) : Promise.resolve(),
 			testHelpersExists ? await fs.copy(flags.testHelpers, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: jsFilesFilter }) : Promise.resolve(), // Put it in the same as the actions
@@ -312,43 +296,66 @@ export default async function (flags: BuildCommandFlags) {
 		]);
 	}
 
-	async function createNodeProjectConfig(): Promise<void> {
-		/**
-		 * Generate package.json file in the test folder in order to:
-		 * 1. Allow tests to be run outside of Build Tools for VMware Aria.
-		 * 2. Enable resolution of .nycrc file by the code coverage CLI.
-		 */
-		const projectJson = {
-			"name": "vro-test",
-			"version": "1.0.0",
-			"description": "",
-			"scripts": {
-				"test": "jasmine --config=./jasmine.json",
-				"test:coverage": "nyc npm run test && nyc report"
-			},
-			"devDependencies": {
-				"jasmine": "^4.0.2",
-				"nyc": "^15.1.0"
-			}
-		};
-		fs.writeFile(path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE), JSON.stringify(projectJson, null, 2));
-	}
+    async function configureTestFramework(flags: BuildCommandFlags) {
+        const customTestsConfigPath = path.join(flags.projectRoot, constants.TEST_CONFIG_PATH);
 
-	async function createJasmineConfig(): Promise<void> {
-		const jasmineConfig = {
-			spec_dir: "test",
-			spec_files: ["**/?(*.)+(spec|test).[jt]s?(x)"],
-			helpers: ["../helpers/*.js"],
-			failSpecWithNoExpectations: false,
-			stopSpecOnExpectationFailure: false,
-			stopOnSpecFailure: false,
-			random: false,
-		};
-		fs.writeFile(path.join(flags.output, constants.JASMINE_CONFIG_FILE), JSON.stringify(jasmineConfig, null, 2));
-	}
+        if (fs.pathExistsSync(customTestsConfigPath)) {
+            // Use use-defined unit tests bootstrapping configuration ("unit-tests.config/*")
+            await Promise.all(fs.readdirSync(customTestsConfigPath).map(fileName => {
+                const sourceFilePath = path.join(customTestsConfigPath, fileName);
+                const destFilePath = path.join(flags.output, fileName);
+                return fs.copy(sourceFilePath, destFilePath, { overwrite: true, recursive: true, errorOnExist: false });
+            }));
+        } else {
+            // Build configuration based on the framework selection
+            const templatesPath = path.join(constants.TEST_CONFIG_TEMPLATES_PATH, flags.testFrameworkPackage || "jasmine");
+            await Promise.all(fs.readdirSync(templatesPath).map(copyTarget => {
+                const sourceFilePath = path.join(templatesPath, copyTarget);
+                const destFilePath = path.join(flags.output, copyTarget);
+                return fs.copy(sourceFilePath, destFilePath, { overwrite: true, recursive: true, errorOnExist: false });
+            }));
+
+            const packageJsonPath = path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE);
+            const packageJsonContent = JSON.parse(fs.readFileSync(packageJsonPath).toString("utf8"));
+            const devDeps = packageJsonContent.devDependencies;
+
+            const projectDetails = util.extractProjectPomDetails(flags.projectRoot);
+            packageJsonContent.name = projectDetails.name;
+            packageJsonContent.version = projectDetails.version;
+
+            if (flags.testFrameworkPackage === "jest") {
+                devDeps.jest = flags.testFrameworkVersion || devDeps.jest;
+                if (flags.runner === "swc") {
+                    devDeps["@swc/core"] = "latest";
+                    devDeps["@swc/jest"] = "latest";
+                }
+
+                const setupFiles = fs.readdirSync(flags.helpers).map(file => `./helpers/${file}`);
+                const jestConfigPath = path.join(flags.output, constants.JEST_CONFIG_FILE);
+                const jestConfigContent = fs.readFileSync(jestConfigPath).toString("utf8");
+                fs.writeFileSync(jestConfigPath, jestConfigContent.replace("setupFiles: []", "setupFiles: " + JSON.stringify(setupFiles)));
+            } else {
+                devDeps["ansi-colors"] = flags.ansiColorsVersion || devDeps["ansi-colors"];
+                devDeps["jasmine"] = flags.testFrameworkVersion || devDeps["jasmine"];
+                devDeps["jasmine-reporters"] = flags.jasmineReportersVerion || devDeps["jasmine-reporters"];
+
+                const runFilePath = path.join(flags.output, constants.JASMINE_RUN_FILE);
+                const runFileContent = fs.readFileSync(runFilePath).toString("utf8");
+                fs.writeFileSync(runFilePath, runFileContent.replace("{TEST_RESULTS_PATH}", constants.TEST_RESULTS_PATH));
+            }
+
+            fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
+        }
+    }
 
 	async function createCoverageConfig(): Promise<void> {
-		const thresholdsToken = flags["coverage-thresholds"];
+        const coverageFilePath = path.join(flags.output, constants.COVERAGE_CONFIG_FILE);
+        // Do not overwrite the file copied from the custom configuration provided in the project root.
+        if (fs.existsSync(coverageFilePath)) {
+            return;
+        }
+
+        const thresholdsToken = flags["coverage-thresholds"];
 		const perFile = flags["per-file"];
 		const covConfig: Record<string, any> = {
 			"all": true,
@@ -410,6 +417,8 @@ export default async function (flags: BuildCommandFlags) {
 				}
 			});
 		}
-		fs.writeFile(path.join(flags.output, constants.COVERAGE_CONFIG_FILE), JSON.stringify(covConfig, null, 2));
+
+        await fs.writeFile(coverageFilePath, JSON.stringify(covConfig, null, 2));
 	}
+
 }

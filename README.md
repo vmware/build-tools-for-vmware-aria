@@ -1,4 +1,4 @@
-# Build Tools for VMware Aria
+  # Build Tools for VMware Aria
 This repository contains the source code for the Build Tools for VMware Aria, formally knows as vRealize Build Tools.
 Build Tools for VMware Aria provides development and release management tools for implementing automation solutions based on the VMware Aria Suite (VMware Aria Automation, VMware Aria Automation Orchestrator, VMware Aria Operations, VMware Aria Automation Pipelines, Aria Operations for Logs) and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and Automation Developers to use standard DevOps practices for managing and deploying content.
 
@@ -39,10 +39,16 @@ Build Tools for VMware Aria provides development and release management tools fo
     ```
 
 ## Package dependencies
-- npm: 6.14.13
-- node: 14.17.1
-- maven: 3.8.7
-- jdk: 17
+- npm: 6.14.x (One compatible with your node version)
+- node: 14.x.x - 16.x.x (only 14 is supported for vcd-ng and vcd-ng-angular8)
+- maven: 3.9.x
+- jdk: 17, 21
+
+To check if the dependencies are met, you can run:
+
+```sh
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
+```
 
 ## Support
 

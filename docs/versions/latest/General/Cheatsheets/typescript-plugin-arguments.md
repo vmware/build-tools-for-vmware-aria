@@ -1,7 +1,7 @@
 [ERROR] 
 [ERROR] groupId: 'com.vmware.pscoe.maven.plugins'
 [ERROR] artifactId: 'o11n-typescript-package-maven-plugin'
-[ERROR] version: '2.43.1-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:o11n-typescript-package-maven-plugin:2.43.1-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact com.vmware.pscoe.maven.plugins:o11n-typescript-package-maven-plugin:jar:2.43.1-SNAPSHOT
+[ERROR] version: '2.44.1-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:o11n-typescript-package-maven-plugin:2.44.1-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact com.vmware.pscoe.maven.plugins:o11n-typescript-package-maven-plugin:jar:2.44.1-SNAPSHOT
 [ERROR] -> [Help 1]
 [ERROR] 
 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.

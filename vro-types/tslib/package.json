@@ -1,6 +1,6 @@
 {
   "name": "tslib",
-  "version": "2.44.1-SNAPSHOT",
+  "version": "3.0.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "description": "TypeScript compiler requires that tslib library is installed as a NodeJS module. VRO is using separate implementation for tslib, so this library will just provide the types.",
   "license": "ISC",

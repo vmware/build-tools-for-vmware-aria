@@ -34,10 +34,6 @@ public class ConfigurationVraNg extends Configuration {
 	 */
 	public static final String CSP_HOST = "csp.host";
 	/**
-	 * param PROJECT_ID.
-	 */
-	public static final String PROJECT_ID = "project.id";
-	/**
 	 * param DATA_COLLECTION_DELAY_SECONDS.
 	 */
 	public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
@@ -50,10 +46,6 @@ public class ConfigurationVraNg extends Configuration {
 	 * param PROJECT_NAME.
 	 */
 	public static final String PROJECT_NAME = "project.name";
-	/**
-	 * param ORGANIZATION_ID.
-	 */
-	public static final String ORGANIZATION_ID = "org.id";
 	/**
 	 * param ORGANIZATION_NAME.
 	 */
@@ -134,13 +126,6 @@ public class ConfigurationVraNg extends Configuration {
 	/**
 	 * @return String
 	 */
-	public String getProjectId() {
-		return this.properties.getProperty(PROJECT_ID);
-	}
-
-	/**
-	 * @return String
-	 */
 	public String getDataCollectionDelaySeconds() {
 		return this.properties.getProperty(DATA_COLLECTION_DELAY_SECONDS);
 	}
@@ -150,13 +135,6 @@ public class ConfigurationVraNg extends Configuration {
 	 */
 	public String getProjectName() {
 		return this.properties.getProperty(PROJECT_NAME);
-	}
-
-	/**
-	 * @return String
-	 */
-	public String getOrgId() {
-		return this.properties.getProperty(ORGANIZATION_ID);
 	}
 
 	/**
@@ -251,12 +229,12 @@ public class ConfigurationVraNg extends Configuration {
 			message.append("Port ");
 		}
 
-		if (StringUtils.isEmpty(getProjectId()) && StringUtils.isEmpty(getProjectName())) {
-			message.append("Project name/Project id ");
+		if (StringUtils.isEmpty(getProjectName())) {
+			message.append("Project name ");
 		}
 
-		if (StringUtils.isEmpty(getOrgId()) && StringUtils.isEmpty(getOrgName())) {
-			message.append("Organization id and Organization Name ");
+		if (StringUtils.isEmpty(getOrgName())) {
+			message.append("Organization Name ");
 		}
 
 		if (StringUtils.isEmpty(getRefreshToken()) && StringUtils.isEmpty(super.getUsername())) {
@@ -274,7 +252,9 @@ public class ConfigurationVraNg extends Configuration {
 	public void deprecationWarnings() {
 		String[] deprecatedFlags = new String[] {
 				"bp.ignore.versions",
-				"bp.release"
+				"bp.release",
+				"project.id",
+				"org.id"
 		};
 
 		for (String flag : deprecatedFlags) {
