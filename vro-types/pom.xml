@@ -120,7 +120,7 @@
 						fail with "You have to use a classifier to attach supplemental artifacts to the 
 						project instead of replacing them." 
 					-->
-					<version>2.4</version>
+					<version>3.4.2</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
