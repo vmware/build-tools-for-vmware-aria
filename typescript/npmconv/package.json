@@ -34,14 +34,14 @@
 		"gulp": "^5.0.0",
 		"gulp-typescript": "^5.0.1",
 		"ts-node": "^8.0.3",
-		"typescript": "^3.3.4000",
-		"cross-spawn": "^7.0.6"
+		"typescript": "^3.3.4000"
 	},
 	"dependencies": {
 		"command-line-args": "^5.1.1",
 		"download-git-repo": "^2.0.0",
 		"fs-extra": "^7.0.1",
 		"glob": "^7.1.4",
-		"npm": "^10.8.0"
+		"npm": "^10.8.0",
+		"cross-spawn": "^7.0.6"
 	}
 }
