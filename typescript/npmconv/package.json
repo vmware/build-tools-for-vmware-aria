@@ -34,7 +34,8 @@
 		"gulp": "^5.0.0",
 		"gulp-typescript": "^5.0.1",
 		"ts-node": "^8.0.3",
-		"typescript": "^3.3.4000"
+		"typescript": "^3.3.4000",
+		"cross-spawn": ">=7.0.6"
 	},
 	"dependencies": {
 		"command-line-args": "^5.1.1",
@@ -42,6 +43,6 @@
 		"fs-extra": "^7.0.1",
 		"glob": "^7.1.4",
 		"npm": "^10.8.0",
-		"cross-spawn": "^7.0.6"
+		"cross-spawn": ">=7.0.6"
 	}
 }
