@@ -28,7 +28,7 @@
 
 ### *Trivy security reporting added*
 
-This is a build improvements. Now security vulnerabilities will be reported to Github Security. Note that this will just report on the security vulnerabilities, but not fail the build. It's up to the maintainers to act upon the reported information.
+This is a build improvement. Now security vulnerabilities will be reported to Github Security. Note that this will just report on the security vulnerabilities, but not fail the build. It's up to the maintainers to act upon the reported information.
 
 ## Improvements
 
