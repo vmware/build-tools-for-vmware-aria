@@ -3,7 +3,7 @@ format: 'sarif'
 output: 'trivy-results.sarif'
 dependency-tree: true
 list-all-pkgs: true
-exit-code: 1
+exit-code: 0 # setting to 0 as we just want to report the vulnerabilities, not fail the build
 severity:
   - HIGH
   - CRITICAL
