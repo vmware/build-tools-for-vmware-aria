@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><dunes-script-module name="processSnmpResult" result-type="Array/Properties" api-version="6.0.0" id="F28080808080808080808080808080808180808001297259131125b940b51f82d" version="1.0.0" allowed-operations="vef"><description><![CDATA[]]></description><param n="snmpResult" t="SNMP:SnmpResult"><![CDATA[]]></param><script encoded="false"><![CDATA[if (snmpResult == null) {
+<?xml version="1.0" encoding="UTF-8"?><dunes-script-module name="processSnmpResult" result-type="Array/Properties" api-version="6.0.0" id="F28080808080808080808080808080808180808001297259131125b940b51f82d" version="1.0.0" allowed-operations="vef"><description/><param n="snmpResult" t="SNMP:SnmpResult"/><script encoded="false"><![CDATA[if (snmpResult == null) {
     return null;
 }
 var resArray = [];
