@@ -1,0 +1,26 @@
+timeout: 10m
+format: json
+dependency-tree: true
+list-all-pkgs: true
+exit-code: 1
+output: result.json
+severity:
+  - HIGH
+  - CRITICAL
+scan:
+  skip-dirs:
+    .settings
+    .m2
+    docs
+    infrastructure
+    target
+    vro-types
+
+  scanners:
+    - vuln
+    - secret
+vulnerability:
+  type:
+    - os
+    - library
+  ignore-unfixed: true
