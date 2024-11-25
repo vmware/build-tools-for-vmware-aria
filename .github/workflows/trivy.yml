@@ -2,9 +2,9 @@ name: Trivy
 on:
   push:
     branches:
-    - build/329-implement-trivy-fs-scan
+    - main
   pull_request:
-  workflow_dispatch:
+
 jobs:
   build:
     name: Run vulnerability scan
