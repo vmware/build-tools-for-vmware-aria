@@ -1,4 +1,6 @@
 timeout: 10m
+format: 'sarif'
+output: 'trivy-results.sarif'
 dependency-tree: true
 list-all-pkgs: true
 exit-code: 1
