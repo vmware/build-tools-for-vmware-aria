@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -1395,10 +1397,14 @@ public final class Installer {
 
 		Properties wfInput = new Properties();
 		try {
+			System.out.println("Reading file: " + wfInputFilePath);
+
 			String wfInputJSON = new String(Files.readAllBytes(Paths.get(wfInputFilePath)));
 			for (Map.Entry<String, JsonElement> entry : gson.fromJson(wfInputJSON, JsonObject.class).entrySet()) {
 				wfInput.put(entry.getKey(), StringEscapeUtils.escapeJava(gson.toJson(entry.getValue())));
 			}
+
+			System.out.println("Executing workflow: " + wfID);
 			List<String> prefixes = new ArrayList<>();
 			if (input.allTrue(Option.VRO_EMBEDDED)) {
 				prefixes.add(ConfigurationPrefix.VRO.getValue());
@@ -1406,16 +1412,21 @@ public final class Installer {
 			} else {
 				prefixes.add(ConfigurationPrefix.VRO.getValue());
 			}
+			System.out.println("Loading vRO client ...");
 			RestClientVro client = RestClientFactory
 					.getClientVro(ConfigurationVro.fromProperties(input.getMappings(prefixes.toArray(new String[0]))));
+			System.out.println("Executing workflow ...");
 			WorkflowExecution workflowExecutionResult = new VroWorkflowExecutor(client).executeWorkflow(wfID, wfInput,
 					Integer.parseInt(wfTimeout));
 
+			System.out.println("Workflow execution completed.");
 			JsonObject wfOutputJson = new JsonObject();
 			for (String key : workflowExecutionResult.getOutput().stringPropertyNames()) {
 				String value = StringEscapeUtils.unescapeJson(workflowExecutionResult.getOutput().getProperty(key));
 				wfOutputJson.add(key, gson.fromJson(value, JsonObject.class));
 			}
+
+			System.out.println("Writing output to file: " + wfOutputFilePath);
 			// write the workflow output
 			Files.write(Paths.get(wfOutputFilePath), gson.toJson(wfOutputJson).getBytes(), StandardOpenOption.CREATE);
 			// write the workflow error in a workflow error file (if any)
@@ -1440,8 +1451,13 @@ public final class Installer {
 			throw new RuntimeException(
 					"Workflow execution failed: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
 		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			String stackTrace = sw.toString();
+
 			throw new RuntimeException("General error during workflow execution: " + e.getClass().getName() + " : "
-					+ e.getLocalizedMessage(), e);
+					+ e.getLocalizedMessage() + "\nStack trace: " + stackTrace, e);
 		}
 	}
 }
