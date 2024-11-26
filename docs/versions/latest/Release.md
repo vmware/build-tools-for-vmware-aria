@@ -39,6 +39,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *License file is no longer part of the vro package*
+
+#### Previous Behavior
+
+The `THIRD-PARTY.properties` file was generated in `src/license` and it was bundled with the rest of the code by `vropkg`.
+
+#### Current Behavior
+
+The `THIRD-PARTY.properties` file is generated directly in the project basedir and it is not bundled with the rest of the code by `vropkg`.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
