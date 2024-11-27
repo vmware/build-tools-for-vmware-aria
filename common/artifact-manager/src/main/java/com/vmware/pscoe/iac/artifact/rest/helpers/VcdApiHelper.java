@@ -20,7 +20,7 @@ import java.util.Base64;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
-public class VcdApiHelper {
+public final class VcdApiHelper {
 
 	private VcdApiHelper() {
 	};
