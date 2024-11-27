@@ -21,6 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 public class VcdApiHelper {
+
+	private VcdApiHelper() {
+	};
+
 	private static final Charset UTF_8 = Charset.forName("UTF-8");
 
 	public static MediaType buildMediaType(String contentType, String apiVersion) {
