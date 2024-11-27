@@ -15,16 +15,20 @@
 package com.vmware.pscoe.iac.artifact.rest.helpers;
 
 import java.nio.charset.Charset;
+import java.util.Base64;
 
 import org.springframework.http.MediaType;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
-public class VcdApiHelper {
+public final class VcdApiHelper {
+
+	private VcdApiHelper() {
+	};
+
 	private static final Charset UTF_8 = Charset.forName("UTF-8");
 
 	public static MediaType buildMediaType(String contentType, String apiVersion) {
-		if(apiVersion == null) {
+		if (apiVersion == null) {
 			return MediaType.parseMediaType(contentType);
 		} else {
 			return MediaType.parseMediaType(contentType + ";version=" + apiVersion);
@@ -41,7 +45,8 @@ public class VcdApiHelper {
 		}
 
 		String username = user + "@" + domain;
-		String auth = Base64Utils.encodeToString((username + ":" + password).getBytes(UTF_8));
+		String auth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(UTF_8));
+
 		return "Basic " + auth;
 	}
 }
