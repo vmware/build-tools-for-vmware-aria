@@ -18,9 +18,13 @@
 [//]: # (#### Relevant Documentation:)
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Trivy security reporting added*
+
+This is a build improvement. Now security vulnerabilities will be reported to Github Security. Note that this will just report on the security vulnerabilities, but not fail the build. It's up to the maintainers to act upon the reported information.
+
 ### *Add Support for YAML Input and Output in Workflow Run with Installer *
 
-Add support for YAML data in the workflow inputs / outputs during workflow run within installer.
+Add support for YAML data in the workflow inputs / outputs during workflow run triggered by the installer.
 
 ## Improvements
 [//]: # (### *Improvement Name* )

@@ -1425,7 +1425,7 @@ public final class Installer {
             }
             // write the workflow output
             String outputString = gson.toJson(wfOutputJson);
-            if (Installer.endsWithIgnoreCase(wfOutputFilePath, "yaml")) {
+            if (Installer.endsWithIgnoreCase(wfOutputFilePath, "yaml") || Installer.endsWithIgnoreCase(wfOutputFilePath, "yml")) {
                 outputString = Installer.convertJsonObjectToYaml(wfOutputFilePath, wfOutputJson);
             }
 
@@ -1477,7 +1477,7 @@ public final class Installer {
 
     private static String convertJsonObjectToYaml(String fileName, JsonObject jsonObject) {
         if (jsonObject.isEmpty()) {
-            return "--";
+            return "---";
         }
         ObjectMapper jsonMapper = new ObjectMapper();
         DumperOptions options = new DumperOptions();
