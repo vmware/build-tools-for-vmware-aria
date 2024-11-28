@@ -3,10 +3,10 @@ import { nodeResolve as rollupNodeResolve } from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import * as ansiColors from "ansi-colors";
 import * as childProcess from "child_process";
-import * as fs from "fs-extra";
 import * as gulp from "gulp";
 import * as path from "path";
 import { rollup } from "rollup";
+import { rmSync } from "fs";
 
 const ROLLUP_IGNORE = [
     "iconv-lite",
@@ -28,8 +28,8 @@ gulp.task("test", async done => {
 });
 
 gulp.task("clean", async done => {
-    await fs.remove("build");
-    await fs.remove(path.join("lib", "vrotest.js"));
+    rmSync("build", { recursive: true });
+    rmSync(path.join("lib", "vrotest.js"));
     done();
 });
 

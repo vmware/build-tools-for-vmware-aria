@@ -13,7 +13,7 @@
  * #L%
  */
 import * as path from "path";
-import * as fs from "fs-extra";
+import { existsSync, readFileSync } from "fs";
 import minimist from "minimist";
 import build from "./build";
 import run from "./run";
@@ -76,8 +76,8 @@ function parseCommandLine(): RootCommandFlags {
 function printVersion(): void {
 	const packageJsonPath = path.join(__dirname, "..", "package.json");
 
-	if (fs.existsSync(packageJsonPath)) {
-		const packageConfig = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+	if (existsSync(packageJsonPath)) {
+		const packageConfig = JSON.parse(readFileSync(packageJsonPath).toString());
 		console.log(`Version ${packageConfig.version}`);
 	}
 }
@@ -85,7 +85,7 @@ function printVersion(): void {
 function printUsage(command?: string): void {
 	command = command && commands[command] ? command : "root";
 	const usageFilePath = path.join(__dirname, "..", "usage", `${command}.txt`);
-	if (fs.existsSync(usageFilePath)) {
-		console.log(fs.readFileSync(usageFilePath).toString());
+	if (existsSync(usageFilePath)) {
+		console.log(readFileSync(usageFilePath).toString());
 	}
 }
