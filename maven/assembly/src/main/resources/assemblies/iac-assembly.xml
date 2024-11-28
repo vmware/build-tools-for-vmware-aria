@@ -9,6 +9,21 @@
 
 	<fileSets>
 		<fileSet>
+			<directory>.${file.separator}</directory>
+			<outputDirectory>${file.separator}</outputDirectory>
+			<includes>
+				<include>${installer.included.item1}</include>
+				<include>${installer.included.item2}</include>
+				<include>${installer.included.item3}</include>
+				<include>${installer.included.item4}</include>
+				<include>${installer.included.item5}</include>
+				<include>${installer.included.item6}</include>
+				<include>${installer.included.item7}</include>
+				<include>${installer.included.item8}</include>
+				<include>${installer.included.item9}</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>target/installer-zip/${installerArtifactId}-${installerVersion}</directory>
 			<outputDirectory>${file.separator}</outputDirectory>
 			<includes>
