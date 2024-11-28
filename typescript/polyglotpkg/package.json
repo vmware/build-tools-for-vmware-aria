@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
-    "@types/node": "^22.9.0",
+    "@types/node": "^22.10.1",
     "@types/adm-zip": "^0.5.6",
     "@types/command-line-args": "^5.2.3",
     "@types/lodash": "4.17.13",

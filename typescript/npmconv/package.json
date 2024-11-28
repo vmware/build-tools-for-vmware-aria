@@ -28,7 +28,7 @@
     "@types/command-line-args": "^5.2.3",
     "which": "^5.0.0",
     "@types/gulp": "^4.0.17",
-    "@types/node": "^22.9.0",
+    "@types/node": "^22.10.1",
     "@types/npm": "^7.19.3",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
