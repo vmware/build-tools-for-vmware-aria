@@ -1406,7 +1406,7 @@ public final class Installer {
             }
 
             for (Map.Entry<String, JsonElement> entry : gson.fromJson(wfInputString, JsonObject.class).entrySet()) {
-                wfInput.put(entry.getKey(),StringEscapeUtils.escapeJava(gson.toJson(entry.getValue())));
+                wfInput.put(entry.getKey(), StringEscapeUtils.escapeJava(gson.toJson(entry.getValue())));
             }
             List<String> prefixes = new ArrayList<>();
             if (input.allTrue(Option.VRO_EMBEDDED)) {
