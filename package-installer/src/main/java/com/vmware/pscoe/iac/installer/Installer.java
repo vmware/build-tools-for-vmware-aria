@@ -1461,7 +1461,7 @@ public final class Installer {
             yaml.load(yamlString);
             return true;
         } catch (ParserException e) {
-            LOGGER.debug("Failed to parse the YAML string from file '{}' : {}", fileName, e.getLocalizedMessage());
+            LOGGER.debug("Encountered an error while parsing workflow input file '{}' as YAML. File will be processed as JSON. Error: {}", fileName, e.getLocalizedMessage());
             return false;
         }
     }
