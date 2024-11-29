@@ -35,6 +35,8 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.parser.ParserException;
@@ -811,6 +813,11 @@ public final class Installer {
 	 */
 	private static final int EXIT_WF_EXEC_FAILED_CODE = -1;
 
+    /**
+     * Instance of the logger used in the installer.
+     */
+	private static final Logger LOGGER = LoggerFactory.getLogger(Installer.class);
+
 	private Installer() {
 	}
 
@@ -1375,10 +1382,8 @@ public final class Installer {
 			return new ArrayList<>();
 		}
 		if (!containerDir.isDirectory()) {
-			throw new RuntimeException(
-					String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
+			throw new RuntimeException(String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
 		}
-
 		List<File> packages = new ArrayList<>();
 		packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtention() }, true));
 
@@ -1401,7 +1406,7 @@ public final class Installer {
         Properties wfInput = new Properties();
         try {
             String wfInputString = new String(Files.readAllBytes(Paths.get(wfInputFilePath)));
-            if (Installer.isValidYaml(wfInputString)) {
+            if (Installer.isValidYaml(wfInputFilePath, wfInputString)) {
                 wfInputString = Installer.convertYamlToJson(wfInputFilePath, wfInputString);
             }
 
@@ -1450,12 +1455,13 @@ public final class Installer {
         }
     }
 	
-    private static boolean isValidYaml(String yamlString) {
+    private static boolean isValidYaml(String fileName, String yamlString) {
         Yaml yaml = new Yaml();
         try {
             yaml.load(yamlString);
             return true;
         } catch (ParserException e) {
+            LOGGER.debug("Failed to parse the YAML string from file '{}' : {}", fileName, e.getLocalizedMessage());
             return false;
         }
     }
