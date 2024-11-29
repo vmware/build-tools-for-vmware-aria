@@ -44,7 +44,6 @@ installer.included.item9
 
 These properties allow you to specify files and directories to be included in the installer bundle. The files and directories will be copied to the root of the installation directory.
 
-
 #### Example
 
 ```xml
@@ -61,6 +60,10 @@ You may want to include Terraform scripts, or state, ansible playbooks, install 
 ### *Trivy security reporting added*
 
 This is a build improvement. Now security vulnerabilities will be reported to Github Security. Note that this will just report on the security vulnerabilities, but not fail the build. It's up to the maintainers to act upon the reported information.
+
+### *Add Support for YAML Input and Output in Workflow Run with Installer*
+
+Add support for YAML data in the workflow inputs / outputs during workflow run triggered by the installer.
 
 ## Improvements
 
