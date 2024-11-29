@@ -218,7 +218,7 @@ export class NpmConverter {
 						files.map(file => {
 							return fs.ensureDir(path.resolve(sourceFilesDestDir, path.dirname(file))).then(() => {
 								const srcPath = path.resolve(this.opts.source.directory, base, file);
-								let sourceCode = fs.readFileSync(srcPath, { encoding: "UTF-8" });
+								let sourceCode = fs.readFileSync(srcPath, { encoding: "utf-8" });
 								console.log(`Processing file: ${srcPath}`)
 								console.log(`Dependency map: ${JSON.stringify(dependencyMap)}`)
 
@@ -236,7 +236,7 @@ export class NpmConverter {
 								);
 								const newSource = rewriter.rewrite();
 
-								return fs.writeFile(path.resolve(sourceFilesDestDir, file), newSource, { encoding: "UTF-8" });
+								return fs.writeFile(path.resolve(sourceFilesDestDir, file), newSource, { encoding: "utf-8" });
 							});
 						})
 					);
@@ -374,10 +374,10 @@ async function exec(command: string, options: cp.ExecOptions): Promise<CmdResult
 }
 
 function updatePomDependencies(pomPath: string, depsSpec: t.MvnPackageRef[]): void {
-	const pomContent = fs.readFileSync(pomPath, { encoding: "UTF-8" });
+	const pomContent = fs.readFileSync(pomPath, { encoding: "utf-8" });
 	const endTagPos = pomContent.indexOf("</dependencies>");
 
-	fs.writeFileSync(pomPath, pomContent.substr(0, endTagPos), { encoding: "UTF-8" });
+	fs.writeFileSync(pomPath, pomContent.substr(0, endTagPos), { encoding: "utf-8" });
 
 	depsSpec.forEach(dep => {
 		fs.appendFileSync(
@@ -389,10 +389,10 @@ function updatePomDependencies(pomPath: string, depsSpec: t.MvnPackageRef[]): vo
       <version>${dep.version}</version>${dep.scope ? "\n      <scope>" + dep.scope + "</scope>" : ""}
 	  </dependency>
   `,
-			{ encoding: "UTF-8" }
+			{ encoding: "utf-8" }
 		);
 	});
-	fs.appendFileSync(pomPath, pomContent.substr(endTagPos), { encoding: "UTF-8" });
+	fs.appendFileSync(pomPath, pomContent.substr(endTagPos), { encoding: "utf-8" });
 }
 
 interface CmdResult {
