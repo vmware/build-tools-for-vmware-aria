@@ -18,9 +18,11 @@ import com.vmware.pscoe.iac.artifact.configuration.*;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
+
+import jakarta.inject.Inject;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
@@ -35,10 +37,10 @@ import java.util.Properties;
 
 public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
-	@Component
+	@Inject
 	private Settings settings;
 
-	@Component
+	@Inject
 	private SettingsDecrypter decrypter;
 
 	@Parameter(required = false, property = "vro", defaultValue = "${vro.*}")
