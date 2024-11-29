@@ -103,6 +103,8 @@
 						<excludedScopes>test</excludedScopes>
 						<excludedArtifacts>maven-surefire-plugin</excludedArtifacts>
 						<excludeTransitiveDependencies>true</excludeTransitiveDependencies>
+						<missingFile>THIRD-PARTY.properties</missingFile> <!-- This defines where the
+						licenses file is generated -->
 						<extraExtensions>
 							<ts>java</ts>
 							<yaml>properties</yaml>
