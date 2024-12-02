@@ -39,6 +39,14 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Better error handling when starting vro workflow*
+
+#### Previous Behavior
+When starting a vro workflow, the error handling was not very clear and the error message was not very helpful when the params were missing the types.
+
+#### New Behavior
+The error handling has been improved and the error message is more helpful when the params are missing the types.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
