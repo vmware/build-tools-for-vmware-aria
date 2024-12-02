@@ -24,6 +24,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,16 +161,13 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, VraNgContentSharingPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(
-				policyFolderPath);
+		Set<String> nameFilterSet = itemNames.stream().collect(Collectors.toSet());
 
-		csPolicies.forEach(policy -> {
-			if (itemNames.contains(policy.getName())) {
-				// getting policy from server
-				VraNgContentSharingPolicy csPolicy = this.restClient.getContentSharingPolicy(policy.getId());
-				storeContentSharingPolicyOnFilesystem(policyFolderPath, csPolicy, currentPoliciesOnFileSystem);
-			}
-		});
+		List<VraNgContentSharingPolicy> filteredPolicies = csPolicies.stream()
+							.filter(policy -> nameFilterSet.contains(policy.getName()))
+							.collect(Collectors.toList());
+							
+		this.handleContentSharingPolicyExport(filteredPolicies, policyFolderPath);
 	}
 
 	/**
