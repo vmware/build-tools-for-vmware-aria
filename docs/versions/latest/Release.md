@@ -39,6 +39,17 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *vRA ContentSharingPolicy not pulled/pushed correctly with v2.39.0 and v2.40.0*
+
+#### Previous Behavior
+
+The `vRA ContentSharingPolicy` was not pulled/pushed correctly with v2.39.0 and v2.40.0 since filtering wasn't calling the resolve
+method that would resolve the naming.
+
+#### New Behavior
+
+The `vRA ContentSharingPolicy` is now pulled/pushed correctly with v2.39.0 and v2.40.0 since filtering is now calling the resolve.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
