@@ -863,6 +863,13 @@ public class RestClientVro extends RestClient {
 				keyType = inputParametersTypes.get(entry.getKey()).toString();
 			}
 
+			// Prevents a NullPointerException when the keyType is null. Can't switch null
+			if (keyType == null) {
+				throw new RuntimeException(
+						String.format("Unable to find type for parameter '%s' in input parameters types",
+								entry.getKey()));
+			}
+
 			switch (keyType) {
 				case "Array/string":
 					ArrayStringValue arrayStringValue = new ArrayStringValue();
