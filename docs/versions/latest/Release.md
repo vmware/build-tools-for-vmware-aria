@@ -78,6 +78,16 @@ Add support for YAML data in the workflow inputs / outputs during workflow run t
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Ability to specify values in wf attributes*
+
+#### Previous Behavior
+
+The `wf` attributes were not able to accept values... now you can bind config or add values.
+
+#### New Behavior
+
+You can now specify values in the `wf` attributes.
+
 ### *License file is no longer part of the vro package*
 
 #### Previous Behavior
