@@ -37,6 +37,11 @@ labels: type:bug
 -   Visual Studio Code Version:
 -   OS Version:
 
+#### Dependencies
+
+Run: `curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash` and paste the output here:
+
+
 #### Server
 
 -   vRealize Automation Version:
