@@ -33,9 +33,9 @@ labels: type:bug
 
 #### Client
 
--   Build Tools for VMware Aria Version:
--   Visual Studio Code Version:
--   OS Version:
+- Build Tools for VMware Aria Version:
+- Visual Studio Code Version:
+- OS Version:
 
 #### Dependencies
 
@@ -44,10 +44,10 @@ Run: `curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-a
 
 #### Server
 
--   vRealize Automation Version:
--   vRealize Orchestrator Version:
--   vRealize Operations Version:
--   vRealize Log Insight Version:
+- vRealize Automation Version:
+- vRealize Orchestrator Version:
+- vRealize Operations Version:
+- vRealize Log Insight Version:
 
 ### Failure Logs
 
@@ -59,6 +59,3 @@ Run: `curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-a
 ### Additional Context
 
 <!-- Add any other information, configuration or screenshots that might be necessary to reproduce the issue. -->
-
-  
- 
