@@ -106,6 +106,8 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 				stringBuilder.append(`<value encoded="n"><![CDATA[${att.defaultValue}]]></value>`).appendLine();
 				stringBuilder.unindent();
 				stringBuilder.append(`</attrib>`).appendLine();
+			} else {
+				stringBuilder.append(` />`).appendLine();
 			}
 		});
 	}
