@@ -28,6 +28,7 @@ import { StringBuilderClass } from "../../../utilities/stringBuilder";
 import { PolicyTemplateDescriptor, PolicyTemplateEventDescriptor, PolicyTemplateScheduleDescriptor, PolicyWorkflowInfo, PolicyAttribute, PolicyElement } from "../../decorators";
 import { prepareHeaderEmitter } from "../codeTransformers/header";
 import { getAttributeVersionValidator } from "../helpers/getAttributeVersionValidator";
+import { printAttributeArrayValue, printAttributeCompositeValue } from "../codeTransformers/attributes";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -732,73 +733,6 @@ export function getPolicyTemplateTransformer(file: FileDescriptor, context: File
 			stringBuilder.append(`</attribute>`).appendLine();
 		}
 
-		/**
-		 * @brief Prints out arrays
-		 *
-		 * @details THIS PRINTS THE ARRAYS IN vRO7 FORMAT
-		 *          vRO8 is backwards compatible, but future versions may not be.
-		 *          Array in vRO8
-		 *          [16:string#123312321,16:string#123132312,16:string#qffwfqwfw]
-		 *
-		 *          Array in vRO7
-		 *          #{#field4:string#test#;#field4:string#test2#;#field4:string#test4#}#
-		 *
-		 * @param value
-		 * @param type
-		 */
-		function printAttributeArrayValue(value: Array<any>, type: string) {
-			type = type.replace("Array/", "");
-			const output = value.map(element => `#${type}#${element}#`).join(";");
-
-			return `#{${output}}#"`;
-		}
-
-		/**
-		 * @brief   Prints out composite type values.
-		 *
-		 * @details THIS PRINTS THE COMPOSITE TYPE IN vRO7 FORMAT
-		 *          vRO8 is backwards compatible, but future versions may not be.
-		 *          Composite type in vRO8: {5:13:field=string#Stefan
-		 *              7:12:field_1=number#123.0
-		 *          }
-		 *
-		 *          Composite type in vRO7:
-		 *          #[#field#=#string#Stefan#+#field_1#=#number#123.0#]#
-		 *          #[#field1#=#string#rabbit#+#field2#=#Array##{#string#Rebecca#;#string#Pedro#;#string#Peppa#}##]#
-		 *
-		 * @param   {any} compositeValue
-		 * @param   {String} compositeType
-		 * @private
-		 */
-		function printAttributeCompositeValue(compositeValue: any, compositeType: string) {
-			const output = Object.entries(compositeValue).map(([key, value]) => (Array.isArray(value)
-				? [key, "Array", printAttributeArrayValue(value as any[], getArrayTypeFromCompositeType(compositeType, key))]
-				: [key, typeof value, value]))
-				.map(([key, valueType, value]) => `#${key}#=#${valueType}#${value}#`)
-				.join("+");
-
-			return `#[${output}]#`;
-		}
-
-		/**
-		 * @brief   Extracts the Array Type from the Composite Type
-		 *
-		 * @details Example CompositeType: CompositeType(field1:number,field2:boolean,field3:string,field4:Array/string):ITest
-		 *          If the key passed is field4 will extract `Array/string`
-		 *
-		 * @param   {String} compositeType
-		 * @param   {String} key
-		 *
-		 * @private
-		 */
-		function getArrayTypeFromCompositeType(compositeType: string, key: string): string | null {
-			const result = compositeType.match(new RegExp(`${key}:(Array\\/[^,)]+)`))?.[1];
-			if (!result) {
-				throw new Error(`Composite Type Array is in invalid format for ${key}!`);
-			}
-
-			return result;
-		}
 	}
 
 	function getText(node: any) {

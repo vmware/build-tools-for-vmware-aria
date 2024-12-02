@@ -39,6 +39,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Ability to specify values in wf attributes*
+
+#### Previous Behavior
+
+The `wf` attributes were not able to accept values... now you can bind config or add values.
+
+#### New Behavior
+
+You can now specify values in the `wf` attributes.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
