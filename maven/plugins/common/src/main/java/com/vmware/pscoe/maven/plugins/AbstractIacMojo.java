@@ -21,6 +21,7 @@ import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
@@ -38,7 +39,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	@Parameter(defaultValue = "${settings}", readonly = true)
 	private Settings settings;
 
-	@Parameter(defaultValue = "${settings.decrypter}", readonly = true)
+	@Component
 	private SettingsDecrypter decrypter;
 
 	@Parameter(required = false, property = "vro", defaultValue = "${vro.*}")
