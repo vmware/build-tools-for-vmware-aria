@@ -216,7 +216,8 @@ public final class RestClientFactory {
 				}
 
 				throw new HttpClientErrorException(response.getStatusCode(),
-						"Invalid/Unreachable FQDN or IP address: " + messageBuilder.toString());
+						"Error (" + messageBuilder.toString()
+								+ ") while processing request, FQDN or IP may be incorrect or the server may be down.");
 			}
 
 		});
