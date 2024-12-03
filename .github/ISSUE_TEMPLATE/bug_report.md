@@ -10,7 +10,6 @@ labels: type:bug
 
 [Description of the issue. Affected functionality / feature.]
 
-
 ### Steps to Reproduce
 
 1. [First Step]
@@ -33,19 +32,22 @@ labels: type:bug
 
 #### Client
 
--   Build Tools for VMware Aria Version:
--   Visual Studio Code Version:
--   OS Version:
+- Build Tools for VMware Aria Version:
+- Visual Studio Code Version:
+- OS Version:
+
+#### Dependencies
+
+Run: `curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash` and paste the output here:
 
 #### Server
 
--   vRealize Automation Version:
--   vRealize Orchestrator Version:
--   vRealize Operations Version:
--   vRealize Log Insight Version:
+- vRealize Automation Version:
+- vRealize Orchestrator Version:
+- vRealize Operations Version:
+- vRealize Log Insight Version:
 
 ### Failure Logs
-
 
 ### Related issues and PRs
 
@@ -55,5 +57,3 @@ labels: type:bug
 
 <!-- Add any other information, configuration or screenshots that might be necessary to reproduce the issue. -->
 
-  
- 
