@@ -10,7 +10,6 @@ labels: type:bug
 
 [Description of the issue. Affected functionality / feature.]
 
-
 ### Steps to Reproduce
 
 1. [First Step]
@@ -41,7 +40,6 @@ labels: type:bug
 
 Run: `curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash` and paste the output here:
 
-
 #### Server
 
 - vRealize Automation Version:
@@ -51,7 +49,6 @@ Run: `curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-a
 
 ### Failure Logs
 
-
 ### Related issues and PRs
 
 <!-- Link any related issues and pull requests here using #number or user/repo#number -->
@@ -59,3 +56,4 @@ Run: `curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-a
 ### Additional Context
 
 <!-- Add any other information, configuration or screenshots that might be necessary to reproduce the issue. -->
+
