@@ -352,7 +352,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 			restClient.deleteCustomResource(customResourceName, existingObjectId);
 			customResourceJsonElement.remove("id");
 			customResourceJsonElement.add("id", new JsonPrimitive(existingObjectId));
-		} catch (HttpClientErrorException ex) {
+		} catch (Exception ex) {
 			if (isCustomResourceActiveAttached(ex)) {
 				// Do warn the user, but don't fail.
 				logger.debug(
@@ -393,11 +393,10 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
 	}
 
-	private static boolean isCustomResourceActiveAttached(final HttpClientErrorException clientException) {
-		HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
+	private static boolean isCustomResourceActiveAttached(final Exception clientException) {
 		final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
 		String message = clientException.getMessage();
-		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
+		return (message != null && message.indexOf(magicMessage) != -1);
 	}
 
 	/**
