@@ -390,13 +390,13 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
 		final String magicMessage = "Custom resource with the same resource type already exists! Use a different resource type name!";
 		String message = clientException.getMessage();
-		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
+		return (status == HttpStatus.BAD_REQUEST && message != null && message.contains(magicMessage));
 	}
 
 	private static boolean isCustomResourceActiveAttached(final Exception clientException) {
 		final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
 		String message = clientException.getMessage();
-		return (message != null && message.indexOf(magicMessage) != -1);
+		return (message != null && message.contains(magicMessage));
 	}
 
 	/**
