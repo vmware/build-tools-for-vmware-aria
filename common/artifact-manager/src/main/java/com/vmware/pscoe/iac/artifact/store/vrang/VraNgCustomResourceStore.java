@@ -395,7 +395,17 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 	private static boolean isCustomResourceActiveAttached(final Exception clientException) {
 		final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
-		String message = clientException.getMessage();
+
+		Throwable e = clientException;
+		StringBuilder builder = new StringBuilder(e.getMessage()).append("\n");
+
+		Throwable cause = e.getCause();
+		while (cause != null) {
+			builder.append(cause.getMessage()).append("\n");
+			cause = cause.getCause();
+		}
+
+		String message = builder.toString();
 		return (message != null && message.contains(magicMessage));
 	}
 
