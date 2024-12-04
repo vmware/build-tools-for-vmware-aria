@@ -406,7 +406,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		}
 
 		String message = builder.toString();
-		return (message != null && message.contains(magicMessage));
+		return message.contains(magicMessage);
 	}
 
 	/**
