@@ -36,7 +36,7 @@ import java.util.Properties;
 
 public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
-	@Component
+	@Parameter(defaultValue = "${settings}", readonly = true)
 	private Settings settings;
 
 	@Component
