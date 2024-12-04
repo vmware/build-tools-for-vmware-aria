@@ -393,6 +393,16 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		return (status == HttpStatus.BAD_REQUEST && message != null && message.contains(magicMessage));
 	}
 
+	/**
+	 * Check if the exception is due to active resources attached to the custom
+	 *
+	 * The reason why we fetch all the messages is that the exception can be nested
+	 * and is currently.
+	 *
+	 * @param clientException - The exception to check
+	 * @return true if the exception is due to active resources attached to the
+	 *         custom
+	 */
 	private static boolean isCustomResourceActiveAttached(final Exception clientException) {
 		final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
 
