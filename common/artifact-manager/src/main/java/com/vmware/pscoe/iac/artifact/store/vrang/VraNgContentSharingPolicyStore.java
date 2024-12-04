@@ -141,7 +141,6 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent() {
-		this.logger.debug("{}->exportStoreContent()", this.getClass());
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 		Path policyFolderPath = getPolicyFolderPath();
 
@@ -156,19 +155,13 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
 		List<VraNgContentSharingPolicy> csPolicies = this.restClient.getContentSharingPolicies();
 		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, VraNgContentSharingPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(
-				policyFolderPath);
 
-		csPolicies.forEach(policy -> {
-			if (itemNames.contains(policy.getName())) {
-				// getting policy from server
-				VraNgContentSharingPolicy csPolicy = this.restClient.getContentSharingPolicy(policy.getId());
-				storeContentSharingPolicyOnFilesystem(policyFolderPath, csPolicy, currentPoliciesOnFileSystem);
-			}
-		});
+		List<VraNgContentSharingPolicy> filteredCsPolicies = csPolicies.stream()
+				.filter(policy -> itemNames.contains(policy.getName())).collect(java.util.stream.Collectors.toList());
+
+		this.handleContentSharingPolicyExport(filteredCsPolicies, policyFolderPath);
 	}
 
 	/**
@@ -302,7 +295,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 				break;
 			}
 			default: {
-				this.logger.warn("Type {}, for definition: {} is unsupported", item.getType(), item.getId());
+				logger.warn("Type {}, for definition: {} is unsupported", item.getType(), item.getId());
 			}
 		}
 	}

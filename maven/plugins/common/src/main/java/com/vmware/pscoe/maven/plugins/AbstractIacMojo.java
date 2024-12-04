@@ -18,6 +18,7 @@ import com.vmware.pscoe.iac.artifact.configuration.*;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -35,7 +36,7 @@ import java.util.Properties;
 
 public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
-	@Component
+	@Parameter(defaultValue = "${settings}", readonly = true)
 	private Settings settings;
 
 	@Component

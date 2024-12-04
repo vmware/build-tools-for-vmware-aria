@@ -34,6 +34,16 @@
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+ 			<version>2.3</version>
+		</dependency>
+ 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.18.2</version>
+		</dependency>
+		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>
 			<artifactId>artifact-manager</artifactId>
 			<version>${revision}</version>

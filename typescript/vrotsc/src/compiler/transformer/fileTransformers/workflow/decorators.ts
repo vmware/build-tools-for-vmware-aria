@@ -350,7 +350,7 @@ function buildWorkflowDecoratorParameters(
 						context.diagnostics.addAtNode(
 							sourceFile,
 							property.initializer,
-							`Workflow parameter default value should be of type string, number or boolean.`,
+							`Workflow parameter default value should be of type string, number, boolean or an Array of them.`,
 							DiagnosticCategory.Error);
 					}
 					break;
@@ -385,19 +385,19 @@ function getWorkflowParamValue(node: ts.Node): string {
 	switch (node.kind) {
 		case ts.SyntaxKind.StringLiteral:
 			return (<ts.StringLiteral>node).text;
-		case ts.SyntaxKind.NumericLiteral: {
+		case ts.SyntaxKind.NumericLiteral:
 			let value = (<ts.NumericLiteral>node).text;
 			if (value.indexOf(".") < 0) {
 				value += ".0";
 			}
 			return value;
-		}
-		case ts.SyntaxKind.TrueKeyword: {
+		case ts.SyntaxKind.TrueKeyword:
 			return "true";
-		}
-		case ts.SyntaxKind.FalseKeyword: {
+		case ts.SyntaxKind.FalseKeyword:
 			return "false";
-		}
+		// Array
+		case ts.SyntaxKind.ArrayLiteralExpression:
+			return (<ts.ArrayLiteralExpression>node).elements.map(getWorkflowParamValue).join(",");
 	}
 };
 

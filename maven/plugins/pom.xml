@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>2.0</version>
+			<version>3.9.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-settings-builder</artifactId>
-			<version>3.3.9</version>
+			<version>3.9.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.17.1</version>
+			<version>2.24.2</version>
 		</dependency>
 	</dependencies>
 
@@ -69,7 +69,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.9.0</version>
+				<version>3.15.1</version>
 				<configuration>
 					<goalPrefix>${goal.prefix}</goalPrefix>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -124,7 +124,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-invoker-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>3.8.1</version>
 						<configuration>
 							<debug>false</debug>
 							<projectsDirectory>src/it</projectsDirectory>

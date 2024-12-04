@@ -35,7 +35,14 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.parser.ParserException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -806,6 +813,11 @@ public final class Installer {
 	 */
 	private static final int EXIT_WF_EXEC_FAILED_CODE = -1;
 
+    /**
+     * Instance of the logger used in the installer.
+     */
+	private static final Logger LOGGER = LoggerFactory.getLogger(Installer.class);
+
 	private Installer() {
 	}
 
@@ -1370,78 +1382,133 @@ public final class Installer {
 			return new ArrayList<>();
 		}
 		if (!containerDir.isDirectory()) {
-			throw new RuntimeException(
-					String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
+			throw new RuntimeException(String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
 		}
-
 		List<File> packages = new ArrayList<>();
 		packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtention() }, true));
 
 		return packages.stream().map(file -> PackageFactory.getInstance(type, file)).collect(Collectors.toList());
 	}
 
-	private static void runWorkflow(final Input input) throws ConfigurationException {
-		input.getText().getTextTerminal().println("Executing vRealize Orchestrator Workflow ...");
+    private static void runWorkflow(final Input input) throws ConfigurationException {
+        input.getText().getTextTerminal().println("Executing vRealize Orchestrator Workflow ...");
 
-		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-		String wfID = input.get(Option.VRO_RUN_WORKFLOW_ID);
-		String wfInputFilePath = input.get(Option.VRO_RUN_WORKFLOW_INPUT_FILE_PATH);
-		String wfOutputFilePath = input.get(Option.VRO_RUN_WORKFLOW_OUTPUT_FILE);
-		String wfErrFilePath = input.get(Option.VRO_RUN_WORKFLOW_ERR_FILE);
-		wfErrFilePath = StringUtils.isEmpty(wfErrFilePath) && !StringUtils.isEmpty(wfOutputFilePath)
-				? wfOutputFilePath + ".err"
-				: "workflow.err";
-		String wfTimeout = input.get(Option.VRO_RUN_WORKFLOW_TIMEOUT);
+        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        String wfID = input.get(Option.VRO_RUN_WORKFLOW_ID);
+        String wfInputFilePath = input.get(Option.VRO_RUN_WORKFLOW_INPUT_FILE_PATH);
+        String wfOutputFilePath = input.get(Option.VRO_RUN_WORKFLOW_OUTPUT_FILE);
+        String wfErrFilePath = input.get(Option.VRO_RUN_WORKFLOW_ERR_FILE);
+        wfErrFilePath = StringUtils.isEmpty(wfErrFilePath) && !StringUtils.isEmpty(wfOutputFilePath)
+                ? wfOutputFilePath + ".err"
+                : "workflow.err";
+        String wfTimeout = input.get(Option.VRO_RUN_WORKFLOW_TIMEOUT);
 
-		Properties wfInput = new Properties();
-		try {
-			String wfInputJSON = new String(Files.readAllBytes(Paths.get(wfInputFilePath)));
-			for (Map.Entry<String, JsonElement> entry : gson.fromJson(wfInputJSON, JsonObject.class).entrySet()) {
-				wfInput.put(entry.getKey(), StringEscapeUtils.escapeJava(gson.toJson(entry.getValue())));
-			}
-			List<String> prefixes = new ArrayList<>();
-			if (input.allTrue(Option.VRO_EMBEDDED)) {
-				prefixes.add(ConfigurationPrefix.VRO.getValue());
-				prefixes.add(ConfigurationPrefix.VRANG.getValue());
-			} else {
-				prefixes.add(ConfigurationPrefix.VRO.getValue());
-			}
-			RestClientVro client = RestClientFactory
-					.getClientVro(ConfigurationVro.fromProperties(input.getMappings(prefixes.toArray(new String[0]))));
-			WorkflowExecution workflowExecutionResult = new VroWorkflowExecutor(client).executeWorkflow(wfID, wfInput,
-					Integer.parseInt(wfTimeout));
+        Properties wfInput = new Properties();
+        try {
+            String wfInputString = new String(Files.readAllBytes(Paths.get(wfInputFilePath)));
+            if (Installer.isValidYaml(wfInputFilePath, wfInputString)) {
+                wfInputString = Installer.convertYamlToJson(wfInputFilePath, wfInputString);
+            }
 
-			JsonObject wfOutputJson = new JsonObject();
-			for (String key : workflowExecutionResult.getOutput().stringPropertyNames()) {
-				String value = StringEscapeUtils.unescapeJson(workflowExecutionResult.getOutput().getProperty(key));
-				wfOutputJson.add(key, gson.fromJson(value, JsonObject.class));
-			}
-			// write the workflow output
-			Files.write(Paths.get(wfOutputFilePath), gson.toJson(wfOutputJson).getBytes(), StandardOpenOption.CREATE);
-			// write the workflow error in a workflow error file (if any)
-			if (!StringUtils.isEmpty(workflowExecutionResult.getError())) {
-				Files.write(Paths.get(wfErrFilePath), workflowExecutionResult.getError().getBytes(),
-						StandardOpenOption.CREATE);
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(
-					"Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
-		} catch (JsonSyntaxException e) {
-			throw new RuntimeException("Unable to parse input / output file data: " + e.getClass().getName() + " : "
-					+ e.getLocalizedMessage(), e);
-		} catch (WorkflowExecutionException e) {
-			try {
-				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(), StandardOpenOption.CREATE);
-			} catch (IOException e1) {
-				throw new RuntimeException(
-						"Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(),
-						e);
-			}
-			throw new RuntimeException(
-					"Workflow execution failed: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
-		} catch (Exception e) {
-			throw new RuntimeException("General error during workflow execution: " + e.getClass().getName() + " : "
-					+ e.getLocalizedMessage(), e);
-		}
-	}
+            for (Map.Entry<String, JsonElement> entry : gson.fromJson(wfInputString, JsonObject.class).entrySet()) {
+                wfInput.put(entry.getKey(), StringEscapeUtils.escapeJava(gson.toJson(entry.getValue())));
+            }
+            List<String> prefixes = new ArrayList<>();
+            if (input.allTrue(Option.VRO_EMBEDDED)) {
+                prefixes.add(ConfigurationPrefix.VRO.getValue());
+                prefixes.add(ConfigurationPrefix.VRANG.getValue());
+            } else {
+                prefixes.add(ConfigurationPrefix.VRO.getValue());
+            }
+            RestClientVro client = RestClientFactory.getClientVro(ConfigurationVro.fromProperties(input.getMappings(prefixes.toArray(new String[0]))));
+            WorkflowExecution workflowExecutionResult = new VroWorkflowExecutor(client).executeWorkflow(wfID, wfInput, Integer.parseInt(wfTimeout));
+
+            JsonObject wfOutputJson = new JsonObject();
+            for (String key : workflowExecutionResult.getOutput().stringPropertyNames()) {
+                String value = StringEscapeUtils.unescapeJson(workflowExecutionResult.getOutput().getProperty(key));
+                wfOutputJson.add(key, gson.fromJson(value, JsonObject.class));
+            }
+            // write the workflow output
+            String outputString = gson.toJson(wfOutputJson);
+            if (Installer.endsWithIgnoreCase(wfOutputFilePath, "yaml") || Installer.endsWithIgnoreCase(wfOutputFilePath, "yml")) {
+                outputString = Installer.convertJsonObjectToYaml(wfOutputFilePath, wfOutputJson);
+            }
+
+            Files.write(Paths.get(wfOutputFilePath), outputString.getBytes(), StandardOpenOption.CREATE);
+            // write the workflow error in a workflow error file (if any)
+            if (!StringUtils.isEmpty(workflowExecutionResult.getError())) {
+                Files.write(Paths.get(wfErrFilePath), workflowExecutionResult.getError().getBytes(), StandardOpenOption.CREATE);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+        } catch (JsonSyntaxException e) {
+            throw new RuntimeException("Unable to parse input / output file data: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+        } catch (WorkflowExecutionException e) {
+            try {
+                Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(), StandardOpenOption.CREATE);
+            } catch (IOException e1) {
+                throw new RuntimeException("Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+            }
+            throw new RuntimeException("Workflow execution failed: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("General error during workflow execution: " + e.getClass().getName() + " : " + e.getLocalizedMessage(), e);
+        }
+    }
+	
+    private static boolean isValidYaml(String fileName, String yamlString) {
+        Yaml yaml = new Yaml();
+        try {
+            yaml.load(yamlString);
+            return true;
+        } catch (ParserException e) {
+            LOGGER.debug("Encountered an error while parsing workflow input file '{}' as YAML. File will be processed as JSON. Error: {}", fileName, e.getLocalizedMessage());
+            return false;
+        }
+    }
+
+    private static String convertYamlToJson(String fileName, String yamlString) {
+        Yaml yaml = new Yaml();
+        ObjectMapper jsonMapper = new ObjectMapper();
+        jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        try {
+            // Parse YAML
+            Map<String, Object> yamlMap = yaml.load(yamlString);
+            // Convert to JSON
+            return jsonMapper.writeValueAsString(yamlMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(String.format("Unable to convert YAML file '%s' to JSON: '%s'", fileName, e.getLocalizedMessage()));
+        }
+    }
+
+    private static String convertJsonObjectToYaml(String fileName, JsonObject jsonObject) {
+        if (jsonObject.isEmpty()) {
+            return "---";
+        }
+        ObjectMapper jsonMapper = new ObjectMapper();
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        Yaml yaml = new Yaml(options);
+
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = jsonMapper.readValue(jsonObject.toString(), Map.class);
+            return yaml.dump(jsonMap);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Unable to convert JSON object to YAML file '%s': '%s'", fileName, e.getLocalizedMessage()));
+        }
+    }
+    
+    private static boolean endsWithIgnoreCase(String str, String suffix) {
+        if (str == null || suffix == null) {
+            return false;
+        }
+        if (suffix.length() > str.length()) {
+            return false;
+        }
+        String lowerStr = str.toLowerCase();
+        String lowerSuffix = suffix.toLowerCase();
+
+        return lowerStr.endsWith(lowerSuffix);
+    }    
 }
