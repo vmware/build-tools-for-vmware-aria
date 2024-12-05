@@ -1,0 +1,57 @@
+name: Re Generate Docs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Validate actor permissions
+        run: |
+          URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
+          OUTPUT=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $URL )
+          echo $OUTPUT
+          if ! [[ $(echo $OUTPUT | jq -r '.state') == "active" ]]; then
+            echo "You are not an active user of 'build-tools-for-vmware-aria-maintainers' team!"
+            exit 1
+          fi
+          if ! [[ $(echo $OUTPUT | jq -r '.role') == "maintainer" ]]; then
+            echo "You are not a maintainer user of 'build-tools-for-vmware-aria-maintainers' team!"
+            exit 1
+          fi
+
+      - name: Checkout
+        run: |
+          git clone https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git .
+          git config --global user.email "svc-wwcoe-ci-admin@vmware.com"
+          git config --global user.name "WWCoE CI admin"
+
+      - name: Install xmllint
+        run: sudo apt-get install libxml2-utils
+
+      - name: Generate plugin arguments
+        run: |          
+          for POM_PATH in $(find maven/plugins -mindepth 2 -maxdepth 2 -name pom.xml -type f -not -path "maven/plugins/common/*"); do # Not recommended, will break on whitespace
+            echo "Processing $POM_PATH..."
+            GROUP_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="parent"]/*[local-name()="groupId"]/text()' $POM_PATH) 
+            echo "Group ID: $GROUP_ID"
+
+            ARTIFACT_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' $POM_PATH) 
+            echo "Artifact ID: $ARTIFACT_ID"
+
+            PLUGIN_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="parent"]/*[local-name()="version"]/text()' $POM_PATH)
+            echo "Version: $PLUGIN_VERSION"
+
+            PLUGIN_FOLDER=$(dirname $POM_PATH)
+            PLUGIN_FOLDER="${PLUGIN_FOLDER##*/}"
+            echo "Plugin Folder: $PLUGIN_FOLDER"
+
+            mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH | awk '!/INFO/ && !/WARNING/{ print $0 }' | tail -n +2 > docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md
+          done
+
