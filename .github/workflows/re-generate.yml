@@ -59,4 +59,9 @@ jobs:
           git config --global user.name "WWCoE CI admin"
           git add docs**
           git commit -m "Re-generate plugin arguments"
-          git push
+
+      - name: push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          branch: ${{ github.ref }}
