@@ -17,6 +17,10 @@ jobs:
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
 
+      - name: Install necessary plugins
+        run: |
+          mvn clean install -f maven/plugins/pom.xml
+
       - name: Generate plugin arguments
         run: |          
           for POM_PATH in $(find maven/plugins -mindepth 2 -maxdepth 2 -name pom.xml -type f -not -path "maven/plugins/common/*"); do # Not recommended, will break on whitespace
