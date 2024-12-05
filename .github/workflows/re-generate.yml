@@ -34,7 +34,8 @@ jobs:
             PLUGIN_FOLDER="${PLUGIN_FOLDER##*/}"
             echo "Plugin Folder: $PLUGIN_FOLDER"
 
-            mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH | awk '!/INFO/ && !/WARNING/{ print $0 }' | tail -n +2 > docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md
+            # mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH | awk '!/INFO/ && !/WARNING/{ print $0 }' | tail -n +2 > docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md
+            mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH
           done
 
       - name: Print current branch
