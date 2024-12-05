@@ -395,9 +395,10 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 	/**
 	 * Check if the exception is due to active resources attached to the custom
+	 * resource.
 	 *
-	 * The reason why we fetch all the messages is that the exception can be nested
-	 * and is currently.
+	 * The reason why we fetch all the messages is that the exception can be nested,
+	 * which it is currently.
 	 *
 	 * @param clientException - The exception to check
 	 * @return true if the exception is due to active resources attached to the
