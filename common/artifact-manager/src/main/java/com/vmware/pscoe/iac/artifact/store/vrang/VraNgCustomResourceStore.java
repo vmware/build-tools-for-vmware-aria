@@ -352,7 +352,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 			restClient.deleteCustomResource(customResourceName, existingObjectId);
 			customResourceJsonElement.remove("id");
 			customResourceJsonElement.add("id", new JsonPrimitive(existingObjectId));
-		} catch (HttpClientErrorException ex) {
+		} catch (Exception ex) {
 			if (isCustomResourceActiveAttached(ex)) {
 				// Do warn the user, but don't fail.
 				logger.debug(
@@ -390,14 +390,34 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 		HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
 		final String magicMessage = "Custom resource with the same resource type already exists! Use a different resource type name!";
 		String message = clientException.getMessage();
-		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
+		return (status == HttpStatus.BAD_REQUEST && message != null && message.contains(magicMessage));
 	}
 
-	private static boolean isCustomResourceActiveAttached(final HttpClientErrorException clientException) {
-		HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
+	/**
+	 * Check if the exception is due to active resources attached to the custom
+	 * resource.
+	 *
+	 * The reason why we fetch all the messages is that the exception can be nested,
+	 * which it is currently.
+	 *
+	 * @param clientException - The exception to check
+	 * @return true if the exception is due to active resources attached to the
+	 *         custom
+	 */
+	private static boolean isCustomResourceActiveAttached(final Exception clientException) {
 		final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
-		String message = clientException.getMessage();
-		return (status == HttpStatus.BAD_REQUEST && message != null && message.indexOf(magicMessage) != -1);
+
+		Throwable e = clientException;
+		StringBuilder builder = new StringBuilder(e.getMessage()).append("\n");
+
+		Throwable cause = e.getCause();
+		while (cause != null) {
+			builder.append(cause.getMessage()).append("\n");
+			cause = cause.getCause();
+		}
+
+		String message = builder.toString();
+		return message.contains(magicMessage);
 	}
 
 	/**

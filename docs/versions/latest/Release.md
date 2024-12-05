@@ -28,6 +28,18 @@
 
 ## Improvements
 
+### *Custom Resources will now get updated correctly if in use*
+
+When a custom resource is in use, we attempt to do an update after a failed deletion (default behavior as we want to recreate it).
+
+#### Previous Behavior
+
+This used to fail since the exception was not caught and was also burried inside of another exception.
+
+#### New Behavior
+
+The exception is now caught and the update is attempted.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
