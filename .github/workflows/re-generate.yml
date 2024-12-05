@@ -17,8 +17,9 @@ jobs:
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
 
-      - name: Install necessary plugins
+      - name: Install necessary components
         run: |
+          mvn clean install -f common/artifact-manager/pom.xml
           mvn clean install -f maven/plugins/pom.xml
 
       - name: Generate plugin arguments
