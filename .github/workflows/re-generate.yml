@@ -11,8 +11,6 @@ jobs:
 
       - name: Checkout vmware/build-tools-for-vmware-aria repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
@@ -59,6 +57,6 @@ jobs:
         run: |
           git config --global user.email "svc-wwcoe-ci-admin@vmware.com"
           git config --global user.name "WWCoE CI admin"
-          git add .
+          git add docs**
           git commit -m "Re-generate plugin arguments"
           git push
