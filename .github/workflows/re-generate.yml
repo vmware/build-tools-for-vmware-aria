@@ -52,8 +52,13 @@ jobs:
       - name: Print current branch
         run: echo "Current branch is $GITHUB_REF"
 
-      - name: Push
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+      - name: Print current branch
+        run: git status
+
+      - name: Commit
+        run: |
+          git config --global user.email "svc-wwcoe-ci-admin@vmware.com"
+          git config --global user.name "WWCoE CI admin"
+          git add .
+          git commit -m "Re-generate plugin arguments"
+          git push
