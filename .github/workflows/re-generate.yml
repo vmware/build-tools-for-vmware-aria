@@ -17,6 +17,13 @@ jobs:
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
 
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.16.0
+        with:
+          java-version: 17
+          java-distribution: "temurin"
+          maven-version: 3.9.2
+
       - name: Install necessary components
         run: |
           mvn clean install -f common/artifact-manager/pom.xml
