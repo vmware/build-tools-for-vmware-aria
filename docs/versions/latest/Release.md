@@ -56,7 +56,7 @@ The exception is now caught and the update is attempted.
 #### Previous Behavior
 
 The cheatsheet documents contained similar error:
-```
+```text
 [ERROR] version: '3.1.1-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:3.1.1-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact
 ```
 
