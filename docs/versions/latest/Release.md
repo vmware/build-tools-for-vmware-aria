@@ -28,7 +28,7 @@
 
 ## Improvements
 
-### *Custom Resources will now get updated correctly if in use*
+### *Custom Resources are now updated correctly if in use*
 
 When a custom resource is in use, we attempt to do an update after a failed deletion (default behavior as we want to recreate it).
 
@@ -50,6 +50,19 @@ The exception is now caught and the update is attempted.
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+### *Plugin arguments cheatsheets generation fixed*
+
+#### Previous Behavior
+
+The cheatsheet documents contained similar error:
+```text
+[ERROR] version: '3.1.1-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:3.1.1-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact
+```
+
+#### New Behavior
+
+The cheatsheet documents are properly generated.
 
 ## Upgrade procedure
 

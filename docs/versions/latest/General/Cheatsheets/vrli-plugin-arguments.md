@@ -1,11 +1,93 @@
-[ERROR] 
-[ERROR] groupId: 'com.vmware.pscoe.maven.plugins'
-[ERROR] artifactId: 'vrli-package-maven-plugin'
-[ERROR] version: '3.1.2-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:vrli-package-maven-plugin:3.1.2-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact com.vmware.pscoe.maven.plugins:vrli-package-maven-plugin:jar:3.1.2-SNAPSHOT
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+com.vmware.pscoe.maven.plugins:vrli-package-maven-plugin:3.1.2-SNAPSHOT
+
+Name: vrli-package-maven-plugin
+Description: Build Tools for VMware Aria provides development and release
+  management tools for implementing automation solutions based on the VMware
+  Aria Suite and VMware Cloud Director. The solution enables Virtual
+  Infrastructure Administrators and Automation Developers to use standard
+  DevOps practices for managing and deploying content.
+Group Id: com.vmware.pscoe.maven.plugins
+Artifact Id: vrli-package-maven-plugin
+Version: 3.1.2-SNAPSHOT
+Goal Prefix: vrli
+
+This plugin has 2 goals:
+
+vrli:package
+  Description: (no description available)
+  Implementation: com.vmware.pscoe.maven.plugins.PackageMojo
+  Language: java
+  Bound to phase: package
+
+  Available parameters:
+
+    project (Default: ${project})
+      (no description available)
+
+vrli:pull
+  Description: (no description available)
+  Implementation: com.vmware.pscoe.maven.plugins.PullMojo
+  Language: java
+
+  Available parameters:
+
+    connectionTimeout (Default: ${vrealize.connection.timeout})
+      User property: connectionTimeout
+      (no description available)
+
+    dryrun (Default: false)
+      User property: dryrun
+      Dry run or not. Default value is false.
+
+    ignoreSslCertificate (Default: false)
+      Required: true
+      User property: ignoreSslCertificate
+      (no description available)
+
+    ignoreSslHostname (Default: false)
+      Required: true
+      User property: ignoreSslHostname
+      (no description available)
+
+    keystoreCert
+      User property: vroCertificatePem
+      Certificate of keystore.
+
+    keystorePassword
+      User property: vroKeyPass
+      password to keystore.
+
+    privateKeyPem
+      User property: vroPrivateKeyPem
+      private key to keystore.
+
+    project (Default: ${project})
+      The project that is built with the tools.
+
+    socketTimeout (Default: ${vrealize.socket.timeout})
+      User property: socketTimeout
+      (no description available)
+
+    ssh (Default: ${ssh.*})
+      User property: ssh
+      (no description available)
+
+    vcd (Default: ${vcd.*})
+      User property: vcd
+      (no description available)
+
+    vrang (Default: ${vrang.*})
+      User property: vrang
+      (no description available)
+
+    vrli (Default: ${vrli.*})
+      User property: vrli
+      (no description available)
+
+    vro (Default: ${vro.*})
+      User property: vro
+      (no description available)
+
+    vrops (Default: ${vrops.*})
+      User property: vrops
+      (no description available)
