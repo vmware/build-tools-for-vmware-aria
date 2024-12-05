@@ -2,6 +2,7 @@ name: Re Generate Docs
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   release:
