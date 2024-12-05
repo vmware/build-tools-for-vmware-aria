@@ -23,4 +23,3 @@ bsc:package
 
     project (Default: ${project})
       (no description available)
-
