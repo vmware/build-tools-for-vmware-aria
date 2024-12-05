@@ -25,7 +25,7 @@ method that would resolve the naming.
 
 The `vRA ContentSharingPolicy` is now pulled/pushed correctly with v2.39.0 and v2.40.0 since filtering is now calling the resolve.
 
-### *Better error handling when starting vro workflow*
+### *Better error handling when starting vRO workflow*
 
 #### Previous Behavior
 When starting a vro workflow, the error handling was not very clear and the error message was not very helpful when the params were missing the types.
