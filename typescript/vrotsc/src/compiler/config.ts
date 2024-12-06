@@ -45,7 +45,6 @@ export function createCompilerOptions(rootDir: string, projectPath?: string): ts
 			],
 			strict: false,
 			allowUnreachableCode: true,
-			noImplicitUseStrict: true,
 			stripInternal: false,
 			removeComments: false,
 			experimentalDecorators: true,

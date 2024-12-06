@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { TestClass2 } from "./sub/subaction1";
 import defaultExport, * as nsImport from "./sub/subaction1";
 import defaultExport2, { default as defNamed } from "./sub/subaction1";
