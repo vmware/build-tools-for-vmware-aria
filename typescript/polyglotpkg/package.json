@@ -28,7 +28,7 @@
     "package"
   ],
   "engines": {
-    "node": ">=20.18.0",
+    "node": ">=20.18.1",
     "npm": ">=10.8.2"
   },
   "author": "VMware WWCoE",
@@ -41,27 +41,26 @@
   "dependencies": {
     "adm-zip": "^0.5.16",
     "command-line-args": "^6.0.1",
-    "lodash": "^4.17.15",
-    "typescript": "^5.6.3",
+    "lodash": "^4.17.21",
+    "typescript": "^5.7.2",
     "uuid": "^11.0.3",
     "which": "^5.0.0",
-    "winston": "^3.2.1",
+    "winston": "^3.17.0",
     "xmlbuilder2": "^3.1.1"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.1",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.1",
-    "@types/adm-zip": "^0.5.6",
+    "@types/adm-zip": "^0.5.7",
     "@types/command-line-args": "^5.2.3",
     "@types/lodash": "4.17.13",
-    "@types/uuid": "^10.0.0",
     "@types/which": "^3.0.4",
     "run-script-os": "^1.1.6",
     "ts-node": "^10.9.2",
-    "mocha": "^10.2.0"
+    "mocha": "^11.0.1"
   },
   "optionalDependencies": {
-    "fsevents": "~2.3.1"
+    "fsevents": "~2.3.3"
   },
   "platform": {
     "runtime": "nodejs",

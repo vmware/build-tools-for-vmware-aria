@@ -15,7 +15,7 @@
     "npmconv": "bin/npmconv"
   },
   "engines": {
-    "node": ">=20.18.0",
+    "node": ">=20.18.1",
     "npm": ">=10.8.2"
   },
   "scripts": {
@@ -40,6 +40,6 @@
     "download-git-repo": "^3.0.2",
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",
-    "npm": "^10.9.1"
+    "npm": "^10.9.2"
   }
 }
