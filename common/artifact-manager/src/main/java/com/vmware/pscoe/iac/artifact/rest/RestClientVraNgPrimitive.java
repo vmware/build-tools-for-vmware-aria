@@ -696,7 +696,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	public void unreleaseBlueprintVersionPrimitive(final String blueprintId, final String versionId)
 			throws URISyntaxException {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_BLUEPRINT + "/" + blueprintId + SERVICE_BLUEPRINT_VERSIONS
-				+ "/" + versionId + "/" + SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
+				+ "/" + versionId + SERVICE_BLUEPRINT_UNRELEASE_VERSIONS_ACTION));
 
 		try {
 			this.postJsonPrimitive(url, HttpMethod.POST, "");
