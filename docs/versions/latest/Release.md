@@ -28,6 +28,18 @@
 
 ## Improvements
 
+### *Custom Resources are now updated correctly if in use*
+
+When a custom resource is in use, we attempt to do an update after a failed deletion (default behavior as we want to recreate it).
+
+#### Previous Behavior
+
+This used to fail since the exception was not caught and was also burried inside of another exception.
+
+#### New Behavior
+
+The exception is now caught and the update is attempted.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
@@ -39,24 +51,28 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *vRA ContentSharingPolicy not pulled/pushed correctly with v2.39.0 and v2.40.0*
+### *Plugin arguments cheatsheets generation fixed*
 
 #### Previous Behavior
 
-The `vRA ContentSharingPolicy` was not pulled/pushed correctly with v2.39.0 and v2.40.0 since filtering wasn't calling the resolve
-method that would resolve the naming.
+The cheatsheet documents contained similar error:
+```text
+[ERROR] version: '3.1.1-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:3.1.1-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact
+```
 
 #### New Behavior
 
-The `vRA ContentSharingPolicy` is now pulled/pushed correctly with v2.39.0 and v2.40.0 since filtering is now calling the resolve.
+The cheatsheet documents are properly generated.
 
-### *Better error handling when starting vro workflow*
+### *Unreleasing BP versions would cause an exception*
 
-#### Previous Behavior
-When starting a vro workflow, the error handling was not very clear and the error message was not very helpful when the params were missing the types.
+An exception was thrown like: `The request was rejected because the URL contained a potentially malicious String "//"","path":"/blueprint/api/blueprints/b355c354-a4b6-4d55-800a-8b4232f29b83/versions/2024-12-06-18-34-42//actions/unrelease`
+
+This was because of the `//` after the version id.
 
 #### New Behavior
-The error handling has been improved and the error message is more helpful when the params are missing the types.
+
+The extra `/` is removed when forming the url now
 
 ## Upgrade procedure
 

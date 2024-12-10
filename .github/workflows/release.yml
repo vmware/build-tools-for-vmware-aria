@@ -47,6 +47,18 @@ jobs:
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
 
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.17.0
+        with:
+          java-version: 17
+          java-distribution: "temurin"
+          maven-version: 3.9.2
+
+      - name: Install necessary components
+        run: |
+          mvn clean install -f common/artifact-manager/pom.xml -DskipTests
+          mvn clean install -f maven/plugins/pom.xml
+
       - name: Generate documentation
         run: |
           echo "Generating Documentation..."
@@ -98,7 +110,7 @@ jobs:
             PLUGIN_FOLDER="${PLUGIN_FOLDER##*/}"
             echo "Plugin Folder: $PLUGIN_FOLDER"
 
-            mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH | awk '!/INFO/ && !/WARNING/{ print $0 }' | tail -n +2 > docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md
+            mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH -D"output=../../../docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md"
           done
 
       - name: Release v${{ inputs.version }}

@@ -23,7 +23,7 @@
 
 	<properties>
 		<main.basedir>${project.basedir}</main.basedir>
-		<revision>3.1.1-SNAPSHOT</revision>
+		<revision>3.1.2-SNAPSHOT</revision>
 		<java.version>17</java.version>
 	</properties>
 
@@ -127,7 +127,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.11.1</version>
+					<version>3.11.2</version>
 					<executions>
 						<execution>
 							<id>attach-javadocs</id>
