@@ -17,7 +17,7 @@ import * as pkg from "./package";
 import * as util from "./util";
 import * as constants from "./constants";
 import { BuildCommandFlags } from "./types/build-command-flags";
-import { appendFileSync, CopySyncOptions, cp, cpSync, existsSync, lstatSync, mkdir, mkdirSync, readdirSync, readFileSync, writeFile, writeFileSync } from "fs";
+import { appendFileSync, CopySyncOptions, cp, cpSync, existsSync, lstatSync, mkdirSync, promises, readdirSync, readFileSync, writeFile, writeFileSync } from "fs";
 
 type ModuleDescriptor = Record<string, string>;
 
@@ -73,11 +73,7 @@ export default async function (flags: BuildCommandFlags) {
 
 	async function createFolderStruct(): Promise<void> {
         const createDirectory = (path: string) => {
-            return mkdir(path, { recursive: true }, (error) => {
-                if (error) {
-                    throw new Error(`Unable to create directory [${path}]!`);
-                }
-            });
+            return  promises.mkdir(path, { recursive: true });
         };
         await Promise.all([
             createDirectory(path.join(flags.output, constants.SOURCE_PATH)),
