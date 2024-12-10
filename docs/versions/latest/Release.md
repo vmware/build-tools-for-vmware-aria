@@ -64,6 +64,16 @@ The cheatsheet documents contained similar error:
 
 The cheatsheet documents are properly generated.
 
+### *Unreleasing BP versions would cause an exception*
+
+An exception was thrown like: `The request was rejected because the URL contained a potentially malicious String "//"","path":"/blueprint/api/blueprints/b355c354-a4b6-4d55-800a-8b4232f29b83/versions/2024-12-06-18-34-42//actions/unrelease`
+
+This was because of the `//` after the version id.
+
+#### New Behavior
+
+The extra `/` is removed when forming the url now
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
