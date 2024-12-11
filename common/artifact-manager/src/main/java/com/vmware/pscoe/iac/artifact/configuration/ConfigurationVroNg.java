@@ -16,6 +16,8 @@ package com.vmware.pscoe.iac.artifact.configuration;
 
 import org.springframework.util.StringUtils;
 
+import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+
 import java.util.Properties;
 
 public final class ConfigurationVroNg extends ConfigurationVraNg implements ConfigurationNg {

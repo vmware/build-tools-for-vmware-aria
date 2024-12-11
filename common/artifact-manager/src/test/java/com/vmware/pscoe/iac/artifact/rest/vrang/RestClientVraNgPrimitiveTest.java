@@ -52,7 +52,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.AbxActionMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.ContentSharingPolicyMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;

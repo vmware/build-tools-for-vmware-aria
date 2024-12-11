@@ -15,7 +15,7 @@
 package com.vmware.pscoe.iac.artifact.helpers.vrang;
 
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNgPrimitive;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.http.HttpEntity;
