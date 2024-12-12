@@ -74,6 +74,29 @@ This was because of the `//` after the version id.
 
 The extra `/` is removed when forming the url now
 
+### *Unable to package ABX project*
+
+#### Previous Behavior
+
+We were getting an error when trying to package ABX project:
+```log
+[ERROR] Failed to execute goal com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:2.44.0:package (default-package) on project anothertest: Error creating ABX bundle: duplicate entry: node_modules/run-script-os/index.js -> [Help 1]
+```
+
+#### New Behavior
+
+The ABX package created successfully.
+
+### *Add interactive installer option for importing ABX package*
+
+#### Previous Behavior
+
+ABX packages are ignored in the bundle. The Installer completes the task without installing the packages.
+
+#### New Behavior
+
+The Installer asks the user whether to install ABX packages and in case of positive response installs the packages.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

@@ -1069,6 +1069,13 @@ public final class Installer {
 			userInput(input, Option.CS_IMPORT, "Import Code Stream packages?", true);
 		}
 		// +-------------------------------------
+		// | ABX
+		// +-------------------------------------
+		boolean hasAbxPackages = !getFilesystemPackages(PackageType.ABX).isEmpty();
+		if (hasAbxPackages) {
+			userInput(input, Option.ABX_IMPORT, "Import ABX packages?", true);
+		}
+		// +-------------------------------------
 		// | vRealize Automation (New Generation)
 		// +-------------------------------------
 		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty();
@@ -1078,7 +1085,7 @@ public final class Installer {
 				userInput(input, Option.VRANG_DELETE_CONTENT, "Clean up Aria Automation content?", true);
 			}
 		}
-		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT, Option.VRANG_DELETE_CONTENT)) {
+		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT, Option.VRANG_DELETE_CONTENT, Option.ABX_IMPORT)) {
 			readVrangProperties(input);
 		}
 		if (input.anyTrue(Option.VRANG_IMPORT)) {
