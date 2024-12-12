@@ -87,6 +87,15 @@ We were getting an error when trying to package ABX project:
 
 The ABX package created successfully.
 
+### *Add interactive installer option for importing ABX package*
+
+#### Previous Behavior
+
+ABX packages are ignored in the bundle. The Installer completes the task without installing the packages.
+
+#### New Behavior
+
+The Installer asks the user whether to install ABX packages and in case of positive response installs the packages.
 
 ## Upgrade procedure
 
