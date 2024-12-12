@@ -39,7 +39,8 @@
 		"inputConstants": [],
 		"inputs": {
 			"tagKey": ""
-		}
+		},
+		"additionalProperties": []
 	},
 	"files": [
 		"out",
