@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgResourceQuotaPolicy;
 
 import java.io.File;
 import java.nio.file.Path;

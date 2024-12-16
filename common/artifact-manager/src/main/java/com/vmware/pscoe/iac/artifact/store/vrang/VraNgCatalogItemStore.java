@@ -20,11 +20,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomFormAndData;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceType;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomFormAndData;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -350,7 +350,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 *       we are not going to save svgs
 	 *       Also this will result in the iconId to be stored in the file, but the
 	 *       check in:
-	 *       com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem#hasIcon() is
+	 *       com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem#hasIcon() is
 	 *       iconExtension dependent,
 	 *       so logic should hold fine.
 	 *

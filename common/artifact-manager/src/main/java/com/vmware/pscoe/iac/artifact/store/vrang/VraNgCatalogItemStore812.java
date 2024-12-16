@@ -21,11 +21,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomFormAndData;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceType;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomFormAndData;
 
 import org.apache.commons.lang3.StringUtils;
 

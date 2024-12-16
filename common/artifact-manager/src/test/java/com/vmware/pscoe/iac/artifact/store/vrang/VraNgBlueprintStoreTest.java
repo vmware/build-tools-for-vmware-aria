@@ -21,8 +21,8 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.BlueprintMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 import org.junit.Rule;

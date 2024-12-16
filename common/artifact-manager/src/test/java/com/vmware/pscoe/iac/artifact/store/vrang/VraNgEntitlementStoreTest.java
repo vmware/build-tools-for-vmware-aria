@@ -21,7 +21,7 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.CatalogEntitlementMockBuilder
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
+import com.vmware.pscoe.iac.artifact.aria.model.*;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 

@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgDay2ActionsPolicy;
 
 import java.io.File;
 import java.nio.file.Path;

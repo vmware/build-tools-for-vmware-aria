@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
 
 import org.apache.commons.io.IOUtils;
 

@@ -17,8 +17,8 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.utils.VraNgIntegrationUtils;
 

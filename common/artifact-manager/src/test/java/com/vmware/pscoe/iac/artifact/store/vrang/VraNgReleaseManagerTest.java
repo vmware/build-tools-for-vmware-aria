@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.store.vrang;
 
 import com.vmware.pscoe.iac.artifact.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.helpers.stubs;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCloudAccount;
 
 public class CloudAccountMockBuilder {
 /*{

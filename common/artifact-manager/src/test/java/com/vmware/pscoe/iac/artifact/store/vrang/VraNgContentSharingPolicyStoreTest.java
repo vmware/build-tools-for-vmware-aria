@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.*;
+import com.vmware.pscoe.iac.artifact.aria.model.*;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

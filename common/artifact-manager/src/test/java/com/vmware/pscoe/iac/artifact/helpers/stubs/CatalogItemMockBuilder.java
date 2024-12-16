@@ -14,9 +14,9 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItemType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItemType;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceType;
 
 public class CatalogItemMockBuilder {
 	/**

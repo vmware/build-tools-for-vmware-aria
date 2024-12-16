@@ -52,10 +52,10 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 public class VraNgSubscriptionStoreTest {

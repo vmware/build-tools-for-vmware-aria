@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.utils;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgIntegration;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 import java.util.List;

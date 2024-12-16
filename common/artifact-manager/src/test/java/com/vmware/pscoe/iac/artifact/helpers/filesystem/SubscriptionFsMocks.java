@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
 
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_SUBSCRIPTIONS;
 

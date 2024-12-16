@@ -14,8 +14,8 @@
  */
 package com.vmware.pscoe.iac.artifact.store.vrang;
 
-import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementType.CATALOG_ITEM_IDENTIFIER;
-import static com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementType.CATALOG_SOURCE_IDENTIFIER;
+import static com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlementType.CATALOG_ITEM_IDENTIFIER;
+import static com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlementType.CATALOG_SOURCE_IDENTIFIER;
 import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_ENTITLEMENTS;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,13 +32,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlement;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogEntitlementType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlementType;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceType;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import org.apache.commons.lang3.StringUtils;

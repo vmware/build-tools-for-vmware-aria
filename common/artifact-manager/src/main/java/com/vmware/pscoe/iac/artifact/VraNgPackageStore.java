@@ -28,9 +28,9 @@ import java.util.List;
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageAdapter;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageContent;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageAdapter;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.vrang.VraNgTypeStoreFactory;
 

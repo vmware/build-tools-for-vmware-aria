@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgOrganization;
 import com.google.gson.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,9 +40,9 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 
 import org.apache.commons.io.FileUtils;

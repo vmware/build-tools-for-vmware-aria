@@ -15,7 +15,7 @@
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
