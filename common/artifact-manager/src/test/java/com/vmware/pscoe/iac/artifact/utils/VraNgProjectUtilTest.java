@@ -12,14 +12,14 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.utils;
+package com.vmware.pscoe.iac.artifact.aria.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.ResourceActionMockBuilder;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgResourceAction;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

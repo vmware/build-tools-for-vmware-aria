@@ -22,7 +22,7 @@ import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.APPROVAL_POLICY;
 import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.BLUEPRINT;

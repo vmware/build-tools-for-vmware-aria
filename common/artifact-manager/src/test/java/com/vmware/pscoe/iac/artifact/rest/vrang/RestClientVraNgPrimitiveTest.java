@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.rest.vrang;
 
-import static com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil.getOrganization;
+import static com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil.getOrganization;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,7 +68,7 @@ import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPropertyGroup;
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
 
 @SuppressWarnings("unchecked")
 class RestClientVraNgPrimitiveTest {

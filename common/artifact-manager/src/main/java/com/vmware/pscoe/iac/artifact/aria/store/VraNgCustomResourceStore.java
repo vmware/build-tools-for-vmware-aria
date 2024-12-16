@@ -25,10 +25,10 @@ import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
-import com.vmware.pscoe.iac.artifact.utils.VraNgProjectUtil;
+import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.aria.utils.VraNgProjectUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 

@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

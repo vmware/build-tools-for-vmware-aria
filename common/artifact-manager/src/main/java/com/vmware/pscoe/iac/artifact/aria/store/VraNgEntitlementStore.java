@@ -39,7 +39,7 @@ import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceType;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.DumperOptions;

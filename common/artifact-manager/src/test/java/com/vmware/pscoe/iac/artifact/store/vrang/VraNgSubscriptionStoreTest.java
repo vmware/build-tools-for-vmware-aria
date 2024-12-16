@@ -56,7 +56,7 @@ import com.vmware.pscoe.iac.artifact.aria.model.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 public class VraNgSubscriptionStoreTest {
 	@Rule

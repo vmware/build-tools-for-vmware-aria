@@ -26,9 +26,9 @@ import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.io.FileUtils;
 

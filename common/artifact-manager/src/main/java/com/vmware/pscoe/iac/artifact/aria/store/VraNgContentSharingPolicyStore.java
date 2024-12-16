@@ -39,7 +39,7 @@ import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgItem;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
 
 public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	/**

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 public class AbxReleaseManager {
 	private final Logger logger = LoggerFactory.getLogger(AbxReleaseManager.class);

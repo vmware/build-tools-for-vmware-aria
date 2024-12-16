@@ -12,10 +12,10 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.utils;
+package com.vmware.pscoe.iac.artifact.aria.utils;
 
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 import java.util.List;
 import java.util.Optional;

@@ -31,7 +31,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageAdapter;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.aria.store.VraNgTypeStoreFactory;
 
 import org.slf4j.Logger;

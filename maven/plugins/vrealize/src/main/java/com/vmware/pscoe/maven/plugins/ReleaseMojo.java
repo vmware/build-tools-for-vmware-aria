@@ -17,12 +17,12 @@ package com.vmware.pscoe.maven.plugins;
 import java.util.Arrays;
 
 import com.vmware.pscoe.iac.artifact.AbxReleaseManager;
-import com.vmware.pscoe.iac.artifact.VraNgReleaseManager;
+import com.vmware.pscoe.iac.artifact.aria.store.helpers.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;

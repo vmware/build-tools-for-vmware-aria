@@ -15,7 +15,7 @@
 /**
  * Package.
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.rest;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
-
+import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlement;
@@ -68,7 +68,7 @@ import com.vmware.pscoe.iac.artifact.aria.model.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgWorkflowContentSource;
 
-import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;

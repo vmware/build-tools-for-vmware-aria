@@ -43,7 +43,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgIntegration;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;

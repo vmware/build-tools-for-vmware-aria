@@ -12,13 +12,14 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.rest.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -47,7 +48,7 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 	private String tokenType;
 	private LocalDateTime tokenExpirationDate;
 
-	protected RestClientVraNgAuthNInterceptor(ConfigurationVraNg configuration, RestTemplate restTemplate) {
+	public RestClientVraNgAuthNInterceptor(ConfigurationVraNg configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 		this.tokenType = DEFAULT_TOKEN_TYPE;
 	}
@@ -60,9 +61,9 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 				acquireToken(request);
 			}
 			if (this.token != null) {
-			   request.getHeaders().add("Authorization", this.tokenType + " " + this.token);
+				request.getHeaders().add("Authorization", this.tokenType + " " + this.token);
 			}
- 
+
 			return execution.execute(request, body);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -77,7 +78,8 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 		} else {
 			logger.info("Acquiring refresh token with credentials");
 			ResponseEntity<String> requestWithCredentialsResponse = this.requestWithCredentials(request);
-			DocumentContext requestWithCredentialsResponseBody = JsonPath.parse(requestWithCredentialsResponse.getBody());
+			DocumentContext requestWithCredentialsResponseBody = JsonPath
+					.parse(requestWithCredentialsResponse.getBody());
 			refreshToken = requestWithCredentialsResponseBody.read("$.refresh_token");
 		}
 
@@ -87,16 +89,18 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 		final int expiresIn = responseBody.jsonString().contains("expires_in") ? responseBody.read("$.expires_in") : 0;
 		this.tokenExpirationDate = now.plus(expiresIn, ChronoField.SECOND_OF_MINUTE.getBaseUnit());
 		this.token = responseBody.jsonString().contains("access_token") ? responseBody.read("$.access_token") : null;
-		String tokenTypeFromResponse = responseBody.jsonString().contains("token_type") ? responseBody.read("$.token_type") : null;
+		String tokenTypeFromResponse = responseBody.jsonString().contains("token_type")
+				? responseBody.read("$.token_type")
+				: null;
 		this.setTokenType(tokenTypeFromResponse);
 	}
 
 	private ResponseEntity<String> requestWithRefreshToken(HttpRequest request, String refreshToken) {
 		final URI tokenUri = UriComponentsBuilder.newInstance()
-			.scheme(request.getURI().getScheme())
-			.host(this.getConfiguration().getAuthHost())
-			.port(this.getConfiguration().getPort())
-			.path(SERVICE_REFRESH_TOKEN).build().toUri();
+				.scheme(request.getURI().getScheme())
+				.host(this.getConfiguration().getAuthHost())
+				.port(this.getConfiguration().getPort())
+				.path(SERVICE_REFRESH_TOKEN).build().toUri();
 
 		logger.info("Token URI: {}", tokenUri);
 		// Prepare Headers
@@ -114,12 +118,12 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 
 	private ResponseEntity<String> requestWithCredentials(HttpRequest request) throws JsonProcessingException {
 		final URI tokenUri = UriComponentsBuilder.newInstance()
-			.scheme(request.getURI().getScheme())
-			.host(this.getConfiguration().getAuthHost())
-			.port(this.getConfiguration().getPort())
-			.path(SERVICE_CREDENTIALS)
-			.queryParam("access_token")
-			.build().toUri();
+				.scheme(request.getURI().getScheme())
+				.host(this.getConfiguration().getAuthHost())
+				.port(this.getConfiguration().getPort())
+				.path(SERVICE_CREDENTIALS)
+				.queryParam("access_token")
+				.build().toUri();
 
 		logger.info("Auth URL: {}", tokenUri);
 
@@ -147,7 +151,8 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 	}
 
 	private boolean isRequestInBlackList(HttpRequest request) {
-		return request.getURI().getPath().contains(SERVICE_REFRESH_TOKEN) || request.getURI().getPath().contains(SERVICE_CREDENTIALS);
+		return request.getURI().getPath().contains(SERVICE_REFRESH_TOKEN)
+				|| request.getURI().getPath().contains(SERVICE_CREDENTIALS);
 	}
 
 	private boolean hasValidToken() {
@@ -161,7 +166,7 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 	private void setTokenType(String newTokenType) {
 		if (this.isValidTokenType(newTokenType)) {
 			// Capitalized for case sensitive Auth schemes
-			this.tokenType = newTokenType.substring(0,1).toUpperCase() + newTokenType.substring(1).toLowerCase();
+			this.tokenType = newTokenType.substring(0, 1).toUpperCase() + newTokenType.substring(1).toLowerCase();
 		} else if (this.tokenType == null) {
 			this.tokenType = DEFAULT_TOKEN_TYPE;
 		}

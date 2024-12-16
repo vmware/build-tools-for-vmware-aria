@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.rest;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -73,7 +73,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	 * @param configuration configuration vra
 	 * @param restTemplate  rest template
 	 */
-	protected RestClientVraNg(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
+	public RestClientVraNg(final ConfigurationVraNg configuration, final RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 	}
 
