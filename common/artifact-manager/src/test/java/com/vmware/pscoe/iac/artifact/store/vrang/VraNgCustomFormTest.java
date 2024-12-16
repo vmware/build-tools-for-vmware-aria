@@ -16,7 +16,7 @@
  * LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.aria.store;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

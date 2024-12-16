@@ -12,11 +12,11 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.aria.store;
 
 import static com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlementType.CATALOG_ITEM_IDENTIFIER;
 import static com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlementType.CATALOG_SOURCE_IDENTIFIER;
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_ENTITLEMENTS;
+import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_ENTITLEMENTS;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

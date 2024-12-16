@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.aria.store;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -74,7 +74,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 
 	/**
 	 * Sub directory of.
-	 * com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs#DIR_CATALOG_ITEMS where
+	 * com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs#DIR_CATALOG_ITEMS where
 	 * custom forms are stored
 	 */
 	protected static final String CUSTOM_FORMS_SUBDIR = "forms";
@@ -86,7 +86,7 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 
 	/**
 	 * Sub directory of.
-	 * com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs#DIR_CATALOG_ITEMS where
+	 * com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs#DIR_CATALOG_ITEMS where
 	 * icons are stored
 	 */
 	private static final String ICONS_SUBDIR = "icons";

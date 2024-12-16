@@ -15,7 +15,7 @@
 /** 
  * Package
  */
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.aria.store;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_RESOURCE_ACTIONS;
+import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_RESOURCE_ACTIONS;
 
 public class VraNgResourceActionStore extends AbstractVraNgStore {
 

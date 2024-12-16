@@ -22,7 +22,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_CATALOG_ITEMS;
+import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_CATALOG_ITEMS;
 
 public class CatalogItemFsMocks extends VraNgFsMock {
 	private final static String WORKDIR = "catalog-items";

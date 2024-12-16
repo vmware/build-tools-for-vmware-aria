@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.aria.store;
 
 import java.io.File;
 import java.io.FileReader;
@@ -66,11 +66,11 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 	@Override
 	public void importContent(final File sourceDirectory) {
 		logger.info("Importing files from the '{}' directory",
-				com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES);
+				com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_POLICIES);
 		// verify directory exists
 		File leasePolicyFolder = Paths
 				.get(sourceDirectory.getPath(),
-						com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_POLICIES,
+						com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_POLICIES,
 						LEASE_POLICY)
 				.toFile();
 		if (!leasePolicyFolder.exists()) {

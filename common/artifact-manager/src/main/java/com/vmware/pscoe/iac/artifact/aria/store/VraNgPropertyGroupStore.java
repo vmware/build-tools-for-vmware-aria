@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.aria.store;
 
 import java.io.File;
 import java.io.FileReader;
@@ -36,7 +36,7 @@ import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.utils.VraNgOrganizationUtil;
 
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_PROPERTY_GROUPS;
+import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_PROPERTY_GROUPS;
 
 /**
  * Store responsible for exporting and importing Property groups from vRA 8.3+.

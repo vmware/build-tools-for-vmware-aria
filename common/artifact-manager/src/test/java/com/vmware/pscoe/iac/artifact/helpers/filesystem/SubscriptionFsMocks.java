@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
 
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_SUBSCRIPTIONS;
+import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_SUBSCRIPTIONS;
 
 import java.io.File;
 import java.nio.file.Paths;

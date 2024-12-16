@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.vrang;
+package com.vmware.pscoe.iac.artifact.aria.store;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,7 +25,7 @@ import com.vmware.pscoe.iac.artifact.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFolderFilter;
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_BLUEPRINTS;
+import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_BLUEPRINTS;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
