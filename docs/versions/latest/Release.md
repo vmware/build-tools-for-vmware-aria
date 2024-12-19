@@ -74,6 +74,52 @@ This was because of the `//` after the version id.
 
 The extra `/` is removed when forming the url now
 
+### *Unable to package ABX project*
+
+#### Previous Behavior
+
+We were getting an error when trying to package ABX project:
+```log
+[ERROR] Failed to execute goal com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:2.44.0:package (default-package) on project anothertest: Error creating ABX bundle: duplicate entry: node_modules/run-script-os/index.js -> [Help 1]
+```
+
+#### New Behavior
+
+The ABX package created successfully.
+
+### *Add interactive installer option for importing ABX package*
+
+#### Previous Behavior
+
+ABX packages are ignored in the bundle. The Installer completes the task without installing the packages.
+
+#### New Behavior
+
+The Installer asks the user whether to install ABX packages and in case of positive response installs the packages.
+
+### *Change interactive installer default value of `Run vRO workflow?` option to `N`*
+
+#### Previous Behavior
+
+The default value was `Y` which often results in the user having to provide explicitly `N` as value.
+In interactive mode, it is assumed that the Java Installer is run manually by a user. In that case if the user wants to run a workflow it is more common to login into the Aria Automation Orchestrator UI and run the workflow from there benefiting from all of the tracking and monitoring offered by Aria Automation Orchestrator.
+
+#### New Behavior
+
+The default value is set to `N` enabling the user to just proceed to the next option without providing explicit value for the most common use cases.
+
+### *Fix interactive installer value hints for `Is single tenant environment?`*
+
+#### Previous Behavior
+
+There was a `(Y/N)` hardcoded in the question which resulted in double entry:
+`Is single tenant environment (Y/N)? (Y/N) [Y]:`
+
+#### New Behavior
+
+The question is updated:
+`Is single tenant environment? (Y/N) [Y]:`
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

@@ -65,9 +65,10 @@ public class PackageMojo extends AbstractMojo {
 		List<File> dirList = new ArrayList<>();
 		List<String> packageNameList = new ArrayList<>();
 		List<Artifact> depArtifacts = new ArrayList<>();
+		File distDir = new File(project.getBasedir(), "dist");
 
 		// Prepare list of artifact root folders
-		getBundlesList(project.getBasedir(), packageName, dirList, packageNameList);
+		getBundlesList(distDir, packageName, dirList, packageNameList);
 
 		int index = 0;
 		for (File dir : dirList) {
@@ -82,7 +83,7 @@ public class PackageMojo extends AbstractMojo {
 			getLog().info("ABX action name '" + newPackageName + "'");
 
 			MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-			File pkgFile = new File(dir, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
+			File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
 			Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
 			try {
 				this.preparePackageFile(pkg, dir, new File(pkgFile.getAbsolutePath()));
