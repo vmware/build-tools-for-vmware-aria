@@ -74,7 +74,7 @@ export class PythonStrategy extends BaseStrategy {
 			});
 		}
 
-        mkdirSync(this.options.bundle, { recursive: true });
+        mkdirSync(path.dirname(this.options.bundle), { recursive: true });
 		zip.writeZip(this.options.bundle);
 		this.logger.info(`Created ${this.options.bundle}`);
 	}
