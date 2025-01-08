@@ -88,7 +88,7 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 			Artifact a = (Artifact) o;
 			if ("tgz".equals(a.getType())) {
 				if (
-					useDefaultUnitTestFramework == false
+					!useDefaultUnitTestFramework
 					&& a.getArtifactId().equals(new String("jasmine"))
 				) {
 					continue;
@@ -132,7 +132,7 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 
 		// Add a dependency for the unit test framework type
 		// definitions according to the project configuration.
-		if (useDefaultUnitTestFramework == false) {
+		if (!useDefaultUnitTestFramework) {
 			if (unitTestFrameworkVersion == null) {
 				getLog().info(
 					"No specific versions of the unit testing framework received, will be using the"
