@@ -7,6 +7,10 @@ on:
       - "main" # trigger the workflow for main branch
   workflow_dispatch:
 
+permissions:
+  actions: write
+  contents: write
+
 jobs:
   build:
     strategy:
