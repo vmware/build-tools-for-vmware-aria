@@ -35,7 +35,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.18.0
+        uses: s4u/setup-maven-action@4f7fb9d9675e899ca81c6161dadbba0189a4ebb1 #v1.18.0
         with:
           java-version: ${{ matrix.java }}
           java-distribution: "temurin"
@@ -78,7 +78,7 @@ jobs:
 
       - name: Import GPG Key
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@82a020f1f7f605c65dd2449b392a52c3fcfef7ef # v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
