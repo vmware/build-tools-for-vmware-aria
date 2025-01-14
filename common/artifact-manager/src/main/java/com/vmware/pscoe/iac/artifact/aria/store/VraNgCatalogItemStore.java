@@ -346,13 +346,13 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * Attempts to store an icon to the file system under {{catalog_item_dir}}/icons
 	 * The correct file extension will be fetched from the content-type header.
 	 *
-	 * @NOTE Due to issue when GET .../icon/api/icons/iconId for vRA 8.4 (IAC-482),
-	 *       we are not going to save svgs
-	 *       Also this will result in the iconId to be stored in the file, but the
-	 *       check in:
-	 *       com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem#hasIcon() is
-	 *       iconExtension dependent,
-	 *       so logic should hold fine.
+	 * NOTE Due to issue when GET .../icon/api/icons/iconId for vRA 8.4 (IAC-482),
+	 * we are not going to save svgs
+	 * Also this will result in the iconId to be stored in the file, but the
+	 * check in:
+	 * com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem#hasIcon() is
+	 * iconExtension dependent,
+	 * so logic should hold fine.
 	 *
 	 * @throws RuntimeException if the file cannot be created for some reason
 	 *

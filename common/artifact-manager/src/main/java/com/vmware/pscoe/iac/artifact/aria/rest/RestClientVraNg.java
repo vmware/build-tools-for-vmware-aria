@@ -412,9 +412,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCloudAccounts.
 	 * 
-	 * @NOTE: This is not used anymore. It's a leftoever from the deprecation of
-	 *        regional content.
-	 *        Leaving it here for now in case it's needed.
+	 * NOTE: This is not used anymore. It's a leftoever from the deprecation of
+	 * regional content.
+	 * Leaving it here for now in case it's needed.
 	 *
 	 * @return cloudAccounts
 	 */
@@ -429,9 +429,9 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
 	 * getCloudAccount.
 	 *
-	 * @NOTE: This is not used anymore. It's a leftoever from the deprecation of
-	 *        regional content.
-	 *        Leaving it here for now in case it's needed.
+	 * NOTE: This is not used anymore. It's a leftoever from the deprecation of
+	 * regional content.
+	 * Leaving it here for now in case it's needed.
 	 *
 	 * @param id cloud account id
 	 * @return cloudAccount
