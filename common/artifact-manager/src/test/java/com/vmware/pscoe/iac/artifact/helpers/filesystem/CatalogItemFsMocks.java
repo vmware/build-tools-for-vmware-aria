@@ -16,13 +16,13 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_CATALOG_ITEMS;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_CATALOG_ITEMS;
 
 public class CatalogItemFsMocks extends VraNgFsMock {
 	private static final String WORKDIR = "catalog-items";

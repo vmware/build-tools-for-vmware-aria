@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration;
 
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
 import org.apache.commons.io.IOUtils;
 
 

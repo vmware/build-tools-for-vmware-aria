@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.aria.store;
+package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
 import com.google.gson.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -33,17 +33,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;

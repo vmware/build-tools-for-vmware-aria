@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.helpers.stubs;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlement;
 
 public class CatalogEntitlementMockBuilder {
 	private String name = "mockedEntitlementName";

@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
 
 import java.io.File;
 import java.nio.file.Path;

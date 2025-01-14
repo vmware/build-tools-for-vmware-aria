@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.aria.store;
+package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -44,7 +44,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.SubscriptionMockBuilder;
@@ -52,11 +52,11 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgProject;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgSubscription;
-import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 
 public class VraNgSubscriptionStoreTest {
 	@Rule

@@ -17,4 +17,4 @@
  * Package that represents ProjectUtil Tests.
  *
  */
-package com.vmware.pscoe.iac.artifact.aria.utils;
+package com.vmware.pscoe.iac.artifact.aria.automation.utils;

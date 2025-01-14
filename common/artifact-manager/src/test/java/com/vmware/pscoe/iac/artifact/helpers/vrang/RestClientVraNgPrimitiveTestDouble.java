@@ -14,8 +14,8 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.vrang;
 
-import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNgPrimitive;
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNgPrimitive;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.http.HttpEntity;
@@ -29,10 +29,10 @@ import java.util.Map;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgProject;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCloudAccount;
 
 public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive {
 

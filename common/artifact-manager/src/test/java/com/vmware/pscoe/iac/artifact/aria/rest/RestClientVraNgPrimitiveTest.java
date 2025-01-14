@@ -12,9 +12,9 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.aria.rest;
+package com.vmware.pscoe.iac.artifact.aria.automation.rest;
 
-import static com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil.getOrganization;
+import static com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil.getOrganization;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,7 +52,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.AbxActionMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.ContentSharingPolicyMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
@@ -60,15 +60,15 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.PropertyGroupMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestDouble;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestResponseProvider;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgProject;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgPropertyGroup;
-import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
+import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 
 @SuppressWarnings("unchecked")
 class RestClientVraNgPrimitiveTest {

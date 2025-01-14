@@ -16,7 +16,7 @@
  * LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.aria.store;
+package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonElement;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomFormAndData;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomFormAndData;
 import java.io.IOException;
 
 public class VraNgCustomFormTest {

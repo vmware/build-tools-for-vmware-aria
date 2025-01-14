@@ -15,7 +15,7 @@
 package com.vmware.pscoe.maven.plugins;
 
 import com.vmware.pscoe.iac.artifact.configuration.*;
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVro;

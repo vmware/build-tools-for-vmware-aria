@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
-import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNgAuthNInterceptor;
-import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNgAuthNInterceptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliAuthInterceptor;
 import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV1;
 import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV2;
@@ -52,7 +52,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;

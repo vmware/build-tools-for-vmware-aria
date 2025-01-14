@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgPropertyGroup;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
 
 import java.io.File;
 import java.nio.file.Path;

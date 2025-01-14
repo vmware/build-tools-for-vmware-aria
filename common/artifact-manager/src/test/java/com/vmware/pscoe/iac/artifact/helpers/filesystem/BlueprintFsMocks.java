@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 
 import java.io.File;
 import java.nio.file.Paths;

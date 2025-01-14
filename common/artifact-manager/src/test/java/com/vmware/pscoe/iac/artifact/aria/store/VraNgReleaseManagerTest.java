@@ -12,11 +12,11 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.aria.store;
+package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.aria.store.helpers.VraNgReleaseManager;
-import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.aria.models.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

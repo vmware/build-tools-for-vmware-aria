@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.configuration;
 
 import org.springframework.util.StringUtils;
 
-import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 
 import java.util.Properties;
 
