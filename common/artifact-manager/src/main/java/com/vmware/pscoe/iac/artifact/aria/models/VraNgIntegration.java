@@ -47,7 +47,7 @@ public class VraNgIntegration implements Serializable {
 	private transient Map<String, Object> additionalProperties = new HashMap<>();
 
 	/**
-	 * @param the name of the integration
+	 * @return the name of the integration
 	 */
 	@JsonProperty("name")
 	public String getName() {
