@@ -34,7 +34,6 @@ public class PropertyGroupMockBuilder {
 		try {
 			String read = IOUtils.toString(cl.getResourceAsStream("test/fixtures/propertyGroup.json"),
 					StandardCharsets.UTF_8);
-			;
 			this.mockData = JsonParser.parseString(read);
 		} catch (IOException ex) {
 			throw ex;

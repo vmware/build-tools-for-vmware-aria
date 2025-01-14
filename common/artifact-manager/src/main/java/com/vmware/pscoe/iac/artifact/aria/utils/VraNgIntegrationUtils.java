@@ -23,7 +23,7 @@ import java.util.Optional;
 /**
  * VraNgIntegrationUtils is used to get the default VraNgIntegration.
  */
-final public class VraNgIntegrationUtils {
+public final class VraNgIntegrationUtils {
 	public static final String DEFAULT_INTEGRATION_NAME = "embedded-VRO";
 	private static final VraNgIntegrationUtils INSTANCE = new VraNgIntegrationUtils();
 

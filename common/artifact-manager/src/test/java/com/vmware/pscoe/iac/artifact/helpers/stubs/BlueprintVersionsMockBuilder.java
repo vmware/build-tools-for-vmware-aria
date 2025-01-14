@@ -25,6 +25,7 @@ import java.util.Date;
 
 public class BlueprintVersionsMockBuilder {
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'";
+	private static final long SECOND_IN_MS = 1000L;
 
 	private final JsonElement mockData;
 	private int versionsCount = 1;
@@ -73,7 +74,7 @@ public class BlueprintVersionsMockBuilder {
 			newVersion.addProperty("version", String.valueOf(i));
 			newVersion.addProperty("id", String.valueOf(i));
 			newVersion.addProperty("createdAt", new SimpleDateFormat(DATE_FORMAT).format(
-					new Date(i * 1000L)));
+					new Date(i * SECOND_IN_MS)));
 
 			versionsArray.add(newVersion);
 		}

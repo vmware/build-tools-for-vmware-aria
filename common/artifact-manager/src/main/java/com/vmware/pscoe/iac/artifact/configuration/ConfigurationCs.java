@@ -19,7 +19,7 @@ import java.util.Properties;
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-final public class ConfigurationCs extends ConfigurationVraNg {
+public final class ConfigurationCs extends ConfigurationVraNg {
 	private ConfigurationCs(Properties props) {
 		super(PackageType.CS, props);
 	}
