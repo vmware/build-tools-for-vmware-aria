@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -40,8 +40,7 @@ public class BlueprintFsMocks extends VraNgFsMock {
 		super(tempDir);
 	}
 
-	
-	/** 
+	/**
 	 * @return File
 	 */
 	@Override
@@ -49,13 +48,13 @@ public class BlueprintFsMocks extends VraNgFsMock {
 		return Paths.get(this.tempDir.getPath(), WORKDIR).toFile();
 	}
 
-
 	/**
 	 * JSON encodes a blueprint and adds it to the blueprints directory.
-	 * This will also create the content.yaml based on the blueprint and alternatively accepts a versions' data containing
+	 * This will also create the content.yaml based on the blueprint and
+	 * alternatively accepts a versions' data containing
 	 * information about the versions.
 	 *
-	 * @param    blueprint - The blueprint to store
+	 * @param blueprint - The blueprint to store
 	 */
 	public void addBlueprint(final VraNgBlueprint blueprint) {
 		addBlueprint(blueprint, blueprint.getName());
@@ -63,9 +62,11 @@ public class BlueprintFsMocks extends VraNgFsMock {
 
 	/**
 	 * JSON encodes a blueprint and adds it to the blueprint directory.
-	 * This will also create the content.yaml based on the blueprint and alternatively accepts a versions' data containing
+	 * This will also create the content.yaml based on the blueprint and
+	 * alternatively accepts a versions' data containing
 	 * information about the versions.
-	 * @param blueprint - Blueprint to store
+	 * 
+	 * @param blueprint  - Blueprint to store
 	 * @param folderName - Blueprint folder name
 	 */
 	public void addBlueprint(final VraNgBlueprint blueprint, String folderName) {
@@ -78,14 +79,12 @@ public class BlueprintFsMocks extends VraNgFsMock {
 		}
 
 		File blueprintContent = Paths.get(
-			blueprintFolder.getAbsolutePath(),
-			"content.yaml"
-		).toFile();
+				blueprintFolder.getAbsolutePath(),
+				"content.yaml").toFile();
 
 		File blueprintDetails = Paths.get(
-			blueprintFolder.getAbsolutePath(),
-			"details.json"
-		).toFile();
+				blueprintFolder.getAbsolutePath(),
+				"details.json").toFile();
 
 		JsonObject bpDetails = new JsonObject();
 		bpDetails.add("id", new JsonPrimitive(blueprint.getId()));
@@ -95,13 +94,11 @@ public class BlueprintFsMocks extends VraNgFsMock {
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 
 		writeFileToPath(
-			Paths.get(blueprintContent.getPath()),
-			blueprint.getContent().getBytes()
-		);
+				Paths.get(blueprintContent.getPath()),
+				blueprint.getContent().getBytes());
 
 		writeFileToPath(
-			Paths.get(blueprintDetails.getPath()),
-			gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class)).getBytes()
-		);
+				Paths.get(blueprintDetails.getPath()),
+				gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class)).getBytes());
 	}
 }

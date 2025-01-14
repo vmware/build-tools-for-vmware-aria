@@ -120,6 +120,10 @@ There was a `(Y/N)` hardcoded in the question which resulted in double entry:
 The question is updated:
 `Is single tenant environment? (Y/N) [Y]:`
 
+### *Moved Aria Automation components to own folder*
+
+This is jut an internal restructuring effort, no functionality was changed.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
