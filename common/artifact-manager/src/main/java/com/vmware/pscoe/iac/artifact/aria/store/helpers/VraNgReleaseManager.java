@@ -31,9 +31,9 @@ import com.vmware.pscoe.iac.artifact.aria.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 public class VraNgReleaseManager {
-	private static int THIRD_SEGMENT = 3;
-	private static int SECOND_SEGMENT = 2;
-	private static int FIRST_SEGMENT = 1;
+	private static final int THIRD_SEGMENT = 3;
+	private static final int SECOND_SEGMENT = 2;
+	private static final int FIRST_SEGMENT = 1;
 
 	RestClientVraNg restClient;
 
