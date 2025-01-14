@@ -24,20 +24,20 @@ import com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.APPROVAL_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.BLUEPRINT;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.CATALOG_ITEM;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.CONTENT_SHARING_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.CONTENT_SOURCE;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.CUSTOM_RESOURCE;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.DAY2_ACTIONS_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.DEPLOYMENT_LIMIT_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.LEASE_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.PROPERTY_GROUP;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.RESOURCE_ACTION;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageContent.ContentType.SUBSCRIPTION;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.APPROVAL_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.BLUEPRINT;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.CATALOG_ITEM;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.CONTENT_SHARING_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.CONTENT_SOURCE;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.CUSTOM_RESOURCE;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.DAY2_ACTIONS_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.DEPLOYMENT_LIMIT_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.LEASE_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.PROPERTY_GROUP;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.RESOURCE_ACTION;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageContent.ContentType.SUBSCRIPTION;
 
 /**
  * Factory to select and setup the store (handler) and determine the order of

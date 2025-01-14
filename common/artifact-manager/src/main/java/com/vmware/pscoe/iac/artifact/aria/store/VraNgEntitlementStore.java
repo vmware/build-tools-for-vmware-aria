@@ -14,8 +14,8 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.store;
 
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlementType.CATALOG_ITEM_IDENTIFIER;
-import static com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlementType.CATALOG_SOURCE_IDENTIFIER;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogEntitlementType.CATALOG_ITEM_IDENTIFIER;
+import static com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogEntitlementType.CATALOG_SOURCE_IDENTIFIER;
 import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_ENTITLEMENTS;
 import java.io.File;
 import java.io.FileInputStream;

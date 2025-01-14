@@ -31,6 +31,9 @@ import com.vmware.pscoe.iac.artifact.aria.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 public class VraNgReleaseManager {
+	private static int THIRD_SEGMENT = 3;
+	private static int SECOND_SEGMENT = 2;
+	private static int FIRST_SEGMENT = 1;
 
 	RestClientVraNg restClient;
 
@@ -155,26 +158,22 @@ public class VraNgReleaseManager {
 		Matcher majorMinor = Pattern.compile("([0-9]+)\\.([0-9]+)").matcher(version);
 		Matcher majorMinorPatch = Pattern.compile("([0-9]+)\\.([0-9]+)\\.([0-9]+)").matcher(version);
 
-		int thirdSegment = 3;
-		int secondSegment = 2;
-		int firstSegment = 1;
-
 		if (majorMinorPatch.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR.PATCH from {} with incrementable segment '{}'", version,
-					majorMinorPatch.group(thirdSegment));
+					majorMinorPatch.group(THIRD_SEGMENT));
 			// increment the patch segment
-			return majorMinorPatch.group(firstSegment) + "." + majorMinorPatch.group(secondSegment) + "."
-					+ (Integer.parseInt(majorMinorPatch.group(thirdSegment)) + 1);
+			return majorMinorPatch.group(FIRST_SEGMENT) + "." + majorMinorPatch.group(SECOND_SEGMENT) + "."
+					+ (Integer.parseInt(majorMinorPatch.group(THIRD_SEGMENT)) + 1);
 		} else if (majorMinor.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR from '{}' with incrementable segment '{}'", version,
-					majorMinor.group(secondSegment));
+					majorMinor.group(SECOND_SEGMENT));
 			// increment the minor segment
-			return majorMinor.group(firstSegment) + "." + (Integer.parseInt(majorMinor.group(secondSegment)) + 1);
+			return majorMinor.group(FIRST_SEGMENT) + "." + (Integer.parseInt(majorMinor.group(SECOND_SEGMENT)) + 1);
 		} else if (major.matches()) {
 			logger.debug("Detected version pattern MAJOR from '{}' with incrementable segment '{}'", version,
-					major.group(firstSegment));
+					major.group(FIRST_SEGMENT));
 			// increment the major segment
-			return Integer.toString(Integer.parseInt(major.group(firstSegment)) + 1);
+			return Integer.toString(Integer.parseInt(major.group(FIRST_SEGMENT)) + 1);
 		} else {
 			logger.debug("Could not determine version pattern from {}", version);
 			return getDateVersion();
