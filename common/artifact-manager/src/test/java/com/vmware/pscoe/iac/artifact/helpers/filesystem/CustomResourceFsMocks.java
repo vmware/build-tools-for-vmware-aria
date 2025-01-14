@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class CustomResourceFsMocks extends VraNgFsMock {
-	private final static String WORKDIR = "custom-resources";
+	private static final String WORKDIR = "custom-resources";
 
 	public CustomResourceFsMocks(File tempDir) {
 		super(tempDir);

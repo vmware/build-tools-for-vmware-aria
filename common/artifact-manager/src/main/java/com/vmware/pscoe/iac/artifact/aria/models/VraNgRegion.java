@@ -14,10 +14,21 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.models;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * Aria automation > Infrastructure > Region.
  */
 public class VraNgRegion {
+	/**
+	 * @param Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
+
+	/**
+	 * @param Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
 
 	private final String id;
 	private final String cloudAccountId;
@@ -59,13 +70,12 @@ public class VraNgRegion {
 	}
 
 	/**
-	 * @return the hash of the instance
+	 * @return the hashcode representation of the object
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		hash = 31 * hash + (cloudAccountId == null ? 0 : cloudAccountId.hashCode());
-
-		return hash;
+		return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
+				.append(cloudAccountId)
+				.toHashCode();
 	}
 }

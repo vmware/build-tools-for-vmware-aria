@@ -20,26 +20,31 @@ import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * VraNgIntegrationUtils is used to get the default VraNgIntegration.
+ */
 public class VraNgIntegrationUtils {
 	public static final String DEFAULT_INTEGRATION_NAME = "embedded-VRO";
 	private static final VraNgIntegrationUtils instance = new VraNgIntegrationUtils();
 
 	private Optional<VraNgIntegration> retVal = Optional.empty();
 
-	private VraNgIntegrationUtils() {}
+	private VraNgIntegrationUtils() {
+	}
 
 	public static VraNgIntegrationUtils getInstance() {
 		return instance;
 	}
 
 	public VraNgIntegration getDefaultVraIntegration(RestClientVraNg restClient) {
-		if(this.retVal.isPresent()) {
+		if (this.retVal.isPresent()) {
 			return this.retVal.get();
 		}
 
 		List<VraNgIntegration> integrations = restClient.getVraWorkflowIntegrations();
 
-		this.retVal = integrations.stream().filter(integration -> DEFAULT_INTEGRATION_NAME.equalsIgnoreCase(integration.getName()))
+		this.retVal = integrations.stream()
+				.filter(integration -> DEFAULT_INTEGRATION_NAME.equalsIgnoreCase(integration.getName()))
 				.findFirst();
 
 		return this.retVal.orElse(new VraNgIntegration());

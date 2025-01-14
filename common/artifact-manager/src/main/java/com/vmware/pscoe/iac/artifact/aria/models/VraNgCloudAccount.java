@@ -17,11 +17,22 @@ package com.vmware.pscoe.iac.artifact.aria.models;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * VraNgCloudAccount is the Aria Automation > Infrastructire > Cloud Account
  * representation.
  */
 public class VraNgCloudAccount {
+	/**
+	 * @param Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
+
+	/**
+	 * @param Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
 	private final String id;
 	private final String name;
 	private final String type;
@@ -95,10 +106,10 @@ public class VraNgCloudAccount {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		hash = 31 * hash + (name == null ? 0 : name.hashCode());
-		hash = 31 * hash + (type == null ? 0 : type.hashCode());
-		return hash;
+		return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
+				.append(name)
+				.append(type)
+				.toHashCode();
 	}
 
 }

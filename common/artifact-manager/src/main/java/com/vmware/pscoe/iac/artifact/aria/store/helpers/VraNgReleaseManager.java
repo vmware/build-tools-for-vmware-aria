@@ -154,23 +154,26 @@ public class VraNgReleaseManager {
 		Matcher major = Pattern.compile("([0-9]+)").matcher(version);
 		Matcher majorMinor = Pattern.compile("([0-9]+)\\.([0-9]+)").matcher(version);
 		Matcher majorMinorPatch = Pattern.compile("([0-9]+)\\.([0-9]+)\\.([0-9]+)").matcher(version);
+		int thirdSegment = 3;
+		int secondSegment = 2;
+		int firstSegment = 1;
 
 		if (majorMinorPatch.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR.PATCH from {} with incrementable segment '{}'", version,
-					majorMinorPatch.group(3));
+					majorMinorPatch.group(thirdSegment));
 			// increment the patch segment
-			return majorMinorPatch.group(1) + "." + majorMinorPatch.group(2) + "."
-					+ (Integer.parseInt(majorMinorPatch.group(3)) + 1);
+			return majorMinorPatch.group(firstSegment) + "." + majorMinorPatch.group(secondSegment) + "."
+					+ (Integer.parseInt(majorMinorPatch.group(thirdSegment)) + 1);
 		} else if (majorMinor.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR from '{}' with incrementable segment '{}'", version,
-					majorMinor.group(2));
+					majorMinor.group(secondSegment));
 			// increment the minor segment
-			return majorMinor.group(1) + "." + (Integer.parseInt(majorMinor.group(2)) + 1);
+			return majorMinor.group(firstSegment) + "." + (Integer.parseInt(majorMinor.group(secondSegment)) + 1);
 		} else if (major.matches()) {
 			logger.debug("Detected version pattern MAJOR from '{}' with incrementable segment '{}'", version,
-					major.group(1));
+					major.group(firstSegment));
 			// increment the major segment
-			return Integer.toString(Integer.parseInt(major.group(1)) + 1);
+			return Integer.toString(Integer.parseInt(major.group(firstSegment)) + 1);
 		} else {
 			logger.debug("Could not determine version pattern from {}", version);
 			return getDateVersion();
