@@ -23,9 +23,9 @@ import java.util.Optional;
 /**
  * VraNgIntegrationUtils is used to get the default VraNgIntegration.
  */
-public class VraNgIntegrationUtils {
+final public class VraNgIntegrationUtils {
 	public static final String DEFAULT_INTEGRATION_NAME = "embedded-VRO";
-	private static final VraNgIntegrationUtils instance = new VraNgIntegrationUtils();
+	private static final VraNgIntegrationUtils INSTANCE = new VraNgIntegrationUtils();
 
 	private Optional<VraNgIntegration> retVal = Optional.empty();
 
@@ -33,7 +33,7 @@ public class VraNgIntegrationUtils {
 	}
 
 	public static VraNgIntegrationUtils getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	public VraNgIntegration getDefaultVraIntegration(RestClientVraNg restClient) {

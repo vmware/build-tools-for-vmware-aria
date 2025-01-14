@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_CATALOG_ITEMS;
 
 public class CatalogItemFsMocks extends VraNgFsMock {
-	private final static String WORKDIR = "catalog-items";
+	private static final String WORKDIR = "catalog-items";
 
 	public CatalogItemFsMocks(File tempDir) {
 		super(tempDir);

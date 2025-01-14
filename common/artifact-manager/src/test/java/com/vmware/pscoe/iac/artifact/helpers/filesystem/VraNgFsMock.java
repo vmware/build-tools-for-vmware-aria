@@ -23,7 +23,7 @@ import java.nio.file.StandardOpenOption;
 /**
  * Abstract class to be implemented by the other FS Mocks.
  */
-abstract public class VraNgFsMock {
+public abstract class VraNgFsMock {
 	protected final File tempDir;
 
 	public VraNgFsMock(File tempDir) {

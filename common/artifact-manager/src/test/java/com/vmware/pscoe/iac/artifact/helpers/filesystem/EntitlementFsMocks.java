@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 
 public class EntitlementFsMocks extends VraNgFsMock {
-	private final static String WORKDIR = "entitlements";
+	private static final String WORKDIR = "entitlements";
 
 	public EntitlementFsMocks(File tempDir) {
 		super(tempDir);

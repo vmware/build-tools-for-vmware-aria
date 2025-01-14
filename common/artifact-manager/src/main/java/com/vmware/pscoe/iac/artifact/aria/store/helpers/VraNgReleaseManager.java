@@ -64,7 +64,7 @@ public class VraNgReleaseManager {
 			}
 
 			blueprints.forEach(bp -> {
-				if (releaseIfNotUpdated == true) {
+				if (releaseIfNotUpdated) {
 					this.restClient.releaseBlueprintVersion(bp.getId(), version);
 					logger.info("Released blueprint " + bp.getName() + " version " + version);
 				} else {
@@ -154,6 +154,7 @@ public class VraNgReleaseManager {
 		Matcher major = Pattern.compile("([0-9]+)").matcher(version);
 		Matcher majorMinor = Pattern.compile("([0-9]+)\\.([0-9]+)").matcher(version);
 		Matcher majorMinorPatch = Pattern.compile("([0-9]+)\\.([0-9]+)\\.([0-9]+)").matcher(version);
+
 		int thirdSegment = 3;
 		int secondSegment = 2;
 		int firstSegment = 1;

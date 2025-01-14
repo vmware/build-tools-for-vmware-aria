@@ -1,6 +1,6 @@
 /*
  * #%L
- * artifact-manager
+ * artifact-manaer
  * %%
  * Copyright (C) 2023 VMware
  * %%
@@ -35,7 +35,8 @@ public class BlueprintVersionsMockBuilder {
 
 		ClassLoader cl = getClass().getClassLoader();
 		try {
-			String read = IOUtils.toString(cl.getResourceAsStream("test/fixtures/blueprintVersion.json"), StandardCharsets.UTF_8);
+			String read = IOUtils.toString(cl.getResourceAsStream("test/fixtures/blueprintVersion.json"),
+					StandardCharsets.UTF_8);
 			this.mockData = JsonParser.parseString(read);
 		} catch (IOException ex) {
 			throw ex;
@@ -72,7 +73,7 @@ public class BlueprintVersionsMockBuilder {
 			newVersion.addProperty("version", String.valueOf(i));
 			newVersion.addProperty("id", String.valueOf(i));
 			newVersion.addProperty("createdAt", new SimpleDateFormat(DATE_FORMAT).format(
-				new Date(i*1000L)));
+					new Date(i * 1000L)));
 
 			versionsArray.add(newVersion);
 		}

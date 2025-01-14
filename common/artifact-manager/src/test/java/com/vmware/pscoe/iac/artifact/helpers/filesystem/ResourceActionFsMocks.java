@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 
 public class ResourceActionFsMocks extends VraNgFsMock {
-	private final static String WORKDIR = "resource-actions";
+	private static final String WORKDIR = "resource-actions";
 
 	public ResourceActionFsMocks(File tempDir) {
 		super(tempDir);

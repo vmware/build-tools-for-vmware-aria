@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 public class ConfigurationAbx extends ConfigurationVraNg {
-	private static final Logger logger = LoggerFactory.getLogger(ConfigurationAbx.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationAbx.class);
 
 	protected ConfigurationAbx(Properties props) {
 		super(PackageType.ABX, props);

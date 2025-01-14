@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PropertyGroupFsMocks extends VraNgFsMock {
-	private final static String WORKDIR = "property-groups";
+	private static final String WORKDIR = "property-groups";
 
 	public PropertyGroupFsMocks(File tempDir) {
 		super(tempDir);
