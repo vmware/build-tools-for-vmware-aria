@@ -18,7 +18,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vmware.pscoe.iac.artifact.aria.model.Identifiable;
+import com.vmware.pscoe.iac.artifact.aria.models.Identifiable;
 
 /**
  * The purpose of this class is to provide a way to delete content from the

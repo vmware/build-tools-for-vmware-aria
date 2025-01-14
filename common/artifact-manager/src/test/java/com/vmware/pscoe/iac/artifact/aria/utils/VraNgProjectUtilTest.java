@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.ResourceActionMockBuilder;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

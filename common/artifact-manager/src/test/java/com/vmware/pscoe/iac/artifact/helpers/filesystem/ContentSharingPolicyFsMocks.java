@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSharingPolicy;
 import java.io.File;
 import java.nio.file.Paths;
 import java.nio.file.Path;
@@ -33,6 +33,7 @@ public final class ContentSharingPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param tempDir a folder to store temporary test data
 	 */
 	public ContentSharingPolicyFsMocks(File tempDir) {
@@ -41,6 +42,7 @@ public final class ContentSharingPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Calculates working directory path.
+	 * 
 	 * @return the working directory folder as a File object.
 	 */
 	@Override
@@ -49,14 +51,15 @@ public final class ContentSharingPolicyFsMocks extends VraNgFsMock {
 	}
 
 	/**
-	 * JSON encodes a content sharing policy and adds it to the policies/content-sharing directory.
-	 * @param    csPolicy - The resource action to store
+	 * JSON encodes a content sharing policy and adds it to the
+	 * policies/content-sharing directory.
+	 * 
+	 * @param csPolicy - The resource action to store
 	 */
 	public void addContentSharingPolicy(VraNgContentSharingPolicy csPolicy) {
 		File file = Paths.get(
-			this.getWorkdir().getAbsolutePath(),
-			csPolicy.getName() + ".json"
-		).toFile();
+				this.getWorkdir().getAbsolutePath(),
+				csPolicy.getName() + ".json").toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());

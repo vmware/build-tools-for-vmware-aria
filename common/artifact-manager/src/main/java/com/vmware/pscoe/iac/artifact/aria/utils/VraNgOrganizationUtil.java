@@ -15,7 +15,7 @@
 package com.vmware.pscoe.iac.artifact.aria.utils;
 
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNgPrimitive;
 import org.apache.commons.lang3.StringUtils;
 

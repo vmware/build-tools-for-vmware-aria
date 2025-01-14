@@ -29,10 +29,10 @@ import java.util.Map;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCloudAccount;
 
 public class RestClientVraNgPrimitiveTestDouble extends RestClientVraNgPrimitive {
 

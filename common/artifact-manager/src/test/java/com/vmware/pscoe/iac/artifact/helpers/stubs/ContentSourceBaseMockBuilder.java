@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSourceBase;
 
 public class ContentSourceBaseMockBuilder {
 	private String id = "mockedSourceId";

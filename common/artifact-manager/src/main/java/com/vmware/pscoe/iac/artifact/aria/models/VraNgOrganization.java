@@ -13,14 +13,17 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.aria.model;
+package com.vmware.pscoe.iac.artifact.aria.models;
 
 import com.fasterxml.jackson.annotation.*;
 
 import java.io.Serializable;
 
+/**
+ * Model for Organizations in Aria.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"id", "name", "refLink"})
+@JsonPropertyOrder({ "id", "name", "refLink" })
 public class VraNgOrganization implements Serializable {
 	private static final long serialVersionUID = -3313748896114761975L;
 
@@ -33,6 +36,9 @@ public class VraNgOrganization implements Serializable {
 	@JsonProperty("refLink")
 	private String refLink;
 
+	/**
+	 * @return the project id
+	 */
 	@JsonProperty("id")
 	public String getId() {
 		if (id == null) {
@@ -41,25 +47,40 @@ public class VraNgOrganization implements Serializable {
 		return id;
 	}
 
+	/**
+	 * @param id - the project id to set
+	 */
 	@JsonProperty("id")
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return the name of the project
+	 */
 	@JsonProperty("name")
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name - the project name to set
+	 */
 	@JsonProperty("name")
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return the reference link of the project
+	 */
 	public String getRefLink() {
 		return refLink;
 	}
 
+	/**
+	 * @param refLink - the reference link of the project to set
+	 */
 	public void setRefLink(String refLink) {
 		this.refLink = refLink;
 	}

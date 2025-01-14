@@ -29,8 +29,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgPropertyGroup;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;

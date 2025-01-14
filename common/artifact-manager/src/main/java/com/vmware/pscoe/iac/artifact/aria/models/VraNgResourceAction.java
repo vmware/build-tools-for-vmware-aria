@@ -15,7 +15,7 @@
 /**
  * Package.
  */
-package com.vmware.pscoe.iac.artifact.aria.model;
+package com.vmware.pscoe.iac.artifact.aria.models;
 
 public class VraNgResourceAction implements Identifiable {
 

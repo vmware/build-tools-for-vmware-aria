@@ -21,8 +21,8 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.ResourceActionMockBuilder;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 import org.junit.Rule;

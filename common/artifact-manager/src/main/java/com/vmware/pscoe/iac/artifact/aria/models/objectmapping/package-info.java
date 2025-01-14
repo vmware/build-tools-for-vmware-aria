@@ -15,4 +15,4 @@
 /**
  * Represents cloud account details.
  */
-package com.vmware.pscoe.iac.artifact.aria.model.objectmapping;
+package com.vmware.pscoe.iac.artifact.aria.models.objectmapping;

@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgApprovalPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
 import org.slf4j.Logger;

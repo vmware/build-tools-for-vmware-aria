@@ -23,7 +23,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.store.helpers.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFolderFilter;
 import static com.vmware.pscoe.iac.artifact.aria.store.VraNgDirs.DIR_BLUEPRINTS;
 import java.io.File;

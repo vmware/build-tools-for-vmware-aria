@@ -21,7 +21,7 @@ import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxPackageContent;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgSecret;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;

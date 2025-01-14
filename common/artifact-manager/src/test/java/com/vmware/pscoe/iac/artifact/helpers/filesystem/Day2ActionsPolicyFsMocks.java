@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgDay2ActionsPolicy;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,6 +34,7 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param tempDir temporary folder for test data.
 	 */
 
@@ -43,6 +44,7 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return the full path where test policy json files are stored during tests.
 	 */
 	@Override
@@ -52,13 +54,13 @@ public class Day2ActionsPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * JSON encodes a policy and adds it to the resource actions directory.
-	 * @param    policy - The  policy to store
+	 * 
+	 * @param policy - The policy to store
 	 */
 	public void addPolicy(VraNgDay2ActionsPolicy policy) {
 		File file = Paths.get(
-			this.getWorkdir().getAbsolutePath(),
-			policy.getName() + ".json"
-		).toFile();
+				this.getWorkdir().getAbsolutePath(),
+				policy.getName() + ".json").toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());

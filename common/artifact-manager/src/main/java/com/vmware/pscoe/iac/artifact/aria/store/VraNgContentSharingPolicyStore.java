@@ -34,10 +34,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgItem;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgItem;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.aria.utils.VraNgOrganizationUtil;
 

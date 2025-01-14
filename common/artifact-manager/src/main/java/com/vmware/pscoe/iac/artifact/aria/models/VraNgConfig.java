@@ -13,7 +13,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.aria.model;
+package com.vmware.pscoe.iac.artifact.aria.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +23,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Content Source Configuration.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "workflows" })
 public class VraNgConfig implements Serializable {
@@ -31,11 +34,17 @@ public class VraNgConfig implements Serializable {
 	@JsonProperty("workflows")
 	private List<VraNgWorkflow> workflows = new ArrayList<>();
 
+	/**
+	 * @return the workflows
+	 */
 	@JsonProperty("workflows")
 	public List<VraNgWorkflow> getWorkflows() {
 		return workflows;
 	}
 
+	/**
+	 * @param workflows - the workflows to set
+	 */
 	@JsonProperty("workflows")
 	public void setWorkflows(List<VraNgWorkflow> workflows) {
 		this.workflows = workflows;

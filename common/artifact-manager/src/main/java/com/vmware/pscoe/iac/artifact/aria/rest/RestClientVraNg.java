@@ -27,28 +27,28 @@ import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgApprovalPolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlement;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCloudAccount;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSource;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgDay2ActionsPolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgDeploymentLimitPolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgLeasePolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgProject;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgPropertyGroup;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgRegion;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgResourceAction;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgResourceQuotaPolicy;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgSecret;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgSubscription;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgWorkflowContentSource;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgApprovalPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCloudAccount;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSource;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgDeploymentLimitPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgLeasePolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgPropertyGroup;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgRegion;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgResourceQuotaPolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgSecret;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgSubscription;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgWorkflowContentSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -411,6 +411,10 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	/**
 	 * getCloudAccounts.
+	 * 
+	 * @NOTE: This is not used anymore. It's a leftoever from the deprecation of
+	 *        regional content.
+	 *        Leaving it here for now in case it's needed.
 	 *
 	 * @return cloudAccounts
 	 */
@@ -424,6 +428,10 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 
 	/**
 	 * getCloudAccount.
+	 *
+	 * @NOTE: This is not used anymore. It's a leftoever from the deprecation of
+	 *        regional content.
+	 *        Leaving it here for now in case it's needed.
 	 *
 	 * @param id cloud account id
 	 * @return cloudAccount

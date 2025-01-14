@@ -33,7 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgLeasePolicy;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgLeasePolicy;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 
 public final class VraNgLeasePolicyStore extends AbstractVraNgStore {

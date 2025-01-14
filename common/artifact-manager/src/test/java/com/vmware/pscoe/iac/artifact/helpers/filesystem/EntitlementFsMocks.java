@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCatalogEntitlement;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -36,18 +36,18 @@ public class EntitlementFsMocks extends VraNgFsMock {
 
 	/**
 	 * JSON encodes a entitlement and adds it to the entitlements directory.
-	 * This will also create the content.yaml based on the entitlement and alternatively accepts a versions' data containing
+	 * This will also create the content.yaml based on the entitlement and
+	 * alternatively accepts a versions' data containing
 	 * information about the versions.
 	 *
-	 * @see    com.vmware.pscoe.iac.artifact.helpers.stubs.entitlementVersionsMockBuilder
-	 * @param    entitlement - The entitlement to store
-	 * @param    versionsData - A string containing the versioning data
+	 * @see com.vmware.pscoe.iac.artifact.helpers.stubs.entitlementVersionsMockBuilder
+	 * @param entitlement  - The entitlement to store
+	 * @param versionsData - A string containing the versioning data
 	 */
 	public void addEntitlement(VraNgCatalogEntitlement entitlement) {
-		File file	= Paths.get(
-			this.getWorkdir().getAbsolutePath(),
-			entitlement.getName() + ".json"
-		).toFile();
+		File file = Paths.get(
+				this.getWorkdir().getAbsolutePath(),
+				entitlement.getName() + ".json").toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());

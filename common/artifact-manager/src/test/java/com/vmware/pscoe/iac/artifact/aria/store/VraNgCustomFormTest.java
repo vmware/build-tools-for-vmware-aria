@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonElement;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgCustomFormAndData;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgCustomFormAndData;
 import java.io.IOException;
 
 public class VraNgCustomFormTest {

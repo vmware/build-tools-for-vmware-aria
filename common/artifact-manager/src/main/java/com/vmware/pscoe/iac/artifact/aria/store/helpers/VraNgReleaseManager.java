@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vmware.pscoe.iac.artifact.aria.model.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 
 public class VraNgReleaseManager {

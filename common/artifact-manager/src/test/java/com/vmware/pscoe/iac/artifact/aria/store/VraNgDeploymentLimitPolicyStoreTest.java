@@ -21,7 +21,7 @@ import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.aria.model.*;
+import com.vmware.pscoe.iac.artifact.aria.models.*;
 import com.vmware.pscoe.iac.artifact.aria.rest.RestClientVraNg;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;

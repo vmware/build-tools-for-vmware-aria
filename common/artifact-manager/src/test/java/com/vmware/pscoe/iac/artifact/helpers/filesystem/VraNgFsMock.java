@@ -33,7 +33,8 @@ abstract public class VraNgFsMock {
 	}
 
 	/**
-	 * Ensures the workdir exists. Will throw an error if the workdir cannot be created
+	 * Ensures the workdir exists. Will throw an error if the workdir cannot be
+	 * created
 	 */
 	protected void ensureWorkdirExists() {
 		File workdir = this.getWorkdir();
@@ -50,18 +51,18 @@ abstract public class VraNgFsMock {
 	/**
 	 * Writes a given byte array body to path
 	 *
-	 * @param    path - the absolute path to the file ( with filename )
-	 * @param    body - body to save
+	 * @param path - the absolute path to the file ( with filename )
+	 * @param body - body to save
 	 */
 	protected void writeFileToPath(Path path, byte[] body) {
 		try {
 			Files.write(
-				path,
-				body,
-				StandardOpenOption.CREATE
-			);
+					path,
+					body,
+					StandardOpenOption.CREATE);
 		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error while creating \"%s\". Message was: %s", path, e.getMessage()));
+			throw new RuntimeException(
+					String.format("Error while creating \"%s\". Message was: %s", path, e.getMessage()));
 		}
 	}
 
