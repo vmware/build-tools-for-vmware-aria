@@ -1,10 +1,10 @@
 {
   "extends": "./tsconfig.build",
   "compilerOptions": {
-      "rootDir": ".",       /* Specify the root folder within your source files. */
-      "declaration": false, /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
+    "rootDir": ".",       /* Specify the root folder within your source files. */
+    "declaration": false, /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
   },
   "exclude": [
-      "node_modules"
+    "node_modules"
   ]
 }

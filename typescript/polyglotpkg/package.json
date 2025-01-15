@@ -28,8 +28,8 @@
     "package"
   ],
   "engines": {
-    "node": ">=20.18.1",
-    "npm": ">=10.8.2"
+    "node": ">=22.13.0 <23.0.0",
+    "npm": ">=10.9.2"
   },
   "author": "VMware WWCoE",
   "license": "VMware Confidential",

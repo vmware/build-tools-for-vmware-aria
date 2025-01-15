@@ -126,8 +126,8 @@ describe("End-to-End Tests", () => {
             throw error;
         }
 
-		const fileToExtract = await unzipper.Open.file(expand('test', 'com.vmware.pscoe.toolchain.package'));
-		await fileToExtract.extract({ path: expand('test', 'target-flat.tmp') });
+        const fileToExtract = await unzipper.Open.file(expand('test', 'com.vmware.pscoe.toolchain.package'));
+        await fileToExtract.extract({ path: expand('test', 'target-flat.tmp') });
 
         compare('target-flat.tmp', 'target-flat', ['elements', '**']);
         deleteDirectoryRecursive(expand('test', 'target-flat.tmp'));
@@ -180,8 +180,8 @@ describe("End-to-End Tests", () => {
             throw error;
         }
 
-		const fileToExtract = await unzipper.Open.file(expand('test', 'com.vmware.pscoe.toolchain.package'));
-		await fileToExtract.extract({ path: expand('test', 'target-flat-custom-forms.tmp') });
+        const fileToExtract = await unzipper.Open.file(expand('test', 'com.vmware.pscoe.toolchain.package'));
+        await fileToExtract.extract({ path: expand('test', 'target-flat-custom-forms.tmp') });
 
         compare('target-flat-custom-forms.tmp', 'target-flat-custom-forms', ['elements', 'input_form*']);
         deleteDirectoryRecursive(expand('test', 'target-flat-custom-forms.tmp'));

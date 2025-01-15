@@ -12,7 +12,7 @@ describe("Utils", () => {
 
             it("Finds files by name in path", () => {
                 assert.equal(
-                    comparable(findFiles([ "my.file" ], options)),
+                    comparable(findFiles(["my.file"], options)),
                     comparable([
                         "my.file"
                     ])
@@ -21,7 +21,7 @@ describe("Utils", () => {
 
             it("Finds files by name in shallow nested path", () => {
                 assert.equal(
-                    comparable(findFiles([ "*/my.file" ], options)),
+                    comparable(findFiles(["*/my.file"], options)),
                     comparable([
                         "exclude/my.file",
                         "include/my.file"
@@ -31,7 +31,7 @@ describe("Utils", () => {
 
             it("Finds files in deep nested paths", () => {
                 assert.equal(
-                    comparable(findFiles([ "**/my.file" ], options)),
+                    comparable(findFiles(["**/my.file"], options)),
                     comparable([
                         "exclude/my.file",
                         "include/my.file",
@@ -44,7 +44,7 @@ describe("Utils", () => {
 
             it("Finds files in shallow and deep nested paths", () => {
                 assert.equal(
-                    comparable(findFiles([ "**my.file" ], options)),
+                    comparable(findFiles(["**my.file"], options)),
                     comparable([
                         "my.file",
                         "exclude/my.file",
@@ -56,11 +56,11 @@ describe("Utils", () => {
                 )
             })
 
-            const excludeOptions = { ...options, exclude: [ "**/exclude/**", "exclude/**" ] };
+            const excludeOptions = { ...options, exclude: ["**/exclude/**", "exclude/**"] };
 
             it("Finds files by name in shallow nested path with path exclusion", () => {
                 assert.equal(
-                    comparable(findFiles([ "*/my.file" ], excludeOptions)),
+                    comparable(findFiles(["*/my.file"], excludeOptions)),
                     comparable([
                         "include/my.file"
                     ])
@@ -69,7 +69,7 @@ describe("Utils", () => {
 
             it("Finds files in deep nested paths with path exclusion", () => {
                 assert.equal(
-                    comparable(findFiles([ "**/my.file" ], excludeOptions)),
+                    comparable(findFiles(["**/my.file"], excludeOptions)),
                     comparable([
                         "include/my.file",
                         "include/include/my.file",
@@ -79,7 +79,7 @@ describe("Utils", () => {
 
             it("Finds files in shallow and deep nested paths with path exclusion", () => {
                 assert.equal(
-                    comparable(findFiles([ "**my.file" ], excludeOptions)),
+                    comparable(findFiles(["**my.file"], excludeOptions)),
                     comparable([
                         "my.file",
                         "include/my.file",
@@ -90,7 +90,7 @@ describe("Utils", () => {
 
             it("Finds all files in path", () => {
                 assert.equal(
-                    comparable(findFiles([ "**" ], options)),
+                    comparable(findFiles(["**"], options)),
                     comparable([
                         'another.file',
                         'my.file',
@@ -104,7 +104,7 @@ describe("Utils", () => {
                         'include/include/my.file',
                         'include/include/exclude/another.file',
                         'include/include/exclude/my.file'
-                      ])
+                    ])
                 )
             })
 
