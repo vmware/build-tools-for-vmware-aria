@@ -59,21 +59,21 @@ export class PowershellStrategy extends BaseStrategy {
 			patterns.push(`${outDir}/**`);
 		}
 
-        const filesToBundle = findFiles(patterns, {
-            path: workspaceFolderPath,
-            absolute: true
-        });
+		const filesToBundle = findFiles(patterns, {
+			path: workspaceFolderPath,
+			absolute: true
+		});
 
-        const modulesToBundle = findFiles([ 'Modules' ], {
-            path: this.options.outBase, // use action specific out subfolder
-            absolute: true
-        });
+		const modulesToBundle = findFiles([ 'Modules' ], {
+			path: this.options.outBase, // use action specific out subfolder
+			absolute: true
+		});
 
 
 		this.logger.info(`Packaging ${filesToBundle.length} files into bundle ${this.options.bundle}...`);
 		const actionBase = polyglotJson.platform.base ? path.resolve(polyglotJson.platform.base) : this.options.outBase;
 		this.logger.info(`Action base: ${actionBase}`);
-        this.zipFiles([
+		this.zipFiles([
 			{ files: filesToBundle, baseDir: actionBase },
 			{ files: modulesToBundle, baseDir: actionBase }
 		]);
@@ -81,7 +81,7 @@ export class PowershellStrategy extends BaseStrategy {
 
 	private async compile(source: string, destination: string) {
 		this.logger.info(`Compiling project...`);
-        cpSync(source, destination, { recursive: true });
+		cpSync(source, destination, { recursive: true });
 		this.logger.info(`Compilation complete`);
 	}
 

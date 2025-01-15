@@ -79,15 +79,15 @@ export class NodejsStrategy extends BaseStrategy {
 			}
 		}
 
-        const filesToBundle = findFiles(patterns, {
-            path: workspaceFolderPath,
-            absolute: true
-        });
+		const filesToBundle = findFiles(patterns, {
+			path: workspaceFolderPath,
+			absolute: true
+		});
 
-        const depsToBundle = findFiles([ "**" ], {
-            path: this.DEPENDENCY_TEMP_DIR,
-            absolute: true
-        });
+		const depsToBundle = findFiles([ "**" ], {
+			path: this.DEPENDENCY_TEMP_DIR,
+			absolute: true
+		});
 
 		this.logger.info(`Packaging ${filesToBundle.length + depsToBundle.length} files into bundle ${this.options.bundle}...`);
 		const actionBase = polyglotJson.platform.base ? path.resolve(polyglotJson.platform.base) : this.options.outBase;

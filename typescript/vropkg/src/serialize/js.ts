@@ -15,8 +15,6 @@
 import * as Path from "path";
 import * as FileSystem from "fs-extra";
 import * as XmlBuilder from "xmlbuilder2";
-import * as unzipper from "unzipper";
-import * as winston from "winston";
 import * as packaging from "../packaging";
 import { VroPackageMetadata, VroNativeElement, VroActionData, VroActionParameter, Lang, VroScriptBundle } from "../types";
 import { exist, isDirectory } from "../util";
@@ -163,7 +161,7 @@ export class VroJsProjRealizer {
             FileSystem.copy(bundle.contentPath, dest);
         } else {
             FileSystem.mkdirs(dest);
-			await packaging.extract(bundle.contentPath, dest);
+            await packaging.extract(bundle.contentPath, dest);
         }
     }
 

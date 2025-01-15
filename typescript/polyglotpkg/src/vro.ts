@@ -75,7 +75,7 @@ export class VroTree {
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8' }, content)
 		const xml = doc.end({ prettyPrint: true });
-        writeFileSync(path.join(this.treeDir, 'pom.xml'), xml);
+		writeFileSync(path.join(this.treeDir, 'pom.xml'), xml);
 	}
 
 	private generateAction(actionDefintion: VroActionDefinition) {

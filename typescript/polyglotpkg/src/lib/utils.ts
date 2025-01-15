@@ -106,20 +106,20 @@ export function determineActionType(pkg: PlatformDefinition, actionType?: Action
 export async function getProjectActions(options: PackagerOptions, actionType?: ActionType): Promise<ProjectActions> {
 
 	// Search for all polyglot.json files located in subfolders of src
-    const plg = findFiles([ 'src/**/polyglot.json' ], {
-        exclude: [ '**/node_modules/**' ],
+	const plg = findFiles([ 'src/**/polyglot.json' ], {
+		exclude: [ '**/node_modules/**' ],
 		path: options.workspace,
 		absolute: true
-    });
+	});
 
 	if (plg.length === 0) {
 		// No polyglot.json found. Assuming legacy project.
 		// Locate package.json from project root
-        const pkg = findFiles([ 'package.json' ], {
-            exclude: [ '**/node_modules/**' ],
-            path: options.workspace,
-            absolute: true
-        });
+		const pkg = findFiles([ 'package.json' ], {
+			exclude: [ '**/node_modules/**' ],
+			path: options.workspace,
+			absolute: true
+		});
 
 		if (pkg.length === 0) {
 			return [];
@@ -195,11 +195,11 @@ export async function createPackageJsonForABX(options: ActionOptions, isMixed: b
  */
 export async function getActionManifest(projectPath: string): Promise<AbxActionDefinition | VroActionDefinition | null> {
 
-    const pkg = findFiles([ "package.json" ], {
-        exclude: [ "**/node_modules/**" ],
-        path: projectPath,
-        absolute: true,
-    })
+	const pkg = findFiles([ "package.json" ], {
+		exclude: [ "**/node_modules/**" ],
+		path: projectPath,
+		absolute: true,
+	})
 
 	if (pkg.length === 0) {
 		return null;
@@ -223,25 +223,25 @@ export function notUndefined<T>(x: T | undefined): x is T {
  */
 export function run(cmd: string, args: Array<string> = [], cwd: string = process.cwd()): Promise<number> {
 	return new Promise(async (resolve, reject) => {
-        let err: any;
-        let commandPath: readonly string[] = [];
-        try {
-            commandPath = await which(cmd, { all: true, nothrow: false });
-        } catch(thrown) {
-            err = thrown;
-        }
-        if (err || !(commandPath && commandPath.length)) {
-            return reject(new Error(`Cannot find "${cmd}"`));
-        }
-        const proc = spawn(quoteString(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
-        proc.on('close', exitCode => {
-            if (exitCode !== 0) {
-                const commandLine = `${quoteString(commandPath[0])} ${args.join(' ')}`;
-                logger.error(`Error running command: ${commandLine}`);
-                return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
-            }
-            resolve(exitCode);
-        });
+		let err: any;
+		let commandPath: readonly string[] = [];
+		try {
+			commandPath = await which(cmd, { all: true, nothrow: false });
+		} catch(thrown) {
+			err = thrown;
+		}
+		if (err || !(commandPath && commandPath.length)) {
+			return reject(new Error(`Cannot find "${cmd}"`));
+		}
+		const proc = spawn(quoteString(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
+		proc.on('close', exitCode => {
+			if (exitCode !== 0) {
+				const commandLine = `${quoteString(commandPath[0])} ${args.join(' ')}`;
+				logger.error(`Error running command: ${commandLine}`);
+				return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
+			}
+			resolve(exitCode);
+		});
 	});
 }
 

@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { copyFileSync, mkdirSync, readdirSync, realpathSync, statSync } from "fs";
+import { readdirSync, realpathSync, statSync } from "fs";
 import { join } from "path";
 
 interface FindFilesOptions {
@@ -23,6 +23,20 @@ interface FindFilesOptions {
     subPath?: string;
     absolute?: boolean;
 }
+/**
+ * Returns list of files under directory tree matching search criteria
+ * Patterns may be:
+ * - RegExp
+ * - path/filename patterns, * and ** supported
+ * Options supported:
+ * - exclude - patterns for filenames to be excluded from result (optional)
+ * - maxDepth - maximum depth to search directory tree (default 10)
+ * - path - directory to search in (default .)
+ * - absolute - true: return full absolute path to file, false: return filename only (default false)
+ * @param {RegExp[] | string[]} patterns Filename patterns
+ * @param {FindFilesOptions} options Search options
+ * @returns {string[]} List of files found
+ */
 export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptions = {}): string[] {
     let result: string[] = [];
 
@@ -48,7 +62,7 @@ export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptio
             : directories.push(_path);
     }
 
-    const someMatch = (fileName: string, pattern: string|RegExp) => {
+    const someMatch = (fileName: string, pattern: string | RegExp) => {
         let regex: RegExp;
         if (pattern instanceof RegExp) {
             regex = pattern;

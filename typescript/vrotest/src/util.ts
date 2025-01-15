@@ -92,15 +92,3 @@ export async function withWorkingDir(dir: string, action: () => Promise<void>): 
 		}
 	}
 }
-
-type CopyFilter = (fileName: string) => boolean;
-
-/**
- * Copy file or directory. Enables filtering.
- * @param {string} path Copy source.
- * @param {string} path Copy source.
- * @return {boolean} Whether or not to copy the file.
- */
-export async function copy(source: string, destination: string, filter?: CopyFilter) {
-
-}

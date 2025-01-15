@@ -44,7 +44,7 @@ export abstract class BaseStrategy implements IStrategy {
 			}
 		})
 
-        mkdirSync(path.dirname(this.options.bundle), { recursive: true });
+		mkdirSync(path.dirname(this.options.bundle), { recursive: true });
 		zip.writeZip(this.options.bundle);
 		this.logger.info(`Created ${this.options.bundle}`);
 	}
@@ -54,8 +54,8 @@ export abstract class BaseStrategy implements IStrategy {
 			const { files: filesToCopy, baseDir } = fileset;
 			for (const filePath of filesToCopy) {
 				const destPath = path.join(path.resolve(dest), path.relative(baseDir, filePath));
-                mkdirSync(path.dirname(destPath), { recursive: true });
-                copyFileSync(filePath, destPath);
+				mkdirSync(path.dirname(destPath), { recursive: true });
+				copyFileSync(filePath, destPath);
 				this.logger.debug(`Copied: ${filePath}`);
 			}
 		}

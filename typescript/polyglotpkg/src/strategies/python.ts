@@ -74,7 +74,7 @@ export class PythonStrategy extends BaseStrategy {
 			});
 		}
 
-        mkdirSync(path.dirname(this.options.bundle), { recursive: true });
+		mkdirSync(path.dirname(this.options.bundle), { recursive: true });
 		zip.writeZip(this.options.bundle);
 		this.logger.info(`Created ${this.options.bundle}`);
 	}
@@ -83,7 +83,7 @@ export class PythonStrategy extends BaseStrategy {
 	 * package project into bundle
 	 */
 	async packageProject() {
-        const polyglotJson = JSON.parse(readFileSync(this.options.polyglotJson).toString("utf8")) as PlatformDefinition;
+		const polyglotJson = JSON.parse(readFileSync(this.options.polyglotJson).toString("utf8")) as PlatformDefinition;
 
 		this.phaseCb(Events.COMPILE_START);
 		await this.compile(this.options.src, this.options.out);
@@ -112,15 +112,15 @@ export class PythonStrategy extends BaseStrategy {
 			patterns.push(`${outDir}/**`);
 		}
 
-        const filesToBundle = findFiles(patterns, {
-            path: workspaceFolderPath,
-            absolute: true
-        });
+		const filesToBundle = findFiles(patterns, {
+			path: workspaceFolderPath,
+			absolute: true
+		});
 
-        const depsToBundle = findFiles([ "**" ], {
-            path: this.DEPENDENCY_TEMP_DIR,
-            absolute: true
-        });
+		const depsToBundle = findFiles([ "**" ], {
+			path: this.DEPENDENCY_TEMP_DIR,
+			absolute: true
+		});
 
 		this.logger.info(`Packaging ${filesToBundle.length + depsToBundle.length} files into bundle ${this.options.bundle}...`);
 		const actionBase = path.resolve(path.join(this.options.outBase, polyglotJson.platform.base ? polyglotJson.platform.base : 'out'));

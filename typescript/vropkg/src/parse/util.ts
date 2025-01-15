@@ -77,7 +77,7 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 			};
 			params.push(param);
 		} else if (element.type == "element" && element.name == "script") {
-			inline = getScriptInline(file, element, comment, false); // @TODO: check if lazy parameter is still relevant 
+			inline = getScriptInline(file, element, comment);
 		} else if (element.type == "element" && element.name == "runtime") {
 			runtime = element.val;
 		} else if (element.type == "element" && element.name == "entry-point") {
@@ -131,7 +131,7 @@ export function getScriptRuntime(runtime: string): t.VroScriptRuntime {
 	return { lang: lang, version: langVersion != "" ? langVersion : defaultVersion };
 }
 
-function getScriptInline(file: string, element: xmldoc.XmlElement, comment: string, lazy: boolean): t.VroScriptInline {
+function getScriptInline(file: string, element: xmldoc.XmlElement, comment: string): t.VroScriptInline {
 
 	let scriptSource: string = element.val;
 	let scriptStartLine: number = element.line;
@@ -152,7 +152,7 @@ function getScriptInline(file: string, element: xmldoc.XmlElement, comment: stri
 		scriptEndIndex = lastLine.length;
 	}
 	return {
-		actionSource: lazy ? null : scriptSource,
+		actionSource: scriptSource,
 		sourceFile: file,
 		sourceStartLine: scriptStartLine,
 		sourceStartIndex: scriptStartIndex,

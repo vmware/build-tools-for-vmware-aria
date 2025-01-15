@@ -109,6 +109,7 @@ const serializeTreeElement = async (context: any, element: t.VroNativeElement): 
         ? element?.categoryPath.pop().split('.')
         : element?.categoryPath;
 
+	// @NOTE: The below code will not support empty values for version, mimetype, and description attributes
     if (element.type == t.VroElementType.ResourceElement && element.attributes["version"]) {
         xInfo.ele("entry").att("key", "version").text(element.attributes["version"].toString());
     }
