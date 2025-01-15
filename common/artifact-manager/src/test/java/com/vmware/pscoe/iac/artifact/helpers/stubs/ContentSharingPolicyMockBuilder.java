@@ -15,11 +15,11 @@
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
 import java.util.ArrayList;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgContentSharingPolicy;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgDefinition;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgEntitledUser;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgItem;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgPrincipal;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSharingPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgDefinition;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgEntitledUser;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgItem;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPrincipal;
 
 public final class ContentSharingPolicyMockBuilder {
 

@@ -3,10 +3,16 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   super-linter:
     name: Lint all code
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
