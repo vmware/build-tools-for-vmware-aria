@@ -74,7 +74,7 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 		Properties projectProperties = project.getProperties();
 		String unitTestFrameworkPackage = projectProperties.getProperty("test.framework.package");
 		String unitTestFrameworkVersion = projectProperties.getProperty("test.framework.version");
-		String unitTestFrameworkTypes = projectProperties.getProperty("test.framework.types");
+		String unitTestFrameworkTypes = projectProperties.getProperty("test.framework.types.version");
 		boolean useDefaultUnitTestFramework =  unitTestFrameworkPackage == null
 			|| unitTestFrameworkPackage.equals(new String("jasmine")) && unitTestFrameworkVersion == null;
 
