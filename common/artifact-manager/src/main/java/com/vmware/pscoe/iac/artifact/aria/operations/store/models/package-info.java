@@ -17,4 +17,4 @@
  * Package that represents vROPs 8 model.
  *
  */
-package com.vmware.pscoe.iac.artifact.model.vrops;
+package com.vmware.pscoe.iac.artifact.aria.operations.store.models;

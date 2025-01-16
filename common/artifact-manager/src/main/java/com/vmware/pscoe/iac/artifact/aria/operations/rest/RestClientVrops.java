@@ -58,7 +58,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageMemberType;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AdapterKindDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
