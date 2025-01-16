@@ -24,13 +24,13 @@ const outTestPath = path.join(outPath, "vro-test");
 })();
 
 async function prepare(): Promise<void> {
-    rmSync(outPath, { recursive: true });
+    rmSync(outPath, { recursive: true, force: true });
     cpSync(projectPath, outProjectPath, { recursive: true });
 
     const depsPath = path.join(outProjectPath, "dependencies");
     for (const depName of readdirSync(depsPath)) {
         await zipFolder(path.join(depsPath, depName), path.join(depsPath, `${depName}.package`));
-        rmSync(path.join(depsPath, depName), { recursive: true });
+        rmSync(path.join(depsPath, depName), { recursive: true, force: true });
     }
 }
 

@@ -28,8 +28,8 @@ gulp.task("test", async done => {
 });
 
 gulp.task("clean", async done => {
-    rmSync("build", { recursive: true });
-    rmSync(path.join("lib", "vrotest.js"));
+    rmSync("build", { recursive: true, force: true });
+    rmSync(path.join("lib", "vrotest.js"), { force: true });
     done();
 });
 
