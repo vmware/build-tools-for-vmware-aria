@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.VropsPackageStore;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.pack.VraNgPackageStore;

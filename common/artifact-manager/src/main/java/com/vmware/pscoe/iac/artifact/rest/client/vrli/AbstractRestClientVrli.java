@@ -21,7 +21,7 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import org.slf4j.Logger;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;

@@ -37,7 +37,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.rest.client.messages.Errors;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.AlertDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackDTO;

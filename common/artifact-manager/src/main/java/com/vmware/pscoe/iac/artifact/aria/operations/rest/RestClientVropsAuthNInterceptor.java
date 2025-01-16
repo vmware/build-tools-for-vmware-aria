@@ -52,7 +52,7 @@ public class RestClientVropsAuthNInterceptor extends RestClientRequestIntercepto
 	private String vropsAuthToken;
 	private LocalDateTime vropsTokenExpirationTime;
 
-	protected RestClientVropsAuthNInterceptor(ConfigurationVrops configuration, RestTemplate restTemplate) {
+	public RestClientVropsAuthNInterceptor(ConfigurationVrops configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 	}
 

@@ -27,7 +27,7 @@ import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
 
 public class RestClientVropsBasicAuthInterceptor extends RestClientRequestInterceptor<ConfigurationVrops> {
 
-	protected RestClientVropsBasicAuthInterceptor(ConfigurationVrops configuration, RestTemplate restTemplate) {
+	public RestClientVropsBasicAuthInterceptor(ConfigurationVrops configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 	}
 

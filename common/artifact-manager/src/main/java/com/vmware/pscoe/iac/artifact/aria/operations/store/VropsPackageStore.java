@@ -72,7 +72,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageMemberType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupDTO;
