@@ -18,6 +18,9 @@ import com.vmware.pscoe.iac.artifact.aria.operations.configuration.Configuration
 
 public class CliManagerFactory {
 
+	private CliManagerFactory() {
+	}
+
 	public static CliManagerVrops getVropsCliManager(ConfigurationVrops config) {
 		return new CliManagerVrops(config);
 	}
