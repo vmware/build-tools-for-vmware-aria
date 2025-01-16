@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.cli;
 
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 
-public class CliManagerFactory {
+public final class CliManagerFactory {
 
 	private CliManagerFactory() {
 	}
