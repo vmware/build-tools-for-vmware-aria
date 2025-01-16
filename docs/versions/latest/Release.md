@@ -122,7 +122,11 @@ The question is updated:
 
 ### *Moved Aria Automation components to own folder*
 
-This is jut an internal restructuring effort, no functionality was changed.
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved Aria Operations components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
 
 ## Upgrade procedure
 
