@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.operations.rest;
 
 import java.io.File;
 import java.net.URI;
@@ -56,28 +56,29 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageMemberType;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AdapterKindDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AlertDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AlertDefinitionDTO.AlertDefinition.State;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AlertDefinitionDTO.AlertDefinition.SymptomSet;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthGroupDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthGroupsDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUsersDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupTypeDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyCustomGroupAssignmentDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.RecommendationDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ReportDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourceKindDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.SupermetricDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.SymptomDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AdapterKindDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition.State;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition.SymptomSet;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupsDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUsersDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupTypeDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyCustomGroupAssignmentDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ResourceKindDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ResourcesDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
 
 @SuppressWarnings("deprecation")
 public class RestClientVrops extends RestClient {

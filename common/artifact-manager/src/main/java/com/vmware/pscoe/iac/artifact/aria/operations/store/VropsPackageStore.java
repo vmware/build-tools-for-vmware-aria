@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.aria.operations.store;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -60,6 +60,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcraft.jsch.JSchException;
+import com.vmware.pscoe.iac.artifact.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.PackageManager;
+import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
 import com.vmware.pscoe.iac.artifact.cli.ZipUtilities;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
@@ -70,16 +73,16 @@ import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageMemberType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AlertDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthGroupDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.CustomGroupDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.RecommendationDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ReportDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.SupermetricDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.SymptomDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ViewDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
 
 /**
  * This is the class that abstracts the operations for working with vROps
@@ -163,7 +166,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	/**
 	 *
 	 * @param vropsCliManager vROPS cli manager
-	 * @param vropsTempDir vROPS temp dir
+	 * @param vropsTempDir    vROPS temp dir
 	 */
 	public VropsPackageStore(final CliManagerVrops vropsCliManager, final File vropsTempDir) {
 		this.cliManager = vropsCliManager;
@@ -174,6 +177,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param cliManager CLI Manager
 	 */
 	public VropsPackageStore(final CliManagerVrops cliManager) {
@@ -182,7 +186,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Constructor.
-	 * @param cliManager CLI Manager
+	 * 
+	 * @param cliManager      CLI Manager
 	 * @param restClientVrops vROPs REST client
 	 */
 	public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops) {
@@ -192,11 +197,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Constructor.
-	 * @param cliManager CLI Manager
+	 * 
+	 * @param cliManager      CLI Manager
 	 * @param restClientVrops REST Client for vROPs
-	 * @param productVersion Product version
+	 * @param productVersion  Product version
 	 */
-	public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final Version productVersion) {
+	public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops,
+			final Version productVersion) {
 		this(cliManager);
 		this.restClient = restClientVrops;
 		super.setProductVersion(productVersion);
@@ -204,11 +211,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Constructor.
-	 * @param cliManager CLI Manager
+	 * 
+	 * @param cliManager      CLI Manager
 	 * @param restClientVrops REST Client for vROPs
-	 * @param tempDir temporary DIR
+	 * @param tempDir         temporary DIR
 	 */
-	public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops, final File tempDir) {
+	public VropsPackageStore(final CliManagerVrops cliManager, final RestClientVrops restClientVrops,
+			final File tempDir) {
 		this.cliManager = cliManager;
 		this.restClient = restClientVrops;
 		this.tempDir = tempDir;
@@ -226,6 +235,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Gets the vROPS packages.
+	 * 
 	 * @return the extracted packages
 	 */
 	@Override
@@ -235,8 +245,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Exports all packages.
+	 * 
 	 * @param packages the packages to export
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun   whether it should be dry run
 	 * @return the exported packages
 	 */
 	@Override
@@ -254,28 +265,36 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Imports all packages.
-	 * @param pkg the packages to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkg          the packages to import
+	 * @param dryrun       whether it should be dry run
 	 * @param enableBackup whether it should back up the packages on import
 	 * @return the imported package
 	 */
 	@Override
 	public List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
-		return this.importAllPackages(pkg, dryrun, false,  enableBackup);
+		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
 	/**
-	 * Implement the push use case, so push the packages that are packed in the local project ot the remote vROps server and if we are not ia a dryrun mode, then
+	 * Implement the push use case, so push the packages that are packed in the
+	 * local project ot the remote vROps server and if we are not ia a dryrun mode,
+	 * then
 	 * effectively import it into vROps.
-	 * @param packages Locally available packages.
-	 * @param dryrun   Just test the whole process without actually import the packages in vROps.
+	 * 
+	 * @param packages      Locally available packages.
+	 * @param dryrun        Just test the whole process without actually import the
+	 *                      packages in vROps.
 	 * @param mergePackages Whether to merge the packages
-	 * @param enableBackup Whether to enable backup
-	 * @return The list of pushed packages. The actual package objects may be different, for example the file content they are associated with may be different file on
-	 * the file system.
+	 * @param enableBackup  Whether to enable backup
+	 * @return The list of pushed packages. The actual package objects may be
+	 *         different, for example the file content they are associated with may
+	 *         be different file on
+	 *         the file system.
 	 */
 	@Override
-	public List<Package> importAllPackages(final List<Package> packages, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
+	public List<Package> importAllPackages(final List<Package> packages, final boolean dryrun,
+			final boolean mergePackages, final boolean enableBackup) {
 		validateFilesystem(packages);
 		List<Package> sourceEndpointPackages = packages;
 
@@ -292,14 +311,17 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 	/**
-	 * Implement the pull use case, so pull all of the packages described in the {@code vropsPackageDescriptor} (constructed from content.yaml).
-	 * @param vropsPackage vropsPackage
+	 * Implement the pull use case, so pull all of the packages described in the
+	 * {@code vropsPackageDescriptor} (constructed from content.yaml).
+	 * 
+	 * @param vropsPackage           vropsPackage
 	 * @param vropsPackageDescriptor vropsPackageDescriptor
-	 * @param dryrun dryrun
+	 * @param dryrun                 dryrun
 	 * @return package
 	 */
 	@Override
-	public Package exportPackage(final Package vropsPackage, final VropsPackageDescriptor vropsPackageDescriptor, final boolean dryrun) {
+	public Package exportPackage(final Package vropsPackage, final VropsPackageDescriptor vropsPackageDescriptor,
+			final boolean dryrun) {
 		logger.info(String.format(PackageStore.PACKAGE_EXPORT, vropsPackage));
 
 		if (!Files.exists(tempVropsExportDir.toPath())) {
@@ -382,7 +404,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				PackageManager.copyContents(tempVropsExportDir, destDir);
 			}
 		} catch (IOException ioe) {
-			throw new RuntimeException(String.format("Cannot copy content of downloaded and extracted package from temp dir %s to actual project dir %s : %s",
+			throw new RuntimeException(String.format(
+					"Cannot copy content of downloaded and extracted package from temp dir %s to actual project dir %s : %s",
 					tempVropsExportDir.getAbsolutePath(), vropsPackage.getFilesystemPath(), ioe.getMessage()));
 		} finally {
 			try {
@@ -398,9 +421,11 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Export views from vROPs.
+	 * 
 	 * @param vropsPackage Package to export views to.
-	 * @param viewNames   List of views to be exported.
-	 * @throws RuntimeException if there are no views on vROPs server or the export fails.
+	 * @param viewNames    List of views to be exported.
+	 * @throws RuntimeException if there are no views on vROPs server or the export
+	 *                          fails.
 	 */
 	private void exportViews(final Package vropsPackage, final List<String> viewNames) {
 		ViewDefinitionDTO allViewDefinitions = restClient.getAllViewDefinitions();
@@ -422,7 +447,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			filteredViews.forEach(view -> copyViewToFilesystem(view, viewsDir));
 		} catch (JSchException e) {
 			String message = "Unable to export views in package '%s', error in connection to '%s'. '%s' : '%s' Use command '%s' for troubleshooting";
-			message = String.format(message, vropsPackage.getFQName(), cliManager, e.getClass().getName(), e.getMessage(), cliManager.toSshComand());
+			message = String.format(message, vropsPackage.getFQName(), cliManager, e.getClass().getName(),
+					e.getMessage(), cliManager.toSshComand());
 			logger.error(message);
 			throw new RuntimeException(message, e);
 		} finally {
@@ -432,9 +458,11 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Export super metrics from vROPs.
-	 * @param vropsPackage Package to export super metrics to.
-	 * @param superMetricNames   List of super metrics to be exported.
-	 * @throws RuntimeException if there are no super metrics on vROPs server or the export fails.
+	 * 
+	 * @param vropsPackage     Package to export super metrics to.
+	 * @param superMetricNames List of super metrics to be exported.
+	 * @throws RuntimeException if there are no super metrics on vROPs server or the
+	 *                          export fails.
 	 */
 	private void exportSuperMetrics(final Package vropsPackage, final List<String> superMetricNames) {
 		SupermetricDTO allSupermetrics = restClient.getAllSupermetrics();
@@ -458,7 +486,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			filteredSupermetrics.forEach(superMetric -> this.copySuperMetricToFilesystem(superMetric, superMetricsDir));
 		} catch (JSchException e) {
 			String message = "Unable to export super metrics in package '%s', error in connection to '%s'. '%s' : '%s' Use command '%s' for troubleshooting";
-			message = String.format(message, vropsPackage.getFQName(), cliManager, e.getClass().getName(), e.getMessage(), cliManager.toSshComand());
+			message = String.format(message, vropsPackage.getFQName(), cliManager, e.getClass().getName(),
+					e.getMessage(), cliManager.toSshComand());
 			logger.error(message);
 			throw new RuntimeException(message, e);
 		} finally {
@@ -468,7 +497,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Export metrics configs from vROPs.
-	 * @param vropsPackage Package to export metric configs to.
+	 * 
+	 * @param vropsPackage      Package to export metric configs to.
 	 * @param metricConfigNames List of metric configs to be exported.
 	 * @throws RuntimeException If the the export fails.
 	 */
@@ -483,7 +513,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			cliManager.connect();
 			for (String metricConfigName : metricConfigNames) {
 				if (metricConfigName.contains(WILDCARD_MATCH_SYMBOL)) {
-					logger.warn("Unable to export metric configs with pattern '{}' as vROPs metric config export does not support regex", metricConfigName);
+					logger.warn(
+							"Unable to export metric configs with pattern '{}' as vROPs metric config export does not support regex",
+							metricConfigName);
 				} else {
 					// Could be stored with or without extension in vROps, so search for both
 					this.copyMetricConfigToFilesystem(metricConfigName, metricConfigsDir);
@@ -492,7 +524,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			}
 		} catch (JSchException e) {
 			String message = "Unable to export metric config in package '%s', error in connection to '%s'. '%s' : '%s' Use command '%s' for troubleshooting";
-			message = String.format(message, vropsPackage.getFQName(), cliManager, e.getClass().getName(), e.getMessage(), cliManager.toSshComand());
+			message = String.format(message, vropsPackage.getFQName(), cliManager, e.getClass().getName(),
+					e.getMessage(), cliManager.toSshComand());
 			logger.error(message);
 			throw new RuntimeException(message, e);
 		} finally {
@@ -502,18 +535,20 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Copy the exported views from vROPs to the local file system.
+	 * 
 	 * @param view view to be copied.
-	 * @param dir directory where the view to be copied.
+	 * @param dir  directory where the view to be copied.
 	 * @throws RuntimeException If the the copy fails.
 	 */
 	private void copyViewToFilesystem(final String view, final File dir) {
 		try {
-			File viewDir = new File(tempDir, "iac-view-" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
+			File viewDir = new File(tempDir,
+					"iac-view-" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
 			viewDir.mkdirs();
 			cliManager.exportView(view, viewDir);
 			File zip = new File(viewDir, view + ".zip");
 			ZipUtilities.unzip(zip, viewDir);
-			
+
 			File content = new File(viewDir, "content.xml");
 			moveFile(content, new File(dir, view + ".xml"));
 			zip.delete();
@@ -528,16 +563,18 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Copy the exported super metric from vROPs to the local file system.
+	 * 
 	 * @param superMetric super metric to be copied.
-	 * @param dir directory where the view to be copied.
+	 * @param dir         directory where the view to be copied.
 	 * @throws RuntimeException If the the copy fails.
 	 */
 	private void copySuperMetricToFilesystem(final String superMetric, final File dir) {
 		try {
-			File superMetricDir = new File(this.tempDir, "iac-supermetric-" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
+			File superMetricDir = new File(this.tempDir,
+					"iac-supermetric-" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
 			superMetricDir.mkdirs();
 			this.cliManager.exportSuperMetric(superMetric, superMetricDir);
-			File content = new File(superMetricDir,  superMetric + ".json");
+			File content = new File(superMetricDir, superMetric + ".json");
 			moveFile(content, new File(dir, superMetric + ".json"));
 			mergeLocalizationResources(new File(superMetricDir, "resources"), new File(dir, "resources"));
 		} catch (JSchException | IOException e) {
@@ -550,21 +587,23 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Copy the exported metric config from vROPs to the local file system.
+	 * 
 	 * @param metricConfig metric config to be copied.
-	 * @param dir directory where the view to be copied.
+	 * @param dir          directory where the view to be copied.
 	 * @throws RuntimeException If the the copy fails.
 	 */
 	private void copyMetricConfigToFilesystem(final String metricConfig, final File dir) {
 		try {
-			File metricConfigsDir = new File(this.tempDir, "iac-metricconfig-" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
+			File metricConfigsDir = new File(this.tempDir,
+					"iac-metricconfig-" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
 			metricConfigsDir.mkdirs();
 
 			this.cliManager.exportMetricConfig(metricConfig, metricConfigsDir);
-			File content = new File(metricConfigsDir,  metricConfig);
+			File content = new File(metricConfigsDir, metricConfig);
 			if (content.exists()) {
 				moveFile(content, new File(dir, metricConfig));
 			}
-			
+
 		} catch (JSchException | IOException e) {
 			String message = "Unable to pull metric config '%s' from remote vROps location '%s' to local filesystem '%s' : '%s'";
 			message = String.format(message, metricConfig, cliManager, e.getClass().getName(), e.getMessage());
@@ -575,8 +614,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Export dashboards from vROPs.
-	 * @param vropsPackage Package to export dashboards to.
-	 * @param dashboardNames   List of dashboards to be exported.
+	 * 
+	 * @param vropsPackage   Package to export dashboards to.
+	 * @param dashboardNames List of dashboards to be exported.
 	 * @throws RuntimeException if the export fails.
 	 */
 	private void exportDashboards(final Package vropsPackage, final List<String> dashboardNames) {
@@ -587,7 +627,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			cliManager.connect();
 			for (String dashboardName : dashboardNames) {
 				if (dashboardName.contains(WILDCARD_MATCH_SYMBOL)) {
-					logger.warn("Unable to export dashboards with pattern '{}' as vROPs dashboard export does not support regex", dashboardName);
+					logger.warn(
+							"Unable to export dashboards with pattern '{}' as vROPs dashboard export does not support regex",
+							dashboardName);
 				} else {
 					copyDashboardToFilesystem(dashboardName, dashboardsDir);
 				}
@@ -600,7 +642,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			storeDashboardActivationMetadata(dashboardsDir, dashboardNames, true);
 		} catch (JSchException e) {
 			String message = "Unable to pull dashboards '%s' from remote vROPs location to local package '%s' : '%s' : '%s' Use command '%s' for troubleshooting remote SSH connection";
-			message = String.format(message, String.join(", ", dashboardNames), vropsPackage.getFQName(), e.getClass().getName(), e.getMessage(),
+			message = String.format(message, String.join(", ", dashboardNames), vropsPackage.getFQName(),
+					e.getClass().getName(), e.getMessage(),
 					cliManager.toSshComand());
 			logger.error(message);
 			throw new RuntimeException(message, e);
@@ -611,9 +654,11 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Export reports from vROPs.
+	 * 
 	 * @param vropsPackage Package to export reports to.
-	 * @param reportNames   List of reports to be exported.
-	 * @throws RuntimeException if there are no reports on the server or the export fails.
+	 * @param reportNames  List of reports to be exported.
+	 * @throws RuntimeException if there are no reports on the server or the export
+	 *                          fails.
 	 */
 	private void exportReports(final Package vropsPackage, final List<String> reportNames) {
 		ReportDefinitionDTO allReportDefinitions = restClient.getAllReportDefinitions();
@@ -635,7 +680,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			filteredReports.forEach(report -> copyReportToFilesystem(report, reportsDir));
 		} catch (JSchException e) {
 			String message = "Unable to pull reports '%s' from remote vROPs location to local package '%s' : '%s' : '%s' Use command '%s' for troubleshooting remote SSH connection";
-			message = String.format(message, String.join(", ", reportNames), vropsPackage.getFQName(), e.getClass().getName(), e.getMessage(),
+			message = String.format(message, String.join(", ", reportNames), vropsPackage.getFQName(),
+					e.getClass().getName(), e.getMessage(),
 					cliManager.toSshComand());
 			logger.error(message);
 			throw new RuntimeException(message, e);
@@ -645,9 +691,11 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 	/**
-	 * Import definitions in vROPs. The following definitions are supported: alert definitions, symptom definitions, recommendations.
+	 * Import definitions in vROPs. The following definitions are supported: alert
+	 * definitions, symptom definitions, recommendations.
+	 * 
 	 * @param vropsPackage Package to export reports to.
-	 * @param tmpDir   Directory where the definitions will be read from.
+	 * @param tmpDir       Directory where the definitions will be read from.
 	 * @throws RuntimeException if the import fails.
 	 */
 	private void importDefinitions(final Package vropsPackage, final File tmpDir) throws IOException {
@@ -655,24 +703,29 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> dependentDefinitionsMap = new HashMap<>();
 
-		List<File> symptomDefinitionFiles = addDefinitionsToImportList(tmpDir, VropsPackageMemberType.SYMPTOM_DEFINITION);
+		List<File> symptomDefinitionFiles = addDefinitionsToImportList(tmpDir,
+				VropsPackageMemberType.SYMPTOM_DEFINITION);
 		Map<String, Object> symptomDefinitionsMap = new HashMap<>();
 		for (File definitionFile : symptomDefinitionFiles) {
 			String defninitionJson;
 			try {
 				defninitionJson = FileUtils.readFileToString(definitionFile, StandardCharsets.UTF_8);
-				SymptomDefinitionDTO.SymptomDefinition symptomDefinition = mapper.readValue(defninitionJson, SymptomDefinitionDTO.SymptomDefinition.class);
+				SymptomDefinitionDTO.SymptomDefinition symptomDefinition = mapper.readValue(defninitionJson,
+						SymptomDefinitionDTO.SymptomDefinition.class);
 				symptomDefinitionsMap.put(symptomDefinition.getId(), symptomDefinition);
 			} catch (IOException e) {
-				messages.append(String.format("Error reading %s : %s", VropsPackageMemberType.SYMPTOM_DEFINITION, e.getMessage()));
+				messages.append(String.format("Error reading %s : %s", VropsPackageMemberType.SYMPTOM_DEFINITION,
+						e.getMessage()));
 			} catch (Exception e) {
-				messages.append(String.format("Error parsing %s : %s", VropsPackageMemberType.SYMPTOM_DEFINITION, e.getMessage()));
+				messages.append(String.format("Error parsing %s : %s", VropsPackageMemberType.SYMPTOM_DEFINITION,
+						e.getMessage()));
 			}
 		}
 		symptomDefinitionsMap.keySet().stream().forEach(item -> {
 			dependentDefinitionsMap.put(item, symptomDefinitionsMap.get(item));
 		});
-		restClient.importDefinitionsInVrops(symptomDefinitionsMap, VropsPackageMemberType.SYMPTOM_DEFINITION, dependentDefinitionsMap);
+		restClient.importDefinitionsInVrops(symptomDefinitionsMap, VropsPackageMemberType.SYMPTOM_DEFINITION,
+				dependentDefinitionsMap);
 
 		List<File> recommendationFiles = addDefinitionsToImportList(tmpDir, VropsPackageMemberType.RECOMMENDATION);
 		Map<String, Object> recommendationsMap = new HashMap<>();
@@ -680,18 +733,22 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			String recommendationJson;
 			try {
 				recommendationJson = FileUtils.readFileToString(recommendationFile, StandardCharsets.UTF_8);
-				RecommendationDTO.Recommendation recommendation = mapper.readValue(recommendationJson, RecommendationDTO.Recommendation.class);
+				RecommendationDTO.Recommendation recommendation = mapper.readValue(recommendationJson,
+						RecommendationDTO.Recommendation.class);
 				recommendationsMap.put(recommendation.getId(), recommendation);
 			} catch (IOException e) {
-				messages.append(String.format("Error reading %s : %s", VropsPackageMemberType.RECOMMENDATION, e.getMessage()));
+				messages.append(
+						String.format("Error reading %s : %s", VropsPackageMemberType.RECOMMENDATION, e.getMessage()));
 			} catch (Exception e) {
-				messages.append(String.format("Error parsing %s : %s", VropsPackageMemberType.RECOMMENDATION, e.getMessage()));
+				messages.append(
+						String.format("Error parsing %s : %s", VropsPackageMemberType.RECOMMENDATION, e.getMessage()));
 			}
 		}
 		recommendationsMap.keySet().stream().forEach(item -> {
 			dependentDefinitionsMap.put(item, recommendationsMap.get(item));
 		});
-		restClient.importDefinitionsInVrops(recommendationsMap, VropsPackageMemberType.RECOMMENDATION, dependentDefinitionsMap);
+		restClient.importDefinitionsInVrops(recommendationsMap, VropsPackageMemberType.RECOMMENDATION,
+				dependentDefinitionsMap);
 
 		List<File> alertDefinitionFiles = addDefinitionsToImportList(tmpDir, VropsPackageMemberType.ALERT_DEFINITION);
 		Map<String, Object> alertDefinitionsMap = new HashMap<>();
@@ -699,18 +756,22 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			String defninitionJson;
 			try {
 				defninitionJson = FileUtils.readFileToString(definitionFile, StandardCharsets.UTF_8);
-				AlertDefinitionDTO.AlertDefinition alertDefinition = mapper.readValue(defninitionJson, AlertDefinitionDTO.AlertDefinition.class);
+				AlertDefinitionDTO.AlertDefinition alertDefinition = mapper.readValue(defninitionJson,
+						AlertDefinitionDTO.AlertDefinition.class);
 				alertDefinitionsMap.put(alertDefinition.getId(), alertDefinition);
 			} catch (IOException e) {
-				messages.append(String.format("Error reading %s : %s", VropsPackageMemberType.ALERT_DEFINITION, e.getMessage()));
+				messages.append(String.format("Error reading %s : %s", VropsPackageMemberType.ALERT_DEFINITION,
+						e.getMessage()));
 			} catch (Exception e) {
-				messages.append(String.format("Error parsing %s : %s", VropsPackageMemberType.ALERT_DEFINITION, e.getMessage()));
+				messages.append(String.format("Error parsing %s : %s", VropsPackageMemberType.ALERT_DEFINITION,
+						e.getMessage()));
 			}
 		}
 		alertDefinitionsMap.keySet().stream().forEach(item -> {
 			dependentDefinitionsMap.put(item, alertDefinitionsMap.get(item));
 		});
-		restClient.importDefinitionsInVrops(alertDefinitionsMap, VropsPackageMemberType.ALERT_DEFINITION, dependentDefinitionsMap);
+		restClient.importDefinitionsInVrops(alertDefinitionsMap, VropsPackageMemberType.ALERT_DEFINITION,
+				dependentDefinitionsMap);
 
 		if (messages.length() > 0) {
 			throw new IOException(messages.toString());
@@ -718,13 +779,18 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 	/**
-	 * Activate / Deactivate dashboards per user or group, based on the data in the activation metadata file.
-	 * @param rootDir Root directory where the dashboards and the metadata files reside.
+	 * Activate / Deactivate dashboards per user or group, based on the data in the
+	 * activation metadata file.
+	 * 
+	 * @param rootDir           Root directory where the dashboards and the metadata
+	 *                          files reside.
 	 * @param isGroupActivation flag whether group activation is specified.
-	 * @throws RuntimeException if the activation / deactivation per user or group fails.
+	 * @throws RuntimeException if the activation / deactivation per user or group
+	 *                          fails.
 	 */
 	private void manageDashboardActivation(final File rootDir, final boolean isGroupActivation) {
-		Map<String, Map<String, List<String>>> activationMetadata = this.getDashboardActivationMetadata(rootDir, isGroupActivation);
+		Map<String, Map<String, List<String>>> activationMetadata = this.getDashboardActivationMetadata(rootDir,
+				isGroupActivation);
 		if (activationMetadata.isEmpty()) {
 			return;
 		}
@@ -739,26 +805,33 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				if (resources.isEmpty()) {
 					return;
 				}
-				// check whether all of the users with that dashboard will be activated / deactivated
+				// check whether all of the users with that dashboard will be activated /
+				// deactivated
 				// exist on the target vROPs
-				List<String> missingResources = isGroupActivation ? this.getMissingGroups(resources) : this.getMissingUsers(resources);
+				List<String> missingResources = isGroupActivation ? this.getMissingGroups(resources)
+						: this.getMissingUsers(resources);
 				if (missingResources != null && !missingResources.isEmpty()) {
-					throw new RuntimeException(String.format("Unable to %s dashboard '%s' as resourcee of type %s '%s' do not exists on target vROPs", action,
+					throw new RuntimeException(String.format(
+							"Unable to %s dashboard '%s' as resourcee of type %s '%s' do not exists on target vROPs",
+							action,
 							dashboard, resourceType, String.join(", ", missingResources.toArray(new String[0]))));
 				}
 				switch (action) {
 					case ACTION_ACTIVATE: {
-						logger.info("Activating dashboard: '{}' for resource of type {}: '{}'", dashboard, resourceType, String.join(", ", resources));
+						logger.info("Activating dashboard: '{}' for resource of type {}: '{}'", dashboard, resourceType,
+								String.join(", ", resources));
 						this.cliManager.activateDashboard(dashboard, resources, isGroupActivation);
 						break;
 					}
 					case ACTION_DEACTIVATE: {
-						logger.info("Deactivating dashboard: '{}' for resource of type {}: '{}'", dashboard, resourceType, String.join(", ", resources));
+						logger.info("Deactivating dashboard: '{}' for resource of type {}: '{}'", dashboard,
+								resourceType, String.join(", ", resources));
 						this.cliManager.deactivateDashboard(dashboard, resources, isGroupActivation);
 						break;
 					}
 					default: {
-						logger.warn("Invalid action: '{}' for resource type {}, supported actions 'share, unshare'", action, resourceType);
+						logger.warn("Invalid action: '{}' for resource type {}, supported actions 'share, unshare'",
+								action, resourceType);
 					}
 				}
 			});
@@ -767,7 +840,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Share / un-share dashboards based on the dashboard sharing metadata file.
-	 * @param rootDir Root directory where the dashboards and the metadata file reside.
+	 * 
+	 * @param rootDir Root directory where the dashboards and the metadata file
+	 *                reside.
 	 * @throws RuntimeException if the sharing / unsharing per user or group fails.
 	 */
 	private void manageDashboardSharing(final File rootDir) {
@@ -789,17 +864,20 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				// exist on the target vROPs
 				List<String> missingGroups = this.getMissingGroups(groups);
 				if (missingGroups != null && !missingGroups.isEmpty()) {
-					throw new RuntimeException(String.format("Unable to %s dashboard '%s' as resources of type group '%s' do not exists on target vROPs",
-						action, dashboard, String.join(", ", missingGroups.toArray(new String[0]))));
+					throw new RuntimeException(String.format(
+							"Unable to %s dashboard '%s' as resources of type group '%s' do not exists on target vROPs",
+							action, dashboard, String.join(", ", missingGroups.toArray(new String[0]))));
 				}
 				switch (action) {
 					case ACTION_SHARE: {
-						logger.info("Sharing dashboard: '{}' with resources of type group: '{}'", dashboard, String.join(", ", groups));
+						logger.info("Sharing dashboard: '{}' with resources of type group: '{}'", dashboard,
+								String.join(", ", groups));
 						this.cliManager.shareDashboard(dashboard, groups.toArray(new String[0]));
 						break;
 					}
 					case ACTION_UNSHARE: {
-						logger.info("Unsharing dashboard: '{}' resources of type group: '{}'", dashboard, String.join(", ", groups));
+						logger.info("Unsharing dashboard: '{}' resources of type group: '{}'", dashboard,
+								String.join(", ", groups));
 						this.cliManager.unshareDashboard(dashboard, groups.toArray(new String[0]));
 						break;
 					}
@@ -812,8 +890,11 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 	/**
-	 * Return the missing groups for dashboard sharing / unsharing / activation / deactivation.
-	 * @param groups List of groups to be checked whether they are present on vROPs server.
+	 * Return the missing groups for dashboard sharing / unsharing / activation /
+	 * deactivation.
+	 * 
+	 * @param groups List of groups to be checked whether they are present on vROPs
+	 *               server.
 	 * @return list of missing groups.
 	 */
 	private List<String> getMissingGroups(final List<String> groups) {
@@ -822,12 +903,16 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			return groups;
 		}
 
-		return groups.stream().filter(group -> foundGroups.stream().noneMatch(t -> t.getDisplayName().equals(group))).collect(Collectors.toList());
+		return groups.stream().filter(group -> foundGroups.stream().noneMatch(t -> t.getDisplayName().equals(group)))
+				.collect(Collectors.toList());
 	}
 
 	/**
-	 * Return the missing users for dashboard sharing / unsharing / activation / deactivation.
-	 * @param users List of users to be checked whether they are present on vROPs server.
+	 * Return the missing users for dashboard sharing / unsharing / activation /
+	 * deactivation.
+	 * 
+	 * @param users List of users to be checked whether they are present on vROPs
+	 *              server.
 	 * @return list of missing users.
 	 */
 	private List<String> getMissingUsers(final List<String> users) {
@@ -836,11 +921,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			return users;
 		}
 
-		return users.stream().filter(user -> foundUsers.stream().noneMatch(t -> t.getUsername().equals(user))).collect(Collectors.toList());
+		return users.stream().filter(user -> foundUsers.stream().noneMatch(t -> t.getUsername().equals(user)))
+				.collect(Collectors.toList());
 	}
 
 	/**
 	 * Gets policy metadata.
+	 * 
 	 * @param rootDir
 	 * @return policy metadata
 	 */
@@ -873,6 +960,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Gets dashboard sharing metadata.
+	 * 
 	 * @param rootDir root directory of the dashboard sharing metadata file.
 	 * @return the dashboard sharing metadata hashmap.
 	 */
@@ -894,30 +982,36 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			dashboardSharingMetadataFileName = dashboardShareMetadataFile.getName();
 			dashboardSharingMetadata = FileUtils.readFileToString(dashboardShareMetadataFile, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			throw new RuntimeException(String.format("An error occurred reading file '%s'", dashboardSharingMetadataFileName), e);
+			throw new RuntimeException(
+					String.format("An error occurred reading file '%s'", dashboardSharingMetadataFileName), e);
 		}
 		try {
 			return new ObjectMapper().readValue(dashboardSharingMetadata, HashMap.class);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(String.format("An error occurred parsing file '%s'", dashboardSharingMetadataFileName), e);
+			throw new RuntimeException(
+					String.format("An error occurred parsing file '%s'", dashboardSharingMetadataFileName), e);
 		}
 	}
 
 	/**
 	 * Gets dashboard activation metadata.
-	 * @param rootDir root directory of the dashboard activation metadata file.
+	 * 
+	 * @param rootDir           root directory of the dashboard activation metadata
+	 *                          file.
 	 * @param isGroupActivation return the group activation metadata.
 	 * @return the dashboard activation metadata hashmap.
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Map<String, List<String>>> getDashboardActivationMetadata(final File rootDir, final boolean isGroupActivation) {
+	private Map<String, Map<String, List<String>>> getDashboardActivationMetadata(final File rootDir,
+			final boolean isGroupActivation) {
 		// get dashboard activation metadata
 		File dashboardsDir = new File(rootDir.getPath(), "dashboards");
 		if (!dashboardsDir.exists()) {
 			return Collections.emptyMap();
 		}
 		String dashboardActivationMetadata = "";
-		String fileName = isGroupActivation ? DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME : DASHBOARD_USER_ACTIVATE_METADATA_FILENAME;
+		String fileName = isGroupActivation ? DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME
+				: DASHBOARD_USER_ACTIVATE_METADATA_FILENAME;
 		String resourceType = isGroupActivation ? "group" : "user";
 		try {
 			File dashboardActivationMetadataFile = new File(dashboardsDir, fileName);
@@ -925,20 +1019,26 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				return Collections.emptyMap();
 			}
 			logger.info("Reading dashboard sharing metadata file '{}' for resource type {}", fileName, resourceType);
-			dashboardActivationMetadata = FileUtils.readFileToString(dashboardActivationMetadataFile, StandardCharsets.UTF_8);
+			dashboardActivationMetadata = FileUtils.readFileToString(dashboardActivationMetadataFile,
+					StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			throw new RuntimeException(String.format("An error occurred reading file '%s' for resource type %s", fileName, resourceType), e);
+			throw new RuntimeException(
+					String.format("An error occurred reading file '%s' for resource type %s", fileName, resourceType),
+					e);
 		}
 		try {
 			return new ObjectMapper().readValue(dashboardActivationMetadata, HashMap.class);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(String.format("An error occurred parsing file '%s' for resource type %s", fileName, resourceType), e);
+			throw new RuntimeException(
+					String.format("An error occurred parsing file '%s' for resource type %s", fileName, resourceType),
+					e);
 		}
 	}
 
 	/**
 	 * Store the policy metadata file.
-	 * @param rootDir root directory where to store policy metadata file.
+	 * 
+	 * @param rootDir        root directory where to store policy metadata file.
 	 * @param policyMetadata hashmap with policy meta data.
 	 */
 	private void storePolicyMetadata(final File rootDir, final Map<String, String> policyMetadata) {
@@ -950,12 +1050,14 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			policyMetadataContent = policyMetadataContent == null ? "" : policyMetadataContent;
 			Files.write(policyMetadataFile.toPath(), policyMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
 		} catch (JsonProcessingException e) {
-			String message = String.format("Error generating policy metadata file %s : %s", policyMetadataFile.getName(), e.getMessage());
+			String message = String.format("Error generating policy metadata file %s : %s",
+					policyMetadataFile.getName(), e.getMessage());
 			logger.error(message);
 
 			throw new RuntimeException(message, e);
 		} catch (IOException e) {
-			String message = String.format("Error exporting policy metadata file %s : %s", policyMetadataFile.getName(), e.getMessage());
+			String message = String.format("Error exporting policy metadata file %s : %s", policyMetadataFile.getName(),
+					e.getMessage());
 			logger.error(message);
 
 			throw new RuntimeException(message, e);
@@ -964,7 +1066,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Store the dashboard sharing metadata file.
-	 * @param rootDir root directory where to store the dashboard sharing metadata file.
+	 * 
+	 * @param rootDir    root directory where to store the dashboard sharing
+	 *                   metadata file.
 	 * @param dashboards list of dashboards to be put in the file.
 	 */
 	private void storeDashboardSharingMetadata(final File rootDir, final List<String> dashboards) {
@@ -988,25 +1092,33 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			logger.debug("Creating parent folders...");
 			dashboardShareMetadataFile.getParentFile().mkdirs();
 			logger.info("Generating dashboard sharing metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
-			Files.write(dashboardShareMetadataFile.toPath(), dashboardShareMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
+			Files.write(dashboardShareMetadataFile.toPath(), dashboardShareMetadataContent.getBytes(),
+					StandardOpenOption.CREATE_NEW);
 		} catch (JsonProcessingException e) {
-			String message = String.format("Error generating dashboard sharing metadata file '%s' : %s", DASHBOARD_SHARE_METADATA_FILENAME, e.getMessage());
+			String message = String.format("Error generating dashboard sharing metadata file '%s' : %s",
+					DASHBOARD_SHARE_METADATA_FILENAME, e.getMessage());
 			logger.warn(message);
 		} catch (IOException e) {
-			String message = String.format("Error exporting dashboard sharing metadata file '%s' : %s", DASHBOARD_SHARE_METADATA_FILENAME, e.getMessage());
+			String message = String.format("Error exporting dashboard sharing metadata file '%s' : %s",
+					DASHBOARD_SHARE_METADATA_FILENAME, e.getMessage());
 			logger.warn(message);
 		}
 	}
 
 	/**
 	 * Store the dashboard activation / deactivation metadata file.
-	 * @param rootDir root directory where to store the dashboard activation / deactivation metadata file.
-	 * @param dashboards list of dashboards to be put in the file.
-	 * @param isGroupActivation flag whether the metadata is for group activation / deactivation.
+	 * 
+	 * @param rootDir           root directory where to store the dashboard
+	 *                          activation / deactivation metadata file.
+	 * @param dashboards        list of dashboards to be put in the file.
+	 * @param isGroupActivation flag whether the metadata is for group activation /
+	 *                          deactivation.
 	 */
-	private void storeDashboardActivationMetadata(final File rootDir, final List<String> dashboards, final boolean isGroupActivation) {
+	private void storeDashboardActivationMetadata(final File rootDir, final List<String> dashboards,
+			final boolean isGroupActivation) {
 		// generate dashboard activation metadata file
-		String fileName = isGroupActivation ? DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME : DASHBOARD_USER_ACTIVATE_METADATA_FILENAME;
+		String fileName = isGroupActivation ? DASHBOARD_GROUP_ACTIVATE_METADATA_FILENAME
+				: DASHBOARD_USER_ACTIVATE_METADATA_FILENAME;
 		File dashboardActivationMetadataFile = new File(rootDir, fileName);
 		// if file exist return here and do not generate sample contents
 		if (dashboardActivationMetadataFile.exists()) {
@@ -1023,24 +1135,31 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			metadata.put(ACTION_DEACTIVATE, dashboardInfo);
 
 			dashboardActivationMetadataContent = this.serializeObject(metadata);
-			dashboardActivationMetadataContent = dashboardActivationMetadataContent == null ? "" : dashboardActivationMetadataContent;
+			dashboardActivationMetadataContent = dashboardActivationMetadataContent == null ? ""
+					: dashboardActivationMetadataContent;
 			logger.debug("Creating parent folders...");
 			dashboardActivationMetadataFile.getParentFile().mkdirs();
 			logger.info("Generating dashboard activation metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
-			Files.write(dashboardActivationMetadataFile.toPath(), dashboardActivationMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
+			Files.write(dashboardActivationMetadataFile.toPath(), dashboardActivationMetadataContent.getBytes(),
+					StandardOpenOption.CREATE_NEW);
 		} catch (JsonProcessingException e) {
-			String message = String.format("Error generating dashboard activation metadata file '%s' for resource of type %s: %s", fileName, resourceType, e.getMessage());
+			String message = String.format(
+					"Error generating dashboard activation metadata file '%s' for resource of type %s: %s", fileName,
+					resourceType, e.getMessage());
 			logger.warn(message, e);
 		} catch (IOException e) {
-			String message = String.format("Error exporting dashboard activation metadata file '%s' for resource of type %s : %s", fileName, resourceType, e.getMessage());
+			String message = String.format(
+					"Error exporting dashboard activation metadata file '%s' for resource of type %s : %s", fileName,
+					resourceType, e.getMessage());
 			logger.warn(message, e);
 		}
 	}
 
 	/**
 	 * Import custom groups to vROPs server.
+	 * 
 	 * @param vropsPackage package to read the custom groups from.
-	 * @param tmpDir temporary directory where to unwrap custom groups to.
+	 * @param tmpDir       temporary directory where to unwrap custom groups to.
 	 */
 	private void importCustomGroups(final Package vropsPackage, final File tmpDir) {
 		File customGroupsDir = new File(tmpDir.getPath(), "custom_groups");
@@ -1051,7 +1170,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		final Map<String, String> policyMetadataMap = getPolicyMetadata(tmpDir);
 
 		StringBuilder messages = new StringBuilder();
-		for (File customGroupFile : FileUtils.listFiles(customGroupsDir, new String[] {"json"}, false)) {
+		for (File customGroupFile : FileUtils.listFiles(customGroupsDir, new String[] { "json" }, false)) {
 			String customGroup = FilenameUtils.removeExtension(customGroupFile.getName());
 			try {
 				logger.info("Importing custom group: '{}'", customGroup);
@@ -1059,7 +1178,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				restClient.importCustomGroupInVrops(customGroup, customGroupPayload, policyMetadataMap);
 				logger.info("Imported custom group: '{}'", customGroup);
 			} catch (Exception e) {
-				messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup, e.getMessage()));
+				messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup,
+						e.getMessage()));
 			}
 		}
 
@@ -1070,6 +1190,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Read custom group file.
+	 * 
 	 * @param customGroupFile JSON file to read from.
 	 * @return string with JSON data read from file.
 	 * @throws IOException if the file cannot be read.
@@ -1078,14 +1199,16 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		try {
 			return FileUtils.readFileToString(customGroupFile, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			throw new IOException(String.format("An error occurred reading file %s : %s %n", customGroupFile.getName(), e.getMessage()));
+			throw new IOException(String.format("An error occurred reading file %s : %s %n", customGroupFile.getName(),
+					e.getMessage()));
 		}
 	}
 
 	/**
 	 * Import policies to vROPs.
+	 * 
 	 * @param vropsPackage package to read policies from.
-	 * @param tmpDir temporary dir where to unwrap polices to.
+	 * @param tmpDir       temporary dir where to unwrap polices to.
 	 * @throws RuntimeException if the polices cannot be imported.
 	 */
 	private void importPolicies(final Package vropsPackage, final File tmpDir) {
@@ -1095,14 +1218,15 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		}
 
 		StringBuilder messages = new StringBuilder();
-		for (File policy : FileUtils.listFiles(policiesDir, new String[] {"zip"}, Boolean.FALSE)) {
+		for (File policy : FileUtils.listFiles(policiesDir, new String[] { "zip" }, Boolean.FALSE)) {
 			String policyName = FilenameUtils.removeExtension(policy.getName());
 			try {
 				logger.info("Importing policy: '{}'", policyName);
 				restClient.importPolicyFromZip(policyName, policy, Boolean.TRUE);
 				logger.info("Imported policy: '{}'", policyName);
 			} catch (Exception e) {
-				String message = String.format("The policy '%s' could not be imported : '%s'", policyName, e.getMessage());
+				String message = String.format("The policy '%s' could not be imported : '%s'", policyName,
+						e.getMessage());
 				logger.error(message);
 				messages.append(message);
 			}
@@ -1117,8 +1241,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * Set the default policy in vROPs. Note it will not do anything if:
 	 * 1. vROPs version is below 8.12 (as it is not supported by the vROPS API).
 	 * 2. No default policy is set in the content.yaml file.
+	 * 
 	 * @param vropsPackage package to read policies from.
-	 * @param tmpDir temporary directory where the content.yaml file resides.
+	 * @param tmpDir       temporary directory where the content.yaml file resides.
 	 * @throws RuntimeException if the default policy cannot be set.
 	 */
 	private void setDefaultPolicy(final Package vropsPackage, final File tmpDir) {
@@ -1142,12 +1267,15 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 	/**
-	 * Set the policy priorities. The ordering of the policies in the content.yaml file
-	 * will define policy priorities (first will be with top priority, last with least priority).
+	 * Set the policy priorities. The ordering of the policies in the content.yaml
+	 * file
+	 * will define policy priorities (first will be with top priority, last with
+	 * least priority).
 	 * Note it will not do anything if: vROPs version is below 8.17.0.
 	 * (as it is not supported by the vROPS API).
+	 * 
 	 * @param vropsPackage package to read policies from.
-	 * @param tmpDir temporary directory where the content.yaml file resides.
+	 * @param tmpDir       temporary directory where the content.yaml file resides.
 	 * @throws RuntimeException if the policy priorities cannot be set.
 	 */
 	private void setPolicyPriorities(final Package vropsPackage, final File tmpDir) {
@@ -1160,8 +1288,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (descriptor.getPolicy() == null || descriptor.getPolicy().isEmpty()) {
 			return;
 		}
-		// if the policies contain wild card then skip setting priorities (as the ordering cannot be guaranteed)
-		boolean hasWildCard = descriptor.getPolicy().stream().allMatch(policy -> policy.endsWith(WILDCARD_MATCH_SYMBOL));
+		// if the policies contain wild card then skip setting priorities (as the
+		// ordering cannot be guaranteed)
+		boolean hasWildCard = descriptor.getPolicy().stream()
+				.allMatch(policy -> policy.endsWith(WILDCARD_MATCH_SYMBOL));
 		if (hasWildCard) {
 			return;
 		}
@@ -1174,8 +1304,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Parse the content.yaml file.
+	 * 
 	 * @param contentYamlFile content.yaml file handle.
-	 * @return VropsPackageDescriptor POJO with the populated values from the content.yaml file.
+	 * @return VropsPackageDescriptor POJO with the populated values from the
+	 *         content.yaml file.
 	 * @throws RuntimeException if the content yaml cannot be parsed.
 	 */
 	private VropsPackageDescriptor parseContentYamlFile(final File contentYamlFile) {
@@ -1184,14 +1316,18 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		try {
 			return mapper.readValue(contentYamlFile, VropsPackageDescriptor.class);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Unable to load vROps Package Descriptor ['%s'] : %s", contentYamlFile.getName(), e.getMessage()));
+			throw new RuntimeException(String.format("Unable to load vROps Package Descriptor ['%s'] : %s",
+					contentYamlFile.getName(), e.getMessage()));
 		}
 	}
 
 	/**
-	 * Export definitions from vrops (alert definitions, symptom definitions definitions, recommendations).
-	 * @param definitionType definition type to be exported (aler, symptom, recommendation).
-	 * @param definitions list of definitions to be exported.
+	 * Export definitions from vrops (alert definitions, symptom definitions
+	 * definitions, recommendations).
+	 * 
+	 * @param definitionType definition type to be exported (aler, symptom,
+	 *                       recommendation).
+	 * @param definitions    list of definitions to be exported.
 	 * @throws RuntimeException if the export fails.
 	 */
 	private void exportDefinitions(final VropsPackageMemberType definitionType, final List<String> definitions) {
@@ -1219,50 +1355,60 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 		Object allDefinitions = restClient.exportDefinitionsFromVrops(definitionType);
 		logger.info("Extracted definitions of type '{}' to '{}'", definitionType, definitionsDir.getAbsolutePath());
-		Map<String, String> definitionsJsonMap = this.generateDefinitionsJsonMap(allDefinitions, definitions, definitionType);
+		Map<String, String> definitionsJsonMap = this.generateDefinitionsJsonMap(allDefinitions, definitions,
+				definitionType);
 
 		generateDefinitionsFile(definitionsJsonMap, definitionsDir);
 	}
 
 	/**
 	 * Generate the definitions JSON mapping.
+	 * 
 	 * @param definitionData the definition data.
-	 * @param definitions list of definitions (alert, symptom or recommendation).
+	 * @param definitions    list of definitions (alert, symptom or recommendation).
 	 * @param definitionType type of the definition.
 	 * @return Mapping of definition name and data.
 	 */
-	private Map<String, String> generateDefinitionsJsonMap(final Object definitionData, final List<String> definitions, final VropsPackageMemberType definitionType) {
+	private Map<String, String> generateDefinitionsJsonMap(final Object definitionData, final List<String> definitions,
+			final VropsPackageMemberType definitionType) {
 		Map<String, String> retVal = new HashMap<>();
 
 		if (definitionData instanceof AlertDefinitionDTO) {
-			for (AlertDefinitionDTO.AlertDefinition definition : ((AlertDefinitionDTO) definitionData).getAlertDefinitions()) {
+			for (AlertDefinitionDTO.AlertDefinition definition : ((AlertDefinitionDTO) definitionData)
+					.getAlertDefinitions()) {
 				if (definitions.stream().anyMatch(name -> this.isPackageAssetMatching(name, definition.getName()))) {
 					String payload = this.serializeObject(definition);
 					if (!StringUtils.isEmpty(payload)) {
 						retVal.put(definition.getName(), payload);
-						logger.info("Exporting definition '{}' (Type: '{}')", definition.getName(), definitionType.name());
+						logger.info("Exporting definition '{}' (Type: '{}')", definition.getName(),
+								definitionType.name());
 					}
 				}
 			}
 		}
 		if (definitionData instanceof SymptomDefinitionDTO) {
-			for (SymptomDefinitionDTO.SymptomDefinition definition : ((SymptomDefinitionDTO) definitionData).getSymptomDefinitions()) {
+			for (SymptomDefinitionDTO.SymptomDefinition definition : ((SymptomDefinitionDTO) definitionData)
+					.getSymptomDefinitions()) {
 				if (definitions.stream().anyMatch(name -> this.isPackageAssetMatching(name, definition.getName()))) {
 					String payload = this.serializeObject(definition);
 					if (!StringUtils.isEmpty(payload)) {
 						retVal.put(definition.getName(), payload);
-						logger.info("Exporting definition '{}' (Type: '{}')", definition.getName(), definitionType.name());
+						logger.info("Exporting definition '{}' (Type: '{}')", definition.getName(),
+								definitionType.name());
 					}
 				}
 			}
 		}
 		if (definitionData instanceof RecommendationDTO) {
-			for (RecommendationDTO.Recommendation definition : ((RecommendationDTO) definitionData).getRecommendations()) {
-				if (definitions.stream().anyMatch(name -> this.isPackageAssetMatching(name, definition.getDescription()))) {
+			for (RecommendationDTO.Recommendation definition : ((RecommendationDTO) definitionData)
+					.getRecommendations()) {
+				if (definitions.stream()
+						.anyMatch(name -> this.isPackageAssetMatching(name, definition.getDescription()))) {
 					String payload = this.serializeObject(definition);
 					if (!StringUtils.isEmpty(payload)) {
 						retVal.put(definition.getDescription(), payload);
-						logger.info("Exporting definition '{}' (Type: '{}')", definition.getDescription(), definitionType.name());
+						logger.info("Exporting definition '{}' (Type: '{}')", definition.getDescription(),
+								definitionType.name());
 					}
 				}
 			}
@@ -1273,8 +1419,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Generate the definition file based on definition data.
+	 * 
 	 * @param definitionJson mapping of the definition JSON data.
-	 * @param dir directory where to put generated file.
+	 * @param dir            directory where to put generated file.
 	 * @throws IOException if the writing of the file fails.
 	 */
 	private void generateDefinitionsFile(final Map<String, String> definitionJson, final File dir) {
@@ -1283,14 +1430,16 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			try {
 				FileUtils.write(definitionFile, definition.getValue(), StandardCharsets.UTF_8);
 			} catch (IOException e) {
-				logger.error("Error generating definitions file file '{}', message {}.", definitionFile, e.getMessage());
+				logger.error("Error generating definitions file file '{}', message {}.", definitionFile,
+						e.getMessage());
 			}
 		}
 	}
 
 	/**
 	 * Export custom groups from vROPs server.
-	 * @param vropsPackage package where to put the custom groups to.
+	 * 
+	 * @param vropsPackage     package where to put the custom groups to.
 	 * @param customGroupNames names of the custom groups to be exported.
 	 * @throws RuntimeException if the export fails.
 	 */
@@ -1306,22 +1455,25 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			logger.error("No custom groups found in vROPs");
 			return;
 		}
-		
+
 		StringBuilder messages = new StringBuilder();
 		for (CustomGroupDTO.Group customGroup : customGroups) {
-			if (customGroupNames.stream().anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
+			if (customGroupNames.stream()
+					.anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
 				String payload = this.serializeObject(customGroup);
-				if (!StringUtils.isEmpty(payload)) {                 
+				if (!StringUtils.isEmpty(payload)) {
 					logger.info("Exporting custom group '{}'", customGroup.getResourceKey().getName());
-					File customGroupFile = new File(customGroupTargetDir, customGroup.getResourceKey().getName() + ".json");
+					File customGroupFile = new File(customGroupTargetDir,
+							customGroup.getResourceKey().getName() + ".json");
 					try {
 						Files.write(customGroupFile.toPath(), payload.getBytes(), StandardOpenOption.CREATE_NEW);
 					} catch (IOException e) {
-						messages.append(String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
-					}                    
+						messages.append(
+								String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
+					}
 				}
 			}
-		}        
+		}
 
 		if (messages.length() > 0) {
 			throw new RuntimeException(messages.toString());
@@ -1330,7 +1482,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Export policies from vROPs server.
-	 * @param vropsPackage package where to put the exported polices to.
+	 * 
+	 * @param vropsPackage  package where to put the exported polices to.
 	 * @param policyEntries names the polices to be exported.
 	 * @throws RuntimeException if the export fails.
 	 */
@@ -1369,28 +1522,31 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Copy dashboard contents to the file system.
+	 * 
 	 * @param dashboard dashboard name to be copied.
-	 * @param dir directory where dashboard to be copied to.
+	 * @param dir       directory where dashboard to be copied to.
 	 * @throws IOException | JSchException if copy fails.
 	 */
 	private void copyDashboardToFilesystem(final String dashboard, final File dir) {
 		try {
 			File dashboardDir = new File(tempDir, "iac-dash-" + UUID.randomUUID().toString() + "-"
-				+ System.currentTimeMillis());
+					+ System.currentTimeMillis());
 			dashboardDir.mkdirs();
 			cliManager.exportDashboard(dashboard, dashboardDir);
 			File zip = new File(dashboardDir, dashboard + ".zip");
 			ZipUtilities.unzip(zip, dashboardDir);
 
 			File subdir = new File(dashboardDir, "dashboard");
-			File content = new File(subdir,  "dashboard.json");
+			File content = new File(subdir, "dashboard.json");
 
 			moveFile(content, new File(dir, dashboard + ".json"));
 
 			zip.delete();
 			mergeLocalizationResources(new File(subdir, "resources"), new File(dir, "resources"));
 		} catch (IOException | JSchException e) {
-			String message = String.format("Unable to pull dashboard '%s' from remote vROps location '%s' to local filesystem dir '%s' : %s : %s", dashboard,
+			String message = String.format(
+					"Unable to pull dashboard '%s' from remote vROps location '%s' to local filesystem dir '%s' : %s : %s",
+					dashboard,
 					cliManager, dir.getAbsolutePath(), e.getClass().getName(), e.getMessage());
 			logger.error(message);
 			logger.debug(message, e);
@@ -1400,28 +1556,31 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Copy report contents to the file system.
+	 * 
 	 * @param report report name to be copied.
-	 * @param dir directory where report to be copied to.
+	 * @param dir    directory where report to be copied to.
 	 * @throws IOException | JSchException if copy fails.
 	 */
 	private void copyReportToFilesystem(final String report, final File dir) {
 		try {
 			File reportDir = new File(tempDir, "iac-dash-" + UUID.randomUUID().toString() + "-"
-				+ System.currentTimeMillis());
-			
+					+ System.currentTimeMillis());
+
 			reportDir.mkdirs();
 			cliManager.exportReport(report, reportDir);
 			File zip = new File(reportDir, report + ".zip");
 			File contentDir = new File(reportDir, report);
 
 			ZipUtilities.unzip(zip, contentDir);
-			File content = new File(reportDir,  "content.xml");
+			File content = new File(reportDir, "content.xml");
 			content.renameTo(new File(contentDir, report));
 			FileUtils.copyDirectory(contentDir, new File(dir, report));
 
 			zip.delete();
 		} catch (IOException | JSchException e) {
-			String message = String.format("Unable to pull report '%s' from remote vROps location '%s' to local filesystem dir '%s' : %s : %s", report,
+			String message = String.format(
+					"Unable to pull report '%s' from remote vROps location '%s' to local filesystem dir '%s' : %s : %s",
+					report,
 					cliManager, dir.getAbsolutePath(), e.getClass().getName(), e.getMessage());
 			logger.error(message);
 			logger.debug(message, e);
@@ -1431,7 +1590,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg    the package to export
 	 * @param dryrun whether it should be a dry run
 	 * @return the exported package
 	 */
@@ -1442,9 +1602,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg              the package to export
 	 * @param exportDescriptor the descriptor of the package to export
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun           whether it should be dry run
 	 * @return the exported package
 	 */
 	@Override
@@ -1456,8 +1617,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	/**
 	 * Imports a package.
-	 * @param pkg the package to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkg           the package to import
+	 * @param dryrun        whether it should be dry run
 	 * @param mergePackages whether to merge the packages
 	 * @return the imported package
 	 */
@@ -1476,23 +1638,23 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 		try {
 			new PackageManager(pkg).unpack(tmpDir);
-			
+
 			addViewToImportList(pkg, tmpDir);
 			addDashboardToImportList(pkg, tmpDir);
 			addReportToImportList(pkg, tmpDir);
 			addSuperMetricToImportList(pkg, tmpDir);
 			addMetricConfigToImportList(pkg, tmpDir);
-			
+
 			if (cliManager.hasAnyCommands()) {
 				cliManager.connect();
 				cliManager.importFilesToVrops();
 			}
-			
+
 			importDefinitions(pkg, tmpDir);
 			importPolicies(pkg, tmpDir);
 			importCustomGroups(pkg, tmpDir);
 			// manage dashboard sharing per groups
-			manageDashboardSharing(tmpDir);            
+			manageDashboardSharing(tmpDir);
 			// manage dashboard activation per groups
 			manageDashboardActivation(tmpDir, true);
 			// manage dashboard activation per users
@@ -1502,7 +1664,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			// set policy priorities
 			setPolicyPriorities(pkg, tmpDir);
 		} catch (IOException | JSchException | ConfigurationException e) {
-			String message = String.format("Unable to push package '%s' to vROps Server '%s' : %s : %s", pkg.getFQName(), cliManager, e.getClass().getName(),
+			String message = String.format("Unable to push package '%s' to vROps Server '%s' : %s : %s",
+					pkg.getFQName(), cliManager, e.getClass().getName(),
 					e.getMessage());
 			logger.error(message);
 			logger.debug(message, e);
@@ -1515,12 +1678,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 					FileUtils.deleteDirectory(tmpDir);
 				}
 			} catch (IOException ioe) {
-				String message = String.format("Cannot delete temporary directory '%s' : %s , leaving it there", tmpDir.getAbsolutePath(), ioe.getMessage());
+				String message = String.format("Cannot delete temporary directory '%s' : %s , leaving it there",
+						tmpDir.getAbsolutePath(), ioe.getMessage());
 				logger.warn(message);
 				logger.debug(message, ioe);
 			}
 		}
-		
+
 		return pkg;
 	}
 
@@ -1546,7 +1710,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (!viewsFolder.exists()) {
 			return;
 		}
-		for (File view : FileUtils.listFiles(viewsFolder, new String[] {"xml"}, false)) {
+		for (File view : FileUtils.listFiles(viewsFolder, new String[] { "xml" }, false)) {
 			File viewZip = createViewZip(view);
 			cliManager.addViewToImportList(viewZip);
 		}
@@ -1569,14 +1733,15 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				break;
 			}
 			default:
-				throw new RuntimeException(String.format("Definition type %s is not supported!", definitionType.name()));
+				throw new RuntimeException(
+						String.format("Definition type %s is not supported!", definitionType.name()));
 		}
 		File definitionsDir = new File(tmpDir.getPath(), definitionsSubDir);
 		if (!definitionsDir.exists()) {
 			return definitions;
 		}
-		FileUtils.listFiles(definitionsDir, new String[] {"json"}, false).stream().forEach(definitions::add);
-		
+		FileUtils.listFiles(definitionsDir, new String[] { "json" }, false).stream().forEach(definitions::add);
+
 		return definitions;
 	}
 
@@ -1585,7 +1750,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (!dashboardsFolder.exists()) {
 			return;
 		}
-		for (File dashboard : FileUtils.listFiles(dashboardsFolder, new String[] {"json"}, false)) {
+		for (File dashboard : FileUtils.listFiles(dashboardsFolder, new String[] { "json" }, false)) {
 			// skip dashboard sharing metadata file
 			if (dashboard.getName().contains(DASHBOARD_SHARE_METADATA_FILENAME)) {
 				continue;
@@ -1611,7 +1776,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (!superMetricsFolder.exists()) {
 			return;
 		}
-		for (File superMetric : FileUtils.listFiles(superMetricsFolder, new String[] {"json"}, false)) {
+		for (File superMetric : FileUtils.listFiles(superMetricsFolder, new String[] { "json" }, false)) {
 			this.cliManager.addSuperMetricsToImportList(superMetric);
 		}
 	}
@@ -1631,13 +1796,15 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			return;
 		}
 		if (!srcDir.canRead()) {
-			getLogger().warn("Cannot copy content of directory \"" + srcDir.getAbsolutePath() + "\" to \"" + destDir.getAbsolutePath()
+			getLogger().warn("Cannot copy content of directory \"" + srcDir.getAbsolutePath() + "\" to \""
+					+ destDir.getAbsolutePath()
 					+ "\". Source directory is not readable. Skipping dir.");
 			return;
 		}
 		destDir.mkdirs();
 		if (!destDir.exists() || !destDir.canWrite()) {
-			getLogger().warn("Cannot copy content of directory \"" + srcDir.getAbsolutePath() + "\" to \"" + destDir.getAbsolutePath()
+			getLogger().warn("Cannot copy content of directory \"" + srcDir.getAbsolutePath() + "\" to \""
+					+ destDir.getAbsolutePath()
 					+ "\". Destination directory cannot be created or is not writable. Skipping dir.");
 			return;
 		}
@@ -1653,15 +1820,17 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 					os.write('\n');
 				}
 			} catch (IOException ioe) {
-			  getLogger().warn("Error merging content of \"" + resource.getAbsolutePath() + "\" to \"" + destFile.getAbsolutePath() + "\" : " + ioe.getLocalizedMessage()
-					  + "; Continuing with other resource files if any.");
+				getLogger().warn("Error merging content of \"" + resource.getAbsolutePath() + "\" to \""
+						+ destFile.getAbsolutePath() + "\" : " + ioe.getLocalizedMessage()
+						+ "; Continuing with other resource files if any.");
 			}
 		}
 	}
 
 	private static void moveFile(final File source, final File dest) throws IOException {
 		if (!source.exists()) {
-			throw new IOException("Source file \"" + source.getAbsolutePath() + "\" does not exist. Cannot move/rename it to \"" + dest.getAbsolutePath() + "\".");
+			throw new IOException("Source file \"" + source.getAbsolutePath()
+					+ "\" does not exist. Cannot move/rename it to \"" + dest.getAbsolutePath() + "\".");
 		}
 		boolean success = source.renameTo(dest);
 		if (!success) {
@@ -1688,7 +1857,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 			File resourcesDir = new File(view.getParent(), "resources");
 			if (resourcesDir.exists()) {
-				for (File propfile : FileUtils.listFiles(resourcesDir, new String[] {"properties"}, false)) {
+				for (File propfile : FileUtils.listFiles(resourcesDir, new String[] { "properties" }, false)) {
 					ZipEntry propEntry = new ZipEntry("resources/" + propfile.getName());
 					zipOut.putNextEntry(propEntry);
 					fileCopyFiltering(propfile, "view." + id, zipOut);
@@ -1703,7 +1872,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		logger.info("Dashboard absolute path: {}", dashboard.getAbsolutePath());
 		String name = FilenameUtils.removeExtension(dashboard.getName());
 		logger.info("Dashboard name {}", name);
-		File dashboardZip = new File(dashboard.getParent(),  name + ".zip");
+		File dashboardZip = new File(dashboard.getParent(), name + ".zip");
 		try (
 				FileOutputStream fos = new FileOutputStream(dashboardZip);
 				ZipOutputStream zipOut = new ZipOutputStream(fos);) {
@@ -1718,7 +1887,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			File resourcesDir = new File(dashboard.getParent(), "resources");
 			if (resourcesDir.exists()) {
 				logger.info("Resources directory: {}", resourcesDir.getAbsolutePath());
-				for (File propfile : FileUtils.listFiles(resourcesDir, new String[]{"properties"}, false)) {
+				for (File propfile : FileUtils.listFiles(resourcesDir, new String[] { "properties" }, false)) {
 					ZipEntry propEntry = new ZipEntry("dashboard/resources/" + propfile.getName());
 					zipOut.putNextEntry(propEntry);
 					fileCopyFiltering(propfile, name, zipOut);
@@ -1733,7 +1902,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		logger.info("Report absolute path: {}", report.getAbsolutePath());
 		String name = FilenameUtils.removeExtension(report.getName());
 		logger.info("Report name {} ", name);
-		File reportZip = new File(report.getParent(),  name + ".zip");
+		File reportZip = new File(report.getParent(), name + ".zip");
 		try (
 				FileOutputStream fos = new FileOutputStream(reportZip);
 				ZipOutputStream zipOut = new ZipOutputStream(fos);) {
@@ -1748,7 +1917,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			File resourcesDir = new File(report, "resources");
 			if (resourcesDir.exists()) {
 				logger.info("Resources directory: {}", resourcesDir.getAbsolutePath());
-				for (File resource : FileUtils.listFiles(resourcesDir, new String[]{"properties"}, false)) {
+				for (File resource : FileUtils.listFiles(resourcesDir, new String[] { "properties" }, false)) {
 					ZipEntry propEntry = new ZipEntry("resources/" + resource.getName());
 					zipOut.putNextEntry(propEntry);
 					fileCopyFiltering(resource, name, zipOut);
@@ -1780,16 +1949,17 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	/**
 	 *
 	 * @param propFile Properties file
-	 * @param prefix Properties prefix
-	 * @param out Output stream
+	 * @param prefix   Properties prefix
+	 * @param out      Output stream
 	 * @throws IOException throws IO exception if input stream not available
 	 */
-	public static void fileCopyFiltering(final File propFile, final String prefix, final OutputStream out) throws IOException {
-		Properties filtered  = new Properties();
+	public static void fileCopyFiltering(final File propFile, final String prefix, final OutputStream out)
+			throws IOException {
+		Properties filtered = new Properties();
 		Properties props = new Properties();
 		try (InputStream in = new FileInputStream(propFile);) {
 			props.load(in);
-			props.forEach((key, value) ->  {
+			props.forEach((key, value) -> {
 				if (("" + key).startsWith(prefix)) {
 					filtered.setProperty("" + key, "" + value);
 				}
@@ -1803,8 +1973,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 *
 	 * @param view View file
 	 * @return Returns View ID
-	 * @throws ConfigurationException throws configuration exception incase of parsing error
-	 * @throws IOException throws IO exception if input stream not available
+	 * @throws ConfigurationException throws configuration exception incase of
+	 *                                parsing error
+	 * @throws IOException            throws IO exception if input stream not
+	 *                                available
 	 */
 	public static String getViewId(final File view) throws ConfigurationException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -1814,15 +1986,18 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(view);
 		} catch (ParserConfigurationException e) {
-			throw new ConfigurationException("The view file \"" + view.getAbsolutePath() + "\" cannot be parsed as XML file because of serious configuration error "
+			throw new ConfigurationException("The view file \"" + view.getAbsolutePath()
+					+ "\" cannot be parsed as XML file because of serious configuration error "
 					+ e.getLocalizedMessage(), e);
 		} catch (SAXException e) {
-			throw new ConfigurationException("The view file \"" + view.getAbsolutePath() + "\" has invalid format. It is not a correct XML file. "
+			throw new ConfigurationException("The view file \"" + view.getAbsolutePath()
+					+ "\" has invalid format. It is not a correct XML file. "
 					+ e.getLocalizedMessage(), e);
 		}
 		Element root = doc.getDocumentElement();
 		if (!"Content".equalsIgnoreCase(root.getNodeName())) {
-			throw new ConfigurationException("The view file \"" + view.getAbsolutePath() + "\" is not in the expected format. It is a valid XML file, bu the root "
+			throw new ConfigurationException("The view file \"" + view.getAbsolutePath()
+					+ "\" is not in the expected format. It is a valid XML file, bu the root "
 					+ "element is \"" + root.getNodeName() + "\" while the expected one is \"Content\".");
 		}
 		NodeList views = root.getChildNodes();
@@ -1835,22 +2010,26 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			viewsNode = viewsNode.getNextSibling();
 		}
 		if (viewsNode == null || !"Views".equalsIgnoreCase(viewsNode.getNodeName())) {
-			throw new ConfigurationException("The view file \"" + view.getAbsolutePath() + "\" is not in the expected format. First child element under \"Content\" is "
-					+ (viewsNode == null ? "UNKNOWN" : "\"" + viewsNode.getNodeName() + "\"") + ", expected: \"Views\".");
+			throw new ConfigurationException("The view file \"" + view.getAbsolutePath()
+					+ "\" is not in the expected format. First child element under \"Content\" is "
+					+ (viewsNode == null ? "UNKNOWN" : "\"" + viewsNode.getNodeName() + "\"")
+					+ ", expected: \"Views\".");
 		}
 		Node viewDefNode = viewsNode.getFirstChild();
 		while (viewDefNode != null && "#text".equalsIgnoreCase(viewDefNode.getNodeName())) {
 			viewDefNode = viewDefNode.getNextSibling();
 		}
 		if (viewDefNode == null || !"ViewDef".equalsIgnoreCase(viewDefNode.getNodeName())) {
-			throw new ConfigurationException("The view file \"" + view.getAbsolutePath() + "\" has invalid format. Child node under \"Content\" -> \"Views\" is "
+			throw new ConfigurationException("The view file \"" + view.getAbsolutePath()
+					+ "\" has invalid format. Child node under \"Content\" -> \"Views\" is "
 					+ (viewDefNode == null ? "NOT PRESENT" : "\"" + viewDefNode + "\"") + ", expected \"ViewDef\"");
 		}
 		NamedNodeMap attributes = viewDefNode.getAttributes();
 		Node id = attributes.getNamedItem("id");
 		if (id == null || id.getNodeValue().trim().length() == 0) {
 			throw new ConfigurationException("The view file \"" + view.getAbsolutePath()
-					+ "\" has invalid format. No XML id attribute available for \"Content\" - > \"Views\" -> " + "\"ViewDef\".");
+					+ "\" has invalid format. No XML id attribute available for \"Content\" - > \"Views\" -> "
+					+ "\"ViewDef\".");
 		}
 		return id.getNodeValue().trim();
 	}

@@ -42,7 +42,7 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.AlertDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackMetadataListDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ResourcesDTO;
 
 public class RestClientVrliV1 extends AbstractRestClientVrli {
 	/**

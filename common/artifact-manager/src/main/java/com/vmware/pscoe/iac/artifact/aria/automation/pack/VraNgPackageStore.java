@@ -16,7 +16,7 @@
  * LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.aria.automation.pack;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.vmware.pscoe.iac.artifact.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.PackageManager;
+import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
@@ -58,7 +61,7 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 	 * @param vraRestClient the vRA rest client
 	 * @param vraConfig     the vRA config
 	 */
-	protected VraNgPackageStore(final RestClientVraNg vraRestClient, final ConfigurationVraNg vraConfig) {
+	public VraNgPackageStore(final RestClientVraNg vraRestClient, final ConfigurationVraNg vraConfig) {
 		this.restClient = vraRestClient;
 		this.config = vraConfig;
 	}

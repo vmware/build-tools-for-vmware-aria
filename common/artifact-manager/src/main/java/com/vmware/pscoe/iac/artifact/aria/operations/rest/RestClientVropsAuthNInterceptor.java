@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.operations.rest;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,7 +39,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
 
 public class RestClientVropsAuthNInterceptor extends RestClientRequestInterceptor<ConfigurationVrops> {
 	private static final String VROPS_AUTH_TOKEN_URI = "/suite-api/api/auth/token/acquire";
@@ -74,7 +75,8 @@ public class RestClientVropsAuthNInterceptor extends RestClientRequestIntercepto
 
 	private void acquireToken(HttpRequest request) throws JsonProcessingException {
 		logger.info("Acquiring VROPS auth token.");
-		final URI vropsTokenUri = UriComponentsBuilder.newInstance().scheme(request.getURI().getScheme()).host(getConfiguration().getHost())
+		final URI vropsTokenUri = UriComponentsBuilder.newInstance().scheme(request.getURI().getScheme())
+				.host(getConfiguration().getHost())
 				.port(getConfiguration().getPort()).path(VROPS_AUTH_TOKEN_URI).build().toUri();
 		logger.info("VROPS Auth Token URL: {}", vropsTokenUri);
 
@@ -87,11 +89,13 @@ public class RestClientVropsAuthNInterceptor extends RestClientRequestIntercepto
 		payload.put("authSource", getConfiguration().getVropsAuthSource());
 
 		final HttpEntity<String> entity = new HttpEntity<>(new ObjectMapper().writeValueAsString(payload), headers);
-		ResponseEntity<String> response = getRestTemplate().exchange(vropsTokenUri, HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> response = getRestTemplate().exchange(vropsTokenUri, HttpMethod.POST, entity,
+				String.class);
 		final DocumentContext responseBody = JsonPath.parse(response.getBody());
 
 		final long ttl = responseBody.read("$.validity");
-		this.vropsTokenExpirationTime = LocalDateTime.now(ZoneOffset.UTC).plus(ttl, ChronoField.MINUTE_OF_HOUR.getBaseUnit());
+		this.vropsTokenExpirationTime = LocalDateTime.now(ZoneOffset.UTC).plus(ttl,
+				ChronoField.MINUTE_OF_HOUR.getBaseUnit());
 		this.vropsAuthToken = responseBody.read("$.token");
 	}
 

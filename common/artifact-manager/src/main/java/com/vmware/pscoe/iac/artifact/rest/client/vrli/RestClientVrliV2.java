@@ -42,7 +42,7 @@ import com.vmware.pscoe.iac.artifact.rest.client.messages.Errors;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.AlertDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v2.ContentPackMetadataListDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ResourcesDTO;
 
 public class RestClientVrliV2 extends AbstractRestClientVrli {
 	/**

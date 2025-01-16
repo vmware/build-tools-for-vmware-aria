@@ -17,8 +17,7 @@ package com.vmware.pscoe.iac.artifact.cli;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.ssh.SshClient;
 
 public class CliManagerVrops implements AutoCloseable {
@@ -36,14 +35,14 @@ public class CliManagerVrops implements AutoCloseable {
 	private static final String REPORT = "report";
 	private static final String FILE = "file";
 	private static final String METRIC_CONFIG = "reskndmetric";
-	private static final String EXPORT    = "export";
+	private static final String EXPORT = "export";
 	private static final String IMPORT = "import";
 	private static final String SHARE = "share";
 	private static final String UNSHARE = "unshare";
 	private static final String ACTIVATE = "show";
 	private static final String DEACTIVATE = "hide";
 
-	private static final String SHARING_DEFAULT_USER= "admin";
+	private static final String SHARING_DEFAULT_USER = "admin";
 
 	private static final String FORCE = "--force";
 	private static final String ALL_POLICIES = "--policies all";
@@ -121,8 +120,8 @@ public class CliManagerVrops implements AutoCloseable {
 	public void addViewToImportList(File file) {
 		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_1,
-				escapeShellCharacters(OPSCLI_PATH),    escapeShellCharacters(VIEW),
-				escapeShellCharacters(IMPORT),         escapeShellCharacters(remoteFilePath),
+				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(VIEW),
+				escapeShellCharacters(IMPORT), escapeShellCharacters(remoteFilePath),
 				escapeShellCharacters(FORCE));
 
 		cmdList.add(command);
@@ -132,8 +131,8 @@ public class CliManagerVrops implements AutoCloseable {
 	public void addDashboardToImportList(File file) {
 		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_2,
-				escapeShellCharacters(OPSCLI_PATH),    escapeShellCharacters(DASHBOARD),
-				escapeShellCharacters(IMPORT),         "all",
+				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
+				escapeShellCharacters(IMPORT), "all",
 				escapeShellCharacters(remoteFilePath), escapeShellCharacters(FORCE));
 
 		cmdList.add(command);
@@ -174,7 +173,7 @@ public class CliManagerVrops implements AutoCloseable {
 			if (isGroupResource) {
 				commands.add(String.format(VROPS_SSH_COMMAND_1,
 						escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
-						escapeShellCharacters(ACTIVATE), "group:"+escapeShellCharacters(resource),
+						escapeShellCharacters(ACTIVATE), "group:" + escapeShellCharacters(resource),
 						escapeShellCharacters(dashboard)));
 			} else {
 				commands.add(String.format(VROPS_SSH_COMMAND_1,
@@ -198,7 +197,7 @@ public class CliManagerVrops implements AutoCloseable {
 			if (isGroupResource) {
 				commands.add(String.format(VROPS_SSH_COMMAND_1,
 						escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
-						escapeShellCharacters(DEACTIVATE), "group:"+escapeShellCharacters(resource),
+						escapeShellCharacters(DEACTIVATE), "group:" + escapeShellCharacters(resource),
 						escapeShellCharacters(dashboard)));
 			} else {
 				commands.add(String.format(VROPS_SSH_COMMAND_1,
@@ -221,7 +220,7 @@ public class CliManagerVrops implements AutoCloseable {
 		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_1,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(REPORT),
-				escapeShellCharacters(IMPORT),      escapeShellCharacters(remoteFilePath),
+				escapeShellCharacters(IMPORT), escapeShellCharacters(remoteFilePath),
 				escapeShellCharacters(FORCE));
 
 		cmdList.add(command);
@@ -232,7 +231,8 @@ public class CliManagerVrops implements AutoCloseable {
 		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_3,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(SUPER_METRIC),
-				escapeShellCharacters(IMPORT), escapeShellCharacters(remoteFilePath), escapeShellCharacters(FORCE), ALL_POLICIES, CHECK_FALSE);
+				escapeShellCharacters(IMPORT), escapeShellCharacters(remoteFilePath), escapeShellCharacters(FORCE),
+				ALL_POLICIES, CHECK_FALSE);
 
 		this.cmdList.add(command);
 		this.fileList.add(file);
@@ -243,11 +243,11 @@ public class CliManagerVrops implements AutoCloseable {
 		String command = String.format(VROPS_SSH_COMMAND_4,
 				escapeShellCharacters(OPSCLI_PATH),
 				escapeShellCharacters(FILE),
-				escapeShellCharacters(IMPORT), 
+				escapeShellCharacters(IMPORT),
 				escapeShellCharacters(METRIC_CONFIG),
-				escapeShellCharacters(remoteFilePath), 
-				escapeShellCharacters(FORCE), 
-				ALL_POLICIES, 
+				escapeShellCharacters(remoteFilePath),
+				escapeShellCharacters(FORCE),
+				ALL_POLICIES,
 				CHECK_FALSE);
 
 		this.cmdList.add(command);
@@ -301,8 +301,8 @@ public class CliManagerVrops implements AutoCloseable {
 	public void exportDashboard(String dashboardName, File localDir) throws JSchException {
 		String remoteFilePath = exportRemotePath + UNIX_PATH_SEPARATOR + "dashboards";
 		String command = String.format(VROPS_SSH_COMMAND_2,
-				escapeShellCharacters(OPSCLI_PATH),   escapeShellCharacters(DASHBOARD),
-				escapeShellCharacters(EXPORT),        escapeShellCharacters(config.getVropsDashboardUser()),
+				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
+				escapeShellCharacters(EXPORT), escapeShellCharacters(config.getVropsDashboardUser()),
 				escapeShellCharacters(dashboardName), escapeShellCharacters(remoteFilePath));
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
@@ -320,7 +320,8 @@ public class CliManagerVrops implements AutoCloseable {
 		String remoteFilePath = exportRemotePath + UNIX_PATH_SEPARATOR + "supermetrics";
 		String command = String.format(VROPS_SSH_COMMAND_1,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(SUPER_METRIC),
-				escapeShellCharacters(EXPORT), escapeShellCharacters(superMetricName), escapeShellCharacters(remoteFilePath));
+				escapeShellCharacters(EXPORT), escapeShellCharacters(superMetricName),
+				escapeShellCharacters(remoteFilePath));
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
 		reconnect();
@@ -351,7 +352,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 		List<String> files = new ArrayList<>();
 		files.add(remoteFilePath + UNIX_PATH_SEPARATOR + metricConfigName);
-		
+
 		SshClient.copyRemoteToLocal(session, files, localDir);
 	}
 
@@ -382,7 +383,6 @@ public class CliManagerVrops implements AutoCloseable {
 		return "ssh \'" + getSshUsername() + "@" + config.getHost() + "' -p " + getSshPort();
 	}
 
-
 	private String escapeShellCharacters(String str) {
 		if (str == null) {
 			return null;
@@ -390,7 +390,7 @@ public class CliManagerVrops implements AutoCloseable {
 		if (str.indexOf('\'') == -1) {
 			return "'" + str + "'";
 		}
-		final char[] special = {'\'', '~', '`', '#', '$', '&', '*', '(', ')', '\\', '|', '[', ']', '{', '}', ';', '"',
+		final char[] special = { '\'', '~', '`', '#', '$', '&', '*', '(', ')', '\\', '|', '[', ']', '{', '}', ';', '"',
 				'<', '>', '?', '!' };
 		StringBuilder buffer = new StringBuilder("\"");
 		for (int i = 0; i < str.length(); i++) {

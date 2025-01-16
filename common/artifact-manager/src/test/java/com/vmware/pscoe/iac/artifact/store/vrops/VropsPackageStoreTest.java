@@ -35,7 +35,7 @@ import org.mockito.Mockito;
 
 import com.jcraft.jsch.JSchException;
 import com.vmware.pscoe.iac.artifact.PackageMocked;
-import com.vmware.pscoe.iac.artifact.VropsPackageStore;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.VropsPackageStore;
 import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
@@ -43,12 +43,12 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.vrops.VropsPackageMemberType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthGroupDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.AuthUserDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.PolicyDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ReportDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.SupermetricDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
 
 public class VropsPackageStoreTest {
 	private static String VROPS_VERSION_8_17 = "8.17.0";

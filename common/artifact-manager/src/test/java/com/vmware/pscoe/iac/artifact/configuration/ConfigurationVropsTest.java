@@ -17,6 +17,9 @@ package com.vmware.pscoe.iac.artifact.configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+
 import java.net.UnknownHostException;
 import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -61,7 +64,6 @@ class ConfigurationVropsTest {
 
 		assertSame(configurationVrops.getHost(), "localhost");
 	}
-
 
 	@Test
 	public void testValidateShouldNotBeNullVropDashboardUser() throws Exception {
