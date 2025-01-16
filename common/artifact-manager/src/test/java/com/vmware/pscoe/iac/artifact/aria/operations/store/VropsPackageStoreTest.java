@@ -12,13 +12,12 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.vrops;
+package com.vmware.pscoe.iac.artifact.aria.operations.store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
@@ -35,7 +34,6 @@ import org.mockito.Mockito;
 
 import com.jcraft.jsch.JSchException;
 import com.vmware.pscoe.iac.artifact.PackageMocked;
-import com.vmware.pscoe.iac.artifact.aria.operations.store.VropsPackageStore;
 import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
@@ -174,20 +172,27 @@ public class VropsPackageStoreTest {
 		Mockito.doReturn(vropsVersion).when(restClientMock).getVersion();
 		Mockito.doReturn(allGroups).when(restClientMock).findAllAuthGroups();
 		Mockito.doReturn(allUsers).when(restClientMock).findAllAuthUsers();
-		Mockito.doReturn(allGroups).when(restClientMock).findAuthGroupsByNames(Arrays.asList(new String[] { existingGroup }));
-		Mockito.doReturn(allUsers).when(restClientMock).findAuthUsersByNames(Arrays.asList(new String[] { existingUser }));
+		Mockito.doReturn(allGroups).when(restClientMock)
+				.findAuthGroupsByNames(Arrays.asList(new String[] { existingGroup }));
+		Mockito.doReturn(allUsers).when(restClientMock)
+				.findAuthUsersByNames(Arrays.asList(new String[] { existingUser }));
 
-		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.ALERT_DEFINITION, new HashMap<>());
-		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.SYMPTOM_DEFINITION, new HashMap<>());
-		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(), VropsPackageMemberType.RECOMMENDATION, new HashMap<>());
-		Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(),
+				VropsPackageMemberType.ALERT_DEFINITION, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(),
+				VropsPackageMemberType.SYMPTOM_DEFINITION, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(),
+				VropsPackageMemberType.RECOMMENDATION, new HashMap<>());
+		Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload,
+				new HashMap<>());
 		Mockito.doNothing().when(restClientMock).setDefaultPolicy(defaultPolicy);
 		Mockito.doNothing().when(restClientMock).setPolicyPriorities(Arrays.asList(new String[] { policyId }));
 		Mockito.doNothing().when(restClientMock).importPolicyFromZip(any(), Mockito.isA(File.class), anyBoolean());
 
 		VropsPackageStore store = new VropsPackageStore(cliMock, restClientMock, tempFolder.newFolder());
 
-		File packageZip = PackageMocked.createSamplePackageZip(tempFolder.newFolder(), "ViewName", "viewid123", existingDashboard, "AlertDefinitions");
+		File packageZip = PackageMocked.createSamplePackageZip(tempFolder.newFolder(), "ViewName", "viewid123",
+				existingDashboard, "AlertDefinitions");
 		Package vropsPkg = PackageFactory.getInstance(PackageType.VROPS, packageZip);
 		List<Package> packages = new ArrayList<>();
 		packages.add(vropsPkg);
