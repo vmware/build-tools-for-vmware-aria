@@ -130,4 +130,17 @@ This is just an internal restructuring effort, no functionality was changed.
 
 ## Upgrade procedure
 
+### *Dynamic type definitions for the unit tests framework.*
+
+The package name and version of the type definitions are being installed dynamically based on the configuration of the solution.  
+This ensures the type definitions available for type hinting / autocomplete in the IDE and for the transpilation are matching the actual code definitions of the unit test framework.
+
+#### Previous Behavior
+
+The type definitions installed were always the same package and version - the [BTVA built-in Jasmine definitions](https://github.com/vmware/build-tools-for-vmware-aria/tree/v3.1.1/vro-types/jasmine) (link is to v3.1.1, might be outdated at later point in time).
+
+#### New Behavior
+
+The configuration in the pom file affects both the framework being used and its type definitions being made available.
+
 [//]: # (Explain in details if something needs to be done)
