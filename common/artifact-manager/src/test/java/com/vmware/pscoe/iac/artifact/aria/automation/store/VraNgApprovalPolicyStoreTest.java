@@ -14,8 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
@@ -25,8 +23,8 @@ import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
@@ -39,9 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

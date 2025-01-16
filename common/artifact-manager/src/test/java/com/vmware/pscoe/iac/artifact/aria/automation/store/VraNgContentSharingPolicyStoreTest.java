@@ -26,12 +26,12 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.*;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.*;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;

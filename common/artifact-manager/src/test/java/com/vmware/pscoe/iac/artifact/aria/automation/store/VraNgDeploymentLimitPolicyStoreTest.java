@@ -21,6 +21,7 @@ import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.*;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.*;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import org.junit.Rule;

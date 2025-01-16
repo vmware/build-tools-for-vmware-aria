@@ -20,24 +20,24 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.APPROVAL_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.BLUEPRINT;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.CATALOG_ITEM;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.CONTENT_SHARING_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.CONTENT_SOURCE;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.CUSTOM_RESOURCE;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.DAY2_ACTIONS_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.DEPLOYMENT_LIMIT_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.LEASE_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.PROPERTY_GROUP;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.RESOURCE_ACTION;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent.ContentType.SUBSCRIPTION;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.APPROVAL_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.BLUEPRINT;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.CATALOG_ITEM;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.CONTENT_SHARING_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.CONTENT_SOURCE;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.CUSTOM_RESOURCE;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.DAY2_ACTIONS_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.DEPLOYMENT_LIMIT_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.LEASE_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.PROPERTY_GROUP;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.RESOURCE_ACTION;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.SUBSCRIPTION;
 
 /**
  * Factory to select and setup the store (handler) and determine the order of

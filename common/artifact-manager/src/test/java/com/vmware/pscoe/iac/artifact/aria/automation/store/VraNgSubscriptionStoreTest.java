@@ -53,7 +53,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;

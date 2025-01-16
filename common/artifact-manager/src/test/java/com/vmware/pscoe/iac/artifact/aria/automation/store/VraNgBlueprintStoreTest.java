@@ -22,15 +22,13 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 
 import org.junit.Rule;
-import org.junit.internal.runners.statements.ExpectException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
@@ -50,7 +48,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 
 /**
- * NOTE: This does not test duplicate names from one content source, since the Store is not responsible for that kind of logic.
+ * NOTE: This does not test duplicate names from one content source, since the
+ * Store is not responsible for that kind of logic.
  */
 public class VraNgBlueprintStoreTest {
 
@@ -100,16 +99,15 @@ public class VraNgBlueprintStoreTest {
 		System.out.println("==========================================================");
 	}
 
-
 	@Test
 	void testExportContentWithNoBlueprints() {
-		//GIVEN 
+		// GIVEN
 		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(new ArrayList<String>());
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, never()).getAllBlueprints();
 		verify(restClient, never()).getBlueprintVersions(anyString());
 
@@ -118,7 +116,7 @@ public class VraNgBlueprintStoreTest {
 
 	@Test
 	void testExportContentWithAllBlueprints() {
-		//GIVEN 
+		// GIVEN
 		List<VraNgBlueprint> blueprints = new ArrayList<>();
 		BlueprintMockBuilder mockBuilder = new BlueprintMockBuilder("ngnix");
 
@@ -127,20 +125,21 @@ public class VraNgBlueprintStoreTest {
 		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(null);
 		when(restClient.getAllBlueprints()).thenReturn(blueprints);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedBlueprints = {"ngnix"};
-		String[] expectedBlueprintFiles = {"content.yaml", "details.json"};
+		String[] expectedBlueprints = { "ngnix" };
+		String[] expectedBlueprintFiles = { "content.yaml", "details.json" };
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedBlueprints);
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "ngnix"), expectedBlueprintFiles);
+		AssertionsHelper.assertFolderContainsFiles(
+				fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "ngnix"), expectedBlueprintFiles);
 	}
 
 	@Test
 	void testExportContentWithSpecificBlueprints() {
-		//GIVEN 
+		// GIVEN
 		List<VraNgBlueprint> blueprints = new ArrayList<>();
 		BlueprintMockBuilder ngnixMockBuilder = new BlueprintMockBuilder("ngnix");
 		BlueprintMockBuilder tomcatMockBuilder = new BlueprintMockBuilder("tomcat");
@@ -154,20 +153,21 @@ public class VraNgBlueprintStoreTest {
 		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
 		when(restClient.getAllBlueprints()).thenReturn(blueprints);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedBlueprints = {"ngnix"};
-		String[] expectedBlueprintFiles = {"content.yaml", "details.json"};
+		String[] expectedBlueprints = { "ngnix" };
+		String[] expectedBlueprintFiles = { "content.yaml", "details.json" };
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedBlueprints);
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "ngnix"), expectedBlueprintFiles);
+		AssertionsHelper.assertFolderContainsFiles(
+				fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "ngnix"), expectedBlueprintFiles);
 	}
-	
+
 	@Test
 	void testExportContentWithNonExistingBlueprint() {
-		//GIVEN 
+		// GIVEN
 		List<VraNgBlueprint> blueprints = new ArrayList<>();
 		BlueprintMockBuilder ngnixMockBuilder = new BlueprintMockBuilder("ngnix");
 
@@ -179,7 +179,7 @@ public class VraNgBlueprintStoreTest {
 		when(vraNgPackageDescriptor.getBlueprint()).thenReturn(blueprintNames);
 		when(restClient.getAllBlueprints()).thenReturn(blueprints);
 
-		//TEST
+		// TEST
 		assertThrows(IllegalStateException.class, () -> store.exportContent());
 	}
 
@@ -196,8 +196,11 @@ public class VraNgBlueprintStoreTest {
 
 		fsMocks.blueprintFsMocks().addBlueprint(blueprint);
 
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx 8.x test"});
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx 8.x test"), new String[]{"content.yaml", "details.json"});
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(),
+				new String[] { "nginx 8.x test" });
+		AssertionsHelper.assertFolderContainsFiles(
+				fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx 8.x test"),
+				new String[] { "content.yaml", "details.json" });
 
 		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
 
@@ -225,8 +228,10 @@ public class VraNgBlueprintStoreTest {
 
 		fsMocks.blueprintFsMocks().addBlueprint(blueprint);
 
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json"});
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[] { "nginx" });
+		AssertionsHelper.assertFolderContainsFiles(
+				fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"),
+				new String[] { "content.yaml", "details.json" });
 
 		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
 
@@ -254,8 +259,10 @@ public class VraNgBlueprintStoreTest {
 
 		fsMocks.blueprintFsMocks().addBlueprint(blueprint);
 
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json"});
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[] { "nginx" });
+		AssertionsHelper.assertFolderContainsFiles(
+				fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"),
+				new String[] { "content.yaml", "details.json" });
 
 		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
 		bluePrintsOnServer.add(blueprint);
@@ -286,9 +293,11 @@ public class VraNgBlueprintStoreTest {
 		VraNgBlueprint blueprint = builder.build();
 
 		fsMocks.blueprintFsMocks().addBlueprint(blueprint);
-		
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[]{"nginx"});
-		AssertionsHelper.assertFolderContainsFiles(fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"), new String[]{"content.yaml", "details.json"});
+
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), new String[] { "nginx" });
+		AssertionsHelper.assertFolderContainsFiles(
+				fsMocks.findItemByNameInFolder(fsMocks.getTempFolderProjectPath(), "nginx"),
+				new String[] { "content.yaml", "details.json" });
 
 		List<VraNgBlueprint> bluePrintsOnServer = new ArrayList<>();
 

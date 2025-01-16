@@ -21,6 +21,7 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.CatalogEntitlementMockBuilder
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.*;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.*;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
@@ -41,82 +42,81 @@ import static org.mockito.Mockito.*;
 
 public class VraNgEntitlementStoreTest {
 	@Rule
-	public TemporaryFolder 				tempFolder		= new TemporaryFolder();
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	protected VraNgEntitlementStore		store;
-	protected RestClientVraNg 			restClient;
-	protected Package 					pkg;
-	protected ConfigurationVraNg 		config;
-	protected VraNgPackageDescriptor 	vraNgPackageDescriptor;
-	protected FsMocks 					fsMocks;
+	protected VraNgEntitlementStore store;
+	protected RestClientVraNg restClient;
+	protected Package pkg;
+	protected ConfigurationVraNg config;
+	protected VraNgPackageDescriptor vraNgPackageDescriptor;
+	protected FsMocks fsMocks;
 
 	@BeforeEach
 	void init() {
 		try {
 			tempFolder.create();
-		}
-		catch ( IOException e ) {
-			throw new RuntimeException( "Could not create a temp folder" );
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create a temp folder");
 		}
 
-		fsMocks					= new FsMocks( tempFolder.getRoot() );
-		store					= new VraNgEntitlementStore();
-		restClient				= Mockito.mock( RestClientVraNg.class );
-		pkg						= PackageFactory.getInstance( PackageType.VRANG, tempFolder.getRoot() );
-		config					= Mockito.mock( ConfigurationVraNg.class );
-		vraNgPackageDescriptor	= Mockito.mock( VraNgPackageDescriptor.class );
+		fsMocks = new FsMocks(tempFolder.getRoot());
+		store = new VraNgEntitlementStore();
+		restClient = Mockito.mock(RestClientVraNg.class);
+		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
+		config = Mockito.mock(ConfigurationVraNg.class);
+		vraNgPackageDescriptor = Mockito.mock(VraNgPackageDescriptor.class);
 
-		store.init( restClient, pkg, config, vraNgPackageDescriptor );
-		System.out.println( "==========================================================" );
-		System.out.println( "START" );
-		System.out.println( "==========================================================" );
+		store.init(restClient, pkg, config, vraNgPackageDescriptor);
+		System.out.println("==========================================================");
+		System.out.println("START");
+		System.out.println("==========================================================");
 	}
 
 	@AfterEach
 	void tearDown() {
 		tempFolder.delete();
 
-		System.out.println( "==========================================================" );
-		System.out.println( "END" );
-		System.out.println( "==========================================================" );
+		System.out.println("==========================================================");
+		System.out.println("END");
+		System.out.println("==========================================================");
 	}
 
 	@Test
 	void testExportContentWithNoEntitlements() {
-		//GIVEN
-		when( vraNgPackageDescriptor.getCatalogEntitlement() ).thenReturn(new ArrayList<String>());
+		// GIVEN
+		when(vraNgPackageDescriptor.getCatalogEntitlement()).thenReturn(new ArrayList<String>());
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
-		verify( restClient, never() ).getAllCatalogEntitlements();
-		assertEquals( 0, tempFolder.getRoot().listFiles().length );
+		// VERIFY
+		verify(restClient, never()).getAllCatalogEntitlements();
+		assertEquals(0, tempFolder.getRoot().listFiles().length);
 	}
 
 	@Test
 	void testExportContentWithAllEntitlements() {
-		//GIVEN
+		// GIVEN
 		when(vraNgPackageDescriptor.getCatalogEntitlement()).thenReturn(null);
 
 		List<VraNgCatalogEntitlement> entitlements = new ArrayList<>();
 		CatalogEntitlementMockBuilder builder = new CatalogEntitlementMockBuilder("entitlement1");
 		entitlements.add(builder.build());
-		when( restClient.getAllCatalogEntitlements() ).thenReturn( entitlements );
+		when(restClient.getAllCatalogEntitlements()).thenReturn(entitlements);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedEntitlementsFile	= { "entitlement1.yaml" };
+		String[] expectedEntitlementsFile = { "entitlement1.yaml" };
 
-		//VERIFY
-		verify( restClient, times(1) ).getAllCatalogEntitlements();
-		AssertionsHelper.assertFolderContainsFiles( fsMocks.getTempFolderProjectPath(), expectedEntitlementsFile );
+		// VERIFY
+		verify(restClient, times(1)).getAllCatalogEntitlements();
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedEntitlementsFile);
 	}
 
 	@Test
 	void testExportContentWithSpecificEntitlements() {
-		//GIVEN
+		// GIVEN
 		List<VraNgCatalogEntitlement> entitlements = new ArrayList<>();
 		CatalogEntitlementMockBuilder builder1 = new CatalogEntitlementMockBuilder("entitlement1");
 		CatalogEntitlementMockBuilder builder2 = new CatalogEntitlementMockBuilder("entitlement2");
@@ -127,21 +127,21 @@ public class VraNgEntitlementStoreTest {
 
 		List<String> entitlementsNames = new ArrayList<>();
 		entitlementsNames.add("entitlement1");
-		when( vraNgPackageDescriptor.getCatalogEntitlement() ).thenReturn(entitlementsNames);
+		when(vraNgPackageDescriptor.getCatalogEntitlement()).thenReturn(entitlementsNames);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedEntitlementsFile	= { "entitlement1.yaml" };
+		String[] expectedEntitlementsFile = { "entitlement1.yaml" };
 
-		//VERIFY
-		verify( restClient, times(1) ).getAllCatalogEntitlements();
-		AssertionsHelper.assertFolderContainsFiles( fsMocks.getTempFolderProjectPath(), expectedEntitlementsFile );
+		// VERIFY
+		verify(restClient, times(1)).getAllCatalogEntitlements();
+		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedEntitlementsFile);
 	}
 
 	@Test
 	void testImportContentExcludingFromConfiguration() {
-		//GIVEN
+		// GIVEN
 		CatalogEntitlementMockBuilder builder1 = new CatalogEntitlementMockBuilder("entitlement1");
 		CatalogEntitlementMockBuilder builder2 = new CatalogEntitlementMockBuilder("entitlement2");
 
@@ -150,18 +150,18 @@ public class VraNgEntitlementStoreTest {
 
 		List<String> entitlementsNames = new ArrayList<>();
 		entitlementsNames.add("entitlement");
-		when( vraNgPackageDescriptor.getCatalogEntitlement() ).thenReturn(entitlementsNames);
+		when(vraNgPackageDescriptor.getCatalogEntitlement()).thenReturn(entitlementsNames);
 
-		//TEST
+		// TEST
 		store.importContent(tempFolder.getRoot());
 
-		//VERIFY
-		verify( restClient, times(0) ).createCatalogEntitlement(any(), any());
+		// VERIFY
+		verify(restClient, times(0)).createCatalogEntitlement(any(), any());
 	}
 
 	@Test
 	void testExportContentWithNoExistingEntitlement() {
-		//GIVEN
+		// GIVEN
 		List<VraNgCatalogEntitlement> entitlements = new ArrayList<>();
 		CatalogEntitlementMockBuilder builder1 = new CatalogEntitlementMockBuilder("entitlement1");
 		CatalogEntitlementMockBuilder builder2 = new CatalogEntitlementMockBuilder("entitlement2");
@@ -172,12 +172,12 @@ public class VraNgEntitlementStoreTest {
 
 		List<String> entitlementsNames = new ArrayList<>();
 		entitlementsNames.add("noting");
-		when( vraNgPackageDescriptor.getCatalogEntitlement() ).thenReturn(entitlementsNames);
+		when(vraNgPackageDescriptor.getCatalogEntitlement()).thenReturn(entitlementsNames);
 
-		//TEST
+		// TEST
 		assertThrows(IllegalStateException.class, () -> store.exportContent());
 
-		//VERIFY
-		verify( restClient, times(1)).getAllCatalogEntitlements();
+		// VERIFY
+		verify(restClient, times(1)).getAllCatalogEntitlements();
 	}
 }

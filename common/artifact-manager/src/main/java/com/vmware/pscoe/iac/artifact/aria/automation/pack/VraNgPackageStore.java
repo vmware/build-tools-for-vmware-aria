@@ -31,9 +31,9 @@ import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageAdapter;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageContent;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageAdapter;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgTypeStoreFactory;
 

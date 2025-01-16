@@ -23,8 +23,6 @@ import static org.mockito.Mockito.when;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
 import com.google.gson.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -42,7 +40,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 
 import org.apache.commons.io.FileUtils;

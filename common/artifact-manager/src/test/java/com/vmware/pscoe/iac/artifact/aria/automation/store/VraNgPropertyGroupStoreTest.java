@@ -22,7 +22,7 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import org.junit.Rule;
