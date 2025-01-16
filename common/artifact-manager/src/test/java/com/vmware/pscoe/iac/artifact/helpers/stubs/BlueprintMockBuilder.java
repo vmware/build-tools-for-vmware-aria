@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 
 public class BlueprintMockBuilder {
 	private String id;

@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgLeasePolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgLeasePolicy;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,6 +34,7 @@ public class LeasePolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param tempDir temporary folder for test data.
 	 */
 
@@ -43,6 +44,7 @@ public class LeasePolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return the full path where test policy json files are stored during tests.
 	 */
 	@Override
@@ -52,20 +54,19 @@ public class LeasePolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * JSON encodes a resource action and adds it to the resource actions directory.
-	 * This will also create the content.yaml based on the resource action and alternatively accepts a versions' data containing
+	 * This will also create the content.yaml based on the resource action and
+	 * alternatively accepts a versions' data containing
 	 * information about the versions.
 	 *
-	 * @param    policy - The  policy to store
+	 * @param policy - The policy to store
 	 */
 	public void addPolicy(VraNgLeasePolicy policy) {
 		File file = Paths.get(
-			this.getWorkdir().getAbsolutePath(),
-			policy.getName() + ".json"
-		).toFile();
+				this.getWorkdir().getAbsolutePath(),
+				policy.getName() + ".json").toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());
 		writeFileToPath(itemName, gson.toJson(policy).getBytes());
 	}
 }
-

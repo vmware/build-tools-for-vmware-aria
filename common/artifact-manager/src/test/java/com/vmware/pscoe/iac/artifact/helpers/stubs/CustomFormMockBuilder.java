@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
 
 public class CustomFormMockBuilder {
 	/**

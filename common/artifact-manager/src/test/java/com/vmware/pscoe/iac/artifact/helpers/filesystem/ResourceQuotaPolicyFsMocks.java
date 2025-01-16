@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgResourceQuotaPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPolicy;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,33 +34,36 @@ public class ResourceQuotaPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param tempDir temporary folder for test data.
 	 */
 	public ResourceQuotaPolicyFsMocks(File tempDir) {
 		super(tempDir);
 	}
+
 	/**
 	 * Getter.
+	 * 
 	 * @return the full path where test policy json files are stored during tests.
 	 */
 	@Override
 	public File getWorkdir() {
 		return Paths.get(this.tempDir.getPath(),
-			DIR_POLICIES, RESOURCE_QUOTA_POLICY).toFile();
+				DIR_POLICIES, RESOURCE_QUOTA_POLICY).toFile();
 	}
 
 	/**
 	 * JSON encodes a resource action and adds it to the resource actions directory.
-	 * This will also create the content.yaml based on the resource action and alternatively accepts a versions' data containing
+	 * This will also create the content.yaml based on the resource action and
+	 * alternatively accepts a versions' data containing
 	 * information about the versions.
 	 *
-	 * @param    rqPolicy - The resource quota policy to store
+	 * @param rqPolicy - The resource quota policy to store
 	 */
 	public void addResourceQuotaPolicy(VraNgResourceQuotaPolicy rqPolicy) {
 		File file = Paths.get(
-			this.getWorkdir().getAbsolutePath(),
-			rqPolicy.getName() + ".json"
-		).toFile();
+				this.getWorkdir().getAbsolutePath(),
+				rqPolicy.getName() + ".json").toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());
