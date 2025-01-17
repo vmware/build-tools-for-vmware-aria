@@ -18,7 +18,7 @@ jobs:
           URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
           OUTPUT=$(curl -L \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.CI_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             $URL )
           echo $OUTPUT
@@ -40,9 +40,9 @@ jobs:
 
       - name: Checkout
         run: |
-          git clone https://${{ secrets.CI_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git .
-          git config --global user.email "venelin.bakalov@broadcom.com"
-          git config --global user.name "Venelin Bakalov"
+          git clone https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git .
+          git config --global user.email "vcf-ps-coe.ci-admin@broadcom.com"
+          git config --global user.name "WWCoE CI admin"
 
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
