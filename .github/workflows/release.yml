@@ -41,7 +41,7 @@ jobs:
       - name: Checkout
         run: |
           git clone https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git .
-          git config --global user.email "svc-wwcoe-ci-admin@vmware.com"
+          git config --global user.email "vcf-ps-coe.ci-admin@broadcom.com"
           git config --global user.name "WWCoE CI admin"
 
       - name: Install xmllint
