@@ -37,7 +37,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlem
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;

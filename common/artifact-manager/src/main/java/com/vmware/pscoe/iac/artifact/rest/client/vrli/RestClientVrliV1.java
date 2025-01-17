@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.vmware.pscoe.iac.artifact.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.rest.client.messages.Errors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.AlertDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.rest.model.vrli.v1.ContentPackMetadataListDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.vrops.ResourcesDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ResourcesDTO;
 
 public class RestClientVrliV1 extends AbstractRestClientVrli {
 	/**

@@ -63,7 +63,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.configuration.Configuration
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
