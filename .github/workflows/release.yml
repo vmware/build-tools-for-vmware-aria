@@ -11,9 +11,7 @@ jobs:
   release:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: write
+    permissions: write-all
     steps:
 
       - name: Validate actor permissions
