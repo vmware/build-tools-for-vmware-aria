@@ -48,7 +48,7 @@ jobs:
         run: sudo apt-get install libxml2-utils
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@4f7fb9d9675e899ca81c6161dadbba0189a4ebb1 #v1.18.0
+        uses: s4u/setup-maven-action@v1.17.0 #4f7fb9d9675e899ca81c6161dadbba0189a4ebb1 #v1.18.0
         with:
           java-version: 17
           java-distribution: "temurin"
