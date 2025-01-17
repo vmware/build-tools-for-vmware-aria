@@ -13,6 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Check write access to repo
+        run: |
+          token_login=$(curl -H "Authorization: Bearer ${token}" https://api.github.com/user | jq -r '.login')
+          echo token login is ${token_login}
+          echo $(curl  -H "Authorization: Bearer ${token}" https://api.github.com/repos/${repo}/collaborators/${token_login}/permission) > result
+          cat result | jq  '.permission == "admin" // .permission == "write"' > /dev/null || ( echo "Token does not have write access to ${repo}" >> ${GITHUB_STEP_SUMMARY}; exit 1)
+          curl -sS -f -I -H "Authorization: Bearer ${token}" https://api.github.com | grep 'x-oauth-scopes:' | grep 'repo' > /dev/null && exit 0 || echo "Token does not have repo scope on ${repo}" >> ${GITHUB_STEP_SUMMARY}
+        env:
+          repo: ${{ github.repository }}
+          token: ${{ secrets.GH_TOKEN}}
+
       - name: Validate actor permissions
         run: |
           URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
