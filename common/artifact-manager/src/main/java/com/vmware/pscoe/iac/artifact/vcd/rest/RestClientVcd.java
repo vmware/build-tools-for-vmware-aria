@@ -38,13 +38,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vcd.VcdNgPackageManifest;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.vcd.models.VcdNgPackageManifest;
 import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginMetadataDTO;
 import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginResourceDTO;
 

@@ -14,9 +14,9 @@
  */
 package com.vmware.pscoe.iac.artifact.vcd.rest;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
 import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.slf4j.Logger;

@@ -22,6 +22,7 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.Configurati
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;

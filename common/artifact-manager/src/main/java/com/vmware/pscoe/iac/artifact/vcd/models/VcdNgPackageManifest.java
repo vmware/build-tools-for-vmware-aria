@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model.vcd;
+package com.vmware.pscoe.iac.artifact.vcd.models;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +31,7 @@ import com.vmware.pscoe.iac.artifact.PackageManager;
 
 public class VcdNgPackageManifest {
 	private String jsonData;
-	
+
 	private VcdNgPackageManifest(String jsonData) {
 		this.jsonData = jsonData;
 	}
@@ -58,7 +58,7 @@ public class VcdNgPackageManifest {
 		if (!member.isJsonArray()) {
 			throw new RuntimeException("Expected metadata member [" + key + "] to be an array, but is not");
 		}
-		
+
 		JsonArray jsonArray = member.getAsJsonArray();
 		String[] list = new String[jsonArray.size()];
 		for (int i = 0; i < jsonArray.size(); i++) {

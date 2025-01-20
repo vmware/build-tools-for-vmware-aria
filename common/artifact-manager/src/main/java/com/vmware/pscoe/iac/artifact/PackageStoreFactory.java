@@ -44,6 +44,7 @@ import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategyForceLatestVersions;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.vcd.store.VcdNgPackageStore;
 

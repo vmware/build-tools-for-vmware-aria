@@ -63,7 +63,7 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroBasicAu
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroSsoAuthNInterceptor;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcdBasicAuthInterceptor;
 

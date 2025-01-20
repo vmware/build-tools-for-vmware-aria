@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.vcd.rest.models;
 
-import com.vmware.pscoe.iac.artifact.model.vcd.VcdNgPackageManifest;
+import com.vmware.pscoe.iac.artifact.vcd.models.VcdNgPackageManifest;
 
 public final class VcdPluginMetadataDTO {
 

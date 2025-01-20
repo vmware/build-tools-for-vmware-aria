@@ -56,7 +56,6 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
@@ -70,6 +69,7 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 /**
  * Created by tsimchev on 2/22/18.
