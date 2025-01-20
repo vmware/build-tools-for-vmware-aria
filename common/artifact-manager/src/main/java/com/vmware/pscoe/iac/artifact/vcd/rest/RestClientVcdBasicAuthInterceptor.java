@@ -12,9 +12,10 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.vcd.rest;
 
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
 import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -62,7 +63,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	 * Provider session api path.
 	 */
 	private static final String PROVIDER_URL_SESSION = "/cloudapi/1.0.0/sessions/provider";
-	
+
 	/**
 	 * version api path.
 	 */
@@ -93,11 +94,12 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	 */
 	private static final String API_VERSION_38 = "38.0";
 
-	protected RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
+	public RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
 			String apiVersion) {
 		super(configuration, restTemplate);
 		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)) {
-			logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38 + ". Switching to using API version " + API_VERSION_37);
+			logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
+					+ ". Switching to using API version " + API_VERSION_37);
 			apiVersion = API_VERSION_37;
 		}
 
@@ -107,25 +109,26 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	/**
 	 * Intercepts all requests done to the vCD API.
 	 * 
-	 * @param request Http request
-	 * @param body body
+	 * @param request   Http request
+	 * @param body      body
 	 * @param execution request execution
 	 * @return ClientHttpResponse
 	 */
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
 		try {
-			if (!request.getURI().getPath().contains(PROVIDER_URL_SESSION) && !request.getURI().getPath().contains(URL_VERSION)) {
+			if (!request.getURI().getPath().contains(PROVIDER_URL_SESSION)
+					&& !request.getURI().getPath().contains(URL_VERSION)) {
 				if (this.bearerToken == null) {
 					logger.info("Aquiring vCD auth token...");
 					acquireToken(request);
 					logger.info("vCD auth token aquired");
 				}
-				
+
 				request.getHeaders().add(HEADER_VCLOUD_TOKEN, this.vcloudToken);
 				request.getHeaders().add(HEADER_AUTHORIZATION, VcdApiHelper.buildBearerToken(this.bearerToken));
 			}
-			
+
 			return execution.execute(request, body);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -134,7 +137,8 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 
 	private void acquireToken(HttpRequest request) throws JsonProcessingException {
 		final URI tokenUri = UriComponentsBuilder.newInstance().scheme(request.getURI().getScheme())
-				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(PROVIDER_URL_SESSION).build().toUri();
+				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(PROVIDER_URL_SESSION).build()
+				.toUri();
 
 		// Prepare Headers
 		final HttpHeaders headers = new HttpHeaders();
@@ -145,14 +149,15 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 		headers.add(HEADER_AUTHORIZATION, VcdApiHelper.buildBasicAuth(this.getConfiguration().getUsername(),
 				this.getConfiguration().getDomain(), this.getConfiguration().getPassword()));
 		final HttpEntity<String> entity = new HttpEntity<>(headers);
-		
+
 		logger.warn("token uri: " + tokenUri);
 		logger.warn("Auth: " + VcdApiHelper.buildBasicAuth(this.getConfiguration().getUsername(),
 				this.getConfiguration().getDomain(), this.getConfiguration().getPassword()));
 
 		final ResponseEntity<String> response = getRestTemplate().exchange(tokenUri, HttpMethod.POST, entity,
 				String.class);
-		this.vcloudToken = response.getHeaders().get(HEADER_VCLOUD_TOKEN) == null ? null : response.getHeaders().get(HEADER_VCLOUD_TOKEN).get(0); 
+		this.vcloudToken = response.getHeaders().get(HEADER_VCLOUD_TOKEN) == null ? null
+				: response.getHeaders().get(HEADER_VCLOUD_TOKEN).get(0);
 		this.bearerToken = response.getHeaders().get(HEADER_BEARER_TOKEN).get(0);
 	}
 

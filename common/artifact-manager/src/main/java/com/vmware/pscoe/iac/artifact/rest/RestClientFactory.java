@@ -64,6 +64,8 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroSsoAuth
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
+import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcdBasicAuthInterceptor;
 
 public final class RestClientFactory {
 	/**

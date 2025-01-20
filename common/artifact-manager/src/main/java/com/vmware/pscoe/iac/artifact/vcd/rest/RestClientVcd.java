@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.vcd.rest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,9 +43,10 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.model.vcd.VcdNgPackageManifest;
+import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
-import com.vmware.pscoe.iac.artifact.rest.model.VcdPluginMetadataDTO;
-import com.vmware.pscoe.iac.artifact.rest.model.VcdPluginResourceDTO;
+import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginMetadataDTO;
+import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginResourceDTO;
 
 import net.minidev.json.JSONArray;
 
@@ -141,7 +142,7 @@ public class RestClientVcd extends RestClient {
 	 */
 	private Map<String, Object> publishedTenantsInfo;
 
-	protected RestClientVcd(ConfigurationVcd configuration, RestTemplate restTemplate) {
+	public RestClientVcd(ConfigurationVcd configuration, RestTemplate restTemplate) {
 		this.configuration = configuration;
 		this.restTemplate = restTemplate;
 	}
@@ -197,11 +198,13 @@ public class RestClientVcd extends RestClient {
 			acceptableMediaTypes.add(contentType);
 			headers.setAccept(acceptableMediaTypes);
 
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<String>(headers), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,
+					new HttpEntity<String>(headers), String.class);
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
 			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)) {
-				logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38 + ". Switching to using API version " + API_VERSION_37);
+				logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
+						+ ". Switching to using API version " + API_VERSION_37);
 				this.apiVersion = API_VERSION_37;
 			}
 
@@ -235,7 +238,7 @@ public class RestClientVcd extends RestClient {
 	 * @param id extension id
 	 * @return Package
 	 * 
-	 * getUiExtension.
+	 *         getUiExtension.
 	 */
 	public Package getUiExtension(String id) {
 		logger.debug("Getting UI extension for ID [" + id + "]...");
@@ -248,7 +251,8 @@ public class RestClientVcd extends RestClient {
 
 		logger.debug("UI extension for ID [" + id + "] retrieved.");
 
-		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId, new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
+		return PackageFactory.getInstance(PACKAGE_TYPE, pluginId,
+				new File(pluginName + "-" + pluginVersion + "." + PACKAGE_TYPE));
 	}
 
 	/**
@@ -256,7 +260,7 @@ public class RestClientVcd extends RestClient {
 	 * @param id extension id
 	 * @return Package
 	 * 
-	 * getUiExtensionTenants.
+	 *         getUiExtensionTenants.
 	 */
 	public JsonArray getUiExtensionTenants(String id) {
 		logger.debug("Getting UI extension Tenants for ID [" + id + "]...");
@@ -273,7 +277,7 @@ public class RestClientVcd extends RestClient {
 	 * @param localPkg local package
 	 * @return Package
 	 * 
-	 * getUiExtension.
+	 *         getUiExtension.
 	 */
 	public Package getUiExtension(Package localPkg) {
 		List<Package> extensions = getAllUiExtensions();
@@ -291,7 +295,7 @@ public class RestClientVcd extends RestClient {
 	 * @param pkg package
 	 * @return Package
 	 * 
-	 * addUiExtension.
+	 *         addUiExtension.
 	 */
 	public Package addUiExtension(Package pkg) {
 		logger.debug("Adding UI extension for [" + pkg + "]...");
@@ -318,7 +322,7 @@ public class RestClientVcd extends RestClient {
 	 * 
 	 * @param remotePkg remote package
 	 * 
-	 * removeUiExtension.
+	 *                  removeUiExtension.
 	 */
 	public void removeUiExtension(Package remotePkg) {
 		logger.debug("Removing UI extension for [" + remotePkg + "]...");
@@ -332,7 +336,7 @@ public class RestClientVcd extends RestClient {
 	 * @param localPkg  local package
 	 * @param remotePkg remote package
 	 * 
-	 * uploadUiPlugin.
+	 *                  uploadUiPlugin.
 	 */
 	public void uploadUiPlugin(Package localPkg, Package remotePkg) {
 		logger.debug("Uploading plugin resource for [" + remotePkg + "].");
@@ -370,7 +374,7 @@ public class RestClientVcd extends RestClient {
 	 * 
 	 * @param remotePkg remote package
 	 * 
-	 * deleteUiPlugin.
+	 *                  deleteUiPlugin.
 	 */
 	public void deleteUiPlugin(Package remotePkg) {
 		logger.debug("Deleting plugin resource for [" + remotePkg + "]...");
@@ -384,7 +388,7 @@ public class RestClientVcd extends RestClient {
 	 * @param pkg package
 	 * @return Package
 	 * 
-	 * addOrReplaceUiPlugin.
+	 *         addOrReplaceUiPlugin.
 	 */
 	public Package addOrReplaceUiPlugin(Package pkg) {
 		Package remotePkg = this.getUiExtension(pkg);
@@ -405,7 +409,7 @@ public class RestClientVcd extends RestClient {
 	 * 
 	 * @param remotePkg remote package
 	 * 
-	 * publishUiPlugin.
+	 *                  publishUiPlugin.
 	 */
 	public void publishUiPlugin(Package remotePkg) {
 		logger.debug("Publishing UI extension [" + remotePkg + "] to all tenants...");
@@ -423,7 +427,7 @@ public class RestClientVcd extends RestClient {
 	 * @param remotePkg remote package
 	 * @param tenants   tenants to publish
 	 * 
-	 * publishUiPluginToTenants.
+	 *                  publishUiPluginToTenants.
 	 */
 	public void publishUiPluginToTenants(Package remotePkg, JsonArray tenants) {
 		logger.debug("Publishing UI plugin [" + remotePkg + "] to specific tenants...");
@@ -440,7 +444,7 @@ public class RestClientVcd extends RestClient {
 	 * 
 	 * @param id extension id
 	 * 
-	 * getUiExtension.
+	 *           getUiExtension.
 	 */
 	private void setUiExtensionPublishedTenantsInfo(String id) {
 		logger.debug("Getting UI extension published tenants info for ID [" + id + "]...");

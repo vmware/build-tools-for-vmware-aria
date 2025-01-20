@@ -9,6 +9,6 @@ The structure of this folder is being reworked. Classes are being moved based on
 - [x] Aria Logs
 - [x] Aria Operations
 - [ ] SSH
-- [ ] vCD
+- [x] vCD
 - [ ] CS
 - [ ] ABX

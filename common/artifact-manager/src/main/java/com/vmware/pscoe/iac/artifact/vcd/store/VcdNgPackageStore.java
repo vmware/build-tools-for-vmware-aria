@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.vcd.store;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,13 +21,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vmware.pscoe.iac.artifact.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.model.vcd.VcdPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;
+import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 
 public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor> {
 	/**
@@ -50,18 +52,19 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 	 * @param vcdRestClient the vcd rest client
 	 * @param vcdStrategies the vcd package store strategies
 	 */
-	protected VcdNgPackageStore(final RestClientVcd vcdRestClient, final List<Strategy> vcdStrategies) {
+	public VcdNgPackageStore(final RestClientVcd vcdRestClient, final List<Strategy> vcdStrategies) {
 		this.restClient = vcdRestClient;
 		this.strategies = vcdStrategies;
 	}
 
 	/**
 	 *
-	 * @param vcdRestClient the vcd rest client
-	 * @param vcdStrategies the vcd package store strategies
+	 * @param vcdRestClient     the vcd rest client
+	 * @param vcdStrategies     the vcd package store strategies
 	 * @param vcdProductVersion the vcd product version
 	 */
-	protected VcdNgPackageStore(final RestClientVcd vcdRestClient, final List<Strategy> vcdStrategies, final Version vcdProductVersion) {
+	public VcdNgPackageStore(final RestClientVcd vcdRestClient, final List<Strategy> vcdStrategies,
+			final Version vcdProductVersion) {
 		this.restClient = vcdRestClient;
 		this.strategies = vcdStrategies;
 		super.setProductVersion(vcdProductVersion);
@@ -69,6 +72,7 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Gets the packages.
+	 * 
 	 * @return the extracted vcd packages
 	 */
 	@Override
@@ -84,7 +88,8 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Exports all packages.
-	 * @param pkg the packages to export
+	 * 
+	 * @param pkg    the packages to export
 	 * @param dryrun whether it should be dry run
 	 * @return the exported packages
 	 */
@@ -95,26 +100,30 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Imports all packages.
-	 * @param pkg the packages to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkg          the packages to import
+	 * @param dryrun       whether it should be dry run
 	 * @param enableBackup whether it should back up the packages on import
 	 * @return the imported packages
 	 */
 	@Override
-	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun,
+			final boolean enableBackup) {
 		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
 	/**
 	 * Imports all packages.
-	 * @param pkgs the packages to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkgs          the packages to import
+	 * @param dryrun        whether it should be dry run
 	 * @param mergePackages whether to merge the packages
-	 * @param enableBackup whether it should back up the packages on import
+	 * @param enableBackup  whether it should back up the packages on import
 	 * @return the imported packages
 	 */
 	@Override
-	public final List<Package> importAllPackages(final List<Package> pkgs, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
+	public final List<Package> importAllPackages(final List<Package> pkgs, final boolean dryrun,
+			final boolean mergePackages, final boolean enableBackup) {
 		if (dryrun) {
 			throw new UnsupportedOperationException("dryrun option not supported");
 		}
@@ -139,7 +148,8 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg    the package to export
 	 * @param dryrun whether it should be a dry run
 	 * @return the exported package
 	 */
@@ -150,9 +160,10 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg              the package to export
 	 * @param exportDescriptor the descriptor of the package to export
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun           whether it should be dry run
 	 * @return the exported package
 	 */
 	@Override
@@ -162,20 +173,23 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg                  the package to export
 	 * @param vraPackageDescriptor the package descriptor
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun               whether it should be dry run
 	 * @return the exported package
 	 */
 	@Override
-	public final Package exportPackage(final Package pkg, final VcdPackageDescriptor vraPackageDescriptor, final boolean dryrun) {
+	public final Package exportPackage(final Package pkg, final VcdPackageDescriptor vraPackageDescriptor,
+			final boolean dryrun) {
 		throw new UnsupportedOperationException("Package export is not supported");
 	}
 
 	/**
 	 * Imports a package.
-	 * @param pkg the package to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkg           the package to import
+	 * @param dryrun        whether it should be dry run
 	 * @param mergePackages whether to merge the packages
 	 * @return the imported package
 	 */
@@ -191,9 +205,10 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Deletes a package.
-	 * @param pkg package to delete
+	 * 
+	 * @param pkg         package to delete
 	 * @param withContent package contains content or not
-	 * @param dryrun dry run the functionality or not
+	 * @param dryrun      dry run the functionality or not
 	 * @return the deleted package
 	 */
 	@Override
@@ -209,6 +224,7 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Gets package content.
+	 * 
 	 * @param pkg package to get the content
 	 * @return the packate content
 	 */
@@ -219,8 +235,9 @@ public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor>
 
 	/**
 	 * Deletes package content.
+	 * 
 	 * @param content package content
-	 * @param dryrun dry run delete functionlity or not
+	 * @param dryrun  dry run delete functionlity or not
 	 */
 	@Override
 	protected final void deleteContent(final Content content, final boolean dryrun) {
