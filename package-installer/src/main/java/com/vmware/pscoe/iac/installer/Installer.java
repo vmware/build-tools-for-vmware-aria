@@ -51,8 +51,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.VroWorkflowExecutor;
-import com.vmware.pscoe.iac.artifact.VroWorkflowExecutor.WorkflowExecutionException;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
@@ -63,13 +61,15 @@ import com.vmware.pscoe.iac.artifact.aria.automation.configuration.Configuration
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVroNg;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor.WorkflowExecutionException;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowExecution;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
 
 /**
  * Created by tsimchev on 2/22/18.
