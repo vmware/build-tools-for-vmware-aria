@@ -19,4 +19,7 @@ public class Errors {
 	public static final String PROCESS_ALERT_DATA_ERROR = "Unable to process alert data";
 	public static final String MAP_CONTENT_PACK_DATA_ERROR = "Unable to map content pack data";
 	public static final String PROCESS_CONTENT_PACK_DATA_ERROR = "Unable to process content pack data";
+
+	private Errors() {
+	}
 }

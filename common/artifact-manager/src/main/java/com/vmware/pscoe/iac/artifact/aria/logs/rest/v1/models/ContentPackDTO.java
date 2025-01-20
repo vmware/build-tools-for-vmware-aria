@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "name", "namespace", "formatVersion", "contentVersion", "author", "url", "info", "instructions",
 		"upgradeInstructions", "framework" })
 public class ContentPackDTO implements Serializable {
-	private final static long serialVersionUID = 7183649262190355102L;
+	private static final long serialVersionUID = 7183649262190355102L;
 
 	@JsonProperty("name")
 	private String name;

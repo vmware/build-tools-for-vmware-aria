@@ -61,7 +61,6 @@ import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory.TimeoutType;
 
 public final class RestClientFactory {
 	/**
