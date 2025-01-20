@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.configuration;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration;
 
 import java.net.URISyntaxException;
 import java.util.Properties;
@@ -21,6 +21,9 @@ import java.util.logging.Logger;
 import org.apache.hc.core5.http.HttpHost;
 import org.springframework.util.StringUtils;
 
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationNg;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationWithRefreshToken;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationVro extends ConfigurationWithRefreshToken implements ConfigurationNg {

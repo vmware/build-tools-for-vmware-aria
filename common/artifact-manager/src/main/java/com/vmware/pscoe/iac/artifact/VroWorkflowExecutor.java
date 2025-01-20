@@ -18,24 +18,25 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowExecution;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 
 public class VroWorkflowExecutor {
 
 	// ANSI Console Color Text Escape Sequences.
 	private static final String BRIGHT_FOREGROUND = "\u001B[90m";
 	private static final String NORMAL_FOREGROUND = "\u001B[39m";
-	private static final String NORMAL            = "\u001B[0m";
-	private static final String BRIGHT_RED        = "\u001B[1;31m";
-	private static final String RED               = "\u001B[0;31m";
-	private static final String BRIGHT_YELLOW     = "\u001B[1;33m";
-	private static final String YELLOW            = "\u001B[0;33m";
-	private static final String GREEN             = "\u001B[0;32m";
+	private static final String NORMAL = "\u001B[0m";
+	private static final String BRIGHT_RED = "\u001B[1;31m";
+	private static final String RED = "\u001B[0;31m";
+	private static final String BRIGHT_YELLOW = "\u001B[1;33m";
+	private static final String YELLOW = "\u001B[0;33m";
+	private static final String GREEN = "\u001B[0;32m";
 	private static final Integer WORKFLOW_FINISH_POLL_INTERVAL = 250;
 	private static final Integer WORKFLOW_EXEC_POLL_INTERVAL = 1000;
 
-	private static final long SERVICE_UNAVAILABLE_SLEEP_MILLIS = 60000; // How long to sleep before retrying in case the service is not available.
+	private static final long SERVICE_UNAVAILABLE_SLEEP_MILLIS = 60000; // How long to sleep before retrying in case the
+																		// service is not available.
 
 	private RestClientVro restClient;
 
@@ -49,15 +50,18 @@ public class VroWorkflowExecutor {
 	 * Executes a workflow synchronously and waits for it to finish/fail
 	 *
 	 * @param workflowId - The ID of the workflow
-	 * @param params     - Properties containing the input parameters of the workflow
+	 * @param params     - Properties containing the input parameters of the
+	 *                   workflow
 	 * @param timeout    - Timeout (in seconds) to wait for the workflow to finish
 	 * @return Properties containing all string output parameters of the workflow
 	 * @throws WorkflowExecutionException exception
 	 */
-	public WorkflowExecution executeWorkflow(String workflowId, Properties params, int timeout) throws WorkflowExecutionException {
+	public WorkflowExecution executeWorkflow(String workflowId, Properties params, int timeout)
+			throws WorkflowExecutionException {
 		// check whether workflow exists prior execution
 		if (!restClient.isWorkflowExisting(workflowId)) {
-			throw new WorkflowExecutionException(String.format("The workflow '%s' cannot be found on the target VRO '%s'", workflowId, restClient.getHost()));
+			throw new WorkflowExecutionException(String.format(
+					"The workflow '%s' cannot be found on the target VRO '%s'", workflowId, restClient.getHost()));
 		}
 		Properties inputParametersTypes = restClient.getInputParametersTypes(workflowId);
 
@@ -103,7 +107,8 @@ public class VroWorkflowExecutor {
 		}
 	}
 
-	private long printLogMessages(String workflowId, String executionId, long lastLogTimestamp, Set<String> printedMessages) {
+	private long printLogMessages(String workflowId, String executionId, long lastLogTimestamp,
+			Set<String> printedMessages) {
 		try {
 			final long timestamp = Instant.now().minus(Duration.ofSeconds(30)).toEpochMilli();
 			final List<String> logs = restClient.getWorkflowLogs(workflowId, executionId, "debug", lastLogTimestamp);
@@ -112,7 +117,7 @@ public class VroWorkflowExecutor {
 					final String colorMsg = (msg)
 							.replaceFirst("\\[(.+?)]", "[" + BRIGHT_FOREGROUND + "$1" + NORMAL_FOREGROUND + "]")
 							.replaceFirst("(?s)\\[warning](.+)", BRIGHT_YELLOW + "[warning]" + YELLOW + "$1" + NORMAL)
-							.replaceFirst("(?s)\\[error](.+)"  , BRIGHT_RED    + "[error]"   + RED    + "$1" + NORMAL);
+							.replaceFirst("(?s)\\[error](.+)", BRIGHT_RED + "[error]" + RED + "$1" + NORMAL);
 					System.out.println(colorMsg);
 					printedMessages.add(msg);
 				}
@@ -129,7 +134,8 @@ public class VroWorkflowExecutor {
 				+ NORMAL + rte.getClass().getName() + " : " + rte.getLocalizedMessage() + ". "
 				+ GREEN + "Sleeping for " + SERVICE_UNAVAILABLE_SLEEP_MILLIS + " milliseconds." + NORMAL);
 		printStackTrace(rte);
-		sleepSilently(SERVICE_UNAVAILABLE_SLEEP_MILLIS); // Give it some more time to recover (1 minute more) and do not fill up the logs so quickly
+		sleepSilently(SERVICE_UNAVAILABLE_SLEEP_MILLIS); // Give it some more time to recover (1 minute more) and do not
+															// fill up the logs so quickly
 	}
 
 	private void sleepSilently(long millis) {

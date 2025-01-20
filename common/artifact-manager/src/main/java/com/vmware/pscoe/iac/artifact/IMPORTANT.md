@@ -5,7 +5,7 @@ The structure of this folder is being reworked. Classes are being moved based on
 ## Progress
 
 - [x] Aria Automation
-- [ ] Aria Orchestrator
+- [x] Aria Orchestrator
 - [x] Aria Logs
 - [x] Aria Operations
 - [ ] SSH

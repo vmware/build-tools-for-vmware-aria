@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.store;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -26,12 +26,14 @@ import java.sql.Timestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vmware.pscoe.iac.artifact.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.PackageStore;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.model.vro.VroPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -56,7 +58,7 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 	 * @param vroRestClient the vRO rest client
 	 * @param vroStrategies the vRO strategies
 	 */
-	protected VroPackageStore(final RestClientVro vroRestClient, final List<Strategy> vroStrategies) {
+	public VroPackageStore(final RestClientVro vroRestClient, final List<Strategy> vroStrategies) {
 		this.restClient = vroRestClient;
 		this.strategies = vroStrategies;
 	}
@@ -67,7 +69,7 @@ public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
 	 * @param vroStrategies     the vRO strategies
 	 * @param vroProductVersion the vRO product version
 	 */
-	protected VroPackageStore(final RestClientVro vroRestClient, final List<Strategy> vroStrategies,
+	public VroPackageStore(final RestClientVro vroRestClient, final List<Strategy> vroStrategies,
 			final Version vroProductVersion) {
 		this.restClient = vroRestClient;
 		this.strategies = vroStrategies;

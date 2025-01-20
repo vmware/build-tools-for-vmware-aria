@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,7 +31,6 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-
 class VroPackageCleanup {
 
 	@BeforeEach
@@ -45,7 +44,7 @@ class VroPackageCleanup {
 	@Test
 	void testGetOrderedPackages() throws IOException {
 		List<String> pkgsNames = new ArrayList<>();
-		
+
 		pkgsNames.add("com.vmware.pscoe.library.vra.dispatcher-1.3.0");
 		pkgsNames.add("com.vmware.pscoe.library.vra.dispatcher-1.5.2-SNAPSHOT");
 		pkgsNames.add("com.vmware.pscoe.library.vra.dispatcher-2.3.0-SNAPSHOT");
@@ -56,14 +55,16 @@ class VroPackageCleanup {
 		pkgsNames.add("com.vmware.pscoe.library.vra.dispatcher-2.5.2-SNAPSHOT");
 		pkgsNames.add("com.vmware.pscoe.library.vra.dispatcher-2.6.0");
 		pkgsNames.add("com.vmware.pscoe.library.vra.dispatcher-2.10.0");
-		
-		List<Package> pkgs = pkgsNames.stream().map(c -> PackageFactory.getInstance(PackageType.VRO, new File(c + ".zip"))).collect(Collectors.toList());
-		
+
+		List<Package> pkgs = pkgsNames.stream()
+				.map(c -> PackageFactory.getInstance(PackageType.VRO, new File(c + ".zip")))
+				.collect(Collectors.toList());
+
 		// Exception from the rule. Unit test must be repeatable
 		Collections.shuffle(pkgs);
 		Collections.sort(pkgs);
-		
-		for(int i=0; i < pkgs.size() ; i++) {
+
+		for (int i = 0; i < pkgs.size(); i++) {
 			assertEquals(pkgs.get(i).getFQName(), pkgsNames.get(i));
 		}
 	}

@@ -56,11 +56,14 @@ import com.vmware.pscoe.iac.artifact.aria.operations.configuration.Configuration
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVropsAuthNInterceptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVropsBasicAuthInterceptor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVroNg;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroBasicAuthNInterceptor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroSsoAuthNInterceptor;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;
 
 public final class RestClientFactory {
 	/**

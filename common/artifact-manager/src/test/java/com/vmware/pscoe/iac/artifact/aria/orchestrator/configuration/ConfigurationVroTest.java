@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.configuration;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,12 +124,17 @@ class ConfigurationVroTest {
 				arguments("configurationadmin@System Domain", "vra", "configurationadmin", "System Domain"),
 				arguments("configurationadmin@@System Domain", "vra", "configurationadmin@", "System Domain"),
 				arguments("configurationadmin@test@System Domain", "vra", "configurationadmin@test", "System Domain"),
-				arguments("configurationadmin@test@test2@System Domain", "vra", "configurationadmin@test@test2", "System Domain"),
+				arguments("configurationadmin@test@test2@System Domain", "vra", "configurationadmin@test@test2",
+						"System Domain"),
 				arguments("configurationadmin", "basic", "configurationadmin", null),
 				arguments("configurationadmin@corp.local", "basic", "configurationadmin@corp.local", "corp.local"),
-				arguments("configurationadmin@System Domain", "basic", "configurationadmin@System Domain", "System Domain"),
-				arguments("configurationadmin@@System Domain", "basic", "configurationadmin@@System Domain", "System Domain"),
-				arguments("configurationadmin@test@System Domain", "basic", "configurationadmin@test@System Domain", "System Domain"),
-				arguments("configurationadmin@test@test2@System Domain", "basic", "configurationadmin@test@test2@System Domain", "System Domain"));
+				arguments("configurationadmin@System Domain", "basic", "configurationadmin@System Domain",
+						"System Domain"),
+				arguments("configurationadmin@@System Domain", "basic", "configurationadmin@@System Domain",
+						"System Domain"),
+				arguments("configurationadmin@test@System Domain", "basic", "configurationadmin@test@System Domain",
+						"System Domain"),
+				arguments("configurationadmin@test@test2@System Domain", "basic",
+						"configurationadmin@test@test2@System Domain", "System Domain"));
 	}
 }

@@ -12,9 +12,10 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.rest;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
 import com.vmware.pscoe.iac.artifact.rest.auth.VraSsoAuth;
 import com.vmware.pscoe.iac.artifact.rest.auth.VraSsoAuth.SsoToken;
 import org.springframework.http.HttpRequest;
@@ -31,9 +32,9 @@ public class RestClientVroSsoAuthNInterceptor extends RestClientRequestIntercept
 	private static final String AUTHORIZATION_SERVICE_URL_VRA_8 = "/csp/gateway/am/api/login";
 	private static final String AUTHORIZATION_SERVICE_URL_VRA_CLOUD = "/csp/gateway/am/api/auth/api-tokens/authorize";
 	private static final String SAAS_URL = "/SAAS/t/";
-	private static final String VERSION_URL= "vco/api/about";
+	private static final String VERSION_URL = "vco/api/about";
 
-	protected RestClientVroSsoAuthNInterceptor(ConfigurationVro configuration, RestTemplate restTemplate) {
+	public RestClientVroSsoAuthNInterceptor(ConfigurationVro configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 
 		this.ssoAuth = new VraSsoAuth(configuration, restTemplate);
@@ -42,7 +43,9 @@ public class RestClientVroSsoAuthNInterceptor extends RestClientRequestIntercept
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
 		try {
-			// blacklisted paths should not be intercepted in order to avoid interception loops
+			// blacklisted paths should not be intercepted in order to avoid interception
+			//
+			// loops
 			if (!isRequestPathInBlacklist(request.getURI().getPath())) {
 				this.token = this.token != null && !this.token.isExpired() ? this.token : this.ssoAuth.acquireToken();
 				request.getHeaders().add("Authorization", this.token.getTokenType() + " " + this.token.getValue());
@@ -55,7 +58,11 @@ public class RestClientVroSsoAuthNInterceptor extends RestClientRequestIntercept
 	}
 
 	private boolean isRequestPathInBlacklist(String requestPath) {
-		return requestPath.contains(SSO_REGISTRY_URL) || requestPath.contains(SAAS_URL) || requestPath.contains(VERSION_URL)
-				|| requestPath.contains(AUTHORIZATION_SERVICE_URL_VRA_8) || requestPath.contains(AUTHORIZATION_SERVICE_URL_VRA_CLOUD);
+
+		return requestPath.contains(SSO_REGISTRY_URL)
+				|| requestPath.contains(SAAS_URL)
+				|| requestPath.contains(VERSION_URL)
+				|| requestPath.contains(AUTHORIZATION_SERVICE_URL_VRA_8)
+				|| requestPath.contains(AUTHORIZATION_SERVICE_URL_VRA_CLOUD);
 	}
 }

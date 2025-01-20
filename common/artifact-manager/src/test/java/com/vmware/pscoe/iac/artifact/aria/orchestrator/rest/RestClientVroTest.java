@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest.vro;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.rest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.Properties;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.helpers.vro.RestClientVroTestDouble;
 
 import static org.junit.jupiter.api.Assertions.*;

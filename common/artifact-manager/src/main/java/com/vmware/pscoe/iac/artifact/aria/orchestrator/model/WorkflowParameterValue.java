@@ -12,20 +12,9 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model.vro;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.model;
 
-import java.util.List;
+import java.io.Serializable;
 
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
-
-public class VroPackageContent extends PackageContent<VroPackageContent.ContentType> {
-	
-	public enum ContentType implements PackageContent.ContentType { 
-		WORKFLOW, ACTION, CONFIGURATION, RESOURCE
-	}
-
-	public VroPackageContent(List<Content<ContentType>> content) {
-		super(content);
-	}
-
+public interface WorkflowParameterValue extends Serializable {
 }

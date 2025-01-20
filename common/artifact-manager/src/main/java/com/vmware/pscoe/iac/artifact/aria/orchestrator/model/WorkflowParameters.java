@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model.vro;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.gson.annotations.SerializedName;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "parameters" })
@@ -236,18 +235,18 @@ public class WorkflowParameters implements Serializable {
 
 		@JsonProperty("boolean")
 		@SerializedName(value = "boolean")
-		private com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.Bool bool;
+		private WorkflowParameters.Bool bool;
 
 		@JsonIgnore
 		private transient Map<java.lang.String, Object> additionalProperties = new HashMap<>();
 
 		@JsonProperty("boolean")
-		public com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.Bool getBoolean() {
+		public WorkflowParameters.Bool getBoolean() {
 			return bool;
 		}
 
 		@JsonProperty("boolean")
-		public void setBoolean(com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.Bool bool) {
+		public void setBoolean(WorkflowParameters.Bool bool) {
 			this.bool = bool;
 		}
 
@@ -268,18 +267,18 @@ public class WorkflowParameters implements Serializable {
 		private static final long serialVersionUID = 3534736269209803202L;
 
 		@JsonProperty("number")
-		private com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.Number number;
+		private WorkflowParameters.Number number;
 
 		@JsonIgnore
 		private transient Map<java.lang.String, Object> additionalProperties = new HashMap<>();
 
 		@JsonProperty("number")
-		public com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.Number getNumber() {
+		public WorkflowParameters.Number getNumber() {
 			return number;
 		}
 
 		@JsonProperty("number")
-		public void setNumber(com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.Number number) {
+		public void setNumber(WorkflowParameters.Number number) {
 			this.number = number;
 		}
 
@@ -300,18 +299,18 @@ public class WorkflowParameters implements Serializable {
 		private static final long serialVersionUID = 8624736269209802096L;
 
 		@JsonProperty("string")
-		private com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.String string;
+		private WorkflowParameters.String string;
 
 		@JsonIgnore
 		private transient Map<java.lang.String, Object> additionalProperties = new HashMap<>();
 
 		@JsonProperty("string")
-		public com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.String getString() {
+		public WorkflowParameters.String getString() {
 			return string;
 		}
 
 		@JsonProperty("string")
-		public void setString(com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.String string) {
+		public void setString(WorkflowParameters.String string) {
 			this.string = string;
 		}
 
@@ -332,18 +331,18 @@ public class WorkflowParameters implements Serializable {
 		private static final long serialVersionUID = 8945736269209803399L;
 
 		@JsonProperty("array")
-		private com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.ArrayElements array;
+		private WorkflowParameters.ArrayElements array;
 
 		@JsonIgnore
 		private transient Map<java.lang.String, Object> additionalProperties = new HashMap<>();
 
 		@JsonProperty("array")
-		public com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.ArrayElements getArray() {
+		public WorkflowParameters.ArrayElements getArray() {
 			return array;
 		}
 
 		@JsonProperty("array")
-		public void setArray(com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.ArrayElements array) {
+		public void setArray(WorkflowParameters.ArrayElements array) {
 			this.array = array;
 		}
 
@@ -364,26 +363,26 @@ public class WorkflowParameters implements Serializable {
 		private static final long serialVersionUID = 8934736269209802297L;
 
 		@JsonProperty("elements")
-		private List<com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.StringValue> elements = new ArrayList<>();
-	
+		private List<WorkflowParameters.StringValue> elements = new ArrayList<>();
+
 		@JsonIgnore
 		private transient Map<java.lang.String, Object> additionalProperties = new HashMap<>();
-	
+
 		@JsonProperty("elements")
-		public List<com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.StringValue> getElements() {
+		public List<WorkflowParameters.StringValue> getElements() {
 			return elements;
 		}
-	
+
 		@JsonProperty("elements")
-		public void setElements(List<com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.StringValue> elements) {
+		public void setElements(List<WorkflowParameters.StringValue> elements) {
 			this.elements = elements;
 		}
-	
+
 		@JsonAnyGetter
 		public Map<java.lang.String, Object> getAdditionalProperties() {
 			return this.additionalProperties;
 		}
-	
+
 		@JsonAnySetter
 		public void setAdditionalProperty(java.lang.String name, Object value) {
 			this.additionalProperties.put(name, value);

@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.rest;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,22 +60,23 @@ import com.google.gson.JsonObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageContent.ContentType;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.ArrayElements;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.ArrayStringValue;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.BooleanValue;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.NumberValue;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.Parameter;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.StringValue;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationNg;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vro.VroPackageContent;
-import com.vmware.pscoe.iac.artifact.model.vro.VroPackageContent.ContentType;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowExecution;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.Parameter;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.StringValue;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.ArrayElements;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.ArrayStringValue;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.BooleanValue;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowParameters.NumberValue;
+import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 public class RestClientVro extends RestClient {
 
@@ -132,7 +133,7 @@ public class RestClientVro extends RestClient {
 	 *                      Automation Orchestrator)
 	 * @param restTemplate  REST Template.
 	 */
-	protected RestClientVro(ConfigurationNg configuration, RestTemplate restTemplate) {
+	public RestClientVro(ConfigurationNg configuration, RestTemplate restTemplate) {
 		this.configuration = configuration;
 		this.restTemplate = restTemplate;
 	}

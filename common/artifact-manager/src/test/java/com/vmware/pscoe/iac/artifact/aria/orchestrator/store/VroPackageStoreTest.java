@@ -12,12 +12,13 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.store;
 
+import com.vmware.pscoe.iac.artifact.PackageMocked;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
 import org.junit.Rule;

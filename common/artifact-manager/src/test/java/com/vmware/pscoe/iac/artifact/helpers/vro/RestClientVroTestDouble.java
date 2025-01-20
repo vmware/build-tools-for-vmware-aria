@@ -14,8 +14,8 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.vro;
 
-import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 
 import org.springframework.web.client.RestTemplate;
 
@@ -27,7 +27,7 @@ public class RestClientVroTestDouble extends RestClientVro {
 	}
 
 	@Override
-	public Properties getInputParametersTypes(String workflowId){
+	public Properties getInputParametersTypes(String workflowId) {
 		return super.getInputParametersTypes(workflowId);
 	}
 
