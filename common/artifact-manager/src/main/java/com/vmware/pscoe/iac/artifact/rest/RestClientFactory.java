@@ -23,11 +23,6 @@ import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNgAuthNInterceptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliAuthInterceptor;
-import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV1;
-import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -45,22 +40,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNgAuthNInterceptor;
+import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.RestClientVrliAuthInterceptor;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.RestClientVrliV1;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.RestClientVrliV2;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVropsAuthNInterceptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVropsBasicAuthInterceptor;
+import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;
+import com.vmware.pscoe.iac.artifact.rest.RestClientFactory.TimeoutType;
 
 public final class RestClientFactory {
 	/**
