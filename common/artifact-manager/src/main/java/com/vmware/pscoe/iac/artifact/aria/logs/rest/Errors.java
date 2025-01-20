@@ -14,7 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.logs.rest;
 
-public class Errors {
+public final class Errors {
 	public static final String MAP_ALERT_DATA_ERROR = "Unable to map alert data";
 	public static final String PROCESS_ALERT_DATA_ERROR = "Unable to process alert data";
 	public static final String MAP_CONTENT_PACK_DATA_ERROR = "Unable to map content pack data";
