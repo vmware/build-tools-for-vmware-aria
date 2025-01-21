@@ -255,4 +255,11 @@ public final class VraNgApprovalPolicy implements Identifiable {
 	public void setDefinition(JsonObject definition) {
 		this.definition = definition;
 	}
+
+	/**
+	 * @return this id should represent uniqueness on the server. DO NOT USE `id`
+	 */
+	public String getUniqueId() {
+		return this.getName() + this.getTypeId();
+	}
 }

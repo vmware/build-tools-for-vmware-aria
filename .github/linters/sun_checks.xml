@@ -180,7 +180,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 		<module name="EqualsHashCode" />
 		<module name="IllegalInstantiation" />
 		<module name="InnerAssignment" />
-		<!-- <module name="MagicNumber" /> -->
+		<module name="MagicNumber" />
 		<module name="MissingSwitchDefault" />
 		<module name="MultipleVariableDeclarations" />
 		<module name="SimplifyBooleanExpression" />
@@ -188,8 +188,7 @@ https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 
 		<!-- Checks for class design                         -->
 		<!-- See https://checkstyle.org/config_design.html -->
-		<!-- Uncomment later -->
-		<!-- <module name="DesignForExtension" /> -->
+		<module name="DesignForExtension" />
 		<module name="FinalClass" />
 		<module name="HideUtilityClassConstructor" />
 		<module name="InterfaceIsType" />
