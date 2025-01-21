@@ -36,7 +36,7 @@ public final class VcdNgPackageManifest {
 		this.jsonData = jsonData;
 	}
 
-	public class Scope {
+	public final class Scope {
 		public static final String TENANT = "tenant";
 		public static final String PROVIDER = "service-provider";
 

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class Validate {
+public final class Validate {
 
 	private Validate() {
 	}

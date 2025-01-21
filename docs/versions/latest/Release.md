@@ -128,6 +128,14 @@ This is just an internal restructuring effort, no functionality was changed.
 
 This is just an internal restructuring effort, no functionality was changed.
 
+### *Moved Aria Operations For Logs components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved vCD components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
 ## Upgrade procedure
 
 ### *Dynamic type definitions for the unit tests framework.*
