@@ -14,9 +14,9 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.vmware.pscoe.iac.artifact.VroWorkflowExecutor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -59,16 +59,19 @@ public class ExecuteWorkflowMojo extends AbstractIacMojo {
 		overwriteFromCmdLine(paramProps, "in.");
 
 		try {
-			WorkflowExecution workflowExecutionResult = new VroWorkflowExecutor(getVroRestClient()).executeWorkflow(id, paramProps, timeout);
+			WorkflowExecution workflowExecutionResult = new VroWorkflowExecutor(getVroRestClient()).executeWorkflow(id,
+					paramProps, timeout);
 			getLog().info("Workflow " + workflowExecutionResult.getState());
 			workflowExecutionResult.getOutput().forEach((param, value) -> getLog().info(" * " + param + " = " + value));
 			if (outputParameter != null && outputParameter.length() > 0) {
 				String outputParameterValue = workflowExecutionResult.getOutput().getProperty(outputParameter);
 				if (outputParameterValue == null) {
-					throw new MojoExecutionException("Workflow completed successfully, but output parameter " + outputParameter + " is missing.");
+					throw new MojoExecutionException("Workflow completed successfully, but output parameter "
+							+ outputParameter + " is missing.");
 				}
 				if (outputFile != null) {
-					com.google.common.io.Files.asCharSink(outputFile, StandardCharsets.UTF_8).write(outputParameterValue);
+					com.google.common.io.Files.asCharSink(outputFile, StandardCharsets.UTF_8)
+							.write(outputParameterValue);
 				}
 			}
 		} catch (ConfigurationException e) {

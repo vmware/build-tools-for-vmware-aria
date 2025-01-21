@@ -35,8 +35,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.google.gson.Gson;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro.AuthProvider;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
 import com.vmware.pscoe.iac.artifact.rest.model.sso.SsoEndpointDto;
 
 public class VraSsoAuth {
