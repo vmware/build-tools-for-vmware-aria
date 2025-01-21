@@ -20,7 +20,7 @@ import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-public class ConfigurationVcd extends Configuration {
+public final class ConfigurationVcd extends Configuration {
 	// Important - when modify properties refer to comments in @Configuration
 	/**
 	 * vCD Package Import content conflict resolution mode

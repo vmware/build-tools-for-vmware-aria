@@ -32,6 +32,9 @@ import java.util.Properties;
 
 public class Validate {
 
+	private Validate() {
+	}
+
 	public static boolean host(String host, TextIO input) {
 		try {
 			InetAddress inet = InetAddress.getByName(host);
@@ -67,13 +70,12 @@ public class Validate {
 
 	public static boolean hostAndPort(String host, int port, TextIO input) {
 		try (Socket socket = new Socket(host, port)) {
-			// Nothing to do.
+			return true;
 		} catch (IOException e) {
 			input.getTextTerminal().println(
 					"  WARNING: Cannot open connection to " + host + ":" + port + " : " + e.getLocalizedMessage());
 			return false;
 		}
-		return true;
 	}
 
 	public static String vrang(String csp, int port, String user, String pass, TextIO input) {
@@ -207,10 +209,10 @@ public class Validate {
 		public String org = null;
 		public String orgId = null;
 
-		public ProjectAndOrg() {
+		ProjectAndOrg() {
 		}
 
-		public ProjectAndOrg(String projectId, String org, String orgId) {
+		ProjectAndOrg(String projectId, String org, String orgId) {
 			this.projectId = projectId;
 			this.org = org;
 			this.orgId = orgId;
@@ -325,7 +327,7 @@ public class Validate {
 		}
 	}
 
-	private static final void disableSecurity(HttpsURLConnection https)
+	private static void disableSecurity(HttpsURLConnection https)
 			throws NoSuchAlgorithmException, KeyManagementException {
 		https.setHostnameVerifier(new HostnameVerifier() {
 			public boolean verify(String host, SSLSession session) {

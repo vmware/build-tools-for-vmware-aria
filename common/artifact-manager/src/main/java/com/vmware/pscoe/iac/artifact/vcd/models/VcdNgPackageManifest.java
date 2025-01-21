@@ -29,7 +29,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.PackageManager;
 
-public class VcdNgPackageManifest {
+public final class VcdNgPackageManifest {
 	private String jsonData;
 
 	private VcdNgPackageManifest(String jsonData) {
@@ -39,6 +39,9 @@ public class VcdNgPackageManifest {
 	public class Scope {
 		public static final String TENANT = "tenant";
 		public static final String PROVIDER = "service-provider";
+
+		private Scope() {
+		}
 	}
 
 	private JsonElement getJsonMember(String key) {
