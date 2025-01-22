@@ -20,6 +20,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import org.slf4j.Logger;
@@ -50,11 +51,6 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 * Sub folder path for approval policy.
 	 */
 	private static final String APPROVAL = "approval";
-
-	/**
-	 * @TODO: Add the type here
-	 */
-	private static final String POLICY_TYPE = "";
 
 	/**
 	 * Logger.
@@ -134,7 +130,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 		}
 
 		Map<String, VraNgApprovalPolicy> policiesOnServer = this
-				.fetchApprovalPolicies(this.getItemListFromDescriptor());
+				.fetchPolicies(this.getItemListFromDescriptor());
 
 		logger.info("Found Approval Policies. Importing ...");
 		for (File policyFile : approvalPolicyFiles) {
@@ -143,28 +139,33 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Imports policy file to server , replacing the organization id.
+	 * Imports policy file to server, replacing the organization id.
+	 *
+	 * NOTE: The `projectId` is only set if it originally existed in the policy. The
+	 * API will not return a `projectId` if the policy is organization scoped
 	 *
 	 * @param approvalPolicyFile the policy to import.
 	 */
 	private void handlePolicyImport(final File approvalPolicyFile, Map<String, VraNgApprovalPolicy> policiesOnServer) {
-		// convert file to policy object.
 		VraNgApprovalPolicy policy = jsonFileToVraNgApprovalPolicy(approvalPolicyFile);
-		// replace object organization id with target organization Id
-		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
 		logger.info("Attempting to import approval policy '{}', from file '{}'", policy.getName(),
 				approvalPolicyFile.getName());
 
-		// @TODO: May want to set the projectID only if projectID did not exist
-		// initially. See: `sanitizePolicy`
-		policy.setProjectId(this.restClient.getProjectId());
-		policy.setOrgId(organizationId);
-
-		if (policiesOnServer.containsKey(policy.getName())) {
-			policy.setId(policiesOnServer.get(policy.getName()).getId());
+		if (policy.getProjectId() != null && !policy.getProjectId().isBlank()) {
+			policy.setProjectId(this.restClient.getProjectId());
 		}
 
+		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
+
+		if (policiesOnServer.containsKey(policy.getName())) {
+			// policy.setId(policiesOnServer.get(policy.getName()).getId());
+			// policy.setProjectId(policiesOnServer.get(policy.getName()).getProjectId());
+
+			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
+		}
+
+		this.logger.info("Attempting to create approval policy '{}'", policy.getName());
 		this.restClient.createApprovalPolicy(policy);
 	}
 
@@ -211,7 +212,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
 		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, VraNgApprovalPolicy> policies = this.fetchApprovalPolicies(itemNames);
+		Map<String, VraNgApprovalPolicy> policies = this.fetchPolicies(itemNames);
 
 		itemNames.forEach(name -> {
 			if (!policies.containsKey(name)) {
@@ -244,7 +245,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 
 			logger.info("Created approval policy file {}",
 					Files.write(Paths.get(policyFile.getPath()),
-							policyJsonObject.toString().getBytes(), StandardOpenOption.CREATE));
+							gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			throw new RuntimeException(
 					String.format(
@@ -305,36 +306,39 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 * @param itemNames - the list of approval policies to fetch. If empty, will
 	 *                  fetch all
 	 */
-	private Map<String, VraNgApprovalPolicy> fetchApprovalPolicies(final List<String> itemNames) {
-		Map<String, VraNgApprovalPolicy> approvalPolicies = new HashMap<>();
+	private Map<String, VraNgApprovalPolicy> fetchPolicies(final List<String> itemNames) {
+		Map<String, VraNgApprovalPolicy> policies = new HashMap<>();
 		boolean includeAll = itemNames.size() == 0;
 
 		this.getAllServerContents().forEach(policy -> {
-			if (policy.getTypeId() == POLICY_TYPE && (includeAll || itemNames.contains(policy.getName()))) {
-				if (approvalPolicies.containsKey(policy.getName())) {
+			if (policy.getTypeId().equals(VraNgPolicyTypes.APPROVAL_POLICY_TYPE)
+					&& (includeAll || itemNames.contains(policy.getName()))) {
+				if (policies.containsKey(policy.getName())) {
 					throw new RuntimeException(
 							String.format(
-									"Approval policy with name '%s' already added. While Aria supports policies with the same type and name, the build tools cannot. This is because we need to distinguish policies.",
+									"More than one approval policy with name '%s' already exists. While Aria supports policies with the same type and name, the build tools cannot. This is because we need to distinguish policies.",
 									policy.getName()));
 				}
 
-				approvalPolicies.put(policy.getName(), policy);
+				logger.debug("Found policy: {}", policy.getName());
+				policies.put(policy.getName(), policy);
 			}
 		});
 
-		return approvalPolicies;
+		return policies;
 	}
 
 	/**
 	 * Sanitizes the give JSON object policy by removing properties that should not
 	 * be stored.
 	 *
+	 * The `projectId` must not be removed, as it controls wether a policy is
+	 * project scoped or not
+	 *
 	 * @param policy - the policy to sanitize
 	 */
 	private void sanitizePolicy(JsonObject policy) {
-		// @TODO: Maybe not?
-		// policy.remove("orgId");
-		// policy.remove("projectId");
+		policy.remove("orgId");
 		policy.remove("createdBy");
 		policy.remove("createdAt");
 		policy.remove("lastUpdatedBy");
