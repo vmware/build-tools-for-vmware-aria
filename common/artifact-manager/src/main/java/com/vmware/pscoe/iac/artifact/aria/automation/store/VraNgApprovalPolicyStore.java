@@ -51,6 +51,9 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 */
 	private static final String APPROVAL = "approval";
 
+	/**
+	 * @TODO: Add the type here
+	 */
 	private static final String POLICY_TYPE = "";
 
 	/**

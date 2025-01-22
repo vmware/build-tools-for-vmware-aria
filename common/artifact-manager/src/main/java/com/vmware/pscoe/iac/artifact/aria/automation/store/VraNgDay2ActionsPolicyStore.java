@@ -59,6 +59,24 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
+	 * getItemListFromDescriptor.
+	 * 
+	 * @return list of policy names to import or export.
+	 */
+	@Override
+	protected List<String> getItemListFromDescriptor() {
+		if (this.vraNgPackageDescriptor.getPolicy() == null) {
+			return null;
+		} else {
+			return this.vraNgPackageDescriptor.getPolicy().getDay2Actions();
+		}
+	}
+
+	/////////////////////////////////////////////
+	// Delete
+	/////////////////////////////////////////////
+
+	/**
 	 * Delete a day 2 actions policy by id.
 	 *
 	 * @param resId the id of the day 2 actions policy to delete
@@ -66,6 +84,14 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
+
+	/////////////////////////////////////////////
+	// Delete
+	/////////////////////////////////////////////
+
+	/////////////////////////////////////////////
+	// Import
+	/////////////////////////////////////////////
 
 	/**
 	 * Imports policies found in specified folder on server, according to filter
@@ -141,19 +167,13 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 		this.restClient.createDay2ActionsPolicy(policy);
 	}
 
-	/**
-	 * getItemListFromDescriptor.
-	 * 
-	 * @return list of policy names to import or export.
-	 */
-	@Override
-	protected List<String> getItemListFromDescriptor() {
-		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			return null;
-		} else {
-			return this.vraNgPackageDescriptor.getPolicy().getDay2Actions();
-		}
-	}
+	/////////////////////////////////////////////
+	// Import
+	/////////////////////////////////////////////
+
+	/////////////////////////////////////////////
+	// Export
+	/////////////////////////////////////////////
 
 	/**
 	 * Exporting every policy of this type found on server.
@@ -231,7 +251,6 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 							"Unable to store day 2 actions policy to file %s.", policyFile.getAbsolutePath()),
 					e);
 		}
-
 	}
 
 	/**
@@ -326,6 +345,10 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 		}
 		return policyFolderPath;
 	}
+
+	/////////////////////////////////////////////
+	// Export
+	/////////////////////////////////////////////
 
 	/**
 	 * Converts a json catalog item file to VraNgDay2ActionsPolicy.

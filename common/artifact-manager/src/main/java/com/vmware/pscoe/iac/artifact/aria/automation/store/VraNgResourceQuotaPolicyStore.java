@@ -60,6 +60,24 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
+	 * getItemListFromDescriptor.
+	 * 
+	 * @return list of policy names to import or export.
+	 */
+	@Override
+	protected List<String> getItemListFromDescriptor() {
+		if (this.vraNgPackageDescriptor.getPolicy() == null) {
+			return null;
+		} else {
+			return this.vraNgPackageDescriptor.getPolicy().getResourceQuota();
+		}
+	}
+
+	////////////////////////////////////////////////////
+	// Delete
+	////////////////////////////////////////////////////
+
+	/**
 	 * Deletes the resource quota policy by id.
 	 *
 	 * @param resId the id of the policy to delete.
@@ -67,6 +85,14 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
+
+	////////////////////////////////////////////////////
+	// Delete
+	////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////
+	// Import
+	////////////////////////////////////////////////////
 
 	/**
 	 * Imports policies found in specified folder on server, according to filter
@@ -143,37 +169,13 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 		this.restClient.createResourceQuotaPolicy(policy);
 	}
 
-	/**
-	 * Converts a json catalog item file to VraNgResourceQuotaPolicy.
-	 *
-	 * @param jsonFile
-	 *
-	 * @return VraNgResourceQuotaPolicy
-	 */
-	private VraNgResourceQuotaPolicy jsonFileToVraNgResourceQuotaPolicy(final File jsonFile) {
-		logger.debug("Converting resource quota policy file to VraNgResourceQuotaPolicies. Name: '{}'",
-				jsonFile.getName());
+	////////////////////////////////////////////////////
+	// Import
+	////////////////////////////////////////////////////
 
-		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
-			return new Gson().fromJson(reader, VraNgResourceQuotaPolicy.class);
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
-		}
-	}
-
-	/**
-	 * getItemListFromDescriptor.
-	 * 
-	 * @return list of policy names to import or export.
-	 */
-	@Override
-	protected List<String> getItemListFromDescriptor() {
-		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			return null;
-		} else {
-			return this.vraNgPackageDescriptor.getPolicy().getResourceQuota();
-		}
-	}
+	////////////////////////////////////////////////////
+	// Export
+	////////////////////////////////////////////////////
 
 	/**
 	 * Exports all the content for the given project.
@@ -246,7 +248,6 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 							"Unable to store resource quota to file %s.", policyFile.getAbsolutePath()),
 					e);
 		}
-
 	}
 
 	/**
@@ -299,7 +300,6 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 * @return a map of filenames and policies, found in the path.
 	 */
 	private Map<String, VraNgResourceQuotaPolicy> getCurrentPoliciesOnFileSystem(Path policyFolderPath) {
-
 		// First make sure path exists and is a folder.
 		if (!policyFolderPath.toFile().isDirectory()
 				&& !policyFolderPath.toFile().mkdirs()) {
@@ -339,4 +339,25 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 		return policyFolderPath;
 	}
 
+	////////////////////////////////////////////////////
+	// Export
+	////////////////////////////////////////////////////
+
+	/**
+	 * Converts a json catalog item file to VraNgResourceQuotaPolicy.
+	 *
+	 * @param jsonFile
+	 *
+	 * @return VraNgResourceQuotaPolicy
+	 */
+	private VraNgResourceQuotaPolicy jsonFileToVraNgResourceQuotaPolicy(final File jsonFile) {
+		logger.debug("Converting resource quota policy file to VraNgResourceQuotaPolicies. Name: '{}'",
+				jsonFile.getName());
+
+		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
+			return new Gson().fromJson(reader, VraNgResourceQuotaPolicy.class);
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
+		}
+	}
 }

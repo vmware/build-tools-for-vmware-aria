@@ -60,6 +60,24 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
+	 * getItemListFromDescriptor.
+	 * 
+	 * @return list of policy names to import or export.
+	 */
+	@Override
+	protected List<String> getItemListFromDescriptor() {
+		if (this.vraNgPackageDescriptor.getPolicy() == null) {
+			return null;
+		} else {
+			return this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit();
+		}
+	}
+
+	////////////////////////////////////////////////////
+	// Delete
+	////////////////////////////////////////////////////
+
+	/**
 	 * Delete a deployment limit policy by its id.
 	 *
 	 * @param resId the id of the policy to delete.
@@ -67,6 +85,14 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
+
+	////////////////////////////////////////////////////
+	// Delete
+	////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////
+	// Import
+	////////////////////////////////////////////////////
 
 	/**
 	 * Imports policies found in specified folder on server, according to filter
@@ -141,19 +167,13 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 		this.restClient.createDeploymentLimitPolicy(policy);
 	}
 
-	/**
-	 * getItemListFromDescriptor.
-	 * 
-	 * @return list of policy names to import or export.
-	 */
-	@Override
-	protected List<String> getItemListFromDescriptor() {
-		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			return null;
-		} else {
-			return this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit();
-		}
-	}
+	////////////////////////////////////////////////////
+	// Import
+	////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////
+	// Export
+	////////////////////////////////////////////////////
 
 	/**
 	 * Exporting every policy of this type found on server.
@@ -322,6 +342,10 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 		}
 		return policyFolderPath;
 	}
+
+	////////////////////////////////////////////////////
+	// Export
+	////////////////////////////////////////////////////
 
 	/**
 	 * Converts a json catalog item file to VraNgDeploymentLimitPolicy.

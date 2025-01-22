@@ -54,9 +54,35 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		return this.restClient.getLeasePolicies();
 	}
 
+	/**
+	 * Get List from descriptor.
+	 * 
+	 * @return null or list of Lease policies.
+	 */
+	@Override
+	protected List<String> getItemListFromDescriptor() {
+		if (this.vraNgPackageDescriptor.getPolicy() == null) {
+			return null;
+		} else {
+			return this.vraNgPackageDescriptor.getPolicy().getLease();
+		}
+	}
+
+	////////////////////////////////////////////////////
+	// Delete
+	////////////////////////////////////////////////////
+
 	protected void deleteResourceById(String resId) {
 		this.restClient.deletePolicy(resId);
 	}
+
+	////////////////////////////////////////////////////
+	// Delete
+	////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////
+	// Import
+	////////////////////////////////////////////////////
 
 	/**
 	 * Imports content.
@@ -121,37 +147,13 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		this.restClient.createLeasePolicy(policy);
 	}
 
-	/**
-	 * Get List from descriptor.
-	 * 
-	 * @return null or list of Lease policies.
-	 */
-	@Override
-	protected List<String> getItemListFromDescriptor() {
-		if (this.vraNgPackageDescriptor.getPolicy() == null) {
-			return null;
-		} else {
-			return this.vraNgPackageDescriptor.getPolicy().getLease();
-		}
-	}
+	////////////////////////////////////////////////////
+	// Import
+	////////////////////////////////////////////////////
 
-	/**
-	 * Converts a json catalog item file to VraNgLeasePolicy.
-	 *
-	 * @param jsonFile to read from
-	 *
-	 * @return VraNgLeasePolicy instance
-	 */
-	private VraNgLeasePolicy jsonFileToVraNgLeasePolicy(final File jsonFile) {
-		logger.debug("Converting Lease policy file to VraNgLeasePolicy. Name: '{}'",
-				jsonFile.getName());
-
-		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
-			return new Gson().fromJson(reader, VraNgLeasePolicy.class);
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
-		}
-	}
+	////////////////////////////////////////////////////
+	// Export
+	////////////////////////////////////////////////////
 
 	/**
 	 * Exports all the content for the given project.
@@ -318,4 +320,25 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgStore {
 		return policyFolderPath;
 	}
 
+	////////////////////////////////////////////////////
+	// Export
+	////////////////////////////////////////////////////
+
+	/**
+	 * Converts a json catalog item file to VraNgLeasePolicy.
+	 *
+	 * @param jsonFile to read from
+	 *
+	 * @return VraNgLeasePolicy instance
+	 */
+	private VraNgLeasePolicy jsonFileToVraNgLeasePolicy(final File jsonFile) {
+		logger.debug("Converting Lease policy file to VraNgLeasePolicy. Name: '{}'",
+				jsonFile.getName());
+
+		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
+			return new Gson().fromJson(reader, VraNgLeasePolicy.class);
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
+		}
+	}
 }
