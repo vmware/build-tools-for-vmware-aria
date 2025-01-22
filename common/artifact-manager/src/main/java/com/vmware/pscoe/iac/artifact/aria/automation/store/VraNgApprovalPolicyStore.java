@@ -153,6 +153,8 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 		logger.info("Attempting to import approval policy '{}', from file '{}'", policy.getName(),
 				approvalPolicyFile.getName());
 
+		// @TODO: May want to set the projectID only if projectID did not exist
+		// initially. See: `sanitizePolicy`
 		policy.setProjectId(this.restClient.getProjectId());
 		policy.setOrgId(organizationId);
 
