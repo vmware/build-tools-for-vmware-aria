@@ -211,7 +211,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		});
 
 		policies.forEach((name, policy) -> {
-			storeContentSharingPolicyOnFilesystem(getPolicyFile(policyFolderPath, policy), policy);
+			storePolicyOnFS(getPolicyFile(policyFolderPath, policy), policy);
 		});
 	}
 
@@ -222,7 +222,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 *                         file.
 	 * @param policy           the policy to store.
 	 */
-	private void storeContentSharingPolicyOnFilesystem(final File policyFile,
+	private void storePolicyOnFS(final File policyFile,
 			final VraNgContentSharingPolicy policy) {
 		logger.info("Storing content sharing policy '{}'", policy.getName());
 

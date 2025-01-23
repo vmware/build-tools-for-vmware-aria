@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,10 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
@@ -90,9 +93,9 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	// Delete
 	////////////////////////////////////////////////////
 
-	////////////////////////////////////////////////////
+	///////////////////////////////////////////
 	// Import
-	////////////////////////////////////////////////////
+	///////////////////////////////////////////
 
 	/**
 	 * Imports policies found in specified folder on server, according to filter
@@ -104,220 +107,165 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	public void importContent(File sourceDirectory) {
-		logger.info("Importing files from the '{}' directory",
-				com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_POLICIES);
-		// verify directory exists
-		File policyFolder = Paths
-				.get(sourceDirectory.getPath(),
-						com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_POLICIES,
-						RESOURCE_QUOTA_POLICY)
+		logger.info("Importing files from the '{}' directory", VraNgDirs.DIR_POLICIES);
+		File policyFolder = Paths.get(sourceDirectory.getPath(), VraNgDirs.DIR_POLICIES, RESOURCE_QUOTA_POLICY)
 				.toFile();
+
 		if (!policyFolder.exists()) {
-			logger.info("Resource Quota policy directory not found.");
+			logger.info("No resource quota policies available - skip import");
 			return;
 		}
 
-		List<String> rqPolicies = this.getItemListFromDescriptor();
+		File[] policyFiles = this.filterBasedOnConfiguration(policyFolder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 
-		File[] resourceQuotaPolicyFiles = this.filterBasedOnConfiguration(policyFolder,
-				new CustomFolderFileFilter(rqPolicies));
-
-		if (resourceQuotaPolicyFiles != null && resourceQuotaPolicyFiles.length == 0) {
-			logger.info("Could not find any Resource Quota Policies.");
+		if (policyFiles != null && policyFiles.length == 0) {
+			logger.info("No resource quota policies available - skip import");
 			return;
 		}
 
-		logger.info("Found Resource Quota Policies. Importing ...");
+		Map<String, VraNgResourceQuotaPolicy> policiesOnServer = this
+				.fetchPolicies(this.getItemListFromDescriptor());
 
-		for (File policyFile : resourceQuotaPolicyFiles) {
-			// exclude hidden files e.g. .DS_Store
-			// exclude files that do not end with a '.json' extension as defined in
-			// CUSTOM_RESOURCE_SUFFIX
-			String filename = policyFile.getName();
-			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
-				this.handleResourceQuotaPolicyImport(policyFile);
-			} else {
-				logger.warn("Skipped unexpected file '{}'", filename);
-			}
+		logger.info("Found ResourceQuota Policies. Importing ...");
+		for (File policyFile : policyFiles) {
+			this.handlePolicyImport(policyFile, policiesOnServer);
 		}
 	}
 
 	/**
-	 * .
-	 * Handles logic to update or create a resource quota policy.
+	 * Imports policy file to server, replacing the organization id.
 	 *
-	 * @param resourceQuotaPolicyFile to read from
+	 * NOTE: The `projectId` is only set if it originally existed in the policy. The
+	 * API will not return a `projectId` if the policy is organization scoped
+	 *
+	 * @param policyFile       the policy to import.
+	 * @param policiesOnServer all the policies currently on the server
 	 */
-	private void handleResourceQuotaPolicyImport(final File resourceQuotaPolicyFile) {
+	private void handlePolicyImport(final File policyFile, Map<String, VraNgResourceQuotaPolicy> policiesOnServer) {
+		VraNgResourceQuotaPolicy policy = jsonFileToVraNgResourceQuotaPolicy(policyFile);
 
-		VraNgResourceQuotaPolicy policy = jsonFileToVraNgResourceQuotaPolicy(resourceQuotaPolicyFile);
+		logger.info("Attempting to import resource quota policy '{}', from file '{}'", policy.getName(),
+				policyFile.getName());
 
-		logger.info("Attempting to import resource quota policy '{}'", policy.getName());
-
-		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
-
-		// if the policy has a project property, replace it with current project id.
-		// if the policy does not have a project property - replacing it will change the
-		// policy,
-		// so do not replace a null or blank value.
-		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank())
-				&& !policy.getOrgId().equals(organizationId)) {
-			logger.debug("Replacing policy projectId with projectId from configuration.");
+		if (policy.getProjectId() != null && !policy.getProjectId().isBlank()) {
 			policy.setProjectId(this.restClient.getProjectId());
 		}
-		policy.setOrgId(organizationId);
+
+		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
+
+		if (policiesOnServer.containsKey(policy.getName())) {
+			this.logger.warn("ResourceQuota policy '{}' already exists on the server. Deleting it first.",
+					policy.getName());
+			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
+		}
+
+		this.logger.info("Attempting to create resource quota policy '{}'", policy.getName());
 		this.restClient.createResourceQuotaPolicy(policy);
 	}
 
-	////////////////////////////////////////////////////
-	// Import
-	////////////////////////////////////////////////////
+	/**
+	 * Converts a json catalog item file to VraNgResourceQuotaPolicy.
+	 *
+	 * @param jsonFile
+	 *
+	 * @return VraNgResourceQuotaPolicy
+	 */
+	private VraNgResourceQuotaPolicy jsonFileToVraNgResourceQuotaPolicy(final File jsonFile) {
+		logger.debug("Converting resource quota policy file to VraNgResourceQuotaPolicy. Name: '{}'",
+				jsonFile.getName());
 
-	////////////////////////////////////////////////////
-	// Export
-	////////////////////////////////////////////////////
+		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
+			return new Gson().fromJson(reader, VraNgResourceQuotaPolicy.class);
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
+		}
+	}
+
+	///////////////////////////////////////////
+	// Import
+	///////////////////////////////////////////
+
+	////////////////////////////////////////////
+	// STORE
+	////////////////////////////////////////////
 
 	/**
-	 * Exports all the content for the given project.
+	 * Exporting every policy of this type found on server.
 	 */
 	@Override
 	protected void exportStoreContent() {
-		logger.debug(this.getClass() + "->exportStoreContent()");
-		List<VraNgResourceQuotaPolicy> rqPolicies = this.restClient.getResourceQuotaPolicies();
-		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(
-				policyFolderPath);
-
-		rqPolicies.forEach(
-				policy -> {
-					storeResourceQuotaPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
-				});
+		this.exportStoreContent(new ArrayList<String>());
 	}
 
 	/**
 	 * Exports all the content for the given project based on the names in
 	 * content.yaml.
-	 * 
+	 *
 	 * @param itemNames Item names for export
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		logger.debug(this.getClass() + "->exportStoreContent({})", itemNames.toString());
-		List<VraNgResourceQuotaPolicy> rqPolicies = this.restClient.getResourceQuotaPolicies();
 		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(
-				policyFolderPath);
+		Map<String, VraNgResourceQuotaPolicy> policies = this.fetchPolicies(itemNames);
 
-		rqPolicies.forEach(
-				policy -> {
-					if (itemNames.contains(policy.getName())) {
-						storeResourceQuotaPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
-					}
-				});
+		itemNames.forEach(name -> {
+			if (!policies.containsKey(name)) {
+				throw new RuntimeException(
+						String.format("ResourceQuota Policy with name: '%s' could not be found on the server.", name));
+			}
+		});
+
+		policies.forEach((name, policy) -> {
+			storePolicyOnFS(
+					getPolicyFile(policyFolderPath, policy),
+					policy);
+		});
 	}
 
 	/**
-	 * Store resource quota policy in JSON file.
+	 * Store policy in JSON file.
 	 *
-	 * @param policyFolderPath            the subfolder where the policy will be
-	 *                                    stored.
-	 * @param policy                      the policy object to store
-	 * @param currentPoliciesOnFileSystem a map of file names and policies, already
-	 *                                    present in the folder, used to avoid
-	 *                                    duplicate file names.
+	 * @param policyFile policy file
+	 * @param policy     policy representation
 	 */
-	private void storeResourceQuotaPolicyOnFilesystem(final Path policyFolderPath,
-			final VraNgResourceQuotaPolicy policy,
-			Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem) {
-		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
-		logger.debug("Storing resource quota policy '{}', to file '{}", policy.getName(), policyFile.getPath());
+	private void storePolicyOnFS(final File policyFile, final VraNgResourceQuotaPolicy policy) {
+		logger.debug("Storing resource quota policy {}", policy.getName());
 
 		try {
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			JsonObject rqPolicyJsonObject = gson.fromJson(new Gson().toJson(policy), JsonObject.class);
-			logger.info("Created resource quota file {}",
+			Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().create();
+			JsonObject policyJsonObject = gson.fromJson(new Gson().toJson(policy), JsonObject.class);
+
+			sanitizePolicy(policyJsonObject);
+
+			logger.info("Created resource quota policy file {}",
 					Files.write(Paths.get(policyFile.getPath()),
-							gson.toJson(rqPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
-			// after write, put currently policy on the map for the next iteration
-			String fileName = policyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
-			currentPoliciesOnFileSystem.put(fileName, policy);
+							gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
-			logger.error("Unable to create resource quota {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(
 					String.format(
-							"Unable to store resource quota to file %s.", policyFile.getAbsolutePath()),
+							"Unable to store resource quota policy to file %s.", policyFile.getAbsolutePath()),
 					e);
 		}
 	}
 
 	/**
-	 * @param policyFolderPath            the correct subfolder path for the policy
-	 *                                    type.
-	 * @param policy                      the policy that is exported.
-	 * @param currentPoliciesOnFileSystem all the other policies currently in the
-	 *                                    folder.
+	 * @param policyFolderPath the correct subfolder path for the policy
+	 *                         type.
+	 * @param policy           the policy that is exported.
+	 *
 	 * @return the file where to store the policy.
 	 */
 
-	private File getPolicyFile(Path policyFolderPath, VraNgResourceQuotaPolicy policy,
-			Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem) {
+	private File getPolicyFile(Path policyFolderPath, VraNgResourceQuotaPolicy policy) {
 		String filename = policy.getName();
-		String policyName = policy.getName();
 		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
 			throw new IllegalArgumentException("Invalid filename " + filename);
 		}
-		// see if filename already exists in map.
-		int index = 1;
-		boolean match = false;
-		while (!match) {
-			if (currentPoliciesOnFileSystem.containsKey(filename)) {
-				// check if policy is our policy from previous run or a different one.
-				if (policy.getId().equals(currentPoliciesOnFileSystem.get(filename).getId())) {
-					match = true;
-				} else {
-					filename = policyName + "_" + index;
-					index++;
 
-				}
-			} else {
-				match = true;
-			}
-		}
-
-		logger.debug("Final Filename is {}, for policy with name {}", filename, policy.getName());
-
-		File policyFile = Paths.get(
+		return Paths.get(
 				String.valueOf(policyFolderPath),
 				filename + CUSTOM_RESOURCE_SUFFIX).toFile();
-		return policyFile;
-	}
-
-	/**
-	 * Read the filesystem where policies will be stored, make a map of pre existing
-	 * files there, to avoid duplication and/or unintentional overwriting.
-	 * 
-	 * @param policyFolderPath get actual path where policies should be stored.
-	 * @return a map of filenames and policies, found in the path.
-	 */
-	private Map<String, VraNgResourceQuotaPolicy> getCurrentPoliciesOnFileSystem(Path policyFolderPath) {
-		// First make sure path exists and is a folder.
-		if (!policyFolderPath.toFile().isDirectory()
-				&& !policyFolderPath.toFile().mkdirs()) {
-			logger.warn("Could not create folder: {}", policyFolderPath.toFile().getAbsolutePath());
-		}
-
-		File[] policyFiles = policyFolderPath.toFile().listFiles();
-		Map<String, VraNgResourceQuotaPolicy> currentPoliciesOnFileSystem = new HashMap<>();
-
-		for (File policyFile : policyFiles) {
-			String fileNameWithExt = policyFile.getName();
-			// exclude hidden files e.g. .DS_Store
-			if (!fileNameWithExt.startsWith(".")) {
-				String fileName = fileNameWithExt.replace(CUSTOM_RESOURCE_SUFFIX, "");
-				currentPoliciesOnFileSystem.put(fileName, this.jsonFileToVraNgResourceQuotaPolicy(policyFile));
-			}
-		}
-		return currentPoliciesOnFileSystem;
 	}
 
 	/**
@@ -328,36 +276,64 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	private Path getPolicyFolderPath() {
 		File store = new File(vraNgPackage.getFilesystemPath());
 
-		Path policyFolderPath = Paths.get(
-				store.getPath(),
-				VraNgDirs.DIR_POLICIES,
-				RESOURCE_QUOTA_POLICY);
-		if (!policyFolderPath.toFile().isDirectory()
-				&& !policyFolderPath.toFile().mkdirs()) {
+		Path policyFolderPath = Paths.get(store.getPath(), VraNgDirs.DIR_POLICIES, RESOURCE_QUOTA_POLICY);
+		if (!policyFolderPath.toFile().isDirectory() && !policyFolderPath.toFile().mkdirs()) {
 			logger.warn("Could not create folder: {}", policyFolderPath.getFileName());
 		}
+
 		return policyFolderPath;
 	}
 
-	////////////////////////////////////////////////////
-	// Export
-	////////////////////////////////////////////////////
+	////////////////////////////////////////////
+	// STORE
+	////////////////////////////////////////////
 
 	/**
-	 * Converts a json catalog item file to VraNgResourceQuotaPolicy.
+	 * This will fetch all the policies that need to be exported.
 	 *
-	 * @param jsonFile
+	 * Will validate that the no duplicate policies exist on the
+	 * environment.
 	 *
-	 * @return VraNgResourceQuotaPolicy
+	 * @param itemNames - the list of policies to fetch. If empty, will
+	 *                  fetch all
 	 */
-	private VraNgResourceQuotaPolicy jsonFileToVraNgResourceQuotaPolicy(final File jsonFile) {
-		logger.debug("Converting resource quota policy file to VraNgResourceQuotaPolicies. Name: '{}'",
-				jsonFile.getName());
+	private Map<String, VraNgResourceQuotaPolicy> fetchPolicies(final List<String> itemNames) {
+		Map<String, VraNgResourceQuotaPolicy> policies = new HashMap<>();
+		boolean includeAll = itemNames.size() == 0;
 
-		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
-			return new Gson().fromJson(reader, VraNgResourceQuotaPolicy.class);
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
-		}
+		this.getAllServerContents().forEach(policy -> {
+			if (policy.getTypeId().equals(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE)
+					&& (includeAll || itemNames.contains(policy.getName()))) {
+				if (policies.containsKey(policy.getName())) {
+					throw new RuntimeException(
+							String.format(
+									"More than one resource quota policy with name '%s' already exists. While Aria supports policies with the same type and name, the build tools cannot. This is because we need to distinguish policies.",
+									policy.getName()));
+				}
+
+				logger.debug("Found policy: {}", policy.getName());
+				policies.put(policy.getName(), policy);
+			}
+		});
+
+		return policies;
+	}
+
+	/**
+	 * Sanitizes the give JSON object policy by removing properties that should not
+	 * be stored.
+	 *
+	 * The `projectId` must not be removed, as it controls wether a policy is
+	 * project scoped or not
+	 *
+	 * @param policy - the policy to sanitize
+	 */
+	private void sanitizePolicy(JsonObject policy) {
+		policy.remove("orgId");
+		policy.remove("createdBy");
+		policy.remove("createdAt");
+		policy.remove("lastUpdatedBy");
+		policy.remove("lastUpdatedAt");
+		policy.remove("id");
 	}
 }

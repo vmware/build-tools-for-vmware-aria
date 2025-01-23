@@ -17,8 +17,10 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgDeploymentLimitPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 
@@ -32,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,66 +107,59 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	public void importContent(File sourceDirectory) {
-		logger.info("Importing files from the '{}' directory",
-				com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_POLICIES);
-		// verify directory exists
-		File policyFolder = Paths
-				.get(sourceDirectory.getPath(),
-						com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_POLICIES,
-						DEPLOYMENT_LIMIT)
-				.toFile();
+		logger.info("Importing files from the '{}' directory", VraNgDirs.DIR_POLICIES);
+		File policyFolder = Paths.get(sourceDirectory.getPath(), VraNgDirs.DIR_POLICIES, DEPLOYMENT_LIMIT).toFile();
+
 		if (!policyFolder.exists()) {
-			logger.info("Deployment limit policy directory not found.");
+			logger.info("No deployment limit policies available - skip import");
 			return;
 		}
 
-		List<String> policies = this.getItemListFromDescriptor();
+		File[] policyFiles = this.filterBasedOnConfiguration(policyFolder,
+				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 
-		File[] deploymentLimitPolicyFiles = this.filterBasedOnConfiguration(policyFolder,
-				new CustomFolderFileFilter(policies));
-
-		if (deploymentLimitPolicyFiles != null && deploymentLimitPolicyFiles.length == 0) {
-			logger.info("Could not find any Deployment Limit Policies.");
+		if (policyFiles != null && policyFiles.length == 0) {
+			logger.info("No deployment limit policies available - skip import");
 			return;
 		}
+
+		Map<String, VraNgDeploymentLimitPolicy> policiesOnServer = this
+				.fetchPolicies(this.getItemListFromDescriptor());
 
 		logger.info("Found Deployment Limit Policies. Importing ...");
-		for (File policyFile : deploymentLimitPolicyFiles) {
-			// exclude hidden files e.g. .DS_Store
-			// exclude files that do not end with a '.json' extension as defined in
-			// CUSTOM_RESOURCE_SUFFIX
-			String filename = policyFile.getName();
-			if (!filename.startsWith(".") && filename.endsWith(CUSTOM_RESOURCE_SUFFIX)) {
-				this.handleDeploymentLimitPolicyImport(policyFile);
-			} else {
-				logger.warn("Skipped unexpected file '{}'", filename);
-			}
+		for (File policyFile : policyFiles) {
+			this.handlePolicyImport(policyFile, policiesOnServer);
 		}
 	}
 
 	/**
-	 * .
-	 * Handles logic to update or create a deployment limit policy.
+	 * Imports policy file to server, replacing the organization id.
 	 *
-	 * @param policyFile
+	 * NOTE: The `projectId` is only set if it originally existed in the policy. The
+	 * API will not return a `projectId` if the policy is organization scoped
+	 *
+	 * @param policyFile       the policy to import.
+	 * @param policiesOnServer all the policies currently on the server
 	 */
-	private void handleDeploymentLimitPolicyImport(final File policyFile) {
-
+	private void handlePolicyImport(final File policyFile, Map<String, VraNgDeploymentLimitPolicy> policiesOnServer) {
 		VraNgDeploymentLimitPolicy policy = jsonFileToVraNgDeploymentLimitPolicy(policyFile);
-		logger.info("Attempting to import deployment limit policy '{}'", policy.getName());
-		// replace object organization id with target organization Id
-		String organizationId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
 
-		// if the policy has a project property, replace it with current project id.
-		// if the policy does not have a project property - replacing it will change the
-		// policy,
-		// so do not replace a null or blank value.
-		if (policy.getProjectId() != null && !(policy.getProjectId().isBlank())
-				&& !policy.getOrgId().equals(organizationId)) {
-			logger.debug("Replacing policy projectId with projectId from configuration.");
+		logger.info("Attempting to import deployment limit policy '{}', from file '{}'", policy.getName(),
+				policyFile.getName());
+
+		if (policy.getProjectId() != null && !policy.getProjectId().isBlank()) {
 			policy.setProjectId(this.restClient.getProjectId());
 		}
-		policy.setOrgId(organizationId);
+
+		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
+
+		if (policiesOnServer.containsKey(policy.getName())) {
+			this.logger.warn("Deployment Limit policy '{}' already exists on the server. Deleting it first.",
+					policy.getName());
+			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
+		}
+
+		this.logger.info("Attempting to create deployment limit policy '{}'", policy.getName());
 		this.restClient.createDeploymentLimitPolicy(policy);
 	}
 
@@ -180,16 +176,7 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent() {
-		this.logger.debug("{}->exportStoreContent()", this.getClass());
-		List<VraNgDeploymentLimitPolicy> rqPolicies = this.restClient.getDeploymentLimitPolicies();
-		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, VraNgDeploymentLimitPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(
-				policyFolderPath);
-
-		rqPolicies.forEach(
-				policy -> {
-					storeDeploymentLimitPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
-				});
+		this.exportStoreContent(new ArrayList<String>());
 	}
 
 	/**
@@ -200,128 +187,66 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
-		this.logger.debug("{}->exportStoreContent({})", this.getClass(), itemNames.toString());
-		List<VraNgDeploymentLimitPolicy> policies = this.restClient.getDeploymentLimitPolicies();
 		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, VraNgDeploymentLimitPolicy> currentPoliciesOnFileSystem = getCurrentPoliciesOnFileSystem(
-				policyFolderPath);
-		policies.forEach(
-				policy -> {
-					if (itemNames.contains(policy.getName())) {
-						storeDeploymentLimitPolicyOnFilesystem(policyFolderPath, policy, currentPoliciesOnFileSystem);
-					}
-				});
+		Map<String, VraNgDeploymentLimitPolicy> policies = this.fetchPolicies(itemNames);
+
+		itemNames.forEach(name -> {
+			if (!policies.containsKey(name)) {
+				throw new RuntimeException(
+						String.format("Deployment Limit with name: '%s' could not be found on the server.", name));
+			}
+		});
+
+		policies.forEach((name, policy) -> {
+			storePolicyOnFS(
+					getPolicyFile(policyFolderPath, policy),
+					policy);
+		});
 	}
 
-	/**
-	 * Store deployment limit policy in JSON file.
+	/*
+	 * Store policy in JSON file.
 	 *
-	 * @param policyFolderPath            the subfolder where the policy will be
-	 *                                    stored.
-	 * @param policy                      the policy object to store
-	 * @param currentPoliciesOnFileSystem a map of file names and policies, already
-	 *                                    present in the folder, used to avoid
-	 *                                    duplicate file names.
+	 * @param policyFile policy file
+	 * 
+	 * @param policy policy representation
 	 */
-	private void storeDeploymentLimitPolicyOnFilesystem(final Path policyFolderPath,
-			final VraNgDeploymentLimitPolicy policy,
-			Map<String, VraNgDeploymentLimitPolicy> currentPoliciesOnFileSystem) {
-		File policyFile = getPolicyFile(policyFolderPath, policy, currentPoliciesOnFileSystem);
-		logger.info("Storing deployment limit policy '{}', to file '{}", policy.getName(), policyFile.getPath());
+	private void storePolicyOnFS(final File policyFile, final VraNgDeploymentLimitPolicy policy) {
+		logger.debug("Storing deployment limit policy {}", policy.getName());
 
 		try {
-			// is serializeNulls() needed?
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			JsonObject d2aPolicyJsonObject = gson.fromJson(new Gson().toJson(policy), JsonObject.class);
+			Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().create();
+			JsonObject policyJsonObject = gson.fromJson(new Gson().toJson(policy), JsonObject.class);
+
+			sanitizePolicy(policyJsonObject);
 
 			logger.info("Created deployment limit policy file {}",
 					Files.write(Paths.get(policyFile.getPath()),
-							gson.toJson(d2aPolicyJsonObject).getBytes(), StandardOpenOption.CREATE));
-			// after write, put currently policy on the map for the next iteration
-			String fileName = policyFile.getName().replace(CUSTOM_RESOURCE_SUFFIX, "");
-			currentPoliciesOnFileSystem.put(fileName, policy);
+							gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
-			logger.error("Unable to create deployment limit policy  {}", policyFile.getAbsolutePath());
 			throw new RuntimeException(
 					String.format(
-							"Unable to store deployment policy to file %s.", policyFile.getAbsolutePath()),
+							"Unable to store deployment limit policy to file %s.", policyFile.getAbsolutePath()),
 					e);
 		}
-
 	}
 
 	/**
-	 * @param policyFolderPath            the correct subfolder path for the policy
-	 *                                    type.
-	 * @param policy                      the policy that is exported.
-	 * @param currentPoliciesOnFileSystem all the other policies currently in the
-	 *                                    folder.
+	 * @param policyFolderPath the correct subfolder path for the policy
+	 *                         type.
+	 * @param policy           the policy that is exported.
+	 *
 	 * @return the file where to store the policy.
 	 */
-
-	private File getPolicyFile(Path policyFolderPath, VraNgDeploymentLimitPolicy policy,
-			Map<String, VraNgDeploymentLimitPolicy> currentPoliciesOnFileSystem) {
+	private File getPolicyFile(Path policyFolderPath, VraNgDeploymentLimitPolicy policy) {
 		String filename = policy.getName();
-		String policyName = policy.getName();
 		if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
 			throw new IllegalArgumentException("Invalid filename " + filename);
 		}
-		// see if filename already exists in map.
-		int index = 1;
-		boolean match = false;
-		while (!match) {
-			// logger.debug("File name {}, index {} , name with Index {};", filename, index,
-			// filenameWithIndex);
 
-			if (currentPoliciesOnFileSystem.containsKey(filename)) {
-				// check if policy is our policy from previous run or a different one.
-				if (policy.getId().equals(currentPoliciesOnFileSystem.get(filename).getId())) {
-					match = true;
-				} else {
-					filename = policyName + "_" + index;
-					index++;
-
-				}
-			} else {
-				match = true;
-			}
-		}
-
-		logger.debug("Final Filename is {}, for policy with name {}", filename, policy.getName());
-
-		File policyFile = Paths.get(
+		return Paths.get(
 				String.valueOf(policyFolderPath),
 				filename + CUSTOM_RESOURCE_SUFFIX).toFile();
-		return policyFile;
-	}
-
-	/**
-	 * Read the filesystem where policies will be stored, make a map of pre existing
-	 * files there, to avoid duplication and/or unintentional overwriting.
-	 * 
-	 * @param policyFolderPath get actual path where policies should be stored.
-	 * @return a map of filenames and policies, found in the path.
-	 */
-	private Map<String, VraNgDeploymentLimitPolicy> getCurrentPoliciesOnFileSystem(Path policyFolderPath) {
-
-		// First make sure path exists and is a folder.
-		if (!policyFolderPath.toFile().isDirectory()
-				&& !policyFolderPath.toFile().mkdirs()) {
-			logger.warn("Could not create folder: {}", policyFolderPath.toFile().getAbsolutePath());
-		}
-
-		File[] policyFiles = policyFolderPath.toFile().listFiles();
-		Map<String, VraNgDeploymentLimitPolicy> currentPoliciesOnFileSystem = new HashMap<>();
-
-		for (File policyFile : policyFiles) {
-			String fileNameWithExt = policyFile.getName();
-			// exclude hidden files e.g. .DS_Store
-			if (!fileNameWithExt.startsWith(".")) {
-				String fileName = fileNameWithExt.replace(CUSTOM_RESOURCE_SUFFIX, "");
-				currentPoliciesOnFileSystem.put(fileName, this.jsonFileToVraNgDeploymentLimitPolicy(policyFile));
-			}
-		}
-		return currentPoliciesOnFileSystem;
 	}
 
 	/**
@@ -363,5 +288,54 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgStore {
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
 		}
+	}
+
+	/**
+	 * This will fetch all the policies that need to be exported.
+	 *
+	 * Will validate that the no duplicate policies exist on the
+	 * environment.
+	 *
+	 * @param itemNames - the list of policies to fetch. If empty, will
+	 *                  fetch all
+	 */
+	private Map<String, VraNgDeploymentLimitPolicy> fetchPolicies(final List<String> itemNames) {
+		Map<String, VraNgDeploymentLimitPolicy> policies = new HashMap<>();
+		boolean includeAll = itemNames.size() == 0;
+
+		this.getAllServerContents().forEach(policy -> {
+			if (policy.getTypeId().equals(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE)
+					&& (includeAll || itemNames.contains(policy.getName()))) {
+				if (policies.containsKey(policy.getName())) {
+					throw new RuntimeException(
+							String.format(
+									"More than one deployment limit policy with name '%s' already exists. While Aria supports policies with the same type and name, the build tools cannot. This is because we need to distinguish policies.",
+									policy.getName()));
+				}
+
+				logger.debug("Found policy: {}", policy.getName());
+				policies.put(policy.getName(), policy);
+			}
+		});
+
+		return policies;
+	}
+
+	/**
+	 * Sanitizes the give JSON object policy by removing properties that should not
+	 * be stored.
+	 *
+	 * The `projectId` must not be removed, as it controls wether a policy is
+	 * project scoped or not
+	 *
+	 * @param policy - the policy to sanitize
+	 */
+	private void sanitizePolicy(JsonObject policy) {
+		policy.remove("orgId");
+		policy.remove("createdBy");
+		policy.remove("createdAt");
+		policy.remove("lastUpdatedBy");
+		policy.remove("lastUpdatedAt");
+		policy.remove("id");
 	}
 }

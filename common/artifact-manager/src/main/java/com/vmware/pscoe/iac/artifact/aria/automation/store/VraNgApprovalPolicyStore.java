@@ -222,7 +222,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 		});
 
 		policies.forEach((name, policy) -> {
-			storeApprovalPolicyOnFilesystem(
+			storePolicyOnFS(
 					getPolicyFile(policyFolderPath, policy),
 					policy);
 		});
@@ -234,7 +234,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 * @param policyFile policy file
 	 * @param policy     policy representation
 	 */
-	private void storeApprovalPolicyOnFilesystem(final File policyFile, final VraNgApprovalPolicy policy) {
+	private void storePolicyOnFS(final File policyFile, final VraNgApprovalPolicy policy) {
 		logger.debug("Storing approval policy {}", policy.getName());
 
 		try {
@@ -296,10 +296,10 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	/**
 	 * This will fetch all the policies that need to be exported.
 	 *
-	 * Will validate that the no duplicate approval policies exist on the
+	 * Will validate that the no duplicate policies exist on the
 	 * environment.
 	 *
-	 * @param itemNames - the list of approval policies to fetch. If empty, will
+	 * @param itemNames - the list of policies to fetch. If empty, will
 	 *                  fetch all
 	 */
 	private Map<String, VraNgApprovalPolicy> fetchPolicies(final List<String> itemNames) {

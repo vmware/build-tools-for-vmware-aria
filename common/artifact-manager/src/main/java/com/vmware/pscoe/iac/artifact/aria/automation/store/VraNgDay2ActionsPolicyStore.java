@@ -197,7 +197,7 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 		});
 
 		policies.forEach((name, policy) -> {
-			storeDay2ActionsPolicyOnFilesystem(
+			storePolicyOnFS(
 					getPolicyFile(policyFolderPath, policy),
 					policy);
 		});
@@ -209,7 +209,7 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgStore {
 	 * @param policyFile policy file
 	 * @param policy     policy representation
 	 */
-	private void storeDay2ActionsPolicyOnFilesystem(final File policyFile, final VraNgDay2ActionsPolicy policy) {
+	private void storePolicyOnFS(final File policyFile, final VraNgDay2ActionsPolicy policy) {
 		logger.debug("Storing day two actions policy {}", policy.getName());
 
 		try {
