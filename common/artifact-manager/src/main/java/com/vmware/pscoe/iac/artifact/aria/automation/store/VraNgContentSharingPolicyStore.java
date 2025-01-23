@@ -167,6 +167,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
 
 		if (policiesOnServer.containsKey(policy.getName())) {
+			this.logger.warn("Content Sharing policy '{}' already exists on the server. Deleting it first.",
+					policy.getName());
 			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
 		}
 

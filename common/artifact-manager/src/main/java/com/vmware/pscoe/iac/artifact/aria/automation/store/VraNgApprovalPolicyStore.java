@@ -121,10 +121,10 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 			return;
 		}
 
-		File[] approvalPolicyFiles = this.filterBasedOnConfiguration(policyFolder,
+		File[] policyFiles = this.filterBasedOnConfiguration(policyFolder,
 				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 
-		if (approvalPolicyFiles != null && approvalPolicyFiles.length == 0) {
+		if (policyFiles != null && policyFiles.length == 0) {
 			logger.info("No approval policies available - skip import");
 			return;
 		}
@@ -133,7 +133,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 				.fetchPolicies(this.getItemListFromDescriptor());
 
 		logger.info("Found Approval Policies. Importing ...");
-		for (File policyFile : approvalPolicyFiles) {
+		for (File policyFile : policyFiles) {
 			this.handlePolicyImport(policyFile, policiesOnServer);
 		}
 	}
@@ -144,14 +144,14 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 * NOTE: The `projectId` is only set if it originally existed in the policy. The
 	 * API will not return a `projectId` if the policy is organization scoped
 	 *
-	 * @param approvalPolicyFile the policy to import.
-	 * @param policiesOnServer   all the policies currently on the server
+	 * @param policyFile       the policy to import.
+	 * @param policiesOnServer all the policies currently on the server
 	 */
-	private void handlePolicyImport(final File approvalPolicyFile, Map<String, VraNgApprovalPolicy> policiesOnServer) {
-		VraNgApprovalPolicy policy = jsonFileToVraNgApprovalPolicy(approvalPolicyFile);
+	private void handlePolicyImport(final File policyFile, Map<String, VraNgApprovalPolicy> policiesOnServer) {
+		VraNgApprovalPolicy policy = jsonFileToVraNgApprovalPolicy(policyFile);
 
 		logger.info("Attempting to import approval policy '{}', from file '{}'", policy.getName(),
-				approvalPolicyFile.getName());
+				policyFile.getName());
 
 		if (policy.getProjectId() != null && !policy.getProjectId().isBlank()) {
 			policy.setProjectId(this.restClient.getProjectId());
@@ -160,6 +160,8 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
 
 		if (policiesOnServer.containsKey(policy.getName())) {
+			this.logger.warn("Approval policy '{}' already exists on the server. Deleting it first.",
+					policy.getName());
 			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
 		}
 
@@ -227,10 +229,10 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Store approval policy in JSON file.
+	 * Store policy in JSON file.
 	 *
-	 * @param policyFile where to store the policy.
-	 * @param policy     the policy object to export.
+	 * @param policyFile policy file
+	 * @param policy     policy representation
 	 */
 	private void storeApprovalPolicyOnFilesystem(final File policyFile, final VraNgApprovalPolicy policy) {
 		logger.debug("Storing approval policy {}", policy.getName());
@@ -250,7 +252,6 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 							"Unable to store approval policy to file %s.", policyFile.getAbsolutePath()),
 					e);
 		}
-
 	}
 
 	/**
