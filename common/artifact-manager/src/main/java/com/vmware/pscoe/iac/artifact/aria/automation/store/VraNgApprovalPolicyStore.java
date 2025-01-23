@@ -160,9 +160,6 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
 
 		if (policiesOnServer.containsKey(policy.getName())) {
-			// policy.setId(policiesOnServer.get(policy.getName()).getId());
-			// policy.setProjectId(policiesOnServer.get(policy.getName()).getProjectId());
-
 			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
 		}
 

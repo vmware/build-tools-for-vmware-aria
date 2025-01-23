@@ -154,34 +154,24 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 */
 	private void handlePolicyImport(final File contentSharingPolicyFile,
 			Map<String, VraNgContentSharingPolicy> policiesOnServer) {
-		VraNgContentSharingPolicy csPolicy = jsonFileToVraNgContentSharingPolicy(contentSharingPolicyFile);
+		VraNgContentSharingPolicy policy = jsonFileToVraNgContentSharingPolicy(contentSharingPolicyFile);
 
-		logger.info("Attempting to import content sharing policy '{}', from file '{}'", csPolicy.getName(),
+		logger.info("Attempting to import content sharing policy '{}', from file '{}'", policy.getName(),
 				contentSharingPolicyFile.getName());
-		this.resolveEntitledUsersOrgAndScope(csPolicy, true);
-		this.enrichContentSharingPolicy(csPolicy);
-		this.restClient.createContentSharingPolicy(csPolicy);
-	}
+		this.resolveEntitledUsersOrgAndScope(policy, true);
 
-	/**
-	 * Used while import to override the orgId and ProjectId for the receiving vRA.
-	 * instance.
-	 * 
-	 * @param csPolicy
-	 */
-	private void enrichContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
-		if (StringUtils.hasLength(csPolicy.getOrganization())) {
-			csPolicy.setOrgId(this.restClient.getOrganizationByName(csPolicy.getOrganization()).getId());
-		} else {
-			csPolicy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
+		if (policy.getProjectId() != null && !policy.getProjectId().isBlank()) {
+			policy.setProjectId(this.restClient.getProjectId());
 		}
-		if (StringUtils.hasLength(csPolicy.getScope())) {
-			csPolicy.setProjectId(this.restClient.getProjectIdByName(csPolicy.getScope()));
-		} else {
-			csPolicy.setProjectId(this.restClient.getProjectId());
+
+		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
+
+		if (policiesOnServer.containsKey(policy.getName())) {
+			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
 		}
-		csPolicy.setScope(null);
-		csPolicy.setOrganization(null);
+
+		this.logger.info("Attempting to create approval policy '{}'", policy.getName());
+		this.restClient.createContentSharingPolicy(policy);
 	}
 
 	/////////////////////////////////////
@@ -271,35 +261,6 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Read the file system where policies will be stored, make a map of pre
-	 * existing files there, to avoid duplication and/or unintentional overwriting.
-	 * 
-	 * @param policyFolderPath get actual path where policies should be stored.
-	 * @return a map of filenames and policies, found in the path.
-	 */
-	private Map<String, VraNgContentSharingPolicy> getCurrentPoliciesOnFileSystem(Path policyFolderPath) {
-		// First make sure path exists and is a folder.
-		if (!policyFolderPath.toFile().isDirectory()) {
-			logger.warn("Could find directory: {}", policyFolderPath.toFile().getAbsolutePath());
-			return new HashMap<String, VraNgContentSharingPolicy>();
-		}
-
-		File[] policyFiles = policyFolderPath.toFile().listFiles();
-		Map<String, VraNgContentSharingPolicy> currentPoliciesOnFileSystem = new HashMap<>();
-		for (File policyFile : policyFiles) {
-			String fileNameWithExt = policyFile.getName();
-			// exclude hidden files e.g. .DS_Store
-			if (fileNameWithExt.startsWith(".")) {
-				continue;
-			}
-			String fileName = fileNameWithExt.replace(CUSTOM_RESOURCE_SUFFIX, "");
-			currentPoliciesOnFileSystem.put(fileName, this.jsonFileToVraNgContentSharingPolicy(policyFile));
-		}
-
-		return currentPoliciesOnFileSystem;
-	}
-
-	/**
 	 * @param policyFolderPath the correct sub folder path for the
 	 *                         policy. type.
 	 * @param policy           the policy that is exported.
@@ -373,6 +334,11 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 					if (foundCatalogItem != null) {
 						item.setId(foundCatalogItem.getId());
 						item.setName(null);
+					} else {
+						throw new RuntimeException(
+								String.format(
+										"Catalog Item with name: '%s' could not be found. Cannot import/export Policy.",
+										item.getName()));
 					}
 				} else {
 					foundCatalogItem = catalogItems.stream()
@@ -381,6 +347,11 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 					if (foundCatalogItem != null) {
 						item.setName(foundCatalogItem.getName());
 						item.setId(null);
+					} else {
+						throw new RuntimeException(
+								String.format(
+										"Catalog Item with name: '%s' could not be found. Cannot import/export Policy.",
+										item.getName()));
 					}
 				}
 				break;
@@ -395,6 +366,11 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 					if (foundContentSource != null) {
 						item.setId(foundContentSource.getId());
 						item.setName(null);
+					} else {
+						throw new RuntimeException(
+								String.format(
+										"Content source with name: '%s' could not be found. Cannot import/export Policy.",
+										item.getName()));
 					}
 				} else {
 					foundContentSource = contentSources.stream()
@@ -403,6 +379,11 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 					if (foundContentSource != null) {
 						item.setName(foundContentSource.getName());
 						item.setId(null);
+					} else {
+						throw new RuntimeException(
+								String.format(
+										"Content source with name: '%s' could not be found. Cannot import/export Policy.",
+										item.getName()));
 					}
 				}
 				break;
