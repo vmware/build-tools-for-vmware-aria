@@ -145,6 +145,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 * API will not return a `projectId` if the policy is organization scoped
 	 *
 	 * @param approvalPolicyFile the policy to import.
+	 * @param policiesOnServer   all the policies currently on the server
 	 */
 	private void handlePolicyImport(final File approvalPolicyFile, Map<String, VraNgApprovalPolicy> policiesOnServer) {
 		VraNgApprovalPolicy policy = jsonFileToVraNgApprovalPolicy(approvalPolicyFile);
@@ -235,7 +236,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	 * @param policy     the policy object to export.
 	 */
 	private void storeApprovalPolicyOnFilesystem(final File policyFile, final VraNgApprovalPolicy policy) {
-		logger.debug("Storing  {}", policy.getName());
+		logger.debug("Storing approval policy {}", policy.getName());
 
 		try {
 			Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().create();
@@ -282,14 +283,11 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgStore {
 	private Path getPolicyFolderPath() {
 		File store = new File(vraNgPackage.getFilesystemPath());
 
-		Path policyFolderPath = Paths.get(
-				store.getPath(),
-				VraNgDirs.DIR_POLICIES,
-				APPROVAL);
-		if (!policyFolderPath.toFile().isDirectory()
-				&& !policyFolderPath.toFile().mkdirs()) {
+		Path policyFolderPath = Paths.get(store.getPath(), VraNgDirs.DIR_POLICIES, APPROVAL);
+		if (!policyFolderPath.toFile().isDirectory() && !policyFolderPath.toFile().mkdirs()) {
 			logger.warn("Could not create folder: {}", policyFolderPath.getFileName());
 		}
+
 		return policyFolderPath;
 	}
 
