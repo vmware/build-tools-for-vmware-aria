@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -352,71 +353,8 @@ public class VraNgDay2ActionsPolicyStoreTest {
 	}
 
 	@Test
-	void testExportContentWithSpecificPoliciesAndDuplicateFiles() {
-		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateFiles");
-		VraNgDay2ActionsPolicy policyInFile = new VraNgDay2ActionsPolicy(
-				"d160119e-4027-48d1-a2b5-5229b3cee282",
-				"D2A01",
-				"com.vmware.policy.deployment.action",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"SOFT",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-
-		VraNgDay2ActionsPolicy policy = new VraNgDay2ActionsPolicy(
-				"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-				"D2A01",
-				"com.vmware.policy.deployment.action",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"HARD",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, Collections.singletonList("D2A01"), null, null, null);
-		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
-		when(restClient.getDay2ActionsPolicies()).thenReturn(Collections.singletonList(policy));
-		when(restClient.getDay2ActionsPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
-
-		File policyFolder = Paths
-				.get(tempFolder.getRoot().getPath(), dirPolicies, day2ActionsPolicy).toFile();
-
-		fsMocks.getDay2ActionsPolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("D2A01_1");
-		fsMocks.getDay2ActionsPolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("D2A01_2");
-		fsMocks.getDay2ActionsPolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("D2A01_3");
-		fsMocks.getDay2ActionsPolicyFsMocks().addPolicy(policyInFile);
-
-		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder,
-				new String[] { "D2A01.json", "D2A01_1.json", "D2A01_2.json", "D2A01_3.json", "D2A01_4.json" });
-	}
-
-	@Test
 	void testExportContentWithSpecificPoliciesAndDuplicateNames() {
 		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateNames");
-		VraNgDay2ActionsPolicy policyInFile = new VraNgDay2ActionsPolicy(
-				"d160119e-4027-48d1-a2b5-5229b3cee282",
-				"D2A01",
-				"com.vmware.policy.deployment.action",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"SOFT",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
 
 		VraNgDay2ActionsPolicy policy = new VraNgDay2ActionsPolicy(
 				"df60ff9e-4027-48d1-a2b5-5229b3cee282",
@@ -497,16 +435,8 @@ public class VraNgDay2ActionsPolicyStoreTest {
 		when(restClient.getDay2ActionsPolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
 		when(restClient.getDay2ActionsPolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
 
-		File policyFolder = Paths
-				.get(tempFolder.getRoot().getPath(), dirPolicies, day2ActionsPolicy).toFile();
-
 		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "D2A01.json", "D2A01_1.json",
-				"D2A01_2.json", "D2A01_3.json", "D2A01_4.json", "D2A01_5.json" });
+		assertThrows(RuntimeException.class, () -> store.exportContent());
 	}
 
 }

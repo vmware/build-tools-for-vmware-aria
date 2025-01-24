@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -319,58 +320,6 @@ public class VraNgDeploymentLimitPolicyStoreTest {
 	}
 
 	@Test
-	void testExportContentWithSpecificDeploymentLimitPoliciesAndDuplicateFiles() {
-		System.out.println(this.getClass() + ".testExportContentWithSpecificDeploymentLimitPoliciesAndDuplicateFiles");
-		VraNgDeploymentLimitPolicy policyInFile = new VraNgDeploymentLimitPolicy(
-				"d160119e-4027-48d1-a2b5-5229b3cee282",
-				"DL01",
-				"com.vmware.policy.deployment.limit",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"SOFT",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-
-		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
-				"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-				"DL01",
-				"com.vmware.policy.deployment.limit",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"HARD",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, null, null, Collections.singletonList("DL01"));
-		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
-		when(restClient.getDeploymentLimitPolicies()).thenReturn(Collections.singletonList(policy));
-		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
-
-		File policyFolder = Paths
-				.get(tempFolder.getRoot().getPath(), dirPolicies, deploymentLimitPolicy).toFile();
-
-		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("DL01_1");
-		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("DL01_2");
-		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("DL01_3");
-		fsMocks.getDeploymentLimitPolicyFsMocks().addPolicy(policyInFile);
-
-		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder,
-				new String[] { "DL01.json", "DL01_1.json", "DL01_2.json", "DL01_3.json", "DL01_4.json" });
-	}
-
-	@Test
 	void testExportContentWithPolicyAlreadyInFile() {
 		System.out.println(this.getClass() + ".testExportContentWithPolicyAlreadyInFile");
 
@@ -406,18 +355,6 @@ public class VraNgDeploymentLimitPolicyStoreTest {
 	@Test
 	void testExportContentWithSpecificPoliciesAndDuplicateNames() {
 		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateNames");
-		VraNgDeploymentLimitPolicy policyInFile = new VraNgDeploymentLimitPolicy(
-				"d160119e-4027-48d1-a2b5-5229b3cee282",
-				"DL01",
-				"com.vmware.policy.deployment.limit",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"SOFT",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-
 		VraNgDeploymentLimitPolicy policy = new VraNgDeploymentLimitPolicy(
 				"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 				"DL01",
@@ -497,15 +434,7 @@ public class VraNgDeploymentLimitPolicyStoreTest {
 		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
 		when(restClient.getDeploymentLimitPolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
 
-		File policyFolder = Paths
-				.get(tempFolder.getRoot().getPath(), dirPolicies, deploymentLimitPolicy).toFile();
-
 		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "DL01.json", "DL01_1.json",
-				"DL01_2.json", "DL01_3.json", "DL01_4.json", "DL01_5.json" });
+		assertThrows(RuntimeException.class, () -> store.exportContent());
 	}
 }
