@@ -60,6 +60,11 @@ jobs:
           java-distribution: "temurin"
           maven-version: 3.9.2
 
+      - name: Tmp Print
+        run: |
+          pwd
+          ls -la
+
       - name: Install necessary components
         run: |
           cd ${{ env.TMP_FOLDER }}
