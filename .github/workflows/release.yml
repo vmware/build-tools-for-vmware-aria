@@ -56,7 +56,7 @@ jobs:
         run: |
           git config --global user.email "vcf-ps-coe.ci-admin@broadcom.com"
           git config --global user.name "svc-wwcoe-ci-admin"
-          
+          rm -rf *
           git clone --branch main https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git .
       
       # - name: Checkout
