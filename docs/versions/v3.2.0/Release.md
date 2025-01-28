@@ -1,0 +1,128 @@
+# v3.2.0
+
+## Breaking Changes
+
+
+## Deprecations
+
+
+
+## Features
+
+
+
+## Improvements
+
+### *Custom Resources are now updated correctly if in use*
+
+When a custom resource is in use, we attempt to do an update after a failed deletion (default behavior as we want to recreate it).
+
+#### Previous Behavior
+
+This used to fail since the exception was not caught and was also burried inside of another exception.
+
+#### New Behavior
+
+The exception is now caught and the update is attempted.
+
+
+### *Plugin arguments cheatsheets generation fixed*
+
+#### Previous Behavior
+
+The cheatsheet documents contained similar error:
+```text
+[ERROR] version: '3.1.1-SNAPSHOT': Plugin com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:3.1.1-SNAPSHOT or one of its dependencies could not be resolved: Could not find artifact
+```
+
+#### New Behavior
+
+The cheatsheet documents are properly generated.
+
+### *Unreleasing BP versions would cause an exception*
+
+An exception was thrown like: `The request was rejected because the URL contained a potentially malicious String "//"","path":"/blueprint/api/blueprints/b355c354-a4b6-4d55-800a-8b4232f29b83/versions/2024-12-06-18-34-42//actions/unrelease`
+
+This was because of the `//` after the version id.
+
+#### New Behavior
+
+The extra `/` is removed when forming the url now
+
+### *Unable to package ABX project*
+
+#### Previous Behavior
+
+We were getting an error when trying to package ABX project:
+```log
+[ERROR] Failed to execute goal com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:2.44.0:package (default-package) on project anothertest: Error creating ABX bundle: duplicate entry: node_modules/run-script-os/index.js -> [Help 1]
+```
+
+#### New Behavior
+
+The ABX package created successfully.
+
+### *Add interactive installer option for importing ABX package*
+
+#### Previous Behavior
+
+ABX packages are ignored in the bundle. The Installer completes the task without installing the packages.
+
+#### New Behavior
+
+The Installer asks the user whether to install ABX packages and in case of positive response installs the packages.
+
+### *Change interactive installer default value of `Run vRO workflow?` option to `N`*
+
+#### Previous Behavior
+
+The default value was `Y` which often results in the user having to provide explicitly `N` as value.
+In interactive mode, it is assumed that the Java Installer is run manually by a user. In that case if the user wants to run a workflow it is more common to login into the Aria Automation Orchestrator UI and run the workflow from there benefiting from all of the tracking and monitoring offered by Aria Automation Orchestrator.
+
+#### New Behavior
+
+The default value is set to `N` enabling the user to just proceed to the next option without providing explicit value for the most common use cases.
+
+### *Fix interactive installer value hints for `Is single tenant environment?`*
+
+#### Previous Behavior
+
+There was a `(Y/N)` hardcoded in the question which resulted in double entry:
+`Is single tenant environment (Y/N)? (Y/N) [Y]:`
+
+#### New Behavior
+
+The question is updated:
+`Is single tenant environment? (Y/N) [Y]:`
+
+### *Moved Aria Automation components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved Aria Operations components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved Aria Operations For Logs components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved vCD components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+## Upgrade procedure
+
+### *Dynamic type definitions for the unit tests framework.*
+
+The package name and version of the type definitions are being installed dynamically based on the configuration of the solution.  
+This ensures the type definitions available for type hinting / autocomplete in the IDE and for the transpilation are matching the actual code definitions of the unit test framework.
+
+#### Previous Behavior
+
+The type definitions installed were always the same package and version - the [BTVA built-in Jasmine definitions](https://github.com/vmware/build-tools-for-vmware-aria/tree/v3.1.1/vro-types/jasmine) (link is to v3.1.1, might be outdated at later point in time).
+
+#### New Behavior
+
+The configuration in the pom file affects both the framework being used and its type definitions being made available.
+
