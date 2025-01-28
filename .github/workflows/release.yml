@@ -52,7 +52,7 @@ jobs:
         run: |
           echo "TMP_FOLDER=tmp_folder" >> $GITHUB_ENV
 
-      - name: Set Git configs
+      - name: Checkout
         run: |
           git config --global user.email "vcf-ps-coe.ci-admin@broadcom.com"
           git config --global user.name "svc-wwcoe-ci-admin"
@@ -73,11 +73,13 @@ jobs:
 
       - name: Install necessary components
         run: |
+          cd ${{ env.TMP_FOLDER }}
           mvn clean install -f common/artifact-manager/pom.xml -DskipTests
           mvn clean install -f maven/plugins/pom.xml
 
       - name: Generate documentation
         run: |
+          cd ${{ env.TMP_FOLDER }}
           echo "Generating Documentation..."
           DOC_VERSION="v${{ inputs.version }}"
           DOC_DATE_VERSION="$DOC_VERSION - $(date +"%d %b %Y")"
@@ -111,7 +113,8 @@ jobs:
           echo "Done Generating Documentation." 
 
       - name: Generate plugin arguments
-        run: |  
+        run: |
+          cd ${{ env.TMP_FOLDER }}
           for POM_PATH in $(find maven/plugins -mindepth 2 -maxdepth 2 -name pom.xml -type f -not -path "maven/plugins/common/*"); do # Not recommended, will break on whitespace
             echo "Processing $POM_PATH..."
             GROUP_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="parent"]/*[local-name()="groupId"]/text()' $POM_PATH) 
@@ -132,10 +135,12 @@ jobs:
 
       - name: Print git configs
         run: |
+          cd ${{ env.TMP_FOLDER }}
           git config --list
 
       - name: Release v${{ inputs.version }}
         run: |
+          cd ${{ env.TMP_FOLDER }}
           mvn versions:set-property -Dproperty=revision -DnewVersion=${{ inputs.version }} -DgenerateBackupPoms=false --non-recursive
           mvn initialize -f vro-types
           mvn initialize -f typescript
@@ -148,6 +153,7 @@ jobs:
 
       - name: Prepare next development iteration
         run: |
+          cd ${{ env.TMP_FOLDER }}
           # Increment the build version by 1 and add SNAPSHOT
           SNAPSHOT_VERSION=$(echo ${{ inputs.version }} | awk -F '.' '{print $1"."$2"."$3+1"-SNAPSHOT"}')
 
