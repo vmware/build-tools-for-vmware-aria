@@ -113,6 +113,10 @@ jobs:
             mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH -D"output=../../../docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md"
           done
 
+      - name: Print git configs
+        run: |
+          git config --list
+
       - name: Release v${{ inputs.version }}
         run: |
           mvn versions:set-property -Dproperty=revision -DnewVersion=${{ inputs.version }} -DgenerateBackupPoms=false --non-recursive
