@@ -43,6 +43,7 @@ jobs:
           git config --global user.email "vcf-ps-coe.ci-admin@broadcom.com"
           git config --global user.name "WWCoE CI admin"
           git clone --branch main https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git .
+          git remote set-url origin https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git
 
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
