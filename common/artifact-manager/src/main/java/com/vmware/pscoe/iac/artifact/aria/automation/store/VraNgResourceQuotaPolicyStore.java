@@ -323,7 +323,7 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgStore {
 	 * Sanitizes the give JSON object policy by removing properties that should not
 	 * be stored.
 	 *
-	 * The `projectId` must not be removed, as it controls wether a policy is
+	 * The `projectId` must not be removed, as it controls whether a policy is
 	 * project scoped or not
 	 *
 	 * @param policy - the policy to sanitize
