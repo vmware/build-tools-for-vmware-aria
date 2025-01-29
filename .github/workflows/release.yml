@@ -11,6 +11,9 @@ jobs:
   release:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
     steps:
 
       - name: Validate actor permissions
@@ -38,12 +41,6 @@ jobs:
             exit 2
           fi
 
-      - name: Checkout
-        run: |
-          git clone https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git .
-          git config --global user.email "vcf-ps-coe.ci-admin@broadcom.com"
-          git config --global user.name "WWCoE CI admin"
-
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
 
@@ -54,13 +51,25 @@ jobs:
           java-distribution: "temurin"
           maven-version: 3.9.2
 
+      - name: Set ENV variables
+        run: |
+          echo "TMP_FOLDER=tmp_folder" >> $GITHUB_ENV
+
+      - name: Checkout
+        run: |
+          git config --global user.email "vcf-ps-coe.ci-admin@broadcom.com"
+          git config --global user.name "svc-wwcoe-ci-admin"
+          git clone --branch main https://svc-wwcoe-ci-admin:${{ secrets.GH_TOKEN }}@github.com/vmware/build-tools-for-vmware-aria.git ${{ env.TMP_FOLDER }}
+
       - name: Install necessary components
         run: |
+          cd ${{ env.TMP_FOLDER }}
           mvn clean install -f common/artifact-manager/pom.xml -DskipTests
           mvn clean install -f maven/plugins/pom.xml
 
       - name: Generate documentation
         run: |
+          cd ${{ env.TMP_FOLDER }}
           echo "Generating Documentation..."
           DOC_VERSION="v${{ inputs.version }}"
           DOC_DATE_VERSION="$DOC_VERSION - $(date +"%d %b %Y")"
@@ -94,7 +103,8 @@ jobs:
           echo "Done Generating Documentation." 
 
       - name: Generate plugin arguments
-        run: |          
+        run: |
+          cd ${{ env.TMP_FOLDER }}
           for POM_PATH in $(find maven/plugins -mindepth 2 -maxdepth 2 -name pom.xml -type f -not -path "maven/plugins/common/*"); do # Not recommended, will break on whitespace
             echo "Processing $POM_PATH..."
             GROUP_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="parent"]/*[local-name()="groupId"]/text()' $POM_PATH) 
@@ -113,8 +123,14 @@ jobs:
             mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH -D"output=../../../docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md"
           done
 
+      - name: Print git configs
+        run: |
+          cd ${{ env.TMP_FOLDER }}
+          git config --list
+
       - name: Release v${{ inputs.version }}
         run: |
+          cd ${{ env.TMP_FOLDER }}
           mvn versions:set-property -Dproperty=revision -DnewVersion=${{ inputs.version }} -DgenerateBackupPoms=false --non-recursive
           mvn initialize -f vro-types
           mvn initialize -f typescript
@@ -126,7 +142,8 @@ jobs:
           git push   
 
       - name: Prepare next development iteration
-        run: |   
+        run: |
+          cd ${{ env.TMP_FOLDER }}
           # Increment the build version by 1 and add SNAPSHOT
           SNAPSHOT_VERSION=$(echo ${{ inputs.version }} | awk -F '.' '{print $1"."$2"."$3+1"-SNAPSHOT"}')
 
