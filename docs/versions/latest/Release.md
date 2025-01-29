@@ -10,6 +10,10 @@
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
+### *Aria (vra-ng) policies are now handled differently.*
+
+Previously, when pulling and pushing policies, duplicates were allowed, however this didn't allow us to map them correctly. So that being the case, now policies with the same name and of the same type on the environment will break the execution of the code.
+
 ## Deprecations
 
 [//]: # (### *Deprecation*)
