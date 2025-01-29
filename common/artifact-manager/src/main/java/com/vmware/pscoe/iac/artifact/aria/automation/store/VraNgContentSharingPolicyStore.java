@@ -231,12 +231,13 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		try {
 			// serialize the object
 			Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().create();
-			String policyJson = gson.toJson(policy);
+			JsonObject policyJsonObject = gson.fromJson(new Gson().toJson(policy), JsonObject.class);
+			this.sanitizePolicy(policyJsonObject);
 
 			// write content sharing file
 			logger.info("Created content sharing file {}",
-					Files.write(Paths.get(policyFile.getPath()), policyJson.getBytes(),
-							StandardOpenOption.CREATE));
+					Files.write(Paths.get(policyFile.getPath()),
+							gson.toJson(policyJsonObject).getBytes(), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			throw new RuntimeException(
 					String.format(
@@ -436,7 +437,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 				if (policies.containsKey(policy.getName())) {
 					throw new RuntimeException(
 							String.format(
-									"More than one content sharing policy with name '%s' already exists. While Aria supports policies with the same type and name, the build tools cannot. This is because we need to distinguish policies.",
+									"More than one content sharing policy with name '%s' already exists. While Aria Automation supports policies with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type in order to properly resolve the desired policy.",
 									policy.getName()));
 				}
 
@@ -452,7 +453,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 * Sanitizes the given JSON object policy by removing properties that should not
 	 * be stored.
 	 *
-	 * The `projectId` must not be removed, as it controls wether a policy is
+	 * The `projectId` must not be removed, as it controls whether a policy is
 	 * project scoped or not
 	 *
 	 * @param policy - the policy to sanitize
