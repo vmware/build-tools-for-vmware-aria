@@ -449,7 +449,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Sanitizes the give JSON object policy by removing properties that should not
+	 * Sanitizes the given JSON object policy by removing properties that should not
 	 * be stored.
 	 *
 	 * The `projectId` must not be removed, as it controls wether a policy is
