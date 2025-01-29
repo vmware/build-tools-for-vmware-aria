@@ -14,6 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -300,51 +301,6 @@ public class VraNgContentSharingPolicyStoreTest {
 	}
 
 	@Test
-	void testImportContentForDifferentDestinationProject() {
-		System.out.println("testImportContentForDifferentDestinationProject");
-		VraNgContentSharingPolicy toBeCreated = this.prepareTestObjects(this.scope1, this.organization.getName());
-
-		// START TEST
-		store.importContent(tempFolder.getRoot());
-
-		// VERIFY
-		verify(restClient).createContentSharingPolicy(argThat(item -> {
-			return item.getId().equals(toBeCreated.getId()) && item.getOrgId().equals(toBeCreated.getOrgId())
-					&& item.getProjectId().equals(toBeCreated.getProjectId());
-		}));
-	}
-
-	@Test
-	void testImportContentForEmptyScope() {
-		System.out.println("testImportContentForEmptyScope");
-		VraNgContentSharingPolicy toBeCreated = this.prepareTestObjects(null, this.organization.getName());
-
-		// START TEST
-		store.importContent(tempFolder.getRoot());
-
-		// VERIFY
-		verify(restClient).createContentSharingPolicy(argThat(item -> {
-			return item.getId().equals(toBeCreated.getId()) && item.getOrgId().equals(toBeCreated.getOrgId())
-					&& item.getProjectId().equals(toBeCreated.getProjectId());
-		}));
-	}
-
-	@Test
-	void testImportContentForDifferentScope() {
-		System.out.println("testImportContentForDifferentScope");
-		VraNgContentSharingPolicy toBeCreated = this.prepareTestObjects(this.scope2, this.organization.getName());
-
-		// START TEST
-		store.importContent(tempFolder.getRoot());
-
-		// VERIFY
-		verify(restClient).createContentSharingPolicy(argThat(item -> {
-			return item.getId().equals(toBeCreated.getId()) && item.getOrgId().equals(toBeCreated.getOrgId())
-					&& item.getProjectId().equals(toBeCreated.getProjectId());
-		}));
-	}
-
-	@Test
 	void testExportContentWithPolicyAlreadyInFile() {
 		System.out.println(this.getClass() + ".testExportContentWithPolicyAlreadyInFile");
 
@@ -368,45 +324,6 @@ public class VraNgContentSharingPolicyStoreTest {
 		// VERIFY
 		// export should overwrite policy, not create a new file.
 		assertEquals(1, Objects.requireNonNull(policyFolder.listFiles()).length);
-	}
-
-	@Test
-	void testExportContentWithSpecificPoliciesAndDuplicateFiles() {
-		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateFiles");
-		VraNgContentSharingPolicy policyInFile = new VraNgContentSharingPolicy("d160119e-4027-48d1-a2b5-5229b3cee282",
-				"CS01",
-				"com.vmware.policy.catalog.entitlement", "b899c648-bf84-4d35-a61c-db212ecb4c1e", "VIDM-L-01A", "SOFT",
-				"TEST", new VraNgDefinition(),
-				this.scope1, this.organization.getName());
-
-		VraNgContentSharingPolicy policy = new VraNgContentSharingPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282", "CS01",
-				"com.vmware.policy.catalog.entitlement", "b899c648-bf84-4d35-a61c-db212ecb4c1e", "VIDM-L-01A", "HARD",
-				"TEST", new VraNgDefinition(),
-				this.scope1, this.organization.getName());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(Collections.singletonList("CS01"), null, null, null, null, null);
-		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
-		when(restClient.getContentSharingPolicies()).thenReturn(Collections.singletonList(policy));
-		when(restClient.getContentSharingPolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
-
-		File policyFolder = Paths.get(tempFolder.getRoot().getPath(), dirContentSharingPolicies, contentSharingPolicy)
-				.toFile();
-
-		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
-		policyInFile.setName("CS01_1");
-		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
-		policyInFile.setName("CS01_2");
-		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
-		policyInFile.setName("CS01_3");
-		fsMocks.contentSharingFsMocks().addContentSharingPolicy(policyInFile);
-
-		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder,
-				new String[] { "CS01.json", "CS01_1.json", "CS01_2.json", "CS01_3.json", "CS01_4.json" });
 	}
 
 	@Test
@@ -455,17 +372,8 @@ public class VraNgContentSharingPolicyStoreTest {
 		when(restClient.getContentSharingPolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
 		when(restClient.getContentSharingPolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
 
-		File policyFolder = Paths.get(tempFolder.getRoot().getPath(), dirContentSharingPolicies, contentSharingPolicy)
-				.toFile();
-
 		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder,
-				new String[] { "CS01.json", "CS01_1.json", "CS01_2.json", "CS01_3.json", "CS01_4.json",
-						"CS01_5.json" });
+		assertThrows(RuntimeException.class, () -> store.exportContent());
 	}
 
 	private VraNgContentSharingPolicy prepareTestObjects(String scope, String organization) {

@@ -136,7 +136,7 @@ public abstract class Configuration {
 		try {
 			return Integer.parseInt(this.properties.getProperty(PORT));
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("Port is not a number");
+			throw new RuntimeException("Port is not a number", e);
 		}
 	}
 

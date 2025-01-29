@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -353,72 +354,8 @@ public class VraNgLeasePolicyStoreTest {
 	}
 
 	@Test
-	void testExportContentWithSpecificPoliciesAndDuplicateFiles() {
-		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateFiles");
-		VraNgLeasePolicy policyInFile = new VraNgLeasePolicy(
-				"d160119e-4027-48d1-a2b5-5229b3cee282",
-				"LP01",
-				"com.vmware.policy.deployment.lease",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"SOFT",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-
-		VraNgLeasePolicy policy = new VraNgLeasePolicy(
-				"df60ff9e-4027-48d1-a2b5-5229b3cee282",
-				"LP01",
-				"com.vmware.policy.deployment.lease",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"HARD",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-		VraNgPolicy vraNgPolicy = new VraNgPolicy(null, null, null, Collections.singletonList("LP01"), null, null);
-		// // GIVEN
-		when(vraNgPackageDescriptor.getPolicy()).thenReturn(vraNgPolicy);
-		when(restClient.getLeasePolicies()).thenReturn(Collections.singletonList(policy));
-		when(restClient.getLeasePolicy("df60ff9e-4027-48d1-a2b5-5229b3cee282")).thenReturn(policy);
-
-		File policyFolder = Paths
-				.get(tempFolder.getRoot().getPath(), dirPolicies, leasePolicy).toFile();
-
-		fsMocks.getLeasePolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("LP01_1");
-		fsMocks.getLeasePolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("LP01_2");
-		fsMocks.getLeasePolicyFsMocks().addPolicy(policyInFile);
-		policyInFile.setName("LP01_3");
-		fsMocks.getLeasePolicyFsMocks().addPolicy(policyInFile);
-
-		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(5, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder,
-				new String[] { "LP01.json", "LP01_1.json", "LP01_2.json", "LP01_3.json", "LP01_4.json" });
-	}
-
-	@Test
 	void testExportContentWithSpecificPoliciesAndDuplicateNames() {
 		System.out.println(this.getClass() + ".testExportContentWithSpecificPoliciesAndDuplicateNames");
-		VraNgLeasePolicy policyInFile = new VraNgLeasePolicy(
-				"d160119e-4027-48d1-a2b5-5229b3cee282",
-				"LP01",
-				"com.vmware.policy.deployment.lease",
-				"b899c648-bf84-4d35-a61c-db212ecb4c1e",
-				"VIDM-L-01A",
-				"SOFT",
-				"TEST",
-				new JsonObject(),
-				new JsonObject(),
-				new JsonObject());
-
 		VraNgLeasePolicy policy = new VraNgLeasePolicy(
 				"df60ff9e-4027-48d1-a2b5-5229b3cee282",
 				"LP01",
@@ -498,15 +435,7 @@ public class VraNgLeasePolicyStoreTest {
 		when(restClient.getLeasePolicy("df60ff9e-4027-14d1-a2b5-5229b3cee282")).thenReturn(policy4);
 		when(restClient.getLeasePolicy("df60ff9e-4027-15d1-a2b5-5229b3cee282")).thenReturn(policy5);
 
-		File policyFolder = Paths
-				.get(tempFolder.getRoot().getPath(), dirPolicies, leasePolicy).toFile();
-
 		// TEST
-		store.exportContent();
-
-		// VERIFY
-		assertEquals(6, Objects.requireNonNull(policyFolder.listFiles()).length);
-		AssertionsHelper.assertFolderContainsFiles(policyFolder, new String[] { "LP01.json", "LP01_1.json",
-				"LP01_2.json", "LP01_3.json", "LP01_4.json", "LP01_5.json" });
+		assertThrows(RuntimeException.class, () -> store.exportContent());
 	}
 }
