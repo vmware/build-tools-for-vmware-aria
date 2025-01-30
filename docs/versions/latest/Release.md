@@ -9,6 +9,13 @@
 [//]: # (### *Breaking Change*)
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
+### *Upgrade to node.js 22 (22.13.1)*
+BTVA is compiled for node.js 22 and may use features not available in older node.js versions. Make sure proper version of node.js is used for project build.
+Projects that use older versions of @types/node should upgrade to the later versions compatible with node.js 22. Changes in code using obsolete functions may be required.
+
+### *Upgrade to latest typescipt and ts-node*
+The latest versions of typescipt have stricter code validation and may report errors where they were previously ignored.
+Examples: not passing all mandatory function parameters, use of 'this' in workflow definitions (*.wf.ts).
 
 ## Deprecations
 
@@ -16,6 +23,14 @@
 [//]: # (Explain what is deprecated and suggest alternatives)
 
 [//]: # (Features -> New Functionality)
+### *Angular 8 not supported for VCD projects*
+The VCD projects based on Angular 8 templates are not supported anymore. Projects must be upgraded to Angular 15 templates.
+
+### *Remove powershell runtime option*
+The following option have been removed:
+```text
+- `powershell:7.4`
+```
 
 ## Features
 
