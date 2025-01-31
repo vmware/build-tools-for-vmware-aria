@@ -656,7 +656,8 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		try {
 			return this.getContentSourcePrimitive(id);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Could not get content source by id '%s'.", id, e));
+			throw new RuntimeException(
+					String.format("Could not get content source by id '%s', error was: '%s'.", id, e.getMessage()), e);
 		}
 	}
 
@@ -671,7 +672,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			return this.getVraWorkflowContentSourcePrimitive(id);
 		} catch (Exception e) {
 			logger.error("Could not find VRA workflow content source {}", id);
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 

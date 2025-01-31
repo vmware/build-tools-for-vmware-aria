@@ -67,7 +67,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPo
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContentSource;
-
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -96,6 +96,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.Strictness;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
@@ -133,26 +134,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * SERVICE_SUBSCRIPTION.
 	 */
 	private static final String SERVICE_SUBSCRIPTION = "/event-broker/api/subscriptions";
-	/**
-	 * SERVICE_FLAVORS.
-	 */
-	private static final String SERVICE_FLAVORS = "/iaas/api/flavors";
-	/**
-	 * SERVICE_FLAVOR_PROFILE.
-	 */
-	private static final String SERVICE_FLAVOR_PROFILE = "/iaas/api/flavor-profiles";
-	/**
-	 * SERVICE_IMAGES.
-	 */
-	private static final String SERVICE_IMAGES = "/iaas/api/images";
-	/**
-	 * SERVICE_IMAGE_PROFILE.
-	 */
-	private static final String SERVICE_IMAGE_PROFILE = "/iaas/api/image-profiles";
-	/**
-	 * SERVICE_STORAGE_PROFILE.
-	 */
-	private static final String SERVICE_STORAGE_PROFILE = "/iaas/api/storage-profiles";
 	/**
 	 * SERVICE_CLOUD_ACCOUNT.
 	 */
@@ -270,31 +251,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * CUSTOM_FORM_DEFAULT_FORMAT.
 	 */
 	private static final String CUSTOM_FORM_DEFAULT_FORMAT = "JSON";
-	/**
-	 * CONTENT_SHARING_POLICY_TYPE.
-	 */
-	private static final String CONTENT_SHARING_POLICY_TYPE = "com.vmware.policy.catalog.entitlement";
-	/**
-	 * APPROVAL_POLICY_TYPE.
-	 */
-	private static final String APPROVAL_POLICY_TYPE = "com.vmware.policy.approval";
-	/**
-	 * DAY2_ACTION_POLICY_TYPE.
-	 */
-	private static final String DAY2_ACTION_POLICY_TYPE = "com.vmware.policy.deployment.action";
-	/**
-	 * LEASE_POLICY_TYPE.
-	 */
-	private static final String LEASE_POLICY_TYPE = "com.vmware.policy.deployment.lease";
-	/**
-	 * DEPLOYMENT_LIMIT_POLICY_TYPE.
-	 */
-	private static final String DEPLOYMENT_LIMIT_POLICY_TYPE = "com.vmware.policy.deployment.limit";
-	/**
-	 * RESOURCE_QUOTA_POLICY_TYPE.
-	 */
-	private static final String RESOURCE_QUOTA_POLICY_TYPE = "com.vmware.policy.resource.quota";
-
 	/**
 	 * MAX_BLUEPRINTS_RETRIEVAL_COUNT.
 	 */
@@ -829,7 +785,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public String createOrUpdateContentSourcePrimitive(final VraNgContentSourceBase contentSource) {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CONTENT_SOURCE));
-		Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
+		Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).serializeNulls().create();
 		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, gson.toJson(contentSource));
 		return new Gson().fromJson(response.getBody(), contentSource.getType().getTypeClass()).getId();
 	}
@@ -1357,7 +1313,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURI(getURIBuilder().setPath(SERVICE_CATALOG_ENTITLEMENTS).addParameter("projectId", project));
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
-		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+		Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().serializeNulls().create();
 		VraNgCatalogEntitlementDto[] entitlements = gson.fromJson(response.getBody(),
 				VraNgCatalogEntitlementDto[].class);
 		return entitlements;
@@ -1739,7 +1695,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			url = uriBuilder.build();
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 					String.class);
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().serializeNulls()
+					.create();
 			VraNgOrganizations organizations = gson.fromJson(response.getBody(), VraNgOrganizations.class);
 			result = organizations.getItems().stream().filter(vraNgOrganization -> {
 				return vraNgOrganization.getName().equalsIgnoreCase(organizationName);
@@ -1778,7 +1735,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			}
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 					String.class);
-			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+			Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().serializeNulls()
+					.create();
 			org = gson.fromJson(response.getBody(), VraNgOrganization.class);
 
 			LOGGER.debug("Found organization: {}", gson.toJson(org));
@@ -2203,22 +2161,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Extract region id from a link fragment part of REST response body.
-	 *
-	 * @param ob fragment
-	 * @return region id
-	 */
-	private String getLinkRegionId(final JsonObject ob) {
-
-		LOGGER.debug("Extracting data: {}", ob);
-
-		String regionHref = ob.get("_links").getAsJsonObject().get("region").getAsJsonObject().get("href")
-				.getAsString();
-
-		return regionHref.substring(regionHref.lastIndexOf('/') + 1);
-	}
-
-	/**
 	 * Extract cloud account id from a link fragment part of REST response body.
 	 *
 	 * @param ob fragment
@@ -2288,7 +2230,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	private String getJsonString(final Map<String, Object> entity) {
-		Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
+		Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).serializeNulls().create();
 
 		return gson.toJson(entity);
 	}
@@ -2402,11 +2344,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// Add additional filter to reduce the data received from server for newer vRA
 		// versions (8.16 and above)
 		if (isVraAbove810) {
-			params.put("typeId", CONTENT_SHARING_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE);
 		}
 		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
+				.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE))
 				.collect(Collectors.toList());
 		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 
@@ -2426,7 +2368,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(p -> p.getTypeId().equalsIgnoreCase(CONTENT_SHARING_POLICY_TYPE))
+				.filter(p -> p.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE))
 				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId())).findFirst()
 				.orElse(null);
 		if (policy == null) {
@@ -2501,11 +2443,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
-			params.put("typeId", RESOURCE_QUOTA_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE);
 
 			List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(RESOURCE_QUOTA_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2568,11 +2510,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
-			params.put("typeId", DAY2_ACTION_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE);
 
 			List<VraNgDay2ActionsPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(DAY2_ACTION_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2630,11 +2572,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
-			params.put("typeId", LEASE_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.LEASE_POLICY_TYPE);
 
 			List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(LEASE_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.LEASE_POLICY_TYPE))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Lease Policies found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2729,11 +2671,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
-			params.put("typeId", DEPLOYMENT_LIMIT_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE);
 
 			List<VraNgDeploymentLimitPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(DEPLOYMENT_LIMIT_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId()
+							.equalsIgnoreCase(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2792,12 +2735,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
 			// filter here to reduce traffic for newer vRA versions.
-			params.put("typeId", APPROVAL_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.APPROVAL_POLICY_TYPE);
 
 			// filter here for older vRA versions.
 			List<VraNgApprovalPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(APPROVAL_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.APPROVAL_POLICY_TYPE))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());

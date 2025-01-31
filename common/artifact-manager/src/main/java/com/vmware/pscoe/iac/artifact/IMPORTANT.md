@@ -5,10 +5,10 @@ The structure of this folder is being reworked. Classes are being moved based on
 ## Progress
 
 - [x] Aria Automation
-- [ ] Aria Orchestrator
-- [ ] Aria Logs
-- [ ] Aria Operations
+- [x] Aria Orchestrator
+- [x] Aria Logs
+- [x] Aria Operations
 - [ ] SSH
-- [ ] vCD
+- [x] vCD
 - [ ] CS
 - [ ] ABX

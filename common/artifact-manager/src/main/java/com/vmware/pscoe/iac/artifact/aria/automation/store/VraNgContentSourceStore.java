@@ -31,7 +31,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSource;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflow;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContentSource;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;

@@ -19,20 +19,34 @@ import java.util.List;
 
 import com.vmware.pscoe.iac.artifact.configuration.*;
 import com.vmware.pscoe.iac.artifact.rest.*;
-import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV1;
-import com.vmware.pscoe.iac.artifact.rest.client.vrli.RestClientVrliV2;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.RestClientVrliV1;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.RestClientVrliV2;
+import com.vmware.pscoe.iac.artifact.aria.logs.store.v1.VrliPackageStoreV1;
+import com.vmware.pscoe.iac.artifact.aria.logs.store.v2.VrliPackageStoreV2;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.VropsPackageStore;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVroNg;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.store.VroPackageStore;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.pack.VraNgPackageStore;
 import com.vmware.pscoe.iac.artifact.cli.CliManagerFactory;
 import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;
 import com.vmware.pscoe.iac.artifact.strategy.StrategyForceLatestVersions;
 import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
+import com.vmware.pscoe.iac.artifact.vcd.store.VcdNgPackageStore;
 
 /**
  * Factory class to create PackageStore instances.
