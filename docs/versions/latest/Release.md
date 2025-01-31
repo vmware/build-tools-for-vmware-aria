@@ -32,6 +32,16 @@ Previously, when pulling and pushing policies, duplicates were allowed, however 
 
 ## Improvements
 
+### VcPlugin types
+
+#### Previous behaviour
+
+VcPlugin types fromString() took the type itself as parameter. The method was not labelled as static, this was leftover from when the types were declared as an interface rather than as a class.
+
+#### New behaviour
+
+VcPlugin types fromString() take a string as a parameter and the method is now correctly labelled as static.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
