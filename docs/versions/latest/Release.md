@@ -61,3 +61,8 @@ The following option have been removed:
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
+
+For older vCD projects which are not buildable with Node 22 you can:
+* Build them as a separate project
+* Use Node version manager to dynamically switch between Node versions during build phases of the different subprojects
+* Utilise Maven goals and plugins to dynamically switch to earlier Node version in the vCD project's pom.xml
