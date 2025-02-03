@@ -58,6 +58,22 @@ The following option have been removed:
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Fix documentation typo*
+
+It is now possible to configure how the unit tests are being bootstrapped and executed.
+
+#### Previous Behavior
+
+Missing a close curly brace in the Workflow's User Interaction example.
+
+#### New Behavior
+
+The example now has a close curly brace.
+
+#### Relevant Documentation
+
+[Workflows.md](../../versions/latest/Components/Archetypes/typescript/Components/Workflows.md).
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
