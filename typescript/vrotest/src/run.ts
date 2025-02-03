@@ -12,10 +12,10 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import * as fs from "fs-extra";
 import { join, basename, dirname } from "path";
 import * as childProc from "child_process";
 import * as util from "./util";
+import { readdirSync } from "fs";
 
 export interface RunCommandFlags {
     instrument?: boolean;
@@ -75,7 +75,7 @@ async function findNodeModules(dir: string): Promise<string> {
         if (basename(dir) === NODE_MODULES_NAME) {
             return dir;
         }
-        if ((await fs.readdir(dir)).some(e => e === NODE_MODULES_NAME)) {
+        if (readdirSync(dir).some(e => e === NODE_MODULES_NAME)) {
             return join(dir, NODE_MODULES_NAME);
         }
         dir = dirname(dir);

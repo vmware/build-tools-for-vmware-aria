@@ -13,8 +13,8 @@
  * #L%
  */
 import * as path from "path";
-import * as fs from "fs-extra";
 import * as util from "./util";
+import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "fs";
 
 export type ElementType = "ScriptModule" | "Workflow" | "ConfigurationElement" | "ResourceElement" | "Unknown";
 
@@ -157,8 +157,8 @@ export async function parseConfigElement(filePath: string): Promise<ConfigDescri
 
 async function loadElements(packagePath: string): Promise<VroElement[]> {
 	const elementsPath = path.join(packagePath, "elements");
-	const entries = await fs.readdir(elementsPath);
-	const stats = await Promise.all(entries.map(p => path.join(elementsPath, p)).map(p => fs.lstat(p)));
+	const entries = readdirSync(elementsPath);
+	const stats = entries.map(p => path.join(elementsPath, p)).map(p => lstatSync(p));
 	const elementDirs = entries.filter((_, i) => stats[i].isDirectory()).map(p => path.join(elementsPath, p));
 	return await Promise.all(elementDirs.map(loadElement));
 }
@@ -208,7 +208,7 @@ async function loadScriptElement(elemPath: string): Promise<VroScriptElement> {
 	params = Array.isArray(params) ? params : [params];
 	const closureParams = params.map(p => p["@_n"]).join(", ");
 	const scriptContent = `module.exports = (function (${closureParams}) {\n${scriptBody}\n});`
-	await fs.writeFile(path.join(elemPath, `${name}.js`), scriptContent);
+	writeFileSync(path.join(elemPath, `${name}.js`), scriptContent);
 
 	return {
 		id,
@@ -235,7 +235,7 @@ async function loadConfigElement(elemPath: string): Promise<VroConfigElement> {
 	const id = path.basename(elemPath);
 
 	// Save attributes as JSON
-	await fs.writeFile(path.join(elemPath, `${config.name}.json`), JSON.stringify(config.attributes, null, 2));
+	writeFileSync(path.join(elemPath, `${config.name}.json`), JSON.stringify(config.attributes, null, 2));
 
 	return {
 		id,
@@ -258,22 +258,22 @@ async function loadResourceElement(elemPath: string): Promise<VroResourceElement
 
 	// Load metadata
 	const id = path.basename(elemPath);
-	if (await fs.pathExists(path.join(dataDir, "VSO-RESOURCE-INF"))) {
+	if (existsSync(path.join(dataDir, "VSO-RESOURCE-INF"))) {
 		dataDir = path.join(dataDir, "VSO-RESOURCE-INF");
 	}
 
-	const name = util.decodeBuffer(await fs.readFile(path.join(dataDir, "attribute_name")));
+	const name = util.decodeBuffer(readFileSync(path.join(dataDir, "attribute_name")));
 
 	let version = "";
 	const versionFilePath = path.join(dataDir, "attribute_version");
-	if (await fs.pathExists(versionFilePath)) {
-		version = util.decodeBuffer(await fs.readFile(versionFilePath));
+	if (existsSync(versionFilePath)) {
+		version = util.decodeBuffer(readFileSync(versionFilePath));
 	}
 
 	const mimetypeFilePath = path.join(dataDir, "attribute_mimetype")
 	let mimetype = "";
-	if (await fs.pathExists(mimetypeFilePath)) {
-		mimetype = util.decodeBuffer(await fs.readFile(mimetypeFilePath));
+	if (existsSync(mimetypeFilePath)) {
+		mimetype = util.decodeBuffer(readFileSync(mimetypeFilePath));
 	}
 
 	return {

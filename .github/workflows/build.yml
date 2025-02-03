@@ -17,8 +17,8 @@ jobs:
       matrix:
         java: ["17","21"]
         maven: ["3.9.2"]
-        node: ["16.20.2"]
-        node_vmware_samples: ["14.17.1"]
+        node: ["22.13.1"]
+        node_vmware_samples: ["22.13.1"]
         os: ["ubuntu-22.04"]
 
     runs-on: ${{ matrix.os }}
@@ -42,7 +42,7 @@ jobs:
           maven-version: ${{ matrix.maven }}
 
       - name: Install xmllint
-        run: sudo apt-get install libxml2-utils
+        run: sudo apt-get update && sudo apt-get install libxml2-utils
         
       - name: Install run-script-os@1.1.6
         run: npm install -g run-script-os@1.1.6

@@ -17,11 +17,11 @@ import charsetDetector from "charset-detector";
 import JSZip from "jszip";
 import { join, dirname } from "path";
 import { XMLParser } from "fast-xml-parser";
-import { readFile, readFileSync, existsSync, readdir, lstat, ensureDir, writeFile } from "fs-extra";
+import { readFileSync, existsSync, readdirSync, lstatSync, mkdirSync, writeFileSync } from "fs";
 
 export async function forEachFile(dir: string, action: (filePath: string) => Promise<void>) {
-	const entries = await readdir(dir);
-	const stats = await Promise.all(entries.map(p => lstat(join(dir, p))));
+	const entries = readdirSync(dir);
+	const stats = entries.map(p => lstatSync(join(dir, p)));
 	const fileNames = entries.filter((_, i) => stats[i].isFile());
 	const childDirNames = entries.filter((_, i) => stats[i].isDirectory());
 	await Promise.all(fileNames.map(fileName => join(dir, fileName)).map(action));
@@ -40,7 +40,7 @@ export function decodeBuffer(buf: Buffer): string {
 }
 
 export async function parseXmlFile<T>(filePath: string): Promise<T> {
-	const buf = await readFile(filePath);
+	const buf = readFileSync(filePath);
 	const str = decodeBuffer(buf);
 	const obj = new XMLParser({ ignoreAttributes: false }).parse(str) as T;
 	return obj;
@@ -68,13 +68,13 @@ export function extractProjectPomDetails(projectPath: string) {
 }
 
 export async function extractZipToFolder(zipFilePath: string, targetPath: string): Promise<void> {
-	const zipData = await readFile(zipFilePath);
+	const zipData = readFileSync(zipFilePath);
 	const zip = await JSZip.loadAsync(zipData);
 	const zipFiles = Object.entries(zip.files).filter(([_, zipObj]) => !zipObj.dir);
 	const buffers = await Promise.all(zipFiles.map(([_, zipObj]) => zipObj.async("nodebuffer")));
 	const fileBufferTupples = zipFiles.map(([n, _]) => n).map((fileName, index) => <[string, Buffer]>[join(targetPath, fileName), buffers[index]]);
-	await Promise.all(fileBufferTupples.map(([filePath, _]) => ensureDir(dirname(filePath))));
-	await Promise.all(fileBufferTupples.map(([filePath, data]) => writeFile(filePath, data)));
+	fileBufferTupples.map(([filePath, _]) => mkdirSync(dirname(filePath), { recursive: true }));
+	fileBufferTupples.map(([filePath, data]) => writeFileSync(filePath, data));
 }
 
 export async function withWorkingDir(dir: string, action: () => Promise<void>): Promise<void> {

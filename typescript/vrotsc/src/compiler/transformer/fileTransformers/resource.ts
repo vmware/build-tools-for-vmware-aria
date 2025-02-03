@@ -17,8 +17,7 @@ import { system } from "../../../system/system";
 import { generateElementId } from "../../../utilities/utilities";
 import { printElementInfo } from "../../elementInfo";
 import { checkResourceForMisplacedDecorators } from "../helpers/checkResourceForMisplacedDecorators";
-
-const yaml: typeof import("js-yaml") = require("js-yaml");
+import { load } from "js-yaml";
 
 interface ResourceElementInfo {
 	id: string;
@@ -70,7 +69,7 @@ export function getResourceTransformer(file: FileDescriptor, context: FileTransf
 
 	function getYamlElementInfo(filePath: string): ResourceElementInfo {
 		if (system.fileExists(filePath)) {
-			return yaml.safeLoad(system.readFile(filePath).toString());
+			return load(system.readFile(filePath).toString()) as ResourceElementInfo;
 		}
 	}
 

@@ -425,6 +425,7 @@ export class UserInteractionWorkflow {
     public userInteractionExit(@In userInteractionAnswer: string) {
         System.log("User Interaction exit");
     }
+}
 ```
 
 The example above would generate the following workflow.
