@@ -65,7 +65,6 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
 - `powercli:12-powershell-7.1`
 - `powercli:12-powershell-7.4`
 - `powercli:13-powershell-7.4`
-- `powershell:7.4`
 - `python:3.7`
 - `python:3.10`
 

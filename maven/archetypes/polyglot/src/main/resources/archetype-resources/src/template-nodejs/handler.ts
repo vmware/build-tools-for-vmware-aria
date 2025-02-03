@@ -17,7 +17,7 @@ async function delay(func: () => void, ms: number = 1) {
         setTimeout(() => {
             try {
                 func();
-                resolve();
+                resolve(undefined);
             } catch (e) {
                 reject(e.message);
             }

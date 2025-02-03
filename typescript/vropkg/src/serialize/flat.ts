@@ -18,7 +18,7 @@ import * as path from "path";
 import * as winston from "winston";
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
-import * as uuidv5 from "uuid/v5";
+import {v5 as uuidv5} from "uuid";
 import * as s from "../security";
 import * as p from "../packaging"
 import { exist, isDirectory } from "../util";
@@ -199,7 +199,7 @@ const serializeFlatElementCategory = async (context: any, element: t.VroNativeEl
         categories.ele("category").att("name", realName).ele("name").dat(realName)
     });
 
-    return context.categories(Buffer.from('\ufeff' + categories.end(), "utf16le").swap16(), DEFAULT_ENCODING);
+    return context.categories(Buffer.from('\ufeff' + categories.end(saveOptions), "utf16le").swap16(), DEFAULT_ENCODING);
 }
 
 const serializeFlatElementBundle = async (context: any, element: t.VroNativeElement): Promise<void> => {
@@ -225,7 +225,7 @@ const serializeFlatElementTags = async (context: any, element: t.VroNativeElemen
     element.tags.forEach(name => {
         node.ele("tag").att("name", name).att("global", true).up()
     })
-    const contentBuffer = Buffer.from('\ufeff' + node.end(xmlOptions), "utf16le").swap16();
+    const contentBuffer = Buffer.from('\ufeff' + node.end(saveOptions), "utf16le").swap16();
 
     return context.tags(contentBuffer, DEFAULT_ENCODING);
 }

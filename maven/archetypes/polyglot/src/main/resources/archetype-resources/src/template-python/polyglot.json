@@ -1,6 +1,10 @@
 {
   "platform": {
+#if ( $type == "vro" )
+    "runtime": "python:3.10",
+#else
     "runtime": "python",
+#end
     "action": "auto",
     "tags": [],
     "entrypoint": "handler.handler",

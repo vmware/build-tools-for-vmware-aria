@@ -21,7 +21,7 @@ import { getPropertyName } from "../helpers/node";
 import { getVroType } from "../helpers/vro";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
 import { ConfigurationDescriptor, ConfigurationAttribute } from "../../decorators";
-const yaml: typeof import("js-yaml") = require("js-yaml");
+import { load } from "js-yaml";
 
 /**
 * Transforms a TypeScript file with a configuration class into a Aria Orchestrator configuration element.
@@ -332,7 +332,7 @@ export function getConfigTypeScriptTransformer(file: FileDescriptor, context: Fi
 */
 export function getConfigYamlTransformer(file: FileDescriptor, context: FileTransformationContext) {
 	return function () {
-		const configInfo: ConfigurationDescriptor = yaml.safeLoad(system.readFile(file.filePath).toString());
+		const configInfo = load(system.readFile(file.filePath).toString()) as ConfigurationDescriptor;
 		configInfo.name = configInfo.name || system.changeFileExt(file.fileName, "");
 		configInfo.path = configInfo.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
 		configInfo.id = configInfo.id || generateElementId(FileType.ConfigurationYAML, `${configInfo.path}/${configInfo.name}`);

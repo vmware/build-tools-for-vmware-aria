@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <comment>
-    <![CDATA[{
+  <comment><![CDATA[{
   "comment": "{\n  \"comment\": \"Exported from PSCoE o11n-convert\",\n  \"returnType\": {\n    \"name\": null,\n    \"type\": \"Array/Properties\",\n    \"description\": \"\"\n  },\n  \"javadoc\": null,\n  \"crc\": \"667ab255\"\n}",
   "returnType": {
     "name": null,
@@ -11,8 +10,7 @@
   },
   "javadoc": null,
   "crc": "58495137"
-}]]>
-  </comment>
+}]]></comment>
   <entry key="categoryPath">com.vmware.library.snmp</entry>
   <entry key="name">processSnmpResult</entry>
   <entry key="type">ScriptModule</entry>

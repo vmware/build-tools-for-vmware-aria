@@ -18,7 +18,7 @@ import { VroPackageMetadata, VroNativeElement, VroActionData, VroElementType, Vr
 import { getCommentFromJavadoc, getScriptRuntime } from "./util";
 import * as AbstractSyntaxTree from "abstract-syntax-tree";
 import * as Comments from "parse-comments";
-import * as uuidv4 from "uuid/v4";
+import {v4 as uuidv4} from "uuid";
 import * as winston from "winston";
 import * as glob from "glob";
 import { WINSTON_CONFIGURATION } from "../constants";

@@ -109,17 +109,18 @@ const serializeTreeElement = async (context: any, element: t.VroNativeElement): 
         ? element?.categoryPath.pop().split('.')
         : element?.categoryPath;
 
+	// @NOTE: The below code will not support empty values for version, mimetype, and description attributes
     if (element.type == t.VroElementType.ResourceElement && element.attributes["version"]) {
-        xInfo.ele("entry").att("key", "version").text(element.attributes["version"]);
+        xInfo.ele("entry").att("key", "version").text(element.attributes["version"].toString());
     }
     xInfo.ele("entry").att("key", "categoryPath").text(pathKey)
-    if (element.type == t.VroElementType.ResourceElement) {
-        xInfo.ele("entry").att("key", "mimetype").text(element.attributes["mimetype"]);
+    if (element.type == t.VroElementType.ResourceElement && element.attributes["mimetype"]) {
+        xInfo.ele("entry").att("key", "mimetype").text(element.attributes["mimetype"].toString());
     }
-    xInfo.ele("entry").att("key", "name").text(element.name);
+    xInfo.ele("entry").att("key", "name").text(element.name.toString());
     xInfo.ele("entry").att("key", "type").text(element.type.toString());
     if (element.type == t.VroElementType.ResourceElement && element.attributes["description"]) {
-        xInfo.ele("entry").att("key", "description").text(element.attributes["description"]);
+        xInfo.ele("entry").att("key", "description").text(element.attributes["description"].toString());
     }
     xInfo.ele("entry").att("key", "id").text(element.id);
 
