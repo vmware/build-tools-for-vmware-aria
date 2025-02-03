@@ -18,11 +18,11 @@
  * and interracting with the packager from command line.
  */
 import path from 'path';
-import fs from 'fs-extra';
 import cmdArgs from "command-line-args";
 import createLogger from './lib/logger';
 import util from 'util';
 import { Packager } from './packager';
+import { existsSync, readFileSync } from 'fs';
 
 interface CliInputs extends cmdArgs.CommandLineOptions {
 	/** verbose logging */
@@ -109,8 +109,8 @@ async function run(): Promise<void> {
  */
 function printVersion() {
 	const packageJsonPath = path.join(__dirname, "../package.json");
-	if (fs.existsSync(packageJsonPath)) {
-		const packageConfig = fs.readJSONSync(packageJsonPath);
+	if (existsSync(packageJsonPath)) {
+		const packageConfig = JSON.parse(readFileSync(packageJsonPath).toString());
 		logger.info(`Version ${packageConfig.version}`);
 	}
 }
@@ -120,8 +120,8 @@ function printVersion() {
  */
 function printUsage() {
 	const usageFilePath = path.join(__dirname, "../Usage.txt");
-	if (fs.existsSync(usageFilePath)) {
-		const usageText = fs.readFileSync(usageFilePath).toString();
+	if (existsSync(usageFilePath)) {
+		const usageText = readFileSync(usageFilePath).toString();
 		logger.info(usageText);
 	}
 }

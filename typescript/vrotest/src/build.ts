@@ -13,11 +13,11 @@
  * #L%
  */
 import * as path from "path";
-import * as fs from "fs-extra";
 import * as pkg from "./package";
 import * as util from "./util";
 import * as constants from "./constants";
 import { BuildCommandFlags } from "./types/build-command-flags";
+import { appendFileSync, CopySyncOptions, cp, cpSync, existsSync, lstatSync, mkdirSync, promises, readdirSync, readFileSync, writeFile, writeFileSync } from "fs";
 
 type ModuleDescriptor = Record<string, string>;
 
@@ -42,6 +42,19 @@ interface ResourceElement {
 	path: string;
 }
 
+/**
+ * Common copy and copy filter options.
+ */
+const copyOptions = { recursive: true, force: true, errorOnExist: false };
+
+const buildCopyFilter = (extension: string) => (fileName: string) => {
+    return lstatSync(fileName).isDirectory()
+    || (
+        path.extname(fileName).toLowerCase() === "." + extension
+        && !fileName.toLowerCase().endsWith(".test." + extension)
+    );
+}
+
 export default async function (flags: BuildCommandFlags) {
 	const packages: pkg.VroPackage[] = [];
 	const modules: Record<string, ModuleDescriptor> = {};
@@ -59,50 +72,44 @@ export default async function (flags: BuildCommandFlags) {
     await createCoverageConfig();
 
 	async function createFolderStruct(): Promise<void> {
-		await Promise.all([
-			fs.ensureDir(path.join(flags.output, constants.SOURCE_PATH)),
-			fs.ensureDir(path.join(flags.output, constants.TEST_PATH)),
-			fs.ensureDir(path.join(flags.output, constants.CONFIGS_PATH)),
-			fs.ensureDir(path.join(flags.output, constants.RESOURCES_PATH)),
-			fs.ensureDir(path.join(flags.output, constants.DEPENDENCIES_PATH)),
-			fs.ensureDir(path.join(flags.output, constants.HELPERS_PATH)),
-			fs.ensureDir(path.join(flags.output, constants.LOGS_PATH)),
+        const createDirectory = (path: string) => {
+            return  promises.mkdir(path, { recursive: true });
+        };
+        await Promise.all([
+            createDirectory(path.join(flags.output, constants.SOURCE_PATH)),
+			createDirectory(path.join(flags.output, constants.TEST_PATH)),
+			createDirectory(path.join(flags.output, constants.CONFIGS_PATH)),
+			createDirectory(path.join(flags.output, constants.RESOURCES_PATH)),
+			createDirectory(path.join(flags.output, constants.DEPENDENCIES_PATH)),
+			createDirectory(path.join(flags.output, constants.HELPERS_PATH)),
+			createDirectory(path.join(flags.output, constants.LOGS_PATH)),
 		]);
 	}
 
 	async function copyContent(): Promise<void> {
 		// Copy files produced during the build phase into the new test bed folder
-		const copyOptions: fs.CopyOptions = { overwrite: true, recursive: true, errorOnExist: false };
-		const jsFilesFilter: fs.CopyFilterAsync = async src => (await fs.lstat(src)).isDirectory() || (path.extname(src).toLowerCase() === ".js" && !src.toLowerCase().endsWith(".test.js"))
-
-		const [
-			actionsExist,
-			testHelpersExists,
-			testsExist,
-			configExist,
-			resourcesExist,
-			helpersExist,
-			tsSourceExist,
-		] = await Promise.all([
-			flags.actions ? fs.pathExists(flags.actions) : Promise.resolve(false),
-			flags.testHelpers ? fs.pathExists(flags.testHelpers) : Promise.resolve(false),
-			flags.tests ? fs.pathExists(flags.tests) : Promise.resolve(false),
-			flags.configurations ? fs.pathExists(flags.configurations) : Promise.resolve(false),
-			flags.resources ? fs.pathExists(flags.resources) : Promise.resolve(false),
-			flags.helpers ? fs.pathExists(flags.helpers) : Promise.resolve(false),
-			flags["ts-src"] ? fs.pathExists(flags["ts-src"]) : Promise.resolve(false),
-		]);
+        const copy = (
+            source: string,
+            destination: string,
+            copyOptions: CopySyncOptions
+        ) => new Promise((resolve) => {
+            if (!existsSync(source)) {
+                return resolve(true);
+            }
+            cpSync(source, destination, copyOptions);
+            resolve(true);
+        });
 
 		await Promise.all([
-			actionsExist ? await fs.copy(flags.actions, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: jsFilesFilter }) : Promise.resolve(),
-			testHelpersExists ? await fs.copy(flags.testHelpers, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: jsFilesFilter }) : Promise.resolve(), // Put it in the same as the actions
-			configExist ? await fs.copy(flags.configurations, path.join(flags.output, constants.CONFIGS_PATH), copyOptions) : Promise.resolve(),
-			resourcesExist ? await fs.copy(flags.resources, path.join(flags.output, constants.RESOURCES_PATH), copyOptions) : Promise.resolve(),
-			helpersExist ? await fs.copy(flags.helpers, path.join(flags.output, constants.HELPERS_PATH), copyOptions) : Promise.resolve(),
+            copy(flags.actions, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: buildCopyFilter("js") }),
+			copy(flags.testHelpers, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: buildCopyFilter("js") }), // Put it in the same as the actions
+			copy(flags.configurations, path.join(flags.output, constants.CONFIGS_PATH), copyOptions),
+			copy(flags.resources, path.join(flags.output, constants.RESOURCES_PATH), copyOptions),
+			copy(flags.helpers, path.join(flags.output, constants.HELPERS_PATH), copyOptions),
 		]);
 
 		// Copy test files
-		if (testsExist) {
+		if (existsSync(flags.tests)) {
 			const testFilesToCopy: Record<string, string> = {};
 			await util.forEachFile(flags.tests, async filePath => {
 				const normalizedFileName = path.basename(filePath).toLowerCase();
@@ -118,33 +125,31 @@ export default async function (flags: BuildCommandFlags) {
 				}
 			});
 			if (Object.keys(testFilesToCopy).length) {
-				await Promise.all(Object.values(testFilesToCopy).map((dest => fs.ensureDir(path.dirname(dest)))));
-				await Promise.all(Object.entries(testFilesToCopy).map(([src, dest]) => fs.copyFile(src, dest)));
+                Object.values(testFilesToCopy).map((dest => mkdirSync(path.dirname(dest), { recursive: true })));
+				Object.entries(testFilesToCopy).map(([src, dest]) => cpSync(src, dest, { recursive: true }));
 			}
 		}
 
 		// Copy TypeScript code to support code coverage reports
-		if (tsSourceExist) {
+		if (existsSync(flags["ts-src"])) {
 			const tsDestPath = path.join(flags.output, constants.SOURCE_PATH, ...(flags["ts-namespace"] || "").split("."));
-			const tsFilesFilter: fs.CopyFilterAsync = async src => (await fs.lstat(src)).isDirectory() || (path.extname(src).toLowerCase() === ".ts" && !src.toLowerCase().endsWith(".test.ts"));
-			const tsCopyOptions: fs.CopyOptions = { ...copyOptions, filter: tsFilesFilter };
-			await fs.copy(flags["ts-src"], tsDestPath, tsCopyOptions);
+			cpSync(flags["ts-src"], tsDestPath, { ...copyOptions, filter: buildCopyFilter("ts") });
 		}
 	}
 
 	async function referenceSourceMaps(): Promise<void> {
-		if (flags.maps && await fs.pathExists(flags.maps)) {
-			await fs.copy(flags.maps, path.join(flags.output, constants.SOURCE_PATH), { overwrite: true, recursive: true });
+		if (flags.maps && existsSync(flags.maps)) {
+			cpSync(flags.maps, path.join(flags.output, constants.SOURCE_PATH), { force: true, recursive: true });
 			const sourceFiles: string[] = [];
 			await util.forEachFile(path.join(flags.output, constants.SOURCE_PATH), async filePath => {
 				if (path.extname(filePath).toLowerCase() === ".js") {
 					sourceFiles.push(filePath);
 				}
 			});
-			const sourceMapFileExist = await Promise.all(sourceFiles.map(filePath => `${filePath}.map`).map(fs.pathExists));
+			const sourceMapFileExist = sourceFiles.map(filePath => `${filePath}.map`).map(existsSync);
 			await Promise.all(sourceFiles.filter((_, i) => sourceMapFileExist[i]).map(addSourceMapRef));
 			async function addSourceMapRef(filePath: string): Promise<void> {
-				await fs.appendFile(filePath, `//# sourceMappingURL=${path.basename(filePath)}.map`);
+				appendFileSync(filePath, `//# sourceMappingURL=${path.basename(filePath)}.map`);
 			}
 		}
 	}
@@ -154,22 +159,22 @@ export default async function (flags: BuildCommandFlags) {
 		const contentPrefix = "module.exports = ";
 		await util.forEachFile(path.join(flags.output, constants.SOURCE_PATH), async filePath => {
 			if (path.extname(filePath).toLowerCase() === ".js") {
-				let content = (await fs.readFile(filePath)).toString("utf-8");
+				let content = (readFileSync(filePath)).toString("utf-8");
 				if (!content.startsWith(contentPrefix)) {
 					content = contentPrefix + content;
-					await fs.writeFile(filePath, content);
+					writeFileSync(filePath, content);
 				}
 			}
 		});
 	}
 
 	async function loadPackages(): Promise<void> {
-		if (!(flags.dependencies && await fs.pathExists(flags.dependencies))) {
+		if (!(flags.dependencies && existsSync(flags.dependencies))) {
 			return;
 		}
-		const entries = await fs.readdir(flags.dependencies);
+		const entries = readdirSync(flags.dependencies);
 		const packageEntries = entries.filter(p => path.extname(p).toLowerCase() === ".package").map(p => path.join(flags.dependencies, p));
-		const stats = await Promise.all(packageEntries.map(p => fs.lstat(p)));
+		const stats = await Promise.all(packageEntries.map(p => lstatSync(p)));
 		const filePaths = packageEntries.filter((_, i) => stats[i].isFile());
 		packages.push(...await Promise.all(filePaths.map(filePath => pkg.VroPackage.load(filePath, path.join(flags.output, constants.DEPENDENCIES_PATH)))));
 	}
@@ -200,7 +205,7 @@ export default async function (flags: BuildCommandFlags) {
 		const basePath = path.join(flags.output, constants.CONFIGS_PATH);
 		await util.forEachFile(basePath, async filePath => {
 			const elementInfoFilePath = filePath.substring(0, filePath.lastIndexOf(".")) + ".element_info.xml";
-			if (path.extname(filePath).toLowerCase() === ".xml" && await fs.pathExists(elementInfoFilePath)) {
+			if (path.extname(filePath).toLowerCase() === ".xml" && existsSync(elementInfoFilePath)) {
 				const elementInfo = await pkg.parseElementInfo(elementInfoFilePath);
 				const category = elementInfo["categoryPath"].split(".").reduce((parent, name) => {
 					const children = parent.children || (parent.children = {});
@@ -211,7 +216,7 @@ export default async function (flags: BuildCommandFlags) {
 				// Save attributes as JSON
 				const config = await pkg.parseConfigElement(filePath);
 				const attsFilePath = path.join(path.dirname(filePath), `${config.name}.json`);
-				await fs.writeFile(attsFilePath, JSON.stringify(config.attributes, null, 2));
+				writeFileSync(attsFilePath, JSON.stringify(config.attributes, null, 2));
 
 				elements[config.name] = {
 					version: config.version || "1.0.0",
@@ -225,7 +230,7 @@ export default async function (flags: BuildCommandFlags) {
 		const basePath = path.join(flags.output, constants.RESOURCES_PATH);
 		await util.forEachFile(basePath, async filePath => {
 			const elementInfoFilePath = filePath + ".element_info.xml";
-			if (await fs.pathExists(elementInfoFilePath)) {
+			if (existsSync(elementInfoFilePath)) {
 				const elementInfo = await pkg.parseElementInfo(elementInfoFilePath);
 				const category = elementInfo["categoryPath"].split(".").reduce((parent, name) => {
 					const children = parent.children || (parent.children = {});
@@ -290,33 +295,37 @@ export default async function (flags: BuildCommandFlags) {
 
 	async function saveMetadata(): Promise<void> {
 		await Promise.all([
-			fs.writeFile(path.join(flags.output, constants.METADATA_MODULES_FILE), JSON.stringify(modules, null, 2)),
-			fs.writeFile(path.join(flags.output, constants.METADATA_CONFIGS_FILE), JSON.stringify(configurations, null, 2)),
-			fs.writeFile(path.join(flags.output, constants.METADATA_RESOURCES_FILE), JSON.stringify(resources, null, 2))
+			writeFile(path.join(flags.output, constants.METADATA_MODULES_FILE), JSON.stringify(modules, null, 2), () => {}),
+			writeFile(path.join(flags.output, constants.METADATA_CONFIGS_FILE), JSON.stringify(configurations, null, 2), () => {}),
+			writeFile(path.join(flags.output, constants.METADATA_RESOURCES_FILE), JSON.stringify(resources, null, 2), () => {})
 		]);
 	}
 
     async function configureTestFramework(flags: BuildCommandFlags) {
         const customTestsConfigPath = path.join(flags.projectRoot, constants.TEST_CONFIG_PATH);
+        const copy = (source: string, destination: string) => new Promise(
+            resolve => cp(source, destination, copyOptions, (error) => {
+                if (error) {
+                    throw new Error(`Failed to copy [${source}] to [${destination}]!`);
+                }
+                resolve(true);
+            }
+        ));
 
-        if (fs.pathExistsSync(customTestsConfigPath)) {
+        if (existsSync(customTestsConfigPath)) {
             // Use use-defined unit tests bootstrapping configuration ("unit-tests.config/*")
-            await Promise.all(fs.readdirSync(customTestsConfigPath).map(fileName => {
-                const sourceFilePath = path.join(customTestsConfigPath, fileName);
-                const destFilePath = path.join(flags.output, fileName);
-                return fs.copy(sourceFilePath, destFilePath, { overwrite: true, recursive: true, errorOnExist: false });
+            await Promise.all(readdirSync(customTestsConfigPath).map(fileName => {
+                return copy(path.join(customTestsConfigPath, fileName), path.join(flags.output, fileName));
             }));
         } else {
             // Build configuration based on the framework selection
             const templatesPath = path.join(constants.TEST_CONFIG_TEMPLATES_PATH, flags.testFrameworkPackage || "jasmine");
-            await Promise.all(fs.readdirSync(templatesPath).map(copyTarget => {
-                const sourceFilePath = path.join(templatesPath, copyTarget);
-                const destFilePath = path.join(flags.output, copyTarget);
-                return fs.copy(sourceFilePath, destFilePath, { overwrite: true, recursive: true, errorOnExist: false });
+            await Promise.all(readdirSync(templatesPath).map(copyTarget => {
+                return copy(path.join(templatesPath, copyTarget), path.join(flags.output, copyTarget));
             }));
 
             const packageJsonPath = path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE);
-            const packageJsonContent = JSON.parse(fs.readFileSync(packageJsonPath).toString("utf8"));
+            const packageJsonContent = JSON.parse(readFileSync(packageJsonPath).toString("utf8"));
             const devDeps = packageJsonContent.devDependencies;
 
             const projectDetails = util.extractProjectPomDetails(flags.projectRoot);
@@ -330,28 +339,28 @@ export default async function (flags: BuildCommandFlags) {
                     devDeps["@swc/jest"] = "latest";
                 }
 
-                const setupFiles = fs.readdirSync(flags.helpers).map(file => `./helpers/${file}`);
+                const setupFiles = readdirSync(flags.helpers).map(file => `./helpers/${file}`);
                 const jestConfigPath = path.join(flags.output, constants.JEST_CONFIG_FILE);
-                const jestConfigContent = fs.readFileSync(jestConfigPath).toString("utf8");
-                fs.writeFileSync(jestConfigPath, jestConfigContent.replace("setupFiles: []", "setupFiles: " + JSON.stringify(setupFiles)));
+                const jestConfigContent = readFileSync(jestConfigPath).toString("utf8");
+                writeFileSync(jestConfigPath, jestConfigContent.replace("setupFiles: []", "setupFiles: " + JSON.stringify(setupFiles)));
             } else {
                 devDeps["ansi-colors"] = flags.ansiColorsVersion || devDeps["ansi-colors"];
                 devDeps["jasmine"] = flags.testFrameworkVersion || devDeps["jasmine"];
                 devDeps["jasmine-reporters"] = flags.jasmineReportersVerion || devDeps["jasmine-reporters"];
 
                 const runFilePath = path.join(flags.output, constants.JASMINE_RUN_FILE);
-                const runFileContent = fs.readFileSync(runFilePath).toString("utf8");
-                fs.writeFileSync(runFilePath, runFileContent.replace("{TEST_RESULTS_PATH}", constants.TEST_RESULTS_PATH));
+                const runFileContent = readFileSync(runFilePath).toString("utf8");
+                writeFileSync(runFilePath, runFileContent.replace("{TEST_RESULTS_PATH}", constants.TEST_RESULTS_PATH));
             }
 
-            fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
+            writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
         }
     }
 
 	async function createCoverageConfig(): Promise<void> {
         const coverageFilePath = path.join(flags.output, constants.COVERAGE_CONFIG_FILE);
         // Do not overwrite the file copied from the custom configuration provided in the project root.
-        if (fs.existsSync(coverageFilePath)) {
+        if (existsSync(coverageFilePath)) {
             return;
         }
 
@@ -418,7 +427,7 @@ export default async function (flags: BuildCommandFlags) {
 			});
 		}
 
-        await fs.writeFile(coverageFilePath, JSON.stringify(covConfig, null, 2));
+        writeFileSync(coverageFilePath, JSON.stringify(covConfig, null, 2));
 	}
 
 }

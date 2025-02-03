@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><dunes-script-module name="logResult" result-type="void" api-version="6.0.0" id="F38080808080808080808080808080808B80808001297259131125b940b51f82d" version="1.0.0" allowed-operations="vef"><description><![CDATA[]]></description><param n="result" t="Array/Properties"><![CDATA[]]></param><script encoded="false"><![CDATA[var output = "";
+<?xml version="1.0" encoding="UTF-8"?><dunes-script-module name="logResult" result-type="void" api-version="6.0.0" id="F38080808080808080808080808080808B80808001297259131125b940b51f82d" version="1.0.0" allowed-operations="vef"><description/><param n="result" t="Array/Properties"/><script encoded="false"><![CDATA[var output = "";
 
 for (var i=0; i<result.length; i++) {
    var elem = result[i];

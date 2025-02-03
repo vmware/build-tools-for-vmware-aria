@@ -15,6 +15,7 @@
 package com.vmware.pscoe.iac.artifact.vcd.rest.models;
 
 import com.vmware.pscoe.iac.artifact.vcd.models.VcdNgPackageManifest;
+import com.google.gson.annotations.SerializedName;
 
 public final class VcdPluginMetadataDTO {
 
@@ -51,11 +52,13 @@ public final class VcdPluginMetadataDTO {
 	/**
 	 * tenantScoped.
 	 */
+	@SerializedName("tenant_scoped")
 	private boolean tenantScoped;
 
 	/**
 	 * providerScoped.
 	 */
+	@SerializedName("provider_scoped")
 	private boolean providerScoped;
 
 	/**

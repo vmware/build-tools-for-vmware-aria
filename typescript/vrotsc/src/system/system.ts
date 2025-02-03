@@ -6,16 +6,16 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 import * as os from "os";
 import { basename, dirname, extname, join, normalize, relative, resolve, sep } from "path";
 import { statSync, readFileSync, removeSync, readdirSync, writeFileSync, ensureDirSync, emptyDirSync } from "fs-extra";
-const _uuid: typeof import("uuid/v3") = require("uuid/v3");
+import { v3 as _uuid } from "uuid";
 
 /**
 * This class is a wrapper around Node.js file system and path modules.

@@ -282,10 +282,10 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 
 			node.exportClause.elements.forEach(exportSpecifier => {
 				const exportPropertyName = exportSpecifier.propertyName || exportSpecifier.name;
-				let exportValue = importVarName ? ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(importVarName), exportPropertyName) : exportPropertyName;
+				let exportValue = importVarName ? ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(importVarName), exportPropertyName as ts.Identifier) : exportPropertyName;
 				const exportStatement = visitor.visitEachChild(
 					ts.factory.createExpressionStatement(ts.factory.createBinaryExpression(
-						ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), exportSpecifier.name),
+						ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), exportSpecifier.name as ts.Identifier),
 						ts.factory.createToken(ts.SyntaxKind.EqualsToken),
 						exportValue,
 					)));
@@ -307,7 +307,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 			if (node.exportClause && ts.isNamespaceExport(node.exportClause)) {
 				// export * as foo from "..."
 				const exportAssignmentNode = ts.factory.createBinaryExpression(
-					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), node.exportClause.name),
+					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), node.exportClause.name as ts.Identifier),
 					ts.factory.createToken(ts.SyntaxKind.EqualsToken),
 					ts.factory.createCallExpression(
 						ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(tslibVarName), "__importStar"),
