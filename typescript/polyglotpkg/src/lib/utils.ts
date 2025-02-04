@@ -225,7 +225,7 @@ export function run(cmd: string, args: Array<string> = [], cwd: string = process
     return new Promise(async (resolve, reject) => {
         let err: any;
         let commandPath: readonly string[] = [];
-        const a;
+        const a = "asd";
         try {
             commandPath = await which(cmd, { all: true, nothrow: false });
         } catch (thrown) {
