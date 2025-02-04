@@ -13,22 +13,22 @@
  * #L%
  */
 
-import which from 'which';
-import path from 'path';
 import { spawn } from 'child_process';
-import {
-	ActionType,
-	AbxActionDefinition,
-	VroActionDefinition,
-	PackageDefinition,
-	PlatformDefinition,
-	ProjectActions,
-	ActionOptions,
-	PackagerOptions,
-} from './model';
-import createLogger from './logger';
 import { readFileSync, writeFileSync } from 'fs';
+import path from 'path';
+import which from 'which';
 import { findFiles } from './file-system';
+import createLogger from './logger';
+import {
+    AbxActionDefinition,
+    ActionOptions,
+    ActionType,
+    PackageDefinition,
+    PackagerOptions,
+    PlatformDefinition,
+    ProjectActions,
+    VroActionDefinition,
+} from './model';
 
 const logger = createLogger();
 
@@ -37,17 +37,17 @@ const logger = createLogger();
  * @param pkg
  */
 export function determineActionType(pkg: PlatformDefinition, actionType?: ActionType): ActionType {
-	if (actionType === ActionType.ABX) {
-		return pkg?.abx ? ActionType.ABX : ActionType.UNKNOWN;
-	} else if (actionType === ActionType.VRO) {
-		return pkg?.vro ? ActionType.VRO : ActionType.UNKNOWN;
-	} else if (pkg?.vro) {
-		return ActionType.VRO;
-	} else if (pkg?.abx) {
-		return ActionType.ABX;
-	} else {
-		return ActionType.UNKNOWN;
-	}
+    if (actionType === ActionType.ABX) {
+        return pkg?.abx ? ActionType.ABX : ActionType.UNKNOWN;
+    } else if (actionType === ActionType.VRO) {
+        return pkg?.vro ? ActionType.VRO : ActionType.UNKNOWN;
+    } else if (pkg?.vro) {
+        return ActionType.VRO;
+    } else if (pkg?.abx) {
+        return ActionType.ABX;
+    } else {
+        return ActionType.UNKNOWN;
+    }
 }
 
 /**
@@ -105,89 +105,89 @@ export function determineActionType(pkg: PlatformDefinition, actionType?: Action
  */
 export async function getProjectActions(options: PackagerOptions, actionType?: ActionType): Promise<ProjectActions> {
 
-	// Search for all polyglot.json files located in subfolders of src
-	const plg = findFiles([ 'src/**/polyglot.json' ], {
-		exclude: [ '**/node_modules/**' ],
-		path: options.workspace,
-		absolute: true
-	});
+    // Search for all polyglot.json files located in subfolders of src
+    const plg = findFiles(['src/**/polyglot.json'], {
+        exclude: ['**/node_modules/**'],
+        path: options.workspace,
+        absolute: true
+    });
 
-	if (plg.length === 0) {
-		// No polyglot.json found. Assuming legacy project.
-		// Locate package.json from project root
-		const pkg = findFiles([ 'package.json' ], {
-			exclude: [ '**/node_modules/**' ],
-			path: options.workspace,
-			absolute: true
-		});
+    if (plg.length === 0) {
+        // No polyglot.json found. Assuming legacy project.
+        // Locate package.json from project root
+        const pkg = findFiles(['package.json'], {
+            exclude: ['**/node_modules/**'],
+            path: options.workspace,
+            absolute: true
+        });
 
-		if (pkg.length === 0) {
-			return [];
-		}
-		const pkgObj = JSON.parse(readFileSync(pkg[0]).toString("utf8"));
+        if (pkg.length === 0) {
+            return [];
+        }
+        const pkgObj = JSON.parse(readFileSync(pkg[0]).toString("utf8"));
 
-		// Set options for a legacy project
-		let projectAction: ActionOptions =
-		{
-			...options,
-			mixed: false,
-			polyglotJson: pkg[0],          // platform options are located in project_root/package.json
-			actionBase: options.workspace, // where to search for tsconfig.json and requirements.txt
-			outBase: options.workspace,    // create out and polyglot-cache subfolders in project_root
-			src: 'src',
-			out: 'out',
-			actionRuntime: pkgObj.platform.runtime,
-			actionType: determineActionType(pkgObj, actionType)
-		};
-		return [projectAction];
-	}
+        // Set options for a legacy project
+        let projectAction: ActionOptions =
+        {
+            ...options,
+            mixed: false,
+            polyglotJson: pkg[0],          // platform options are located in project_root/package.json
+            actionBase: options.workspace, // where to search for tsconfig.json and requirements.txt
+            outBase: options.workspace,    // create out and polyglot-cache subfolders in project_root
+            src: 'src',
+            out: 'out',
+            actionRuntime: pkgObj.platform.runtime,
+            actionType: determineActionType(pkgObj, actionType)
+        };
+        return [projectAction];
+    }
 
-	let projectActions: ProjectActions = [];
-	const projectBasePath: string = path.resolve(options.workspace);
-	// Loop all actions found
-	for (var i = 0; i < plg.length; i++) {
-		let actionBasePath: string = path.dirname(plg[i]);
-		if (actionBasePath.includes('template-')) {
-			// Ignore folders starting with "template-"
-			continue;
-		}
+    let projectActions: ProjectActions = [];
+    const projectBasePath: string = path.resolve(options.workspace);
+    // Loop all actions found
+    for (var i = 0; i < plg.length; i++) {
+        let actionBasePath: string = path.dirname(plg[i]);
+        if (actionBasePath.includes('template-')) {
+            // Ignore folders starting with "template-"
+            continue;
+        }
 
-		const actionFolder: string = path.relative(path.join(projectBasePath, 'src'), actionBasePath);
-		// To separate out files of multiple actions out and polyglot-cache are created under project_root/out/action_name
-		const outBasePath: string = path.join(options.workspace, 'out', actionFolder);
-		// To separate bundle.zip files of multiple actions they are created under project_root/dist/action_name/dist
-		const bundleZipPath: string = path.resolve('.', 'dist', actionFolder, 'dist', 'bundle.zip');
-		const pkgObj = JSON.parse(readFileSync(plg[i]).toString("utf8"));
-		let projectAction: ActionOptions =
-		{
-			...options,
-			bundle: bundleZipPath,
-			mixed: true,
-			polyglotJson: plg[i],
-			actionBase: actionBasePath,
-			outBase: outBasePath,
-			src: path.relative(projectBasePath, actionBasePath),
-			out: path.relative(projectBasePath, path.join(outBasePath, 'out')),
-			actionRuntime: pkgObj.platform.runtime,
-			actionType: determineActionType(pkgObj, actionType)
-		};
-		projectActions.push(projectAction);
-	}
-	return projectActions;
+        const actionFolder: string = path.relative(path.join(projectBasePath, 'src'), actionBasePath);
+        // To separate out files of multiple actions out and polyglot-cache are created under project_root/out/action_name
+        const outBasePath: string = path.join(options.workspace, 'out', actionFolder);
+        // To separate bundle.zip files of multiple actions they are created under project_root/dist/action_name/dist
+        const bundleZipPath: string = path.resolve('.', 'dist', actionFolder, 'dist', 'bundle.zip');
+        const pkgObj = JSON.parse(readFileSync(plg[i]).toString("utf8"));
+        let projectAction: ActionOptions =
+        {
+            ...options,
+            bundle: bundleZipPath,
+            mixed: true,
+            polyglotJson: plg[i],
+            actionBase: actionBasePath,
+            outBase: outBasePath,
+            src: path.relative(projectBasePath, actionBasePath),
+            out: path.relative(projectBasePath, path.join(outBasePath, 'out')),
+            actionRuntime: pkgObj.platform.runtime,
+            actionType: determineActionType(pkgObj, actionType)
+        };
+        projectActions.push(projectAction);
+    }
+    return projectActions;
 }
 
 /**
  * Create a package.json file for ABX action dist.
  */
 export async function createPackageJsonForABX(options: ActionOptions, isMixed: boolean) {
-	const projectPkg = await getActionManifest(options.workspace) as PackageDefinition;
-	const polyglotPkg = isMixed && JSON.parse(readFileSync(options.polyglotJson).toString("utf8")) as AbxActionDefinition;
-	if (polyglotPkg && polyglotPkg.platform.action === "auto") {
-		polyglotPkg.platform.action = path.basename(options.actionBase);
-	}
-	const bundlePkg = isMixed ? { ...projectPkg, ...polyglotPkg } : projectPkg;
-	const actionDistPkgPath = path.join(options.workspace, 'dist', isMixed ? path.basename(options.actionBase) : "", 'package.json');
-	writeFileSync(actionDistPkgPath, JSON.stringify(bundlePkg, null, 2));
+    const projectPkg = await getActionManifest(options.workspace) as PackageDefinition;
+    const polyglotPkg = isMixed && JSON.parse(readFileSync(options.polyglotJson).toString("utf8")) as AbxActionDefinition;
+    if (polyglotPkg && polyglotPkg.platform.action === "auto") {
+        polyglotPkg.platform.action = path.basename(options.actionBase);
+    }
+    const bundlePkg = isMixed ? { ...projectPkg, ...polyglotPkg } : projectPkg;
+    const actionDistPkgPath = path.join(options.workspace, 'dist', isMixed ? path.basename(options.actionBase) : "", 'package.json');
+    writeFileSync(actionDistPkgPath, JSON.stringify(bundlePkg, null, 2));
 }
 
 /**
@@ -195,18 +195,18 @@ export async function createPackageJsonForABX(options: ActionOptions, isMixed: b
  */
 export async function getActionManifest(projectPath: string): Promise<AbxActionDefinition | VroActionDefinition | null> {
 
-	const pkg = findFiles([ "package.json" ], {
-		exclude: [ "**/node_modules/**" ],
-		path: projectPath,
-		absolute: true,
-	})
+    const pkg = findFiles(["package.json"], {
+        exclude: ["**/node_modules/**"],
+        path: projectPath,
+        absolute: true,
+    })
 
-	if (pkg.length === 0) {
-		return null;
-	}
+    if (pkg.length === 0) {
+        return null;
+    }
 
-	const pkgObj = JSON.parse(readFileSync(pkg[0]).toString("utf8"));
-	return pkgObj;
+    const pkgObj = JSON.parse(readFileSync(pkg[0]).toString("utf8"));
+    return pkgObj;
 }
 
 /**
@@ -214,7 +214,7 @@ export async function getActionManifest(projectPath: string): Promise<AbxActionD
  * @param x
  */
 export function notUndefined<T>(x: T | undefined): x is T {
-	return x !== undefined;
+    return x !== undefined;
 }
 
 /**
@@ -222,29 +222,30 @@ export function notUndefined<T>(x: T | undefined): x is T {
  * @param cmd
  */
 export function run(cmd: string, args: Array<string> = [], cwd: string = process.cwd()): Promise<number> {
-	return new Promise(async (resolve, reject) => {
-		let err: any;
-		let commandPath: readonly string[] = [];
-		try {
-			commandPath = await which(cmd, { all: true, nothrow: false });
-		} catch(thrown) {
-			err = thrown;
-		}
-		if (err || !(commandPath && commandPath.length)) {
-			return reject(new Error(`Cannot find "${cmd}"`));
-		}
-		const proc = spawn(quoteString(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
-		proc.on('close', exitCode => {
-			if (exitCode !== 0) {
-				const commandLine = `${quoteString(commandPath[0])} ${args.join(' ')}`;
-				logger.error(`Error running command: ${commandLine}`);
-				return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
-			}
-			resolve(exitCode);
-		});
-	});
+    return new Promise(async (resolve, reject) => {
+        let err: any;
+        let commandPath: readonly string[] = [];
+        const a;
+        try {
+            commandPath = await which(cmd, { all: true, nothrow: false });
+        } catch (thrown) {
+            err = thrown;
+        }
+        if (err || !(commandPath && commandPath.length)) {
+            return reject(new Error(`Cannot find "${cmd}"`));
+        }
+        const proc = spawn(quoteString(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
+        proc.on('close', exitCode => {
+            if (exitCode !== 0) {
+                const commandLine = `${quoteString(commandPath[0])} ${args.join(' ')}`;
+                logger.error(`Error running command: ${commandLine}`);
+                return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
+            }
+            resolve(exitCode);
+        });
+    });
 }
 
 function quoteString(str: string) {
-	return /\s+/.test(str) ? `"${str}"` : str;
+    return /\s+/.test(str) ? `"${str}"` : str;
 }
