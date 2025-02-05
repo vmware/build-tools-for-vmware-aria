@@ -1,5 +1,5 @@
 {
-	"name": "Content Sharing Policy 01a",
+	"name": "Template Content Sharing Policy",
 	"typeId": "com.vmware.policy.catalog.entitlement",
 	"enforcementType": "HARD",
 	"description": "",

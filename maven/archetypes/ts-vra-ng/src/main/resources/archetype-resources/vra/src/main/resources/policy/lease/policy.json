@@ -1,6 +1,6 @@
 {
 	"id": "80b8c817-63cd-43f4-9dda-e7abd5b51087",
-	"name": "L01",
+	"name": "Template Lease Policy",
 	"typeId": "com.vmware.policy.deployment.lease",
 	"orgId": "b2c558c8-f20c-4da6-9bc3-d7561f64df16",
 	"scopeCriteria": {

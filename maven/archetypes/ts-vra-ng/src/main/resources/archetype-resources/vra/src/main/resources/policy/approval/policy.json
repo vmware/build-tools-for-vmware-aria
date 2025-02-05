@@ -1,6 +1,6 @@
 {
 	"id": "policy uiid",
-	"name": "policy name",
+	"name": "Template Approval Policy",
 	"description": "",
 	"typeId": "com.vmware.policy.approval",
 	"enforcementType": "HARD|SOFT",

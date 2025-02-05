@@ -1,5 +1,5 @@
 {
-  "name": "property-group-1",
-  "id": "06e82ea8-4f28-4030-99a5-40dc589ca854",
-  "rawData": "{\"type\":\"INPUT\",\"id\":\"inputId\",\"createdAt\":\"date\",\"createdBy\":\"user\",\"updatedAt\":\"date\",\"updatedBy\":\"user\",\"orgId\":\"organizationId\",\"projectId\":\"projectId\",\"projectName\":\"Test Project Name\",\"name\":\"property-group-1\",\"description\":\"\",\"properties\":{\"first\":{\"type\":\"string\",\"encrypted\":false,\"default\":\"1\"}}}"
+	"name": "property_group_1",
+	"id": "06e82ea8-4f28-4030-99a5-40dc589ca854",
+	"rawData": "{\"type\":\"INPUT\",\"id\":\"inputId\",\"createdAt\":\"date\",\"createdBy\":\"user\",\"updatedAt\":\"date\",\"updatedBy\":\"user\",\"orgId\":\"organizationId\",\"projectId\":\"projectId\",\"projectName\":\"Test Project Name\",\"name\":\"property-group-1\",\"description\":\"\",\"properties\":{\"first\":{\"type\":\"string\",\"encrypted\":false,\"default\":\"1\"}}}"
 }

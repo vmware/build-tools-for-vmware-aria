@@ -1,16 +1,16 @@
 {
-  "id": "custom resource id",
-  "displayName": "Custom Resource",
-  "description": "Description",
-  "resourceType": "Custom.CreateFolder",
-  "externalType": "VC:VmFolder",
-  "status": "RELEASED",
-  "projectId": "project id",
-  "properties": {},
-  "additionalActions": [],
-  "mainActions": {
-    "create": {},
-    "update": null,
-    "delete": {}
-  }
+	"id": "custom resource id",
+	"displayName": "Custom Resource",
+	"description": "Description",
+	"resourceType": "Custom.CreateFolder.v1",
+	"externalType": "VC:VmFolder",
+	"status": "RELEASED",
+	"projectId": "project id",
+	"properties": {},
+	"additionalActions": [],
+	"mainActions": {
+		"create": {},
+		"update": null,
+		"delete": {}
+	}
 }
