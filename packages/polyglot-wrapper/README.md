@@ -6,17 +6,17 @@ This decorators can be used in actions.
 
 The **@Polyglot** decorator can be used combined with the **@Workflow** decorator inside a workflow definition on typescript code.
 
-# Usage
+## Usage
 
 This library can be used added the next dependency to the pom of the project
 
 ```xml
 <dependency>
-	<groupId>com.vmware.pscoe.library</groupId>
-	<artifactId>polyglot-wrapper</artifactId>
-	<version>1.0.0</version>
-	<type>tgz</type>
-	<scope>compile</scope>
+  <groupId>com.vmware.pscoe.library</groupId>
+  <artifactId>polyglot-wrapper</artifactId>
+  <version>1.0.0</version>
+  <type>tgz</type>
+  <scope>compile</scope>
 </dependency>
 
 <dependency>
@@ -26,7 +26,7 @@ This library can be used added the next dependency to the pom of the project
     <version>1.1.0</version>
 </dependency>
 ```
-## Example of how to use the wrapper library
+### Example of how to use the wrapper library
 
 ```js
 import { Polyglot } from "com.vmware.pscoe.library.polyglot-wrapper/polyglot";
@@ -36,17 +36,17 @@ export class Sample {
         let polyglotInstance = new Polyglot<any>();
 
             polyglotInstance.execute(
-				"com.vmware.pscoe.customer", // package where is the polyglot action
-				"nodejs", // name of the method to be invoked
-				// Parameters of the polyglot action -- max number of parameters 10
-				1000,
-                { limit: 1, vraEndpoint: { host: "temp", base: "temp" } },
+				      "com.vmware.pscoe.customer", // package where is the polyglot action
+				      "nodejs", // name of the method to be invoked
+				      // Parameters of the polyglot action -- max number of parameters 10
+				      1000,
+              { limit: 1, vraEndpoint: { host: "temp", base: "temp" } },
             );
     }
 }
 ```
 
-## Example of how to use the @polyglot decorator on actions
+### Example of how to use the @polyglot decorator on actions
 
 ```js
 import { polyglot, polyglotIn, polyglotOut } from "com.vmware.pscoe.library.polyglot-wrapper/decorator";
@@ -77,7 +77,7 @@ export class PolyglotDecoratorExample {
 }
 ```
 
-## Example of how to use the @Polyglot decorator combined with @Workflow decorator
+### Example of how to use the @Polyglot decorator combined with @Workflow decorator
 
 ```js
 import { Workflow, Out, Polyglot } from "vrotsc-annotations";
