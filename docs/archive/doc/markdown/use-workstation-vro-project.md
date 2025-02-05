@@ -234,7 +234,7 @@ If in the workflow's XML file the description is populated with the one or more 
 ```ts
 @Configuration({
     name: "Sample Config",
-    path: "MyOrg/MyProject",
+    path: "PSCoE/MyProject",
     attributes: {
         field1: { type: "sring" },
         field2: {
@@ -261,7 +261,7 @@ import { Workflow, Out } from "tsc-annotations";
 @Workflow({
   id: "",
   name: "Sample Workflow",
-  path: "MyOrg/MyProject",
+  path: "PSCoE/MyProject",
   description: "Sample workflow description",
   attributes: {},
   input: {
@@ -325,7 +325,7 @@ import { LoggerFactory } from "./LoggerFactory";
 ```ts
 @PolicyTemplate({
     name: "Sample Policy",
-    path: "MyOrg/MyProject",
+    path: "PSCoE/MyProject",
     type: "AMQP:Subscription"
 })
 class SamplePolicy {
