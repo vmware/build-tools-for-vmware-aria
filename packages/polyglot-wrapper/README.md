@@ -36,10 +36,10 @@ export class Sample {
         let polyglotInstance = new Polyglot<any>();
 
             polyglotInstance.execute(
-				      "com.vmware.pscoe.customer", // package where is the polyglot action
-				      "nodejs", // name of the method to be invoked
-				      // Parameters of the polyglot action -- max number of parameters 10
-				      1000,
+              "com.vmware.pscoe.customer", // package where is the polyglot action
+              "nodejs", // name of the method to be invoked
+              // Parameters of the polyglot action -- max number of parameters 10
+              1000,
               { limit: 1, vraEndpoint: { host: "temp", base: "temp" } },
             );
     }
