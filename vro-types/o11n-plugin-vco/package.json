@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-vco",
-  "version": "4.0.0",
+  "version": "4.0.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
