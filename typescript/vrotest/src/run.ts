@@ -57,7 +57,7 @@ export default async function (flags: RunCommandFlags): Promise<void> {
             console.log("Installing node modules for the tests completed.");
 
             console.log("Starting unit tests.");
-            var child = childProc.spawnSync("npm", [ "test" ], { encoding : 'utf8' });
+            var child = childProc.spawnSync("npm", [ "test" ], { encoding : 'utf8', shell: true });
             if (child.status === 0) {
                 console.log(child.stdout);
                 console.log(child.stderr);

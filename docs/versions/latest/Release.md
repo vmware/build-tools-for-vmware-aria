@@ -74,6 +74,16 @@ The example now has a close curly brace.
 
 [Workflows.md](../../versions/latest/Components/Archetypes/typescript/Components/Workflows.md).
 
+### *Fix unit test execution in Windows reporting error*
+
+#### Previous Behavior
+
+When maven build executes unit tests, it reports "Error occurred in unit tests execution: null"
+
+#### New Behavior
+
+The correct output of unit tests result is shown
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
