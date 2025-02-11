@@ -39,6 +39,49 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Add missing types to AD plugin*
+
+AD plugin was missing some types that are now added.
+
+#### Previous Behavior
+
+The following were missing completely or partially:
+
+* AD_Computer
+* AD_OrganizationalUnit
+* AD_UserGroup
+
+#### Current Behavior
+
+The following are now available:
+
+* AD_Computer
+
+* AD_OrganizationalUnit
+  * Method  `createUser`
+  * Method `createUserWithPassword`
+  * Method `createUserWithDetails`
+  * Method `createUserGroup`
+  * Method `createOrganizationalUnit`
+  * Method `createComputer`
+  * Method `createComputerWithPassword`
+  * Method `removeAttribute`
+  * Method `destroy`
+  * Method `setAttribute`
+  * Method `getAttribute`
+  * Method `addAttribute`
+  * Method `getAttributeValueBytes`
+  * Method `getArrayAttribute`
+* AD_UserGroup:
+  * JDOC for `removeAttribute`
+  * JDOC for `destroy`
+  * JDOC for `rename`
+  * JDOC for `setAttribute`
+  * JDOC for `getAttribute`
+  * JDOC for `addAttribute`
+  * JDOC for `getAttributeValueBytes`
+  * JDOC for `getArrayAttribute`
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

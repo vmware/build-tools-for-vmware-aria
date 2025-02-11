@@ -550,13 +550,121 @@ declare interface AD_Group {
  * Represents an Organizational Unit
  */
 declare interface AD_OrganizationalUnit {
-	id: string;
-  	distinguishedName: string;
+	readonly id: string;
+	readonly users: object[];
+	readonly computers: object[];
+	readonly userGroups: object[];
+	readonly containers: object[];
+	readonly organizationalUnits: object[];
+	readonly distinguishedName: string;
+	readonly allAttributes: object[];
+	readonly gUID: string;
 	/**
 	 * Get a computer by name
 	 * @param computerName
 	 */
 	searchComputer(computerName: string): AD_Computer;
+
+	/**
+	 * Creates a new user and adds it to this container
+	 * @param accountName 
+	 * @param domainName 
+	 * @param displayName 
+	 */
+	createUser(accountName: string, domainName: string, displayName: string): void;
+
+	/**
+	 * Creates a new user, sets its password and adds it to this container.
+	 * @param accountName 
+	 * @param password 
+	 * @param domainName 
+	 * @param displayName 
+	 */
+	createUserWithPassword(accountName: string, password: string, domainName: string, displayName: string): void;
+
+	/**
+	 * Creates a new user with detailed information.
+	 * @param accountName 
+	 * @param password 
+	 * @param domainName 
+	 * @param displayName 
+	 * @param firstName 
+	 * @param lastName 
+	 */
+	createUserWithDetails(accountName: string, password: string, domainName: string, displayName: string, firstName: string, lastName: string): void;
+
+	/**
+	 * Creates a new user group and adds it to this container
+	 * @param groupName 
+	 */
+	createUserGroup(groupName: string): void;
+
+	/**
+	 * Creates a new organizational unit and adds it to this container
+	 * @param ouName 
+	 */
+	createOrganizationalUnit(ouName: string): void;
+
+	/**
+	 * Create a new computer and add it to this container
+	 * @param computerName 
+	 * @param domainName 
+	 * @param computerNamePreWin2K 
+	 */
+	createComputer(computerName: string, domainName: string, computerNamePreWin2K: string): void;
+
+	/**
+	 * Create a new computer with password and add it to this container
+	 * @param computerName 
+	 * @param domainName 
+	 * @param password 
+	 * @param computerNamePreWin2K 
+	 */
+	createComputerWithPassword(computerName: string, domainName: string, password: string, computerNamePreWin2K: string): void;
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Change the value of an existing attribute
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	setAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute
+	 * @param attribName 
+	 */
+	getAttribute(attribName: string): string;
+
+	/**
+	 * Adds an attribute
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	addAttribute(attribName: string, newValue: string): void;
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 * @param attribName 
+	 */
+	getAttributeValueBytes(attribName: string): object[];
+
+	/**
+	 * Get an AD attribute for an array of values
+	 * @param attribName 
+	 */
+	getArrayAttribute(attribName: string): string[];
 }
 
 /**
@@ -703,41 +811,51 @@ declare interface AD_UserGroup {
 
 	/**
 	 * Removes an attribute as specified by the attribName parameter.
+	 * @param attribName 
 	 */
 	removeAttribute(attribName: string): void;
 
 	/**
 	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 * @param param0 
 	 */
 	destroy(param0: boolean): void;
 
 	/**
 	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 * @param name 
 	 */
 	rename(name: string): void;
 
 	/**
 	 * Change the value of an existing attribute.
+	 * @param attribName
+	 * @param newValue 
 	 */
 	setAttribute(attribName: string, newValue: object): void;
 
 	/**
 	 * Get an AD attribute.
+	 * @param attribName 
 	 */
 	getAttribute(attribName: string): string;
 
 	/**
 	 * Adds an attribute.
+	 * @param attribName 
+	 * @param newValue 
 	 */
 	addAttribute(attribName: string, newValue: object): void;
 
 	/**
 	 * Get an AD attribute value as byte array.
+	 * @param attribName 
 	 */
 	getAttributeValueBytes(attribName: string): object[];
 
 	/**
 	 * Get an AD attribute for an array of values.
+	 * @param attribName 
 	 */
 	getArrayAttribute(attribName: string): string[];
 }
@@ -814,4 +932,67 @@ declare interface LdapLoadBalancingMode {
 	 * @param value
 	 */
 	fromString(value: string): LdapLoadBalancingMode;
+}
+
+/**
+ * Computer on the AD
+ */
+declare interface AD_Computer {
+	readonly id: string;
+	readonly name: string;
+	readonly hostname: string;
+	enabled: boolean;
+	readonly distinguishedName: string;
+	readonly allAttributes: object[];
+	readonly gUID: string;
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 * @param name 
+	 */
+	rename(name: string): void;
+
+	/**
+	 * Change the value of an existing attribute
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	setAttribute(attribName: string, newValue: object): void;
+
+	/**
+	 * Get an AD attribute
+	 * @param attribName 
+	 */
+	getAttribute(attribName: string): string;
+
+	/**
+	 * Adds an attribute
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	addAttribute(attribName: string, newValue: string): void;
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 * @param attribName 
+	 */
+	getAttributeValueBytes(attribName: string): object[];
+
+	/**
+	 * Get an AD attribute for an array of values
+	 * @param attribName 
+	 */
+	getArrayAttribute(attribName: string): string[];
 }
