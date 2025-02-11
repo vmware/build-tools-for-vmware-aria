@@ -457,16 +457,6 @@ declare class AD_ServerConfiguration {
 }
 
 /**
- * Computer on the AD
- */
-declare interface AD_Computer {
-	id: string;
-	readonly name: string;
-	readonly hostname: string;
-  	readonly distinguishedName: string;
-}
-
-/**
  * Group
  */
 declare interface AD_Group {
