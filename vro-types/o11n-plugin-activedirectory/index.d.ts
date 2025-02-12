@@ -392,14 +392,14 @@ declare class ActiveDirectory {
 	 * @param adServer
 	 */
 	static getDC(adServer: AD_Host): AD_Computer;
-	 /**
-	 * Move Ad Object to a diferent OU or rename
-	 * @param from // Objcect Distinguish Name
-	 * @param to   // Object new Name
-	 * @param new_parent // Object New Ou Parent
-	 * @param adServer // AdServer
-	 */
-	static rename(from:string, to:string, new_parent:string, adServer: AD_Host): void;
+	/**
+	* Move Ad Object to a diferent OU or rename
+	* @param from // Objcect Distinguish Name
+	* @param to   // Object new Name
+	* @param new_parent // Object New Ou Parent
+	* @param adServer // AdServer
+	*/
+	static rename(from: string, to: string, new_parent: string, adServer: AD_Host): void;
 
 	/**
 	 * Processes a search operation with the provided information. It is expected that at most one entry will be 
@@ -463,7 +463,62 @@ declare interface AD_Computer {
 	id: string;
 	readonly name: string;
 	readonly hostname: string;
-  	readonly distinguishedName: string;
+	enabled: boolean;
+	readonly allAttributes: any[];
+	readonly gUID: string;
+	readonly distinguishedName: string;
+
+	/**
+	 * Get an AD attribute for an array of values
+	 * @param attibName
+	 */
+	getArrayAttribute(attibName: string): string[];
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 * @param attibName
+	 */
+	getAttributeValueBytes(attibName: string): any[];
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 * @param name 
+	 */
+	rename(name: string): void;
+
+	/**
+	 * Change the value of an existing attribute
+	 * 
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+
+	/**
+	 * Get an AD attribute
+	 * @param attibName
+	 */
+	getAttribute(attibName: string): string;
+
+	/**
+	 * Adds an attribute
+	 *
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	addAttribute(attribName: string, newValue: any): void;
 }
 
 /**
@@ -550,13 +605,141 @@ declare interface AD_Group {
  * Represents an Organizational Unit
  */
 declare interface AD_OrganizationalUnit {
-	id: string;
-  	distinguishedName: string;
+	readonly id: string;
+	/**
+	 * List of all computers (read-only)
+	 */
+	readonly computers: AD_Computer[];
+	/**
+	 * List of all user groups (read-only)
+	 */
+	readonly userGroups: AD_UserGroup[];
+	/**
+	 * List of all Group (read-only)
+	 */
+	readonly containers: AD_Group[];
+	/**
+	 * List of all OU (read-only)
+	 */
+	readonly organizationalUnits: AD_OrganizationalUnit[];
+	/**
+	 * List of all users (read-only)
+	 */
+	readonly users: AD_User[];
+	/**
+	 * Returns all attributes
+	 */
+	readonly allAttributes: any[];
+	/**
+	 * Return object GUID formatted as dashed string
+	 */
+	readonly gUID: string;
+	/**
+	 * Return the DN of the item
+	 */
+	readonly distinguishedName: string;
 	/**
 	 * Get a computer by name
 	 * @param computerName
 	 */
 	searchComputer(computerName: string): AD_Computer;
+
+	/**
+	 * Creates a new user, sets its password and adds it to this container
+	 *
+	 * @param accountName
+	 * @param password 
+	 * @param domainName 
+	 * @param displayName 
+	 */
+	createUserWithPassword(accountName: string, password: string, domainName: string, displayName: string): void;
+
+	/**
+	 * Creates a new user, sets its password and adds it to this container
+	 */
+	createUserWithDetails(accountName: string, password: string, domainName: string, displayName: string, firstName: string, lastName: string): void;
+
+	/**
+	 * Creates a new user group and adds it to this container
+	 * @param groupName 
+	 */
+	createUserGroup(groupName: string): void;
+
+	/**
+	 * Creates a new organizational unit and adds it to this container
+	 * @param ouName 
+	 */
+	createOrganizationalUnit(ouName: string): void;
+
+	/**
+	 * Create a new computer and add it to this container
+	 * @param domainName 
+	 * @param computerName 
+	 * @param computerNamePreWin2K 
+	 */
+	createComputer(computerName: string, domainName: string, computerNamePreWin2K: string): void;
+
+	/**
+	 * Create a new computer with password and add it to this container
+	 * @param computerNamePreWin2K 
+	 * @param computerName
+	 * @param password 
+	 * @param domainName 
+	 */
+	createComputerWithPassword(computerName: string, domainName: string, password: string, computerNamePreWin2K: string): void;
+
+	/**
+	 * Creates a new user and adds it to this container
+	 * @param domainName 
+	 * @param displayName 
+	 * @param accountName 
+	 */
+	createUser(accountName: string, domainName: string, displayName: string): void;
+
+	/**
+	 * Get an AD attribute for an array of values.
+	 */
+	getArrayAttribute(attibName: string): string[];
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 * @param attibName
+	 */
+	getAttributeValueBytes(attibName: string): any[];
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Change the value of an existing attribute
+	 * 
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+
+	/**
+	 * Get an AD attribute
+	 * @param attibName
+	 */
+	getAttribute(attibName: string): string;
+
+	/**
+	 * Adds an attribute
+	 *
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	addAttribute(attribName: string, newValue: any): void;
 }
 
 /**
@@ -652,7 +835,7 @@ declare interface AD_User {
 	/**
 	 * Change the value of an existing attribute.
 	 */
-	 setAttribute(attribName: string, newValue: object): void;
+	setAttribute(attribName: string, newValue: object): void;
 
 	/**
 	 * Get an AD attribute.
