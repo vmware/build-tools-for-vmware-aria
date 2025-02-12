@@ -76,7 +76,7 @@ mvn archetype:generate \
     -DarchetypeVersion=<iac_for_vrealize_version> \
     -DgroupId=local.corp.it.cloud \
     -DartifactId=dns \
-    -DworkflowsPath=Corp/Cloud/Util
+    -DworkflowsPath=integration-service-1/workflows
 ```
 
 This will produce the following project file structure:
@@ -117,7 +117,7 @@ mvn archetype:generate \
     -DarchetypeVersion=<iac_for_vrealize_version> \
     -DgroupId=local.corp.it.cloud \
     -DartifactId=services \
-    -DworkflowsPath=Corp/Cloud/Services
+    -DworkflowsPath=integration-service-1/workflows
 ```
 
 This will produce the following project file structure:

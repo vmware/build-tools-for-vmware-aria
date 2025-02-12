@@ -5,7 +5,7 @@ mvn archetype:generate \
     -DarchetypeArtifactId=package-xml-archetype \
     -DgroupId=local.corp.devops.common \
     -DartifactId=example \
-    -DworkflowsPath=Corporation/Common/Example \
+    -DworkflowsPath=integration-service-1/workflows \
     -DlicenseUrl= \
     -DlicenseHeader= \
     -DlicenseTechnicalPreview=false
