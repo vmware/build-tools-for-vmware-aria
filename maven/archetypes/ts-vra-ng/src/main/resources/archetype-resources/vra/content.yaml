@@ -42,20 +42,30 @@
 #     - policy name 2
 
 blueprint:
-  - Volume
-subscription: []
-catalog-item: []
-custom-resource: []
-resource-action: []
-catalog-entitlement: []
-
-property-group: []
+  - Small VM
+catalog-item: 
+  - Orchestrator_Development__Add a REST host
+content-source:
+    - Orchestrator_Development
+custom-resource:
+  - CustomResource
 policy:
-  approval: []
-  content-sharing: []
-  day2-actions: []
-  deployment-limit: []
-  lease: []
-  resource-quota: []
-
-content-source: []
+  approval:
+    - vra8-db-mssql Approval Policy
+  content-sharing:
+    - vra8-db-mssql Content Sharing Policy
+  day2-actions:
+    - vra8-db-mssql Day 2 Actions Policy
+  deployment-limit:
+    - vra8-db-mssql Deployment Limit Policy
+  lease:
+    - vra8-db-mssql Lease Policy
+  resource-quota:
+    - vra8-db-mssql Resource Quota Policy
+property-group:
+  - vra8_db_mssql_property_group
+resource-action:
+  - Cloud.vSphere.Machine__add_disk_to_vm
+subscription:
+  - vra8-db-mssql Subscription
+catalog-entitlement: []

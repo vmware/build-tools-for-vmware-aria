@@ -1,0 +1,14 @@
+{
+	"type": "INPUT",
+	"organization": "vidm-l-01a",
+	"name": "vra8_db_mssql_property_group",
+	"displayName": "Property Group",
+	"description": "",
+	"properties": {
+		"notification_email": {
+			"type": "string",
+			"encrypted": false,
+			"title": "Notification Email"
+		}
+	}
+}
