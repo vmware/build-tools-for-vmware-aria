@@ -1,14 +1,13 @@
 {
-	"id": "80b8c817-63cd-43f4-9dda-e7abd5b51087",
-	"name": "L01",
+	"name": "vra8-db-mssql Lease Policy",
 	"typeId": "com.vmware.policy.deployment.lease",
-	"orgId": "b2c558c8-f20c-4da6-9bc3-d7561f64df16",
+	"organization": "vidm-l-01a",
 	"scopeCriteria": {
 		"matchExpression": [
 			{
 				"key": "project.name",
 				"operator": "contains",
-				"value": "ljklasdfgh"
+				"value": "b"
 			}
 		]
 	},

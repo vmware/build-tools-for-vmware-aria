@@ -1,10 +1,8 @@
 {
-	"id": "policy uiid",
-	"name": "policy name",
-	"description": "",
+	"name": "vra8-db-mssql Approval Policy",
 	"typeId": "com.vmware.policy.approval",
-	"enforcementType": "HARD|SOFT",
-	"orgId": "organization uiid",
+	"enforcementType": "HARD",
+	"organization": "vidm-l-01a",
 	"scopeCriteria": {
 		"matchExpression": [
 			{
@@ -17,7 +15,7 @@
 	"definition": {
 		"level": 1,
 		"actions": [
-			"Allocations.Storage.Delete"
+			"Cloud.vSphere.Machine.Shutdown"
 		],
 		"approvers": [
 			"USER:configurationadmin"

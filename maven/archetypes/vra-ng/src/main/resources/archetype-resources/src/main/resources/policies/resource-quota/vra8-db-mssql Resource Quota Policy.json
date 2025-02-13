@@ -1,10 +1,9 @@
 {
-	"id": "f7cd2b97-d157-4042-96a3-c9c713729d57",
-	"name": "RQ05",
+	"name": "vra8-db-mssql Resource Quota Policy",
 	"typeId": "com.vmware.policy.resource.quota",
 	"enforcementType": "HARD",
 	"description": "",
-	"orgId": "b2c558c8-f20c-4da6-9bc3-d7561f64df16",
+	"organization": "vidm-l-01a",
 	"scopeCriteria": {
 		"matchExpression": [
 			{

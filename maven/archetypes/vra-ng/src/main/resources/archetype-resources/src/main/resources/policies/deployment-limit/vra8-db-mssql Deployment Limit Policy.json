@@ -1,8 +1,7 @@
 {
-	"id": "e42189dd-19fa-4f4d-a0db-315c748a5b60",
-	"name": "DL01",
+	"name": "vra8-db-mssql Deployment Limit Policy",
 	"typeId": "com.vmware.policy.deployment.limit",
-	"orgId": "b2c558c8-f20c-4da6-9bc3-d7561f64df16",
+	"organization": "vidm-l-01a",
 	"enforcementType": "HARD",
 	"criteria": {
 		"matchExpression": [
