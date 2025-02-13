@@ -38,4 +38,4 @@ jobs:
           VALIDATE_JAVASCRIPT_STANDARD: true
           VALIDATE_MARKDOWN: true
           # ignore js files under test and e2e folders
-          FILTER_REGEX_EXCLUDE: .*test/.*.js|e2e/.*\.js|.*maven/archetypes/actions/src/main/resources/archetype-resources/src/main/resources/integration-service-1/sample.js|.*maven/archetypes/mixed/src/main/resources/archetype-resources/actions/src/main/resources/integration-service-1/sample.js
+          FILTER_REGEX_EXCLUDE: .*test/.*.js|e2e/.*\.js|.*maven/archetypes/actions/.*.js
