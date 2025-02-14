@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:bsc-package-maven-plugin:3.2.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:bsc-package-maven-plugin:4.0.1-SNAPSHOT
 
 Name: bsc-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: bsc-package-maven-plugin
-Version: 3.2.1-SNAPSHOT
+Version: 4.0.1-SNAPSHOT
 Goal Prefix: bsc
 
 This plugin has 1 goal:
