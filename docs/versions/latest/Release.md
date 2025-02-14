@@ -19,13 +19,10 @@
 
 ## Features
 
-### *Added new types to o11n-plugin-activedirectory*
-
-New ad types are added for:
-
-- AD_Computer
-- AD_OrganizationalUnit
-- AD_UserGroup
+[//]: # (### *Feature Name*)
+[//]: # (Describe the feature)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
