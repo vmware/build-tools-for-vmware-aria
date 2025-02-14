@@ -21,7 +21,7 @@ version_ge() {
     printf '%s\n%s\n' "$2" "$1" | sort -C -V
 }
 
-# Check Node.js Version Range (14.x to 16.x)
+# Check Node.js Version Range (22.x to 22.x)
 check_node_version() {
     node_version=$(node -v 2>/dev/null | sed 's/v//')
     node_major_version=$(echo "$node_version" | cut -d. -f1)
