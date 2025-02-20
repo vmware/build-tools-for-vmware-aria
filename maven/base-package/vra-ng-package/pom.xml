@@ -68,6 +68,6 @@
 
 		<checksum.packagesEnabled>true</checksum.packagesEnabled>
 		<checksum.packagesDir>target</checksum.packagesDir>
-		<checksum.packagesGlob>*.vra-ng</checksum.packagesGlob>
+		<checksum.packagesGlob>*.vrang</checksum.packagesGlob>
 	</properties>
 </project>

@@ -911,6 +911,11 @@ public final class Installer {
 					.getInstance(
 							ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VRANG), false, vroEnableBackup);
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
+					.importAllPackages(getFilesystemPackages(PackageType.VRANGv3), false, vroEnableBackup);
+					
 		}
 
 		if (input.allTrue(Option.VCD_IMPORT)) {
@@ -949,6 +954,8 @@ public final class Installer {
 			String[] prefixes = { ConfigurationPrefix.VRANG.getValue() };
 			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(prefixes)))
 					.deleteAllPackages(getFilesystemPackages(PackageType.VRANG), true, false, false);
+			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(prefixes)))
+					.deleteAllPackages(getFilesystemPackages(PackageType.VRANGv3), true, false, false);
 		}
 
 		if (input.allTrue(Option.VROPS_IMPORT)) {
@@ -1079,7 +1086,7 @@ public final class Installer {
 		// +-------------------------------------
 		// | vRealize Automation (New Generation)
 		// +-------------------------------------
-		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty();
+		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty() || !getFilesystemPackages(PackageType.VRANGv3).isEmpty();
 		if (hasVraNgPackages) {
 			userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
 			if (!input.anyTrue(Option.VRANG_IMPORT)) {

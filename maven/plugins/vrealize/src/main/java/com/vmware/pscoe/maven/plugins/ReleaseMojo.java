@@ -61,7 +61,7 @@ public class ReleaseMojo extends AbstractIacMojo {
 
 		try {
 
-			if (PackageType.VRANG == packageType) {
+			if (PackageType.VRANG == packageType || PackageType.VRANGv3 == packageType) {
 
 				RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
 				VraNgReleaseManager releaseManager = new VraNgReleaseManager(restClient);

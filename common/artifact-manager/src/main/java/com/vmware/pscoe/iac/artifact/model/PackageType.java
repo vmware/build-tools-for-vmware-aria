@@ -14,9 +14,11 @@
  */
 package com.vmware.pscoe.iac.artifact.model;
 
+// Make sure not to introduce new types with dash - in the extension. This will introduce maven and artifactory issues!
 public enum PackageType {
 	VRO("package", "vro"),
-	VRANG("vra-ng", "vra-ng"),
+	VRANG("vrang", "vra-ng"),
+	VRANGv3("vra-ng", "vra-ng"), // kept for backward compatibility with Build Tools for VMware Aria <= 3.x.x
 	VCDNG("vcd-ng", "vcd-ng"),
 	VROPS("vrops", "vrops"),
 	VRLI("vrli", "vrli"),

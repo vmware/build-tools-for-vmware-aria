@@ -257,7 +257,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		} else if (PackageType.VROPS == type) {
 			return Optional
 					.ofNullable(ConfigurationVrops.fromProperties(getConfigurationProperties(type, vrops, "vrops.")));
-		} else if (PackageType.VRANG == type) {
+		} else if (PackageType.VRANG == type || PackageType.VRANGv3 == type) {
 			return Optional
 					.ofNullable(ConfigurationVraNg.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
 		} else if (PackageType.ABX == type) {
