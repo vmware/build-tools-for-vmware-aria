@@ -234,7 +234,7 @@ If in the workflow's XML file the description is populated with the one or more 
 ```ts
 @Configuration({
     name: "Sample Config",
-    path: "PSCoE/MyProject",
+    path: "PSCoE/my-project",
     attributes: {
         field1: { type: "sring" },
         field2: {

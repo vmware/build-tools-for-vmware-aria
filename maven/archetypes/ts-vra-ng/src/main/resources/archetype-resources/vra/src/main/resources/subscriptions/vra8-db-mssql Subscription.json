@@ -6,7 +6,7 @@
 	"ownerId": "configurationadmin",
 	"blocking": true,
 	"description": "",
-	"criteria": "event.data.tags \u003d\u003d\u003d \"myProject\"",
+	"criteria": "event.data.tags \u003d\u003d\u003d \"my-project\"",
 	"constraints": {
 		"projectId": null
 	},

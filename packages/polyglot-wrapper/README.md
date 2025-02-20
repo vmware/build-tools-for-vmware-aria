@@ -83,7 +83,7 @@ export class PolyglotDecoratorExample {
 import { Workflow, Out, Polyglot } from "vrotsc-annotations";
 @Workflow({
     name: "Sample Workflow",
-    path: "PSCoE/MyProject",
+    path: "PSCoE/my-project",
     description: "Sample workflow description"
 })
 export class SampleWorkflow {

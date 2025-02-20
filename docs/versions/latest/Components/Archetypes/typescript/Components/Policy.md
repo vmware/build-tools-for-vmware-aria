@@ -25,7 +25,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
     name: "Sample Policy",
-    path: "PSCoE/MyProject",
+    path: "PSCoE/my-project",
     description: "Some Description",
     templateVersion: "v2", // or v1
 })
@@ -42,7 +42,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
     name: "Policy Template Amqp",
-    path: "PSCoE/MyProject",
+    path: "PSCoE/my-project",
     type: "AMQP:Subscription",
     templateVersion: "v1"
 })
@@ -60,7 +60,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
     name: "Sample Policy",
-    path: "PSCoE/MyProject",
+    path: "PSCoE/my-project",
     description: "Some Description",
     templateVersion: "v2",
     variables: {
@@ -119,7 +119,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
     name: "Sample Policy",
-    path: "PSCoE/MyProject",
+    path: "PSCoE/my-project",
     description: "Some Description",
     templateVersion: "v2", // Policy Template Version: v1 or v2
     variables: {

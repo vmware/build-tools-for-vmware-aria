@@ -2,7 +2,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
 
 @PolicyTemplate({
 	name: "Event Listener",
-	path: "PSCoE/MyProject/integration-service-1/policies",
+	path: "PSCoE/my-project/integration-service-1/policies",
 	templateVersion: "v2",
 	variables: {
 		sample: {

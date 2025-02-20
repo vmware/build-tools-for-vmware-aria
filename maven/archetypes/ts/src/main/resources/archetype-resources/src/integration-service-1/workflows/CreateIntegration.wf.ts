@@ -2,14 +2,14 @@ import { Out, Workflow } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Create Integration",
-	path: "PSCoE/MyProject/integration-service-1/workflows",
+	path: "PSCoE/my-project/integration-service-1/workflows",
 	id: "",
 	description: "Sample workflow description",
 	attributes: {
 		field1: {
 			type: string,
 			bind: true,
-			value: "PSCoE/MyProject/field1"
+			value: "PSCoE/my-project/field1"
 		}
 	},
 	input: {
