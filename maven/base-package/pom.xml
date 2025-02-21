@@ -405,7 +405,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>target/dependency/vra-ng</outputDirectory>
-							<includeTypes>vra-ng</includeTypes>
+							<includeTypes>vra-ng,vrang</includeTypes>
 							<prependGroupId>true</prependGroupId>
 						</configuration>
 					</execution>

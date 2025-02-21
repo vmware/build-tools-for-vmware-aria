@@ -49,6 +49,7 @@
 			<outputDirectory>${file.separator}vra-ng</outputDirectory>
 			<includes>
 				<include>*.vra-ng</include>
+				<include>*.vrang</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -56,6 +57,7 @@
 			<outputDirectory>${file.separator}vra-ng</outputDirectory>
 			<includes>
 				<include>*.vra-ng</include>
+				<include>*.vrang</include>
 			</includes>
 		</fileSet>
 		<fileSet>
