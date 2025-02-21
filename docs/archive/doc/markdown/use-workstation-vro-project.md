@@ -261,7 +261,7 @@ import { Workflow, Out } from "tsc-annotations";
 @Workflow({
   id: "",
   name: "Sample Workflow",
-  path: "PSCoE/MyProject",
+  path: "PSCoE/my-project",
   description: "Sample workflow description",
   attributes: {},
   input: {
@@ -325,7 +325,7 @@ import { LoggerFactory } from "./LoggerFactory";
 ```ts
 @PolicyTemplate({
     name: "Sample Policy",
-    path: "PSCoE/MyProject",
+    path: "PSCoE/my-project",
     type: "AMQP:Subscription"
 })
 class SamplePolicy {
