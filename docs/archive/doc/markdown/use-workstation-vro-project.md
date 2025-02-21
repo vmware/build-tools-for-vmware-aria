@@ -76,7 +76,7 @@ mvn archetype:generate \
     -DarchetypeVersion=<iac_for_vrealize_version> \
     -DgroupId=local.corp.it.cloud \
     -DartifactId=dns \
-    -DworkflowsPath=Corp/Cloud/Util
+    -DworkflowsPath=integration-service-1/workflows
 ```
 
 This will produce the following project file structure:
@@ -117,7 +117,7 @@ mvn archetype:generate \
     -DarchetypeVersion=<iac_for_vrealize_version> \
     -DgroupId=local.corp.it.cloud \
     -DartifactId=services \
-    -DworkflowsPath=Corp/Cloud/Services
+    -DworkflowsPath=integration-service-1/workflows
 ```
 
 This will produce the following project file structure:
@@ -234,7 +234,7 @@ If in the workflow's XML file the description is populated with the one or more 
 ```ts
 @Configuration({
     name: "Sample Config",
-    path: "MyOrg/MyProject",
+    path: "PSCoE/my-project",
     attributes: {
         field1: { type: "sring" },
         field2: {
@@ -261,7 +261,7 @@ import { Workflow, Out } from "tsc-annotations";
 @Workflow({
   id: "",
   name: "Sample Workflow",
-  path: "MyOrg/MyProject",
+  path: "PSCoE/my-project",
   description: "Sample workflow description",
   attributes: {},
   input: {
@@ -325,7 +325,7 @@ import { LoggerFactory } from "./LoggerFactory";
 ```ts
 @PolicyTemplate({
     name: "Sample Policy",
-    path: "MyOrg/MyProject",
+    path: "PSCoE/my-project",
     type: "AMQP:Subscription"
 })
 class SamplePolicy {

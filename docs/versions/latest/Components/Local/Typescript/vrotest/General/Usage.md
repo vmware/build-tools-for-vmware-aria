@@ -38,7 +38,7 @@ The following commandline options are accepted when building:
   --dependencies                Path to the folder containing dependent vRO packages.
   --helpers                     Path to the folder containing vRO scripting API.
   --ts-src                      Path to the original TypeScript code.
-  --ts-namespace                Namespace for the TypeScript project e.g. com.example.myproject
+  --ts-namespace                Namespace for the TypeScript project e.g. com.example.my-project
   --output                      Folder where testbed will be created.
   --coverage-thresholds         Defines the threshold (in %) for the test coverage. Tests will fail if coverage is below the threshold.
                                 Format: <error>:<warn>:<type>

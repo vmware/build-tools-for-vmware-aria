@@ -73,7 +73,7 @@ import { Configuration } from "vrotsc-annotations";
 
 @Configuration({
   name: "GeneralConfig",
-  path: "PSCoE/MyProject",
+  path: "PSCoE/my-project",
   attributes: {
     composite: {
       type: "CompositeType(field1:number,field2:boolean,field3:string,field4:Array/string):ITest",
@@ -125,7 +125,7 @@ Example YAML configuration element
 
 ```yaml
 name: CompositeConfigYaml
-path: PSCoE/MyProject
+path: PSCoE/my-project
 attributes:
   field1:
     type: CompositeType(field1:number,field2:boolean,field3:string,field4:Array/string):ITest

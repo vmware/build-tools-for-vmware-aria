@@ -13,9 +13,9 @@
 - Git-based Source control system (we assume Gitlab)
 - CI Server capable of running Maven commands (we assume Gitlab):
   - Git client
-  - Maven 3.5+
-  - Java 17
-  - NodeJS 16.12+ (NPM 6.7+)
+  - Maven 3.9+
+  - Java 17 - 21
+  - NodeJS 22.x.x+ (NPM 6.7+)
   - (Optional) PowerShell version 6+ (recommended 7.2.3+) is required for supporting powershell polyglot projects.
 - Temporary access to internet during the installation
 - vRO 7.3.0 Appliance - the toolchain uses vRO 7.3.0 dependencies that are part of the appliance and are served as an embedded Maven repository.

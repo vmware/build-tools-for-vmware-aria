@@ -1,0 +1,1255 @@
+{
+  "id": "cf235f4c-65e8-4001-b1c1-b732074891d8",
+  "name": "Add a REST host",
+  "form": {
+    "layout": {
+      "pages": [
+        {
+          "id": "page_1",
+          "title": "Host Properties",
+          "sections": [
+            {
+              "id": "section_project",
+              "fields": [
+                {
+                  "id": "project",
+                  "display": "dropDown",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_deploymentName",
+              "fields": [
+                {
+                  "id": "deploymentName",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_0",
+              "fields": [
+                {
+                  "id": "GENERATED_327ade02-73a4-4faa-ae2c-743d5a4d0a12",
+                  "display": "text",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_1",
+              "fields": [
+                {
+                  "id": "name",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_2",
+              "fields": [
+                {
+                  "id": "url",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_3",
+              "fields": [
+                {
+                  "id": "connectionTimeout",
+                  "display": "decimalField",
+                  "signpostPosition": "top-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_4",
+              "fields": [
+                {
+                  "id": "operationTimeout",
+                  "display": "decimalField",
+                  "signpostPosition": "top-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_5",
+              "fields": [
+                {
+                  "id": "ignoreWarnings",
+                  "display": "checkbox",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_6",
+              "fields": [
+                {
+                  "id": "autoUrlRedirection",
+                  "display": "checkbox",
+                  "state": {
+                    "visible": false
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_7",
+              "fields": [
+                {
+                  "id": "parallelRequestExecution",
+                  "display": "checkbox",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_8",
+              "fields": [
+                {
+                  "id": "redirectStrategy",
+                  "display": "dropDown",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "page_2",
+          "title": "Host Authentication",
+          "sections": [
+            {
+              "id": "section_9",
+              "fields": [
+                {
+                  "id": "authentication",
+                  "display": "dropDown",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "page_3",
+          "title": "User credentials",
+          "sections": [
+            {
+              "id": "section_10",
+              "fields": [
+                {
+                  "id": "GENERATED_3fd51f2e-c77e-499f-8df1-8a1c584ae73e",
+                  "display": "text",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_11",
+              "fields": [
+                {
+                  "id": "sessionMode",
+                  "display": "dropDown",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_12",
+              "fields": [
+                {
+                  "id": "authUserName",
+                  "display": "textField",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#sessionMode\u003d\u003d\"Shared Session\"`"
+                        },
+                        {
+                          "sessionMode": "sessionMode"
+                        },
+                        {
+                          "sessionMode__type_": "`string`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_13",
+              "fields": [
+                {
+                  "id": "authPassword",
+                  "display": "passwordField",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#sessionMode\u003d\u003d\"Shared Session\"`"
+                        },
+                        {
+                          "sessionMode": "sessionMode"
+                        },
+                        {
+                          "sessionMode__type_": "`string`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ],
+          "state": {
+            "visible": {
+              "id": "com.vmware.o11n.forms/evalOGNL",
+              "type": "scriptAction",
+              "parameters": [
+                {
+                  "ognl": "`#authentication!\u003d\"NONE\"\u0026\u0026#authentication!\u003d\"OAuth 1.0\"\u0026\u0026#authentication!\u003d\"OAuth 2.0\"`"
+                },
+                {
+                  "authentication": "authentication"
+                },
+                {
+                  "authentication__type_": "`string`"
+                },
+                {
+                  "return": "`boolean`"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "page_4",
+          "title": "OAuth 1.0",
+          "sections": [
+            {
+              "id": "section_14",
+              "fields": [
+                {
+                  "id": "GENERATED_a5d280dd-809a-426c-87ab-da80f51267aa",
+                  "display": "text",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_15",
+              "fields": [
+                {
+                  "id": "consumerKey",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_16",
+              "fields": [
+                {
+                  "id": "consumerSecret",
+                  "display": "passwordField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_17",
+              "fields": [
+                {
+                  "id": "accessToken",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_18",
+              "fields": [
+                {
+                  "id": "accessTokenSecret",
+                  "display": "passwordField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ],
+          "state": {
+            "visible": {
+              "id": "com.vmware.o11n.forms/evalOGNL",
+              "type": "scriptAction",
+              "parameters": [
+                {
+                  "ognl": "`#authentication\u003d\u003d\"OAuth 1.0\"`"
+                },
+                {
+                  "authentication": "authentication"
+                },
+                {
+                  "authentication__type_": "`string`"
+                },
+                {
+                  "return": "`boolean`"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "page_5",
+          "title": "OAuth 2.0",
+          "sections": [
+            {
+              "id": "section_19",
+              "fields": [
+                {
+                  "id": "GENERATED_8f67e751-4ff4-494b-9fd4-3546bfc4f39a",
+                  "display": "text",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_20",
+              "fields": [
+                {
+                  "id": "oauth2Token",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_21",
+              "fields": [
+                {
+                  "id": "tokenSendingStrategy",
+                  "display": "dropDown",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ],
+          "state": {
+            "visible": {
+              "id": "com.vmware.o11n.forms/evalOGNL",
+              "type": "scriptAction",
+              "parameters": [
+                {
+                  "ognl": "`#authentication\u003d\u003d\"OAuth 2.0\"`"
+                },
+                {
+                  "authentication": "authentication"
+                },
+                {
+                  "authentication__type_": "`string`"
+                },
+                {
+                  "return": "`boolean`"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "page_6",
+          "title": "NTLM",
+          "sections": [
+            {
+              "id": "section_22",
+              "fields": [
+                {
+                  "id": "workstation",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_23",
+              "fields": [
+                {
+                  "id": "domain",
+                  "display": "textField",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ],
+          "state": {
+            "visible": {
+              "id": "com.vmware.o11n.forms/evalOGNL",
+              "type": "scriptAction",
+              "parameters": [
+                {
+                  "ognl": "`#authentication\u003d\u003d\"NTLM\"`"
+                },
+                {
+                  "authentication": "authentication"
+                },
+                {
+                  "authentication__type_": "`string`"
+                },
+                {
+                  "return": "`boolean`"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "page_7",
+          "title": "Proxy Settings",
+          "sections": [
+            {
+              "id": "section_24",
+              "fields": [
+                {
+                  "id": "useProxy",
+                  "display": "checkbox",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_25",
+              "fields": [
+                {
+                  "id": "proxyHost",
+                  "display": "textField",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#useProxy`"
+                        },
+                        {
+                          "useProxy": "useProxy"
+                        },
+                        {
+                          "useProxy__type_": "`boolean`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_26",
+              "fields": [
+                {
+                  "id": "proxyPort",
+                  "display": "decimalField",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#useProxy`"
+                        },
+                        {
+                          "useProxy": "useProxy"
+                        },
+                        {
+                          "useProxy__type_": "`boolean`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_27",
+              "fields": [
+                {
+                  "id": "proxyAuthentication",
+                  "display": "dropDown",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#useProxy`"
+                        },
+                        {
+                          "useProxy": "useProxy"
+                        },
+                        {
+                          "useProxy__type_": "`boolean`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "page_8",
+          "title": "Proxy Credentials",
+          "sections": [
+            {
+              "id": "section_28",
+              "fields": [
+                {
+                  "id": "proxySessionMode",
+                  "display": "dropDown",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#useProxy \u0026\u0026 #proxyAuthentication !\u003d \"NONE\" \u0026\u0026 #proxyAuthentication !\u003d \"OAuth 1.0\" \u0026\u0026 #proxyAuthentication !\u003d \"OAuth 2.0\"`"
+                        },
+                        {
+                          "proxyAuthentication": "proxyAuthentication"
+                        },
+                        {
+                          "proxyAuthentication__type_": "`string`"
+                        },
+                        {
+                          "useProxy": "useProxy"
+                        },
+                        {
+                          "useProxy__type_": "`boolean`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_29",
+              "fields": [
+                {
+                  "id": "proxyAuthUserName",
+                  "display": "textField",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#useProxy \u0026\u0026 (#proxySessionMode \u003d\u003d \"Shared Session\")`"
+                        },
+                        {
+                          "proxySessionMode": "proxySessionMode"
+                        },
+                        {
+                          "proxySessionMode__type_": "`string`"
+                        },
+                        {
+                          "useProxy": "useProxy"
+                        },
+                        {
+                          "useProxy__type_": "`boolean`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_30",
+              "fields": [
+                {
+                  "id": "proxyAuthPassword",
+                  "display": "passwordField",
+                  "state": {
+                    "visible": {
+                      "id": "com.vmware.o11n.forms/evalOGNL",
+                      "type": "scriptAction",
+                      "parameters": [
+                        {
+                          "ognl": "`#useProxy \u0026\u0026 (#proxySessionMode \u003d\u003d \"Shared Session\")`"
+                        },
+                        {
+                          "proxySessionMode": "proxySessionMode"
+                        },
+                        {
+                          "proxySessionMode__type_": "`string`"
+                        },
+                        {
+                          "useProxy": "useProxy"
+                        },
+                        {
+                          "useProxy__type_": "`boolean`"
+                        },
+                        {
+                          "return": "`boolean`"
+                        }
+                      ]
+                    }
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ],
+          "state": {
+            "visible": {
+              "id": "com.vmware.o11n.forms/evalOGNL",
+              "type": "scriptAction",
+              "parameters": [
+                {
+                  "ognl": "`#useProxy \u0026\u0026 #proxyAuthentication !\u003d \"NONE\" \u0026\u0026 #proxyAuthentication !\u003d \"OAuth 1.0\" \u0026\u0026 #proxyAuthentication !\u003d \"OAuth 2.0\"`"
+                },
+                {
+                  "proxyAuthentication": "proxyAuthentication"
+                },
+                {
+                  "proxyAuthentication__type_": "`string`"
+                },
+                {
+                  "useProxy": "useProxy"
+                },
+                {
+                  "useProxy__type_": "`boolean`"
+                },
+                {
+                  "return": "`boolean`"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "page_9",
+          "title": "SSL",
+          "sections": [
+            {
+              "id": "section_31",
+              "fields": [
+                {
+                  "id": "hostVerification",
+                  "display": "checkbox",
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            },
+            {
+              "id": "section_32",
+              "fields": [
+                {
+                  "id": "key",
+                  "display": "valuePickerTree",
+                  "state": {
+                    "visible": true,
+                    "read-only": false
+                  },
+                  "signpostPosition": "right-middle"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "schema": {
+      "project": {
+        "label": "Project",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "valueList": {
+          "id": "projects",
+          "type": "scriptAction"
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "deploymentName": {
+        "label": "Deployment Name",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true,
+          "max-value": 900
+        }
+      },
+      "GENERATED_327ade02-73a4-4faa-ae2c-743d5a4d0a12": {
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "Properties  to create a new host. The name is the host\u0027s unique identifier.",
+        "constraints": {}
+      },
+      "name": {
+        "label": "Name",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "url": {
+        "label": "URL",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "connectionTimeout": {
+        "label": "Connection timeout (seconds)",
+        "signpost": "The maximum time to establish a connection with the remote REST host.",
+        "type": {
+          "dataType": "decimal",
+          "isMultiple": false
+        },
+        "default": 30,
+        "constraints": {
+          "min-value": 0
+        }
+      },
+      "operationTimeout": {
+        "label": "Operation timeout (seconds)",
+        "signpost": "The time waiting for data after establishing a connection with the remote REST host. Maximum time of inactivity between two data packets before terminating.",
+        "type": {
+          "dataType": "decimal",
+          "isMultiple": false
+        },
+        "default": 60,
+        "constraints": {
+          "min-value": 0
+        }
+      },
+      "ignoreWarnings": {
+        "label": "If set to true, the certificate is accepted silently and the certificate is added to the trusted store.",
+        "type": {
+          "dataType": "boolean",
+          "isMultiple": false
+        },
+        "default": false,
+        "constraints": {}
+      },
+      "autoUrlRedirection": {
+        "label": "Automatically URL Redirection",
+        "type": {
+          "dataType": "boolean",
+          "isMultiple": false
+        },
+        "default": false,
+        "constraints": {}
+      },
+      "parallelRequestExecution": {
+        "label": "Support for parallel request executions",
+        "type": {
+          "dataType": "boolean",
+          "isMultiple": false
+        },
+        "default": false,
+        "constraints": {}
+      },
+      "redirectStrategy": {
+        "label": "Redirect strategy",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "defaultRedirect",
+        "valueList": [
+          "defaultRedirect",
+          "alwaysRedirect",
+          "neverRedirect"
+        ],
+        "constraints": {}
+      },
+      "authentication": {
+        "label": "Host\u0027s authentication type",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "NONE",
+        "valueList": [
+          "NONE",
+          "OAuth 1.0",
+          "OAuth 2.0",
+          "Basic",
+          "Digest",
+          "NTLM",
+          "Kerberos"
+        ],
+        "constraints": {
+          "required": true
+        }
+      },
+      "GENERATED_3fd51f2e-c77e-499f-8df1-8a1c584ae73e": {
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "If Shared Session is selected, the provided credentials are used.  If Per User Session option is used, the credentials are retrieved from the currently logged-in user.",
+        "constraints": {}
+      },
+      "sessionMode": {
+        "label": "Session mode",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "Shared Session",
+        "valueList": [
+          "Shared Session",
+          "Per User Session"
+        ],
+        "constraints": {}
+      },
+      "authUserName": {
+        "label": "Authentication user name",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "authPassword": {
+        "label": "Authentication password",
+        "type": {
+          "dataType": "secureString",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "GENERATED_a5d280dd-809a-426c-87ab-da80f51267aa": {
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "OAuth authentication properties. For details, see https://oauth.net/",
+        "constraints": {}
+      },
+      "consumerKey": {
+        "label": "Consumer key",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "consumerSecret": {
+        "label": "Consumer secret",
+        "type": {
+          "dataType": "secureString",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "accessToken": {
+        "label": "Access token",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {}
+      },
+      "accessTokenSecret": {
+        "label": "Access token secret",
+        "type": {
+          "dataType": "secureString",
+          "isMultiple": false
+        },
+        "constraints": {}
+      },
+      "GENERATED_8f67e751-4ff4-494b-9fd4-3546bfc4f39a": {
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "Token can be sent in either of two ways:\n\nIf you select \"Authorization header\" strategy (recommended) - token is sent in the Authorization header as a bearer token;\nIf you select \"Query parameter\" strategy (deprecated) - token is sent in \"oauth_token\" query parameter;\n\nNote: Currently the REST plug-in supports bearer tokens only.\nIf you wish to use a different token type, you can add the headers needed from the scripting.",
+        "constraints": {}
+      },
+      "oauth2Token": {
+        "label": "Token",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "tokenSendingStrategy": {
+        "label": "Token sending strategy",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "Authorization header",
+        "valueList": [
+          "Authorization header",
+          "Query parameter"
+        ],
+        "constraints": {}
+      },
+      "workstation": {
+        "label": "Workstation  for NTLM authentication",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": {
+          "id": "com.vmware.o11n.forms/evalOGNL",
+          "type": "scriptAction",
+          "parameters": [
+            {
+              "ognl": "`GetAction(\"com.vmware.library.http-rest.configuration\",\"getRESTHostAuthenticationProperty\").call( #host , 3.0, #authentication, (#authentication\u003d\u003d\"NTLM\") )`"
+            },
+            {
+              "host": "`vcoSerialized:`"
+            },
+            {
+              "host__type_": "`string`"
+            },
+            {
+              "authentication": "authentication"
+            },
+            {
+              "authentication__type_": "`string`"
+            },
+            {
+              "return": "`string`"
+            }
+          ]
+        },
+        "constraints": {}
+      },
+      "domain": {
+        "label": "Domain  for NTLM authentication",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": {
+          "id": "com.vmware.o11n.forms/evalOGNL",
+          "type": "scriptAction",
+          "parameters": [
+            {
+              "ognl": "`GetAction(\"com.vmware.library.http-rest.configuration\",\"getRESTHostAuthenticationProperty\").call( #host , 4.0, #authentication, (#authentication\u003d\u003d\"NTLM\") )`"
+            },
+            {
+              "host": "`vcoSerialized:`"
+            },
+            {
+              "host__type_": "`string`"
+            },
+            {
+              "authentication": "authentication"
+            },
+            {
+              "authentication__type_": "`string`"
+            },
+            {
+              "return": "`string`"
+            }
+          ]
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "useProxy": {
+        "label": "Use Proxy",
+        "type": {
+          "dataType": "boolean",
+          "isMultiple": false
+        },
+        "default": false,
+        "constraints": {}
+      },
+      "proxyHost": {
+        "label": "Proxy address",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": {
+          "id": "com.vmware.o11n.forms/evalOGNL",
+          "type": "scriptAction",
+          "parameters": [
+            {
+              "ognl": "`(#useProxy \u0026\u0026 #host !\u003d null) ? #host.proxyHost : \"\"`"
+            },
+            {
+              "host": "`vcoSerialized:`"
+            },
+            {
+              "host__type_": "`string`"
+            },
+            {
+              "useProxy": "useProxy"
+            },
+            {
+              "useProxy__type_": "`boolean`"
+            },
+            {
+              "return": "`string`"
+            }
+          ]
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "proxyPort": {
+        "label": "Proxy port",
+        "type": {
+          "dataType": "decimal",
+          "isMultiple": false
+        },
+        "default": {
+          "id": "com.vmware.o11n.forms/evalOGNL",
+          "type": "scriptAction",
+          "parameters": [
+            {
+              "ognl": "`(#useProxy \u0026\u0026 #host !\u003d null) ? #host.proxyPort : \"\"`"
+            },
+            {
+              "host": "`vcoSerialized:`"
+            },
+            {
+              "host__type_": "`string`"
+            },
+            {
+              "useProxy": "useProxy"
+            },
+            {
+              "useProxy__type_": "`boolean`"
+            },
+            {
+              "return": "`number`"
+            }
+          ]
+        },
+        "constraints": {
+          "required": true
+        }
+      },
+      "proxyAuthentication": {
+        "label": "Proxy AuthenticationType",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "valueList": {
+          "id": "com.vmware.o11n.forms/evalOGNL",
+          "type": "scriptAction",
+          "parameters": [
+            {
+              "ognl": "`(#url.toString().startsWith(\"https\")) ? new String[]{\"NONE\"} : new String[]{\"NONE\", \"Basic\"}`"
+            },
+            {
+              "url": "url"
+            },
+            {
+              "url__type_": "`string`"
+            },
+            {
+              "return": "`Array/string`"
+            }
+          ]
+        },
+        "constraints": {
+          "required": {
+            "id": "com.vmware.o11n.forms/evalOGNL",
+            "type": "scriptAction",
+            "parameters": [
+              {
+                "ognl": "`#useProxy`"
+              },
+              {
+                "useProxy": "useProxy"
+              },
+              {
+                "useProxy__type_": "`boolean`"
+              },
+              {
+                "return": "`boolean`"
+              }
+            ]
+          }
+        }
+      },
+      "proxySessionMode": {
+        "label": "Proxy Session mode",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "default": "Shared Session",
+        "valueList": [
+          "Shared Session",
+          "Per User Session"
+        ],
+        "constraints": {}
+      },
+      "proxyAuthUserName": {
+        "label": "Proxy user name",
+        "type": {
+          "dataType": "string",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": {
+            "id": "com.vmware.o11n.forms/evalOGNL",
+            "type": "scriptAction",
+            "parameters": [
+              {
+                "ognl": "`#useProxy \u0026\u0026 (#proxySessionMode \u003d\u003d \"Shared Session\")`"
+              },
+              {
+                "proxySessionMode": "proxySessionMode"
+              },
+              {
+                "proxySessionMode__type_": "`string`"
+              },
+              {
+                "useProxy": "useProxy"
+              },
+              {
+                "useProxy__type_": "`boolean`"
+              },
+              {
+                "return": "`boolean`"
+              }
+            ]
+          }
+        }
+      },
+      "proxyAuthPassword": {
+        "label": "Proxy password",
+        "type": {
+          "dataType": "secureString",
+          "isMultiple": false
+        },
+        "constraints": {
+          "required": {
+            "id": "com.vmware.o11n.forms/evalOGNL",
+            "type": "scriptAction",
+            "parameters": [
+              {
+                "ognl": "`#useProxy \u0026\u0026 (#proxySessionMode \u003d\u003d \"Shared Session\")`"
+              },
+              {
+                "proxySessionMode": "proxySessionMode"
+              },
+              {
+                "proxySessionMode__type_": "`string`"
+              },
+              {
+                "useProxy": "useProxy"
+              },
+              {
+                "useProxy__type_": "`boolean`"
+              },
+              {
+                "return": "`boolean`"
+              }
+            ]
+          }
+        }
+      },
+      "hostVerification": {
+        "label": "Verify whether the target hostname matches the names stored inside the server\u0027s X.509 certificate",
+        "type": {
+          "dataType": "boolean",
+          "isMultiple": false
+        },
+        "default": true,
+        "constraints": {}
+      },
+      "key": {
+        "label": "The PrivateKeyEntry to use for client certificate authentication.",
+        "type": {
+          "dataType": "reference",
+          "referenceType": "Configurator:Key",
+          "isMultiple": false
+        },
+        "constraints": {}
+      }
+    },
+    "options": {
+      "externalValidations": []
+    }
+  },
+  "styles": null,
+  "sourceType": "com.vmw.vro.workflow",
+  "sourceId": "cb422623-d99d-3cdf-9b4c-a6ebad6fe8be",
+  "type": "requestForm",
+  "status": "OFF",
+  "formFormat": "JSON"
+}
