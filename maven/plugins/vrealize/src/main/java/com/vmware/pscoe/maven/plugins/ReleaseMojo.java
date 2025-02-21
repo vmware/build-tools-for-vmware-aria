@@ -52,6 +52,9 @@ public class ReleaseMojo extends AbstractIacMojo {
 	@Parameter(required = false, property = "vrang.releaseIfNotUpdated", defaultValue = "false")
 	private boolean releaseIfNotUpdated;
 
+	/**
+	 * Release the content of vRANG (vRANGv3) and ABX projects
+	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
