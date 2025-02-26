@@ -1764,27 +1764,27 @@ declare namespace Server {
 	 * Return a workflow category matching the given path or null if not found.
 	 * @param path The path to the workflow category using forward slash(/) as separator.
 	 */
-	function getWorkflowCategoryWithPath(path: string): WorkflowCategory;
+	function getWorkflowCategoryWithPath(path: string): WorkflowCategory | null;
 	/**
 	 * Return a configuration element category matching the given path or null if not found.
 	 * @param path The path to the configuration element category using forward slash(/) as separator.
 	 */
-	function getConfigurationElementCategoryWithPath(path: string): ConfigurationElementCategory;
+	function getConfigurationElementCategoryWithPath(path: string): ConfigurationElementCategory | null;
 	/**
 	 * Return a resource element category matching the given path or null if not found.
 	 * @param path The path to the resource element category using forward slash(/) as separator.
 	 */
-	function getResourceElementCategoryWithPath(path: string): ResourceElementCategory;
+	function getResourceElementCategoryWithPath(path: string): ResourceElementCategory | null;
 	/**
 	 * Return a package given its name or null if not found.
 	 * @param name The package name.
 	 */
-	function getPackageWithName(name: string): Package;
+	function getPackageWithName(name: string): Package | null;
 	/**
 	 * Return a policy template category matching the given path or null if not found.
 	 * @param path The path to the policy template category using forward slash(/) as separator.
 	 */
-	function getPolicyTemplateCategoryWithPath(path: string): PolicyTemplateCategory;
+	function getPolicyTemplateCategoryWithPath(path: string): PolicyTemplateCategory | null;
 	/**
 	 * Return all policy template categories.
 	 */

@@ -72,7 +72,7 @@ namespace vroapi {
         return Object.values(parentDescriptor.children || {}).map(child => getOrCreateCategory(child));
     }
 
-    function getCategory(categoryPath: string): ConfigurationElementCategory {
+    function getCategory(categoryPath: string): ConfigurationElementCategory | null {
         const categoryDescriptor = findDescriptorByPath(categoryPath);
         return categoryDescriptor ? getOrCreateCategory(categoryDescriptor) : null;
     }
@@ -96,7 +96,7 @@ namespace vroapi {
         return Object.values(categoryDescriptor.elements).map(elem => getOrCreateElement(elem, category));
     }
 
-    function getElement(categoryPath: string, name: string): ConfigurationElement {
+    function getElement(categoryPath: string, name: string): ConfigurationElement | null {
         const categoryDescriptor = findDescriptorByPath(categoryPath);
         if (!categoryDescriptor) {
             return null;
