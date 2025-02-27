@@ -150,7 +150,7 @@ export default class DecisionItemDecoratorStrategy extends BaseItemDecoratorStra
 	 * @param sourceText The source text to clear the `wrapper` function from
 	 * @returns The source text without the `wrapper` function
 	 */
-	private clearWrapperFunction(sourceText: string): string {
-		return sourceText.replace(/function wrapper\(\) \{|}$/gm, '').trim();
+    private clearWrapperFunction(sourceText: string): string {
+        return sourceText.replace(/function wrapper\(\) \{([\s\S]*)\}$/gm, '$1').trim();
 	}
 }
