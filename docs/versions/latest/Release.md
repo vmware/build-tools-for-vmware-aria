@@ -28,6 +28,17 @@
 
 ## Improvements
 
+[//]: # (### *Improvement Name* )
+[//]: # (Talk ONLY regarding the improvement)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### Previous Behavior)
+[//]: # (Explain how it used to behave, regarding to the change)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### New Behavior)
+[//]: # (Explain how it behaves now, regarding to the change)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
+
 ### *Improve type definitions of Server class functions*
 
 Improve type definitions of Server class functions by adding `| null` to the return type.
@@ -46,16 +57,17 @@ The following function definitions have `| null` added to their return type:
 - `Server.getPackageWithName`
 - `Server.getPolicyTemplateCategoryWithPath`
 
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+### *Fix Decision element transpilation issue*
+
+In Typescript workflow classes, methods with the DecisionItem decorator were transpiled incorrectly into Javascript.
+
+#### Previous Behavior
+
+Closing brackets ('{'), e.g in if blocks, were missing from the contents of the transpiled Decision element.
+
+#### New Behavior
+
+Closing brackets are no longer missing from the contents of the transpiled Decision element.
 
 ## Upgrade procedure
 
