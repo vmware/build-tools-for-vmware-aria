@@ -26,13 +26,16 @@ export class CleanDefinition {
             "definition": "/***@return{Any}*/(function(){varexports={};returnexports;});"
         }
     ];
+	private readonly logger = winston.loggers.get(LOGGER_PREFIX);
 
     public removeEmptyDefinitions(vroJsFolderPath: string): void {
         const JS_EXTENSION = ".js";
 
-        winston.loggers.get(LOGGER_PREFIX).debug(`Base Path : "${vroJsFolderPath}"`);
-        let baseDir = Path.join(vroJsFolderPath, "src", "main", "resources");
-        glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)).forEach(jsFile => {
+        this.logger.debug(`Base Path : "${vroJsFolderPath}"`);
+		let baseDir = this.joinPath(vroJsFolderPath, "src", "main", "resources");
+		const jsFiles = glob.sync(this.joinPath(baseDir, "**", "*" + JS_EXTENSION));
+		this.logger.debug("JS Files: "+ JSON.stringify(jsFiles));
+		jsFiles.forEach(jsFile => {
             let content = FileSystem.readFileSync(jsFile);
             let source = content.toString();
 
@@ -40,13 +43,15 @@ export class CleanDefinition {
                 try {
                     if (FileSystem.existsSync(jsFile)) {
                         FileSystem.unlinkSync(jsFile);
-                        winston.loggers.get(LOGGER_PREFIX).info(`File deleted : "${jsFile}"`);
+						this.logger.info(`File deleted : "${jsFile}"`);
                     }
                 }
                 catch (error) {
                     throw error;
                 }
-            }
+            } else {
+				this.logger.debug(`${jsFile} is not an empty definition: ${source}`)
+			}
 
         });
     }
@@ -58,7 +63,7 @@ export class CleanDefinition {
                 .replace(/(\r\n|\n|\r)/gm, "")
                 .replace(/ /g, "")
                 .trim();
-            winston.loggers.get("vrbt").debug(`File content : ${stringWithoutLineBreaks}`);
+			this.logger.debug(`File content : ${stringWithoutLineBreaks}`);
 
             //This cicle goes until the end if result is always 'false'
             //If result has a match with any empty definition this file 
@@ -72,4 +77,8 @@ export class CleanDefinition {
         }
         return result;
     }
+
+	private joinPath(...args: string[]) {
+		return Path.join(...args).replace(/[\\]+/gm, "/")
+	}
 }
