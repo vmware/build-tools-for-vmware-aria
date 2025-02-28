@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.1.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.2.1-SNAPSHOT
 
 Name: vrealize-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vrealize-package-maven-plugin
-Version: 4.1.1-SNAPSHOT
+Version: 4.2.1-SNAPSHOT
 Goal Prefix: vrealize
 
 This plugin has 4 goals:
