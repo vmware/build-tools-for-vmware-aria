@@ -115,13 +115,13 @@ declare class SSHCommand {
  * SSH Session to username@host:port. This object replace the old 'SSHCommand' object.
  */
 declare class SSHSession {
-	exitCode: number;
+	readonly exitCode: number;
 	cmd: string;
-	pty: string;
+	pty: boolean;
 	terminal: string;
-	output: string;
-	error: string;
-	state: string;
+	readonly output: string;
+	readonly error: string;
+	readonly state: string;
 	soTimeout: number;
 	constructor()
 	/**
@@ -141,26 +141,26 @@ declare class SSHSession {
 	 * Connect the session using simple username/password authentication.
 	 * @param password
 	 */
-	connectWithPassword(password: any): void;
+	connectWithPassword(password: any): object;
 	/**
 	 * Deprecated use connectWithIdentity(). Connect the session using Public key Authentication.
 	 * @param privateKeyPath
 	 * @param passphrase
 	 */
-	connectWithIdentidy(privateKeyPath: any, passphrase: any): void;
+	connectWithIdentidy(privateKeyPath: any, passphrase: any): object;
 	/**
-	 * Connect the session using Public key Authentication.
+	 * Deprecated use connectWithIdentity(). Connect the session using Public key Authentication.
 	 * @param privateKeyPath
 	 * @param passphrase
 	 */
-	connectWithIdentity(privateKeyPath: any, passphrase: any): void;
+	connectWithIdentity(privateKeyPath: string, passphrase: any): object;
 	/**
 	 * Connect the session using either password or Public key Authentication.
 	 * @param isPassword
 	 * @param password
 	 * @param privateKeyPath
 	 */
-	connectWithPasswordOrIdentity(isPassword: boolean, password: any, privateKeyPath: any): void;
+	connectWithPasswordOrIdentity(isPassword: boolean, password: any, privateKeyPath: string): object;
 	/**
 	 * The provided userInfo object is used for callback for the keyboard-interactive authentication and for the other types of messages send from the remote server during authentication. The function signatures should be:
 	 *
@@ -169,87 +169,123 @@ declare class SSHSession {
 	 *
 	 * @param userInfo
 	 */
-	setUserInfo(userInfo: any): void;
+	setUserInfo(userInfo: object): void;
 	/**
 	 * Fills a property list of environment variables that will be set prior to opening a channel.
 	 * @param key
 	 * @param value
 	 */
-	addEnvironment(key: string, value: string): void;
+	addEnvironment(key: string, value: string): object;
+	/**
+	 * Set connection timeout, in milliseconds
+	 * @param setConnectTimeout
+	 */
+	setConnectTimeout(timeout: number): void;
+	/**
+	 * Get connection timeout
+	 */
+	getConnectTimeout(): number;
+	/**
+	 * Set socket timeout, in milliseconds
+	 * @param timeout
+	 */
+	setTimeout(timeout: number): void;
+	/**
+	 * Get socket timeout
+	 */
+	getTimeout(): number;
+	/**
+	 * Set an interval, in milliseconds, to send keep-alive message. If zero, keep-alive message will not be sent.
+	 * @param interval
+	 */
+	setKeepAliveInterval(interval: number): void;
+	/**
+	 * Get keep-alive interval
+	 */
+	getKeepAliveInterval(): number;
+	/**
+	 * Set the number of keep-alive messages that may be sent before the connection is considered to have failed.
+	 * @param count
+	 */
+	setKeepAliveCountMax(count: number): void;
+	/**
+	 * Get keep-alive messages count threshold
+	 */
+	getKeepAliveCountMax(): number;
 	/**
 	 * Sets the encoding that will be used to process the results from executeCommand method
 	 * @param encoding
 	 */
-	setEncoding(encoding: string): void;
+	setEncoding(encoding: string): object;
 	/**
 	 * Returns the encoding used by this SSHSession
 	 */
-	getEncoding(): any;
+	getEncoding(): object;
 	/**
 	 * Execute a single command and return immediately. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
 	 */
-	execute(): void;
+	execute(): object;
 	/**
 	 * Execute a single command and wait until end. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occurred.
 	 * @param file
 	 */
-	executeAndLog(file: any): void;
+	executeAndLog(file: any): object;
 	/**
 	 * Execute a single command and wait until completed, return the stdout result if synchronous. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
 	 * @param cmd
 	 * @param wait
 	 */
-	executeCommand(cmd: string, wait: boolean): void;
+	executeCommand(cmd: string, wait: boolean): string;
 	/**
 	 * Copy a file FROM a remote host TO the vCO Server. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Returns 0 if successful, or -1 if an error has occurred.
 	 * @param remoteFile
 	 * @param localFile
 	 */
-	getFile(remoteFile: any, localFile: any): number;
+	getFile(remoteFile: string, localFile: string): number;
 	/**
 	 * Copy a file TO a remote host FROM the vCO Server. Returns 0 if successful, or -1 if an error has occurred. If a remote file name is provided, the destination file name will use it. If only the destination directory is specified, then the destination file will use the source file name. The destination directory must exist.
 	 *
 	 * @param localFile
 	 * @param remoteFile
 	 */
-	putFile(localFile: any, remoteFile: any): number;
+	putFile(localFile: string, remoteFile: string): number;
 	/**
 	 * Recursively search and return matching pattern file and directory. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session.
 	 * @param basePath
 	 * @param pattern
 	 */
-	findAll(basePath: any, pattern: string): string[];
+	findAll(basePath: string, pattern: string): string[];
 	/**
 	 * Recursively search and return matching pattern file ONLY. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session.
 	 * @param basePath
 	 * @param pattern
 	 */
-	findFile(basePath: any, pattern: string): string[];
+	findFile(basePath: string, pattern: string): string[];
 	/**
 	 * Recursively search and return matching pattern directory ONLY.  This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session.
 	 * @param basePath
 	 * @param pattern
 	 */
-	findDir(basePath: any, pattern: string): string[];
+	findDir(basePath: string, pattern: string): string[];
 	/**
 	 * List files and directories in path. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session.
 	 * @param basePath
 	 */
-	listAll(basePath: any): string[];
+	listAll(basePath: string): string[];
 	/**
 	 * List files ONLY in path. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session.
 	 * @param basePath
 	 */
-	listFile(basePath: any): string[];
+	listFile(basePath: string): string[];
 	/**
 	 * List directories ONLY in path. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session.
 	 * @param basePath
 	 */
-	listDir(basePath: any): string[];
+	listDir(basePath: string): string[];
 	/**
 	 * Disconnects the current session if open. The session parameters are given in the object constructor (host, username, password); a session is opened automatically when any method is called that requires a session (like execute). Once open, the session remains open; any method uses the same session but opens a new channel and the closes it when done. You need to use this disconnect method to close the session.
 	 */
-	disconnect(): void;
+	disconnect(): object;
 }
 
 /**
