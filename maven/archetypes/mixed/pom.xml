@@ -9,7 +9,7 @@
     <artifactId>package-mixed-archetype</artifactId>
     <packaging>maven-archetype</packaging>
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
     <build>
         <resources>
