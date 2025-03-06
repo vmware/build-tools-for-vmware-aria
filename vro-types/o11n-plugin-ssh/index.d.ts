@@ -141,26 +141,26 @@ declare class SSHSession {
 	 * Connect the session using simple username/password authentication.
 	 * @param password
 	 */
-	connectWithPassword(password: any): object;
+	connectWithPassword(password: SecureString): any;
 	/**
 	 * Deprecated use connectWithIdentity(). Connect the session using Public key Authentication.
 	 * @param privateKeyPath
 	 * @param passphrase
 	 */
-	connectWithIdentidy(privateKeyPath: any, passphrase: any): object;
+	connectWithIdentidy(privateKeyPath: string, passphrase: SecureString): any;
 	/**
 	 * Deprecated use connectWithIdentity(). Connect the session using Public key Authentication.
 	 * @param privateKeyPath
 	 * @param passphrase
 	 */
-	connectWithIdentity(privateKeyPath: string, passphrase: any): object;
+	connectWithIdentity(privateKeyPath: string, passphrase: SecureString): any;
 	/**
 	 * Connect the session using either password or Public key Authentication.
 	 * @param isPassword
 	 * @param password
 	 * @param privateKeyPath
 	 */
-	connectWithPasswordOrIdentity(isPassword: boolean, password: any, privateKeyPath: string): object;
+	connectWithPasswordOrIdentity(isPassword: boolean, password: SecureString, privateKeyPath: string): any;
 	/**
 	 * The provided userInfo object is used for callback for the keyboard-interactive authentication and for the other types of messages send from the remote server during authentication. The function signatures should be:
 	 *
@@ -169,13 +169,13 @@ declare class SSHSession {
 	 *
 	 * @param userInfo
 	 */
-	setUserInfo(userInfo: object): void;
+	setUserInfo(userInfo: any): void;
 	/**
 	 * Fills a property list of environment variables that will be set prior to opening a channel.
 	 * @param key
 	 * @param value
 	 */
-	addEnvironment(key: string, value: string): object;
+	addEnvironment(key: string, value: string): any;
 	/**
 	 * Set connection timeout, in milliseconds
 	 * @param setConnectTimeout
@@ -216,20 +216,20 @@ declare class SSHSession {
 	 * Sets the encoding that will be used to process the results from executeCommand method
 	 * @param encoding
 	 */
-	setEncoding(encoding: string): object;
+	setEncoding(encoding: string): any;
 	/**
 	 * Returns the encoding used by this SSHSession
 	 */
-	getEncoding(): object;
+	getEncoding(): any;
 	/**
 	 * Execute a single command and return immediately. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
 	 */
-	execute(): object;
+	execute(): any;
 	/**
 	 * Execute a single command and wait until end. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occurred.
 	 * @param file
 	 */
-	executeAndLog(file: any): object;
+	executeAndLog(file: any): any;
 	/**
 	 * Execute a single command and wait until completed, return the stdout result if synchronous. This command will connect the session, request an execution channel, execute the command and close the execution channel. The session is open automatically if not opened yet, but will remain open after the command execution. Use disconnect to close the session. Value of the exitCode property is changed to -1 for initializing, 0 if successful, and positive number if an error occured.
 	 * @param cmd
