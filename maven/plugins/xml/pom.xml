@@ -15,7 +15,7 @@
 
 	<properties>
 		<goal.prefix>vro</goal.prefix>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
 
     <dependencies>

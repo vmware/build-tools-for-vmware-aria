@@ -29,7 +29,7 @@
 		<module>cs</module>
 	</modules>
 	<properties>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
 	<build>
 		<plugins>

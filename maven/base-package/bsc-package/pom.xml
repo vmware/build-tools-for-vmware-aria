@@ -52,7 +52,7 @@
 	</build>
 
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 		<!-- checksum calculation properties -->
 		<checksum.definitions>content,packages</checksum.definitions>
 
