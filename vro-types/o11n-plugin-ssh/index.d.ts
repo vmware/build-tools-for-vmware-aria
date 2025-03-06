@@ -285,7 +285,7 @@ declare class SSHSession {
 	/**
 	 * Disconnects the current session if open. The session parameters are given in the object constructor (host, username, password); a session is opened automatically when any method is called that requires a session (like execute). Once open, the session remains open; any method uses the same session but opens a new channel and the closes it when done. You need to use this disconnect method to close the session.
 	 */
-	disconnect(): object;
+	disconnect(): any;
 }
 
 /**
