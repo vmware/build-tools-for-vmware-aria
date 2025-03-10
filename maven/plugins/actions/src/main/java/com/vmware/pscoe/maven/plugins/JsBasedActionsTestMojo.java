@@ -33,8 +33,8 @@ public class JsBasedActionsTestMojo extends AbstractVroTestMojo {
 	protected void addTestbedPaths(List<String> cmd, Configuration config) {
 		String projectRoot = project.getBasedir().toPath().toString();
 		cmd.add("--actions");
-		cmd.add(Paths.get(projectRoot, SRC_JS_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_JS_PATH));
 		cmd.add("--tests");
-		cmd.add(Paths.get(projectRoot, SRC_TEST_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_TEST_PATH));
 	}
 }

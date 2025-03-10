@@ -120,7 +120,7 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 		String vroPkgExec = SystemUtils.IS_OS_WINDOWS ? "vropkg.cmd" : "vropkg";
 		ArrayList<String> vroPkgCmd = new ArrayList<>();
 
-		vroPkgCmd.add(Paths.get(projectRoot, "node_modules", "@vmware-pscoe", "vropkg", "bin", vroPkgExec).toString());
+		vroPkgCmd.add(toPathArgument(projectRoot, "node_modules", "@vmware-pscoe", "vropkg", "bin", vroPkgExec));
 		vroPkgCmd.add("--in");
 		vroPkgCmd.add(srcType);
 		vroPkgCmd.add("--srcPath");
@@ -148,5 +148,13 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 
 		new ProcessExecutor().name("Running vropkg...").directory(project.getBasedir()).throwOnError(true)
 				.command(vroPkgCmd).execute(getLog());
+	}
+
+	protected String toPathArgument(String first, String... more) {
+		return "\"" + Paths.get(first, more)
+				.normalize()
+				.toString()
+				.replaceAll("[\\\\/]+", SystemUtils.IS_OS_WINDOWS ? "\\\\" : "/")
+				+ "\"";
 	}
 }

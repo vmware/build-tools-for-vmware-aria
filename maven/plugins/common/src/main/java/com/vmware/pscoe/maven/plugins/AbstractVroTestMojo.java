@@ -119,11 +119,11 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		cmd.add("--projectRoot");
 		cmd.add(projectRoot);
 		cmd.add("--dependencies");
-		cmd.add(Paths.get(projectRoot, DEP_ROOT_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, DEP_ROOT_PATH));
 		cmd.add("--helpers");
-		cmd.add(Paths.get(projectRoot, VRO_API_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, VRO_API_PATH));
 		cmd.add("--output");
-		cmd.add(Paths.get(projectRoot, TESTBED_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, TESTBED_PATH));
 		cmd.add("--testFrameworkPackage");
 		cmd.add(config.getFrameworkPackageName());
 		cmd.add("--testFrameworkVersion");
@@ -153,6 +153,14 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 			}
 		}
 		return cmd;
+	}
+
+	protected String toPathArgument(String first, String... more) {
+		return "\"" + Paths.get(first, more)
+			.normalize()
+			.toString()
+			.replaceAll("[\\\\/]+", SystemUtils.IS_OS_WINDOWS ? "\\\\" : "/")
+			 + "\"";
 	}
 
 	protected abstract void addTestbedPaths(List<String> cmd, Configuration config);
