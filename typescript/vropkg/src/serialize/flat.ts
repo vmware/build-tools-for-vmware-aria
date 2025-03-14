@@ -276,7 +276,7 @@ const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata):
     const promises = [];
     const target = context.target;
 
-    glob.sync(target + "/**/*", { nodir: true }).forEach(file => {
+	glob.sync((target + "/**/*").replace(/[\\/]+/gm, path.posix.sep), { nodir: true }).forEach(file => {
         const location = path.normalize(file).replace(target, "");
         const data = s.sign(fs.readFileSync(file), pkg.certificate);
         const signature = context.signatures(location)(data);

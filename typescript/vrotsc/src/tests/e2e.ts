@@ -155,7 +155,7 @@ async function runSpec(caseName: string): Promise<boolean> {
 		let expectCaseDir = path.join(expectDir, caseName);
 		let caseOutDir = path.join(outDir, caseName);
 
-		glob.sync(path.resolve(caseOutDir, "**/*"))
+		glob.sync(path.resolve(caseOutDir, "**/*")?.replace(/[\\/]+/gm, path.posix.sep))
 			.forEach(actualPath => {
 				let expectPath = path.join(
 					expectCaseDir,
@@ -168,7 +168,7 @@ async function runSpec(caseName: string): Promise<boolean> {
 			});
 
 		glob
-			.sync(path.resolve(expectCaseDir, "**/*"), { nodir: true })
+            .sync(path.resolve(expectCaseDir, "**/*")?.replace(/[\\/]+/gm, path.posix.sep), { nodir: true })
 			.forEach(expectFilePath => {
 				let actualFilePath = path.join(
 					caseOutDir,
