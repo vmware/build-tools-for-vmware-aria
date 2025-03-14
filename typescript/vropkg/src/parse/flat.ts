@@ -132,7 +132,7 @@ function parseInputForms(baseDirectory: string): any {
     let formNames: string[] = getWorkflowItems(path.join(baseDirectory, "data"), WORKFLOW_ITEM_INPUT_TYPE);
     let formItems: t.VroNativeFormElement[] = [];
     formNames.forEach((formName: string) => {
-        const inputFormItemPath = [baseDirectory, FORM_ITEM_TEMPLATE.replace("{{formName}}", formName)].join(path.sep);
+        const inputFormItemPath = path.join(baseDirectory, FORM_ITEM_TEMPLATE.replace("{{formName}}", formName)).replace(/[\\/]+/gm, path.posix.sep);
         if (!exist(inputFormItemPath)) {
             return;
         }
