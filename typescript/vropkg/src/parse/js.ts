@@ -41,8 +41,8 @@ export class VroJsProjParser {
 		glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)?.replace(/[\\/]+/gm, Path.posix.sep)).forEach(jsFile => {
 			let content = FileSystem.readFileSync(jsFile);
 			let vroPath = jsFile.substring(baseDir.length + 1);
-			let moduleIndex = vroPath.lastIndexOf("/");
-			let moduleName = vroPath.substring(0, moduleIndex).replace(/\//g, ".");
+			let moduleIndex = Math.max(vroPath.lastIndexOf("/"), vroPath.lastIndexOf("\\"));
+			let moduleName = vroPath.substring(0, moduleIndex).replace(/[\\/]+/g, ".");
 			let name = vroPath.substring(moduleIndex + 1, vroPath.length - JS_EXTENSION.length);
 			let source = content.toString();
 			let javadoc: any = VroJsProjParser.getFirstCommentInSource(source, jsFile);

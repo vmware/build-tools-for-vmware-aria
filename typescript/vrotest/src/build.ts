@@ -193,7 +193,7 @@ export default async function (flags: BuildCommandFlags) {
 		await util.forEachFile(basePath, async filePath => {
 			if (path.extname(filePath).toLowerCase() === ".js") {
 				const relativePath = path.relative(basePath, filePath);
-				const module = path.dirname(relativePath).split(path.sep).join(".");
+				const module = path.dirname(relativePath).split(/[\\/]+/gm).join(".");
 				const name = path.basename(relativePath, ".js");
 				const modInfo = modules[module] || (modules[module] = {});
 				modInfo[name] = path.join(constants.SOURCE_PATH, relativePath);

@@ -78,7 +78,7 @@ namespace vroapi {
     }
 
     function removeCategory(categoryPath: string) {
-        const path = categoryPath.split("/");
+        const path = categoryPath.split(/[\\/]+/gm);
         const name = path.pop();
         const parentDescriptor = path.length ? findDescriptorByPath(path.join("/")) : getRoot();
         delete parentDescriptor.children[name];
@@ -110,7 +110,7 @@ namespace vroapi {
     }
 
     function createElement(categoryPath: string, name: string): ConfigurationElement {
-        const categoryDescriptor = categoryPath.split("/").reduce((parent, name) => {
+        const categoryDescriptor = categoryPath.split(/[\\/]+/gm).reduce((parent, name) => {
             let child: CategoryDescriptor = parent.children[name];
             if (!child) {
                 child = {
@@ -165,7 +165,7 @@ namespace vroapi {
 
 
     function findDescriptorByPath(categoryPath: string): CategoryDescriptor {
-        return categoryPath.split("/").reduce((parent, name) => parent ? parent.children[name] : null, getRoot());
+        return categoryPath.split(/[\\/]+/gm).reduce((parent, name) => parent ? parent.children[name] : null, getRoot());
     }
 
     function getOrCreateCategory(descriptor: CategoryDescriptor): ConfigurationElementCategory {

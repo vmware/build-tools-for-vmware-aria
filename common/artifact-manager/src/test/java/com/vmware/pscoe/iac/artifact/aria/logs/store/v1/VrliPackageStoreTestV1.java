@@ -96,7 +96,7 @@ public class VrliPackageStoreTestV1 {
 		// GIVEN
 		Mockito.doReturn(getAlerts()).when(restClientApiVersion1).getAllAlerts();
 		Mockito.doReturn(getAlertNames()).when(descriptor).getAlerts();
-		File path = new File(vrliPackage.getFilesystemPath() + "/" + ALERTS_DIR);
+		File path = new File(vrliPackage.getFilesystemPath() + File.separator + ALERTS_DIR);
 
 		// WHEN
 		storeApiVersion1.exportPackage(vrliPackage, descriptor, false);
@@ -110,7 +110,7 @@ public class VrliPackageStoreTestV1 {
 		// GIVEN
 		Mockito.doCallRealMethod().when(restClientApiVersion1).importAlert(getAlert());
 
-		File path = new File(vrliPackage.getFilesystemPath() + "/" + ALERTS_DIR);
+		File path = new File(vrliPackage.getFilesystemPath() + File.separator + ALERTS_DIR);
 		FileUtils.mkdir(path, true);
 		File alertFile = new File(path + "/ApiV1Alert01.json");
 
@@ -135,7 +135,7 @@ public class VrliPackageStoreTestV1 {
 		Mockito.doReturn(getContentPacks()).when(restClientApiVersion1).getAllContentPacks();
 		Mockito.doReturn(getContentPack()).when(restClientApiVersion1).getContentPack(CONTENT_PACK_NAMESPACE);
 		Mockito.doReturn(getContentPackNames()).when(descriptor).getContentPacks();
-		File path = new File(vrliPackage.getFilesystemPath() + "/" + CONTENT_PACKS_DIR);
+		File path = new File(vrliPackage.getFilesystemPath() + File.separator + CONTENT_PACKS_DIR);
 
 		// WHEN
 		storeApiVersion1.exportPackage(vrliPackage, descriptor, false);
@@ -149,7 +149,7 @@ public class VrliPackageStoreTestV1 {
 		// GIVEN
 		String contentPackName = "exampleContentPack";
 		String contentPackJson = this.getContentPack();
-		File path = new File(vrliPackage.getFilesystemPath() + "/" + CONTENT_PACKS_DIR);
+		File path = new File(vrliPackage.getFilesystemPath() + File.separator + CONTENT_PACKS_DIR);
 		FileUtils.mkdir(path, true);
 		File contentPackFile = new File(path + "/ContentPack01.json");
 		Package vrliPackage = this.createPackage(path.getParent(), contentPackFile.getName(), contentPackJson, false);
