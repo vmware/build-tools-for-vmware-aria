@@ -36,17 +36,18 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
         data: (element: t.VroNativeElement, sourceFile: string, type: t.VroElementType) => {
             switch (type) {
                 case t.VroElementType.ResourceElement: {
-                    return fs.copyFile(sourceFile, path.join(target, `${elementName}`));
+                    return fs.copyFileSync(sourceFile, path.join(target, `${elementName}`));
                 }
                 case t.VroElementType.ScriptModule: {
                     let elementXmlPath = path.join(target, `${elementName}.xml`)
-                    let actionXml = getActionXml(element.id, element.name, element.description, element.action);
-                    return fs.writeFile(elementXmlPath, actionXml);
+					let actionXml = getActionXml(element.id, element.name, element.description, element.action);
+					fs.mkdirsSync(path.dirname(elementXmlPath));
+                    return fs.writeFileSync(elementXmlPath, actionXml);
                 }
                 default: {
                     // Re-encode the content to UTF-8
                     let buffer = fs.readFileSync(sourceFile);
-                    return fs.writeFile(path.join(target, `${elementName}.xml`), decode(buffer));
+                    return fs.writeFileSync(path.join(target, `${elementName}.xml`), decode(buffer));
                 }
             }
         },
