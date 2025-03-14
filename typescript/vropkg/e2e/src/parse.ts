@@ -58,12 +58,12 @@ describe("End-to-End Tests", () => {
         const destination = ['test', destinationPath];
 
         const sourceFilesArray = glob
-            .sync(expand(...source, ...globExpr))
+			.sync(expand(...source, ...globExpr)?.replace(/[\\/]+/gm, path.posix.sep))
             .filter(file => !file.includes('META-INF') && !file.includes('version-history'))
             .map(file => path.normalize(file).replace(expand(...source), ''))
             .sort();
         const destinationFilesArray = glob
-            .sync(expand(...destination, ...globExpr))
+			.sync(expand(...destination, ...globExpr)?.replace(/[\\/]+/gm, path.posix.sep))
             .filter(file => !file.includes('META-INF') && !file.includes('version-history'))
             .map(file => path.normalize(file).replace(expand(...destination), ''))
             .sort();

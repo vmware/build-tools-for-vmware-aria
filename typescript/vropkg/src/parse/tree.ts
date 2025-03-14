@@ -121,7 +121,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
 
 async function parseTree(nativeFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, description: string): Promise<t.VroPackageMetadata> {
     let elements = glob
-        .sync(path.join(nativeFolderPath, "**", "*.element_info.xml"))
+		.sync(path.join(nativeFolderPath, "**", "*.element_info.xml").replace(/[\\/]+/gm, path.posix.sep))
         .map(file => parseTreeElement(file)
         );
 

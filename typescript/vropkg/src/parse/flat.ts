@@ -164,7 +164,7 @@ const parseFlat = async (nativePackagePath: string, destDir: string): Promise<t.
 
     let elements = await Promise.all(
         glob
-            .sync(path.join(tmp, "elements", "**", "info"))
+			.sync(path.join(tmp, "elements", "**", "info")?.replace(/[\\/]+/gm, path.posix.sep))
             .map(file => parseFlatElement(file))
     );
     let result = <t.VroPackageMetadata>{
