@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { join, basename, dirname } from "path";
+import { join, basename, dirname, posix } from "path";
 import * as childProc from "child_process";
 import * as util from "./util";
 import { readdirSync } from "fs";
@@ -29,9 +29,9 @@ export default async function (flags: RunCommandFlags): Promise<void> {
         if (!nodeModulesDir) {
             throw new Error(`Unable to find node_modules folder`);
         }
-        const nycPath = '"' + join(nodeModulesDir, "nyc", "bin", "nyc.js") + '"';
-        const nodeCmd = `"${process.argv[0]}"`;
-        const vroTestCmd = `"${process.argv[1]}"`;
+        const nycPath = toPathArg(nodeModulesDir, "nyc", "bin", "nyc.js");
+        const nodeCmd = toPathArg(process.argv[0]);
+        const vroTestCmd = toPathArg(process.argv[1]);
         const args = [nycPath, nodeCmd, vroTestCmd, "run"];
         const nycProc = childProc.spawn(nodeCmd, args, {
             cwd: testDir,
@@ -81,4 +81,9 @@ async function findNodeModules(dir: string): Promise<string> {
         dir = dirname(dir);
     }
     return dir;
+}
+
+function toPathArg(...args: string[]) {
+    const res = args.length == 1 ? args[0] : join(...args).replace(/[\\/]+/, posix.sep);
+    return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
 }

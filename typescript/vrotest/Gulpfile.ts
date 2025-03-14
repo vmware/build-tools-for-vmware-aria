@@ -8,6 +8,11 @@ import * as path from "path";
 import { rollup } from "rollup";
 import { rmSync } from "fs";
 
+function toPathArg(...args: string[]) {
+    const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+    return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
+}
+
 const ROLLUP_IGNORE = [
     "iconv-lite",
     "jasmine",
@@ -21,7 +26,7 @@ gulp.task("compile", async done => {
 gulp.task("test", async done => {
     await tsc(path.join("e2e", "tsconfig.json"));
     let error: any = undefined;
-    if (0 !== await exec(process.argv[0], [path.join("e2e", "build", "runner.js")])) {
+    if (0 !== await exec(process.argv[0], [toPathArg("e2e", "build", "runner.js")])) {
         error = "One or more test cases failed.";
     }
     done(error);
@@ -62,14 +67,15 @@ gulp.task("build", gulp.series("clean", "compile", "bundle", "test"));
 
 async function tsc(projectName: string): Promise<void> {
     const tscCommand = path.join("node_modules", ".bin", "tsc");
-    const tscArgs = ["--project", projectName];
+    const tscArgs = ["--project", toPathArg(projectName)];
     await exec(tscCommand, tscArgs, undefined, true);
 }
 
 async function exec(command: string, args: string[] = [], cwd?: string, checkExitCode?: boolean): Promise<number> {
+    command = toPathArg(command);
     const commandLine = `${command} ${args.join(" ")}`;
     log(`Executing '${ansiColors.cyan(commandLine)}'...`);
-    const proc = childProcess.spawn(`"${command}"`, args, {
+    const proc = childProcess.spawn(command, args, {
         shell: true,
         stdio: "inherit",
         cwd: cwd || __dirname,
