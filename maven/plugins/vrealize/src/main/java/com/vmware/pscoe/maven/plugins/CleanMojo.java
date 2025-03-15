@@ -41,16 +41,13 @@ public class CleanMojo extends AbstractIacMojo {
 	@Parameter(required = false, property = "dryrun", defaultValue = "false")
 	private boolean dryrun;
 
-	@Parameter(required = true, property = "includeDependencies", defaultValue = "true")
+	@Parameter(required = true, property = "includeDependencies", defaultValue = "false")
 	private boolean includeDependencies;
 	
-	@Parameter(required = false, property = "cleanUpLastVersion", defaultValue = "false")
+	@Parameter(required = false, property = "cleanUpLastVersion", defaultValue = "true")
 	private boolean cleanUpLastVersion;
-	
-	@Parameter(required = false, property = "cleanUpOldVersions", defaultValue = "true")
-	private boolean cleanUpOldVersions;
 
-	private void deleteArtifact(Artifact a) throws MojoExecutionException {
+	private void deleteArtifact(Artifact a, boolean isDependency) throws MojoExecutionException {
 		PackageType pkgType = PackageType.fromExtension(a.getType());
 		String artifactFile = String.format("%s.%s-%s.package", a.getGroupId(), a.getArtifactId(), a.getVersion());
 		if (pkgType != null) {
@@ -62,7 +59,7 @@ public class CleanMojo extends AbstractIacMojo {
 					.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
 					.orElseThrow(() -> new ConfigurationException("Unable to find PackageStore based on configuration. "
 						+ "Make sure there is configuration for type: " + pkgType.name()));
-				store.deletePackage(pkg, cleanUpLastVersion, cleanUpOldVersions, dryrun);
+				store.deletePackage(pkg, isDependency || cleanUpLastVersion, true, dryrun);
 			} catch (UnsupportedOperationException e) { // This also catches NotImplementedException since it's a child
 				getLog().warn(String.format("Tried to clean up package of type %s, but that type does not support deletion", pkgType), e);
 			} catch (ConfigurationException e) {
@@ -84,10 +81,10 @@ public class CleanMojo extends AbstractIacMojo {
 
 		if (includeDependencies) {
 			for (Object o : project.getArtifacts()) {
-				deleteArtifact((Artifact) o);
+				deleteArtifact((Artifact) o, true);
 			}
 		}
-		deleteArtifact(project.getArtifact());
+		deleteArtifact(project.getArtifact(), false);
 	}
 
 }

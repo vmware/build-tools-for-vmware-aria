@@ -108,46 +108,50 @@ public abstract class GenericPackageStore<T extends PackageDescriptor> implement
 
 		Collections.sort(serverPackages);
 
-		LinkedList<Package> all = new LinkedList(serverPackages);
+		LinkedList<Package> all = new LinkedList<>(serverPackages);
 
 		for (Package p : all) {
 			logger.info("Found package '{}' on server.", p.getFQName());
 		}
 
-		if (all.size() == 0 || !all.contains(vroPackage)) {
+		if (all.isEmpty()) {
 			logger.info("Nothing to do. There is no package '{}' available on the server.", vroPackage.getFQName());
 			return deleted;
 		}
 
 		Package latest = all.pollLast();
 
-		if (!latest.equals(vroPackage)) {
+		if (latest.compareTo(vroPackage) > 0) {
 			logger.error("Not supported operation. Server contains higher version of package {} than the provided {}.",
-					latest, vroPackage);
+				latest, vroPackage);
 			return deleted;
 		}
 
-		if (lastVersion && oldVersions) {
+		if (oldVersions) {
 			for (Package p : all) {
 				logger.info("Removing package version '{}' with its content.", p.getFQName());
 				deleted.add(this.deletePackage(p, true, dryrun));
 			}
-		} else if (lastVersion) {
-			if (all.size() == 0) {
-				logger.info("Removing package version '{}' with its content.", vroPackage.getFQName());
-				deleted.add(this.deletePackage(latest, true, dryrun));
-			} else {
-				Package previous = all.pollLast();
-				logger.warn("Package version '{}' and its content will be cleaned up against previous version '{}'",
-						latest, previous);
-				deleted.add(deletePackageVersion(previous, latest, dryrun));
-			}
-		} else if (oldVersions) {
-			for (Package p : all) {
-				deletePackageVersion(latest, p, dryrun);
-				deleted.add(p);
-			}
+			all.clear();
 		}
+
+		if (oldVersions && latest.compareTo(vroPackage) < 0) {
+			logger.info("Removing package version '{}' with its content.", latest.getFQName());
+			deleted.add(this.deletePackage(latest, true, dryrun));
+		}
+
+		if (lastVersion && latest.compareTo(vroPackage) == 0 && all.isEmpty()) {
+			logger.info("Removing package version '{}' with its content.", latest.getFQName());
+			deleted.add(this.deletePackage(latest, true, dryrun));
+		}
+
+		if (lastVersion && latest.compareTo(vroPackage) == 0 && !all.isEmpty()) {
+			Package previous = all.pollLast();
+			logger.warn("Package version '{}' and its content will be cleaned up against previous version '{}'",
+				latest, previous);
+			deleted.add(deletePackageVersion(previous, latest, dryrun));
+		}
+
 		return deleted;
 	}
 
