@@ -184,7 +184,7 @@ public class SshClient {
 		try {
 			reconnectChannel(sftpChannel);
 			StringBuilder path = new StringBuilder();
-			for (String item : directory.split("/")) {
+			for (String item : directory.split("[\\\\/]+")) {
 				if (!StringUtils.isEmpty(item)) {
 					path.append("/" + item);
 					if (!isFileExisting(sftpChannel, path.toString())) {

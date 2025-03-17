@@ -340,9 +340,9 @@ export class ActionItemSourceFilePrinter implements SourceFilePrinter {
 											factory.createIdentifier("getModule")
 										),
 										undefined,
-										[factory.createStringLiteral(itemInfo.canvasItemPolymorphicBag.scriptModule.split("/")[0])]
+										[factory.createStringLiteral(itemInfo.canvasItemPolymorphicBag.scriptModule.split(/[\\/]+/gm)[0])]
 									),
-									factory.createIdentifier(itemInfo.canvasItemPolymorphicBag.scriptModule.split("/")[1])
+									factory.createIdentifier(itemInfo.canvasItemPolymorphicBag.scriptModule.split(/[\\/]+/gm)[1])
 								),
 								undefined,
 								itemInfo.input.map((input) => factory.createIdentifier(input))
