@@ -49,7 +49,7 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-public class VrliPackageStoreTestV2 {
+public final class VrliPackageStoreTestV2 {
 	private static final String ALERTS_DIR = "alerts";
 	private static final String CONTENT_PACKS_DIR = "content_packs";
 	private static final String CONTENT_PACK_NAMESPACE = "com.example.content.pack.v2";
