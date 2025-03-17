@@ -39,6 +39,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Removed Obsolete vrealize Archetype
+
+#### Previous Behavior
+
+The "vrealize" archetype is an obsolete archetype that was a mix between vRA 7 archetype and a vRO JS/XML project, as the release 3.0.0 the vRA 7 archetype is removed, hence the logic of this archetype is the same as the "mixed" archetype.
+
+#### New Behavior
+
+The "vrealize" is removed as the logic is covered by the "mixed" archetype.
+
 ### *Improve SSHSession class*
 
 Improve type definitions of SSHSession class functions according to the API. Add missing methods. Fix types. Fix descriptions. Fix class attributes.
