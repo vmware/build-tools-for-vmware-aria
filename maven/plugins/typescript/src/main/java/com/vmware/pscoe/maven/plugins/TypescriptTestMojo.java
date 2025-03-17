@@ -29,11 +29,23 @@ public class TypescriptTestMojo extends AbstractVroTestMojo {
 	private static final String SRC_MAP_PATH = Paths.get(SRC_ROOT_PATH, "map").toString();
 	private static final String SRC_XML_PATH = Paths.get(SRC_ROOT_PATH, "xml", "src", "main", "resources").toString();
 
+    /**
+     * Returns whether the action has tests.
+     *
+     * @return true if there are files in the test path otherwise false.
+     */
 	protected Boolean hasTests() {
 		String projectRoot = project.getBasedir().toPath().toString();
 		return super.hasTests() && new File(Paths.get(projectRoot, SRC_TEST_PATH).toString()).exists();
 	}
 
+    /**
+     * Add testbed paths to the command line.
+     * @param cmd command line arguments
+     * @param config configuration object.
+     *
+     * @return true if there are files in the test path otherwise false.
+     */
 	protected void addTestbedPaths(List<String> cmd, Configuration config) {
 		String projectRoot = project.getBasedir().toPath().toString();
 		cmd.add("--actions");
