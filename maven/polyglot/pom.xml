@@ -143,7 +143,6 @@
 							</goals>
 							<phase>compile</phase>
 							<configuration>
-								<!--                                 <executable>${basedir}/${executable.path}</executable>-->
 								<executable>npm</executable>
 								<arguments>
 									<argument>run</argument>

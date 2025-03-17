@@ -13,7 +13,7 @@
   <packaging>package</packaging>
 
   <properties>
-		<main.basedir>${project.baseUri}../../</main.basedir>
+    <main.basedir>${project.baseUri}../../</main.basedir>
   </properties>
 
   <dependencies>

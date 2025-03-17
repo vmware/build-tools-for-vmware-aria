@@ -41,8 +41,8 @@ interface FindFilesOptions {
 export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptions = {}): string[] {
     let result: string[] = [];
 
-    const maxDepth = options.maxDepth || 10;
-    const currentDepth = options.currentDepth || 0;
+    const maxDepth = options.maxDepth ?? 10;
+    const currentDepth = options.currentDepth ?? 0;
 
     if (currentDepth > maxDepth) {
         return result;
@@ -95,7 +95,7 @@ export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptio
     for (const file of files) {
         const shortFileName = file.substring(path.length + 1);
         if (checkMatch(shortFileName)) {
-            result.push(!!options.absolute ? realpathSync(file) : shortFileName);
+            result.push(options.absolute ? realpathSync(file) : shortFileName);
         }
     }
 

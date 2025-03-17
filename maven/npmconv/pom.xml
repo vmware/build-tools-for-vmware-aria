@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <properties>
-		<main.basedir>${project.baseUri}../../</main.basedir>
+        <main.basedir>${project.baseUri}../../</main.basedir>
         <npmPackageVersion>${project.version}</npmPackageVersion>
         <npmconvSrcArgs>-s src/**/*</npmconvSrcArgs>
         <npmconvAuxIncludeArgs>--auxInclude src/*.ts:src</npmconvAuxIncludeArgs>
