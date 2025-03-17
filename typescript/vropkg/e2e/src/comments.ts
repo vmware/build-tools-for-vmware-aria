@@ -41,10 +41,7 @@ describe("Unit Tests", () => {
             const result = new cleaner.CleanDefinition();
             result.removeEmptyDefinitions(`${path}/empty-js-definition`);
 
-            await fs.rmdir(`${path}/empty-js-definition/src/main/resources`);
-            await fs.rmdir(`${path}/empty-js-definition/src/main`);
-            await fs.rmdir(`${path}/empty-js-definition/src`);
-            await fs.rmdir(`${path}/empty-js-definition`);
+	        await fs.rm(`${path}/empty-js-definition/`, { recursive: true, force: true });
         } catch (error) {
             throw error;
         }

@@ -17,8 +17,8 @@ package com.vmware.pscoe.maven.plugins;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-
-import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 @Mojo(name = "run-vro-tests", defaultPhase = LifecyclePhase.TEST)
 public class TypescriptTestMojo extends AbstractVroTestMojo {
@@ -37,20 +37,22 @@ public class TypescriptTestMojo extends AbstractVroTestMojo {
 	protected void addTestbedPaths(List<String> cmd, Configuration config) {
 		String projectRoot = project.getBasedir().toPath().toString();
 		cmd.add("--actions");
-		cmd.add(Paths.get(projectRoot, SRC_JS_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_JS_PATH));
 		cmd.add("--testHelpers");
-		cmd.add(Paths.get(projectRoot, SRC_TEST_HELPERS_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_TEST_HELPERS_PATH));
 		cmd.add("--tests");
-		cmd.add(Paths.get(projectRoot, SRC_TEST_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_TEST_PATH));
 		cmd.add("--maps");
-		cmd.add(Paths.get(projectRoot, SRC_MAP_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_MAP_PATH));
 		cmd.add("--resources");
-		cmd.add(Paths.get(projectRoot, SRC_XML_PATH, "ResourceElement").toString());
+		cmd.add(toPathArgument(projectRoot, SRC_XML_PATH, "ResourceElement"));
 		cmd.add("--configurations");
-		cmd.add(Paths.get(projectRoot, SRC_XML_PATH, "ConfigurationElement").toString());
+		cmd.add(toPathArgument(projectRoot, SRC_XML_PATH, "ConfigurationElement"));
 		cmd.add("--ts-src");
 		cmd.add("src");
 		cmd.add("--ts-namespace");
 		cmd.add(TypescriptHelper.getActionsNamespaceForProject(project));
 	}
+	
+
 }

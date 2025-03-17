@@ -17,7 +17,7 @@ package com.vmware.pscoe.maven.plugins;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -65,6 +65,10 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 			runTests(config);
 		}
 	}
+
+    protected String toPathArgument(String first, String... more) {
+        return "\"" + Paths.get(first, more).normalize().toString().replaceAll("[\\\\/]+", SystemUtils.IS_OS_WINDOWS ? "\\\\" : "/")+ "\"";
+    }
 
 	/**
 	 * @return A flag indicating whether or not tests exist for the project.
