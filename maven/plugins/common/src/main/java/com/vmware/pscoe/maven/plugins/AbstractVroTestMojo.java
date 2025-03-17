@@ -66,8 +66,16 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		}
 	}
 
+    /**
+     * Converts the path argument so that it is platform independent.
+     *
+     * @param first first path argument
+     * @param MojoFailureException other path arguments.
+     *
+     * @return path argument that is platform independent.
+     */
     protected String toPathArgument(String first, String... more) {
-        return "\"" + Paths.get(first, more).normalize().toString().replaceAll("[\\\\/]+", SystemUtils.IS_OS_WINDOWS ? "\\\\" : "/")+ "\"";
+        return "\"" + Paths.get(first, more).normalize().toString().replaceAll("[\\\\/]+", SystemUtils.IS_OS_WINDOWS ? "\\\\" : "/") + "\"";
     }
 
 	/**
