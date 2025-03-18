@@ -78,7 +78,7 @@ The following methods were added to the SSHSession class:
 
 #### Previous Behavior
 
-The build on windows host failed due to path separator difference on windows an linux hosts.
+The build on windows host failed due to path separator difference on windows and linux hosts.
 
 #### New Behavior
 
