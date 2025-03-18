@@ -233,10 +233,10 @@ export function run(cmd: string, args: Array<string> = [], cwd: string = process
 		if (err || !(commandPath && commandPath.length)) {
 			return reject(new Error(`Cannot find "${cmd}"`));
 		}
-		const proc = spawn(quoteString(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
+        const proc = spawn(toPathArg(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
 		proc.on('close', exitCode => {
 			if (exitCode !== 0) {
-				const commandLine = `${quoteString(commandPath[0])} ${args.join(' ')}`;
+                const commandLine = `${toPathArg(commandPath[0])} ${args.join(' ')}`;
 				logger.error(`Error running command: ${commandLine}`);
 				return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
 			}
@@ -245,6 +245,7 @@ export function run(cmd: string, args: Array<string> = [], cwd: string = process
 	});
 }
 
-function quoteString(str: string) {
-	return /\s+/.test(str) ? `"${str}"` : str;
+function toPathArg(...args: string[]) {
+    const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+    return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
 }

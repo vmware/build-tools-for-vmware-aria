@@ -187,7 +187,7 @@ export class NpmConverter {
 		const srcFiles = (this.opts.include.sourceGlobs || []).map<{ base: string; files: string[], destDir: string | null }>(pattern => {
 			const { globPattern, destDir } = this.splitGlobMap(pattern);
 
-			let files = glob.sync(globPattern, { cwd: this.opts.source.directory, nodir: true });
+			let files = glob.sync(globPattern?.replace(/[\\/]+/gm, path.posix.sep), { cwd: this.opts.source.directory, nodir: true });
 
 			let base = path.dirname(globPattern);
 			while (base != "." && !fs.existsSync(path.resolve(this.opts.source.directory, base))) {
@@ -254,7 +254,7 @@ export class NpmConverter {
 
 		const auxFiles: { srcFiles: string[]; destDir: string }[] = auxFilesSplits.reduce((res, fileSplit) => {
 			return res.concat({
-				srcFiles: glob.sync(fileSplit.globPattern, { nodir: true }),
+				srcFiles: glob.sync(fileSplit.globPattern?.replace(/[\\/]+/gm, path.posix.sep), { nodir: true }),
 				destDir: fileSplit.destDir
 			});
 		}, []);

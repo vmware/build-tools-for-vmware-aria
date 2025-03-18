@@ -132,7 +132,7 @@ function parseInputForms(baseDirectory: string): any {
     let formNames: string[] = getWorkflowItems(path.join(baseDirectory, "data"), WORKFLOW_ITEM_INPUT_TYPE);
     let formItems: t.VroNativeFormElement[] = [];
     formNames.forEach((formName: string) => {
-        const inputFormItemPath = [baseDirectory, FORM_ITEM_TEMPLATE.replace("{{formName}}", formName)].join(path.sep);
+        const inputFormItemPath = path.join(baseDirectory, FORM_ITEM_TEMPLATE.replace("{{formName}}", formName)).replace(/[\\/]+/gm, path.posix.sep);
         if (!exist(inputFormItemPath)) {
             return;
         }
@@ -164,7 +164,7 @@ const parseFlat = async (nativePackagePath: string, destDir: string): Promise<t.
 
     let elements = await Promise.all(
         glob
-            .sync(path.join(tmp, "elements", "**", "info"))
+			.sync(path.join(tmp, "elements", "**", "info")?.replace(/[\\/]+/gm, path.posix.sep))
             .map(file => parseFlatElement(file))
     );
     let result = <t.VroPackageMetadata>{

@@ -24,6 +24,12 @@ const ROLLUP_IGNORE = [
 	"@microsoft/typescript-etw",
 ];
 
+function toPathArg(...args: string[]) {
+    const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+    return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
+}
+
+
 gulp.task("compile", done => {
 	tsc();
 	done();
@@ -32,7 +38,7 @@ gulp.task("compile", done => {
 gulp.task("test", done => {
 	tsc("tests");
 	let error = "";
-	if (0 !== exec(process.argv[0], [path.join("dist", "src", "tests", "e2e.js")])) {
+    if (0 !== exec(process.argv[0], [toPathArg("dist", "src", "tests", "e2e.js")])) {
 		error = "One or more test cases failed.";
 	}
 	done(error ? new Error(error): null);
@@ -99,15 +105,16 @@ function tsc(projectName?: string): void {
 	const tscCommand = path.join("node_modules", ".bin", "tsc");
 	let tscArgs: string[] = [];
 	if (projectName) {
-		tscArgs = ["--build", path.join("src", projectName)];
+        tscArgs = ["--build", toPathArg("src", projectName)];
 	}
 	exec(tscCommand, tscArgs, undefined, true);
 }
 
-function exec(command: string, args: string[] = [], cwd?: string, checkExitCode?: boolean): number | null{
+function exec(command: string, args: string[] = [], cwd?: string, checkExitCode?: boolean): number | null {
+    command = toPathArg(command);
 	const commandLine = `${command} ${args.join(" ")}`;
 	log(`Executing '${ansiColors.cyan(commandLine)}'...`);
-	const result = childProcess.spawnSync(`"${command}"`, args, {
+	const result = childProcess.spawnSync(command, args, {
 		shell: true,
 		stdio: "inherit",
 		cwd: cwd || __dirname,

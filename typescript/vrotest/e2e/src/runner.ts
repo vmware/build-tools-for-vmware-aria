@@ -9,6 +9,11 @@ const outPath = path.resolve(__dirname, "..", "out");
 const outProjectPath = path.join(outPath, "project");
 const outTestPath = path.join(outPath, "vro-test");
 
+function toPathArg(...args: string[]) {
+    const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+    return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
+}
+
 (async () => {
     await prepare();
     await runTests();
@@ -58,46 +63,32 @@ async function runTests(options = {}) {
 async function build({ testFrameworkPackage, testFrameworkVersion, runner, jasmineReportersVerion, ansiColorsVersion }: any): Promise<void> {
     // TODO: Add introduced properties for Jest support
     const params = [
-        cliPath,
+        toPathArg(cliPath),
         "build",
-        "--projectRoot",
-        outProjectPath,
-        "--actions",
-        "src",
-        "--tests",
-        "test",
-        "--resources",
-        "resources",
-        "--configurations",
-        "configurations",
-        "--dependencies",
-        "dependencies",
-        "--helpers",
-        "helpers",
-        "--output",
-        outTestPath,
-        "--coverage-reports",
-        "text,lcov",
+        "--projectRoot", toPathArg(outProjectPath),
+        "--actions", "src",
+        "--tests", "test",
+        "--resources", "resources",
+        "--configurations", "configurations",
+        "--dependencies", "dependencies",
+        "--helpers", "helpers",
+        "--output", toPathArg(outTestPath),
+        "--coverage-reports", "text,lcov",
     ];
     if (testFrameworkPackage) {
-        params.push("--testFrameworkPackage");
-        params.push(testFrameworkPackage);
+        params.push("--testFrameworkPackage", testFrameworkPackage);
     }
     if (testFrameworkVersion) {
-        params.push("--testFrameworkVersion");
-        params.push(testFrameworkVersion);
+        params.push("--testFrameworkVersion", testFrameworkVersion);
     }
     if (runner) {
-        params.push("--runner");
-        params.push(runner);
+        params.push("--runner", runner);
     }
     if (jasmineReportersVerion) {
-        params.push("--jasmineReportersVerion");
-        params.push(jasmineReportersVerion);
+        params.push("--jasmineReportersVerion", jasmineReportersVerion);
     }
     if (ansiColorsVersion) {
-        params.push("--ansiColorsVersion");
-        params.push(ansiColorsVersion);
+        params.push("--ansiColorsVersion", ansiColorsVersion);
     }
     await executeScript(outProjectPath, params);
 }
