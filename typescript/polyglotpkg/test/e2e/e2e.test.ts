@@ -20,10 +20,6 @@ describe('E2E Tests', () => {
     .map(runtime => runtime.replace(/[:\-.]/g, "_"))
     .filter(runtime => existsSync(path.join('test', 'e2e', runtime)))
     .forEach(runtime => {
-		// skip unit test if the platform is windows and the action is abx_all
-		if (platform() === "win32" && runtime === 'abx_all')
-			return;
-		
         describe(`Packaging ${runtime}`, () => {
             const processCwd = process.cwd();
 

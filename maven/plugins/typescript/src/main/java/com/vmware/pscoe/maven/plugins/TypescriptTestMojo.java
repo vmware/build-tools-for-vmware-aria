@@ -53,6 +53,4 @@ public class TypescriptTestMojo extends AbstractVroTestMojo {
 		cmd.add("--ts-namespace");
 		cmd.add(TypescriptHelper.getActionsNamespaceForProject(project));
 	}
-	
-
 }
