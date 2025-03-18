@@ -52,7 +52,7 @@
     "fs-extra": "9.0.0",
     "happypack": "5.0.0",
     "node-sass": "4.14.1",
-    "postcss": "7.0.5",
+    "postcss": "8.4.31",
     "postcss-loader": "3.0.0",
     "postcss-url": "8.0.0",
     "raw-loader": "0.5.1",
