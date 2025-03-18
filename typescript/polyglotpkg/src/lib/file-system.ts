@@ -13,7 +13,8 @@
  * #L%
  */
 import { readdirSync, realpathSync, statSync } from "fs";
-import { join } from "path";
+import * as Path from "path";
+const join = (...args: string[]) => Path.join(...args).replace(/[\\/]+/gm,"/");
 
 interface FindFilesOptions {
     exclude?: RegExp[] | string[];
@@ -67,6 +68,7 @@ export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptio
         if (pattern instanceof RegExp) {
             regex = pattern;
         } else {
+            pattern = pattern.replace(/[\\/]+/gm, "/");
             const single = "{single}";
             const singleRegex = "[a-z0-9\-\_\.]*";
             const double = "{double}";
