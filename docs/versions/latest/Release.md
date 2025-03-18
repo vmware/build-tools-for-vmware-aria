@@ -70,6 +70,18 @@ The following methods were added to the SSHSession class:
 - `setKeepAliveCountMax`
 - `getKeepAliveCountMax`
 
+### *Fix Formatting in the Generated Javascript Code*
+
+Apply formatting rules to the generated javascript code from the transpiler, based on the configuration of the prettier plugin.
+
+#### Previous Behavior
+
+The formatting in the generated javascript code was incorrect.
+
+#### New Behavior
+
+The formatting in the generated script is now correct and based on the prettier plugin configuration file (*.prettierrc*).
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
