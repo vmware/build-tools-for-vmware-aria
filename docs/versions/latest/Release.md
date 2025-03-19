@@ -85,3 +85,13 @@ The formatting in the generated script is now correct and based on the prettier 
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
+
+### *Fix Build on Windows
+
+#### Previous Behavior
+
+The build on windows host failed due to path separator difference on windows and linux hosts.
+
+#### New Behavior
+
+The build on windows is fixed and passes. The license plugin path is corrected as well as methods that are platform dependent.

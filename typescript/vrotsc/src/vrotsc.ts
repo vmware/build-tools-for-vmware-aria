@@ -74,15 +74,14 @@ export function execute() {
 		printUsage();
 		return;
 	}
-
 	const rootDir = commandLine._.length ? system.resolvePath(commandLine._[0]) : system.getCurrentDirectory();
 	const outDir = commandLine.output || "";
 	const programOptions: ProgramOptions = {
 		rootDir: rootDir,
 		emitHeader: commandLine.emitHeader,
-		project: commandLine.project,
-		actionsNamespace: commandLine.actionsNamespace,
-		workflowsNamespace: commandLine.workflowsNamespace,
+        project: cleanQuotedArg(commandLine.project),
+        actionsNamespace: cleanQuotedArg(commandLine.actionsNamespace),
+        workflowsNamespace: cleanQuotedArg(commandLine.workflowsNamespace),
 		files: commandLine.files ? commandLine.files.split(",") : null,
 		outputs: {
 			actions: commandLine.actionsOut || system.joinPath(outDir, "actions"),
@@ -152,7 +151,7 @@ function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
 	diagnostics.forEach(d => {
 		const sb = new StringBuilderClass();
 		if (d.file) {
-			sb.append(ansiColors.cyan(d.file.split("/").join(path.sep)));
+            sb.append(ansiColors.cyan(d.file.split(/[\\/]+/gm).join(path.sep)));
 			sb.append(":");
 			sb.append(ansiColors.yellow("" + (d.line || 1)));
 			sb.append(":");
@@ -178,4 +177,9 @@ function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
 		sb.append(` ${d.messageText}`);
 		console.log(sb.toString());
 	});
+}
+
+function cleanQuotedArg(arg: string): string {
+    return arg?.length >=2 && ((arg.startsWith('"') && arg.endsWith('"')) || (arg.startsWith("'") && arg.endsWith("'")))
+        ? arg.substring(1, arg.length-1) : arg;
 }
