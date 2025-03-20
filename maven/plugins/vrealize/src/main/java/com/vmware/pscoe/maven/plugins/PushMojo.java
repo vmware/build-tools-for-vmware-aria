@@ -14,6 +14,7 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,6 +59,28 @@ public class PushMojo extends AbstractIacMojo {
 				new MavenArtifactPackageInfoProvider(artifact).getPackageName());
 	}
 
+	private void deleteObsoleteVersions(Artifact a) throws MojoExecutionException {
+		PackageType pkgType = PackageType.fromExtension(a.getType());
+		String artifactFile = String.format("%s.%s-%s.package", a.getGroupId(), a.getArtifactId(), a.getVersion());
+		if (pkgType != null) {
+			getLog().info("Package: " + artifactFile);
+			getLog().info("Package type: " + pkgType);
+			com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(pkgType, new File(artifactFile));
+			try {
+				PackageStore store = getConfigurationForType(PackageType.fromExtension(a.getType()))
+					.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
+					.orElseThrow(() -> new ConfigurationException("Unable to find PackageStore based on configuration. "
+						+ "Make sure there is configuration for type: " + pkgType.name()));
+				store.deletePackage(pkg, false, true, dryrun);
+			} catch (UnsupportedOperationException e) { // This also catches NotImplementedException since it's a child
+				getLog().warn(String.format("Tried to clean up obsolete packages of type %s, but that type does not support deletion", pkgType), e);
+			} catch (ConfigurationException e) {
+				getLog().error(e);
+				throw new MojoExecutionException(e, "Error processing configuration", "Error processing configuration");
+			}
+		}
+	}
+
 	private void importArtifacts(Collection<Artifact> allArtifacts) throws MojoExecutionException {
 		Map<String, List<Artifact>> artifactsByType = allArtifacts.stream()
 				.collect(Collectors.groupingBy(Artifact::getType));
@@ -72,10 +95,8 @@ public class PushMojo extends AbstractIacMojo {
 						.collect(Collectors.toList());
 				PackageStore<?> store = getConfigurationForType(PackageType.fromExtension(type.getKey()))
 						.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
-						.orElseThrow(() -> new ConfigurationException(
-								"Unable to find PackageStore based on configuration. Make sure there is configuration for type: "
-										+ pkgType.name()));
-
+						.orElseThrow(() -> new ConfigurationException("Unable to find PackageStore based on configuration. "
+							+ "Make sure there is configuration for type: " + pkgType.name()));
 				boolean mergePackages = filesChanged.size() != 0; // it means that only a few files was selected to
 																	// create the package
 				this.getLog().info("Merge Package vrealize PushMojo: " + mergePackages);
@@ -113,6 +134,7 @@ public class PushMojo extends AbstractIacMojo {
 		artifacts.addLast(project.getArtifact());
 		try {
 			importArtifacts(artifacts);
+			deleteObsoleteVersions(project.getArtifact());
 		} catch (ConfigurationException e) {
 			throw new MojoExecutionException("Failed to import artifacts", e);
 		}
