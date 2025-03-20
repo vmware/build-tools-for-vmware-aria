@@ -18,6 +18,7 @@
         "preserveConstEnums": true,
         "newLine": "lf",
         "outDir": "dist",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "module": "commonjs"
     }
 }
