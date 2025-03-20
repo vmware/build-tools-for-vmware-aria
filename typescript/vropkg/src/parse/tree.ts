@@ -88,7 +88,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
     let form: t.VroNativeFormElement | undefined;
     // extract base dir for forms
     const formFileDir = elementInputFormPath.replace(".element_info.xml", "").replace(workflowName, "");
-    const formFileName = [formFileDir, `${workflowName}${FORM_SUFFIX}`].join(path.sep);
+    const formFileName = path.join(formFileDir, `${workflowName}${FORM_SUFFIX}`).replace(/[\\/]+/gm, path.posix.sep)
     // Input form is only applicable for vRO workflows
     if (exist(formFileName)) {
         winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form '${workflowName}' from file ${formFileName}`);
@@ -97,11 +97,11 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
             name: workflowName
         };
     }
-    let formNames: string[] = getWorkflowItems([formFileDir, `${workflowName}.xml`].join(path.sep), WORKFLOW_ITEM_INPUT_TYPE);
+    let formNames: string[] = getWorkflowItems(path.join(formFileDir, `${workflowName}.xml`).replace(/[\\/]+/gm ,path.posix.sep), WORKFLOW_ITEM_INPUT_TYPE);
     let formItems: t.VroNativeFormElement[] = [];
     formNames.forEach((item: string) => {
         const formItemFile = VRO_CUSTOM_FORMS_FILENAME_TEMPLATE.replace("{{elementName}}", workflowName).replace("{{formName}}", item);
-        const formItemFileName = [formFileDir, formItemFile].join(path.sep);
+        const formItemFileName = path.join(formFileDir, formItemFile).replace(/[\\/]+/gm, path.posix.sep);
         if (!exist(formItemFileName)) {
             return;
         }
@@ -121,7 +121,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
 
 async function parseTree(nativeFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, description: string): Promise<t.VroPackageMetadata> {
     let elements = glob
-        .sync(path.join(nativeFolderPath, "**", "*.element_info.xml"))
+		.sync(path.join(nativeFolderPath, "**", "*.element_info.xml").replace(/[\\/]+/gm, path.posix.sep))
         .map(file => parseTreeElement(file)
         );
 

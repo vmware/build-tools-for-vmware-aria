@@ -1,9 +1,9 @@
 import path from 'path';
 import { run } from "../../src/lib/utils";
 import { existsSync } from 'fs';
+import { platform } from "os";
 
 describe('E2E Tests', () => {
-
     [
         'abxpython',
         'abx_all',
@@ -20,7 +20,6 @@ describe('E2E Tests', () => {
     .map(runtime => runtime.replace(/[:\-.]/g, "_"))
     .filter(runtime => existsSync(path.join('test', 'e2e', runtime)))
     .forEach(runtime => {
-
         describe(`Packaging ${runtime}`, () => {
             const processCwd = process.cwd();
 
@@ -36,7 +35,5 @@ describe('E2E Tests', () => {
                 await run('../../../bin/polyglotpkg', ['-e', environment]);
             })
         })
-
     })
-
 })

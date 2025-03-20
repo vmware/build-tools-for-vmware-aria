@@ -231,7 +231,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		}
 
 		// Storing blueprint details
-		String detailsFileName = bpFolderPath + "/" + BP_DETAILS_FILE_NAME;
+		String detailsFileName = bpFolderPath + File.separator + BP_DETAILS_FILE_NAME;
 		JsonObject bpDetails = new JsonObject();
 		bpDetails.add("id", new JsonPrimitive(blueprint.getId()));
 		bpDetails.add("name", new JsonPrimitive(bpName));
@@ -248,7 +248,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		}
 
 		// Storing blueprint content
-		String contentFileName = bpFolderPath + "/" + BP_CONTENT_FILE_NAME;
+		String contentFileName = bpFolderPath + File.separator + BP_CONTENT_FILE_NAME;
 		logger.debug("Creating content file: " + contentFileName);
 		try {
 			byte[] contentBytes = blueprint.getContent().getBytes();

@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -71,7 +71,7 @@ namespace vroapi {
     }
 
     function removeCategory(categoryPath: string) {
-        const path = categoryPath.split("/");
+        const path = categoryPath.split(/[\\/]+/gm);
         const name = path.pop();
         const parentDescriptor = path.length ? findDescriptorByPath(path.join("/")) : getRoot();
         delete parentDescriptor.children[name];
@@ -103,7 +103,7 @@ namespace vroapi {
     }
 
     function createElement(categoryPath: string, name: string): ResourceElement {
-        const categoryDescriptor = categoryPath.split("/").reduce((parent, name) => {
+        const categoryDescriptor = categoryPath.split(/[\\/]+/gm).reduce((parent, name) => {
             let child: CategoryDescriptor = parent.children[name];
             if (!child) {
                 child = {
@@ -149,7 +149,7 @@ namespace vroapi {
     }
 
     function findDescriptorByPath(categoryPath: string): CategoryDescriptor {
-        return categoryPath.split("/").reduce((parent, name) => parent ? parent.children[name] : null, getRoot());
+        return categoryPath.split(/[\\/]+/gm).reduce((parent, name) => parent ? parent.children[name] : null, getRoot());
     }
 
     function getOrCreateCategory(descriptor: CategoryDescriptor): ResourceElementCategory {

@@ -14,7 +14,7 @@
 
 	<properties>
 		<attachFileName>${project.artifactId}-${project.version}.tgz</attachFileName>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
 
 	<build>

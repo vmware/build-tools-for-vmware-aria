@@ -19,6 +19,7 @@ import * as glob from "glob";
 import { LOGGER_PREFIX } from "../constants";
 
 export class CleanDefinition {
+	readonly logger = winston.loggers.get(LOGGER_PREFIX);
     //Add here others definitions to be removed
     //Each empty definition can not contain white spaces
     private emptyDefinition = [
@@ -30,9 +31,11 @@ export class CleanDefinition {
     public removeEmptyDefinitions(vroJsFolderPath: string): void {
         const JS_EXTENSION = ".js";
 
-        winston.loggers.get(LOGGER_PREFIX).debug(`Base Path : "${vroJsFolderPath}"`);
-        let baseDir = Path.join(vroJsFolderPath, "src", "main", "resources");
-        glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)).forEach(jsFile => {
+		let globPath = Path.normalize(Path.join(vroJsFolderPath, "src", "main", "resources", "**", "*" + JS_EXTENSION))
+			.replace(/[\\/]+/gm, Path.posix.sep)
+		const files = glob.sync(globPath);
+		this.logger.debug(`Base Path : "${vroJsFolderPath}", ${JSON.stringify({ globPath, files })} `);
+		files.forEach(jsFile => {
             let content = FileSystem.readFileSync(jsFile);
             let source = content.toString();
 
@@ -40,7 +43,7 @@ export class CleanDefinition {
                 try {
                     if (FileSystem.existsSync(jsFile)) {
                         FileSystem.unlinkSync(jsFile);
-                        winston.loggers.get(LOGGER_PREFIX).info(`File deleted : "${jsFile}"`);
+						this.logger.info(`File deleted : "${jsFile}"`);
                     }
                 }
                 catch (error) {
@@ -58,7 +61,7 @@ export class CleanDefinition {
                 .replace(/(\r\n|\n|\r)/gm, "")
                 .replace(/ /g, "")
                 .trim();
-            winston.loggers.get("vrbt").debug(`File content : ${stringWithoutLineBreaks}`);
+			this.logger.debug(`File content : ${stringWithoutLineBreaks}`);
 
             //This cicle goes until the end if result is always 'false'
             //If result has a match with any empty definition this file 

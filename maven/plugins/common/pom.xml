@@ -14,14 +14,14 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>33.4.0-jre</version>
+			<version>33.4.5-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -52,5 +52,18 @@
 			<version>${revision}</version>
 		</dependency>
 	</dependencies>
+
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.11.2</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
 
 </project>

@@ -30,7 +30,7 @@
 	<properties>
 		<build.number>local</build.number>
 		<assembly.skipAssembly>true</assembly.skipAssembly>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 		<license.organizationName>VMWARE</license.organizationName>
 		<license.licenseName>_license</license.licenseName>
 		<license.encoding>UTF-8</license.encoding>

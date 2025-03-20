@@ -14,7 +14,7 @@
 	<artifactId>o11n-project</artifactId>
 
 	<properties>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
 
 	<build>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>33.4.0-jre</version>
+			<version>33.4.5-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

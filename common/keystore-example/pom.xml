@@ -11,7 +11,7 @@
 	</parent>
 
 	<properties>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
 
 	<groupId>com.vmware.pscoe.build</groupId>
