@@ -44,7 +44,6 @@ public class TypescriptTestMojo extends AbstractVroTestMojo {
      * @param cmd command line arguments
      * @param config configuration object.
      *
-     * @return true if there are files in the test path otherwise false.
      */
 	protected void addTestbedPaths(List<String> cmd, Configuration config) {
 		String projectRoot = project.getBasedir().toPath().toString();

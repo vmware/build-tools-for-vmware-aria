@@ -69,8 +69,8 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
     /**
      * Converts the path argument so that it is platform independent.
      *
-     * @param first first path argument
-     * @param MojoFailureException other path arguments.
+     * @param first first path argument.
+     * @param more next path argument.
      *
      * @return path argument that is platform independent.
      */
