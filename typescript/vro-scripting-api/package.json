@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/vro-scripting-api",
-  "version": "4.2.2-SNAPSHOT",
+  "version": "4.3.0",
   "author": "VMware PSCoE",
   "license": "VMware Confidential",
   "description": "vRO script API for NodeJS",
