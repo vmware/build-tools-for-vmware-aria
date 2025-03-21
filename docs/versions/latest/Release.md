@@ -39,7 +39,7 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### Removed Obsolete vrealize Archetype
+### *Remove obsolete `vrealize` archetype*
 
 #### Previous Behavior
 
@@ -48,6 +48,16 @@ The "vrealize" archetype is an obsolete archetype that was a mix between vRA 7 a
 #### New Behavior
 
 The "vrealize" is removed as the logic is covered by the "mixed" archetype.
+
+### *Remove obsolete `vcd-ng-angular8` archetype*
+
+#### Previous Behavior
+
+The "vcd-ng-angular8" archetype is no longer supported since Node JS (a direct dependency of Angular) was upgraded in Build Tools for Aria releases 3.x.x and 4.x.x. This makes the archetype unusable with newer versions and is described in the suggested upgrade path for 4.0.0.
+
+#### New Behavior
+
+The "vcd-ng-angular8" leftover is removed.
 
 ### *Improve SSHSession class*
 
