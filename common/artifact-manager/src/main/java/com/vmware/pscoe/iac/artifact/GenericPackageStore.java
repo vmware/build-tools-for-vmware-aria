@@ -128,9 +128,10 @@ public abstract class GenericPackageStore<T extends PackageDescriptor> implement
 		}
 
 		if (oldVersions) {
+			boolean keepContent = !lastVersion && latest.compareTo(vroPackage) == 0;
 			for (Package p : all) {
-				logger.info("Removing package version '{}' with its content.", p.getFQName());
-				deleted.add(this.deletePackage(p, true, dryrun));
+				logger.info("Removing package version '{}'. Keep content: '{}'", p.getFQName(), keepContent);
+				deleted.add(this.deletePackage(p, !keepContent, dryrun));
 			}
 			all.clear();
 		}

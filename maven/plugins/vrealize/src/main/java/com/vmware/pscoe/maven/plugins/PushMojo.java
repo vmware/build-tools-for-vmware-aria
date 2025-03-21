@@ -59,9 +59,9 @@ public class PushMojo extends AbstractIacMojo {
 				new MavenArtifactPackageInfoProvider(artifact).getPackageName());
 	}
 
-	private void deleteObsoleteVersions(Artifact a) throws MojoExecutionException {
+	private void cleanUpOldPackageVersions(Artifact a) throws MojoExecutionException {
 		PackageType pkgType = PackageType.fromExtension(a.getType());
-		String artifactFile = String.format("%s.%s-%s.package", a.getGroupId(), a.getArtifactId(), a.getVersion());
+		String artifactFile = String.format("%s.%s-%s.package", a.getGroupId(), a.getArtifactId(), a.getBaseVersion());
 		if (pkgType != null) {
 			getLog().info("Package: " + artifactFile);
 			getLog().info("Package type: " + pkgType);
@@ -134,7 +134,9 @@ public class PushMojo extends AbstractIacMojo {
 		artifacts.addLast(project.getArtifact());
 		try {
 			importArtifacts(artifacts);
-			deleteObsoleteVersions(project.getArtifact());
+			for (Artifact artifact : artifacts) {
+				cleanUpOldPackageVersions(artifact);
+			}
 		} catch (ConfigurationException e) {
 			throw new MojoExecutionException("Failed to import artifacts", e);
 		}
