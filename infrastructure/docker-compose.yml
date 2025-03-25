@@ -12,8 +12,7 @@ services:
     volumes:
       - "./nginx:/etc/nginx/"
   nexus:
-    image: sonatype/nexus3 # Linux
-    #image: klo2k/nexus3 # Mac
+    image: sonatype/nexus3
     container_name: nexus
     hostname: "nexus.corp.local"
     environment:
@@ -35,7 +34,6 @@ services:
         hard: 40000
   gitlab:
     image: gitlab/gitlab-ce # Linux
-    #image: yrzr/gitlab-ce-arm64v8 # Mac
     container_name: gitlab-ce
     restart: always
     environment:
@@ -56,6 +54,9 @@ services:
       - "gitlab-log:/var/gitlab/log"
   gitlab-runner:
     image: gitlab-runner # Custom image build from the gitlab-runner directory
+    build:
+      context: gitlab-runner
+      dockerfile: ./gitlab-runner/Dockerfile
     container_name: gitlab-runner
     restart: always
     hostname: "gitlab-runner.corp.local"
