@@ -60,6 +60,18 @@ The following methods were added to the SSHSession class:
 - `setKeepAliveCountMax`
 - `getKeepAliveCountMax`
 
+### *Transform module paths for jest mocks*
+
+Some module mocking functions of jest get module path parameter, that should be transformed to match vro-test actual file locations
+
+#### Previous Behavior
+
+The path is not transformed and functions fail to find the referenced file
+
+#### New Behavior
+
+During transpilation the paths to be transformed to the actual vro-test file location
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
