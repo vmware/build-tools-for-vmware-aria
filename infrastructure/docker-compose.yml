@@ -54,7 +54,7 @@ services:
       - "gitlab-log:/var/gitlab/log"
   gitlab-runner:
     build:
-      context: gitlab-runner
+      context: .
       dockerfile: ./gitlab-runner/Dockerfile
     container_name: gitlab-runner
     restart: always
