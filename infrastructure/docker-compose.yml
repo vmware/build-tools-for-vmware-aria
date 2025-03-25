@@ -53,7 +53,6 @@ services:
       - "gitlab-data:/var/gitlab/data"
       - "gitlab-log:/var/gitlab/log"
   gitlab-runner:
-    image: gitlab-runner # Custom image build from the gitlab-runner directory
     build:
       context: gitlab-runner
       dockerfile: ./gitlab-runner/Dockerfile
