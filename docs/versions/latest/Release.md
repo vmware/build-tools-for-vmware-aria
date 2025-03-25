@@ -43,7 +43,7 @@
 
 #### Previous Behavior
 
-During deploying a package via the package installer, the logs were missing, hence making hard to trace errors during deploymeng.
+During package deployment via package installer, the logs were missing, hence making it hard to trace errors.
 
 #### New Behavior
 
