@@ -51,7 +51,13 @@ checkoutBTVA() {
 
 installDocker() {
 	pushd /tmp
-		curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+		if command_exists docker; then
+			print_color "$YELLOW" "Docker is already installed, skipping"
+			return
+		else
+			print_color "$GREEN" "Docker is not installed, installing"
+			curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+		fi
 	popd
 }
 
