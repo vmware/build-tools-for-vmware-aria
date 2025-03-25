@@ -10,9 +10,12 @@ RUN wget https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/ap
     && ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn \
     && rm -rf /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz
 
-# Install Node.js (npm is included in the package)
-RUN curl -fsSL https://fnm.vercel.app/install | bash
-RUN fnm install 22
+# Install fnm and Node.js in a single step
+RUN curl -fsSL https://fnm.vercel.app/install | bash \
+    && export PATH="$HOME/.local/share/fnm:$PATH" \
+    && eval "$(bash -c 'fnm env')" \
+    && fnm install 22 \
+    && fnm use 22
 
 # Clean up the package lists to reduce image size
 RUN rm -rf /var/lib/apt/lists/* 
