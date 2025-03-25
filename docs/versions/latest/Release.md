@@ -39,6 +39,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Fixed Missing Logs During Installer Run
+
+#### Previous Behavior
+
+During deploying a package via the package installer, the logs were missing, hence making hard to trace errors during deploymeng.
+
+#### New Behavior
+
+Log messages are now appearing during package deployment via the installer. Additional logging configuration file called *logback.xml* was added to the *etc* directory in the installer that configures the logging severity.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
