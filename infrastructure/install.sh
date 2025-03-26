@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 # Depends on `git`, `curl`
+# This will checkout BTVA locally in `/opt`
 
 ######################### Utils
 
@@ -32,15 +33,17 @@ if [ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
-checkoutBTVA() {
-	BTVA_NAME=build-tools-for-vmware-aria
-	BTVA_DIR=/tmp/$BTVA_NAME
+TMP_DIR=/tmp
+BTVA_CHECKOUT_DIR=/opt
+BTVA_NAME=build-tools-for-vmware-aria
+BTVA_DIR=$BTVA_CHECKOUT_DIR/$BTVA_NAME
 
+checkoutBTVA() {
 	if [ -d $BTVA_DIR ]; then
 			print_color "$YELLOW" "$BTVA_DIR exists, skipping"
 	else 
 			print_color "$GREEN" "$BTVA_DIR does not exist, checking the repository out"
-			pushd /tmp
+			pushd $BTVA_CHECKOUT_DIR
 				git clone https://github.com/vmware/build-tools-for-vmware-aria.git || exit 1
 
 				# @TODO: This is temporary, remove it later
@@ -50,7 +53,7 @@ checkoutBTVA() {
 }
 
 installDocker() {
-	pushd /tmp
+	pushd $TMP_DIR
 		if command_exists docker; then
 			print_color "$YELLOW" "Docker is already installed, skipping"
 			return
@@ -62,13 +65,12 @@ installDocker() {
 }
 
 createInfra() {
-	pushd /tmp/build-tools-for-vmware-aria/infrastructure
+	pushd $BTVA_DIR
 		docker compose up -d
 	popd
 }
 
 ######################## Funcs
-
 
 checkoutBTVA
 installDocker
