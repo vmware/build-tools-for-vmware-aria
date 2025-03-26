@@ -66,7 +66,7 @@ installDocker() {
 
 createInfra() {
 	pushd $BTVA_INFRASTRUCTURE_DIR
-		docker compose up -d
+		docker compose up -d || exit 1
 	popd
 }
 
