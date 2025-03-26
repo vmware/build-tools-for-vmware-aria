@@ -36,7 +36,9 @@ fi
 TMP_DIR=/tmp
 BTVA_CHECKOUT_DIR=/opt
 BTVA_NAME=build-tools-for-vmware-aria
+INFRASTRUCTURE_DIR=infrastructure
 BTVA_DIR=$BTVA_CHECKOUT_DIR/$BTVA_NAME
+BTVA_INFRASTRUCTURE_DIR=$BTVA_CHECKOUT_DIR/$BTVA_NAME/$INFRASTRUCTURE_DIR
 
 checkoutBTVA() {
 	if [ -d $BTVA_DIR ]; then
@@ -63,7 +65,7 @@ installDocker() {
 }
 
 createInfra() {
-	pushd $BTVA_DIR
+	pushd $BTVA_INFRASTRUCTURE_DIR
 		docker compose up -d
 	popd
 }
