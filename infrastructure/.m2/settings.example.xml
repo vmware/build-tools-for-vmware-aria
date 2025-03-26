@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
+	xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<servers>
+		<server>
+			<id>central</id>
+			<username></username>
+			<password></password>
+		</server>
+		<server>
+			<id>snapshots</id>
+			<username></username>
+			<password></password>
+		</server>
+
+		<server>
+			<id>vro</id>
+			<username>configurationadmin@System Domain</username>
+			<password>VMware1!</password>
+		</server>
+	</servers>
+
+	<profiles>
+		<profile>
+			<id>packaging</id>
+			<activation>
+				<property>
+					<name>!legacy</name>
+				</property>
+			</activation>
+			<properties>
+				<keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
+				<keystoreArtifactId>keystore.example</keystoreArtifactId>
+				<keystoreVersion>4.2.1</keystoreVersion>
+				<keystoreLocation>target/${keystoreArtifactId}-${keystoreVersion}/archetype.keystore</keystoreLocation>
+				<vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
+				<vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
+				<keystorePassword>password123</keystorePassword>
+				<vroKeyPass>VMware1!</vroKeyPass>
+
+				<packGroupId>com.vmware.pscoe.iac</packGroupId>
+				<packArtifactId>installer</packArtifactId>
+				<packVersion>1.0.0</packVersion>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>legacy-package-installer</id>
+			<activation>
+				<property>
+					<name>legacy</name>
+				</property>
+			</activation>
+			<properties>
+				<packGroupId>com.vmware.pscoe</packGroupId>
+				<packArtifactId>packageinstaller</packArtifactId>
+				<packVersion>1.1.9</packVersion>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>artifactory</id>
+
+			<properties>
+				<releaseRepositoryUrl>
+					VIRTUAL</releaseRepositoryUrl>
+				<snapshotRepositoryUrl>
+					VIRTUAL</snapshotRepositoryUrl>
+			</properties>
+
+			<repositories>
+				<repository>
+					<id>central</id>
+					<url>VIRTUAL</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>snapshots</id>
+					<url>VIRTUAL</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>central</id>
+					<url>VIRTUAL</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+
+		<profile>
+			<id>dev</id>
+			<properties>
+				<vro.host>vra-l-01a.corp.local</vro.host>
+				<vro.auth>vra</vro.auth>
+				<vro.authHost>vra-l-01a.corp.local</vro.authHost>
+				<vro.port>443</vro.port>
+				<vro.username>configurationadmin</vro.username>
+				<vro.password>VMware1!</vro.password>
+				<vrang.host>vra-l-01a.corp.local</vrang.host>
+				<vrang.auth.host>vra-l-01a.corp.local</vrang.auth.host>
+				<vrang.username>configurationadmin</vrang.username>
+				<vrang.password>VMware1!</vrang.password>
+				<vrang.port>443</vrang.port>
+				<vrang.project.name>dev</vrang.project.name>
+				<vrang.org.name>vidm-l-01a</vrang.org.name>
+				<!-- <vrang.import.timeout>600000</vrang.import.timeout> -->
+
+				<vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
+				<vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
+				<http.connection.timeout>10000000</http.connection.timeout>
+
+				<vrops.host>vrops-l-02a</vrops.host>
+				<vrops.port>443</vrops.port>
+				<vrops.username>root</vrops.username>
+				<vrops.password>VMware1!</vrops.password>
+				<vrops.restUser>admin</vrops.restUser>
+				<vrops.restPassword>VMware1!</vrops.restPassword>
+				<vrops.dashboardUser>admin</vrops.dashboardUser>
+				<vrops.sshPort>22</vrops.sshPort>
+
+				<!--vRLI -->
+				<vrli.host>vrli-l-01a.corp.local</vrli.host>
+				<vrli.port>443</vrli.port>
+				<vrli.username>admin</vrli.username>
+				<vrli.password>VMware1!</vrli.password>
+				<vrli.provider>Local</vrli.provider>
+				<vrli.vropsHost>vrops-l-01a.corp.local</vrli.vropsHost>
+				<vrli.vropsPort>443</vrli.vropsPort>
+				<vrli.vropsUser>admin</vrli.vropsUser>
+				<vrli.vropsPassword>VMware1!</vrli.vropsPassword>
+				<vrli.vropsAuthSource>local</vrli.vropsAuthSource>
+
+				<ssh.host></ssh.host>
+				<ssh.port>22</ssh.port>
+				<ssh.username>root</ssh.username>
+				<ssh.password>VMware1!</ssh.password>
+				<ssh.directory>/test</ssh.directory>
+			</properties>
+		</profile>
+
+	</profiles>
+	<activeProfiles>
+		<activeProfile>artifactory</activeProfile>
+	</activeProfiles>
+</settings>
