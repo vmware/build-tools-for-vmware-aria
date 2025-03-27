@@ -39,6 +39,18 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Content Sharing Policies Import*
+
+CSPs could not be imported due to a forgotten fetch before creation.
+
+#### Previous Behavior
+
+When importing we were getting an error that id is expected of type UUID.String but was null
+
+#### New Behavior
+
+CSPs are no longer fetched prior to updating to set their ID.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
