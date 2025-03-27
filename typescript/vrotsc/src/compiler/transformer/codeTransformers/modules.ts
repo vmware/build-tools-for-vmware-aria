@@ -452,10 +452,10 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		if (isJestMethodCallWithModuleName(node)) {
 			const moduleSpecifier = (node.arguments[0] as ts.StringLiteral).text;
 			const moduleName = system.normalizePath(system.joinPath(context.file.relativeDirPath, moduleSpecifier));
-			const actionNamespaceDirs = context.actionsNamespace?context.actionsNamespace.split('.'):[];
-			const relativeDirPathDirs = context.file.relativeDirPath?context.file.relativeDirPath.split('/'):[];
-			const subfolderLevels = 1+actionNamespaceDirs.length+relativeDirPathDirs.length;
-			const newPath = "../".repeat(subfolderLevels)+'src/'+actionNamespaceDirs.join('/')+'/'+moduleName;
+			const actionNamespaceDirs = context.actionsNamespace ? context.actionsNamespace.split('.') : [];
+			const relativeDirPathDirs = context.file.relativeDirPath ? context.file.relativeDirPath.split('/') : [];
+			const subfolderLevels = 1 + actionNamespaceDirs.length + relativeDirPathDirs.length;
+			const newPath = "../".repeat(subfolderLevels) + 'src/' + actionNamespaceDirs.join('/') + '/' + moduleName;
 
 			const newArguments: ts.Expression[] = [ts.factory.createStringLiteral(newPath)];
 			for (let i=1; i<node.arguments.length; i++) {
