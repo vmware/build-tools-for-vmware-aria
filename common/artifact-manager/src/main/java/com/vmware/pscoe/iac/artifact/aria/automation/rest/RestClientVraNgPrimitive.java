@@ -2419,12 +2419,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
-		VraNgContentSharingPolicy existingPolicy = this.getContentSharingPolicyPrimitive(csPolicy.getId());
-		// if the policy does not exist remove its id in order to be created, otherwise
-		// update it
-		if (existingPolicy == null) {
-			csPolicy.setId(null);
-		}
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
