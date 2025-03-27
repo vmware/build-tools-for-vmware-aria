@@ -2,6 +2,7 @@
 
 # Depends on `git`, `curl`
 # This will checkout BTVA locally in `/opt`
+# If you want to authenticate to docker, to raise your pull limits, pass exactly 2 arguments, first being the username, second the PAT
 
 ######################### Utils
 
@@ -64,6 +65,15 @@ installDocker() {
 	popd
 }
 
+dockerLogin() {
+	if [ $# -eq 2 ]; then
+		print_color "$GREEN" "Docker login"
+		docker login -u $1 -p $2
+	else
+		print_color "$RED" "Did not pass exactly 2 arguments, will not do docker login"
+	fi
+}
+
 createInfra() {
 	pushd $BTVA_INFRASTRUCTURE_DIR
 		docker compose up -d --wait
@@ -74,5 +84,6 @@ createInfra() {
 
 checkoutBTVA
 installDocker
+dockerLogin $1 $2
 createInfra
 
