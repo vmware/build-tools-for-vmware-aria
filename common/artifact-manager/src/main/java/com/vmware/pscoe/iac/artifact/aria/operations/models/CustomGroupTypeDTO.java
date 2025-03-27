@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"name", "key"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CustomGroupTypeDTO {
+public final class CustomGroupTypeDTO {
 
     @JsonProperty("name")
     private String name;

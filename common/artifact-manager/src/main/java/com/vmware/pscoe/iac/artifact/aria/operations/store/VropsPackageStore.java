@@ -1436,7 +1436,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
             customGroup.setPolicy(foundPolicy.get().getName());
             return;
         }
-        String msg = String.format("Unable to export custom group '%s' as its policy '%s' cannot be found on the target system.", customGroup.getResourceKey().getName() , customGroup.getPolicy());
+        String msg = String.format("Unable to export custom group '%s' as its policy '%s' cannot be found on the target system.", customGroup.getResourceKey().getName(), customGroup.getPolicy());
 
         throw new RuntimeException(msg);
 	}
