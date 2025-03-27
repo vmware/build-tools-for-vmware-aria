@@ -108,6 +108,45 @@ export function isRequireCall(callExpression: ts.Node): boolean {
 	return true;
 }
 
+/**
+* Verify if a jest method that requires module name is being called,
+*   e.g. jest.methodName("path/name"[, args])
+*/
+export function isJestMethodCallWithModuleName(callExpression: ts.CallExpression): boolean {
+	if (callExpression.kind !== ts.SyntaxKind.CallExpression) {
+		return false;
+	}
+	if (callExpression.expression.kind !== ts.SyntaxKind.PropertyAccessExpression) {
+		return false;
+	}
+	if (callExpression.arguments.length === 0 || callExpression.arguments[0].kind !== ts.SyntaxKind.StringLiteral) {
+		return false;
+	}
+
+	const methodExpression = callExpression.expression as ts.PropertyAccessExpression;
+	if (methodExpression.expression.kind !== ts.SyntaxKind.Identifier || methodExpression.name.kind !== ts.SyntaxKind.Identifier) {
+		return false;
+	}
+	if ((methodExpression.expression as ts.Identifier).escapedText !== "jest") {
+		return false;
+	}
+
+	const methodName = (methodExpression.name as ts.Identifier).escapedText;
+	switch(methodName) {
+		case "createMockFromModule":
+		case "mock":
+		case "unmock":
+		case "deepUnmock":
+		case "doMock":
+		case "dontmock":
+		case "setMock":
+		case "requireActual":
+		case "requireMock":
+			return true;
+	}
+	return false;
+}
+
 export function getPropertyName(node: ts.PropertyName): string {
 	switch (node.kind) {
 		case ts.SyntaxKind.Identifier:

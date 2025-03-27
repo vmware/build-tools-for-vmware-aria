@@ -51,6 +51,19 @@ When importing we were getting an error that id is expected of type UUID.String 
 
 CSPs are no longer fetched prior to updating to set their ID.
 
+### *Transform module paths for jest mocks*
+
+Some module mocking functions of jest get module path parameter, that should be transformed to match vro-test actual file locations
+
+#### Previous Behavior
+
+The path is not transformed and functions fail to find the referenced file
+
+#### New Behavior
+
+During transpilation the paths to be transformed to the actual vro-test file location
+*Note*: Path transformation is only supported for paths provided as string literals.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
