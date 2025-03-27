@@ -143,7 +143,6 @@
 							</goals>
 							<phase>compile</phase>
 							<configuration>
-								<!--                                 <executable>${basedir}/${executable.path}</executable>-->
 								<executable>npm</executable>
 								<arguments>
 									<argument>run</argument>
@@ -298,7 +297,7 @@
 	</build>
 
 	<properties>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 		<sonar.sources>src</sonar.sources>
 		<sonar.language>ts</sonar.language>
 		<sonar.javascript.lcov.reportPaths>./target/lcov.info</sonar.javascript.lcov.reportPaths>

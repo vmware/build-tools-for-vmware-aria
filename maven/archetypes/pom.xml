@@ -16,7 +16,6 @@
 		<module>actions</module>
 		<module>xml</module>
 		<module>mixed</module>
-		<module>vrealize</module>
 		<module>vra-ng</module>
 		<module>ts</module>
 		<module>ts-vra-ng</module>
@@ -29,7 +28,7 @@
 		<module>cs</module>
 	</modules>
 	<properties>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
 	<build>
 		<plugins>

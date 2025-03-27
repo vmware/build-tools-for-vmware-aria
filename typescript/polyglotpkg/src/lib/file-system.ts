@@ -13,7 +13,8 @@
  * #L%
  */
 import { readdirSync, realpathSync, statSync } from "fs";
-import { join } from "path";
+import * as Path from "path";
+const join = (...args: string[]) => Path.join(...args).replace(/[\\/]+/gm,"/");
 
 interface FindFilesOptions {
     exclude?: RegExp[] | string[];
@@ -40,8 +41,8 @@ interface FindFilesOptions {
 export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptions = {}): string[] {
     let result: string[] = [];
 
-    const maxDepth = options.maxDepth || 10;
-    const currentDepth = options.currentDepth || 0;
+    const maxDepth = options.maxDepth ?? 10;
+    const currentDepth = options.currentDepth ?? 0;
 
     if (currentDepth > maxDepth) {
         return result;
@@ -67,6 +68,7 @@ export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptio
         if (pattern instanceof RegExp) {
             regex = pattern;
         } else {
+            pattern = pattern.replace(/[\\/]+/gm, "/");
             const single = "{single}";
             const singleRegex = "[a-z0-9\-\_\.]*";
             const double = "{double}";
@@ -93,7 +95,7 @@ export function findFiles(patterns: RegExp[] | string[], options: FindFilesOptio
     for (const file of files) {
         const shortFileName = file.substring(path.length + 1);
         if (checkMatch(shortFileName)) {
-            result.push(!!options.absolute ? realpathSync(file) : shortFileName);
+            result.push(options.absolute ? realpathSync(file) : shortFileName);
         }
     }
 

@@ -58,12 +58,12 @@ describe("End-to-End Tests", () => {
         const destination = ['test', destinationPath];
 
         const sourceFilesArray = glob
-            .sync(expand(...source, ...globExpr))
+			.sync(expand(...source, ...globExpr)?.replace(/[\\/]+/gm, path.posix.sep))
             .filter(file => !file.includes('META-INF') && !file.includes('version-history'))
             .map(file => path.normalize(file).replace(expand(...source), ''))
             .sort();
         const destinationFilesArray = glob
-            .sync(expand(...destination, ...globExpr))
+			.sync(expand(...destination, ...globExpr)?.replace(/[\\/]+/gm, path.posix.sep))
             .filter(file => !file.includes('META-INF') && !file.includes('version-history'))
             .map(file => path.normalize(file).replace(expand(...destination), ''))
             .sort();
@@ -101,6 +101,11 @@ describe("End-to-End Tests", () => {
     }
     const expand = (...args: string[]) => path.join(currentPath, ...args);
 
+    function toPathArg(...args: string[]) {
+        const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+        return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
+    }
+
     function readFile(path: string): string {
         return fs.readFileSync(path).toString().replace(/\r\n/g, "\n");
     }
@@ -108,13 +113,13 @@ describe("End-to-End Tests", () => {
     it("Convert XML project from tree to flat structure", async () => {
         try {
             await runCase("Project tree -> flat", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'tree',
                 '--out', 'flat',
-                '--srcPath', expand('test', 'com.vmware.pscoe.toolchain-expand'),
-                '--destPath', expand('test', 'target-flat'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain-expand'),
+                '--destPath', toPathArg('test', 'target-flat'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
@@ -137,13 +142,13 @@ describe("End-to-End Tests", () => {
     it("Convert XML project from flat to tree structure", async () => {
         try {
             await runCase("Project flat -> tree", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'flat',
                 '--out', 'tree',
-                '--srcPath', expand('test', 'com.vmware.pscoe.toolchain.package'),
-                '--destPath', expand('test', 'target-tree'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain.package'),
+                '--destPath', toPathArg('test', 'target-tree'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
@@ -162,13 +167,13 @@ describe("End-to-End Tests", () => {
     it("Convert XML project with custom forms from tree to flat structure", async () => {
         try {
             await runCase("Project tree -> flat", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'tree',
                 '--out', 'flat',
-                '--srcPath', expand('test', 'com.vmware.pscoe.toolchain-expand'),
-                '--destPath', expand('test', 'target-flat-custom-forms'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain-expand'),
+                '--destPath', toPathArg('test', 'target-flat-custom-forms'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
@@ -191,13 +196,13 @@ describe("End-to-End Tests", () => {
     it("Convert XML project with custom forms from flat to tree structure", async () => {
         try {
             await runCase("Project flat -> tree", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'flat',
                 '--out', 'tree',
-                '--srcPath', expand('test', 'com.vmware.pscoe.vrbt.custom.interaction.package'),
-                '--destPath', expand('test', 'target-tree-custom-forms'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.vrbt.custom.interaction.package'),
+                '--destPath', toPathArg('test', 'target-tree-custom-forms'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',

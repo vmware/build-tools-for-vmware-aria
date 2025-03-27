@@ -17,8 +17,8 @@ package com.vmware.pscoe.maven.plugins;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-
-import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 @Mojo(name = "run-vro-tests", defaultPhase = LifecyclePhase.TEST)
 public class TypescriptTestMojo extends AbstractVroTestMojo {
@@ -29,25 +29,36 @@ public class TypescriptTestMojo extends AbstractVroTestMojo {
 	private static final String SRC_MAP_PATH = Paths.get(SRC_ROOT_PATH, "map").toString();
 	private static final String SRC_XML_PATH = Paths.get(SRC_ROOT_PATH, "xml", "src", "main", "resources").toString();
 
+    /**
+     * Returns whether the action has tests.
+     *
+     * @return true if there are files in the test path otherwise false.
+     */
 	protected Boolean hasTests() {
 		String projectRoot = project.getBasedir().toPath().toString();
 		return super.hasTests() && new File(Paths.get(projectRoot, SRC_TEST_PATH).toString()).exists();
 	}
 
+    /**
+     * Add testbed paths to the command line.
+     * @param cmd command line arguments
+     * @param config configuration object.
+     *
+     */
 	protected void addTestbedPaths(List<String> cmd, Configuration config) {
 		String projectRoot = project.getBasedir().toPath().toString();
 		cmd.add("--actions");
-		cmd.add(Paths.get(projectRoot, SRC_JS_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_JS_PATH));
 		cmd.add("--testHelpers");
-		cmd.add(Paths.get(projectRoot, SRC_TEST_HELPERS_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_TEST_HELPERS_PATH));
 		cmd.add("--tests");
-		cmd.add(Paths.get(projectRoot, SRC_TEST_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_TEST_PATH));
 		cmd.add("--maps");
-		cmd.add(Paths.get(projectRoot, SRC_MAP_PATH).toString());
+		cmd.add(toPathArgument(projectRoot, SRC_MAP_PATH));
 		cmd.add("--resources");
-		cmd.add(Paths.get(projectRoot, SRC_XML_PATH, "ResourceElement").toString());
+		cmd.add(toPathArgument(projectRoot, SRC_XML_PATH, "ResourceElement"));
 		cmd.add("--configurations");
-		cmd.add(Paths.get(projectRoot, SRC_XML_PATH, "ConfigurationElement").toString());
+		cmd.add(toPathArgument(projectRoot, SRC_XML_PATH, "ConfigurationElement"));
 		cmd.add("--ts-src");
 		cmd.add("src");
 		cmd.add("--ts-namespace");

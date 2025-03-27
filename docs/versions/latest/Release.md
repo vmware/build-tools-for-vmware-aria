@@ -39,26 +39,17 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Improve SSHSession class*
+### *Content Sharing Policies Import*
 
-Improve type definitions of SSHSession class functions according to the API. Add missing methods. Fix types. Fix descriptions. Fix class attributes.
-  
+CSPs could not be imported due to a forgotten fetch before creation.
+
 #### Previous Behavior
 
-The return type of some function definitions in the SSHSession class was not correctly defined and few methods were missing.
+When importing we were getting an error that id is expected of type UUID.String but was null
 
 #### New Behavior
 
-The following methods were added to the SSHSession class:
-
-- `setConnectTimeout`
-- `getConnectTimeout`
-- `setTimeout`
-- `getTimeout`
-- `setKeepAliveInterval`
-- `getKeepAliveInterval`
-- `setKeepAliveCountMax`
-- `getKeepAliveCountMax`
+CSPs are no longer fetched prior to updating to set their ID.
 
 ### *Transform module paths for jest mocks*
 

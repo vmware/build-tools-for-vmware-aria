@@ -22,8 +22,8 @@
 	</modules>
 
 	<properties>
-		<main.basedir>${project.basedir}</main.basedir>
-		<revision>4.2.2-SNAPSHOT</revision>
+		<main.basedir>${project.baseUri}</main.basedir>
+		<revision>4.3.1-SNAPSHOT</revision>
 		<java.version>17</java.version>
 	</properties>
 
@@ -96,7 +96,7 @@
 					<configuration>
 						<encoding>UTF-8</encoding>
 						<licenseName>bsd2_license</licenseName>
-						<licenseResolver>file:${main.basedir}/licenses</licenseResolver>
+						<licenseResolver>${main.basedir}licenses</licenseResolver>
 						<!-- <aggregate>true</aggregate> -->
 						<inceptionYear>2023</inceptionYear>
 						<organizationName>VMware</organizationName>
