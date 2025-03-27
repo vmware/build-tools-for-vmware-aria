@@ -71,6 +71,7 @@ The path is not transformed and functions fail to find the referenced file
 #### New Behavior
 
 During transpilation the paths to be transformed to the actual vro-test file location
+*Note*: Path transformation is only supported for paths provided as string literals.
 
 ## Upgrade procedure
 
