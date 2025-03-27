@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -110,10 +111,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * The vRO rest client.
 	 */
 	private RestClientVrops restClient;
-	/**
-	 * Constant for policy metadata file name.
-	 */
-	private static final String POLICY_METADATA_FILENAME = "policiesMetadata.vrops.json";
 	/**
 	 * Sharing Dashboards file name.
 	 */
@@ -925,38 +922,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				.collect(Collectors.toList());
 	}
 
-	/**
-	 * Gets policy metadata.
-	 * 
-	 * @param rootDir
-	 * @return policy metadata
-	 */
-	@SuppressWarnings("unchecked")
-	private Map<String, String> getPolicyMetadata(final File rootDir) {
-		File policiesDir = new File(rootDir.getPath(), "policies");
-		if (!policiesDir.exists()) {
-			return Collections.emptyMap();
-		}
-		String policiesMetdata = "";
-		String policiesMetdataFileName = "";
-		try {
-			logger.info("Reading policy metadata file '{}'", POLICY_METADATA_FILENAME);
-			File policiesMetadataFile = new File(policiesDir, POLICY_METADATA_FILENAME);
-			policiesMetdataFileName = policiesMetadataFile.getName();
-			policiesMetdata = FileUtils.readFileToString(policiesMetadataFile, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			logger.warn("An error occurred reading file {} : {}", policiesMetdataFileName, e.getMessage());
-
-			return Collections.emptyMap();
-		}
-		try {
-			return new ObjectMapper().readValue(policiesMetdata, HashMap.class);
-		} catch (JsonProcessingException e) {
-			logger.warn("An error occurred parsing metadata file {} : {}", policiesMetdataFileName, e.getMessage());
-
-			return Collections.emptyMap();
-		}
-	}
 
 	/**
 	 * Gets dashboard sharing metadata.
@@ -1032,35 +997,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			throw new RuntimeException(
 					String.format("An error occurred parsing file '%s' for resource type %s", fileName, resourceType),
 					e);
-		}
-	}
-
-	/**
-	 * Store the policy metadata file.
-	 * 
-	 * @param rootDir        root directory where to store policy metadata file.
-	 * @param policyMetadata hashmap with policy meta data.
-	 */
-	private void storePolicyMetadata(final File rootDir, final Map<String, String> policyMetadata) {
-		// generate policy metadata file
-		File policyMetadataFile = new File(rootDir, POLICY_METADATA_FILENAME);
-		String policyMetadataContent = "";
-		try {
-			policyMetadataContent = this.serializeObject(policyMetadata);
-			policyMetadataContent = policyMetadataContent == null ? "" : policyMetadataContent;
-			Files.write(policyMetadataFile.toPath(), policyMetadataContent.getBytes(), StandardOpenOption.CREATE_NEW);
-		} catch (JsonProcessingException e) {
-			String message = String.format("Error generating policy metadata file %s : %s",
-					policyMetadataFile.getName(), e.getMessage());
-			logger.error(message);
-
-			throw new RuntimeException(message, e);
-		} catch (IOException e) {
-			String message = String.format("Error exporting policy metadata file %s : %s", policyMetadataFile.getName(),
-					e.getMessage());
-			logger.error(message);
-
-			throw new RuntimeException(message, e);
 		}
 	}
 
@@ -1166,8 +1102,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (!customGroupsDir.exists()) {
 			return;
 		}
-		// get policy metadata in order to assign correct policy to the custom group
-		final Map<String, String> policyMetadataMap = getPolicyMetadata(tmpDir);
 
 		StringBuilder messages = new StringBuilder();
 		for (File customGroupFile : FileUtils.listFiles(customGroupsDir, new String[] { "json" }, false)) {
@@ -1175,11 +1109,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			try {
 				logger.info("Importing custom group: '{}'", customGroup);
 				String customGroupPayload = readCustomGroupFile(customGroupFile);
-				restClient.importCustomGroupInVrops(customGroup, customGroupPayload, policyMetadataMap);
+				restClient.importCustomGroupInVrops(customGroup, customGroupPayload);
 				logger.info("Imported custom group: '{}'", customGroup);
 			} catch (Exception e) {
-				messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup,
-						e.getMessage()));
+				messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup, e.getMessage()));
 			}
 		}
 
@@ -1455,29 +1388,57 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			logger.error("No custom groups found in vROPs");
 			return;
 		}
+		// extract all policies in order to assign name of the policy in the target JSON file
+		List<PolicyDTO.Policy> policies = restClient.getAllPolicies();
 
 		StringBuilder messages = new StringBuilder();
 		for (CustomGroupDTO.Group customGroup : customGroups) {
-			if (customGroupNames.stream()
-					.anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
+			if (customGroupNames.stream().anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
+	             // set the policy name to the policy JSON file if it is supported
+			    if (!StringUtils.isEmpty(customGroup.getPolicy())) {
+			        try {
+			            this.setPolicyNameInCustomGroup(customGroup, policies);			            
+			        } catch (Exception e) {
+			            messages.append(e.getMessage());
+			            continue;
+			        }
+			    }
 				String payload = this.serializeObject(customGroup);
 				if (!StringUtils.isEmpty(payload)) {
 					logger.info("Exporting custom group '{}'", customGroup.getResourceKey().getName());
-					File customGroupFile = new File(customGroupTargetDir,
-							customGroup.getResourceKey().getName() + ".json");
+					File customGroupFile = new File(customGroupTargetDir, customGroup.getResourceKey().getName() + ".json");
 					try {
 						Files.write(customGroupFile.toPath(), payload.getBytes(), StandardOpenOption.CREATE_NEW);
 					} catch (IOException e) {
-						messages.append(
-								String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
+						messages.append(String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
 					}
 				}
 			}
 		}
 
 		if (messages.length() > 0) {
-			throw new RuntimeException(messages.toString());
+			throw new RuntimeException(String.join(", ", messages.toString()));
 		}
+	}
+
+    /**
+     * Set the vROPs policy name in the custom group.
+     *
+     * @param customGroup  custom group where policy should be set.
+     * @param policies list of all vROPs policies where the name should be found (by id).
+     * @throws RuntimeException if the policy cannot be found.
+     */
+	private void setPolicyNameInCustomGroup(CustomGroupDTO.Group customGroup, List<PolicyDTO.Policy> policies) {
+        // set the policy name to the output file
+        Optional<PolicyDTO.Policy> foundPolicy = policies.stream().filter(item -> item.getId().equalsIgnoreCase(customGroup.getPolicy())).findFirst();
+
+        if (foundPolicy.isPresent()) {
+            customGroup.setPolicy(foundPolicy.get().getName());
+            return;
+        }
+        String msg = String.format("Unable to export custom group '%s' as its policy '%s' cannot be found on the target system.", customGroup.getResourceKey().getName() , customGroup.getPolicy());
+
+        throw new RuntimeException(msg);
 	}
 
 	/**
@@ -1515,9 +1476,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (messages.length() > 0) {
 			throw new RuntimeException(messages.toString());
 		}
-
-		// store policy metadata file (that contains id - name mapping)
-		storePolicyMetadata(policyDir, policyIdNameMap);
 	}
 
 	/**
