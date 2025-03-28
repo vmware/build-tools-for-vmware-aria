@@ -1394,7 +1394,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		StringBuilder messages = new StringBuilder();
 		for (CustomGroupDTO.Group customGroup : customGroups) {
 			if (customGroupNames.stream().anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
-	             // set the policy name to the policy JSON file if it is supported
+			    // set the policy name to the policy JSON file if it is defined in the file
 			    if (!StringUtils.isEmpty(customGroup.getPolicy())) {
 			        try {
 			            this.setPolicyNameInCustomGroup(customGroup, policies);			            
@@ -1404,14 +1404,15 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			        }
 			    }
 				String payload = this.serializeObject(customGroup);
-				if (!StringUtils.isEmpty(payload)) {
-					logger.info("Exporting custom group '{}'", customGroup.getResourceKey().getName());
-					File customGroupFile = new File(customGroupTargetDir, customGroup.getResourceKey().getName() + ".json");
-					try {
-						Files.write(customGroupFile.toPath(), payload.getBytes(), StandardOpenOption.CREATE_NEW);
-					} catch (IOException e) {
-						messages.append(String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
-					}
+				if (StringUtils.isEmpty(payload)) {
+				    continue;
+				}
+				logger.info("Exporting custom group '{}'", customGroup.getResourceKey().getName());
+				File customGroupFile = new File(customGroupTargetDir, customGroup.getResourceKey().getName() + ".json");
+				try {
+				    Files.write(customGroupFile.toPath(), payload.getBytes(), StandardOpenOption.CREATE_NEW);
+				} catch (IOException e) {
+				    messages.append(String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
 				}
 			}
 		}
@@ -1421,7 +1422,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		}
 	}
 
-    /**
+	/**
      * Set the vROPs policy name in the custom group.
      *
      * @param customGroup  custom group where policy should be set.
@@ -1429,16 +1430,16 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
      * @throws RuntimeException if the policy cannot be found.
      */
 	private void setPolicyNameInCustomGroup(CustomGroupDTO.Group customGroup, List<PolicyDTO.Policy> policies) {
-        // set the policy name to the output file
-        Optional<PolicyDTO.Policy> foundPolicy = policies.stream().filter(item -> item.getId().equalsIgnoreCase(customGroup.getPolicy())).findFirst();
+	    // set the policy name to the output file
+	    Optional<PolicyDTO.Policy> foundPolicy = policies.stream().filter(item -> item.getId().equalsIgnoreCase(customGroup.getPolicy())).findFirst();
 
-        if (foundPolicy.isPresent()) {
-            customGroup.setPolicy(foundPolicy.get().getName());
-            return;
-        }
-        String msg = String.format("Unable to export custom group '%s' as its policy '%s' cannot be found on the target system.", customGroup.getResourceKey().getName(), customGroup.getPolicy());
+	    if (foundPolicy.isPresent()) {
+	        customGroup.setPolicy(foundPolicy.get().getName());
+	        return;
+	    }
+	    String msg = String.format("Unable to export custom group '%s' as its policy '%s' cannot be found on the target system.", customGroup.getResourceKey().getName(), customGroup.getPolicy());
 
-        throw new RuntimeException(msg);
+	    throw new RuntimeException(msg);
 	}
 
 	/**
