@@ -41,13 +41,9 @@ Before proceeding, make sure you have the following installed on your system:
     export PATH=$PATH:~/.docker/bin
     ```
 - [Docker Compose](https://docs.docker.com/compose/install)
-
-
-@TODO-STEF: SHOULD THIS EXIST?
 - [Open JDK 17](https://openjdk.org/install/)
 - [Maven 3.9+](https://maven.apache.org/)
 - [NodeJS 22.x](https://nodejs.org/en/download/package-manager) - Recommended to use [fnm](https://github.com/Schniz/fnm) to manage Node versions.
-@TODO-STEF: SHOULD THIS EXIST?
 
 For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
 
@@ -55,11 +51,9 @@ For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastruct
 Validate all of the prerequisites are available in the Terminal:
 ```bash
 docker -v
-@TODO-STEF: SHOULD THIS EXIST?
 node -v
 mvn -v
 java --version
-@TODO-STEF: SHOULD THIS EXIST?
 ```
 
 ## Running the Infrastructure
@@ -175,7 +169,7 @@ To get started, follow the steps below:
     cp .m2/settings.xml ~/.m2/settings.xml
     ```
 
-## Project Setup @TODO-STEF: SHOULD THIS EXIST?
+## Project Setup
 1. Create a repository called `demo` at [http://infra.corp.local/gitlab/projects/new#blank_project](http://infra.corp.local/gitlab/projects/new#blank_project).
 2. Setup your local git environment and follow the `Command line instructions` listed in your new repo to clone it.
 3. Open a terminal and `cd` to the repository directory.
