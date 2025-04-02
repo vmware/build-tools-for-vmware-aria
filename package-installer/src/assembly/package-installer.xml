@@ -25,5 +25,10 @@
             <directory>target/appassembler</directory>
             <outputDirectory>.</outputDirectory>
         </fileSet>
+        <!-- Include the config directory -->
+        <fileSet>
+            <directory>etc</directory>
+            <outputDirectory>etc</outputDirectory>
+        </fileSet>
     </fileSets>
 </assembly>

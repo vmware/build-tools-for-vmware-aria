@@ -39,6 +39,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Fixed Missing Logs During Installer Run*
+
+#### Previous Behavior
+
+During package deployment via package installer, the logs were missing, hence making it hard to trace errors.
+
+#### New Behavior
+
+Log messages are now appearing during package deployment via the installer. Additional logging configuration file called *logback.xml* was added to the *etc* directory in the installer that configures the logging severity.
+
 ### *Content Sharing Policies Import*
 
 CSPs could not be imported due to a forgotten fetch before creation.
