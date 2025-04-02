@@ -39,7 +39,7 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Fixed Missing Logs During Installer Run
+### *Fixed Missing Logs During Installer Run*
 
 #### Previous Behavior
 
@@ -48,6 +48,33 @@ During package deployment via package installer, the logs were missing, hence ma
 #### New Behavior
 
 Log messages are now appearing during package deployment via the installer. Additional logging configuration file called *logback.xml* was added to the *etc* directory in the installer that configures the logging severity.
+
+### *Content Sharing Policies Import*
+
+CSPs could not be imported due to a forgotten fetch before creation.
+
+#### Previous Behavior
+
+When importing we were getting an error that id is expected of type UUID.String but was null
+
+#### New Behavior
+
+CSPs are no longer fetched prior to updating to set their ID.
+
+### *Add missing classes to VC plugin*
+
+Add missing classes to VC plugin
+  
+#### Previous Behavior
+
+`VcVirtualMachineVirtualNuma` classes were missing
+
+#### New Behavior
+
+The following classes were added to VC plugin:
+
+- `VcVirtualMachineVirtualNuma`
+- `VcVirtualMachineVirtualNumaInfo`
 
 ## Upgrade procedure
 
