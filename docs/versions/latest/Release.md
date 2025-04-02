@@ -51,6 +51,21 @@ When importing we were getting an error that id is expected of type UUID.String 
 
 CSPs are no longer fetched prior to updating to set their ID.
 
+### *Add missing classes to VC plugin*
+
+Add missing classes to VC plugin
+  
+#### Previous Behavior
+
+`VcVirtualMachineVirtualNuma` classes were missing
+
+#### New Behavior
+
+The following classes were added to VC plugin:
+
+- `VcVirtualMachineVirtualNuma`
+- `VcVirtualMachineVirtualNumaInfo`
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
