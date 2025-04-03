@@ -49,6 +49,12 @@
 			<version>${revision}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+ 			<groupId>ch.qos.logback</groupId>
+ 			<artifactId>logback-classic</artifactId>
+ 			<version>1.5.18</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -100,7 +106,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version>
+				<version>0.8.13</version>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
