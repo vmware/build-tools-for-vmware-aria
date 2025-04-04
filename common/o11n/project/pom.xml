@@ -22,7 +22,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version>
+				<version>0.8.13</version>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>33.4.5-jre</version>
+			<version>33.4.6-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

@@ -16,7 +16,7 @@ import * as ts from "typescript";
 import { ScriptTransformationContext, HierarchyFacts } from "../../../types";
 import { NodeVisitor } from "../../visitor";
 import { SCRIPT_HELPER_MODULE, SCRIPT_VROES_VAR, SCRIPT_LAZY_IMPORT_NAME, SCRIPT_VRO_GLOBAL } from "../helpers/VROES";
-import { getIdentifierTextOrNull, hasModifier, isRequireCall, getStringTextOrNull } from "../helpers/node";
+import { getIdentifierTextOrNull, hasModifier, isRequireCall, getStringTextOrNull, isJestMethodCallWithModuleName } from "../helpers/node";
 import { system } from "../../../system/system";
 import { createModulePrologueStatements } from "./prologueStatements";
 import { createEpilogueStatements } from "./epilogueStatements";
@@ -263,7 +263,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				const moduleName = resolveFullModuleName(node.moduleSpecifier.text);
 				const requireCall = ts.setSourceMapRange(ts.factory.createCallExpression(
 					ts.factory.createIdentifier("require"),
-                        /*typeArguments*/ undefined,
+					/*typeArguments*/ undefined,
 					[ts.factory.createStringLiteral(moduleName)]
 				), ts.getSourceMapRange(node));
 				const importVarPrefix = moduleName.substring(1 + Math.max(moduleName.lastIndexOf("."), moduleName.lastIndexOf("/")));
@@ -301,7 +301,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 			const moduleName = resolveFullModuleName(node.moduleSpecifier.text);
 			const requireCall = ts.setSourceMapRange(ts.factory.createCallExpression(
 				ts.factory.createIdentifier("require"),
-                    /*typeArguments*/ undefined,
+				/*typeArguments*/ undefined,
 				[ts.factory.createStringLiteral(moduleName)]
 			), ts.getSourceMapRange(node));
 			if (node.exportClause && ts.isNamespaceExport(node.exportClause)) {
@@ -311,7 +311,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 					ts.factory.createToken(ts.SyntaxKind.EqualsToken),
 					ts.factory.createCallExpression(
 						ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(tslibVarName), "__importStar"),
-                            /*typeArguments*/ undefined,
+						/*typeArguments*/ undefined,
 						[requireCall, ts.factory.createIdentifier("exports")]
 					),
 				);
@@ -319,7 +319,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 			} else {
 				const exportCall = ts.setSourceMapRange(ts.factory.createCallExpression(
 					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(tslibVarName), "__exportStar"),
-                        /*typeArguments*/ undefined,
+					/*typeArguments*/ undefined,
 					[requireCall, ts.factory.createIdentifier("exports")]
 				), ts.getSourceMapRange(node));
 				return ts.setSourceMapRange(ts.factory.createExpressionStatement(exportCall), ts.getSourceMapRange(node));
@@ -372,12 +372,12 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				const isDefault = hasModifier(node.modifiers, ts.SyntaxKind.DefaultKeyword);
 				const exportName = isDefault || !node.name ? "default" : node.name.text;
 				const funcExp = ts.setSourceMapRange(ts.factory.createFunctionExpression(
-                        /*modifiers*/undefined,
-                        /*asteriskToken*/undefined,
-                        /*name*/undefined,
-                        /*typeParameters*/undefined,
+					/*modifiers*/undefined,
+					/*asteriskToken*/undefined,
+					/*name*/undefined,
+					/*typeParameters*/undefined,
 					node.parameters,
-                        /*type*/undefined,
+					/*type*/undefined,
 					body
 				), ts.getSourceMapRange(node));
 				result.push(ts.setSourceMapRange(ts.factory.createExpressionStatement(ts.factory.createBinaryExpression(
@@ -389,12 +389,12 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				result.push(
 					ts.factory.updateFunctionDeclaration(
 						node,
-                        /*modifiers*/undefined,
-                        /*asteriskToken*/undefined,
+						/*modifiers*/undefined,
+						/*asteriskToken*/undefined,
 						node.name,
-                        /*typeParameters*/undefined,
+						/*typeParameters*/undefined,
 						node.parameters,
-                        /*type*/undefined,
+						/*type*/undefined,
 						body
 					));
 				if (isExported) {
@@ -448,6 +448,21 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		if (isRequireCall(node)) {
 			node = tryUpdateLocalRequireCall(node);
 			context.file.hierarchyFacts |= HierarchyFacts.ContainsRequire;
+		}
+		if (isJestMethodCallWithModuleName(node)) {
+			const moduleSpecifier = (node.arguments[0] as ts.StringLiteral).text;
+			const moduleName = system.normalizePath(system.joinPath(context.file.relativeDirPath, moduleSpecifier));
+			const actionNamespaceDirs = context.actionsNamespace ? context.actionsNamespace.split('.') : [];
+			const relativeDirPathDirs = context.file.relativeDirPath ? context.file.relativeDirPath.split('/') : [];
+			const subfolderLevels = 1 + actionNamespaceDirs.length + relativeDirPathDirs.length;
+			const newPath = "../".repeat(subfolderLevels) + 'src/' + actionNamespaceDirs.join('/') + '/' + moduleName;
+
+			const newArguments: ts.Expression[] = [ts.factory.createStringLiteral(newPath)];
+			for (let i=1; i<node.arguments.length; i++) {
+				newArguments.push(node.arguments[i]);
+			}
+			const newNode = ts.factory.updateCallExpression(node, node.expression, node.typeArguments, newArguments);
+			return visitor.visitEachChild(newNode);
 		}
 		return visitor.visitEachChild(node);
 	}
@@ -545,7 +560,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				requireCallNode = ts.factory.updateCallExpression(
 					requireCallNode,
 					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_LAZY_IMPORT_NAME),
-                        /* typeArguments */ undefined,
+					/* typeArguments */ undefined,
 					requireCallNode.arguments);
 				node = ts.factory.createVariableDeclaration(
 					node.name,
@@ -606,7 +621,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				requireCallNode = ts.factory.updateCallExpression(
 					requireCallNode,
 					requireCallNode.expression,
-                        /* typeArguments */ undefined,
+					/* typeArguments */ undefined,
 					[ts.factory.createStringLiteral(moduleName)]);
 			}
 		}
