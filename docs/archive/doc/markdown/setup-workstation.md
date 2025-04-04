@@ -7,7 +7,8 @@
 - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
 - [vRealize Developer Tools](https://github.com/vmware/vrealize-developer-tools)
 - Java 17
-- Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
+- Maven 3.9+ ([official installation guide](https://maven.apache.org/install.html))
+- NodeJs 22.x ([official downloads](https://nodejs.org/en/download))
 - Development vRealize Automation Tenant configured with development vRealize Orchestrator
   - Tenant administrator user
   - Workstation can access vRA server on port 443
