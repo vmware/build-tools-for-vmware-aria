@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-powershell",
-  "version": "4.4.1-SNAPSHOT",
+  "version": "4.4.2-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
