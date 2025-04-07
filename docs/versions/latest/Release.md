@@ -40,6 +40,10 @@ There were errors building BTVA due to the versions of keystore-example used lon
 
 There are no more errors related to keystoreVersion during building.
 
+### CSP Now correctly work cross env
+
+Project id is set at the correct time and also logs are correct.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
