@@ -150,6 +150,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 * API will not return a `projectId` if the policy is organization scoped
 	 *
 	 * @param contentSharingPolicyFile file where the policy is stored.
+	 * @param policiesOnServer         csps found on server.
 	 */
 	private void handlePolicyImport(final File contentSharingPolicyFile,
 			Map<String, VraNgContentSharingPolicy> policiesOnServer) {
@@ -219,9 +220,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Store content sharing policy in JSON file.
 	 * 
-	 * @param policyFolderPath Path to the folder where to store the
-	 *                         file.
-	 * @param policy           the policy to store.
+	 * @param policyFile Path to the folder where to store the file
+	 * @param policy     the policy to store.
 	 */
 	private void storePolicyOnFS(final File policyFile,
 			final VraNgContentSharingPolicy policy) {
@@ -428,6 +428,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 *
 	 * @param itemNames - the list of policy names to fetch. If empty, will fetch
 	 *                  all
+	 *
+	 * @return the policies on server
 	 */
 	private Map<String, VraNgContentSharingPolicy> fetchPolicies(final List<String> itemNames) {
 		Map<String, VraNgContentSharingPolicy> policies = new HashMap<>();
