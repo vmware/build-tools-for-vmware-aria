@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:o11n-actions-package-maven-plugin:4.3.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:o11n-actions-package-maven-plugin:4.4.1-SNAPSHOT
 
 Name: o11n-actions-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: o11n-actions-package-maven-plugin
-Version: 4.3.1-SNAPSHOT
+Version: 4.4.1-SNAPSHOT
 Goal Prefix: vro
 
 This plugin has 6 goals:

@@ -1,6 +1,6 @@
 {
   "name": "@types/vrotsc-annotations",
-  "version": "4.4.1-SNAPSHOT",
+  "version": "4.4.1",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true

@@ -28,22 +28,6 @@
 
 ## Improvements
 
-### Updated keystore-example version
-
-The versions of keystore-example (keystoreVersion) in pom.xml files and examplers were updated to 4.4.0.
-
-#### Previous Behavior
-
-There were errors building BTVA due to the versions of keystore-example used longer being present in the maven repository.
-
-#### New Behavior
-
-There are no more errors related to keystoreVersion during building.
-
-### CSP Now correctly work cross env
-
-Project id is set at the correct time and also logs are correct.
-
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
