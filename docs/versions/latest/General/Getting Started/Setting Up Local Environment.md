@@ -67,7 +67,7 @@ The artifact should be deployed to any path as long as the **settings.xml** file
 Example:
 - artifact group ID: com.clientname.build
 - artifact ID: archetype.keystore
-- artifact version: 1.0.0
+- artifact version: 4.4.0
 - **keystorePassword** and **vroKeyPass** passwords need to be replaced with the values used during the key generation process above
 - settings section:
 ```xml
@@ -75,7 +75,7 @@ Example:
     <keystoreGroupId>com.clientname.build</keystoreGroupId>
     <keystoreArtifactId>archetype.keystore</keystoreArtifactId>
     <keystoreLocation>target/${keystoreArtifactId}-${keystoreVersion}/archetype.keystore</keystoreLocation>
-    <keystoreVersion>1.0.0</keystoreVersion>
+    <keystoreVersion>4.4.0</keystoreVersion>
     <keystorePassword>{{keystorePassword}}</keystorePassword>
     <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
     <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
@@ -127,7 +127,7 @@ Furthermore, in the example, bundling (i.e. should the bundle.zip be produced up
         <!-- Version >= 2.14 -->
         <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
         <keystoreArtifactId>archetype.keystore</keystoreArtifactId>
-        <keystoreVersion>2.0.0</keystoreVersion>
+        <keystoreVersion>4.4.0</keystoreVersion>
         <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
         <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
         <vroKeyPass>VMware1!</vroKeyPass>
