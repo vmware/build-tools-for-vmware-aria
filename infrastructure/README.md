@@ -57,6 +57,31 @@ java --version
 ```
 
 ## Running the Infrastructure
+
+### Simple
+
+This is a fully automated script to bring the infra up. Will not edit your hostfiles, but you can use the machine's IP just as well.
+
+```sh
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/master/infrastructure/install.sh
+```
+
+Or if you want to also do docker login (to avoid rate limits)
+
+```sh
+
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/master/infrastructure/install.sh | bash -s -- dockerUsername dockerPAT
+```
+
+If you don't edit your hostfiles:
+
+```sh
+sed -i \"s|external_url 'http://infra.corp.local/gitlab'|external_url '%q'|\" /opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml
+docker compose -f /opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml up -d --wait
+```
+
+### Advanced
+
 To get started, follow the steps below:
 
 1. Clone the repository containing the existing resources:
