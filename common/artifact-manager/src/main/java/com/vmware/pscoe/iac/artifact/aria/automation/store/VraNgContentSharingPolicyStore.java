@@ -122,7 +122,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 				.get(sourceDirectory.getPath(), VraNgDirs.DIR_POLICIES, CONTENT_SHARING_POLICY).toFile();
 
 		if (!contentSharingPolicyFolder.exists()) {
-			logger.info("No approval policies available - skip import");
+			logger.info("No content sharing policies available - skip import");
 			return;
 		}
 
@@ -130,7 +130,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 
 		if (contentSharingPolicyFiles != null && contentSharingPolicyFiles.length == 0) {
-			logger.info("No approval policies available - skip import");
+			logger.info("No content sharing policies available - skip import");
 			return;
 		}
 
@@ -150,6 +150,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 * API will not return a `projectId` if the policy is organization scoped
 	 *
 	 * @param contentSharingPolicyFile file where the policy is stored.
+	 * @param policiesOnServer         csps found on server.
 	 */
 	private void handlePolicyImport(final File contentSharingPolicyFile,
 			Map<String, VraNgContentSharingPolicy> policiesOnServer) {
@@ -157,11 +158,12 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 
 		logger.info("Attempting to import content sharing policy '{}', from file '{}'", policy.getName(),
 				contentSharingPolicyFile.getName());
-		this.resolveEntitledUsersOrgAndScope(policy, true);
 
 		if (policy.getProjectId() != null && !policy.getProjectId().isBlank()) {
 			policy.setProjectId(this.restClient.getProjectId());
 		}
+
+		this.resolveEntitledUsersOrgAndScope(policy, true);
 
 		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
 
@@ -171,7 +173,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
 		}
 
-		this.logger.info("Attempting to create approval policy '{}'", policy.getName());
+		this.logger.info("Attempting to create content sharing policy '{}'", policy.getName());
 		this.restClient.createContentSharingPolicy(policy);
 	}
 
@@ -205,7 +207,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 		itemNames.forEach(name -> {
 			if (!policies.containsKey(name)) {
 				throw new RuntimeException(
-						String.format("Approval Policy with name: '%s' could not be found on the server.", name));
+						String.format("Content Sharing Policy with name: '%s' could not be found on the server.",
+								name));
 			}
 		});
 
@@ -217,9 +220,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	/**
 	 * Store content sharing policy in JSON file.
 	 * 
-	 * @param policyFolderPath Path to the folder where to store the
-	 *                         file.
-	 * @param policy           the policy to store.
+	 * @param policyFile Path to the folder where to store the file
+	 * @param policy     the policy to store.
 	 */
 	private void storePolicyOnFS(final File policyFile,
 			final VraNgContentSharingPolicy policy) {
@@ -426,6 +428,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgStore {
 	 *
 	 * @param itemNames - the list of policy names to fetch. If empty, will fetch
 	 *                  all
+	 *
+	 * @return the policies on server
 	 */
 	private Map<String, VraNgContentSharingPolicy> fetchPolicies(final List<String> itemNames) {
 		Map<String, VraNgContentSharingPolicy> policies = new HashMap<>();
