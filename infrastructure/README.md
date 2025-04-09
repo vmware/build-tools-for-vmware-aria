@@ -63,14 +63,14 @@ java --version
 This is a fully automated script to bring the infra up. Will not edit your hostfiles, but you can use the machine's IP just as well.
 
 ```sh
-curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/master/infrastructure/install.sh
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/refs/heads/main/infrastructure/install.sh
 ```
 
 Or if you want to also do docker login (to avoid rate limits)
 
 ```sh
 
-curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/master/infrastructure/install.sh | bash -s -- dockerUsername dockerPAT
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/refs/heads/main/infrastructure/install.sh | bash -s -- dockerUsername dockerPAT
 ```
 
 If you don't edit your hostfiles:
