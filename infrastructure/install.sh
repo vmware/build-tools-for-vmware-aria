@@ -47,8 +47,7 @@ checkoutBTVA() {
 	else 
 			print_color "$GREEN" "$BTVA_DIR does not exist, checking the repository out"
 			pushd $BTVA_CHECKOUT_DIR
-				# @TODO: Branch checkout is temporary, remove it later
-				git clone https://github.com/vmware/build-tools-for-vmware-aria.git -b refactor/minimal-infra-simplified-setup || exit 1
+				git clone https://github.com/vmware/build-tools-for-vmware-aria.git || exit 1
 			popd
 	fi
 }
