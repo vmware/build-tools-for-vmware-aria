@@ -76,7 +76,8 @@ curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/ma
 If you don't edit your hostfiles:
 
 ```sh
-sed -i \"s|external_url 'http://infra.corp.local/gitlab'|external_url '%q'|\" /opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml
+# Change localhost to whatever IP
+sed -i \"s|external_url 'http://infra.corp.local/gitlab'|external_url 'http://localhost:8082/gitlab'|\" /opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml
 docker compose -f /opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml up -d --wait
 ```
 
