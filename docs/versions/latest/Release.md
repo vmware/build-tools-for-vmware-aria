@@ -25,6 +25,9 @@
 [//]: # (#### Relevant Documentation:)
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
+### *Simplified Minimal Infra Setup*
+
+There is a new script now that can be executed and it will setup the minimal infra.
 
 ## Improvements
 
