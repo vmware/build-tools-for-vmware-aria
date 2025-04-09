@@ -95,10 +95,10 @@ To get started, follow the steps below:
     cd build-tools-for-vmware-aria/infrastructure
     ```
 
-4. Open the [docker-compose.yml](docker-compose.yml) file:
+4. Open the [docker-compose.yml](docker-compose.yml) file
     - Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](./nginx/conf.d/main.conf).
 
-5. Add the nginx container and the docker internal host endpoints to your `hosts` file.  
+5. Add the nginx container and the docker internal host endpoints to your `hosts` file
     - Docker provides an internal DNS server in user-defined networks (infranet) to resolve container names to their internal IP addresses. Since your nginx and GitLab services are part of the infranet network, they can communicate using their Docker defined hostnames.
 
     - We are going to be accessing the containers from the nginx reverse proxy. For this you need to manually edit the /etc/hosts file on your host machine:
@@ -108,12 +108,12 @@ To get started, follow the steps below:
         127.0.0.1 infra.corp.local
         ```
 
-6. Run the [docker-compose.yml](docker-compose.yml) file:
+6. Run the [docker-compose.yml](docker-compose.yml) file
     ```bash
     docker compose up -d
     ```
 
-7. Validate the containers are created:
+7. Validate the containers are created
     ```bash
     docker ps
     ```
@@ -127,7 +127,7 @@ To get started, follow the steps below:
     17ba02a491e8   gitlab/gitlab-runner     "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes             0.0.0.0:2811->2811/tcp                                gitlab-runner
     ```
 
-8. Wait until all containers are up and running, which might take a few minutes:
+8. Wait until all containers are up and running, which might take a few minutes
     - nginx - [infra.corp.local](http://infra.corp.local)
     - Nexus - [infra.corp.local/nexus](http://infra.corp.local/nexus)
     - GitLab - [infra.corp.local/gitlab](http://infra.corp.local/gitlab)
