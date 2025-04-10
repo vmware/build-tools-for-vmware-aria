@@ -75,7 +75,12 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
      * @return path argument that is platform independent.
      */
     protected String toPathArgument(String first, String... more) {
-        return "\"" + Paths.get(first, more).normalize().toString().replaceAll("[\\\\/]+", SystemUtils.IS_OS_WINDOWS ? "\\\\" : "/") + "\"";
+		String path = Paths.get(first, more)
+			.normalize()
+			.toString()
+			.replaceAll("[\\\\/]+", "/")
+			.replace("\"", "");
+        return path.indexOf(" ") >= 0 ? "\"" + path + "\"" : path;
     }
 
 	/**

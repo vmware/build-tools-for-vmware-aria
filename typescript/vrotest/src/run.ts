@@ -23,7 +23,7 @@ export interface RunCommandFlags {
 }
 
 export default async function (flags: RunCommandFlags): Promise<void> {
-    const testDir = flags._[1] || process.cwd();
+    const testDir = toPathArg(flags._[1] || process.cwd()).replace(/"+/gm,"");
     if (flags.instrument) {
         const nodeModulesDir = await findNodeModules(__dirname);
         if (!nodeModulesDir) {

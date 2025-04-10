@@ -19,11 +19,9 @@ This file serves as a guide to create a minimal infrastructure example using con
 
 - [nginx](https://hub.docker.com/_/nginx)
 - `Nexus`
-  - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/) for Linux.
-  - [klo2k/nexus3](https://hub.docker.com/r/klo2k/nexus3) for M1+ Mac.
+  - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/)
 - `GitLab`
-  - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) for Linux.
-  - [yrzr/gitlab-ce-arm64v8](yrzr/gitlab-ce-arm64v8) for M1+ Mac.
+  - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce)
 - [gitlab/gitlab-runner](https://hub.docker.com/r/gitlab/gitlab-runner)
 
 Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](../README.md) project.
@@ -44,9 +42,8 @@ Before proceeding, make sure you have the following installed on your system:
     ```
 - [Docker Compose](https://docs.docker.com/compose/install)
 - [Open JDK 17](https://openjdk.org/install/)
-- [Maven](https://maven.apache.org/)
-- [NodeJS 14.21.03](https://nodejs.org/en/download/package-manager) - Recommended to use [nvm](https://github.com/nvm-sh/nvm) to manage Node versions.
-- [npm 6.14.18](https://nodejs.org/en/download/package-manager) - Should be bundled with `NodeJS`.
+- [Maven 3.9+](https://maven.apache.org/)
+- [NodeJS 22.x](https://nodejs.org/en/download/package-manager) - Recommended to use [fnm](https://github.com/Schniz/fnm) to manage Node versions.
 
 For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
 
@@ -55,27 +52,37 @@ Validate all of the prerequisites are available in the Terminal:
 ```bash
 docker -v
 node -v
-npm -v
 mvn -v
 java --version
 ```
 
-The latest versions used to test this guide on Ubuntu are as follows:
-```text
-Docker version 27.0.3
-NodeJS version 14.21.3
-npm version 6.14.18
-Apache Maven 3.6.3
-Maven home: /usr/share/maven
-Javaversion: 17.0.12, vendor:Ubuntu,runtime: /usr/lib/jvm/java-17-openjdk-arm64
-Default locale:en_US, platform encoding:ANSI_X3.4-1968
-OS name: "linux",version: "6.6.32-linuxkit",arch:"aarch64", family: "unix"
-openjdk 17.0.12 2024-07-16
-OpenJDK Runtime Environment (build 17.0.12+7-Ubuntu-1ubuntu220.04)
-OpenJDK 64-Bit Server VM (build 17.0.12+7-Ubuntu-1ubuntu220.04, mixed mode, sharing)
+## Running the Infrastructure
+
+### Simple
+
+This is a fully automated script to bring the infra up. Will not edit your hostfiles, but you can use the machine's IP just as well.
+
+```sh
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/refs/heads/main/infrastructure/install.sh
 ```
 
-## Running the Infrastructure
+Or if you want to also do docker login (to avoid rate limits)
+
+```sh
+
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/refs/heads/main/infrastructure/install.sh | bash -s -- dockerUsername dockerPAT
+```
+
+If you don't edit your hostfiles:
+
+```sh
+# Change localhost to whatever IP
+sed -i \"s|external_url 'http://infra.corp.local/gitlab'|external_url 'http://localhost:8082/gitlab'|\" /opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml
+docker compose -f /opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml up -d --wait
+```
+
+### Advanced
+
 To get started, follow the steps below:
 
 1. Clone the repository containing the existing resources:
@@ -88,16 +95,10 @@ To get started, follow the steps below:
     cd build-tools-for-vmware-aria/infrastructure
     ```
 
-3. Create the custom Maven GitLab Runner image by executing:
-    ```bash
-    docker build -t gitlab-runner ./gitlab-runner
-    ```
+4. Open the [docker-compose.yml](docker-compose.yml) file
+    - Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](./nginx/conf.d/main.conf).
 
-4. Open the [docker-compose.yml](docker-compose.yml) file:
-    - Depending on your host OS uncomment the `image` property under the `gitlab` and `nexus` services either tagged with `## Mac` or `## Linux`.
-    - `OPTIONAL` Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](./nginx/conf.d/main.conf).
-
-5. Add the nginx container and the docker internal host endpoints to your `hosts` file.  
+5. Add the nginx container and the docker internal host endpoints to your `hosts` file
     - Docker provides an internal DNS server in user-defined networks (infranet) to resolve container names to their internal IP addresses. Since your nginx and GitLab services are part of the infranet network, they can communicate using their Docker defined hostnames.
 
     - We are going to be accessing the containers from the nginx reverse proxy. For this you need to manually edit the /etc/hosts file on your host machine:
@@ -107,12 +108,12 @@ To get started, follow the steps below:
         127.0.0.1 infra.corp.local
         ```
 
-6. Run the [docker-compose.yml](docker-compose.yml) file:
+6. Run the [docker-compose.yml](docker-compose.yml) file
     ```bash
     docker compose up -d
     ```
 
-7. Validate the containers are created:
+7. Validate the containers are created
     ```bash
     docker ps
     ```
@@ -126,7 +127,7 @@ To get started, follow the steps below:
     17ba02a491e8   gitlab/gitlab-runner     "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes             0.0.0.0:2811->2811/tcp                                gitlab-runner
     ```
 
-8. Wait until all containers are up and running, which might take a few minutes:
+8. Wait until all containers are up and running, which might take a few minutes
     - nginx - [infra.corp.local](http://infra.corp.local)
     - Nexus - [infra.corp.local/nexus](http://infra.corp.local/nexus)
     - GitLab - [infra.corp.local/gitlab](http://infra.corp.local/gitlab)
