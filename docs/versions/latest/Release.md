@@ -31,6 +31,22 @@ There is a new script now that can be executed and it will setup the minimal inf
 
 ## Improvements
 
+### Fixed Errors related to dependency versions
+
+Older dependency versions were used due to committed package-lock.json files.
+
+#### Previous Behavior
+
+When running vrotest, errors were displayed of the type:
+```log
+[ERROR] npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+[ERROR] npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+```
+
+#### New Behavior
+
+Errors related to dependency versions are no longer shown when running vrotest.
+
 ### Fixed Error Running Unit Tests on Linux and Windows
 
 An error affected unit test execution in versions after 4.3.0 without causing the build to fail.

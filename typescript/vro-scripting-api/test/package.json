@@ -7,7 +7,7 @@
     "test:coverage": "nyc npm run test && nyc report"
   },
   "devDependencies": {
-    "jasmine": "^4.0.2",
+    "jasmine": "^5.6.0",
     "nyc": "^15.1.0"
   }
 }
