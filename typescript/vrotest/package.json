@@ -61,23 +61,23 @@
   ],
   "overrides": {
     "gulp-typescript": {
-      "glob": "$glob",
-      "vinyl-fs": "$vinyl-fs"
+      "glob": ">11.0.0",
+      "vinyl-fs": ">3.9.0"
     },
     "istanbul-lib-processinfo": {
-      "glob": "$glob"
+      "glob": ">11.0.0"
     },
     "nyc": {
-      "glob": "$glob"
+      "glob": ">11.0.0"
     },
     "rimraf": {
-      "glob": "$glob"
+      "glob": ">11.0.0"
     },
     "spawn-wrap": {
-      "glob": "$glob"
+      "glob": ">11.0.0"
     },
     "test-exclude": {
-      "glob": "$glob"
+      "glob": ">11.0.0"
     }
   }
 }

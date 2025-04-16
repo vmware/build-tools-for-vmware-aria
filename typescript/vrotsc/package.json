@@ -79,8 +79,8 @@
     },
     "overrides": {
         "gulp-typescript": {
-            "glob": "$glob",
-            "vinyl-fs": "$vinyl-fs"
+            "glob": ">11.0.0",
+            "vinyl-fs": ">3.9.0"
         }
     }
 }

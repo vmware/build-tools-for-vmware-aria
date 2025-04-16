@@ -96,17 +96,17 @@
 	],
 	"overrides": {
 		"gulp-typescript": {
-			"glob": "$glob",
-			"vinyl-fs": "$vinyl-fs"
+			"glob": ">11.0.0",
+			"vinyl-fs": ">3.9.0"
 		},
 		"gulp": {
-			"vinyl-fs": "$vinyl-fs"
+			"vinyl-fs": ">3.9.0"
 		},
 		"archiver-utils": {
-			"glob": "$glob"
+			"glob": ">11.0.0"
 		},
 		"jasmine": {
-			"glob": "$glob"
+			"glob": ">11.0.0"
 		},
 		"vinyl-fs": {
 			"glob-stream": ">8.0.0"
