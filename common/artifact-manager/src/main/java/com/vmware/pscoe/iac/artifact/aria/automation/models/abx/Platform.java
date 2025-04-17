@@ -1,5 +1,4 @@
-
-package com.vmware.pscoe.iac.artifact.model.abx;
+package com.vmware.pscoe.iac.artifact.aria.automation.models.abx;
 
 /*-
  * #%L

@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model.abx;
+package com.vmware.pscoe.iac.artifact.aria.automation.models.abx;
 
 import com.vmware.pscoe.iac.artifact.model.PackageContent;
 
@@ -30,13 +30,13 @@ public class AbxPackageContent extends PackageContent<AbxPackageContent.ContentT
 			this.type = type;
 		}
 
-		public String getTypeValue(){
+		public String getTypeValue() {
 			return this.type;
 		}
 
 		public static ContentType getInstance(String type) {
-			for(ContentType ct: ContentType.values()) {
-				if(ct.getTypeValue().equalsIgnoreCase(type)) {
+			for (ContentType ct : ContentType.values()) {
+				if (ct.getTypeValue().equalsIgnoreCase(type)) {
 					return ct;
 				}
 			}

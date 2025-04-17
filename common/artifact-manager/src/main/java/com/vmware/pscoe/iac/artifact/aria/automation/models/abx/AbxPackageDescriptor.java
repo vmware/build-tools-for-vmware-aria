@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model.abx;
+package com.vmware.pscoe.iac.artifact.aria.automation.models.abx;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonIOException;
@@ -51,7 +51,8 @@ public class AbxPackageDescriptor extends PackageDescriptor {
 	/**
 	 * getInstance() return the instance of the package descriptor with populated
 	 * action data and bundle file.
-	 * @param filesystemPath path to where the package.json resides. 
+	 * 
+	 * @param filesystemPath path to where the package.json resides.
 	 * @return AbxPackageDescriptor instance of the descriptor with parsed abx
 	 *         action data and bundle file.
 	 * @throws RuntimeException if the package.json file cannot be read or parsed or
@@ -63,7 +64,8 @@ public class AbxPackageDescriptor extends PackageDescriptor {
 		String packageJsonPath = filesystemPath.getPath() + File.separator + AbxPackageDescriptor.PACKAGE_JSON;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			AbxAction action = mapper.readValue(FileUtils.readFileToString(new File(packageJsonPath), Charset.defaultCharset()), AbxAction.class);
+			AbxAction action = mapper.readValue(
+					FileUtils.readFileToString(new File(packageJsonPath), Charset.defaultCharset()), AbxAction.class);
 			File bundleFile = new File(filesystemPath, AbxPackageDescriptor.BUNDLE);
 			action.setBundle(Files.readAllBytes(Paths.get(bundleFile.getAbsolutePath())));
 			pd.setAction(action);
