@@ -51,9 +51,9 @@ To check if the dependencies are met, you can run:
 curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
 ```
 
-## Development Playground
+## Quickstart
 
-If you have a dev machine that has access to the internet as well as a linux VM, you can use [go-btva](https://github.com/Michaelpalacce/go-btva) to:
+If you have a dev machine that has access to the internet as well as a linux VM, you can use the zero-dependency [go-btva](https://github.com/Michaelpalacce/go-btva) to:
 - [x] Install needed dependencies
 - [x] Setup local environment for development
 - [x] Setup Artifact Manager and a build server
