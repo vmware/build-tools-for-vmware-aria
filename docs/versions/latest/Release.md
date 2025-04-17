@@ -29,6 +29,10 @@
 
 There is a new script now that can be executed and it will setup the minimal infra.
 
+### *New Tool For Simplified Setup*
+
+Added link to `go-btva` that can be used to get a sandbox up and running, fast.
+
 ## Improvements
 
 ### Fixed Error Running Unit Tests on Linux and Windows
