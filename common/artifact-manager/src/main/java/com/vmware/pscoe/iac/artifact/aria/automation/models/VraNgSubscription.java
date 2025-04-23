@@ -89,7 +89,7 @@ public class VraNgSubscription implements Identifiable {
 			return false;
 		}
 
-		VraNgBlueprint other = (VraNgBlueprint) obj;
+		VraNgSubscription other = (VraNgSubscription) obj;
 		return this.id.equals(other.getId());
 	}
 

@@ -97,7 +97,7 @@ public class VraNgCloudAccount {
 			return false;
 		}
 
-		VraNgBlueprint other = (VraNgBlueprint) obj;
+		VraNgCloudAccount other = (VraNgCloudAccount) obj;
 		return this.id.equals(other.getId());
 	}
 
