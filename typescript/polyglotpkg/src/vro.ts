@@ -84,7 +84,7 @@ export class VroTree {
         const environment = this.options.actionEnvironment;
         let content;
 
-        if (environment !== undefined && environment.length > 0) {
+        if (environment !== undefined && environment !== null && environment.length > 0) {
             content = {
                 'dunes-script-module': {
                     '@name': actionDefintion.platform.action,

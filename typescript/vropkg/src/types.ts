@@ -101,7 +101,8 @@ export class VroActionData {
     version: string;
     params: VroActionParameter[];
     returnType: VroActionParameter;
-    runtime: VroScriptRuntime;
+    runtime?: VroScriptRuntime;
+	environment?: string;
     timeout?: string;
     memoryLimit?: string;
     inline: VroScriptInline; // Inline Script. bundle will be null

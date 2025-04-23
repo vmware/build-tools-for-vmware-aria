@@ -61,6 +61,7 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 	let memoryLimit = actionXml.attr["memory-limit"];
 
 	let runtime = null;
+	let environment = null;
 	let entryHandler = null;
 	let params: Array<t.VroActionParameter> = [];
 	let inline = null;
@@ -78,6 +79,8 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 			params.push(param);
 		} else if (element.type == "element" && element.name == "script") {
 			inline = getScriptInline(file, element, comment);
+		} else if (element.type == "element" && element.name == "environment") {
+			environment = element.val;
 		} else if (element.type == "element" && element.name == "runtime") {
 			runtime = element.val;
 		} else if (element.type == "element" && element.name == "entry-point") {
@@ -100,6 +103,7 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 			params: params,
 			returnType: returnType,
 			runtime: getScriptRuntime(runtime),
+			environment: environment,
 			timeout,
 			memoryLimit,
 			inline: inline,
