@@ -5,6 +5,7 @@
 #else
     "runtime": "python",
 #end
+    "environment": "",
     "action": "auto",
     "tags": [],
     "entrypoint": "handler.handler",

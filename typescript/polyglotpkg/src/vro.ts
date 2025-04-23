@@ -81,28 +81,57 @@ export class VroTree {
 	private generateAction(actionDefintion: VroActionDefinition) {
 
 		const runtime = this.options.actionRuntime;
+        const environment = this.options.actionEnvironment;
+        let content;
 
-		const content = {
-			'dunes-script-module': {
-				'@name': actionDefintion.platform.action,
-				'@result-type': actionDefintion.vro.outputType,
-				'@api-version': '6.0.0',
-				'@id': this.getId(actionDefintion),
-				'@version': (actionDefintion.version || this.DEFAULT_VERSION).replace('-SNAPSHOT', ''),
-				'@allowed-operations': 'vfe',
-				'@memory-limit': (actionDefintion.platform.memoryLimitMb || this.DEFAULT_MEMORY_LIMIT_MB) * 1000 * 1000,
-				'@timeout': actionDefintion.platform.timeoutSec || this.DEFAULT_TIMEOUT_SEC,
-				description: { '$': actionDefintion.description || '' },
-				runtime: { '$': runtime },
-				'entry-point': { '$': actionDefintion.platform.entrypoint },
-				...(actionDefintion.vro.inputs && {
-					param: Object.entries(actionDefintion.vro.inputs).map(([inputName, inputType]) => ({
-						'@n': inputName,
-						'@t': inputType
-					}))
-				}),
-			}
-		}
+        if (environment !== undefined && environment.length > 0) {
+            content = {
+                'dunes-script-module': {
+                    '@name': actionDefintion.platform.action,
+                    '@result-type': actionDefintion.vro.outputType,
+                    '@api-version': '6.0.0',
+                    '@id': this.getId(actionDefintion),
+                    '@version': (actionDefintion.version || this.DEFAULT_VERSION).replace('-SNAPSHOT', ''),
+                    '@allowed-operations': 'vfe',
+                    '@memory-limit': (actionDefintion.platform.memoryLimitMb || this.DEFAULT_MEMORY_LIMIT_MB) * 1000 * 1000,
+                    '@timeout': actionDefintion.platform.timeoutSec || this.DEFAULT_TIMEOUT_SEC,
+                    description: { '$': actionDefintion.description || '' },
+                    environment: { '$': environment },
+                    'entry-point': { '$': actionDefintion.platform.entrypoint },
+                    ...(actionDefintion.vro.inputs && {
+                        param: Object.entries(actionDefintion.vro.inputs).map(([inputName, inputType]) => ({
+                            '@n': inputName,
+                            '@t': inputType
+                        }))
+                    }),
+                }
+            }
+
+        } else {
+            content = {
+                'dunes-script-module': {
+                    '@name': actionDefintion.platform.action,
+                    '@result-type': actionDefintion.vro.outputType,
+                    '@api-version': '6.0.0',
+                    '@id': this.getId(actionDefintion),
+                    '@version': (actionDefintion.version || this.DEFAULT_VERSION).replace('-SNAPSHOT', ''),
+                    '@allowed-operations': 'vfe',
+                    '@memory-limit': (actionDefintion.platform.memoryLimitMb || this.DEFAULT_MEMORY_LIMIT_MB) * 1000 * 1000,
+                    '@timeout': actionDefintion.platform.timeoutSec || this.DEFAULT_TIMEOUT_SEC,
+                    description: { '$': actionDefintion.description || '' },
+                    runtime: { '$': runtime },
+                    'entry-point': { '$': actionDefintion.platform.entrypoint },
+                    ...(actionDefintion.vro.inputs && {
+                        param: Object.entries(actionDefintion.vro.inputs).map(([inputName, inputType]) => ({
+                            '@n': inputName,
+                            '@t': inputType
+                        }))
+                    }),
+                }
+            }
+
+        }
+
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8' }, content)
 		const xml = doc.end({ prettyPrint: true });

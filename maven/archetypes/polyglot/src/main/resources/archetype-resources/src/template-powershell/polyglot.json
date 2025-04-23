@@ -5,6 +5,7 @@
 #else
     "runtime": "powershell",
 #end
+    "environment": "",
     "action": "auto",
     "tags": [],
     "entrypoint": "out/handler.handler"

@@ -12,6 +12,7 @@ describe('E2E Tests', () => {
         'powershell',
         "node:12",
         "node:14",
+        "powershell:7.4",
         "powercli:13-powershell-7.4",
         "powercli:12-powershell-7.4",
         "powercli:12-powershell-7.1",

@@ -22,6 +22,7 @@ export enum Lang {
     javascript,
     node,
     powercli,
+	powershell,
     python
 }
 

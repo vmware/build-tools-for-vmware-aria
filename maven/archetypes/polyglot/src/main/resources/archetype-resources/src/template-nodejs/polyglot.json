@@ -5,6 +5,7 @@
 #else
     "runtime": "nodejs",
 #end
+    "environment": "",
     "action": "auto",  
     "tags": [],
     "entrypoint": "out/handler.handler"
