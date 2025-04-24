@@ -54,18 +54,6 @@ Unit test results are shown as expected.
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Content Sharing Policies Import*
-
-CSPs could not be imported due to a forgotten fetch before creation.
-
-#### Previous Behavior
-
-When importing we were getting an error that id is expected of type UUID.String but was null
-
-#### New Behavior
-
-CSPs are no longer fetched prior to updating to set their ID.
-
 ### *Fixed Error with Pulling vROPs policies*
 
 Fixed error during pulling of vROPs policies due to missing *policiesMetadata.vrops.json* file.
