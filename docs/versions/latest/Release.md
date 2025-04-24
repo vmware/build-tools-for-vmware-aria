@@ -58,6 +58,18 @@ Unit test results are shown as expected.
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Fixed Error with Pulling vROPs policies*
+
+Fixed error during pulling of vROPs policies due to missing *policiesMetadata.vrops.json* file.
+
+#### Previous Behavior
+
+Due to error while creating of the *policiesMetadata.vrops.json* file when exporting vROPs policies they cannot be exported.
+
+#### New Behavior
+
+Policies can be exported successfully, the *policiesMetadata.vrops.json* file creation and reading is removed, as it is no longer needed. When custom groups that are dependent on policies are exported the name of the policy is stored in the custom group JSON file. When importing those custom groups their policies are searched in the target system prior import, if they cannot be found an error will be thrown.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
