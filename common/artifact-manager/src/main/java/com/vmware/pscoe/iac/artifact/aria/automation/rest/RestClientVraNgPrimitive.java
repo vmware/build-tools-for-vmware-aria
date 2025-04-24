@@ -64,6 +64,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgRegion;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgScenario;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContentSource;
@@ -134,6 +135,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * SERVICE_SUBSCRIPTION.
 	 */
 	private static final String SERVICE_SUBSCRIPTION = "/event-broker/api/subscriptions";
+	/**
+	 * SERVICE_SCENARIO.
+	 */
+	private static final String SERVICE_SCENARIO = "/notification/api/scenario-configs";
 	/**
 	 * SERVICE_CLOUD_ACCOUNT.
 	 */
@@ -1009,6 +1014,116 @@ public class RestClientVraNgPrimitive extends RestClient {
 		});
 
 		return subscriptions;
+	}
+
+	/**
+	 * Import Scenario.
+	 *
+	 * @param scenarioJson scenario JSON
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
+	 */
+	protected void importScenarioPrimitive(final String scenarioJson)
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_SCENARIO).setParameter("expandBody", "true").build();
+
+		this.postJsonPrimitive(url, HttpMethod.POST, scenarioJson);
+	}
+
+	/**
+	 * Retrieve a scenario.
+	 *
+	 * @param objId objId
+	 * @return the response
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
+	 */
+	protected VraNgScenario getScenarioPrimitive(final String objId)
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").setParameter("defaultConfig", "true").build();
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
+			String.class);
+		
+		JsonElement root = JsonParser.parseString(response.getBody());
+
+		if (root.isJsonObject()) {
+			JsonObject ob = root.getAsJsonObject();
+
+			Boolean enabled = ob.get("enabled").getAsBoolean();
+			String scenarioCategory = ob.get("scenarioCategory").getAsString();
+			String scenarioName = ob.get("scenarioName").getAsString();
+			String scenarioId = ob.get("scenarioId").getAsString();
+			String subject = ob.get("subject").getAsString();
+			String body = ob.get("body").getAsString();
+
+			return new VraNgScenario(enabled, scenarioCategory, scenarioName, scenarioId, subject, body);
+		}
+		return null;
+	}
+
+	/**
+	 * Retrieve Scenario by name.
+	 *
+	 * @return VraNg Scenario.
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
+	 */
+	protected VraNgScenario getScenarioByNamePrimitive(final String name)
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_SCENARIO).build();
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
+			String.class);
+		
+		JsonElement root = JsonParser.parseString(response.getBody());
+
+		if (root.isJsonObject()) {
+			JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
+
+			for(JsonElement o: content) {
+				JsonObject ob = o.getAsJsonObject();
+				String scenarioName = ob.get("scenarioName").getAsString();
+				if (scenarioName.equals(name)) {
+					String scenarioId = ob.get("scenarioId").getAsString();
+					try {
+						VraNgScenario scenario = getScenarioPrimitive(scenarioId);
+						if (scenario != null) {
+							return scenario;
+						}	
+					} catch (Exception ignore) {}
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Retrieve All Scenarios.
+	 *
+	 * @return VraNg Scenarios.
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
+	 */
+	protected List<VraNgScenario> getAllScenariosPrimitive()
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_SCENARIO).build();
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
+			String.class);
+		
+		JsonElement root = JsonParser.parseString(response.getBody());
+
+		List<VraNgScenario> scenarios = new ArrayList<>();
+
+		if (root.isJsonObject()) {
+			JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
+
+			content.forEach(o -> {
+				JsonObject ob = o.getAsJsonObject();
+				String scenarioId = ob.get("scenarioId").getAsString();
+				try {
+					VraNgScenario scenario = getScenarioPrimitive(scenarioId);
+					if (scenario != null) {
+						scenarios.add(scenario);
+					}
+				} catch(Exception ignore) {}
+			});
+		}
+		return scenarios;
 	}
 
 	/**

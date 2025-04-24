@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
@@ -46,6 +47,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgRegion;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgScenario;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContentSource;
@@ -403,6 +405,54 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "orgId", orgId)
 				+ " and " + String.format(SUBSCRIPTION_QUERY_PARAM, "name", name);
 		return getAllSubscriptionsPrimitive(query);
+	}
+
+	// =================================================
+	// SCENARIO OPERATIONS
+	// =================================================
+
+	/**
+	 * importScenario.
+	 *
+	 * @param scenarioName scenario name
+	 * @param scenarioJson scenario json
+	 */
+	public void importScenario(final String scenarioName, final String scenarioJson) {
+		try {
+			importScenarioPrimitive(scenarioJson);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not import Scenario with name '%s'.", scenarioName),
+					e);
+		}
+	}
+
+	/**
+	 * getAllScenarios.
+	 *
+	 * @return scenarios
+	 */
+	public List<VraNgScenario> getAllScenarios() {
+		try {
+			return getAllScenariosPrimitive();
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not read Scenarios from server."),
+					e);
+		}
+	}
+
+	/**
+	 * getScenarioByName.
+	 *
+	 * @param name scenario name
+	 * @return scenario
+	 */
+	public VraNgScenario getScenarioByName(final String name) {
+		try {
+			return getScenarioByNamePrimitive(name);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not import Scenario with name '%s'.", name),
+					e);
+		}
 	}
 
 	// =================================================
