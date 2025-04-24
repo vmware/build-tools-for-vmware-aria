@@ -33,6 +33,11 @@ There is a new script now that can be executed and it will setup the minimal inf
 
 Added link to `go-btva` that can be used to get a sandbox up and running, fast.
 
+### *Polyglot actions support VRO custom environments*
+
+Polyglot actions can be set with custom environments.
+To use this feature, add to polyglot.json of the action a new platform.environment parameter containing environment uuid as value.
+
 ## Improvements
 
 ### Fixed Error Running Unit Tests on Linux and Windows
