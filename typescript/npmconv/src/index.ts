@@ -21,8 +21,24 @@ import ImportsRewriter from "./rewriter";
 import tscfgmerge from "./tscfgmerge";
 import * as t from "./types";
 
-// TODO replace - has vulnerabilities
-const gitclone: (url: string, dest: string, opts: any, cb: (err?: Error) => any) => void = require('git-clone');
+function gitclone(repoUrl, targetPath, opts, cb) {
+	const proc = cp.spawn('git', ['clone', ...(opts.shallow ? ['--depth', '1'] : []), '--', repoUrl, targetPath]);
+	proc.on('close', (status) => {
+		if (status !== 0) {
+			cb(new Error("'git clone' failed with status " + status));
+			return;
+		}
+		// checking out
+		const proc = cp.spawn('git', ['checkout', opts.checkout], { cwd: targetPath });
+		proc.on('close', function (status) {
+			if (status == 0) {
+				cb();
+			} else {
+				cb(new Error("'git checkout' failed with status " + status));
+			}
+		});
+	});
+}
 
 export class NpmConverter {
 	private packRep: {
