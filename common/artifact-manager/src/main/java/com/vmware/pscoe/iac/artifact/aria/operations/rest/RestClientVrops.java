@@ -54,6 +54,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.Strictness;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
@@ -505,13 +506,12 @@ public class RestClientVrops extends RestClient {
 		}
 
 		logger.info("Ordering policies by priority '{}'", this.concatenateList(policyNames, ", "));
-		Gson gson = new GsonBuilder().setLenient().create();
+		Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).create();
 		try {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromUri(new URI(getURIBuilder().setPath(POLICY_PRIORITY_PUBLIC_API).toString()));
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(POLICY_PRIORITY_PUBLIC_API).toString()));
 			URI restUri = uriBuilder.build().toUri();
 			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			headers.setContentType(MediaType.APPLICATION_JSON);
 			Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 			List<String> mergedPolicyIds = policyIds;
 			// in order priority list to work properly preserve the current ordering for the
@@ -579,7 +579,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public List<PolicyDTO.Policy> getAllPolicies() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		// older vROPs versions use internal API for policies, thus internal header
 		// needs to be set.
@@ -677,7 +677,7 @@ public class RestClientVrops extends RestClient {
 	public void applyPolicyToCustomGroups(PolicyDTO.Policy policy, List<CustomGroupDTO.Group> groups) {
 		UriComponentsBuilder uriBuilder;
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		// for newer vROPs versions the policies API is no longer internal.
 		if (this.isVersionAbove812()) {
@@ -763,7 +763,7 @@ public class RestClientVrops extends RestClient {
 		URI restUri = getDefinitionUri(definitionType, definitionId);
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
@@ -795,7 +795,7 @@ public class RestClientVrops extends RestClient {
 		URI restUri = getDefinitionUri(definitionType);
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
@@ -846,10 +846,8 @@ public class RestClientVrops extends RestClient {
 	 * 
 	 * @param customGroupName    - the custom group name.
 	 * @param customGroupPayload - the payload of the custom group as json.
-	 * @param policyIdMap        - the policy mappings.
 	 */
-	public void importCustomGroupInVrops(String customGroupName, String customGroupPayload,
-			Map<String, String> policyIdMap) {
+	public void importCustomGroupInVrops(String customGroupName, String customGroupPayload) {
 		if (StringUtils.isEmpty(customGroupPayload)) {
 			return;
 		}
@@ -858,9 +856,14 @@ public class RestClientVrops extends RestClient {
 		HttpMethod method = customGroupExists(customGroupPayload) ? HttpMethod.PUT : HttpMethod.POST;
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
 
+		// resolve the  policy id from the name
+		PolicyDTO.Policy policy = this.findPolicyByName(customGroup.getPolicy());
+		customGroup.setPolicy(policy.getId());
+
 		// vROPs requires the group type to exists prior to creating
 		createMissingGroupTypes(customGroup);
 
+		customGroupPayload = deserializeCustomGroup(customGroup);
 		// vROPs requires the group id to be set to null prior creating it
 		if (HttpMethod.POST.equals(method)) {
 			customGroupPayload = setCustomGroupIdToNull(customGroupPayload);
@@ -868,7 +871,7 @@ public class RestClientVrops extends RestClient {
 			customGroupPayload = updateCustomGroupId(serializeCustomGroup(customGroupPayload), customGroupPayload);
 		}
 
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(customGroupPayload, headers);
 		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
@@ -910,7 +913,7 @@ public class RestClientVrops extends RestClient {
 		// Update policy for the custom group (if any)
 		// Note: due to bug in the API of vROPs the updating for the policy of
 		// a custom group should be done via separate call to the vROPs public API
-		updateCustomGroupPolicy(customGroupPayload, policyIdMap);
+		updateCustomGroupPolicy(customGroupPayload, policy);
 	}
 
 	/**
@@ -943,7 +946,7 @@ public class RestClientVrops extends RestClient {
 	public void createCustomGroupType(String customGroupType) {
 		logger.info(String.format("Custom group type doesn't exist. Creating custom group type '%s'", customGroupType));
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		CustomGroupTypeDTO customGroupTypeDto = new CustomGroupTypeDTO();
 		customGroupTypeDto.setName(customGroupType);
 		String customGroupTypePayload = deserializeCustomGroupType(customGroupTypeDto);
@@ -1013,7 +1016,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public ResourcesDTO getResourcesPerAdapterType(final String adapterType, final Long page) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		String endpointName = String.format(RESOURCES_LIST_PER_ADAPTER_KIND, adapterType);
@@ -1090,7 +1093,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public ResourcesDTO getResources(final Long page) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		try {
@@ -1131,7 +1134,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public SupermetricDTO getAllSupermetrics() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 		SupermetricDTO retVal = new SupermetricDTO();
@@ -1178,7 +1181,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public ViewDefinitionDTO getAllViewDefinitions() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		// Required header for internal API
 		headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
 		HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -1223,7 +1226,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public ReportDefinitionDTO getAllReportDefinitions() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
 		ReportDefinitionDTO retVal = new ReportDefinitionDTO();
@@ -1271,7 +1274,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public List<AuthGroupDTO> findAllAuthGroups() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
 		List<AuthGroupDTO> retVal = new ArrayList<>();
@@ -1312,7 +1315,7 @@ public class RestClientVrops extends RestClient {
 	 */
 	public List<AuthUserDTO> findAllAuthUsers() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
 		List<AuthUserDTO> retVal = new ArrayList<>();
@@ -1444,10 +1447,10 @@ public class RestClientVrops extends RestClient {
 	/**
 	 * Update policy for custom group.
 	 * 
-	 * @param customGroupPayload
-	 * @param policyIdMap
+	 * @param customGroupPayload - JSON string of the custom group payload.
+	 * @param policy - policy that will be applied to the custom group.
 	 */
-	private void updateCustomGroupPolicy(String customGroupPayload, Map<String, String> policyIdMap) {
+	private void updateCustomGroupPolicy(String customGroupPayload, PolicyDTO.Policy policy) {
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
 		if (customGroup == null) {
 			return;
@@ -1459,44 +1462,28 @@ public class RestClientVrops extends RestClient {
 		}
 
 		String customGroupName = customGroup.getResourceKey().getName();
-		// throw an exception if the custom group has a policy but it cannot be found in
-		// the mapping data
-		if (!policyIdMap.containsKey(policyId)) {
-			throw new RuntimeException(
-					String.format("The policy for custom group '%s' could not be found in the policy metadata file",
-							customGroupName));
-		}
-
 		// find the custom group in the target system
 		customGroup = findCustomGroupByName(customGroupName);
 		if (customGroup == null) {
-			throw new RuntimeException(
-					String.format("Custom group '%s' cannot be found on the target system", customGroupName));
+			throw new RuntimeException(String.format("Custom group '%s' cannot be found on the target system", customGroupName));
 		}
-
-		// find policy in the target system
-		String policyName = policyIdMap.get(policyId);
-		PolicyDTO.Policy policy = findPolicyByName(policyName);
-		customGroup.setPolicy(policy.getId());
 
 		// prepare rest call payload
 		customGroupPayload = deserializeCustomGroup(customGroup);
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(customGroupPayload, headers);
 		ResponseEntity<String> responseEntity;
-		logger.info("Setting policy for custom group '{}' to '{}'", customGroupName, policyName);
+		logger.info("Setting policy for custom group '{}' to '{}'", customGroupName, policy.getName());
 		try {
 			URI restUri = new URI(getURIBuilder().setPath(CUSTOM_GROUPS_UPDATE_API).toString());
 			responseEntity = restTemplate.exchange(restUri, HttpMethod.PUT, entity, String.class);
 		} catch (RestClientException e) {
-			throw new RuntimeException(String.format("Unable to update policy for custom group '%s' : %s",
-					customGroupName, e.getMessage()), e);
+			throw new RuntimeException(String.format("Unable to update policy for custom group '%s' : %s", customGroupName, e.getMessage()), e);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(
-					String.format("Unable to determine REST endpoint for updating policy for custom group '%s' : %s",
-							customGroupName, e.getMessage()),
+					String.format("Unable to determine REST endpoint for updating policy for custom group '%s' : %s", customGroupName, e.getMessage()),
 					e);
 		}
 
@@ -1639,7 +1626,7 @@ public class RestClientVrops extends RestClient {
 	private List<CustomGroupDTO.Group> findCustomGroupsByNames(List<String> customGroupNames) {
 		List<CustomGroupDTO.Group> retVal = new ArrayList<>();
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
 		String groupInfo = customGroupNames != null && !customGroupNames.isEmpty()
@@ -1751,7 +1738,7 @@ public class RestClientVrops extends RestClient {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(definitionPayload, headers);
 		ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
 		String definitionName = getDefinitionName(definition, definitionType);
@@ -2012,7 +1999,7 @@ public class RestClientVrops extends RestClient {
 			throw new RuntimeException(e);
 		}
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		ResponseEntity<String> response;
@@ -2041,7 +2028,7 @@ public class RestClientVrops extends RestClient {
 
 	private ResourcesDTO.PageInfo getResourcePerAdapterKindPageInfo(String adapterKind) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
 		String endpointName = String.format(RESOURCES_LIST_PER_ADAPTER_KIND, adapterKind);
@@ -2087,7 +2074,7 @@ public class RestClientVrops extends RestClient {
 
 	private ResourcesDTO.PageInfo getResourcePageInfo() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
 		try {
@@ -2136,16 +2123,15 @@ public class RestClientVrops extends RestClient {
 		}
 
 		// get all resource kinds on the target system
-		ResourceKindDTO resourceKindObject = getAllResourceKinds(adapterKindKey);
+		ResourceKindDTO resourceKindObject = getResourceKindsPerAdapterKind(adapterKindKey);
 		if (resourceKindObject == null) {
 			return false;
 		}
 
-		return resourceKindObject.getResourceKind().stream()
-				.anyMatch(item -> resourceKindKey.equalsIgnoreCase(item.getKey()));
+		return resourceKindObject.getResourceKind().stream().anyMatch(item -> resourceKindKey.equalsIgnoreCase(item.getKey()));
 	}
 
-	private ResourceKindDTO getAllResourceKinds(String adapterKindKey) {
+	private ResourceKindDTO getResourceKindsPerAdapterKind(String adapterKindKey) {
 		if (StringUtils.isEmpty(adapterKindKey)) {
 			return new ResourceKindDTO();
 		}
@@ -2159,7 +2145,7 @@ public class RestClientVrops extends RestClient {
 			throw new RuntimeException(e);
 		}
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		ResponseEntity<String> response;
@@ -2349,7 +2335,7 @@ public class RestClientVrops extends RestClient {
 			throw new RuntimeException(e);
 		}
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		ResponseEntity<String> response;
