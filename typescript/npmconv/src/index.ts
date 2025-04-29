@@ -13,19 +13,16 @@
  * #L%
  */
 import * as glob from "glob";
-
 import * as path from "path";
-
 import * as fs from "fs-extra";
-
 import * as cp from "child_process";
-
-import * as dwonloadGit from "download-git-repo";
-
 import { NpmProxy, DependenciesMapper } from "./deps";
 import ImportsRewriter from "./rewriter";
 import tscfgmerge from "./tscfgmerge";
 import * as t from "./types";
+
+// TODO replace - has vulnerabilities
+const gitclone: (url: string, dest: string, opts: any, cb: (err?: Error) => any) => void = require('git-clone');
 
 export class NpmConverter {
 	private packRep: {
@@ -71,10 +68,17 @@ export class NpmConverter {
 			await fs.ensureDir(this.opts.source.directory);
 			await ensureGone(this.opts.source.directory);
 
-			console.log(`Cloning source repo from: ${gitRepo} to ${this.opts.source.directory}`);
+			const dest = this.opts.source.directory;
+			console.log(`Cloning source repo from: ${gitRepo} to ${dest}`);
+			const [all, url, branch] = /^(?:([^#]+)(?:#(.+))?)$/.exec(gitRepo);
 			await new Promise((resolve, reject) => {
-				dwonloadGit(`direct:${gitRepo}`, this.opts.source.directory, { clone: true }, err => {
-					err ? reject(err) : resolve(undefined);
+				gitclone(url, dest, { checkout: branch || 'master', shallow: !branch }, (err) => {
+					if (err) {
+						return reject(err);
+					} else {
+						fs.removeSync(dest + '/.git');
+						resolve(undefined);
+					}
 				});
 			});
 			console.debug("Cloning done.");
