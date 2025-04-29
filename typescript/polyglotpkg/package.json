@@ -53,7 +53,7 @@
     "@types/node": "^22.10.1",
     "@types/adm-zip": "^0.5.7",
     "@types/command-line-args": "^5.2.3",
-    "@types/lodash": "4.17.13",
+    "@types/lodash": "4.17.16",
     "@types/which": "^3.0.4",
     "run-script-os": "^1.1.6",
     "ts-node": "^10.9.2",
