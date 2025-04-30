@@ -17,6 +17,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store.models;
 public enum VraNgPackageMemberType {
 	BLUEPRINT("blueprint"),
 	SUBSCRIPTION("subscription"),
+	SCENARIO("scenario"),
 	CATALOG_ENTITLEMENT("catalog-entitlement"),
 	CUSTOM_RESOURCE("custom-resource"),
 	RESOURCE_ACTION("resource-action"),
