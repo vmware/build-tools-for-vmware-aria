@@ -21,22 +21,48 @@ import ImportsRewriter from "./rewriter";
 import tscfgmerge from "./tscfgmerge";
 import * as t from "./types";
 
-function gitclone(repoUrl, targetPath, opts, cb) {
-	const proc = cp.spawn('git', ['clone', ...(opts.shallow ? ['--depth', '1'] : []), '--', repoUrl, targetPath]);
+/**
+ * Regex for direct type repo URLs (of type <repo url>#<branch>)
+ * Extracted from download-git-repo
+ */
+const DIRECT_REPO_URL_PATTERN = /^(?:([^#]+)(?:#(.+))?)$/;
+/**
+ * Clones git repository. Checks out branch, if provided, or master/main otherwise
+ * Extracted from download-git-repo for direct type repo URLs
+ * @param {string} repoUrl 
+ * @param {string} targetPath - where the repo will be cloned
+ * @param {string} branch - branch to checkout, if not provided will try 'master' or 'main'
+ * @param {function} cb - callback function to execute on error (with error as parameter) or success (no error parameter)
+ */
+function gitClone(repoUrl: string, targetPath: string, branch: string, cb: (err?: Error) => any) {
+	const defaultBranches = ["master", "main"];
+	const shallowDepth = !branch || defaultBranches.indexOf(branch) >= 0 ? ['--depth', '1'] : [];
+	const proc = cp.spawn('git', ['clone', ...shallowDepth, '--', repoUrl, targetPath]);
 	proc.on('close', (status) => {
-		if (status !== 0) {
+		if (status === 0) {
+			gitCheckout(!branch ? defaultBranches : [branch], targetPath, cb); 
+		} else {
 			cb(new Error("'git clone' failed with status " + status));
-			return;
 		}
-		// checking out
-		const proc = cp.spawn('git', ['checkout', opts.checkout], { cwd: targetPath });
-		proc.on('close', function (status) {
-			if (status == 0) {
-				cb();
-			} else {
-				cb(new Error("'git checkout' failed with status " + status));
-			}
-		});
+	});
+}
+
+/**
+ * Tries to checkout a branch
+ * @param {string[]} branchesToTry - array of branches to try and checkout, will be consumed sequentially until empty
+ * @param {string} cwd - directory where the repo is cloned
+ * @param {function} cb - callback function to execute on error (with error as parameter) or success (no error parameter)
+ */
+function gitCheckout(branchesToTry: string[], cwd: string, cb: (err?: Error) => any) {
+	const proc = cp.spawn('git', ['checkout', branchesToTry.shift()], { cwd });
+	proc.on('close', function (status) {
+		if (status == 0) {
+			cb();
+		} else if (branchesToTry.length) {
+			gitCheckout(branchesToTry, cwd, cb);
+		} else {
+			cb(new Error("'git checkout' failed with status " + status));
+		}
 	});
 }
 
@@ -86,11 +112,11 @@ export class NpmConverter {
 
 			const dest = this.opts.source.directory;
 			console.log(`Cloning source repo from: ${gitRepo} to ${dest}`);
-			const [all, url, branch] = /^(?:([^#]+)(?:#(.+))?)$/.exec(gitRepo);
+			const [all, url, branch] = DIRECT_REPO_URL_PATTERN.exec(gitRepo);
 			await new Promise((resolve, reject) => {
-				gitclone(url, dest, { checkout: branch || 'master', shallow: !branch }, (err) => {
+				gitClone(url, dest, branch, (err) => {
 					if (err) {
-						return reject(err);
+						reject(err);
 					} else {
 						fs.removeSync(dest + '/.git');
 						resolve(undefined);
