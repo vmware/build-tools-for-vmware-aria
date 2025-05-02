@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCloudAccount;
 

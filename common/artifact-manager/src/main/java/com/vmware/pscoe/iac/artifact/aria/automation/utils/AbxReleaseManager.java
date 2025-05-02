@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.aria.automation.utils;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 
 public class AbxReleaseManager {
@@ -52,7 +52,8 @@ public class AbxReleaseManager {
 	/**
 	 * Release content of an action based on version.
 	 * 
-	 * @param version version to release (if set to 'auto', version will be incremented automatically).
+	 * @param version version to release (if set to 'auto', version will be
+	 *                incremented automatically).
 	 * @param baseDir base directory to use.
 	 */
 	public void releaseContent(String version, File baseDir) {
@@ -145,7 +146,8 @@ public class AbxReleaseManager {
 			logger.debug("Detected version pattern MAJOR.MINOR from '{}' with incrementable segment '{}'", version,
 					majorMinor.group(NEXT_VER_GROUP_2));
 			// increment the minor segment
-			return majorMinor.group(NEXT_VER_GROUP_1) + "." + (Integer.parseInt(majorMinor.group(NEXT_VER_GROUP_2)) + 1);
+			return majorMinor.group(NEXT_VER_GROUP_1) + "."
+					+ (Integer.parseInt(majorMinor.group(NEXT_VER_GROUP_2)) + 1);
 		} else if (major.matches()) {
 			logger.debug("Detected version pattern MAJOR from '{}' with incrementable segment '{}'", version,
 					major.group(1));

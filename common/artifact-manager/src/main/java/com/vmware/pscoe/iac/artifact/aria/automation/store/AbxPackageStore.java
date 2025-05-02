@@ -12,15 +12,18 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxPackageContent;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.PackageManager;
+import com.vmware.pscoe.iac.artifact.PackageStore;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import org.apache.commons.lang3.NotImplementedException;
@@ -56,7 +59,7 @@ public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	 * @param restClientVraNg vRA Rest Client
 	 * @param abxConfig       abx configuration
 	 */
-	protected AbxPackageStore(final RestClientVraNg restClientVraNg, final ConfigurationAbx abxConfig) {
+	public AbxPackageStore(final RestClientVraNg restClientVraNg, final ConfigurationAbx abxConfig) {
 		this.restClient = restClientVraNg;
 		this.config = abxConfig;
 	}
