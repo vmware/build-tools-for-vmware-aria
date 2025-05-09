@@ -1030,6 +1030,17 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
+	 * Delete a scenario customization.
+	 *
+	 * @param objId objId
+	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
+	 */
+	protected ResponseEntity<String> deleteScenarioPrimitive(final String objId)
+			throws URISyntaxException {
+		URI url = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).build();
+		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+	}
+	/**
 	 * Retrieve a scenario.
 	 *
 	 * @param objId objId

@@ -60,7 +60,7 @@ public class VraNgScenarioStore extends AbstractVraNgStore {
 	 * @param resId - id of the scenario
 	 */
 	protected void deleteResourceById(String resId) {
-		throw new RuntimeException("Delete operation is not supported for scenarios.");
+		this.restClient.deleteScenario(resId);
 	}
 
 	/**

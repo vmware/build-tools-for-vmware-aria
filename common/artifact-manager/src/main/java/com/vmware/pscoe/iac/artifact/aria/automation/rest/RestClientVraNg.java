@@ -427,6 +427,24 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
+	 * Deletes a scenario customization.
+	 *
+	 * @param scenarioId scenario id
+	 */
+	public void deleteScenario(final String scenarioId) {
+		try {
+			logger.info("Deleting scenario with id '{}'", scenarioId);
+			ResponseEntity<String> res = deleteScenarioPrimitive(scenarioId);
+
+			if (!res.getStatusCode().is2xxSuccessful()) {
+				logger.error("Failed to delete scenario with id '{}'", scenarioId);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Could not delete Scenario with id '%s'.", scenarioId), e);
+		}
+	}
+	
+	/**
 	 * getAllScenarios.
 	 *
 	 * @return scenarios

@@ -130,7 +130,8 @@ public class VraNgTypeStoreFactory {
 			// The following
 			RESOURCE_ACTION,
 			PROPERTY_GROUP,
-			CUSTOM_RESOURCE
+			CUSTOM_RESOURCE,
+			SCENARIO
 	};
 
 	/**
