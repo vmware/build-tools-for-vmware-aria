@@ -16,7 +16,7 @@ String licenseUrl = request.properties.get("licenseUrl")
 String licenseHeader = request.properties.get("licenseHeader")
 String type = request.properties.get("type")
 
-if (type !== "vro") {
+if (type == "abx") {
     File resources = projectPath.resolve("src/resources").toFile()
     resources.deleteDir()
 }

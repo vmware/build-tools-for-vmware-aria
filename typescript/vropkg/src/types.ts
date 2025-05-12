@@ -67,6 +67,7 @@ export enum VroElementType {
     PolicyTemplate = "PolicyTemplate",
     ResourceElement = "ResourceElement",
     ConfigurationElement = "ConfigurationElement",
+	ActionEnvironment = "ActionEnvironment",
 }
 
 export class VroActionParameter {
