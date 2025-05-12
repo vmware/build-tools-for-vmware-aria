@@ -25,13 +25,6 @@
 [//]: # (#### Relevant Documentation:)
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
-### *Simplified Minimal Infra Setup*
-
-There is a new script now that can be executed and it will setup the minimal infra.
-
-### *New Tool For Simplified Setup*
-
-Added link to `go-btva` that can be used to get a sandbox up and running, fast.
 
 ### *Polyglot actions support VRO custom environments*
 
@@ -39,18 +32,6 @@ Polyglot actions can be set with custom environments.
 To use this feature, add to polyglot.json of the action a new platform.environment parameter containing environment uuid as value.
 
 ## Improvements
-
-### Fixed Error Running Unit Tests on Linux and Windows
-
-An error affected unit test execution in versions after 4.3.0 without causing the build to fail.
-
-#### Previous Behavior
-
-An error of the type "Error occurred in unit tests execution:" was shown instead of unit test results.
-
-#### New Behavior
-
-Unit test results are shown as expected.
 
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)

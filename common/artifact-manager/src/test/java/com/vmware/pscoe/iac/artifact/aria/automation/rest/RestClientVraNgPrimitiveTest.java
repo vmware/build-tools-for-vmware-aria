@@ -59,7 +59,6 @@ import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.PropertyGroupMockBuilder;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestDouble;
 import com.vmware.pscoe.iac.artifact.helpers.vrang.RestClientVraNgPrimitiveTestResponseProvider;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCloudAccount;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSharingPolicy;
@@ -68,6 +67,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 
 @SuppressWarnings("unchecked")

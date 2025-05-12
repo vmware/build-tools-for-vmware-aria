@@ -16,8 +16,8 @@ package com.vmware.pscoe.maven.plugins;
 
 import java.util.Arrays;
 
-import com.vmware.pscoe.iac.artifact.AbxReleaseManager;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
+import com.vmware.pscoe.iac.artifact.aria.automation.utils.AbxReleaseManager;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -30,7 +30,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-
 
 @Mojo(name = "release", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class ReleaseMojo extends AbstractIacMojo {
@@ -66,18 +65,22 @@ public class ReleaseMojo extends AbstractIacMojo {
 
 			if (PackageType.VRANG == packageType || PackageType.VRANGv3 == packageType) {
 
-				RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
+				RestClientVraNg restClient = RestClientFactory
+						.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
 				VraNgReleaseManager releaseManager = new VraNgReleaseManager(restClient);
-				releaseManager.releaseContent(this.contentType, Arrays.asList(this.contentNames), this.version, this.releaseIfNotUpdated);
+				releaseManager.releaseContent(this.contentType, Arrays.asList(this.contentNames), this.version,
+						this.releaseIfNotUpdated);
 
 			} else if (PackageType.ABX == packageType) {
 
-				RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
+				RestClientVraNg restClient = RestClientFactory
+						.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
 				AbxReleaseManager releaseManager = new AbxReleaseManager(restClient);
 				releaseManager.releaseContent(this.version, project.getBasedir());
 
 			} else {
-				getLog().warn(String.format("Skipping release because of unsupported artifact type '%s'", artifactType));
+				getLog().warn(
+						String.format("Skipping release because of unsupported artifact type '%s'", artifactType));
 			}
 
 		} catch (ConfigurationException e) {
