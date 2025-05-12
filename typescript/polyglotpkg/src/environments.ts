@@ -26,9 +26,6 @@ import Zip from 'adm-zip';
 export class VroEnvironment {
 
 	private readonly scriptModuleDir: string
-	private readonly DEFAULT_VERSION = '1.0.0';
-	private readonly DEFAULT_MEMORY_LIMIT_MB = 64;
-	private readonly DEFAULT_TIMEOUT_SEC = 180;
 
 	constructor(private readonly logger: Logger, private readonly options: PackagerOptions) {
         this.scriptModuleDir = path.join(this.options.vro, 'src', 'main', 'resources', 'ScriptModule');
@@ -68,6 +65,7 @@ export class VroEnvironment {
 			'properties': {
 				comment: 'UTF-16',
 				entry: [
+                    { '@key': 'categoryPath', '#': '', },
 					{ '@key': 'type', '#': 'ActionEnvironment', },
 					{ '@key': 'id', '#': this.getId(source), },
 				]
