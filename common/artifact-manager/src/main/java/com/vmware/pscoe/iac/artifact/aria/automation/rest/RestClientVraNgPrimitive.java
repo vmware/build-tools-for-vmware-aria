@@ -35,9 +35,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
@@ -67,6 +64,9 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPo
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContentSource;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 
@@ -2419,6 +2419,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
+		VraNgContentSharingPolicy existingPolicy = this.getContentSharingPolicyPrimitive(csPolicy.getId());
+		// if the policy does not exist remove its id in order to be created, otherwise
+		// update it
+		if (existingPolicy == null) {
+			csPolicy.setId(null);
+		}
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
