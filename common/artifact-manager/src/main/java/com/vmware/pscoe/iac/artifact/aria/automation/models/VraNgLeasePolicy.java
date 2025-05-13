@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 /**
 
 */
-public class VraNgLeasePolicy implements Identifiable {
+public class VraNgLeasePolicy implements IVraNgPolicy {
 
 	/**
 	 * Unique identifier for the policy.
