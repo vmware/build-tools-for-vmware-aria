@@ -2427,7 +2427,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 		String jsonBody = new Gson().toJson(csPolicy);
-		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+		LOGGER.debug(String.format("createContentSharingPolicyPrimitive - status %s, body: %s", response.getStatusCode(), response.getBody()));
+		if (!response.getStatusCode().is2xxSuccessful()) {
+			throw new RuntimeException(String.format("Failed to create Content Sharing Policy. Status: ", response.getStatusCode()));
+		}
 	}
 
 	// =================================================
@@ -2470,7 +2474,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(rqPolicy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			LOGGER.debug(String.format("createResourceQuotaPolicyPrimitive - status %s, body: %s",
+					response.getStatusCode(), response.getBody()));
+			if (!response.getStatusCode().is2xxSuccessful()) {
+				throw new RuntimeException(
+						String.format("Failed to create REsource Quota Policy. Status: ", response.getStatusCode()));
+			}
 		} else {
 			throw (new UnsupportedOperationException(
 					"Policy import/export supported in VRA Versions  8.10.x or newer."));
@@ -2534,7 +2544,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(d2aPolicy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			LOGGER.debug(String.format("createDay2ActionsPolicyPrimitive - status %s, body: %s",
+					response.getStatusCode(), response.getBody()));
+			if (!response.getStatusCode().is2xxSuccessful()) {
+				throw new RuntimeException(
+						String.format("Failed to create Day Two Actions Policy. Status: ", response.getStatusCode()));
+			}
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
@@ -2614,7 +2630,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(policy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			LOGGER.debug(String.format("createLeasePolicyPrimitive - status %s, body: %s",
+					response.getStatusCode(), response.getBody()));
+			if (!response.getStatusCode().is2xxSuccessful()) {
+				throw new RuntimeException(
+						String.format("Failed to create Lease Policy. Status: ", response.getStatusCode()));
+			}
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
@@ -2635,7 +2657,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(policy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			LOGGER.debug(String.format("createDeploymentLimitPolicyPrimitive - status %s, body: %s",
+					response.getStatusCode(), response.getBody()));
+			if (!response.getStatusCode().is2xxSuccessful()) {
+				throw new RuntimeException(
+						String.format("Failed to create Deployment Limit Policy. Status: ", response.getStatusCode()));
+			}
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
@@ -2700,7 +2728,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
 			String jsonBody = new Gson().toJson(policy);
 			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
+			LOGGER.debug(String.format("createApprovalPolicyPrimitive - status %s, body: %s",
+					response.getStatusCode(), response.getBody()));
+			if (!response.getStatusCode().is2xxSuccessful()) {
+				throw new RuntimeException(
+						String.format("Failed to create Approval Policy. Status: ", response.getStatusCode()));
+			}
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
