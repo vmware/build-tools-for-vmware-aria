@@ -45,6 +45,10 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 * Suffix used for all of the resources saved by this store.
 	 */
 	static final String CUSTOM_RESOURCE_SUFFIX = ".json";
+	/**
+	 * Suffix used for all of the resources saved by this store.
+	 */
+	static final String POLICY_BACKUP_SUFFIX = "_PL_TMP_BKUP";
 	/** Gson utility */
 	private static final Gson GSON = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().create();
 
@@ -104,7 +108,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			return;
 		}
 
-		Map<String, T> policiesOnServer = this.fetchPolicies(this.getItemListFromDescriptor());
+		Map<String, T> policiesOnServer = this.fetchPolicies(this.getItemListFromDescriptor(), true);
 
 		logger.info("Found {} Policies. Importing ...", policyDesc);
 		for (File policyFile : policyFiles) {
@@ -129,7 +133,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
 		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, T> policies = this.fetchPolicies(itemNames);
+		Map<String, T> policies = this.fetchPolicies(itemNames, false);
 
 		itemNames.forEach(name -> {
 			if (!policies.containsKey(name)) {
@@ -178,11 +182,13 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 * Will validate that the no duplicate policies exist on the
 	 * environment.
 	 *
-	 * @param itemNames - the list of policies to fetch. If empty, will fetch all
+	 * @param itemNames          - the list of policies to fetch. If empty, will fetch all
+	 * @param throwOnBackupFound - if true, a Runtime Exception will be thrown if the fetched policies contain a backup.
+	 *                             Otherwise backups will be excluded
 	 * 
 	 * @return Map with keys - policy names and values - the policy objects
 	 */
-	private Map<String, T> fetchPolicies(final List<String> itemNames) {
+	private Map<String, T> fetchPolicies(final List<String> itemNames, boolean throwOnBackupFound) {
 		Map<String, T> policies = new HashMap<>();
 		boolean includeAll = itemNames.size() == 0;
 
@@ -195,9 +201,15 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 									"More than one %s policy with name '%s' already exists. While Aria Automation supports policies with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type in order to properly resolve the desired policy.",
 									policyDesc.toLowerCase(), policy.getName()));
 				}
-
-				logger.debug("Found policy: {}", policy.getName());
-				policies.put(policy.getName(), policy);
+				if (!policy.getName().contains(POLICY_BACKUP_SUFFIX)) {
+					logger.debug("Found policy: {}", policy.getName());
+					policies.put(policy.getName(), policy);
+				} else if (!throwOnBackupFound) {
+					logger.debug("Skipping policy backup: {}", policy.getName());
+				} else {
+					throw new RuntimeException(String.format("%s Policy update is in progress, found backup on server: '%s'",
+									policyDesc, policy.getName()));
+				}
 			}
 		});
 
@@ -215,21 +227,43 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 */
 	private void handlePolicyImport(final File policyFile, Map<String, T> policiesOnServer) {
 		T policy = policyFromJsonFile(policyFile);
-		logger.info("Attempting to import {} policy '{}', from file '{}'",
+		logger.info("Attempting to import {} policy '{}' from file '{}'",
 				policyDesc.toLowerCase(),
 				policy.getName(),
 				policyFile.getName());
 
 		populatePolicyDetails(policy);
 
-		if (policiesOnServer.containsKey(policy.getName())) {
-			this.logger.warn("{} policy '{}' already exists on the server. Deleting it first.",
-					policyDesc, policy.getName());
-			this.deleteResourceById(policiesOnServer.get(policy.getName()).getId());
+		// prepare backup for existing policy and delete it
+		T existingPolicy = policiesOnServer.get(policy.getName());
+		boolean isNew = existingPolicy == null;
+		T backupPolicy = createExistingPolicyBackup(existingPolicy);
+		if (!isNew) {
+			try {
+				this.logger.warn("Backup '{}' created with ID='{}'. Attempting to delete {} policy '{}' before recreating it.",
+				backupPolicy.getName(), backupPolicy.getId(), policyDesc, policy.getName());
+				deleteResourceById(existingPolicy.getId());
+			} catch (Exception e) {
+				deleteExistingPolicyBackup(backupPolicy);
+				throw new RuntimeException(String.format("Failed to delete previous version of %s policy '%s'", policyDesc, existingPolicy.getName()), e);
+			}
 		}
 
-		this.logger.info("Attempting to create {} policy '{}'", policyDesc.toLowerCase(), policy.getName());
-		this.createPolicy(policy);
+		// Save the new/updated policy
+		try {
+			this.logger.info("Attempting to {}create {} policy '{}'", isNew ? "" : "re-", policyDesc.toLowerCase(), policy.getName());
+			createPolicy(policy);
+			logger.info("Successfully {}created {} Policy '{}', ID='{}'", isNew ? "" : "re-", policyDesc, policy.getName(), policy.getId());
+			deleteExistingPolicyBackup(backupPolicy);
+		} catch (Exception creationEx) {
+			if (backupPolicy == null) {
+				throw new RuntimeException(String.format("Failed to create %s Policy '%s'", policyDesc, policy.getName()), creationEx);
+			}
+			// attempt to restore
+			String restoreDetails = restorePolicy(existingPolicy, backupPolicy);
+			throw new RuntimeException(String.format("Failed to update %s Policy '%s' - %s.",
+					policyDesc, existingPolicy.getName(), restoreDetails), creationEx);
+		}
 	}
 
 	/**
@@ -330,6 +364,70 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		this.resolvePolicyItem(policy, true);
 
 		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
+	}
+
+	/**
+	 * Creates on the server a backup of the policy with name, suffixed by
+	 * POLICY_BACKUP_SUFFIX. Deletes the original.
+	 * 
+	 * @param existingPolicy - policy to backup
+	 * @return null, if existingPolicy is not provided.
+	 *         Backup of the policy (expected to have an ID) otherwise.
+	 * @throws RuntimeException if backup creation fails
+	 */
+	private T createExistingPolicyBackup(T existingPolicy) {
+		if (existingPolicy == null) {
+			return null;
+		}
+		String backupName = existingPolicy.getName() + POLICY_BACKUP_SUFFIX;
+		this.logger.debug(
+				"{} policy '{}' already exists on the server. Attempting to store backup '{}'",
+				policyDesc, backupName);
+		try {
+			T backupPolicy = GSON.fromJson(policyToJsonObject(existingPolicy), policyClass); // sanitized copy
+			backupPolicy.setName(backupName);
+			// set orgId?
+			this.createPolicy(backupPolicy);
+			return backupPolicy;
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("Failed to create backup for %s policy '%s'.", policyDesc, existingPolicy.getName()),
+					e);
+		}
+	}
+
+	/**
+	 * Deletes the backup policy; logs a warning on failure (does not throw)
+	 * If a policy isn't provided, does nothing.
+	 * @param existingPolicyBackup - policy backup
+	 */
+	private void deleteExistingPolicyBackup(T existingPolicyBackup) {
+		if (existingPolicyBackup != null) {
+			try {
+				deleteResourceById(existingPolicyBackup.getId());
+			} catch (Exception e2) {
+				logger.warn("Failed to delete backup for {} Policy: '{}'", policyDesc, existingPolicyBackup.getName());
+			}
+		}
+	}
+
+	/**
+	 * Restores original policy on failure to update.
+	 * 
+	 * @param policy               - original policy to restore
+	 * @param existingPolicyBackup - backup; will be deleted on success
+	 * @return "restored from backup" or "backup is available for manual restore:..."
+	 */
+	private String restorePolicy(T policy, T existingPolicyBackup) {
+		String backupDetails = "restored from backup";
+		try {
+			createPolicy(policy);
+			deleteExistingPolicyBackup(existingPolicyBackup);
+		} catch (Exception e) {
+			backupDetails = String.format("backup is available for manual restore: '%s'",
+					existingPolicyBackup.getName());
+		}
+		return backupDetails;
 	}
 
 	/**
