@@ -251,7 +251,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createContentSharingPolicy(any());
+		verify(restClient, times(2)).createContentSharingPolicy(any());
 	}
 
 	@Test

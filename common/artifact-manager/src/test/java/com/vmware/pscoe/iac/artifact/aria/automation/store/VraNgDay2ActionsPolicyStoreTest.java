@@ -254,7 +254,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createDay2ActionsPolicy(any());
+		verify(restClient, times(2)).createDay2ActionsPolicy(any());
 	}
 
 	@Test

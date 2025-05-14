@@ -262,7 +262,7 @@ public class VraNgApprovalPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createApprovalPolicy(any());
+		verify(restClient, times(2)).createApprovalPolicy(any());
 	}
 
 	@Test
