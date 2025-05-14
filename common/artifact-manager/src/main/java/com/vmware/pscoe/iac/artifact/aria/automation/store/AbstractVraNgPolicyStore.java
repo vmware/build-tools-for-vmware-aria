@@ -79,7 +79,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 * 
 	 * @param policy - policy entry to create; will be updated with ID, etc. from API response
 	 */
-	protected abstract void createPolicy(final T policy);
+	protected abstract void createPolicy(T policy);
 
 	/**
 	 * Imports policies found in specified folder on server, according to filter
@@ -137,9 +137,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 
 		itemNames.forEach(name -> {
 			if (!policies.containsKey(name)) {
-				throw new RuntimeException(
-						String.format("%s policy with name: '%s' could not be found on the server.",
-								policyDesc, name));
+				throw errorFrom(null, "%s policy with name: '%s' could not be found on the server.", policyDesc, name);
 			}
 		});
 
@@ -172,6 +170,18 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		// no-op
 	}
 
+	/**
+	 * Returns a RuntimeException with formatted message
+	 * 
+	 * @param cause - cause (can be null)
+	 * @param fmt   - formatting string
+	 * @param args  - arguments for the formatting string
+	 */
+	protected RuntimeException errorFrom(Exception cause, String fmt, Object... args) {
+		String msg = String.format(fmt, args);
+		return cause != null ? new RuntimeException(msg, cause) : new RuntimeException(msg);
+	}
+
 	////////////////////////////////////////////////////
 	// Helper methods
 	////////////////////////////////////////////////////
@@ -196,10 +206,9 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			if (policy.getTypeId().equals(policyType)
 					&& (includeAll || itemNames.contains(policy.getName()))) {
 				if (policies.containsKey(policy.getName())) {
-					throw new RuntimeException(
-							String.format(
-									"More than one %s policy with name '%s' already exists. While Aria Automation supports policies with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type in order to properly resolve the desired policy.",
-									policyDesc.toLowerCase(), policy.getName()));
+					throw errorFrom(null, "More than one %s policy with name '%s' already exists. While Aria Automation supports policies "
+						+ "with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type "
+						+ "in order to properly resolve the desired policy.", policyDesc.toLowerCase(), policy.getName());
 				}
 				if (!policy.getName().contains(POLICY_BACKUP_SUFFIX)) {
 					logger.debug("Found policy: {}", policy.getName());
@@ -207,8 +216,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 				} else if (!throwOnBackupFound) {
 					logger.debug("Skipping policy backup: {}", policy.getName());
 				} else {
-					throw new RuntimeException(String.format("%s Policy update is in progress, found backup on server: '%s'",
-									policyDesc, policy.getName()));
+					throw errorFrom(null, "%s Policy update is in progress, found backup on server: '%s'", policyDesc, policy.getName());
 				}
 			}
 		});
@@ -245,7 +253,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 				deleteResourceById(existingPolicy.getId());
 			} catch (Exception e) {
 				deleteExistingPolicyBackup(backupPolicy);
-				throw new RuntimeException(String.format("Failed to delete previous version of %s policy '%s'", policyDesc, existingPolicy.getName()), e);
+				throw errorFrom(e, "Failed to delete previous version of %s policy '%s'", policyDesc, existingPolicy.getName());
 			}
 		}
 
@@ -255,14 +263,13 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			createPolicy(policy);
 			logger.info("Successfully {}created {} Policy '{}', ID='{}'", isNew ? "" : "re-", policyDesc, policy.getName(), policy.getId());
 			deleteExistingPolicyBackup(backupPolicy);
-		} catch (Exception creationEx) {
+		} catch (Exception e) {
 			if (backupPolicy == null) {
-				throw new RuntimeException(String.format("Failed to create %s Policy '%s'", policyDesc, policy.getName()), creationEx);
+				throw errorFrom(e, "Failed to create %s Policy '%s'", policyDesc, policy.getName());
 			}
 			// attempt to restore
 			String restoreDetails = restorePolicy(existingPolicy, backupPolicy);
-			throw new RuntimeException(String.format("Failed to update %s Policy '%s' - %s.",
-					policyDesc, existingPolicy.getName(), restoreDetails), creationEx);
+			throw errorFrom(e, "Failed to update %s Policy '%s' - %s.", policyDesc, existingPolicy.getName(), restoreDetails);
 		}
 	}
 
@@ -302,12 +309,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 							GSON.toJson(policyJsonObject).getBytes(),
 							StandardOpenOption.CREATE));
 		} catch (IOException e) {
-			throw new RuntimeException(
-					String.format(
-							"Unable to store %s policy to file %s.",
-							policiesDesc,
-							policyFile.getAbsolutePath()),
-					e);
+			throw errorFrom(e, "Unable to store %s policy to file %s.", policiesDesc, policyFile.getAbsolutePath());
 		}
 	}
 
@@ -344,11 +346,11 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()));
 			return GSON.fromJson(reader, policyClass);
 		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
+			throw errorFrom(e, "Error reading from file: %s", jsonFile.getPath());
 		} catch (JsonIOException | JsonSyntaxException e) {
-			throw new RuntimeException(String.format("Error parsing file: %s", jsonFile.getPath()), e);
+			throw errorFrom(e, "Error parsing file: %s", jsonFile.getPath());
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("General error processing file file: %s", jsonFile.getPath()), e);
+			throw errorFrom(e, "General error processing file file: %s", jsonFile.getPath());
 		}
 	}
 
@@ -390,9 +392,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			this.createPolicy(backupPolicy);
 			return backupPolicy;
 		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Failed to create backup for %s policy '%s'.", policyDesc, existingPolicy.getName()),
-					e);
+			throw errorFrom(e, "Failed to create backup for %s policy '%s'.", policyDesc, existingPolicy.getName());
 		}
 	}
 

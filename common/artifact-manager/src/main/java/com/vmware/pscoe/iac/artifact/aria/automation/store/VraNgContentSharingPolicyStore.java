@@ -122,29 +122,19 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgPolicyStore<Vra
 				if (isByNameResolved) {
 					foundCatalogItem = catalogItems.stream()
 							.filter(catalogItem -> catalogItem.getName().equalsIgnoreCase(item.getName())).findFirst()
-							.orElse(null);
-					if (foundCatalogItem != null) {
-						item.setId(foundCatalogItem.getId());
-						item.setName(null);
-					} else {
-						throw new RuntimeException(
-								String.format(
-										"Catalog Item with name: '%s' could not be found. Cannot import/export Policy.",
-										item.getName()));
-					}
+							.orElseThrow(() -> errorFrom(null,
+									"Catalog Item with name: '%s' could not be found. Cannot import/export Policy.",
+									item.getName()));
+					item.setId(foundCatalogItem.getId());
+					item.setName(null);
 				} else {
 					foundCatalogItem = catalogItems.stream()
 							.filter(catalogItem -> catalogItem.getId().equalsIgnoreCase(item.getId())).findFirst()
-							.orElse(null);
-					if (foundCatalogItem != null) {
-						item.setName(foundCatalogItem.getName());
-						item.setId(null);
-					} else {
-						throw new RuntimeException(
-								String.format(
-										"Catalog Item with name: '%s' could not be found. Cannot import/export Policy.",
-										item.getName()));
-					}
+							.orElseThrow(() -> errorFrom(null,
+									"Catalog Item with name: '%s' could not be found. Cannot import/export Policy.",
+									item.getName()));
+					item.setName(foundCatalogItem.getName());
+					item.setId(null);
 				}
 				break;
 			}
@@ -154,29 +144,20 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgPolicyStore<Vra
 					foundContentSource = contentSources.stream()
 							.filter(contentSource -> contentSource.getName().equalsIgnoreCase(item.getName()))
 							.findFirst()
-							.orElse(null);
-					if (foundContentSource != null) {
-						item.setId(foundContentSource.getId());
-						item.setName(null);
-					} else {
-						throw new RuntimeException(
-								String.format(
-										"Content source with name: '%s' could not be found. Cannot import/export Policy.",
-										item.getName()));
-					}
+							.orElseThrow(() -> errorFrom(null,
+									"Content source with name: '%s' could not be found. Cannot import/export Policy.",
+									item.getName()));
+					item.setId(foundContentSource.getId());
+					item.setName(null);
 				} else {
 					foundContentSource = contentSources.stream()
-							.filter(contentSource -> contentSource.getId().equalsIgnoreCase(item.getId())).findFirst()
-							.orElse(null);
-					if (foundContentSource != null) {
-						item.setName(foundContentSource.getName());
-						item.setId(null);
-					} else {
-						throw new RuntimeException(
-								String.format(
-										"Content source with name: '%s' could not be found. Cannot import/export Policy.",
-										item.getName()));
-					}
+							.filter(contentSource -> contentSource.getId().equalsIgnoreCase(item.getId()))
+							.findFirst()
+							.orElseThrow(() -> errorFrom(null,
+									"Content source with name: '%s' could not be found. Cannot import/export Policy.",
+									item.getName()));
+					item.setName(foundContentSource.getName());
+					item.setId(null);
 				}
 				break;
 			}
