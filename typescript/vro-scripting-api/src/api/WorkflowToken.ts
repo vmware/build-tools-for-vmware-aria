@@ -20,9 +20,9 @@ namespace vroapi {
 
         name: string;
 
-        rootWorkflow: any;
+        rootWorkflow: Workflow;
 
-        currentWorkflow: any;
+        currentWorkflow: Workflow;
 
         state: string;
 
@@ -36,9 +36,9 @@ namespace vroapi {
 
         endDate: string;
 
-        startDateAsDate: any;
+        startDateAsDate: Date;
 
-        endDateAsDate: any;
+        endDateAsDate: Date;
 
         logEvents: LogEvent[] = [];
 

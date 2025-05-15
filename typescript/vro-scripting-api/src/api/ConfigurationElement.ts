@@ -34,10 +34,10 @@ namespace vroapi {
         }
 
         /**
-        * Returns the attribute of the configuration element for the specified key.
+        * Returns the attribute of the configuration element for the specified key or null if not found.
         * @param key
         */
-        getAttributeWithKey(key: string): Attribute {
+        getAttributeWithKey(key: string): Attribute | null {
             const attribute = this.attributes.find(a => a.name === key);
           
             return typeof attribute === 'undefined' ? null : attribute;
