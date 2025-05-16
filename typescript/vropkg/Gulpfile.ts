@@ -1,9 +1,89 @@
 import * as fs from "fs-extra";
 import * as gulp from "gulp";
-import jasmine from "gulp-jasmine";
 import * as tsc from "gulp-typescript";
 import * as path from 'path';
 import { execSync } from "child_process";
+import PluginError from "plugin-error";
+import through from "through2";
+
+/** Recursively delete cache for object with given ID and its children */
+function deleteRequireCache(id) {
+	if (!id?.includes('node_modules')) {
+		return;
+	}
+
+	const files = require.cache[id];
+
+	if (files !== undefined) {
+		for (const file of Object.keys(files.children)) {
+			deleteRequireCache(files.children[file].id);
+		}
+
+		delete require.cache[id];
+	}
+}
+
+/** Fixed (no onComplete) and simplified gulp-jasmine */
+function gulpJasmineFixed() {
+	const Jasmine = require("jasmine");
+	const jasmineRunner = new Jasmine();
+	jasmineRunner.exitOnCompletion = false;
+	if (jasmineRunner.env.clearReporters) {
+		jasmineRunner.env.clearReporters();
+	}
+	const jasmineReporters = require("jasmine-reporters");
+	jasmineRunner.addReporter(new jasmineReporters.TerminalReporter({
+		verbosity: 3,
+		color: process.argv.indexOf('--no-color') === -1,
+		showStack: true
+	}));
+
+	return through.obj((file, enc, cb) => {
+		if (file.isNull()) {
+			cb(null, file);
+			return;
+		}
+
+		if (file.isStream()) {
+			cb(new PluginError('vropkg-gulpfile', 'Streaming not supported'));
+			return;
+		}
+		const resolvedPath = path.resolve(file.path);
+		const modId = require.resolve(resolvedPath);
+		deleteRequireCache(modId);
+
+		jasmineRunner.addSpecFile(resolvedPath);
+
+		cb(null, file);
+	}, function (cb) {
+		const self = this;
+
+		try {
+			if (jasmineRunner.helperFiles) {
+				for (const helper of jasmineRunner.helperFiles) {
+					const resolvedPath = path.resolve(helper);
+					const modId = require.resolve(resolvedPath);
+					deleteRequireCache(modId);
+				}
+			}
+
+			const result: Promise<any> = jasmineRunner.execute();
+			result.then(result => {
+				if (result.overallStatus === 'passed') {
+					console.log('All specs have passed');
+					self.emit('jasmineDone', true);
+					cb();
+				} else {
+					console.log('At least one spec has failed');
+					cb(new PluginError('vropkg-gulpfile', 'Tests failed', { showStack: false }));
+				}
+			})
+		} catch (err) {
+			cb(new PluginError('vropkg-gulpfile', err, { showStack: true }));
+		}
+	});
+};
+
 
 function toPathArg(...args: string[]) {
 	const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
@@ -54,10 +134,7 @@ gulp.task("test-e2e", gulp.series([
 	"compile-prod",
 	"compile-e2e",
 	() => gulp.src("build/e2e/*.js")
-		.pipe(jasmine({
-			verbose: true,
-			includeStackTrace: true
-		}))
+		.pipe(gulpJasmineFixed())
 ]));
 
 gulp.task("build-prod", gulp.series(["package-prod", "test-e2e"]));

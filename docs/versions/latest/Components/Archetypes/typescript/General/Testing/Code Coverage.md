@@ -42,7 +42,7 @@ Activate the profile by adding it to the `<activeProfiles></activeProfiles>`.
 
 ### Reporters
 
-The toolchain supports many different code coverage reporters. Internally we use a tool called IstanbulJS, so the supported reporters and their documentation can be found here: [Using Alternative Reporters](https://istanbul.js.org/docs/advanced/alternative-reporters/).
+The toolchain supports many different code coverage reporters. Internally we use a tool called c8 compatible with IstanbulJS, so the supported reporters and their documentation can be found here: [Using Alternative Reporters](https://istanbul.js.org/docs/advanced/alternative-reporters/).
 
 After enabling a reporter and running `mvn clean test`, you can see the output files in: `<PROJECT_DIR>/target/vro-tests/coverage/`
 
@@ -58,7 +58,7 @@ Code coverage per file bases. Set custom --coverage-thresholds, if any file in t
 
 Enable by setting `<test.coverage.perfile>true</test.coverage.perfile>` in your `~/.m2/settings.xml` testing profile.
 
-Refer to InstanbulJS documentation for more information: [https://github.com/istanbuljs/nyc](https://github.com/istanbuljs/nyc).
+Refer to c8 documentation for more information: [https://www.npmjs.com/package/c8?activeTab=readme](https://www.npmjs.com/package/c8?activeTab=readme).
 
 ```xml
 <profile>

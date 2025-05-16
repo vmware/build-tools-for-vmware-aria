@@ -4,10 +4,10 @@
   "description": "",
   "scripts": {
     "test": "jasmine --config=./jasmine.json",
-    "test:coverage": "nyc npm run test && nyc report"
+    "test:coverage": "c8 npm run test && c8 report"
   },
   "devDependencies": {
-    "jasmine": "^4.0.2",
-    "nyc": "^15.1.0"
+    "jasmine": "^5.6.0",
+    "c8": "^10.1.3"
   }
 }

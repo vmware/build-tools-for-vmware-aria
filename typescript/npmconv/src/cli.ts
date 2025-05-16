@@ -16,7 +16,7 @@ import * as path from "path";
 
 import * as fs from "fs-extra";
 
-import * as cmdArgs from "command-line-args";
+import cmdArgs from "command-line-args";
 
 import { DependenciesMapper } from "./deps";
 import * as npmconv from "./index";
