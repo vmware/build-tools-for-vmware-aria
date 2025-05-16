@@ -2422,7 +2422,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected void createOrUpdateContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
-		createOrUpdatePolicy(csPolicy, "Content Sharing");
+		createOrUpdatePolicyPrimitive(csPolicy, "Content Sharing");
 	}
 
 	// =================================================
@@ -2460,7 +2460,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createOrUpdateResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
 			throws URISyntaxException, UnsupportedOperationException {
-		createOrUpdatePolicy(rqPolicy, "Resource Quota");
+		createOrUpdatePolicyPrimitive(rqPolicy, "Resource Quota");
 	}
 
 	/**
@@ -2515,7 +2515,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param d2aPolicy policy data to create (when ID is null) or update (when ID is not null)
 	 */
 	public void createOrUpdateDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy) throws URISyntaxException {
-		createOrUpdatePolicy(d2aPolicy, "Day Two Actions");
+		createOrUpdatePolicyPrimitive(d2aPolicy, "Day Two Actions");
 	}
 
 	/**
@@ -2587,7 +2587,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
 	 */
 	public void createOrUpdateLeasePolicyPrimitive(final VraNgLeasePolicy policy) throws URISyntaxException {
-		createOrUpdatePolicy(policy, "Lease");
+		createOrUpdatePolicyPrimitive(policy, "Lease");
 	}
 
 	// =================================================
@@ -2600,7 +2600,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createOrUpdateDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
 			throws URISyntaxException {
-		createOrUpdatePolicy(policy, "Deployment Limit");
+		createOrUpdatePolicyPrimitive(policy, "Deployment Limit");
 	}
 
 	/**
@@ -2657,7 +2657,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
 	 */
 	public void createOrUpdateApprovalPolicyPrimitive(final VraNgApprovalPolicy policy) throws URISyntaxException {
-		createOrUpdatePolicy(policy, "Approval");
+		createOrUpdatePolicyPrimitive(policy, "Approval");
 	}
 
 	/**
@@ -2720,7 +2720,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 	}
 
-	protected void createOrUpdatePolicy(IVraNgPolicy policy, String policyDesc) throws URISyntaxException {
+	/**
+	 * Create (when ID is null) or update (when ID si not null) policy.
+	 * 
+	 * @param policy     - the policy to create/update
+	 * @param policyDesc - policy description for error handling
+	 * @throws URISyntaxException from URIBuilder
+	 */
+	private void createOrUpdatePolicyPrimitive(IVraNgPolicy policy, String policyDesc) throws URISyntaxException {
 		if (isVraAbove810) {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
