@@ -2418,11 +2418,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Creates or updates a Content Sharing Policy.
-	 * @param csPolicy policy data to create (when ID is null) or update (when ID is not null)
+	 * @param csPolicy policy data to create (when ID is null
+	 * l) or update (when ID is not null)
 	 */
 	protected void createOrUpdateContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(csPolicy, "Content Sharing");
+		createOrUpdatePolicyPrimitive(csPolicy, "Content Sharing", VraNgContentSharingPolicy.class);
 	}
 
 	// =================================================
@@ -2460,7 +2461,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createOrUpdateResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
 			throws URISyntaxException, UnsupportedOperationException {
-		createOrUpdatePolicyPrimitive(rqPolicy, "Resource Quota");
+		createOrUpdatePolicyPrimitive(rqPolicy, "Resource Quota", VraNgResourceQuotaPolicy.class);
 	}
 
 	/**
@@ -2515,7 +2516,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param d2aPolicy policy data to create (when ID is null) or update (when ID is not null)
 	 */
 	public void createOrUpdateDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy) throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(d2aPolicy, "Day Two Actions");
+		createOrUpdatePolicyPrimitive(d2aPolicy, "Day Two Actions", VraNgDay2ActionsPolicy.class);
 	}
 
 	/**
@@ -2587,7 +2588,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
 	 */
 	public void createOrUpdateLeasePolicyPrimitive(final VraNgLeasePolicy policy) throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(policy, "Lease");
+		createOrUpdatePolicyPrimitive(policy, "Lease", VraNgLeasePolicy.class);
 	}
 
 	// =================================================
@@ -2600,7 +2601,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void createOrUpdateDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
 			throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(policy, "Deployment Limit");
+		createOrUpdatePolicyPrimitive(policy, "Deployment Limit", VraNgDeploymentLimitPolicy.class);
 	}
 
 	/**
@@ -2657,7 +2658,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
 	 */
 	public void createOrUpdateApprovalPolicyPrimitive(final VraNgApprovalPolicy policy) throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(policy, "Approval");
+		createOrUpdatePolicyPrimitive(policy, "Approval", VraNgApprovalPolicy.class);
 	}
 
 	/**
@@ -2711,13 +2712,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return the response
 	 */
 	protected ResponseEntity<String> deletePolicyPrimitive(String policyId) {
-		if (isVraAbove810) {
-			String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
-			URI url = getURI(getURIBuilder().setPath(deleteURL));
-			return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
-		} else {
+		if (!isVraAbove810) {
 			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions 8.10.x or newer.");
 		}
+		String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
+		URI url = getURI(getURIBuilder().setPath(deleteURL));
+		LOGGER.info("Executing method DELETE on URI {} with entity {} ", url); // TODO debug
+		ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class); // TODO
+		if (result == null) {
+			LOGGER.info("Result: null");
+		} else {
+			LOGGER.info("Result - status:{}, body: {} ", result.getStatusCode(), result.getBody());
+		}
+		return result;
 	}
 
 	/**
@@ -2727,8 +2734,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param policyDesc - policy description for error handling
 	 * @throws URISyntaxException from URIBuilder
 	 */
-	private void createOrUpdatePolicyPrimitive(IVraNgPolicy policy, String policyDesc) throws URISyntaxException {
-		if (isVraAbove810) {
+	private <T extends IVraNgPolicy> void createOrUpdatePolicyPrimitive(T policy, String policyDesc, Class<T> policyClass) throws URISyntaxException {
+		if (!isVraAbove810) {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
 
@@ -2752,7 +2759,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 							response.getStatusCode()));
 		}
 
-		String newId = new Gson().fromJson(response.getBody(), IVraNgPolicy.class).getId();
+		String newId = new Gson().fromJson(response.getBody(), policyClass).getId();
 		if (policy.getId() != null && !policy.getId().equals(newId)) {
 			throw new RuntimeException(
 					String.format("Updated ID '%s' does not match original ID '%s' of %s Policy '%s'!",
