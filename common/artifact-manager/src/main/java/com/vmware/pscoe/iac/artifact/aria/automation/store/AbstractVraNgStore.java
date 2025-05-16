@@ -62,10 +62,10 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 	protected Logger logger;
 
 	/**
-	 * @param restClient
-	 * @param vraNgPackage
-	 * @param config
-	 * @param vraNgPackageDescriptor
+	 * @param restClient             - vRA REST client
+	 * @param vraNgPackage           - package
+	 * @param config                 - configuration
+	 * @param vraNgPackageDescriptor - package descriptor
 	 */
 	private void ini(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor) {
@@ -76,10 +76,10 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 	}
 
 	/**
-	 * @param restClient
-	 * @param vraNgPackage
-	 * @param config
-	 * @param vraNgPackageDescriptor
+	 * @param restClient             - vRA REST client
+	 * @param vraNgPackage           - package
+	 * @param config                 - configuration
+	 * @param vraNgPackageDescriptor - package descriptor
 	 */
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor) {
@@ -88,11 +88,11 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 	}
 
 	/**
-	 * @param restClient
-	 * @param vraNgPackage
-	 * @param config
-	 * @param vraNgPackageDescriptor
-	 * @param logger
+	 * @param restClient             - vRA REST client
+	 * @param vraNgPackage           - package
+	 * @param config                 - configuration
+	 * @param vraNgPackageDescriptor - package descriptor
+	 * @param logger                 - logger
 	 */
 	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
 			VraNgPackageDescriptor vraNgPackageDescriptor, Logger logger) {
@@ -148,7 +148,7 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 
 	/**
 	 * @return the endpoint link of the target integration
-	 * @throws ConfigurationException
+	 * @throws ConfigurationException if we can't find the right vRO integration
 	 */
 	protected String getVroTargetIntegrationEndpointLink() throws ConfigurationException {
 		String integrationName = this.config.getVroIntegration();
@@ -177,8 +177,8 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 	/**
 	 * Filter the files based on the given filter.
 	 * 
-	 * @param itemFolder
-	 * @param filter
+	 * @param itemFolder - directory to search in
+	 * @param filter - filter by file name
 	 * @return array of filtered files
 	 */
 	protected File[] filterBasedOnConfiguration(File itemFolder, FilenameFilter filter) {

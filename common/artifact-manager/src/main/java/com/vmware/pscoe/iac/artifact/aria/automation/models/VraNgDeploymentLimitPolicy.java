@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.models;
 
 import com.google.gson.JsonObject;
 
-public final class VraNgDeploymentLimitPolicy implements Identifiable {
+public final class VraNgDeploymentLimitPolicy implements IVraNgPolicy {
 	/**
 	 * Id of the Policy.
 	 */
