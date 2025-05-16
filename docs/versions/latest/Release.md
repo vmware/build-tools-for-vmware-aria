@@ -26,6 +26,22 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Polyglot actions support VRO custom environments*
+
+Polyglot actions can be set with custom environments in vRO.
+Two new features were added to vRO polyglot projects:
+- Polyglot action can be set with a custom environment. In addition to platform.runtime, a new parameter platform.environment may be provided containing environment id
+- Custom environment definition may be added to vRO polyglot projects and included in import package. Custom environment definitions must be stored in src/resources/environments/{environmentName}.json files
+
+Sample vRO project from polyglot archetype was extended with:
+- Empty platform.environment added to polyglot.json files
+- Sample environment definition src/resources/environments/environment.json.sample
+
+### *Polyglot runtime option restored and fixed*
+
+Runtime option powershell:7.4 was causing a vropkg error and was removed in a previous release.
+Now the issue is fixed and the option is restored and available to use.
+
 ## Improvements
 
 ### Improve type definition in o11n-core

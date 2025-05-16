@@ -1,0 +1,16 @@
+{
+  "name" : "environmentName",
+  "version" : "0.0.0",
+  "environmentVariables" : {
+    "varName" : "varValue"
+  },
+  "dependencies" : {
+    "moduleName" : "moduleVersion"
+  },
+  "repositories" : { },
+  "bundleHash" : "",
+  "id" : "01234567-89ab-cdef-0123-456789abcdef",
+  "runtime" : "node:20",
+  "memoryLimit" : 0,
+  "timeout" : 180
+}

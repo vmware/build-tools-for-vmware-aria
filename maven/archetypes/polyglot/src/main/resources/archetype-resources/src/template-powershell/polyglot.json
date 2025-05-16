@@ -2,6 +2,7 @@
   "platform": {
 #if ( $type == "vro" )
     "runtime": "powercli:13-powershell-7.4",
+    "environment": "",
 #else
     "runtime": "powershell",
 #end

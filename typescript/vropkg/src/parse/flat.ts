@@ -90,6 +90,10 @@ const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeEle
             comment = getCommentFromJavadoc(comment, action?.bundle?.projectPath, action.returnType, action?.inline?.javadoc);
             break;
         }
+		case t.VroElementType.ActionEnvironment: {
+			name = JSON.parse(read(dataFilePath)).name;
+			break;
+		}
         case t.VroElementType.PolicyTemplate: {
             name = xml(read(elementDataPath)).attr.name;
             break;

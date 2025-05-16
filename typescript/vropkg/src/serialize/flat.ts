@@ -254,6 +254,9 @@ const serializeFlatElementContent = async (context: any, pkg: t.VroPackageMetada
             content = getActionXml(element.id, element.name, element.description, element.action);
             break;
         }
+		case t.VroElementType.ActionEnvironment: {
+			return context.data(fs.readFileSync(element.dataFilePath));
+		}
         default: {
             content = decode(fs.readFileSync(element.dataFilePath));
         }

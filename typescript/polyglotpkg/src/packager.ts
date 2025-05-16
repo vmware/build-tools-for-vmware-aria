@@ -14,7 +14,7 @@
  */
 import { Logger } from 'winston';
 
-import { PackagerOptions, ActionType, ActionRuntime, Events, NodeJsActionRuntimes, PythonActionRuntimes, PowershellActionRuntimes } from "./lib/model";
+import { PackagerOptions, ActionType, ActionRuntime, Events, NodeJsActionRuntimes, PythonActionRuntimes, PowershellActionRuntimes, VroActionDefinition } from "./lib/model";
 import { createPackageJsonForABX, getProjectActions } from './lib/utils';
 import { IStrategy } from './strategies/base';
 import { NodejsStrategy } from './strategies/nodejs';
@@ -23,6 +23,7 @@ import { PythonStrategy } from './strategies/python';
 import { PowershellStrategy } from './strategies/powershell';
 import createLogger from './lib/logger';
 import { EventEmitter } from 'events';
+import { VroEnvironment } from './environments';
 
 export class Packager extends EventEmitter {
 	private readonly logger: Logger;
@@ -35,6 +36,7 @@ export class Packager extends EventEmitter {
 	async packageProject() {
 		// Collect list of actions included in the project
 		const projectActions = await getProjectActions(this.options, <ActionType>this.options.env);
+        let addEnvironments = false;
 
 		// Loop all actions found and execute the packager for each of them
 		for (var i = 0; i < projectActions.length; i++) {
@@ -67,6 +69,7 @@ export class Packager extends EventEmitter {
 
 			// Prepare input files for vRO packaging
 			if (!this.options.skipVro && actionType === ActionType.VRO) {
+                addEnvironments = true;
 				const tree = new VroTree(this.logger, projectActions[i]);
 				await tree.createTree();
 			}
@@ -76,6 +79,12 @@ export class Packager extends EventEmitter {
 				await createPackageJsonForABX(projectActions[i], projectActions[i].mixed);
 			}
 		}
+
+        if (addEnvironments) {
+            const vroEnvironment = new VroEnvironment(this.logger, this.options);
+            await vroEnvironment.createEnvironments();
+        }
+
 	}
 
 }
