@@ -255,7 +255,7 @@ public class VraNgLeasePolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(2)).createOrUpdateLeasePolicy(any());
+		verify(restClient, times(1)).createOrUpdateLeasePolicy(any());
 	}
 
 	@Test

@@ -254,7 +254,7 @@ public class VraNgDeploymentLimitPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(2)).createOrUpdateDeploymentLimitPolicy(any());
+		verify(restClient, times(1)).createOrUpdateDeploymentLimitPolicy(any());
 	}
 
 	@Test

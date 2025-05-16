@@ -247,7 +247,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(2)).createOrUpdateResourceQuotaPolicy(any());
+		verify(restClient, times(1)).createOrUpdateResourceQuotaPolicy(any());
 	}
 
 	@Test
