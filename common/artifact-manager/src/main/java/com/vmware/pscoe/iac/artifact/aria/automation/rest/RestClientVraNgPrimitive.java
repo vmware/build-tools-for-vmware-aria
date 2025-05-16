@@ -2418,8 +2418,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 	/**
 	 * Creates or updates a Content Sharing Policy.
-	 * @param csPolicy policy data to create (when ID is null
-	 * l) or update (when ID is not null)
+	 * @param csPolicy policy data to create (when ID is null) or update (when ID is not null)
 	 */
 	protected void createOrUpdateContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
