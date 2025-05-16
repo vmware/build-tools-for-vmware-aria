@@ -251,7 +251,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(2)).createContentSharingPolicy(any());
+		verify(restClient, times(2)).createOrUpdateContentSharingPolicy(any());
 	}
 
 	@Test
@@ -283,7 +283,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createContentSharingPolicy(any());
+		verify(restClient, times(1)).createOrUpdateContentSharingPolicy(any());
 	}
 
 	@Test
@@ -297,7 +297,7 @@ public class VraNgContentSharingPolicyStoreTest {
 		verify(vraNgPackageDescriptor, never()).getPolicy();
 		verify(restClient, never()).getContentSharingPolicies();
 		verify(restClient, never()).getContentSharingPolicy(anyString());
-		verify(restClient, never()).createContentSharingPolicy(any());
+		verify(restClient, never()).createOrUpdateContentSharingPolicy(any());
 	}
 
 	@Test

@@ -254,7 +254,7 @@ public class VraNgDeploymentLimitPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(2)).createDeploymentLimitPolicy(any());
+		verify(restClient, times(2)).createOrUpdateDeploymentLimitPolicy(any());
 	}
 
 	@Test
@@ -302,7 +302,7 @@ public class VraNgDeploymentLimitPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createDeploymentLimitPolicy(any());
+		verify(restClient, times(1)).createOrUpdateDeploymentLimitPolicy(any());
 	}
 
 	@Test
@@ -316,7 +316,7 @@ public class VraNgDeploymentLimitPolicyStoreTest {
 		verify(vraNgPackageDescriptor, never()).getPolicy();
 		verify(restClient, never()).getDeploymentLimitPolicies();
 		verify(restClient, never()).getDeploymentLimitPolicy(anyString());
-		verify(restClient, never()).createDeploymentLimitPolicy(any());
+		verify(restClient, never()).createOrUpdateDeploymentLimitPolicy(any());
 	}
 
 	@Test
