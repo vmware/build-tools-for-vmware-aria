@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.IVraNgPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlement;
@@ -2239,16 +2240,19 @@ public class RestClientVraNgPrimitive extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-		LOGGER.debug("Executing method {} on URI {} with entity {} ", method, url, entity);
-		return restTemplate.exchange(url, method, entity, String.class);
+		LOGGER.info("Executing method {} on URI {} with entity {} ", method, url, entity); // TODO debug
+		ResponseEntity<String> result = restTemplate.exchange(url, method, entity, String.class);
+		// TODO remove:
+		if (result == null) {
+			LOGGER.info("Result: null");
+		} else {
+			LOGGER.info("Result - status:{}, body: {} ", result.getStatusCode(), result.getBody());
+		}
+		return result;
 	}
 
 	private ResponseEntity<String> putJsonPrimitive(final URI url, final String jsonBody) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-
-		return restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+		return postJsonPrimitive(url, HttpMethod.PUT, jsonBody);
 	}
 
 	private List<VraNgContentSourceBase> getContentSources() {
@@ -2413,25 +2417,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Creates Content Sharing Policy.
-	 *
-	 * @param csPolicy policy data to create
+	 * Creates or updates a Content Sharing Policy.
+	 * @param csPolicy policy data to create (when ID is null) or update (when ID is not null)
 	 */
-	protected void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
+	protected void createOrUpdateContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
 			throws URISyntaxException {
-		VraNgContentSharingPolicy existingPolicy = this.getContentSharingPolicyPrimitive(csPolicy.getId());
-		// if the policy does not exist remove its id in order to be created, otherwise
-		// update it
-		if (existingPolicy == null) {
-			csPolicy.setId(null);
-		}
-		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-		String jsonBody = new Gson().toJson(csPolicy);
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-		LOGGER.debug(String.format("createContentSharingPolicyPrimitive - status %s, body: %s", response.getStatusCode(), response.getBody()));
-		if (!response.getStatusCode().is2xxSuccessful()) {
-			throw new RuntimeException(String.format("Failed to create Content Sharing Policy. Status: ", response.getStatusCode()));
-		}
+		createOrUpdatePolicy(csPolicy, "Content Sharing");
 	}
 
 	// =================================================
@@ -2464,27 +2455,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Creates Resource Quota Policy.
-	 *
-	 * @param rqPolicy policy data to create
+	 * Creates or updates a Resource Quota Policy.
+	 * @param rqPolicy policy data to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
+	public void createOrUpdateResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
 			throws URISyntaxException, UnsupportedOperationException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(rqPolicy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-			LOGGER.debug(String.format("createResourceQuotaPolicyPrimitive - status %s, body: %s",
-					response.getStatusCode(), response.getBody()));
-			if (!response.getStatusCode().is2xxSuccessful()) {
-				throw new RuntimeException(
-						String.format("Failed to create REsource Quota Policy. Status: ", response.getStatusCode()));
-			}
-		} else {
-			throw (new UnsupportedOperationException(
-					"Policy import/export supported in VRA Versions  8.10.x or newer."));
-		}
+		createOrUpdatePolicy(rqPolicy, "Resource Quota");
 	}
 
 	/**
@@ -2535,25 +2511,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Creates Day 2 Actions Policy.
-	 *
-	 * @param d2aPolicy policy data to create
+	 * Creates or updates a Day 2 Actions Policy.
+	 * @param d2aPolicy policy data to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy) throws URISyntaxException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(d2aPolicy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-			LOGGER.debug(String.format("createDay2ActionsPolicyPrimitive - status %s, body: %s",
-					response.getStatusCode(), response.getBody()));
-			if (!response.getStatusCode().is2xxSuccessful()) {
-				throw new RuntimeException(
-						String.format("Failed to create Day Two Actions Policy. Status: ", response.getStatusCode()));
-			}
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
+	public void createOrUpdateDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy) throws URISyntaxException {
+		createOrUpdatePolicy(d2aPolicy, "Day Two Actions");
 	}
 
 	/**
@@ -2621,25 +2583,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Creates lease Policy.
-	 *
-	 * @param policy policy data to create
+	 * Creates or updates a Lease Policy.
+	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createLeasePolicyPrimitive(final VraNgLeasePolicy policy) throws URISyntaxException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(policy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-			LOGGER.debug(String.format("createLeasePolicyPrimitive - status %s, body: %s",
-					response.getStatusCode(), response.getBody()));
-			if (!response.getStatusCode().is2xxSuccessful()) {
-				throw new RuntimeException(
-						String.format("Failed to create Lease Policy. Status: ", response.getStatusCode()));
-			}
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
+	public void createOrUpdateLeasePolicyPrimitive(final VraNgLeasePolicy policy) throws URISyntaxException {
+		createOrUpdatePolicy(policy, "Lease");
 	}
 
 	// =================================================
@@ -2647,26 +2595,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 	// =================================================
 
 	/**
-	 * Creates Deployment Limit Policy.
-	 *
-	 * @param policy policy data to create
+	 * Creates or updates a Deployment Limit Policy.
+	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
+	public void createOrUpdateDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
 			throws URISyntaxException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(policy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-			LOGGER.debug(String.format("createDeploymentLimitPolicyPrimitive - status %s, body: %s",
-					response.getStatusCode(), response.getBody()));
-			if (!response.getStatusCode().is2xxSuccessful()) {
-				throw new RuntimeException(
-						String.format("Failed to create Deployment Limit Policy. Status: ", response.getStatusCode()));
-			}
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
+		createOrUpdatePolicy(policy, "Deployment Limit");
 	}
 
 	/**
@@ -2719,25 +2653,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 	// =================================================
 
 	/**
-	 * Creates Approval Policy.
-	 *
-	 * @param policy policy data to create
+	 * Creates or updates an Approval Policy.
+	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createApprovalPolicyPrimitive(final VraNgApprovalPolicy policy) throws URISyntaxException {
-		if (isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(policy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-			LOGGER.debug(String.format("createApprovalPolicyPrimitive - status %s, body: %s",
-					response.getStatusCode(), response.getBody()));
-			if (!response.getStatusCode().is2xxSuccessful()) {
-				throw new RuntimeException(
-						String.format("Failed to create Approval Policy. Status: ", response.getStatusCode()));
-			}
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
+	public void createOrUpdateApprovalPolicyPrimitive(final VraNgApprovalPolicy policy) throws URISyntaxException {
+		createOrUpdatePolicy(policy, "Approval");
 	}
 
 	/**
@@ -2798,5 +2718,42 @@ public class RestClientVraNgPrimitive extends RestClient {
 		} else {
 			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions 8.10.x or newer.");
 		}
+	}
+
+	protected void createOrUpdatePolicy(IVraNgPolicy policy, String policyDesc) throws URISyntaxException {
+		if (isVraAbove810) {
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
+		}
+
+		boolean isNew = policy.getId() == null;
+		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+		String jsonBody = new Gson().toJson(policy);
+
+		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+
+		LOGGER.info("{} {} Policy '{}', ID={}",
+				isNew ? "Creating" : "Updating",
+				policyDesc,
+				policy.getName(),
+				policy.getId());
+
+		if (!response.getStatusCode().is2xxSuccessful()) {
+			throw new RuntimeException(
+					String.format("Failed to %s %s Policy. Status: %s",
+							isNew ? "create" : "update",
+							policyDesc,
+							response.getStatusCode()));
+		}
+
+		String newId = new Gson().fromJson(response.getBody(), IVraNgPolicy.class).getId();
+		if (policy.getId() != null && !policy.getId().equals(newId)) {
+			throw new RuntimeException(
+					String.format("Updated ID '%s' does not match original ID '%s' of %s Policy '%s'!",
+							newId,
+							policy.getId(),
+							policyDesc,
+							policy.getName()));
+		}
+		policy.setId(newId);
 	}
 }
