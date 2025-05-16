@@ -46,12 +46,13 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgPolicyStore<VraNgL
 	}
 
 	/**
-	 * Makes an API call to create a Policy
+	 * Makes an API call to create or update a Policy
 	 * 
-	 * @param policy
+	 * @param policy - policy to create (when it has no ID) or update (when it has
+	 *               an ID)
 	 */
 	@Override
-	protected void createPolicy(final VraNgLeasePolicy policy) {
-		this.restClient.createLeasePolicy(policy);
+	protected void createOrUpdatePolicy(final VraNgLeasePolicy policy) {
+		this.restClient.createOrUpdateLeasePolicy(policy);
 	}
 }

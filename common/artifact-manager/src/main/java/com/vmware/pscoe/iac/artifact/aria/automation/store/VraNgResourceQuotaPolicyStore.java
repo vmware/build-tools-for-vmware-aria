@@ -52,12 +52,12 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgPolicyStor
 	}
 
 	/**
-	 * Makes an API call to create a Policy
+	 * Makes an API call to create or update a Policy
 	 * 
-	 * @param policy
+	 * @param policy - policy to create (when it has no ID) or update (when it has an ID)
 	 */
 	@Override
-	protected void createPolicy(final VraNgResourceQuotaPolicy policy) {
-		this.restClient.createResourceQuotaPolicy(policy);
+	protected void createOrUpdatePolicy(final VraNgResourceQuotaPolicy policy) {
+		this.restClient.createOrUpdateResourceQuotaPolicy(policy);
 	}
 }

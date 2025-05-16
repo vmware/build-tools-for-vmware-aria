@@ -1206,13 +1206,12 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createContentSharingPolicy.
-	 * 
-	 * @param csPolicy content sharing policy
+	 * createOrUpdateContentSharingPolicy.
+	 * @param csPolicy content sharing policy to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
+	public void createOrUpdateContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
 		try {
-			this.createContentSharingPolicyPrimitive(csPolicy);
+			this.createOrUpdateContentSharingPolicyPrimitive(csPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
@@ -1265,13 +1264,12 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createResourceQuotaPolicy.
-	 * 
-	 * @param rqPolicy resource quota policy
+	 * createOrUpdateResourceQuotaPolicy.
+	 * @param rqPolicy resource quota policy to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createResourceQuotaPolicy(final VraNgResourceQuotaPolicy rqPolicy) {
+	public void createOrUpdateResourceQuotaPolicy(final VraNgResourceQuotaPolicy rqPolicy) {
 		try {
-			createResourceQuotaPolicyPrimitive(rqPolicy);
+			createOrUpdateResourceQuotaPolicyPrimitive(rqPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
@@ -1279,13 +1277,12 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createLeasePolicy.
-	 * 
-	 * @param csPolicy lease policy
+	 * createOrUpdateLeasePolicy.
+	 * @param csPolicy lease policy to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createLeasePolicy(final VraNgLeasePolicy csPolicy) {
+	public void createOrUpdateLeasePolicy(final VraNgLeasePolicy csPolicy) {
 		try {
-			createLeasePolicyPrimitive(csPolicy);
+			createOrUpdateLeasePolicyPrimitive(csPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
@@ -1337,13 +1334,12 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createDay2ActionsPolicy.
-	 *
-	 * @param d2aPolicy day 2 actions policy
+	 * createOrUpdateDay2ActionsPolicy.
+	 * @param d2aPolicy day 2 actions policy to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createDay2ActionsPolicy(final VraNgDay2ActionsPolicy d2aPolicy) {
+	public void createOrUpdateDay2ActionsPolicy(final VraNgDay2ActionsPolicy d2aPolicy) {
 		try {
-			createDay2ActionsPolicyPrimitive(d2aPolicy);
+			createOrUpdateDay2ActionsPolicyPrimitive(d2aPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
@@ -1380,13 +1376,12 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createDeploymentLimitPolicy.
-	 *
-	 * @param policy day 2 actions policy
+	 * createOrUpdateDeploymentLimitPolicy.
+	 * @param policy day 2 actions policy to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createDeploymentLimitPolicy(final VraNgDeploymentLimitPolicy policy) {
+	public void createOrUpdateDeploymentLimitPolicy(final VraNgDeploymentLimitPolicy policy) {
 		try {
-			createDeploymentLimitPolicyPrimitive(policy);
+			createOrUpdateDeploymentLimitPolicyPrimitive(policy);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
@@ -1423,13 +1418,12 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createApprovalPolicy.
-	 *
-	 * @param policy policy to be created or updated.
+	 * createOrUpdateApprovalPolicy.
+	 * @param policy - approval policy to create (when ID is null) or update (when ID is not null)
 	 */
-	public void createApprovalPolicy(final VraNgApprovalPolicy policy) {
+	public void createOrUpdateApprovalPolicy(final VraNgApprovalPolicy policy) {
 		try {
-			createApprovalPolicyPrimitive(policy);
+			createOrUpdateApprovalPolicyPrimitive(policy);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);

@@ -51,12 +51,13 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgPolicyStore<
 	}
 
 	/**
-	 * Makes an API call to create a Policy
+	 * Makes an API call to create or update a Policy
 	 * 
-	 * @param policy
+	 * @param policy - policy to create (when it has no ID) or update (when it has
+	 *               an ID)
 	 */
 	@Override
-	protected void createPolicy(final VraNgDay2ActionsPolicy policy) {
-		this.restClient.createDay2ActionsPolicy(policy);
+	protected void createOrUpdatePolicy(final VraNgDay2ActionsPolicy policy) {
+		this.restClient.createOrUpdateDay2ActionsPolicy(policy);
 	}
 }

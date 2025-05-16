@@ -51,12 +51,13 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgPolicySt
 	}
 
 	/**
-	 * Makes an API call to create a Policy
+	 * Makes an API call to create or update a Policy
 	 * 
-	 * @param policy
+	 * @param policy - policy to create (when it has no ID) or update (when it has
+	 *               an ID)
 	 */
 	@Override
-	protected void createPolicy(final VraNgDeploymentLimitPolicy policy) {
-		this.restClient.createDeploymentLimitPolicy(policy);
+	protected void createOrUpdatePolicy(final VraNgDeploymentLimitPolicy policy) {
+		this.restClient.createOrUpdateDeploymentLimitPolicy(policy);
 	}
 }

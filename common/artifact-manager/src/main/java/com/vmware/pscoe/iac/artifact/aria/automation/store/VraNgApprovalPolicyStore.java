@@ -56,12 +56,13 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgPolicyStore<Vra
 	}
 
 	/**
-	 * Makes an API call to create a Policy
+	 * Makes an API call to create or update a Policy
 	 * 
-	 * @param policy
+	 * @param policy - policy to create (when it has no ID) or update (when it has
+	 *               an ID)
 	 */
 	@Override
-	protected void createPolicy(final VraNgApprovalPolicy policy) {
-		this.restClient.createApprovalPolicy(policy);
+	protected void createOrUpdatePolicy(final VraNgApprovalPolicy policy) {
+		this.restClient.createOrUpdateApprovalPolicy(policy);
 	}
 }
