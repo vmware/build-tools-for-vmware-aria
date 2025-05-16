@@ -75,11 +75,12 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	}
 
 	/**
-	 * Makes an API call to create a Policy. Throws RuntimeException on failure
-	 * 
-	 * @param policy - policy entry to create; will be updated with ID, etc. from API response
+	 * Makes an API call to create or update a Policy
+	 * Throws RuntimeException on failure (error, unsuccessful HTTP
+	 * status)
+	 * @param policy - policy to create (when it has no ID) or update (when it has an ID)
 	 */
-	protected abstract void createPolicy(T policy);
+	protected abstract void createOrUpdatePolicy(T policy);
 
 	/**
 	 * Imports policies found in specified folder on server, according to filter
@@ -247,29 +248,24 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		boolean isNew = existingPolicy == null;
 		T backupPolicy = createExistingPolicyBackup(existingPolicy);
 		if (!isNew) {
-			try {
-				this.logger.warn("Backup '{}' created with ID='{}'. Attempting to delete {} policy '{}' before recreating it.",
-				backupPolicy.getName(), backupPolicy.getId(), policyDesc, policy.getName());
-				deleteResourceById(existingPolicy.getId());
-			} catch (Exception e) {
-				deleteExistingPolicyBackup(backupPolicy);
-				throw errorFrom(e, "Failed to delete previous version of %s policy '%s'", policyDesc, existingPolicy.getName());
-			}
+			policy.setId(existingPolicy.getId());
 		}
 
 		// Save the new/updated policy
 		try {
-			this.logger.info("Attempting to {}create {} policy '{}'", isNew ? "" : "re-", policyDesc.toLowerCase(), policy.getName());
-			createPolicy(policy);
-			logger.info("Successfully {}created {} Policy '{}', ID='{}'", isNew ? "" : "re-", policyDesc, policy.getName(), policy.getId());
+			this.logger.info("Attempting to {} {} policy '{}', ID='{}'", isNew ? "create" : "update", policyDesc.toLowerCase(), policy.getName(), policy.getId());
+			createOrUpdatePolicy(policy);
+			logger.info("Successfully {} {} Policy '{}', ID='{}'", isNew ? "created" : "updated", policyDesc, policy.getName(), policy.getId());
+			// TODO validate the policy has been created/updated
 			deleteExistingPolicyBackup(backupPolicy);
 		} catch (Exception e) {
-			if (backupPolicy == null) {
-				throw errorFrom(e, "Failed to create %s Policy '%s'", policyDesc, policy.getName());
-			}
+			// if (isNew) {
+				throw errorFrom(e, "Failed to %s %s Policy '%s'", isNew ? "create" : "update",
+						 policyDesc, policy.getName());
+			// }
 			// attempt to restore
-			String restoreDetails = restorePolicy(existingPolicy, backupPolicy);
-			throw errorFrom(e, "Failed to update %s Policy '%s' - %s.", policyDesc, existingPolicy.getName(), restoreDetails);
+			// String restoreDetails = restorePolicy(existingPolicy, backupPolicy);
+			// throw errorFrom(e, "Failed to update %s Policy '%s' - %s.", policyDesc, existingPolicy.getName(), restoreDetails);
 		}
 	}
 
@@ -389,7 +385,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			T backupPolicy = GSON.fromJson(policyToJsonObject(existingPolicy), policyClass); // sanitized copy
 			backupPolicy.setName(backupName);
 			// set orgId?
-			this.createPolicy(backupPolicy);
+			this.createOrUpdatePolicy(backupPolicy);
 			return backupPolicy;
 		} catch (Exception e) {
 			throw errorFrom(e, "Failed to create backup for %s policy '%s'.", policyDesc, existingPolicy.getName());
@@ -421,7 +417,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	private String restorePolicy(T policy, T existingPolicyBackup) {
 		String backupDetails = "restored from backup";
 		try {
-			createPolicy(policy);
+			createOrUpdatePolicy(policy);
 			deleteExistingPolicyBackup(existingPolicyBackup);
 		} catch (Exception e) {
 			backupDetails = String.format("backup is available for manual restore: '%s'",
