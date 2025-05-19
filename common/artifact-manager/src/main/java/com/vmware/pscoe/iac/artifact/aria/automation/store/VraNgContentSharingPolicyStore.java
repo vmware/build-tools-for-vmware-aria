@@ -35,8 +35,7 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgPolicyStore<Vra
 	 * Constructor for policy store of type VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE
 	 */
 	public VraNgContentSharingPolicyStore() {
-		super(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE, "content-sharing", "Content Sharing", 
-				VraNgContentSharingPolicy.class);
+		super(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE);
 	}
 
 	/**
@@ -60,17 +59,6 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgPolicyStore<Vra
 		} else {
 			return this.vraNgPackageDescriptor.getPolicy().getContentSharing();
 		}
-	}
-
-	/**
-	 * Makes an API call to create or update a Policy
-	 * 
-	 * @param policy - policy to create (when it has no ID) or update (when it has
-	 *               an ID)
-	 */
-	@Override
-	protected void createOrUpdatePolicy(final VraNgContentSharingPolicy policy) {
-		this.restClient.createOrUpdateContentSharingPolicy(policy);
 	}
 
 	/**

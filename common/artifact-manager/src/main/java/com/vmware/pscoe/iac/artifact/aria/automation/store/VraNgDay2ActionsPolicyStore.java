@@ -23,8 +23,7 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgPolicyStore<
 	 * Constructor for policy store of type VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE
 	 */
 	public VraNgDay2ActionsPolicyStore() {
-		super(VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE, "day2-actions", "Day Two Actions",
-				VraNgDay2ActionsPolicy.class);
+		super(VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE);
 	}
 
 	/**
@@ -48,16 +47,5 @@ public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgPolicyStore<
 		} else {
 			return this.vraNgPackageDescriptor.getPolicy().getDay2Actions();
 		}
-	}
-
-	/**
-	 * Makes an API call to create or update a Policy
-	 * 
-	 * @param policy - policy to create (when it has no ID) or update (when it has
-	 *               an ID)
-	 */
-	@Override
-	protected void createOrUpdatePolicy(final VraNgDay2ActionsPolicy policy) {
-		this.restClient.createOrUpdateDay2ActionsPolicy(policy);
 	}
 }

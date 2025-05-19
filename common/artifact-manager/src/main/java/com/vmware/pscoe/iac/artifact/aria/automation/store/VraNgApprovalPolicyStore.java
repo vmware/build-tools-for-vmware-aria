@@ -27,7 +27,7 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgPolicyStore<Vra
 	 * Constructor for policy store of type VraNgPolicyTypes.APPROVAL_POLICY_TYPE
 	 */
 	public VraNgApprovalPolicyStore() {
-		super(VraNgPolicyTypes.APPROVAL_POLICY_TYPE, "approval", "Approval", VraNgApprovalPolicy.class);
+		super(VraNgPolicyTypes.APPROVAL_POLICY_TYPE);
 	}
 
 	/**
@@ -53,16 +53,5 @@ public final class VraNgApprovalPolicyStore extends AbstractVraNgPolicyStore<Vra
 	 */
 	protected List<VraNgApprovalPolicy> getAllServerContents() {
 		return this.restClient.getApprovalPolicies();
-	}
-
-	/**
-	 * Makes an API call to create or update a Policy
-	 * 
-	 * @param policy - policy to create (when it has no ID) or update (when it has
-	 *               an ID)
-	 */
-	@Override
-	protected void createOrUpdatePolicy(final VraNgApprovalPolicy policy) {
-		this.restClient.createOrUpdateApprovalPolicy(policy);
 	}
 }

@@ -24,8 +24,7 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgPolicyStor
 	 * Constructor for policy store of type VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE
 	 */
 	public VraNgResourceQuotaPolicyStore() {
-		super(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE, "resource-quota", "Resource Quota",
-				VraNgResourceQuotaPolicy.class);
+		super(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE);
 	}
 
 	/**
@@ -49,15 +48,5 @@ public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgPolicyStor
 		} else {
 			return this.vraNgPackageDescriptor.getPolicy().getResourceQuota();
 		}
-	}
-
-	/**
-	 * Makes an API call to create or update a Policy
-	 * 
-	 * @param policy - policy to create (when it has no ID) or update (when it has an ID)
-	 */
-	@Override
-	protected void createOrUpdatePolicy(final VraNgResourceQuotaPolicy policy) {
-		this.restClient.createOrUpdateResourceQuotaPolicy(policy);
 	}
 }

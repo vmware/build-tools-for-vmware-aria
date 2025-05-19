@@ -23,8 +23,7 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgPolicySt
 	 * Constructor for policy store of type VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE
 	 */
 	public VraNgDeploymentLimitPolicyStore() {
-		super(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE, "deployment-limit", "Deployment Limit",
-				VraNgDeploymentLimitPolicy.class);
+		super(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE);
 	}
 
 	/**
@@ -48,16 +47,5 @@ public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgPolicySt
 		} else {
 			return this.vraNgPackageDescriptor.getPolicy().getDeploymentLimit();
 		}
-	}
-
-	/**
-	 * Makes an API call to create or update a Policy
-	 * 
-	 * @param policy - policy to create (when it has no ID) or update (when it has
-	 *               an ID)
-	 */
-	@Override
-	protected void createOrUpdatePolicy(final VraNgDeploymentLimitPolicy policy) {
-		this.restClient.createOrUpdateDeploymentLimitPolicy(policy);
 	}
 }

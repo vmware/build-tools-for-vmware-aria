@@ -25,6 +25,7 @@ import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.IVraNgPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import com.vmware.pscoe.iac.artifact.model.Package;
@@ -63,7 +64,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	/** Policy type description - for logging and error handling */
 	protected final String policyDesc;
 	/** Policy class */
-	protected final Class<T> policyClass;
+	protected final Class<IVraNgPolicy> policyClass;
 	/** Cached Project ID (fetched once by the REST client) */
 	private String cachedProjectId;
 	/** Cached Organization ID (fetched once by the REST client based on configuration)  */
@@ -71,15 +72,14 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	/**
 	 * Abstract parent to all Policy Store classes
 	 * 
-	 * @param policyType   - policy type (see VraNgPolicyTypes)
-	 * @param policyDir - subfolder of the policies directory (see VraNgDirs.DIR_POLICIES)
-	 * @param policyDesc   - description - for logging/error handling
+	 * @param t   - policy type (see VraNgPolicyTypes)
 	 */
-	protected AbstractVraNgPolicyStore(String policyType, String policyDir, String policyDesc, Class<T> policyClass) {
-		this.policyType = policyType; 
-		this.policyDir = policyDir;
-		this.policyDesc = policyDesc;
-		this.policyClass = policyClass;
+	@SuppressWarnings("unchecked")
+	protected AbstractVraNgPolicyStore(VraNgPolicyTypes t) {
+		this.policyType = t.id; 
+		this.policyDir = t.folder;
+		this.policyDesc = t.description;
+		this.policyClass = t.vraNgPolicyClass;
 	}
 
 	/**
@@ -95,14 +95,6 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		this.cachedOrgId = null;
 		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 	}
-
-	/**
-	 * Makes an API call to create or update a Policy
-	 * Throws RuntimeException on failure (error, unsuccessful HTTP
-	 * status)
-	 * @param policy - policy to create (when it has no ID) or update (when it has an ID)
-	 */
-	protected abstract void createOrUpdatePolicy(T policy);
 
 	/**
 	 * Imports policies found in specified folder on server, according to filter
@@ -199,6 +191,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 * @param cause - cause (can be null)
 	 * @param fmt   - formatting string
 	 * @param args  - arguments for the formatting string
+	 * @return RuntimeException
 	 */
 	protected RuntimeException errorFrom(Exception cause, String fmt, Object... args) {
 		String msg = String.format(fmt, args);
@@ -274,15 +267,14 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			policy.setId(isNew ? null : existingPolicy.getId());
 			this.logger.info("Attempting to {} {} policy '{}', ID='{}'", isNew ? "create" : "update", 
 					descr, policy.getName(), policy.getId());
-			createOrUpdatePolicy(policy);
+			this.restClient.createOrUpdatePolicy(policy);
 			logger.info("Successfully {} {} Policy '{}', ID='{}'", isNew ? "created" : "updated", policyDesc, policy.getName(), policy.getId());
 			return; // Success
 		} catch (Exception e) {
 			if (isNew) {
 				throw errorFrom(e, "Failed to create %s Policy '%s'", policyDesc, policy.getName());
 			}
-			logger.warn("Failed to update existing {} Policy '{}' with ID={}: {}\nAttempting to create new record...",
-					policyDesc, policy.getName(), policy.getId(), e);
+			logger.warn("{}\nAttempting to create new record...", e.getMessage());
 		}
 		// store existing policy as backup
 		String origName = existingPolicy.getName();
@@ -292,7 +284,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 				policyDesc, existingPolicy.getId(), backupName);
 		try {
 			existingPolicy.setName(backupName);
-			this.createOrUpdatePolicy(existingPolicy);
+			this.restClient.createOrUpdatePolicy(existingPolicy);
 		} catch (Exception e) {
 			throw errorFrom(e, "Failed to create backup for %s policy '%s' with ID=%s.", 
 					descr, origName, existingPolicy.getId());
@@ -301,7 +293,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		try {
 			policy.setId(null);
 			this.logger.info("Attempting to create new record for {} policy '{}'", descr, origName);
-			this.createOrUpdatePolicy(policy);
+			this.restClient.createOrUpdatePolicy(policy);
 			this.logger.info("Successfully created a new record for {} policy '{}' with ID={}", 
 					descr, origName, policy.getId());
 			deleteExistingPolicyBackup(existingPolicy);
@@ -441,7 +433,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		String backupDetails = "Backup was successfully restored.";
 		backedUpPolicy.setName(origName);
 		try {
-			createOrUpdatePolicy(backedUpPolicy);
+			this.restClient.createOrUpdatePolicy(backedUpPolicy);
 		} catch (Exception e) {
 			backupDetails = String.format("Backup can be restored manually from: '%s'",
 					backedUpPolicy.getName() + POLICY_BACKUP_SUFFIX);

@@ -24,7 +24,7 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgPolicyStore<VraNgL
 	 * Constructor for policy store of type VraNgPolicyTypes.LEASE_POLICY_TYPE
 	 */
 	public VraNgLeasePolicyStore() {
-		super(VraNgPolicyTypes.LEASE_POLICY_TYPE, "lease", "Lease", VraNgLeasePolicy.class);
+		super(VraNgPolicyTypes.LEASE_POLICY_TYPE);
 	}
 
 	protected List<VraNgLeasePolicy> getAllServerContents() {
@@ -43,16 +43,5 @@ public final class VraNgLeasePolicyStore extends AbstractVraNgPolicyStore<VraNgL
 		} else {
 			return this.vraNgPackageDescriptor.getPolicy().getLease();
 		}
-	}
-
-	/**
-	 * Makes an API call to create or update a Policy
-	 * 
-	 * @param policy - policy to create (when it has no ID) or update (when it has
-	 *               an ID)
-	 */
-	@Override
-	protected void createOrUpdatePolicy(final VraNgLeasePolicy policy) {
-		this.restClient.createOrUpdateLeasePolicy(policy);
 	}
 }
