@@ -109,7 +109,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			return;
 		}
 
-		Map<String, T> policiesOnServer = this.fetchPolicies(this.getItemListFromDescriptor(), true);
+		Map<String, T> policiesOnServer = this.fetchPolicies(this.getItemListFromDescriptor());
 
 		logger.info("Found {} Policies. Importing ...", policyDesc);
 		for (File policyFile : policyFiles) {
@@ -134,7 +134,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
 		Path policyFolderPath = getPolicyFolderPath();
-		Map<String, T> policies = this.fetchPolicies(itemNames, false);
+		Map<String, T> policies = this.fetchPolicies(itemNames);
 
 		itemNames.forEach(name -> {
 			if (!policies.containsKey(name)) {
@@ -190,18 +190,17 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	/**
 	 * This will fetch all the policies that need to be exported.
 	 *
-	 * Will validate that the no duplicate policies exist on the
-	 * environment.
-	 *
-	 * @param itemNames          - the list of policies to fetch. If empty, will fetch all
-	 * @param throwOnBackupFound - if true, a Runtime Exception will be thrown if the fetched policies contain a backup.
-	 *                             Otherwise backups will be excluded
+	 * Will validate that on the environment there are no policies of the given type and names that are duplicate
+	 * or backed up (indicating update is in progress or has  failed and needs manual resolution from the UI)
+	 * 
+	 * @param itemNames - the list of policies to fetch. If empty, will fetch all
 	 * 
 	 * @return Map with keys - policy names and values - the policy objects
 	 */
-	private Map<String, T> fetchPolicies(final List<String> itemNames, boolean throwOnBackupFound) {
+	private Map<String, T> fetchPolicies(final List<String> itemNames) {
 		Map<String, T> policies = new HashMap<>();
 		boolean includeAll = itemNames.size() == 0;
+		List<String> policyBackups = new ArrayList<>();
 
 		this.<T>getAllServerContents().forEach(policy -> {
 			if (policy.getTypeId().equals(policyType)
@@ -211,16 +210,18 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 						+ "with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type "
 						+ "in order to properly resolve the desired policy.", policyDesc.toLowerCase(), policy.getName());
 				}
-				if (!policy.getName().contains(POLICY_BACKUP_SUFFIX)) {
-					logger.debug("Found policy: {}", policy.getName());
-					policies.put(policy.getName(), policy);
-				} else if (!throwOnBackupFound) {
-					logger.debug("Skipping policy backup: {}", policy.getName());
-				} else {
-					throw errorFrom(null, "%s Policy update is in progress, found backup on server: '%s'", policyDesc, policy.getName());
+				if (policy.getName().contains(POLICY_BACKUP_SUFFIX)) {
+					policyBackups.add(policy.getName());
 				}
+				logger.debug("Found policy: {}", policy.getName());
+				policies.put(policy.getName(), policy);
 			}
 		});
+		if (!policyBackups.isEmpty()) {
+			throw errorFrom(null, "Policy backups found on server indicate that either a policy update is in progress "
+					+ "or that a previous policy update failure needs manual resolution from the UI:\n%s\n%s",
+					String.join("\n", policyBackups), "Please resolve before proceeding.");
+		}
 
 		return policies;
 	}
