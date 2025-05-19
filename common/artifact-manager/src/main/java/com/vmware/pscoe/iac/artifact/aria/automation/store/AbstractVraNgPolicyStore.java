@@ -22,8 +22,12 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.IVraNgPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.model.Package;
 
 import java.io.File;
 import java.io.FileReader;
@@ -60,6 +64,10 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	protected final String policyDesc;
 	/** Policy class */
 	protected final Class<T> policyClass;
+	/** Cached Project ID (fetched once by the REST client) */
+	private String cachedProjectId;
+	/** Cached Organization ID (fetched once by the REST client based on configuration)  */
+	private String cachedOrgId;
 	/**
 	 * Abstract parent to all Policy Store classes
 	 * 
@@ -72,6 +80,20 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		this.policyDir = policyDir;
 		this.policyDesc = policyDesc;
 		this.policyClass = policyClass;
+	}
+
+	/**
+	 * @param restClient             - vRA REST client
+	 * @param vraNgPackage           - package
+	 * @param config                 - configuration
+	 * @param vraNgPackageDescriptor - package descriptor
+	 */
+	@Override
+	public void init(RestClientVraNg restClient, Package vraNgPackage, ConfigurationVraNg config,
+			VraNgPackageDescriptor vraNgPackageDescriptor) {
+		this.cachedProjectId = null;
+		this.cachedOrgId = null;
+		super.init(restClient, vraNgPackage, config, vraNgPackageDescriptor);
 	}
 
 	/**
@@ -379,12 +401,17 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 */
 	private void populatePolicyDetails(T policy) {
 		if (policy.getProjectId() != null && !policy.getProjectId().isBlank()) {
-			policy.setProjectId(this.restClient.getProjectId());
+			if (!policy.getProjectId().equals(this.getProjectId())) {
+				logger.warn("{} Policy '{}' - project ID was updated from '{}' to '{}'!",
+						policyDesc, policy.getName(), policy.getProjectId(), this.getProjectId());
+			}
+			policy.setProjectId(this.getProjectId());
 		}
 
 		this.resolvePolicyItem(policy, true);
 
-		policy.setOrgId(VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId());
+		logger.debug("{} Policy '{}' - setting organization ID to '{}'", policyDesc, policy.getName(), this.getOrgId());
+		policy.setOrgId(this.getOrgId());
 	}
 
 	/**
@@ -435,5 +462,21 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 		policy.remove("lastUpdatedBy");
 		policy.remove("lastUpdatedAt");
 		policy.remove("id");
+	}
+
+	/** @return Project ID */
+	private String getProjectId() {
+		if (this.cachedProjectId == null) {
+			this.cachedProjectId = this.restClient.getProjectId();
+		}
+		return this.cachedProjectId;
+	}
+
+	/** @return Organization ID */
+	private String getOrgId() {
+		if (this.cachedOrgId == null) {
+			this.cachedOrgId = VraNgOrganizationUtil.getOrganization(this.restClient, this.config).getId();
+		}
+		return this.cachedOrgId;
 	}
 }
