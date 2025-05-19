@@ -2240,14 +2240,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-		LOGGER.info("Executing method {} on URI {} with entity {} ", method, url, entity); // TODO debug
+		LOGGER.debug("Executing method {} on URI {} with entity {} ", method, url, entity);
 		ResponseEntity<String> result = restTemplate.exchange(url, method, entity, String.class);
-		// TODO remove:
-		if (result == null) {
-			LOGGER.info("Result: null");
-		} else {
-			LOGGER.info("Result - status:{}, body: {} ", result.getStatusCode(), result.getBody());
-		}
 		return result;
 	}
 
@@ -2716,13 +2710,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
-		LOGGER.info("Executing method DELETE on URI {} with entity {} ", url); // TODO debug
-		ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class); // TODO
-		if (result == null) {
-			LOGGER.info("Result: null");
-		} else {
-			LOGGER.info("Result - status:{}, body: {} ", result.getStatusCode(), result.getBody());
-		}
+		LOGGER.debug("Executing method DELETE on URI {} with entity {} ", url);
+		ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+
 		return result;
 	}
 
@@ -2744,17 +2734,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 
-		LOGGER.info("{} {} Policy '{}', ID={}",
-				isNew ? "Creating" : "Updating",
-				policyDesc,
-				policy.getName(),
-				policy.getId());
-
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw new RuntimeException(
-					String.format("Failed to %s %s Policy. Status: %s",
+					String.format("Failed to %s %s Policy '%s' (ID=%s). Status: %s",
 							isNew ? "create" : "update",
 							policyDesc,
+							policy.getName(),
+							policy.getId(),
 							response.getStatusCode()));
 		}
 
