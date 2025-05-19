@@ -22,7 +22,7 @@ namespace vroapi {
 
         description: string;
 
-        workflowCategory: any;
+        workflowCategory: WorkflowCategory;
 
         version: string;
 
