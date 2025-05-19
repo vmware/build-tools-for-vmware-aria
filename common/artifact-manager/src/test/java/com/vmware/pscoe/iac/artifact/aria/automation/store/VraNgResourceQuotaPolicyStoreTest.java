@@ -247,7 +247,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createOrUpdateResourceQuotaPolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -293,7 +293,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createOrUpdateResourceQuotaPolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -307,7 +307,7 @@ public class VraNgResourceQuotaPolicyStoreTest {
 		verify(vraNgPackageDescriptor, never()).getPolicy();
 		verify(restClient, never()).getResourceQuotaPolicies();
 		verify(restClient, never()).getResourceQuotaPolicy(anyString());
-		verify(restClient, never()).createOrUpdateResourceQuotaPolicy(any());
+		verify(restClient, never()).createOrUpdatePolicy(any());
 	}
 
 	@Test
