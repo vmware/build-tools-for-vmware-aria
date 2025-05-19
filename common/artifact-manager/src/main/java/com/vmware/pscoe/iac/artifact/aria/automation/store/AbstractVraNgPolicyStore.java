@@ -111,7 +111,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 				.toFile();
 
 		if (!policyFolder.exists()) {
-			logger.info("No {} policies available - skip import", policyDesc.toLowerCase());
+			logger.info("No {} Policies available - skip import", policyDesc);
 			return;
 		}
 
@@ -119,7 +119,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 				new CustomFolderFileFilter(this.getItemListFromDescriptor()));
 
 		if (policyFiles != null && policyFiles.length == 0) {
-			logger.info("No {} policies available - skip import", policyDesc.toLowerCase());
+			logger.info("No {} Policies available - skip import", policyDesc);
 			return;
 		}
 
@@ -221,9 +221,9 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			if (policy.getTypeId().equals(policyType)
 					&& (includeAll || itemNames.contains(policy.getName()))) {
 				if (policies.containsKey(policy.getName())) {
-					throw errorFrom(null, "More than one %s policy with name '%s' already exists. While Aria Automation supports policies "
+					throw errorFrom(null, "More than one %s Policy with name '%s' already exists. While Aria Automation supports policies "
 						+ "with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type "
-						+ "in order to properly resolve the desired policy.", policyDesc.toLowerCase(), policy.getName());
+						+ "in order to properly resolve the desired policy.", policyDesc, policy.getName());
 				}
 				if (policy.getName().contains(POLICY_BACKUP_SUFFIX)) {
 					policyBackups.add(policy.getName());
@@ -252,9 +252,8 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 */
 	private void handlePolicyImport(final File policyFile, Map<String, T> policiesOnServer) {
 		T policy = policyFromJsonFile(policyFile);
-		String descr = policyDesc.toLowerCase();
-		logger.info("Attempting to import {} policy '{}' from file '{}'",
-				descr,
+		logger.info("Attempting to import {} Policy '{}' from file '{}'",
+				policyDesc,
 				policy.getName(),
 				policyFile.getName());
 
@@ -265,8 +264,8 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 
 		try {
 			policy.setId(isNew ? null : existingPolicy.getId());
-			this.logger.info("Attempting to {} {} policy '{}', ID='{}'", isNew ? "create" : "update", 
-					descr, policy.getName(), policy.getId());
+			this.logger.info("Attempting to {} {} Policy '{}', ID='{}'", isNew ? "create" : "update", 
+					policyDesc, policy.getName(), policy.getId());
 			this.restClient.createOrUpdatePolicy(policy);
 			logger.info("Successfully {} {} Policy '{}', ID='{}'", isNew ? "created" : "updated", policyDesc, policy.getName(), policy.getId());
 			return; // Success
@@ -286,22 +285,22 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			existingPolicy.setName(backupName);
 			this.restClient.createOrUpdatePolicy(existingPolicy);
 		} catch (Exception e) {
-			throw errorFrom(e, "Failed to create backup for %s policy '%s' with ID=%s.", 
-					descr, origName, existingPolicy.getId());
+			throw errorFrom(e, "Failed to create backup for %s Policy '%s' with ID=%s.", 
+					policyDesc, origName, existingPolicy.getId());
 		}
 		// create new record for the changed policy
 		try {
 			policy.setId(null);
-			this.logger.info("Attempting to create new record for {} policy '{}'", descr, origName);
+			this.logger.info("Attempting to create new record for {} Policy '{}'", policyDesc, origName);
 			this.restClient.createOrUpdatePolicy(policy);
-			this.logger.info("Successfully created a new record for {} policy '{}' with ID={}", 
-					descr, origName, policy.getId());
+			this.logger.info("Successfully created a new record for {} Policy '{}' with ID={}", 
+					policyDesc, origName, policy.getId());
 			deleteExistingPolicyBackup(existingPolicy);
 		} catch (Exception e) {
 			// creation failed - restore (rename) backup:
 			String backupDetails = restoreBackedUpPolicy(existingPolicy, origName);
-			throw errorFrom(e, "Failed to create new record for %s policy '%s'. %s", 
-					descr, origName, backupDetails);
+			throw errorFrom(e, "Failed to create new record for %s Policy '%s'. %s", 
+					policyDesc, origName, backupDetails);
 		}
 	}
 
@@ -328,21 +327,20 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 * @param policy     policy representation
 	 */
 	private void storePolicyOnFS(final File policyFile, final T policy) {
-		String policiesDesc = policyDesc.toLowerCase();
-		logger.debug("Storing {} policy {}", policiesDesc, policy.getName());
+		logger.debug("Storing {} Policy {}", policyDesc, policy.getName());
 		this.resolvePolicyItem(policy, false);
 		try {
 			JsonObject policyJsonObject = GSON.fromJson(GSON.toJson(policy), JsonObject.class);
 			sanitizePolicy(policyJsonObject);
 
-			logger.info("Created {} policy file {}",
-					policiesDesc,
+			logger.info("Created {} Policy file {}",
+					policyDesc,
 					Files.write(
-							Paths.get(policyFile.getPath()),
-							GSON.toJson(policyJsonObject).getBytes(),
-							StandardOpenOption.CREATE));
+					Paths.get(policyFile.getPath()),
+					GSON.toJson(policyJsonObject).getBytes(),
+					StandardOpenOption.CREATE));
 		} catch (IOException e) {
-			throw errorFrom(e, "Unable to store %s policy to file %s.", policiesDesc, policyFile.getAbsolutePath());
+			throw errorFrom(e, "Unable to store %s Policy to file %s.", policyDesc, policyFile.getAbsolutePath());
 		}
 	}
 
@@ -372,8 +370,8 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	 * @return T
 	 */
 	private T policyFromJsonFile(final File jsonFile) {
-		logger.debug("Converting {} policy file to {}. Name: '{}'",
-				policyDesc.toLowerCase(), policyClass.getSimpleName(), jsonFile.getName());
+		logger.debug("Converting {} Policy file to {}. Name: '{}'",
+				policyDesc, policyClass.getSimpleName(), jsonFile.getName());
 
 		try {
 			JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()));

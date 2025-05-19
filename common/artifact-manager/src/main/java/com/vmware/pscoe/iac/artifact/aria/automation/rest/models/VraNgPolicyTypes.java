@@ -35,7 +35,7 @@ public enum VraNgPolicyTypes {
 	/**
 	 * APPROVAL_POLICY_TYPE.
 	 */
-	APPROVAL_POLICY_TYPE("com.vmware.policy.approval", "approval","Approval", VraNgApprovalPolicy.class),
+	APPROVAL_POLICY_TYPE("com.vmware.policy.approval", "approval", "Approval", VraNgApprovalPolicy.class),
 	/**
 	 * DAY2_ACTION_POLICY_TYPE.
 	 */
@@ -73,7 +73,7 @@ public enum VraNgPolicyTypes {
 	 * @param description  - description - for logging/error handling
 	 * @param vraNgPolicyClass - policy data class of the type VraNgWhateverPolicy
 	 */
-	private <T extends IVraNgPolicy> VraNgPolicyTypes(String id, String folder, String description, Class<T> vraNgPolicyClass) {
+	<T extends IVraNgPolicy> VraNgPolicyTypes(String id, String folder, String description, Class<T> vraNgPolicyClass) {
 		this.id = id;
 		this.folder = folder;
 		this.description = description;
