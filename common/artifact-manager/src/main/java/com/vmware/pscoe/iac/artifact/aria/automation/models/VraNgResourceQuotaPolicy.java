@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.models;
 
 import com.google.gson.JsonObject;
 
-public final class VraNgResourceQuotaPolicy implements IVraNgPolicy {
+public final class VraNgResourceQuotaPolicy implements VraNgPolicyDTO {
 	/**
 	 * Id of the Resource Quota Policy.
 	 */

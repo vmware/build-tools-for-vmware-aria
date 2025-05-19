@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
  * The purpose of this class is to be able to export and import Approval Policy
  * from Service Broker.
  */
-public final class VraNgApprovalPolicy implements IVraNgPolicy {
+public final class VraNgApprovalPolicy implements VraNgPolicyDTO {
 	/**
 	 * Id of the Policy.
 	 */

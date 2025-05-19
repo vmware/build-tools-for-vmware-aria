@@ -1,6 +1,6 @@
 package com.vmware.pscoe.iac.artifact.aria.automation.rest.models;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.models.IVraNgPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgDay2ActionsPolicy;
@@ -73,7 +73,7 @@ public enum VraNgPolicyTypes {
 	 * @param description  - description - for logging/error handling
 	 * @param vraNgPolicyClass - policy data class of the type VraNgWhateverPolicy
 	 */
-	<T extends IVraNgPolicy> VraNgPolicyTypes(String id, String folder, String description, Class<T> vraNgPolicyClass) {
+	<T extends VraNgPolicyDTO> VraNgPolicyTypes(String id, String folder, String description, Class<T> vraNgPolicyClass) {
 		this.id = id;
 		this.folder = folder;
 		this.description = description;

@@ -23,7 +23,7 @@ import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.IVraNgPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * Abstract class that unify the way Policies are imported, exported and deleted for all subclasses.
  */
-public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends AbstractVraNgStore {
+public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends AbstractVraNgStore {
 	/**
 	 * Suffix used for all of the resources saved by this store.
 	 */
@@ -64,7 +64,7 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 	/** Policy type description - for logging and error handling */
 	protected final String policyDesc;
 	/** Policy class */
-	protected final Class<IVraNgPolicy> policyClass;
+	protected final Class<VraNgPolicyDTO> policyClass;
 	/** Cached Project ID (fetched once by the REST client) */
 	private String cachedProjectId;
 	/** Cached Organization ID (fetched once by the REST client based on configuration)  */

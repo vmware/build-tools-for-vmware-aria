@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.IVraNgPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlement;
@@ -2673,7 +2673,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @param policy     - the policy to create/update
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends IVraNgPolicy> void createOrUpdatePolicy(T policy) {
+	public <T extends VraNgPolicyDTO> void createOrUpdatePolicy(T policy) {
 		if (!isVraAbove810) {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
@@ -2685,7 +2685,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			String jsonBody = new Gson().toJson(policy);
 			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 			String newId = !response.getStatusCode().is2xxSuccessful() ? null
-					: new Gson().fromJson(response.getBody(), (Class<IVraNgPolicy>) policyType.vraNgPolicyClass).getId();
+					: new Gson().fromJson(response.getBody(), (Class<VraNgPolicyDTO>) policyType.vraNgPolicyClass).getId();
 			if (newId == null) {
 				failureCause = String.format("Status: %s; Body: %s", response.getStatusCode(), response.getBody());
 			} else if (policy.getId() != null && !policy.getId().equals(newId)) {

@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.models;
 /**
  * Base policy interface
  */
-public interface IVraNgPolicy extends Identifiable {
+public interface VraNgPolicyDTO extends Identifiable {
 
 	/**
 	 * Setter for policy ID
