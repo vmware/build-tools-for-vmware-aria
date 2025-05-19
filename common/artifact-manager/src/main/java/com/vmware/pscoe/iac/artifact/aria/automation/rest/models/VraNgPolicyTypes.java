@@ -94,4 +94,13 @@ public enum VraNgPolicyTypes {
 		}
 		throw new RuntimeException("Unsupported policy class: " + vraNgPolicyClass);
 	}
+
+	/**
+	 * Checks if the given policy is of the type of the current enum value
+	 * @param policy - policy
+	 * @return true if the type ID of the policy matches the ID from the enum
+	 */
+	public boolean isTypeOf(VraNgPolicyDTO policy) {
+		return policy != null && this.id.equalsIgnoreCase(policy.getTypeId());
+	}
 }

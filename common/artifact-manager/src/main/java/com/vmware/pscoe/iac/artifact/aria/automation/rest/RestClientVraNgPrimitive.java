@@ -2243,12 +2243,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
 		LOGGER.debug("Executing method {} on URI {} with entity {} ", method, url, entity);
-		ResponseEntity<String> result = restTemplate.exchange(url, method, entity, String.class);
-		return result;
+		return restTemplate.exchange(url, method, entity, String.class);
 	}
 
 	private ResponseEntity<String> putJsonPrimitive(final URI url, final String jsonBody) {
-		return postJsonPrimitive(url, HttpMethod.PUT, jsonBody);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+
+		return restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 	}
 
 	private List<VraNgContentSourceBase> getContentSources() {
@@ -2348,7 +2351,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.id))
+				.filter(policy -> VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.isTypeOf(policy))
 				.collect(Collectors.toList());
 		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 
@@ -2368,7 +2371,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(p -> p.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.id))
+				.filter(p -> VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.isTypeOf(p))
 				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId())).findFirst()
 				.orElse(null);
 		if (policy == null) {
@@ -2429,7 +2432,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE.id))
+					.filter(policy -> VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2478,7 +2481,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgDay2ActionsPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE.id))
+					.filter(policy -> VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2524,7 +2527,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.LEASE_POLICY_TYPE.id))
+					.filter(policy -> VraNgPolicyTypes.LEASE_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Lease Policies found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2590,8 +2593,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 			List<VraNgDeploymentLimitPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class))
-					.filter(policy -> policy.getTypeId()
-							.equalsIgnoreCase(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE.id))
+					.filter(policy -> VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2639,7 +2641,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			// filter here for older vRA versions.
 			List<VraNgApprovalPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.APPROVAL_POLICY_TYPE.id))
+					.filter(policy -> VraNgPolicyTypes.APPROVAL_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2662,9 +2664,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
 		URI url = getURI(getURIBuilder().setPath(deleteURL));
 		LOGGER.debug("Executing method DELETE on URI {} with entity {} ", url);
-		ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
-
-		return result;
+		return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 	}
 
 	/**
