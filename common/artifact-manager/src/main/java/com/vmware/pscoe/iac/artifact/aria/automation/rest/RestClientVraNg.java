@@ -1206,19 +1206,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createOrUpdateContentSharingPolicy.
-	 * @param csPolicy content sharing policy to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
-		try {
-			this.createOrUpdateContentSharingPolicyPrimitive(csPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
-		}
-	}
-
-	/**
 	 * getContentSharingPolicy.
 	 * 
 	 * @param policyId content sharing policy id
@@ -1263,31 +1250,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
-	/**
-	 * createOrUpdateResourceQuotaPolicy.
-	 * @param rqPolicy resource quota policy to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateResourceQuotaPolicy(final VraNgResourceQuotaPolicy rqPolicy) {
-		try {
-			createOrUpdateResourceQuotaPolicyPrimitive(rqPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
-		}
-	}
-
-	/**
-	 * createOrUpdateLeasePolicy.
-	 * @param csPolicy lease policy to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateLeasePolicy(final VraNgLeasePolicy csPolicy) {
-		try {
-			createOrUpdateLeasePolicyPrimitive(csPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
-		}
-	}
 
 	/**
 	 * getResourceQuotaPolicy.
@@ -1334,19 +1296,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createOrUpdateDay2ActionsPolicy.
-	 * @param d2aPolicy day 2 actions policy to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateDay2ActionsPolicy(final VraNgDay2ActionsPolicy d2aPolicy) {
-		try {
-			createOrUpdateDay2ActionsPolicyPrimitive(d2aPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
-		}
-	}
-
-	/**
 	 * getDay2ActionsPolicy.
 	 *
 	 * @param policyId day 2 actions policy id
@@ -1376,19 +1325,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createOrUpdateDeploymentLimitPolicy.
-	 * @param policy day 2 actions policy to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateDeploymentLimitPolicy(final VraNgDeploymentLimitPolicy policy) {
-		try {
-			createOrUpdateDeploymentLimitPolicyPrimitive(policy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
-		}
-	}
-
-	/**
 	 * getDeploymentLimitPolicy.
 	 *
 	 * @param policyId day 2 actions policy id
@@ -1414,19 +1350,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		} catch (Exception e) {
 			logger.error("Error fetching Approval policies", e.getMessage());
 			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * createOrUpdateApprovalPolicy.
-	 * @param policy - approval policy to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateApprovalPolicy(final VraNgApprovalPolicy policy) {
-		try {
-			createOrUpdateApprovalPolicyPrimitive(policy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
 		}
 	}
 

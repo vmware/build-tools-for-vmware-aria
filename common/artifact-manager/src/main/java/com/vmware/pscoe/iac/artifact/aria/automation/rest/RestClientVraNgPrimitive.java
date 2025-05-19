@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
@@ -659,7 +661,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			this.postJsonPrimitive(url, HttpMethod.POST, "");
 		} catch (HttpClientErrorException e) {
 			throw new RuntimeException(
-					String.format("Error ocurred during when unreleasing version %s for blueprint %s. Message: %s",
+					String.format("Error ocurred while unreleasing version %s for blueprint %s. Message: %s",
 							versionId, blueprintId, e.getMessage()));
 		}
 	}
@@ -2342,11 +2344,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// Add additional filter to reduce the data received from server for newer vRA
 		// versions (8.16 and above)
 		if (isVraAbove810) {
-			params.put("typeId", VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.id);
 		}
 		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE))
+				.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.id))
 				.collect(Collectors.toList());
 		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 
@@ -2366,7 +2368,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(p -> p.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE))
+				.filter(p -> p.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.id))
 				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId())).findFirst()
 				.orElse(null);
 		if (policy == null) {
@@ -2410,15 +2412,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return csPolicy;
 	}
 
-	/**
-	 * Creates or updates a Content Sharing Policy.
-	 * @param csPolicy policy data to create (when ID is null) or update (when ID is not null)
-	 */
-	protected void createOrUpdateContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
-			throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(csPolicy, "Content Sharing", VraNgContentSharingPolicy.class);
-	}
-
 	// =================================================
 	// Resource Quota Policy
 	// =================================================
@@ -2432,11 +2425,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
-			params.put("typeId", VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE.id);
 
 			List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE.id))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2446,15 +2439,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 			throw (new UnsupportedOperationException(
 					"Policy import/export supported in VRA Versions  8.10.x or newer."));
 		}
-	}
-
-	/**
-	 * Creates or updates a Resource Quota Policy.
-	 * @param rqPolicy policy data to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
-			throws URISyntaxException, UnsupportedOperationException {
-		createOrUpdatePolicyPrimitive(rqPolicy, "Resource Quota", VraNgResourceQuotaPolicy.class);
 	}
 
 	/**
@@ -2490,11 +2474,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
-			params.put("typeId", VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE.id);
 
 			List<VraNgDay2ActionsPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE.id))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2502,14 +2486,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
-	}
-
-	/**
-	 * Creates or updates a Day 2 Actions Policy.
-	 * @param d2aPolicy policy data to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy) throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(d2aPolicy, "Day Two Actions", VraNgDay2ActionsPolicy.class);
 	}
 
 	/**
@@ -2544,11 +2520,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
-			params.put("typeId", VraNgPolicyTypes.LEASE_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.LEASE_POLICY_TYPE.id);
 
 			List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.LEASE_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.LEASE_POLICY_TYPE.id))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Lease Policies found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2576,26 +2552,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 	}
 
-	/**
-	 * Creates or updates a Lease Policy.
-	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateLeasePolicyPrimitive(final VraNgLeasePolicy policy) throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(policy, "Lease", VraNgLeasePolicy.class);
-	}
-
 	// =================================================
 	// Deployment Limit Policy
 	// =================================================
-
-	/**
-	 * Creates or updates a Deployment Limit Policy.
-	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
-			throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(policy, "Deployment Limit", VraNgDeploymentLimitPolicy.class);
-	}
 
 	/**
 	 * Retrieve Deployment Limit Policy based on Id.
@@ -2627,12 +2586,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
-			params.put("typeId", VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE.id);
 
 			List<VraNgDeploymentLimitPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class))
 					.filter(policy -> policy.getTypeId()
-							.equalsIgnoreCase(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE))
+							.equalsIgnoreCase(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE.id))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2645,14 +2604,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	// =================================================
 	// Approval Policy
 	// =================================================
-
-	/**
-	 * Creates or updates an Approval Policy.
-	 * @param policy policy data to create (when ID is null) or update (when ID is not null)
-	 */
-	public void createOrUpdateApprovalPolicyPrimitive(final VraNgApprovalPolicy policy) throws URISyntaxException {
-		createOrUpdatePolicyPrimitive(policy, "Approval", VraNgApprovalPolicy.class);
-	}
 
 	/**
 	 * Retrieve Approval Policy based on Id.
@@ -2683,12 +2634,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
 			// filter here to reduce traffic for newer vRA versions.
-			params.put("typeId", VraNgPolicyTypes.APPROVAL_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.APPROVAL_POLICY_TYPE.id);
 
 			// filter here for older vRA versions.
 			List<VraNgApprovalPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.APPROVAL_POLICY_TYPE))
+					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.APPROVAL_POLICY_TYPE.id))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2720,39 +2671,42 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Create (when ID is null) or update (when ID si not null) policy.
 	 * 
 	 * @param policy     - the policy to create/update
-	 * @param policyDesc - policy description for error handling
-	 * @throws URISyntaxException from URIBuilder
 	 */
-	private <T extends IVraNgPolicy> void createOrUpdatePolicyPrimitive(T policy, String policyDesc, Class<T> policyClass) throws URISyntaxException {
+	public <T extends IVraNgPolicy> void createOrUpdatePolicy(T policy) {
 		if (!isVraAbove810) {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
-
-		boolean isNew = policy.getId() == null;
-		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-		String jsonBody = new Gson().toJson(policy);
-
-		ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-
-		if (!response.getStatusCode().is2xxSuccessful()) {
-			throw new RuntimeException(
-					String.format("Failed to %s %s Policy '%s' (ID=%s). Status: %s",
-							isNew ? "create" : "update",
-							policyDesc,
-							policy.getName(),
-							policy.getId(),
-							response.getStatusCode()));
+		VraNgPolicyTypes policyType = VraNgPolicyTypes.forPolicyClass(policy.getClass());
+		String createOrUpdate = policy.getId() == null ? "create" : "update";
+		String failureCause = null;
+		try {
+			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+			String jsonBody = new Gson().toJson(policy);
+			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+			String newId = !response.getStatusCode().is2xxSuccessful() ? null
+					: new Gson().fromJson(response.getBody(), (Class<IVraNgPolicy>)policyType.vraNgPolicyClass).getId();
+			if (newId == null) {
+				failureCause = String.format("Status: %s; Body: %s", response.getStatusCode(), response.getBody());
+			} else if (policy.getId() != null && !policy.getId().equals(newId)) {
+				failureCause = String.format("Updated ID '%s' does not match original ID '%s'!", newId, policy.getId());
+			} else {
+				policy.setId(newId);
+				return;
+			}
+		} catch (HttpClientErrorException e)  {
+			String msg = e.getStatusText() != null ? e.getStatusText() : e.getMessage();
+        	Matcher matcher = Pattern.compile("\\{(.*?)\\}").matcher(msg);
+			failureCause = matcher.find() ? String.format("{%s}", matcher.group(1)) : msg;
+		} catch (Exception e) {
+			failureCause = e.getMessage();
 		}
 
-		String newId = new Gson().fromJson(response.getBody(), policyClass).getId();
-		if (policy.getId() != null && !policy.getId().equals(newId)) {
-			throw new RuntimeException(
-					String.format("Updated ID '%s' does not match original ID '%s' of %s Policy '%s'!",
-							newId,
-							policy.getId(),
-							policyDesc,
-							policy.getName()));
-		}
-		policy.setId(newId);
+		throw new RuntimeException(String.format("Could not %s %s Policy '%s' (ID=%s): %s",
+				createOrUpdate,
+				policyType.description,
+				policy.getName(),
+				policy.getId(),
+				failureCause
+				));
 	}
 }
