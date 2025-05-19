@@ -281,8 +281,8 @@ public abstract class AbstractVraNgPolicyStore<T extends IVraNgPolicy> extends A
 			if (isNew) {
 				throw errorFrom(e, "Failed to create %s Policy '%s'", policyDesc, policy.getName());
 			}
-			logger.warn("Failed to update existing {} Policy '{}' with ID={}. Attempting to create new record...", 
-					policyDesc, policy.getName(), policy.getId());
+			logger.warn("Failed to update existing {} Policy '{}' with ID={}: {}\nAttempting to create new record...",
+					policyDesc, policy.getName(), policy.getId(), e);
 		}
 		// store existing policy as backup
 		String origName = existingPolicy.getName();
