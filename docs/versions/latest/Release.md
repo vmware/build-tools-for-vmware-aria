@@ -42,6 +42,10 @@ Sample vRO project from polyglot archetype was extended with:
 Runtime option powershell:7.4 was causing a vropkg error and was removed in a previous release.
 Now the issue is fixed and the option is restored and available to use.
 
+### *Polyglot not producing correct bundle fixed*
+
+An issue is fixed that handler files were missing from polyglot package.
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
