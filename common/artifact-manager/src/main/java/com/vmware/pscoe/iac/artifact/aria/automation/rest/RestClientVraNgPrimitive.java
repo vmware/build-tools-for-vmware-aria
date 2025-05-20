@@ -32,10 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlement;
@@ -658,7 +661,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			this.postJsonPrimitive(url, HttpMethod.POST, "");
 		} catch (HttpClientErrorException e) {
 			throw new RuntimeException(
-					String.format("Error ocurred during when unreleasing version %s for blueprint %s. Message: %s",
+					String.format("Error ocurred while unreleasing version %s for blueprint %s. Message: %s",
 							versionId, blueprintId, e.getMessage()));
 		}
 	}
@@ -2344,11 +2347,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// Add additional filter to reduce the data received from server for newer vRA
 		// versions (8.16 and above)
 		if (isVraAbove810) {
-			params.put("typeId", VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.id);
 		}
 		List<VraNgContentSharingPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE))
+				.filter(policy -> VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.isTypeOf(policy))
 				.collect(Collectors.toList());
 		LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 
@@ -2368,7 +2371,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		VraNgContentSharingPolicy policy = this.getPagedContent(SERVICE_POLICIES, params).stream()
 				.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgContentSharingPolicy.class))
-				.filter(p -> p.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE))
+				.filter(p -> VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE.isTypeOf(p))
 				.filter(p -> p.getName().equals(name) && p.getProjectId().equals(this.getProjectId())).findFirst()
 				.orElse(null);
 		if (policy == null) {
@@ -2412,24 +2415,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return csPolicy;
 	}
 
-	/**
-	 * Creates Content Sharing Policy.
-	 *
-	 * @param csPolicy policy data to create
-	 */
-	protected void createContentSharingPolicyPrimitive(final VraNgContentSharingPolicy csPolicy)
-			throws URISyntaxException {
-		VraNgContentSharingPolicy existingPolicy = this.getContentSharingPolicyPrimitive(csPolicy.getId());
-		// if the policy does not exist remove its id in order to be created, otherwise
-		// update it
-		if (existingPolicy == null) {
-			csPolicy.setId(null);
-		}
-		URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-		String jsonBody = new Gson().toJson(csPolicy);
-		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
-	}
-
 	// =================================================
 	// Resource Quota Policy
 	// =================================================
@@ -2443,34 +2428,16 @@ public class RestClientVraNgPrimitive extends RestClient {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
-			params.put("typeId", VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE.id);
 
 			List<VraNgResourceQuotaPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgResourceQuotaPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE))
+					.filter(policy -> VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
 
-		} else {
-			throw (new UnsupportedOperationException(
-					"Policy import/export supported in VRA Versions  8.10.x or newer."));
-		}
-	}
-
-	/**
-	 * Creates Resource Quota Policy.
-	 *
-	 * @param rqPolicy policy data to create
-	 */
-	public void createResourceQuotaPolicyPrimitive(final VraNgResourceQuotaPolicy rqPolicy)
-			throws URISyntaxException, UnsupportedOperationException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(rqPolicy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
 			throw (new UnsupportedOperationException(
 					"Policy import/export supported in VRA Versions  8.10.x or newer."));
@@ -2510,31 +2477,15 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
-			params.put("typeId", VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE.id);
 
 			List<VraNgDay2ActionsPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDay2ActionsPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE))
+					.filter(policy -> VraNgPolicyTypes.DAY2_ACTION_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
 			return results;
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
-	}
-
-	/**
-	 * Creates Day 2 Actions Policy.
-	 *
-	 * @param d2aPolicy policy data to create
-	 */
-	public void createDay2ActionsPolicyPrimitive(final VraNgDay2ActionsPolicy d2aPolicy) throws URISyntaxException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(d2aPolicy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
 		} else {
 			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
 		}
@@ -2572,11 +2523,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			Map<String, String> params = new HashMap<>();
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
-			params.put("typeId", VraNgPolicyTypes.LEASE_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.LEASE_POLICY_TYPE.id);
 
 			List<VraNgLeasePolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgLeasePolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.LEASE_POLICY_TYPE))
+					.filter(policy -> VraNgPolicyTypes.LEASE_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Lease Policies found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2604,42 +2555,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 	}
 
-	/**
-	 * Creates lease Policy.
-	 *
-	 * @param policy policy data to create
-	 */
-	public void createLeasePolicyPrimitive(final VraNgLeasePolicy policy) throws URISyntaxException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(policy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
-	}
-
 	// =================================================
 	// Deployment Limit Policy
 	// =================================================
-
-	/**
-	 * Creates Deployment Limit Policy.
-	 *
-	 * @param policy policy data to create
-	 */
-	public void createDeploymentLimitPolicyPrimitive(final VraNgDeploymentLimitPolicy policy)
-			throws URISyntaxException {
-		if (this.isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(policy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
-	}
 
 	/**
 	 * Retrieve Deployment Limit Policy based on Id.
@@ -2671,12 +2589,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("expandDefinition", "true");
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
-			params.put("typeId", VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE.id);
 
 			List<VraNgDeploymentLimitPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgDeploymentLimitPolicy.class))
-					.filter(policy -> policy.getTypeId()
-							.equalsIgnoreCase(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE))
+					.filter(policy -> VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2689,22 +2606,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	// =================================================
 	// Approval Policy
 	// =================================================
-
-	/**
-	 * Creates Approval Policy.
-	 *
-	 * @param policy policy data to create
-	 */
-	public void createApprovalPolicyPrimitive(final VraNgApprovalPolicy policy) throws URISyntaxException {
-		if (isVraAbove810) {
-			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
-			String jsonBody = new Gson().toJson(policy);
-			JsonObject jsonObject = new Gson().fromJson(jsonBody, JsonObject.class);
-			this.postJsonPrimitive(url, HttpMethod.POST, jsonObject.toString());
-		} else {
-			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
-		}
-	}
 
 	/**
 	 * Retrieve Approval Policy based on Id.
@@ -2735,12 +2636,12 @@ public class RestClientVraNgPrimitive extends RestClient {
 			params.put("computeStats", "true");
 			// filtering by typeId works on 8.16 but not on earlier versions.
 			// filter here to reduce traffic for newer vRA versions.
-			params.put("typeId", VraNgPolicyTypes.APPROVAL_POLICY_TYPE);
+			params.put("typeId", VraNgPolicyTypes.APPROVAL_POLICY_TYPE.id);
 
 			// filter here for older vRA versions.
 			List<VraNgApprovalPolicy> results = this.getPagedContent(SERVICE_POLICIES, params).stream()
 					.map(jsonOb -> new Gson().fromJson(jsonOb.toString(), VraNgApprovalPolicy.class))
-					.filter(policy -> policy.getTypeId().equalsIgnoreCase(VraNgPolicyTypes.APPROVAL_POLICY_TYPE))
+					.filter(policy -> VraNgPolicyTypes.APPROVAL_POLICY_TYPE.isTypeOf(policy))
 					.collect(Collectors.toList());
 
 			LOGGER.debug("Policy Ids found on server - {}, for projectId: {}", results.size(), this.getProjectId());
@@ -2757,12 +2658,56 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * @return the response
 	 */
 	protected ResponseEntity<String> deletePolicyPrimitive(String policyId) {
-		if (isVraAbove810) {
-			String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
-			URI url = getURI(getURIBuilder().setPath(deleteURL));
-			return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
-		} else {
+		if (!isVraAbove810) {
 			throw new UnsupportedOperationException("Policy deletion supported inVRA Versions 8.10.x or newer.");
 		}
+		String deleteURL = String.format(SERVICE_POLICIES + "/%s", policyId);
+		URI url = getURI(getURIBuilder().setPath(deleteURL));
+		LOGGER.debug("Executing method DELETE on URI {} with entity {} ", url);
+		return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+	}
+
+	/**
+	 * Create (when ID is null) or update (when ID si not null) policy.
+	 * 
+	 * @param policy     - the policy to create/update
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends VraNgPolicyDTO> void createOrUpdatePolicy(T policy) {
+		if (!isVraAbove810) {
+			throw new UnsupportedOperationException("Policy import/export supported inVRA Versions  8.10.x or newer.");
+		}
+		VraNgPolicyTypes policyType = VraNgPolicyTypes.forPolicyClass(policy.getClass());
+		String createOrUpdate = policy.getId() == null ? "create" : "update";
+		String failureCause = null;
+		try {
+			URI url = getURIBuilder().setPath(SERVICE_POLICIES).build();
+			String jsonBody = new Gson().toJson(policy);
+			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
+			String newId = !response.getStatusCode().is2xxSuccessful() ? null
+					: new Gson().fromJson(response.getBody(), (Class<VraNgPolicyDTO>) policyType.vraNgPolicyClass).getId();
+			if (newId == null) {
+				failureCause = String.format("Status: %s; Body: %s", response.getStatusCode(), response.getBody());
+			} else if (policy.getId() != null && !policy.getId().equals(newId)) {
+				failureCause = String.format("Updated ID '%s' does not match original ID '%s'!", newId, policy.getId());
+			} else {
+				policy.setId(newId);
+				return;
+			}
+		} catch (HttpClientErrorException e)  {
+			String msg = e.getStatusText() != null ? e.getStatusText() : e.getMessage();
+        	Matcher matcher = Pattern.compile("\\{(.*?)\\}").matcher(msg);
+			failureCause = matcher.find() ? String.format("{%s}", matcher.group(1)) : msg;
+		} catch (Exception e) {
+			failureCause = e.getMessage();
+		}
+
+		throw new RuntimeException(String.format("Could not %s %s Policy '%s' (ID=%s): %s",
+				createOrUpdate,
+				policyType.description,
+				policy.getName(),
+				policy.getId(),
+				failureCause
+				));
 	}
 }
