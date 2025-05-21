@@ -81,13 +81,10 @@ export class VroTree {
 	private generateAction(actionDefintion: VroActionDefinition) {
 
 		const runtime = this.options.actionRuntime;
-        const environment = this.options.actionEnvironment;
-        let conditionalParams;
-        if (environment !== undefined && environment !== null && environment.length > 0) {
-            conditionalParams = {environment: { '$': environment }}
-        } else {
-            conditionalParams = {runtime: { '$': runtime }}
-        }
+        const environment = this.options?.actionEnvironment;
+        const customEnvironment = environment?.length > 0;
+        const handlerFilename = this.getHandlerFilename();
+
         const content = {
             'dunes-script-module': {
                 '@name': actionDefintion.platform.action,
@@ -99,14 +96,15 @@ export class VroTree {
                 '@memory-limit': (actionDefintion.platform.memoryLimitMb || this.DEFAULT_MEMORY_LIMIT_MB) * 1000 * 1000,
                 '@timeout': actionDefintion.platform.timeoutSec || this.DEFAULT_TIMEOUT_SEC,
                 description: { '$': actionDefintion.description || '' },
-                ...conditionalParams,
-                'entry-point': { '$': actionDefintion.platform.entrypoint },
+                ...(customEnvironment ? {environment: { '$': environment }} : {runtime: { '$': runtime }}),
+                ...(!customEnvironment ? {'entry-point': { '$': actionDefintion.platform.entrypoint }} : {}),
                 ...(actionDefintion.vro.inputs && {
                     param: Object.entries(actionDefintion.vro.inputs).map(([inputName, inputType]) => ({
                         '@n': inputName,
                         '@t': inputType
                     }))
                 }),
+                ...(customEnvironment && handlerFilename ? {'script': {'@encoded': "false", "$": readFileSync(handlerFilename)}} : {})
             }
         }
 
@@ -116,15 +114,25 @@ export class VroTree {
 
 	}
 
+    private getHandlerFilename() {
+        let handlerFilename = this.options.out + "/handler.";
+        if (this.options.actionRuntime.startsWith("python")) handlerFilename += "py";
+        else if (this.options.actionRuntime.startsWith("node")) handlerFilename += "js";
+        else if (this.options.actionRuntime.startsWith("power")) handlerFilename += "ps1";
+        else return null;
+        if (existsSync(handlerFilename)) return handlerFilename;
+        return null;
+    }
+
 	private generateMeta(actionDefintion: VroActionDefinition) {
 
 		const content = {
 			'properties': {
 				comment: 'UTF-16',
 				entry: [
-					{ '@key': 'categoryPath', '#': actionDefintion.vro.module, },
-					{ '@key': 'type', '#': 'ScriptModule', },
-					{ '@key': 'id', '#': this.getId(actionDefintion), },
+					{ '@key': 'categoryPath', '#': actionDefintion.vro.module },
+					{ '@key': 'type', '#': 'ScriptModule' },
+					{ '@key': 'id', '#': this.getId(actionDefintion) }
 					// TODO: check whether we need signature-owner
 				]
 			}
@@ -153,6 +161,7 @@ export class VroTree {
 	}
 
 	private copyBundle(actionDefintion: VroActionDefinition) {
+        if (this.options?.actionEnvironment?.length > 0) return;
 		const source = this.options.bundle;
 		const dest = path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.bundle.zip`);
 		copyFileSync(source, dest);

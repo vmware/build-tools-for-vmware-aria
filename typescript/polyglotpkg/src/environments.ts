@@ -65,9 +65,9 @@ export class VroEnvironment {
 			'properties': {
 				comment: 'UTF-16',
 				entry: [
-                    { '@key': 'categoryPath', '#': '', },
-					{ '@key': 'type', '#': 'ActionEnvironment', },
-					{ '@key': 'id', '#': this.getId(source), },
+                    { '@key': 'categoryPath', '#': '' },
+					{ '@key': 'type', '#': 'ActionEnvironment' },
+					{ '@key': 'id', '#': this.getId(source) }
 				]
 			}
 		}
@@ -79,9 +79,7 @@ export class VroEnvironment {
 
 	private generateTags(envName: string) {
 		const content = {
-			'tags': {
-				tag: [].map(t => ({ '@name': t, '@global': true }))
-			}
+			'tags': {}
 		}
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8' }, content);
