@@ -38,7 +38,7 @@ The new features include:
   - If both platform.runtime and platform.environment are provided, the action will be imported to vRO as a script action
     - The script will include only code from handler.ts|handler.py|handler.ps1, any other source files are ignored
     - Any module dependencies should be configured as part of custom environment definition, dependencies defined in the action files will not be packaged
-- Sample vRO project from polyglot archetype was extended with: 
+- Sample vRO project from polyglot archetype was extended with:
   - Empty platform.environment added to polyglot.json files
   - Sample environment definition src/resources/environments/environment.json.sample
 
