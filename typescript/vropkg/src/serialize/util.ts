@@ -16,10 +16,10 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import * as archiver from 'archiver';
 import * as t from "../types";
-import * as winston from 'winston';
+import getLogger from "../logger";
 import * as xmlbuilder from "xmlbuilder";
 import * as CRC from "crc-32";
-import { JSON_MINOR_IDENT, WINSTON_CONFIGURATION } from "../constants";
+import { JSON_MINOR_IDENT} from "../constants";
 
 export const saveOptions = {
     pretty: false
@@ -41,7 +41,7 @@ export const serialize = (target: string) => {
     return (file: string) => async (data: any, options?: any, fileName?: string): Promise<void> => {
         const absolutePath = path.join(target, (fileName || file));
         fs.mkdirsSync(path.dirname(absolutePath));
-        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Writing ${absolutePath}`);
+        getLogger().debug(`Writing ${absolutePath}`);
         fs.writeFileSync(absolutePath, data, options || {});
     }
 }

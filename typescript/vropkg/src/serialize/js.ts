@@ -19,7 +19,7 @@ import * as packaging from "../packaging";
 import { VroPackageMetadata, VroNativeElement, VroActionData, VroActionParameter, Lang, VroScriptBundle } from "../types";
 import { exist, isDirectory } from "../util";
 import * as path from "path";
-import { WINSTON_CONFIGURATION, SAVE_OPTIONS, XML_OPTIONS } from "../constants";
+import { SAVE_OPTIONS, XML_OPTIONS } from "../constants";
 
 export class VroJsProjRealizer {
     private lazy: boolean;
