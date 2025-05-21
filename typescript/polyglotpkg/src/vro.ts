@@ -116,11 +116,21 @@ export class VroTree {
 
     private getHandlerFilename() {
         let handlerFilename = this.options.out + "/handler.";
-        if (this.options.actionRuntime.startsWith("python")) handlerFilename += "py";
-        else if (this.options.actionRuntime.startsWith("node")) handlerFilename += "js";
-        else if (this.options.actionRuntime.startsWith("power")) handlerFilename += "ps1";
-        else return null;
-        if (existsSync(handlerFilename)) return handlerFilename;
+        if (this.options.actionRuntime.startsWith("python")) {
+            handlerFilename += "py";
+        }
+        else if (this.options.actionRuntime.startsWith("node")) {
+            handlerFilename += "js";
+        }
+        else if (this.options.actionRuntime.startsWith("power")) {
+            handlerFilename += "ps1";
+        }
+        else {
+            return null;
+        }
+        if (existsSync(handlerFilename)) {
+            return handlerFilename;
+        }
         return null;
     }
 
@@ -161,7 +171,9 @@ export class VroTree {
 	}
 
 	private copyBundle(actionDefintion: VroActionDefinition) {
-        if (this.options?.actionEnvironment?.length > 0) return;
+        if (this.options?.actionEnvironment?.length > 0) {
+            return;
+        }
 		const source = this.options.bundle;
 		const dest = path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.bundle.zip`);
 		copyFileSync(source, dest);
