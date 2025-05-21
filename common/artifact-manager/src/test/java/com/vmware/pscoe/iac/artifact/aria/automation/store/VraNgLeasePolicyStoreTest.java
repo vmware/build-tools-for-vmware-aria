@@ -255,7 +255,7 @@ public class VraNgLeasePolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createLeasePolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -303,7 +303,7 @@ public class VraNgLeasePolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createLeasePolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -317,7 +317,7 @@ public class VraNgLeasePolicyStoreTest {
 		verify(vraNgPackageDescriptor, never()).getPolicy();
 		verify(restClient, never()).getLeasePolicies();
 		verify(restClient, never()).getLeasePolicy(anyString());
-		verify(restClient, never()).createLeasePolicy(any());
+		verify(restClient, never()).createOrUpdatePolicy(any());
 	}
 
 	@Test

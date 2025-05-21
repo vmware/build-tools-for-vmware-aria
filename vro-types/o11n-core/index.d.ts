@@ -23,9 +23,9 @@ declare interface Trigger {
 }
 
 /**
- * Object representing the current instance of a Workflow
+ * Object representing the current instance of a Workflow or undefined if not in a workflow.
  */
-declare var workflow: WorkflowToken;
+declare var workflow: WorkflowToken | undefined;
 
 /**
  * Object used to call custom action in the system.
@@ -264,10 +264,10 @@ declare interface ConfigurationElement {
 	attributes: Attribute[];
 	configurationElementCategory: any;
 	/**
-	 * Returns the attribute of the configuration element for the specified key.
+	 * Returns the attribute of the configuration element for the specified key or null if not found.
 	 * @param key
 	 */
-	getAttributeWithKey(key: string): Attribute;
+	getAttributeWithKey(key: string): Attribute | null;
 	/**
 	 * Sets the attribute value of the configuration element for the specified key.
 	 * @param key
@@ -751,13 +751,12 @@ declare interface Properties {
 	 * Remove a property to the property list.
 	 * @param key
 	 */
-	remove(key: string): any;
+	remove(key: string): void;
 	/**
-	 * Returns the property entry for the given key.
+	 * Returns the property entry for the given key or null if not found.
 	 * @param key
 	 */
-	get(key: string): any;
-	get<T>(key: string): T;
+	get<T>(key: string): T | null;
 	/**
 	 * Loads properties from a File, an URL or a String object
 	 * @param input
@@ -1013,7 +1012,7 @@ declare interface VersionHistoryItem {
 declare class Workflow {
 	name: string;
 	description: string;
-	workflowCategory: any;
+	workflowCategory: WorkflowCategory;
 	version: string;
 	firstItem: any;
 	numberOfItem: number;
@@ -1218,16 +1217,16 @@ declare interface WorkflowItemWaitingTimer {
  */
 declare class WorkflowToken {
 	name: string;
-	rootWorkflow: any;
-	currentWorkflow: any;
+	rootWorkflow: Workflow;
+	currentWorkflow: Workflow;
 	state: string;
 	exception: string;
 	businessState: string;
 	workflowInputId: string;
 	startDate: string;
 	endDate: string;
-	startDateAsDate: any;
-	endDateAsDate: any;
+	startDateAsDate: Date;
+	endDateAsDate: Date;
 	logEvents: LogEvent[];
 	isStillValid: boolean;
 	attributesStack: Attribute[];

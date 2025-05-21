@@ -262,7 +262,7 @@ public class VraNgApprovalPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createApprovalPolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -310,7 +310,7 @@ public class VraNgApprovalPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createApprovalPolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -324,7 +324,7 @@ public class VraNgApprovalPolicyStoreTest {
 		verify(vraNgPackageDescriptor, never()).getPolicy();
 		verify(restClient, never()).getApprovalPolicies();
 		verify(restClient, never()).getApprovalPolicy(anyString());
-		verify(restClient, never()).createApprovalPolicy(any());
+		verify(restClient, never()).createOrUpdatePolicy(any());
 	}
 
 	@Test
