@@ -15,7 +15,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as cmdArgs from "command-line-args";
-import * as winston from "winston";
+import getLogger from "./logger";
 import * as t from "./types";
 import { loadCertificate } from "./security";
 import { parseTree } from "./parse/tree";
@@ -25,19 +25,9 @@ import { serializeTree } from "./serialize/tree";
 import { serializeFlat } from "./serialize/flat";
 import { VroJsProjRealizer } from "./serialize/js";
 import { CleanDefinition } from "./cleaner/definitionCleaner";
-import { WINSTON_CONFIGURATION } from "./constants";
 
-winston.loggers.add(WINSTON_CONFIGURATION.logPrefix, <winston.LoggerOptions>{
-	level: WINSTON_CONFIGURATION.logLevel,
-	format: winston.format.json(),
-	// defaultMeta: { service: 'user-service' },
-	transports: [
-		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.error, level: 'error' }),
-		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.debug, level: 'debug' }),
-		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.default }),
-		new winston.transports.Console({ format: winston.format.simple() })
-	]
-});
+/** Instantiates the default logger */
+const LOGGER = getLogger();
 
 interface CliInputs extends cmdArgs.CommandLineOptions {
 	/** whether futher logging is in order */
@@ -189,14 +179,14 @@ function validate(input: CliInputs): boolean {
 }
 
 function cleanup(input: CliInputs): void {
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Removing empty definitions generated in the compile process ...`);
+	getLogger().debug(`Removing empty definitions generated in the compile process ...`);
 	let cleaner = new CleanDefinition();
 	cleaner.removeEmptyDefinitions(input.srcPath);
 }
 
 async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.VroPackageMetadata> {
 	let pkgPromise: any = null;
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing project type '${input.in}'`);
+	getLogger().debug(`Parsing project type '${input.in}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
 			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description);
@@ -214,13 +204,13 @@ async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.Vr
 			throw new Error("Unsupported input: " + input.in);
 		}
 	}
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing of project type '${input.in}' completed`);
+	getLogger().debug(`Parsing of project type '${input.in}' completed`);
 
 	return pkgPromise;
 }
 
 async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.VroPackageMetadata): Promise<void> {
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing project type '${input.out}'`);
+	getLogger().debug(`Serializing project type '${input.out}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
 			serializeTree(pkg, input.destPath);
@@ -238,7 +228,7 @@ async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.Vr
 			throw new Error("Unsupported output: " + input.out);
 		}
 	}
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing of project type '${input.out}' completed`);
+	getLogger().debug(`Serializing of project type '${input.out}' completed`);
 }
 
 run();

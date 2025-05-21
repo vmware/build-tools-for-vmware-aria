@@ -19,9 +19,8 @@ import { getCommentFromJavadoc, getScriptRuntime } from "./util";
 import * as AbstractSyntaxTree from "abstract-syntax-tree";
 import * as Comments from "parse-comments";
 import {v4 as uuidv4} from "uuid";
-import * as winston from "winston";
+import getLogger from "../logger";
 import * as glob from "glob";
-import { WINSTON_CONFIGURATION } from "../constants";
 
 export class VroJsProjParser {
 	private lazy: boolean;
@@ -31,7 +30,7 @@ export class VroJsProjParser {
 	}
 
 	public async parse(vroJsFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string): Promise<VroPackageMetadata> {
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);
+		getLogger().info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);
 
 		let elements: Array<VroNativeElement> = [];
 
