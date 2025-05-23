@@ -81,28 +81,32 @@ export class VroTree {
 	private generateAction(actionDefintion: VroActionDefinition) {
 
 		const runtime = this.options.actionRuntime;
+        const environment = this.options?.actionEnvironment;
+        const customEnvironment = environment?.length > 0;
+        const handlerFilename = this.getHandlerFilename();
 
-		const content = {
-			'dunes-script-module': {
-				'@name': actionDefintion.platform.action,
-				'@result-type': actionDefintion.vro.outputType,
-				'@api-version': '6.0.0',
-				'@id': this.getId(actionDefintion),
-				'@version': (actionDefintion.version || this.DEFAULT_VERSION).replace('-SNAPSHOT', ''),
-				'@allowed-operations': 'vfe',
-				'@memory-limit': (actionDefintion.platform.memoryLimitMb || this.DEFAULT_MEMORY_LIMIT_MB) * 1000 * 1000,
-				'@timeout': actionDefintion.platform.timeoutSec || this.DEFAULT_TIMEOUT_SEC,
-				description: { '$': actionDefintion.description || '' },
-				runtime: { '$': runtime },
-				'entry-point': { '$': actionDefintion.platform.entrypoint },
-				...(actionDefintion.vro.inputs && {
-					param: Object.entries(actionDefintion.vro.inputs).map(([inputName, inputType]) => ({
-						'@n': inputName,
-						'@t': inputType
-					}))
-				}),
-			}
-		}
+        const content = {
+            'dunes-script-module': {
+                '@name': actionDefintion.platform.action,
+                '@result-type': actionDefintion.vro.outputType,
+                '@api-version': '6.0.0',
+                '@id': this.getId(actionDefintion),
+                '@version': (actionDefintion.version || this.DEFAULT_VERSION).replace('-SNAPSHOT', ''),
+                '@allowed-operations': 'vfe',
+                '@memory-limit': (actionDefintion.platform.memoryLimitMb || this.DEFAULT_MEMORY_LIMIT_MB) * 1000 * 1000,
+                '@timeout': actionDefintion.platform.timeoutSec || this.DEFAULT_TIMEOUT_SEC,
+                description: { '$': actionDefintion.description || '' },
+                ...(customEnvironment ? {environment: { '$': environment }} : {runtime: { '$': runtime }}),
+                ...(!customEnvironment ? {'entry-point': { '$': actionDefintion.platform.entrypoint }} : {}),
+                ...(actionDefintion.vro.inputs && {
+                    param: Object.entries(actionDefintion.vro.inputs).map(([inputName, inputType]) => ({
+                        '@n': inputName,
+                        '@t': inputType
+                    }))
+                }),
+                ...(customEnvironment && handlerFilename ? {'script': {'@encoded': "false", "$": readFileSync(handlerFilename)}} : {})
+            }
+        }
 
 		const doc = createXML({ version: '1.0', encoding: 'UTF-8' }, content)
 		const xml = doc.end({ prettyPrint: true });
@@ -110,15 +114,35 @@ export class VroTree {
 
 	}
 
+    private getHandlerFilename() {
+        let handlerFilename = this.options.out + "/handler.";
+        if (this.options.actionRuntime.startsWith("python")) {
+            handlerFilename += "py";
+        }
+        else if (this.options.actionRuntime.startsWith("node")) {
+            handlerFilename += "js";
+        }
+        else if (this.options.actionRuntime.startsWith("power")) {
+            handlerFilename += "ps1";
+        }
+        else {
+            return null;
+        }
+        if (existsSync(handlerFilename)) {
+            return handlerFilename;
+        }
+        return null;
+    }
+
 	private generateMeta(actionDefintion: VroActionDefinition) {
 
 		const content = {
 			'properties': {
 				comment: 'UTF-16',
 				entry: [
-					{ '@key': 'categoryPath', '#': actionDefintion.vro.module, },
-					{ '@key': 'type', '#': 'ScriptModule', },
-					{ '@key': 'id', '#': this.getId(actionDefintion), },
+					{ '@key': 'categoryPath', '#': actionDefintion.vro.module },
+					{ '@key': 'type', '#': 'ScriptModule' },
+					{ '@key': 'id', '#': this.getId(actionDefintion) }
 					// TODO: check whether we need signature-owner
 				]
 			}
@@ -147,6 +171,9 @@ export class VroTree {
 	}
 
 	private copyBundle(actionDefintion: VroActionDefinition) {
+        if (this.options?.actionEnvironment?.length > 0) {
+            return;
+        }
 		const source = this.options.bundle;
 		const dest = path.join(this.scriptModuleDir, `${actionDefintion.platform.action}.bundle.zip`);
 		copyFileSync(source, dest);

@@ -2,6 +2,7 @@
   "platform": {
 #if ( $type == "vro" )
     "runtime": "python:3.10",
+    "environment": "",
 #else
     "runtime": "python",
 #end

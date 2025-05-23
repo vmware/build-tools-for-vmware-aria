@@ -104,7 +104,7 @@ export class PythonStrategy extends BaseStrategy {
 			patterns.push(...polyglotJson.files);
 			// Replace %src and %out placeholders with the actual paths from action options
 			for (var i = 0; i < patterns.length; i++) {
-				patterns[i] = patterns[i].replace('%src', this.options.src).replace('%out', this.options.out).replace(/\\/g, '/');
+				patterns[i] = patterns[i].replace('%src', this.options.src+"/**").replace('%out', this.options.out+"/**").replace(/\\/g, '/');
 			}
 		} else {
 			patterns.push('*.py');

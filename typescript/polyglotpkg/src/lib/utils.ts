@@ -137,6 +137,7 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			src: 'src',
 			out: 'out',
 			actionRuntime: pkgObj.platform.runtime,
+            actionEnvironment: pkgObj.platform.environment,
 			actionType: determineActionType(pkgObj, actionType)
 		};
 		return [projectAction];
@@ -169,6 +170,7 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			src: path.relative(projectBasePath, actionBasePath),
 			out: path.relative(projectBasePath, path.join(outBasePath, 'out')),
 			actionRuntime: pkgObj.platform.runtime,
+            actionEnvironment: pkgObj.platform.environment,
 			actionType: determineActionType(pkgObj, actionType)
 		};
 		projectActions.push(projectAction);
