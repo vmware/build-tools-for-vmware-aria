@@ -9,7 +9,6 @@ on:
 
 jobs:
   release:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -35,6 +34,8 @@ jobs:
             echo "You are not a maintainer user of 'build-tools-for-vmware-aria-maintainers' team!"
             exit 1
           fi
+
+          exit 1
           
       - name: Validate version input
         run: |
