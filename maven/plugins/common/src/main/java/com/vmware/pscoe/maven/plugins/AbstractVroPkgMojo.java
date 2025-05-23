@@ -49,10 +49,16 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 	private String keystoreCert;
 
 	/**
-	 *  password to keystore.
+	 * password to keystore.
 	 */
 	@Parameter(property = "vroKeyPass", defaultValue = "")
 	private String keystorePassword;
+
+	/**
+	 * name of the vRO ignore file. Default is ".vroignore"
+	 */
+	@Parameter(property = "vroIgnoreFile", defaultValue = ".vroignore")
+	private String vroIgnoreFile;
 
 	/**
 	 * Description provided in pom.xml.
@@ -145,6 +151,8 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 		vroPkgCmd.add(description);
 		vroPkgCmd.add("--groupId");
 		vroPkgCmd.add(project.getGroupId());
+		vroPkgCmd.add("--vroIgnoreFile");
+		vroPkgCmd.add(vroIgnoreFile);
 
 		new ProcessExecutor().name("Running vropkg...").directory(project.getBasedir()).throwOnError(true)
 				.command(vroPkgCmd).execute(getLog());

@@ -69,6 +69,9 @@ interface CliInputs extends cmdArgs.CommandLineOptions {
 
 	/** POM Project groupId **/
 	groupId: string;
+
+	/** File containing patterns to ignore when packaging/calculating unit test coverage */
+	vroIgnoreFile: string;
 }
 
 const cliOpts = <cmdArgs.OptionDefinition[]>[
@@ -87,6 +90,7 @@ const cliOpts = <cmdArgs.OptionDefinition[]>[
 	{ name: "artifactId", type: String },
 	{ name: "description", type: String },
 	{ name: "groupId", type: String },
+	{ name: "vroIgnoreFile", type: String}
 ];
 
 async function run() {
