@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-ssh",
-  "version": "4.5.1-SNAPSHOT",
+  "version": "4.6.0",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
