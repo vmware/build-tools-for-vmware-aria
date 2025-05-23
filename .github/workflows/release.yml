@@ -20,7 +20,7 @@ jobs:
           URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
           OUTPUT=$(curl -L \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.TEST }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             $URL )
           echo $GITHUB_ACTOR
