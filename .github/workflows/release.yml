@@ -17,13 +17,37 @@ jobs:
 
       - name: Validate actor permissions
         run: |
-          URL="https://api.github.com/organizations/vmware/team/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
+          URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
           OUTPUT=$(curl -L \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             $URL )
           echo $GITHUB_ACTOR
+          echo $OUTPUT
+
+                    URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/"
+          OUTPUT=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $URL )
+          echo $OUTPUT
+
+                           URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/"
+          OUTPUT=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $URL )
+          echo $OUTPUT
+
+                                     URL="https://api.github.com/orgs/vmware/teams/"
+          OUTPUT=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $URL )
           echo $OUTPUT
 
           if ! [[ $(echo $OUTPUT | jq -r '.state') == "active" ]]; then
