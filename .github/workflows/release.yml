@@ -17,7 +17,7 @@ jobs:
 
       - name: Validate actor permissions
         run: |
-          URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
+          URL="https://api.github.com/organizations/vmware/team/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
           OUTPUT=$(curl -L \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
