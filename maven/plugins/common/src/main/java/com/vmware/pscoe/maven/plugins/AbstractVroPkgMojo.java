@@ -152,9 +152,26 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 		vroPkgCmd.add("--groupId");
 		vroPkgCmd.add(project.getGroupId());
 		vroPkgCmd.add("--vroIgnoreFile");
-		vroPkgCmd.add(vroIgnoreFile);
+		vroPkgCmd.add(toPathArgument(projectRoot, vroIgnoreFile));
 
 		new ProcessExecutor().name("Running vropkg...").directory(project.getBasedir()).throwOnError(true)
 				.command(vroPkgCmd).execute(getLog());
+	}
+
+	/**
+	 * Converts the path argument so that it is platform independent.
+	 *
+	 * @param first first path argument.
+	 * @param more  next path argument.
+	 *
+	 * @return path argument that is platform independent.
+	 */
+	protected String toPathArgument(String first, String... more) {
+		String path = Paths.get(first, more)
+				.normalize()
+				.toString()
+				.replaceAll("[\\\\/]+", "/")
+				.replace("\"", "");
+		return path.indexOf(" ") >= 0 ? "\"" + path + "\"" : path;
 	}
 }
