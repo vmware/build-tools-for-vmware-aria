@@ -25,7 +25,10 @@ export function isDirectory(path:string) : boolean {
         return false;
     }
 }
+/** Category for test helper file patterns in the .vroignore file */
 export const TEST_HELPER_VROIGNORE_CATEGORY = "Test Helper Files";
+
+/** Default content for the .vroignore file. */
 export const DEFAULT_VRO_IGNORE_FILE_CONTENT = [
 	"# " + TEST_HELPER_VROIGNORE_CATEGORY,
 	"## Files with these paths  will be included in the tests but will not be part of the coverage or the vro package",
@@ -35,10 +38,11 @@ export const DEFAULT_VRO_IGNORE_FILE_CONTENT = [
 	"# Others",
 	"## Other files to ignore from package/coverage"
 ]
+
 /**
- * 
- * @param path 
- * @returns 
+ * Creates a .vroignore-type file with default content at the given filepath
+ * @param {string} path - file path where the file will be created (main project folder/.vroignore)
+ * @returns {boolean} true if successfully created, false otherwise
  */
 export function createDefaultVroIgnoreFile(path: string) {
 	try {
@@ -50,6 +54,13 @@ export function createDefaultVroIgnoreFile(path: string) {
 	}
 }
 
+/**
+ * Reads .vroignore file contents by categories
+ * @param {string} path - file path of the .vroignore file. If no file exists,
+ * checks the default .vroignore file contents
+ * @param {string[]} categories - categories to read from the file. If not provided, reads all
+ * @returns {string[]} array of glob patterns for the respective categories.
+ */
 export function readVrIgnorePatternsFromFile(path: string, ...categories: string[]) {
 	let rows: string[]
 	try {
