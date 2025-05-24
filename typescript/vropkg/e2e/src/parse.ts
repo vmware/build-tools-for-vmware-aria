@@ -126,7 +126,7 @@ describe("End-to-End Tests", () => {
                 '--description', '',
                 '--groupId', 'test.group',
                 '--keyPass', "VMware1!",
-				'--vroIgnoreFile', '.vroignore'
+				'--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;
@@ -156,7 +156,7 @@ describe("End-to-End Tests", () => {
                 '--description', '',
                 '--groupId', 'test.group',
                 '--keyPass', "VMware1!",
-				'--vroIgnoreFile', '.vroignore'
+				'--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;
@@ -182,7 +182,7 @@ describe("End-to-End Tests", () => {
                 '--description', '',
                 '--groupId', 'test.group',
                 '--keyPass', "VMware1!",
-				'--vroIgnoreFile', '.vroignore'
+				'--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;
@@ -212,7 +212,7 @@ describe("End-to-End Tests", () => {
                 '--description', '',
                 '--groupId', 'test.group',
                 '--keyPass', "VMware1!",
-				'--vroIgnoreFile', '.vroignore'
+				'--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;

@@ -86,7 +86,7 @@ function generateBasePackage() {
 		'--description', '',
 		'--groupId', 'test.group',
 		'--keyPass', "VMware1!",
-		'--vroIgnoreFile', '".vroignore"'
+		'--vroIgnoreFile', '.vroignore'
 	]
 
 	execSync( options.join( " " ), {
