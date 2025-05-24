@@ -25,6 +25,7 @@ import { serializeTree } from "./serialize/tree";
 import { serializeFlat } from "./serialize/flat";
 import { VroJsProjRealizer } from "./serialize/js";
 import { CleanDefinition } from "./cleaner/definitionCleaner";
+import { createDefaultVroIgnoreFile } from "./util";
 
 /** Instantiates the default logger */
 const LOGGER = getLogger();
@@ -178,6 +179,13 @@ function validate(input: CliInputs): boolean {
 	if (!input.keyPass) {
 		console.warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
 	}
+	if (!input.vroIgnoreFile) {
+		input.vroIgnoreFile = path.join(__dirname.replace(/[\\]+/gm,"/"),".vroignore");
+	}
+	if (!fs.existsSync(input.vroIgnoreFile)) {
+		console.warn(`Cannot find file vRO ignore file "${input.vroIgnoreFile}". Creating file with default content...`);
+		createDefaultVroIgnoreFile(input.vroIgnoreFile);
+	}
 
 	return printHelp;
 }
@@ -193,15 +201,15 @@ async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.Vr
 	getLogger().debug(`Parsing project type '${input.in}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
-			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description);
+			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description, input.vroIgnoreFile);
 			break;
 		}
 		case t.ProjectType.flat: {
-			pkgPromise = parseFlat(input.srcPath, input.destPath);
+			pkgPromise = parseFlat(input.srcPath, input.destPath, input.vroIgnoreFile);
 			break;
 		}
 		case t.ProjectType.js: {
-			pkgPromise = new VroJsProjParser().parse(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging);
+			pkgPromise = new VroJsProjParser().parse(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.vroIgnoreFile);
 			break;
 		}
 		default: {

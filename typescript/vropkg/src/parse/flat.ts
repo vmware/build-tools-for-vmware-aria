@@ -20,7 +20,7 @@ import getLogger from "../logger";
 import * as a from "../packaging";
 import * as t from "../types";
 import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc, getWorkflowItems, validateWorkflowPath} from "./util";
-import { exist } from "../util";
+import { exist, readVrIgnorePatternsFromFile } from "../util";
 import { FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME, DEFAULT_FORM_FILE_NAME, VSO_RESOURCE_INF } from "../constants";
 
 /**
@@ -150,9 +150,15 @@ function parseInputForms(baseDirectory: string): any {
     };
 }
 
-const parseFlat = async (nativePackagePath: string, destDir: string): Promise<t.VroPackageMetadata> => {
+const parseFlat = async (
+	nativePackagePath: string,
+	destDir: string,
+	vroIgnoreFile: string
+): Promise<t.VroPackageMetadata> => {
     let tmp = path.join(destDir, "tmp");
     getLogger().info(`Extracting package ${nativePackagePath} to "${destDir}" folder...`);
+	const ignorePatterns = readVrIgnorePatternsFromFile(vroIgnoreFile);
+	getLogger().info(`vropkg parse flat - ignored: ${JSON.stringify(ignorePatterns)}`);
 
     await a.extract(nativePackagePath, tmp);
 
@@ -164,7 +170,9 @@ const parseFlat = async (nativePackagePath: string, destDir: string): Promise<t.
 
     let elements = await Promise.all(
         glob
-			.sync(path.join(tmp, "elements", "**", "info")?.replace(/[\\/]+/gm, path.posix.sep))
+			.sync(path.join(tmp, "elements", "**", "info")?.replace(/[\\/]+/gm, path.posix.sep)
+				// , {ignore: ignorePatterns}
+			)
             .map(file => parseFlatElement(file))
     );
     let result = <t.VroPackageMetadata>{

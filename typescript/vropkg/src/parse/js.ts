@@ -21,6 +21,7 @@ import * as Comments from "parse-comments";
 import {v4 as uuidv4} from "uuid";
 import getLogger from "../logger";
 import * as glob from "glob";
+import { readVrIgnorePatternsFromFile } from "../util";
 
 export class VroJsProjParser {
 	private lazy: boolean;
@@ -29,15 +30,26 @@ export class VroJsProjParser {
 		this.lazy = lazy;
 	}
 
-	public async parse(vroJsFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string): Promise<VroPackageMetadata> {
+	public async parse(
+		vroJsFolderPath: string,
+		groupId: string,
+		artifactId: string,
+		version: string,
+		packaging: string,
+		vroIgnoreFile: string
+	): Promise<VroPackageMetadata> {
 		getLogger().info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);
+		const ignorePatterns = readVrIgnorePatternsFromFile(vroIgnoreFile);
+		getLogger().info(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
 
 		let elements: Array<VroNativeElement> = [];
 
 		// let parser = new VroNativeFolderElementParser();
 		const JS_EXTENSION = ".js";
 		let baseDir = Path.join(vroJsFolderPath, "src", "main", "resources");
-		glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)?.replace(/[\\/]+/gm, Path.posix.sep)).forEach(jsFile => {
+		glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)?.replace(/[\\/]+/gm, Path.posix.sep)
+			// , {ignore: ignorePatterns}
+		).forEach(jsFile => {
 			let content = FileSystem.readFileSync(jsFile);
 			let vroPath = jsFile.substring(baseDir.length + 1);
 			let moduleIndex = Math.max(vroPath.lastIndexOf("/"), vroPath.lastIndexOf("\\"));

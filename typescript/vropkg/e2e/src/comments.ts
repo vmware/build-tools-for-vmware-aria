@@ -13,7 +13,7 @@ describe("Unit Tests", () => {
     it("Check comments inside data file ", async () => {
         try {
             const path = expand('test', "target-with-description");
-            const result = await parser.parseFlat(path, currentPath);
+            const result = await parser.parseFlat(path, currentPath, expand(".vroignore"));
 
             expect(result).toBeDefined();
             expect(result.description).toBeDefined();
