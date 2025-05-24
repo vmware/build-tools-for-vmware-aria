@@ -46,6 +46,11 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 
 	@Parameter(required = false, property = "test", defaultValue = "${test.*}")
 	private Map<String, String> test;
+	/**
+	 * name of the vRO ignore file. Default is ".vroignore"
+	 */
+	@Parameter(property = "vroIgnoreFile", defaultValue = ".vroignore")
+	private String vroIgnoreFile;
 
 	/**
 	 * Triggers the unit tests execution.
@@ -151,6 +156,8 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		cmd.add(config.getJasmineReportersVersion());
 		cmd.add("--ansiColorsVersion");
 		cmd.add(config.getAnsiColorsVersion());
+		cmd.add("--vroIgnoreFile");
+		cmd.add(toPathArgument(projectRoot, vroIgnoreFile));
 
 		if (config.isCoverageEnabled()) {
 			String coverageReports = String.join(",", config.getCoverageReports());
