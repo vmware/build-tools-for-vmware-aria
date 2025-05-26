@@ -28,6 +28,8 @@ import { getResourceTransformer } from "./transformer/fileTransformers/resource"
 import { getTestTransformer } from "./transformer/fileTransformers/test";
 import { getSagaTransformer } from "./transformer/saga/saga";
 import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow/workflow";
+import { resolve } from "path";
+import { createDefaultVroIgnoreFile, readVrIgnorePatternsFromFile } from "../utilities/utilities";
 
 export interface Program {
 	getFiles(): readonly FileDescriptor[];
@@ -152,7 +154,14 @@ export function createProgram(options: ProgramOptions): Program {
 	}
 
 	function getFiles(): FileDescriptor[] {
-		let filePaths = system.getFiles(rootDir, true);
+		const vroIgnoreFile: string = resolve(options.vroIgnoreFile || '.vroIgnore');
+		if (!system.fileExists(vroIgnoreFile)) {
+			console.warn(`Cannot find file vRO ignore file "${vroIgnoreFile}". Creating file with default content...`);
+			createDefaultVroIgnoreFile(vroIgnoreFile);
+		}
+		const ignorePatterns = readVrIgnorePatternsFromFile(vroIgnoreFile); // TODO category?
+		let filePaths = system.getFiles(rootDir, true//, ignorePatterns
+		);
 		const fileSet: Record<string, boolean> = {};
 		const files: FileDescriptor[] = [];
 

@@ -6,14 +6,17 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 import { system } from "../system/system";
 import { FileType } from "../types";
+import * as fs from "fs-extra";
+import * as os from "os";
+import { minimatch } from "minimatch";
 
 /**
 * Generates a unique id for a given file path.
@@ -49,4 +52,85 @@ export function generateElementId(fileType: FileType, path: string): string {
 				throw new Error(`Unimplemented ID Generation type: ${fileType}`);
 		}
 	}
+}
+
+/** Category for test helper file patterns in the .vroignore file */
+export const TEST_HELPER_VROIGNORE_CATEGORY = "Test Helper Files";
+
+/** Default content for the .vroignore file. */
+export const DEFAULT_VRO_IGNORE_FILE_CONTENT = [
+	"# " + TEST_HELPER_VROIGNORE_CATEGORY,
+	"## Files with these paths  will be included in the tests but will not be part of the coverage or the vro package",
+	"**/*_helper.js",
+	"**/*.helper.[tj]s",
+	"",
+	"# Others",
+	"## Other files to ignore from package/coverage"
+]
+
+/**
+ * Creates a .vroignore-type file with default content at the given filepath
+ * @param {string} path - file path where the file will be created (main project folder/.vroignore)
+ * @returns {boolean} true if successfully created, false otherwise
+ */
+export function createDefaultVroIgnoreFile(path: string) {
+	try {
+		fs.writeFileSync(path, DEFAULT_VRO_IGNORE_FILE_CONTENT.join(os.EOL), 'utf-8');
+		return true;
+	} catch (err) {
+		console.error(`Failed to create file ${path}`);
+		return false;
+	}
+}
+
+/**
+ * Reads .vroignore file contents by categories
+ * @param {string} path - file path of the .vroignore file. If no file exists,
+ * checks the default .vroignore file contents
+ * @param {string[]} categories - categories to read from the file. If not provided, reads all
+ * @returns {string[]} array of glob patterns for the respective categories.
+ */
+export function readVrIgnorePatternsFromFile(path: string, ...categories: string[]) {
+	let rows: string[]
+	try {
+		rows = fs.readFileSync(path, 'utf-8')
+			.split(/\r?\n/gm)
+			.map(p => p.trim())
+			.filter(p => !!p);
+	} catch {
+		console.error(`Failed to read vRO ignore file ${path}!`);
+	}
+	if (!rows?.length) {
+		console.warn(`Returning default vRO ignore patterns.`);
+		rows = DEFAULT_VRO_IGNORE_FILE_CONTENT;
+	} else {
+		console.info(`Successfully read vRO ignore file '${path}'`);
+	}
+
+	rows = rows.filter(s => !/^\s*##/.test(s) && !/^[\s#]+$/.test(s)); // descriptions, empty categories
+	const result: Record<string, string[]> = {};
+	let currentCategory: string = null;
+	rows.forEach(row => {
+		const isCategoryRow = /^\s*#/.test(row);
+		currentCategory = ((isCategoryRow ? row.replace("#", "").trim() : currentCategory)
+			|| TEST_HELPER_VROIGNORE_CATEGORY).toLowerCase();
+		if(!result[currentCategory]) {
+			result[currentCategory] = [];
+		}
+		if (!isCategoryRow && result[currentCategory].indexOf(row) < 0) {
+			result[currentCategory].push(row);
+		}
+	});
+	console.info(`All vRO ignore patterns: ${JSON.stringify(result)}`);
+	const resArr = Object.keys(result)
+		.filter(k => !categories?.length || categories.find(cat => cat.toLowerCase() == currentCategory))
+		.reduce((res, k) => [...res, ...(result[k])], []);
+	console.info(`vRO ignore patterns: ${JSON.stringify(resArr)}`)
+	return resArr;
+}
+
+export function filePathMatchesGlob(filePath: string, globPatterns: string[]): boolean {
+	const negatedPatterns = globPatterns.filter(p => p.startsWith("!"));
+	globPatterns = globPatterns.filter(p => p.startsWith("!"));
+	return globPatterns.find(p => minimatch(filePath, p)) && !negatedPatterns.find(p => minimatch(filePath, p));
 }
