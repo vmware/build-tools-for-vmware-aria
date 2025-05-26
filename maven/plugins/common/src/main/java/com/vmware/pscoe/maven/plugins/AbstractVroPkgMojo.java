@@ -20,21 +20,14 @@
 package com.vmware.pscoe.maven.plugins;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public abstract class AbstractVroPkgMojo extends AbstractMojo {
-	/**
-	 * Keeps a handle to the pom.xml.
-	 */
-	@Parameter(defaultValue = "${project}")
-	protected MavenProject project;
+public abstract class AbstractVroPkgMojo extends AbstractVroMojo {
 
 	/**
 	* private key to keystore.
@@ -53,12 +46,6 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "vroKeyPass", defaultValue = "")
 	private String keystorePassword;
-
-	/**
-	 * name of the vRO ignore file. Default is ".vroignore"
-	 */
-	@Parameter(property = "vroIgnoreFile", defaultValue = ".vroignore")
-	private String vroIgnoreFile;
 
 	/**
 	 * Description provided in pom.xml.
@@ -151,27 +138,9 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 		vroPkgCmd.add(description);
 		vroPkgCmd.add("--groupId");
 		vroPkgCmd.add(project.getGroupId());
-		vroPkgCmd.add("--vroIgnoreFile");
-		vroPkgCmd.add(toPathArgument(projectRoot, vroIgnoreFile));
+		addVroIgnoreArgToCmd(vroPkgCmd);
 
 		new ProcessExecutor().name("Running vropkg...").directory(project.getBasedir()).throwOnError(true)
 				.command(vroPkgCmd).execute(getLog());
-	}
-
-	/**
-	 * Converts the path argument so that it is platform independent.
-	 *
-	 * @param first first path argument.
-	 * @param more  next path argument.
-	 *
-	 * @return path argument that is platform independent.
-	 */
-	protected String toPathArgument(String first, String... more) {
-		String path = Paths.get(first, more)
-				.normalize()
-				.toString()
-				.replaceAll("[\\\\/]+", "/")
-				.replace("\"", "");
-		return path.indexOf(" ") >= 0 ? "\"" + path + "\"" : path;
 	}
 }

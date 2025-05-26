@@ -20,17 +20,13 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
 
 import org.apache.commons.io.FileUtils;
 
-public abstract class AbstractCleanNodeDepsMojo extends AbstractMojo {
-	@Parameter(defaultValue = "${project}")
-	protected MavenProject project;
+public abstract class AbstractCleanNodeDepsMojo extends AbstractVroMojo {
 
 	@Parameter(property = "skipInstallNodeDeps", defaultValue = "false")
 	protected boolean skipInstallNodeDeps;
