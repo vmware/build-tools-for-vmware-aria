@@ -31,13 +31,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
-public class BasicPackageMojo extends AbstractMojo {
-
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
-
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
+public class BasicPackageMojo extends AbstractVroMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {

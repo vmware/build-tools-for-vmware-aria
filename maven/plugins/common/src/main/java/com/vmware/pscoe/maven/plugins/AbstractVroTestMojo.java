@@ -14,11 +14,9 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -29,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class AbstractVroTestMojo extends AbstractMojo {
+public abstract class AbstractVroTestMojo extends AbstractVroMojo {
 
 	protected static final String DEP_ROOT_PATH =
 			Paths.get("target", "dependency", "vro").toString();
@@ -38,19 +36,11 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 	protected static final String TESTBED_PATH = Paths.get("target", "vro-tests").toString();
 	public static final int COVERAGE_TRESHOLDS_SIZE = 5;
 
-	@Parameter(defaultValue = "${project}")
-	protected MavenProject project;
-
 	@Parameter(property = "skipTests", defaultValue = "false")
 	protected boolean skipTests;
 
 	@Parameter(required = false, property = "test", defaultValue = "${test.*}")
 	private Map<String, String> test;
-	/**
-	 * name of the vRO ignore file. Default is ".vroignore"
-	 */
-	@Parameter(property = "vroIgnoreFile", defaultValue = ".vroignore")
-	private String vroIgnoreFile;
 
 	/**
 	 * Triggers the unit tests execution.
@@ -70,23 +60,6 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 			runTests(config);
 		}
 	}
-
-    /**
-     * Converts the path argument so that it is platform independent.
-     *
-     * @param first first path argument.
-     * @param more next path argument.
-     *
-     * @return path argument that is platform independent.
-     */
-    protected String toPathArgument(String first, String... more) {
-		String path = Paths.get(first, more)
-			.normalize()
-			.toString()
-			.replaceAll("[\\\\/]+", "/")
-			.replace("\"", "");
-        return path.indexOf(" ") >= 0 ? "\"" + path + "\"" : path;
-    }
 
 	/**
 	 * @return A flag indicating whether or not tests exist for the project.
@@ -156,8 +129,7 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		cmd.add(config.getJasmineReportersVersion());
 		cmd.add("--ansiColorsVersion");
 		cmd.add(config.getAnsiColorsVersion());
-		cmd.add("--vroIgnoreFile");
-		cmd.add(toPathArgument(projectRoot, vroIgnoreFile));
+		addVroIgnoreArgToCmd(cmd);
 
 		if (config.isCoverageEnabled()) {
 			String coverageReports = String.join(",", config.getCoverageReports());
