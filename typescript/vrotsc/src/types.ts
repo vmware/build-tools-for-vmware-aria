@@ -126,6 +126,7 @@ export interface ProgramOptions {
 	actionsNamespace?: string;
 	workflowsNamespace?: string;
 	outputs?: ProgramOutputs;
+    vroIgnoreFile?: string;
 }
 
 export interface ProgramOutputs {
