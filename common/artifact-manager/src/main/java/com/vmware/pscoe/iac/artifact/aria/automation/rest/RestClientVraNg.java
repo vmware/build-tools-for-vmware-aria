@@ -24,9 +24,6 @@ import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxActionVersion;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxConstant;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
@@ -51,6 +48,9 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgScenario;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContentSource;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1274,20 +1274,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createContentSharingPolicy.
-	 * 
-	 * @param csPolicy content sharing policy
-	 */
-	public void createContentSharingPolicy(final VraNgContentSharingPolicy csPolicy) {
-		try {
-			this.createContentSharingPolicyPrimitive(csPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Content Sharing policy with name '%s'.", csPolicy.getName()), e);
-		}
-	}
-
-	/**
 	 * getContentSharingPolicy.
 	 * 
 	 * @param policyId content sharing policy id
@@ -1332,33 +1318,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		}
 	}
 
-	/**
-	 * createResourceQuotaPolicy.
-	 * 
-	 * @param rqPolicy resource quota policy
-	 */
-	public void createResourceQuotaPolicy(final VraNgResourceQuotaPolicy rqPolicy) {
-		try {
-			createResourceQuotaPolicyPrimitive(rqPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Resource Quota policy with name '%s'.", rqPolicy.getName()), e);
-		}
-	}
-
-	/**
-	 * createLeasePolicy.
-	 * 
-	 * @param csPolicy lease policy
-	 */
-	public void createLeasePolicy(final VraNgLeasePolicy csPolicy) {
-		try {
-			createLeasePolicyPrimitive(csPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create lease policy with name '%s'.", csPolicy.getName()), e);
-		}
-	}
 
 	/**
 	 * getResourceQuotaPolicy.
@@ -1405,20 +1364,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createDay2ActionsPolicy.
-	 *
-	 * @param d2aPolicy day 2 actions policy
-	 */
-	public void createDay2ActionsPolicy(final VraNgDay2ActionsPolicy d2aPolicy) {
-		try {
-			createDay2ActionsPolicyPrimitive(d2aPolicy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Day 2 Actions policy with name '%s'.", d2aPolicy.getName()), e);
-		}
-	}
-
-	/**
 	 * getDay2ActionsPolicy.
 	 *
 	 * @param policyId day 2 actions policy id
@@ -1448,20 +1393,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 	}
 
 	/**
-	 * createDeploymentLimitPolicy.
-	 *
-	 * @param policy day 2 actions policy
-	 */
-	public void createDeploymentLimitPolicy(final VraNgDeploymentLimitPolicy policy) {
-		try {
-			createDeploymentLimitPolicyPrimitive(policy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Deployment Limit with name '%s'.", policy.getName()), e);
-		}
-	}
-
-	/**
 	 * getDeploymentLimitPolicy.
 	 *
 	 * @param policyId day 2 actions policy id
@@ -1487,20 +1418,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 		} catch (Exception e) {
 			logger.error("Error fetching Approval policies", e.getMessage());
 			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * createApprovalPolicy.
-	 *
-	 * @param policy policy to be created or updated.
-	 */
-	public void createApprovalPolicy(final VraNgApprovalPolicy policy) {
-		try {
-			createApprovalPolicyPrimitive(policy);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					String.format("Could not create Approval policy with name '%s'.", policy.getName()), e);
 		}
 	}
 

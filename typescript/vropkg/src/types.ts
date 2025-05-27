@@ -22,6 +22,7 @@ export enum Lang {
     javascript,
     node,
     powercli,
+	powershell,
     python
 }
 
@@ -66,6 +67,7 @@ export enum VroElementType {
     PolicyTemplate = "PolicyTemplate",
     ResourceElement = "ResourceElement",
     ConfigurationElement = "ConfigurationElement",
+	ActionEnvironment = "ActionEnvironment",
 }
 
 export class VroActionParameter {
@@ -100,7 +102,8 @@ export class VroActionData {
     version: string;
     params: VroActionParameter[];
     returnType: VroActionParameter;
-    runtime: VroScriptRuntime;
+    runtime?: VroScriptRuntime;
+	environment?: string;
     timeout?: string;
     memoryLimit?: string;
     inline: VroScriptInline; // Inline Script. bundle will be null

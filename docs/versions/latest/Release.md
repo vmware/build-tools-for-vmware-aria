@@ -25,13 +25,6 @@
 [//]: # (#### Relevant Documentation:)
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
-### *Simplified Minimal Infra Setup*
-
-There is a new script now that can be executed and it will setup the minimal infra.
-
-### *New Tool For Simplified Setup*
-
-Added link to `go-btva` that can be used to get a sandbox up and running, fast.
 
 ### *Support of notification scenarios by vrang*
 
@@ -44,18 +37,6 @@ Packaching of scenarios is supported as well as the following operations:
 - vrealize:clean - delete scenario customization and reset to the default.
 
 ## Improvements
-
-### Fixed Error Running Unit Tests on Linux and Windows
-
-An error affected unit test execution in versions after 4.3.0 without causing the build to fail.
-
-#### Previous Behavior
-
-An error of the type "Error occurred in unit tests execution:" was shown instead of unit test results.
-
-#### New Behavior
-
-Unit test results are shown as expected.
 
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)

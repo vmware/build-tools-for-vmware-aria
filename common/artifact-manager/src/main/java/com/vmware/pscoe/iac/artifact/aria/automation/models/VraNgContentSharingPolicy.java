@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.models;
 /**
 
 */
-public class VraNgContentSharingPolicy implements Identifiable {
+public class VraNgContentSharingPolicy implements VraNgPolicyDTO {
 	/**
 	 * Id of the Content Sharing Policy.
 	 */

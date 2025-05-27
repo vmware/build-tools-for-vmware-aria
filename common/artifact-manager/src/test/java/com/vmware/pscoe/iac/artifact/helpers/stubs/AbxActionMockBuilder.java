@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.vmware.pscoe.iac.artifact.model.abx.Abx;
-import com.vmware.pscoe.iac.artifact.model.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.model.abx.Platform;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.Abx;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.Platform;
 
 public final class AbxActionMockBuilder {
 	public static final String FAAS_PROVIDER = "aws";

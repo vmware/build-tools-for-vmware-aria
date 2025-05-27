@@ -254,7 +254,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createDay2ActionsPolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -302,7 +302,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createDay2ActionsPolicy(any());
+		verify(restClient, times(1)).createOrUpdatePolicy(any());
 	}
 
 	@Test
@@ -316,7 +316,7 @@ public class VraNgDay2ActionsPolicyStoreTest {
 		verify(vraNgPackageDescriptor, never()).getPolicy();
 		verify(restClient, never()).getDay2ActionsPolicies();
 		verify(restClient, never()).getDay2ActionsPolicy(anyString());
-		verify(restClient, never()).createDay2ActionsPolicy(any());
+		verify(restClient, never()).createOrUpdatePolicy(any());
 	}
 
 	@Test

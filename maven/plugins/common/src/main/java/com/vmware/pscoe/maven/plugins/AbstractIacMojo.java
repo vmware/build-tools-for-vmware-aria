@@ -15,6 +15,7 @@
 package com.vmware.pscoe.maven.plugins;
 
 import com.vmware.pscoe.iac.artifact.configuration.*;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;

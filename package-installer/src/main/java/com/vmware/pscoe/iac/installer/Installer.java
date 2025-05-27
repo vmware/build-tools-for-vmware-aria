@@ -52,10 +52,10 @@ import com.google.gson.JsonSyntaxException;
 import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
@@ -915,7 +915,7 @@ public final class Installer {
 					.getInstance(
 							ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VRANGv3), false, vroEnableBackup);
-					
+
 		}
 
 		if (input.allTrue(Option.VCD_IMPORT)) {
@@ -1086,7 +1086,8 @@ public final class Installer {
 		// +-------------------------------------
 		// | vRealize Automation (New Generation)
 		// +-------------------------------------
-		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty() || !getFilesystemPackages(PackageType.VRANGv3).isEmpty();
+		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty()
+				|| !getFilesystemPackages(PackageType.VRANGv3).isEmpty();
 		if (hasVraNgPackages) {
 			userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
 			if (!input.anyTrue(Option.VRANG_IMPORT)) {

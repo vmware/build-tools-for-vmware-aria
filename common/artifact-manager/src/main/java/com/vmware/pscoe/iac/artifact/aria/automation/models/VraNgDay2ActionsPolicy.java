@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.models;
 
 import com.google.gson.JsonObject;
 
-public final class VraNgDay2ActionsPolicy implements Identifiable {
+public final class VraNgDay2ActionsPolicy implements VraNgPolicyDTO {
 
 	/**
 	 * Id of the Day 2 Actions Policy.
