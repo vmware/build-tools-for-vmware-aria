@@ -1,0 +1,7 @@
+# Test Helper Files
+## Files with these paths  will be included in the tests but will not be part of the coverage or the vro package
+**/*_helper.js
+**/*.helper.[tj]s
+
+# Others
+## Other files to ignore from package/coverage
