@@ -1036,6 +1036,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Delete a scenario customization.
 	 *
 	 * @param objId objId
+	 * @return the response
 	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
 	protected ResponseEntity<String> deleteScenarioPrimitive(final String objId)
@@ -1076,6 +1077,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Retrieve Scenario by name.
 	 *
+	 * @param name Scenario name
 	 * @return VraNg Scenario.
 	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
 	 */
@@ -1090,7 +1092,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (root.isJsonObject()) {
 			JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
 
-			for(JsonElement o: content) {
+			for (JsonElement o: content) {
 				JsonObject ob = o.getAsJsonObject();
 				String scenarioName = ob.get("scenarioName").getAsString();
 				if (scenarioName.equals(name)) {
@@ -1100,7 +1102,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 						if (scenario != null) {
 							return scenario;
 						}	
-					} catch (Exception ignore) {}
+					} catch (Exception ignore) { }
 				}
 			}
 		}
@@ -1134,7 +1136,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 					if (scenario != null) {
 						scenarios.add(scenario);
 					}
-				} catch(Exception ignore) {}
+				} catch (Exception ignore) { }
 			});
 		}
 		return scenarios;
@@ -2797,6 +2799,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * Create (when ID is null) or update (when ID si not null) policy.
 	 * 
 	 * @param policy     - the policy to create/update
+	 * @param <T>        - the policy type.
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends VraNgPolicyDTO> void createOrUpdatePolicy(T policy) {
