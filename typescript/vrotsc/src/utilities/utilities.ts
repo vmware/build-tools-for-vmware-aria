@@ -129,8 +129,16 @@ export function readVrIgnorePatternsFromFile(path: string, ...categories: string
 	return resArr;
 }
 
+/**
+ * Checks if a file path matches any of the provided patterns
+ * @param filePath - file path (resolved)
+ * @param globPatterns - array of patterns to check. Any patterns starting with "!" will be excluded
+ *  (does not support "^" or multiple starting "!")
+ * @returns true if the path matches any of the glob patterns and there is no negative pattern that matches it
+ *          false otherwise
+ */
 export function filePathMatchesGlob(filePath: string, globPatterns: string[]): boolean {
 	const negatedPatterns = globPatterns.filter(p => p.startsWith("!"));
 	globPatterns = globPatterns.filter(p => p.startsWith("!"));
-	return globPatterns.find(p => minimatch(filePath, p)) && !negatedPatterns.find(p => minimatch(filePath, p));
+	return globPatterns.find(p => minimatch(filePath, p)) && !negatedPatterns.find(p => minimatch(filePath, p.substring(1)));
 }
