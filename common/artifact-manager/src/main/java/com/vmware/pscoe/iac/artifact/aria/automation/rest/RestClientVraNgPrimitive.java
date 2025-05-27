@@ -1041,7 +1041,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
 	/**
-	 * Retrieve a scenario.
+	 * Retrieve a scenario customization.
 	 *
 	 * @param objId objId
 	 * @return the response
@@ -1049,7 +1049,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	protected VraNgScenario getScenarioPrimitive(final String objId)
 			throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").setParameter("defaultConfig", "true").build();
+		URI url = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").build();
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
 			String.class);
 		

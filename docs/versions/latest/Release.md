@@ -33,6 +33,16 @@ There is a new script now that can be executed and it will setup the minimal inf
 
 Added link to `go-btva` that can be used to get a sandbox up and running, fast.
 
+### *Support of notification scenarios by vrang*
+
+Added support for Service broker Notification scenarios to vrang projects.
+New scenarios: category added to content.yaml supporting options for none, all, or listed scenarios by name. 
+Archetype was changed to contain the new category and a sample scenario.
+Packaching of scenarios is supported as well as the following operations:
+- vrealize:pull - read scenarios from vRA. Reading customized scenario if available, default configuration otherwise
+- vrealize:push - create or update scenario customization.
+- vrealize:clean - delete scenario customization and reset to the default.
+
 ## Improvements
 
 ### Fixed Error Running Unit Tests on Linux and Windows

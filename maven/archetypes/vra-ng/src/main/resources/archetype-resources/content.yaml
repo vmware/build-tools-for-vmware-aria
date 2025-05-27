@@ -40,7 +40,7 @@
 #   resource-quota:
 #     - policy name 1
 #     - policy name 2
-# scenarios:
+# scenario:
 
 blueprint:
   - Small VM
@@ -70,4 +70,4 @@ resource-action:
 subscription:
   - vra8-db-mssql Subscription
 catalog-entitlement: []
-scenarios: []
+scenario: []
