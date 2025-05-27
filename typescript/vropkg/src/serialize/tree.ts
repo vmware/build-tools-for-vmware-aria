@@ -44,6 +44,9 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
 					fs.mkdirsSync(path.dirname(elementXmlPath));
                     return fs.writeFileSync(elementXmlPath, actionXml);
                 }
+				case t.VroElementType.ActionEnvironment: {
+                    return fs.copyFileSync(sourceFile, path.join(target, `${elementName}`));
+				}
                 default: {
                     // Re-encode the content to UTF-8
                     let buffer = fs.readFileSync(sourceFile);

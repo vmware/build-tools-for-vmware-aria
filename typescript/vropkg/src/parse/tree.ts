@@ -67,6 +67,10 @@ function parseTreeElement(elementInfoPath: string): t.VroNativeElement {
             action = xmlToAction(dataFilePath, bundleFilePath, name, comment, description, tags);
             break;
         }
+		case t.VroElementType.ActionEnvironment: {
+			name = JSON.parse(read(dataFilePath)).name;
+			break;
+		}
         default: {
             // parse input forms (applicable for vRO workflows only)
             formData = parseInputForms(type, name, elementInfoPath);

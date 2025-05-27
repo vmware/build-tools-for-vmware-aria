@@ -34,6 +34,7 @@ export enum ActionRuntime {
 	VRO_POWERCLI_12_PS_71 = 'powercli:12-powershell-7.1',
 	VRO_POWERCLI_12_PS_74 = 'powercli:12-powershell-7.4',
 	VRO_POWERCLI_13_PS_74 = 'powercli:13-powershell-7.4',
+    VRO_POWERSHELL_74 = 'powershell:7.4',
 
 	VRO_PYTHON_37 = 'python:3.7',
 	VRO_PYTHON_310 = 'python:3.10',
@@ -56,7 +57,8 @@ export const VroPowershellActionRuntimes = [
 	ActionRuntime.VRO_POWERCLI_11_PS_62,
 	ActionRuntime.VRO_POWERCLI_12_PS_71,
 	ActionRuntime.VRO_POWERCLI_12_PS_74,
-	ActionRuntime.VRO_POWERCLI_13_PS_74
+	ActionRuntime.VRO_POWERCLI_13_PS_74,
+	ActionRuntime.VRO_POWERSHELL_74
 ];
 
 export const VroPythonActionRuntimes = [
@@ -86,6 +88,7 @@ export type PlatformDefinition = PackageDefinition & {
 		action: string,
 		entrypoint: string,
 		runtime: ActionRuntimeType,
+        environment?: string,
 		base?: string,
 		tags?: Array<string>;
 		memoryLimitMb?: number,
@@ -151,6 +154,7 @@ export type ActionOptions = PackagerOptions & {
 	// out: string;            Inherited: Relative path from workspace to the out directory
 	actionType: string;     // The type of action to be compiled. Either `vro` or `abx`
 	actionRuntime: string;   // One of: `nodejs`, `python`, `powershell`
+    actionEnvironment: string; // The custom environment id where the action should be run
 };
 
 export type ProjectActions = Array<ActionOptions>;
