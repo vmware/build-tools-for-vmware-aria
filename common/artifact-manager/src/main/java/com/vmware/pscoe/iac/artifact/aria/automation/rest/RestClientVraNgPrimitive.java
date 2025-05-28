@@ -1056,22 +1056,35 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").build();
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
 			String.class);
-		
 		JsonElement root = JsonParser.parseString(response.getBody());
-
-		if (root.isJsonObject()) {
-			JsonObject ob = root.getAsJsonObject();
-
-			Boolean enabled = ob.get("enabled").getAsBoolean();
-			String scenarioCategory = ob.get("scenarioCategory").getAsString();
-			String scenarioName = ob.get("scenarioName").getAsString();
-			String scenarioId = ob.get("scenarioId").getAsString();
-			String subject = ob.get("subject").getAsString();
-			String body = ob.get("body").getAsString();
-
-			return new VraNgScenario(enabled, scenarioCategory, scenarioName, scenarioId, subject, body);
+		if (!root.isJsonObject()) {
+			return null;
 		}
-		return null;
+		JsonObject ob = root.getAsJsonObject();
+		Boolean enabled = ob.get("enabled").getAsBoolean();
+		String scenarioCategory = ob.get("scenarioCategory").getAsString();
+		String scenarioName = ob.get("scenarioName").getAsString();
+		String scenarioId = ob.get("scenarioId").getAsString();
+		String subject = ob.has("subject")?ob.get("subject").getAsString():null;
+		String body = ob.has("body")?ob.get("body").getAsString():null;
+
+		if (subject==null || body==null) {
+			URI url2 = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").setParameter("defaultConfig", "true").build();
+			ResponseEntity<String> response2 = restTemplate.exchange(url2, HttpMethod.GET, getDefaultHttpEntity(), 
+				String.class);
+			JsonElement root2 = JsonParser.parseString(response2.getBody());
+			if (!root2.isJsonObject()) {
+				return null;
+			}
+			JsonObject ob2 = root2.getAsJsonObject();
+			if (subject==null) {
+				subject = ob2.get("subject").getAsString();
+			}
+			if (body==null) {
+				body = ob2.get("body").getAsString();
+			}
+		}
+		return new VraNgScenario(enabled, scenarioCategory, scenarioName, scenarioId, subject, body);
 	}
 
 	/**
