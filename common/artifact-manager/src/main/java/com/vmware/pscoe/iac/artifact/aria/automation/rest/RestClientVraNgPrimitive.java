@@ -1102,7 +1102,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 						if (scenario != null) {
 							return scenario;
 						}	
-					} catch (Exception ignore) { }
+					} catch (Exception e) { 
+						throw new RuntimeException(
+							String.format("Error ocurred during during reading of scenario. Message: %s", e.getMessage()));
+					}
 				}
 			}
 		}
@@ -1136,8 +1139,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 					if (scenario != null) {
 						scenarios.add(scenario);
 					}
-				} catch (Exception ignore) { }
-			});
+				} catch (Exception e) { 
+					throw new RuntimeException(
+						String.format("Error ocurred during reading of scenario. Message: %s", e.getMessage()));
+				}
+		});
 		}
 		return scenarios;
 	}
