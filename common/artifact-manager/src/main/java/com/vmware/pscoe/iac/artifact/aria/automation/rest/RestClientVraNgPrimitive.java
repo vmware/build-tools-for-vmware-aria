@@ -1065,10 +1065,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String scenarioCategory = ob.get("scenarioCategory").getAsString();
 		String scenarioName = ob.get("scenarioName").getAsString();
 		String scenarioId = ob.get("scenarioId").getAsString();
-		String subject = ob.has("subject")?ob.get("subject").getAsString():null;
-		String body = ob.has("body")?ob.get("body").getAsString():null;
+		String subject = ob.has("subject") ? ob.get("subject").getAsString() : null;
+		String body = ob.has("body") ? ob.get("body").getAsString() : null;
 
-		if (subject==null || body==null) {
+		if (subject == null || body == null) {
 			URI url2 = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").setParameter("defaultConfig", "true").build();
 			ResponseEntity<String> response2 = restTemplate.exchange(url2, HttpMethod.GET, getDefaultHttpEntity(), 
 				String.class);
@@ -1077,10 +1077,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 				return null;
 			}
 			JsonObject ob2 = root2.getAsJsonObject();
-			if (subject==null) {
+			if (subject == null) {
 				subject = ob2.get("subject").getAsString();
 			}
-			if (body==null) {
+			if (body == null) {
 				body = ob2.get("body").getAsString();
 			}
 		}
