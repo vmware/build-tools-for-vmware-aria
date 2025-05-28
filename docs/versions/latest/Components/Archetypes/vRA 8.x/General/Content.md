@@ -20,8 +20,16 @@ custom-resource:
 resource-action:
 catalog-entitlement:
 catalog-item:
-content-sources:
+content-source:
 property-group:
+scenario:
+policy:
+  approval:
+  content-sharing:
+  day2-actions:
+  deployment-limit:
+  lease:
+  resource-quota:
 ```
 
 #### Content Filtering
@@ -40,6 +48,7 @@ Contents are exported by different rules.
   - catalog-entitlement
   - property-group
   - subscription
+  - scenario
   - policies
 
 #### Export Rules for content types
@@ -54,6 +63,7 @@ Contents are exported by different rules.
   - catalog-entitlement
   - property-group
   - subscription
+  - scenario
   - policies
 
 #### Examples
@@ -88,4 +98,5 @@ policy:  # export according to filter
   deployment-limit: []
   lease: []
   resource-quota: []
+scenario: []
 ```

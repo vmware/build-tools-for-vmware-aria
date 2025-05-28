@@ -28,6 +28,7 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
         "action": "auto", // The name of the action, if set to auto, the folder name will be used, otherwise the value will be used
         "entrypoint": "handler.handler", // The entrypoint for the action. First part is the file name, second part is the function name
         "runtime": "python", // The runtime for the action. Check below for possible values
+        "environment": "${environmentId}", // Optional parameter, applicable to VRO only. If provided, the action is configured with customer environment
         "tags": [], // Tags for the action... TBD
         "memoryLimitMb": 64, // The memory limit for the action
         "timeoutSec": 60, // The timeout for the action
@@ -118,3 +119,9 @@ Note: you do not need to delete template folders. Any folder starting with `temp
 #### Powershell
 
 - `handler.ps1` - holds all the logic for the action
+
+#### VRO custom environments
+
+Environment definition may be added to a VRO polyglot project
+Each environment is defined in a file, e.g.
+src/resources/environments/{environment name}.json
