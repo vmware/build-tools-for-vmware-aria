@@ -13,29 +13,47 @@
  * #L%
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store.models;
-/**
- * vra-ng package member types.
- * @see #BLUEPRINT
- * @see #SUBSCRIPTION
- * @see #SCENARIO
- * @see #CATALOG_ENTITLEMENT
- * @see #CUSTOM_RESOURCE
- * @see #RESOURCE_ACTION
- * @see #PROPERTY_GROUP
- * @see #CONTENT_SOURCE
- * @see #CATALOG_ITEM
- * @see #POLICY
- */
+
 public enum VraNgPackageMemberType {
+	/**
+	 * Blueprint package member type
+	 */
 	BLUEPRINT("blueprint"),
+	/**
+	 * Subscription package member type
+	 */
 	SUBSCRIPTION("subscription"),
+	/**
+	 * Scenario package member type
+	 */
 	SCENARIO("scenario"),
+	/**
+	 * Catalog entitlement package member type
+	 */
 	CATALOG_ENTITLEMENT("catalog-entitlement"),
+	/**
+	 * Custom resource package member type
+	 */
 	CUSTOM_RESOURCE("custom-resource"),
+	/**
+	 * Resource action package member type
+	 */
 	RESOURCE_ACTION("resource-action"),
+	/**
+	 * Property group package member type
+	 */
 	PROPERTY_GROUP("property-group"),
+	/**
+	 * Content source package member type
+	 */
 	CONTENT_SOURCE("content-source"),
+	/**
+	 * Catalog item package member type
+	 */
 	CATALOG_ITEM("catalog-item"),
+	/**
+	 * Policy package member type
+	 */
 	POLICY("policy");
 
 	/**
