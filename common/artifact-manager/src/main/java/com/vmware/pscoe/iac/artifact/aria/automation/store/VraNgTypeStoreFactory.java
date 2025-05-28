@@ -38,6 +38,7 @@ import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPa
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.RESOURCE_ACTION;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.SUBSCRIPTION;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.SCENARIO;
 
 /**
  * Factory to select and setup the store (handler) and determine the order of
@@ -62,7 +63,8 @@ public class VraNgTypeStoreFactory {
 			RESOURCE_QUOTA_POLICY,
 			DAY2_ACTIONS_POLICY,
 			DEPLOYMENT_LIMIT_POLICY,
-			APPROVAL_POLICY
+			APPROVAL_POLICY,
+			SCENARIO
 	};
 
 	/**
@@ -92,7 +94,8 @@ public class VraNgTypeStoreFactory {
 			RESOURCE_QUOTA_POLICY,
 			DAY2_ACTIONS_POLICY,
 			DEPLOYMENT_LIMIT_POLICY,
-			APPROVAL_POLICY
+			APPROVAL_POLICY,
+			SCENARIO
 	};
 
 	/**
@@ -128,6 +131,7 @@ public class VraNgTypeStoreFactory {
 			RESOURCE_ACTION,
 			PROPERTY_GROUP,
 			CUSTOM_RESOURCE,
+			SCENARIO
 	};
 
 	/**
@@ -250,6 +254,8 @@ public class VraNgTypeStoreFactory {
 				return new VraNgDeploymentLimitPolicyStore();
 			case APPROVAL_POLICY:
 				return new VraNgApprovalPolicyStore();
+			case SCENARIO:
+				return new VraNgScenarioStore();
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}

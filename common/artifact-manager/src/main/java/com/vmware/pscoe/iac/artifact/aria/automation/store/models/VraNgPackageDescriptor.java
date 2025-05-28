@@ -47,6 +47,10 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	 */
 	private List<String> subscription;
 	/**
+	 * List of scenarios.
+	 */
+	private List<String> scenario;
+	/**
 	 * List of catalogEntitlements.
 	 */
 	private List<String> catalogEntitlement;
@@ -146,6 +150,24 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	 */
 	public void setSubscription(List<String> subscription) {
 		this.subscription = subscription;
+	}
+
+		/**
+	 * Getter.
+	 * 
+	 * @return scenarios.
+	 */
+	public List<String> getScenario() {
+		return this.scenario;
+	}
+
+	/**
+	 * Setter.
+	 * 
+	 * @param scenario input values.
+	 */
+	public void setScenario(List<String> scenario) {
+		this.scenario = scenario;
 	}
 
 	/**
@@ -251,6 +273,8 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 				return getBlueprint();
 			case SUBSCRIPTION:
 				return getSubscription();
+			case SCENARIO:
+				return getScenario();
 			case CATALOG_ENTITLEMENT:
 				return getCatalogEntitlement();
 			case PROPERTY_GROUP:
@@ -322,6 +346,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 		VraNgPackageDescriptor pd = new VraNgPackageDescriptor();
 		pd.blueprint = map.get(VraNgPackageContent.ContentType.BLUEPRINT);
 		pd.subscription = map.get(VraNgPackageContent.ContentType.SUBSCRIPTION);
+		pd.scenario = map.get(VraNgPackageContent.ContentType.SCENARIO);
 		pd.catalogEntitlement = map.get(VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT);
 		pd.customResource = map.get(VraNgPackageContent.ContentType.CUSTOM_RESOURCE);
 		pd.resourceAction = map.get(VraNgPackageContent.ContentType.RESOURCE_ACTION);

@@ -24,13 +24,14 @@ All data that needs to be exported from vRA is defined in the `content.yaml` fil
 - catalog-entitlement
 - property-group
 - subscription
-- policies
+- policy
   - approval
   - content-sharing
   - day2-actions
   - deployment-limit
   - lease
   - resource-quota
+- scenario
 
 It will throw an error if the given entities are not on the server.
 

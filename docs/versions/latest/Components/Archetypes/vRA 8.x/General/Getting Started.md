@@ -85,6 +85,8 @@ catalog
                 └── leasePolicy1.json 
             └── resource-quota:
                 └── resourceQuotaPolicy1.json 
+        └── scenarios:
+            └── Scenario Name.json
             
             
 ```

@@ -87,7 +87,12 @@ public class VraNgPackageContent extends PackageContent<VraNgPackageContent.Cont
 		/**
 		 * Content type for approval policies.
 		 */
-		APPROVAL_POLICY("approval");
+		APPROVAL_POLICY("approval"),
+
+		/**
+		 * Content type for scenarios.
+		 */
+		SCENARIO("scenario");
 
 		/**
 		 * PackageContent type.

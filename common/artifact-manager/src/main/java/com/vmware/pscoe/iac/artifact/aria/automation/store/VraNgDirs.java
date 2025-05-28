@@ -51,6 +51,10 @@ public final class VraNgDirs {
 	 * custom-resources folder name.
 	 */
 	public static final String DIR_CUSTOM_RESOURCES = "custom-resources";
+	/**
+	 * scenarios folder name.
+	 */
+	public static final String DIR_SCENARIOS = "scenarios";
 
 	/**
 	 * Hiding constructor of utility class.
