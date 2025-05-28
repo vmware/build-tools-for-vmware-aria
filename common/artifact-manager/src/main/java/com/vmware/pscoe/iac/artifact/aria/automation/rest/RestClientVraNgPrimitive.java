@@ -1089,23 +1089,24 @@ public class RestClientVraNgPrimitive extends RestClient {
 		
 		JsonElement root = JsonParser.parseString(response.getBody());
 
-		if (root.isJsonObject()) {
-			JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
+		if (!root.isJsonObject()) {
+			return null;
+		}
+		JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
 
-			for (JsonElement o: content) {
-				JsonObject ob = o.getAsJsonObject();
-				String scenarioName = ob.get("scenarioName").getAsString();
-				if (scenarioName.equals(name)) {
-					String scenarioId = ob.get("scenarioId").getAsString();
-					try {
-						VraNgScenario scenario = getScenarioPrimitive(scenarioId);
-						if (scenario != null) {
-							return scenario;
-						}	
-					} catch (Exception e) { 
-						throw new RuntimeException(
-							String.format("Error ocurred during during reading of scenario. Message: %s", e.getMessage()));
-					}
+		for (JsonElement o: content) {
+			JsonObject ob = o.getAsJsonObject();
+			String scenarioName = ob.get("scenarioName").getAsString();
+			if (scenarioName.equals(name)) {
+				String scenarioId = ob.get("scenarioId").getAsString();
+				try {
+					VraNgScenario scenario = getScenarioPrimitive(scenarioId);
+					if (scenario != null) {
+						return scenario;
+					}	
+				} catch (Exception e) { 
+					throw new RuntimeException(
+						String.format("Error ocurred during during reading of scenario. Message: %s", e.getMessage()));
 				}
 			}
 		}
@@ -1128,23 +1129,24 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		List<VraNgScenario> scenarios = new ArrayList<>();
 
-		if (root.isJsonObject()) {
-			JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
-
-			content.forEach(o -> {
-				JsonObject ob = o.getAsJsonObject();
-				String scenarioId = ob.get("scenarioId").getAsString();
-				try {
-					VraNgScenario scenario = getScenarioPrimitive(scenarioId);
-					if (scenario != null) {
-						scenarios.add(scenario);
-					}
-				} catch (Exception e) { 
-					throw new RuntimeException(
-						String.format("Error ocurred during reading of scenario. Message: %s", e.getMessage()));
-				}
-		});
+		if (!root.isJsonObject()) {
+			return scenarios;
 		}
+		JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
+
+		content.forEach(o -> {
+			JsonObject ob = o.getAsJsonObject();
+			String scenarioId = ob.get("scenarioId").getAsString();
+			try {
+				VraNgScenario scenario = getScenarioPrimitive(scenarioId);
+				if (scenario != null) {
+					scenarios.add(scenario);
+				}
+			} catch (Exception e) { 
+				throw new RuntimeException(
+					String.format("Error ocurred during reading of scenario. Message: %s", e.getMessage()));
+			}
+		});
 		return scenarios;
 	}
 
