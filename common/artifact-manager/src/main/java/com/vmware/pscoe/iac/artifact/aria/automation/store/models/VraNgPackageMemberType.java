@@ -13,7 +13,19 @@
  * #L%
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store.models;
-
+/**
+ * vra-ng package member types
+ * @see BLUEPRINT
+ * @see SUBSCRIPTION
+ * @see SCENARIO
+ * @see CATALOG_ENTITLEMENT
+ * @see CUSTOM_RESOURCE
+ * @see RESOURCE_ACTION
+ * @see PROPERTY_GROUP
+ * @see CONTENT_SOURCE
+ * @see CATALOG_ITEM
+ * @see POLICY
+ */
 public enum VraNgPackageMemberType {
 	BLUEPRINT("blueprint"),
 	SUBSCRIPTION("subscription"),
@@ -26,7 +38,13 @@ public enum VraNgPackageMemberType {
 	CATALOG_ITEM("catalog-item"),
 	POLICY("policy");
 
+	/**
+	 * Package member type name.
+	 */
 	private final String name;
+	/**
+	 * Is package member type a native content.
+	 */
 	private final boolean isNativeContent;
 
 	VraNgPackageMemberType(String name) {
@@ -38,6 +56,9 @@ public enum VraNgPackageMemberType {
 		this.isNativeContent = isNativeContent;
 	}
 
+	/**
+	 * @return isNativeContent
+	 */
 	public boolean isNativeContent() {
 		return this.isNativeContent;
 	}
@@ -47,6 +68,10 @@ public enum VraNgPackageMemberType {
 		return this.name;
 	}
 
+	/**
+	 * @param name Package member type name
+	 * @return Package member type object
+	 */
 	public static VraNgPackageMemberType fromString(String name) {
 		for (VraNgPackageMemberType type : VraNgPackageMemberType.values()) {
 			if (type.name.equalsIgnoreCase(name)) {

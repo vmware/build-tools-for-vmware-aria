@@ -60,7 +60,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 
 public class RestClientVraNg extends RestClientVraNgPrimitive {
+	/**
+	 * Constant for subscription base query.
+	 */
 	private static final String SUBSCRIPTION_BASE_QUERY = "type ne 'SUBSCRIBABLE'";
+	/**
+	 * Constant for subscription query param.
+	 */
 	private static final String SUBSCRIPTION_QUERY_PARAM = "%s eq '%s'";
 
 	/**

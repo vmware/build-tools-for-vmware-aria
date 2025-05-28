@@ -33,10 +33,30 @@ public class VraNgCloudAccount {
 	 * @param Prime Number 31.
 	 */
 	private static final int PRIME_NUMBER_31 = 31;
+
+	/**
+	 * @param id ID of the cloud account.
+	 */
 	private final String id;
+
+	/**
+	 * @param name Name of the cloud account.
+	 */
 	private final String name;
+
+	/**
+	 * @param type Type of the cloud account.
+	 */
 	private final String type;
+
+	/**
+	 * @param regionIds Region IDs for the cloud account.
+	 */
 	private final List<String> regionIds;
+
+	/**
+	 * @param tags Tags for the cloud account.
+	 */
 	private final List<String> tags;
 
 	/**
@@ -44,6 +64,7 @@ public class VraNgCloudAccount {
 	 * @param name      - the name of the CA
 	 * @param type      - the type of the CA
 	 * @param regionIds - all the region IDs for the cloud account
+	 * @param tags      - all tags for the cloud account
 	 */
 	public VraNgCloudAccount(String id, String name, String type, List<String> regionIds, List<String> tags) {
 		this.id = id;
