@@ -14,17 +14,17 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store.models;
 /**
- * vra-ng package member types
- * @see BLUEPRINT
- * @see SUBSCRIPTION
- * @see SCENARIO
- * @see CATALOG_ENTITLEMENT
- * @see CUSTOM_RESOURCE
- * @see RESOURCE_ACTION
- * @see PROPERTY_GROUP
- * @see CONTENT_SOURCE
- * @see CATALOG_ITEM
- * @see POLICY
+ * vra-ng package member types.
+ * @see #BLUEPRINT
+ * @see #SUBSCRIPTION
+ * @see #SCENARIO
+ * @see #CATALOG_ENTITLEMENT
+ * @see #CUSTOM_RESOURCE
+ * @see #RESOURCE_ACTION
+ * @see #PROPERTY_GROUP
+ * @see #CONTENT_SOURCE
+ * @see #CATALOG_ITEM
+ * @see #POLICY
  */
 public enum VraNgPackageMemberType {
 	BLUEPRINT("blueprint"),
