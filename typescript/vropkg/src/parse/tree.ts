@@ -17,7 +17,8 @@ import * as path from "path";
 import * as t from "../types";
 import getLogger from "../logger";
 import { read, stringToCategory, xml, xmlGet, xmlToAction, xmlChildNamed, xmlToTag, getWorkflowItems } from "./util";
-import { exist, readVrIgnorePatternsFromFile } from "../util";
+import { exist } from "../util";
+import { readVroIgnorePatternsFromFile } from "../vroIgnoreUtil";
 import { FORM_SUFFIX, RESOURCE_ELEMENT_DEFAULT_VERSION, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE } from "../constants";
 
 function parseTreeElement(elementInfoPath: string): t.VroNativeElement {
@@ -132,7 +133,7 @@ async function parseTree(
 	description: string,
 	vroIgnoreFile: string
 ): Promise<t.VroPackageMetadata> {
-	const ignorePatterns = readVrIgnorePatternsFromFile(vroIgnoreFile);
+	const ignorePatterns = readVroIgnorePatternsFromFile(vroIgnoreFile); // TODO
 	getLogger().info(`vropkg parse tree - ignored: ${JSON.stringify(ignorePatterns)}`);
     let elements = glob
 		.sync(
