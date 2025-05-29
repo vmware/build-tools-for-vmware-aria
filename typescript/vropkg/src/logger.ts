@@ -28,7 +28,8 @@ const DEFAULT_WINSTON_CONFIGURATION = {
 const LOGGERS: Record<string, winston.Logger> = {};
 
 /**
- * 
+ * Instantiates and caches a logger with the given name.
+ * @param verbose - if true, log level will be 'debug', otherwise 'info'. Used only on instantiation
  * @param name - logger name. Default is "vrbt"
  * @param opts - logger options - used to create logger if it doesn't exist. By default:
  * - log level is "info", logged into file "vrbt.log"
@@ -38,8 +39,8 @@ const LOGGERS: Record<string, winston.Logger> = {};
  * 
  * @returns logger with the given name (if it exists) and options (when newly created) as singleton
  */
-export default function getLogger(name: string = DEFAULT_WINSTON_CONFIGURATION.logPrefix, opts: winston.LoggerOptions = {
-	level: DEFAULT_WINSTON_CONFIGURATION.logLevel,
+export default function getLogger(verbose: boolean = false, name: string = DEFAULT_WINSTON_CONFIGURATION.logPrefix, opts: winston.LoggerOptions = {
+	level: verbose ? 'debug': DEFAULT_WINSTON_CONFIGURATION.logLevel,
 	format: winston.format.json(),
 	// defaultMeta: { service: 'user-service' },
 	transports: [

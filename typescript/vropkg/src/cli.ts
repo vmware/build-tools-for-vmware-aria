@@ -27,9 +27,6 @@ import { VroJsProjRealizer } from "./serialize/js";
 import { CleanDefinition } from "./cleaner/definitionCleaner";
 import { createDefaultVroIgnoreFile } from "./util";
 
-/** Instantiates the default logger */
-const LOGGER = getLogger();
-
 interface CliInputs extends cmdArgs.CommandLineOptions {
 	/** whether futher logging is in order */
 	verbose: boolean;
@@ -96,9 +93,9 @@ const cliOpts = <cmdArgs.OptionDefinition[]>[
 
 async function run() {
 	let input = cmdArgs(cliOpts, { stopAtFirstUnknown: false }) as CliInputs;
-	if (!(input.verbose || input.vv)) {
-		console.debug = () => { };
-	}
+	
+	/** Instantiates the default logger */
+	getLogger(input.verbose || input.vv);
 
 	// validate input data
 	let printHelp = validate(input);
@@ -132,14 +129,14 @@ function printVersion(): void {
 	let packageJsonPath = path.join(__dirname, "../package.json");
 	if (fs.existsSync(packageJsonPath)) {
 		let packageConfig = JSON.parse(fs.readFileSync(packageJsonPath).toString());
-		console.log(`Version ${packageConfig.version}`);
+		getLogger().info(`Version ${packageConfig.version}`);
 	}
 }
 
 function printUsage(): boolean {
 	let usageFilePath = path.join(__dirname, "../Usage.txt");
 	if (fs.existsSync(usageFilePath)) {
-		console.log(fs.readFileSync(usageFilePath).toString());
+		getLogger().info(fs.readFileSync(usageFilePath).toString());
 	}
 
 	return false;
@@ -148,39 +145,40 @@ function printUsage(): boolean {
 function validate(input: CliInputs): boolean {
 	let printHelp = false;
 	if (input._unknown) {
-		console.error("Unexpected option:", input._unknown);
+		getLogger().error("Unexpected option:", input._unknown);
 		printHelp = true;
 	}
 	if (!input.srcPath) {
-		console.error("Missing srcPath");
+		getLogger().error("Missing srcPath");
 		printHelp = true;
 	}
 	if (!input.destPath) {
-		console.error("Missing destPath");
+		getLogger().error("Missing destPath");
 	}
 	if (!input.version) {
-		console.error("Missing project version")
+		getLogger().error("Missing project version")
 	}
 	if (!input.artifactId) {
-		console.error("Missing artifactId")
+		getLogger().error("Missing artifactId")
 	}
 	if (!input.groupId) {
-		console.error("Missing groupId")
+		getLogger().error("Missing groupId")
 	}
 	let certificateRequired = t.ProjectType[input.out] == t.ProjectType.flat;
 	if (certificateRequired && (!input.certificatesPEM || !input.privateKeyPEM)) {
-		console.error("Missing privateKeyPEM or certificatesPEM");
+		getLogger().error("Missing privateKeyPEM or certificatesPEM");
 		printHelp = true;
 	}
 	if (t.ProjectType[input.in] == null || t.ProjectType[input.out] == null) {
-		console.error("Incorrect in/out parameter");
+		getLogger().error("Incorrect in/out parameter");
 		printHelp = true;
 	}
 	if (!input.keyPass) {
-		console.warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
+		getLogger().warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
 	}
 	if (!input.vroIgnoreFile) {
 		input.vroIgnoreFile = path.join(__dirname.replace(/[\\]+/gm,"/"),".vroignore");
+		getLogger().warn("No vroIgnoreFile specified, defaulting to " + input.vroIgnoreFile);
 	}
 	if (!fs.existsSync(input.vroIgnoreFile)) {
 		console.warn(`Cannot find file vRO ignore file "${input.vroIgnoreFile}". Creating file with default content...`);
