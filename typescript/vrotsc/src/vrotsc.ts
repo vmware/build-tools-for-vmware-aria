@@ -96,8 +96,10 @@ export function execute() {
 			types: commandLine.typesOut || system.joinPath(outDir, "types"),
 			maps: commandLine.mapsOut || system.joinPath(outDir, "maps"),
 		},
-        vroIgnoreFile: commandLine.vroIgnoreFile
+        vroIgnoreFile: path.resolve(commandLine.vroIgnoreFile || ".vroignore").replace(/[\\]+/gm,"/")
 	};
+	const defaultVroIgnore = !commandLine.vroIgnoreFile ? "default " : "";
+	console.info(`Using ${defaultVroIgnore}vRO ignore file: ${programOptions.vroIgnoreFile}`);
 	const writeFileCallback: WriteFileCallback = (fileName: string, data: string | Buffer) => {
 		let dirName = system.dirname(fileName);
 		system.ensureDir(dirName);

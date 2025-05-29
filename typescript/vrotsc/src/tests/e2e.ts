@@ -118,7 +118,8 @@ async function runSpec(caseName: string): Promise<boolean> {
 			"--typesOut", toPathArg(caseOutDir, "types"),
 			"--resourcesOut", toPathArg(caseOutDir, "resources"),
 			"--policiesOut", toPathArg(caseOutDir, "policies"),
-			"--mapsOut", toPathArg(caseOutDir, "maps")
+			"--mapsOut", toPathArg(caseOutDir, "maps"),
+            "--vroIgnoreFile", toPathArg(".vroignore")
 		];
 
 		if (childProcLogs) {

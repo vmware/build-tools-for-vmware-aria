@@ -24,6 +24,8 @@ import { transformModuleSystem } from "../codeTransformers/modules";
 import { canCreateDeclarationForFile } from "../metaTransformers/declaration";
 import { checkActionForMisplacedClassDecorators } from "../helpers/checkActionForMisplacedClassDecorators";
 import { addHeaderComment } from "../helpers/source";
+import { filePathMatchesGlob, readVroIgnorePatternsFromFile } from "../../../utilities/vroIgnoreUtil";
+import { resolve } from "path";
 
 /**
  * Returns Action file transformer
@@ -50,6 +52,7 @@ function transform(file: FileDescriptor, context: FileTransformationContext, sou
 	const transformers = buildTransformers(context.emitHeader);
 	const [sourceText, typeDefText, mapText] = transformSourceFile(sourceFile, context, transformers);
 
+	// special case of .vroignore (kept as is):
 	const isHelper = file.relativeFilePath.match(/\.helper\.[tj]s$/);
 	const outputDir = isHelper ? context.outputs.testHelpers : context.outputs.actions;
 
@@ -62,7 +65,10 @@ function transform(file: FileDescriptor, context: FileTransformationContext, sou
 
 	context.writeFile(targetFilePath, sourceText);
 
-	if (typeDefText && canCreateDeclarationForFile(file, context.rootDir)) {
+	const ignorePatterns = readVroIgnorePatternsFromFile(resolve(context.vroIgnoreFile), 'TestHelpers', 'Compilation');
+    console.log(`vrotsc/action: Ignored patterns: ${JSON.stringify(ignorePatterns)}`);
+	const isIgnored = filePathMatchesGlob(resolvedPath, ignorePatterns);
+	if (typeDefText && !isIgnored && canCreateDeclarationForFile(file, context.rootDir)) {
 		const targetDtsFilePath = system.changeFileExt(system.resolvePath(context.outputs.types, file.relativeFilePath), ".d.ts");
 		context.writeFile(targetDtsFilePath, typeDefText);
 	}
