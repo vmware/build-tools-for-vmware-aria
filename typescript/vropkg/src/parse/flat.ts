@@ -20,7 +20,8 @@ import getLogger from "../logger";
 import * as a from "../packaging";
 import * as t from "../types";
 import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc, getWorkflowItems, validateWorkflowPath} from "./util";
-import { exist, readVrIgnorePatternsFromFile } from "../util";
+import { exist } from "../util";
+import { readVroIgnorePatternsFromFile } from "../vroIgnoreUtil";
 import { FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME, DEFAULT_FORM_FILE_NAME, VSO_RESOURCE_INF } from "../constants";
 
 /**
@@ -161,7 +162,7 @@ const parseFlat = async (
 ): Promise<t.VroPackageMetadata> => {
     let tmp = path.join(destDir, "tmp");
     getLogger().info(`Extracting package ${nativePackagePath} to "${destDir}" folder...`);
-	const ignorePatterns = readVrIgnorePatternsFromFile(vroIgnoreFile);
+	const ignorePatterns = readVroIgnorePatternsFromFile(vroIgnoreFile); // TODO
 	getLogger().info(`vropkg parse flat - ignored: ${JSON.stringify(ignorePatterns)}`);
 
     await a.extract(nativePackagePath, tmp);

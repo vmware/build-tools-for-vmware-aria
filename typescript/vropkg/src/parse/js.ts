@@ -21,7 +21,7 @@ import * as Comments from "parse-comments";
 import {v4 as uuidv4} from "uuid";
 import getLogger from "../logger";
 import * as glob from "glob";
-import { readVrIgnorePatternsFromFile } from "../util";
+import { readVroIgnorePatternsFromFile } from "../vroIgnoreUtil";
 
 export class VroJsProjParser {
 	private lazy: boolean;
@@ -39,7 +39,7 @@ export class VroJsProjParser {
 		vroIgnoreFile: string
 	): Promise<VroPackageMetadata> {
 		getLogger().info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);
-		const ignorePatterns = readVrIgnorePatternsFromFile(vroIgnoreFile);
+		const ignorePatterns = readVroIgnorePatternsFromFile(vroIgnoreFile); // TODO
 		getLogger().info(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
 
 		let elements: Array<VroNativeElement> = [];
