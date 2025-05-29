@@ -25,7 +25,8 @@
   "dependencies": {
     "browserslist": "4.24.2",
     "iconv-lite": "0.6.3",
-    "nyc": "17.1.0"
+    "nyc": "17.1.0",
+    "minimatch": "^10.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "28.0.1",

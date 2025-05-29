@@ -1,6 +1,6 @@
 /*-
  * #%L
- * vrotsc
+ * vropkg
  * %%
  * Copyright (C) 2023 - 2025 VMware
  * %%
@@ -140,11 +140,9 @@ export function readVroIgnorePatternsFromFile(path: string, ...categories: VroIg
  *          false otherwise
  */
 export function filePathMatchesGlob(filePath: string, globPatterns: string[]): boolean {
-    const negatedPatterns = globPatterns.filter(p => p.startsWith("!"));
-    globPatterns = globPatterns.filter(p => !p.startsWith("!"));
-    const res = globPatterns.find(p => minimatch(filePath, p)) && !negatedPatterns.find(p => minimatch(filePath, p.substring(1)));
-    console.info(`Checking if '${filePath}' matches glob ${JSON.stringify(globPatterns)} -> ${res}`);
-    return res;
+	const negatedPatterns = globPatterns.filter(p => p.startsWith("!"));
+	globPatterns = globPatterns.filter(p => !p.startsWith("!"));
+	return globPatterns.find(p => minimatch(filePath, p)) && !negatedPatterns.find(p => minimatch(filePath, p.substring(1)));
 }
 
 // HELPER FUNCTIONS
