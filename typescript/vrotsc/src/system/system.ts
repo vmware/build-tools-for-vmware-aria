@@ -16,7 +16,7 @@ import * as os from "os";
 import { basename, dirname, extname, join, normalize, relative, resolve, sep } from "path";
 import { statSync, readFileSync, removeSync, readdirSync, writeFileSync, ensureDirSync, emptyDirSync } from "fs-extra";
 import { v3 as _uuid } from "uuid";
-import { filePathMatchesGlob } from "../utilities/utilities";
+import { filePathMatchesGlob } from "../utilities/vroIgnoreUtil";
 
 /**
 * This class is a wrapper around Node.js file system and path modules.

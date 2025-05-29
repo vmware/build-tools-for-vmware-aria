@@ -29,7 +29,7 @@ import { getTestTransformer } from "./transformer/fileTransformers/test";
 import { getSagaTransformer } from "./transformer/saga/saga";
 import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow/workflow";
 import { resolve } from "path";
-import { createDefaultVroIgnoreFile, readVrIgnorePatternsFromFile } from "../utilities/utilities";
+import { readVroIgnorePatternsFromFile } from "../utilities/vroIgnoreUtil";
 
 export interface Program {
 	getFiles(): readonly FileDescriptor[];
@@ -75,6 +75,7 @@ export function createProgram(options: ProgramOptions): Program {
 			diagnostics: diagnostics,
 			sourceFiles: [],
 			configIdsMap: {},
+            vroIgnoreFile: options.vroIgnoreFile,
 			getFile: path => fileByPath[path],
 			readFile: fileName => system.readFile(fileName).toString(),
 			writeFile: (fileName: string, data: string | Buffer) => {
@@ -154,12 +155,7 @@ export function createProgram(options: ProgramOptions): Program {
 	}
 
 	function getFiles(): FileDescriptor[] {
-		const vroIgnoreFile: string = resolve(options.vroIgnoreFile || '.vroIgnore');
-		if (!system.fileExists(vroIgnoreFile)) {
-			console.warn(`Cannot find file vRO ignore file "${vroIgnoreFile}". Creating file with default content...`);
-			createDefaultVroIgnoreFile(vroIgnoreFile);
-		}
-		const ignorePatterns = readVrIgnorePatternsFromFile(vroIgnoreFile); // TODO category?
+		const ignorePatterns = readVroIgnorePatternsFromFile(options.vroIgnoreFile); // TODO category?
 		let filePaths = system.getFiles(rootDir, true//, ignorePatterns
 		);
 		const fileSet: Record<string, boolean> = {};
