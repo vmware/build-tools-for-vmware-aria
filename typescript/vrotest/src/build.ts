@@ -18,6 +18,7 @@ import * as util from "./util";
 import * as constants from "./constants";
 import { BuildCommandFlags } from "./types/build-command-flags";
 import { appendFileSync, CopySyncOptions, cp, cpSync, existsSync, lstatSync, mkdirSync, promises, readdirSync, readFileSync, writeFile, writeFileSync } from "fs";
+import { readVroIgnorePatternsFromFile } from "./vroIgnoreUtil";
 
 type ModuleDescriptor = Record<string, string>;
 
@@ -48,11 +49,11 @@ interface ResourceElement {
 const copyOptions = { recursive: true, force: true, errorOnExist: false };
 
 const buildCopyFilter = (extension: string) => (fileName: string) => {
-    return lstatSync(fileName).isDirectory()
-    || (
-        path.extname(fileName).toLowerCase() === "." + extension
-        && !fileName.toLowerCase().endsWith(".test." + extension)
-    );
+	return lstatSync(fileName).isDirectory()
+	|| (
+		path.extname(fileName).toLowerCase() === "." + extension
+		&& !fileName.toLowerCase().endsWith(".test." + extension)
+	);
 }
 
 export default async function (flags: BuildCommandFlags) {
@@ -60,6 +61,14 @@ export default async function (flags: BuildCommandFlags) {
 	const modules: Record<string, ModuleDescriptor> = {};
 	const configurations: Record<string, ConfigCategory> = {};
 	const resources: Record<string, ResourceCategory> = {};
+
+	const defaultVroIgnore = !flags.vroIgnoreFile ? "default " : "";
+	flags.vroIgnoreFile = path.resolve(flags.vroIgnoreFile || ".vroignore").replace(/[\\]+/gm,"/");
+	console.info(`Using ${defaultVroIgnore}vRO ignore file: ${flags.vroIgnoreFile}`);
+	const allIgnoredPatterns = readVroIgnorePatternsFromFile(flags.vroIgnoreFile);
+	console.log(`vrotest build ALL ignored files: ${JSON.stringify(allIgnoredPatterns)}`); // TODO
+	const helperIgnoredPatterns = readVroIgnorePatternsFromFile(flags.vroIgnoreFile, 'TestHelpers');
+	console.log(`vrotest build HELPER ignored files: ${JSON.stringify(helperIgnoredPatterns)}`); // TODO
 
 	await createFolderStruct();
 	await copyContent();
@@ -69,14 +78,14 @@ export default async function (flags: BuildCommandFlags) {
 	await buildMetadata();
 	await saveMetadata();
 	await configureTestFramework(flags);
-    await createCoverageConfig();
+	await createCoverageConfig();
 
 	async function createFolderStruct(): Promise<void> {
-        const createDirectory = (path: string) => {
-            return  promises.mkdir(path, { recursive: true });
-        };
-        await Promise.all([
-            createDirectory(path.join(flags.output, constants.SOURCE_PATH)),
+		const createDirectory = (path: string) => {
+			return  promises.mkdir(path, { recursive: true });
+		};
+		await Promise.all([
+			createDirectory(path.join(flags.output, constants.SOURCE_PATH)),
 			createDirectory(path.join(flags.output, constants.TEST_PATH)),
 			createDirectory(path.join(flags.output, constants.CONFIGS_PATH)),
 			createDirectory(path.join(flags.output, constants.RESOURCES_PATH)),
@@ -88,20 +97,21 @@ export default async function (flags: BuildCommandFlags) {
 
 	async function copyContent(): Promise<void> {
 		// Copy files produced during the build phase into the new test bed folder
-        const copy = (
-            source: string,
-            destination: string,
-            copyOptions: CopySyncOptions
-        ) => new Promise((resolve) => {
-            if (!existsSync(source)) {
-                return resolve(true);
-            }
-            cpSync(source, destination, copyOptions);
-            resolve(true);
-        });
+		const copy = (
+			source: string,
+			destination: string,
+			copyOptions: CopySyncOptions
+		) => new Promise((resolve) => {
+			if (!existsSync(source) //|| util.filePathMatchesGlob(source, ignoredPatterns)
+				) {
+				return resolve(true);
+			}
+			cpSync(source, destination, copyOptions);
+			resolve(true);
+		});
 
 		await Promise.all([
-            copy(flags.actions, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: buildCopyFilter("js") }),
+			copy(flags.actions, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: buildCopyFilter("js") }),
 			copy(flags.testHelpers, path.join(flags.output, constants.SOURCE_PATH), { ...copyOptions, filter: buildCopyFilter("js") }), // Put it in the same as the actions
 			copy(flags.configurations, path.join(flags.output, constants.CONFIGS_PATH), copyOptions),
 			copy(flags.resources, path.join(flags.output, constants.RESOURCES_PATH), copyOptions),
@@ -125,7 +135,7 @@ export default async function (flags: BuildCommandFlags) {
 				}
 			});
 			if (Object.keys(testFilesToCopy).length) {
-                Object.values(testFilesToCopy).map((dest => mkdirSync(path.dirname(dest), { recursive: true })));
+				Object.values(testFilesToCopy).map((dest => mkdirSync(path.dirname(dest), { recursive: true })));
 				Object.entries(testFilesToCopy).map(([src, dest]) => cpSync(src, dest, { recursive: true }));
 			}
 		}
@@ -301,70 +311,70 @@ export default async function (flags: BuildCommandFlags) {
 		]);
 	}
 
-    async function configureTestFramework(flags: BuildCommandFlags) {
-        const customTestsConfigPath = path.join(flags.projectRoot, constants.TEST_CONFIG_PATH);
-        const copy = (source: string, destination: string) => new Promise(
-            resolve => cp(source, destination, copyOptions, (error) => {
-                if (error) {
-                    throw new Error(`Failed to copy [${source}] to [${destination}]!`);
-                }
-                resolve(true);
-            }
-        ));
+	async function configureTestFramework(flags: BuildCommandFlags) {
+		const customTestsConfigPath = path.join(flags.projectRoot, constants.TEST_CONFIG_PATH);
+		const copy = (source: string, destination: string) => new Promise(
+			resolve => cp(source, destination, copyOptions, (error) => {
+				if (error) {
+					throw new Error(`Failed to copy [${source}] to [${destination}]!`);
+				}
+				resolve(true);
+			}
+		));
 
-        if (existsSync(customTestsConfigPath)) {
-            // Use use-defined unit tests bootstrapping configuration ("unit-tests.config/*")
-            await Promise.all(readdirSync(customTestsConfigPath).map(fileName => {
-                return copy(path.join(customTestsConfigPath, fileName), path.join(flags.output, fileName));
-            }));
-        } else {
-            // Build configuration based on the framework selection
-            const templatesPath = path.join(constants.TEST_CONFIG_TEMPLATES_PATH, flags.testFrameworkPackage || "jasmine");
-            await Promise.all(readdirSync(templatesPath).map(copyTarget => {
-                return copy(path.join(templatesPath, copyTarget), path.join(flags.output, copyTarget));
-            }));
+		if (existsSync(customTestsConfigPath)) {
+			// Use use-defined unit tests bootstrapping configuration ("unit-tests.config/*")
+			await Promise.all(readdirSync(customTestsConfigPath).map(fileName => {
+				return copy(path.join(customTestsConfigPath, fileName), path.join(flags.output, fileName));
+			}));
+		} else {
+			// Build configuration based on the framework selection
+			const templatesPath = path.join(constants.TEST_CONFIG_TEMPLATES_PATH, flags.testFrameworkPackage || "jasmine");
+			await Promise.all(readdirSync(templatesPath).map(copyTarget => {
+				return copy(path.join(templatesPath, copyTarget), path.join(flags.output, copyTarget));
+			}));
 
-            const packageJsonPath = path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE);
-            const packageJsonContent = JSON.parse(readFileSync(packageJsonPath).toString("utf8"));
-            const devDeps = packageJsonContent.devDependencies;
+			const packageJsonPath = path.join(flags.output, constants.NODE_PROJECT_CONFIG_FILE);
+			const packageJsonContent = JSON.parse(readFileSync(packageJsonPath).toString("utf8"));
+			const devDeps = packageJsonContent.devDependencies;
 
-            const projectDetails = util.extractProjectPomDetails(flags.projectRoot);
-            packageJsonContent.name = projectDetails.name;
-            packageJsonContent.version = projectDetails.version;
+			const projectDetails = util.extractProjectPomDetails(flags.projectRoot);
+			packageJsonContent.name = projectDetails.name;
+			packageJsonContent.version = projectDetails.version;
 
-            if (flags.testFrameworkPackage === "jest") {
-                devDeps.jest = flags.testFrameworkVersion || devDeps.jest;
-                if (flags.runner === "swc") {
-                    devDeps["@swc/core"] = "latest";
-                    devDeps["@swc/jest"] = "latest";
-                }
+			if (flags.testFrameworkPackage === "jest") {
+				devDeps.jest = flags.testFrameworkVersion || devDeps.jest;
+				if (flags.runner === "swc") {
+					devDeps["@swc/core"] = "latest";
+					devDeps["@swc/jest"] = "latest";
+				}
 
-                const setupFiles = readdirSync(flags.helpers).map(file => `./helpers/${file}`);
-                const jestConfigPath = path.join(flags.output, constants.JEST_CONFIG_FILE);
-                const jestConfigContent = readFileSync(jestConfigPath).toString("utf8");
-                writeFileSync(jestConfigPath, jestConfigContent.replace("setupFiles: []", "setupFiles: " + JSON.stringify(setupFiles)));
-            } else {
-                devDeps["ansi-colors"] = flags.ansiColorsVersion || devDeps["ansi-colors"];
-                devDeps["jasmine"] = flags.testFrameworkVersion || devDeps["jasmine"];
-                devDeps["jasmine-reporters"] = flags.jasmineReportersVerion || devDeps["jasmine-reporters"];
+				const setupFiles = readdirSync(flags.helpers).map(file => `./helpers/${file}`);
+				const jestConfigPath = path.join(flags.output, constants.JEST_CONFIG_FILE);
+				const jestConfigContent = readFileSync(jestConfigPath).toString("utf8");
+				writeFileSync(jestConfigPath, jestConfigContent.replace("setupFiles: []", "setupFiles: " + JSON.stringify(setupFiles)));
+			} else {
+				devDeps["ansi-colors"] = flags.ansiColorsVersion || devDeps["ansi-colors"];
+				devDeps["jasmine"] = flags.testFrameworkVersion || devDeps["jasmine"];
+				devDeps["jasmine-reporters"] = flags.jasmineReportersVerion || devDeps["jasmine-reporters"];
 
-                const runFilePath = path.join(flags.output, constants.JASMINE_RUN_FILE);
-                const runFileContent = readFileSync(runFilePath).toString("utf8");
-                writeFileSync(runFilePath, runFileContent.replace("{TEST_RESULTS_PATH}", constants.TEST_RESULTS_PATH));
-            }
+				const runFilePath = path.join(flags.output, constants.JASMINE_RUN_FILE);
+				const runFileContent = readFileSync(runFilePath).toString("utf8");
+				writeFileSync(runFilePath, runFileContent.replace("{TEST_RESULTS_PATH}", constants.TEST_RESULTS_PATH));
+			}
 
-            writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
-        }
-    }
+			writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
+		}
+	}
 
 	async function createCoverageConfig(): Promise<void> {
-        const coverageFilePath = path.join(flags.output, constants.COVERAGE_CONFIG_FILE);
-        // Do not overwrite the file copied from the custom configuration provided in the project root.
-        if (existsSync(coverageFilePath)) {
-            return;
-        }
+		const coverageFilePath = path.join(flags.output, constants.COVERAGE_CONFIG_FILE);
+		// Do not overwrite the file copied from the custom configuration provided in the project root.
+		if (existsSync(coverageFilePath)) {
+			return;
+		}
 
-        const thresholdsToken = flags["coverage-thresholds"];
+		const thresholdsToken = flags["coverage-thresholds"];
 		const perFile = flags["per-file"];
 		const covConfig: Record<string, any> = {
 			"all": true,
@@ -372,10 +382,7 @@ export default async function (flags: BuildCommandFlags) {
 			"include": [
 				"src"
 			],
-			"exclude": [
-				"**/*_helper.js",
-				"**/*.helper.[tj]s",
-			],
+			"exclude": helperIgnoredPatterns,
 			"reporter": (flags["coverage-reports"] || "text").split(",").map(x => x.trim()),
 			"report-dir": "coverage",
 			"per-file": !!perFile,
@@ -427,7 +434,7 @@ export default async function (flags: BuildCommandFlags) {
 			});
 		}
 
-        writeFileSync(coverageFilePath, JSON.stringify(covConfig, null, 2));
+		writeFileSync(coverageFilePath, JSON.stringify(covConfig, null, 2));
 	}
 
 }
