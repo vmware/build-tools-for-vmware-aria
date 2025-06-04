@@ -16,6 +16,7 @@
 import { existsSync, writeFileSync, readFileSync } from "fs";
 import { EOL } from "os";
 import { resolve } from "path";
+import { minimatch } from "minimatch";
 
 /** Cached .vroignore files per (resolved) path */
 const CACHE: Record<string, Record<VroIgnoreCategory, string[]>> = {};
@@ -128,6 +129,22 @@ export function readVroIgnorePatternsFromFile(path: string, ...categories: VroIg
 		.reduce((res, k) => [...res, ...(result[k])], []);
 	
 	return Array.from(new Set(resArr));
+}
+
+/**
+ * Checks if a file path matches any of the provided patterns
+ * @param filePath - file path (resolved)
+ * @param globPatterns - array of patterns to check. Any patterns starting with "!" will be excluded
+ *  (does not support "^" or multiple starting "!")
+ * @returns true if the path matches any of the glob patterns and there is no negative pattern that matches it
+ *          false otherwise
+ */
+export function filePathMatchesGlob(filePath: string, globPatterns: string[]): boolean {
+    const negatedPatterns = globPatterns.filter(p => p.startsWith("!"));
+    globPatterns = globPatterns.filter(p => !p.startsWith("!"));
+    const res = globPatterns.find(p => minimatch(filePath, p)) && !negatedPatterns.find(p => minimatch(filePath, p.substring(1)));
+    console.info(`Checking if '${filePath}' matches glob ${JSON.stringify(globPatterns)} -> ${res}`);
+    return res;
 }
 
 // HELPER FUNCTIONS
