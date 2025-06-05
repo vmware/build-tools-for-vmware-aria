@@ -11,9 +11,15 @@
 # Example vra workflow Catalog Item
 # catalog-item:
 #   - source__Sum two numbers
-# Example vra workflow Content SOurce
+# Example vra workflow Content Source
 # content-source:
 #   - source
+# Example Custom Resource
+# custom-resource:
+#   - CustomResource 1
+# Example Resource Action
+# resource-action:
+#   - resource action 1
 # Example Catalog Entitlement:
 # catalog-entitlement
 #  - content source entitlement 1
@@ -40,6 +46,8 @@
 #   resource-quota:
 #     - policy name 1
 #     - policy name 2
+# scenario:
+#   - scenarion name 1
 
 blueprint:
   - Small VM
@@ -69,3 +77,4 @@ resource-action:
 subscription:
   - vra8-db-mssql Subscription
 catalog-entitlement: []
+scenario: []
