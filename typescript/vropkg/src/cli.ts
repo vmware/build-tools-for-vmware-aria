@@ -25,6 +25,7 @@ import { serializeTree } from "./serialize/tree";
 import { serializeFlat } from "./serialize/flat";
 import { VroJsProjRealizer } from "./serialize/js";
 import { CleanDefinition } from "./cleaner/definitionCleaner";
+import { readVroIgnorePatternsFromFile } from "./vroIgnoreUtil";
 
 interface CliInputs extends cmdArgs.CommandLineOptions {
 	/** whether futher logging is in order */
@@ -176,9 +177,9 @@ function validate(input: CliInputs): boolean {
 		getLogger().warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
 	}
 	if (!input.vroIgnoreFile) {
-		input.vroIgnoreFile = path.join(__dirname.replace(/[\\]+/gm,"/"),".vroignore");
 		getLogger().warn("No vroIgnoreFile specified, defaulting to " + input.vroIgnoreFile);
 	}
+	input.vroIgnoreFile = path.resolve(__dirname, input.vroIgnoreFile?.replace(/"/gm,"") || ".vroignore").replace(/[\\]+/gm,"/");
 
 	return printHelp;
 }
@@ -226,7 +227,8 @@ async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.Vr
 			break;
 		}
 		case t.ProjectType.js: {
-			await new VroJsProjRealizer().realize(pkg, input.destPath);
+			const ignorePatterns = readVroIgnorePatternsFromFile(input.vroIgnoreFile, 'TestHelpers', 'Packaging');
+			await new VroJsProjRealizer().realize(pkg, input.destPath, ignorePatterns);
 			break;
 		}
 		default: {

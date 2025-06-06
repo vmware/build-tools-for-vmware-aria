@@ -133,12 +133,12 @@ async function parseTree(
 	description: string,
 	vroIgnoreFile: string
 ): Promise<t.VroPackageMetadata> {
-	const ignorePatterns = readVroIgnorePatternsFromFile(vroIgnoreFile); // TODO
+	const ignorePatterns = readVroIgnorePatternsFromFile(vroIgnoreFile, 'TestHelpers', 'Packaging'); // TODO
 	getLogger().info(`vropkg parse tree - ignored: ${JSON.stringify(ignorePatterns)}`);
     let elements = glob
 		.sync(
 			path.join(nativeFolderPath, "**", "*.element_info.xml").replace(/[\\/]+/gm, path.posix.sep)
-			// , {ignore: ignorePatterns}
+			, {ignore: ignorePatterns}
 		)
         .map(file => parseTreeElement(file)
         );
