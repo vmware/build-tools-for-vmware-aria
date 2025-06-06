@@ -162,7 +162,7 @@ const parseFlat = async (
 ): Promise<t.VroPackageMetadata> => {
     let tmp = path.join(destDir, "tmp");
     getLogger().info(`Extracting package ${nativePackagePath} to "${destDir}" folder...`);
-	const ignorePatterns = readVroIgnorePatternsFromFile(vroIgnoreFile); // TODO
+	const ignorePatterns = readVroIgnorePatternsFromFile(vroIgnoreFile); // TODO - nothing to filter from package!
 	getLogger().info(`vropkg parse flat - ignored: ${JSON.stringify(ignorePatterns)}`);
 
     await a.extract(nativePackagePath, tmp);
