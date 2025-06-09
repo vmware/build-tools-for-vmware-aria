@@ -29,6 +29,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractVroMojo {
 
+	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 

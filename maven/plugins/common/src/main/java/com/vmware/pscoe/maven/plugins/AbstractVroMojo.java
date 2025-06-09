@@ -22,7 +22,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-public abstract class AbstractVroMojo extends AbstractMojo{
+public abstract class AbstractVroMojo extends AbstractMojo {
 	/**
 	 * Project build directory.
 	 */
@@ -40,23 +40,27 @@ public abstract class AbstractVroMojo extends AbstractMojo{
 	@Parameter(property = "vroIgnoreFile", defaultValue = ".vroignore")
 	protected String vroIgnoreFile;
 
-    /**
-     * Converts the path argument so that it is platform independent.
-     *
-     * @param first first path argument.
-     * @param more next path argument.
-     *
-     * @return path argument that is platform independent.
-     */
-    protected String toPathArgument(String first, String... more) {
+	/**
+	 * Converts the path argument so that it is platform independent.
+	 *
+	 * @param first first path argument.
+	 * @param more next path argument.
+	 *
+	 * @return path argument that is platform independent.
+	 */
+	protected String toPathArgument(String first, String... more) {
 		String path = Paths.get(first, more)
 			.normalize()
 			.toString()
 			.replaceAll("[\\\\/]+", "/")
 			.replace("\"", "");
-        return path.indexOf(" ") >= 0 ? "\"" + path + "\"" : path;
-    }
+		return path.indexOf(" ") >= 0 ? "\"" + path + "\"" : path;
+	}
 
+	/**
+	 * Adds the vroIgnoreFile command argument to the given list of commands
+	 * @param vroCmd - list of commands
+	 */
 	protected void addVroIgnoreArgToCmd(List<String> vroCmd) {
 		String projectRoot = project.getBasedir().toPath().toString();
 		vroCmd.add("--vroIgnoreFile");

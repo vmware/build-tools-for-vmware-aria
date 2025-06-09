@@ -47,7 +47,7 @@ public class PackageMojo extends AbstractVroMojo {
 
 			File contentFile = new File(project.getBasedir().getPath() + File.separator + "content.yaml");
 			if (contentFile.exists()) {
-				getLog().debug("Adding to package: "+ contentFile.getName());
+				getLog().debug("Adding to package: " + contentFile.getName());
 				mgr.addTextFileToExistingZip(contentFile, Paths.get("."));
 			}
 

@@ -33,6 +33,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class VcdNgPackageMojo extends AbstractVroMojo {
 
+	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 		
@@ -58,7 +59,7 @@ public class VcdNgPackageMojo extends AbstractVroMojo {
 			.command(nodeBuildArgs)
 			.execute(getLog());
 
-		if(!java.nio.file.Files.exists(zipBundle)) {
+		if (!java.nio.file.Files.exists(zipBundle)) {
 			throw new RuntimeException(String.format(
 				"Unable to find packaged files %s. Please check npm output with -X option.", 
 				zipBundle.toString()));

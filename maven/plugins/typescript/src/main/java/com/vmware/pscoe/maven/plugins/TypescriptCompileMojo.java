@@ -48,6 +48,7 @@ public class TypescriptCompileMojo extends AbstractVroMojo {
 	@Component
 	private MavenProjectHelper projectHelper;
 
+	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		printFilesSelected();
 		getLog().debug("basedir " + project.getBasedir());
@@ -113,16 +114,8 @@ public class TypescriptCompileMojo extends AbstractVroMojo {
 	}
 
 	private String createFileList() {
-		String result = "";
-		{
-			result = this.filesChanged.stream().reduce((s, s2) -> {
-					if (s2 == null)
-						return s;
-					else return s + "," + s2;
-				}
-			).orElse("");
-		}
-		return result;
+		return this.filesChanged == null || this.filesChanged.isEmpty() ? ""
+			: this.filesChanged.stream().reduce((s, s2) -> s2 != null ? s + "," + s2 : s).orElse("");
 	}
 
 	private List<String> buildCompileCommand() {
