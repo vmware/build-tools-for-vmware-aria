@@ -19,6 +19,14 @@
 
 ## Features
 
+### *Shim for Array.prototype.includes*
+
+Added a shim for `Array.prototype.includes`, which is not natively supported by the current version of Rhino in VMware Aria.
+
+#### Relevant Documentation
+
+[MDN Array.prototype.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
+
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
