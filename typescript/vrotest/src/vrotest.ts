@@ -63,7 +63,8 @@ function parseCommandLine(): RootCommandFlags {
 			"output", "actions", "testHelpers", "tests", "maps", "resources", "configurations",
 			"dependencies", "helpers", "output", "projectRoot", "ts-src", "ts-namespace",
             "coverage-thresholds", "coverage-reports", "per-file", "testFrameworkPackage",
-            "testFrameworkVersion", "runner", "jasmineReportersVerion", "ansiColorsVersion"
+            "testFrameworkVersion", "runner", "jasmineReportersVerion", "ansiColorsVersion",
+            "vroIgnoreFile"
 		],
 		alias: {
 			"h": "help",
