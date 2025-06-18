@@ -17,6 +17,7 @@
     var arr = [1, 2, 3, 4, 5];
     VROES.Shims.arrayFind(arr, function (x) { return x > 3; });
     VROES.Shims.arrayFindIndex(arr, function (x) { return x > 3; });
+    VROES.Shims.arrayIncludes(arr, 4);
     // Set
     var set = new Set();
     set.add("key1");
