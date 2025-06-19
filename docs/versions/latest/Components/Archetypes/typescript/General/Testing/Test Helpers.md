@@ -2,7 +2,7 @@
 
 ## Overview
 
-Helpers are testing files. Naming convention is - filename.helper.ts . They are compiled, can be used in testing, no code coverage and will not be pushed to vRO. Mocks are defined in Helper files.
+Helpers are testing files. Naming convention is - filename.helper.ts, filename.helper.js, filename_helper.js. They are compiled, can be used in testing, no code coverage and will not be pushed to vRO. Mocks are defined in Helper files.
 
 ## Table Of Contents
 
