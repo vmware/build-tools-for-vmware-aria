@@ -18,17 +18,12 @@ import * as XmlBuilder from "xmlbuilder2";
 import * as packaging from "../packaging";
 import { VroPackageMetadata, VroNativeElement, VroActionData, VroActionParameter, Lang, VroScriptBundle } from "../types";
 import { exist, isDirectory } from "../util";
-import * as path from "path";
+import VroIgnore from "../util/VroIgnore"
 import { SAVE_OPTIONS, XML_OPTIONS } from "../constants";
 
 export class VroJsProjRealizer {
-    private lazy: boolean;
 
-    constructor(lazy: boolean = true) {
-        this.lazy = lazy;
-    }
-
-    public static realizeElement(element: VroNativeElement, nativeFolder: string) {
+    public static realizeElement(element: VroNativeElement, nativeFolder: string, ignorePatterns: string[]) {
         let categoryPath: Array<string> = element.categoryPath;
         let type: string = element.type || "UnknownType";
         let id: string = element.id;
@@ -48,16 +43,22 @@ export class VroJsProjRealizer {
             dirs = dirs.filter(x => x != null).map(x => x.replace(/\//g, "-"));
             dirs.unshift(nativeFolder);
             let basePath = Path.join.apply(null, dirs);
-            VroJsProjRealizer.writeJsFile(nativeFolder, basePath, name + ".js", id, description, tags, action);
-            if (action.bundle != null) {
-                VroJsProjRealizer.writeBundleFile(nativeFolder, basePath, action.bundle);
-            }
+			const resolvedFileName = Path.join(basePath, name + ".js").replace(/[\\]+/gm,"/");
+			if (!VroIgnore.filePathMatchesGlob(resolvedFileName, ignorePatterns)) {
+				VroJsProjRealizer.writeJsFile(nativeFolder, basePath, name + ".js", id, description, tags, action);
+				if (action.bundle != null) {
+					VroJsProjRealizer.writeBundleFile(nativeFolder, basePath, action.bundle);
+				}
+			}
         } else {
             let dirs: Array<string> = ["src", "main", "resources", type].concat(categoryPath);
             dirs = dirs.filter(x => x != null).map(x => x.replace(/\//g, "-"));
             dirs.unshift(nativeFolder);
             let basePath = Path.join.apply(null, dirs);
-            VroJsProjRealizer.writeOtherResource(basePath, name, element);
+			const resolvedFileName = Path.join(basePath, name).replace(/[\\]+/gm,"/");
+			if (!VroIgnore.filePathMatchesGlob(resolvedFileName, ignorePatterns)) {
+            	VroJsProjRealizer.writeOtherResource(basePath, name, element);
+			}
         }
     }
 
@@ -166,7 +167,7 @@ export class VroJsProjRealizer {
     }
 
     private static getScriptBundleDestination(nativeFolder: string, basePath: string, bundle: VroScriptBundle): string {
-        let dest: string = bundle?.projectPath == null ? Path.join.apply(null, [path.resolve(basePath), "bundle"]) : bundle.projectPath;
+        let dest: string = bundle?.projectPath == null ? Path.join.apply(null, [Path.resolve(basePath), "bundle"]) : bundle.projectPath;
         if (!Path.isAbsolute(dest)) {
             dest = Path.resolve(nativeFolder, dest);
         }
@@ -249,9 +250,9 @@ export class VroJsProjRealizer {
         FileSystem.writeFile(elementTagsPath, elementTagsXml.end(SAVE_OPTIONS));
     }
 
-    public async realize(pkg: VroPackageMetadata, nativeFolder: string): Promise<void> {
+    public async realize(pkg: VroPackageMetadata, nativeFolder: string, ignorePatterns: string[]): Promise<void> {
         pkg.elements.forEach(element => {
-            VroJsProjRealizer.realizeElement(element, nativeFolder);
+            VroJsProjRealizer.realizeElement(element, nativeFolder, ignorePatterns);
         })
     }
 }
