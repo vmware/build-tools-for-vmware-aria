@@ -28,6 +28,7 @@ export interface BuildCommandFlags {
 	dependencies: string;
 	helpers: string;
 	output: string;
+	vroIgnoreFile: string;
 	"ts-src": string;
 	"ts-namespace": string;
 	"coverage-thresholds": string;
