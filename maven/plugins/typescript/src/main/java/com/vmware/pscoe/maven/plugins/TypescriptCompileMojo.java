@@ -18,7 +18,6 @@ import com.google.common.io.Files;
 import com.google.gson.stream.JsonWriter;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -26,7 +25,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -39,12 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE)
-public class TypescriptCompileMojo extends AbstractMojo {
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
-
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
+public class TypescriptCompileMojo extends AbstractVroMojo {
 
 	@Parameter(required = false, property = "vrotsc.emitHeader", defaultValue = "false")
 	private boolean emitHeader;
@@ -55,6 +48,7 @@ public class TypescriptCompileMojo extends AbstractMojo {
 	@Component
 	private MavenProjectHelper projectHelper;
 
+	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		printFilesSelected();
 		getLog().debug("basedir " + project.getBasedir());
@@ -120,16 +114,8 @@ public class TypescriptCompileMojo extends AbstractMojo {
 	}
 
 	private String createFileList() {
-		String result = "";
-		{
-			result = this.filesChanged.stream().reduce((s, s2) -> {
-					if (s2 == null)
-						return s;
-					else return s + "," + s2;
-				}
-			).orElse("");
-		}
-		return result;
+		return this.filesChanged == null || this.filesChanged.isEmpty() ? ""
+			: this.filesChanged.stream().reduce((s, s2) -> s2 != null ? s + "," + s2 : s).orElse("");
 	}
 
 	private List<String> buildCompileCommand() {
@@ -166,6 +152,7 @@ public class TypescriptCompileMojo extends AbstractMojo {
 		cmd.add(Paths.get(TypescriptConstants.OUT_XML_SRC_PATH, "ResourceElement").toString());
 		cmd.add("--configsOut");
 		cmd.add(Paths.get(TypescriptConstants.OUT_XML_SRC_PATH, "ConfigurationElement").toString());
+		addVroIgnoreArgToCmd(cmd);
 		return cmd;
 	}
 }
