@@ -7,7 +7,7 @@ import { Out, Workflow } from "vrotsc-annotations";
 	description: "Sample workflow description",
 	attributes: {
 		field1: {
-			type: string,
+			type: "string",
 			bind: true,
 			value: "PSCoE/my-project/field1"
 		}

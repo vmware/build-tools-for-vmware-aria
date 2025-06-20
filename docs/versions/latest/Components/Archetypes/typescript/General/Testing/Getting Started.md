@@ -32,6 +32,10 @@ Label your test suites (describe blocks) and specs (it blocks) in a way that cle
 
 Test file contains one describe() block containing multiple describes with common functionality. Each describe() must have a meaningful name. Do not include logic or mocks in describe blocks.
 
+> ***Naming Convention***
+
+Testing file names must be of the type filename.test.ts, filename.test.js, filename_test.js  - see [Best Practices](./Code%20Coverage.md#best-practices)
+
 > ***beforeEach()***
 
 We can execute some pieces of code before execution of each spec. For example you can create new instances here. Don't use any logic in the describe() block, only in beforeEach(). Use "this" to share variables between it and before/after blocks.

@@ -41,6 +41,7 @@ interface ParsedArgs {
 	mapsOut?: string;
 	actionsNamespace?: string;
 	workflowsNamespace?: string;
+    vroIgnoreFile?: string;
 	_: string[];
 }
 
@@ -54,7 +55,8 @@ interface ParsedArgs {
 export function execute() {
 	const commandLine = <ParsedArgs>minimist(system.args, {
 		boolean: ["help", "version", "emitHeader"],
-		string: ["files", "output", "actionsOut", "workflowsOut", "policiesOut", "configsOut", "resourcesOut", "testsOut", "testHelpersOut", "typesOut", "mapsOut", "actionsNamespace", "workflowsNamespace", "project"],
+		string: ["files", "output", "actionsOut", "workflowsOut", "policiesOut", "configsOut", "resourcesOut", "testsOut",
+            "testHelpersOut", "typesOut", "mapsOut", "actionsNamespace", "workflowsNamespace", "project", "vroIgnoreFile"],
 		alias: {
 			"h": "help",
 			"v": "version",
@@ -93,8 +95,11 @@ export function execute() {
 			testHelpers: commandLine.testHelpersOut || system.joinPath(outDir, "testHelpers"),
 			types: commandLine.typesOut || system.joinPath(outDir, "types"),
 			maps: commandLine.mapsOut || system.joinPath(outDir, "maps"),
-		}
+		},
+        vroIgnoreFile: path.resolve(commandLine.vroIgnoreFile || ".vroignore").replace(/[\\]+/gm,"/")
 	};
+	const defaultVroIgnore = !commandLine.vroIgnoreFile ? "default " : "";
+	console.debug(`Using ${defaultVroIgnore}vRO ignore file: ${programOptions.vroIgnoreFile}`);
 	const writeFileCallback: WriteFileCallback = (fileName: string, data: string | Buffer) => {
 		let dirName = system.dirname(fileName);
 		system.ensureDir(dirName);
