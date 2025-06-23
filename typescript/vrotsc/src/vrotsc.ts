@@ -98,8 +98,6 @@ export function execute() {
 		},
         vroIgnoreFile: path.resolve(commandLine.vroIgnoreFile || ".vroignore").replace(/[\\]+/gm,"/")
 	};
-	const defaultVroIgnore = !commandLine.vroIgnoreFile ? "default " : "";
-	console.debug(`Using ${defaultVroIgnore}vRO ignore file: ${programOptions.vroIgnoreFile}`);
 	const writeFileCallback: WriteFileCallback = (fileName: string, data: string | Buffer) => {
 		let dirName = system.dirname(fileName);
 		system.ensureDir(dirName);

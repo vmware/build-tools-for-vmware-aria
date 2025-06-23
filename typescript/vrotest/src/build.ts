@@ -62,9 +62,7 @@ export default async function (flags: BuildCommandFlags) {
 	const configurations: Record<string, ConfigCategory> = {};
 	const resources: Record<string, ResourceCategory> = {};
 
-	const defaultVroIgnore = !flags.vroIgnoreFile ? "default " : "";
 	flags.vroIgnoreFile = path.resolve(flags.vroIgnoreFile || ".vroignore").replace(/[\\]+/gm,"/");
-	console.info(`Using ${defaultVroIgnore}vRO ignore file: ${flags.vroIgnoreFile}`);
     const vroIgnoreUtil = new VroIgnore(flags.vroIgnoreFile);
 	const testingIgnoredPatterns = vroIgnoreUtil.getPatterns('Testing', 'General'); // excluded from testing and coverage
 	const helperIgnoredPatterns = vroIgnoreUtil.getPatterns('TestHelpers'); // excluded from coverage

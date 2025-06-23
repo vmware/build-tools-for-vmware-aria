@@ -1,6 +1,6 @@
 /*-
  * #%L
- * vropkg
+ * vrotest
  * %%
  * Copyright (C) 2023 - 2025 VMware
  * %%
@@ -49,7 +49,7 @@ const VroIgnoreCategoriesArray = [ 'General' , 'Packaging' , 'Compilation' , 'Te
 const CACHE: Record<string, Record<VroIgnoreCategory, string[]>> = {};
 
 /** Allows to set log level */
-const log =  console.debug; // (msg)=>{} // console.log
+const log =  (msg: string) => {}; // avoids flooding console when called in a child process (stdout does not differentiate between console.debug and console.info)
 const { warn } = console;
 
 /**
