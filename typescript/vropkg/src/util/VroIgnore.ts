@@ -125,7 +125,7 @@ export default class VroIgnore {
 	/**
 	 * Reads the .vroignore-type file from the given path. If no such file exists, creates one with default content.
 	 * Does not throw on I/O operations. Caches the content for further use.
-	 * @returns {boolean} Record with keys - the categories from the file and values - patterns of ignored files per category.
+	 * @returns {Record<VroIgnoreCategory, string[]>} Record with keys - the categories from the file and values - patterns of ignored files per category.
 	 */
 	private getOrCreateDefault(): Record<VroIgnoreCategory, string[]> {
 		if (CACHE[this.resolvedPath]) {
