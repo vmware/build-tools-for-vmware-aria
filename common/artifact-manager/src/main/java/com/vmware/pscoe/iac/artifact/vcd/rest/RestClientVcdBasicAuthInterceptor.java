@@ -14,10 +14,10 @@
  */
 package com.vmware.pscoe.iac.artifact.vcd.rest;
 
-import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
-import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
-import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +32,10 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
+import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 public class RestClientVcdBasicAuthInterceptor extends RestClientRequestInterceptor<ConfigurationVcd> {
 
@@ -97,7 +97,9 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	public RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
 			String apiVersion) {
 		super(configuration, restTemplate);
-		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)) {
+		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)
+				&& Double.parseDouble(apiVersion) < Double.parseDouble("40")) {
+			System.out.println("Unsupported version ");
 			logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
 					+ ". Switching to using API version " + API_VERSION_37);
 			apiVersion = API_VERSION_37;

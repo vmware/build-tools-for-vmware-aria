@@ -18,9 +18,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.Option;
-import net.minidev.json.JSONArray;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,11 +30,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.gson.Gson;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
 import com.vmware.pscoe.iac.artifact.rest.model.sso.SsoEndpointDto;
+
+import net.minidev.json.JSONArray;
 
 public class VraSsoAuth {
 	/** CAFE_CLI_OWNER. */
@@ -70,7 +71,7 @@ public class VraSsoAuth {
 	/** REST Tempalate to be used for communicating with the REST API of the. */
 	private RestTemplate restTemplate;
 	/** Aria Automation version. */
-	private String serverVersion;
+	public String serverVersion;
 
 	/**
 	 * Create new instance of the class that is using the orivided configuraiton and
