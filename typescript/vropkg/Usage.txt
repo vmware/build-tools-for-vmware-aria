@@ -18,7 +18,8 @@ privateKeyPEM    pem     The string of PEM encoded private key, used to sign the
 certificatesPEM  pem     The string of PEM encoded certificate chine. The last certificate in this chain has to be the corresponding to the privateKeyPEM.
 keyPass          string  The password for decoding the private key specified in privateKeyPEM
 version          string  The package version. If -SNAPSHOT is provided, it will be truncated.
+vroIgnoreFile    path    The path to the file containing patterns of files ignored during  vRealize Orchestrator packaging and unit test coverage calculation. Default is `.vroignore`.
 
 Example:
-vropkg --in tree --out flat --srcPath "com.vmware.pscoe.toolchain-expand"  --destPath "target" --privateKeyPEM private_key.pem --certificatesPEM cert.pem --version '1.0.0' --packaging 'package' --artifactId 'proj-artifact' --groupId 'test.group' --keyPass VMware1!
+vropkg --in tree --out flat --srcPath "com.vmware.pscoe.toolchain-expand"  --destPath "target" --privateKeyPEM private_key.pem --certificatesPEM cert.pem --version '1.0.0' --packaging 'package' --artifactId 'proj-artifact' --groupId 'test.group' --keyPass VMware1! --vroIgnoreFile ".gitignore"
 vropkg --in flat --out tree --srcPath "com.vmware.pscoe.toolchain.package" --destPath "target" --privateKeyPEM private_key.pem --certificatesPEM cert.pem --version '1.0.0' --packaging 'package' --artifactId 'proj-artifact' --groupId 'test.group' --keyPass VMware1!

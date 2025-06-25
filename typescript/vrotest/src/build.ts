@@ -18,6 +18,7 @@ import * as util from "./util";
 import * as constants from "./constants";
 import { BuildCommandFlags } from "./types/build-command-flags";
 import { appendFileSync, CopySyncOptions, cp, cpSync, existsSync, lstatSync, mkdirSync, promises, readdirSync, readFileSync, writeFile, writeFileSync } from "fs";
+import VroIgnore from "./VroIgnore";
 
 type ModuleDescriptor = Record<string, string>;
 
@@ -61,6 +62,11 @@ export default async function (flags: BuildCommandFlags) {
 	const configurations: Record<string, ConfigCategory> = {};
 	const resources: Record<string, ResourceCategory> = {};
 
+	flags.vroIgnoreFile = path.resolve(flags.vroIgnoreFile || ".vroignore").replace(/[\\]+/gm,"/");
+    const vroIgnoreUtil = new VroIgnore(flags.vroIgnoreFile);
+	const testingIgnoredPatterns = vroIgnoreUtil.getPatterns('Testing', 'General'); // excluded from testing and coverage
+	const helperIgnoredPatterns = vroIgnoreUtil.getPatterns('TestHelpers'); // excluded from coverage
+
 	await createFolderStruct();
 	await copyContent();
 	await referenceSourceMaps();
@@ -93,7 +99,7 @@ export default async function (flags: BuildCommandFlags) {
             destination: string,
             copyOptions: CopySyncOptions
         ) => new Promise((resolve) => {
-            if (!existsSync(source)) {
+            if (!existsSync(source) || VroIgnore.filePathMatchesGlob(source, testingIgnoredPatterns)) {
                 return resolve(true);
             }
             cpSync(source, destination, copyOptions);
@@ -372,10 +378,7 @@ export default async function (flags: BuildCommandFlags) {
 			"include": [
 				"src"
 			],
-			"exclude": [
-				"**/*_helper.js",
-				"**/*.helper.[tj]s",
-			],
+			"exclude": helperIgnoredPatterns.concat(testingIgnoredPatterns),
 			"reporter": (flags["coverage-reports"] || "text").split(",").map(x => x.trim()),
 			"report-dir": "coverage",
 			"per-file": !!perFile,

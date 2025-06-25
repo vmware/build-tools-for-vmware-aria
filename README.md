@@ -16,7 +16,7 @@ Build Tools for VMware Aria provides development and release management tools fo
             <properties>
                 <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
                 <keystoreArtifactId>keystore.example</keystoreArtifactId>
-                <keystoreVersion>4.4.0</keystoreVersion>
+                <keystoreVersion>4.6.0</keystoreVersion>
                 <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
                 <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
                 <vroKeyPass>VMware1!</vroKeyPass>
