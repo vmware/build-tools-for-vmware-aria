@@ -14,13 +14,12 @@
  */
 import * as iconvlite from "iconv-lite";
 import * as characterEncoding from "charset-detector";
-import * as winston from "winston";
-import { WINSTON_CONFIGURATION } from "./constants";
+import getLogger from "./logger";
 
 export const decode = (buf: Buffer): string => {
 	const charEncondings = characterEncoding(buf);
 	if (charEncondings.length == 0) {
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info("Encoding not found. Using UTF-16");
+		getLogger().info("Encoding not found. Using UTF-16");
 		let str = "";
 		for (let i = 0; i < buf.length; i++) {
 			str += String.fromCharCode(buf[i]);

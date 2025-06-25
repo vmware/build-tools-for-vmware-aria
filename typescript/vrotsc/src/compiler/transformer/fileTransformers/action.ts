@@ -24,6 +24,7 @@ import { transformModuleSystem } from "../codeTransformers/modules";
 import { canCreateDeclarationForFile } from "../metaTransformers/declaration";
 import { checkActionForMisplacedClassDecorators } from "../helpers/checkActionForMisplacedClassDecorators";
 import { addHeaderComment } from "../helpers/source";
+import VroIgnore from "../../../utilities/VroIgnore";
 
 /**
  * Returns Action file transformer
@@ -50,6 +51,7 @@ function transform(file: FileDescriptor, context: FileTransformationContext, sou
 	const transformers = buildTransformers(context.emitHeader);
 	const [sourceText, typeDefText, mapText] = transformSourceFile(sourceFile, context, transformers);
 
+	// special case of .vroignore (kept as is):
 	const isHelper = file.relativeFilePath.match(/\.helper\.[tj]s$/);
 	const outputDir = isHelper ? context.outputs.testHelpers : context.outputs.actions;
 
@@ -62,12 +64,16 @@ function transform(file: FileDescriptor, context: FileTransformationContext, sou
 
 	context.writeFile(targetFilePath, sourceText);
 
-	if (typeDefText && canCreateDeclarationForFile(file, context.rootDir)) {
+	const ignoreUtil = new VroIgnore(context.vroIgnoreFile);
+	const isIgnored = ignoreUtil.shouldIgnore(resolvedPath, 'Compilation', 'General');
+	const isTestHelper = ignoreUtil.shouldIgnore(resolvedPath, 'TestHelpers');
+
+	if (typeDefText && !isIgnored && !isTestHelper && canCreateDeclarationForFile(file, context.rootDir)) {
 		const targetDtsFilePath = system.changeFileExt(system.resolvePath(context.outputs.types, file.relativeFilePath), ".d.ts");
 		context.writeFile(targetDtsFilePath, typeDefText);
 	}
 
-	if (mapText) {
+	if (mapText && !isIgnored) { // map files are created for test helpers
 		const targetMapFilePath = system.changeFileExt(system.resolvePath(context.outputs.maps, file.relativeFilePath), ".js.map");
 		context.writeFile(targetMapFilePath, mapText);
 	}

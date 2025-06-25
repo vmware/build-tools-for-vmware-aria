@@ -85,7 +85,8 @@ function generateBasePackage() {
 		'--artifactId', 'proj-artifact',
 		'--description', '',
 		'--groupId', 'test.group',
-		'--keyPass', "VMware1!"
+		'--keyPass', "VMware1!",
+		'--vroIgnoreFile', '.vroignore'
 	]
 
 	execSync( options.join( " " ), {
@@ -110,7 +111,8 @@ function generateAdditionalPackage() {
 		'--artifactId', 'proj-artifact',
 		'--description', '',
 		'--groupId', 'custom.forms',
-		'--keyPass', "VMware1!"
+		'--keyPass', "VMware1!",
+		'--vroIgnoreFile', '".vroignore"'
 	]
 
 	execSync( options.join( " " ), {
