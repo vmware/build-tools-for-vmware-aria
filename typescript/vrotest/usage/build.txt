@@ -36,5 +36,6 @@ Options:
                                   * lcov
                                   * lcovonly
   --per-file                    Code coverage per file bases. Set custom --coverage-thresholds, if any file in the project drops below those thresholds, the build will fail
+  --vroIgnoreFile               Path to a file containing glob patterns to be excluded from test coverage and packaging.
 Examples:
-$ vrotest build --actions src --testHelpers src --tests test --output target/vro-test --coverage-thresholds 50:60:all,65:70:statements --coverage-reports text,html,lcovonly
+$ vrotest build --actions src --testHelpers src --tests test --output target/vro-test --coverage-thresholds 50:60:all,65:70:statements --coverage-reports text,html,lcovonly --vroIgnoreFile=.vroIgnore
