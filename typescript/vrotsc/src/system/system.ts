@@ -16,6 +16,7 @@ import * as os from "os";
 import { basename, dirname, extname, join, normalize, relative, resolve, sep } from "path";
 import { statSync, readFileSync, removeSync, readdirSync, writeFileSync, ensureDirSync, emptyDirSync } from "fs-extra";
 import { v3 as _uuid } from "uuid";
+import VroIgnore from "../utilities/VroIgnore";
 
 /**
 * This class is a wrapper around Node.js file system and path modules.
@@ -82,15 +83,18 @@ export const system = {
 	deleteFile(path: string): void {
 		removeSync(path);
 	},
-	getFiles(path: string, recursive?: boolean): string[] {
+	getFiles(path: string, recursive: boolean = false, ignorePatterns?: string[]): string[] {
 		let files = readdirSync(path, { withFileTypes: true })
 			.filter(ent => !ent.isDirectory())
 			.filter(ent => ent.name[0] !== ".")
 			.map(ent => system.joinPath(path, ent.name));
 
+		if (ignorePatterns?.length) {
+			files = files.filter(filePath => !VroIgnore.filePathMatchesGlob(filePath, ignorePatterns))
+		}
 		if (recursive) {
 			system.getDirectories(path).forEach(dirName => {
-				files = files.concat(system.getFiles(system.joinPath(path, dirName), true));
+				files = files.concat(system.getFiles(system.joinPath(path, dirName), true, ignorePatterns));
 			});
 		}
 		return files;
