@@ -15,6 +15,7 @@
 
 	<properties>
 		<main.basedir>${project.baseUri}../../../</main.basedir>
+		<goal.prefix>common</goal.prefix>
 	</properties>
 
 	<dependencies>
