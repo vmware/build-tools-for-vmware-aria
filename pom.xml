@@ -8,10 +8,19 @@
 	<version>${revision}</version>
 
 	<modules>
-		<!-- <module>common/o11n/project</module>
+		<module>common/keystore-example</module>
+		<module>maven/npmlib</module>
+		<module>maven/base-package</module>
+		<module>maven/typescript-project-all</module>
+		<module>packages</module>
+		<module>maven/repository</module>
+
+
+
+		<module>common/o11n/project</module>
 		<module>common/artifact-manager</module>
 		<module>maven/archetypes</module>
-		<module>maven/plugins</module> -->
+		<module>maven/plugins</module>
 		<module>maven/npmconv</module>
 		<module>maven/npmlib</module>
 		<module>maven/assembly</module>
