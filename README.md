@@ -29,14 +29,9 @@ Build Tools for VMware Aria provides development and release management tools fo
     ```
 2. Execute:
     ```shell
-    mvn clean install -f pom.xml -pl .
-    mvn clean install -f common/keystore-example/pom.xml
-    mvn clean install -f maven/npmlib/pom.xml
-    mvn clean install -f pom.xml
-    mvn clean install -f maven/base-package/pom.xml
-    mvn clean install -f packages/pom.xml
-    mvn clean install -f maven/typescript-project-all/pom.xml
-    mvn clean install -f maven/repository/pom.xml
+    mvn clean install -D build.plugins
+    mvn clean install -D build.tools
+    mvn clean package -D build.repository
     ```
 
 ## Package dependencies
