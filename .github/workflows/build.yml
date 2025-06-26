@@ -112,6 +112,25 @@ jobs:
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/keystore-example/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml   
       - name: Build 'npmlib'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/npmlib/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+      
+      
+      - name: Build 'o11n'
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/o11n/project/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+      
+      - name: Build 'common/artifact-manager'
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f common/artifact-manager/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml      
+
+      - name: Build 'maven/archetypes'
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/archetypes/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml            
+
+      - name: Build 'common plugin'
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/plugins/common/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml      
+      
+      - name: Build 'plugins'
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f -DgeneratePluginRegistry maven/plugins/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml      
+
+
+
       - name: Build 'iac'
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -DgeneratePluginRegistry -f pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       - name: Build 'base-package'

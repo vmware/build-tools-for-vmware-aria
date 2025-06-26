@@ -8,10 +8,10 @@
 	<version>${revision}</version>
 
 	<modules>
-		<module>common/o11n/project</module>
+		<!-- <module>common/o11n/project</module>
 		<module>common/artifact-manager</module>
 		<module>maven/archetypes</module>
-		<module>maven/plugins</module>
+		<module>maven/plugins</module> -->
 		<module>maven/npmconv</module>
 		<module>maven/npmlib</module>
 		<module>maven/assembly</module>
