@@ -127,7 +127,7 @@ jobs:
         run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -f maven/plugins/common/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml      
       
       - name: Build 'plugins'
-        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -DgeneratePluginRegistry -f maven/plugins/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml      
+        run: mvn clean ${{ env.MVN_BUILD_COMMAND }} -DgeneratePluginRegistry -U -f maven/plugins/pom.xml --batch-mode -Dgpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml      
 
 
 
