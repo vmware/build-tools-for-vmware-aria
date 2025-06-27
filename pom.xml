@@ -167,10 +167,10 @@
 
 	<profiles>
 		<profile>
-			<id>build.plugins</id>
+			<id>modules.plugins</id>
 			<activation>
 				<property>
-					<name>build.plugins</name>
+					<name>modules.plugins</name>
 				</property>
 			</activation>
 			<modules>
@@ -180,10 +180,10 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>build.tools</id>
+			<id>modules.tools</id>
 			<activation>
 				<property>
-					<name>build.tools</name>
+					<name>modules.tools</name>
 				</property>
 			</activation>
 			<modules>
@@ -202,10 +202,10 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>build.repository</id>
+			<id>modules.repository</id>
 			<activation>
 				<property>
-					<name>build.repository</name>
+					<name>modules.repository</name>
 				</property>
 			</activation>
 			<modules>
