@@ -77,7 +77,6 @@ jobs:
           sed -i "s/{{ OSSRH_PASSWORD }}/${{ secrets.OSSRH_PASSWORD }}/g" .m2/settings.xml
 
       - name: Import GPG Key
-        if: ${{ github.ref == 'refs/heads/main' }}
         uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -87,12 +86,11 @@ jobs:
         run: echo "GPG_PASSPHRASE=''" >> $GITHUB_ENV
 
       - name: Set env GPG_PASSPHRASE if main
-        if: ${{ github.ref == 'refs/heads/main' }}
         run: echo "GPG_PASSPHRASE=${{ secrets.GPG_PASSPHRASE }}" >> $GITHUB_ENV
 
       - name: Set MVN_BUILD_COMMAND
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ matrix.java }}" = "17" ]; then
+          if [ "${{ matrix.java }}" = "17" ]; then
             MVN_BUILD_COMMAND="deploy"
           else
             MVN_BUILD_COMMAND="install"
