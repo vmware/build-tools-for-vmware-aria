@@ -7,19 +7,7 @@
 	<packaging>pom</packaging>
 	<version>${revision}</version>
 
-	<modules>
-		<module>common/o11n/project</module>
-		<module>common/artifact-manager</module>
-		<module>maven/archetypes</module>
-		<module>maven/plugins</module>
-		<module>maven/npmconv</module>
-		<module>maven/npmlib</module>
-		<module>maven/assembly</module>
-		<module>maven/polyglot</module>
-		<module>vro-types</module>
-		<module>typescript</module>
-		<module>package-installer</module>
-	</modules>
+	<!-- All <modules> are in the <profiles> section -->
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
@@ -178,6 +166,52 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>build.plugins</id>
+			<activation>
+				<property>
+					<name>build.plugins</name>
+				</property>
+			</activation>
+			<modules>
+				<module>common/o11n/project</module>
+				<module>common/artifact-manager</module>
+				<module>maven/plugins</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>build.tools</id>
+			<activation>
+				<property>
+					<name>build.tools</name>
+				</property>
+			</activation>
+			<modules>
+				<module>common/keystore-example</module>
+				<module>maven/npmlib</module>
+				<module>maven/archetypes</module>
+				<module>maven/npmconv</module>
+				<module>maven/assembly</module>
+				<module>maven/polyglot</module>
+				<module>vro-types</module>
+				<module>typescript</module>
+				<module>package-installer</module>
+				<module>maven/base-package</module>
+				<module>packages</module>
+				<module>maven/typescript-project-all</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>build.repository</id>
+			<activation>
+				<property>
+					<name>build.repository</name>
+				</property>
+			</activation>
+			<modules>
+				<module>maven/repository</module>
+			</modules>
+		</profile>
 		<profile>
 			<!-- Enable maven-gpg-plugin and maven-source-plugin with -Dgpg.passphrase=XXX -->
 			<id>release-sign-source</id>
