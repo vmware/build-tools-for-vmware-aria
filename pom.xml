@@ -276,4 +276,11 @@
             </build>
         </profile>
 	</profiles>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>artifactory-c-01a-snapshots</name>
+			<url>${snapshotRepositoryUrl}</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
