@@ -167,46 +167,6 @@
 
 	<profiles>
 		<profile>
-			<id>release-deploy</id>
-			<activation>
-				<property>
-					<name>performReleaseDeploy</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.central</groupId>
-						<artifactId>central-publishing-maven-plugin</artifactId>
-						<version>0.8.0</version>
-						<extensions>true</extensions>
-						<configuration>
-							<publishingServerId>central</publishingServerId>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>snapshot-deploy</id>
-			<activation>
-				<property>
-					<name>performSnapshotDeploy</name>
-				</property>
-			</activation>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>snapshots</id>
-					<name>artifactory-c-01a-snapshots</name>
-					<url>${snapshotRepositoryUrl}</url>
-				</snapshotRepository>
-			</distributionManagement>
-		</profile>
-
-
-
-		<profile>
 			<id>build.plugins</id>
 			<activation>
 				<property>
@@ -292,5 +252,28 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+            <id>use-central-publishing-maven-plugin</id>
+            <activation>
+                <property>
+                    <name>project.version</name>
+                    <value>/^(?!.-SNAPSHOT).$/</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.8.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+							<deploymentName>build-tools-for-vmware-aria-${project.version}</deploymentName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
 </project>
