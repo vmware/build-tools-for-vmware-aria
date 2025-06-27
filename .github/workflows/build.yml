@@ -101,7 +101,7 @@ jobs:
 
       - name: Set MVN_DEPLOY_PLUGIN
         run: |
-          if [contains(${{ env.IAC_VERSION }}, '-SNAPSHOT') ]; then
+          if [[ ${{ env.IAC_VERSION }} == *"-SNAPSHOT"* ]]; then
             MVN_DEPLOY_PLUGIN="performSnapshotDeploy"
           else
             MVN_DEPLOY_PLUGIN="performReleaseDeploy"
