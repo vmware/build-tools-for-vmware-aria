@@ -162,20 +162,50 @@
 					<prePhase>install</prePhase>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.sonatype.central</groupId>
-				<artifactId>central-publishing-maven-plugin</artifactId>
-				<version>0.8.0</version>
-				<extensions>true</extensions>
-				<configuration>
-					<publishingServerId>central</publishingServerId>
-					<centralSnapshotsUrl>https://central.sonatype.com/repository/maven-snapshots</centralSnapshotsUrl>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
+		<profile>
+			<id>snapshot-deploy</id>
+			<activation>
+				<property>
+					<name>performSnapshotDeploy</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>0.8.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>release-deploy</id>
+			<activation>
+				<property>
+					<name>performReleaseDeploy</name>
+				</property>
+			</activation>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<name>artifactory-c-01a-snapshots</name>
+					<url>${snapshotRepositoryUrl}</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+
+
+
 		<profile>
 			<id>build.plugins</id>
 			<activation>
@@ -186,7 +216,6 @@
 			<modules>
 				<module>common/o11n/project</module>
 				<module>common/artifact-manager</module>
-				<module>maven/plugins/common</module>
 				<module>maven/plugins</module>
 			</modules>
 		</profile>
@@ -264,12 +293,4 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>artifactory-c-01a-snapshots</name>
-			<url>${snapshotRepositoryUrl}</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
