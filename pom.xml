@@ -257,7 +257,7 @@
             <activation>
                 <property>
                     <name>project.version</name>
-                    <value>/^(?!.-SNAPSHOT).$/</value>
+					<value>/^(?!.*-SNAPSHOT).*$/</value>
                 </property>
             </activation>
             <build>
