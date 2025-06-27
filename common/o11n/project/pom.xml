@@ -12,6 +12,7 @@
 
 	<groupId>com.vmware.pscoe.o11n</groupId>
 	<artifactId>o11n-project</artifactId>
+	<name>${project.artifactId}</name>
 
 	<properties>
 		<main.basedir>${project.baseUri}../../../</main.basedir>

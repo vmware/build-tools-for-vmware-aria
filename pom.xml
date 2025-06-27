@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe</groupId>
 	<artifactId>iac</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<version>${revision}</version>
 
@@ -41,7 +42,6 @@
 		<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main</url>
 	</scm>
 
-	<name>Build Tools for VMware Aria</name>
 	<description>
 		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions
 		based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and 
@@ -181,7 +181,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<publishingServerId>central</publishingServerId>
-					<autoPublish>true</autoPublish>
 				</configuration>
 			</plugin>
 		</plugins>

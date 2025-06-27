@@ -13,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.o11n</groupId>
 	<artifactId>base-packages-parent</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<modules>
 		<module>base-package</module>

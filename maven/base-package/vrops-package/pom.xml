@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.vmware.pscoe.vrops</groupId>
 	<artifactId>vrops-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<pluginManagement>

@@ -11,6 +11,7 @@
 	</parent>
 
 	<artifactId>typescript-project</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>

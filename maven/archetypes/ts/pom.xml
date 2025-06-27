@@ -9,6 +9,7 @@
 
 	<groupId>com.vmware.pscoe.o11n.archetypes</groupId>
 	<artifactId>package-typescript-archetype</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>maven-archetype</packaging>
 	<properties>
 		<main.basedir>${project.baseUri}../../../</main.basedir>
