@@ -107,6 +107,7 @@ jobs:
             MVN_DEPLOY_PLUGIN="performReleaseDeploy"
           fi
           echo "MVN_DEPLOY_PLUGIN is $MVN_DEPLOY_PLUGIN"
+          echo "MVN_DEPLOY_PLUGIN=$MVN_DEPLOY_PLUGIN" >> $GITHUB_ENV
  
       - name: Cache Maven dependencies
         uses: actions/cache@v4
