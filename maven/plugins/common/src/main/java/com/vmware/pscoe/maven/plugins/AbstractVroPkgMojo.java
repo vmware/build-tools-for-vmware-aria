@@ -20,21 +20,14 @@
 package com.vmware.pscoe.maven.plugins;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public abstract class AbstractVroPkgMojo extends AbstractMojo {
-	/**
-	 * Keeps a handle to the pom.xml.
-	 */
-	@Parameter(defaultValue = "${project}")
-	protected MavenProject project;
+public abstract class AbstractVroPkgMojo extends AbstractVroMojo {
 
 	/**
 	* private key to keystore.
@@ -49,7 +42,7 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 	private String keystoreCert;
 
 	/**
-	 *  password to keystore.
+	 * password to keystore.
 	 */
 	@Parameter(property = "vroKeyPass", defaultValue = "")
 	private String keystorePassword;
@@ -145,6 +138,7 @@ public abstract class AbstractVroPkgMojo extends AbstractMojo {
 		vroPkgCmd.add(description);
 		vroPkgCmd.add("--groupId");
 		vroPkgCmd.add(project.getGroupId());
+		addVroIgnoreArgToCmd(vroPkgCmd);
 
 		new ProcessExecutor().name("Running vropkg...").directory(project.getBasedir()).throwOnError(true)
 				.command(vroPkgCmd).execute(getLog());

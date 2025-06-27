@@ -25,13 +25,10 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import com.vmware.pscoe.iac.artifact.PackageManager;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.VropsPackageStore;
@@ -44,7 +41,7 @@ import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDe
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
-public class PackageMojo extends AbstractMojo {
+public class PackageMojo extends AbstractVroMojo {
 	/**
 	 * Policy metadata file name.
 	 */
@@ -77,16 +74,6 @@ public class PackageMojo extends AbstractMojo {
 	 * Content yaml file name.
 	 */
 	private static final String CONTENT_YAML_FILE_NAME = "content.yaml";
-	/**
-	 * Project build directory.
-	 */
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
-	/**
-	 * Project handle.
-	 */
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
 
 	/**
 	 * Execute the vROPs package MoJo, that will generate the target bundle with the assets defined in the content.yaml file.

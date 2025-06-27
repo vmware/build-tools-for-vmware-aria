@@ -15,10 +15,11 @@
 import * as glob from "glob";
 import * as path from "path";
 import * as t from "../types";
-import * as winston from "winston";
+import getLogger from "../logger";
 import { read, stringToCategory, xml, xmlGet, xmlToAction, xmlChildNamed, xmlToTag, getWorkflowItems } from "./util";
 import { exist } from "../util";
-import { FORM_SUFFIX, RESOURCE_ELEMENT_DEFAULT_VERSION, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, WINSTON_CONFIGURATION, WORKFLOW_ITEM_INPUT_TYPE } from "../constants";
+import { FORM_SUFFIX, RESOURCE_ELEMENT_DEFAULT_VERSION, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE } from "../constants";
+import VroIgnore from "../util/VroIgnore";
 
 function parseTreeElement(elementInfoPath: string): t.VroNativeElement {
     let info = xml(read(elementInfoPath));
@@ -95,7 +96,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
     const formFileName = path.join(formFileDir, `${workflowName}${FORM_SUFFIX}`).replace(/[\\/]+/gm, path.posix.sep)
     // Input form is only applicable for vRO workflows
     if (exist(formFileName)) {
-        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form '${workflowName}' from file ${formFileName}`);
+        getLogger().info(`Parsing form '${workflowName}' from file ${formFileName}`);
         form = {
             data: JSON.parse(read(formFileName)),
             name: workflowName
@@ -113,7 +114,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
         if (!formItem) {
             return;
         }
-        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${item}' from file '${formItemFileName}'`);
+        getLogger().info(`Parsing form item '${item}' from file '${formItemFileName}'`);
         formItems.push({ name: item, data: formItem });
     });
 
@@ -123,9 +124,11 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
     };
 }
 
-async function parseTree(nativeFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, description: string): Promise<t.VroPackageMetadata> {
+async function parseTree(nativeFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, description: string, vroIgnoreFile: string): Promise<t.VroPackageMetadata> {
+	const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'TestHelpers', 'Packaging');
+	getLogger().debug(`vropkg parse tree - ignored: ${JSON.stringify(ignorePatterns)}`);
     let elements = glob
-		.sync(path.join(nativeFolderPath, "**", "*.element_info.xml").replace(/[\\/]+/gm, path.posix.sep))
+		.sync(path.join(nativeFolderPath, "**", "*.element_info.xml").replace(/[\\/]+/gm, path.posix.sep), {ignore: ignorePatterns})
         .map(file => parseTreeElement(file)
         );
 

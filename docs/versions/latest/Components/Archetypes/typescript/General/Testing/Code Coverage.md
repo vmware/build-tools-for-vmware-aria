@@ -95,15 +95,13 @@ During testing, you will be able to use these files by specifying them normally 
 > **Naming convention**
 
 ```txt
-"**/?(*.)+(spec|test).[j|t]s(x)"
+"**/?(*.)+(test).[j|t]s"
  
 //example names for javascript file
 MyTests.test.js
-MyTests.spec.js
  
 //example names for typescript file
 MyTest.test.ts
-MyTest.spec.ts
 ```
 
 ### Limitations

@@ -18,12 +18,9 @@ import com.vmware.pscoe.iac.artifact.PackageManager;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 
@@ -35,13 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
-public class PackageMojo extends AbstractMojo {
-
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
-
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
+public class PackageMojo extends AbstractVroMojo {
 
 	/**
 	 * The function is extended with support for multiple ABX bundles in a single
