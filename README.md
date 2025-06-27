@@ -29,9 +29,9 @@ Build Tools for VMware Aria provides development and release management tools fo
     ```
 2. Execute:
     ```shell
-    mvn clean install -D build.plugins
-    mvn clean install -D build.tools
-    mvn clean package -D build.repository
+    mvn clean install -D modules.plugins
+    mvn clean install -D modules.tools
+    mvn clean package -D modules.repository
     ```
 
 ## Package dependencies
