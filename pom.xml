@@ -269,6 +269,8 @@
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
+							<autoPublish>true</autoPublish>
+							<waitUntil>published</waitUntil>
 							<deploymentName>build-tools-for-vmware-aria-${project.version}</deploymentName>
                         </configuration>
                     </plugin>
