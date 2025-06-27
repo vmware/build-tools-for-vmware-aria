@@ -186,6 +186,7 @@
 			<modules>
 				<module>common/o11n/project</module>
 				<module>common/artifact-manager</module>
+				<module>maven/plugins/common</module>
 				<module>maven/plugins</module>
 			</modules>
 		</profile>
