@@ -253,6 +253,9 @@
 			</build>
 		</profile>
 		<profile>
+			<!-- This plugin needs to be activated only during release. There is a bug that fails
+			snapshot deployments if they contain multimodule builds with mixed type of maven-plugin and
+			another type making the build fail because of goal prefix not populated in maven metadata file -->
             <id>use-central-publishing-maven-plugin</id>
             <activation>
                 <property>
