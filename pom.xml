@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe</groupId>
 	<artifactId>iac</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<version>${revision}</version>
 
@@ -29,7 +30,6 @@
 		<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main</url>
 	</scm>
 
-	<name>Build Tools for VMware Aria</name>
 	<description>
 		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions
 		based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and 
@@ -167,10 +167,10 @@
 
 	<profiles>
 		<profile>
-			<id>build.plugins</id>
+			<id>modules.plugins</id>
 			<activation>
 				<property>
-					<name>build.plugins</name>
+					<name>modules.plugins</name>
 				</property>
 			</activation>
 			<modules>
@@ -180,10 +180,10 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>build.tools</id>
+			<id>modules.tools</id>
 			<activation>
 				<property>
-					<name>build.tools</name>
+					<name>modules.tools</name>
 				</property>
 			</activation>
 			<modules>
@@ -202,10 +202,10 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>build.repository</id>
+			<id>modules.repository</id>
 			<activation>
 				<property>
-					<name>build.repository</name>
+					<name>modules.repository</name>
 				</property>
 			</activation>
 			<modules>
@@ -252,14 +252,36 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<!-- This plugin needs to be activated only during release. There is a bug that fails
+			snapshot deployments if they contain multimodule builds with mixed type of maven-plugin and
+			another type making the build fail because of goal prefix not populated in maven metadata file -->
+            <id>use-central-publishing-maven-plugin</id>
+            <activation>
+                <property>
+                    <name>project.version</name>
+					<value>/^(?!.*-SNAPSHOT).*$/</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.8.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+							<autoPublish>true</autoPublish>
+							<waitUntil>published</waitUntil>
+							<deploymentName>build-tools-for-vmware-aria-${project.version}</deploymentName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
-
 	<distributionManagement>
-		<repository>
-			<id>central</id>
-			<name>ossgh</name>
-			<url>${releaseRepositoryUrl}</url>
-		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>artifactory-c-01a-snapshots</name>

@@ -10,6 +10,7 @@
 
 	<groupId>com.vmware.pscoe.o11n</groupId>
 	<artifactId>exec</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>package</packaging>
 
 	<licenses>

@@ -13,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.iac</groupId>
 	<artifactId>artifact-manager</artifactId>
+	<name>${project.artifactId}</name>
 
 	<properties>
 		<main.basedir>${project.baseUri}../../</main.basedir>

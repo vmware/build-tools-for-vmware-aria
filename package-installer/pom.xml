@@ -11,6 +11,7 @@
 	</parent>
 
 	<groupId>com.vmware.pscoe.iac</groupId>
+	<name>${project.artifactId}</name>
 	<artifactId>installer</artifactId>
 
 	<properties>

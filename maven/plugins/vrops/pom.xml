@@ -9,6 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>vrops-package-maven-plugin</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>maven-plugin</packaging>
 
     <properties>
