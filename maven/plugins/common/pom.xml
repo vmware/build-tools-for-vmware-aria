@@ -11,6 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe.maven.plugins</groupId>
 	<artifactId>common</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>jar</packaging>
 
 	<properties>

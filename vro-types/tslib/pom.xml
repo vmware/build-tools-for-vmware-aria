@@ -11,6 +11,7 @@
 
 	<groupId>com.vmware.pscoe.ts.types</groupId>
 	<artifactId>tslib</artifactId>
+	<name>${project.artifactId}</name>
 
 	<properties>
 		<attachFileName>${project.artifactId}-${project.version}.tgz</attachFileName>

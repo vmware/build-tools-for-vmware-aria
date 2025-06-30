@@ -18,26 +18,17 @@ import com.vmware.pscoe.iac.artifact.PackageManager;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
-public class PackageMojo extends AbstractMojo {
-
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
-
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
+public class PackageMojo extends AbstractVroMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -56,7 +47,7 @@ public class PackageMojo extends AbstractMojo {
 
 			File contentFile = new File(project.getBasedir().getPath() + File.separator + "content.yaml");
 			if (contentFile.exists()) {
-				getLog().debug("Adding to package: "+ contentFile.getName());
+				getLog().debug("Adding to package: " + contentFile.getName());
 				mgr.addTextFileToExistingZip(contentFile, Paths.get("."));
 			}
 

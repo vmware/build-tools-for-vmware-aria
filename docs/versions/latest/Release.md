@@ -26,16 +26,6 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### *Support of notification scenarios by vrang*
-
-Added support for Service broker Notification scenarios to vrang projects.
-New scenarios: category added to content.yaml supporting options for none, all, or listed scenarios by name.
-Archetype was changed to contain the new category. Use vra-ng:pull to read scenarios to be customized.
-Packaging of scenarios is supported as well as the following operations:
-- vra-ng:pull - read scenarios from vRA. Reading customized scenario if available, default configuration otherwise.
-- vrealize:push - create or update scenario customization.
-- vrealize:clean - delete scenario customization and reset to the default.
-
 ## Improvements
 
 [//]: # (### *Improvement Name* )

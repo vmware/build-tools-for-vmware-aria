@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.vmware.pscoe.vrli</groupId>
 	<artifactId>vrli-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>

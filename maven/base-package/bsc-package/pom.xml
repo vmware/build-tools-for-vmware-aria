@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.vmware.pscoe.bsc</groupId>
 	<artifactId>bsc-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>

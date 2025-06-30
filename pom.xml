@@ -4,26 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe</groupId>
 	<artifactId>iac</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<version>${revision}</version>
 
-	<modules>
-		<module>common/o11n/project</module>
-		<module>common/artifact-manager</module>
-		<module>maven/archetypes</module>
-		<module>maven/plugins</module>
-		<module>maven/npmconv</module>
-		<module>maven/npmlib</module>
-		<module>maven/assembly</module>
-		<module>maven/polyglot</module>
-		<module>vro-types</module>
-		<module>typescript</module>
-		<module>package-installer</module>
-	</modules>
+	<!-- All <modules> are in the <profiles> section -->
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
-		<revision>4.6.1-SNAPSHOT</revision>
+		<revision>4.7.1-SNAPSHOT</revision>
 		<java.version>17</java.version>
 	</properties>
 
@@ -41,7 +30,6 @@
 		<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main</url>
 	</scm>
 
-	<name>Build Tools for VMware Aria</name>
 	<description>
 		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions
 		based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and 
@@ -179,6 +167,52 @@
 
 	<profiles>
 		<profile>
+			<id>modules.plugins</id>
+			<activation>
+				<property>
+					<name>modules.plugins</name>
+				</property>
+			</activation>
+			<modules>
+				<module>common/o11n/project</module>
+				<module>common/artifact-manager</module>
+				<module>maven/plugins</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>modules.tools</id>
+			<activation>
+				<property>
+					<name>modules.tools</name>
+				</property>
+			</activation>
+			<modules>
+				<module>common/keystore-example</module>
+				<module>maven/npmlib</module>
+				<module>maven/archetypes</module>
+				<module>maven/npmconv</module>
+				<module>maven/assembly</module>
+				<module>maven/polyglot</module>
+				<module>vro-types</module>
+				<module>typescript</module>
+				<module>package-installer</module>
+				<module>maven/base-package</module>
+				<module>packages</module>
+				<module>maven/typescript-project-all</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>modules.repository</id>
+			<activation>
+				<property>
+					<name>modules.repository</name>
+				</property>
+			</activation>
+			<modules>
+				<module>maven/repository</module>
+			</modules>
+		</profile>
+		<profile>
 			<!-- Enable maven-gpg-plugin and maven-source-plugin with -Dgpg.passphrase=XXX -->
 			<id>release-sign-source</id>
 			<activation>
@@ -218,14 +252,37 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<!-- This plugin needs to be activated only during release. There is a bug that fails
+			snapshot deployments if they contain multimodule builds with mixed type of maven-plugin and
+			another type making the build fail because of goal prefix not populated in maven metadata file -->
+            <id>use-central-publishing-maven-plugin</id>
+            <activation>
+                <property>
+                    <name>project.version</name>
+					<value>/^(?!.*-SNAPSHOT).*$/</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.8.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+							<autoPublish>true</autoPublish>
+							<waitUntil>published</waitUntil>
+							<waitMaxTime>21600</waitMaxTime>
+							<deploymentName>build-tools-for-vmware-aria-${project.version}</deploymentName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
-
 	<distributionManagement>
-		<repository>
-			<id>central</id>
-			<name>ossgh</name>
-			<url>${releaseRepositoryUrl}</url>
-		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>artifactory-c-01a-snapshots</name>

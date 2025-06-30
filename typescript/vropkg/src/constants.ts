@@ -37,13 +37,3 @@ export const XML_OPTIONS = {
     encoding: "UTF-8",
     standalone: false
 };
-
-export const WINSTON_CONFIGURATION = {
-    logLevel: 'info',
-    logPrefix: "vrbt",
-    logFiles: {
-        error: "vrbt-error.log",
-        debug: "vrbt-debug.log",
-        default: "vrbt.log"
-    }
-};

@@ -13,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.serverless</groupId>
 	<artifactId>serverless-project</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<dependencies>

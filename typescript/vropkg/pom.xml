@@ -13,6 +13,7 @@
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>vropkg</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <properties>

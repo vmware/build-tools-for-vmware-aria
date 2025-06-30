@@ -12,6 +12,7 @@
 	</parent>
 	<groupId>com.vmware.pscoe.maven</groupId>
 	<artifactId>iac-assembly</artifactId>
+	<name>${project.artifactId}</name>
 	<properties>
 		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>

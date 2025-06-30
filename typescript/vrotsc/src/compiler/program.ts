@@ -28,6 +28,7 @@ import { getResourceTransformer } from "./transformer/fileTransformers/resource"
 import { getTestTransformer } from "./transformer/fileTransformers/test";
 import { getSagaTransformer } from "./transformer/saga/saga";
 import { getWorkflowTransformer } from "./transformer/fileTransformers/workflow/workflow";
+import VroIgnore from "../utilities/VroIgnore";
 
 export interface Program {
 	getFiles(): readonly FileDescriptor[];
@@ -73,6 +74,7 @@ export function createProgram(options: ProgramOptions): Program {
 			diagnostics: diagnostics,
 			sourceFiles: [],
 			configIdsMap: {},
+            vroIgnoreFile: options.vroIgnoreFile,
 			getFile: path => fileByPath[path],
 			readFile: fileName => system.readFile(fileName).toString(),
 			writeFile: (fileName: string, data: string | Buffer) => {
@@ -152,7 +154,8 @@ export function createProgram(options: ProgramOptions): Program {
 	}
 
 	function getFiles(): FileDescriptor[] {
-		let filePaths = system.getFiles(rootDir, true);
+		const ignorePatterns = new VroIgnore(options.vroIgnoreFile).getPatterns('Compilation', 'General');
+		let filePaths = system.getFiles(rootDir, true, ignorePatterns);
 		const fileSet: Record<string, boolean> = {};
 		const files: FileDescriptor[] = [];
 

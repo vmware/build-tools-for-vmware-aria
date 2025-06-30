@@ -9,6 +9,7 @@
 	</parent>
 	<artifactId>typescript-project-all</artifactId>
 	<groupId>com.vmware.pscoe.o11n</groupId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>

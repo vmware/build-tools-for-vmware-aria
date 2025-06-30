@@ -16,7 +16,7 @@ Build Tools for VMware Aria provides development and release management tools fo
             <properties>
                 <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
                 <keystoreArtifactId>keystore.example</keystoreArtifactId>
-                <keystoreVersion>4.4.0</keystoreVersion>
+                <keystoreVersion>4.6.0</keystoreVersion>
                 <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
                 <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
                 <vroKeyPass>VMware1!</vroKeyPass>
@@ -29,14 +29,9 @@ Build Tools for VMware Aria provides development and release management tools fo
     ```
 2. Execute:
     ```shell
-    mvn clean install -f pom.xml -pl .
-    mvn clean install -f common/keystore-example/pom.xml
-    mvn clean install -f maven/npmlib/pom.xml
-    mvn clean install -f pom.xml
-    mvn clean install -f maven/base-package/pom.xml
-    mvn clean install -f packages/pom.xml
-    mvn clean install -f maven/typescript-project-all/pom.xml
-    mvn clean install -f maven/repository/pom.xml
+    mvn clean install -D modules.plugins
+    mvn clean install -D modules.tools
+    mvn clean package -D modules.repository
     ```
 
 ## Package dependencies

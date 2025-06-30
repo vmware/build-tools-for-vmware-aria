@@ -10,6 +10,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>xml-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
