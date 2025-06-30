@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:o11n-polyglot-package-maven-plugin:4.5.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:o11n-polyglot-package-maven-plugin:4.6.1-SNAPSHOT
 
 Name: o11n-polyglot-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: o11n-polyglot-package-maven-plugin
-Version: 4.5.1-SNAPSHOT
+Version: 4.6.1-SNAPSHOT
 Goal Prefix: vro
 
 This plugin has 3 goals:
@@ -22,11 +22,15 @@ vro:clean
   Available parameters:
 
     project (Default: ${project})
-      (no description available)
+      Project handle.
 
     skipInstallNodeDeps (Default: false)
       User property: skipInstallNodeDeps
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
 vro:install-node-deps
   Description: (no description available)
@@ -93,6 +97,10 @@ vro:install-node-deps
       User property: vro
       (no description available)
 
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
+
     vrops (Default: ${vrops.*})
       User property: vrops
       (no description available)
@@ -118,5 +126,9 @@ vro:package
       private key to keystore.
 
     project (Default: ${project})
-      Keeps a handle to the pom.xml.
+      Project handle.
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 

@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:cs-package-maven-plugin:4.5.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:cs-package-maven-plugin:4.6.1-SNAPSHOT
 
 Name: cs-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: cs-package-maven-plugin
-Version: 4.5.1-SNAPSHOT
+Version: 4.6.1-SNAPSHOT
 Goal Prefix: cs
 
 This plugin has 2 goals:
@@ -22,7 +22,11 @@ cs:package
   Available parameters:
 
     project (Default: ${project})
-      (no description available)
+      Project handle.
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
 cs:pull
   Description: (no description available)
@@ -87,6 +91,10 @@ cs:pull
     vro (Default: ${vro.*})
       User property: vro
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
     vrops (Default: ${vrops.*})
       User property: vrops

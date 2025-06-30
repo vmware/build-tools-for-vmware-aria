@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:bsc-package-maven-plugin:4.5.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:bsc-package-maven-plugin:4.6.1-SNAPSHOT
 
 Name: bsc-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: bsc-package-maven-plugin
-Version: 4.5.1-SNAPSHOT
+Version: 4.6.1-SNAPSHOT
 Goal Prefix: bsc
 
 This plugin has 1 goal:
@@ -22,5 +22,9 @@ bsc:package
   Available parameters:
 
     project (Default: ${project})
-      (no description available)
+      Project handle.
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
