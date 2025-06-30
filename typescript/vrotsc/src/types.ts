@@ -83,6 +83,7 @@ export interface FileTransformationContext {
 	outputs: ProgramOutputs;
 	diagnostics: DiagnosticCollection;
 	sourceFiles: ts.SourceFile[];
+    vroIgnoreFile: string;
 	configIdsMap: {[key: string]: string};											// Holds ConfigElement Path -> Id mappings.
 	getFile(fileName: string): FileDescriptor | undefined;
 	readFile(fileName: string): string | undefined;
@@ -126,6 +127,7 @@ export interface ProgramOptions {
 	actionsNamespace?: string;
 	workflowsNamespace?: string;
 	outputs?: ProgramOutputs;
+    vroIgnoreFile?: string;
 }
 
 export interface ProgramOutputs {

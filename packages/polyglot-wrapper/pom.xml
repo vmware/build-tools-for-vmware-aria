@@ -10,6 +10,7 @@
 
   <groupId>com.vmware.pscoe.library</groupId>
   <artifactId>polyglot-wrapper</artifactId>
+  <name>${project.artifactId}</name>
   <packaging>package</packaging>
 
   <properties>

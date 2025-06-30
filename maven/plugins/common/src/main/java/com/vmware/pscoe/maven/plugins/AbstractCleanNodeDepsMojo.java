@@ -20,17 +20,13 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
 
 import org.apache.commons.io.FileUtils;
 
-public abstract class AbstractCleanNodeDepsMojo extends AbstractMojo {
-	@Parameter(defaultValue = "${project}")
-	protected MavenProject project;
+public abstract class AbstractCleanNodeDepsMojo extends AbstractVroMojo {
 
 	@Parameter(property = "skipInstallNodeDeps", defaultValue = "false")
 	protected boolean skipInstallNodeDeps;
@@ -39,8 +35,7 @@ public abstract class AbstractCleanNodeDepsMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException { 
 		File nodeModulesDir = Paths.get(project.getBasedir().toString(), "node_modules").toFile();
 
-		if(skipInstallNodeDeps)
-		{
+		if (skipInstallNodeDeps) {
 			getLog().info("Skipping the node_modules deletion");
 			return;
 		}
@@ -50,6 +45,11 @@ public abstract class AbstractCleanNodeDepsMojo extends AbstractMojo {
 		tryDeleteFile("package-lock.json");
 	}
 
+	/**
+	 * Attempts to delete the given folder, if it exists.
+	 * Logs a warning on failure.
+	 * @param subdir - given folder
+	 */
 	protected void tryDeleteDirectory(File subdir) {
 		if (subdir.exists()) {
 			try {
@@ -60,6 +60,12 @@ public abstract class AbstractCleanNodeDepsMojo extends AbstractMojo {
 		}
 	}
 
+	/**
+	 * Attempts to delete a file from the base directory, if it exists.
+	 * Logs a warning on failure.
+	 * 
+	 * @param fileName - name of the given file
+	 */
 	protected void tryDeleteFile(String fileName) {
 		Path filePath = Paths.get(project.getBasedir().toString(), fileName);
 		if (Files.exists(filePath)) {

@@ -12,6 +12,7 @@
 
     <groupId>com.vmware.pscoe.npm</groupId>
     <artifactId>lib</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <build>

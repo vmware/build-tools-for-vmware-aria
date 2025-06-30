@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.5.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.6.1-SNAPSHOT
 
 Name: vrealize-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vrealize-package-maven-plugin
-Version: 4.5.1-SNAPSHOT
+Version: 4.6.1-SNAPSHOT
 Goal Prefix: vrealize
 
 This plugin has 4 goals:
@@ -53,7 +53,7 @@ vrealize:auth
       private key to keystore.
 
     project (Default: ${project})
-      Keeps a handle to the pom.xml.
+      Project handle.
 
     socketTimeout (Default: ${vrealize.socket.timeout})
       User property: socketTimeout
@@ -78,6 +78,10 @@ vrealize:auth
     vro (Default: ${vro.*})
       User property: vro
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
     vrops (Default: ${vrops.*})
       User property: vrops
@@ -161,6 +165,10 @@ vrealize:clean
       User property: vro
       (no description available)
 
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
+
     vrops (Default: ${vrops.*})
       User property: vrops
       (no description available)
@@ -238,6 +246,10 @@ vrealize:push
     vro (Default: ${vro.*})
       User property: vro
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
     vrops (Default: ${vrops.*})
       User property: vrops
@@ -324,6 +336,10 @@ vrealize:release
     vro (Default: ${vro.*})
       User property: vro
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
     vrops (Default: ${vrops.*})
       User property: vrops

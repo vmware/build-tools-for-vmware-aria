@@ -7,6 +7,7 @@
     </parent>
     <groupId>com.vmware.pscoe.vcd.archetypes</groupId>
     <artifactId>package-vcd-ng-archetype</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>maven-archetype</packaging>
 	<properties>
 		<main.basedir>${project.baseUri}../../../</main.basedir>

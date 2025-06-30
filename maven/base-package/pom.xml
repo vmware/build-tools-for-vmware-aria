@@ -13,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.o11n</groupId>
 	<artifactId>base-packages-parent</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<modules>
 		<module>base-package</module>
@@ -571,7 +572,7 @@ for (String definition : checksumDefs.split(',')) {
 					<dependency>
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy</artifactId>
-						<version>3.0.19</version>
+						<version>3.0.25</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>

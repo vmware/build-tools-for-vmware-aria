@@ -12,6 +12,7 @@
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>typescript</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
 	<properties>

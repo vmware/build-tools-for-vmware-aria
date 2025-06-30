@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/vrotest",
-  "version": "4.6.1-SNAPSHOT",
+  "version": "4.7.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "VMware Confidential",
   "description": "vRO Test Suite for NodeJS",
@@ -25,7 +25,8 @@
   "dependencies": {
     "browserslist": "4.24.2",
     "iconv-lite": "0.6.3",
-    "nyc": "17.1.0"
+    "nyc": "17.1.0",
+    "minimatch": "^10.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "28.0.1",

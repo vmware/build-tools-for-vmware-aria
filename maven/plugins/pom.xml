@@ -27,6 +27,7 @@
 
 	<groupId>com.vmware.pscoe.maven.plugins</groupId>
 	<artifactId>base-maven-plugin</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<properties>

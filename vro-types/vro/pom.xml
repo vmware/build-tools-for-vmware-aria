@@ -13,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.ts.types</groupId>
 	<artifactId>vro</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<properties>

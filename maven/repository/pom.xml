@@ -13,6 +13,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe.iac</groupId>
 	<artifactId>repository</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<properties>

@@ -1,6 +1,6 @@
 {
     "name": "@vmware-pscoe/vrotsc",
-    "version": "4.6.1-SNAPSHOT",
+    "version": "4.7.1-SNAPSHOT",
     "author": "VMware PSCoE",
     "license": "VMware Confidential",
     "description": "vRO TypeScript to JavaScript transpiler",
@@ -14,6 +14,9 @@
     "main": "./lib/vrotsc.js",
     "bin": {
         "vrotsc": "bin/vrotsc"
+    },
+    "dependencies": {
+        "minimatch": "^10.0.0"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "28.0.1",

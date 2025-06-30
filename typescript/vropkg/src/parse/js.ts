@@ -19,9 +19,9 @@ import { getCommentFromJavadoc, getScriptRuntime } from "./util";
 import * as AbstractSyntaxTree from "abstract-syntax-tree";
 import * as Comments from "parse-comments";
 import {v4 as uuidv4} from "uuid";
-import * as winston from "winston";
+import getLogger from "../logger";
 import * as glob from "glob";
-import { WINSTON_CONFIGURATION } from "../constants";
+import VroIgnore from "../util/VroIgnore";
 
 export class VroJsProjParser {
 	private lazy: boolean;
@@ -30,15 +30,17 @@ export class VroJsProjParser {
 		this.lazy = lazy;
 	}
 
-	public async parse(vroJsFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string): Promise<VroPackageMetadata> {
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);
+	public async parse(vroJsFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, vroIgnoreFile: string): Promise<VroPackageMetadata> {
+		getLogger().info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);
+		const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'Packaging');
+		getLogger().debug(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
 
 		let elements: Array<VroNativeElement> = [];
 
 		// let parser = new VroNativeFolderElementParser();
 		const JS_EXTENSION = ".js";
 		let baseDir = Path.join(vroJsFolderPath, "src", "main", "resources");
-		glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)?.replace(/[\\/]+/gm, Path.posix.sep)).forEach(jsFile => {
+		glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)?.replace(/[\\/]+/gm, Path.posix.sep), {ignore: ignorePatterns}).forEach(jsFile => {
 			let content = FileSystem.readFileSync(jsFile);
 			let vroPath = jsFile.substring(baseDir.length + 1);
 			let moduleIndex = Math.max(vroPath.lastIndexOf("/"), vroPath.lastIndexOf("\\"));
