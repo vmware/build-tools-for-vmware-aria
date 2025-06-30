@@ -274,6 +274,7 @@
                             <publishingServerId>central</publishingServerId>
 							<autoPublish>true</autoPublish>
 							<waitUntil>published</waitUntil>
+							<waitMaxTime>21600</waitMaxTime>
 							<deploymentName>build-tools-for-vmware-aria-${project.version}</deploymentName>
                         </configuration>
                     </plugin>
