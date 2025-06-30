@@ -572,7 +572,7 @@ for (String definition : checksumDefs.split(',')) {
 					<dependency>
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy</artifactId>
-						<version>3.0.19</version>
+						<version>3.0.25</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
