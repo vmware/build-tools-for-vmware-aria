@@ -39,6 +39,7 @@ public class RestClientVroSsoAuthNInterceptor extends RestClientRequestIntercept
 	private static final String AUTHORIZATION_SERVICE_URL_VRA_CLOUD = "/csp/gateway/am/api/auth/api-tokens/authorize";
 	private static final String SAAS_URL = "/SAAS/t/";
 	private static final String VERSION_URL = "vco/api/about";
+	private static final String VRA_9_VERSION_PREFIX = "9.";
 
 	public RestClientVroSsoAuthNInterceptor(ConfigurationVro configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
@@ -54,7 +55,7 @@ public class RestClientVroSsoAuthNInterceptor extends RestClientRequestIntercept
 			//
 			// loops
 
-			if (this.ssoAuth.serverVersion.startsWith("9.")) {
+			if (this.ssoAuth.getVersion().startsWith(VRA_9_VERSION_PREFIX)) {
 				return this.vcdInterceptor.intercept(request, body, execution);
 			}
 
@@ -79,13 +80,14 @@ public class RestClientVroSsoAuthNInterceptor extends RestClientRequestIntercept
 	}
 
 	private void createVcdInterceptor(ConfigurationVro configuration, RestTemplate restTemplate) {
-		if (!this.ssoAuth.serverVersion.startsWith("9.0")) {
+		if (!this.ssoAuth.getVersion().startsWith(VRA_9_VERSION_PREFIX)) {
 			return;
 		}
 
 		Properties properties = new Properties();
 
-		properties.setProperty("username", configuration.getUsername() + "@" + configuration.getDomain());
+		properties.setProperty("username",
+				String.format("%s@%s", configuration.getUsername(), configuration.getDomain()));
 		properties.setProperty("password", configuration.getPassword());
 		properties.setProperty("port", configuration.getPort() + "");
 		properties.setProperty("host", configuration.getHost());

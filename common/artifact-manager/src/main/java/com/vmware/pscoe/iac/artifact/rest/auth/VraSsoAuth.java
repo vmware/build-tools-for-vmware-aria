@@ -47,8 +47,6 @@ public class VraSsoAuth {
 	private static final String AUTHORIZATION_SERVICE_URL_VRA_CLOUD = "/csp/gateway/am/api/auth/api-tokens/authorize";
 	/** Login endpoint for vRA 8.x . */
 	private static final String AUTHORIZATION_SERVICE_URL_VRA_8 = "/csp/gateway/am/api/login";
-	/** Authentication endpoint for vRA 7.x . */
-	private static final String AUTHORIZATION_SERVICE_URL_VRA_7 = "/SAAS/t/%s/auth/oauthtoken";
 	/** Single Sign On endpont for vRA 7.x . */
 	private static final String COMPONENT_REGISTRY_URL_VRA_7 = "/component-registry/endpoints/types/sso";
 	/** Endpont used to get the version. */
@@ -59,8 +57,6 @@ public class VraSsoAuth {
 	private static final String TOKEN_NAME = "cspAuthToken";
 	/** Bearer token type. */
 	private static final String DEFAULT_TOKEN_TYPE = "Bearer";
-	/** Version prefix for vRA versions 8.x. */
-	private static final String VRA_8_VERSION_PREFIX = "8.";
 	/** Http Entity. */
 	private static final String HTTP_ENTITY_TYPE = "httpEntity";
 	/** Token URI. */
@@ -71,7 +67,7 @@ public class VraSsoAuth {
 	/** REST Tempalate to be used for communicating with the REST API of the. */
 	private RestTemplate restTemplate;
 	/** Aria Automation version. */
-	public String serverVersion;
+	private String serverVersion;
 
 	/**
 	 * Create new instance of the class that is using the orivided configuraiton and
@@ -225,7 +221,10 @@ public class VraSsoAuth {
 	 * 
 	 * @return the strig representation of the version.
 	 */
-	private String getVersion() {
+	public String getVersion() {
+		if (this.serverVersion != null) {
+			return this.serverVersion;
+		}
 		// vRA Cloud doesn't have vRO services and it's auth host
 		// (console.cloud.vmware.com)
 		// is different than the Extensibility Proxy's vRO address

@@ -84,26 +84,9 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	 */
 	private static final String HEADER_AUTHORIZATION = "Authorization";
 
-	/**
-	 * api version that is supported.
-	 */
-	private static final String API_VERSION_37 = "37.0";
-
-	/**
-	 * api version that is not yet supported.
-	 */
-	private static final String API_VERSION_38 = "38.0";
-
 	public RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
 			String apiVersion) {
 		super(configuration, restTemplate);
-		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)
-				&& Double.parseDouble(apiVersion) < Double.parseDouble("40")) {
-			System.out.println("Unsupported version ");
-			logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
-					+ ". Switching to using API version " + API_VERSION_37);
-			apiVersion = API_VERSION_37;
-		}
 
 		this.contentType = VcdApiHelper.buildMediaType("application/json", apiVersion);
 	}
