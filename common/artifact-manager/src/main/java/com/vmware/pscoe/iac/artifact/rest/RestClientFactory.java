@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
@@ -63,6 +64,7 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroBasicAu
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroSsoAuthNInterceptor;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.rest.auth.VraSsoAuth;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcdBasicAuthInterceptor;
@@ -112,6 +114,8 @@ public final class RestClientFactory {
 	 * The end of the HTTP status code range for successful responses.
 	 */
 	private static final Integer STATUS_CODE_2XX_RANGE_END = 299;
+
+	private static final String VRA_9_VERSION_PREFIX = "9.";
 
 	private RestClientFactory() {
 		throw new IllegalStateException("Cannot instantiate the factory class: RestClientFactory");
@@ -235,6 +239,39 @@ public final class RestClientFactory {
 		return restTemplate;
 	}
 
+	private static String getVraApiVersion(Configuration configuration, RestTemplate restTemplate) {
+		Properties properties = new Properties();
+
+		properties.setProperty("username", configuration.getUsername());
+		properties.setProperty("password", configuration.getPassword());
+		properties.setProperty("port", configuration.getPort() + "");
+		properties.setProperty("host", configuration.getHost());
+
+		ConfigurationVro configurationVro = ConfigurationVro.fromProperties(properties);
+
+		VraSsoAuth vraClient = new VraSsoAuth(configurationVro, restTemplate);
+		return vraClient.getVersion();
+	}
+
+	private static String getVcdApiVersion(ConfigurationVcd configuration, RestTemplate restTemplate) {
+		RestClientVcd versionRestClient = new RestClientVcd(configuration, restTemplate);
+		// vCD API version is passed to Content-Type headers.
+		// No authentication is required to obtain API version
+		return versionRestClient.getVersion();
+	}
+
+	private static ConfigurationVcd createConfigurationVcd(Configuration configuraiton) {
+		Properties properties = new Properties();
+
+		properties.setProperty("username",
+				String.format("%s@%s", configuraiton.getUsername(), configuraiton.getDomain()));
+		properties.setProperty("password", configuraiton.getPassword());
+		properties.setProperty("port", configuraiton.getPort() + "");
+		properties.setProperty("host", configuraiton.getHost());
+
+		return ConfigurationVcd.fromProperties(properties);
+	}
+
 	/**
 	 * The function returns a RestClientVro object with a configured RestTemplate
 	 * and
@@ -269,20 +306,30 @@ public final class RestClientFactory {
 	 */
 	public static RestClientVro getClientVro(ConfigurationVro configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
-		RestClientRequestInterceptor<ConfigurationVro> interceptor;
+		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
-		switch (configuration.getAuth()) {
-			case VRA:
-				interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
-				break;
-			case BASIC:
-				interceptor = new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
-				break;
-			default:
-				throw new UnsupportedOperationException("Unsupported authentication provider");
+		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
+			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
+			String vcdApiVersion = getVcdApiVersion(vcdConfiguration, restTemplate);
+			RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
+					vcdConfiguration, restTemplate, vcdApiVersion);
+			restTemplate.getInterceptors().add(vcdInterceptor);
+		} else {
+			RestClientRequestInterceptor<ConfigurationVro> interceptor;
+
+			LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
+			switch (configuration.getAuth()) {
+				case VRA:
+					interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
+					break;
+				case BASIC:
+					interceptor = new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
+					break;
+				default:
+					throw new UnsupportedOperationException("Unsupported authentication provider");
+			}
+			restTemplate.getInterceptors().add(interceptor);
 		}
-		restTemplate.getInterceptors().add(interceptor);
 
 		return new RestClientVro(configuration, restTemplate);
 	}
@@ -333,10 +380,19 @@ public final class RestClientFactory {
 	 */
 	public static RestClientVraNg getClientVraNg(ConfigurationVraNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
+		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
-				configuration, restTemplate);
-		restTemplate.getInterceptors().add(interceptor);
+		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
+			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
+			String vcdApiVersion = getVcdApiVersion(vcdConfiguration, restTemplate);
+			RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
+					vcdConfiguration, restTemplate, vcdApiVersion);
+			restTemplate.getInterceptors().add(vcdInterceptor);
+		} else {
+			RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
+					configuration, restTemplate);
+			restTemplate.getInterceptors().add(interceptor);
+		}
 
 		return new RestClientVraNg(configuration, restTemplate);
 	}
@@ -357,11 +413,7 @@ public final class RestClientFactory {
 	 */
 	public static RestClientVcd getClientVcd(ConfigurationVcd configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
-
-		RestClientVcd versionRestClient = new RestClientVcd(configuration, restTemplate);
-		// vCD API version is passed to Content-Type headers.
-		// No authentication is required to obtain API version
-		String apiVersion = versionRestClient.getVersion();
+		String apiVersion = getVcdApiVersion(configuration, restTemplate);
 		RestClientRequestInterceptor<ConfigurationVcd> interceptor = new RestClientVcdBasicAuthInterceptor(
 				configuration, restTemplate, apiVersion);
 		restTemplate.getInterceptors().add(interceptor);
