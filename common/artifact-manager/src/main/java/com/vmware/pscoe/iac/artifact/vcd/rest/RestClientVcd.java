@@ -113,6 +113,21 @@ public class RestClientVcd extends RestClient {
 	private static final String URL_UI_PLUGIN_PUBLISH_ALL = URL_UI_EXTENSION_BASE + "/%s/tenants/publishAll";
 
 	/**
+	 * api version that is supported.
+	 */
+	private static final String API_VERSION_37 = "37.0";
+
+	/**
+	 * api version that is not yet supported.
+	 */
+	private static final String API_VERSION_38 = "38.0";
+
+	/**
+	 * supported vcf 9 api version.
+	 */
+	private static final String API_VERSION_40 = "40.0";
+
+	/**
 	 * tenant scoped key name.
 	 */
 	private static final String TENANT_SCOPED_KEY_NAME = "tenant_scoped";
@@ -192,6 +207,14 @@ public class RestClientVcd extends RestClient {
 					new HttpEntity<String>(headers), String.class);
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
+
+			// Preserving API version check for backwards compatibility
+			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)
+					&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
+				logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
+						+ " and lower than " + API_VERSION_40 + ". Switching to using API version " + API_VERSION_37);
+				this.apiVersion = API_VERSION_37;
+			}
 
 			logger.debug("API version is: " + this.apiVersion);
 		}
