@@ -327,7 +327,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-archetype-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.4.0</version>
 				<executions>
 					<execution>
 						<id>iac-maven-repository</id>
