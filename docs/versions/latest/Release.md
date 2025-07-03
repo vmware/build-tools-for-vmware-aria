@@ -39,6 +39,24 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Polyglot missing/invalid dependency validation
+
+Added validation that the listed Powershell module imports have been downloaded.
+
+#### Previous Behavior
+
+When a dependency could not be downloaded (either due to invalid Module name or other reason), the building completed successfully.
+
+#### New Behavior
+
+When an imported Powershell module is not downloaded, the build fails with an error of the type:
+
+```log
+Error downloading modules VMware.vSphere.SsoAdmin,VMware.vSphere.SsoAdminAsdasd! Verify that:
+1. The default PSGallery repository is registered and accessible
+2. All listed modules are valid and can be fetched from PSGallery!
+```
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
