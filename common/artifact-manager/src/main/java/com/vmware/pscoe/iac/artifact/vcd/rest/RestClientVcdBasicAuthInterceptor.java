@@ -60,9 +60,20 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	private MediaType contentType;
 
 	/**
+	 * Defines whether to use PROVIDER_URL_SESSION or SESSION_URL during
+	 * authentication.
+	 */
+	private Boolean useProviderAuth;
+
+	/**
 	 * Provider session api path.
 	 */
 	private static final String PROVIDER_URL_SESSION = "/cloudapi/1.0.0/sessions/provider";
+
+	/**
+	 * Session api path for non-provider / specific tenant authentication.
+	 */
+	private static final String SESSION_URL = "/cloudapi/1.0.0/sessions";
 
 	/**
 	 * version api path.
@@ -101,8 +112,12 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 
 	public RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
 			String apiVersion) {
-		super(configuration, restTemplate);
+		this(configuration, restTemplate, apiVersion, true);
+	}
 
+	public RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
+			String apiVersion, Boolean useProviderAuth) {
+		super(configuration, restTemplate);
 		// Preserving API version check for backwards compatibility
 		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)
 				&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
@@ -113,6 +128,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 		}
 
 		this.contentType = VcdApiHelper.buildMediaType("application/json", apiVersion);
+		this.useProviderAuth = useProviderAuth;
 	}
 
 	/**
@@ -126,12 +142,12 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
 		try {
-			if (!request.getURI().getPath().contains(PROVIDER_URL_SESSION)
+			String sessionUrl = this.useProviderAuth ? PROVIDER_URL_SESSION : SESSION_URL;
+
+			if (!request.getURI().getPath().contains(sessionUrl)
 					&& !request.getURI().getPath().contains(URL_VERSION)) {
 				if (this.bearerToken == null) {
-					logger.info("Aquiring vCD auth token...");
-					acquireToken(request);
-					logger.info("vCD auth token aquired");
+					acquireToken(request, sessionUrl);
 				}
 
 				request.getHeaders().add(HEADER_VCLOUD_TOKEN, this.vcloudToken);
@@ -144,9 +160,10 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 		}
 	}
 
-	private void acquireToken(HttpRequest request) throws JsonProcessingException {
+	private void acquireToken(HttpRequest request, String sessionUrl) throws JsonProcessingException {
 		final URI tokenUri = UriComponentsBuilder.newInstance().scheme(request.getURI().getScheme())
-				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(PROVIDER_URL_SESSION).build()
+				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(sessionUrl)
+				.build()
 				.toUri();
 
 		// Prepare Headers

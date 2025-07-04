@@ -386,7 +386,7 @@ public final class RestClientFactory {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
 			String vcdApiVersion = getVcdApiVersion(vcdConfiguration, restTemplate);
 			RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
-					vcdConfiguration, restTemplate, vcdApiVersion);
+					vcdConfiguration, restTemplate, vcdApiVersion, false);
 			restTemplate.getInterceptors().add(vcdInterceptor);
 		} else {
 			RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
