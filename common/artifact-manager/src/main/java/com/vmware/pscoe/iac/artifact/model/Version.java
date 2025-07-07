@@ -38,18 +38,18 @@ public class Version implements Comparable<Version> {
 
 	public Integer getMajorVersion() {
 		return this.version.equalsIgnoreCase("cloud")
-			? new Integer(Integer.MAX_VALUE)
-			: this.parseVersion(MAJOR_VERSION_OFFSET);
+				? new Integer(Integer.MAX_VALUE)
+				: this.parseVersion(MAJOR_VERSION_OFFSET);
 	}
 
 	public Integer getMinorVersion() {
 		return this.version.equalsIgnoreCase("cloud")
-			? new Integer(Integer.MAX_VALUE)
-			: this.parseVersion(MINOR_VERSION_OFFSET);
+				? new Integer(Integer.MAX_VALUE)
+				: this.parseVersion(MINOR_VERSION_OFFSET);
 	}
 
 	private Integer parseVersion(int offset) {
-		String[] verData = StringUtils.isEmpty(this.version) ? new String[]{} : this.version.split(VERSION_DELIMITER);
+		String[] verData = StringUtils.isEmpty(this.version) ? new String[] {} : this.version.split(VERSION_DELIMITER);
 		String versionString = verData.length > offset - 1 ? verData[offset] : "";
 		if (StringUtils.isEmpty(versionString)) {
 			return null;
@@ -109,11 +109,14 @@ public class Version implements Comparable<Version> {
 	}
 
 	/**
-	 * Compares semantic versions. The method works even for versions that have Build Numbers at the end or don't follow
+	 * Compares semantic versions. The method works even for versions that have
+	 * Build Numbers at the end or don't follow
 	 * the syntax strictly, e.g. 8.8, 8.3.3.412333
+	 * 
 	 * @param versionA Version in format x.y.z
 	 * @param versionB Version in format x.y.z
-	 * @return 0 - versions match, -1 - version A is older than B, 1 - version A is newer than B
+	 * @return 0 - versions match, -1 - version A is older than B, 1 - version A is
+	 *         newer than B
 	 */
 	public static int compareSemanticVersions(String versionA, String versionB) {
 		String[] versionASplit = versionA.split("\\.");
@@ -129,8 +132,10 @@ public class Version implements Comparable<Version> {
 				return -1;
 			}
 		}
-		if (versionASplit.length > versionBSplit.length) return 1;
-		if (versionASplit.length < versionBSplit.length) return -1;
+		if (versionASplit.length > versionBSplit.length)
+			return 1;
+		if (versionASplit.length < versionBSplit.length)
+			return -1;
 		return 0;
 	}
 }

@@ -23,20 +23,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "items" })
-public class VraNgOrganizations implements Serializable {
+@JsonPropertyOrder({ "results" })
+public class VraNgOrganizationsV2 implements Serializable {
 	private static final long serialVersionUID = -3313748896114761975L;
 
-	@JsonProperty("items")
-	private List<VraNgOrganization> items;
+	@JsonProperty("results")
+	private List<VraNgOrganization> results;
 
-	@JsonProperty("items")
-	public List<VraNgOrganization> getItems() {
-		return items;
+	@JsonProperty("results")
+	public List<VraNgOrganization> getResults() {
+		return results;
 	}
 
-	@JsonProperty("items")
-	public void setItems(List<VraNgOrganization> items) {
-		this.items = items;
+	@JsonProperty("results")
+	public void setResults(List<VraNgOrganization> results) {
+		this.results = results;
 	}
 }
