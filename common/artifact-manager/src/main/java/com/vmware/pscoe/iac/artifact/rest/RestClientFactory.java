@@ -115,7 +115,15 @@ public final class RestClientFactory {
 	 */
 	private static final Integer STATUS_CODE_2XX_RANGE_END = 299;
 
+	/**
+	 * VCF Automation version 9 prefix
+	 */
 	private static final String VRA_9_VERSION_PREFIX = "9.";
+
+	/**
+	 * Default provider admin domain
+	 */
+	private static final String SYSTEM_DOMAIN = "System";
 
 	private RestClientFactory() {
 		throw new IllegalStateException("Cannot instantiate the factory class: RestClientFactory");
@@ -308,11 +316,13 @@ public final class RestClientFactory {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
+		// For vCF 9 use vCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
 			String vcdApiVersion = getVcdApiVersion(vcdConfiguration, restTemplate);
+			Boolean useProviderAuth = configuration.getDomain().equals(SYSTEM_DOMAIN);
 			RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
-					vcdConfiguration, restTemplate, vcdApiVersion);
+					vcdConfiguration, restTemplate, vcdApiVersion, useProviderAuth);
 			restTemplate.getInterceptors().add(vcdInterceptor);
 		} else {
 			RestClientRequestInterceptor<ConfigurationVro> interceptor;
@@ -382,6 +392,7 @@ public final class RestClientFactory {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
+		// For vCF 9 use vCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
 			String vcdApiVersion = getVcdApiVersion(vcdConfiguration, restTemplate);

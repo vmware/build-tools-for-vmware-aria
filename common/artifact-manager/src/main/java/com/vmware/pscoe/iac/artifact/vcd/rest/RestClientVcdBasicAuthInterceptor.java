@@ -71,7 +71,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	private static final String PROVIDER_URL_SESSION = "/cloudapi/1.0.0/sessions/provider";
 
 	/**
-	 * Session api path for non-provider / specific tenant authentication.
+	 * Session api path for non-provider / specific organization authentication.
 	 */
 	private static final String SESSION_URL = "/cloudapi/1.0.0/sessions";
 
@@ -142,6 +142,8 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
 		try {
+			// Session URL needs to be adapted based on whether the user is Provider Admin
+			// or part of specific organization
 			String sessionUrl = this.useProviderAuth ? PROVIDER_URL_SESSION : SESSION_URL;
 
 			if (!request.getURI().getPath().contains(sessionUrl)
@@ -186,5 +188,4 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 				: response.getHeaders().get(HEADER_VCLOUD_TOKEN).get(0);
 		this.bearerToken = response.getHeaders().get(HEADER_BEARER_TOKEN).get(0);
 	}
-
 }

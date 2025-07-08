@@ -185,6 +185,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private static final String SERVICE_VRA_INTEGRATIONS = "provisioning/uerp/provisioning/mgmt/endpoints";
 	/**
 	 * SERVICE_VRA_ORGANIZATIONS.
+	 * Removed in API version 40.0
 	 */
 	private static final String SERVICE_VRA_ORGANIZATIONS = "/csp/gateway/am/api/loggedin/user/orgs";
 	/**
