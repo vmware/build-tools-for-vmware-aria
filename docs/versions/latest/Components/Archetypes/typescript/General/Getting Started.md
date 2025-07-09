@@ -25,7 +25,7 @@
 
 **Build Tools for VMware Aria** provides ready to use project templates (*maven archetypes*).
 
-To create a new vRA 8.x project from archetype use the following command:
+To create a new Typescript based Orchestrator project from archetype use the following command:
 
 ```Bash
 mvn archetype:generate \
