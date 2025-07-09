@@ -18,8 +18,8 @@
 ## Table Of Contents
 
 1. [Maven Archetype](#maven-archetype)
-3. [Configuring settings.xml](#configuring-m2settingsxml-to-work-with-orchestrator-project-types)
-2. [Properties](#properties)
+2. [Configuring settings.xml](#configuring-m2settingsxml-to-work-with-orchestrator-project-types)
+3. [Properties](#properties)
 
 ### Maven Archetype
 

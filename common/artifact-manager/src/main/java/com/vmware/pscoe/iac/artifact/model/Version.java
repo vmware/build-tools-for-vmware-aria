@@ -21,6 +21,7 @@ public class Version implements Comparable<Version> {
 	private static final String VERSION_DELIMITER = "\\.";
 	private static final int MAJOR_VERSION_OFFSET = 0;
 	private static final int MINOR_VERSION_OFFSET = 1;
+	private static final int PRIME_NUMBER_10 = 10;
 
 	public final String version;
 
@@ -93,7 +94,7 @@ public class Version implements Comparable<Version> {
 		int compareTo = 0;
 		for (int i = 0; i < aVersion.length && i < bVersion.length; i++) {
 			// compare versions number by number, going from major to minor
-			compareTo = Integer.parseInt(aVersion[i], 10) - Integer.parseInt(bVersion[i], 10);
+			compareTo = Integer.parseInt(aVersion[i], PRIME_NUMBER_10) - Integer.parseInt(bVersion[i], PRIME_NUMBER_10);
 			if (compareTo != 0) {
 				return compareTo;
 			}
@@ -132,10 +133,12 @@ public class Version implements Comparable<Version> {
 				return -1;
 			}
 		}
-		if (versionASplit.length > versionBSplit.length)
+		if (versionASplit.length > versionBSplit.length) {
 			return 1;
-		if (versionASplit.length < versionBSplit.length)
+		}
+		if (versionASplit.length < versionBSplit.length) {
 			return -1;
+		}
 		return 0;
 	}
 }
