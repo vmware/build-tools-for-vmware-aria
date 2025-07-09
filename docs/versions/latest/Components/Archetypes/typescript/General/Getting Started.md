@@ -39,6 +39,41 @@ mvn archetype:generate \
 
 **Note**: *If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
 
+#### Content Structure
+
+The result of this command will produce the following project file structure:
+
+```ascii
+service-automation
+├── README.md
+├── pom.xml
+├── release.sh
+├── tsconfig.json
+└── src
+    └── integration-service-1
+        └── actions
+            └── integrationAction.js
+        └── classes
+            └── IntegrationService1.ts
+            └── IntegrationService1.test.ts            
+        └── policies
+            └── EventListener.pl.ts
+        └── resources
+            └── sample.txt
+            └── sample_2.json
+            └── sample_2.json.element_info.json
+            └── sample_3.xml
+            └── sample_3.xml.element_info.yaml
+            └── sample_4.json
+        └── types
+            └── IntegrationService1.d.ts
+        └── workflows
+            └── CreateIntegration.wf.ts
+            └── CreateIntegration.wf.form.json
+        └── IntegrationService1.conf.ts            
+        └── IntegrationService1Alternative.conf.yaml        
+```
+
 ### Configuring ~/.m2/settings.xml to work with Orchestrator project types
 
 The following need to be added to the profile that you intend to use:
