@@ -87,7 +87,7 @@ Refer to InstanbulJS documentation for more information: [https://github.com/ist
 ### How to exclude files from code coverage
 
 Files can be excluded from code coverage by naming them following the pattern: `*.helper.[tj]s`.
-You can also define custom patterns via the `.vroignore` file. For more details please review the `vroIgnoreFile` section in [Getting Started](../Getting%20Started.md)
+You can also define custom patterns via the `.vroignore` file. For more details please review the `vroIgnoreFile` section in [Getting Started](../Getting%20Started.md).
 
 During testing, you will be able to use these files by specifying them normally (`import testHelper from "./testHelper.helper";`).
 

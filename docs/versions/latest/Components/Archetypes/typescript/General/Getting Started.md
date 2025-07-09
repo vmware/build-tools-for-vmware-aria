@@ -3,7 +3,7 @@
 [//]: # (Remove Comments when you are done)
 [//]: # (What is this?)
 
-# Title
+# Getting Started
 
 [//]: # (Additional Information on the topic goes here)
 
@@ -17,7 +17,48 @@
 
 ## Table Of Contents
 
-1. [Properties](#properties)
+1. [Maven Archetype](#maven-archetype)
+3. [Configuring settings.xml](#configuring-m2settingsxml-to-work-with-orchestrator-project-types)
+2. [Properties](#properties)
+
+### Maven Archetype
+
+**Build Tools for VMware Aria** provides ready to use project templates (*maven archetypes*).
+
+To create a new vRA 8.x project from archetype use the following command:
+
+```Bash
+mvn archetype:generate \
+    -DinteractiveMode=false \
+    -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes \
+    -DarchetypeArtifactId=package-typescript-archetype \
+    -DarchetypeVersion=<build_tools_for_aria_version> \
+    -DgroupId=local.corp.it.cloud \
+    -DartifactId=service-automation
+```
+
+**Note**: *If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
+
+### Configuring ~/.m2/settings.xml to work with Orchestrator project types
+
+The following need to be added to the profile that you intend to use:
+
+```xml
+<profile>
+    <!--    ..... OTHER DIRECTIVES .....  -->
+    <vro.host>vra-l-01a.corp.local</vro.host>
+    <vro.auth>vra</vro.auth>
+    <vro.authHost>vra-l-01a.corp.local</vro.authHost>
+    <vro.authPort>443</vro.authPort>
+    <vro.port>443</vro.port>
+    <vro.username>configurationadmin</vro.username>
+    <vro.password>someSecurePassword</vro.password>
+</profile>
+```
+
+- `vro.username` - For vCF 9 Orchestrator you need to provide username in the following format: user@domain. E.g.:
+  admin@System - Provider admin
+  configurationadmin@Classic - Classic organization admin
 
 ### Properties
 
