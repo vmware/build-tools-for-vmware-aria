@@ -78,7 +78,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.4.0</version>
+						<version>3.6.1</version>
 						<executions>
 							<execution>
 								<id>timestamp-property</id>
@@ -96,7 +96,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>2.4.0</version>
+						<version>2.6.0</version>
 						<configuration>
 							<inceptionYear>${current.year}</inceptionYear>
 							<organizationName>${license.organizationName}</organizationName>
@@ -149,7 +149,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
-						<version>3.7.1</version>
+						<version>3.8.1</version>
 						<executions>
 							<execution>
 								<id>unpack-keystore</id>
@@ -193,7 +193,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
-						<version>3.7.1</version>
+						<version>3.8.1</version>
 						<executions>
 							<execution>
 								<id>unpack-installer</id>
@@ -363,7 +363,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
+				<version>3.1.1</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
@@ -372,7 +372,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.7.1</version>
+				<version>3.8.1</version>
 				<executions>
 					<execution>
 						<id>copy-vro-dependencies</id>
