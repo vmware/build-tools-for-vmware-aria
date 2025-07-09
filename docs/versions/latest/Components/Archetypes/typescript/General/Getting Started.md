@@ -37,7 +37,7 @@ mvn archetype:generate \
     -DartifactId=service-automation
 ```
 
-**Note**: *If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
+**Note**: *If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.*
 
 #### Content Structure
 

@@ -25,12 +25,12 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.vra-ng.archetypes \
     -DarchetypeArtifactId=package-vra-ng-archetype \
-    -DarchetypeVersion=<iac_for_vrealize_version> \
+    -DarchetypeVersion=<build_tools_for_aria_version> \
     -DgroupId=local.corp.it.cloud \
     -DartifactId=catalog
 ```
 
-**Note**: *The specified <iac_for_vrealize_version> should be minimum 2.4.11*
+**Note**: *If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.*
 
 #### Content Structure
 
