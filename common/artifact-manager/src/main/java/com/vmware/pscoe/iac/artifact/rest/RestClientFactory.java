@@ -280,6 +280,14 @@ public final class RestClientFactory {
 		return ConfigurationVcd.fromProperties(properties);
 	}
 
+	private static void attachVcdInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
+			Boolean useProviderAuth) {
+		String vcdApiVersion = getVcdApiVersion(configuration, restTemplate);
+		RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
+				configuration, restTemplate, vcdApiVersion, useProviderAuth);
+		restTemplate.getInterceptors().add(vcdInterceptor);
+	}
+
 	/**
 	 * The function returns a RestClientVro object with a configured RestTemplate
 	 * and
@@ -293,10 +301,16 @@ public final class RestClientFactory {
 	 */
 	public static RestClientVro getClientVroNg(ConfigurationVroNg configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
+		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
-				configuration, restTemplate);
-		restTemplate.getInterceptors().add(interceptor);
+		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
+			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
+			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
+		} else {
+			RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
+					configuration, restTemplate);
+			restTemplate.getInterceptors().add(interceptor);
+		}
 
 		return new RestClientVro(configuration, restTemplate);
 	}
@@ -319,11 +333,7 @@ public final class RestClientFactory {
 		// For vCF 9 use vCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
-			String vcdApiVersion = getVcdApiVersion(vcdConfiguration, restTemplate);
-			Boolean useProviderAuth = configuration.getDomain().equals(SYSTEM_DOMAIN);
-			RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
-					vcdConfiguration, restTemplate, vcdApiVersion, useProviderAuth);
-			restTemplate.getInterceptors().add(vcdInterceptor);
+			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
 		} else {
 			RestClientRequestInterceptor<ConfigurationVro> interceptor;
 
@@ -395,10 +405,7 @@ public final class RestClientFactory {
 		// For vCF 9 use vCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
-			String vcdApiVersion = getVcdApiVersion(vcdConfiguration, restTemplate);
-			RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
-					vcdConfiguration, restTemplate, vcdApiVersion, false);
-			restTemplate.getInterceptors().add(vcdInterceptor);
+			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
 		} else {
 			RestClientRequestInterceptor<ConfigurationVraNg> interceptor = new RestClientVraNgAuthNInterceptor(
 					configuration, restTemplate);
@@ -424,10 +431,7 @@ public final class RestClientFactory {
 	 */
 	public static RestClientVcd getClientVcd(ConfigurationVcd configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate();
-		String apiVersion = getVcdApiVersion(configuration, restTemplate);
-		RestClientRequestInterceptor<ConfigurationVcd> interceptor = new RestClientVcdBasicAuthInterceptor(
-				configuration, restTemplate, apiVersion);
-		restTemplate.getInterceptors().add(interceptor);
+		attachVcdInterceptor(configuration, restTemplate, true);
 
 		return new RestClientVcd(configuration, restTemplate);
 	}
