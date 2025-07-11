@@ -250,10 +250,10 @@ public final class RestClientFactory {
 	private static String getVraApiVersion(Configuration configuration, RestTemplate restTemplate) {
 		Properties properties = new Properties();
 
-		properties.setProperty("username", configuration.getUsername());
-		properties.setProperty("password", configuration.getPassword());
-		properties.setProperty("port", configuration.getPort() + "");
-		properties.setProperty("host", configuration.getHost());
+		properties.setProperty(Configuration.USERNAME, configuration.getUsername());
+		properties.setProperty(Configuration.PASSWORD, configuration.getPassword());
+		properties.setProperty(Configuration.PORT, configuration.getPort() + "");
+		properties.setProperty(Configuration.HOST, configuration.getHost());
 
 		ConfigurationVro configurationVro = ConfigurationVro.fromProperties(properties);
 
@@ -271,11 +271,12 @@ public final class RestClientFactory {
 	private static ConfigurationVcd createConfigurationVcd(Configuration configuraiton) {
 		Properties properties = new Properties();
 
-		properties.setProperty("username",
-				String.format("%s@%s", configuraiton.getUsername(), configuraiton.getDomain()));
-		properties.setProperty("password", configuraiton.getPassword());
-		properties.setProperty("port", configuraiton.getPort() + "");
-		properties.setProperty("host", configuraiton.getHost());
+		properties.setProperty(Configuration.USERNAME,
+				String.format("%s@%s", configuraiton.getUsername(),
+						configuraiton.getDomain()));
+		properties.setProperty(Configuration.PASSWORD, configuraiton.getPassword());
+		properties.setProperty(Configuration.PORT, configuraiton.getPort() + "");
+		properties.setProperty(Configuration.HOST, configuraiton.getHost());
 
 		return ConfigurationVcd.fromProperties(properties);
 	}
