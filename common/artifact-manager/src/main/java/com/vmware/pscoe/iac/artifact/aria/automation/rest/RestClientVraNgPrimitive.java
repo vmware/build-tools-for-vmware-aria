@@ -36,9 +36,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.net.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.Strictness;
+import com.jayway.jsonpath.JsonPath;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlement;
@@ -59,6 +86,8 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgLeasePolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganizations;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganizationsV2;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgRegion;
@@ -73,37 +102,9 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.core5.net.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.Strictness;
-import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.model.Version;
+import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 public class RestClientVraNgPrimitive extends RestClient {
 	/**
@@ -184,8 +185,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 	private static final String SERVICE_VRA_INTEGRATIONS = "provisioning/uerp/provisioning/mgmt/endpoints";
 	/**
 	 * SERVICE_VRA_ORGANIZATIONS.
+	 * Removed in API version 40.0
 	 */
 	private static final String SERVICE_VRA_ORGANIZATIONS = "/csp/gateway/am/api/loggedin/user/orgs";
+	/**
+	 * SERVICE_VRA_ORGANIZATIONS API v2.
+	 */
+	private static final String SERVICE_VRA_ORGANIZATIONS_V2 = "/csp/gateway/am/api/v2/loggedin/user/orgs";
 	/**
 	 * SERVICE_VRA_ORGANIZATION.
 	 */
@@ -299,6 +305,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * vRA 8.10 version. vRealize Automation 8.10.2.27406 (20867529).
 	 */
 	private static final String VRA_8_10 = "8.10.2.27406";
+	/**
+	 * vRA 9.x
+	 */
+	private static final String VRA_9 = "9.";
 	/**
 	 * Not found error returned by vRA.
 	 */
@@ -1044,6 +1054,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		URI url = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).build();
 		return restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
 	}
+
 	/**
 	 * Retrieve a scenario customization.
 	 *
@@ -1054,8 +1065,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected VraNgScenario getScenarioPrimitive(final String objId)
 			throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").build();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
-			String.class);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
 		JsonElement root = JsonParser.parseString(response.getBody());
 		if (!root.isJsonObject()) {
 			return null;
@@ -1069,9 +1080,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		String body = ob.has("body") ? ob.get("body").getAsString() : null;
 
 		if (subject == null || body == null) {
-			URI url2 = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true").setParameter("defaultConfig", "true").build();
-			ResponseEntity<String> response2 = restTemplate.exchange(url2, HttpMethod.GET, getDefaultHttpEntity(), 
-				String.class);
+			URI url2 = getURIBuilder().setPath(SERVICE_SCENARIO + "/" + objId).setParameter("expandBody", "true")
+					.setParameter("defaultConfig", "true").build();
+			ResponseEntity<String> response2 = restTemplate.exchange(url2, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 			JsonElement root2 = JsonParser.parseString(response2.getBody());
 			if (!root2.isJsonObject()) {
 				return null;
@@ -1097,9 +1109,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected VraNgScenario getScenarioByNamePrimitive(final String name)
 			throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_SCENARIO).build();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
-			String.class);
-		
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		if (!root.isJsonObject()) {
@@ -1107,7 +1119,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		}
 		JsonArray content = root.getAsJsonObject().getAsJsonArray("content");
 
-		for (JsonElement o: content) {
+		for (JsonElement o : content) {
 			JsonObject ob = o.getAsJsonObject();
 			String scenarioName = ob.get("scenarioName").getAsString();
 			if (scenarioName.equals(name)) {
@@ -1116,10 +1128,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 					VraNgScenario scenario = getScenarioPrimitive(scenarioId);
 					if (scenario != null) {
 						return scenario;
-					}	
-				} catch (Exception e) { 
+					}
+				} catch (Exception e) {
 					throw new RuntimeException(
-						String.format("Error ocurred during during reading of scenario. Message: %s", e.getMessage()));
+							String.format("Error ocurred during during reading of scenario. Message: %s",
+									e.getMessage()));
 				}
 			}
 		}
@@ -1135,9 +1148,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 	protected List<VraNgScenario> getAllScenariosPrimitive()
 			throws URISyntaxException {
 		URI url = getURIBuilder().setPath(SERVICE_SCENARIO).build();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), 
-			String.class);
-		
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+
 		JsonElement root = JsonParser.parseString(response.getBody());
 
 		List<VraNgScenario> scenarios = new ArrayList<>();
@@ -1155,9 +1168,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 				if (scenario != null) {
 					scenarios.add(scenario);
 				}
-			} catch (Exception e) { 
+			} catch (Exception e) {
 				throw new RuntimeException(
-					String.format("Error ocurred during reading of scenario. Message: %s", e.getMessage()));
+						String.format("Error ocurred during reading of scenario. Message: %s", e.getMessage()));
 			}
 		});
 		return scenarios;
@@ -1665,6 +1678,31 @@ public class RestClientVraNgPrimitive extends RestClient {
 		return regionIds;
 	}
 
+	private List<VraNgOrganization> getOrganizations() {
+		String path = this.getProductVersion().getString().startsWith(VRA_9) ? SERVICE_VRA_ORGANIZATIONS_V2
+				: SERVICE_VRA_ORGANIZATIONS;
+		URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost()).setPath(path)
+				.setParameter("expand", "1");
+		URI url;
+		try {
+			url = uriBuilder.build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(
+					String.format("Unable to build REST URI to fetch organizations : %s", e.getMessage()));
+		}
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().serializeNulls()
+				.create();
+
+		if (this.getProductVersion().getString().startsWith(VRA_9)) {
+			return gson.fromJson(response.getBody(), VraNgOrganizationsV2.class).getResults();
+		} else {
+			return gson.fromJson(response.getBody(), VraNgOrganizations.class).getItems();
+		}
+	}
+
 	private List<String> getTags(final JsonElement tagsElement) {
 		List<String> tags = new ArrayList<>();
 
@@ -1838,24 +1876,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 			return null;
 		}
 
-		URIBuilder uriBuilder = getURIBuilder().setHost(configuration.getAuthHost()).setPath(SERVICE_VRA_ORGANIZATIONS)
-				.setParameter("expand", "1");
-
-		URI url;
 		Optional<VraNgOrganization> result = null;
 		try {
-			url = uriBuilder.build();
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
-					String.class);
-			Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).setPrettyPrinting().serializeNulls()
-					.create();
-			VraNgOrganizations organizations = gson.fromJson(response.getBody(), VraNgOrganizations.class);
-			result = organizations.getItems().stream().filter(vraNgOrganization -> {
+			result = this.getOrganizations().stream().filter(vraNgOrganization -> {
 				return vraNgOrganization.getName().equalsIgnoreCase(organizationName);
 			}).findFirst();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(String.format("Unable to build REST URI to fetch organization name %s : %s",
-					organizationName, e.getMessage()));
 		} catch (Exception error) {
 			throw new RuntimeException(
 					"Organization not found by the provided name. Error message: " + error.getMessage(), error);
@@ -2819,8 +2844,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	/**
 	 * Create (when ID is null) or update (when ID si not null) policy.
 	 * 
-	 * @param policy     - the policy to create/update
-	 * @param <T>        - the policy type.
+	 * @param policy - the policy to create/update
+	 * @param <T>    - the policy type.
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends VraNgPolicyDTO> void createOrUpdatePolicy(T policy) {
@@ -2835,7 +2860,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 			String jsonBody = new Gson().toJson(policy);
 			ResponseEntity<String> response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 			String newId = !response.getStatusCode().is2xxSuccessful() ? null
-					: new Gson().fromJson(response.getBody(), (Class<VraNgPolicyDTO>) policyType.vraNgPolicyClass).getId();
+					: new Gson().fromJson(response.getBody(), (Class<VraNgPolicyDTO>) policyType.vraNgPolicyClass)
+							.getId();
 			if (newId == null) {
 				failureCause = String.format("Status: %s; Body: %s", response.getStatusCode(), response.getBody());
 			} else if (policy.getId() != null && !policy.getId().equals(newId)) {
@@ -2844,9 +2870,9 @@ public class RestClientVraNgPrimitive extends RestClient {
 				policy.setId(newId);
 				return;
 			}
-		} catch (HttpClientErrorException e)  {
+		} catch (HttpClientErrorException e) {
 			String msg = e.getStatusText() != null ? e.getStatusText() : e.getMessage();
-        	Matcher matcher = Pattern.compile("\\{(.*?)\\}").matcher(msg);
+			Matcher matcher = Pattern.compile("\\{(.*?)\\}").matcher(msg);
 			failureCause = matcher.find() ? String.format("{%s}", matcher.group(1)) : msg;
 		} catch (Exception e) {
 			failureCause = e.getMessage();
@@ -2857,7 +2883,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 				policyType.description,
 				policy.getName(),
 				policy.getId(),
-				failureCause
-				));
+				failureCause));
 	}
 }
