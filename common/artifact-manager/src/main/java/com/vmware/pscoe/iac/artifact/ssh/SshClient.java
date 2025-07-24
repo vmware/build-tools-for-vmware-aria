@@ -75,6 +75,8 @@ public final class SshClient {
 		List<String> output = new ArrayList<>();
 		Channel channel = null;
 		InputStream in = null;
+		final long MAX_EXECUTION_TIME_MS = 5 * 60 * 1000; 
+		long startTime = System.currentTimeMillis();
 		try {
 			channel = session.openChannel(CHANNEL_TYPE_EXEC);
 			((ChannelExec) channel).setCommand(command);
@@ -100,6 +102,10 @@ public final class SshClient {
 				}
 
 				if (channel.isClosed()) {
+					break;
+				}
+				if (System.currentTimeMillis() - startTime > MAX_EXECUTION_TIME_MS) {
+					LOGGER.error("SSH: Command execution timed out after {} ms", MAX_EXECUTION_TIME_MS);
 					break;
 				}
 				try {
