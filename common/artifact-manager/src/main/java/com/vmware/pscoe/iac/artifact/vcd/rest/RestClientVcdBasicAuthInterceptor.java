@@ -14,10 +14,10 @@
  */
 package com.vmware.pscoe.iac.artifact.vcd.rest;
 
-import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
-import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
-import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +32,10 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
+import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 public class RestClientVcdBasicAuthInterceptor extends RestClientRequestInterceptor<ConfigurationVcd> {
 
@@ -60,9 +60,20 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	private MediaType contentType;
 
 	/**
+	 * Defines whether to use PROVIDER_URL_SESSION or SESSION_URL during
+	 * authentication.
+	 */
+	private Boolean useProviderAuth;
+
+	/**
 	 * Provider session api path.
 	 */
 	private static final String PROVIDER_URL_SESSION = "/cloudapi/1.0.0/sessions/provider";
+
+	/**
+	 * Session api path for non-provider / specific organization authentication.
+	 */
+	private static final String SESSION_URL = "/cloudapi/1.0.0/sessions";
 
 	/**
 	 * version api path.
@@ -94,16 +105,30 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	 */
 	private static final String API_VERSION_38 = "38.0";
 
+	/**
+	 * supported vcf 9 api version.
+	 */
+	private static final String API_VERSION_40 = "40.0";
+
 	public RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
 			String apiVersion) {
+		this(configuration, restTemplate, apiVersion, true);
+	}
+
+	public RestClientVcdBasicAuthInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
+			String apiVersion, Boolean useProviderAuth) {
 		super(configuration, restTemplate);
-		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)) {
+		// Preserving API version check for backwards compatibility
+		if (Double.parseDouble(apiVersion) >= Double.parseDouble(API_VERSION_38)
+				&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
+			System.out.println("Unsupported version " + apiVersion);
 			logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
-					+ ". Switching to using API version " + API_VERSION_37);
+					+ " and lower than " + API_VERSION_40 + ". Switching to using API version " + API_VERSION_37);
 			apiVersion = API_VERSION_37;
 		}
 
 		this.contentType = VcdApiHelper.buildMediaType("application/json", apiVersion);
+		this.useProviderAuth = useProviderAuth;
 	}
 
 	/**
@@ -117,12 +142,14 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
 		try {
-			if (!request.getURI().getPath().contains(PROVIDER_URL_SESSION)
+			// Session URL needs to be adapted based on whether the user is Provider Admin
+			// or part of specific organization
+			String sessionUrl = this.useProviderAuth ? PROVIDER_URL_SESSION : SESSION_URL;
+
+			if (!request.getURI().getPath().contains(sessionUrl)
 					&& !request.getURI().getPath().contains(URL_VERSION)) {
 				if (this.bearerToken == null) {
-					logger.info("Aquiring vCD auth token...");
-					acquireToken(request);
-					logger.info("vCD auth token aquired");
+					acquireToken(request, sessionUrl);
 				}
 
 				request.getHeaders().add(HEADER_VCLOUD_TOKEN, this.vcloudToken);
@@ -135,9 +162,10 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 		}
 	}
 
-	private void acquireToken(HttpRequest request) throws JsonProcessingException {
+	private void acquireToken(HttpRequest request, String sessionUrl) throws JsonProcessingException {
 		final URI tokenUri = UriComponentsBuilder.newInstance().scheme(request.getURI().getScheme())
-				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(PROVIDER_URL_SESSION).build()
+				.host(request.getURI().getHost()).port(request.getURI().getPort()).path(sessionUrl)
+				.build()
 				.toUri();
 
 		// Prepare Headers
@@ -160,5 +188,4 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 				: response.getHeaders().get(HEADER_VCLOUD_TOKEN).get(0);
 		this.bearerToken = response.getHeaders().get(HEADER_BEARER_TOKEN).get(0);
 	}
-
 }

@@ -7,6 +7,8 @@ vRA 8.x projects are called vRA NG (New Generation) projects in **Build Tools fo
 - *Content Descriptor* defines what part vRA 8.x content will be part of this project - `content.yaml`
 - *Content Container* holds the actual content representation -`./src` folder
 
+**Note**: *This project type is also compatible with VCF 9 Automation - Classic tenant*
+
 ## Table Of Contents
 
 1. [Maven Archetype](#maven-archetype)
@@ -23,12 +25,12 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.vra-ng.archetypes \
     -DarchetypeArtifactId=package-vra-ng-archetype \
-    -DarchetypeVersion=<iac_for_vrealize_version> \
+    -DarchetypeVersion=<build_tools_for_aria_version> \
     -DgroupId=local.corp.it.cloud \
     -DartifactId=catalog
 ```
 
-**Note**: *The specified <iac_for_vrealize_version> should be minimum 2.4.11*
+**Note**: *If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.*
 
 #### Content Structure
 
@@ -117,6 +119,10 @@ The following need to be added to the profile that you intend to use:
     <vrang.vro.integration>{vro+integration+name}</vrang.vro.integration>
 </profile>
 ```
+
+- `vrang.username` - For VCF 9 Automation - Classic organization instead of using <vrang.tenant>
+you need to provide username in the following format: user@domain, e.g. configurationadmin@Classic. Currently only operations via the
+Classic organization admin are supported, push and pull via Provider admin are not supported (e.g. via admin@System).
 
 - `vrang.refresh.token` - will use the given refresh token instead of credentials.
 
