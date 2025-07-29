@@ -12,7 +12,7 @@
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
-		<revision>4.7.1-SNAPSHOT</revision>
+		<revision>0.111.114</revision>
 		<java.version>17</java.version>
 	</properties>
 
@@ -283,6 +283,11 @@
         </profile>
 	</profiles>
 	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>ossgh</name>
+			<url>${releaseRepositoryUrl}</url>
+		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>artifactory-c-01a-snapshots</name>
