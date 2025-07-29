@@ -283,6 +283,11 @@
         </profile>
 	</profiles>
 	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>ossgh</name>
+			<url>${releaseRepositoryUrl}</url>
+		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>artifactory-c-01a-snapshots</name>
