@@ -13,6 +13,7 @@
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>polyglotpkg</artifactId>
+    <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <properties>

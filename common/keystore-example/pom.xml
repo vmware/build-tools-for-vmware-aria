@@ -16,6 +16,7 @@
 
 	<groupId>com.vmware.pscoe.build</groupId>
 	<artifactId>keystore.example</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>

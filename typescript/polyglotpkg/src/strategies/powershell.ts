@@ -18,7 +18,7 @@ import { Logger } from "winston";
 import { BaseStrategy } from "./base";
 import { run } from "../lib/utils";
 import { ActionOptions, PlatformDefinition, Events } from "../lib/model";
-import { cpSync, mkdirSync, readFileSync } from 'fs';
+import { cpSync, mkdirSync, readFileSync, existsSync } from 'fs';
 import { findFiles } from '../lib/file-system';
 
 export class PowershellStrategy extends BaseStrategy {
@@ -89,30 +89,29 @@ export class PowershellStrategy extends BaseStrategy {
 
 		const psScriptName: string = polyglotJson.platform.entrypoint.split(/[\\/]+/gm)[1].split(".")[0];
 		const depsManifest: string = path.join(this.options.out, `${psScriptName}.ps1`);
-		const deps: string = readFileSync(depsManifest, "utf-8");
 		const modulesPath: string = path.resolve(path.join(this.options.outBase, "Modules"));
-		const modules: string[] = [];
-
-		deps.split(/\r?\n/).forEach(line => {
-			if (line.indexOf("Import-Module") !== -1 && line.indexOf("#@ignore") === -1 && !line.startsWith("#")) {
-				const module: string = line.replace("Import-Module", "").replace("-Name", "").replace(";", "").trim();
-				modules.push(module);
-			}
-		});
-
-		this.logger.info(`Powershell modules included: ${modules}`);
+		const modules: string[] = readFileSync(depsManifest, "utf-8")
+			.split(/\r?\n/)
+			.filter(line => !(/^\s*#|#\s*@ignore/gm).test(line) && line.indexOf("Import-Module") >= 0)
+			.map(line => line.replace(/Import-Module|-Name|;/gm, "").trim());
 
 		const moduleNames = modules.join(",");
-		const securityProtocolArg = polyglotJson.platform.protocolType ? `[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::${polyglotJson.platform.protocolType};` : "";
-		const command = `${securityProtocolArg} Save-Module -Name ${moduleNames} -Path '${modulesPath}' -Repository PSGallery`;
-
-		const args = polyglotJson.platform.protocolType ? [`-c "${command}"`] : [command];
-		if (modules.length > 0) {
-			mkdirSync(modulesPath, { recursive: true });
-			this.logger.info(`Downloading and saving dependencies in "${modulesPath}..."`);
-			await run("pwsh", args);
-		} else {
+		if (!moduleNames) {
 			this.logger.info("No change in dependencies. Skipping installation...");
+			return;
+		}
+
+		this.logger.info(`Downloading and saving dependencies in "${modulesPath}": [${moduleNames}]`);
+		mkdirSync(modulesPath, { recursive: true });
+		const { protocolType } = polyglotJson.platform;
+		const securityProtocolArg = !protocolType ? "" : `[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::${protocolType}; `;
+		const command = `${securityProtocolArg}Save-Module -Name ${moduleNames} -Path '${modulesPath}' -Repository PSGallery`;
+		this.logger.debug(`Running powershell command: ${command}`);
+		await run("pwsh", ["-c", `"${command}"`]);
+
+		const missingModules = modules.filter(module => !existsSync(path.join(modulesPath, module))).join();
+		if (missingModules) {
+			throw new Error(`Error downloading modules ${missingModules}! Verify that:\n1. The default PSGallery repository is registered and accessible\n2. All listed modules are valid and can be fetched from PSGallery!`);
 		}
 	}
 

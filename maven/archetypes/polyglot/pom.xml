@@ -9,6 +9,7 @@
 
 	<groupId>com.vmware.pscoe.polyglot.archetypes</groupId>
 	<artifactId>package-polyglot-archetype</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>maven-archetype</packaging>
 
 	<properties>

@@ -13,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.ts.types</groupId>
 	<artifactId>base-type</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<modules>

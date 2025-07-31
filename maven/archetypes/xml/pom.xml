@@ -7,6 +7,7 @@
     </parent>
     <groupId>com.vmware.pscoe.o11n.archetypes</groupId>
     <artifactId>package-xml-archetype</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>maven-archetype</packaging>
 	<properties>
 		<main.basedir>${project.baseUri}../../../</main.basedir>

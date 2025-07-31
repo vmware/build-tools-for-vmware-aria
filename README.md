@@ -29,14 +29,9 @@ Build Tools for VMware Aria provides development and release management tools fo
     ```
 2. Execute:
     ```shell
-    mvn clean install -f pom.xml -pl .
-    mvn clean install -f common/keystore-example/pom.xml
-    mvn clean install -f maven/npmlib/pom.xml
-    mvn clean install -f pom.xml
-    mvn clean install -f maven/base-package/pom.xml
-    mvn clean install -f packages/pom.xml
-    mvn clean install -f maven/typescript-project-all/pom.xml
-    mvn clean install -f maven/repository/pom.xml
+    mvn clean install -D modules.plugins
+    mvn clean install -D modules.tools
+    mvn clean package -D modules.repository
     ```
 
 ## Package dependencies
@@ -50,13 +45,6 @@ To check if the dependencies are met, you can run:
 ```sh
 curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
 ```
-
-## Quickstart
-
-If you have a dev machine that has access to the internet as well as a linux VM, you can use the zero-dependency [go-btva](https://github.com/Michaelpalacce/go-btva) to:
-- [x] Install needed dependencies
-- [x] Setup local environment for development
-- [x] Setup Artifact Manager and a build server
 
 ## Support
 

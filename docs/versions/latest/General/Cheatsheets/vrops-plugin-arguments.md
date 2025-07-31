@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vrops-package-maven-plugin:4.5.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vrops-package-maven-plugin:4.7.1-SNAPSHOT
 
 Name: vrops-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vrops-package-maven-plugin
-Version: 4.5.1-SNAPSHOT
+Version: 4.7.1-SNAPSHOT
 Goal Prefix: vrops
 
 This plugin has 3 goals:
@@ -23,6 +23,10 @@ vrops:package
 
     project (Default: ${project})
       Project handle.
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
 vrops:pull
   Description: (no description available)
@@ -87,6 +91,10 @@ vrops:pull
     vro (Default: ${vro.*})
       User property: vro
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
     vrops (Default: ${vrops.*})
       User property: vrops
@@ -165,6 +173,10 @@ vrops:push
     vro (Default: ${vro.*})
       User property: vro
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
     vrops (Default: ${vrops.*})
       User property: vrops
