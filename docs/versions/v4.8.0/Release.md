@@ -14,25 +14,25 @@ The `go-btva` tool has been archived so references in the documentation are remo
 ## Features
 
 
-### *Support for push of Orchestrator packages to VCF9
+### *Support for push/pull of Orchestrator packages to VCF9
 
-Push of different Orchestrator package types to VCF 9 is now supported. This includes:
+Push/pull of different Orchestrator package types to VCF 9 is now supported. This includes:
 * actions-package
 * xml-package
-* typescript-project-all
+* typescript-project-all (only push)
 
 Since VCF 9 uses vCD based-authentication the username needs to contain domain as well, e.g.:
 * <vro.username>admin@System</vro.username> - This results in code push via the Provider administrative user "admin"
 * <vro.username>configurationadmin@Classic</vro.username> - This results in code push via the Classic organization administrative user "configurationadmin"
 
-### *Support for push of `vra-ng` packages to Classic organization in VCF9
+### *Support for push/pull of `vra-ng` packages to Classic organization in VCF9
 
-Push of `vra-ng` package types to VCF 9 Classic organization is now supported.
+Push/pull of `vra-ng` package types to/from VCF 9 Classic organization is now supported.
 
 Since VCF 9 uses vCD based-authentication the username needs to contain domain as well. Currently only push through Classic organization administrator
 is supported, e.g.:
 * <vrang.username>configurationadmin@Classic</vrang.username>
-
+* <vrang.org.name>Classic</vrang.org.name>
 
 ## Improvements
 

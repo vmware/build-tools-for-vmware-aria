@@ -19,6 +19,15 @@
 
 ## Features
 
+### *Support for push/pull of `vra-ng` packages to Classic organization in VCF9 via provider admin user
+
+Push/pull of `vra-ng` package types to/from VCF 9 Classic organization via provider admin user is now supported, e.g.:
+
+* <vrang.username>admin@System</vrang.username>
+* <vrang.org.name>Classic</vrang.org.name>
+
+Note that the "System" domain is used to identify the user as Provider admin.
+
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
