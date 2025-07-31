@@ -196,7 +196,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 		if (Double.parseDouble(apiVersion) >= Double.parseDouble(RestClientVcd.API_VERSION_38)
 				&& Double.parseDouble(apiVersion) < Double.parseDouble(RestClientVcd.API_VERSION_40)) {
 			System.out.println("Unsupported version " + apiVersion);
-			logger.warn("Detected vCD API version equal or greater than " + RestClientVcd.API_VERSION_38
+			logger.warn("Detected VCD API version equal or greater than " + RestClientVcd.API_VERSION_38
 					+ " and lower than " + RestClientVcd.API_VERSION_40 + ". Switching to using API version "
 					+ RestClientVcd.API_VERSION_37);
 			apiVersion = RestClientVcd.API_VERSION_37;
@@ -207,7 +207,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	}
 
 	/**
-	 * Intercepts all requests done to the vCD API.
+	 * Intercepts all requests done to the VCD API.
 	 * 
 	 * @param request   Http request
 	 * @param body      body

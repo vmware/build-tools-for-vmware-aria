@@ -211,7 +211,7 @@ public class RestClientVcd extends RestClient {
 			// Preserving API version check for backwards compatibility
 			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)
 					&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
-				logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
+				logger.warn("Detected VCD API version equal or greater than " + API_VERSION_38
 						+ " and lower than " + API_VERSION_40 + ". Switching to using API version " + API_VERSION_37);
 				this.apiVersion = API_VERSION_37;
 			}

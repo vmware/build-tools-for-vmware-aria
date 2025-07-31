@@ -263,7 +263,7 @@ public final class RestClientFactory {
 
 	private static String getVcdApiVersion(ConfigurationVcd configuration, RestTemplate restTemplate) {
 		RestClientVcd versionRestClient = new RestClientVcd(configuration, restTemplate);
-		// vCD API version is passed to Content-Type headers.
+		// VCD API version is passed to Content-Type headers.
 		// No authentication is required to obtain API version
 		return versionRestClient.getVersion();
 	}
@@ -338,7 +338,7 @@ public final class RestClientFactory {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		// For VCF 9 use vCD based interceptor to authenticate
+		// For VCF 9 use VCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
 			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
@@ -410,7 +410,7 @@ public final class RestClientFactory {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		// For VCF 9 use vCD based interceptor to authenticate
+		// For VCF 9 use VCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
 			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
@@ -431,8 +431,8 @@ public final class RestClientFactory {
 	 * @param configuration The "configuration" parameter is an object of type
 	 *                      ConfigurationVcd. It
 	 *                      contains the necessary configuration settings for
-	 *                      connecting to a vCloud Director (vCD) instance.
-	 *                      This could include information such as the vCD server
+	 *                      connecting to a vCloud Director (VCD) instance.
+	 *                      This could include information such as the VCD server
 	 *                      URL, credentials, and any other required
 	 *                      settings.
 	 * @return The method is returning an instance of the RestClientVcd class.

@@ -23,7 +23,7 @@ import com.vmware.pscoe.iac.artifact.model.PackageType;
 public final class ConfigurationVcd extends Configuration {
 	// Important - when modify properties refer to comments in @Configuration
 	/**
-	 * vCD Package Import content conflict resolution mode
+	 * VCD Package Import content conflict resolution mode
 	 */
 	public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
 
