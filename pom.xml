@@ -12,7 +12,7 @@
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
-		<revision>4.7.1-SNAPSHOT</revision>
+		<revision>4.8.1-SNAPSHOT</revision>
 		<java.version>17</java.version>
 	</properties>
 
@@ -54,7 +54,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>flatten-maven-plugin</artifactId>
-					<version>1.7.1</version>
+					<version>1.7.2</version>
 					<inherited>true</inherited>
 					<configuration>
 						<updatePomFile>true</updatePomFile>
@@ -283,6 +283,11 @@
         </profile>
 	</profiles>
 	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>ossgh</name>
+			<url>${releaseRepositoryUrl}</url>
+		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>artifactory-c-01a-snapshots</name>
