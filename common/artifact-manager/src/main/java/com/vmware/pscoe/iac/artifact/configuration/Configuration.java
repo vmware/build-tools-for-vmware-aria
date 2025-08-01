@@ -206,7 +206,8 @@ public abstract class Configuration {
 		}
 
 		try {
-			return Integer.parseInt(this.properties.getProperty(SSH_TIMEOUT));
+			int timeout = Integer.parseInt(this.properties.getProperty(SSH_TIMEOUT));
+			return timeout == 0 ? DEFAULT_CONNECTION_TIMEOUT : timeout;
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("SSH timeout is not a number", e);
 		}
