@@ -1,5 +1,5 @@
 /**
- * Represents a vCD host with all its configuration parameters.
+ * Represents a VCD host with all its configuration parameters.
  */
 declare interface VclHost {
 	readonly internalId: string;
@@ -125,11 +125,11 @@ declare interface VclHost {
 	 */
 	updateInternalState(): void;
 	/**
-	 * Get the vCD API Version.
+	 * Get the VCD API Version.
 	 */
 	getApiVersion(): string;
 	/**
-	 * Validate vCD API Version.
+	 * Validate VCD API Version.
 	 * @param selectedApiVersion 
 	 */
 	validateApiVersion(selectedApiVersion: string): string;
@@ -193,7 +193,7 @@ declare interface VclHost {
 }
 
 /**
- * Represents a vCD host for administrative tasks.
+ * Represents a VCD host for administrative tasks.
  */
 declare interface VclHostAdmin {
 	/**
@@ -249,11 +249,11 @@ declare interface VclHostAdmin {
 }
 
 /**
- * Manages the configuration of vCD hosts.
+ * Manages the configuration of VCD hosts.
  */
 declare class VclHostManager {
 	/**
-	 * Creates a host. This is the entry point to vCD.
+	 * Creates a host. This is the entry point to VCD.
 	 */
 	static createHost(): VclHost;
 	/**
@@ -668,7 +668,7 @@ declare interface VclOrganization {
 	 */
 	getCatalogs(): VclCatalog[];
 	/**
-	 * Returns all vCDs of this organization.
+	 * Returns all VCDs of this organization.
 	 */
 	getVdcs(): VclVdc[];
 	/**
@@ -785,7 +785,7 @@ declare interface VclAdminOrganization {
 	 */
 	addAdminCatalog(params: VclAdminCatalogParams): VclAdminCatalog;
 	/**
-	 * Returns all admin vCDs of this admin organization.
+	 * Returns all admin VCDs of this admin organization.
 	 */
 	getAdminVdcs(): VclAdminVdc[];
 	/**
@@ -2812,47 +2812,47 @@ declare interface VclDisk {
 declare interface VclAdminExtension {
 	readonly href: string;
 	/**
-	 * Returns all VMW VdcTemplate in this vCD instance.
+	 * Returns all VMW VdcTemplate in this VCD instance.
 	 */
 	getVMWVdcTemplates(): VclVMWVdcTemplate[];
 	/**
-	 * Returns all VIM servers in this vCD instance.
+	 * Returns all VIM servers in this VCD instance.
 	 */
 	getVimServers(): VclVimServer[];
 	/**
-	 * Returns all VIM datastores in this vCD instance.
+	 * Returns all VIM datastores in this VCD instance.
 	 */
 	getVMWDatastores(): VclVMWDatastore[];
 	/**
-	 * Returns all VMW hosts in this vCD instance.
+	 * Returns all VMW hosts in this VCD instance.
 	 */
 	getVMWHosts(): VclVMWHost[];
 	/**
-	 * Returns all VMW external networks in this vCD instance.
+	 * Returns all VMW external networks in this VCD instance.
 	 */
 	getVMWExternalNetworks(): VclVMWExternalNetwork[];
 	/**
-	 * Returns all VMW network pools in this vCD instance.
+	 * Returns all VMW network pools in this VCD instance.
 	 */
 	getVMWNetworkPools(): VclVMWNetworkPool[];
 	/**
-	 * Returns all VMW provider vDCs in this vCD instance.
+	 * Returns all VMW provider vDCs in this VCD instance.
 	 */
 	getVMWProviderVdcs(): VclVMWProviderVdc[];
 	/**
-	 * Returns all licensing reports in this vCD instance.
+	 * Returns all licensing reports in this VCD instance.
 	 */
 	getLicensingReports(): VclLicensingReport[];
 	/**
-	 * Returns all stranded items in this vCD instance.
+	 * Returns all stranded items in this VCD instance.
 	 */
 	getStrandedItems(): VclStrandedItem[];
 	/**
-	 * Returns all extensions/services in this vCD instance.
+	 * Returns all extensions/services in this VCD instance.
 	 */
 	getServices(): VclAdminService[];
 	/**
-	 * Returns all blocking tasks in this vCD instance.
+	 * Returns all blocking tasks in this VCD instance.
 	 */
 	getBlockingTasks(): VclBlockingTask[];
 	/**
@@ -2905,11 +2905,11 @@ declare interface VclAdminExtension {
 	 */
 	getExtensionQueryService(): VclExtensionQueryService;
 	/**
-	 * Returns the Amqp settings of the vCD system.
+	 * Returns the Amqp settings of the VCD system.
 	 */
 	getAmqpSettings(): VclAmqpSettings;
 	/**
-	 * Updates the vCD system's amqp settings.
+	 * Updates the VCD system's amqp settings.
 	 * @param settings 
 	 */
 	updateAmqpSettings(settings: VclAmqpSettings): void;
@@ -2918,7 +2918,7 @@ declare interface VclAdminExtension {
 	 */
 	testAmqpConnection(): boolean;
 	/**
-	 * Updates the vCD system's catalog settings.
+	 * Updates the VCD system's catalog settings.
 	 * @param isSyncEnabled 
 	 * @param refreshInterval 
 	 * @param syncStartMillis 
@@ -2930,82 +2930,82 @@ declare interface VclAdminExtension {
 	 */
 	getBlockingTasksSettings(): VclBlockingTaskSettings;
 	/**
-	 * Updates the vCD system's blocking task settings.
+	 * Updates the VCD system's blocking task settings.
 	 * @param settings 
 	 */
 	updateBlockingTaskSettings(settings: VclBlockingTaskSettings): void;
 	/**
-	 * Returns the Branding settings of the vCD system.
+	 * Returns the Branding settings of the VCD system.
 	 */
 	getBrandingSettings(): VclBrandingSettings;
 	/**
-	 * Updates the vCD system's branding settings.
+	 * Updates the VCD system's branding settings.
 	 * @param settings 
 	 */
 	updateBrandingSettings(settings: VclBrandingSettings): void;
 	/**
-	 * Returns the Email settings of the vCD system.
+	 * Returns the Email settings of the VCD system.
 	 */
 	getEmailSettings(): VclEmailSettings;
 	/**
-	 * Updates the vCD system's email settings.
+	 * Updates the VCD system's email settings.
 	 * @param settings 
 	 */
 	updateEmailSettings(settings: VclEmailSettings): void;
 	/**
-	 * Returns the email Smtp settings of the vCD system.
+	 * Returns the email Smtp settings of the VCD system.
 	 */
 	getEmailSmtpSettings(): VclSmtpSettings;
 	/**
-	 * Returns the General settings of the vCD system.
+	 * Returns the General settings of the VCD system.
 	 */
 	getGeneralSettings(): VclGeneralSettings;
 	/**
-	 * Updates the vCD system's general settings.
+	 * Updates the VCD system's general settings.
 	 * @param settings 
 	 */
 	updateGeneralSettings(settings: VclGeneralSettings): void;
 	/**
-	 * Returns the LDAP group settings of the vCD system.
+	 * Returns the LDAP group settings of the VCD system.
 	 */
 	getLdapGroupSettings(): VclLdapGroupAttributes;
 	/**
-	 * Returns the LDAP settings of the vCD system.
+	 * Returns the LDAP settings of the VCD system.
 	 */
 	getLdapSettings(): VclLdapSettings;
 	/**
-	 * Updates the vCD system's LDAP settings.
+	 * Updates the VCD system's LDAP settings.
 	 * @param settings 
 	 */
 	updateLdapSettings(settings: VclLdapSettings): void;
 	/**
-	 * Returns the LDAP user settings of the vCD system.
+	 * Returns the LDAP user settings of the VCD system.
 	 */
 	getLdapUserSettings(): VclLdapUserAttributes;
 	/**
-	 * Returns the License settings of the vCD system.
+	 * Returns the License settings of the VCD system.
 	 */
 	getLicenseSettings(): VclLicense;
 	/**
-	 * Updates the vCD system's license settings.
+	 * Updates the VCD system's license settings.
 	 * @param license 
 	 */
 	updateLicenseSettings(license: VclLicense): void;
 	/**
-	 * Returns the PasswordPolicy settings of the vCD system.
+	 * Returns the PasswordPolicy settings of the VCD system.
 	 */
 	getPasswordPolicySettings(): VclSystemPasswordPolicySettings;
 	/**
-	 * Updates the vCD system's PasswordPolicy settings.
+	 * Updates the VCD system's PasswordPolicy settings.
 	 * @param settings 
 	 */
 	updatePasswordPolicySettings(settings: VclSystemPasswordPolicySettings): void;
 	/**
-	 * Returns the vCD Admin Settings Resource as defined in the vCD API.
+	 * Returns the VCD Admin Settings Resource as defined in the VCD API.
 	 */
 	getSystemSettings(): VclSystemSettings;
 	/**
-	 * Updates the vCD system settings.
+	 * Updates the VCD system settings.
 	 * @param settings 
 	 */
 	updateSystemSettings(settings: VclSystemSettings): void;
@@ -3014,21 +3014,21 @@ declare interface VclAdminExtension {
 	 */
 	getKerberosSettings(): VclKerberosSettings;
 	/**
-	 * Updates the vCD system's Kerberos settings.
+	 * Updates the VCD system's Kerberos settings.
 	 * @param settings 
 	 */
 	updateKerberosSettings(settings: VclKerberosSettings): void;
 	/**
-	 * Returns the Notifications settings of the vCD system.
+	 * Returns the Notifications settings of the VCD system.
 	 */
 	isNotificationsEnabled(): boolean;
 	/**
-	 * Enable/Disable the vCD system's notifications settings.
+	 * Enable/Disable the VCD system's notifications settings.
 	 * @param enable 
 	 */
 	enableNotifications(enable: boolean): void;
 	/**
-	 * Returns the LicenseMetrics info of the vCD system.
+	 * Returns the LicenseMetrics info of the VCD system.
 	 */
 	getLicenseMetricsInfo(): VclLicenseMetricsInfo;
 	/**
@@ -3036,7 +3036,7 @@ declare interface VclAdminExtension {
 	 */
 	getEnabledBlockingTaskOperations(): VclBlockingTaskOperationType[];
 	/**
-	 * Returns the Lookup service of the vCD system.
+	 * Returns the Lookup service of the VCD system.
 	 */
 	getLookupService(): VclLookupServiceSettings;
 	/**
@@ -3045,7 +3045,7 @@ declare interface VclAdminExtension {
 	 */
 	createVMWVdcTemplate(vdcTemplateParams: any): VclVMWVdcTemplate;
 	/**
-	 * Updates the Lookup service of the vCD system.
+	 * Updates the Lookup service of the VCD system.
 	 * @param params 
 	 */
 	updateLookupService(params: VclLookupServiceParams): VclTask;
@@ -4354,7 +4354,7 @@ declare interface VclBlockingTask {
 }
 
 /**
- * Notification helper. Helps to parse vCD notifications.
+ * Notification helper. Helps to parse VCD notifications.
  */
 declare class VclNotificationHelper {
 	constructor();
@@ -12860,7 +12860,7 @@ declare class VclResourceClassParams {
 
 /**
  * 
- * Information that allows vCloud Director to connect to a
+ * Information that allows VMware Cloud Director to connect to a
  * vSphere lookup service.
  * 
  */
@@ -13241,7 +13241,7 @@ declare class VclNotificationsSettings {
 
 /**
  * 
- * vCloud Director AMQP notification in XML format. This
+ * VMware Cloud Director AMQP notification in XML format. This
  * notification format has been deprecated in favor of a JSON
  * format. It might be removed in a future release.
  * 
@@ -13377,7 +13377,7 @@ declare class VclSmtpSettings {
 
 /**
  * 
- * Represents parameters to register vCloud Director
+ * Represents parameters to register VMware Cloud Director
  * with Component Manager.
  * 
  */
@@ -14131,7 +14131,7 @@ declare class VclImportMediaParams {
 
 /**
  * 
- * Information used to customize the vCloud Director Web console.
+ * Information used to customize the VMware Cloud Director Web console.
  * Include provider-specific text and values.
  * 
  */
@@ -22853,7 +22853,7 @@ declare class VclQueryResultAdminMediaRecord {
 
 /**
  * 
- * Represents a vCloud Director server group that this session is authorized to access.
+ * Represents a VMware Cloud Director server group that this session is authorized to access.
  * 
  */
 declare class VclAuthorizedLocation {
@@ -26334,7 +26334,7 @@ declare class VclLeaseSettingsSection {
 
 /**
  * 
- * Describes an asynchronous operation to be performed by vCloud Director extension.
+ * Describes an asynchronous operation to be performed by VMware Cloud Director extension.
  * 
  */
 declare class VclTaskPrototype {
@@ -29352,7 +29352,7 @@ declare class VclEventProperty {
 
 /**
  * 
- * Represents an asynchronous operation in vCloud Director.
+ * Represents an asynchronous operation in VMware Cloud Director.
  * 
  */
 declare class VclTaskParams {

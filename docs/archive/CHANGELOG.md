@@ -948,11 +948,11 @@ with different domain.
 
 ### Enhancements
 
-* [MVN] vrealize:push goal now supports vCloud Director Angular UI extension projects.
-* [PI] Package installer now supports vCloud Director Angular UI extension projects.
+* [MVN] vrealize:push goal now supports VMware Cloud Director Angular UI extension projects.
+* [PI] Package installer now supports VMware Cloud Director Angular UI extension projects.
 * [MVN] Support for XML workflow representation in TypeScript projects.
 * [MVN] Support for decorators in TypeScript projects.
-* [MVN] Implement support for vCloud Director Angular UI extension projects.
+* [MVN] Implement support for VMware Cloud Director Angular UI extension projects.
 * [TS] Support for vRO policies in TypeScript projects. Files ending with .pl.ts will be transpiled as a vRO policy template.
 * [TS] Enhanced support for vRO resource elements in TypeScript projects.
 * [TS] Enhanced support for vRO configurations and workflows in TypeScript projects.

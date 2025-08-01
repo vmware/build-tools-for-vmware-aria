@@ -149,7 +149,7 @@ public final class VcdNgPackageManifest {
 			pm.cleanup(unpackFolder.toFile());
 		} catch (IOException e) {
 			throw new RuntimeException(
-					"Error occurred while loading vCD Package Manifest for package [" + vcdNgPackage.getFQName() + "]",
+					"Error occurred while loading VCD Package Manifest for package [" + vcdNgPackage.getFQName() + "]",
 					e);
 		}
 

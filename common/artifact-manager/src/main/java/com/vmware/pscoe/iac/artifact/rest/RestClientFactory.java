@@ -263,7 +263,7 @@ public final class RestClientFactory {
 
 	private static String getVcdApiVersion(ConfigurationVcd configuration, RestTemplate restTemplate) {
 		RestClientVcd versionRestClient = new RestClientVcd(configuration, restTemplate);
-		// vCD API version is passed to Content-Type headers.
+		// VCD API version is passed to Content-Type headers.
 		// No authentication is required to obtain API version
 		return versionRestClient.getVersion();
 	}
@@ -272,11 +272,18 @@ public final class RestClientFactory {
 		Properties properties = new Properties();
 
 		properties.setProperty(Configuration.USERNAME,
-				String.format("%s@%s", configuraiton.getUsername(),
+				String.format(ConfigurationVcd.USER_AT_DOMAIN_STRING_FORMAT, configuraiton.getUsername(),
 						configuraiton.getDomain()));
 		properties.setProperty(Configuration.PASSWORD, configuraiton.getPassword());
 		properties.setProperty(Configuration.PORT, configuraiton.getPort() + "");
 		properties.setProperty(Configuration.HOST, configuraiton.getHost());
+
+		if (configuraiton instanceof ConfigurationVraNg) {
+			// Set organization in case provider admin (user@System) is executing a vra-ng
+			// push for specific organization
+			properties.setProperty(ConfigurationVraNg.ORGANIZATION_NAME,
+					((ConfigurationVraNg) configuraiton).getOrgName());
+		}
 
 		return ConfigurationVcd.fromProperties(properties);
 	}
@@ -331,7 +338,7 @@ public final class RestClientFactory {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		// For vCF 9 use vCD based interceptor to authenticate
+		// For VCF 9 use VCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
 			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
@@ -403,7 +410,7 @@ public final class RestClientFactory {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
 		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		// For vCF 9 use vCD based interceptor to authenticate
+		// For VCF 9 use VCD based interceptor to authenticate
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
 			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
@@ -424,8 +431,8 @@ public final class RestClientFactory {
 	 * @param configuration The "configuration" parameter is an object of type
 	 *                      ConfigurationVcd. It
 	 *                      contains the necessary configuration settings for
-	 *                      connecting to a vCloud Director (vCD) instance.
-	 *                      This could include information such as the vCD server
+	 *                      connecting to a VMware Cloud Director (VCD) instance.
+	 *                      This could include information such as the VCD server
 	 *                      URL, credentials, and any other required
 	 *                      settings.
 	 * @return The method is returning an instance of the RestClientVcd class.

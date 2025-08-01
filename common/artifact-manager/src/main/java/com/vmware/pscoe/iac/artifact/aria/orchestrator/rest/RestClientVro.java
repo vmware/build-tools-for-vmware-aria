@@ -22,17 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
-import java.util.List;
-import java.util.Properties;
-import java.util.Optional;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
@@ -54,6 +52,8 @@ import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -736,7 +736,7 @@ public class RestClientVro extends RestClient {
 			String requestBody = String.format("{\"severity\": \"%s\",\"older-than\": %d}", severity, sinceTimestamp);
 			RequestEntity<String> request = RequestEntity.post(syslogsUri)
 					.accept(MediaType.APPLICATION_JSON_UTF8)
-					.header("Content-Type", "application/json")
+					.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 					.body(requestBody);
 			response = restTemplate.exchange(request, String.class);
 		} else {

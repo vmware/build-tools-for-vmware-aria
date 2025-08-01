@@ -121,8 +121,9 @@ The following need to be added to the profile that you intend to use:
 ```
 
 - `vrang.username` - For VCF 9 Automation - Classic organization instead of using <vrang.tenant>
-you need to provide username in the following format: user@domain, e.g. configurationadmin@Classic. Currently only operations via the
-Classic organization admin are supported, push and pull via Provider admin are not supported (e.g. via admin@System).
+you need to provide username in the following format: user@domain. E.g.:
+  - admin@System - Provider admin (the "System" domain is used to identify the user as Provider admin)
+  - configurationadmin@Classic - Classic organization admin
 
 - `vrang.refresh.token` - will use the given refresh token instead of credentials.
 
