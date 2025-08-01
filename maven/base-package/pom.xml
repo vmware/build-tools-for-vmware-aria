@@ -295,6 +295,7 @@
 						<restPassword>${vrops.restPassword}</restPassword>
 						<restAuthSource>${vrops.restAuthSource}</restAuthSource>
 						<restAuthProvider>${vrops.restAuthProvider}</restAuthProvider>
+						<sshTimeout>${vrealize.ssh.timeout}</sshTimeout>
 					</vrops>
 					<vrli>
 						<host>${vrli.host}</host>
@@ -328,6 +329,7 @@
 						<password>${ssh.password}</password>
 						<serverId>${ssh.serverId}</serverId>
 						<directory>${ssh.directory}</directory>
+						<sshTimeout>${vrealize.ssh.timeout}</sshTimeout>
 					</ssh>
 				</configuration>
 			</plugin>

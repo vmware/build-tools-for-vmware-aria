@@ -64,6 +64,7 @@
 							<restPassword>${vrops.restPassword}</restPassword>
 							<restAuthSource>${vrops.restAuthSource}</restAuthSource>
 							<restAuthProvider>${vrops.restAuthProvider}</restAuthProvider>
+							<sshTimeout>${vrealize.ssh.timeout}</sshTimeout>
 						</vrops>
 						<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
 						<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>

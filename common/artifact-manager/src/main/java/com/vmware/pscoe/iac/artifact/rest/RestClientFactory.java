@@ -95,15 +95,15 @@ public final class RestClientFactory {
 	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
 
 	/**
+	 * The number of milliseconds in a second.
+	 */
+	public static final Integer TO_MILISECONDS_MULTIPLIER = 1000;
+
+	/**
 	 * This logger is used to log messages and exceptions related to the creation
 	 * and usage of REST clients.
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientFactory.class);
-
-	/**
-	 * The number of milliseconds in a second.
-	 */
-	private static final Integer TO_MILISECONDS_MULTIPLIER = 1000;
 
 	/**
 	 * The beginning of the HTTP status code range for successful responses.

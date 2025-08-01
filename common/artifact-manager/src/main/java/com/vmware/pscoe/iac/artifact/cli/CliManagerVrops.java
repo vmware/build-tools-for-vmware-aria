@@ -26,6 +26,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.ssh.SshClient;
 
 public class CliManagerVrops implements AutoCloseable {
@@ -97,6 +98,10 @@ public class CliManagerVrops implements AutoCloseable {
 		return !this.cmdList.isEmpty();
 	}
 
+	private int getSshTimeout() {
+		return config.getSshTimeout() * RestClientFactory.TO_MILISECONDS_MULTIPLIER;
+	}
+
 	@Override
 	public void close() {
 		fileList = new ArrayList<>();
@@ -112,7 +117,7 @@ public class CliManagerVrops implements AutoCloseable {
 			StringBuilder commands = new StringBuilder();
 			commands.append("rm -r " + exportRemotePath + ";");
 			commands.append("rm -r " + importRemotePath + ";");
-			SshClient.execute(session, commands.toString());
+			SshClient.execute(session, commands.toString(), getSshTimeout());
 		}
 	}
 
@@ -146,7 +151,7 @@ public class CliManagerVrops implements AutoCloseable {
 				escapeShellCharacters(dashboard), escapeShellCharacters(String.join(", ", groups)));
 		try {
 			logger.info("Sharing dashboards using command:\n{}", command);
-			List<String> output = SshClient.execute(session, command);
+			List<String> output = SshClient.execute(session, command, getSshTimeout());
 			output.stream().forEach(logger::info);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -160,7 +165,7 @@ public class CliManagerVrops implements AutoCloseable {
 				escapeShellCharacters(dashboard), escapeShellCharacters(String.join(", ", groups)));
 		try {
 			logger.info("Unsharing dashboards using command:\n{}", command);
-			List<String> output = SshClient.execute(session, command);
+			List<String> output = SshClient.execute(session, command, getSshTimeout());
 			output.stream().forEach(logger::info);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -184,7 +189,7 @@ public class CliManagerVrops implements AutoCloseable {
 		}
 		try {
 			logger.info("Activating dashboards using command(s):\n{}", String.join(";\n", commands));
-			List<String> output = SshClient.execute(session, String.join(";", commands));
+			List<String> output = SshClient.execute(session, String.join(";", commands), getSshTimeout());
 			output.stream().forEach(logger::info);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -209,7 +214,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 		try {
 			logger.info("Deactivating dashboards using command(s):\n{}", String.join(";\n", commands));
-			List<String> output = SshClient.execute(session, String.join(";", commands));
+			List<String> output = SshClient.execute(session, String.join(";", commands), getSshTimeout());
 			output.stream().forEach(logger::info);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -264,7 +269,7 @@ public class CliManagerVrops implements AutoCloseable {
 			String remoteCommands = String.join(";", cmdList);
 			logger.info("Executing vROps SSH remote command(s):\n{}", String.join("\n", cmdList));
 
-			List<String> output = SshClient.execute(session, remoteCommands);
+			List<String> output = SshClient.execute(session, remoteCommands, getSshTimeout());
 			output.stream().forEach(logger::info);
 		} catch (JSchException | SftpException e) {
 			logger.error(e.getMessage(), e);
@@ -289,7 +294,7 @@ public class CliManagerVrops implements AutoCloseable {
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
 		reconnect();
-		List<String> output = SshClient.execute(session, command);
+		List<String> output = SshClient.execute(session, command, getSshTimeout());
 		output.stream().forEach(logger::info);
 
 		List<String> files = new ArrayList<>();
@@ -307,7 +312,7 @@ public class CliManagerVrops implements AutoCloseable {
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
 		reconnect();
-		List<String> output = SshClient.execute(session, command);
+		List<String> output = SshClient.execute(session, command, getSshTimeout());
 		output.stream().forEach(logger::info);
 
 		List<String> files = new ArrayList<>();
@@ -325,7 +330,7 @@ public class CliManagerVrops implements AutoCloseable {
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
 		reconnect();
-		List<String> output = SshClient.execute(this.session, command);
+		List<String> output = SshClient.execute(session, command, getSshTimeout());
 		output.stream().forEach(logger::info);
 
 		List<String> files = new ArrayList<>();
@@ -347,7 +352,7 @@ public class CliManagerVrops implements AutoCloseable {
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
 		reconnect();
-		List<String> output = SshClient.execute(this.session, command);
+		List<String> output = SshClient.execute(session, command, getSshTimeout());
 		output.stream().forEach(logger::info);
 
 		List<String> files = new ArrayList<>();
@@ -365,7 +370,7 @@ public class CliManagerVrops implements AutoCloseable {
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
 		reconnect();
-		List<String> output = SshClient.execute(session, command);
+		List<String> output = SshClient.execute(session, command, getSshTimeout());
 		output.stream().forEach(logger::info);
 
 		List<String> files = new ArrayList<>();

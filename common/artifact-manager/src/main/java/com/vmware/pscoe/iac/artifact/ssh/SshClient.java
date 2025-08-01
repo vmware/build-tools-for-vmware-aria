@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -23,6 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -32,10 +36,6 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public final class SshClient {
 	private static final int CONNECT_TIMEOUT = 30000;
 	private static final int INPUT_BUFFER_SIZE = 1024;
@@ -44,7 +44,7 @@ public final class SshClient {
 	private static final String STRICT_HOST_CHECK = "no";
 	private static final String CHANNEL_TYPE_EXEC = "exec";
 	private static final String CHANNEL_TYPE_SFTP = "sftp";
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SshClient.class);
 
 	private SshClient() {
@@ -70,11 +70,13 @@ public final class SshClient {
 		return session;
 	}
 
-	public static List<String> execute(Session session, String command) {
-	    LOGGER.debug("Execute | Session is connected: '{}'", session.isConnected());
+	public static List<String> execute(Session session, String command, int timeout) {
+		LOGGER.debug("Execute | Session is connected: '{}'", session.isConnected());
 		List<String> output = new ArrayList<>();
 		Channel channel = null;
 		InputStream in = null;
+		long startTime = System.currentTimeMillis();
+
 		try {
 			channel = session.openChannel(CHANNEL_TYPE_EXEC);
 			((ChannelExec) channel).setCommand(command);
@@ -83,13 +85,14 @@ public final class SshClient {
 			final ByteArrayOutputStream errs = new ByteArrayOutputStream();
 			((ChannelExec) channel).setErrStream(errs);
 			final ByteArrayOutputStream outs = new ByteArrayOutputStream();
-			((ChannelExec) channel).setOutputStream(outs);
+			channel.setOutputStream(outs);
 
 			reconnectChannel(channel);
 			in = channel.getInputStream();
 
 			LOGGER.debug("Execute | Channel is connected: '{}'", channel.isConnected());
 			byte[] buffer = new byte[INPUT_BUFFER_SIZE];
+
 			while (true) {
 				while (in.available() > 0) {
 					int i = in.read(buffer, 0, INPUT_BUFFER_SIZE);
@@ -102,23 +105,27 @@ public final class SshClient {
 				if (channel.isClosed()) {
 					break;
 				}
-				try {
-					Thread.sleep(THREAD_SLEEP_TIME);
-				} catch (InterruptedException ee) {
-				    LOGGER.warn("Sleep interrupted: {}.", ee.getMessage());
+
+				if (System.currentTimeMillis() - startTime > timeout) {
+					LOGGER.error("SSH: Command execution timed out after {} ms", timeout);
+					break;
 				}
+
+				sleep(THREAD_SLEEP_TIME);
 			}
 
 			output.add(new String(outs.toByteArray()));
 			output.add(new String(errs.toByteArray()));
 		} catch (Exception e) {
-		    LOGGER.error("SSH: Failed to execute remote command: '{}' : '{}' : {}", command, e.getClass().getName(), e.getMessage());
+			LOGGER.error("SSH: Failed to execute remote command: '{}' : '{}' : {}", command, e.getClass().getName(),
+					e.getMessage());
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException ioe) {
-				    LOGGER.warn("SSH: Failed to close reading from stdout for command '{}'. {}. Ignoring this error", command, ioe.getMessage());
+					LOGGER.warn("SSH: Failed to close reading from stdout for command '{}'. {}. Ignoring this error",
+							command, ioe.getMessage());
 				}
 			}
 			if (channel != null) {
@@ -129,7 +136,8 @@ public final class SshClient {
 		return output;
 	}
 
-	public static void copyLocalToRemote(Session session, List<File> fileList, String dest) throws JSchException, SftpException {
+	public static void copyLocalToRemote(Session session, List<File> fileList, String dest)
+			throws JSchException, SftpException {
 		final ChannelSftp sftpChannel = (ChannelSftp) session.openChannel(CHANNEL_TYPE_SFTP);
 		try {
 			reconnectChannel(sftpChannel);
@@ -142,7 +150,8 @@ public final class SshClient {
 				try {
 					sftpChannel.put(file.getAbsolutePath(), destinationFile);
 				} catch (SftpException e) {
-				    LOGGER.error("Failed to put file '{}' as remote file '{}' via SFTP session: {}", file.getAbsolutePath(), destinationFile, e.getMessage());
+					LOGGER.error("Failed to put file '{}' as remote file '{}' via SFTP session: {}",
+							file.getAbsolutePath(), destinationFile, e.getMessage());
 				}
 			});
 		} finally {
@@ -152,20 +161,22 @@ public final class SshClient {
 		}
 	}
 
-	public static void copyRemoteToLocal(Session session, List<String> remoteFiles, File localDir) throws JSchException {
+	public static void copyRemoteToLocal(Session session, List<String> remoteFiles, File localDir)
+			throws JSchException {
 		ChannelSftp sftpChannel = (ChannelSftp) session.openChannel(CHANNEL_TYPE_SFTP);
 		try {
 			reconnectChannel(sftpChannel);
 			remoteFiles.forEach(remoteFile -> {
 				try {
-				    LOGGER.info("Copying file '{}' to '{}'", remoteFile, localDir.getAbsoluteFile());
+					LOGGER.info("Copying file '{}' to '{}'", remoteFile, localDir.getAbsoluteFile());
 					if (isFileExisting(sftpChannel, remoteFile)) {
 						sftpChannel.get(remoteFile, localDir.getAbsolutePath());
 					} else {
-					    LOGGER.warn("Unable to get remote file '{}' as it does not exist", remoteFile);
+						LOGGER.warn("Unable to get remote file '{}' as it does not exist", remoteFile);
 					}
 				} catch (SftpException e) {
-				    LOGGER.error("Failed to get remote file '{}' into local directory '{}' via SFTP session: {}", remoteFile, localDir.getAbsolutePath(),
+					LOGGER.error("Failed to get remote file '{}' into local directory '{}' via SFTP session: {}",
+							remoteFile, localDir.getAbsolutePath(),
 							e.getMessage());
 				}
 			});
@@ -178,7 +189,7 @@ public final class SshClient {
 
 	public static void createDirectory(ChannelSftp sftpChannel, String directory, boolean forceDisconnect) {
 		if (sftpChannel == null) {
-		    LOGGER.error("Unable to open SFTP channel");
+			LOGGER.error("Unable to open SFTP channel");
 			return;
 		}
 		try {
@@ -195,7 +206,7 @@ public final class SshClient {
 		} catch (Exception e) {
 			String message = e.getMessage();
 			if (!message.contains(FILE_EXISTS_MESSAGE)) {
-			    LOGGER.error("Failed to create directory '{}', {}", directory, e.getMessage());
+				LOGGER.error("Failed to create directory '{}', {}", directory, e.getMessage());
 			}
 		} finally {
 			if (forceDisconnect) {
@@ -222,8 +233,16 @@ public final class SshClient {
 				}
 				channel.connect(CONNECT_TIMEOUT);
 			} catch (JSchException e) {
-			    LOGGER.error("Unable to reconnect channel '{}' : {}", channel.getClass().getName(), e.getMessage());
+				LOGGER.error("Unable to reconnect channel '{}' : {}", channel.getClass().getName(), e.getMessage());
 			}
+		}
+	}
+
+	private static void sleep(int sleepTime) {
+		try {
+			Thread.sleep(sleepTime);
+		} catch (InterruptedException ee) {
+			LOGGER.warn("Sleep interrupted: {}.", ee.getMessage());
 		}
 	}
 }
