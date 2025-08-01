@@ -12860,7 +12860,7 @@ declare class VclResourceClassParams {
 
 /**
  * 
- * Information that allows vCloud Director to connect to a
+ * Information that allows VMware Cloud Director to connect to a
  * vSphere lookup service.
  * 
  */
@@ -13241,7 +13241,7 @@ declare class VclNotificationsSettings {
 
 /**
  * 
- * vCloud Director AMQP notification in XML format. This
+ * VMware Cloud Director AMQP notification in XML format. This
  * notification format has been deprecated in favor of a JSON
  * format. It might be removed in a future release.
  * 
@@ -13377,7 +13377,7 @@ declare class VclSmtpSettings {
 
 /**
  * 
- * Represents parameters to register vCloud Director
+ * Represents parameters to register VMware Cloud Director
  * with Component Manager.
  * 
  */
@@ -14131,7 +14131,7 @@ declare class VclImportMediaParams {
 
 /**
  * 
- * Information used to customize the vCloud Director Web console.
+ * Information used to customize the VMware Cloud Director Web console.
  * Include provider-specific text and values.
  * 
  */
@@ -22853,7 +22853,7 @@ declare class VclQueryResultAdminMediaRecord {
 
 /**
  * 
- * Represents a vCloud Director server group that this session is authorized to access.
+ * Represents a VMware Cloud Director server group that this session is authorized to access.
  * 
  */
 declare class VclAuthorizedLocation {
@@ -26334,7 +26334,7 @@ declare class VclLeaseSettingsSection {
 
 /**
  * 
- * Describes an asynchronous operation to be performed by vCloud Director extension.
+ * Describes an asynchronous operation to be performed by VMware Cloud Director extension.
  * 
  */
 declare class VclTaskPrototype {
@@ -29352,7 +29352,7 @@ declare class VclEventProperty {
 
 /**
  * 
- * Represents an asynchronous operation in vCloud Director.
+ * Represents an asynchronous operation in VMware Cloud Director.
  * 
  */
 declare class VclTaskParams {

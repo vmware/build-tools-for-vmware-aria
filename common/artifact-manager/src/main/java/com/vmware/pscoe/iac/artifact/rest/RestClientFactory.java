@@ -431,7 +431,7 @@ public final class RestClientFactory {
 	 * @param configuration The "configuration" parameter is an object of type
 	 *                      ConfigurationVcd. It
 	 *                      contains the necessary configuration settings for
-	 *                      connecting to a vCloud Director (VCD) instance.
+	 *                      connecting to a VMware Cloud Director (VCD) instance.
 	 *                      This could include information such as the VCD server
 	 *                      URL, credentials, and any other required
 	 *                      settings.
