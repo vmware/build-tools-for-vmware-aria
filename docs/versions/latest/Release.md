@@ -24,6 +24,14 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Add SSH timeout common configuration*
+
+Common configuration for timeout on SSH operations is added that can be used by any archetype that needs it.
+The new timeout has the following configuration options:
+* <vrealize.ssh.timeout> - in `settings.xml` profile
+* vrealize_ssh_timeout - as `installer` script input
+* default value of 300 if not provided
+
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ## Improvements
@@ -38,6 +46,18 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+### *Add SSH timeout to vROps operations*
+
+Use the newly introduced SSH timeout common configuration in vROps push/pull operations.
+
+#### Previous Behavior
+
+SSH operations have no timeout which in certain scenarios results in hanging push/pull operation.
+
+#### New Behavior
+
+SSH operations use the configured (or default) timeout value and if reached - the push/pull operation fails.
 
 ## Upgrade procedure
 
