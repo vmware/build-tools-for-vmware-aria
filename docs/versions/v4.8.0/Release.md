@@ -6,7 +6,6 @@
 ## Deprecations
 
 
-
 ### *Remove `go-btva` reference
 
 The `go-btva` tool has been archived so references in the documentation are removed.
