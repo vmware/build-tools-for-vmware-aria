@@ -51,20 +51,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVroNg;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor.WorkflowExecutionException;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
-import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -91,6 +91,13 @@ enum Option {
 	SOCKET_TIMEOUT(
 			"http_socket_timeout",
 			Configuration.SOCKET_TIMEOUT),
+	/**
+	 *
+	 * timeouts.
+	 */
+	SSH_TIMEOUT(
+			"vrealize_ssh_timeout",
+			Configuration.SSH_TIMEOUT),
 	/**
 	 * VRO force import latest package versions.
 	 */
@@ -846,7 +853,11 @@ public final class Installer {
 		/**
 		 * SSH.
 		 */
-		SSH("ssh_");
+		SSH("ssh_"),
+		/**
+		 * VRLI.
+		 */
+		VREALIZE("vrealize_");
 
 		/**
 		 * value.
@@ -959,9 +970,8 @@ public final class Installer {
 		}
 
 		if (input.allTrue(Option.VROPS_IMPORT)) {
-			PackageStoreFactory
-					.getInstance(
-							ConfigurationVrops.fromProperties(input.getMappings(ConfigurationPrefix.VROPS.getValue())))
+			String[] prefixes = { ConfigurationPrefix.VROPS.getValue(), ConfigurationPrefix.VREALIZE.getValue() };
+			PackageStoreFactory.getInstance(ConfigurationVrops.fromProperties(input.getMappings(prefixes)))
 					.importAllPackages(getFilesystemPackages(PackageType.VROPS), false, vroEnableBackup);
 		}
 
@@ -1202,6 +1212,11 @@ public final class Installer {
 		userInput(input, Option.SOCKET_TIMEOUT, "  HTTP socket timeout",
 				Configuration.DEFAULT_SOCKET_TIMEOUT.toString());
 		Validate.timeout(input.get(Option.SOCKET_TIMEOUT), input.getText());
+
+		input.getText().getTextTerminal().println("SSH Common Properties:");
+		userInput(input, Option.SSH_TIMEOUT, "  SSH execution timeout",
+				Configuration.DEFAULT_SSH_TIMEOUT.toString());
+		Validate.timeout(input.get(Option.SSH_TIMEOUT), input.getText());
 	}
 
 	private static void setCommonProperties(final Input input) {
