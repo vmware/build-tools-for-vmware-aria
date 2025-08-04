@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -107,8 +108,7 @@ public final class SshClient {
 				}
 
 				if (System.currentTimeMillis() - startTime > timeout) {
-					LOGGER.error("SSH: Command execution timed out after {} ms", timeout);
-					break;
+					throw new TimeoutException(String.format("SSH: Command execution timed out after %s ms", timeout));
 				}
 
 				sleep(THREAD_SLEEP_TIME);
@@ -116,6 +116,10 @@ public final class SshClient {
 
 			output.add(new String(outs.toByteArray()));
 			output.add(new String(errs.toByteArray()));
+		} catch (TimeoutException e) {
+			output.stream().forEach(LOGGER::info);
+			throw new RuntimeException(String.format("SSH: Failed to execute remote command: '%s' : '%s' : %s", command,
+					e.getClass().getName(), e.getMessage()));
 		} catch (Exception e) {
 			LOGGER.error("SSH: Failed to execute remote command: '{}' : '{}' : {}", command, e.getClass().getName(),
 					e.getMessage());
