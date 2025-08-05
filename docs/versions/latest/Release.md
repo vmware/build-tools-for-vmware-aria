@@ -59,6 +59,14 @@ SSH operations have no timeout which in certain scenarios results in hanging pus
 
 SSH operations use the configured (or default) timeout value and if reached - the push/pull operation fails.
 
+### *Add `Workflow` to XML based archetypes path for Workflows content*
+
+#### Previous Behavior
+The XML based archetypes were missing `Workflow` folder in their path which results in creating duplicate content in separate folder in source code after pushing to Orchestrator and after that pulling the same package.
+
+#### New Behavior
+The XML based archetypes now create proper folder path and after pulling from Orchestrator content is updated and not duplicated in a separate folder.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
