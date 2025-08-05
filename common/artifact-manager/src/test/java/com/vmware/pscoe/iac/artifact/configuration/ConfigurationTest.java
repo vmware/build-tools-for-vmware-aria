@@ -15,11 +15,14 @@
 package com.vmware.pscoe.iac.artifact.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.Properties;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -59,6 +62,31 @@ class ConfigurationTest {
 		assertEquals(expectedStrategy, configuration.isForceImportLatestVersions());
 	}
 
+	@ParameterizedTest
+	@MethodSource("sshTimeoutProvider")
+	public void testGetSshTimeout(String sshTimeout, int exptectedSshTimeout) {
+		Properties properties = new Properties();
+		properties.setProperty("sshTimeout", sshTimeout);
+		ConfigurationTestDouble configuration = new ConfigurationTestDouble(properties);
+
+		assertEquals(exptectedSshTimeout, configuration.getSshTimeout());
+	}
+
+	@Test
+	public void testGetSshTimeoutShouldThrowIfNotNumber() throws Exception {
+		Properties properties = new Properties();
+		properties.setProperty("sshTimeout", "NaN");
+		ConfigurationTestDouble configuration = new ConfigurationTestDouble(properties);
+
+		// WHEN
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			configuration.getSshTimeout();
+		});
+
+		// THEN
+		assertTrue(exception.getMessage().contains("SSH timeout is not a number"));
+	}
+
 	private static Stream<Arguments> usernameProvider() {
 		return Stream.of(arguments("configurationadmin", "configurationadmin", null),
 				arguments("configurationadmin@corp.local", "configurationadmin", "corp.local"),
@@ -71,5 +99,11 @@ class ConfigurationTest {
 
 	private static Stream<Arguments> importStrategyProvider() {
 		return Stream.of(arguments(Boolean.FALSE));
+	}
+
+	private static Stream<Arguments> sshTimeoutProvider() {
+		return Stream.of(arguments("20", 20),
+				arguments("0", 300),
+				arguments("", 300));
 	}
 }
