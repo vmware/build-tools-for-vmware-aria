@@ -105,15 +105,15 @@ public abstract class Configuration {
 	public static final String FORCE_IMPORT_LATEST_VERSIONS = "forceImportLatestVersions";
 
 	/**
-	 * Contains all the properties passed by the user.
-	 */
-	protected Properties properties;
-
-	/**
 	 * Default flag for the default import strategy. It is currently set to false
 	 * for backwards compatibility.
 	 */
-	private static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = false;
+	public static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = false;
+
+	/**
+	 * Contains all the properties passed by the user.
+	 */
+	protected Properties properties;
 
 	/**
 	 * Logger instance.
