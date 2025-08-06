@@ -23,24 +23,17 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
-public class VcdNgPackageMojo extends AbstractMojo {
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
+public class VcdNgPackageMojo extends AbstractVroMojo {
 
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
-
+	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 		
@@ -66,7 +59,7 @@ public class VcdNgPackageMojo extends AbstractMojo {
 			.command(nodeBuildArgs)
 			.execute(getLog());
 
-		if(!java.nio.file.Files.exists(zipBundle)) {
+		if (!java.nio.file.Files.exists(zipBundle)) {
 			throw new RuntimeException(String.format(
 				"Unable to find packaged files %s. Please check npm output with -X option.", 
 				zipBundle.toString()));

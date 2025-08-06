@@ -18,9 +18,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.Option;
-import net.minidev.json.JSONArray;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,11 +30,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.gson.Gson;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
 import com.vmware.pscoe.iac.artifact.rest.model.sso.SsoEndpointDto;
+
+import net.minidev.json.JSONArray;
 
 public class VraSsoAuth {
 	/** CAFE_CLI_OWNER. */
@@ -46,8 +47,6 @@ public class VraSsoAuth {
 	private static final String AUTHORIZATION_SERVICE_URL_VRA_CLOUD = "/csp/gateway/am/api/auth/api-tokens/authorize";
 	/** Login endpoint for vRA 8.x . */
 	private static final String AUTHORIZATION_SERVICE_URL_VRA_8 = "/csp/gateway/am/api/login";
-	/** Authentication endpoint for vRA 7.x . */
-	private static final String AUTHORIZATION_SERVICE_URL_VRA_7 = "/SAAS/t/%s/auth/oauthtoken";
 	/** Single Sign On endpont for vRA 7.x . */
 	private static final String COMPONENT_REGISTRY_URL_VRA_7 = "/component-registry/endpoints/types/sso";
 	/** Endpont used to get the version. */
@@ -58,8 +57,6 @@ public class VraSsoAuth {
 	private static final String TOKEN_NAME = "cspAuthToken";
 	/** Bearer token type. */
 	private static final String DEFAULT_TOKEN_TYPE = "Bearer";
-	/** Version prefix for vRA versions 8.x. */
-	private static final String VRA_8_VERSION_PREFIX = "8.";
 	/** Http Entity. */
 	private static final String HTTP_ENTITY_TYPE = "httpEntity";
 	/** Token URI. */
@@ -224,7 +221,10 @@ public class VraSsoAuth {
 	 * 
 	 * @return the strig representation of the version.
 	 */
-	private String getVersion() {
+	public String getVersion() {
+		if (this.serverVersion != null) {
+			return this.serverVersion;
+		}
 		// vRA Cloud doesn't have vRO services and it's auth host
 		// (console.cloud.vmware.com)
 		// is different than the Extensibility Proxy's vRO address

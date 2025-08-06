@@ -19,9 +19,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -123,6 +123,11 @@ public class RestClientVcd extends RestClient {
 	private static final String API_VERSION_38 = "38.0";
 
 	/**
+	 * supported vcf 9 api version.
+	 */
+	private static final String API_VERSION_40 = "40.0";
+
+	/**
 	 * tenant scoped key name.
 	 */
 	private static final String TENANT_SCOPED_KEY_NAME = "tenant_scoped";
@@ -202,9 +207,12 @@ public class RestClientVcd extends RestClient {
 					new HttpEntity<String>(headers), String.class);
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
-			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)) {
+
+			// Preserving API version check for backwards compatibility
+			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)
+					&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
 				logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
-						+ ". Switching to using API version " + API_VERSION_37);
+						+ " and lower than " + API_VERSION_40 + ". Switching to using API version " + API_VERSION_37);
 				this.apiVersion = API_VERSION_37;
 			}
 

@@ -13,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.serverless</groupId>
 	<artifactId>serverless-project</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<dependencies>
@@ -46,7 +47,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.5.1</version>
 					<executions>
 						<!--
                         Validate: validate the project is correct and all necessary information is available.
@@ -189,7 +190,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.5.3</version>
+					<version>3.1.1</version>
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<tagNameFormat>v@{project.version}</tagNameFormat>
@@ -204,7 +205,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-scm-plugin</artifactId>
-					<version>1.11.2</version>
+					<version>2.1.0</version>
 					<configuration>
 						<message>(release) updated package.json to v${project.version}</message>
 						<includes>package.json,package-lock.json</includes>

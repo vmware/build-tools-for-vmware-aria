@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:4.5.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:4.7.1-SNAPSHOT
 
 Name: abx-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: abx-package-maven-plugin
-Version: 4.5.1-SNAPSHOT
+Version: 4.7.1-SNAPSHOT
 Goal Prefix: abx
 
 This plugin has 3 goals:
@@ -78,6 +78,10 @@ abx:install-node-deps
       User property: vro
       (no description available)
 
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
+
     vrops (Default: ${vrops.*})
       User property: vrops
       (no description available)
@@ -91,7 +95,11 @@ abx:package
   Available parameters:
 
     project (Default: ${project})
-      (no description available)
+      Project handle.
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
 abx:pull
   Description: (no description available)
@@ -156,6 +164,10 @@ abx:pull
     vro (Default: ${vro.*})
       User property: vro
       (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
 
     vrops (Default: ${vrops.*})
       User property: vrops

@@ -11,6 +11,7 @@
 	</parent>
 
 	<groupId>com.vmware.pscoe.iac</groupId>
+	<name>${project.artifactId}</name>
 	<artifactId>installer</artifactId>
 
 	<properties>
@@ -41,7 +42,7 @@
  		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.19.0</version>
+			<version>2.19.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.iac</groupId>

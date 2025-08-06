@@ -13,6 +13,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe.iac</groupId>
 	<artifactId>repository</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -294,7 +295,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>3.9.2</version>
+			<version>3.9.11</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.o11n</groupId>
@@ -307,7 +308,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.7.1</version>
+				<version>3.8.1</version>
 				<executions>
 					<execution>
 						<id>copy</id>
@@ -326,7 +327,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-archetype-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.4.0</version>
 				<executions>
 					<execution>
 						<id>iac-maven-repository</id>
@@ -364,7 +365,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.4.0</version>
+				<version>3.6.1</version>
 				<extensions>true</extensions>
 				<executions>
 					<execution>

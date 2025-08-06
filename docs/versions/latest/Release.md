@@ -34,16 +34,6 @@ Added a shim for `Array.prototype.includes`, which is not natively supported by 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### *Support of notification scenarios by vrang*
-
-Added support for Service broker Notification scenarios to vrang projects.
-New scenarios: category added to content.yaml supporting options for none, all, or listed scenarios by name.
-Archetype was changed to contain the new category. Use vra-ng:pull to read scenarios to be customized.
-Packaging of scenarios is supported as well as the following operations:
-- vra-ng:pull - read scenarios from vRA. Reading customized scenario if available, default configuration otherwise.
-- vrealize:push - create or update scenario customization.
-- vrealize:clean - delete scenario customization and reset to the default.
-
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -56,6 +46,14 @@ Packaging of scenarios is supported as well as the following operations:
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+### *Add `Workflow` to XML based archetypes path for Workflows content*
+
+#### Previous Behavior
+The XML based archetypes were missing `Workflow` folder in their path which results in creating duplicate content in separate folder in source code after pushing to Orchestrator and after that pulling the same package.
+
+#### New Behavior
+The XML based archetypes now create proper folder path and after pulling from Orchestrator content is updated and not duplicated in a separate folder.
 
 ## Upgrade procedure
 

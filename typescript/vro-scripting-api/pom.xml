@@ -11,6 +11,7 @@
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>vro-scripting-api</artifactId>
+    <name>${project.artifactId}</name>
 
     <properties>
         <attachFileName>vmware-pscoe-${project.artifactId}-${project.version}.tgz</attachFileName>
