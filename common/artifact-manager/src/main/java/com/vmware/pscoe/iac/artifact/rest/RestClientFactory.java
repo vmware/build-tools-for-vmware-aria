@@ -271,9 +271,12 @@ public final class RestClientFactory {
 	private static ConfigurationVcd createConfigurationVcd(Configuration configuraiton) {
 		Properties properties = new Properties();
 
-		properties.setProperty(Configuration.USERNAME,
-				String.format(ConfigurationVcd.USER_AT_DOMAIN_STRING_FORMAT, configuraiton.getUsername(),
-						configuraiton.getDomain()));
+		String username = configuraiton.getUsername();
+		String domain = configuraiton.getDomain();
+		// Remove duplicate domain in case of ConfigurationVro with BASIC auth
+		String fullUsername = username.endsWith(domain) ? username : String.format("%s@%s", username, domain);
+
+		properties.setProperty(Configuration.USERNAME, fullUsername);
 		properties.setProperty(Configuration.PASSWORD, configuraiton.getPassword());
 		properties.setProperty(Configuration.PORT, configuraiton.getPort() + "");
 		properties.setProperty(Configuration.HOST, configuraiton.getHost());
