@@ -69,6 +69,7 @@
 						<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
 						<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
 						<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+						<sshTimeout>${vrealize.ssh.timeout}</sshTimeout>
 					</configuration>
 				</plugin>
 			</plugins>

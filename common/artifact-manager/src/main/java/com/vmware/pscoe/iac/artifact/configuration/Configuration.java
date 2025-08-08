@@ -67,6 +67,11 @@ public abstract class Configuration {
 	public static final String SOCKET_TIMEOUT = "vrealize.socket.timeout";
 
 	/**
+	 * SSH timeout in seconds.
+	 */
+	public static final String SSH_TIMEOUT = "sshTimeout";
+
+	/**
 	 * Default connection timeout in seconds.
 	 */
 	public static final Integer DEFAULT_CONNECTION_TIMEOUT = 360;
@@ -75,6 +80,11 @@ public abstract class Configuration {
 	 * Default socket timeout in seconds.
 	 */
 	public static final Integer DEFAULT_SOCKET_TIMEOUT = 360;
+
+	/**
+	 * Default SSH timeout in seconds.
+	 */
+	public static final Integer DEFAULT_SSH_TIMEOUT = 300;
 
 	/**
 	 * Strategy configuration property. If set to true will perform force import
@@ -95,15 +105,15 @@ public abstract class Configuration {
 	public static final String FORCE_IMPORT_LATEST_VERSIONS = "forceImportLatestVersions";
 
 	/**
-	 * Contains all the properties passed by the user.
-	 */
-	protected Properties properties;
-
-	/**
 	 * Default flag for the default import strategy. It is currently set to false
 	 * for backwards compatibility.
 	 */
-	private static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = false;
+	public static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = false;
+
+	/**
+	 * Contains all the properties passed by the user.
+	 */
+	protected Properties properties;
 
 	/**
 	 * Logger instance.
@@ -184,6 +194,22 @@ public abstract class Configuration {
 			return DEFAULT_FORCE_IMPORT_LATEST_VERSIONS;
 		} else {
 			return Boolean.parseBoolean(this.properties.getProperty(FORCE_IMPORT_LATEST_VERSIONS));
+		}
+	}
+
+	/**
+	 * @return the port
+	 */
+	public int getSshTimeout() {
+		if (!StringUtils.hasLength(this.properties.getProperty(SSH_TIMEOUT))) {
+			return DEFAULT_SSH_TIMEOUT;
+		}
+
+		try {
+			int timeout = Integer.parseInt(this.properties.getProperty(SSH_TIMEOUT));
+			return timeout == 0 ? DEFAULT_SSH_TIMEOUT : timeout;
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("SSH timeout is not a number", e);
 		}
 	}
 

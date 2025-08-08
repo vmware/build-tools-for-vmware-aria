@@ -31,7 +31,6 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-
 @Mojo(name = "pull")
 public class PullMojo extends AbstractIacMojo {
 	@Parameter(defaultValue = "${project}")

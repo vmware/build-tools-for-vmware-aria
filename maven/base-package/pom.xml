@@ -314,6 +314,7 @@
 					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
 					<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
 					<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
+					<sshTimeout>${vrealize.ssh.timeout}</sshTimeout>
 				</configuration>
 			</plugin>
 			<plugin>
