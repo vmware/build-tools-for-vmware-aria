@@ -56,6 +56,14 @@ The XML based archetypes were missing `Workflow` folder in their path which resu
 #### New Behavior
 The XML based archetypes now create proper folder path and after pulling from Orchestrator content is updated and not duplicated in a separate folder.
 
+### *Fix `Installer - run Workflow` operation on VCF 9*
+
+#### Previous Behavior
+Orchestrator code push to VCF 9 via `Installer` was working but `run Workflow` operation was failing to authenticate because of domain duplication when parsing credentials.
+
+#### New Behavior
+Credentials are now properly parsed and both code push and running a Workflow are working as expected.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
