@@ -12,7 +12,7 @@
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
-		<revision>4.9.0</revision>
+		<revision>4.9.1-SNAPSHOT</revision>
 		<java.version>17</java.version>
 	</properties>
 
