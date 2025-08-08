@@ -58,6 +58,7 @@ import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVropsAuthNInterceptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVropsBasicAuthInterceptor;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVroNg;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVroBasicAuthNInterceptor;
@@ -271,10 +272,16 @@ public final class RestClientFactory {
 	private static ConfigurationVcd createConfigurationVcd(Configuration configuraiton) {
 		Properties properties = new Properties();
 
-		String username = configuraiton.getUsername();
-		String domain = configuraiton.getDomain();
-		// Remove duplicate domain in case of ConfigurationVro with BASIC auth
-		String fullUsername = username.endsWith(domain) ? username : String.format("%s@%s", username, domain);
+		String fullUsername;
+
+		if ((configuraiton instanceof ConfigurationVro)
+				&& ((ConfigurationVro) configuraiton).getAuth() == AuthProvider.BASIC) {
+			// In case of external Orchestrator with BASIC auth the domain is extracted as
+			// part of the username so we need this check to prevent duplication
+			fullUsername = configuraiton.getUsername();
+		} else {
+			fullUsername = String.format("%s@%s", configuraiton.getUsername(), configuraiton.getDomain());
+		}
 
 		properties.setProperty(Configuration.USERNAME, fullUsername);
 		properties.setProperty(Configuration.PASSWORD, configuraiton.getPassword());
