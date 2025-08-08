@@ -51,20 +51,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVroNg;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor.WorkflowExecutionException;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
-import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -973,8 +973,8 @@ public final class Installer {
 		}
 
 		if (input.allTrue(Option.VCD_DELETE_OLD_VERSIONS)) {
-			// TODO - add clean up support for vCD
-			input.getText().getTextTerminal().println("vCloud Director clean up is not supported yet.");
+			// TODO - add clean up support for VCD
+			input.getText().getTextTerminal().println("VMware Cloud Director clean up is not supported yet.");
 		}
 
 		if (input.allTrue(Option.SSH_IMPORT)) {
@@ -1132,10 +1132,10 @@ public final class Installer {
 			readVroWorkflowProperties(input);
 		}
 		// +-------------------------------------
-		// | vCloud Director (New Generation)
+		// | VMware Cloud Director (New Generation)
 		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.VCDNG).isEmpty()) {
-			userInput(input, Option.VCD_IMPORT, "Import vCD packages?", true);
+			userInput(input, Option.VCD_IMPORT, "Import VCD packages?", true);
 		}
 		if (input.anyTrue(Option.VCD_IMPORT)) {
 			readVcdImportProperties(input);
@@ -1299,11 +1299,11 @@ public final class Installer {
 	}
 
 	private static void readVcdProperties(final Input input) {
-		input.getText().getTextTerminal().println("vCloud Director Configuration:");
-		userInput(input, Option.VCD_SERVER, "  vCD FQDN:");
-		userInput(input, Option.VCD_PORT, "  vCD Port", HTTPS_PORT);
-		userInput(input, Option.VCD_USERNAME, "  vCD Username@Org (Provider)", "administrator@system");
-		passInput(input, Option.VCD_PASSWORD, "  vCD Password (Provider)");
+		input.getText().getTextTerminal().println("VMware Cloud Director Configuration:");
+		userInput(input, Option.VCD_SERVER, "  VCD FQDN:");
+		userInput(input, Option.VCD_PORT, "  VCD Port", HTTPS_PORT);
+		userInput(input, Option.VCD_USERNAME, "  VCD Username@Org (Provider)", "administrator@system");
+		passInput(input, Option.VCD_PASSWORD, "  VCD Password (Provider)");
 	}
 
 	private static void readVroImportProperties(final Input input) {
@@ -1334,10 +1334,10 @@ public final class Installer {
 	}
 
 	private static void readVcdImportProperties(final Input input) {
-		input.getText().getTextTerminal().println("vCloud Director Import Configuration:");
-		userInput(input, Option.SKIP_VCD_IMPORT_OLD_VERSIONS, "  vCD Skip Old Package Versions?", true);
+		input.getText().getTextTerminal().println("VMware Cloud Director Import Configuration:");
+		userInput(input, Option.SKIP_VCD_IMPORT_OLD_VERSIONS, "  VCD Skip Old Package Versions?", true);
 		input.put(Option.VCD_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VCD_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
-		userInput(input, Option.VCD_IMPORT_OVERWRITE_MODE, "  vCD Import Mode", "SKIP,OVERWRITE");
+		userInput(input, Option.VCD_IMPORT_OVERWRITE_MODE, "  VCD Import Mode", "SKIP,OVERWRITE");
 	}
 
 	private static void readVropsImportProperties(final Input input) {

@@ -150,7 +150,7 @@ public final class PackageStoreFactory {
 			ConfigurationVcd config = (ConfigurationVcd) configuration;
 			RestClientVcd restClient = RestClientFactory.getClientVcd(config);
 			version = restClient.getVersion();
-			LOGGER.info("Detecting vCD Server version '{}'.", version);
+			LOGGER.info("Detecting VCD Server version '{}'.", version);
 
 			return new VcdNgPackageStore(restClient, strategies, new Version(version));
 		}
