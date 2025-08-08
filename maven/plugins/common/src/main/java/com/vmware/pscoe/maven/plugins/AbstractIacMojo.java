@@ -179,9 +179,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	}
 
 	/**
-	 * Retrieve vCD configuration for vCD interaction.
+	 * Retrieve VCD configuration for VCD interaction.
 	 * 
-	 * @return vCD configuration
+	 * @return VCD configuration
 	 * @throws ConfigurationException
 	 */
 	protected ConfigurationVcd getConfigurationForVcd() throws ConfigurationException {
@@ -189,7 +189,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		if (configuration.isPresent()) {
 			return (ConfigurationVcd) configuration.get();
 		} else {
-			throw new ConfigurationException("Invalid or incomplete vCD configuration.");
+			throw new ConfigurationException("Invalid or incomplete VCD configuration.");
 		}
 	}
 
@@ -204,7 +204,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		if (configuration.isPresent()) {
 			return (ConfigurationVrops) configuration.get();
 		} else {
-			throw new ConfigurationException("Invalid or incomplete vCD configuration.");
+			throw new ConfigurationException("Invalid or incomplete VCD configuration.");
 		}
 	}
 

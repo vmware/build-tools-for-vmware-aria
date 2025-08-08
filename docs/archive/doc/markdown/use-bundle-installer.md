@@ -214,7 +214,7 @@ vro_run_workflow_output_file_path
 vro_run_workflow_err_file_path
 vro_run_workflow_timeout
 
-#### vCD import configurations ####
+#### VCD import configurations ####
 vcd_delete_old_versions
 vcd_import_old_versions
 skip_vcd_import_old_versions
