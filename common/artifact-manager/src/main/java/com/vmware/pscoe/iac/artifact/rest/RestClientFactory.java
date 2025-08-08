@@ -280,7 +280,8 @@ public final class RestClientFactory {
 			// part of the username so we need this check to prevent duplication
 			fullUsername = configuraiton.getUsername();
 		} else {
-			fullUsername = String.format("%s@%s", configuraiton.getUsername(), configuraiton.getDomain());
+			fullUsername = String.format(ConfigurationVcd.USER_AT_DOMAIN_STRING_FORMAT, configuraiton.getUsername(),
+					configuraiton.getDomain());
 		}
 
 		properties.setProperty(Configuration.USERNAME, fullUsername);
