@@ -229,8 +229,10 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 
 					// In case of provider (System) domain additional calls are required that use
 					// the bearer token acquired above in order to create a provider admin session
-					// for a specific organization
-					if (this.getConfiguration().getDomain().equals(PROVIDER_DOMAIN)) {
+					// for a specific organization. An exception is embedded Orchestrator where
+					// organization input is not required
+					ConfigurationVcd configuration = this.getConfiguration();
+					if (configuration.getDomain().equals(PROVIDER_DOMAIN) && configuration.getOrgName() != null) {
 						acquireProviderToken(request);
 					}
 				}
