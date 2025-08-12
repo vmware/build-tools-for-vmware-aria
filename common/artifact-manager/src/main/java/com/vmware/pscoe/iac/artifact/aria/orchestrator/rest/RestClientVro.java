@@ -295,7 +295,7 @@ public class RestClientVro extends RestClient {
 
 					Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
 
-					System.out.print("File copied.");
+					System.out.println("File copied.");
 				}
 				return null;
 			}

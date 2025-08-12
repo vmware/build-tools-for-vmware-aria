@@ -289,9 +289,10 @@ public final class RestClientFactory {
 		properties.setProperty(Configuration.PORT, configuraiton.getPort() + "");
 		properties.setProperty(Configuration.HOST, configuraiton.getHost());
 
-		if (configuraiton instanceof ConfigurationVraNg) {
+		if (configuraiton instanceof ConfigurationVraNg && ((ConfigurationVraNg) configuraiton).getOrgName() != null) {
 			// Set organization in case provider admin (user@System) is executing a vra-ng
-			// push for specific organization
+			// push for specific organization. Note that in ConfigurationVroNg organization
+			// is missing and not required
 			properties.setProperty(ConfigurationVraNg.ORGANIZATION_NAME,
 					((ConfigurationVraNg) configuraiton).getOrgName());
 		}

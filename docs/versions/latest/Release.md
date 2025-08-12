@@ -59,13 +59,13 @@ SSH operations have no timeout which in certain scenarios results in hanging pus
 
 SSH operations use the configured (or default) timeout value and if reached - the push/pull operation fails.
 
-### *Add `Workflow` to XML based archetypes path for Workflows content*
+### *Fix issue where organization name is mandatory even for embedded Orchestrator code push*
 
 #### Previous Behavior
-The XML based archetypes were missing `Workflow` folder in their path which results in creating duplicate content in separate folder in source code after pushing to Orchestrator and after that pulling the same package.
+Organization name parameter was mandatory even when pushing to embedded Orchestrator. This resulted in `Installer` code push throwing nullpointer unless you manually added vrang_org_name parameter to `environment.properties` since the installer prompts do not ask you for it (as it should be).
 
 #### New Behavior
-The XML based archetypes now create proper folder path and after pulling from Orchestrator content is updated and not duplicated in a separate folder.
+Organization name is now consumed only in cases where it is explicitly provided or mandatory and `Installer` code push to embedded Orchestrator executes successfully without it.
 
 ## Upgrade procedure
 
