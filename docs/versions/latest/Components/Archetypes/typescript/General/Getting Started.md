@@ -106,6 +106,13 @@ Note: If node_modules folder doesn't exist, then this flag is ineffective.
 #### -Dvro.forceImportLatestVersions
 
 This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for better CI/CD pipelines, where we can ensure that the latest versions are always used on the server.
+Snapshot versions are considered newer if they are the same as the version on the server.
+Default values is `false`.
+
+#### -Dvro.importOldVersions
+This strategy will upload a version of the package even if it is older than the version on the server.
+Snapshot versions are considered newer if they are the same as the version on the server.
+If `forceImportLatestVersions` is set to `true` this configuration is ignored.
 
 #### vroIgnoreFile
 
