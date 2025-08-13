@@ -24,7 +24,8 @@ import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.model.Package;
 
 /**
- * This strategy will only import a package if it's the same or newer version than the one in the Orchestrator server.
+ * This strategy will only import a package if it's the same or newer version
+ * than the one in the Orchestrator server.
  * Snapshot versions are considered newer if they are the same version.
  */
 public class StrategyForceLatestVersions extends StrategySkipOldVersions {
@@ -39,9 +40,12 @@ public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 	 *
 	 * Logic:
 	 * - If the package is not present in the destination, we will import it.
-	 * - If the package has a newer version, and we will import it (`diff` will be a positive value)
-	 * - If the package has the same version, we will import it if it's a snapshot. (`diff` will be 0)
-	 * - If the package has an older version, we will not import it. (`diff` will be a negative value)
+	 * - If the package has a newer version, and we will import it (`diff` will be a
+	 * positive value)
+	 * - If the package has the same version, we will import it if it's a snapshot.
+	 * (`diff` will be 0)
+	 * - If the package has an older version, we will not import it. (`diff` will be
+	 * a negative value)
 	 *
 	 * @param sourceEndpointPackages      The packages in the source endpoint.
 	 * @param destinationEndpointPackages The packages in the destination endpoint.
@@ -67,6 +71,7 @@ public class StrategyForceLatestVersions extends StrategySkipOldVersions {
 					logInfoPackages(sourcePackage, latest, "PASS", ">");
 					return true;
 				} else if (diff == 0) {
+					logInfoPackages(sourcePackage, latest, "SKIP", ">");
 					return false;
 				} else {
 					logInfoPackages(sourcePackage, latest, "FAIL", ">");

@@ -59,6 +59,10 @@ SSH operations have no timeout which in certain scenarios results in hanging pus
 
 SSH operations use the configured (or default) timeout value and if reached - the push/pull operation fails.
 
+### *Update documention for import strategies*
+
+Add documentation about `importOldVersions` import strategy and update documentation for `forceImportLatestVersions`. Add missing log in case of skipped import of package when using `forceImportLatestVersions`.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
