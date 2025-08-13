@@ -46,6 +46,7 @@
 						<password>${ssh.password}</password>
 						<serverId>${ssh.serverId}</serverId>
 						<directory>${ssh.directory}</directory>
+						<sshTimeout>${vrealize.ssh.timeout}</sshTimeout>
 					</ssh>
 				</configuration>
 			</plugin>
