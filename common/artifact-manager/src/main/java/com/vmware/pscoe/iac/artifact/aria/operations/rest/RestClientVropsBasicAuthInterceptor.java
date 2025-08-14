@@ -42,5 +42,4 @@ public class RestClientVropsBasicAuthInterceptor extends RestClientRequestInterc
 			throw new RuntimeException(e);
 		}
 	}
-
 }

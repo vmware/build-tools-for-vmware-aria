@@ -24,9 +24,6 @@ public abstract class RestClientRequestInterceptor<T extends Configuration> impl
 	private RestTemplate restTemplate;
 	private T operationsContext;
 
-	private RestClientRequestInterceptor() {
-	}
-
 	protected RestClientRequestInterceptor(T operationsContext, RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 		this.operationsContext = operationsContext;
@@ -39,5 +36,4 @@ public abstract class RestClientRequestInterceptor<T extends Configuration> impl
 	protected T getConfiguration() {
 		return operationsContext;
 	}
-
 }
