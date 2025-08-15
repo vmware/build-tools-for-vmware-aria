@@ -1,4 +1,4 @@
-import { Out, Workflow } from "vrotsc-annotations";
+import { Out, RootItem, UserInteractionItem, Workflow } from "vrotsc-annotations";
 
 @Workflow({
 	name: "Create Integration",
@@ -29,8 +29,14 @@ import { Out, Workflow } from "vrotsc-annotations";
 	presentation: ""
 })
 export class SampleWorkflow {
+	@RootItem({ target: "userInteraction1Enter" })
 	public install(foo: string, bar: string, field1: string, @Out result: any): void {
 		System.log(`foo=${foo}, bar=${bar}, field1=${field1}`);
 		result = "result value";
 	}
+
+	@UserInteractionItem({
+		target: "end",
+	})
+	public userApproval() { }
 }
