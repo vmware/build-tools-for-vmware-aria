@@ -81,6 +81,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	@Parameter(required = false, property = "socketTimeout", defaultValue = "${vrealize.socket.timeout}")
 	private int socketTimeout;
 
+	@Parameter(required = false, property = "sshTimeout", defaultValue = "${vrealize.ssh.timeout}")
+	protected int sshTimeout;
+
 	/**
 	 * Process the SSL system properties.
 	 */
@@ -301,6 +304,11 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		overwriteFromCmdLine(props, prefix);
 		overwriteServerCredentials(props);
 		overwriteConfigurationPropertiesForType(type, props);
+
+		// Set SSH timeout as global property available for all archetype. If not
+		// provided or 0 a default value is returned by Configuration class. Currently
+		// this is read and populated only in "vrops" archetype.
+		props.setProperty(Configuration.SSH_TIMEOUT, String.valueOf(sshTimeout));
 
 		return props;
 	}

@@ -92,6 +92,13 @@ enum Option {
 			"http_socket_timeout",
 			Configuration.SOCKET_TIMEOUT),
 	/**
+	 *
+	 * timeouts.
+	 */
+	SSH_TIMEOUT(
+			"vrealize_ssh_timeout",
+			Configuration.SSH_TIMEOUT),
+	/**
 	 * VRO force import latest package versions.
 	 */
 	VRO_FORCE_IMPORT_LATEST_VERSION(
@@ -846,7 +853,11 @@ public final class Installer {
 		/**
 		 * SSH.
 		 */
-		SSH("ssh_");
+		SSH("ssh_"),
+		/**
+		 * VRLI.
+		 */
+		VREALIZE("vrealize_");
 
 		/**
 		 * value.
@@ -959,9 +970,8 @@ public final class Installer {
 		}
 
 		if (input.allTrue(Option.VROPS_IMPORT)) {
-			PackageStoreFactory
-					.getInstance(
-							ConfigurationVrops.fromProperties(input.getMappings(ConfigurationPrefix.VROPS.getValue())))
+			String[] prefixes = { ConfigurationPrefix.VROPS.getValue(), ConfigurationPrefix.VREALIZE.getValue() };
+			PackageStoreFactory.getInstance(ConfigurationVrops.fromProperties(input.getMappings(prefixes)))
 					.importAllPackages(getFilesystemPackages(PackageType.VROPS), false, vroEnableBackup);
 		}
 
@@ -1202,6 +1212,11 @@ public final class Installer {
 		userInput(input, Option.SOCKET_TIMEOUT, "  HTTP socket timeout",
 				Configuration.DEFAULT_SOCKET_TIMEOUT.toString());
 		Validate.timeout(input.get(Option.SOCKET_TIMEOUT), input.getText());
+
+		input.getText().getTextTerminal().println("SSH Common Properties:");
+		userInput(input, Option.SSH_TIMEOUT, "  SSH execution timeout",
+				Configuration.DEFAULT_SSH_TIMEOUT.toString());
+		Validate.timeout(input.get(Option.SSH_TIMEOUT), input.getText());
 	}
 
 	private static void setCommonProperties(final Input input) {
