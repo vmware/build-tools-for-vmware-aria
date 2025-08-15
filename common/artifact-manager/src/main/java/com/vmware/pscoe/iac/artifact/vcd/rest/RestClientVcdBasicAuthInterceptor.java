@@ -195,7 +195,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 		// Preserving API version check for backwards compatibility
 		if (Double.parseDouble(apiVersion) >= Double.parseDouble(RestClientVcd.API_VERSION_38)
 				&& Double.parseDouble(apiVersion) < Double.parseDouble(RestClientVcd.API_VERSION_40)) {
-			System.out.println("Unsupported version " + apiVersion);
+			logger.info("Unsupported version: {}", apiVersion);
 			logger.warn("Detected VCD API version equal or greater than " + RestClientVcd.API_VERSION_38
 					+ " and lower than " + RestClientVcd.API_VERSION_40 + ". Switching to using API version "
 					+ RestClientVcd.API_VERSION_37);
@@ -236,6 +236,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 						acquireProviderToken(request);
 					}
 				}
+
 				request.getHeaders().add(HEADER_VCLOUD_TOKEN, this.vcloudToken);
 				request.getHeaders().add(HEADER_AUTHORIZATION, VcdApiHelper.buildBearerToken(this.bearerToken));
 			}
@@ -248,16 +249,13 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 
 	private void acquireToken(HttpRequest request, String sessionUrl) throws JsonProcessingException {
 		final URI tokenUri = generateUri(request, sessionUrl);
+		logger.info("VCD Auth Token URL: {}", tokenUri);
 
 		final HttpHeaders headers = generateDefaultHeaders();
 		headers.add(HEADER_AUTHORIZATION, VcdApiHelper.buildBasicAuth(this.getConfiguration().getUsername(),
 				this.getConfiguration().getDomain(), this.getConfiguration().getPassword()));
+
 		final HttpEntity<String> entity = new HttpEntity<>(headers);
-
-		logger.warn("token uri: " + tokenUri);
-		logger.warn("Auth: " + VcdApiHelper.buildBasicAuth(this.getConfiguration().getUsername(),
-				this.getConfiguration().getDomain(), this.getConfiguration().getPassword()));
-
 		final ResponseEntity<String> response = getRestTemplate().exchange(tokenUri, HttpMethod.POST, entity,
 				String.class);
 

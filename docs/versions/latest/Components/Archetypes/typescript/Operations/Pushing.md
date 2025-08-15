@@ -1,30 +1,19 @@
-[//]: # (DEFAULT TEMPLATE, Used if no others match)
+# Pushing
 
-[//]: # (Remove Comments when you are done)
-[//]: # (What is this?)
-
-# Title
-
-[//]: # (Additional Information on the topic goes here)
-
-[//]: # (What will you learn)
-[//]: # (Optional)
+Maven command for pushing code to Orchestrator.
 
 ## Overview
 
-[//]: # (Internal navigation)
-[//]: # (Navigational links may have a short description after them separated by a `-`)
+This will push all local content from `./src` folder to the remote Orchestrator Server for the given profile.
 
 ## Table Of Contents
 
-1. [Section](#section)
+1. [Usage](#usage)
 
-[//]: # (Fill As many of these as you need. Use h4 and further here, do not include h1s, h2s or h3s.)
+### Usage
 
-### Section
+To deploy the code developed in the local project or checked out from source control to a live server, you can use the `vrealize:push` command.
 
-[//]: # (Optional Section)
-[//]: # (## Previous:)
-
-[//]: # (Optional Section)
-[//]: # (## Next:)
+```bash
+mvn package vrealize:push -P{profile}
+```

@@ -49,5 +49,4 @@ public class RestClientVroBasicAuthNInterceptor extends RestClientRequestInterce
 			throw new RuntimeException(e);
 		}
 	}
-
 }

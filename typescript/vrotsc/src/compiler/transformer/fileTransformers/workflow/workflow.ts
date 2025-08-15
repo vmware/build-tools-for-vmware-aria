@@ -12,18 +12,18 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { FileDescriptor, FileTransformationContext, FileType } from "../../../../types";
 import { system } from "../../../../system/system";
-import { printElementInfo } from "../../../elementInfo";
-import { transformSourceFile } from "../../scripts/scripts";
-import { collectFactsBefore } from "../../metaTransformers/facts";
-import { transformShimsBefore, transformShims } from "../../codeTransformers/shims";
+import { FileDescriptor, FileTransformationContext, FileType } from "../../../../types";
 import { generateElementId } from "../../../../utilities/utilities";
-import { getPropertyName } from "../../helpers/node";
-import { WorkflowDescriptor, WorkflowItemDescriptor, PolyglotDescriptor } from "../../../decorators";
-import { remediateTypeScript } from "../../codeTransformers/remediate";
-import { transformModuleSystem } from "../../codeTransformers/modules";
+import { PolyglotDescriptor, WorkflowDescriptor, WorkflowItemDescriptor } from "../../../decorators";
+import { printElementInfo } from "../../../elementInfo";
 import { prepareHeaderEmitter } from "../../codeTransformers/header";
+import { transformModuleSystem } from "../../codeTransformers/modules";
+import { remediateTypeScript } from "../../codeTransformers/remediate";
+import { transformShims, transformShimsBefore } from "../../codeTransformers/shims";
+import { getPropertyName } from "../../helpers/node";
+import { collectFactsBefore } from "../../metaTransformers/facts";
+import { transformSourceFile } from "../../scripts/scripts";
 import { buildWorkflowDecorators, registerMethodArgumentDecorators, registerMethodDecorators, registerPolyglotDecorators } from "./decorators";
 import { mergeWorkflowXml, printPolyglotCode, printWorkflowXml } from "./presentation";
 
@@ -32,6 +32,7 @@ import UserInteractionDecoratorStrategy from "./decorators/userInteractionDecora
 
 const defaultUserInteractionJson = '{"schema":{},"layout":{"pages":[]},"itemId":"{{itemId}}"}';
 const userInteractionFormFileNameTemplate = "{{workflowName}}_input_form_{{itemId}}.form.json";
+const userInteractionFormSourceFileNameTemplate = "{{workflowFileName}}_input_form_{{itemId}}.wf.form.json";
 
 /**
  * Workflow transformer is responsible from transforming a TypeScript `wf.ts` file into a vRO workflow.
@@ -39,123 +40,143 @@ const userInteractionFormFileNameTemplate = "{{workflowName}}_input_form_{{itemI
  * It relies on Decorators to extract the workflow information and the workflow items.
  */
 export function getWorkflowTransformer(file: FileDescriptor, context: FileTransformationContext) {
-	const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
-	const workflows: WorkflowDescriptor[] = [];
-	const actionSourceFiles: ts.SourceFile[] = [];
+    const sourceFile = ts.createSourceFile(file.filePath, system.readFile(file.filePath).toString(), ts.ScriptTarget.Latest, true);
+    const workflows: WorkflowDescriptor[] = [];
+    const actionSourceFiles: ts.SourceFile[] = [];
 
-	sourceFile.statements
-		.filter(node => node.kind === ts.SyntaxKind.ClassDeclaration)
-		.forEach(classNode => {
-			const workflowInfo = createWorkflowDescriptor(classNode as ts.ClassDeclaration);
-			registerWorkflowClass(workflowInfo, classNode as ts.ClassDeclaration);
-		});
+    sourceFile.statements
+        .filter(node => node.kind === ts.SyntaxKind.ClassDeclaration)
+        .forEach(classNode => {
+            const workflowInfo = createWorkflowDescriptor(classNode as ts.ClassDeclaration);
+            registerWorkflowClass(workflowInfo, classNode as ts.ClassDeclaration);
+        });
 
-	actionSourceFiles.forEach(sourceFile => context.sourceFiles.push(sourceFile));
+    actionSourceFiles.forEach(sourceFile => context.sourceFiles.push(sourceFile));
 
-	return function() {
-		transpileActionItems(workflows, actionSourceFiles, context, file);
-		workflows.forEach(workflowInfo => {
-			generateWorkflowXmlAndForms(workflowInfo);
-		});
-	};
+    return function () {
+        transpileActionItems(workflows, actionSourceFiles, context, file);
+        workflows.forEach(workflowInfo => {
+            generateWorkflowXmlAndForms(workflowInfo);
+        });
+    };
 
-	/**
-	 * Handles generating workflow xml files and form json files.
-	 *
-	 * @param workflowInfo The workflow descriptor object.
-	 * @returns void
-	 */
-	function generateWorkflowXmlAndForms(workflowInfo: WorkflowDescriptor): void {
-		const targetFilePath = system.changeFileExt(
-			system.resolvePath(context.outputs.workflows, workflowInfo.path, workflowInfo.name),
-			"",
-			[".wf.ts"]);
+    /**
+     * Handles generating workflow xml files and form json files.
+     *
+     * @param workflowInfo The workflow descriptor object.
+     * @returns void
+     */
+    function generateWorkflowXmlAndForms(workflowInfo: WorkflowDescriptor): void {
+        const workflowName = workflowInfo.name;
+        const targetFilePath = system.changeFileExt(
+            system.resolvePath(context.outputs.workflows, workflowInfo.path, workflowName),
+            "",
+            [".wf.ts"]);
 
-		const xmlTemplateFilePath = system.changeFileExt(file.filePath, ".xml");
-		const xmlTemplate = system.fileExists(xmlTemplateFilePath) ? system.readFile(xmlTemplateFilePath).toString() : undefined;
+        const xmlTemplateFilePath = system.changeFileExt(file.filePath, ".xml");
+        const xmlTemplate = system.fileExists(xmlTemplateFilePath) ? system.readFile(xmlTemplateFilePath).toString() : undefined;
 
-		context.writeFile(
-			`${targetFilePath}.xml`,
-			xmlTemplate
-				? mergeWorkflowXml(workflowInfo, xmlTemplate)
-				: printWorkflowXml(workflowInfo, context)
-		);
+        context.writeFile(
+            `${targetFilePath}.xml`,
+            xmlTemplate
+                ? mergeWorkflowXml(workflowInfo, xmlTemplate)
+                : printWorkflowXml(workflowInfo, context)
+        );
 
-		context.writeFile(`${targetFilePath}.element_info.xml`, printElementInfo({
-			categoryPath: workflowInfo.path.replace(/(\\|\/)/g, "."),
-			name: workflowInfo.name,
-			type: "Workflow",
-			id: workflowInfo.id,
-		}));
+        context.writeFile(`${targetFilePath}.element_info.xml`, printElementInfo({
+            categoryPath: workflowInfo.path.replace(/(\\|\/)/g, "."),
+            name: workflowName,
+            type: "Workflow",
+            id: workflowInfo.id,
+        }));
 
-		const workflowFormFilePath = system.changeFileExt(file.filePath, ".form.json");
-		const workflowJsonForm = system.fileExists(workflowFormFilePath) ? system.readFile(workflowFormFilePath).toString() : undefined;
-		if (workflowJsonForm) {
-			context.writeFile(`${targetFilePath}.form.json`, workflowJsonForm);
-		}
-		// attach the custom interaction component form json file (if any)
-		workflowInfo.items?.forEach(item => {
-			const isCustomInteractionComponent = item.strategy instanceof UserInteractionDecoratorStrategy;
-			if (isCustomInteractionComponent) {
-				const itemId = (item.strategy as UserInteractionDecoratorStrategy).getItemId();
-				const fileName = userInteractionFormFileNameTemplate.replace("{{workflowName}}", workflowInfo.name).replace("{{itemId}}", itemId);
-				const path = system.resolvePath(context.outputs.workflows, workflowInfo.path);
-				context.writeFile(system.resolvePath(path, fileName), defaultUserInteractionJson.replace("{{itemId}}", itemId));
-			}
-		});
-	}
+        const workflowFormFilePath = system.changeFileExt(file.filePath, ".form.json"); // e.g. /usr/me/projects/integration/src/workflows/CreateIntegration.wf.form.json
+        const workflowFileName = file.fileName; // e.g. CreateIntegration.wf.ts
+        const workflowFormFilePrefix = workflowFileName.replace(".wf.ts", ""); // e.g. CreateIntegration
+        const workflowRootDir = file.filePath.replace(workflowFileName, ""); // e.g. /usr/me/projects/integration/src/workflows/
+        const workflowJsonForm = system.fileExists(workflowFormFilePath) ? system.readFile(workflowFormFilePath).toString() : undefined;
 
-	/**
-	 * Handles parsing the decorators of a class node and registering the information in the workflowInfo object.
-	 *
-	 * This is the entry point for the workflow transformation.
-	 *
-	 * @param workflowInfo The workflow descriptor object.
-	 * @param classNode The class node to extract information from.
-	 * @returns void
-	 */
-	function registerWorkflowClass(workflowInfo: WorkflowDescriptor, classNode: ts.ClassDeclaration): void {
-		const decorators = ts.getDecorators(classNode);
-		if (decorators?.length) {
-			buildWorkflowDecorators(
-				workflowInfo,
-				classNode,
-				context,
-				sourceFile
-			);
-		}
+        if (workflowJsonForm) {
+            console.debug(`Found existing Custom Form for Workflow: '${workflowFileName}'. Attaching.`);
+            context.writeFile(`${targetFilePath}.form.json`, workflowJsonForm);
+        }
 
-		classNode.members
-			.filter(member => member.kind === ts.SyntaxKind.MethodDeclaration)
-			.forEach((methodNode: ts.MethodDeclaration) => {
-				const itemInfo = createWorkflowItemDescriptor(methodNode.name, workflowInfo);
-				workflowInfo.items.push(itemInfo);
+        console.debug(`Attaching User Interaction Custom Forms for Workflow '${workflowFileName}'.`);
 
-				registerWorkflowItem(itemInfo, methodNode);
+        // attach the custom interaction component form json file (if any)
+        workflowInfo.items?.forEach(item => {
+            const isCustomInteractionComponent = item.strategy instanceof UserInteractionDecoratorStrategy;
+            if (isCustomInteractionComponent) {
+                const itemId = (item.strategy as UserInteractionDecoratorStrategy).getItemId();
+                const fileName = userInteractionFormFileNameTemplate.replace("{{workflowName}}", workflowName).replace("{{itemId}}", itemId);
+                const path = system.resolvePath(context.outputs.workflows, workflowInfo.path);
 
-				const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
-				let actionSourceText = itemInfo.strategy.printSourceFile(methodNode, sourceFile, itemInfo);
-				// @TODO: "Unstupify" me
-				if (itemInfo.polyglot) {
-					actionSourceText = decorateSourceFileTextWithPolyglot(actionSourceText, itemInfo.polyglot, itemInfo);
-				}
+                const sourceFileName = userInteractionFormSourceFileNameTemplate.replace("{{workflowFileName}}", workflowFormFilePrefix).replace("{{itemId}}", itemId);
+                const fullFormPath = workflowRootDir.concat(sourceFileName);
 
-				const newSourceFile = ts.createSourceFile(
-					actionSourceFilePath,
-					actionSourceText,
-					ts.ScriptTarget.Latest,
-					true
-				);
+                if (system.fileExists(fullFormPath)) {
+                    console.debug(`Found existing User Interaction Custom Form: '${sourceFileName}' for item with ID '${itemId}'. Attaching to Workflow.`)
+                    const userInteractionFormJson = system.readFile(fullFormPath).toString();
+                    context.writeFile(system.resolvePath(path, fileName), userInteractionFormJson);
+                } else {
+                    console.debug(`No User Interaction Custom Form found for item with ID '${itemId}' matching the template '${userInteractionFormSourceFileNameTemplate}'. Attaching default empty Custom Form.`);
+                    context.writeFile(system.resolvePath(path, fileName), defaultUserInteractionJson.replace("{{itemId}}", itemId));
+                }
+            }
+        });
+    }
 
-				actionSourceFiles.push(newSourceFile);
-			});
+    /**
+     * Handles parsing the decorators of a class node and registering the information in the workflowInfo object.
+     *
+     * This is the entry point for the workflow transformation.
+     *
+     * @param workflowInfo The workflow descriptor object.
+     * @param classNode The class node to extract information from.
+     * @returns void
+     */
+    function registerWorkflowClass(workflowInfo: WorkflowDescriptor, classNode: ts.ClassDeclaration): void {
+        const decorators = ts.getDecorators(classNode);
+        if (decorators?.length) {
+            buildWorkflowDecorators(
+                workflowInfo,
+                classNode,
+                context,
+                sourceFile
+            );
+        }
 
-		workflowInfo.name = workflowInfo.name || classNode.name.text;
-		workflowInfo.path = workflowInfo.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
-		workflowInfo.id = workflowInfo.id || generateElementId(FileType.Workflow, `${workflowInfo.path}/${workflowInfo.name}`);
+        classNode.members
+            .filter(member => member.kind === ts.SyntaxKind.MethodDeclaration)
+            .forEach((methodNode: ts.MethodDeclaration) => {
+                const itemInfo = createWorkflowItemDescriptor(methodNode.name, workflowInfo);
+                workflowInfo.items.push(itemInfo);
 
-		workflows.push(workflowInfo);
-	}
+                registerWorkflowItem(itemInfo, methodNode);
+
+                const actionSourceFilePath = system.changeFileExt(sourceFile.fileName, `.${itemInfo.name}.wf.ts`, [".wf.ts"]);
+                let actionSourceText = itemInfo.strategy.printSourceFile(methodNode, sourceFile, itemInfo);
+                // @TODO: "Unstupify" me
+                if (itemInfo.polyglot) {
+                    actionSourceText = decorateSourceFileTextWithPolyglot(actionSourceText, itemInfo.polyglot, itemInfo);
+                }
+
+                const newSourceFile = ts.createSourceFile(
+                    actionSourceFilePath,
+                    actionSourceText,
+                    ts.ScriptTarget.Latest,
+                    true
+                );
+
+                actionSourceFiles.push(newSourceFile);
+            });
+
+        workflowInfo.name = workflowInfo.name || classNode.name.text;
+        workflowInfo.path = workflowInfo.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
+        workflowInfo.id = workflowInfo.id || generateElementId(FileType.Workflow, `${workflowInfo.path}/${workflowInfo.name}`);
+
+        workflows.push(workflowInfo);
+    }
 }
 
 /**
@@ -167,13 +188,13 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
  *        should be refactored to adhere to the rest of the canvas items
  */
 function decorateSourceFileTextWithPolyglot(actionSourceText: string, polyglotDescriptor: PolyglotDescriptor, itemInfo: WorkflowItemDescriptor): string {
-	// Exists a declaration of a Polyglot decorator
-	if (itemInfo.input.length > 0 && itemInfo.output.length > 0) {
-		const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
-		actionSourceText = polyglotCall + actionSourceText;
-	}
+    // Exists a declaration of a Polyglot decorator
+    if (itemInfo.input.length > 0 && itemInfo.output.length > 0) {
+        const polyglotCall = printPolyglotCode(polyglotDescriptor.package, polyglotDescriptor.method, itemInfo.input, itemInfo.output);
+        actionSourceText = polyglotCall + actionSourceText;
+    }
 
-	return actionSourceText;
+    return actionSourceText;
 }
 
 /**
@@ -185,9 +206,9 @@ function decorateSourceFileTextWithPolyglot(actionSourceText: string, polyglotDe
  * @returns void
  */
 function registerWorkflowItem(itemInfo: WorkflowItemDescriptor, methodNode: ts.MethodDeclaration): void {
-	registerPolyglotDecorators(methodNode, itemInfo);
-	registerMethodDecorators(methodNode, itemInfo);
-	registerMethodArgumentDecorators(methodNode, itemInfo);
+    registerPolyglotDecorators(methodNode, itemInfo);
+    registerMethodDecorators(methodNode, itemInfo);
+    registerMethodArgumentDecorators(methodNode, itemInfo);
 }
 
 /**
@@ -205,33 +226,33 @@ function registerWorkflowItem(itemInfo: WorkflowItemDescriptor, methodNode: ts.M
  * @returns void
  */
 function transpileActionItems(
-	workflows: WorkflowDescriptor[],
-	actionSourceFiles: ts.SourceFile[],
-	context: FileTransformationContext,
-	file: FileDescriptor
+    workflows: WorkflowDescriptor[],
+    actionSourceFiles: ts.SourceFile[],
+    context: FileTransformationContext,
+    file: FileDescriptor
 ): void {
-	const actionItems = workflows.reduce((items, wf) => items.concat(wf.items), <WorkflowItemDescriptor[]>[]);
+    const actionItems = workflows.reduce((items, wf) => items.concat(wf.items), <WorkflowItemDescriptor[]>[]);
 
-	actionSourceFiles.forEach((actionSourceFile, i) => {
-		const [sourceText] = transformSourceFile(
-			actionSourceFile,
-			context,
-			{
-				before: [
-					collectFactsBefore,
-					transformShimsBefore,
-				],
-				after: [
-					transformShims,
-					remediateTypeScript,
-					transformModuleSystem,
-					prepareHeaderEmitter(context)
-				],
-			},
-			file);
+    actionSourceFiles.forEach((actionSourceFile, i) => {
+        const [sourceText] = transformSourceFile(
+            actionSourceFile,
+            context,
+            {
+                before: [
+                    collectFactsBefore,
+                    transformShimsBefore,
+                ],
+                after: [
+                    transformShims,
+                    remediateTypeScript,
+                    transformModuleSystem,
+                    prepareHeaderEmitter(context)
+                ],
+            },
+            file);
 
-		actionItems[i].sourceText = sourceText;
-	});
+        actionItems[i].sourceText = sourceText;
+    });
 }
 
 // ---------------------------------------- Utility functions ----------------------------------------
@@ -242,31 +263,31 @@ function transpileActionItems(
  * @TODO: See which logic you can move to the strategies
  */
 function createWorkflowItemDescriptor(propertyNameNode: ts.PropertyName, workflowInfo: WorkflowDescriptor): WorkflowItemDescriptor {
-	return {
-		name: getPropertyName(propertyNameNode),
-		input: [],
-		output: [],
-		sourceText: "",
-		target: null,
-		strategy: null,
-		canvasItemPolymorphicBag: {},
-		parent: workflowInfo
-	};
+    return {
+        name: getPropertyName(propertyNameNode),
+        input: [],
+        output: [],
+        sourceText: "",
+        target: null,
+        strategy: null,
+        canvasItemPolymorphicBag: {},
+        parent: workflowInfo
+    };
 }
 
 /**
  * Represents the workflow information extracted from the TypeScript file.
  */
 function createWorkflowDescriptor(classNode: ts.ClassDeclaration): WorkflowDescriptor {
-	return {
-		id: undefined,
-		name: classNode.name.text,
-		path: undefined,
-		version: "1.0.0",
-		parameters: [],
-		rootItem: null,
-		items: [],
-		presentation: undefined,
-		description: undefined
-	};
+    return {
+        id: undefined,
+        name: classNode.name.text,
+        path: undefined,
+        version: "1.0.0",
+        parameters: [],
+        rootItem: null,
+        items: [],
+        presentation: undefined,
+        description: undefined
+    };
 }
