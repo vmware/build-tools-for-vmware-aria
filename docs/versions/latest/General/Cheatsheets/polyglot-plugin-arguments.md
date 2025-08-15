@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:o11n-polyglot-package-maven-plugin:4.9.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:o11n-polyglot-package-maven-plugin:4.9.2-SNAPSHOT
 
 Name: o11n-polyglot-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: o11n-polyglot-package-maven-plugin
-Version: 4.9.1-SNAPSHOT
+Version: 4.9.2-SNAPSHOT
 Goal Prefix: vro
 
 This plugin has 3 goals:
@@ -79,6 +79,10 @@ vro:install-node-deps
 
     ssh (Default: ${ssh.*})
       User property: ssh
+      (no description available)
+
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
       (no description available)
 
     vcd (Default: ${vcd.*})

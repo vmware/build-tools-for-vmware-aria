@@ -1,6 +1,6 @@
 {
 	"name": "@vmware-pscoe/vropkg",
-	"version": "4.9.2-SNAPSHOT",
+	"version": "4.10.0",
 	"description": "Used to build vRealize Orchestrator signed package out of it source code (expand to package XML)",
 	"author": "VMware PSCoE",
 	"license": "VMware Confidential",
