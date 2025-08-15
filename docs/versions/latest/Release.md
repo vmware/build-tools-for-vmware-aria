@@ -34,7 +34,7 @@ The new timeout has the following configuration options:
 
 ### *Add support for User Interaction Custom Forms push in Typescript based projects*
 
-In release 2.44.0 support for `@UserInteractionItem` decorator for `Workflows` was added which enables the user to define `User Interaction` Workflow components in Typescript based project but was limitted to pushing a default empty `Custom Form`. 
+In release 2.44.0 support for `@UserInteractionItem` decorator for `Workflows` was added which enables the user to define `User Interaction` Workflow components in Typescript based project but was limitted to pushing a default empty `Custom Form`.
 
 The current feature enables the user to push `User Interaction Custom Forms` provided as a JSON definitions in separate files similar to the already supported `Workflow Custom Forms` push. The file needs to be placed in the same folder as the related `.wf.ts` file and must follow naming convention: `{{workflowFileName}}_input_form_{{userInteractionItemId}}.wf.form.json` where:
 * `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
