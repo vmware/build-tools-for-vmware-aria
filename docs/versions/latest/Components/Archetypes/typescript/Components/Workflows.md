@@ -448,8 +448,8 @@ If no `User Interaction Custom Form` file definition is provided (or the naming 
 
 
 :scroll:**NOTE!** Currently `pull` operation for `Custom Forms` is not supported. As a workaround you can:
-* use an `XML` based project to pull the forms, move them to the proper folder and rename them to match the naming convention.
-* Navigate to the Orchestrator UI, open the `Workflow` edit page and navigate to `Version History` from where you can extract the `YAML` definition, convert it to `JSON` and place it in a file.
+- use an `XML` based project to pull the forms, move them to the proper folder and rename them to match the naming convention.
+- Navigate to the Orchestrator UI, open the `Workflow` edit page and navigate to `Version History` from where you can extract the `YAML` definition, convert it to `JSON` and place it in a file.
 
 #### Example
 
