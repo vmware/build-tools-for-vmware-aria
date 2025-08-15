@@ -444,7 +444,16 @@ You can push `Workflow Custom Form` and `User Interaction Custom Forms` provided
 
 Only a single `Workflow Custom Form` is supported per `Workflow` and a single `User Interaction Custom Form` per `User Interaction` element (which can lead to having multiple `User Interaction Custom Form` definition files mapped to a single `wf.ts` file based on the number of `User Interactions` in the `Workflow`).
 
-If no `User Interaction Custom Form` file definition is provided (or the naming convention is not properly followed) a following default empty definition is used which can then be editted in the Orchestrator UI.
+If no `User Interaction Custom Form` file definition is provided (or the naming convention is not properly followed) the following default empty definition is used which can then be editted in the Orchestrator UI:
+```json
+{
+    "schema": {},
+    "layout": {
+        "pages": []
+    },
+    "itemId": "{{itemId}}"
+}
+```
 
 
 :scroll:**NOTE!** Currently `pull` operation for `Custom Forms` is not supported. As a workaround you can:
