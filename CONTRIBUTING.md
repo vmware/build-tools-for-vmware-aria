@@ -32,11 +32,12 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
 ### Prerequisites
 
 - [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/), `~14.17.1`
+- [Node.js](https://nodejs.org/), `~22.0.0`
 - [Npm](https://www.npmjs.com), `~6.14.13`
-- [Maven](https://maven.apache.org/), `~3.8.6`
-- [JDK](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html), `1.8.0_xxx`
+- [Maven](https://maven.apache.org/), `~3.9.0`
+- [JDK](https://openjdk.org/projects/jdk/17/), `17-21`
 
+:scroll:**NOTE!** For an up-to-date pre-req check please use the [healthcheck script](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/health.sh)
 
 ### Guides
 1. [Setting up local environment](docs/versions/latest/General/Getting%20Started/Setting%20Up%20Local%20Environment.md)
@@ -49,14 +50,21 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
      - Example: The VMware Aria Automation 8 Package Store class is `VraNgPackageStore.java`.
    - Most of the Package Store classes will use a REST client for communication. REST clients are located in `/common/artifact-manager/src/main/java/com/vmware/pscoe/iac/artifact/rest/`.
      - Example: `VraNgPackageStore.java` uses `RestClientVraNg.java`, which itself uses `RestClientVraNgPrimitive.java`.
+    - Most frequently a change needs to be introduced in `common/artifact-manager` module. All classes related REST and SSH communication with the products are located there. The `Mojo` classes and the `Installer` script both consume the `artifact-manager` module to execute the desired `push`/`pull` operation. The module has been recently recently so that folders are split by products/archetypes to make it easier to navigate and have better structure.
+      - `artifact-manager` also contains `Configuration` classes whose purpose is to access different user provided configurations such as the ones located in the local `settings.xml`. E.g. <vrang.host> and <vrang.org.name> are accessed from the [ConfigurationVraNg] (https://github.com/vmware/build-tools-for-vmware-aria/blob/main/common/artifact-manager/src/main/java/com/vmware/pscoe/iac/artifact/aria/automation/configuration/ConfigurationVraNg.java) class. There are two ways in which configuration values are fed to the `Configuration` classes:
+        - Read from `settings.xml` during `push`/`pull` operations executed via terminal or VS Code actions. Once `Maven` reads the values they are populated to [AbstractIacMojo](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/maven/plugins/common/src/main/java/com/vmware/pscoe/maven/plugins/AbstractIacMojo.java) where the `Configuration` class instance is created. The `AbstractIacMojo` is inherited in some cases so some of the functions might be overriden - have this in mind when troubleshooting. E.g. the `overwriteConfigurationPropertiesForType` function from `AbstractIacMojo` is overridden in the vROps [PullMojo](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/maven/plugins/vrops/src/main/java/com/vmware/pscoe/maven/plugins/PullMojo.java).
+        - Provided as user input through the `Installer` script - this is the script generated when you run `mvn clean package -Pbundle-with-installer` under `bin` directory in the generated `zip` file.. That script receives the inputs either is command line input or from an `environment.properties` file (from code perspective both of those options are treated the same). The [Installer](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/package-installer/src/main/java/com/vmware/pscoe/iac/installer/Installer.java) class reads those inputs and similar to the `Mojo` generates the `Configuration` and `Package Store` class instances.
 4. Testing guide - follow the steps bellow to do a local test of a new functionality or a bugfix.
    - Create or reuse an existing project with the type of archetype that you need.
      - Example: For VMware Aria Automation 8 you will need a `vra-ng` project archetype.
-   - Bump the test project's Aria Build Tools version to the latest **SNAPSHOT** version. The version number is located in the `pom.xml` file/s between the `<parent>` tags. Each project can have multiple `pom.xml` files. If that's the case, change all of them.
-   - Run `mvn clean package` from the main test project directory so you can download the latest Aria Build Tools artifacts.
-   - After you make the proper changes under your local Aria Build Tools source, you will need to install the modified artifacts (locally), so you can test them. This is done by running the `mvn clean install` command from a *particular modified* Aria Build Tools directory (this will save you time, so you will not need to install all artifacts locally).
+   - Bump the test project's Build Tools for VMware Aria version to the latest **SNAPSHOT** version. The version number is located in the `pom.xml` file/s between the `<parent>` tags. Each project can have multiple `pom.xml` files. If that's the case, change all of them.
+   - Run `mvn clean package` from the main test project directory so you can download the latest Build Tools for VMware Aria artifacts.
+   - After you make the proper changes under your local Build Tools for VMware Aria source, you will need to install the modified artifacts (locally), so you can test them. This is done by running the `mvn clean install` command from a *particular modified* Build Tools for VMware Aria directory (this will save you time, so you will not need to install all artifacts locally).
      - Example: If you have modified the `VraNgPackageStore.java` or the `RestClientVraNg.java` class, you can run the `mvn clean install` command from the `/common/artifact-manager` directory.
      - Example: If you have modified a `PullMojo.java` class, you can run the `mvn clean install` command from the `/maven/plugins/` directory.
+     - If for some reason you have to re-build the whole project run the following two commands in order from the Build Tools for Aria root folder:
+      - `mvn clean install -D modules.plugins`
+      - `mvn clean install -D modules.tools`
    - Now test the modifications by executing `mvn clean package/pull/push` command from the test project.
 
 ### Documentation
@@ -154,4 +162,3 @@ The main labels used for version are:
 - `version/patch` - This label is used to mark issues that are patches.
 - `version/minor` - This label is used to mark issues that are minor versions.
 - `version/major` - This label is used to mark issues that are major versions.
-
