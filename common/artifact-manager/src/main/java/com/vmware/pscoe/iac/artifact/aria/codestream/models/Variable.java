@@ -15,14 +15,11 @@
 package com.vmware.pscoe.iac.artifact.aria.codestream.models;
 
 public class Variable {
-
 	String project;
 	String name;
 	String type;
 	String description;
 	String value;
-	// String version;
-	// String kind;
 
 	public String getProject() {
 		return project;

@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.bsc.store;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,16 +26,18 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jcraft.jsch.Session;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
+import com.vmware.pscoe.iac.artifact.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.PackageManager;
+import com.vmware.pscoe.iac.artifact.PackageStore;
+import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
+import com.vmware.pscoe.iac.artifact.bsc.store.models.BasicPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.cli.SshClient;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.basic.BasicPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.ssh.SshClient;
 
 public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor> {
 	/**
@@ -62,20 +64,22 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 	 *
 	 * @param sshConfig the ssh configuration
 	 */
-	protected SshPackageStore(final ConfigurationSsh sshConfig) {
+	public SshPackageStore(final ConfigurationSsh sshConfig) {
 		this.config = sshConfig;
 	}
 
 	/**
 	 * Imports all packages.
-	 * @param pkgs the packages to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkgs          the packages to import
+	 * @param dryrun        whether it should be dry run
 	 * @param mergePackages whether to merge the packages
-	 * @param enableBackup whether it should back up the packages on import
+	 * @param enableBackup  whether it should back up the packages on import
 	 * @return the imported packages
 	 */
 	@Override
-	public final List<Package> importAllPackages(final List<Package> pkgs, final boolean dryrun, final boolean mergePackages, final boolean enableBackup) {
+	public final List<Package> importAllPackages(final List<Package> pkgs, final boolean dryrun,
+			final boolean mergePackages, final boolean enableBackup) {
 		this.validateFilesystem(pkgs);
 
 		List<Package> sourceEndpointPackages = pkgs;
@@ -92,7 +96,8 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Exports all packages.
-	 * @param pkgs the packages to export
+	 * 
+	 * @param pkgs   the packages to export
 	 * @param dryrun whether it should be dry run
 	 * @return the exported packages
 	 */
@@ -103,20 +108,23 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Imports all packages.
-	 * @param pkg the packages to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkg          the packages to import
+	 * @param dryrun       whether it should be dry run
 	 * @param enableBackup whether it should back up the packages on import
 	 * @return the imported packages
 	 */
 	@Override
-	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun, final boolean enableBackup) {
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun,
+			final boolean enableBackup) {
 		return this.importAllPackages(pkg, dryrun, false, enableBackup);
 	}
 
 	/**
 	 * Imports a package.
-	 * @param pkg the package to import
-	 * @param dryrun whether it should be dry run
+	 * 
+	 * @param pkg           the package to import
+	 * @param dryrun        whether it should be dry run
 	 * @param mergePackages whether to merge the packages
 	 * @return the imported package
 	 */
@@ -141,7 +149,8 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg    the package to export
 	 * @param dryrun whether it should be a dry run
 	 * @return the exported package
 	 */
@@ -152,9 +161,10 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg              the package to export
 	 * @param exportDescriptor the descriptor of the package to export
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun           whether it should be dry run
 	 * @return the exported package
 	 */
 	@Override
@@ -166,16 +176,20 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Exports a package.
-	 * @param pkg the package to export
+	 * 
+	 * @param pkg                  the package to export
 	 * @param sshPackageDescriptor the package descriptor
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun               whether it should be dry run
 	 * @return the exported package
 	 */
 	@Override
-	public final Package exportPackage(final Package pkg, final BasicPackageDescriptor sshPackageDescriptor, final boolean dryrun) {
+	public final Package exportPackage(final Package pkg, final BasicPackageDescriptor sshPackageDescriptor,
+			final boolean dryrun) {
 		logger.info(String.format(PackageStore.PACKAGE_EXPORT, pkg));
-		String rootDirectory = this.config.getSshDirectory().endsWith(File.separator) ? this.config.getSshDirectory() : this.config.getSshDirectory() + File.separator;
-		List<String> files = sshPackageDescriptor.getContent().stream().map(file -> (rootDirectory + file)).collect(Collectors.toList());
+		String rootDirectory = this.config.getSshDirectory().endsWith(File.separator) ? this.config.getSshDirectory()
+				: this.config.getSshDirectory() + File.separator;
+		List<String> files = sshPackageDescriptor.getContent().stream().map(file -> (rootDirectory + file))
+				.collect(Collectors.toList());
 
 		if (files != null) {
 			exportFiles(pkg, files);
@@ -188,6 +202,7 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Gets the packages.
+	 * 
 	 * @return the packages
 	 */
 	@Override
@@ -197,9 +212,10 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Deletes a package.
-	 * @param pkg the package to delete
+	 * 
+	 * @param pkg         the package to delete
 	 * @param withContent whether to delete the package with the content
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun      whether it should be dry run
 	 * @return the deleted package
 	 */
 	@Override
@@ -209,6 +225,7 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Gets package content.
+	 * 
 	 * @param pkg the package which content to get
 	 * @return the package content
 	 */
@@ -219,8 +236,9 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Deletes content.
+	 * 
 	 * @param content the content to be deleted
-	 * @param dryrun whether it should be dry run
+	 * @param dryrun  whether it should be dry run
 	 */
 	@Override
 	protected final void deleteContent(final Content content, final boolean dryrun) {
@@ -229,8 +247,9 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Exports files from ssh package.
+	 * 
 	 * @param sshPackage the ssh package from which to export the files
-	 * @param files the exported files
+	 * @param files      the exported files
 	 */
 	private void exportFiles(final Package sshPackage, final List<String> files) {
 		if (files == null || files.isEmpty()) {
@@ -261,8 +280,9 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Imports files.
+	 * 
 	 * @param sshPackage the ssh package to import files from
-	 * @param tmp the temporary file
+	 * @param tmp        the temporary file
 	 */
 	private void importFiles(final Package sshPackage, final File tmp) {
 		File contentDirectory = Paths.get(tmp.getPath()).toFile();
@@ -290,6 +310,7 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Connects.
+	 * 
 	 * @throws JSchException
 	 */
 	private void connect() throws JSchException {
@@ -301,6 +322,7 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 
 	/**
 	 * Reconnects.
+	 * 
 	 * @throws JSchException
 	 */
 	private void reconnect() throws JSchException {

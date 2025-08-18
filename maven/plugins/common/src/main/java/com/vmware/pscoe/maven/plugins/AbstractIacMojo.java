@@ -31,14 +31,14 @@ import org.apache.maven.settings.crypto.SettingsDecryptionResult;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;

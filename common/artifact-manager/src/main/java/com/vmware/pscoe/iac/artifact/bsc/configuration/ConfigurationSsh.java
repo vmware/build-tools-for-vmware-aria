@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.configuration;
+package com.vmware.pscoe.iac.artifact.bsc.configuration;
 
 import java.net.InetAddress;
 import java.net.URISyntaxException;
@@ -22,6 +22,8 @@ import java.util.Properties;
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
 
+import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public final class ConfigurationSsh extends Configuration {
