@@ -17,8 +17,8 @@ package com.vmware.pscoe.iac.artifact.aria.operations.store;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,19 +34,19 @@ import org.mockito.Mockito;
 
 import com.jcraft.jsch.JSchException;
 import com.vmware.pscoe.iac.artifact.PackageMocked;
-import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
-import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.cli.CliManagerVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
+import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class VropsPackageStoreTest {
 	private static String VROPS_VERSION_8_17 = "8.17.0";

@@ -13,7 +13,7 @@
  * #L%
  */
 /**
- * This package holds classes for CLI operations and utilities.
+ * This package holds common utility classes.
  *
  */
-package com.vmware.pscoe.iac.artifact.cli;
+package com.vmware.pscoe.iac.artifact.common.utils;

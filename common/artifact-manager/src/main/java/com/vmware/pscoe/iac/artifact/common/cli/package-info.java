@@ -13,7 +13,7 @@
  * #L%
  */
 /**
- * This package holds classes for SSH connections and operations.
+ * This package holds common utility classes for CLI operations.
  *
  */
-package com.vmware.pscoe.iac.artifact.ssh;
+package com.vmware.pscoe.iac.artifact.common.cli;

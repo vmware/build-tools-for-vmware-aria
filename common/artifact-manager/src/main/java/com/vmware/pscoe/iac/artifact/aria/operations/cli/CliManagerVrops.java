@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.cli;
+package com.vmware.pscoe.iac.artifact.aria.operations.cli;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.common.cli.SshClient;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.ssh.SshClient;
 
 public class CliManagerVrops implements AutoCloseable {
 	private static final String VIEW = "view";

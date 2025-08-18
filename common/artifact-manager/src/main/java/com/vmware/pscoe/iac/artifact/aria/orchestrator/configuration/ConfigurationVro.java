@@ -168,6 +168,7 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 		ConfigurationVro config = new ConfigurationVro(props);
 
 		boolean hasVroTenant = !StringUtils.isEmpty(config.getTenant());
+
 		if (hasVroTenant && config.getAuth() != AuthProvider.VRA) {
 			throw new ConfigurationException(
 					"vRO configuration validation error! Multi-tenancy requires 'vra' authentication!");
@@ -180,5 +181,4 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	public enum AuthProvider {
 		BASIC, VRA, VC
 	}
-
 }
