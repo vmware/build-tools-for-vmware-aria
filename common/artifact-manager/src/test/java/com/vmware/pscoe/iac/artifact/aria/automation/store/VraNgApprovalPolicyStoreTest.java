@@ -14,26 +14,14 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPolicy;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,12 +31,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.never;
+import org.junit.Rule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.JsonObject;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPolicy;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 
 public class VraNgApprovalPolicyStoreTest {
 	/**

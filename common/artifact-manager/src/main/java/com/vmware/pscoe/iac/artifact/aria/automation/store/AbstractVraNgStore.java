@@ -28,7 +28,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgIntegrationUtils;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 /**
  * Abstract class that unify the way the content is exported for all subclasses.

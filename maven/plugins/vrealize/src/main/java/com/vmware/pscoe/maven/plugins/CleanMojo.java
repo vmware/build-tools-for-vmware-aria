@@ -26,11 +26,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "clean", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class CleanMojo extends AbstractIacMojo {
@@ -55,7 +55,7 @@ public class CleanMojo extends AbstractIacMojo {
 		if (pkgType != null) {
 			getLog().info("Package: " + artifactFile);
 			getLog().info("Package type: " + pkgType.toString());
-			com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(pkgType,
+			com.vmware.pscoe.iac.artifact.common.store.Package pkg = PackageFactory.getInstance(pkgType,
 					new File(artifactFile));
 			try {
 				PackageStore store = getConfigurationForType(PackageType.fromExtension(a.getType()))

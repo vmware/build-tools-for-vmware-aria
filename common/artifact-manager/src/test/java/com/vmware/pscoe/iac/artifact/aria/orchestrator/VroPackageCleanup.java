@@ -27,9 +27,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 class VroPackageCleanup {
 

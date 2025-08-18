@@ -30,13 +30,13 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.VropsPackageStore;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 

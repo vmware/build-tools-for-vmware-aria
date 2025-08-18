@@ -38,8 +38,8 @@ import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgProjectUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
 
 public class VraNgResourceActionStore extends AbstractVraNgStore {
 

@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.common.configuration;
 
 import java.util.Properties;
 
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public abstract class ConfigurationWithRefreshToken extends Configuration {
 

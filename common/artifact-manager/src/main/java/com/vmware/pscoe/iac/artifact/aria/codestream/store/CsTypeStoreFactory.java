@@ -27,7 +27,7 @@ import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.Configuration
 import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 /**
  * Factory to select and setup the store (handler) and determine the order of

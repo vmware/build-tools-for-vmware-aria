@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.strategy;
+package com.vmware.pscoe.iac.artifact.common.strategy;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 /**
  * Strategy to skip packages with older versions.
@@ -34,11 +34,13 @@ public class StrategySkipOldVersions implements Strategy {
 	protected final Logger logger = LoggerFactory.getLogger(StrategySkipOldVersions.class);
 
 	/**
-	 * Filter sourceEndpointPackages with higher version then their server representative.
+	 * Filter sourceEndpointPackages with higher version then their server
+	 * representative.
 	 *
 	 * @param sourceEndpointPackages      - sourceEndpointPackages
 	 * @param destinationEndpointPackages - destinationEndpointPackages
-	 * @return - sourceEndpointPackages with higher version then their server representative.
+	 * @return - sourceEndpointPackages with higher version then their server
+	 *         representative.
 	 */
 	public List<Package> filterHigherVersions(List<Package> sourceEndpointPackages,
 			List<Package> destinationEndpointPackages) {

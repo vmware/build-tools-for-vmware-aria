@@ -14,22 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.GenericPackageStore;
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxPackageContent;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import org.apache.commons.lang3.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,6 +21,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSecret;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 
 public class AbxPackageStore extends GenericPackageStore<AbxPackageDescriptor> {
 	/**

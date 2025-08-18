@@ -28,16 +28,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vmware.pscoe.iac.artifact.GenericPackageStore;
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageAdapter;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 
 public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescriptor> {
 	/**

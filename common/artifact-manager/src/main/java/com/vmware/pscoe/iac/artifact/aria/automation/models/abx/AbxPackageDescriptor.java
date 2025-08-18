@@ -14,16 +14,18 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.models.abx;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import org.apache.commons.io.FileUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 public class AbxPackageDescriptor extends PackageDescriptor {
 	private static final String PACKAGE_JSON = "package.json";

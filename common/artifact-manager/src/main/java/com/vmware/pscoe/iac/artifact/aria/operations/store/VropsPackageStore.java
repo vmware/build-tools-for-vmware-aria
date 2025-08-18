@@ -61,9 +61,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcraft.jsch.JSchException;
-import com.vmware.pscoe.iac.artifact.GenericPackageStore;
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.aria.operations.cli.CliManagerVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
@@ -79,11 +76,14 @@ import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Version;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.common.utils.ZipUtilities;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.Version;
 
 /**
  * This is the class that abstracts the operations for working with vROps

@@ -27,7 +27,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
 
 public final class VcdNgPackageManifest {
 	private String jsonData;
@@ -135,7 +135,7 @@ public final class VcdNgPackageManifest {
 		return new VcdNgPackageManifest(manifestContent);
 	}
 
-	public static VcdNgPackageManifest getInstance(com.vmware.pscoe.iac.artifact.model.Package vcdNgPackage) {
+	public static VcdNgPackageManifest getInstance(com.vmware.pscoe.iac.artifact.common.store.Package vcdNgPackage) {
 		PackageManager pm = new PackageManager(vcdNgPackage);
 
 		String manifestContent;

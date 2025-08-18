@@ -18,7 +18,7 @@ import java.util.Properties;
 
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public final class ConfigurationVcd extends Configuration {
 	// Important - when modify properties refer to comments in @Configuration

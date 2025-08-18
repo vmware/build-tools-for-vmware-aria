@@ -22,10 +22,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractVroMojo {
@@ -33,11 +33,12 @@ public class PackageMojo extends AbstractVroMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-		
+
 		getLog().info("basedir " + project.getBasedir());
-		File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtention());
+		File pkgFile = new File(directory,
+				pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtention());
 		getLog().info("Target VRLI package file " + pkgFile.getAbsolutePath());
-		
+
 		Package pkg = PackageFactory.getInstance(PackageType.VRLI, pkgFile);
 		try {
 			getLog().info("Packaging VRLI bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());

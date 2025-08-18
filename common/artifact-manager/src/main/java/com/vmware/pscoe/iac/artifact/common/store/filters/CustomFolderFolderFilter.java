@@ -12,14 +12,14 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.filters;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.vmware.pscoe.iac.artifact.common.store.filters;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CustomFolderFolderFilter implements FilenameFilter {
 	private final List<String> descriptionNames;
@@ -33,9 +33,10 @@ public class CustomFolderFolderFilter implements FilenameFilter {
 
 	/**
 	 * Method that filters files based on what is defined in the content.yaml.
-	 * Walks trough the files in a specific directory and decides if the the file should be chosen or not
+	 * Walks trough the files in a specific directory and decides if the the file
+	 * should be chosen or not
 	 * 
-	 * @param dir File to filter
+	 * @param dir  File to filter
 	 * @param name name of the file
 	 * @return boolean
 	 */

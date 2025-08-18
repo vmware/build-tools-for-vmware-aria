@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 public abstract class AbstractCsStore implements ICsStore {
 	protected RestClientCs restClient;

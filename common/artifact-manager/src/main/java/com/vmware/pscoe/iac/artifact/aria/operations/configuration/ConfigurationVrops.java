@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
 
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationWithRefreshToken;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 	/** 0x0FFFF = 65535 */

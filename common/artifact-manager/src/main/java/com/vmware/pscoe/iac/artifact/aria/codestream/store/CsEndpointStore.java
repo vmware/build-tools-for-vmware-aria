@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.aria.codestream.models.Endpoint;
-import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 public class CsEndpointStore extends AbstractCsStore {
 	private static final String DIR_ENDPOINTS = "endpoints";

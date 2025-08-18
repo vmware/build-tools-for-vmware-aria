@@ -41,11 +41,11 @@ import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.Configuration
 import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
 import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class CsVariableStoreTest {
 	@Rule

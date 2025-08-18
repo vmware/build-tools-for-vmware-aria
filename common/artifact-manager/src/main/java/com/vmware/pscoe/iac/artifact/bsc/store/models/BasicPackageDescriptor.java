@@ -20,7 +20,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 public class BasicPackageDescriptor extends PackageDescriptor {
 	private List<String> content;

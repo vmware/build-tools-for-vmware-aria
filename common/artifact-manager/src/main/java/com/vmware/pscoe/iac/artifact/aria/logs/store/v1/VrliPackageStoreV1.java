@@ -32,7 +32,7 @@ import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.RestClientVrliV1;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.models.AlertDTO;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.models.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.aria.logs.store.AbstractVrliPackageStore;
-import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 public class VrliPackageStoreV1 extends AbstractVrliPackageStore {
 	private final RestClientVrliV1 restClient;

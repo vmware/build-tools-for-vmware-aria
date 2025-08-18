@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model;
+package com.vmware.pscoe.iac.artifact.common.store;
 
 public final class Package implements Comparable<Package> {
 	/**
@@ -42,13 +42,14 @@ public final class Package implements Comparable<Package> {
 
 	/**
 	 *
-	 * @param packageType The package type
-	 * @param packageId The package id
-	 * @param packageName The package name
-	 * @param packageVersion The package version
+	 * @param packageType           The package type
+	 * @param packageId             The package id
+	 * @param packageName           The package name
+	 * @param packageVersion        The package version
 	 * @param packageFilesystemPath The package file system path
 	 */
-	protected Package(final PackageType packageType, final String packageId, final String packageName, final String packageVersion, final String packageFilesystemPath) {
+	protected Package(final PackageType packageType, final String packageId, final String packageName,
+			final String packageVersion, final String packageFilesystemPath) {
 		this.type = packageType;
 		this.id = packageId;
 		this.name = packageName;
@@ -119,7 +120,7 @@ public final class Package implements Comparable<Package> {
 		if (b.version == null) {
 			return 1;
 		}
-		
+
 		return new Version(a.version).compareTo(new Version(b.version));
 	}
 

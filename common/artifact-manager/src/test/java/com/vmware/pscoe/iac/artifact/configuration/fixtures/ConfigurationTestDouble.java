@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.configuration.fixtures;
 import java.util.Properties;
 
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public class ConfigurationTestDouble extends Configuration {
 	public ConfigurationTestDouble(Properties props) {

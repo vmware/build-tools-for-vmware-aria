@@ -22,10 +22,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class BasicPackageMojo extends AbstractVroMojo {
@@ -33,13 +33,14 @@ public class BasicPackageMojo extends AbstractVroMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-		
+
 		getLog().info("basedir " + project.getBasedir());
-		File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.BASIC.getPackageExtention());
+		File pkgFile = new File(directory,
+				pkgInfoProvider.getPackageName() + "." + PackageType.BASIC.getPackageExtention());
 		getLog().info("Target package file: " + pkgFile.getAbsolutePath());
 		File srcDir = new File(project.getBasedir(), "src");
 		Package pkg = PackageFactory.getInstance(PackageType.BASIC, pkgFile);
-		
+
 		try {
 			getLog().info("Packaging basic bundle from: " + srcDir.getAbsolutePath());
 			new PackageManager(pkg).pack(srcDir);

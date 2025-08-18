@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model;
+package com.vmware.pscoe.iac.artifact.common.store;
 
 // Make sure not to introduce new types with dash - in the extension. This will introduce maven and artifactory issues!
 public enum PackageType {

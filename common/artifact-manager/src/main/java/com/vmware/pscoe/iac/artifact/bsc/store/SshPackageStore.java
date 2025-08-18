@@ -29,15 +29,15 @@ import org.slf4j.LoggerFactory;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.vmware.pscoe.iac.artifact.GenericPackageStore;
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.bsc.store.models.BasicPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.common.cli.SshClient;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 
 public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor> {
 	/**

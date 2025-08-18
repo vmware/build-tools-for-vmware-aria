@@ -14,6 +14,7 @@
  */
 
 /**
- * Package that represents vRA 8 Rest Package.
+ * This package contains the classes that define the strategy to be used when
+ * importing and exporting packages.
  */
-package com.vmware.pscoe.iac.artifact.rest;
+package com.vmware.pscoe.iac.artifact.common.strategy;

@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.orchestrator.model;
 
 import java.util.List;
 
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 
 public class VroPackageContent extends PackageContent<VroPackageContent.ContentType> {
 

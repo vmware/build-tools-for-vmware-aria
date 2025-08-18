@@ -22,9 +22,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractVroMojo {
@@ -38,7 +38,7 @@ public class PackageMojo extends AbstractVroMojo {
 				pkgInfoProvider.getPackageName() + "." + PackageType.CS.getPackageExtention());
 		getLog().info("Target CS package file " + pkgFile.getAbsolutePath());
 
-		com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(PackageType.CS, pkgFile);
+		com.vmware.pscoe.iac.artifact.common.store.Package pkg = PackageFactory.getInstance(PackageType.CS, pkgFile);
 		try {
 			getLog().info("Packaging CS bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());
 			new PackageManager(pkg).pack(pkgInfoProvider.getSourceDirectory());

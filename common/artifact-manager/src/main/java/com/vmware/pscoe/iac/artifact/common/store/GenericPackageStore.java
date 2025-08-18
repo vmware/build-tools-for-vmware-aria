@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact;
+package com.vmware.pscoe.iac.artifact.common.store;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,15 +24,12 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.Version;
-
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 public abstract class GenericPackageStore<T extends PackageDescriptor> implements PackageStore<T> {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());

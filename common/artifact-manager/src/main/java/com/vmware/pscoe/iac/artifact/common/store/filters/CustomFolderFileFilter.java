@@ -12,15 +12,15 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.filters;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.vmware.pscoe.iac.artifact.common.store.filters;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CustomFolderFileFilter implements FilenameFilter {
 	/**
@@ -34,20 +34,24 @@ public class CustomFolderFileFilter implements FilenameFilter {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param descriptionNames Items as they appear in the content.yaml file.
-	 */	
+	 */
 	public CustomFolderFileFilter(List<String> descriptionNames) {
 		super();
-		// convert the descriptor content to lower case (in order search to be case insensitive).
-		this.descriptionNames = descriptionNames == null ? null : descriptionNames.stream().map(item -> item.toLowerCase().trim()).collect(Collectors.toList());
+		// convert the descriptor content to lower case (in order search to be case
+		// insensitive).
+		this.descriptionNames = descriptionNames == null ? null
+				: descriptionNames.stream().map(item -> item.toLowerCase().trim()).collect(Collectors.toList());
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
 	/**
 	 * Method that filters files based on what is defined in the content.yaml.
-	 * Accepts only files and filters them by name as defined in their respective categories in the content.yaml.
+	 * Accepts only files and filters them by name as defined in their respective
+	 * categories in the content.yaml.
 	 * 
-	 * @param dir File to filter.
+	 * @param dir  File to filter.
 	 * @param name name of the file.
 	 * @return boolean.
 	 */
@@ -58,14 +62,19 @@ public class CustomFolderFileFilter implements FilenameFilter {
 		logger.debug("Items in descriptor (content.yaml): {}", items);
 
 		File currentFile = new File(dir, name);
-		// There are cases where in the main item folder, there is a sub-directory, e.g. catalog-item/forms/.
-		if (currentFile.isDirectory()) { 
+		// There are cases where in the main item folder, there is a sub-directory, e.g.
+		// catalog-item/forms/.
+		if (currentFile.isDirectory()) {
 			return false;
 		}
 
-		// Following name replace regex, matches the file extension only, by which it enables to have "." in the names
-		// for the different entities - bps, forms, etc. e.g. Name "RHEL 8.X Family" -> produced "RHEL 8.X Family.json"
-		// -> run replaceFirst [.][^.]+$ = "" -> RHEL 8.X Family, furthermore the search in the descriptor is case insensitive.
-		return descriptionNames == null || descriptionNames.contains(name.replaceFirst("[.][^.]+$", "").toLowerCase().trim());
+		// Following name replace regex, matches the file extension only, by which it
+		// enables to have "." in the names
+		// for the different entities - bps, forms, etc. e.g. Name "RHEL 8.X Family" ->
+		// produced "RHEL 8.X Family.json"
+		// -> run replaceFirst [.][^.]+$ = "" -> RHEL 8.X Family, furthermore the search
+		// in the descriptor is case insensitive.
+		return descriptionNames == null
+				|| descriptionNames.contains(name.replaceFirst("[.][^.]+$", "").toLowerCase().trim());
 	}
 }

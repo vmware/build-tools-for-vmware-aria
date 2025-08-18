@@ -44,9 +44,9 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public class VropsPackageStoreTest {
 	private static String VROPS_VERSION_8_17 = "8.17.0";

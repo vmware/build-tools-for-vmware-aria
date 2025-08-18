@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 public class CsPackageDescriptor extends PackageDescriptor {
 	private static final Logger logger = LoggerFactory.getLogger(CsPackageDescriptor.class);

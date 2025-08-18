@@ -14,7 +14,7 @@
  */
 
 /**
- * Package that represents vRA 8 Rest Model Package.
+ * Package that represents file filters.
  *
  */
-package com.vmware.pscoe.iac.artifact.rest.model;
+package com.vmware.pscoe.iac.artifact.common.store.filters;
