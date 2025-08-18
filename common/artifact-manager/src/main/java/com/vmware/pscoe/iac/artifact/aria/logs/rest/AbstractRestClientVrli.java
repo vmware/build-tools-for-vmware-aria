@@ -40,7 +40,7 @@ import com.vmware.pscoe.iac.artifact.aria.operations.configuration.Configuration
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 
 public abstract class AbstractRestClientVrli extends RestClient {
 	protected String apiPrefix;

@@ -23,7 +23,7 @@ import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.RestTemplate;
 
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
-import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientRequestInterceptor;
 
 public class RestClientVropsBasicAuthInterceptor extends RestClientRequestInterceptor<ConfigurationVrops> {
 

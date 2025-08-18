@@ -39,8 +39,8 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 public abstract class AbstractIacMojo extends AbstractVroPkgMojo {

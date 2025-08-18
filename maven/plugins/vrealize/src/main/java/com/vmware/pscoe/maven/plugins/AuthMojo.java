@@ -37,8 +37,8 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.VraSsoAuth;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.rest.auth.VraSsoAuth;
 
 @Mojo(name = "auth", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class AuthMojo extends AbstractIacMojo {

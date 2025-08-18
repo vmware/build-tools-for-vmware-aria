@@ -36,7 +36,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
-import com.vmware.pscoe.iac.artifact.rest.model.sso.SsoEndpointDto;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.models.SsoEndpointDto;
 
 import net.minidev.json.JSONArray;
 

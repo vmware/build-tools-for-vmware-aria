@@ -46,7 +46,7 @@ import com.vmware.pscoe.iac.artifact.aria.codestream.models.CustomIntegrationVer
 import com.vmware.pscoe.iac.artifact.aria.codestream.models.Endpoint;
 import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 
 /**
  * Rest client for Code Stream.

@@ -29,8 +29,8 @@ import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.AbxReleaseManager;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 
 @Mojo(name = "release", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class ReleaseMojo extends AbstractIacMojo {

@@ -27,7 +27,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.common.cli.SshClient;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
 
 public class CliManagerVrops implements AutoCloseable {
 	private static final String VIEW = "view";
