@@ -44,8 +44,8 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.models.VcdNgPackageManifest;
-import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginMetadataDTO;
-import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginResourceDTO;
+import com.vmware.pscoe.iac.artifact.vcd.models.VcdPluginMetadataDTO;
+import com.vmware.pscoe.iac.artifact.vcd.models.VcdPluginResourceDTO;
 
 import net.minidev.json.JSONArray;
 

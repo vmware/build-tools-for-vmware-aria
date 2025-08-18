@@ -88,6 +88,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganizations;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganizationsV2;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgRegion;
@@ -100,7 +101,6 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContent
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClient;

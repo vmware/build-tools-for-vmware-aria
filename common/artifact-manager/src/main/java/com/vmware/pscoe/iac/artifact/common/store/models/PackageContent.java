@@ -25,7 +25,8 @@ public abstract class PackageContent<T extends PackageContent.ContentType> {
 	public static class Content<T> {
 
 		private final T type;
-		private final String id, name;
+		private final String id;
+		private final String name;
 
 		public Content(T type, String id, String name) {
 			this.type = type;
@@ -51,7 +52,8 @@ public abstract class PackageContent<T extends PackageContent.ContentType> {
 			if (obj == null || !this.getClass().equals(obj.getClass())) {
 				return false;
 			}
-			Content a = this, b = (Content) obj;
+			Content a = this;
+			Content b = (Content) obj;
 			return a.type.equals(b.type) && a.id.equalsIgnoreCase(b.id) && a.name.equalsIgnoreCase(b.name);
 		}
 

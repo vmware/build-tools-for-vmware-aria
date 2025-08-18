@@ -23,6 +23,9 @@ import java.util.zip.ZipInputStream;
 
 public class ZipUtilities {
 
+	private ZipUtilities() {
+	}
+
 	public static void unzip(File zipFile, File outputLocation) throws IOException {
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile.getAbsolutePath()))) {
 			ZipEntry ze = null;

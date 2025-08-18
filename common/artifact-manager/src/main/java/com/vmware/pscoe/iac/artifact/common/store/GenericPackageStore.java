@@ -191,7 +191,8 @@ public abstract class GenericPackageStore<T extends PackageDescriptor> implement
 			this.deletePackage(toBeRemovedPackage, false, dryrun);
 		} catch (HttpClientErrorException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-				// alaredy deleted - ignore cleanup, re-throw error otherwise
+				// already deleted - ignore cleanup, re-throw error otherwise
+				logger.info("Package is already deleted.");
 			} else {
 				throw e;
 			}

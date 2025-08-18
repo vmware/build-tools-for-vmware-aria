@@ -2,7 +2,7 @@
  * #%L
  * artifact-manager
  * %%
- * Copyright (C) 2023 - 2025 VMware
+ * Copyright (C) 2023 VMware
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
@@ -14,8 +14,7 @@
  */
 
 /**
- * 
- * This package holds the models for vRA Policies REST operations
- * 
+ * Package that represents vRLI store test classes.
+ *
  */
-package com.vmware.pscoe.iac.artifact.aria.automation.rest.models;
+package com.vmware.pscoe.iac.artifact.aria.logs.store.v1;

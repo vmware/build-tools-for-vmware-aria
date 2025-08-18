@@ -71,12 +71,15 @@ public class Variable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null)
+		}
+		if (o == null) {
 			return false;
-		if (this.getClass() != o.getClass())
+		}
+		if (this.getClass() != o.getClass()) {
 			return false;
+		}
 		Variable var = (Variable) o;
 
 		return (name.equals(var.name)

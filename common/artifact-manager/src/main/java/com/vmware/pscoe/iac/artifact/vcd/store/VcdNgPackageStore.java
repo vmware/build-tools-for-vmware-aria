@@ -28,8 +28,8 @@ import com.vmware.pscoe.iac.artifact.common.store.Version;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.common.strategy.Strategy;
-import com.vmware.pscoe.iac.artifact.vcd.models.VcdPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
+import com.vmware.pscoe.iac.artifact.vcd.store.models.VcdPackageDescriptor;
 
 public class VcdNgPackageStore extends GenericPackageStore<VcdPackageDescriptor> {
 	/**

@@ -31,14 +31,17 @@ import com.google.gson.JsonSyntaxException;
 
 public class JsonHelper {
 
-	private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonHelper.class);
+
+	private JsonHelper() {
+	}
 
 	public static String getPrettyJson(String json) {
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 			return gson.toJson(JsonParser.parseString(json));
 		} catch (JsonSyntaxException e) {
-			logger.error("Unable to parse Json[" + json + "]", e);
+			LOGGER.error("Unable to parse Json[" + json + "]", e);
 			return json;
 		}
 	}

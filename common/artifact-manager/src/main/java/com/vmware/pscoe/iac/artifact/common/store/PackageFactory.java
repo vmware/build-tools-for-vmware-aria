@@ -20,15 +20,15 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 
-public class PackageFactory {
+public final class PackageFactory {
 
-	private static final Pattern nameVersionPattern = Pattern.compile("(.*)-(\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?)(\\.*)?");
+	private static final Pattern NAME_VERSION_PATTERN = Pattern.compile("(.*)-(\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?)(\\.*)?");
 
 	private PackageFactory() {
 	}
 
 	private static Package createPackage(PackageType type, String id, String packageFQN, String packageFilePath) {
-		Matcher matcher = nameVersionPattern.matcher(packageFQN);
+		Matcher matcher = NAME_VERSION_PATTERN.matcher(packageFQN);
 		if (matcher.find()) {
 			return new Package(type, id, matcher.group(1), matcher.group(2), packageFilePath);
 		} else {
