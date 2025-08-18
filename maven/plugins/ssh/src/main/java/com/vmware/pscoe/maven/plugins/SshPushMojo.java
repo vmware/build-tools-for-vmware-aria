@@ -17,8 +17,6 @@ package com.vmware.pscoe.maven.plugins;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
@@ -32,7 +30,7 @@ import org.apache.maven.project.MavenProject;
 
 import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
@@ -66,7 +64,8 @@ public class SshPushMojo extends AbstractIacMojo {
 					.collect(Collectors.toList());
 			PackageStore store = PackageStoreFactory.getInstance(getConfigurationForSsh());
 
-			boolean mergePackages = filesChanged.size() != 0; // it means that only a few files was selected to create the package
+			boolean mergePackages = filesChanged.size() != 0; // it means that only a few files was selected to create
+																// the package
 			store.importAllPackages(packages, dryrun, mergePackages);
 		} catch (ConfigurationException e) {
 			getLog().error(e);

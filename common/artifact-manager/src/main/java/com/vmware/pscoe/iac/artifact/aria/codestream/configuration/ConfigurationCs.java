@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.aria.codestream.configuration;
 import java.util.Properties;
 
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public final class ConfigurationCs extends ConfigurationVraNg {

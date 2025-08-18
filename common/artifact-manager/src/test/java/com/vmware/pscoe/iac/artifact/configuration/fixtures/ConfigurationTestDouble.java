@@ -14,10 +14,10 @@
  */
 package com.vmware.pscoe.iac.artifact.configuration.fixtures;
 
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-
 import java.util.Properties;
+
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationTestDouble extends Configuration {
 	public ConfigurationTestDouble(Properties props) {

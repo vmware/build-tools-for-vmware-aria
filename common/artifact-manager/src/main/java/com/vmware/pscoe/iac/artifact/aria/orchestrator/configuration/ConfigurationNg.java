@@ -12,9 +12,9 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.configuration;
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration;
 
-public  interface ConfigurationNg {
+public interface ConfigurationNg {
 	// Important - when modify properties refer to comments in @Configuration
 	public static final String EMBEDDED = "embedded";
 	public static final String DEFAULT_TAG_IMPORT_MODE = "ImportAndOverwriteExistingValue";
@@ -32,10 +32,9 @@ public  interface ConfigurationNg {
 	public static final String PACKAGE_EXPORT_VERSION_HISTORY = "packageExportVersionHistory";
 	public static final String PACKAGE_EXPORT_CONFIGURATION_ATTRIBUTE_VALUES = "packageExportConfigurationAttributeValues";
 	public static final String PACKAGE_EXPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES = "packageExportConfigSecureStringAttributeValues";
-	public static final String PACKAGE_EXPORT_GLOBAL_TAGS= "packageExportGlobalTags";
+	public static final String PACKAGE_EXPORT_GLOBAL_TAGS = "packageExportGlobalTags";
 
 	public static final String PACKAGE_EXPORT_AS_ZIP = "packgeExportAsZip";
-
 
 	public boolean isPackageImportConfigurationAttributeValues();
 

@@ -45,7 +45,7 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.store.VroPackageStore;
 import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
 import com.vmware.pscoe.iac.artifact.bsc.store.SshPackageStore;
 import com.vmware.pscoe.iac.artifact.common.cli.CliManagerFactory;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.strategy.Strategy;

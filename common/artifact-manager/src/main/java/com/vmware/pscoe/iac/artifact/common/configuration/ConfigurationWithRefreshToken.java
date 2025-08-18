@@ -12,13 +12,13 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.configuration;
-
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+package com.vmware.pscoe.iac.artifact.common.configuration;
 
 import java.util.Properties;
 
-public abstract class ConfigurationWithRefreshToken extends Configuration{
+import com.vmware.pscoe.iac.artifact.model.PackageType;
+
+public abstract class ConfigurationWithRefreshToken extends Configuration {
 
 	public static final String REFRESH_TOKEN = "refresh.token";
 

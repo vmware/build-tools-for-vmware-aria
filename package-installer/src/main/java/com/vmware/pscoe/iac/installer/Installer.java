@@ -63,8 +63,8 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecut
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
 import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;

@@ -60,6 +60,7 @@ import com.google.gson.JsonObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationNg;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageContent.ContentType;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
@@ -70,8 +71,7 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.NumberValue;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.Parameter;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.StringValue;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationNg;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
@@ -644,7 +644,8 @@ public class RestClientVro extends RestClient {
 
 		ResponseEntity<String> response = null;
 		try {
-			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, this.buildHttpEntry(), String.class);
+			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Unable to fetch input parameters types for workflow id '%s' : %s",
 					workflowId, e.getMessage()));
@@ -673,7 +674,7 @@ public class RestClientVro extends RestClient {
 
 		ResponseEntity<String> response = null;
 		try {
-			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, this.buildHttpEntry(), String.class);
+			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		} catch (Exception e) {
 			return false;
 		}
@@ -693,7 +694,7 @@ public class RestClientVro extends RestClient {
 	 */
 	public String getExecutionState(String workflowId, String executionId) {
 		URI executionStateUri = this.buildUri("/vco/api/workflows/", workflowId, "/executions/", executionId, "/state");
-		HttpEntity<String> executionEntity = this.buildHttpEntry();
+		HttpEntity<String> executionEntity = getDefaultHttpEntity();
 		ResponseEntity<String> response = null;
 		try {
 			response = restTemplate.exchange(executionStateUri, HttpMethod.GET, executionEntity, String.class);
@@ -741,7 +742,7 @@ public class RestClientVro extends RestClient {
 			response = restTemplate.exchange(request, String.class);
 		} else {
 			// API change in vRO 7.6 - GET instead of POST
-			response = restTemplate.exchange(syslogsUri, HttpMethod.GET, this.buildHttpEntry(), String.class);
+			response = restTemplate.exchange(syslogsUri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		}
 
 		final List<String> result = new LinkedList<>();
@@ -777,7 +778,7 @@ public class RestClientVro extends RestClient {
 	 */
 	public WorkflowExecution getExecution(String workflowId, String executionId) {
 		URI executionUri = this.buildUri("/vco/api/workflows/", workflowId, "/executions/", executionId);
-		HttpEntity<String> executionEntity = this.buildHttpEntry();
+		HttpEntity<String> executionEntity = getDefaultHttpEntity();
 
 		ResponseEntity<String> response = restTemplate.exchange(executionUri, HttpMethod.GET, executionEntity,
 				String.class);
@@ -821,13 +822,6 @@ public class RestClientVro extends RestClient {
 		}
 
 		return output;
-	}
-
-	private HttpEntity<String> buildHttpEntry() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-		return new HttpEntity<>(headers);
 	}
 
 	private URI buildUri(String... paths) {

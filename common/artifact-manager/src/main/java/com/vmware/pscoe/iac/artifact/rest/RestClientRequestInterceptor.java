@@ -17,7 +17,7 @@ package com.vmware.pscoe.iac.artifact.rest;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 
 public abstract class RestClientRequestInterceptor<T extends Configuration> implements ClientHttpRequestInterceptor {
 

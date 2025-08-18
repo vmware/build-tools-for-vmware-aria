@@ -102,7 +102,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.model.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 

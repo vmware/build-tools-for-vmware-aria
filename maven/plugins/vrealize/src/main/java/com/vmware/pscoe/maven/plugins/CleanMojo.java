@@ -17,7 +17,6 @@ package com.vmware.pscoe.maven.plugins;
 import java.io.File;
 import java.util.Optional;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -29,7 +28,7 @@ import org.apache.maven.project.MavenProject;
 
 import com.vmware.pscoe.iac.artifact.PackageStore;
 import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
@@ -43,10 +42,10 @@ public class CleanMojo extends AbstractIacMojo {
 
 	@Parameter(required = true, property = "includeDependencies", defaultValue = "true")
 	private boolean includeDependencies;
-	
+
 	@Parameter(required = false, property = "cleanUpLastVersion", defaultValue = "false")
 	private boolean cleanUpLastVersion;
-	
+
 	@Parameter(required = false, property = "cleanUpOldVersions", defaultValue = "true")
 	private boolean cleanUpOldVersions;
 
@@ -56,15 +55,18 @@ public class CleanMojo extends AbstractIacMojo {
 		if (pkgType != null) {
 			getLog().info("Package: " + artifactFile);
 			getLog().info("Package type: " + pkgType.toString());
-			com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(pkgType, new File(artifactFile));
+			com.vmware.pscoe.iac.artifact.model.Package pkg = PackageFactory.getInstance(pkgType,
+					new File(artifactFile));
 			try {
 				PackageStore store = getConfigurationForType(PackageType.fromExtension(a.getType()))
-					.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
-					.orElseThrow(() -> new ConfigurationException("Unable to find PackageStore based on configuration. "
-						+ "Make sure there is configuration for type: " + pkgType.name()));
+						.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
+						.orElseThrow(
+								() -> new ConfigurationException("Unable to find PackageStore based on configuration. "
+										+ "Make sure there is configuration for type: " + pkgType.name()));
 				store.deletePackage(pkg, cleanUpLastVersion, cleanUpOldVersions, dryrun);
 			} catch (UnsupportedOperationException e) { // This also catches NotImplementedException since it's a child
-				getLog().warn(String.format("Tried to clean up package of type %s, but that type does not support deletion", pkgType), e);
+				getLog().warn(String.format(
+						"Tried to clean up package of type %s, but that type does not support deletion", pkgType), e);
 			} catch (ConfigurationException e) {
 				getLog().error(e);
 				throw new MojoExecutionException(e, "Error processing configuration", "Error processing configuration");

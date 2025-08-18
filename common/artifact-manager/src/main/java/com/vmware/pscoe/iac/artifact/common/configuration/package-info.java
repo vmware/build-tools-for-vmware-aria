@@ -13,7 +13,7 @@
  * #L%
  */
 /**
- * Package that Configurations of vRealize Suite.
+ * Package that contains common Configuration classes.
  *
  */
-package com.vmware.pscoe.iac.artifact.configuration;
+package com.vmware.pscoe.iac.artifact.common.configuration;

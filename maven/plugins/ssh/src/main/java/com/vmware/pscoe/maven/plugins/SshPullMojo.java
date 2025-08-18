@@ -14,26 +14,27 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+
+import com.vmware.pscoe.iac.artifact.PackageManager;
+import com.vmware.pscoe.iac.artifact.PackageStore;
+import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 @Mojo(name = "pull")
 public class SshPullMojo extends AbstractIacMojo {
@@ -78,13 +79,14 @@ public class SshPullMojo extends AbstractIacMojo {
 		}
 
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-		File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.BASIC.getPackageExtention()).toFile();
+		File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.BASIC.getPackageExtention())
+				.toFile();
 		Package pkg = PackageFactory.getInstance(PackageType.BASIC, pkgFile);
 		try {
 			PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForSsh());
 			store.exportPackage(pkg, new File(project.getBasedir(), "content.yaml"), dryrun);
 			PackageManager.copyContents(Paths.get(pkg.getFilesystemPath(), "content").toFile(),
-				new File(project.getBasedir(), "src"));
+					new File(project.getBasedir(), "src"));
 		} catch (ConfigurationException | IOException e) {
 			getLog().error(e);
 			throw new MojoExecutionException(e, "Error pulling SSH package", "Error pulling SSH package");

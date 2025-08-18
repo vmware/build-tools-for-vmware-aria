@@ -45,7 +45,7 @@ import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.Configuration
 import com.vmware.pscoe.iac.artifact.aria.codestream.models.CustomIntegrationVersion;
 import com.vmware.pscoe.iac.artifact.aria.codestream.models.Endpoint;
 import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 /**
@@ -84,7 +84,7 @@ public class RestClientCs extends RestClient {
 	private String projectId;
 	private String cloudProxyId;
 
-	protected RestClientCs(ConfigurationCs configuration, RestTemplate restTemplate) {
+	public RestClientCs(ConfigurationCs configuration, RestTemplate restTemplate) {
 		this.configuration = configuration;
 		this.restTemplate = restTemplate;
 		initProjectNameAndId();

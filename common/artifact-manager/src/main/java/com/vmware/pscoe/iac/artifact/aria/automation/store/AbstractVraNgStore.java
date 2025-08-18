@@ -14,21 +14,21 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgIntegrationUtils;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.List;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgIntegrationUtils;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.model.Package;
 
 /**
  * Abstract class that unify the way the content is exported for all subclasses.
@@ -178,7 +178,7 @@ public abstract class AbstractVraNgStore extends AbstractVraNgDeleteStore implem
 	 * Filter the files based on the given filter.
 	 * 
 	 * @param itemFolder - directory to search in
-	 * @param filter - filter by file name
+	 * @param filter     - filter by file name
 	 * @return array of filtered files
 	 */
 	protected File[] filterBasedOnConfiguration(File itemFolder, FilenameFilter filter) {

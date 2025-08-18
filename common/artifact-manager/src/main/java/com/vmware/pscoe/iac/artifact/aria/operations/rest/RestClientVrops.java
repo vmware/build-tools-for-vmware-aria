@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
@@ -41,7 +42,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -56,19 +56,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.Strictness;
 import com.jayway.jsonpath.JsonPath;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
-import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AdapterKindDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition.State;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition.SymptomSet;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupsDTO;
-import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUsersDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUsersDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupTypeDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyCustomGroupAssignmentDTO;
@@ -80,6 +76,10 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.ResourcesDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.model.Version;
+import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 @SuppressWarnings("deprecation")
 public class RestClientVrops extends RestClient {
@@ -508,7 +508,8 @@ public class RestClientVrops extends RestClient {
 		logger.info("Ordering policies by priority '{}'", this.concatenateList(policyNames, ", "));
 		Gson gson = new GsonBuilder().setStrictness(Strictness.LENIENT).create();
 		try {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(getURIBuilder().setPath(POLICY_PRIORITY_PUBLIC_API).toString()));
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder
+					.fromUri(new URI(getURIBuilder().setPath(POLICY_PRIORITY_PUBLIC_API).toString()));
 			URI restUri = uriBuilder.build().toUri();
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -856,7 +857,7 @@ public class RestClientVrops extends RestClient {
 		HttpMethod method = customGroupExists(customGroupPayload) ? HttpMethod.PUT : HttpMethod.POST;
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
 
-		// resolve the  policy id from the name
+		// resolve the policy id from the name
 		PolicyDTO.Policy policy = this.findPolicyByName(customGroup.getPolicy());
 		customGroup.setPolicy(policy.getId());
 
@@ -1448,7 +1449,7 @@ public class RestClientVrops extends RestClient {
 	 * Update policy for custom group.
 	 * 
 	 * @param customGroupPayload - JSON string of the custom group payload.
-	 * @param policy - policy that will be applied to the custom group.
+	 * @param policy             - policy that will be applied to the custom group.
 	 */
 	private void updateCustomGroupPolicy(String customGroupPayload, PolicyDTO.Policy policy) {
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
@@ -1465,7 +1466,8 @@ public class RestClientVrops extends RestClient {
 		// find the custom group in the target system
 		customGroup = findCustomGroupByName(customGroupName);
 		if (customGroup == null) {
-			throw new RuntimeException(String.format("Custom group '%s' cannot be found on the target system", customGroupName));
+			throw new RuntimeException(
+					String.format("Custom group '%s' cannot be found on the target system", customGroupName));
 		}
 
 		// prepare rest call payload
@@ -1480,10 +1482,12 @@ public class RestClientVrops extends RestClient {
 			URI restUri = new URI(getURIBuilder().setPath(CUSTOM_GROUPS_UPDATE_API).toString());
 			responseEntity = restTemplate.exchange(restUri, HttpMethod.PUT, entity, String.class);
 		} catch (RestClientException e) {
-			throw new RuntimeException(String.format("Unable to update policy for custom group '%s' : %s", customGroupName, e.getMessage()), e);
+			throw new RuntimeException(String.format("Unable to update policy for custom group '%s' : %s",
+					customGroupName, e.getMessage()), e);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(
-					String.format("Unable to determine REST endpoint for updating policy for custom group '%s' : %s", customGroupName, e.getMessage()),
+					String.format("Unable to determine REST endpoint for updating policy for custom group '%s' : %s",
+							customGroupName, e.getMessage()),
 					e);
 		}
 
@@ -2128,7 +2132,8 @@ public class RestClientVrops extends RestClient {
 			return false;
 		}
 
-		return resourceKindObject.getResourceKind().stream().anyMatch(item -> resourceKindKey.equalsIgnoreCase(item.getKey()));
+		return resourceKindObject.getResourceKind().stream()
+				.anyMatch(item -> resourceKindKey.equalsIgnoreCase(item.getKey()));
 	}
 
 	private ResourceKindDTO getResourceKindsPerAdapterKind(String adapterKindKey) {

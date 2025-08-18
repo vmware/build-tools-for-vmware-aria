@@ -18,8 +18,8 @@ import java.util.Properties;
 
 import org.springframework.util.StringUtils;
 
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationVrli extends Configuration {

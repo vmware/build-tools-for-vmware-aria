@@ -21,9 +21,8 @@ import java.util.logging.Logger;
 import org.apache.hc.core5.http.HttpHost;
 import org.springframework.util.StringUtils;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationNg;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationWithRefreshToken;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationWithRefreshToken;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class ConfigurationVro extends ConfigurationWithRefreshToken implements ConfigurationNg {
