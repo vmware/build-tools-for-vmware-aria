@@ -29,24 +29,25 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientCs;
-import com.vmware.pscoe.iac.artifact.rest.model.cs.Endpoint;
-
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.Endpoint;
+import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.CsEndpointStore;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class CsEndpointStoreTest {
 	@Rule
@@ -97,7 +98,7 @@ public class CsEndpointStoreTest {
 		List<Endpoint> endpoints = new ArrayList<>();
 		Endpoint endpoint = new Endpoint();
 		endpoints.add(endpoint);
-		endpoint.setName( "testEndpoint");
+		endpoint.setName("testEndpoint");
 		endpoint.setProperties(new LinkedHashMap<>());
 		List<String> names = Arrays.asList(new String[] { "testEndpoint" });
 		when(restClient.getProjectEndpoints()).thenReturn(endpoints);
@@ -118,7 +119,7 @@ public class CsEndpointStoreTest {
 		List<Endpoint> endpoints = new ArrayList<>();
 		Endpoint endpoint = new Endpoint();
 		endpoints.add(endpoint);
-		endpoint.setName( "testEndpoint");
+		endpoint.setName("testEndpoint");
 
 		List<String> names = Arrays.asList(new String[] { "notMatchingPipeline" });
 		when(restClient.getProjectEndpoints()).thenReturn(endpoints);
@@ -140,14 +141,13 @@ public class CsEndpointStoreTest {
 		List<Endpoint> endpoints = new ArrayList<>();
 		Endpoint endpoint = new Endpoint();
 		endpoints.add(endpoint);
-		endpoint.setName( "testEndpoint");
+		endpoint.setName("testEndpoint");
 
-		//pipelines.add(pipeline);
+		// pipelines.add(pipeline);
 		createTempFile("testEndpoint", endpoint);
 
-
 		endpoint = new Endpoint();
-		endpoint.setName( "testEndpointNew");
+		endpoint.setName("testEndpointNew");
 		endpoint.setId("xxx-xxxx-xxxx");
 		createTempFile("testEndpointNew", endpoint);
 

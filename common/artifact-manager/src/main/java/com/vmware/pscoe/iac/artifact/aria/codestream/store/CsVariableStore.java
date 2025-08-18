@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,21 +23,22 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageMemberType;
-import com.vmware.pscoe.iac.artifact.rest.model.cs.Variable;
 
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageMemberType;
 
 public class CsVariableStore extends AbstractCsStore {
 	private static final String DIR_VAR = "variables";
 	private final Logger logger = LoggerFactory.getLogger(CsPipelineStore.class);
 
 	/**
-	* Exporting the contents of variables
-	*/
+	 * Exporting the contents of variables
+	 */
 	public void exportContent() {
 		List<String> variableNames = this.descriptor.getMembersForType(CsPackageMemberType.VARIABLE);
 		if (variableNames != null) {
@@ -49,6 +50,7 @@ public class CsVariableStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
+	 * 
 	 * @param sourceDirectory sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
@@ -56,13 +58,12 @@ public class CsVariableStore extends AbstractCsStore {
 		if (!varFolder.exists()) {
 			return;
 		}
-		Collection<File> varFiles = FileUtils.listFiles(varFolder, new String[] {"yaml"}, false);
+		Collection<File> varFiles = FileUtils.listFiles(varFolder, new String[] { "yaml" }, false);
 		if (varFiles == null || varFiles.isEmpty()) {
 			return;
 		}
 		importVariables(varFiles);
 	}
-
 
 	private void exportVariables(List<String> variableNames) {
 		List<Variable> varList = this.restClient.getProjectVariables()
@@ -75,8 +76,6 @@ public class CsVariableStore extends AbstractCsStore {
 		CsStoreHelper.storeToYamlFile(csPackage.getFilesystemPath(), DIR_VAR, "variables", varList);
 
 	}
-
-
 
 	private void importVariables(Collection<File> varFiles) {
 
@@ -104,14 +103,14 @@ public class CsVariableStore extends AbstractCsStore {
 							return;
 						}
 						if (!existingVar.getType().equals("REGULAR")) {
-							logger.warn(String.format("Change of SECRET/RESTRICTED variable '%s'. Secret value is lost.", existingVar
-									.getName()));
+							logger.warn(String.format(
+									"Change of SECRET/RESTRICTED variable '%s'. Secret value is lost.", existingVar
+											.getName()));
 						}
 
 						var.setValue(existingVar.getValue());
 						logger.info(String.format("Update variable '%s'", var.getName()));
 						restClient.updateVariable(var);
-
 
 					});
 				});

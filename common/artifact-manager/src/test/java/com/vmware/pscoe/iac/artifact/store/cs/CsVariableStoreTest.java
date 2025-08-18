@@ -28,24 +28,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientCs;
-import com.vmware.pscoe.iac.artifact.rest.model.cs.Variable;
-
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
+import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.CsVariableStore;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class CsVariableStoreTest {
 	@Rule
@@ -117,7 +118,7 @@ public class CsVariableStoreTest {
 		// GIVEN
 		List<Variable> variables = new ArrayList<>();
 		List<Variable> existingVars = new ArrayList<>();
-		
+
 		Variable var = new Variable();
 		var.setName("var1");
 		var.setType("REGULAR");

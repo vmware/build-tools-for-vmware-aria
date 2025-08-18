@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,16 +28,18 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageDescriptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 
 public class CsStoreHelper {
 	private final static Logger logger = LoggerFactory.getLogger(CsStoreHelper.class);
@@ -61,7 +63,8 @@ public class CsStoreHelper {
 	}
 
 	public static void sanitizeDefaultProperties(JsonObject obj) {
-		String[] myIntArray = {"id", "project", "_link", "_createdBy", "_updatedBy", "_updateTimeInMicros", "_createTimeInMicros", "_projectId"};
+		String[] myIntArray = { "id", "project", "_link", "_createdBy", "_updatedBy", "_updateTimeInMicros",
+				"_createTimeInMicros", "_projectId" };
 		Arrays.stream(myIntArray).forEach(obj::remove);
 	}
 
@@ -71,8 +74,6 @@ public class CsStoreHelper {
 				.filter(ex -> ex.get("name").getAsString().equals(name))
 				.findFirst();
 	}
-
-
 
 	public static void storeToYamlFile(String path, String subPath, String name, String jsonString) {
 		File store = new File(path);
@@ -96,7 +97,6 @@ public class CsStoreHelper {
 	}
 
 	public static void storeToYamlFile(String path, String subPath, String name, Object obj) {
-
 
 		File store = new File(path);
 		File file = Paths.get(store.getPath(), subPath, name + ".yaml").toFile();

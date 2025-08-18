@@ -12,23 +12,24 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.model.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store.models;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
 
 public class CsPackageDescriptor extends PackageDescriptor {
 	private static final Logger logger = LoggerFactory.getLogger(CsPackageDescriptor.class);

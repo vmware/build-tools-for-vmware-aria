@@ -12,18 +12,26 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.CUSTOM_INTEGRATION;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.DOCKER_WEBHOOK;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.ENDPOINT;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.GERRIT_LISTENER;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.GERRIT_TRIGGER;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.GIT_WEBHOOK;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.PIPELINE;
+import static com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent.ContentType.VARIABLE;
 
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageContent;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientCs;
-import static com.vmware.pscoe.iac.artifact.model.cs.CsPackageContent.ContentType.*;
 
 /**
-	Factory to select and setup the store (handler) and determine the order of execution.
+ * Factory to select and setup the store (handler) and determine the order of
+ * execution.
  */
 public class CsTypeStoreFactory {
 
@@ -36,8 +44,6 @@ public class CsTypeStoreFactory {
 			DOCKER_WEBHOOK,
 			GERRIT_LISTENER,
 			GERRIT_TRIGGER
-
-
 	};
 
 	public static CsPackageContent.ContentType[] EXPORT_ORDER = {

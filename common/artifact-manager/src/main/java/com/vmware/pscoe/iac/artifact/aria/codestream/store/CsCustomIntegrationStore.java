@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -22,11 +22,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import com.vmware.pscoe.iac.artifact.rest.model.cs.CustomIntegrationVersion;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.CustomIntegrationVersion;
 
 public class CsCustomIntegrationStore extends AbstractCsStore {
 	private static final String DIR_VAR = "custom-integrations";
@@ -34,8 +35,8 @@ public class CsCustomIntegrationStore extends AbstractCsStore {
 	private List<CustomIntegrationVersion> items;
 
 	/**
-	* Exporting the contents of customIntegrations
-	*/
+	 * Exporting the contents of customIntegrations
+	 */
 	public void exportContent() {
 		List<String> customIntegrationNames = this.descriptor.getCustomIntegration();
 		if (customIntegrationNames == null) {
@@ -47,6 +48,7 @@ public class CsCustomIntegrationStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
+	 * 
 	 * @param sourceDirectory sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
@@ -55,7 +57,7 @@ public class CsCustomIntegrationStore extends AbstractCsStore {
 			logger.info("Missing custom integrations folder.");
 			return;
 		}
-		Collection<File> varFiles = FileUtils.listFiles(varFolder, new String[] {"yaml"}, false);
+		Collection<File> varFiles = FileUtils.listFiles(varFolder, new String[] { "yaml" }, false);
 		if (varFiles == null || varFiles.isEmpty()) {
 			logger.info("Empty custom integrations folder.");
 			return;
@@ -82,11 +84,10 @@ public class CsCustomIntegrationStore extends AbstractCsStore {
 		CsStoreHelper.storeToYamlFile(csPackage.getFilesystemPath(), DIR_VAR, ciName, all);
 	}
 
-
-
 	private void importCustomIntegration(File file) {
 		logger.info("Importing custom integration '{}'.", file.getName());
-		List<CustomIntegrationVersion> versions = Arrays.asList(CsStoreHelper.loadFromYamlFile(file, CustomIntegrationVersion[].class));
+		List<CustomIntegrationVersion> versions = Arrays
+				.asList(CsStoreHelper.loadFromYamlFile(file, CustomIntegrationVersion[].class));
 		final CustomIntegrationVersion ci = versions.get(0);
 		Optional<CustomIntegrationVersion> existingCiOptional = this.getAllItems().stream()
 				.filter(el -> el.getName().equals(ci.getName()))
@@ -96,7 +97,8 @@ public class CsCustomIntegrationStore extends AbstractCsStore {
 			logger.info("Updating custom integration: '{}'", file.getName());
 			ci.setId(existingCiOptional.get().getId());
 			List<CustomIntegrationVersion> existingVersions = restClient.getCustomIntegrationVersions(ci.getId());
-			List<String> existingIds = existingVersions.stream().map(CustomIntegrationVersion::getVersion).collect(Collectors.toList());
+			List<String> existingIds = existingVersions.stream().map(CustomIntegrationVersion::getVersion)
+					.collect(Collectors.toList());
 			restClient.updateCustomIntegration(ci);
 			versions.stream()
 					.skip(1)

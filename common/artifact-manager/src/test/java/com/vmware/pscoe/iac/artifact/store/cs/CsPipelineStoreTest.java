@@ -44,14 +44,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.CsPipelineStore;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientCs;
 
 public class CsPipelineStoreTest {
 	@Rule

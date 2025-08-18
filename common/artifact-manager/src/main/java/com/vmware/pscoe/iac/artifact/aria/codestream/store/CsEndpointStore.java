@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -24,20 +24,22 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.rest.model.cs.Endpoint;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.Endpoint;
+import com.vmware.pscoe.iac.artifact.model.Package;
 
 public class CsEndpointStore extends AbstractCsStore {
 	private static final String DIR_ENDPOINTS = "endpoints";
 	private final Logger logger = LoggerFactory.getLogger(CsEndpointStore.class);
 
 	/**
-	* Exporting the contents of all blueprints listed in the content.yaml file, available for the configured project
-	*/
+	 * Exporting the contents of all blueprints listed in the content.yaml file,
+	 * available for the configured project
+	 */
 	public void exportContent() {
 		List<String> endpointNames = this.descriptor.getEndpoint();
 		if (endpointNames != null) {
@@ -49,6 +51,7 @@ public class CsEndpointStore extends AbstractCsStore {
 
 	/**
 	 * Importing content into vRA target environment
+	 * 
 	 * @param sourceDirectory sourceDirectory
 	 */
 	public void importContent(File sourceDirectory) {
@@ -58,7 +61,7 @@ public class CsEndpointStore extends AbstractCsStore {
 			return;
 		}
 
-		Collection<File> endpointFiles = FileUtils.listFiles(endpointsFolder, new String[] {"yaml"}, false);
+		Collection<File> endpointFiles = FileUtils.listFiles(endpointsFolder, new String[] { "yaml" }, false);
 		if (endpointFiles == null || endpointFiles.isEmpty()) {
 			logger.info("No endpoints files found in content.");
 			return;
@@ -75,7 +78,8 @@ public class CsEndpointStore extends AbstractCsStore {
 					endpoint.setId(null);
 					endpoint.setProject(null);
 					endpoint.setCloudProxyId(null);
-					CsStoreHelper.storeToYamlFile(csPackage.getFilesystemPath(), DIR_ENDPOINTS, endpoint.getName(), endpoint);
+					CsStoreHelper.storeToYamlFile(csPackage.getFilesystemPath(), DIR_ENDPOINTS, endpoint.getName(),
+							endpoint);
 					addEndpointVarsToExtractionContext(endpoint);
 				});
 	}

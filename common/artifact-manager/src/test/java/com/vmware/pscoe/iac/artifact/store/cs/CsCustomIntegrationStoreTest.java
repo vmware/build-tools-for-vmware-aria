@@ -28,25 +28,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.cs.CsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.rest.RestClientCs;
-import com.vmware.pscoe.iac.artifact.rest.model.cs.CustomIntegrationVersion;
-import com.vmware.pscoe.iac.artifact.rest.model.cs.Endpoint;
-
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.CustomIntegrationVersion;
+import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.CsCustomIntegrationStore;
+import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+import com.vmware.pscoe.iac.artifact.model.Package;
+import com.vmware.pscoe.iac.artifact.model.PackageFactory;
+import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public class CsCustomIntegrationStoreTest {
 	@Rule
@@ -97,16 +97,15 @@ public class CsCustomIntegrationStoreTest {
 		List<CustomIntegrationVersion> cis = new ArrayList<>();
 		CustomIntegrationVersion ci = new CustomIntegrationVersion();
 		cis.add(ci);
-		ci.setName( "testCustomIntegration");
+		ci.setName("testCustomIntegration");
 		ci.setStatus("DRAFT");
 
 		List<CustomIntegrationVersion> versions = new ArrayList<>();
 		CustomIntegrationVersion version = new CustomIntegrationVersion();
 		versions.add(version);
-		version.setName( "testCustomIntegration");
+		version.setName("testCustomIntegration");
 		version.setVersion("1");
 		version.setStatus("RELEASED");
-
 
 		List<String> names = Arrays.asList(new String[] { "testCustomIntegration" });
 
@@ -129,7 +128,7 @@ public class CsCustomIntegrationStoreTest {
 		List<CustomIntegrationVersion> cis = new ArrayList<>();
 		CustomIntegrationVersion ci = new CustomIntegrationVersion();
 		cis.add(ci);
-		ci.setName( "testCustomIntegration");
+		ci.setName("testCustomIntegration");
 		ci.setStatus("DRAFT");
 
 		List<String> names = Arrays.asList(new String[] { "notMachingCi" });
@@ -152,30 +151,28 @@ public class CsCustomIntegrationStoreTest {
 		List<CustomIntegrationVersion> storageNew = new ArrayList<>();
 		CustomIntegrationVersion ciNew = new CustomIntegrationVersion();
 		storageNew.add(ciNew);
-		ciNew.setName( "testCustomIntegrationNew");
+		ciNew.setName("testCustomIntegrationNew");
 		ciNew.setStatus("DRAFT");
 		createTempFile("testCustomIntegationNew", storageNew);
-
-
 
 		List<CustomIntegrationVersion> cis = new ArrayList<>();
 		List<CustomIntegrationVersion> storage = new ArrayList<>();
 		CustomIntegrationVersion ci = new CustomIntegrationVersion();
 		cis.add(ci);
 		storage.add(ci);
-		ci.setName( "testCustomIntegration");
+		ci.setName("testCustomIntegration");
 		ci.setStatus("DRAFT");
 
 		List<CustomIntegrationVersion> versions = new ArrayList<>();
 		CustomIntegrationVersion version = new CustomIntegrationVersion();
 		versions.add(version);
 		storage.add(version);
-		version.setName( "testCustomIntegration");
+		version.setName("testCustomIntegration");
 		version.setVersion("1");
 		version.setStatus("RELEASED");
 		version = new CustomIntegrationVersion();
 		storage.add(version);
-		version.setName( "testCustomIntegration");
+		version.setName("testCustomIntegration");
 		version.setVersion("2");
 		version.setStatus("RELEASED");
 		createTempFile("testCustomIntegration", storage);

@@ -2,7 +2,7 @@
  * #%L
  * artifact-manager
  * %%
- * Copyright (C) 2024 VMware
+ * Copyright (C) 2023 - 2025 VMware
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
@@ -14,7 +14,6 @@
  */
 
 /**
- * Package that handles Aria Pipelines imports/exports.
- *
+ * Package that represents Code Stream Store.
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;

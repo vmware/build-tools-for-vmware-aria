@@ -12,22 +12,17 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.rest.model.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.models;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+public class Variable {
 
-public class Endpoint {
-	private String project;
-	private String id;
-	private String name;
-	private String description;
-	private String version;
-	private String type;
-	private Boolean isRestricted;
-	private String cloudProxyId;
-
-	private Map<String, String> properties;
+	String project;
+	String name;
+	String type;
+	String description;
+	String value;
+	// String version;
+	// String kind;
 
 	public String getProject() {
 		return project;
@@ -35,14 +30,6 @@ public class Endpoint {
 
 	public void setProject(String project) {
 		this.project = project;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -61,14 +48,6 @@ public class Endpoint {
 		this.description = description;
 	}
 
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -77,29 +56,12 @@ public class Endpoint {
 		this.type = type;
 	}
 
-	public Boolean getIsRestricted() {
-		return isRestricted;
+	public String getValue() {
+		return value;
 	}
 
-	public void setIsRestricted(Boolean isRestricted) {
-		this.isRestricted = isRestricted;
-	}
-
-	public Map<String, String> getProperties() {
-		properties = properties == null ? new LinkedHashMap<>() : properties;
-		return properties;
-	}
-
-	public void setProperties(Map<String, String> properties) {
-		this.properties = properties;
-	}
-
-	public String getCloudProxyId() {
-		return cloudProxyId;
-	}
-
-	public void setCloudProxyId(String cloudProxyId) {
-		this.cloudProxyId = cloudProxyId;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
@@ -126,6 +88,6 @@ public class Endpoint {
 
 	@Override
 	public String toString() {
-		return String.format("Endpoint: name=%s, project=%s, type=%s", name, project, type);
+		return String.format("Variable: name=%s, project=%s, type=%s", name, project, type);
 	}
 }
