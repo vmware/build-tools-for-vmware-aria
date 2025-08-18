@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout vmware/build-tools-for-vmware-aria repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -121,7 +121,7 @@ jobs:
 
       # Test the packages on build-tools-for-vmware-aria-samples
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: vmware-samples/build-tools-for-vmware-aria-samples
           ref: main
