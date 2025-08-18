@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -36,13 +36,10 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
 import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
-import com.vmware.pscoe.iac.artifact.aria.codestream.store.CsGitWebhookStore;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
@@ -50,11 +47,11 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-public class CsGitWebhookStoreTest {
+public class CsVariableStoreTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	protected CsGitWebhookStore store;
+	protected CsVariableStore store;
 	protected RestClientCs restClient;
 	protected Package pkg;
 	protected ConfigurationCs config;
@@ -65,16 +62,16 @@ public class CsGitWebhookStoreTest {
 	void init() {
 		try {
 			tempFolder.create();
-			tempFolder.newFolder("git-webhooks");
+			tempFolder.newFolder("variables");
 
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create a temp folder");
 		}
 
 		fsMocks = new FsMocks(tempFolder.getRoot());
-		store = new CsGitWebhookStore();
+		store = new CsVariableStore();
 		restClient = Mockito.mock(RestClientCs.class);
-		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
+		pkg = PackageFactory.getInstance(PackageType.CS, tempFolder.getRoot());
 		config = Mockito.mock(ConfigurationCs.class);
 		vraNgPackageDescriptor = Mockito.mock(CsPackageDescriptor.class);
 
@@ -96,18 +93,20 @@ public class CsGitWebhookStoreTest {
 	@Test
 	void testExportDesiredPipeline() {
 		// GIVEN
-		List<JsonObject> pipelines = new ArrayList<>();
-		JsonObject pipeline = new JsonObject();
-		pipelines.add(pipeline);
-		pipeline.addProperty("name", "testWebhook");
-		List<String> names = Arrays.asList(new String[] { "testWebhook" });
-		when(restClient.getProjectGitWebhooks()).thenReturn(pipelines);
-		when(vraNgPackageDescriptor.getGitWebhook()).thenReturn(names);
+		List<Variable> variables = new ArrayList<>();
+		Variable var = new Variable();
+		var.setName("var1");
+		var.setType("type");
+		var.setProject("myProject");
+		variables.add(var);
+		List<String> names = Arrays.asList(new String[] { "var1" });
+		when(restClient.getProjectVariables()).thenReturn(variables);
+		when(vraNgPackageDescriptor.getPipeline()).thenReturn(names);
 
 		// TEST
 		store.exportContent();
 
-		String[] expectedPipelinefile = { "testWebhook.yaml" };
+		String[] expectedPipelinefile = { "variables.yaml" };
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(getTempFolderProjectPath(), expectedPipelinefile);
@@ -116,28 +115,47 @@ public class CsGitWebhookStoreTest {
 	@Test
 	void testImportContentIm() {
 		// GIVEN
-		List<JsonObject> pipelines = new ArrayList<>();
-		JsonObject pipeline = new JsonObject();
-		pipeline.addProperty("name", "newWebhook");
-		pipeline.addProperty("state", "ENABLED");
-		// pipelines.add(pipeline);
-		createTempFile("newWebhook", pipeline);
+		List<Variable> variables = new ArrayList<>();
+		List<Variable> existingVars = new ArrayList<>();
 
-		pipeline = new JsonObject();
-		pipeline.addProperty("name", "existingWebhook");
-		pipeline.addProperty("state", "RELEASED");
-		pipeline.addProperty("id", "xxxx-yyyyy-xxxxx");
-		pipelines.add(pipeline);
-		createTempFile("existingWebhook", pipeline);
+		Variable var = new Variable();
+		var.setName("var1");
+		var.setType("REGULAR");
+		var.setProject("myProject");
+		var.setDescription("VAR1");
+		variables.add(var);
+		existingVars.add(var);
 
-		when(restClient.getProjectGitWebhooks()).thenReturn(pipelines);
+		var = new Variable();
+		var.setName("var2");
+		var.setType("REGULAR");
+		var.setProject("myProject");
+		var.setDescription("VAR2");
+		variables.add(var);
+		var = new Variable();
+		var.setName("var2");
+		var.setType("REGULAR");
+		var.setProject("myProject");
+		var.setDescription("VAR2-OLD");
+		existingVars.add(var);
+
+		var = new Variable();
+		var.setName("var3");
+		var.setType("REGULAR");
+		var.setProject("myProject");
+		var.setDescription("VAR3");
+		variables.add(var);
+
+		createTempFile(variables);
+
+		when(restClient.getProjectVariables()).thenReturn(existingVars);
 		when(restClient.getProjectName()).thenReturn("myProject");
 		// TEST
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createGitWebhook(any());
-		verify(restClient, times(1)).updateGitWebhook(any(), any());
+		verify(restClient, times(1)).createVariable(any());
+		verify(restClient, times(1)).updateVariable(any());
 
 	}
 
@@ -157,14 +175,13 @@ public class CsGitWebhookStoreTest {
 		return files[0];
 	}
 
-	private void createTempFile(String name, JsonObject obj) {
-		File file = Paths.get(tempFolder.getRoot().getPath(), "git-webhooks", name + ".yaml").toFile();
+	private void createTempFile(List<Variable> obj) {
+		File file = Paths.get(tempFolder.getRoot().getPath(), "variables", "variables" + ".yaml").toFile();
 		file.getParentFile().mkdirs();
 		try {
-			JsonNode jsonNodeTree = new ObjectMapper().readTree(obj.toString());
 			YAMLMapper yamlMapper = new YAMLMapper();
 			yamlMapper.setSerializationInclusion(Include.NON_NULL);
-			String yamlString = yamlMapper.writeValueAsString(jsonNodeTree);
+			String yamlString = yamlMapper.writeValueAsString(obj);
 			// StringWriter writer = new StringWriter();
 			// writer.write(triggerYaml);
 			Files.write(Paths.get(file.getPath()), yamlString.getBytes(),

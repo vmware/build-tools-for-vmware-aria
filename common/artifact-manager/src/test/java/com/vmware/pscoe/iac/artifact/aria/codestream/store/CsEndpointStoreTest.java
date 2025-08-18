@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Rule;
@@ -38,9 +39,8 @@ import org.mockito.Mockito;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.Endpoint;
 import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
-import com.vmware.pscoe.iac.artifact.aria.codestream.store.CsVariableStore;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
@@ -48,11 +48,11 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-public class CsVariableStoreTest {
+public class CsEndpointStoreTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	protected CsVariableStore store;
+	protected CsEndpointStore store;
 	protected RestClientCs restClient;
 	protected Package pkg;
 	protected ConfigurationCs config;
@@ -63,14 +63,14 @@ public class CsVariableStoreTest {
 	void init() {
 		try {
 			tempFolder.create();
-			tempFolder.newFolder("variables");
+			tempFolder.newFolder("endpoints");
 
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create a temp folder");
 		}
 
 		fsMocks = new FsMocks(tempFolder.getRoot());
-		store = new CsVariableStore();
+		store = new CsEndpointStore();
 		restClient = Mockito.mock(RestClientCs.class);
 		pkg = PackageFactory.getInstance(PackageType.CS, tempFolder.getRoot());
 		config = Mockito.mock(ConfigurationCs.class);
@@ -92,72 +92,72 @@ public class CsVariableStoreTest {
 	}
 
 	@Test
-	void testExportDesiredPipeline() {
+	void testExportDesiredEndpoint() {
 		// GIVEN
-		List<Variable> variables = new ArrayList<>();
-		Variable var = new Variable();
-		var.setName("var1");
-		var.setType("type");
-		var.setProject("myProject");
-		variables.add(var);
-		List<String> names = Arrays.asList(new String[] { "var1" });
-		when(restClient.getProjectVariables()).thenReturn(variables);
-		when(vraNgPackageDescriptor.getPipeline()).thenReturn(names);
+		List<Endpoint> endpoints = new ArrayList<>();
+		Endpoint endpoint = new Endpoint();
+		endpoints.add(endpoint);
+		endpoint.setName("testEndpoint");
+		endpoint.setProperties(new LinkedHashMap<>());
+		List<String> names = Arrays.asList(new String[] { "testEndpoint" });
+		when(restClient.getProjectEndpoints()).thenReturn(endpoints);
+		when(vraNgPackageDescriptor.getEndpoint()).thenReturn(names);
 
 		// TEST
 		store.exportContent();
 
-		String[] expectedPipelinefile = { "variables.yaml" };
+		String[] expectedPipelinefile = { "testEndpoint.yaml" };
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(getTempFolderProjectPath(), expectedPipelinefile);
 	}
 
 	@Test
+	void testExportMissingEndpoint() {
+		// GIVEN
+		List<Endpoint> endpoints = new ArrayList<>();
+		Endpoint endpoint = new Endpoint();
+		endpoints.add(endpoint);
+		endpoint.setName("testEndpoint");
+
+		List<String> names = Arrays.asList(new String[] { "notMatchingPipeline" });
+		when(restClient.getProjectEndpoints()).thenReturn(endpoints);
+		when(vraNgPackageDescriptor.getEndpoint()).thenReturn(names);
+
+		// TEST
+		store.exportContent();
+
+		String[] expectedPipelinefile = {};
+
+		// VERIFY
+		AssertionsHelper.assertFolderContainsFiles(getTempFolderProjectPath(), expectedPipelinefile);
+
+	}
+
+	@Test
 	void testImportContentIm() {
 		// GIVEN
-		List<Variable> variables = new ArrayList<>();
-		List<Variable> existingVars = new ArrayList<>();
+		List<Endpoint> endpoints = new ArrayList<>();
+		Endpoint endpoint = new Endpoint();
+		endpoints.add(endpoint);
+		endpoint.setName("testEndpoint");
 
-		Variable var = new Variable();
-		var.setName("var1");
-		var.setType("REGULAR");
-		var.setProject("myProject");
-		var.setDescription("VAR1");
-		variables.add(var);
-		existingVars.add(var);
+		// pipelines.add(pipeline);
+		createTempFile("testEndpoint", endpoint);
 
-		var = new Variable();
-		var.setName("var2");
-		var.setType("REGULAR");
-		var.setProject("myProject");
-		var.setDescription("VAR2");
-		variables.add(var);
-		var = new Variable();
-		var.setName("var2");
-		var.setType("REGULAR");
-		var.setProject("myProject");
-		var.setDescription("VAR2-OLD");
-		existingVars.add(var);
+		endpoint = new Endpoint();
+		endpoint.setName("testEndpointNew");
+		endpoint.setId("xxx-xxxx-xxxx");
+		createTempFile("testEndpointNew", endpoint);
 
-		var = new Variable();
-		var.setName("var3");
-		var.setType("REGULAR");
-		var.setProject("myProject");
-		var.setDescription("VAR3");
-		variables.add(var);
-
-		createTempFile(variables);
-
-		when(restClient.getProjectVariables()).thenReturn(existingVars);
+		when(restClient.getProjectEndpoints()).thenReturn(endpoints);
 		when(restClient.getProjectName()).thenReturn("myProject");
 		// TEST
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createVariable(any());
-		verify(restClient, times(1)).updateVariable(any());
-
+		verify(restClient, times(1)).createEndpoint(any());
+		verify(restClient, times(1)).updateEndpoint(any());
 	}
 
 	/**
@@ -176,8 +176,8 @@ public class CsVariableStoreTest {
 		return files[0];
 	}
 
-	private void createTempFile(List<Variable> obj) {
-		File file = Paths.get(tempFolder.getRoot().getPath(), "variables", "variables" + ".yaml").toFile();
+	private void createTempFile(String name, Endpoint obj) {
+		File file = Paths.get(tempFolder.getRoot().getPath(), "endpoints", name + ".yaml").toFile();
 		file.getParentFile().mkdirs();
 		try {
 			YAMLMapper yamlMapper = new YAMLMapper();

@@ -12,11 +12,9 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-package com.vmware.pscoe.iac.artifact.store.cs;
+package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,18 +33,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.CustomIntegrationVersion;
 import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
-import com.vmware.pscoe.iac.artifact.aria.codestream.store.CsPipelineStore;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
@@ -54,11 +47,11 @@ import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.model.PackageFactory;
 import com.vmware.pscoe.iac.artifact.model.PackageType;
 
-public class CsPipelineStoreTest {
+public class CsCustomIntegrationStoreTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	protected CsPipelineStore store;
+	protected CsCustomIntegrationStore store;
 	protected RestClientCs restClient;
 	protected Package pkg;
 	protected ConfigurationCs config;
@@ -69,16 +62,16 @@ public class CsPipelineStoreTest {
 	void init() {
 		try {
 			tempFolder.create();
-			tempFolder.newFolder("pipelines");
+			tempFolder.newFolder("custom-integrations");
 
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create a temp folder");
 		}
 
 		fsMocks = new FsMocks(tempFolder.getRoot());
-		store = new CsPipelineStore();
+		store = new CsCustomIntegrationStore();
 		restClient = Mockito.mock(RestClientCs.class);
-		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
+		pkg = PackageFactory.getInstance(PackageType.CS, tempFolder.getRoot());
 		config = Mockito.mock(ConfigurationCs.class);
 		vraNgPackageDescriptor = Mockito.mock(CsPackageDescriptor.class);
 
@@ -98,36 +91,48 @@ public class CsPipelineStoreTest {
 	}
 
 	@Test
-	void testExportDesiredPipeline() {
+	void testExportDesiredCi() {
 		// GIVEN
-		List<JsonObject> pipelines = new ArrayList<>();
-		JsonObject pipeline = new JsonObject();
-		pipelines.add(pipeline);
-		pipeline.addProperty("name", "testPipeline");
-		List<String> names = Arrays.asList(new String[] { "testPipeline" });
-		when(restClient.getProjectPipelines()).thenReturn(pipelines);
-		when(vraNgPackageDescriptor.getPipeline()).thenReturn(names);
+		List<CustomIntegrationVersion> cis = new ArrayList<>();
+		CustomIntegrationVersion ci = new CustomIntegrationVersion();
+		cis.add(ci);
+		ci.setName("testCustomIntegration");
+		ci.setStatus("DRAFT");
+
+		List<CustomIntegrationVersion> versions = new ArrayList<>();
+		CustomIntegrationVersion version = new CustomIntegrationVersion();
+		versions.add(version);
+		version.setName("testCustomIntegration");
+		version.setVersion("1");
+		version.setStatus("RELEASED");
+
+		List<String> names = Arrays.asList(new String[] { "testCustomIntegration" });
+
+		when(restClient.getCustomIntegrations()).thenReturn(cis);
+		when(restClient.getCustomIntegrationVersions(any())).thenReturn(versions);
+		when(vraNgPackageDescriptor.getCustomIntegration()).thenReturn(names);
 
 		// TEST
 		store.exportContent();
 
-		String[] expectedPipelinefile = { "testPipeline.yaml" };
+		String[] expectedPipelinefile = { "testCustomIntegration.yaml" };
 
 		// VERIFY
 		AssertionsHelper.assertFolderContainsFiles(getTempFolderProjectPath(), expectedPipelinefile);
 	}
 
 	@Test
-	void testExportMissingPipeline() {
+	void testExportMissingCi() {
 		// GIVEN
-		List<JsonObject> pipelines = new ArrayList<>();
-		JsonObject pipeline = new JsonObject();
-		pipeline.addProperty("name", "testPipeline");
+		List<CustomIntegrationVersion> cis = new ArrayList<>();
+		CustomIntegrationVersion ci = new CustomIntegrationVersion();
+		cis.add(ci);
+		ci.setName("testCustomIntegration");
+		ci.setStatus("DRAFT");
 
-		pipelines.add(pipeline);
-		List<String> names = Arrays.asList(new String[] { "notMatchingPipeline" });
-		when(restClient.getProjectPipelines()).thenReturn(pipelines);
-		when(vraNgPackageDescriptor.getPipeline()).thenReturn(names);
+		List<String> names = Arrays.asList(new String[] { "notMachingCi" });
+		when(restClient.getCustomIntegrations()).thenReturn(cis);
+		when(vraNgPackageDescriptor.getCustomIntegration()).thenReturn(names);
 
 		// TEST
 		store.exportContent();
@@ -141,80 +146,49 @@ public class CsPipelineStoreTest {
 
 	@Test
 	void testImportContentIm() {
-		// GIVEN
-		List<JsonObject> pipelines = new ArrayList<>();
-		JsonObject pipeline = new JsonObject();
-		pipeline.addProperty("name", "newPipeline");
-		pipeline.addProperty("state", "ENABLED");
-		// pipelines.add(pipeline);
-		createTempFile("newPipeline", pipeline);
 
-		pipeline = new JsonObject();
-		pipeline.addProperty("name", "existingPipeline");
-		pipeline.addProperty("state", "RELEASED");
-		pipeline.addProperty("id", "xxxx-yyyyy-xxxxx");
-		pipelines.add(pipeline);
-		createTempFile("existingPipeline", pipeline);
+		List<CustomIntegrationVersion> storageNew = new ArrayList<>();
+		CustomIntegrationVersion ciNew = new CustomIntegrationVersion();
+		storageNew.add(ciNew);
+		ciNew.setName("testCustomIntegrationNew");
+		ciNew.setStatus("DRAFT");
+		createTempFile("testCustomIntegationNew", storageNew);
 
-		when(restClient.getProjectPipelines()).thenReturn(pipelines);
+		List<CustomIntegrationVersion> cis = new ArrayList<>();
+		List<CustomIntegrationVersion> storage = new ArrayList<>();
+		CustomIntegrationVersion ci = new CustomIntegrationVersion();
+		cis.add(ci);
+		storage.add(ci);
+		ci.setName("testCustomIntegration");
+		ci.setStatus("DRAFT");
+
+		List<CustomIntegrationVersion> versions = new ArrayList<>();
+		CustomIntegrationVersion version = new CustomIntegrationVersion();
+		versions.add(version);
+		storage.add(version);
+		version.setName("testCustomIntegration");
+		version.setVersion("1");
+		version.setStatus("RELEASED");
+		version = new CustomIntegrationVersion();
+		storage.add(version);
+		version.setName("testCustomIntegration");
+		version.setVersion("2");
+		version.setStatus("RELEASED");
+		createTempFile("testCustomIntegration", storage);
+
+		List<String> names = Arrays.asList(new String[] { "testCustomIntegration" });
+
+		when(restClient.getCustomIntegrations()).thenReturn(cis);
+		when(restClient.getCustomIntegrationVersions(any())).thenReturn(versions);
+		when(vraNgPackageDescriptor.getCustomIntegration()).thenReturn(names);
 		when(restClient.getProjectName()).thenReturn("myProject");
 		// TEST
 		store.importContent(tempFolder.getRoot());
 
 		// VERIFY
-		verify(restClient, times(1)).createPipeline(any());
-		verify(restClient, times(1)).updatePipeline(any(), any());
-		verify(restClient, times(3)).patchPipeline(any(), any());
-
-	}
-
-	@Test
-	void testImportPipelineWithRollbackDependencies() {
-		// GIVEN Three pipelines. One of them used as a rollback to the other two.
-		List<JsonObject> pipelines = new ArrayList<>(3);
-
-		JsonObject rollbackPipe = new JsonObject();
-		rollbackPipe.addProperty("name", "PipelineRollback");
-		rollbackPipe.addProperty("state", "ENABLED");
-		rollbackPipe.addProperty("id", "3C22AD16-95D9-4C20-B9FF-D035CF97AA88");
-
-		JsonObject pipe1 = new JsonObject();
-		pipe1.addProperty("name", "Pipeline1");
-		pipe1.addProperty("state", "ENABLED");
-		pipe1.addProperty("id", "740820E8-E249-4399-985F-DBA1C554DC38");
-
-		JsonObject pipe2 = new JsonObject();
-		pipe2.addProperty("name", "Pipeline2");
-		pipe2.addProperty("state", "ENABLED");
-		pipe2.addProperty("id", "FA3EEDE8-C6F5-4D59-8277-84B90B702464");
-
-		JsonArray rollbacks = new JsonArray();
-		rollbacks.add(rollbackPipe);
-		pipe1.add("rollbacks", rollbacks);
-		pipe2.add("rollbacks", rollbacks);
-
-		pipelines.add(pipe1);
-		pipelines.add(pipe2);
-		pipelines.add(rollbackPipe);
-
-		createTempFile("PipelineRollback", rollbackPipe);
-		createTempFile("Pipeline1", pipe1);
-		createTempFile("Pipeline2", pipe2);
-
-		when(restClient.getProjectPipelines()).thenReturn(pipelines);
-		when(restClient.getProjectName()).thenReturn("myProject");
-
-		// TEST
-		store.importContent(tempFolder.getRoot());
-
-		// VERIFY
-		InOrder inOrder = inOrder(restClient);
-		inOrder.verify(restClient).updatePipeline(eq("PipelineRollback"), any());
-		inOrder.verify(restClient).updatePipeline(eq("Pipeline2"), any());
-		inOrder.verify(restClient).updatePipeline(eq("Pipeline1"), any());
-
-		verify(restClient, times(3)).patchPipeline(any(), any());
-
+		verify(restClient, times(1)).createCustomIntegration(any());
+		verify(restClient, times(1)).updateCustomIntegration(any());
+		verify(restClient, times(1)).createCustomIntegrationVersion(any(), any());
 	}
 
 	/**
@@ -233,14 +207,13 @@ public class CsPipelineStoreTest {
 		return files[0];
 	}
 
-	private void createTempFile(String name, JsonObject obj) {
-		File file = Paths.get(tempFolder.getRoot().getPath(), "pipelines", name + ".yaml").toFile();
+	private void createTempFile(String name, List<CustomIntegrationVersion> obj) {
+		File file = Paths.get(tempFolder.getRoot().getPath(), "custom-integrations", name + ".yaml").toFile();
 		file.getParentFile().mkdirs();
 		try {
-			JsonNode jsonNodeTree = new ObjectMapper().readTree(obj.toString());
 			YAMLMapper yamlMapper = new YAMLMapper();
 			yamlMapper.setSerializationInclusion(Include.NON_NULL);
-			String yamlString = yamlMapper.writeValueAsString(jsonNodeTree);
+			String yamlString = yamlMapper.writeValueAsString(obj);
 			// StringWriter writer = new StringWriter();
 			// writer.write(triggerYaml);
 			Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
