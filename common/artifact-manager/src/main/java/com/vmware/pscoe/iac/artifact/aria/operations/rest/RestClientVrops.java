@@ -78,7 +78,7 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.model.Version;
+import com.vmware.pscoe.iac.artifact.common.store.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 @SuppressWarnings("deprecation")

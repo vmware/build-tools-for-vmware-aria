@@ -72,10 +72,10 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.Parameter;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.StringValue;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 public class RestClientVro extends RestClient {

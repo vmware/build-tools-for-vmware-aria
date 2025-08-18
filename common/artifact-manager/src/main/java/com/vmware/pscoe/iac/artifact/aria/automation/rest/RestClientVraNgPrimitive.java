@@ -103,7 +103,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.model.Version;
+import com.vmware.pscoe.iac.artifact.common.store.Version;
 import com.vmware.pscoe.iac.artifact.rest.RestClient;
 
 public class RestClientVraNgPrimitive extends RestClient {
