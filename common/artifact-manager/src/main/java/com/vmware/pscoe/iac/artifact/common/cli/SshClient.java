@@ -149,7 +149,8 @@ public final class SshClient {
 			createDirectory(sftpChannel, dest, false);
 			sftpChannel.cd(dest);
 			fileList.forEach(file -> {
-				String destinationFile = dest + "/" + file.getName();
+				String resourceType = file.getParentFile().getName();
+				String destinationFile = dest + "/" + resourceType + "-" + file.getName();
 				LOGGER.info("Copy file with path '{}' to '{}'", file.getAbsolutePath(), destinationFile);
 				try {
 					sftpChannel.put(file.getAbsolutePath(), destinationFile);
