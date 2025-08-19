@@ -33,7 +33,7 @@ public class CsPackageContent extends PackageContent<CsPackageContent.ContentTyp
 
 		private final String type;
 
-		private ContentType(String type) {
+		ContentType(String type) {
 			this.type = type;
 		}
 

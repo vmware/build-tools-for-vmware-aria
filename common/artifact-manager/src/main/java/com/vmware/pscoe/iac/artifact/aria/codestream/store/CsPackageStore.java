@@ -167,7 +167,7 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 		logger.info(String.format(PackageStore.PACKAGE_EXPORT, csPackage));
 		CsTypeStoreFactory storeFactory = CsTypeStoreFactory.withConfig(restClient, csPackage, config,
 				csPackageDescriptor);
-		for (CsPackageContent.ContentType type : CsTypeStoreFactory.EXPORT_ORDER) {
+		for (CsPackageContent.ContentType type : CsTypeStoreFactory.exportOrder) {
 			logger.info("EXPORTING: {}", type.getTypeValue());
 			storeFactory.getStoreForType(type).exportContent();
 		}
@@ -198,7 +198,7 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 		}
 
 		CsTypeStoreFactory storeFactory = CsTypeStoreFactory.withConfig(restClient, csPackage, config, null);
-		for (CsPackageContent.ContentType type : CsTypeStoreFactory.IMPORT_ORDER) {
+		for (CsPackageContent.ContentType type : CsTypeStoreFactory.importOrder) {
 			logger.info("IMPORTING : {}", type.getTypeValue());
 			storeFactory.getStoreForType(type).importContent(tmp);
 		}

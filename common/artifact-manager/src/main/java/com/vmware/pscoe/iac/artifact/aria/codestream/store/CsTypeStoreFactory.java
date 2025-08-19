@@ -35,7 +35,7 @@ import com.vmware.pscoe.iac.artifact.common.store.Package;
  */
 public class CsTypeStoreFactory {
 
-	public static CsPackageContent.ContentType[] IMPORT_ORDER = {
+	public static CsPackageContent.ContentType[] importOrder = {
 			VARIABLE,
 			CUSTOM_INTEGRATION,
 			ENDPOINT,
@@ -46,7 +46,7 @@ public class CsTypeStoreFactory {
 			GERRIT_TRIGGER
 	};
 
-	public static CsPackageContent.ContentType[] EXPORT_ORDER = {
+	public static CsPackageContent.ContentType[] exportOrder = {
 			PIPELINE,
 			ENDPOINT,
 			CUSTOM_INTEGRATION,

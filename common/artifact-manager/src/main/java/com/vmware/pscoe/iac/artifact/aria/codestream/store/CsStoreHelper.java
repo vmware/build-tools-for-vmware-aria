@@ -42,7 +42,10 @@ import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 
 public class CsStoreHelper {
-	private final static Logger logger = LoggerFactory.getLogger(CsStoreHelper.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(CsStoreHelper.class);
+
+	private CsStoreHelper() {
+	}
 
 	public static void addVarsToExtractionContext(String content, CsPackageDescriptor descriptor) {
 
@@ -91,7 +94,7 @@ public class CsStoreHelper {
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException e) {
-			logger.error("Unable to store file {} {}", name, file.getPath());
+			LOGGER.error("Unable to store file {} {}", name, file.getPath());
 			throw new RuntimeException("Unable to store file.", e);
 		}
 	}
@@ -113,7 +116,7 @@ public class CsStoreHelper {
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException e) {
-			logger.error("Unable to store file {} {}", name, file.getPath());
+			LOGGER.error("Unable to store file {} {}", name, file.getPath());
 			throw new RuntimeException("Unable to store file.", e);
 		}
 	}

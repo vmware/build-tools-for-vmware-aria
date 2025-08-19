@@ -17,7 +17,11 @@ package com.vmware.pscoe.iac.artifact.common.store.models;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public abstract class PackageContent<T extends PackageContent.ContentType> {
+	private static final int PRIME_NUMBER_17 = 17;
+	private static final int PRIME_NUMBER_31 = 31;
 
 	public interface ContentType {
 	}
@@ -58,6 +62,15 @@ public abstract class PackageContent<T extends PackageContent.ContentType> {
 		}
 
 		@Override
+		public int hashCode() {
+			return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
+					.append(id)
+					.append(name)
+					.append(type)
+					.toHashCode();
+		}
+
+		@Override
 		public String toString() {
 			return String.format("Type: %s Id: %s Name: %s", this.type, this.id, this.name);
 		}
@@ -72,5 +85,4 @@ public abstract class PackageContent<T extends PackageContent.ContentType> {
 	public List<Content<T>> getContent() {
 		return content;
 	}
-
 }

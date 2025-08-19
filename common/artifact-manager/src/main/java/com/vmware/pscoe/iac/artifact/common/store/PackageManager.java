@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
  * packaging a directory structure into a package file.
  */
 public class PackageManager {
+	private static final int PRIME_NUMBER_1024 = 1024;
 
 	/**
 	 * An abstraction that represents a package.
@@ -99,7 +100,7 @@ public class PackageManager {
 
 				if (!ze.isDirectory()) {
 					try (FileOutputStream fos = new FileOutputStream(newFile)) {
-						byte[] buffer = new byte[1024];
+						byte[] buffer = new byte[PRIME_NUMBER_1024];
 
 						int len;
 						while ((len = zis.read(buffer)) > 0) {
@@ -209,7 +210,7 @@ public class PackageManager {
 			ZipEntry zipEntry = new ZipEntry(zipFilePath.replaceAll("\\\\", "/"));
 			zos.putNextEntry(zipEntry);
 
-			byte[] bytes = new byte[1024];
+			byte[] bytes = new byte[PRIME_NUMBER_1024];
 			int length;
 			while ((length = fis.read(bytes)) >= 0) {
 				zos.write(bytes, 0, length);
@@ -266,7 +267,7 @@ public class PackageManager {
 		// Copy Existing Files
 		if (hasExistingFiles) {
 			ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile));
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[PRIME_NUMBER_1024];
 			ZipEntry entry = zin.getNextEntry();
 			while (entry != null) {
 				zout.putNextEntry(new ZipEntry(entry.getName()));

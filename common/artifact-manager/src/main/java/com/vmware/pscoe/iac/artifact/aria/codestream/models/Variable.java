@@ -15,6 +15,9 @@
 package com.vmware.pscoe.iac.artifact.aria.codestream.models;
 
 public class Variable {
+	private static final int PRIME_NUMBER_7 = 7;
+	private static final int PRIME_NUMBER_31 = 31;
+
 	String project;
 	String name;
 	String type;
@@ -63,9 +66,9 @@ public class Variable {
 
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		hash = 31 * hash + (name == null ? 0 : name.hashCode());
-		hash = 31 * hash + (project == null ? 0 : project.hashCode());
+		int hash = PRIME_NUMBER_7;
+		hash = PRIME_NUMBER_31 * hash + (name == null ? 0 : name.hashCode());
+		hash = PRIME_NUMBER_31 * hash + (project == null ? 0 : project.hashCode());
 		return hash;
 	}
 

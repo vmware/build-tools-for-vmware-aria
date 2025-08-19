@@ -63,8 +63,8 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
      - Example: If you have modified the `VraNgPackageStore.java` or the `RestClientVraNg.java` class, you can run the `mvn clean install` command from the `/common/artifact-manager` directory.
      - Example: If you have modified a `PullMojo.java` class, you can run the `mvn clean install` command from the `/maven/plugins/` directory.
      - If for some reason you have to re-build the whole project run the following two commands in order from the Build Tools for Aria root folder:
-      - `mvn clean install -D modules.plugins`
-      - `mvn clean install -D modules.tools`
+    - `mvn clean install -D modules.plugins`
+    - `mvn clean install -D modules.tools`
    - Now test the modifications by executing `mvn clean package/pull/push` command from the test project.
 
 ### Documentation

@@ -32,7 +32,7 @@ import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 public class CsPackageDescriptor extends PackageDescriptor {
-	private static final Logger logger = LoggerFactory.getLogger(CsPackageDescriptor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CsPackageDescriptor.class);
 
 	private List<String> pipeline;
 	private List<String> variable;
@@ -52,7 +52,11 @@ public class CsPackageDescriptor extends PackageDescriptor {
 	}
 
 	public List<String> getVariable() {
-		return variable == null ? variable = new ArrayList<>() : variable;
+		if (variable == null) {
+			variable = new ArrayList<>();
+		}
+
+		return variable;
 	}
 
 	public void setVariable(List<String> variable) {
@@ -142,7 +146,7 @@ public class CsPackageDescriptor extends PackageDescriptor {
 		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
 		try {
 			CsPackageDescriptor pkgDescriptor = mapper.readValue(filesystemPath, CsPackageDescriptor.class);
-			logger.debug(ReflectionToStringBuilder.toString(pkgDescriptor, ToStringStyle.MULTI_LINE_STYLE));
+			LOGGER.debug(ReflectionToStringBuilder.toString(pkgDescriptor, ToStringStyle.MULTI_LINE_STYLE));
 			return pkgDescriptor;
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to load CS Package Descriptor[" + filesystemPath.getAbsolutePath() + "]",
@@ -162,7 +166,7 @@ public class CsPackageDescriptor extends PackageDescriptor {
 
 		CsPackageDescriptor pd = new CsPackageDescriptor();
 		pd.pipeline = map.get(CsPackageContent.ContentType.PIPELINE);
-		logger.debug(ReflectionToStringBuilder.toString(pd, ToStringStyle.MULTI_LINE_STYLE));
+		LOGGER.debug(ReflectionToStringBuilder.toString(pd, ToStringStyle.MULTI_LINE_STYLE));
 		return pd;
 	}
 }

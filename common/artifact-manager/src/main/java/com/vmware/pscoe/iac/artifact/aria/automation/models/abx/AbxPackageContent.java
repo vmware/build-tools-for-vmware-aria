@@ -26,7 +26,7 @@ public class AbxPackageContent extends PackageContent<AbxPackageContent.ContentT
 
 		private final String type;
 
-		private ContentType(String type) {
+		ContentType(String type) {
 			this.type = type;
 		}
 

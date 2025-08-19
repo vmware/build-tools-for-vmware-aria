@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ZipUtilities {
+public final class ZipUtilities {
+	private static final int PRIME_NUMBER_1024 = 1024;
 
 	private ZipUtilities() {
 	}
@@ -38,7 +39,7 @@ public class ZipUtilities {
 				new File(newFile.getParent()).mkdirs();
 
 				try (FileOutputStream fos = new FileOutputStream(newFile)) {
-					byte[] buffer = new byte[1024];
+					byte[] buffer = new byte[PRIME_NUMBER_1024];
 
 					int len;
 					while ((len = zis.read(buffer)) > 0) {

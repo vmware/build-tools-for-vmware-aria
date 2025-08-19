@@ -18,6 +18,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Endpoint {
+	private static final int PRIME_NUMBER_7 = 7;
+	private static final int PRIME_NUMBER_31 = 31;
+
 	private String project;
 	private String id;
 	private String name;
@@ -104,9 +107,9 @@ public class Endpoint {
 
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		hash = 31 * hash + (name == null ? 0 : name.hashCode());
-		hash = 31 * hash + (project == null ? 0 : project.hashCode());
+		int hash = PRIME_NUMBER_7;
+		hash = PRIME_NUMBER_31 * hash + (name == null ? 0 : name.hashCode());
+		hash = PRIME_NUMBER_31 * hash + (project == null ? 0 : project.hashCode());
 		return hash;
 	}
 

@@ -14,7 +14,18 @@
  */
 package com.vmware.pscoe.iac.artifact.common.store;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public final class Package implements Comparable<Package> {
+	/**
+	 * @param Prime Number 17.
+	 */
+	private static final int PRIME_NUMBER_17 = 17;
+	/**
+	 * @param Prime Number 31.
+	 */
+	private static final int PRIME_NUMBER_31 = 31;
+
 	/**
 	 * The package type.
 	 */
@@ -133,6 +144,17 @@ public final class Package implements Comparable<Package> {
 	}
 
 	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(PRIME_NUMBER_17, PRIME_NUMBER_31)
+				.append(id)
+				.append(name)
+				.append(type)
+				.append(version)
+				.append(filesystemPath)
+				.toHashCode();
+	}
+
+	@Override
 	public String toString() {
 		if (hasVersionQualifier()) {
 			return getName() + "-" + getVersion() + "." + type.getPackageExtention();
@@ -140,5 +162,4 @@ public final class Package implements Comparable<Package> {
 			return getName() + "." + type.getPackageExtention();
 		}
 	}
-
 }
