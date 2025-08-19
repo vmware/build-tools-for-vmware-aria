@@ -14,7 +14,7 @@
  */
 
 /**
- * Package that contain Configuration class tests.
+ * Package that contains Configuration class tests.
  *
  */
 package com.vmware.pscoe.iac.artifact.configuration;
