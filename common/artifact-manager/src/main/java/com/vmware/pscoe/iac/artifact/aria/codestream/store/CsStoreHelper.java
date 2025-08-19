@@ -41,8 +41,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
 
-public class CsStoreHelper {
-	private final static Logger LOGGER = LoggerFactory.getLogger(CsStoreHelper.class);
+public final class CsStoreHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CsStoreHelper.class);
 
 	private CsStoreHelper() {
 	}
