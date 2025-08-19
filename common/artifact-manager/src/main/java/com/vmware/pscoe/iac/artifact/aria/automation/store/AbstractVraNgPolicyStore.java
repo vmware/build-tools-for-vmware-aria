@@ -14,22 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.Strictness;
-import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
-import com.vmware.pscoe.iac.artifact.model.Package;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -42,8 +26,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.Strictness;
+import com.google.gson.stream.JsonReader;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyDTO;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyTypes;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
+
 /**
- * Abstract class that unify the way Policies are imported, exported and deleted for all subclasses.
+ * Abstract class that unify the way Policies are imported, exported and deleted
+ * for all subclasses.
  */
 public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends AbstractVraNgStore {
 	/**
@@ -67,16 +68,20 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 	protected final Class<VraNgPolicyDTO> policyClass;
 	/** Cached Project ID (fetched once by the REST client) */
 	private String cachedProjectId;
-	/** Cached Organization ID (fetched once by the REST client based on configuration)  */
+	/**
+	 * Cached Organization ID (fetched once by the REST client based on
+	 * configuration)
+	 */
 	private String cachedOrgId;
+
 	/**
 	 * Abstract parent to all Policy Store classes
 	 * 
-	 * @param t   - policy type (see VraNgPolicyTypes)
+	 * @param t - policy type (see VraNgPolicyTypes)
 	 */
 	@SuppressWarnings("unchecked")
 	protected AbstractVraNgPolicyStore(VraNgPolicyTypes t) {
-		this.policyType = t.id; 
+		this.policyType = t.id;
 		this.policyDir = t.folder;
 		this.policyDesc = t.description;
 		this.policyClass = t.vraNgPolicyClass;
@@ -143,7 +148,8 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 	 * Called when the List returned from getItemListFromDescriptor is not empty.
 	 * 
 	 * @param itemNames list of names
-	 * @throws RuntimeException if policy with given name cannot be found on the server
+	 * @throws RuntimeException if policy with given name cannot be found on the
+	 *                          server
 	 */
 	@Override
 	protected void exportStoreContent(final List<String> itemNames) {
@@ -205,8 +211,10 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 	/**
 	 * This will fetch all the policies that need to be exported.
 	 *
-	 * Will validate that on the environment there are no policies of the given type and names that are duplicate
-	 * or backed up (indicating update is in progress or has  failed and needs manual resolution from the UI)
+	 * Will validate that on the environment there are no policies of the given type
+	 * and names that are duplicate
+	 * or backed up (indicating update is in progress or has failed and needs manual
+	 * resolution from the UI)
 	 * 
 	 * @param itemNames - the list of policies to fetch. If empty, will fetch all
 	 * 
@@ -221,9 +229,11 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 			if (policy.getTypeId().equals(policyType)
 					&& (includeAll || itemNames.contains(policy.getName()))) {
 				if (policies.containsKey(policy.getName())) {
-					throw errorFrom(null, "More than one %s Policy with name '%s' already exists. While Aria Automation supports policies "
-						+ "with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type "
-						+ "in order to properly resolve the desired policy.", policyDesc, policy.getName());
+					throw errorFrom(null,
+							"More than one %s Policy with name '%s' already exists. While Aria Automation supports policies "
+									+ "with the same type and name, Build Tools for Aria does not support duplicate policy names of the same type "
+									+ "in order to properly resolve the desired policy.",
+							policyDesc, policy.getName());
 				}
 				if (policy.getName().contains(POLICY_BACKUP_SUFFIX)) {
 					policyBackups.add(policy.getName());
@@ -264,10 +274,11 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 
 		try {
 			policy.setId(isNew ? null : existingPolicy.getId());
-			this.logger.info("Attempting to {} {} Policy '{}', ID='{}'", isNew ? "create" : "update", 
+			this.logger.info("Attempting to {} {} Policy '{}', ID='{}'", isNew ? "create" : "update",
 					policyDesc, policy.getName(), policy.getId());
 			this.restClient.createOrUpdatePolicy(policy);
-			logger.info("Successfully {} {} Policy '{}', ID='{}'", isNew ? "created" : "updated", policyDesc, policy.getName(), policy.getId());
+			logger.info("Successfully {} {} Policy '{}', ID='{}'", isNew ? "created" : "updated", policyDesc,
+					policy.getName(), policy.getId());
 			return; // Success
 		} catch (Exception e) {
 			if (isNew) {
@@ -285,7 +296,7 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 			existingPolicy.setName(backupName);
 			this.restClient.createOrUpdatePolicy(existingPolicy);
 		} catch (Exception e) {
-			throw errorFrom(e, "Failed to create backup for %s Policy '%s' with ID=%s.", 
+			throw errorFrom(e, "Failed to create backup for %s Policy '%s' with ID=%s.",
 					policyDesc, origName, existingPolicy.getId());
 		}
 		// create new record for the changed policy
@@ -293,13 +304,13 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 			policy.setId(null);
 			this.logger.info("Attempting to create new record for {} Policy '{}'", policyDesc, origName);
 			this.restClient.createOrUpdatePolicy(policy);
-			this.logger.info("Successfully created a new record for {} Policy '{}' with ID={}", 
+			this.logger.info("Successfully created a new record for {} Policy '{}' with ID={}",
 					policyDesc, origName, policy.getId());
 			deleteExistingPolicyBackup(existingPolicy);
 		} catch (Exception e) {
 			// creation failed - restore (rename) backup:
 			String backupDetails = restoreBackedUpPolicy(existingPolicy, origName);
-			throw errorFrom(e, "Failed to create new record for %s Policy '%s'. %s", 
+			throw errorFrom(e, "Failed to create new record for %s Policy '%s'. %s",
 					policyDesc, origName, backupDetails);
 		}
 	}
@@ -336,9 +347,9 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 			logger.info("Created {} Policy file {}",
 					policyDesc,
 					Files.write(
-					Paths.get(policyFile.getPath()),
-					GSON.toJson(policyJsonObject).getBytes(),
-					StandardOpenOption.CREATE));
+							Paths.get(policyFile.getPath()),
+							GSON.toJson(policyJsonObject).getBytes(),
+							StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			throw errorFrom(e, "Unable to store %s Policy to file %s.", policyDesc, policyFile.getAbsolutePath());
 		}
@@ -386,7 +397,9 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 	}
 
 	/**
-	 * Populates the policy with projectId, orgId and other details (see resolvePolicyItem)
+	 * Populates the policy with projectId, orgId and other details (see
+	 * resolvePolicyItem)
+	 * 
 	 * @param policy - policy to populate
 	 */
 	private void populatePolicyDetails(T policy) {
@@ -407,6 +420,7 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 	/**
 	 * Deletes the backup policy; logs a warning on failure (does not throw)
 	 * If a policy isn't provided, does nothing.
+	 * 
 	 * @param existingPolicyBackup - policy backup
 	 */
 	private void deleteExistingPolicyBackup(T existingPolicyBackup) {

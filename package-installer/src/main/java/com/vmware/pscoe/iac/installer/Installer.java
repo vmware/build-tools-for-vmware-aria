@@ -49,10 +49,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
@@ -61,14 +60,15 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecut
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor.WorkflowExecutionException;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 /**

@@ -14,9 +14,15 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.google.common.io.Files;
-import com.google.gson.stream.JsonWriter;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -26,15 +32,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
-import org.apache.commons.lang3.SystemUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.io.Files;
+import com.google.gson.stream.JsonWriter;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE)
 public class TypescriptCompileMojo extends AbstractVroMojo {
@@ -70,8 +71,7 @@ public class TypescriptCompileMojo extends AbstractVroMojo {
 				.execute(getLog());
 
 		String projectRoot = project.getBasedir().toPath().toString();
-		List<String> packageNameList =
-				new ArrayList<>(Arrays.asList(project.getGroupId().split("\\.")));
+		List<String> packageNameList = new ArrayList<>(Arrays.asList(project.getGroupId().split("\\.")));
 		File packageJson = new File(
 				Paths.get(projectRoot, TypescriptConstants.OUT_TYPE_PATH, "package.json")
 						.toString());
@@ -115,7 +115,7 @@ public class TypescriptCompileMojo extends AbstractVroMojo {
 
 	private String createFileList() {
 		return this.filesChanged == null || this.filesChanged.isEmpty() ? ""
-			: this.filesChanged.stream().reduce((s, s2) -> s2 != null ? s + "," + s2 : s).orElse("");
+				: this.filesChanged.stream().reduce((s, s2) -> s2 != null ? s + "," + s2 : s).orElse("");
 	}
 
 	private List<String> buildCompileCommand() {

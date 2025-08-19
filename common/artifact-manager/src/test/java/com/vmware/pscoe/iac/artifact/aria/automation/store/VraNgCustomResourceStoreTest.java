@@ -14,34 +14,24 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
-import com.google.gson.*;
-import org.mockito.ArgumentCaptor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
@@ -51,10 +41,29 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
 
 public class VraNgCustomResourceStoreTest {
 	@Rule

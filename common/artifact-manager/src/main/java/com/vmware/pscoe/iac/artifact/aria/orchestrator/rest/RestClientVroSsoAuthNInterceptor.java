@@ -22,9 +22,8 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
-import com.vmware.pscoe.iac.artifact.rest.auth.VraSsoAuth;
-import com.vmware.pscoe.iac.artifact.rest.auth.VraSsoAuth.SsoToken;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.VraSsoAuth.SsoToken;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientRequestInterceptor;
 
 public class RestClientVroSsoAuthNInterceptor extends RestClientRequestInterceptor<ConfigurationVro> {
 	private final VraSsoAuth ssoAuth;

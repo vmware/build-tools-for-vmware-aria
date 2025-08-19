@@ -21,10 +21,9 @@ import java.util.logging.Logger;
 import org.apache.hc.core5.http.HttpHost;
 import org.springframework.util.StringUtils;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationNg;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationWithRefreshToken;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationWithRefreshToken;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public class ConfigurationVro extends ConfigurationWithRefreshToken implements ConfigurationNg {
 
@@ -168,6 +167,7 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 		ConfigurationVro config = new ConfigurationVro(props);
 
 		boolean hasVroTenant = !StringUtils.isEmpty(config.getTenant());
+
 		if (hasVroTenant && config.getAuth() != AuthProvider.VRA) {
 			throw new ConfigurationException(
 					"vRO configuration validation error! Multi-tenancy requires 'vra' authentication!");
@@ -180,5 +180,4 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	public enum AuthProvider {
 		BASIC, VRA, VC
 	}
-
 }

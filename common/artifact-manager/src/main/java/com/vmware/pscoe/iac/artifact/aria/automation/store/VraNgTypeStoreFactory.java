@@ -18,12 +18,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.APPROVAL_POLICY;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.BLUEPRINT;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.CATALOG_ENTITLEMENT;
@@ -37,8 +31,14 @@ import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPa
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.PROPERTY_GROUP;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.RESOURCE_ACTION;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.RESOURCE_QUOTA_POLICY;
-import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.SUBSCRIPTION;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.SCENARIO;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent.ContentType.SUBSCRIPTION;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageContent;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 /**
  * Factory to select and setup the store (handler) and determine the order of

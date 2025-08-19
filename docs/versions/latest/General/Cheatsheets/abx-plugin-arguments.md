@@ -48,7 +48,7 @@ abx:install-node-deps
       private key to keystore.
 
     project (Default: ${project})
-      The external project that is built with VMware Aria Build Tools.
+      The external project that is built with Build Tools for VMware Aria.
 
     skipInstallNodeDeps (Default: false)
       User property: skipInstallNodeDeps

@@ -16,14 +16,20 @@ package com.vmware.pscoe.iac.artifact.aria.automation.rest;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlement;
@@ -50,14 +56,6 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContent
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.HttpClientErrorException;
-
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 
 public class RestClientVraNg extends RestClientVraNgPrimitive {
 	/**
@@ -448,7 +446,7 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(String.format("Could not delete Scenario with id '%s'.", scenarioId), e);
 		}
 	}
-	
+
 	/**
 	 * getAllScenarios.
 	 *
@@ -1322,7 +1320,6 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 	/**
 	 * getResourceQuotaPolicy.

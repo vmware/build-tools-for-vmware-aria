@@ -14,9 +14,9 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.models.abx;
 
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
-
 import java.util.List;
+
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 
 public class AbxPackageContent extends PackageContent<AbxPackageContent.ContentType> {
 
@@ -26,7 +26,7 @@ public class AbxPackageContent extends PackageContent<AbxPackageContent.ContentT
 
 		private final String type;
 
-		private ContentType(String type) {
+		ContentType(String type) {
 			this.type = type;
 		}
 

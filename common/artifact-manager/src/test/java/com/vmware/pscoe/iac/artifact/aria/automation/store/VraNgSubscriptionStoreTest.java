@@ -45,18 +45,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.stubs.SubscriptionMockBuilder;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgOrganization;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.SubscriptionMockBuilder;
 
 public class VraNgSubscriptionStoreTest {
 	@Rule

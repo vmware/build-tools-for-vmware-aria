@@ -69,7 +69,7 @@ check_java_version() {
 }
 
 # Run all checks
-echo "Starting VMware Aria Build Tools Checks..."
+echo "Starting Build Tools for VMware Aria Checks..."
 
 check_node_version
 check_maven_version

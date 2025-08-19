@@ -14,22 +14,6 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
-import com.vmware.pscoe.iac.artifact.rest.auth.VraSsoAuth;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.springframework.web.client.RestTemplate;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -38,6 +22,23 @@ import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.time.Instant;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.springframework.web.client.RestTemplate;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.VraSsoAuth;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 
 @Mojo(name = "auth", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class AuthMojo extends AbstractIacMojo {
@@ -71,8 +72,8 @@ public class AuthMojo extends AbstractIacMojo {
 
 			try (Writer writer = Files.newBufferedWriter(tokenFilePath, StandardCharsets.UTF_8)) {
 				final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class,
-						(JsonSerializer<Instant>) (instant, type, ctx) ->
-								new JsonPrimitive(instant.toString())).create();
+						(JsonSerializer<Instant>) (instant, type, ctx) -> new JsonPrimitive(instant.toString()))
+						.create();
 				gson.toJson(ssoToken, writer);
 			}
 		} catch (IOException e) {

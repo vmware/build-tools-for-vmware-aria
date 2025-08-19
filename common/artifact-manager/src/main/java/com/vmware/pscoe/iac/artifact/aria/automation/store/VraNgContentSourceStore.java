@@ -18,26 +18,33 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSource;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgIntegration;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflow;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgWorkflowContentSource;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgIntegrationUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
 
 /**
  * Content Source Store.

@@ -14,23 +14,24 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.orchestrator.store;
 
-import com.vmware.pscoe.iac.artifact.PackageMocked;
-import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.strategy.Strategy;
-import com.vmware.pscoe.iac.artifact.strategy.StrategySkipOldVersions;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.vmware.pscoe.iac.artifact.PackageMocked;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.common.strategy.Strategy;
+import com.vmware.pscoe.iac.artifact.common.strategy.StrategySkipOldVersions;
 
 public class VroPackageStoreTest {
 

@@ -17,9 +17,9 @@ package com.vmware.pscoe.iac.artifact.aria.orchestrator.model;
 import java.io.File;
 import java.util.List;
 
-import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
-
 import org.apache.commons.lang3.NotImplementedException;
+
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 public class VroPackageDescriptor extends PackageDescriptor {
 

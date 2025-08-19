@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientRequestInterceptor;
 
 public class RestClientVroBasicAuthNInterceptor extends RestClientRequestInterceptor<ConfigurationVro> {
 

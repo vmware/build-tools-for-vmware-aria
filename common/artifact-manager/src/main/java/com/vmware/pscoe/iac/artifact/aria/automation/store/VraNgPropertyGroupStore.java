@@ -14,6 +14,8 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_PROPERTY_GROUPS;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,15 +30,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
-
-import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_PROPERTY_GROUPS;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
 
 /**
  * Store responsible for exporting and importing Property groups from vRA 8.3+.

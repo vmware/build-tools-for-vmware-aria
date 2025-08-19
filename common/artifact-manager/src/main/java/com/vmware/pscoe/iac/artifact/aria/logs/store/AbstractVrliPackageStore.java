@@ -14,15 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.logs.store;
 
-import com.vmware.pscoe.iac.artifact.GenericPackageStore;
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.aria.logs.store.models.VrliPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,6 +21,16 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+
+import com.vmware.pscoe.iac.artifact.aria.logs.store.models.VrliPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 
 public abstract class AbstractVrliPackageStore extends GenericPackageStore<VrliPackageDescriptor> {
 	/**

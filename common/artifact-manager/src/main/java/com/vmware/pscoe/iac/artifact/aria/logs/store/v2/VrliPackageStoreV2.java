@@ -14,17 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.logs.store.v2;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.RestClientVrliV2;
-import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models.AlertDTO;
-import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models.ContentPackDTO;
-import com.vmware.pscoe.iac.artifact.aria.logs.store.AbstractVrliPackageStore;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +21,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.RestClientVrliV2;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models.AlertDTO;
+import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models.ContentPackDTO;
+import com.vmware.pscoe.iac.artifact.aria.logs.store.AbstractVrliPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 public class VrliPackageStoreV2 extends AbstractVrliPackageStore {
 	private final RestClientVrliV2 restClient;

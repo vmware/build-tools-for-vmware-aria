@@ -14,22 +14,22 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.ArtifactUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractVroMojo {
@@ -74,7 +74,8 @@ public class PackageMojo extends AbstractVroMojo {
 			getLog().info("ABX action name '" + newPackageName + "'");
 
 			MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-			File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
+			File pkgFile = new File(directory,
+					pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
 			Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
 			try {
 				this.preparePackageFile(pkg, dir, new File(pkgFile.getAbsolutePath()));

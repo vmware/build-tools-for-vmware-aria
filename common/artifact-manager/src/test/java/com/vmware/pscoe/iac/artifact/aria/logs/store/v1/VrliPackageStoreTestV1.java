@@ -38,16 +38,16 @@ import org.mockito.Mockito;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.RestClientVrliV1;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.models.AlertDTO;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.models.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.aria.logs.store.models.VrliPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
 
 public final class VrliPackageStoreTestV1 {
 	private static final String ALERTS_DIR = "alerts";

@@ -22,7 +22,6 @@ import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientRequestInterceptor;
 
 public class RestClientVrliAuthInterceptor extends RestClientRequestInterceptor<ConfigurationVrli> {
 

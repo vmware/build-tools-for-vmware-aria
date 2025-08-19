@@ -14,12 +14,13 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
+import java.util.List;
+
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSharingPolicy;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgItem;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
-import java.util.List;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyTypes;
 
 public class VraNgContentSharingPolicyStore extends AbstractVraNgPolicyStore<VraNgContentSharingPolicy> {
 	/**
@@ -32,7 +33,8 @@ public class VraNgContentSharingPolicyStore extends AbstractVraNgPolicyStore<Vra
 	private static final String CATALOG_ITEM = "CATALOG_ITEM_IDENTIFIER";
 
 	/**
-	 * Constructor for policy store of type VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE
+	 * Constructor for policy store of type
+	 * VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE
 	 */
 	public VraNgContentSharingPolicyStore() {
 		super(VraNgPolicyTypes.CONTENT_SHARING_POLICY_TYPE);

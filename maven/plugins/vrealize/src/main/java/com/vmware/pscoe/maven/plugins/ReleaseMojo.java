@@ -16,13 +16,6 @@ package com.vmware.pscoe.maven.plugins;
 
 import java.util.Arrays;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
-import com.vmware.pscoe.iac.artifact.aria.automation.utils.AbxReleaseManager;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -30,6 +23,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
+import com.vmware.pscoe.iac.artifact.aria.automation.utils.AbxReleaseManager;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "release", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class ReleaseMojo extends AbstractIacMojo {
