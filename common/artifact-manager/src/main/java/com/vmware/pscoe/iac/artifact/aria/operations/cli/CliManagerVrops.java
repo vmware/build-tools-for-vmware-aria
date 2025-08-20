@@ -124,7 +124,7 @@ public class CliManagerVrops implements AutoCloseable {
 	// IMPORT
 	public void addViewToImportList(File file) {
 		String resourceType = file.getParentFile().getName();
-		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + "-" + file.getName();
+		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_1,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(VIEW),
 				escapeShellCharacters(IMPORT), escapeShellCharacters(remoteFilePath),
@@ -136,7 +136,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 	public void addDashboardToImportList(File file) {
 		String resourceType = file.getParentFile().getName();
-		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + "-" + file.getName();
+		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_2,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
 				escapeShellCharacters(IMPORT), "all",
@@ -225,7 +225,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 	public void addReportToImportList(File file) {
 		String resourceType = file.getParentFile().getName();
-		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + "-" + file.getName();
+		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_1,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(REPORT),
 				escapeShellCharacters(IMPORT), escapeShellCharacters(remoteFilePath),
@@ -237,7 +237,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 	public void addSuperMetricsToImportList(File file) {
 		String resourceType = file.getParentFile().getName();
-		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + "-" + file.getName();
+		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_3,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(SUPER_METRIC),
 				escapeShellCharacters(IMPORT), escapeShellCharacters(remoteFilePath), escapeShellCharacters(FORCE),
@@ -249,7 +249,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 	public void addMetricConfigsToImportList(File file) {
 		String resourceType = file.getParentFile().getName();
-		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + "-" + file.getName();
+		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + UNIX_PATH_SEPARATOR + file.getName();
 		String command = String.format(VROPS_SSH_COMMAND_4,
 				escapeShellCharacters(OPSCLI_PATH),
 				escapeShellCharacters(FILE),
@@ -269,7 +269,7 @@ public class CliManagerVrops implements AutoCloseable {
 			logger.info("Copying files to vrops appliance");
 
 			reconnect();
-			SshClient.copyLocalToRemote(session, fileList, importRemotePath);
+			SshClient.copyLocalToRemote(session, fileList, importRemotePath, true);
 
 			String remoteCommands = String.join(";", cmdList);
 			logger.info("Executing vROps SSH remote command(s):\n{}", String.join("\n", cmdList));
