@@ -140,7 +140,12 @@ public final class SshClient {
 		return output;
 	}
 
-	public static void copyLocalToRemote(Session session, List<File> fileList, String dest, boolean copyToResourceTypeFolder)
+	public static void copyLocalToRemote(Session session, List<File> fileList, String dest)
+		throws JSchException, SftpException {
+		SshClient.copyLocalToRemote(session, fileList, dest, false);
+	}
+
+	public static void copyLocalToRemote(Session session, List<File> fileList, String dest, boolean copyToParentFolder)
 			throws JSchException, SftpException {
 		final ChannelSftp sftpChannel = (ChannelSftp) session.openChannel(CHANNEL_TYPE_SFTP);
 		try {
@@ -149,20 +154,17 @@ public final class SshClient {
 			createDirectory(sftpChannel, dest, false);
 			sftpChannel.cd(dest);
 			fileList.forEach(file -> {
-				String destinationFile = "";
+				String targetDir = dest;
 
+				if (copyToParentFolder) {
+					String parentFolder = file.getParentFile().getName();
+					targetDir = dest + "/" + parentFolder;
+					createDirectory(sftpChannel, targetDir, false);
+				}
+
+				final String destinationFile =  targetDir + "/" + file.getName();
+				LOGGER.info("Copy file with path '{}' to '{}'", file.getAbsolutePath(), destinationFile);
 				try {
-					String targetDir = dest;
-
-					if (copyToResourceTypeFolder) {
-						String resourceType = file.getParentFile().getName();
-						targetDir = dest + "/" + resourceType;
-						createDirectory(sftpChannel, targetDir, false);
-						sftpChannel.cd(targetDir);
-					}
-
-					destinationFile =  targetDir + "/" + file.getName();
-					LOGGER.info("Copy file with path '{}' to '{}'", file.getAbsolutePath(), destinationFile);
 					sftpChannel.put(file.getAbsolutePath(), destinationFile);
 				} catch (SftpException e) {
 					LOGGER.error("Failed to put file '{}' as remote file '{}' via SFTP session: {}",

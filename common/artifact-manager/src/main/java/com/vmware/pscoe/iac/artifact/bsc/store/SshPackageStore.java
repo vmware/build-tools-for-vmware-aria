@@ -294,7 +294,7 @@ public class SshPackageStore extends GenericPackageStore<BasicPackageDescriptor>
 				logger.info("Copying files to target Host.");
 
 				reconnect();
-				SshClient.copyLocalToRemote(session, files, config.getSshDirectory(), false);
+				SshClient.copyLocalToRemote(session, files, config.getSshDirectory());
 			} catch (JSchException | SftpException e) {
 				String message = "Unable to import content from package '%s', error in connection to '%s'. '%s' : '%s'";
 				message = String.format(message, sshPackage.getFQName(), config.getHost(), e.getClass().getName(),
