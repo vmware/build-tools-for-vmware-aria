@@ -39,6 +39,13 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Add support for push/pull of different aria operation types with the same name*
+
+#### Previous Behavior
+It is not possible to have different resource types with the same name in Aria Operations. For instance a View and a Dashboard with name "Test", which is requirement in some projects
+
+#### New Behavior
+Users are able to create different resource types with the same name in Aria Operations, the same way as they are doing it from the UI.
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
