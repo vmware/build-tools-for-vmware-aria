@@ -32,7 +32,8 @@ import UserInteractionDecoratorStrategy from "./decorators/userInteractionDecora
 
 const defaultUserInteractionJson = '{"schema":{},"layout":{"pages":[]},"itemId":"{{itemId}}"}';
 const userInteractionFormFileNameTemplate = "{{workflowName}}_input_form_{{itemId}}.form.json";
-const userInteractionFormSourceFileNameTemplate = "{{workflowFileName}}_input_form_{{itemId}}.wf.form.json";
+const userInteractionFormSourceFileNameByIdTemplate = "{{workflowFileName}}_input_form_{{itemId}}.wf.form.json";
+const userInteractionFormSourceFileNameByFunctionTemplate = "{{workflowFileName}}_input_form_{{functionName}}.wf.form.json";
 
 /**
  * Workflow transformer is responsible from transforming a TypeScript `wf.ts` file into a vRO workflow.
@@ -108,18 +109,29 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
             const isCustomInteractionComponent = item.strategy instanceof UserInteractionDecoratorStrategy;
             if (isCustomInteractionComponent) {
                 const itemId = (item.strategy as UserInteractionDecoratorStrategy).getItemId();
+
                 const fileName = userInteractionFormFileNameTemplate.replace("{{workflowName}}", workflowName).replace("{{itemId}}", itemId);
                 const path = system.resolvePath(context.outputs.workflows, workflowInfo.path);
 
-                const sourceFileName = userInteractionFormSourceFileNameTemplate.replace("{{workflowFileName}}", workflowFormFilePrefix).replace("{{itemId}}", itemId);
+                const sourceFileName = userInteractionFormSourceFileNameByIdTemplate.replace("{{workflowFileName}}", workflowFormFilePrefix).replace("{{itemId}}", itemId);
                 const fullFormPath = workflowRootDir.concat(sourceFileName);
 
+                const userInteractionDisplayName = item.name;
+                const sourceFileNameByFunction = userInteractionFormSourceFileNameByFunctionTemplate.replace("{{workflowFileName}}", workflowFormFilePrefix).replace("{{functionName}}", item.name);
+                const fullFormPathByFunction = workflowRootDir.concat(sourceFileNameByFunction);
+
+                // Check for file using item ID convention
                 if (system.fileExists(fullFormPath)) {
                     console.debug(`Found existing User Interaction Custom Form: '${sourceFileName}' for item with ID '${itemId}'. Attaching to Workflow.`)
                     const userInteractionFormJson = system.readFile(fullFormPath).toString();
                     context.writeFile(system.resolvePath(path, fileName), userInteractionFormJson);
+                    // Check for file using function name convention
+                } else if (system.fileExists(fullFormPathByFunction)) {
+                    console.debug(`Found existing User Interaction Custom Form: '${sourceFileNameByFunction}' for item with display name '${userInteractionDisplayName}'. Attaching to Workflow.`)
+                    const userInteractionFormJson = system.readFile(fullFormPathByFunction).toString();
+                    context.writeFile(system.resolvePath(path, fileName), userInteractionFormJson);
                 } else {
-                    console.debug(`No User Interaction Custom Form found for item with ID '${itemId}' matching the template '${userInteractionFormSourceFileNameTemplate}'. Attaching default empty Custom Form.`);
+                    console.debug(`No User Interaction Custom Form found for item with ID '${itemId}' matching the template '${userInteractionFormSourceFileNameByIdTemplate}' or dispay name '${userInteractionDisplayName}' matching the template '${userInteractionFormSourceFileNameByFunctionTemplate}'. Attaching default empty Custom Form.`);
                     context.writeFile(system.resolvePath(path, fileName), defaultUserInteractionJson.replace("{{itemId}}", itemId));
                 }
             }
