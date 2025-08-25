@@ -131,7 +131,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
                     const userInteractionFormJson = system.readFile(fullFormPathByFunction).toString();
                     context.writeFile(system.resolvePath(path, fileName), userInteractionFormJson);
                 } else {
-                    console.debug(`No User Interaction Custom Form found for item with ID '${itemId}' matching the template '${userInteractionFormSourceFileNameByIdTemplate}'. Attaching default empty Custom Form.`);
+                    console.debug(`No User Interaction Custom Form found for item with ID '${itemId}' matching the template '${userInteractionFormSourceFileNameByIdTemplate}' or dispay name '${userInteractionDisplayName}' matching the template '${userInteractionFormSourceFileNameByFunctionTemplate}'. Attaching default empty Custom Form.`);
                     context.writeFile(system.resolvePath(path, fileName), defaultUserInteractionJson.replace("{{itemId}}", itemId));
                 }
             }

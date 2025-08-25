@@ -27,14 +27,14 @@ export class UserInteractionWorkflow {
     }
 
     @UserInteractionItem({
-        target: "userInteractionExit"
+        target: "exit"
     })
     public userInteraction3Enter() {
         System.log(`Start user interaction 3`);
     }
 
     @Item({ target: "end" })
-    public userInteractionExit(@Out timeoutDate: Date) {
+    public exit(@Out timeoutDate: Date) {
         System.log(`User Interaction exit on ${timeoutDate?.toUTCString()}`);
     }
 }
