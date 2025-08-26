@@ -14,16 +14,9 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.vmware.pscoe.iac.artifact.configuration.*;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
-import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
-import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -36,9 +29,19 @@ import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.settings.crypto.SettingsDecryptionRequest;
 import org.apache.maven.settings.crypto.SettingsDecryptionResult;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
@@ -77,6 +80,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
 	@Parameter(required = false, property = "socketTimeout", defaultValue = "${vrealize.socket.timeout}")
 	private int socketTimeout;
+
+	@Parameter(required = false, property = "sshTimeout", defaultValue = "${vrealize.ssh.timeout}")
+	protected int sshTimeout;
 
 	/**
 	 * Process the SSL system properties.
@@ -173,9 +179,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	}
 
 	/**
-	 * Retrieve vCD configuration for vCD interaction.
+	 * Retrieve VCD configuration for VCD interaction.
 	 * 
-	 * @return vCD configuration
+	 * @return VCD configuration
 	 * @throws ConfigurationException
 	 */
 	protected ConfigurationVcd getConfigurationForVcd() throws ConfigurationException {
@@ -183,7 +189,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		if (configuration.isPresent()) {
 			return (ConfigurationVcd) configuration.get();
 		} else {
-			throw new ConfigurationException("Invalid or incomplete vCD configuration.");
+			throw new ConfigurationException("Invalid or incomplete VCD configuration.");
 		}
 	}
 
@@ -198,7 +204,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		if (configuration.isPresent()) {
 			return (ConfigurationVrops) configuration.get();
 		} else {
-			throw new ConfigurationException("Invalid or incomplete vCD configuration.");
+			throw new ConfigurationException("Invalid or incomplete VCD configuration.");
 		}
 	}
 
@@ -288,14 +294,21 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	private Properties getConfigurationProperties(PackageType type, Map<String, String> map, String prefix) {
 		Properties props = new Properties();
 		getLog().info("Reading config for type : " + type);
+
 		map.forEach((key, value) -> {
 			if (map.get(key) != null) {
 				props.setProperty(key, value);
 			}
 		});
+
 		overwriteFromCmdLine(props, prefix);
 		overwriteServerCredentials(props);
 		overwriteConfigurationPropertiesForType(type, props);
+
+		// Set SSH timeout as global property available for all archetype. If not
+		// provided or 0 a default value is returned by Configuration class. Currently
+		// this is read and populated only in "vrops" archetype.
+		props.setProperty(Configuration.SSH_TIMEOUT, String.valueOf(sshTimeout));
 
 		return props;
 	}

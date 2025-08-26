@@ -16,16 +16,23 @@ package com.vmware.pscoe.iac.artifact.vcd.configuration;
 
 import java.util.Properties;
 
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public final class ConfigurationVcd extends Configuration {
 	// Important - when modify properties refer to comments in @Configuration
 	/**
-	 * vCD Package Import content conflict resolution mode
+	 * VCD Package Import content conflict resolution mode
 	 */
 	public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
+
+	public static final String USER_AT_DOMAIN_STRING_FORMAT = "%s@%s";
+
+	/**
+	 * param ORGANIZATION_NAME.
+	 */
+	public static final String ORGANIZATION_NAME = "org.name";
 
 	private ConfigurationVcd(Properties props) {
 		super(PackageType.VCDNG, props);
@@ -33,6 +40,13 @@ public final class ConfigurationVcd extends Configuration {
 
 	public String getPackageImportOverwriteMode() {
 		return this.properties.getProperty(PACKAGE_IMPORT_OVERWRITE_MODE, "SKIP,OVERWRITE");
+	}
+
+	/**
+	 * @return String
+	 */
+	public String getOrgName() {
+		return this.properties.getProperty(ORGANIZATION_NAME);
 	}
 
 	public static ConfigurationVcd fromProperties(Properties props) throws ConfigurationException {

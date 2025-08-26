@@ -14,6 +14,28 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_BLUEPRINTS;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -21,30 +43,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFolderFilter;
-import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_BLUEPRINTS;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.Objects;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFolderFilter;
 
 /**
  * Blueprint store implementation for vRA NG.

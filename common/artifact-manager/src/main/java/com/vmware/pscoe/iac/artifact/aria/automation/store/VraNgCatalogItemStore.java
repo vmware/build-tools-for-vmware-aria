@@ -14,24 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomFormAndData;
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,6 +26,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomFormAndData;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
 
 /**
  * Responsible for exporting/importing catalog items' icons and custom forms.
@@ -74,7 +75,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 
 	/**
 	 * Sub directory of.
-	 * com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs#DIR_CATALOG_ITEMS where
+	 * com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs#DIR_CATALOG_ITEMS
+	 * where
 	 * custom forms are stored
 	 */
 	protected static final String CUSTOM_FORMS_SUBDIR = "forms";
@@ -86,7 +88,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 
 	/**
 	 * Sub directory of.
-	 * com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs#DIR_CATALOG_ITEMS where
+	 * com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs#DIR_CATALOG_ITEMS
+	 * where
 	 * icons are stored
 	 */
 	private static final String ICONS_SUBDIR = "icons";
@@ -350,7 +353,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	 * we are not going to save svgs
 	 * Also this will result in the iconId to be stored in the file, but the
 	 * check in:
-	 * com.vmware.pscoe.iac.artifact.aria.automation.model.VraNgCatalogItem#hasIcon() is
+	 * com.vmware.pscoe.iac.artifact.aria.automation.model.VraNgCatalogItem#hasIcon()
+	 * is
 	 * iconExtension dependent,
 	 * so logic should hold fine.
 	 *

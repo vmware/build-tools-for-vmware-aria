@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store.models;
 
 import java.util.List;
 
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 
 /**
  * This class extends the PackageContent class and provides a list of content

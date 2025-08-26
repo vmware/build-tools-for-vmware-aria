@@ -37,20 +37,39 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jayway.jsonpath.JsonPath;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
-import com.vmware.pscoe.iac.artifact.rest.helpers.VcdApiHelper;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.models.VcdNgPackageManifest;
-import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginMetadataDTO;
-import com.vmware.pscoe.iac.artifact.vcd.rest.models.VcdPluginResourceDTO;
+import com.vmware.pscoe.iac.artifact.vcd.models.VcdPluginMetadataDTO;
+import com.vmware.pscoe.iac.artifact.vcd.models.VcdPluginResourceDTO;
 
 import net.minidev.json.JSONArray;
 
 public class RestClientVcd extends RestClient {
+
+	/**
+	 * api version that is supported.
+	 */
+	public static final String API_VERSION_37 = "37.0";
+
+	/**
+	 * api version that is not yet supported.
+	 */
+	public static final String API_VERSION_38 = "38.0";
+
+	/**
+	 * supported vcf 9 api version.
+	 */
+	public static final String API_VERSION_40 = "40.0";
+
+	/**
+	 * versions api path.
+	 */
+	public static final String URL_VERSIONS = "api/versions";
 
 	/**
 	 * packageType.
@@ -76,11 +95,6 @@ public class RestClientVcd extends RestClient {
 	 * apiVersion.
 	 */
 	private String apiVersion;
-
-	/**
-	 * versions api path.
-	 */
-	private static final String URL_VERSIONS = "api/versions";
 
 	/**
 	 * extensions api path.
@@ -111,21 +125,6 @@ public class RestClientVcd extends RestClient {
 	 * publish all path.
 	 */
 	private static final String URL_UI_PLUGIN_PUBLISH_ALL = URL_UI_EXTENSION_BASE + "/%s/tenants/publishAll";
-
-	/**
-	 * api version that is supported.
-	 */
-	private static final String API_VERSION_37 = "37.0";
-
-	/**
-	 * api version that is not yet supported.
-	 */
-	private static final String API_VERSION_38 = "38.0";
-
-	/**
-	 * supported vcf 9 api version.
-	 */
-	private static final String API_VERSION_40 = "40.0";
 
 	/**
 	 * tenant scoped key name.
@@ -178,7 +177,7 @@ public class RestClientVcd extends RestClient {
 
 	private HttpHeaders getCommonVcdHeaders() {
 		HttpHeaders headers = new HttpHeaders();
-		MediaType contentType = VcdApiHelper.buildMediaType("application/json", apiVersion);
+		MediaType contentType = VcdApiHelper.buildMediaType(MediaType.APPLICATION_JSON_VALUE, apiVersion);
 
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 		acceptableMediaTypes.add(contentType);
@@ -211,7 +210,7 @@ public class RestClientVcd extends RestClient {
 			// Preserving API version check for backwards compatibility
 			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)
 					&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
-				logger.warn("Detected vCD API version equal or greater than " + API_VERSION_38
+				logger.warn("Detected VCD API version equal or greater than " + API_VERSION_38
 						+ " and lower than " + API_VERSION_40 + ". Switching to using API version " + API_VERSION_37);
 				this.apiVersion = API_VERSION_37;
 			}

@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.7.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.9.2-SNAPSHOT
 
 Name: vrealize-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vrealize-package-maven-plugin
-Version: 4.7.1-SNAPSHOT
+Version: 4.9.2-SNAPSHOT
 Goal Prefix: vrealize
 
 This plugin has 4 goals:
@@ -61,6 +61,10 @@ vrealize:auth
 
     ssh (Default: ${ssh.*})
       User property: ssh
+      (no description available)
+
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
       (no description available)
 
     vcd (Default: ${vcd.*})
@@ -149,6 +153,10 @@ vrealize:clean
       User property: ssh
       (no description available)
 
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
+      (no description available)
+
     vcd (Default: ${vcd.*})
       User property: vcd
       (no description available)
@@ -229,6 +237,10 @@ vrealize:push
 
     ssh (Default: ${ssh.*})
       User property: ssh
+      (no description available)
+
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
       (no description available)
 
     vcd (Default: ${vcd.*})
@@ -314,6 +326,10 @@ vrealize:release
 
     ssh (Default: ${ssh.*})
       User property: ssh
+      (no description available)
+
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
       (no description available)
 
     vcd (Default: ${vcd.*})

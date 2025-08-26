@@ -16,7 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.operations.store.models;
 
 import java.util.List;
 
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 
 public class VropsPackageContent extends PackageContent<VropsPackageContent.ContentType> {
 

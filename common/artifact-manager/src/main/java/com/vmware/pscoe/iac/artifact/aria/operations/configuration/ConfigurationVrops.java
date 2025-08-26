@@ -22,9 +22,9 @@ import java.util.Properties;
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationWithRefreshToken;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationWithRefreshToken;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 	/** 0x0FFFF = 65535 */

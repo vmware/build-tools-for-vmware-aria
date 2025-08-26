@@ -14,9 +14,10 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import java.util.List;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyTypes;
 
 /**
  * Store for Approval Policies.

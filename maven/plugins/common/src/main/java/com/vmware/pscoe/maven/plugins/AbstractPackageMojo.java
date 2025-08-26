@@ -14,15 +14,17 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.google.common.io.Files;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Parameter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import com.google.common.io.Files;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 public abstract class AbstractPackageMojo extends AbstractVroPkgMojo {
 
@@ -37,7 +39,6 @@ public abstract class AbstractPackageMojo extends AbstractVroPkgMojo {
 	}
 
 	abstract void executeVroPkg(File packageFile) throws MojoExecutionException, MojoFailureException;
-
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		getLog().info("Project basedir: " + project.getBasedir());

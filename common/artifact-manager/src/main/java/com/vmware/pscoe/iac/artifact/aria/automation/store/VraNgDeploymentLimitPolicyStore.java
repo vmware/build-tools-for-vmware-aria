@@ -14,13 +14,15 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgDeploymentLimitPolicy;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import java.util.List;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgDeploymentLimitPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyTypes;
 
 public final class VraNgDeploymentLimitPolicyStore extends AbstractVraNgPolicyStore<VraNgDeploymentLimitPolicy> {
 	/**
-	 * Constructor for policy store of type VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE
+	 * Constructor for policy store of type
+	 * VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE
 	 */
 	public VraNgDeploymentLimitPolicyStore() {
 		super(VraNgPolicyTypes.DEPLOYMENT_LIMIT_POLICY_TYPE);
