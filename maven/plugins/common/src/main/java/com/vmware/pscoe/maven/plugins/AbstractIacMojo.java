@@ -42,6 +42,7 @@ import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException
 import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfaConfiguration;
 
 public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
@@ -68,6 +69,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
 	@Parameter(required = false, property = "ssh", defaultValue = "${ssh.*}")
 	private Map<String, String> ssh;
+
+	@Parameter(required = false, property = "vcfaAllApp", defaultValue = "${vcfaAllApp.*}")
+	private Map<String, String> vcfaAllApp;
 
 	@Parameter(required = true, property = "ignoreSslCertificate", defaultValue = "false")
 	private boolean ignoreSslCertificate;
@@ -241,6 +245,21 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	}
 
 	/**
+	 * Retrieve VCFA configuration for VCFA All App interaction.
+	 * 
+	 * @return VCFA configuration
+	 * @throws ConfigurationException
+	 */
+	protected VcfaConfiguration getConfigurationForVcfa() throws ConfigurationException {
+		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCFA);
+		if (configuration.isPresent()) {
+			return (VcfaConfiguration) configuration.get();
+		} else {
+			throw new ConfigurationException("Invalid or incomplete VCFA configuration.");
+		}
+	}
+
+	/**
 	 * Retrieve vRO rest client for vRO interaction.
 	 * 
 	 * @return vRO rest client
@@ -278,6 +297,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		} else if (PackageType.CS == type) {
 			return Optional
 					.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
+		} else if (PackageType.VCFA == type) {
+			return Optional
+					.ofNullable(VcfaConfiguration.fromProperties(getConfigurationProperties(type, vcfaAllApp, "vcfaAllApp.")));
 		} else {
 			return Optional.empty();
 		}

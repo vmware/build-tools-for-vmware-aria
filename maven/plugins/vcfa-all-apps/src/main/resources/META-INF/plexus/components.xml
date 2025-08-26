@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-set>
+  <components>
+    <component>
+      <role>org.apache.maven.plugin.Mojo</role>
+      <role-hint>package</role-hint>
+      <implementation>com.vmware.pscoe.maven.plugins.PackageMojo</implementation>
+      <language>java</language>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <isolated-realm>false</isolated-realm>
+    </component>
+    <component>
+      <role>org.apache.maven.plugin.Mojo</role>
+      <role-hint>pull</role-hint>
+      <implementation>com.vmware.pscoe.maven.plugins.PullMojo</implementation>
+      <language>java</language>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <isolated-realm>false</isolated-realm>
+    </component>
+  </components>
+</component-set>

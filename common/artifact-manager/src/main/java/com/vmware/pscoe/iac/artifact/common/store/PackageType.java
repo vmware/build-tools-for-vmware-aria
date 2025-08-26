@@ -19,6 +19,7 @@ public enum PackageType {
 	VRO("package", "vro"),
 	VRANG("vrang", "vra-ng"),
 	VRANGv3("vra-ng", "vra-ng"), // kept for backward compatibility with Build Tools for VMware Aria <= 3.x.x
+	VCFA("vcfa", "vcfa-all-app"),
 	VCDNG("vcd-ng", "vcd-ng"),
 	VROPS("vrops", "vrops"),
 	VRLI("vrli", "vrli"),

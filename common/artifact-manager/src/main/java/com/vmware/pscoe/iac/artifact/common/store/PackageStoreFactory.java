@@ -53,6 +53,9 @@ import com.vmware.pscoe.iac.artifact.common.strategy.StrategySkipOldVersions;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.vcd.store.VcdNgPackageStore;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfaConfiguration;
+import com.vmware.pscoe.iac.artifact.vcf.automation.rest.VcfaRestClient;
+import com.vmware.pscoe.iac.artifact.vcf.automation.store.VcfaPackageStore;
 
 /**
  * Factory class to create PackageStore instances.
@@ -144,6 +147,15 @@ public final class PackageStoreFactory {
 			LOGGER.info("Creating configuration for VRA NG");
 
 			return new VraNgPackageStore(restClient, config);
+		}
+
+		if (configuration instanceof VcfaConfiguration) {
+			LOGGER.info("Detected VcfaConfiguration");
+			VcfaConfiguration config = (VcfaConfiguration) configuration;
+			LOGGER.info("Creating configuration for VCFA All App");
+
+			VcfaRestClient restClient = new VcfaRestClient(config);
+			return new VcfaPackageStore(restClient, config);
 		}
 
 		if (configuration instanceof ConfigurationVcd) {

@@ -49,3 +49,5 @@ typescript/vrotsc-annotations/package-lock.json
 .flattened-pom.xml
 
 infrastructure/.m2/repository
+
+vcfa-all-apps-new-apis/
