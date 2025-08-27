@@ -17,6 +17,11 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.models;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 public class VraNgResourceAction implements Identifiable {
 
 	/**
@@ -38,7 +43,7 @@ public class VraNgResourceAction implements Identifiable {
 	/**
 	 * Resource Action JSON.
 	 */
-	private final String json;
+	private String json;
 	/**
 	 * Resource Action Resource Type.
 	 */
@@ -54,7 +59,7 @@ public class VraNgResourceAction implements Identifiable {
 	public VraNgResourceAction(final String identifier, final String recourseName, final String jsonString) {
 		this.id = identifier;
 		this.name = recourseName;
-		this.json = jsonString;
+		this.setJson(jsonString);
 		this.resourceType = null;
 	}
 
@@ -70,7 +75,7 @@ public class VraNgResourceAction implements Identifiable {
 			final String actionResourceType) {
 		this.id = identifier;
 		this.name = actionName;
-		this.json = jsonString;
+		this.setJson(jsonString);
 		this.resourceType = actionResourceType;
 	}
 
@@ -136,4 +141,25 @@ public class VraNgResourceAction implements Identifiable {
 		return PRIME_NUMBER_31 * result + this.id.hashCode();
 	}
 
+	private void setJson(String json) {
+		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+		JsonObject resourceActionJson = gson.fromJson(json, JsonObject.class);
+		JsonObject formDefinition = resourceActionJson.getAsJsonObject("formDefinition");
+		JsonElement form = formDefinition.get("form");
+
+		if (form == null) {
+			this.json = json;
+			return;
+		}
+
+		// Prettify the nested stringified JSON
+		if (form.isJsonPrimitive() && form.getAsJsonPrimitive().isString()) {
+			String stringifiedForm = form.getAsString();
+			JsonObject formJson = gson.fromJson(stringifiedForm, JsonObject.class);
+			// replace the existing form with the prettified version
+			formDefinition.add("form", formJson);
+		}
+
+		this.json = gson.toJson(resourceActionJson);
+	}
 }
