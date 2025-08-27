@@ -112,17 +112,16 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
         try {
             // Authenticate with VCFA
             restClient.authenticate();
-            
-            // Create package content container
-            List<Content<VcfaPackageMemberType>> contentList = new ArrayList<>();
-            
-            // TODO: Implement export logic for each content type
-            // For now, return empty content
-            VcfaPackageContent content = new VcfaPackageContent(contentList);
-            
+
+            VcfaTypeStoreFactory storeFactory = VcfaTypeStoreFactory.withConfig(restClient, pkg, config, descriptor);
+            for (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type : VcfaTypeStoreFactory
+                    .getExportOrder()) {
+                storeFactory.getStoreForType(type).exportContent();
+            }
+
             logger.info("Successfully exported VCFA package: {}", pkg.getFQName());
             return pkg;
-            
+
         } catch (Exception e) {
             logger.error("Failed to export VCFA package: {}", pkg.getFQName(), e);
             throw new RuntimeException("Export failed", e);
@@ -156,11 +155,25 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
             // Authenticate with VCFA
             restClient.authenticate();
             
-            // TODO: Implement import logic for each content type
-            // This would involve:
-            // 1. Extracting package contents
-            // 2. Reading content.yaml descriptor
-            // 3. Importing each content type in proper order
+            java.io.File tmp;
+            try {
+                tmp = java.nio.file.Files.createTempDirectory("iac-package-import").toFile();
+                logger.info("Created temp dir {}", tmp.getAbsolutePath());
+                new com.vmware.pscoe.iac.artifact.common.store.PackageManager(pkg).unpack(tmp);
+            } catch (java.io.IOException e) {
+                logger.error("Unable to extract package '{}' in temporary directory.", pkg.getFQName());
+                throw new RuntimeException("Unable to extract package.", e);
+            }
+
+            VcfaPackageDescriptor pkgDescriptor = VcfaPackageDescriptor
+                    .getInstance(new java.io.File(tmp.toPath().toString() + "/content.yaml"));
+            VcfaTypeStoreFactory storeFactory = VcfaTypeStoreFactory.withConfig(restClient, pkg, config,
+                    pkgDescriptor);
+            for (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type : VcfaTypeStoreFactory
+                    .getImportOrder()) {
+                logger.info("Currently importing: {}", type.getTypeValue());
+                storeFactory.getStoreForType(type).importContent(tmp);
+            }
             
             logger.info("Successfully imported VCFA package: {}", pkg.getFQName());
             return pkg;
@@ -180,8 +193,26 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
             return pkg;
         }
         
-        // TODO: Implement package deletion logic
-        logger.warn("Package deletion not yet implemented for VCFA packages");
+        java.io.File tmp;
+        try {
+            tmp = java.nio.file.Files.createTempDirectory("iac-package-delete").toFile();
+            logger.info("Created temp dir {}", tmp.getAbsolutePath());
+            new com.vmware.pscoe.iac.artifact.common.store.PackageManager(pkg).unpack(tmp);
+        } catch (java.io.IOException e) {
+            logger.error("Unable to extract package '{}' in temporary directory.", pkg.getFQName());
+            throw new RuntimeException("Unable to extract package.", e);
+        }
+
+        VcfaPackageDescriptor pkgDescriptor = VcfaPackageDescriptor
+                .getInstance(new java.io.File(tmp.toPath().toString() + "/content.yaml"));
+        VcfaTypeStoreFactory storeFactory = VcfaTypeStoreFactory.withConfig(restClient, pkg, config, pkgDescriptor);
+
+        for (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type : VcfaTypeStoreFactory
+                .getDeleteOrder()) {
+            logger.info("Currently deleting: {}", type.getTypeValue());
+            storeFactory.getStoreForType(type).deleteContent();
+        }
+
         return pkg;
     }
 
