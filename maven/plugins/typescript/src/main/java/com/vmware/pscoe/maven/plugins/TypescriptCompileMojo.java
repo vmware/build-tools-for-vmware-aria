@@ -56,7 +56,7 @@ public class TypescriptCompileMojo extends AbstractVroMojo {
 
 		PackageInfoProvider packageInfoProvider = new MavenProjectPackageInfoProvider(project);
 		File destination = new File(directory,
-				packageInfoProvider.getPackageName() + "." + PackageType.VRO.getPackageExtention());
+				packageInfoProvider.getPackageName() + "." + PackageType.VRO.getPackageExtension());
 		try {
 			Files.createParentDirs(destination);
 		} catch (IOException e) {

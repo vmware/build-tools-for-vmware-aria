@@ -27,6 +27,7 @@
 		<module>serverless</module>
 		<module>bsc-package</module>
 		<module>cs-package</module>
+		<module>vcf-auto-modern-package</module>
 	</modules>
 	<properties>
 		<build.number>local</build.number>
@@ -274,6 +275,23 @@
 						<proxy>${vrang.proxy}</proxy>
 						<cloud.proxy.name>${vrang.cloud.proxy.name}</cloud.proxy.name>
 					</vrang>
+					<vcf-auto>
+						<host>${vcf-auto.host}</host>
+						<csp.host>${vcf-auto.csp.host}</csp.host>
+						<port>${vcf-auto.port}</port>
+						<username>${vcf-auto.username}</username>
+						<password>${vcf-auto.password}</password>
+						<serverId>${vcf-auto.serverId}</serverId>
+						<project.name>${vcf-auto.project.name}</project.name>
+						<org.name>${vcf-auto.org.name}</org.name>
+						<refresh.token>${vcf-auto.refresh.token}</refresh.token>
+						<bp.release>${vcf-auto.bp.release}</bp.release>
+						<vro.integration>${vcf-auto.vro.integration}</vro.integration>
+						<import.timeout>${vcf-auto.import.timeout}</import.timeout>
+						<data.collection.delay.seconds>${vcf-auto.data.collection.delay.seconds}</data.collection.delay.seconds>
+						<proxy>${vcf-auto.proxy}</proxy>
+						<cloud.proxy.name>${vcf-auto.cloud.proxy.name}</cloud.proxy.name>
+					</vcf-auto>
 					<vcd>
 						<host>${vcd.host}</host>
 						<port>${vcd.port}</port>
@@ -408,6 +426,18 @@
 						<configuration>
 							<outputDirectory>target/dependency/vra-ng</outputDirectory>
 							<includeTypes>vra-ng,vrang</includeTypes>
+							<prependGroupId>true</prependGroupId>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-vcf-auto-modern-dependencies</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/dependency/vcf-auto-modern</outputDirectory>
+							<includeTypes>vcf_auto_modern</includeTypes>
 							<prependGroupId>true</prependGroupId>
 						</configuration>
 					</execution>

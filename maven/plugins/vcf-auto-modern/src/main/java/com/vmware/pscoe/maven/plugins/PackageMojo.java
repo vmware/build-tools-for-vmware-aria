@@ -1,6 +1,6 @@
 /*
  * #%L
- * vcfa-all-app-package-maven-plugin
+ * vcf-auto-modern-package-maven-plugin
  * %%
  * Copyright (C) 2023 VMware
  * %%
@@ -37,10 +37,10 @@ public class PackageMojo extends AbstractVroMojo {
 
         getLog().info("basedir " + project.getBasedir());
         File pkgFile = new File(directory,
-                pkgInfoProvider.getPackageName() + "." + PackageType.VCFA.getPackageExtention());
+                pkgInfoProvider.getPackageName() + "." + PackageType.VCF_AUTO_MODERN.getPackageExtension());
         getLog().info("Target VCFA All App package file " + pkgFile.getAbsolutePath());
 
-        Package pkg = PackageFactory.getInstance(PackageType.VCFA, pkgFile);
+        Package pkg = PackageFactory.getInstance(PackageType.VCF_AUTO_MODERN, pkgFile);
         try {
 
             getLog().info("Packaging VCFA All App bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());

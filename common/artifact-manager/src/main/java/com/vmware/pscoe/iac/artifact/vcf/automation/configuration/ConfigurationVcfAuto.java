@@ -37,7 +37,7 @@ public class ConfigurationVcfAuto extends Configuration {
     public static final String LOGIN_TYPE = "loginType";
 
     public ConfigurationVcfAuto(Properties props) {
-        super(PackageType.VCFA, props);
+        super(PackageType.VCF_AUTO_MODERN, props);
     }
 
     public String getHost() {
@@ -154,11 +154,6 @@ public class ConfigurationVcfAuto extends Configuration {
 
     public String getBaseUrl() {
         return String.format("https://%s:%d", getHost(), getPort());
-    }
-
-    @Override
-    public PackageType getPackageType() {
-        return PackageType.VCFA;
     }
 
     public static ConfigurationVcfAuto fromProperties(Properties props) {

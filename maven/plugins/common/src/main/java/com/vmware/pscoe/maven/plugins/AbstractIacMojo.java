@@ -70,8 +70,8 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	@Parameter(required = false, property = "ssh", defaultValue = "${ssh.*}")
 	private Map<String, String> ssh;
 
-	@Parameter(required = false, property = "vcfaAllApp", defaultValue = "${vcfaAllApp.*}")
-	private Map<String, String> vcfaAllApp;
+	@Parameter(required = false, property = "vcf-auto", defaultValue = "${vcf-auto.*}")
+	private Map<String, String> vcfAuto;
 
 	@Parameter(required = true, property = "ignoreSslCertificate", defaultValue = "false")
 	private boolean ignoreSslCertificate;
@@ -251,7 +251,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	 * @throws ConfigurationException
 	 */
 	protected ConfigurationVcfAuto getConfigurationForVcfa() throws ConfigurationException {
-		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCFA);
+		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCF_AUTO_MODERN);
 		if (configuration.isPresent()) {
 			return (ConfigurationVcfAuto) configuration.get();
 		} else {
@@ -297,9 +297,9 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		} else if (PackageType.CS == type) {
 			return Optional
 					.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
-		} else if (PackageType.VCFA == type) {
+		} else if (PackageType.VCF_AUTO_MODERN == type) {
 			return Optional
-					.ofNullable(ConfigurationVcfAuto.fromProperties(getConfigurationProperties(type, vcfaAllApp, "vcfaAllApp.")));
+					.ofNullable(ConfigurationVcfAuto.fromProperties(getConfigurationProperties(type, vcfAuto, "vcf-auto.")));
 		} else {
 			return Optional.empty();
 		}

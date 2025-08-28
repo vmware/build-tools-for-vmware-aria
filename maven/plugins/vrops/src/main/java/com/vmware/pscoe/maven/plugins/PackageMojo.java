@@ -90,7 +90,7 @@ public class PackageMojo extends AbstractVroMojo {
 
 		getLog().info("vROps Package Plugin: Executing in Project Base: " + project.getBasedir());
 		File pkgFile = new File(directory,
-				pkgInfoProvider.getPackageName() + "." + PackageType.VROPS.getPackageExtention());
+				pkgInfoProvider.getPackageName() + "." + PackageType.VROPS.getPackageExtension());
 		getLog().info("vROps Package Plugin: Target Package File:      \"" + pkgFile.getAbsolutePath() + "\"");
 
 		File filteredDir = new File(pkgInfoProvider.getTargetDirectory(), "vrops");

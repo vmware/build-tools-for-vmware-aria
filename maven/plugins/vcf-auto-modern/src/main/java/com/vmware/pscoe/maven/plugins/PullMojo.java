@@ -1,6 +1,6 @@
 /*
  * #%L
- * vcfa-all-app-package-maven-plugin
+ * vcf-auto-modern-package-maven-plugin
  * %%
  * Copyright (C) 2023 VMware
  * %%
@@ -61,8 +61,8 @@ public class PullMojo extends AbstractIacMojo {
         }
 
         MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-        File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.VCFA.getPackageExtention()).toFile();
-        Package pkg = PackageFactory.getInstance(PackageType.VCFA, pkgFile);
+        File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.VCF_AUTO_MODERN.getPackageExtension()).toFile();
+        Package pkg = PackageFactory.getInstance(PackageType.VCF_AUTO_MODERN, pkgFile);
         
         try {
             PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForVcfa());

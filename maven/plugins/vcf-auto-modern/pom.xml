@@ -8,12 +8,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>vcfa-all-app-package-maven-plugin</artifactId>
+    <artifactId>vcf-auto-modern-package-maven-plugin</artifactId>
     <name>${project.artifactId}</name>
     <packaging>maven-plugin</packaging>
 
     <properties>
-        <goal.prefix>vcfa-all-app</goal.prefix>
+        <goal.prefix>vcf_auto_modern</goal.prefix>
         <main.basedir>${project.baseUri}../../../</main.basedir>
     </properties>
 

@@ -1417,7 +1417,7 @@ public final class Installer {
 					String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
 		}
 		List<File> packages = new ArrayList<>();
-		packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtention() }, true));
+		packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtension() }, true));
 
 		return packages.stream().map(file -> PackageFactory.getInstance(type, file)).collect(Collectors.toList());
 	}
