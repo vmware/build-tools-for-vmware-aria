@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +52,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         }
 
         // Fetch existing blueprints on server
-        List<Map<String,Object>> serverBps;
+        List<VcfaBlueprint> serverBps;
         try {
             serverBps = restClient.getBlueprints();
         } catch (IOException e) {
@@ -73,7 +72,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     @Override
     public void exportContent() {
         ObjectMapper mapper = new ObjectMapper();
-        List<Map<String,Object>> serverBps;
+        List<VcfaBlueprint> serverBps;
         try {
             serverBps = restClient.getBlueprints();
         } catch (IOException e) {
@@ -81,12 +80,12 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             throw new RuntimeException("Unable to fetch blueprints from server", e);
         }
         Package serverPackage = this.vcfaPackage;
-        serverBps.forEach(bpMap -> {
-            String name = (String) bpMap.get("name");
-            String id = (String) bpMap.get("id");
+        serverBps.forEach(bpSummary -> {
+            String name = bpSummary.getName();
+            String id = bpSummary.getId();
             try {
-                Map<String,Object> details = restClient.getBlueprintById(id);
-                String content = (String) details.get("content");
+                VcfaBlueprint details = restClient.getBlueprintById(id);
+                String content = details.getContent();
 
                 String bpFolderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), "blueprints", name)
                         .toString();
@@ -113,7 +112,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         // Deletion not implemented generically here; handled via VcfaPackageStore delete flow
     }
 
-    private void handleImport(final File bpDir, final List<Map<String,Object>> serverBps) throws IOException {
+    private void handleImport(final File bpDir, final List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
         VcfaBlueprint bp;
         try (JsonReader reader = new JsonReader(new FileReader(Paths.get(bpDir.getPath(), "details.json").toString()))) {
@@ -131,12 +130,12 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         }
 
         // find by name on server
-        Map<String,Object> existing = serverBps.stream().filter(m -> bpName.equals(m.get("name"))).findFirst().orElse(null);
+        VcfaBlueprint existing = serverBps.stream().filter(m -> bpName.equals(m.getName())).findFirst().orElse(null);
         if (existing == null) {
             // create
             restClient.createBlueprint(bp);
         } else {
-            String id = (String) existing.get("id");
+            String id = (String) existing.getId();
             restClient.updateBlueprint(id, bp);
         }
     }

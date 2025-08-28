@@ -19,7 +19,7 @@ import java.util.Properties;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
-public class VcfaConfiguration extends Configuration {
+public class ConfigurationVcfAuto extends Configuration {
 
     public static final String HOST = "host";
     public static final String PORT = "port";
@@ -36,7 +36,7 @@ public class VcfaConfiguration extends Configuration {
     public static final String API_VERSION = "apiVersion";
     public static final String LOGIN_TYPE = "loginType";
 
-    public VcfaConfiguration(Properties props) {
+    public ConfigurationVcfAuto(Properties props) {
         super(PackageType.VCFA, props);
     }
 
@@ -161,10 +161,10 @@ public class VcfaConfiguration extends Configuration {
         return PackageType.VCFA;
     }
 
-    public static VcfaConfiguration fromProperties(Properties props) {
+    public static ConfigurationVcfAuto fromProperties(Properties props) {
         if (props == null || props.isEmpty()) {
             return null;
         }
-        return new VcfaConfiguration(props);
+        return new ConfigurationVcfAuto(props);
     }
 }

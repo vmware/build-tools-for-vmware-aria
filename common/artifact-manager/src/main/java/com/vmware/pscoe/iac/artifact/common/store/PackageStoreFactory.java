@@ -53,8 +53,8 @@ import com.vmware.pscoe.iac.artifact.common.strategy.StrategySkipOldVersions;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.vcd.store.VcdNgPackageStore;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfaConfiguration;
-import com.vmware.pscoe.iac.artifact.vcf.automation.rest.VcfaRestClient;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.VcfaPackageStore;
 
 /**
@@ -149,14 +149,14 @@ public final class PackageStoreFactory {
 			return new VraNgPackageStore(restClient, config);
 		}
 
-		if (configuration instanceof VcfaConfiguration) {
-			LOGGER.info("Detected VcfaConfiguration");
-			VcfaConfiguration config = (VcfaConfiguration) configuration;
-			LOGGER.info("Creating configuration for VCFA All App");
+        if (configuration instanceof ConfigurationVcfAuto) {
+            LOGGER.info("Detected ConfigurationVcfAuto");
+            ConfigurationVcfAuto config = (ConfigurationVcfAuto) configuration;
+            LOGGER.info("Creating configuration for VCFA All App");
 
-			VcfaRestClient restClient = new VcfaRestClient(config);
-			return new VcfaPackageStore(restClient, config);
-		}
+            RestClientVcfAuto restClient = RestClientFactory.getClientVcfAuto(config);
+            return new VcfaPackageStore(restClient, config);
+        }
 
 		if (configuration instanceof ConfigurationVcd) {
 			LOGGER.info("Detected ConfigurationVcd");

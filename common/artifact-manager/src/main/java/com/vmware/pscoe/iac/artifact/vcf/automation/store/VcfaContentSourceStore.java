@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource;
 
 public class VcfaContentSourceStore extends AbstractVcfaStore {
     @Override
@@ -40,16 +41,16 @@ public class VcfaContentSourceStore extends AbstractVcfaStore {
         if (items == null) return;
 
         for (File item : items) {
-            com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource details = readDetailsJson(item, com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource.class);
+            ContentSource details = readDetailsJson(item, ContentSource.class);
             if (details == null) continue;
             try {
                 // find existing by name
-                java.util.List<java.util.Map<String,Object>> server = restClient.getContentSources();
-                java.util.Map<String,Object> existing = server.stream().filter(m -> item.getName().equals(m.get("name"))).findFirst().orElse(null);
+                List<ContentSource> server = restClient.getContentSources();
+                ContentSource existing = server.stream().filter(m -> item.getName().equals(m.getName())).findFirst().orElse(null);
                 if (existing == null) {
                     restClient.createContentSource(details);
                 } else {
-                    String id = existing.get("id").toString();
+                    String id = existing.getId();
                     restClient.updateContentSource(id, details);
                 }
             } catch (IOException e) {
@@ -62,10 +63,10 @@ public class VcfaContentSourceStore extends AbstractVcfaStore {
     public void exportContent() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<Map<String,Object>> items = restClient.getContentSources();
+            List<ContentSource> items = restClient.getContentSources();
             Package serverPackage = this.vcfaPackage;
             items.forEach(item -> {
-                String name = item.get("name") != null ? item.get("name").toString() : item.get("id").toString();
+                String name = item.getName() != null ? item.getName() : item.getId();
                 String folderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), "content-sources", name).toString();
                 try {
                     Files.createDirectories(Paths.get(folderPath));

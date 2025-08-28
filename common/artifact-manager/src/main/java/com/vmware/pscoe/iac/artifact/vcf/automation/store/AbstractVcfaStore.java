@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.common.store.Package;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfaConfiguration;
-import com.vmware.pscoe.iac.artifact.vcf.automation.rest.VcfaRestClient;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 
 /**
@@ -30,13 +30,13 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDesc
  * stores. Concrete implementations can override import/export/delete behaviour.
  */
 public abstract class AbstractVcfaStore implements IVcfaStore {
-    protected VcfaRestClient restClient;
+    protected RestClientVcfAuto restClient;
     protected Package vcfaPackage;
     protected VcfaPackageDescriptor descriptor = new VcfaPackageDescriptor();
-    protected VcfaConfiguration config;
+    protected ConfigurationVcfAuto config;
     protected Logger logger;
 
-    private void ini(VcfaRestClient restClient, Package vcfaPackage, VcfaConfiguration config,
+    private void ini(RestClientVcfAuto restClient, Package vcfaPackage, ConfigurationVcfAuto config,
             VcfaPackageDescriptor descriptor) {
         this.restClient = restClient;
         this.vcfaPackage = vcfaPackage;
@@ -46,13 +46,13 @@ public abstract class AbstractVcfaStore implements IVcfaStore {
         }
     }
 
-    public void init(VcfaRestClient restClient, Package vcfaPackage, VcfaConfiguration config,
+    public void init(RestClientVcfAuto restClient, Package vcfaPackage, ConfigurationVcfAuto config,
             VcfaPackageDescriptor descriptor) {
         this.ini(restClient, vcfaPackage, config, descriptor);
         this.logger = LoggerFactory.getLogger(this.getClass());
     }
 
-    public void init(VcfaRestClient restClient, Package vcfaPackage, VcfaConfiguration config,
+    public void init(RestClientVcfAuto restClient, Package vcfaPackage, ConfigurationVcfAuto config,
             VcfaPackageDescriptor descriptor, Logger logger) {
         this.ini(restClient, vcfaPackage, config, descriptor);
         this.logger = logger;

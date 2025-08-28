@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.ResourceAction;
 
 public class VcfaResourceActionStore extends AbstractVcfaStore {
     @Override
@@ -35,7 +36,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
         File[] items = folder.listFiles();
         if (items == null) return;
         for (File item : items) {
-            com.vmware.pscoe.iac.artifact.vcf.automation.models.ResourceAction details = readDetailsJson(item, com.vmware.pscoe.iac.artifact.vcf.automation.models.ResourceAction.class);
+            ResourceAction details = readDetailsJson(item, ResourceAction.class);
             if (details == null) continue;
             try {
                 restClient.createResourceAction(details);
@@ -49,10 +50,10 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
     public void exportContent() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<Map<String,Object>> items = restClient.getResourceActions();
+            List<ResourceAction> items = restClient.getResourceActions();
             Package serverPackage = this.vcfaPackage;
             items.forEach(item -> {
-                String name = item.get("name") != null ? item.get("name").toString() : item.get("id").toString();
+                String name = item.getName() != null ? item.getName() : item.getId();
                 String folderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), "resource-actions", name).toString();
                 try {
                     Files.createDirectories(Paths.get(folderPath));

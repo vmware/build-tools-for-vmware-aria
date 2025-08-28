@@ -15,8 +15,8 @@
 package com.vmware.pscoe.iac.artifact.vcf.automation.store;
 
 import com.vmware.pscoe.iac.artifact.common.store.Package;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfaConfiguration;
-import com.vmware.pscoe.iac.artifact.vcf.automation.rest.VcfaRestClient;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageContent;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType;
@@ -53,21 +53,21 @@ public class VcfaTypeStoreFactory {
         return DELETE_ORDER;
     }
 
-    private final VcfaRestClient restClient;
+    private final RestClientVcfAuto restClient;
     private final Package vcfaPackage;
-    private final VcfaConfiguration config;
+    private final ConfigurationVcfAuto config;
     private final VcfaPackageDescriptor descriptor;
 
-    protected VcfaTypeStoreFactory(final VcfaRestClient restClient, final Package vcfaPackage,
-            final VcfaConfiguration config, final VcfaPackageDescriptor descriptor) {
+    protected VcfaTypeStoreFactory(final RestClientVcfAuto restClient, final Package vcfaPackage,
+            final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
         this.restClient = restClient;
         this.vcfaPackage = vcfaPackage;
         this.config = config;
         this.descriptor = descriptor;
     }
 
-    public static VcfaTypeStoreFactory withConfig(final VcfaRestClient restClient, final Package vcfaPackage,
-            final VcfaConfiguration config, final VcfaPackageDescriptor descriptor) {
+    public static VcfaTypeStoreFactory withConfig(final RestClientVcfAuto restClient, final Package vcfaPackage,
+            final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
         return new VcfaTypeStoreFactory(restClient, vcfaPackage, config, descriptor);
     }
 

@@ -70,6 +70,8 @@ import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcdBasicAuthInterceptor;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 
 public final class RestClientFactory {
 	/**
@@ -373,6 +375,24 @@ public final class RestClientFactory {
 		}
 
 		return new RestClientVro(configuration, restTemplate);
+	}
+
+	/**
+	 * Returns a Vcfa Rest Client.
+	 *
+	 * @param configuration Vcfa configuration
+	 * @return RestClientVcfAuto
+	 */
+	public static RestClientVcfAuto getClientVcfAuto(ConfigurationVcfAuto configuration) {
+		RestTemplate restTemplate = getInsecureRestTemplate();
+		String apiVersion = getVraApiVersion(configuration, restTemplate);
+
+		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
+			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
+			attachVcdInterceptor(vcdConfiguration, restTemplate, "provider".equals(configuration.getLoginType()));
+		}
+
+		return new RestClientVcfAuto(configuration, restTemplate);
 	}
 
 	/**

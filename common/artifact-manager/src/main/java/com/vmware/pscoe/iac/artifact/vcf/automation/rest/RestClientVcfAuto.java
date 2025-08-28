@@ -35,68 +35,49 @@ import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfaConfiguration;
+import org.springframework.web.client.RestTemplate;
 
-public class VcfaRestClient {
+import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogItem;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CustomResourceType;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.ResourceAction;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.Scenario;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.Subscription;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.Policy;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
+
+public class RestClientVcfAuto extends RestClient {
     
-    private final VcfaConfiguration configuration;
+    private final ConfigurationVcfAuto configuration;
     private final CloseableHttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
     private String authToken;
 
-    public VcfaRestClient(VcfaConfiguration configuration) {
+    public RestClientVcfAuto(ConfigurationVcfAuto configuration) {
+        this(configuration, null);
+    }
+
+    public RestClientVcfAuto(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
         this.configuration = configuration;
         this.objectMapper = new ObjectMapper();
         this.httpClient = HttpClientBuilder.create().build();
+        this.restTemplate = restTemplate;
     }
 
-    public void authenticate() throws IOException {
-        if (configuration.getApiToken() != null) {
-            this.authToken = configuration.getApiToken();
-        } else {
-            authenticateWithUsernamePassword();
-        }
+    @Override
+    protected com.vmware.pscoe.iac.artifact.common.configuration.Configuration getConfiguration() {
+        return this.configuration;
     }
 
-    private void authenticateWithUsernamePassword() throws IOException {
-        String loginType = configuration.getLoginType();
-        String authString;
-        String loginUrl;
-
-        if ("provider".equals(loginType)) {
-            // Provider login: USER@System:PASS
-            authString = configuration.getUsername() + "@System:" + configuration.getPassword();
-            loginUrl = configuration.getBaseUrl() + "/cloudapi/1.0.0/sessions/provider";
-        } else {
-            // Tenant login: USER@TENANT_NAME:PASS  
-            String tenantName = configuration.getTenantName();
-            if (tenantName == null || tenantName.isEmpty()) {
-                throw new IOException("Tenant name is required for tenant login");
-            }
-            authString = configuration.getUsername() + "@" + tenantName + ":" + configuration.getPassword();
-            loginUrl = configuration.getBaseUrl() + "/cloudapi/1.0.0/sessions";
-        }
-
-        String authHeader = "Basic " + Base64.getEncoder().encodeToString(authString.getBytes(StandardCharsets.UTF_8));
-        
-        HttpPost request = new HttpPost(loginUrl);
-        request.setHeader("Authorization", authHeader);
-        request.setHeader("Accept", "application/*;version=" + configuration.getApiVersion());
-        
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
-            if (response.getCode() == 200) {
-                // Extract the x-vmware-vcloud-access-token from response headers
-                org.apache.hc.core5.http.Header tokenHeader = response.getFirstHeader("x-vmware-vcloud-access-token");
-                if (tokenHeader != null) {
-                    this.authToken = tokenHeader.getValue().trim();
-                } else {
-                    throw new IOException("Authentication failed: x-vmware-vcloud-access-token header not found in response");
-                }
-            } else {
-                String responseBody = getResponseBody(response.getEntity());
-                throw new IOException("Authentication failed: " + response.getCode() + " - " + responseBody);
-            }
-        }
+    @Override
+    public String getVersion() {
+        // Vcfa exposes API version via configuration; return that as client version
+        return this.configuration.getApiVersion();
     }
 
     private void setAuthHeader(HttpUriRequestBase request) {
@@ -147,13 +128,15 @@ public class VcfaRestClient {
         }
     }
 
-    private List<Map<String,Object>> getList(String relativePath) throws IOException {
+    private <T> List<T> getList(String relativePath, Class<T> cls) throws IOException {
         HttpGet request = new HttpGet(configuration.getBaseUrl() + relativePath);
         setAuthHeader(request);
         request.setHeader("Content-Type", "application/json");
         String responseBody = executeRequestWithExpected(request, 200);
         Map<String,Object> result = objectMapper.readValue(responseBody, Map.class);
-        return (List<Map<String,Object>>) result.get("content");
+        Object content = result.get("content");
+        if (content == null) return java.util.Collections.emptyList();
+        return objectMapper.convertValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, cls));
     }
 
     private Map<String,Object> postMap(String relativePath, Map<String,Object> payload, int... expected) throws IOException {
@@ -184,31 +167,35 @@ public class VcfaRestClient {
         executeRequestWithExpected(request, expected.length == 0 ? new int[]{204} : expected);
     }
 
-    public List<Map<String, Object>> getBlueprints() throws IOException {
-        return getList("/blueprint/api/blueprints");
+    public List<VcfaBlueprint> getBlueprints() throws IOException {
+        return getList("/blueprint/api/blueprints", VcfaBlueprint.class);
     }
 
-    public Map<String, Object> getBlueprintById(String id) throws IOException {
+    public VcfaBlueprint getBlueprintById(String id) throws IOException {
         HttpGet request = new HttpGet(configuration.getBaseUrl() + "/blueprint/api/blueprints/" + id);
         setAuthHeader(request);
         request.setHeader("Content-Type", "application/json");
         String responseBody = executeRequestWithExpected(request, 200);
-        return objectMapper.readValue(responseBody, Map.class);
+        return objectMapper.readValue(responseBody, VcfaBlueprint.class);
     }
 
-    public Map<String, Object> createBlueprint(Map<String, Object> blueprint) throws IOException {
-        return postMap("/blueprint/api/blueprints", blueprint, 201);
+    public VcfaBlueprint createBlueprint(Map<String, Object> blueprint) throws IOException {
+        Map<String,Object> result = postMap("/blueprint/api/blueprints", blueprint, 201);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, VcfaBlueprint.class);
     }
 
-    public Map<String, Object> updateBlueprint(String id, Map<String, Object> blueprint) throws IOException {
-        return putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
+    public VcfaBlueprint updateBlueprint(String id, Map<String, Object> blueprint) throws IOException {
+        Map<String,Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, VcfaBlueprint.class);
     }
 
-    public Map<String, Object> createBlueprint(com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint blueprint) throws IOException {
+    public VcfaBlueprint createBlueprint(VcfaBlueprint blueprint) throws IOException {
         return createBlueprint(objectMapper.convertValue(blueprint, Map.class));
     }
 
-    public Map<String, Object> updateBlueprint(String id, com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint blueprint) throws IOException {
+    public VcfaBlueprint updateBlueprint(String id, VcfaBlueprint blueprint) throws IOException {
         return updateBlueprint(id, objectMapper.convertValue(blueprint, Map.class));
     }
 
@@ -216,87 +203,97 @@ public class VcfaRestClient {
         deletePath("/blueprint/api/blueprints/" + id, 204);
     }
 
-    public List<Map<String, Object>> getCatalogItems() throws IOException {
-        return getList("/catalog/api/items");
+    public List<CatalogItem> getCatalogItems() throws IOException {
+        return getList("/catalog/api/items", CatalogItem.class);
     }
 
-    public List<Map<String, Object>> getContentSources() throws IOException {
-        return getList("/content/api/sources");
+    public List<ContentSource> getContentSources() throws IOException {
+        return getList("/content/api/sources", ContentSource.class);
     }
 
-    public List<Map<String, Object>> getCustomResources() throws IOException {
-        return getList("/resource/api/types");
+    public List<CustomResourceType> getCustomResources() throws IOException {
+        return getList("/resource/api/types", CustomResourceType.class);
     }
 
-    public List<Map<String, Object>> getResourceActions() throws IOException {
-        return getList("/catalog/api/resource-actions");
+    public List<ResourceAction> getResourceActions() throws IOException {
+        return getList("/catalog/api/resource-actions", ResourceAction.class);
     }
 
-    public List<Map<String, Object>> getSubscriptions() throws IOException {
-        return getList("/provisioning/uerp/provisioning/mgmt/event-broker/subscriptions");
+    public List<Subscription> getSubscriptions() throws IOException {
+        return getList("/provisioning/uerp/provisioning/mgmt/event-broker/subscriptions", Subscription.class);
     }
 
-    public List<Map<String, Object>> getPolicies() throws IOException {
-        return getList("/policy/api/policies");
+    public List<Policy> getPolicies() throws IOException {
+        return getList("/policy/api/policies", Policy.class);
     }
 
-    public List<Map<String, Object>> getPropertyGroups() throws IOException {
-        return getList("/blueprint/api/property-groups");
+    public List<PropertyGroup> getPropertyGroups() throws IOException {
+        return getList("/blueprint/api/property-groups", PropertyGroup.class);
     }
 
-    public List<Map<String, Object>> getCatalogEntitlements() throws IOException {
-        return getList("/catalog/api/entitlements");
+    public List<CatalogEntitlement> getCatalogEntitlements() throws IOException {
+        return getList("/catalog/api/entitlements", CatalogEntitlement.class);
     }
 
-    public List<Map<String, Object>> getScenarios() throws IOException {
-        return getList("/catalog/api/notification/scenarios");
+    public List<Scenario> getScenarios() throws IOException {
+        return getList("/catalog/api/notification/scenarios", Scenario.class);
     }
 
-    public Map<String, Object> createContentSource(Map<String, Object> payload) throws IOException {
-        return postMap("/content/api/sources", payload, 201, 200);
+    public ContentSource createContentSource(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/content/api/sources", payload, 201, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, ContentSource.class);
     }
 
-    public Map<String, Object> createContentSource(com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource payload) throws IOException {
+    public ContentSource createContentSource(ContentSource payload) throws IOException {
         return createContentSource(objectMapper.convertValue(payload, Map.class));
     }
 
-    public Map<String, Object> updateContentSource(String id, com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource payload) throws IOException {
+    public ContentSource updateContentSource(String id, ContentSource payload) throws IOException {
         return updateContentSource(id, objectMapper.convertValue(payload, Map.class));
     }
 
-    public Map<String, Object> updateContentSource(String id, Map<String, Object> payload) throws IOException {
-        return putMap("/content/api/sources/" + id, payload, 200);
+    public ContentSource updateContentSource(String id, Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = putMap("/content/api/sources/" + id, payload, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, ContentSource.class);
     }
 
     public void deleteContentSource(String id) throws IOException {
         deletePath("/content/api/sources/" + id, 204, 200);
     }
 
-    public Map<String, Object> createPropertyGroup(Map<String, Object> payload) throws IOException {
-        return postMap("/properties/api/property-groups", payload, 201, 200);
+    public PropertyGroup createPropertyGroup(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/properties/api/property-groups", payload, 201, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, PropertyGroup.class);
     }
 
-    public Map<String, Object> createPropertyGroup(com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup payload) throws IOException {
+    public PropertyGroup createPropertyGroup(PropertyGroup payload) throws IOException {
         return createPropertyGroup(objectMapper.convertValue(payload, Map.class));
     }
 
-    public Map<String, Object> updatePropertyGroup(String id, com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup payload) throws IOException {
+    public PropertyGroup updatePropertyGroup(String id, PropertyGroup payload) throws IOException {
         return updatePropertyGroup(id, objectMapper.convertValue(payload, Map.class));
     }
 
-    public Map<String, Object> updatePropertyGroup(String id, Map<String, Object> payload) throws IOException {
-        return putMap("/properties/api/property-groups/" + id, payload, 200);
+    public PropertyGroup updatePropertyGroup(String id, Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = putMap("/properties/api/property-groups/" + id, payload, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, PropertyGroup.class);
     }
 
     public void deletePropertyGroup(String id) throws IOException {
         deletePath("/properties/api/property-groups/" + id, 204, 200);
     }
 
-    public Map<String, Object> createPolicy(Map<String, Object> payload) throws IOException {
-        return postMap("/policy/api/policies", payload, 200,201,202);
+    public Policy createPolicy(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/policy/api/policies", payload, 200,201,202);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, Policy.class);
     }
 
-    public Map<String, Object> createPolicy(com.vmware.pscoe.iac.artifact.vcf.automation.models.Policy payload) throws IOException {
+    public Policy createPolicy(Policy payload) throws IOException {
         return createPolicy(objectMapper.convertValue(payload, Map.class));
     }
 
@@ -304,11 +301,13 @@ public class VcfaRestClient {
         deletePath("/policy/api/policies/" + id, 204,200);
     }
 
-    public Map<String, Object> createResourceAction(Map<String, Object> payload) throws IOException {
-        return postMap("/form-service/api/custom/resource-actions", payload, 200,201);
+    public ResourceAction createResourceAction(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/form-service/api/custom/resource-actions", payload, 200,201);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, ResourceAction.class);
     }
 
-    public Map<String, Object> createResourceAction(com.vmware.pscoe.iac.artifact.vcf.automation.models.ResourceAction payload) throws IOException {
+    public ResourceAction createResourceAction(ResourceAction payload) throws IOException {
         return createResourceAction(objectMapper.convertValue(payload, Map.class));
     }
 
@@ -316,11 +315,13 @@ public class VcfaRestClient {
         deletePath("/form-service/api/custom/resource-actions/" + id, 200,204);
     }
 
-    public Map<String, Object> createCustomResourceType(Map<String, Object> payload) throws IOException {
-        return postMap("/form-service/api/custom/resource-types", payload, 200,201);
+    public CustomResourceType createCustomResourceType(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/form-service/api/custom/resource-types", payload, 200,201);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, CustomResourceType.class);
     }
 
-    public Map<String, Object> createCustomResourceType(com.vmware.pscoe.iac.artifact.vcf.automation.models.CustomResourceType payload) throws IOException {
+    public CustomResourceType createCustomResourceType(CustomResourceType payload) throws IOException {
         return createCustomResourceType(objectMapper.convertValue(payload, Map.class));
     }
 
@@ -328,20 +329,24 @@ public class VcfaRestClient {
         deletePath("/form-service/api/custom/resource-types/" + id, 200,204);
     }
 
-    public Map<String, Object> createCatalogItem(Map<String, Object> payload) throws IOException {
-        return postMap("/catalog/api/items", payload, 201,200);
+    public CatalogItem createCatalogItem(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/catalog/api/items", payload, 201,200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, CatalogItem.class);
     }
 
-    public Map<String, Object> createCatalogItem(com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogItem payload) throws IOException {
+    public CatalogItem createCatalogItem(CatalogItem payload) throws IOException {
         return createCatalogItem(objectMapper.convertValue(payload, Map.class));
     }
 
-    public Map<String, Object> updateCatalogItem(String id, com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogItem payload) throws IOException {
+    public CatalogItem updateCatalogItem(String id, CatalogItem payload) throws IOException {
         return updateCatalogItem(id, objectMapper.convertValue(payload, Map.class));
     }
 
-    public Map<String, Object> updateCatalogItem(String id, Map<String, Object> payload) throws IOException {
-        return putMap("/catalog/api/items/" + id, payload, 200);
+    public CatalogItem updateCatalogItem(String id, Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = putMap("/catalog/api/items/" + id, payload, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, CatalogItem.class);
     }
 
     public void deleteCatalogItem(String id) throws IOException {

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CustomResourceType;
 
 public class VcfaCustomResourceStore extends AbstractVcfaStore {
     @Override
@@ -35,7 +36,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         File[] items = folder.listFiles();
         if (items == null) return;
         for (File item : items) {
-            com.vmware.pscoe.iac.artifact.vcf.automation.models.CustomResourceType details = readDetailsJson(item, com.vmware.pscoe.iac.artifact.vcf.automation.models.CustomResourceType.class);
+            CustomResourceType details = readDetailsJson(item, CustomResourceType.class);
             if (details == null) continue;
             try {
                 restClient.createCustomResourceType(details);
@@ -49,10 +50,10 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     public void exportContent() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<Map<String,Object>> items = restClient.getCustomResources();
+            List<CustomResourceType> items = restClient.getCustomResources();
             Package serverPackage = this.vcfaPackage;
             items.forEach(item -> {
-                String name = item.get("name") != null ? item.get("name").toString() : item.get("id").toString();
+                String name = item.getName() != null ? item.getName() : item.getId();
                 String folderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), "custom-resources", name).toString();
                 try {
                     Files.createDirectories(Paths.get(folderPath));

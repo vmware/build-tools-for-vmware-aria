@@ -29,8 +29,8 @@ import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfaConfiguration;
-import com.vmware.pscoe.iac.artifact.vcf.automation.rest.VcfaRestClient;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageContent;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType;
@@ -46,10 +46,10 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
     
     private static final Logger logger = LoggerFactory.getLogger(VcfaPackageStore.class);
     
-    private final VcfaRestClient restClient;
-    private final VcfaConfiguration config;
+    private final RestClientVcfAuto restClient;
+    private final ConfigurationVcfAuto config;
 
-    public VcfaPackageStore(VcfaRestClient restClient, VcfaConfiguration config) {
+    public VcfaPackageStore(RestClientVcfAuto restClient, ConfigurationVcfAuto config) {
         this.restClient = restClient;
         this.config = config;
     }
@@ -110,12 +110,10 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
         }
         
         try {
-            // Authenticate with VCFA
-            restClient.authenticate();
+            // Authentication is handled by RestClientFactory and interceptors
 
             VcfaTypeStoreFactory storeFactory = VcfaTypeStoreFactory.withConfig(restClient, pkg, config, descriptor);
-            for (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type : VcfaTypeStoreFactory
-                    .getExportOrder()) {
+            for (VcfaPackageMemberType type : VcfaTypeStoreFactory.getExportOrder()) {
                 storeFactory.getStoreForType(type).exportContent();
             }
 
@@ -152,8 +150,7 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
         }
         
         try {
-            // Authenticate with VCFA
-            restClient.authenticate();
+            // Authentication is handled by RestClientFactory and interceptors
             
             java.io.File tmp;
             try {
@@ -169,8 +166,7 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
                     .getInstance(new java.io.File(tmp.toPath().toString() + "/content.yaml"));
             VcfaTypeStoreFactory storeFactory = VcfaTypeStoreFactory.withConfig(restClient, pkg, config,
                     pkgDescriptor);
-            for (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type : VcfaTypeStoreFactory
-                    .getImportOrder()) {
+            for (VcfaPackageMemberType type : VcfaTypeStoreFactory.getImportOrder()) {
                 logger.info("Currently importing: {}", type.getTypeValue());
                 storeFactory.getStoreForType(type).importContent(tmp);
             }
@@ -207,8 +203,7 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
                 .getInstance(new java.io.File(tmp.toPath().toString() + "/content.yaml"));
         VcfaTypeStoreFactory storeFactory = VcfaTypeStoreFactory.withConfig(restClient, pkg, config, pkgDescriptor);
 
-        for (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type : VcfaTypeStoreFactory
-                .getDeleteOrder()) {
+        for (VcfaPackageMemberType type : VcfaTypeStoreFactory.getDeleteOrder()) {
             logger.info("Currently deleting: {}", type.getTypeValue());
             storeFactory.getStoreForType(type).deleteContent();
         }

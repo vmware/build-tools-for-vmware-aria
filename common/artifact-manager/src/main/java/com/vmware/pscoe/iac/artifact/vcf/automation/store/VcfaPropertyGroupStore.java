@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup;
 
 public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     @Override
@@ -35,16 +36,16 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
         File[] items = folder.listFiles();
         if (items == null) return;
         for (File item : items) {
-            com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup details = readDetailsJson(item, com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup.class);
+            PropertyGroup details = readDetailsJson(item, PropertyGroup.class);
             if (details == null) continue;
             try {
                 // create or update based on existence by name
-                java.util.List<java.util.Map<String,Object>> server = restClient.getPropertyGroups();
-                java.util.Map<String,Object> existing = server.stream().filter(m -> item.getName().equals(m.get("name"))).findFirst().orElse(null);
+                List<PropertyGroup> server = restClient.getPropertyGroups();
+                PropertyGroup existing = server.stream().filter(m -> item.getName().equals(m.getName())).findFirst().orElse(null);
                 if (existing == null) {
                     restClient.createPropertyGroup(details);
                 } else {
-                    String id = existing.get("id").toString();
+                    String id = existing.getId();
                     restClient.updatePropertyGroup(id, details);
                 }
             } catch (IOException e) {
@@ -57,10 +58,10 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     public void exportContent() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<Map<String,Object>> items = restClient.getPropertyGroups();
+            List<PropertyGroup> items = restClient.getPropertyGroups();
             Package serverPackage = this.vcfaPackage;
             items.forEach(item -> {
-                String name = item.get("name") != null ? item.get("name").toString() : item.get("id").toString();
+                String name = item.getName() != null ? item.getName() : item.getId();
                 String folderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), "property-groups", name).toString();
                 try {
                     Files.createDirectories(Paths.get(folderPath));
