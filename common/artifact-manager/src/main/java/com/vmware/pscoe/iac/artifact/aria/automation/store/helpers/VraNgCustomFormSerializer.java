@@ -23,7 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-public class VraNgCustomFormSerializer {
+public final class VraNgCustomFormSerializer {
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	private static final Logger LOGGER = LoggerFactory.getLogger(VraNgCustomFormSerializer.class);
 
