@@ -72,8 +72,8 @@ The Custom Form is pulled as double serialized JSON which is unreadable and very
 #### New Behavior
 The Custom Form is pulled and stored on the file system as a prettified JSON Object.
 Note that the functionality is backwards compatible - during push operation the Custom Form definition is evaluated:
- * if the field conatins double serialized JSON (expected by the API) the content is not changed
- * if the field contains prettified JSON Object it is properly convered to a serialized String as expected by the API
+* if the field conatins double serialized JSON (expected by the API) the content is not changed
+* if the field contains prettified JSON Object it is properly convered to a serialized String as expected by the API
 
 ```json
 {
