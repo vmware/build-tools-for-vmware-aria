@@ -17,10 +17,7 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.models;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgCustomFormSerializer;
 
 public class VraNgResourceAction implements Identifiable {
 
@@ -59,7 +56,7 @@ public class VraNgResourceAction implements Identifiable {
 	public VraNgResourceAction(final String identifier, final String recourseName, final String jsonString) {
 		this.id = identifier;
 		this.name = recourseName;
-		this.setJson(jsonString);
+		this.json = VraNgCustomFormSerializer.deserialize(jsonString);
 		this.resourceType = null;
 	}
 
@@ -75,7 +72,7 @@ public class VraNgResourceAction implements Identifiable {
 			final String actionResourceType) {
 		this.id = identifier;
 		this.name = actionName;
-		this.setJson(jsonString);
+		this.json = VraNgCustomFormSerializer.deserialize(jsonString);
 		this.resourceType = actionResourceType;
 	}
 
@@ -139,27 +136,5 @@ public class VraNgResourceAction implements Identifiable {
 	public int hashCode() {
 		int result = PRIME_NUMBER_17;
 		return PRIME_NUMBER_31 * result + this.id.hashCode();
-	}
-
-	private void setJson(String json) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-		JsonObject resourceActionJson = gson.fromJson(json, JsonObject.class);
-		JsonObject formDefinition = resourceActionJson.getAsJsonObject("formDefinition");
-		JsonElement form = formDefinition.get("form");
-
-		if (form == null) {
-			this.json = json;
-			return;
-		}
-
-		// Prettify the nested stringified JSON
-		if (form.isJsonPrimitive() && form.getAsJsonPrimitive().isString()) {
-			String stringifiedForm = form.getAsString();
-			JsonObject formJson = gson.fromJson(stringifiedForm, JsonObject.class);
-			// replace the existing form with the prettified version
-			formDefinition.add("form", formJson);
-		}
-
-		this.json = gson.toJson(resourceActionJson);
 	}
 }

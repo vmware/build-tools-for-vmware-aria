@@ -34,9 +34,9 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgCustomFormSerializer;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgProjectUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
@@ -245,7 +245,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 						resourceActionId, e);
 			}
 
-			convertFormToStringifiedJson(resourceActionJsonElement, gson);
+			VraNgCustomFormSerializer.serialize(resourceActionJsonElement);
 			resourceActionJson = gson.toJson(resourceActionJsonElement);
 
 			String resultResourceActionJson = restClient.importResourceAction(resourceActionName, resourceActionJson);
@@ -295,17 +295,5 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 		sourceForm.addProperty("id", newFormId);
 		resultJsonObject.add("formDefinition", sourceForm);
 		return resultJsonObject;
-	}
-
-	private void convertFormToStringifiedJson(JsonObject sourceJsonObject, Gson gson) {
-		JsonObject sourceForm = sourceJsonObject.getAsJsonObject("formDefinition");
-		JsonElement form = sourceForm.get("form");
-
-		// If form is prettified JSON object convert it to a stringified JSON that the
-		// API expects
-		if (form != null && form.isJsonObject()) {
-			String formAsString = gson.toJson(form);
-			sourceForm.addProperty("form", formAsString);
-		}
 	}
 }
