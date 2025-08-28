@@ -19,6 +19,7 @@
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -107,5 +108,10 @@ public class VraNgCustomFormSerializerTest {
 
 		assertEquals(JsonParser.parseString(serializedForm.getAsString()),
 				JsonParser.parseString(deserializedForm.getAsString()));
+	}
+
+	@Test
+	void testNonCompliantStringDeserialization() {
+		assertThrows(RuntimeException.class, () -> VraNgCustomFormSerializer.deserialize("Invalid JSON string"));
 	}
 }
