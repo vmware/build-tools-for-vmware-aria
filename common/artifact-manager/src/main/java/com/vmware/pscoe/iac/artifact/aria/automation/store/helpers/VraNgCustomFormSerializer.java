@@ -14,13 +14,18 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store.helpers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 public class VraNgCustomFormSerializer {
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+	private static final Logger LOGGER = LoggerFactory.getLogger(VraNgCustomFormSerializer.class);
 
 	/**
 	 * Takes as input double serialized JSON string returned by vRA API and converts
@@ -50,15 +55,20 @@ public class VraNgCustomFormSerializer {
 	 * @return
 	 */
 	public static String deserialize(String json) {
-		JsonObject resourceActionJson = gson.fromJson(json, JsonObject.class);
-		JsonObject formDefinition = resourceActionJson.getAsJsonObject("formDefinition");
+		JsonObject resourceActionJson;
+		try {
+			resourceActionJson = gson.fromJson(json, JsonObject.class);
+		} catch (JsonSyntaxException e) {
+			throw new RuntimeException(String.format(
+					"Unable parse object definition - JSON data might be malformed. Error: %s", e.getMessage()));
+		}
 
+		JsonObject formDefinition = resourceActionJson.getAsJsonObject("formDefinition");
 		if (formDefinition == null) {
 			return json;
 		}
 
 		JsonElement form = formDefinition.get("form");
-
 		if (form == null) {
 			return json;
 		}
@@ -66,7 +76,17 @@ public class VraNgCustomFormSerializer {
 		// Prettify the nested stringified JSON
 		if (form.isJsonPrimitive() && form.getAsJsonPrimitive().isString()) {
 			String stringifiedForm = form.getAsString();
-			JsonObject formJson = gson.fromJson(stringifiedForm, JsonObject.class);
+			JsonObject formJson;
+
+			try {
+				LOGGER.debug("Converting double serialized Custom Form to prettified JSON.");
+				formJson = gson.fromJson(stringifiedForm, JsonObject.class);
+			} catch (JsonSyntaxException e) {
+				throw new RuntimeException(String.format(
+						"Unable parse Custom Form definition - JSON data might be malformed. Error: %s",
+						e.getMessage()));
+			}
+
 			// replace the existing form with the prettified version
 			formDefinition.add("form", formJson);
 			return gson.toJson(resourceActionJson);
@@ -115,6 +135,7 @@ public class VraNgCustomFormSerializer {
 		// If form is prettified JSON object convert it to a stringified JSON that the
 		// API expects
 		if (form != null && form.isJsonObject()) {
+			LOGGER.debug("Serializing JSON to API acceptable format.");
 			String formAsString = gson.toJson(form);
 			sourceForm.addProperty("form", formAsString);
 		}
