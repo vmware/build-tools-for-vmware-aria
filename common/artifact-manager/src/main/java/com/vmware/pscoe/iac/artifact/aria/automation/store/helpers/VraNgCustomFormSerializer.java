@@ -27,6 +27,9 @@ public class VraNgCustomFormSerializer {
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	private static final Logger LOGGER = LoggerFactory.getLogger(VraNgCustomFormSerializer.class);
 
+	private VraNgCustomFormSerializer() {
+	}
+
 	/**
 	 * Takes as input double serialized JSON string returned by vRA API and converts
 	 * it to a prettified JSON string suitable for storing on the file system after
