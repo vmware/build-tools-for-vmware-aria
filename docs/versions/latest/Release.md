@@ -48,4 +48,54 @@ It is not possible to have different resource types with the same name in Aria O
 Users are able to create different resource types with the same name in Aria Operations, the same way as they are doing it from the UI.
 ## Upgrade procedure
 
+### *Pull Resource Action Custom Form as prettified JSON instead of double serialized JSON*
+
+#### Previous Behavior
+The Custom Form is pulled as double serialized JSON which is unreadable and very hard to update. E.g.:
+
+```json
+{
+  "id": "Cloud.vSphere.Machine.custom.add_disk_to_vm",
+  "name": "add_disk_to_vm",
+  "runnableItem": {...},
+  "formDefinition": {
+    "name": "add_disk_to_vm",
+    "form": "{\"layout\":{{\"pages\":[...]},\"schema\":{...},\"options\":{...}",
+    "sourceType": "resource.action",
+    "sourceId": "Cloud.vSphere.Machine.custom.add_disk_to_vm",
+    "type": "requestForm",
+    "status": "ON",
+    "formFormat": "JSON"
+  }
+}
+```
+#### New Behavior
+The Custom Form is pulled and stored on the file system as a prettified JSON Object.
+Note that the functionality is backwards compatible - during push operation the Custom Form definition is evaluated:
+ * if the field conatins double serialized JSON (expected by the API) the content is not changed
+ * if the field contains prettified JSON Object it is properly convered to a serialized String as expected by the API
+
+```json
+{
+  "id": "Cloud.vSphere.Machine.custom.add_disk_to_vm",
+  "name": "add_disk_to_vm",
+  "runnableItem": {...},
+  "formDefinition": {
+    "name": "add_disk_to_vm",
+    "form": {
+      "layout": {...},
+      "schema": {...},
+      "options": {
+        "externalValidations": [...]
+      }
+    },
+    "sourceType": "resource.action",
+    "sourceId": "Cloud.vSphere.Machine.custom.add_disk_to_vm",
+    "type": "requestForm",
+    "status": "ON",
+    "formFormat": "JSON"
+  }
+}
+```
+
 [//]: # (Explain in details if something needs to be done)
