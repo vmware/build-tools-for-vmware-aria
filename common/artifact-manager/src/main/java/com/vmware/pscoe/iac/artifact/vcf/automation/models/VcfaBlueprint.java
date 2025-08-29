@@ -16,11 +16,13 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.models;
  */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VcfaBlueprint {
     private String id;
@@ -29,7 +31,7 @@ public class VcfaBlueprint {
     private String content;
 
     @JsonProperty("requestScopeOrg")
-    private String requestScopeOrg;
+    private Boolean requestScopeOrg;
 
     public VcfaBlueprint() {}
 
@@ -45,12 +47,11 @@ public class VcfaBlueprint {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
-    public String getRequestScopeOrg() { return requestScopeOrg; }
-    public void setRequestScopeOrg(String requestScopeOrg) { this.requestScopeOrg = requestScopeOrg; }
+    public Boolean getRequestScopeOrg() { return requestScopeOrg; }
+    public void setRequestScopeOrg(Boolean requestScopeOrg) { this.requestScopeOrg = requestScopeOrg; }
 
     public Map<String,Object> toMap() {
         ObjectMapper m = new ObjectMapper();
         return m.convertValue(this, Map.class);
     }
 }
-
