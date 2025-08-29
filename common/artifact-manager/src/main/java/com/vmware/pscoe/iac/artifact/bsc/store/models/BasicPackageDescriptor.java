@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
@@ -43,7 +43,7 @@ public class BasicPackageDescriptor extends PackageDescriptor {
 
 	public static BasicPackageDescriptor getInstance(File filesystemPath) {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
 		try {
 			return mapper.readValue(filesystemPath, BasicPackageDescriptor.class);
 		} catch (Exception e) {
