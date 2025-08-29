@@ -26,6 +26,10 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.jayway.jsonpath.JsonPath;
+import org.apache.hc.core5.net.URIBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +87,55 @@ public class RestClientVcfAutoPrimitive extends RestClient {
         return objectMapper.convertValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, cls));
     }
 
+    /**
+     * Common retriever for paged content. It performs GET requests against the
+     * given path until the final page has been reached.
+     *
+     * @param path      URL path
+     * @param paramsMap any number of query parameters
+     * @return combined results as list of maps
+     */
+    protected List<Map<String,Object>> getPagedContent(final String path, final Map<String, String> paramsMap) throws IOException {
+        final int PAGE_SIZE = 500;
+
+        URIBuilder uriBuilder = getURIBuilder().setPath(path).setParameter("page", "0").setParameter("size", String.valueOf(PAGE_SIZE));
+
+        for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
+            uriBuilder.setParameter(entry.getKey(), entry.getValue());
+        }
+
+        java.net.URI uri = getURI(uriBuilder);
+        org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri, org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), String.class);
+        if (response == null) return java.util.Collections.emptyList();
+
+        Map<String,Object> root = objectMapper.readValue(response.getBody(), Map.class);
+        if (root == null) return java.util.Collections.emptyList();
+
+        List<Map<String,Object>> allResults = new ArrayList<>();
+        Object tp = root.get("totalPages");
+        int totalPages = tp instanceof Number ? ((Number)tp).intValue() : 1;
+
+        for (int page = 0; page < totalPages; page++) {
+            if (page > 0) {
+                uriBuilder.setParameter("page", String.valueOf(page));
+                response = restTemplate.exchange(getURI(uriBuilder), org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), String.class);
+                root = objectMapper.readValue(response.getBody(), Map.class);
+            }
+            Object content = root.get("content");
+            if (content instanceof List) {
+                List<?> list = (List<?>) content;
+                for (Object o : list) {
+                    if (o instanceof Map) {
+                        allResults.add((Map<String,Object>) o);
+                    }
+                }
+            }
+            if (totalPages == 1) break;
+        }
+
+        return allResults;
+    }
+
     protected Map<String,Object> postMap(String relativePath, Map<String,Object> payload, int... expected) throws IOException {
         if (restTemplate == null) {
             throw new IOException("RestTemplate not configured for RestClientVcfAuto");
@@ -119,7 +172,10 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
     // ============== primitives for business methods ==============
     protected List<VcfaBlueprint> getBlueprintsPrimitive() throws IOException {
-        return getList("/blueprint/api/blueprints", VcfaBlueprint.class);
+        List<Map<String,Object>> results = this.getPagedContent("/blueprint/api/blueprints", new HashMap<>());
+        return results.stream()
+                .map(m -> objectMapper.convertValue(m, VcfaBlueprint.class))
+                .collect(Collectors.toList());
     }
 
     protected VcfaBlueprint getBlueprintByIdPrimitive(String id) throws IOException {
@@ -280,4 +336,3 @@ public class RestClientVcfAutoPrimitive extends RestClient {
         return this.apiVersion;
     }
 }
-
