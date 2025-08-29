@@ -330,7 +330,7 @@ public class CliManagerVrops implements AutoCloseable {
 		String remoteFilePath = exportRemotePath + UNIX_PATH_SEPARATOR + "supermetrics";
 		String command = String.format(VROPS_SSH_COMMAND_1,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(SUPER_METRIC),
-				escapeShellCharacters(EXPORT), escapeShellCharacters(superMetricName),
+				escapeShellCharacters(EXPORT), escapeSpecialCharacters(superMetricName),
 				escapeShellCharacters(remoteFilePath));
 		logger.info(VROPS_SSH_COMMAND_INFO, command);
 
@@ -400,21 +400,29 @@ public class CliManagerVrops implements AutoCloseable {
 		if (str.indexOf('\'') == -1) {
 			return "'" + str + "'";
 		}
+		return escapeSpecialCharacters(str);
+	}
+
+	private static String escapeSpecialCharacters(String str) {
+		// In case we have a space in the name, we should wrap it with "" without escaping the other characters
+		if (str.contains(" ")) {
+			return "\"" + str + "\"";
+		}
 		final char[] special = { '\'', '~', '`', '#', '$', '&', '*', '(', ')', '\\', '|', '[', ']', '{', '}', ';', '"',
 				'<', '>', '?', '!' };
-		StringBuilder buffer = new StringBuilder("\"");
+		StringBuilder sb = new StringBuilder("\"");
 		for (int i = 0; i < str.length(); i++) {
 			char chr = str.charAt(i);
 			for (char element : special) {
 				if (chr == element) {
-					buffer.append("\\");
+					sb.append("\\");
 				}
-				buffer.append(chr);
 			}
+			sb.append(chr);
 		}
-		buffer.append("\"");
+		sb.append("\"");
 
-		return buffer.toString();
+		return sb.toString();
 	}
 
 }
