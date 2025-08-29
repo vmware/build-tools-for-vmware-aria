@@ -1,0 +1,283 @@
+/*
+ * #%L
+ * artifact-manager
+ * %%
+ * Copyright (C) 2023 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
+package com.vmware.pscoe.iac.artifact.vcf.automation.rest;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+
+// replaced low-level HTTP client usage with RestTemplate
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.jayway.jsonpath.JsonPath;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogItem;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CustomResourceType;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.ResourceAction;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.Scenario;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.Subscription;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.Policy;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
+
+public class RestClientVcfAutoPrimitive extends RestClient {
+    
+    protected final ConfigurationVcfAuto configuration;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAutoPrimitive.class);
+    protected static final String API_VERSION = "/iaas/api/about";
+    protected final ObjectMapper objectMapper;
+    protected final RestTemplate restTemplate;
+    protected String apiVersion;
+
+    public RestClientVcfAutoPrimitive(ConfigurationVcfAuto configuration) {
+        this(configuration, null);
+    }
+
+    public RestClientVcfAutoPrimitive(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
+        this.configuration = configuration;
+        this.objectMapper = new ObjectMapper();
+        this.restTemplate = restTemplate;
+    }
+
+    @Override
+    protected com.vmware.pscoe.iac.artifact.common.configuration.Configuration getConfiguration() {
+        return this.configuration;
+    }
+
+    protected <T> List<T> getList(String relativePath, Class<T> cls) throws IOException {
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+        String responseBody = response.getBody();
+        Map<String,Object> result = objectMapper.readValue(responseBody, Map.class);
+        Object content = result.get("content");
+        if (content == null) return java.util.Collections.emptyList();
+        return objectMapper.convertValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, cls));
+    }
+
+    protected Map<String,Object> postMap(String relativePath, Map<String,Object> payload, int... expected) throws IOException {
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
+        String requestBody = objectMapper.writeValueAsString(payload);
+        org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(requestBody, getDefaultHttpEntity().getHeaders());
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+        String responseBody = response.getBody();
+        if (responseBody == null || responseBody.isEmpty()) return null;
+        return objectMapper.readValue(responseBody, Map.class);
+    }
+
+    protected Map<String,Object> putMap(String relativePath, Map<String,Object> payload, int... expected) throws IOException {
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
+        String requestBody = objectMapper.writeValueAsString(payload);
+        org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(requestBody, getDefaultHttpEntity().getHeaders());
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, String.class);
+        String responseBody = response.getBody();
+        if (responseBody == null || responseBody.isEmpty()) return null;
+        return objectMapper.readValue(responseBody, Map.class);
+    }
+
+    protected void deletePath(String relativePath, int... expected) throws IOException {
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
+        restTemplate.exchange(uri, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+    }
+
+    // ============== primitives for business methods ==============
+    protected List<VcfaBlueprint> getBlueprintsPrimitive() throws IOException {
+        return getList("/blueprint/api/blueprints", VcfaBlueprint.class);
+    }
+
+    protected VcfaBlueprint getBlueprintByIdPrimitive(String id) throws IOException {
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath("/blueprint/api/blueprints/" + id));
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+        return objectMapper.readValue(response.getBody(), VcfaBlueprint.class);
+    }
+
+    protected VcfaBlueprint createBlueprintPrimitive(Map<String, Object> blueprint) throws IOException {
+        Map<String,Object> result = postMap("/blueprint/api/blueprints", blueprint, 201);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, VcfaBlueprint.class);
+    }
+
+    protected VcfaBlueprint updateBlueprintPrimitive(String id, Map<String, Object> blueprint) throws IOException {
+        Map<String,Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, VcfaBlueprint.class);
+    }
+
+    protected void deleteBlueprintPrimitive(String id) throws IOException {
+        deletePath("/blueprint/api/blueprints/" + id, 204);
+    }
+
+    protected List<CatalogItem> getCatalogItemsPrimitive() throws IOException {
+        return getList("/catalog/api/items", CatalogItem.class);
+    }
+
+    protected List<ContentSource> getContentSourcesPrimitive() throws IOException {
+        return getList("/content/api/sources", ContentSource.class);
+    }
+
+    protected List<CustomResourceType> getCustomResourcesPrimitive() throws IOException {
+        return getList("/resource/api/types", CustomResourceType.class);
+    }
+
+    protected List<ResourceAction> getResourceActionsPrimitive() throws IOException {
+        return getList("/catalog/api/resource-actions", ResourceAction.class);
+    }
+
+    protected List<Subscription> getSubscriptionsPrimitive() throws IOException {
+        return getList("/provisioning/uerp/provisioning/mgmt/event-broker/subscriptions", Subscription.class);
+    }
+
+    protected List<Policy> getPoliciesPrimitive() throws IOException {
+        return getList("/policy/api/policies", Policy.class);
+    }
+
+    protected List<PropertyGroup> getPropertyGroupsPrimitive() throws IOException {
+        return getList("/blueprint/api/property-groups", PropertyGroup.class);
+    }
+
+    protected List<CatalogEntitlement> getCatalogEntitlementsPrimitive() throws IOException {
+        return getList("/catalog/api/entitlements", CatalogEntitlement.class);
+    }
+
+    protected List<Scenario> getScenariosPrimitive() throws IOException {
+        return getList("/catalog/api/notification/scenarios", Scenario.class);
+    }
+
+    protected ContentSource createContentSourcePrimitive(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/content/api/sources", payload, 201, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, ContentSource.class);
+    }
+
+    protected ContentSource updateContentSourcePrimitive(String id, Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = putMap("/content/api/sources/" + id, payload, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, ContentSource.class);
+    }
+
+    protected void deleteContentSourcePrimitive(String id) throws IOException {
+        deletePath("/content/api/sources/" + id, 204, 200);
+    }
+
+    protected PropertyGroup createPropertyGroupPrimitive(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/properties/api/property-groups", payload, 201, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, PropertyGroup.class);
+    }
+
+    protected PropertyGroup updatePropertyGroupPrimitive(String id, Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = putMap("/properties/api/property-groups/" + id, payload, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, PropertyGroup.class);
+    }
+
+    protected void deletePropertyGroupPrimitive(String id) throws IOException {
+        deletePath("/properties/api/property-groups/" + id, 204, 200);
+    }
+
+    protected Policy createPolicyPrimitive(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/policy/api/policies", payload, 200,201,202);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, Policy.class);
+    }
+
+    protected void deletePolicyPrimitive(String id) throws IOException {
+        deletePath("/policy/api/policies/" + id, 204,200);
+    }
+
+    protected ResourceAction createResourceActionPrimitive(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/form-service/api/custom/resource-actions", payload, 200,201);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, ResourceAction.class);
+    }
+
+    protected void deleteResourceActionPrimitive(String id) throws IOException {
+        deletePath("/form-service/api/custom/resource-actions/" + id, 200,204);
+    }
+
+    protected CustomResourceType createCustomResourceTypePrimitive(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/form-service/api/custom/resource-types", payload, 200,201);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, CustomResourceType.class);
+    }
+
+    protected void deleteCustomResourceTypePrimitive(String id) throws IOException {
+        deletePath("/form-service/api/custom/resource-types/" + id, 200,204);
+    }
+
+    protected CatalogItem createCatalogItemPrimitive(Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = postMap("/catalog/api/items", payload, 201,200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, CatalogItem.class);
+    }
+
+    protected CatalogItem updateCatalogItemPrimitive(String id, Map<String, Object> payload) throws IOException {
+        Map<String,Object> result = putMap("/catalog/api/items/" + id, payload, 200);
+        if (result == null) return null;
+        return objectMapper.convertValue(result, CatalogItem.class);
+    }
+
+    protected void deleteCatalogItemPrimitive(String id) throws IOException {
+        deletePath("/catalog/api/items/" + id, 204,200);
+    }
+
+    /**
+     * Retrieve Version.
+     *
+     * @return Version
+     */
+    @Override
+    public String getVersion() {
+        if (this.apiVersion != null && !this.apiVersion.isEmpty()) {
+            return this.apiVersion;
+        }
+
+        URI url = getURI(getURIBuilder().setPath(API_VERSION));
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(), String.class);
+        this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
+        LOGGER.info("Detected API Version {}", this.apiVersion);
+
+        return this.apiVersion;
+    }
+}
+
