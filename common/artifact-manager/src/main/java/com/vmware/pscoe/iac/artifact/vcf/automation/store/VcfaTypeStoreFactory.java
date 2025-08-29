@@ -28,80 +28,83 @@ import static com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPack
  */
 public class VcfaTypeStoreFactory {
 
-    private static final VcfaPackageMemberType[] IMPORT_ORDER = new VcfaPackageMemberType[] {
-            PROPERTY_GROUP, CONTENT_SOURCE, CUSTOM_RESOURCE, RESOURCE_ACTION, BLUEPRINT, SUBSCRIPTION,
-            CATALOG_ENTITLEMENT, CATALOG_ITEM, POLICY, SCENARIO
-    };
+	private static final VcfaPackageMemberType[] IMPORT_ORDER = new VcfaPackageMemberType[] {
+			PROPERTY_GROUP, CONTENT_SOURCE, CUSTOM_RESOURCE, RESOURCE_ACTION, BLUEPRINT, SUBSCRIPTION,
+			CATALOG_ENTITLEMENT, CATALOG_ITEM, POLICY, SCENARIO
+	};
 
-    public static VcfaPackageMemberType[] getImportOrder() {
-        return IMPORT_ORDER;
-    }
+	private static final VcfaPackageMemberType[] EXPORT_ORDER = new VcfaPackageMemberType[] {
+			BLUEPRINT
+	};
 
-    private static final VcfaPackageMemberType[] EXPORT_ORDER = IMPORT_ORDER;
+	public static VcfaPackageMemberType[] getImportOrder() {
+		return IMPORT_ORDER;
+	}
 
-    public static VcfaPackageMemberType[] getExportOrder() {
-        return EXPORT_ORDER;
-    }
+	public static VcfaPackageMemberType[] getExportOrder() {
+		return EXPORT_ORDER;
+	}
 
-    private static final VcfaPackageMemberType[] DELETE_ORDER = new VcfaPackageMemberType[] {
-            // delete policies and entitlements first
-            POLICY, SCENARIO, CATALOG_ITEM, CATALOG_ENTITLEMENT, SUBSCRIPTION, CONTENT_SOURCE, BLUEPRINT,
-            RESOURCE_ACTION, CUSTOM_RESOURCE, PROPERTY_GROUP
-    };
+	private static final VcfaPackageMemberType[] DELETE_ORDER = new VcfaPackageMemberType[] {
+			// delete policies and entitlements first
+			POLICY, SCENARIO, CATALOG_ITEM, CATALOG_ENTITLEMENT, SUBSCRIPTION, CONTENT_SOURCE, BLUEPRINT,
+			RESOURCE_ACTION, CUSTOM_RESOURCE, PROPERTY_GROUP
+	};
 
-    public static VcfaPackageMemberType[] getDeleteOrder() {
-        return DELETE_ORDER;
-    }
+	public static VcfaPackageMemberType[] getDeleteOrder() {
+		return DELETE_ORDER;
+	}
 
-    private final RestClientVcfAuto restClient;
-    private final Package vcfaPackage;
-    private final ConfigurationVcfAuto config;
-    private final VcfaPackageDescriptor descriptor;
+	private final RestClientVcfAuto restClient;
+	private final Package vcfaPackage;
+	private final ConfigurationVcfAuto config;
+	private final VcfaPackageDescriptor descriptor;
 
-    protected VcfaTypeStoreFactory(final RestClientVcfAuto restClient, final Package vcfaPackage,
-            final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
-        this.restClient = restClient;
-        this.vcfaPackage = vcfaPackage;
-        this.config = config;
-        this.descriptor = descriptor;
-    }
+	protected VcfaTypeStoreFactory(final RestClientVcfAuto restClient, final Package vcfaPackage,
+			final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
+		this.restClient = restClient;
+		this.vcfaPackage = vcfaPackage;
+		this.config = config;
+		this.descriptor = descriptor;
+	}
 
-    public static VcfaTypeStoreFactory withConfig(final RestClientVcfAuto restClient, final Package vcfaPackage,
-            final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
-        return new VcfaTypeStoreFactory(restClient, vcfaPackage, config, descriptor);
-    }
+	public static VcfaTypeStoreFactory withConfig(final RestClientVcfAuto restClient, final Package vcfaPackage,
+			final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
+		return new VcfaTypeStoreFactory(restClient, vcfaPackage, config, descriptor);
+	}
 
-    public IVcfaStore getStoreForType(final com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type) {
-        AbstractVcfaStore store = selectStore(type);
-        store.init(restClient, vcfaPackage, config, descriptor);
-        return store;
-    }
+	public IVcfaStore getStoreForType(
+			final com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type) {
+		AbstractVcfaStore store = selectStore(type);
+		store.init(restClient, vcfaPackage, config, descriptor);
+		return store;
+	}
 
-    private static AbstractVcfaStore selectStore(
-            final com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type) {
-        switch (type) {
-            case BLUEPRINT:
-                return new VcfaBlueprintStore();
-            case CATALOG_ITEM:
-                return new VcfaCatalogItemStore();
-            case CONTENT_SOURCE:
-                return new VcfaContentSourceStore();
-            case CUSTOM_RESOURCE:
-                return new VcfaCustomResourceStore();
-            case RESOURCE_ACTION:
-                return new VcfaResourceActionStore();
-            case SUBSCRIPTION:
-                return new VcfaSubscriptionStore();
-            case POLICY:
-                return new VcfaPolicyStore();
-            case PROPERTY_GROUP:
-                return new VcfaPropertyGroupStore();
-            case CATALOG_ENTITLEMENT:
-                return new VcfaEntitlementStore();
-            case SCENARIO:
-                return new VcfaScenarioStore();
-            default:
-                throw new RuntimeException("unknown type: " + type);
-        }
-    }
+	private static AbstractVcfaStore selectStore(
+			final com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType type) {
+		switch (type) {
+			case BLUEPRINT:
+				return new VcfaBlueprintStore();
+			case CATALOG_ITEM:
+				return new VcfaCatalogItemStore();
+			case CONTENT_SOURCE:
+				return new VcfaContentSourceStore();
+			case CUSTOM_RESOURCE:
+				return new VcfaCustomResourceStore();
+			case RESOURCE_ACTION:
+				return new VcfaResourceActionStore();
+			case SUBSCRIPTION:
+				return new VcfaSubscriptionStore();
+			case POLICY:
+				return new VcfaPolicyStore();
+			case PROPERTY_GROUP:
+				return new VcfaPropertyGroupStore();
+			case CATALOG_ENTITLEMENT:
+				return new VcfaEntitlementStore();
+			case SCENARIO:
+				return new VcfaScenarioStore();
+			default:
+				throw new RuntimeException("unknown type: " + type);
+		}
+	}
 }

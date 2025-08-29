@@ -70,8 +70,8 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	@Parameter(required = false, property = "ssh", defaultValue = "${ssh.*}")
 	private Map<String, String> ssh;
 
-	@Parameter(required = false, property = "vcf-auto", defaultValue = "${vcf-auto.*}")
-	private Map<String, String> vcfAuto;
+    @Parameter(required = false, property = "vcfa", defaultValue = "${vcfa.*}")
+    private Map<String, String> vcfa;
 
 	@Parameter(required = true, property = "ignoreSslCertificate", defaultValue = "false")
 	private boolean ignoreSslCertificate;
@@ -297,12 +297,12 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		} else if (PackageType.CS == type) {
 			return Optional
 					.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
-		} else if (PackageType.VCF_AUTO_MODERN == type) {
-			return Optional
-					.ofNullable(ConfigurationVcfAuto.fromProperties(getConfigurationProperties(type, vcfAuto, "vcf-auto.")));
-		} else {
-			return Optional.empty();
-		}
+        } else if (PackageType.VCF_AUTO_MODERN == type) {
+            return Optional
+                    .ofNullable(ConfigurationVcfAuto.fromProperties(getConfigurationProperties(type, vcfa, "vcfa.")));
+        } else {
+            return Optional.empty();
+        }
 	}
 
 	/**

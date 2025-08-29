@@ -14,152 +14,268 @@
  */
 package com.vmware.pscoe.iac.artifact.vcf.automation.configuration;
 
+import java.net.URISyntaxException;
 import java.util.Properties;
 
+import org.apache.hc.core5.http.HttpHost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
+/**
+ * Important - when modify properties refer to comments in @Configuration.
+ */
 public class ConfigurationVcfAuto extends Configuration {
 
-    public static final String HOST = "host";
-    public static final String PORT = "port";
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String PROJECT_ID = "projectId";
-    public static final String API_TOKEN = "apiToken";
-    public static final String REFRESH_TOKEN = "refreshToken";
-    public static final String CONNECTION_TIMEOUT = "connectionTimeout";
-    public static final String SOCKET_TIMEOUT = "socketTimeout";
-    public static final String IGNORE_SSL_CERTIFICATE = "ignoreSslCertificate";
-    public static final String IGNORE_SSL_HOSTNAME = "ignoreSslHostname";
-    public static final String TENANT_NAME = "tenantName";
-    public static final String API_VERSION = "apiVersion";
-    public static final String LOGIN_TYPE = "loginType";
+	/**
+	 * param CSP_HOST.
+	 */
+	public static final String CSP_HOST = "csp.host";
+	/**
+	 * param DATA_COLLECTION_DELAY_SECONDS.
+	 */
+	public static final String DATA_COLLECTION_DELAY_SECONDS = "data.collection.delay.seconds";
+	/**
+	 * param DELETE_CONTENT. If this is set, the environment will be cleaned up
+	 * based on the content.yaml
+	 */
+	public static final String DELETE_CONTENT = "delete.content";
+	/**
+	 * param PROJECT_NAME.
+	 */
+	public static final String PROJECT_NAME = "project.name";
+	/**
+	 * param ORGANIZATION_NAME.
+	 */
+	public static final String ORGANIZATION_NAME = "org.name";
+	/**
+	 * param REFRESH_TOKEN.
+	 */
+	public static final String REFRESH_TOKEN = "refresh.token";
+	/**
+	 * param IMPORT_TIMEOUT.
+	 */
+	public static final String IMPORT_TIMEOUT = "import.timeout";
+	/**
+	 * param VRO_INTEGRATION.
+	 */
+	public static final String VRO_INTEGRATION = "vro.integration";
+	/**
+	 * param PROXY.
+	 */
+	public static final String PROXY = "proxy";
+	/**
+	 * param PROXY_REQUIRED.
+	 */
+	public static final String PROXY_REQUIRED = "proxy.required";
+	/**
+	 * param CLOUD_PROXY_NAME.
+	 */
+	public static final String CLOUD_PROXY_NAME = "cloud.proxy.name";
+	/**
+	 * param UNRELEASE_BLUEPRINT_VERSIONS.
+	 */
+	public static final String UNRELEASE_BLUEPRINT_VERSIONS = "bp.unrelease.versions";
+	/**
+	 * param DEFAULT_IMPORT_TIMEOUT.
+	 */
+	public static final Integer DEFAULT_IMPORT_TIMEOUT = 6000;
 
-    public ConfigurationVcfAuto(Properties props) {
-        super(PackageType.VCF_AUTO_MODERN, props);
-    }
+	/**
+	 * vRA Package Import content conflict resolution mode.
+	 * 
+	 * param PACKAGE_IMPORT_OVERWRITE_MODE
+	 */
+	public static final String PACKAGE_IMPORT_OVERWRITE_MODE = "packageImportOverwriteMode";
 
-    public String getHost() {
-        return this.properties.getProperty(HOST);
-    }
+	/**
+	 * @param logger
+	 */
+	private final Logger logger;
 
-    public void setHost(String host) {
-        this.properties.setProperty(HOST, host);
-    }
+	protected ConfigurationVcfAuto(Properties props) {
+		super(PackageType.VCF_AUTO_MODERN, props);
+		this.logger = LoggerFactory.getLogger(this.getClass());
+	}
 
-    public int getPort() {
-        return Integer.parseInt(this.properties.getProperty(PORT, "443"));
-    }
+	protected ConfigurationVcfAuto(PackageType pkgType, Properties props) {
+		super(pkgType, props);
+		this.logger = LoggerFactory.getLogger(this.getClass());
+	}
 
-    public void setPort(int port) {
-        this.properties.setProperty(PORT, String.valueOf(port));
-    }
+	/**
+	 * @return String
+	 */
+	public String getPackageImportOverwriteMode() {
+		return this.properties.getProperty(PACKAGE_IMPORT_OVERWRITE_MODE, "SKIP,OVERWRITE");
+	}
 
-    public String getUsername() {
-        return this.properties.getProperty(USERNAME);
-    }
+	/**
+	 * @return String
+	 */
+	public String getAuthHost() {
+		if (this.properties.getProperty(CSP_HOST) == null || this.properties.getProperty(CSP_HOST).isEmpty()) {
+			return this.properties.getProperty(HOST);
+		} else {
+			return this.properties.getProperty(CSP_HOST);
+		}
+	}
 
-    public void setUsername(String username) {
-        this.properties.setProperty(USERNAME, username);
-    }
+	/**
+	 * @return String
+	 */
+	public String getDataCollectionDelaySeconds() {
+		return this.properties.getProperty(DATA_COLLECTION_DELAY_SECONDS);
+	}
 
-    public String getPassword() {
-        return this.properties.getProperty(PASSWORD);
-    }
+	/**
+	 * @return String
+	 */
+	public String getProjectName() {
+		return this.properties.getProperty(PROJECT_NAME);
+	}
 
-    public void setPassword(String password) {
-        this.properties.setProperty(PASSWORD, password);
-    }
+	/**
+	 * @return String
+	 */
+	public String getOrgName() {
+		return this.properties.getProperty(ORGANIZATION_NAME);
+	}
 
-    public String getProjectId() {
-        return this.properties.getProperty(PROJECT_ID);
-    }
+	/**
+	 * @return String
+	 */
+	public String getVroIntegration() {
+		return this.properties.getProperty(VRO_INTEGRATION);
+	}
 
-    public void setProjectId(String projectId) {
-        this.properties.setProperty(PROJECT_ID, projectId);
-    }
+	/**
+	 * @return String
+	 */
+	public String getRefreshToken() {
+		return this.properties.getProperty(REFRESH_TOKEN);
+	}
 
-    public String getApiToken() {
-        return this.properties.getProperty(API_TOKEN);
-    }
+	/**
+	 * @return String
+	 */
+	public String getCloudProxyName() {
+		return this.properties.getProperty(CLOUD_PROXY_NAME);
+	}
 
-    public void setApiToken(String apiToken) {
-        this.properties.setProperty(API_TOKEN, apiToken);
-    }
+	/**
+	 * @return boolean
+	 */
+	public boolean getDeleteContent() {
+		return Boolean.parseBoolean(this.properties.getProperty(DELETE_CONTENT, "false"));
+	}
 
-    public String getRefreshToken() {
-        return this.properties.getProperty(REFRESH_TOKEN);
-    }
+	/**
+	 * @return Integer
+	 */
+	public Integer getImportTimeout() {
+		if (StringUtils.isEmpty(this.properties.getProperty(IMPORT_TIMEOUT))) {
+			return DEFAULT_IMPORT_TIMEOUT;
+		}
+		try {
+			return Integer.valueOf(this.properties.getProperty(IMPORT_TIMEOUT));
+		} catch (NumberFormatException e) {
+			return DEFAULT_IMPORT_TIMEOUT;
+		}
+	}
 
-    public void setRefreshToken(String refreshToken) {
-        this.properties.setProperty(REFRESH_TOKEN, refreshToken);
-    }
+	/**
+	 * @return HttpHost
+	 */
+	public HttpHost getProxy() {
+		String proxy = this.properties.getProperty(PROXY);
+		if (StringUtils.isEmpty(proxy)) {
+			return null;
+		}
+		try {
+			return HttpHost.create(proxy);
+		} catch (URISyntaxException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		}
+	}
 
-    public int getConnectionTimeout() {
-        return Integer.parseInt(this.properties.getProperty(CONNECTION_TIMEOUT, "30000"));
-    }
+	/**
+	 * @return boolean
+	 */
+	public boolean getUnreleaseBlueprintVersions() {
+		return Boolean.parseBoolean(this.properties.getProperty(UNRELEASE_BLUEPRINT_VERSIONS, "true"));
+	}
 
-    public void setConnectionTimeout(int connectionTimeout) {
-        this.properties.setProperty(CONNECTION_TIMEOUT, String.valueOf(connectionTimeout));
-    }
+	/**
+	 * @param domainOptional is doamin optional indicator
+	 * @throws ConfigurationException throws configuration exception if validation
+	 *                                fails
+	 */
+	@Override
+	public void validate(boolean domainOptional) throws ConfigurationException {
+		StringBuilder message = new StringBuilder();
 
-    public int getSocketTimeout() {
-        return Integer.parseInt(this.properties.getProperty(SOCKET_TIMEOUT, "30000"));
-    }
+		if (StringUtils.isEmpty(getHost())) {
+			message.append("Hostname ");
+		}
 
-    public void setSocketTimeout(int socketTimeout) {
-        this.properties.setProperty(SOCKET_TIMEOUT, String.valueOf(socketTimeout));
-    }
+		if (StringUtils.isEmpty(getAuthHost())) {
+			message.append("Authentication hostname ");
+		}
 
-    public boolean isIgnoreSslCertificate() {
-        return Boolean.parseBoolean(this.properties.getProperty(IGNORE_SSL_CERTIFICATE, "false"));
-    }
+		if (StringUtils.isEmpty(getPort())) {
+			message.append("Port ");
+		}
 
-    public void setIgnoreSslCertificate(boolean ignoreSslCertificate) {
-        this.properties.setProperty(IGNORE_SSL_CERTIFICATE, String.valueOf(ignoreSslCertificate));
-    }
+		if (StringUtils.isEmpty(getProjectName())) {
+			message.append("Project name ");
+		}
 
-    public boolean isIgnoreSslHostname() {
-        return Boolean.parseBoolean(this.properties.getProperty(IGNORE_SSL_HOSTNAME, "false"));
-    }
+		if (StringUtils.isEmpty(getOrgName())) {
+			message.append("Organization Name ");
+		}
 
-    public void setIgnoreSslHostname(boolean ignoreSslHostname) {
-        this.properties.setProperty(IGNORE_SSL_HOSTNAME, String.valueOf(ignoreSslHostname));
-    }
+		if (StringUtils.isEmpty(getRefreshToken()) && StringUtils.isEmpty(super.getUsername())) {
+			message.append("Refresh token or Username ");
+		}
 
-    public String getTenantName() {
-        return this.properties.getProperty(TENANT_NAME);
-    }
+		if (message.length() != 0) {
+			throw new ConfigurationException("Configuration validation failed: Empty " + message);
+		}
+	}
 
-    public void setTenantName(String tenantName) {
-        this.properties.setProperty(TENANT_NAME, tenantName);
-    }
+	/**
+	 * Shows deprecation warnings for different flags.
+	 */
+	public void deprecationWarnings() {
+		String[] deprecatedFlags = new String[] {
+				"bp.ignore.versions",
+				"bp.release",
+				"project.id",
+				"org.id"
+		};
 
-    public String getApiVersion() {
-        return this.properties.getProperty(API_VERSION, "40.0");
-    }
+		for (String flag : deprecatedFlags) {
+			this.logger.warn("%s has been deprecated, it is ignored. Consult the releases %s for more information",
+					flag, "https://github.com/vmware/build-tools-for-vmware-aria/releases");
+		}
+	}
 
-    public void setApiVersion(String apiVersion) {
-        this.properties.setProperty(API_VERSION, apiVersion);
-    }
+	/**
+	 * @param props form properties
+	 * @return ConfigurationVraNg
+	 * @throws ConfigurationException throws configuration exception if validation
+	 *                                fails
+	 */
+	public static ConfigurationVcfAuto fromProperties(Properties props) throws ConfigurationException {
+		ConfigurationVcfAuto config = new ConfigurationVcfAuto(props);
 
-    public String getLoginType() {
-        return this.properties.getProperty(LOGIN_TYPE, "tenant");
-    }
+		config.validate(false);
 
-    public void setLoginType(String loginType) {
-        this.properties.setProperty(LOGIN_TYPE, loginType);
-    }
-
-    public String getBaseUrl() {
-        return String.format("https://%s:%d", getHost(), getPort());
-    }
-
-    public static ConfigurationVcfAuto fromProperties(Properties props) {
-        if (props == null || props.isEmpty()) {
-            return null;
-        }
-        return new ConfigurationVcfAuto(props);
-    }
+		return config;
+	}
 }

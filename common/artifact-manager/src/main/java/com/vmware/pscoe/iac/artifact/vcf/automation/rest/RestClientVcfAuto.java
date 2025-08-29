@@ -15,28 +15,25 @@
 package com.vmware.pscoe.iac.artifact.vcf.automation.rest;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hc.client5.http.classic.methods.HttpDelete;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpPut;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.io.entity.StringEntity;
+// replaced low-level HTTP client usage with RestTemplate
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.jayway.jsonpath.JsonPath;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNgPrimitive;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
@@ -53,10 +50,11 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 public class RestClientVcfAuto extends RestClient {
     
     private final ConfigurationVcfAuto configuration;
-    private final CloseableHttpClient httpClient;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAuto.class);
+	private static final String API_VERSION = "/iaas/api/about";
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
-    private String authToken;
+	private String apiVersion;
 
     public RestClientVcfAuto(ConfigurationVcfAuto configuration) {
         this(configuration, null);
@@ -65,7 +63,6 @@ public class RestClientVcfAuto extends RestClient {
     public RestClientVcfAuto(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
         this.configuration = configuration;
         this.objectMapper = new ObjectMapper();
-        this.httpClient = HttpClientBuilder.create().build();
         this.restTemplate = restTemplate;
     }
 
@@ -74,65 +71,14 @@ public class RestClientVcfAuto extends RestClient {
         return this.configuration;
     }
 
-    @Override
-    public String getVersion() {
-        // Vcfa exposes API version via configuration; return that as client version
-        return this.configuration.getApiVersion();
-    }
-
-    private void setAuthHeader(HttpUriRequestBase request) {
-        if (authToken != null) {
-            request.setHeader("x-vmware-vcloud-access-token", authToken);
-            request.setHeader("Accept", "application/*;version=" + configuration.getApiVersion());
-        }
-    }
-
-    private String getResponseBody(HttpEntity entity) throws IOException {
-        try {
-            return EntityUtils.toString(entity);
-        } catch (ParseException e) {
-            throw new IOException("Failed to parse response body", e);
-        }
-    }
-
-    /**
-     * Execute the request and return response body while validating expected codes.
-     * If no expected codes are provided, 200 is expected.
-     */
-    private String executeRequestWithExpected(HttpUriRequestBase request, int... expected) throws IOException {
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
-            int code = response.getCode();
-            String responseBody = "";
-            if (response.getEntity() != null) {
-                responseBody = getResponseBody(response.getEntity());
-            }
-
-            boolean ok;
-            if (expected == null || expected.length == 0) {
-                ok = (code == 200);
-            } else {
-                ok = false;
-                for (int c : expected) {
-                    if (c == code) {
-                        ok = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!ok) {
-                throw new IOException("Request failed: " + code + " " + responseBody);
-            }
-
-            return responseBody;
-        }
-    }
-
     private <T> List<T> getList(String relativePath, Class<T> cls) throws IOException {
-        HttpGet request = new HttpGet(configuration.getBaseUrl() + relativePath);
-        setAuthHeader(request);
-        request.setHeader("Content-Type", "application/json");
-        String responseBody = executeRequestWithExpected(request, 200);
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
+        org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri, org.springframework.http.HttpMethod.GET,
+                getDefaultHttpEntity(), String.class);
+        String responseBody = response.getBody();
         Map<String,Object> result = objectMapper.readValue(responseBody, Map.class);
         Object content = result.get("content");
         if (content == null) return java.util.Collections.emptyList();
@@ -140,31 +86,37 @@ public class RestClientVcfAuto extends RestClient {
     }
 
     private Map<String,Object> postMap(String relativePath, Map<String,Object> payload, int... expected) throws IOException {
-        HttpPost request = new HttpPost(configuration.getBaseUrl() + relativePath);
-        setAuthHeader(request);
-        request.setHeader("Content-Type", "application/json");
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
         String requestBody = objectMapper.writeValueAsString(payload);
-        request.setEntity(new StringEntity(requestBody));
-        String responseBody = executeRequestWithExpected(request, expected.length == 0 ? new int[]{201} : expected);
+        org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(requestBody, getDefaultHttpEntity().getHeaders());
+        org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri, org.springframework.http.HttpMethod.POST, entity, String.class);
+        String responseBody = response.getBody();
         if (responseBody == null || responseBody.isEmpty()) return null;
         return objectMapper.readValue(responseBody, Map.class);
     }
 
     private Map<String,Object> putMap(String relativePath, Map<String,Object> payload, int... expected) throws IOException {
-        HttpPut request = new HttpPut(configuration.getBaseUrl() + relativePath);
-        setAuthHeader(request);
-        request.setHeader("Content-Type", "application/json");
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
         String requestBody = objectMapper.writeValueAsString(payload);
-        request.setEntity(new StringEntity(requestBody));
-        String responseBody = executeRequestWithExpected(request, expected.length == 0 ? new int[]{200} : expected);
+        org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(requestBody, getDefaultHttpEntity().getHeaders());
+        org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri, org.springframework.http.HttpMethod.PUT, entity, String.class);
+        String responseBody = response.getBody();
         if (responseBody == null || responseBody.isEmpty()) return null;
         return objectMapper.readValue(responseBody, Map.class);
     }
 
     private void deletePath(String relativePath, int... expected) throws IOException {
-        HttpDelete request = new HttpDelete(configuration.getBaseUrl() + relativePath);
-        setAuthHeader(request);
-        executeRequestWithExpected(request, expected.length == 0 ? new int[]{204} : expected);
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
+        restTemplate.exchange(uri, org.springframework.http.HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
     }
 
     public List<VcfaBlueprint> getBlueprints() throws IOException {
@@ -172,11 +124,13 @@ public class RestClientVcfAuto extends RestClient {
     }
 
     public VcfaBlueprint getBlueprintById(String id) throws IOException {
-        HttpGet request = new HttpGet(configuration.getBaseUrl() + "/blueprint/api/blueprints/" + id);
-        setAuthHeader(request);
-        request.setHeader("Content-Type", "application/json");
-        String responseBody = executeRequestWithExpected(request, 200);
-        return objectMapper.readValue(responseBody, VcfaBlueprint.class);
+        if (restTemplate == null) {
+            throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+        }
+        java.net.URI uri = getURI(getURIBuilder().setPath("/blueprint/api/blueprints/" + id));
+        org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri, org.springframework.http.HttpMethod.GET,
+                getDefaultHttpEntity(), String.class);
+        return objectMapper.readValue(response.getBody(), VcfaBlueprint.class);
     }
 
     public VcfaBlueprint createBlueprint(Map<String, Object> blueprint) throws IOException {
@@ -353,9 +307,23 @@ public class RestClientVcfAuto extends RestClient {
         deletePath("/catalog/api/items/" + id, 204,200);
     }
 
-    public void close() throws IOException {
-        if (httpClient != null) {
-            httpClient.close();
-        }
-    }
+	/**
+	 * Retrieve Version.
+	 *
+	 * @return Version
+	 */
+	@Override
+	public String getVersion() {
+		if (this.apiVersion != null && !this.apiVersion.isEmpty()) {
+			return this.apiVersion;
+		}
+
+		URI url = getURI(getURIBuilder().setPath(API_VERSION));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		this.apiVersion = JsonPath.parse(response.getBody()).read("$.supportedApis[0].apiVersion");
+		LOGGER.info("Detected API Version {}", this.apiVersion);
+
+		return this.apiVersion;
+	}
 }

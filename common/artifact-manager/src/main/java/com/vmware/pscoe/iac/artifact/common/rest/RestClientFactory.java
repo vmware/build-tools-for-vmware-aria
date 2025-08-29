@@ -389,7 +389,7 @@ public final class RestClientFactory {
 
 		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
-			attachVcdInterceptor(vcdConfiguration, restTemplate, "provider".equals(configuration.getLoginType()));
+			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
 		}
 
 		return new RestClientVcfAuto(configuration, restTemplate);
