@@ -31,23 +31,23 @@
 				<version>${revision}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<vcf-auto>
-						<host>${vcf-auto.host}</host>
-						<csp.host>${vcf-auto.csp.host}</csp.host>
-						<port>${vcf-auto.port}</port>
-						<username>${vcf-auto.username}</username>
-						<password>${vcf-auto.password}</password>
-						<serverId>${vcf-auto.serverId}</serverId>
-						<project.name>${vcf-auto.project.name}</project.name>
-						<org.name>${vcf-auto.org.name}</org.name>
-						<refresh.token>${vcf-auto.refresh.token}</refresh.token>
-						<bp.release>${vcf-auto.bp.release}</bp.release>
-						<vro.integration>${vcf-auto.vro.integration}</vro.integration>
-						<import.timeout>${vcf-auto.import.timeout}</import.timeout>
-						<data.collection.delay.seconds>${vcf-auto.data.collection.delay.seconds}</data.collection.delay.seconds>
-						<proxy>${vcf-auto.proxy}</proxy>
-						<cloud.proxy.name>${vcf-auto.cloud.proxy.name}</cloud.proxy.name>
-					</vcf-auto>
+					<vcfa>
+						<host>${vcfa.host}</host>
+						<csp.host>${vcfa.csp.host}</csp.host>
+						<port>${vcfa.port}</port>
+						<username>${vcfa.username}</username>
+						<password>${vcfa.password}</password>
+						<serverId>${vcfa.serverId}</serverId>
+						<project.name>${vcfa.project.name}</project.name>
+						<org.name>${vcfa.org.name}</org.name>
+						<refresh.token>${vcfa.refresh.token}</refresh.token>
+						<bp.release>${vcfa.bp.release}</bp.release>
+						<vro.integration>${vcfa.vro.integration}</vro.integration>
+						<import.timeout>${vcfa.import.timeout}</import.timeout>
+						<data.collection.delay.seconds>${vcfa.data.collection.delay.seconds}</data.collection.delay.seconds>
+						<proxy>${vcfa.proxy}</proxy>
+						<cloud.proxy.name>${vcfa.cloud.proxy.name}</cloud.proxy.name>
+					</vcfa>
 					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
 					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
 					<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
@@ -69,6 +69,6 @@
 
 		<checksum.packagesEnabled>true</checksum.packagesEnabled>
 		<checksum.packagesDir>target</checksum.packagesDir>
-		<checksum.packagesGlob>*.vcf_auto_modern</checksum.packagesGlob>
+		<checksum.packagesGlob>*.vcfam</checksum.packagesGlob>
 	</properties>
 </project>

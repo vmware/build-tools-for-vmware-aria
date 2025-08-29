@@ -3,7 +3,7 @@
         <component>
             <role>org.apache.maven.lifecycle.mapping.LifecycleMapping
             </role>
-            <role-hint>vcf_auto_modern</role-hint>
+            <role-hint>vcf-auto-modern</role-hint>
             <implementation>
                 org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
             </implementation>
@@ -28,14 +28,14 @@
         </component>
         <component>
             <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-            <role-hint>vcf_auto_modern</role-hint>
+            <role-hint>vcf-auto-modern</role-hint>
             <implementation>
                 org.apache.maven.artifact.handler.DefaultArtifactHandler
             </implementation>
             <configuration>
-                <extension>vcf_auto_modern</extension>
+                <extension>vcfam</extension>
                 <type>vcf-auto-modern</type>
-                <packaging>vcf_auto_modern</packaging>
+                <packaging>vcf-auto-modern</packaging>
             </configuration>
         </component>
     </components>

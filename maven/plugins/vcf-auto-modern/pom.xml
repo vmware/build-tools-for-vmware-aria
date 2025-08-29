@@ -13,7 +13,7 @@
     <packaging>maven-plugin</packaging>
 
     <properties>
-        <goal.prefix>vcf_auto_modern</goal.prefix>
+        <goal.prefix>vcf-auto-modern</goal.prefix>
         <main.basedir>${project.baseUri}../../../</main.basedir>
     </properties>
 

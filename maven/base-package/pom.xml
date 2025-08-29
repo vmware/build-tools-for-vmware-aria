@@ -275,23 +275,23 @@
 						<proxy>${vrang.proxy}</proxy>
 						<cloud.proxy.name>${vrang.cloud.proxy.name}</cloud.proxy.name>
 					</vrang>
-					<vcf-auto>
-						<host>${vcf-auto.host}</host>
-						<csp.host>${vcf-auto.csp.host}</csp.host>
-						<port>${vcf-auto.port}</port>
-						<username>${vcf-auto.username}</username>
-						<password>${vcf-auto.password}</password>
-						<serverId>${vcf-auto.serverId}</serverId>
-						<project.name>${vcf-auto.project.name}</project.name>
-						<org.name>${vcf-auto.org.name}</org.name>
-						<refresh.token>${vcf-auto.refresh.token}</refresh.token>
-						<bp.release>${vcf-auto.bp.release}</bp.release>
-						<vro.integration>${vcf-auto.vro.integration}</vro.integration>
-						<import.timeout>${vcf-auto.import.timeout}</import.timeout>
-						<data.collection.delay.seconds>${vcf-auto.data.collection.delay.seconds}</data.collection.delay.seconds>
-						<proxy>${vcf-auto.proxy}</proxy>
-						<cloud.proxy.name>${vcf-auto.cloud.proxy.name}</cloud.proxy.name>
-					</vcf-auto>
+					<vcfa>
+						<host>${vcfa.host}</host>
+						<csp.host>${vcfa.csp.host}</csp.host>
+						<port>${vcfa.port}</port>
+						<username>${vcfa.username}</username>
+						<password>${vcfa.password}</password>
+						<serverId>${vcfa.serverId}</serverId>
+						<project.name>${vcfa.project.name}</project.name>
+						<org.name>${vcfa.org.name}</org.name>
+						<refresh.token>${vcfa.refresh.token}</refresh.token>
+						<bp.release>${vcfa.bp.release}</bp.release>
+						<vro.integration>${vcfa.vro.integration}</vro.integration>
+						<import.timeout>${vcfa.import.timeout}</import.timeout>
+						<data.collection.delay.seconds>${vcfa.data.collection.delay.seconds}</data.collection.delay.seconds>
+						<proxy>${vcfa.proxy}</proxy>
+						<cloud.proxy.name>${vcfa.cloud.proxy.name}</cloud.proxy.name>
+					</vcfa>
 					<vcd>
 						<host>${vcd.host}</host>
 						<port>${vcd.port}</port>
@@ -437,7 +437,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>target/dependency/vcf-auto-modern</outputDirectory>
-							<includeTypes>vcf_auto_modern</includeTypes>
+							<includeTypes>vcf-auto-modern</includeTypes>
 							<prependGroupId>true</prependGroupId>
 						</configuration>
 					</execution>

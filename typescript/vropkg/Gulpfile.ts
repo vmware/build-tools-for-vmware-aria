@@ -60,7 +60,11 @@ gulp.task("test-e2e", gulp.series([
 		}))
 ]));
 
-gulp.task("build-prod", gulp.series(["package-prod", "test-e2e"]));
+const buildProdTasks = ["package-prod"];
+if (!(process.env.SKIP_NPM_TESTS && process.env.SKIP_NPM_TESTS.toLowerCase() === 'true')) {
+    buildProdTasks.push("test-e2e");
+}
+gulp.task("build-prod", gulp.series(buildProdTasks));
 
 gulp.task("default", gulp.series(["clean", "build-prod"]));
 
