@@ -26,28 +26,6 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### *Add support for User Interaction Custom Form files named based on User Interaction item name instead of ID in Typescript projects*
-
-This feature extends the support for Typescript push for User Interaction Custom Form files with one more naming convention. Originally we support `{{workflowFileName}}_input_form_{{userInteractionItemId}}.wf.form.json` as naming convention.
-
-The current feature enables also the following convention: `{{workflowFileName}}_input_form_{{userInteractionName}}.wf.form.json` where:
-* `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
-* `userInteractionName` - the name of the `User Interaction` component - corresponds to the decorated function name in the `.wf.ts` file and is translated to the display name of the `User Interaction` component in the Orchestrator UI. Please note that the function name (and thus - display name) cannot contain whitespaces and comes with any other function naming limitation of Typescript functions.
-
-E.g. for `CreateIntegration.wf.ts` and following User Interaction definition with an item ID `item2` and Typescript code:
-```typescript
-   @UserInteractionItem({
-        target: "end",
-    })
-    public userApproval() {
-    }
-```
-During push the code searches for one of the following 2 files:
-* CreateIntegration_input_form_item2.wf.form.json
-* CreateIntegration_input_form_userApproval.wf.form.json
-
-If neither are found the default empty form is used.
-
 ## Improvements
 
 [//]: # (### *Improvement Name* )

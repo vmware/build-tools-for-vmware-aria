@@ -358,6 +358,7 @@ interface VroUserInteractionItemDecorator {
 
 interface VroUserInteractionItemConfiguration {
 	target: string;
+	exception?: string;
 }
 
 interface VroUserInteractionItemMethodDecorator {
