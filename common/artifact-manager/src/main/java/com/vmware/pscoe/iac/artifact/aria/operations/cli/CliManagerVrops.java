@@ -404,6 +404,10 @@ public class CliManagerVrops implements AutoCloseable {
 	}
 
 	private static String escapeSpecialCharacters(String str) {
+		// In case we have a space in the name, we should wrap it with "" without escaping the other characters
+		if (str.contains(" ")) {
+			return "\"" + str + "\"";
+		}
 		final char[] special = { '\'', '~', '`', '#', '$', '&', '*', '(', ')', '\\', '|', '[', ']', '{', '}', ';', '"',
 				'<', '>', '?', '!' };
 		StringBuilder sb = new StringBuilder("\"");

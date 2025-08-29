@@ -48,4 +48,10 @@ It is not possible to have different resource types with the same name in Aria O
 Users are able to create different resource types with the same name in Aria Operations, the same way as they are doing it from the UI.
 ## Upgrade procedure
 
-[//]: # (Explain in details if something needs to be done)
+### *Add support for special characters in supermetric names*
+
+#### Previous Behavior
+It is not possible to pull super metrics with special characters in the names, eg Supermetric (Cluster Storage usage)
+
+#### New Behavior
+Users are able to push and pull super metrics that has special characters in the names. Also to use wildcards with special characters, eg Supermetric(* 
