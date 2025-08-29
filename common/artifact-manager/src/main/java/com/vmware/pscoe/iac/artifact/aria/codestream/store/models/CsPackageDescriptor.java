@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
@@ -143,7 +143,7 @@ public class CsPackageDescriptor extends PackageDescriptor {
 
 	public static CsPackageDescriptor getInstance(File filesystemPath) {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
 		try {
 			CsPackageDescriptor pkgDescriptor = mapper.readValue(filesystemPath, CsPackageDescriptor.class);
 			LOGGER.debug(ReflectionToStringBuilder.toString(pkgDescriptor, ToStringStyle.MULTI_LINE_STYLE));

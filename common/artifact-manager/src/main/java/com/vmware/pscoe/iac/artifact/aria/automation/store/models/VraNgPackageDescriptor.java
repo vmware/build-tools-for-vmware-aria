@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
@@ -314,7 +314,7 @@ public class VraNgPackageDescriptor extends PackageDescriptor {
 	 */
 	public static VraNgPackageDescriptor getInstance(File filesystemPath) {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			VraNgPackageDescriptor pkgDescriptor = mapper.readValue(filesystemPath, VraNgPackageDescriptor.class);
