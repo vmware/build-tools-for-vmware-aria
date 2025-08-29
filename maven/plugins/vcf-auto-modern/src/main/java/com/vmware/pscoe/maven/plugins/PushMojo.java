@@ -16,9 +16,10 @@ package com.vmware.pscoe.maven.plugins;
 
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+
 import org.apache.maven.plugins.annotations.ResolutionScope;
+
 
 @Mojo(name = "push", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class PushMojo extends BasePushMojo {
-
 }
