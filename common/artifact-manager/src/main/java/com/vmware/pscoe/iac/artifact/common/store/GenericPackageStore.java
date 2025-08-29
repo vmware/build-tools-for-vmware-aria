@@ -163,6 +163,9 @@ public abstract class GenericPackageStore<T extends PackageDescriptor> implement
 		if (containsWildcard) {
 			pattern = pattern.replace(WILDCARD_MATCH_SYMBOL, ".*");
 			pattern = ".*" + pattern + ".*";
+		} else {
+			// Convert pattern to regex expression
+			pattern = Pattern.quote(matchExpression);
 		}
 
 		return Pattern.compile(pattern).matcher(assetName).matches();

@@ -131,5 +131,10 @@ Note that the functionality is backwards compatible - during push operation the 
   }
 }
 ```
+### *Add support for special characters in supermetric names*
 
-[//]: # (Explain in details if something needs to be done)
+#### Previous Behavior
+It is not possible to pull super metrics with special characters in the names, eg Supermetric (Cluster Storage usage)
+
+#### New Behavior
+Users are able to push and pull super metrics that has special characters in the names. Also to use wildcards with special characters, eg Supermetric(*
