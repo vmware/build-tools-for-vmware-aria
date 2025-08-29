@@ -35,99 +35,146 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.models.Policy;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 
 /**
- * High-level client for VCF Automation API. Delegates to RestClientVcfAutoPrimitive
+ * High-level client for VCF Automation API. Delegates to
+ * RestClientVcfAutoPrimitive
  * and converts checked IOExceptions into runtime exceptions.
  */
 public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAuto.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAuto.class);
 
-    public RestClientVcfAuto(ConfigurationVcfAuto configuration) {
-        super(configuration, null);
-    }
+	public RestClientVcfAuto(ConfigurationVcfAuto configuration) {
+		super(configuration, null);
+	}
 
-    public RestClientVcfAuto(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
-        super(configuration, restTemplate);
-    }
+	public RestClientVcfAuto(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
+		super(configuration, restTemplate);
+	}
 
-    public List<VcfaBlueprint> getBlueprints() throws IOException {
-        return getBlueprintsPrimitive();
-    }
+	public List<VcfaBlueprint> getBlueprints() throws IOException {
+		return getBlueprintsPrimitive();
+	}
 
-    public VcfaBlueprint getBlueprintById(String id) throws IOException {
-        return getBlueprintByIdPrimitive(id);
-    }
+	public VcfaBlueprint getBlueprintById(String id) throws IOException {
+		return getBlueprintByIdPrimitive(id);
+	}
 
-    public VcfaBlueprint createBlueprint(Map<String, Object> blueprint) throws IOException {
-        return createBlueprintPrimitive(blueprint);
-    }
+	public VcfaBlueprint createBlueprint(VcfaBlueprint blueprint) throws IOException {
+		return createBlueprintPrimitive(blueprint.toMap());
+	}
 
-    public VcfaBlueprint createBlueprint(VcfaBlueprint blueprint) throws IOException {
-        return createBlueprint(blueprint.toMap());
-    }
+	public VcfaBlueprint updateBlueprint(String id, VcfaBlueprint blueprint) throws IOException {
+		return updateBlueprintPrimitive(id, objectMapper.convertValue(blueprint, Map.class));
+	}
 
-    public VcfaBlueprint updateBlueprint(String id, Map<String, Object> blueprint) throws IOException {
-        return updateBlueprintPrimitive(id, blueprint);
-    }
+	public void deleteBlueprint(String id) throws IOException {
+		deleteBlueprintPrimitive(id);
+	}
 
-    public VcfaBlueprint updateBlueprint(String id, VcfaBlueprint blueprint) throws IOException {
-        return updateBlueprint(id, objectMapper.convertValue(blueprint, Map.class));
-    }
+	// --- Catalog items
+	public List<CatalogItem> getCatalogItems() throws IOException {
+		return getCatalogItemsPrimitive();
+	}
 
-    public void deleteBlueprint(String id) throws IOException {
-        deleteBlueprintPrimitive(id);
-    }
+	public CatalogItem createCatalogItem(CatalogItem payload) throws IOException {
+		return createCatalogItemPrimitive(objectMapper.convertValue(payload, Map.class));
+	}
 
-    // --- Catalog items
-    public List<CatalogItem> getCatalogItems() throws IOException { return getCatalogItemsPrimitive(); }
-    public CatalogItem createCatalogItem(CatalogItem payload) throws IOException { return createCatalogItemPrimitive(objectMapper.convertValue(payload, Map.class)); }
-    public CatalogItem createCatalogItem(Map<String,Object> payload) throws IOException { return createCatalogItemPrimitive(payload); }
-    public CatalogItem updateCatalogItem(String id, CatalogItem payload) throws IOException { return updateCatalogItemPrimitive(id, objectMapper.convertValue(payload, Map.class)); }
-    public CatalogItem updateCatalogItem(String id, Map<String,Object> payload) throws IOException { return updateCatalogItemPrimitive(id, payload); }
-    public void deleteCatalogItem(String id) throws IOException { deleteCatalogItemPrimitive(id); }
+	public CatalogItem updateCatalogItem(String id, CatalogItem payload) throws IOException {
+		return updateCatalogItemPrimitive(id, objectMapper.convertValue(payload, Map.class));
+	}
 
-    // --- Content sources
-    public List<ContentSource> getContentSources() throws IOException { return getContentSourcesPrimitive(); }
-    public ContentSource createContentSource(Map<String,Object> payload) throws IOException { return createContentSourcePrimitive(payload); }
-    public ContentSource createContentSource(ContentSource payload) throws IOException { return createContentSourcePrimitive(objectMapper.convertValue(payload, Map.class)); }
-    public ContentSource updateContentSource(String id, Map<String,Object> payload) throws IOException { return updateContentSourcePrimitive(id, payload); }
-    public ContentSource updateContentSource(String id, ContentSource payload) throws IOException { return updateContentSourcePrimitive(id, objectMapper.convertValue(payload, Map.class)); }
-    public void deleteContentSource(String id) throws IOException { deleteContentSourcePrimitive(id); }
+	public void deleteCatalogItem(String id) throws IOException {
+		deleteCatalogItemPrimitive(id);
+	}
 
-    // --- Custom resource types
-    public List<CustomResourceType> getCustomResources() throws IOException { return getCustomResourcesPrimitive(); }
-    public CustomResourceType createCustomResourceType(Map<String,Object> payload) throws IOException { return createCustomResourceTypePrimitive(payload); }
-    public CustomResourceType createCustomResourceType(CustomResourceType payload) throws IOException { return createCustomResourceTypePrimitive(objectMapper.convertValue(payload, Map.class)); }
-    public void deleteCustomResourceType(String id) throws IOException { deleteCustomResourceTypePrimitive(id); }
+	// --- Content sources
+	public List<ContentSource> getContentSources() throws IOException {
+		return getContentSourcesPrimitive();
+	}
 
-    // --- Resource actions
-    public List<ResourceAction> getResourceActions() throws IOException { return getResourceActionsPrimitive(); }
-    public ResourceAction createResourceAction(Map<String,Object> payload) throws IOException { return createResourceActionPrimitive(payload); }
-    public ResourceAction createResourceAction(ResourceAction payload) throws IOException { return createResourceActionPrimitive(objectMapper.convertValue(payload, Map.class)); }
-    public void deleteResourceAction(String id) throws IOException { deleteResourceActionPrimitive(id); }
+	public ContentSource createContentSource(ContentSource payload) throws IOException {
+		return createContentSourcePrimitive(objectMapper.convertValue(payload, Map.class));
+	}
 
-    // --- Property groups
-    public List<PropertyGroup> getPropertyGroups() throws IOException { return getPropertyGroupsPrimitive(); }
-    public PropertyGroup createPropertyGroup(Map<String,Object> payload) throws IOException { return createPropertyGroupPrimitive(payload); }
-    public PropertyGroup createPropertyGroup(PropertyGroup payload) throws IOException { return createPropertyGroupPrimitive(objectMapper.convertValue(payload, Map.class)); }
-    public PropertyGroup updatePropertyGroup(String id, Map<String,Object> payload) throws IOException { return updatePropertyGroupPrimitive(id, payload); }
-    public PropertyGroup updatePropertyGroup(String id, PropertyGroup payload) throws IOException { return updatePropertyGroupPrimitive(id, objectMapper.convertValue(payload, Map.class)); }
-    public void deletePropertyGroup(String id) throws IOException { deletePropertyGroupPrimitive(id); }
+	public ContentSource updateContentSource(String id, ContentSource payload) throws IOException {
+		return updateContentSourcePrimitive(id, objectMapper.convertValue(payload, Map.class));
+	}
 
-    // --- Policies
-    public List<Policy> getPolicies() throws IOException { return getPoliciesPrimitive(); }
-    public Policy createPolicy(Map<String,Object> payload) throws IOException { return createPolicyPrimitive(payload); }
-    public Policy createPolicy(Policy payload) throws IOException { return createPolicyPrimitive(objectMapper.convertValue(payload, Map.class)); }
-    public void deletePolicy(String id) throws IOException { deletePolicyPrimitive(id); }
+	public void deleteContentSource(String id) throws IOException {
+		deleteContentSourcePrimitive(id);
+	}
 
-    // --- Catalog entitlements
-    public List<CatalogEntitlement> getCatalogEntitlements() throws IOException { return getCatalogEntitlementsPrimitive(); }
+	// --- Custom resource types
+	public List<CustomResourceType> getCustomResources() throws IOException {
+		return getCustomResourcesPrimitive();
+	}
 
-    // --- Scenarios
-    public List<Scenario> getScenarios() throws IOException { return getScenariosPrimitive(); }
+	public CustomResourceType createCustomResourceType(CustomResourceType payload) throws IOException {
+		return createCustomResourceTypePrimitive(objectMapper.convertValue(payload, Map.class));
+	}
 
-    // --- Subscriptions
-    public List<Subscription> getSubscriptions() throws IOException { return getSubscriptionsPrimitive(); }
+	public void deleteCustomResourceType(String id) throws IOException {
+		deleteCustomResourceTypePrimitive(id);
+	}
 
-    // Additional wrapper methods (catalog, content source, policies, etc.) can be
-    // added the same way when needed.
+	// --- Resource actions
+	public List<ResourceAction> getResourceActions() throws IOException {
+		return getResourceActionsPrimitive();
+	}
+
+	public ResourceAction createResourceAction(ResourceAction payload) throws IOException {
+		return createResourceActionPrimitive(objectMapper.convertValue(payload, Map.class));
+	}
+
+	public void deleteResourceAction(String id) throws IOException {
+		deleteResourceActionPrimitive(id);
+	}
+
+	// --- Property groups
+	public List<PropertyGroup> getPropertyGroups() throws IOException {
+		return getPropertyGroupsPrimitive();
+	}
+
+	public PropertyGroup createPropertyGroup(PropertyGroup payload) throws IOException {
+		return createPropertyGroupPrimitive(objectMapper.convertValue(payload, Map.class));
+	}
+
+	public PropertyGroup updatePropertyGroup(String id, PropertyGroup payload) throws IOException {
+		return updatePropertyGroupPrimitive(id, objectMapper.convertValue(payload, Map.class));
+	}
+
+	public void deletePropertyGroup(String id) throws IOException {
+		deletePropertyGroupPrimitive(id);
+	}
+
+	// --- Policies
+	public List<Policy> getPolicies() throws IOException {
+		return getPoliciesPrimitive();
+	}
+
+	public Policy createPolicy(Policy payload) throws IOException {
+		return createPolicyPrimitive(objectMapper.convertValue(payload, Map.class));
+	}
+
+	public void deletePolicy(String id) throws IOException {
+		deletePolicyPrimitive(id);
+	}
+
+	// --- Catalog entitlements
+	public List<CatalogEntitlement> getCatalogEntitlements() throws IOException {
+		return getCatalogEntitlementsPrimitive();
+	}
+
+	// --- Scenarios
+	public List<Scenario> getScenarios() throws IOException {
+		return getScenariosPrimitive();
+	}
+
+	// --- Subscriptions
+	public List<Subscription> getSubscriptions() throws IOException {
+		return getSubscriptionsPrimitive();
+	}
+
+	// Additional wrapper methods (catalog, content source, policies, etc.) can be
+	// added the same way when needed.
 }
