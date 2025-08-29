@@ -131,8 +131,6 @@ Note that the functionality is backwards compatible - during push operation the 
   }
 }
 ```
-
-[//]: # (Explain in details if something needs to be done)
 ### *Add support for special characters in supermetric names*
 
 #### Previous Behavior
