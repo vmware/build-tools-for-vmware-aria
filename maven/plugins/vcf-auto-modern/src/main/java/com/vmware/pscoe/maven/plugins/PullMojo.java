@@ -65,7 +65,7 @@ public class PullMojo extends AbstractIacMojo {
         Package pkg = PackageFactory.getInstance(PackageType.VCF_AUTO_MODERN, pkgFile);
         
         try {
-            PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForVcfa());
+            PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForVcfAuto());
             store.exportPackage(pkg, new File(project.getBasedir(), "content.yaml"), dryrun);
             PackageManager.copyContents(new File(pkg.getFilesystemPath()),
                     new File(pkgInfoProvider.getSourceDirectory().getAbsolutePath()));

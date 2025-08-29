@@ -250,7 +250,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	 * @return VCFA configuration
 	 * @throws ConfigurationException
 	 */
-	protected ConfigurationVcfAuto getConfigurationForVcfa() throws ConfigurationException {
+	protected ConfigurationVcfAuto getConfigurationForVcfAuto() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCF_AUTO_MODERN);
 		if (configuration.isPresent()) {
 			return (ConfigurationVcfAuto) configuration.get();
