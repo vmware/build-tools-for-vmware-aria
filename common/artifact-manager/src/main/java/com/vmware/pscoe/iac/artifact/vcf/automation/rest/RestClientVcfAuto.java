@@ -175,6 +175,8 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return getSubscriptionsPrimitive();
 	}
 
-	// Additional wrapper methods (catalog, content source, policies, etc.) can be
-	// added the same way when needed.
+	// --- Projects
+	public String getProjectId(final String projectName) throws IOException {
+		return getProjectIdPrimitive(projectName);
+	}
 }

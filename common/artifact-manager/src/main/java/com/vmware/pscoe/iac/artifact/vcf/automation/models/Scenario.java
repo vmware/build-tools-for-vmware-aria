@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Scenario {
+public class Scenario implements Identifiable {
     private String id;
     private String name;
     private String body;
@@ -36,4 +36,3 @@ public class Scenario {
     public String getBody() { return body; }
     public void setBody(String body) { this.body = body; }
 }
-

@@ -84,8 +84,8 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             String name = bpSummary.getName();
             String id = bpSummary.getId();
             try {
-                VcfaBlueprint details = restClient.getBlueprintById(id);
-                String content = details.getContent();
+                VcfaBlueprint bp = restClient.getBlueprintById(id);
+                String content = bp.getContent();
 
                 String bpFolderPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), "blueprints", name)
                         .toString();
@@ -93,7 +93,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 if (!bpFolder.exists()) bpFolder.mkdirs();
 
                 String detailsFileName = bpFolderPath + File.separator + "details.json";
-                String detailsJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(details);
+                String detailsJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(bp.asExportMap());
                 Files.write(Paths.get(detailsFileName), detailsJson.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
 
                 String contentFileName = bpFolderPath + File.separator + "content.yaml";
@@ -128,6 +128,9 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             String content = Files.readAllLines(contentFile.toPath(), StandardCharsets.UTF_8).stream().collect(Collectors.joining(System.lineSeparator()));
             bp.setContent(content);
         }
+
+		String projectId = restClient.getProjectId();
+		bp.setProjectId(projectId);
 
         // find by name on server
         VcfaBlueprint existing = serverBps.stream().filter(m -> bpName.equals(m.getName())).findFirst().orElse(null);

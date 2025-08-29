@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PropertyGroup {
+public class PropertyGroup implements Identifiable {
     private String id;
     private String name;
     private String type;
@@ -40,4 +40,3 @@ public class PropertyGroup {
     public Map<String,Object> getProperties() { return properties; }
     public void setProperties(Map<String,Object> properties) { this.properties = properties; }
 }
-

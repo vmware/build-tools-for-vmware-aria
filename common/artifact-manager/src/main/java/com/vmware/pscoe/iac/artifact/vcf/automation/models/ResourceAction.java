@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResourceAction {
+public class ResourceAction implements Identifiable {
     private String id;
     private String name;
     private String description;
@@ -40,4 +40,3 @@ public class ResourceAction {
     public Map<String,Object> getRunnableItem() { return runnableItem; }
     public void setRunnableItem(Map<String,Object> runnableItem) { this.runnableItem = runnableItem; }
 }
-

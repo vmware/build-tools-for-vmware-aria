@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ContentSource {
+public class ContentSource implements Identifiable {
     private String id;
     private String name;
     private String type;
@@ -40,4 +40,3 @@ public class ContentSource {
     public Map<String,Object> getConfig() { return config; }
     public void setConfig(Map<String,Object> config) { this.config = config; }
 }
-

@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Policy {
+public class Policy implements Identifiable {
     private String id;
     private String name;
     private String description;
@@ -44,4 +44,3 @@ public class Policy {
     public Map<String,Object> getDefinition() { return definition; }
     public void setDefinition(Map<String,Object> definition) { this.definition = definition; }
 }
-

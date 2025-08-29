@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CustomResourceType {
+public class CustomResourceType implements Identifiable {
     private String id;
     private String name;
     private String description;
@@ -40,4 +40,3 @@ public class CustomResourceType {
     public Map<String,Object> getProperties() { return properties; }
     public void setProperties(Map<String,Object> properties) { this.properties = properties; }
 }
-

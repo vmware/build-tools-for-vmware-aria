@@ -54,7 +54,7 @@ public class PushMojo extends AbstractIacMojo {
 	private List<String> filesChanged;
 
 	private static Package packageFromArtifact(Artifact artifact) {
-		return PackageFactory.getInstance(PackageType.fromExtension(artifact.getType()), artifact.getFile(),
+		return PackageFactory.getInstance(PackageType.fromType(artifact.getType()), artifact.getFile(),
 				new MavenArtifactPackageInfoProvider(artifact).getPackageName());
 	}
 
@@ -63,14 +63,14 @@ public class PushMojo extends AbstractIacMojo {
 				.collect(Collectors.groupingBy(Artifact::getType));
 
 		for (Map.Entry<String, List<Artifact>> type : artifactsByType.entrySet()) {
-			PackageType pkgType = PackageType.fromExtension(type.getKey());
+			PackageType pkgType = PackageType.fromType(type.getKey());
 			if (pkgType == null) {
 				continue;
 			}
 			try {
 				List<Package> packages = artifactsByType.get(type.getKey()).stream().map(PushMojo::packageFromArtifact)
 						.collect(Collectors.toList());
-				PackageStore<?> store = getConfigurationForType(PackageType.fromExtension(type.getKey()))
+				PackageStore<?> store = getConfigurationForType(PackageType.fromType(type.getKey()))
 						.flatMap(configuration -> Optional.of(PackageStoreFactory.getInstance(configuration)))
 						.orElseThrow(() -> new ConfigurationException(
 								"Unable to find PackageStore based on configuration. Make sure there is configuration for type: "
@@ -94,7 +94,7 @@ public class PushMojo extends AbstractIacMojo {
 
 		this.printFilesSelected();
 		final String artifactType = project.getArtifact().getType();
-		final PackageType packageType = PackageType.fromExtension(artifactType);
+		final PackageType packageType = PackageType.fromType(artifactType);
 		if (packageType == null) {
 			getLog().warn(String.format("Skipping push because of unsupported artifact type '%s'", artifactType));
 			return;

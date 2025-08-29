@@ -21,14 +21,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
+import java.lang.reflect.Field;
+import com.vmware.pscoe.iac.artifact.common.annotation.SkipExport;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class VcfaBlueprint {
+public class VcfaBlueprint implements Identifiable {
     private String id;
     private String name;
     private String description;
     private String content;
+    @SkipExport
+    private String projectId;
 
     @JsonProperty("requestScopeOrg")
     private Boolean requestScopeOrg;
@@ -47,11 +51,10 @@ public class VcfaBlueprint {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
+	public String getProjectId() { return projectId; }
+    public void setProjectId(String projectId) { this.projectId = projectId; }
+
     public Boolean getRequestScopeOrg() { return requestScopeOrg; }
     public void setRequestScopeOrg(Boolean requestScopeOrg) { this.requestScopeOrg = requestScopeOrg; }
 
-    public Map<String,Object> toMap() {
-        ObjectMapper m = new ObjectMapper();
-        return m.convertValue(this, Map.class);
-    }
 }

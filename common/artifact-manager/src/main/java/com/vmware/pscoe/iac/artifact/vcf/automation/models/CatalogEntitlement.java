@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CatalogEntitlement {
+public class CatalogEntitlement implements Identifiable {
     private String id;
     private String name;
     private String description;
@@ -40,4 +40,3 @@ public class CatalogEntitlement {
     public Map<String,Object> getDetails() { return details; }
     public void setDetails(Map<String,Object> details) { this.details = details; }
 }
-
