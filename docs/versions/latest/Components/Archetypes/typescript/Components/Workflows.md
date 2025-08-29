@@ -38,6 +38,7 @@ This decorator is used to specify a default error handler. It can be bound eithe
 
 - `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
 - `exceptionVariable` - Exception variable that will hold the exception data when triggered.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -125,8 +126,8 @@ This decorator is used to specify a scriptable task.
 
 ##### Supported Parameters
 
-- `target` - The name of the next in line item. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the wf. If this is set to a string, but it does not exist in the workflow, it will point to the end of the wf.
-- `exception` - **Not implemented yet**
+- `target` - The name of the next in line item. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the wf. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 #### `@WaitingTimerItem`
 
@@ -135,6 +136,7 @@ This decorator is used to specify a waiting timer.
 ##### Supported Parameters
 
 - `target` - The name of the next in line item. Same as `@Item`. This decorator expects an `@In` parameter with the name of the waiting timer. If one isn't added, the workflow will not work.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 ##### Example
 
@@ -177,6 +179,7 @@ This decorator is used to specify a decision item.
 
 - `target` - The name of the next in line item. Same as `@Item`.
 - `else` - The name of the next in line item if the decision is false. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the wf. If this is set to a string, but it does not exist in the workflow, it will point to the end of the wf.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 ##### Example
 
@@ -222,6 +225,7 @@ The decorator is used to specify a workflow item that will be called.
 
 - `target` - The name of the next in line item. Same as `@Item`.
 - `linkedItem` - The ID of the workflow to call.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -233,6 +237,7 @@ The decorator is used to specify a scheduled workflow item that will be called.
 
 - `target` - The name of the next in line item. Same as `@Item`.
 - `linkedItem` - The ID of the workflow to schedule.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -319,6 +324,7 @@ This is a meta decorator. Add this to whichever function you want to be the entr
 - `@AsyncWorkflowItem({target: "", linkedItem: "" })`
   - `target` - The name of the next in line item.
   - `linkedItem` - The ID of the workflow to call
+  - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 ##### Outputs
 
@@ -337,6 +343,7 @@ No special inputs are needed for the AsyncWorkflowItem.
 - `@ActionItem({target: "", scriptModule: "" })`
   - `target` - The name of the next in line item. Same as `@Item`.
   - `scriptModule` - The path of the action you want to call and the action name, separated by `/`. Example: `com.vmware.pscoe.library.general/echo`.
+  - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -351,6 +358,7 @@ The decorator is used to specify an user interaction workflow item.
 ##### Supported Parameters
 
 - `target` - The name of the target to that user interaction workflow item is connected to. You can specify another user interaction workflow item as a target, thus chaining multiple user interaction components.
+- `exception` - The name of the next in line item in case an exception or a timeout is encountered occured during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators.
 
