@@ -13,7 +13,7 @@
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
 		<revision>4.11.1-SNAPSHOT</revision>
-		<java.version>23</java.version>
+		<java.version>17</java.version>
 	</properties>
 
 	<licenses>
