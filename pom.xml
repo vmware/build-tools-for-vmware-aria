@@ -12,8 +12,8 @@
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
-		<revision>4.10.1-SNAPSHOT</revision>
-		<java.version>22</java.version>
+		<revision>4.11.1-SNAPSHOT</revision>
+		<java.version>17</java.version>
 	</properties>
 
 	<licenses>
