@@ -15,7 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: ["17", "21"]
+        java: ["17", "21", "24"]
         maven: ["3.9.2"]
         node: ["22.13.1"]
         node_vmware_samples: ["22.13.1"]
@@ -110,10 +110,10 @@ jobs:
 
       # Install or deploy maven packages
       - name: Build plugins
-        run: mvn clean install -D modules.plugins --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: mvn clean install -D modules.plugins -D java.version=${{ matrix.java }} --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
 
       - name: Build plugins + tools
-        run: mvn ${{ env.MVN_BUILD_COMMAND }} -D modules.plugins -D modules.tools --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: mvn ${{ env.MVN_BUILD_COMMAND }} -D modules.plugins -D modules.tools -D java.version=${{ matrix.java }} --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       
       - name: Build repository
         if: ${{ matrix.java == 17 }}
