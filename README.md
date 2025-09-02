@@ -38,7 +38,7 @@ Build Tools for VMware Aria provides development and release management tools fo
 - npm: 6.14.x (One compatible with your node version)
 - node: 22.x.x (only 14 is supported for vcd-ng)
 - maven: 3.9.x
-- jdk: 17, 21
+- jdk: 17, 21, 24
 
 To check if the dependencies are met, you can run:
 
