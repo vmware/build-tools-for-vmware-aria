@@ -110,14 +110,13 @@ jobs:
 
       # Install or deploy maven packages
       - name: Build plugins
-        run: mvn clean install -D modules.plugins --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: mvn clean install -D modules.plugins -D java.version=${{ matrix.java }} --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
 
       - name: Build plugins + tools
-        run: mvn ${{ env.MVN_BUILD_COMMAND }} -D modules.plugins -D modules.tools --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: mvn ${{ env.MVN_BUILD_COMMAND }} -D modules.plugins -D modules.tools -D java.version=${{ matrix.java }} --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       
       - name: Build repository
-        if: ${{ matrix.java == 17 }}
-        run: mvn package -D modules.repository --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: mvn package -D modules.repository -D java.version=${{ matrix.java }} --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
 
       # Test the packages on build-tools-for-vmware-aria-samples
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
