@@ -27,7 +27,7 @@
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ### *Add support for Java 24*
-Java 24 is now included in the build matrix of `build` Workflow. Java version is dynamically populated to the `maven-compiler-plugin` based on the build matrix value. 
+Java 24 is now included in the build matrix of `build` Workflow. Java version is dynamically populated to the `maven-compiler-plugin` based on the build matrix value.
 
 ## Improvements
 
