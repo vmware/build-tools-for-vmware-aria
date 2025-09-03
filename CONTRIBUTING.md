@@ -35,7 +35,7 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
 - [Node.js](https://nodejs.org/), `~22.0.0`
 - [Npm](https://www.npmjs.com), `~6.14.13`
 - [Maven](https://maven.apache.org/), `~3.9.0`
-- [JDK](https://openjdk.org/projects/jdk/17/), `17-21`
+- [JDK](https://openjdk.org/projects/jdk/17/), `17-24`
 
 :scroll:**NOTE!** For an up-to-date pre-req check please use the [healthcheck script](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/health.sh)
 
