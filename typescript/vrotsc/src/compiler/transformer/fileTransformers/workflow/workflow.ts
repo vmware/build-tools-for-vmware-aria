@@ -300,6 +300,8 @@ function createWorkflowDescriptor(classNode: ts.ClassDeclaration): WorkflowDescr
         rootItem: null,
         items: [],
         presentation: undefined,
-        description: undefined
+        description: undefined,
+        restartMode: undefined,
+        resumeFromFailedMode: undefined
     };
 }

@@ -8,19 +8,75 @@ You can use the method decorators to define various canvas items that will be in
 
 ## Table of Contents
 
-1. [Argument Decorators](#argument-decorators)
-2. [Available Method Decorators](#available-method-decorators)
+1. [Workflow Decorator](workflow)
+2. [Argument Decorators](#argument-decorators)
+3. [Available Method Decorators](#available-method-decorators)
    - [`@DefaultErrorHandler`](#defaulterrorhandler)
    - [`@WorkflowEndItem`](#workflowenditem)
    - [`@Item`](#item)
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
+   - [`@WorkflowItem`](#workflowitem)
+   - [`@ScheduledWorkflowItem`](#scheduledworkflowitem)
    - [`@RootItem`](#rootitem)
-   - [`@DefaultErrorHandler`](#defaulterrorhandler)
+   - [`@AsyncWorkflowItem`](#asyncworkflowitem)
+   - [`@ActionItem`](#actionitem)
    - [`@UserInteractionWorkflowItem`](#userinteractionworkflowitem)
-   - [`@WorkflowEndItem`](#workflowenditem)
-3. [Custom Form support](#custom-form-support)
-4. [Example Workflow](#example-workflow)
+4. [Custom Form support](#custom-form-support)
+5. [Example Workflow](#example-workflow)
+
+### Workflow Decorator
+
+```ts
+@Workflow({
+  id: "",
+  name: "Sample Workflow",
+  path: "VMware/PSCoE",
+  version: "1.0.0",
+  description: "Sample workflow description",
+  attributes: {},
+  input: {
+    foo: { type: "string" },
+    bar: { type: "string" },
+  },
+  output: {
+    result: { type: "Any" },
+  },
+  presentation: "",
+  restartMode: 1,
+  resumeFromFailedMode: 0
+})
+```
+
+#### Supported Parameters
+
+- `id` - workflow id.
+- `name` - workflow name.
+- `path` - workflow location path.
+- `version` - workflow version.
+- `description` - workflow description.
+- `attributes` - list of workflow attributes. See details below.
+- `input` - list of workflow input parameters. See details below.
+- `output` - list of workflow output parameters. See details below.
+- `presentation` - custom presentation of the workflow. If omitted, presentation is build based on parameters definitions.
+- `restartMode` - server restart behaviour (0 - do not resume workflow run, 1 - resume workflow run (default)).
+- `resumeFromFailedMode` - resume workflow from failed behavior (0 - system default, 1 - enabled, 2 - disabled).
+
+The following parameters are supported for each element of attributes, input, and output:
+- `type` - parameter type.
+- `title` - parameter name.
+- `description` - parameter description.
+- `value` or `defaultValue` - parameter value (attributes only).
+- `bind` - parameter bind to configuration flag (attributes only). Configuration reference is stored in value or defaultValue parameter.
+- parameters that apply to presentation, ignored when custom presentation is used:
+  - `required` - if parameter to be marked mandatory.
+  - `multiLine` - if parameter to be marked as multiline.
+  - `hidden` - if parameter to be hidden.
+  - `maxStringLength` - parameter max string length.
+  - `minStringLength` - parameter min string length.
+  - `numberFormat` - parameter number format.
+  - `availableValues` - list of parameter available values.
+
 
 ### Argument Decorators
 
@@ -34,7 +90,7 @@ You can use the method decorators to define various canvas items that will be in
 
 This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
 
-#### Supported Parameters
+##### Supported Parameters
 
 - `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
 - `exceptionVariable` - Exception variable that will hold the exception data when triggered.
@@ -42,7 +98,7 @@ This decorator is used to specify a default error handler. It can be bound eithe
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
-#### Example
+##### Example
 
 ```ts
 import {
