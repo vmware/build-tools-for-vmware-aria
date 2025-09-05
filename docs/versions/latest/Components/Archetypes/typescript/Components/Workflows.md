@@ -8,7 +8,7 @@ You can use the method decorators to define various canvas items that will be in
 
 ## Table of Contents
 
-1. [Workflow Decorator](workflow)
+1. [Workflow Decorator](#workflow-decorator)
 2. [Argument Decorators](#argument-decorators)
 3. [Available Method Decorators](#available-method-decorators)
    - [`@DefaultErrorHandler`](#defaulterrorhandler)
