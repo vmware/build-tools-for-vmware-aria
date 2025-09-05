@@ -54,6 +54,8 @@ export interface WorkflowDescriptor {
 	parameters: WorkflowParameter[];
 	items: WorkflowItemDescriptor[];
 	description: string;
+	restartMode: number;
+	resumeFromFailedMode: number;
 }
 /**
  * Represents a Workflow item (task, decision, waiting timer, polyglot)

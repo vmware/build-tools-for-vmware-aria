@@ -19,6 +19,27 @@
 
 ## Features
 
+### *Add restart and resume behaviour configuration to @Workflow decorator*
+
+Workflow decorator now supports passing values for *Server restart behavior* and *Resume workflow from failed behavior*.
+
+```typescript
+    @Workflow({
+        ...,
+        restartMode: 1,
+        resumeFromFailedMode: 0
+    })
+```
+
+The following values are allowed:
+- restartMode
+  - 0: Do not resume workflow run
+  - 1: Resume workflow run (default)
+- resumeFromFailedMode
+  - 0: System default (default)
+  - 1: Enabled
+  - 2: Disabled
+
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)

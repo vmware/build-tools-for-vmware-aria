@@ -50,6 +50,8 @@ interface VroWorkflow {
 	output?: VroParameterList;
 	attributes?: VroAttributeList;
 	presentation?: string;
+	restartMode?: number;
+	resumeFromFailedMode?: number;
 }
 
 interface VroWorkflowDecorator {

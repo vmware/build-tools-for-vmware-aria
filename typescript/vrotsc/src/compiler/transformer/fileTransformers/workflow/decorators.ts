@@ -246,6 +246,14 @@ function buildWorkflowDecorator(
 					workflowInfo.description = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
+				case "restartMode": {
+					workflowInfo.restartMode = parseInt((<ts.NumericLiteral>property.initializer).text);
+					break;
+				}
+				case "resumeFromFailedMode": {
+					workflowInfo.resumeFromFailedMode = parseInt((<ts.NumericLiteral>property.initializer).text);
+					break;
+				}
 				case "input": {
 					buildWorkflowDecoratorParameters(
 						workflowInfo.parameters,
