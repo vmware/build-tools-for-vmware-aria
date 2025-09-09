@@ -30,7 +30,7 @@ jobs:
           persist-credentials: false
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
 
@@ -128,7 +128,7 @@ jobs:
           path: build-tools-for-vmware-aria-samples
 
       - name: Use Node.js ${{ matrix.node_vmware_samples }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node_vmware_samples }}
 
