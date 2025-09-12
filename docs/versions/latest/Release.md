@@ -77,7 +77,7 @@ This is just an internal restructuring effort, no functionality was changed.
 
 ### *Fixed UserInteractionItem decorator options binding
 
-When a function is decorated by @UserInteractionItem, it may receive the following 4 parameters: 
+When a function is decorated by @UserInteractionItem, it may receive the following 4 parameters:
 security_assignees, security_assignee_groups, security_group, timeout_date.
 If passed, they will be bound to the following options respectively:
 security.assignees, security.assignee.groups, security.group, timeout.date.

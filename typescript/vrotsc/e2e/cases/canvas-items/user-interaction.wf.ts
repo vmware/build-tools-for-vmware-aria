@@ -22,7 +22,7 @@ export class UserInteractionWorkflow {
     @UserInteractionItem({
         target: "userInteraction3Enter"
     })
-    public userInteraction2Enter(@In security_assignees: LdapUser[], @In security_assignee_groups: LdapGroup[], @In security_group: LdapGroup, @In timeout_date?: Date, @In userInteractionAnswer?: string) {
+    public userInteraction2Enter(@In security_assignees: LdapUser[], @In security_assignee_groups: LdapGroup[], @In security_group: LdapGroup, @In timeout_date?: Date, @Out userInteractionAnswer?: string) {
         System.log(`User interaction component answered with '${userInteractionAnswer}'`);
     }
 
