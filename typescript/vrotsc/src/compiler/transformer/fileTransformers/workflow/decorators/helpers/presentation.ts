@@ -45,8 +45,18 @@ export function buildItemParameterBindings(
 	parameters.forEach(paramName => {
 		const param = itemInfo.parent.parameters.find((p: WorkflowParameter) => p.name === paramName);
 		if (param) {
-			const isWaitingTimer = itemInfo.strategy.getDecoratorType() === WorkflowItemType.WaitingTimer;
-			stringBuilder.append(`<bind name="${isWaitingTimer ? "timer.date" : param.name}" type="${param.type}" export-name="${param.name}" />`).appendLine();
+			var bindName = param.name;
+			if (itemInfo.strategy.getDecoratorType() === WorkflowItemType.UserInteractionItem) {
+				switch (param.name) {
+					case "security_assignees": bindName = "security.assignees"; break;
+					case "security_assignee_groups": bindName = "security.assignee.groups"; break;
+					case "security_group": bindName = "security.group"; break;
+					case "timeout_date": bindName = "timeout.date"; break;
+				}
+			} else if (itemInfo.strategy.getDecoratorType() === WorkflowItemType.WaitingTimer) {
+				bindName = "timer.date";
+			}
+			stringBuilder.append(`<bind name="${bindName}" type="${param.type}" export-name="${param.name}" />`).appendLine();
 		}
 	});
 	stringBuilder.unindent();
