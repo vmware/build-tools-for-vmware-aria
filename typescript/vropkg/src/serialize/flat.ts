@@ -24,6 +24,7 @@ import * as p from "../packaging"
 import { exist, isDirectory } from "../util";
 import { getPackageName, serialize, zipbundle, getActionXml, saveOptions, xmlOptions, infoOptions } from "./util"
 import * as archiver from "archiver";
+import { Buffer } from 'buffer';
 import { decode } from "../encoding";
 import * as xmlDoc from "xmldoc";
 import { DEFAULT_ENCODING, FORM_ITEM_TEMPLATE, VSO_RESOURCE_INF } from "../constants";
@@ -52,8 +53,8 @@ const initializeContext = (target: string) => {
     // Clean up before start
     fs.pathExistsSync(target) && fs.removeSync(target);
 
-    const bundle = (name: string): Promise<void> => {
-        const arch = p.archive(path.join(target, name));
+    const bundle = async (name: string): Promise<void> => {
+        const arch = await p.archive(path.join(target, name));
         [CERTIFICATES, ELEMENTS, SIGNATURES].forEach(folder => arch.directory(path.join(target, folder), folder));
         return arch.append(fs.createReadStream(path.join(target, DUNES_META_INF)), { name: DUNES_META_INF }).finalize();
     }
@@ -88,22 +89,36 @@ const initializeElementContext = (target: string) => {
 }
 
 const serializeFlatElementData = (target: string) => {
-    let bundle: archiver.Archiver;
+    let archiver: p.ManagedArchiver | undefined;
 
-    const initBundle = () => {
-        bundle = p.archive(target);
-    }
-    const append = (name: string) => (data: any) => {
+    const createBundle = async () => {
+        archiver = await p.archive(target);
+        return archiver;
+    };
+
+    const append = (name: string) => async (data: any) => {
+        if (!archiver) {
+            throw new Error('Bundle not initialized. Call initBundle first.');
+        }
+        
         if (data) {
-            bundle.append(Buffer.from(data, 'utf8'), { name: `${VSO_RESOURCE_INF}/${name}` })
+            const buffer = data instanceof Buffer ? data : Buffer.from(data, 'utf8');
+            await archiver.append(buffer, { name: `${VSO_RESOURCE_INF}/${name}` });
         } else {
-			getLogger().debug(`Element not available ${VSO_RESOURCE_INF}/${name}`);
+            getLogger().debug(`Element not available ${VSO_RESOURCE_INF}/${name}`);
         }
     };
 
     return {
         target: target,
-        initBundle: initBundle,
+        initBundle: async () => {
+            try {
+                archiver = await createBundle();
+            } catch (error) {
+                getLogger().error(`Failed to initialize bundle at ${target}: ${error instanceof Error ? error.message : String(error)}`);
+                throw error;
+            }
+        },
         allowedOperations: append(DATA_ALLOWEDOPERATIONS),
         description: append(DATA_DESCRIPTION),
         id: append(DATA_ID),
@@ -111,7 +126,12 @@ const serializeFlatElementData = (target: string) => {
         name: append(DATA_NAME),
         version: append(DATA_VERSION),
         data: append(DATA),
-        save: () => bundle.finalize()
+        save: async () => {
+            if (!archiver) {
+                throw new Error('Bundle not initialized. Call initBundle first.');
+            }
+            return archiver.finalize();
+        }
     }
 }
 
@@ -139,21 +159,61 @@ const serializeFlatDunesMetadata = async (context: any, pkg: t.VroPackageMetadat
     return context.dunesMetaInf(node.end(saveOptions));
 }
 
-const serializeFlatElements = (context: any, pkg: t.VroPackageMetadata): Array<Promise<void>> => {
-    return pkg.elements.map(async element => {
-        const elementContext = context.elements(element.id)
-        await Promise.all([
-            serializeFlatElementInfo(elementContext, pkg, element),
-            serializeFlatElementCategory(elementContext, element),
-            serializeFlatElementContent(elementContext, pkg, element),
-            serializeFlatElementBundle(elementContext, element),
-            serializeFlatElementTags(elementContext, element),
-            serializeFlatElementInputForm(elementContext, element),
-            serializeFlatElementInputFormItems(elementContext, element)
-        ]);
+const MAX_CONCURRENT_ELEMENTS = 5;
 
-        return exportPackageElementContentSignature(elementContext, pkg);
-    });
+/**
+ * Process a batch of elements with proper error handling
+ */
+const processBatch = async (elements: t.VroNativeElement[], context: any, pkg: t.VroPackageMetadata): Promise<void[]> => {
+    try {
+        const promises = elements.map(async element => {
+            try {
+                const elementContext = context.elements(element.id);
+                // Process each component sequentially for the element
+                await serializeFlatElementInfo(elementContext, pkg, element);
+                await serializeFlatElementCategory(elementContext, element);
+                await serializeFlatElementContent(elementContext, pkg, element);
+                await serializeFlatElementBundle(elementContext, element);
+                await serializeFlatElementTags(elementContext, element);
+                await serializeFlatElementInputForm(elementContext, element);
+                await serializeFlatElementInputFormItems(elementContext, element);
+                return exportPackageElementContentSignature(elementContext, pkg);
+            } catch (error) {
+                getLogger().error(`Error processing element ${element.id}: ${error.message}`);
+                throw error;
+            }
+        });
+        
+        const results = await Promise.all(promises);
+        return results;
+    } catch (error) {
+        getLogger().error(`Error processing batch of elements: ${error.message}`);
+        throw error;
+    }
+};
+
+/**
+ * Process elements in controlled batches to prevent file handle exhaustion
+ */
+const serializeFlatElements = async (context: any, pkg: t.VroPackageMetadata): Promise<void[]> => {
+    const elements = pkg.elements;
+    const results: void[] = [];
+    
+    // Process elements in batches of MAX_CONCURRENT_ELEMENTS
+    for (let i = 0; i < elements.length; i += MAX_CONCURRENT_ELEMENTS) {
+        const batch = elements.slice(i, i + MAX_CONCURRENT_ELEMENTS);
+        getLogger().debug(`Processing batch of ${batch.length} elements (${i + 1} to ${i + batch.length} of ${elements.length})`);
+        
+        try {
+            const batchResults = await processBatch(batch, context, pkg);
+            results.push(...batchResults);
+        } catch (error) {
+            getLogger().error(`Failed to process batch starting at element ${i + 1}: ${error.message}`);
+            throw error;
+        }
+    }
+    
+    return results;
 }
 
 const serializeFlatElementInfo = async (context: any, pkg: t.VroPackageMetadata, element: t.VroNativeElement): Promise<void> => {
@@ -238,17 +298,25 @@ const serializeFlatElementContent = async (context: any, pkg: t.VroPackageMetada
         case t.VroElementType.ResourceElement: {
             const data = context.dataComplex;
             const value = (name: string) => element.attributes[name.replace('attribute_', '')]
-            // Order is important for ZIP checksum
-            data.initBundle();
-            data.id(value(DATA_ID));
-            data.name(value(DATA_NAME));
-            data.version(pkgVersion);
-            data.description(value(DATA_DESCRIPTION));
-            data.mimetype(value(DATA_MIMETYPE));
-            data.allowedOperations(value(DATA_ALLOWEDOPERATIONS));
-            data.data(Buffer.from(fs.readFileSync(element.dataFilePath)));
+            
+            try {
+                // Initialize the bundle first
+                await data.initBundle();
+                
+                // Order is important for ZIP checksum
+                await data.id(value(DATA_ID));
+                await data.name(value(DATA_NAME));
+                await data.version(pkgVersion);
+                await data.description(value(DATA_DESCRIPTION));
+                await data.mimetype(value(DATA_MIMETYPE));
+                await data.allowedOperations(value(DATA_ALLOWEDOPERATIONS));
+                await data.data(Buffer.from(fs.readFileSync(element.dataFilePath)));
 
-            return data.save();
+                return data.save();
+            } catch (error) {
+                getLogger().error(`Failed to process ResourceElement ${element.id}: ${error instanceof Error ? error.message : String(error)}`);
+                throw error;
+            }
         }
         case t.VroElementType.ScriptModule: {
             content = getActionXml(element.id, element.name, element.description, element.action);
@@ -291,12 +359,27 @@ const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata):
 
 const serializeFlat = async (pkg: t.VroPackageMetadata, targetPath: string) => {
     const context = initializeContext(targetPath);
+    
+    // Process certificates
+    const certificatePromises = serializeFlatCertificate(context, pkg);
+    
+    // Process metadata
+    const metadataPromise = serializeFlatDunesMetadata(context, pkg);
+    
+    // Process elements
+    const elementsPromise = serializeFlatElements(context, pkg);
+    
+    // Wait for all processes to complete
     await Promise.all([
-        ...serializeFlatCertificate(context, pkg),
-        serializeFlatDunesMetadata(context, pkg),
-        ...serializeFlatElements(context, pkg)])
+        ...certificatePromises,
+        metadataPromise,
+        elementsPromise
+    ]);
 
+    // Process signatures last as they depend on all other files being written
     await serializeFlatSignatures(context, pkg);
+    
+    // Save and return the final package
     return context.save(getPackageName(pkg));
 }
 

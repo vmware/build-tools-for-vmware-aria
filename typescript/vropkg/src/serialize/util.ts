@@ -19,7 +19,9 @@ import * as t from "../types";
 import getLogger from "../logger";
 import * as xmlbuilder from "xmlbuilder";
 import * as CRC from "crc-32";
-import { JSON_MINOR_IDENT} from "../constants";
+import { JSON_MINOR_IDENT } from "../constants";
+import { FileUtil } from '../util/FileUtil';
+import { archive, ManagedArchiver } from '../packaging';
 
 export const saveOptions = {
     pretty: false
@@ -49,8 +51,8 @@ export const serialize = (target: string) => {
 /**
  * Used to asynchronously write a resource that is can be optionally zipped.
  * @param target The target directory where the new resource should be placed.
- * @return A function that ccepts a destination file name (for a resource) and based on it
- *         itself returns a fuction that can be used to write that resource.
+ * @return A function that accepts a destination file name (for a resource) and based on it
+ *         itself returns a function that can be used to write that resource.
  *         Finally the function that writes the resource is an asynchronous one.
  */
 export const zipbundle = (target: string) => {
@@ -58,13 +60,31 @@ export const zipbundle = (target: string) => {
     return (file: string) => async (sourcePath: string, isDir: boolean): Promise<void> => {
         const absoluteZipPath = path.join(target, file);
         if (isDir) {
-            let output = fs.createWriteStream(absoluteZipPath);
-            let archive = archiver('zip', { zlib: { level: 9 } });
-            archive.directory(sourcePath, false);
-            archive.pipe(output);
-            archive.finalize();
+            const fileUtil = FileUtil.getInstance();
+            try {
+                const managedArchiver = await archive(absoluteZipPath);
+                managedArchiver.directory(sourcePath, false);
+                await managedArchiver.finalize();
+            } catch (error) {
+                getLogger().error(`Error creating zip bundle for ${sourcePath}: ${error.message}`);
+                throw error;
+            }
         } else {
-            fs.copySync(sourcePath, absoluteZipPath);
+            // For single files, use FileUtil to manage the copy operation
+            try {
+                const fileUtil = FileUtil.getInstance();
+                const readStream = await fileUtil.createManagedReadStream(fs.createReadStream(sourcePath));
+                const writeStream = await fileUtil.createManagedWriteStream(fs.createWriteStream(absoluteZipPath));
+                
+                await new Promise<void>((resolve, reject) => {
+                    readStream.pipe(writeStream)
+                        .on('finish', resolve)
+                        .on('error', reject);
+                });
+            } catch (error) {
+                getLogger().error(`Error copying file ${sourcePath}: ${error.message}`);
+                throw error;
+            }
         }
     }
 }
