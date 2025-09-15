@@ -52,6 +52,10 @@ export function buildItemParameterBindings(
 					case "security_assignee_groups": bindName = "security.assignee.groups"; break;
 					case "security_group": bindName = "security.group"; break;
 					case "timeout_date": bindName = "timeout.date"; break;
+					default: 
+						if (parameterType === InputOutputBindings.IN_BINDINGS) {
+							console.warn(`Unsupported User Interaction parameter "${param.name}"`);
+						}
 				}
 			} else if (itemInfo.strategy.getDecoratorType() === WorkflowItemType.WaitingTimer) {
 				bindName = "timer.date";
