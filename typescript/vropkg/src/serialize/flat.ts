@@ -161,9 +161,11 @@ const limitConcurrency = (concurrency: number) => {
 };
 
 const serializeFlatElements = (context: any, pkg: t.VroPackageMetadata): Array<Promise<void>> => {
-    const defaultConc = process.platform === 'win32' ? 2 : 4;
+    // Use extremely conservative concurrency to prevent EMFILE errors
+    const defaultConc = process.platform === 'win32' ? 1 : 1;
     const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
     const limit = limitConcurrency(concurrency);
+    getLogger().debug(`Processing ${pkg.elements.length} elements with concurrency: ${concurrency}`);
     return pkg.elements.map(() => null).map((_, idx) => limit(async () => {
         const element = pkg.elements[idx];
         const elementContext = context.elements(element.id)
@@ -305,10 +307,13 @@ const exportPackageElementContentSignature = async (context: any, pkg: t.VroPack
 const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata): Promise<void> => {
     const target = context.target;
     const files = glob.sync((target + "/**/*").replace(/[\\/]+/gm, path.posix.sep), { nodir: true });
-    const defaultConc = process.platform === 'win32' ? 2 : 4;
+    // Use very conservative concurrency for Windows due to low file descriptor limits
+    const defaultConc = process.platform === 'win32' ? 1 : 1;
     const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
     const limit = limitConcurrency(concurrency);
 
+    getLogger().debug(`Processing ${files.length} files for signatures with concurrency: ${concurrency}`);
+    
     await Promise.all(files.map(file => limit(async () => {
         const location = path.normalize(file).replace(target, "");
         const buffer = await fs.readFile(file);

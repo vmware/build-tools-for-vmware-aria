@@ -23,6 +23,24 @@ import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed,
 import { exist } from "../util";
 import { FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME, DEFAULT_FORM_FILE_NAME, VSO_RESOURCE_INF } from "../constants";
 
+// Simple concurrency limiter to avoid too many concurrent open files
+const limitConcurrency = (concurrency: number) => {
+    let active = 0;
+    const queue: Array<() => void> = [];
+    const next = () => {
+        active--;
+        const fn = queue.shift();
+        if (fn) fn();
+    };
+    return <T>(fn: () => Promise<T>): Promise<T> => new Promise<T>((resolve, reject) => {
+        const run = () => {
+            active++;
+            fn().then((v) => { resolve(v); next(); }).catch((e) => { reject(e); next(); });
+        };
+        if (active < concurrency) run(); else queue.push(run);
+    });
+};
+
 /**
  * Extracts a vRO element of out unziped Package element folder
  * @param elementInfoPath - vro_package/elements/<id>/info
@@ -166,10 +184,16 @@ const parseFlat = async (nativePackagePath: string, destDir: string): Promise<t.
     let endArtifactIndex = pkgName?.endsWith("-SNAPSHOT") ? pkgName.length - "-SNAPSHOT".length : pkgName?.lastIndexOf("-") || 0;
     let pkgArtifactTokens = pkgName?.slice(0, endArtifactIndex).split(".");
 
+    // Use concurrency limiting to avoid too many open files
+    const infoFiles = glob.sync(path.join(tmp, "elements", "**", "info")?.replace(/[\\/]+/gm, path.posix.sep));
+    const defaultConc = process.platform === 'win32' ? 1 : 1;
+    const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
+    const limit = limitConcurrency(concurrency);
+    
+    getLogger().debug(`Processing ${infoFiles.length} element info files with concurrency: ${concurrency}`);
+    
     let elements = await Promise.all(
-        glob
-			.sync(path.join(tmp, "elements", "**", "info")?.replace(/[\\/]+/gm, path.posix.sep))
-            .map(file => parseFlatElement(file))
+        infoFiles.map(file => limit(async () => parseFlatElement(file)))
     );
     let result = <t.VroPackageMetadata>{
         groupId: pkgArtifactTokens?.slice(0, -1).join("."),

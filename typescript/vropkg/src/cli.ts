@@ -97,6 +97,13 @@ async function run() {
 	// Mitigate EMFILE/ENFILE by making fs operations graceful (queues retries)
 	// This also affects libraries using the native fs (e.g., archiver)
 	gracefulFs.gracefulify(nodeFs as any);
+	
+	// Set more aggressive retry settings for graceful-fs on Windows
+	if (process.platform === 'win32') {
+		(gracefulFs as any).MAX_OPEN = 32;  // Reduce max open files
+		(gracefulFs as any).RETRY_DELAY = 100;  // Increase retry delay
+	}
+	
 	let input = cmdArgs(cliOpts, { stopAtFirstUnknown: false }) as CliInputs;
 	
 	/** Instantiates the default logger */
@@ -111,6 +118,14 @@ async function run() {
 		try { getLogger().error('Uncaught exception:', err?.stack || err?.message || err); } catch { console.error('Uncaught exception:', err); }
 		process.exit(1);
 	});
+
+	// Log concurrency settings for debugging EMFILE issues
+	const defaultConc = process.platform === 'win32' ? 1 : 1;
+	const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
+	getLogger().debug(`File I/O concurrency limit set to: ${concurrency} (Platform: ${process.platform})`);
+	if (process.platform === 'win32') {
+		getLogger().info('Running on Windows - using conservative file I/O concurrency to prevent EMFILE errors');
+	}
 
 	// validate input data
 	let printHelp = validate(input);
