@@ -428,7 +428,7 @@ Those inputs are optional.
 - `security_group` (type `LdapGroup`) - Any user member of this group will be authorized to fill in this form.
 - `timeout_date` (type `Date`) - If not null, this input item will wait until date and will continue workflow execution.
 
-Note that those parameters should match also the input parameters of the workflow.
+Note that those parameters should match the input parameters of the workflow to ensure proper typization.
 
 ##### Known Limitations for the Input Parameters
 
