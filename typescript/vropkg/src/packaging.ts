@@ -28,22 +28,34 @@ import getLogger from "./logger";
  * @param outputPath archive given path
  * @returns {archiver.Archiver} archiver object
  */
-export const archive = (outputPath: string): archiver.Archiver => {
-	let instance =
-		archiver.create('zip', { zlib: { level: 6 } })
-			.on('warning', (err) => {
-				if (err.code === 'ENOENT') {
-					console.warn(err)
-				} else {
-					throw err;
-				}
-			})
-			.on('error', function (err) {
-				throw err;
-			})
-	instance.pipe(fs.createWriteStream(outputPath));
+// Extend the Archiver type at runtime with a done Promise for completion awareness
+export type ArchiverWithDone = archiver.Archiver & { done: Promise<void> };
 
-	return instance;
+export const archive = (outputPath: string): ArchiverWithDone => {
+	const output = fs.createWriteStream(outputPath);
+	const instance = archiver.create('zip', { zlib: { level: 6 } });
+
+	// Create a promise that resolves when the output stream is finished/closed
+	const done = new Promise<void>((resolve, reject) => {
+		const onError = (err: any) => reject(err);
+		output.on('finish', () => resolve());
+		output.on('close', () => resolve());
+		output.on('error', onError);
+		instance.on('error', onError);
+		instance.on('warning', (err: any) => {
+			// pass through non-ENOENT as error, log ENOENT
+			if (err?.code === 'ENOENT') {
+				console.warn(err);
+			} else {
+				onError(err);
+			}
+		});
+	});
+
+	instance.pipe(output);
+	(instance as any).done = done;
+
+	return instance as ArchiverWithDone;
 }
 
 /**

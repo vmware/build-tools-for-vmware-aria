@@ -15,6 +15,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as archiver from 'archiver';
+import { ArchiverWithDone, archive as createArchive } from "../packaging";
 import * as t from "../types";
 import getLogger from "../logger";
 import * as xmlbuilder from "xmlbuilder";
@@ -58,11 +59,10 @@ export const zipbundle = (target: string) => {
     return (file: string) => async (sourcePath: string, isDir: boolean): Promise<void> => {
         const absoluteZipPath = path.join(target, file);
         if (isDir) {
-            let output = fs.createWriteStream(absoluteZipPath);
-            let archive = archiver('zip', { zlib: { level: 9 } });
-            archive.directory(sourcePath, false);
-            archive.pipe(output);
-            archive.finalize();
+            const arch: ArchiverWithDone = createArchive(absoluteZipPath);
+            arch.directory(sourcePath, false);
+            arch.finalize();
+            await arch.done;
         } else {
             fs.copySync(sourcePath, absoluteZipPath);
         }

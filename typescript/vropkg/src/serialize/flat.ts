@@ -21,6 +21,7 @@ import * as xmlbuilder from "xmlbuilder";
 import {v5 as uuidv5} from "uuid";
 import * as s from "../security";
 import * as p from "../packaging"
+import type { ArchiverWithDone } from "../packaging";
 import { exist, isDirectory } from "../util";
 import { getPackageName, serialize, zipbundle, getActionXml, saveOptions, xmlOptions, infoOptions } from "./util"
 import * as archiver from "archiver";
@@ -52,10 +53,12 @@ const initializeContext = (target: string) => {
     // Clean up before start
     fs.pathExistsSync(target) && fs.removeSync(target);
 
-    const bundle = (name: string): Promise<void> => {
+    const bundle = async (name: string): Promise<void> => {
         const arch = p.archive(path.join(target, name));
         [CERTIFICATES, ELEMENTS, SIGNATURES].forEach(folder => arch.directory(path.join(target, folder), folder));
-        return arch.append(fs.createReadStream(path.join(target, DUNES_META_INF)), { name: DUNES_META_INF }).finalize();
+        arch.append(fs.createReadStream(path.join(target, DUNES_META_INF)), { name: DUNES_META_INF });
+        arch.finalize();
+        await (arch as ArchiverWithDone).done;
     }
     const store = serialize(target);
 
@@ -88,10 +91,10 @@ const initializeElementContext = (target: string) => {
 }
 
 const serializeFlatElementData = (target: string) => {
-    let bundle: archiver.Archiver;
+    let bundle: ArchiverWithDone;
 
     const initBundle = () => {
-        bundle = p.archive(target);
+        bundle = p.archive(target) as ArchiverWithDone;
     }
     const append = (name: string) => (data: any) => {
         if (data) {
@@ -111,7 +114,7 @@ const serializeFlatElementData = (target: string) => {
         name: append(DATA_NAME),
         version: append(DATA_VERSION),
         data: append(DATA),
-        save: () => bundle.finalize()
+        save: async () => { bundle.finalize(); await bundle.done; }
     }
 }
 
@@ -139,8 +142,29 @@ const serializeFlatDunesMetadata = async (context: any, pkg: t.VroPackageMetadat
     return context.dunesMetaInf(node.end(saveOptions));
 }
 
+// Simple concurrency limiter to avoid too many concurrent open files
+const limitConcurrency = (concurrency: number) => {
+    let active = 0;
+    const queue: Array<() => void> = [];
+    const next = () => {
+        active--;
+        const fn = queue.shift();
+        if (fn) fn();
+    };
+    return <T>(fn: () => Promise<T>): Promise<T> => new Promise<T>((resolve, reject) => {
+        const run = () => {
+            active++;
+            fn().then((v) => { resolve(v); next(); }).catch((e) => { reject(e); next(); });
+        };
+        if (active < concurrency) run(); else queue.push(run);
+    });
+};
+
 const serializeFlatElements = (context: any, pkg: t.VroPackageMetadata): Array<Promise<void>> => {
-    return pkg.elements.map(async element => {
+    const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || 4);
+    const limit = limitConcurrency(concurrency);
+    return pkg.elements.map(() => null).map((_, idx) => limit(async () => {
+        const element = pkg.elements[idx];
         const elementContext = context.elements(element.id)
         await Promise.all([
             serializeFlatElementInfo(elementContext, pkg, element),
@@ -153,7 +177,7 @@ const serializeFlatElements = (context: any, pkg: t.VroPackageMetadata): Array<P
         ]);
 
         return exportPackageElementContentSignature(elementContext, pkg);
-    });
+    }));
 }
 
 const serializeFlatElementInfo = async (context: any, pkg: t.VroPackageMetadata, element: t.VroNativeElement): Promise<void> => {
@@ -275,8 +299,8 @@ const exportPackageElementContentSignature = async (context: any, pkg: t.VroPack
     return context.contentSignature(s.sign(data, pkg.certificate));
 }
 
-const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata): Promise<void[]> => {
-    const promises = [];
+const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata): Promise<void> => {
+    const promises: Promise<void>[] = [];
     const target = context.target;
 
 	glob.sync((target + "/**/*").replace(/[\\/]+/gm, path.posix.sep), { nodir: true }).forEach(file => {
@@ -286,7 +310,7 @@ const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata):
         promises.push(signature);
     })
 
-    return promises;
+    await Promise.all(promises);
 }
 
 const serializeFlat = async (pkg: t.VroPackageMetadata, targetPath: string) => {

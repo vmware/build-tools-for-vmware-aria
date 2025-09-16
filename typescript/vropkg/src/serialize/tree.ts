@@ -15,6 +15,8 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as archiver from 'archiver';
+import { archive as createArchive } from "../packaging";
+import type { ArchiverWithDone } from "../packaging";
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
 import { serialize, xmlOptions, complexActionComment, getActionXml } from "./util"
@@ -66,11 +68,10 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
             }
             let bundleFilePathDest = path.join(target, `${elementName}.bundle.zip`);
             if (isDirectory(bundleFilePathSrc)) {
-                let output = fs.createWriteStream(bundleFilePathDest);
-                let archive = archiver('zip', { zlib: { level: ZLIB_COMPRESS_LEVEL } });
-                archive.directory(bundleFilePathSrc, false);
-                archive.pipe(output);
-                archive.finalize();
+                const arch: ArchiverWithDone = createArchive(bundleFilePathDest);
+                arch.directory(bundleFilePathSrc, false);
+                arch.finalize();
+                return arch.done;
             } else {
                 return fs.copyFile(bundleFilePathSrc, bundleFilePathDest);
             }
