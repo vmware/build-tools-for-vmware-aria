@@ -142,21 +142,84 @@ const serializeFlatDunesMetadata = async (context: any, pkg: t.VroPackageMetadat
     return context.dunesMetaInf(node.end(saveOptions));
 }
 
-// Simple concurrency limiter to avoid too many concurrent open files
+// Enhanced concurrency limiter with robust defensive mechanisms
 const limitConcurrency = (concurrency: number) => {
     let active = 0;
+    let completed = 0;
+    let failed = 0;
     const queue: Array<() => void> = [];
+    const startTime = Date.now();
+    
     const next = () => {
         active--;
         const fn = queue.shift();
         if (fn) fn();
     };
+    
+    // Watchdog to detect if we're completely stuck
+    const watchdogInterval = setInterval(() => {
+        const runtime = Date.now() - startTime;
+        if (runtime > 60000 && active === 0 && queue.length === 0) {
+            getLogger().warn(`Concurrency limiter appears idle after ${Math.round(runtime/1000)}s - cleared watchdog`);
+            clearInterval(watchdogInterval);
+        } else if (runtime > 300000) { // 5 minutes total
+            getLogger().error(`Concurrency limiter stuck for 5+ minutes! Active: ${active}, Queue: ${queue.length}, Completed: ${completed}, Failed: ${failed}`);
+            // Force clear the queue to prevent indefinite hanging
+            while (queue.length > 0) {
+                const fn = queue.shift();
+                if (fn) {
+                    try { fn(); } catch (e) { getLogger().debug('Queue cleanup error:', e); }
+                }
+            }
+            clearInterval(watchdogInterval);
+        }
+    }, 30000);
+    
     return <T>(fn: () => Promise<T>): Promise<T> => new Promise<T>((resolve, reject) => {
+        const operationStartTime = Date.now();
+        
         const run = () => {
             active++;
-            fn().then((v) => { resolve(v); next(); }).catch((e) => { reject(e); next(); });
+            
+            // Shorter timeout per operation, but log more aggressively 
+            const timeoutId = setTimeout(() => {
+                const duration = Date.now() - operationStartTime;
+                getLogger().error(`Operation timed out after ${duration}ms (active: ${active}, queue: ${queue.length}, completed: ${completed})`);
+                failed++;
+                reject(new Error(`Operation timed out after ${duration}ms`));
+                next();
+            }, 45000); // 45 second timeout per operation
+            
+            // Wrap the original function with additional error handling
+            Promise.resolve()
+                .then(() => fn())
+                .then((v) => { 
+                    clearTimeout(timeoutId);
+                    completed++;
+                    if (completed % 20 === 0) {
+                        getLogger().debug(`Concurrency stats: completed=${completed}, failed=${failed}, active=${active}, queue=${queue.length}`);
+                    }
+                    resolve(v); 
+                    next(); 
+                })
+                .catch((e) => { 
+                    clearTimeout(timeoutId);
+                    failed++;
+                    const duration = Date.now() - operationStartTime;
+                    getLogger().debug(`Operation failed after ${duration}ms (active: ${active}, queue: ${queue.length}):`, e.code || e.message || 'Unknown error');
+                    reject(e); 
+                    next(); 
+                });
         };
-        if (active < concurrency) run(); else queue.push(run);
+        
+        if (active < concurrency) {
+            run();
+        } else {
+            queue.push(run);
+            if (queue.length % 50 === 0) {
+                getLogger().debug(`Queue growing: ${queue.length} operations waiting, ${active} active`);
+            }
+        }
     });
 };
 
@@ -165,22 +228,47 @@ const serializeFlatElements = (context: any, pkg: t.VroPackageMetadata): Array<P
     const defaultConc = process.platform === 'win32' ? 1 : 1;
     const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
     const limit = limitConcurrency(concurrency);
-    getLogger().debug(`Processing ${pkg.elements.length} elements with concurrency: ${concurrency}`);
+    getLogger().info(`Processing ${pkg.elements.length} elements with concurrency: ${concurrency}`);
+    
     return pkg.elements.map(() => null).map((_, idx) => limit(async () => {
         const element = pkg.elements[idx];
+        const elementStartTime = Date.now();
+        getLogger().debug(`Processing element ${idx + 1}/${pkg.elements.length}: ${element.name} (${element.type})`);
         const elementContext = context.elements(element.id)
-        // Perform element operations sequentially to minimize concurrent file handles
-        await serializeFlatElementInfo(elementContext, pkg, element);
-        await serializeFlatElementCategory(elementContext, element);
-        await serializeFlatElementContent(elementContext, pkg, element);
-        await serializeFlatElementBundle(elementContext, element);
-        await serializeFlatElementTags(elementContext, element);
-        await serializeFlatElementInputForm(elementContext, element);
-        await serializeFlatElementInputFormItems(elementContext, element);
+        
+        try {
+            // Add per-element timeout protection
+            const elementTimeout = new Promise<never>((_, reject) => {
+                setTimeout(() => {
+                    const elapsed = Date.now() - elementStartTime;
+                    reject(new Error(`Element processing timed out after ${elapsed}ms for ${element.name}`));
+                }, 120000); // 2 minutes per element
+            });
+            
+            const elementWork = (async () => {
+                // Perform element operations sequentially to minimize concurrent file handles
+                await serializeFlatElementInfo(elementContext, pkg, element);
+                await serializeFlatElementCategory(elementContext, element);
+                await serializeFlatElementContent(elementContext, pkg, element);
+                await serializeFlatElementBundle(elementContext, element);
+                await serializeFlatElementTags(elementContext, element);
+                await serializeFlatElementInputForm(elementContext, element);
+                await serializeFlatElementInputFormItems(elementContext, element);
 
-        return exportPackageElementContentSignature(elementContext, pkg);
+                return await exportPackageElementContentSignature(elementContext, pkg);
+            })();
+            
+            const result = await Promise.race([elementWork, elementTimeout]);
+            const duration = Date.now() - elementStartTime;
+            getLogger().debug(`Completed element ${idx + 1}/${pkg.elements.length}: ${element.name} (${duration}ms)`);
+            return result;
+        } catch (error) {
+            const duration = Date.now() - elementStartTime;
+            getLogger().error(`Failed processing element ${element.name} (${element.type}) after ${duration}ms:`, error);
+            throw error;
+        }
     }));
-}
+};
 
 const serializeFlatElementInfo = async (context: any, pkg: t.VroPackageMetadata, element: t.VroNativeElement): Promise<void> => {
     let node = xmlbuilder.create("properties", infoOptions)
@@ -201,18 +289,17 @@ const serializeFlatElementInputForm = async (context: any, element: t.VroNativeE
 }
 
 const serializeFlatElementInputFormItems = async (context: any, element: t.VroNativeElement): Promise<void> => {
-    const promises: Promise<void>[] = [];
-    if (element.formItems && Array.isArray(element.formItems)) {
-        element.formItems.forEach((formItem: t.VroNativeFormElement) => {
+    if (element.formItems && Array.isArray(element.formItems) && element.formItems.length > 0) {
+        getLogger().debug(`Processing ${element.formItems.length} form items for element: ${element.name}`);
+        
+        // Process form items sequentially to avoid too many concurrent file operations
+        for (const formItem of element.formItems) {
             const buffer = Buffer.from('\ufeff' + JSON.stringify(formItem.data), "utf16le").swap16();
             const formName: string = formItem.name || "";
             const fileName = FORM_ITEM_TEMPLATE.replace("{{formName}}", formName);
-            const promise = context.formItems(buffer, DEFAULT_ENCODING, fileName);
-            promises.push(promise);
-        });
+            await context.formItems(buffer, DEFAULT_ENCODING, fileName);
+        }
     }
-
-    await Promise.all(promises);
 }
 
 const serializeFlatElementCategory = async (context: any, element: t.VroNativeElement): Promise<void> => {
@@ -312,14 +399,47 @@ const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata):
     const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
     const limit = limitConcurrency(concurrency);
 
-    getLogger().debug(`Processing ${files.length} files for signatures with concurrency: ${concurrency}`);
+    getLogger().info(`Processing ${files.length} files for signatures with concurrency: ${concurrency}`);
+    let processedCount = 0;
+    let lastProgressTime = Date.now();
     
-    await Promise.all(files.map(file => limit(async () => {
-        const location = path.normalize(file).replace(target, "");
-        const buffer = await fs.readFile(file);
-        const data = s.sign(buffer, pkg.certificate);
-        await context.signatures(location)(data);
-    })));
+    const processFile = async (file: string): Promise<void> => {
+        const fileStartTime = Date.now();
+        try {
+            const location = path.normalize(file).replace(target, "");
+            getLogger().debug(`Processing signature for: ${location}`);
+            const buffer = await fs.readFile(file);
+            const data = s.sign(buffer, pkg.certificate);
+            await context.signatures(location)(data);
+            processedCount++;
+            
+            const now = Date.now();
+            if (processedCount % 10 === 0 || (now - lastProgressTime) > 30000) {
+                const duration = now - fileStartTime;
+                getLogger().info(`Processed ${processedCount}/${files.length} signatures (last file took ${duration}ms)`);
+                lastProgressTime = now;
+            }
+        } catch (error) {
+            const duration = Date.now() - fileStartTime;
+            getLogger().error(`Failed to process signature for ${file} after ${duration}ms:`, error);
+            throw error;
+        }
+    };
+    
+    // Add overall timeout for the entire signatures process
+    const signaturesStartTime = Date.now();
+    const maxSignaturesTime = files.length * 1000 + 300000; // 1 second per file + 5 minutes buffer
+    
+    const signaturesPromise = Promise.all(files.map(file => limit(() => processFile(file))));
+    const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+            const elapsed = Date.now() - signaturesStartTime;
+            reject(new Error(`Signatures processing timed out after ${elapsed}ms. Expected max: ${maxSignaturesTime}ms`));
+        }, maxSignaturesTime);
+    });
+    
+    await Promise.race([signaturesPromise, timeoutPromise]);
+    getLogger().info(`Completed processing all ${processedCount} signatures`);
 }
 
 const serializeFlat = async (pkg: t.VroPackageMetadata, targetPath: string) => {
