@@ -14,7 +14,6 @@
  */
 import * as fs from "fs-extra";
 import * as path from "path";
-import * as archiver from 'archiver';
 import { ArchiverWithDone, archive as createArchive } from "../packaging";
 import * as t from "../types";
 import getLogger from "../logger";
@@ -43,7 +42,7 @@ export const serialize = (target: string) => {
         const absolutePath = path.join(target, (fileName || file));
         fs.mkdirsSync(path.dirname(absolutePath));
         getLogger().debug(`Writing ${absolutePath}`);
-        fs.writeFileSync(absolutePath, data, options || {});
+        await fs.writeFile(absolutePath, data, options || {});
     }
 }
 
