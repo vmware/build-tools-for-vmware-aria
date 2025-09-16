@@ -270,7 +270,10 @@ const serializeFlatElementContent = async (context: any, pkg: t.VroPackageMetada
             data.description(value(DATA_DESCRIPTION));
             data.mimetype(value(DATA_MIMETYPE));
             data.allowedOperations(value(DATA_ALLOWEDOPERATIONS));
-            data.data(Buffer.from(fs.readFileSync(element.dataFilePath)));
+            {
+                const fileBuf = await fs.readFile(element.dataFilePath);
+                data.data(Buffer.from(fileBuf));
+            }
 
             return data.save();
         }
@@ -278,11 +281,11 @@ const serializeFlatElementContent = async (context: any, pkg: t.VroPackageMetada
             content = getActionXml(element.id, element.name, element.description, element.action);
             break;
         }
-		case t.VroElementType.ActionEnvironment: {
-			return context.data(fs.readFileSync(element.dataFilePath));
-		}
+        case t.VroElementType.ActionEnvironment: {
+            return context.data(await fs.readFile(element.dataFilePath));
+        }
         default: {
-            content = decode(fs.readFileSync(element.dataFilePath));
+        content = decode(await fs.readFile(element.dataFilePath));
         }
     }
     // Update vRO elements with package version

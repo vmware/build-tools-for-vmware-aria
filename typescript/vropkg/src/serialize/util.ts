@@ -40,7 +40,7 @@ export const serialize = (target: string) => {
     fs.mkdirsSync(target);
     return (file: string) => async (data: any, options?: any, fileName?: string): Promise<void> => {
         const absolutePath = path.join(target, (fileName || file));
-        fs.mkdirsSync(path.dirname(absolutePath));
+        await fs.mkdirs(path.dirname(absolutePath));
         getLogger().debug(`Writing ${absolutePath}`);
         await fs.writeFile(absolutePath, data, options || {});
     }
