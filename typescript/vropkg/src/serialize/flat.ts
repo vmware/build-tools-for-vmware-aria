@@ -161,20 +161,20 @@ const limitConcurrency = (concurrency: number) => {
 };
 
 const serializeFlatElements = (context: any, pkg: t.VroPackageMetadata): Array<Promise<void>> => {
-    const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || 4);
+    const defaultConc = process.platform === 'win32' ? 2 : 4;
+    const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
     const limit = limitConcurrency(concurrency);
     return pkg.elements.map(() => null).map((_, idx) => limit(async () => {
         const element = pkg.elements[idx];
         const elementContext = context.elements(element.id)
-        await Promise.all([
-            serializeFlatElementInfo(elementContext, pkg, element),
-            serializeFlatElementCategory(elementContext, element),
-            serializeFlatElementContent(elementContext, pkg, element),
-            serializeFlatElementBundle(elementContext, element),
-            serializeFlatElementTags(elementContext, element),
-            serializeFlatElementInputForm(elementContext, element),
-            serializeFlatElementInputFormItems(elementContext, element)
-        ]);
+        // Perform element operations sequentially to minimize concurrent file handles
+        await serializeFlatElementInfo(elementContext, pkg, element);
+        await serializeFlatElementCategory(elementContext, element);
+        await serializeFlatElementContent(elementContext, pkg, element);
+        await serializeFlatElementBundle(elementContext, element);
+        await serializeFlatElementTags(elementContext, element);
+        await serializeFlatElementInputForm(elementContext, element);
+        await serializeFlatElementInputFormItems(elementContext, element);
 
         return exportPackageElementContentSignature(elementContext, pkg);
     }));
@@ -198,7 +198,7 @@ const serializeFlatElementInputForm = async (context: any, element: t.VroNativeE
     }
 }
 
-const serializeFlatElementInputFormItems = async (context: any, element: t.VroNativeElement): Promise<Promise<void>[]> => {
+const serializeFlatElementInputFormItems = async (context: any, element: t.VroNativeElement): Promise<void> => {
     const promises: Promise<void>[] = [];
     if (element.formItems && Array.isArray(element.formItems)) {
         element.formItems.forEach((formItem: t.VroNativeFormElement) => {
@@ -210,7 +210,7 @@ const serializeFlatElementInputFormItems = async (context: any, element: t.VroNa
         });
     }
 
-    return promises;
+    await Promise.all(promises);
 }
 
 const serializeFlatElementCategory = async (context: any, element: t.VroNativeElement): Promise<void> => {
@@ -303,17 +303,18 @@ const exportPackageElementContentSignature = async (context: any, pkg: t.VroPack
 }
 
 const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata): Promise<void> => {
-    const promises: Promise<void>[] = [];
     const target = context.target;
+    const files = glob.sync((target + "/**/*").replace(/[\\/]+/gm, path.posix.sep), { nodir: true });
+    const defaultConc = process.platform === 'win32' ? 2 : 4;
+    const concurrency = Math.max(1, Number(process.env.VROPKG_IO_CONCURRENCY) || defaultConc);
+    const limit = limitConcurrency(concurrency);
 
-	glob.sync((target + "/**/*").replace(/[\\/]+/gm, path.posix.sep), { nodir: true }).forEach(file => {
+    await Promise.all(files.map(file => limit(async () => {
         const location = path.normalize(file).replace(target, "");
-        const data = s.sign(fs.readFileSync(file), pkg.certificate);
-        const signature = context.signatures(location)(data);
-        promises.push(signature);
-    })
-
-    await Promise.all(promises);
+        const buffer = await fs.readFile(file);
+        const data = s.sign(buffer, pkg.certificate);
+        await context.signatures(location)(data);
+    })));
 }
 
 const serializeFlat = async (pkg: t.VroPackageMetadata, targetPath: string) => {

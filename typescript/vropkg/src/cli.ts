@@ -219,11 +219,11 @@ async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.Vr
 	getLogger().debug(`Serializing project type '${input.out}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
-			serializeTree(pkg, input.destPath);
+				await serializeTree(pkg, input.destPath);
 			break;
 		}
 		case t.ProjectType.flat: {
-			serializeFlat(pkg, input.destPath);
+				await serializeFlat(pkg, input.destPath);
 			break;
 		}
 		case t.ProjectType.js: {
