@@ -13,8 +13,10 @@
  * #L%
  */
 import * as fs from "fs-extra";
+import * as nodeFs from "fs";
+import * as gracefulFs from "graceful-fs";
 import * as path from "path";
-import * as cmdArgs from "command-line-args";
+import cmdArgs = require("command-line-args");
 import getLogger from "./logger";
 import * as t from "./types";
 import { loadCertificate } from "./security";
@@ -92,10 +94,23 @@ const cliOpts = <cmdArgs.OptionDefinition[]>[
 ];
 
 async function run() {
+	// Mitigate EMFILE/ENFILE by making fs operations graceful (queues retries)
+	// This also affects libraries using the native fs (e.g., archiver)
+	gracefulFs.gracefulify(nodeFs as any);
 	let input = cmdArgs(cliOpts, { stopAtFirstUnknown: false }) as CliInputs;
 	
 	/** Instantiates the default logger */
 	getLogger(input.verbose || input.vv);
+
+	// Catch unhandled promise rejections and uncaught exceptions to provide clearer errors
+	process.on('unhandledRejection', (reason: any) => {
+		try { getLogger().error('Unhandled promise rejection:', reason); } catch { console.error('Unhandled promise rejection:', reason); }
+		process.exitCode = 1;
+	});
+	process.on('uncaughtException', (err: any) => {
+		try { getLogger().error('Uncaught exception:', err?.stack || err?.message || err); } catch { console.error('Uncaught exception:', err); }
+		process.exit(1);
+	});
 
 	// validate input data
 	let printHelp = validate(input);

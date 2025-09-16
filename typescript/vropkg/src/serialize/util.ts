@@ -63,7 +63,7 @@ export const zipbundle = (target: string) => {
             arch.finalize();
             await arch.done;
         } else {
-            fs.copySync(sourcePath, absoluteZipPath);
+            await fs.copy(sourcePath, absoluteZipPath);
         }
     }
 }
