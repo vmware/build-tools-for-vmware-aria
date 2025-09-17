@@ -113,3 +113,11 @@ It is not possible to pull super metrics with special characters in the names, e
 
 #### New Behavior
 Users are able to push and pull super metrics that has special characters in the names. Also to use wildcards with special characters, eg Supermetric(*
+
+### *Bugfix for pulling/pushing symtptom definitions in Aria Operations*
+
+#### Previous Behavior
+A symptom definition which is comparing 2 metrics (of numeric type) is pulled with a "condition.value" property set to "null" (as string) and therefore when the symptom definition is about to get pushed it is returning a HTTP 400 (Bad Request) response
+
+#### New Behavior
+Users are able to push symptom definitions, which are comparing 2 numeric metrics, to Aria Operations

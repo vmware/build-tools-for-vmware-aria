@@ -216,7 +216,7 @@ public class SymptomDefinitionDTO implements Serializable {
 
 		@JsonInclude(JsonInclude.Include.NON_NULL)
 		@JsonPropertyOrder({ "type", "key", "operator", "value", "valueType", "instanced", "thresholdType", "stringValue", "eventType", "message", "faultKey" })
-		@JsonIgnoreProperties({ "faultEvents", "targetKey", "instanced", "hardThresholdEventType", "statKey" })
+		@JsonIgnoreProperties({ "faultEvents", "instanced", "hardThresholdEventType", "statKey" })
 		public static class Condition implements Serializable {
 			private static final long serialVersionUID = 6996617212704194983L;
 
@@ -229,6 +229,8 @@ public class SymptomDefinitionDTO implements Serializable {
 			@JsonProperty("operator")
 			private String operator;
 
+			@JsonInclude(value = JsonInclude.Include.CUSTOM,
+				valueFilter = ConditionValueFilter.class)
 			@JsonProperty("value")
 			private String value;
 
@@ -237,6 +239,10 @@ public class SymptomDefinitionDTO implements Serializable {
 
 			@JsonProperty("instanced")
 			private Boolean instanced;
+
+			@JsonInclude(value = JsonInclude.Include.NON_ABSENT)
+			@JsonProperty("targetKey")
+			private String targetKey;
 
 			@JsonProperty("thresholdType")
 			private String thresholdType;
@@ -286,6 +292,8 @@ public class SymptomDefinitionDTO implements Serializable {
 				this.operator = operator;
 			}
 
+			@JsonInclude(value = JsonInclude.Include.CUSTOM,
+				valueFilter = ConditionValueFilter.class)
 			@JsonProperty("value")
 			public String getValue() {
 				return value;
@@ -314,6 +322,18 @@ public class SymptomDefinitionDTO implements Serializable {
 			@JsonProperty("instanced")
 			public void setInstanced(Boolean instanced) {
 				this.instanced = instanced;
+			}
+
+			@JsonInclude(value = JsonInclude.Include.NON_ABSENT)
+			@JsonProperty("targetKey")
+			public String getTargetKey() {
+				return targetKey;
+			}
+
+			@JsonInclude(value = JsonInclude.Include.NON_ABSENT)
+			@JsonProperty("targetKey")
+			public void setTargetKey(String targetKey) {
+				this.targetKey = targetKey;
 			}
 
 			@JsonProperty("thresholdType")
@@ -376,5 +396,13 @@ public class SymptomDefinitionDTO implements Serializable {
 				this.additionalProperties.put(name, value);
 			}
 		}
+	}
+}
+
+class ConditionValueFilter {
+
+	@Override
+	public boolean equals(Object other) {
+		return "null".equals(other);
 	}
 }
