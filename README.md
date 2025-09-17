@@ -6,6 +6,7 @@ Build Tools for VMware Aria provides development and release management tools fo
 ## Documentation
 - [Installation and Operations Documents](docs/archive/doc/markdown)
 - [Workstation Setup Guide](docs/archive/doc/markdown/setup-workstation.md)
+- [GitHub Codespaces Setup](docs/CODESPACES.md)
 
 ## How to build
 1. Update ~/.m2/settings.xml with:

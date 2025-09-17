@@ -1,0 +1,37 @@
+{
+	"name": "Build Tools for VMware Aria",
+	"image": "mcr.microsoft.com/devcontainers/java:17",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "22"
+		},
+		"ghcr.io/devcontainers/features/maven:1": {
+			"version": "3.9"
+		},
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"ms-vscode.vscode-typescript-next",
+				"bradlc.vscode-tailwindcss",
+				"ms-vscode.vscode-json"
+			],
+			"settings": {
+				"java.configuration.runtimes": [
+					{
+						"name": "JavaSE-17",
+						"path": "/usr/local/sdkman/candidates/java/current",
+						"default": true
+					}
+				],
+				"java.compile.nullAnalysis.mode": "automatic",
+				"maven.terminal.useJavaHome": true
+			}
+		}
+	},
+	"forwardPorts": [3000, 8080],
+	"postCreateCommand": "curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash",
+	"remoteUser": "vscode"
+}
