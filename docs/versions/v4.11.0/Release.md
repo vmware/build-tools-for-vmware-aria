@@ -6,9 +6,7 @@
 ## Deprecations
 
 
-
 ## Features
-
 
 
 ### *Add support for User Interaction Custom Form files named based on User Interaction item name instead of ID in Typescript projects*
@@ -113,7 +111,6 @@ It is not possible to pull super metrics with special characters in the names, e
 
 #### New Behavior
 Users are able to push and pull super metrics that has special characters in the names. Also to use wildcards with special characters, eg Supermetric(*
-
 ### *Bugfix for pulling/pushing symtptom definitions in Aria Operations*
 
 #### Previous Behavior
