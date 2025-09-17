@@ -405,4 +405,9 @@ class ConditionValueFilter {
 	public boolean equals(Object other) {
 		return "null".equals(other);
 	}
+
+	@Override
+	public int hashCode() {
+		return "null".hashCode();
+	}
 }
