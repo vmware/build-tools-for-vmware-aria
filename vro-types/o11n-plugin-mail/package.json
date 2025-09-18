@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-mail",
-  "version": "4.11.1-SNAPSHOT",
+  "version": "4.12.0",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
