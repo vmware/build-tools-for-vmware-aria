@@ -248,7 +248,7 @@ async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.Vr
 			throw new Error("Unsupported output: " + input.out);
 		}
 	}
-	getLogger().debug(`Serializing of project type '${input.out}' completed`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing of project type '${input.out}' completed`);
 }
 
 run();

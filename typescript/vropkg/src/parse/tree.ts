@@ -126,7 +126,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
 
 async function parseTree(nativeFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, description: string, vroIgnoreFile: string): Promise<t.VroPackageMetadata> {
 	const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'TestHelpers', 'Packaging');
-	getLogger().debug(`vropkg parse tree - ignored: ${JSON.stringify(ignorePatterns)}`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`vropkg parse tree - ignored: ${JSON.stringify(ignorePatterns)}`);
     let elements = glob
 		.sync(path.join(nativeFolderPath, "**", "*.element_info.xml").replace(/[\\/]+/gm, path.posix.sep), {ignore: ignorePatterns})
         .map(file => parseTreeElement(file)

@@ -33,7 +33,7 @@ export class VroJsProjParser {
 
 	public async parse(vroJsFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, vroIgnoreFile: string): Promise<VroPackageMetadata> {
 		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);		const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'Packaging');
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info.debug(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
 
 		let elements: Array<VroNativeElement> = [];
 
