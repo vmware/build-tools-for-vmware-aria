@@ -15,10 +15,10 @@
 import * as glob from "glob";
 import * as path from "path";
 import * as t from "../types";
-import getLogger from "../logger";
+import * as winston from "winston";
 import { read, stringToCategory, xml, xmlGet, xmlToAction, xmlChildNamed, xmlToTag, getWorkflowItems } from "./util";
 import { exist } from "../util";
-import { FORM_SUFFIX, RESOURCE_ELEMENT_DEFAULT_VERSION, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE } from "../constants";
+import { WINSTON_CONFIGURATION, FORM_SUFFIX, RESOURCE_ELEMENT_DEFAULT_VERSION, VRO_CUSTOM_FORMS_FILENAME_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE } from "../constants";
 import VroIgnore from "../util/VroIgnore";
 
 function parseTreeElement(elementInfoPath: string): t.VroNativeElement {
@@ -96,7 +96,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
     const formFileName = path.join(formFileDir, `${workflowName}${FORM_SUFFIX}`).replace(/[\\/]+/gm, path.posix.sep)
     // Input form is only applicable for vRO workflows
     if (exist(formFileName)) {
-        getLogger().info(`Parsing form '${workflowName}' from file ${formFileName}`);
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form '${workflowName}' from file ${formFileName}`);
         form = {
             data: JSON.parse(read(formFileName)),
             name: workflowName
@@ -114,7 +114,7 @@ function parseInputForms(elementType: t.VroElementType, workflowName: string, el
         if (!formItem) {
             return;
         }
-        getLogger().info(`Parsing form item '${item}' from file '${formItemFileName}'`);
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${item}' from file '${formItemFileName}'`);
         formItems.push({ name: item, data: formItem });
     });
 

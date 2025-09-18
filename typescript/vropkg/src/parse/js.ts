@@ -19,9 +19,10 @@ import { getCommentFromJavadoc, getScriptRuntime } from "./util";
 import * as AbstractSyntaxTree from "abstract-syntax-tree";
 import * as Comments from "parse-comments";
 import {v4 as uuidv4} from "uuid";
-import getLogger from "../logger";
+import * as winston from "winston";
 import * as glob from "glob";
 import VroIgnore from "../util/VroIgnore";
+import { WINSTON_CONFIGURATION } from "../constants";
 
 export class VroJsProjParser {
 	private lazy: boolean;
@@ -31,9 +32,8 @@ export class VroJsProjParser {
 	}
 
 	public async parse(vroJsFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, vroIgnoreFile: string): Promise<VroPackageMetadata> {
-		getLogger().info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);
-		const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'Packaging');
-		getLogger().debug(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);		const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'Packaging');
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info.debug(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
 
 		let elements: Array<VroNativeElement> = [];
 

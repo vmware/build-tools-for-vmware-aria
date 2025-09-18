@@ -15,7 +15,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as cmdArgs from "command-line-args";
-import getLogger from "./logger";
+import * as winston from "winston";
 import * as t from "./types";
 import { loadCertificate } from "./security";
 import { parseTree } from "./parse/tree";
@@ -26,6 +26,19 @@ import { serializeFlat } from "./serialize/flat";
 import { VroJsProjRealizer } from "./serialize/js";
 import { CleanDefinition } from "./cleaner/definitionCleaner";
 import VroIgnore from "./util/VroIgnore";
+import { WINSTON_CONFIGURATION } from "./constants";
+
+winston.loggers.add(WINSTON_CONFIGURATION.logPrefix, <winston.LoggerOptions>{
+	level: WINSTON_CONFIGURATION.logLevel,
+	format: winston.format.json(),
+	// defaultMeta: { service: 'user-service' },
+	transports: [
+		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.error, level: 'error' }),
+		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.debug, level: 'debug' }),
+		new winston.transports.File({ filename: WINSTON_CONFIGURATION.logFiles.default }),
+		new winston.transports.Console({ format: winston.format.simple() })
+	]
+});
 
 interface CliInputs extends cmdArgs.CommandLineOptions {
 	/** whether futher logging is in order */
@@ -95,8 +108,9 @@ async function run() {
 	let input = cmdArgs(cliOpts, { stopAtFirstUnknown: false }) as CliInputs;
 	
 	/** Instantiates the default logger */
-	getLogger(input.verbose || input.vv);
-
+	if (!(input.verbose || input.vv)) {
+		console.debug = () => { };
+	}
 	// validate input data
 	let printHelp = validate(input);
 	if (input.help || printHelp) {
@@ -129,14 +143,14 @@ function printVersion(): void {
 	let packageJsonPath = path.join(__dirname, "../package.json");
 	if (fs.existsSync(packageJsonPath)) {
 		let packageConfig = JSON.parse(fs.readFileSync(packageJsonPath).toString());
-		getLogger().info(`Version ${packageConfig.version}`);
+		console.log(`Version ${packageConfig.version}`);
 	}
 }
 
 function printUsage(): boolean {
 	let usageFilePath = path.join(__dirname, "../Usage.txt");
 	if (fs.existsSync(usageFilePath)) {
-		getLogger().info(fs.readFileSync(usageFilePath).toString());
+		console.log(fs.readFileSync(usageFilePath).toString());
 	}
 
 	return false;
@@ -145,39 +159,38 @@ function printUsage(): boolean {
 function validate(input: CliInputs): boolean {
 	let printHelp = false;
 	if (input._unknown) {
-		getLogger().error("Unexpected option:", input._unknown);
+		console.error("Unexpected option:", input._unknown);
 		printHelp = true;
 	}
 	if (!input.srcPath) {
-		getLogger().error("Missing srcPath");
+		console.error("Missing srcPath");
 		printHelp = true;
 	}
 	if (!input.destPath) {
-		getLogger().error("Missing destPath");
+		console.error("Missing destPath");
 	}
 	if (!input.version) {
-		getLogger().error("Missing project version")
+		console.error("Missing project version");
 	}
 	if (!input.artifactId) {
-		getLogger().error("Missing artifactId")
+		console.error("Missing artifactId");
 	}
 	if (!input.groupId) {
-		getLogger().error("Missing groupId")
+		console.error("Missing groupId");
 	}
 	let certificateRequired = t.ProjectType[input.out] == t.ProjectType.flat;
 	if (certificateRequired && (!input.certificatesPEM || !input.privateKeyPEM)) {
-		getLogger().error("Missing privateKeyPEM or certificatesPEM");
+		console.error("Missing privateKeyPEM or certificatesPEM");
 		printHelp = true;
 	}
 	if (t.ProjectType[input.in] == null || t.ProjectType[input.out] == null) {
-		getLogger().error("Incorrect in/out parameter");
+		console.error("Incorrect in/out parameter");
 		printHelp = true;
 	}
 	if (!input.keyPass) {
-		getLogger().warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
-	}
+		console.warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");	}
 	if (!input.vroIgnoreFile) {
-		getLogger().warn("No vroIgnoreFile specified, defaulting to .vroignore");
+		console.warn("No vroIgnoreFile specified, defaulting to .vroignore");
 	}
 	input.vroIgnoreFile = path.resolve(__dirname, input.vroIgnoreFile?.replace(/"/gm,"") || ".vroignore").replace(/[\\]+/gm,"/");
 
@@ -185,14 +198,14 @@ function validate(input: CliInputs): boolean {
 }
 
 function cleanup(input: CliInputs): void {
-	getLogger().debug(`Removing empty definitions generated in the compile process ...`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Removing empty definitions generated in the compile process ...`);
 	let cleaner = new CleanDefinition();
 	cleaner.removeEmptyDefinitions(input.srcPath);
 }
 
 async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.VroPackageMetadata> {
 	let pkgPromise: any = null;
-	getLogger().debug(`Parsing project type '${input.in}'`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing project type '${input.in}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
 			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description, input.vroIgnoreFile);
@@ -210,13 +223,13 @@ async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.Vr
 			throw new Error("Unsupported input: " + input.in);
 		}
 	}
-	getLogger().debug(`Parsing of project type '${input.in}' completed`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing of project type '${input.in}' completed`);
 
 	return pkgPromise;
 }
 
 async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.VroPackageMetadata): Promise<void> {
-	getLogger().debug(`Serializing project type '${input.out}'`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing of project type '${input.out}' completed`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
 			serializeTree(pkg, input.destPath);
