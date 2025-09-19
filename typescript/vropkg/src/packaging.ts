@@ -15,8 +15,8 @@
 import * as fs from "fs-extra";
 import * as archiver from 'archiver';
 import * as unzipper from 'unzipper';
-import getLogger from "./logger";
-
+import * as winston from 'winston';
+import { WINSTON_CONFIGURATION } from "./constants";
 /*
  * Utility class for variety of packaging operations.
  */
@@ -55,7 +55,7 @@ export const archive = (outputPath: string): archiver.Archiver => {
 export const extract = async (assemblyFilePath: string, destinationDir): Promise<void> => {
 	const fileToExtract = await unzipper.Open.file(assemblyFilePath);
 	return fileToExtract.extract({ path: destinationDir }).catch(error => {
-		getLogger().info(
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(
 			`Error extracting ${assemblyFilePath} into ${destinationDir}.` +
 			`Error ${error.message},file ${error.fileName}, line ${error.lineNumber}`
 		);

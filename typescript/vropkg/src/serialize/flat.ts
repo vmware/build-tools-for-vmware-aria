@@ -15,7 +15,7 @@
 import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as path from "path";
-import getLogger from "../logger";
+import * as winston from "winston";
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
 import {v5 as uuidv5} from "uuid";
@@ -26,7 +26,7 @@ import { getPackageName, serialize, zipbundle, getActionXml, saveOptions, xmlOpt
 import * as archiver from "archiver";
 import { decode } from "../encoding";
 import * as xmlDoc from "xmldoc";
-import { DEFAULT_ENCODING, FORM_ITEM_TEMPLATE, VSO_RESOURCE_INF } from "../constants";
+import { DEFAULT_ENCODING, FORM_ITEM_TEMPLATE, VSO_RESOURCE_INF, WINSTON_CONFIGURATION } from "../constants";
 
 const
     DUNES_META_INF = "dunes-meta-inf",
@@ -97,7 +97,7 @@ const serializeFlatElementData = (target: string) => {
         if (data) {
             bundle.append(Buffer.from(data, 'utf8'), { name: `${VSO_RESOURCE_INF}/${name}` })
         } else {
-			getLogger().debug(`Element not available ${VSO_RESOURCE_INF}/${name}`);
+			winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element not available ${VSO_RESOURCE_INF}/${name}`);
         }
     };
 
@@ -218,8 +218,7 @@ const serializeFlatElementBundle = async (context: any, element: t.VroNativeElem
 
 const serializeFlatElementTags = async (context: any, element: t.VroNativeElement): Promise<void> => {
     if (!element.tags?.length) {
-        getLogger().debug(`Element does not have tags ${element.name}`);
-        return;
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element does not have tags ${element.name}`);       return;
     }
     let node = xmlbuilder.create("tags", xmlOptions);
     element.tags.forEach(name => {
