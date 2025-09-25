@@ -13,7 +13,8 @@ workflows/node_modules/
 actions/node_modules/
 
 # VSCode
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 
 # IntelliJ IDEA
 out/

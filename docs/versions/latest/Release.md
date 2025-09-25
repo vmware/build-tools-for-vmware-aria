@@ -26,6 +26,8 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add `vRealize Developer Tools` as Workspace recommended extension to all archetypes*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
