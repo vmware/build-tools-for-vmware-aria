@@ -37,19 +37,6 @@ Java 24 is now included in the build matrix of `build` Workflow. Java version is
 
 ## Improvements
 
-
-### *Moved Aria Code Stream components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved Basic archetype components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved common components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
 ### *Fixed UserInteractionItem decorator options binding
 
 When a function is decorated by @UserInteractionItem, it may receive the following 4 parameters:
