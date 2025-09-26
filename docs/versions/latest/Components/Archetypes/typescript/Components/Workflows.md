@@ -428,7 +428,7 @@ Those inputs are optional.
 - `security_group` (type `LdapGroup`) - Any user member of this group will be authorized to fill in this form.
 - `timeout_date` (type `Date`) - If not null, this input item will wait until date and will continue workflow execution.
 
-Note that those parameters should match the input parameters of the workflow to ensure proper typization.
+Note that those parameters should match the input or attribute parameters of the workflow to ensure proper typization.
 
 ##### Known Limitations for the Input Parameters
 
@@ -458,6 +458,23 @@ import {
     name: "User Interaction",
     path: "VMware/PSCoE",
     description: "Adding user interaction parameters",
+    input: {
+      security_assignee_groups: {
+        type: "Array/LdapGroup"
+      },
+      security_group: {
+        type: "LdapGroup"
+      },
+      timeout_date: {
+        type: "Date"
+      }
+    },
+    attributes: {
+      security_assignees: {
+        type: "Array/LdapUser",
+        value: "configurationadmin"
+      }
+    }
 })
 export class UserInteractionWorkflow {
 
