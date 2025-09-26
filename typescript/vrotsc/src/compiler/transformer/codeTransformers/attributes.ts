@@ -28,10 +28,10 @@
  * @param type
  */
 export function printAttributeArrayValue(value: Array<any>, type: string) {
-    type = type.replace("Array/", "");
+    const cleanedType = type.replace("Array/", "");
 
     const output = value.map(element => {
-        const typeAndValue = `${type}#${element}`;
+        const typeAndValue = `${cleanedType}#${element}`;
         return `${typeAndValue.length}:${typeAndValue}`;
     }).join(",");
 
