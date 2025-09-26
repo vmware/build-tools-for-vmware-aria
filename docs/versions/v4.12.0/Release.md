@@ -6,7 +6,6 @@
 ## Deprecations
 
 
-
 ## Features
 
 ### *Add restart and resume behaviour configuration to @Workflow decorator*
@@ -29,7 +28,6 @@ The following values are allowed:
   - 0: System default (default)
   - 1: Enabled
   - 2: Disabled
-
 
 
 ### *Add support for Java 24*
