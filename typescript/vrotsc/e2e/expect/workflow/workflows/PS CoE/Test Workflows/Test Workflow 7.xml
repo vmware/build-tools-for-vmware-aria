@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?><workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="4cc78043-7529-31c0-8a31-472d3471e43b" version="1.0.0" api-version="6.0.0" restartMode="1" resumeFromFailedMode="0"><display-name><![CDATA[Test Workflow 7]]></display-name><description><![CDATA[Test attributes with default value of type Array]]></description><position x="40.0" y="10.0" /><attrib name="testStringAtt" type="Array/string" read-only="false" ><value encoded="n"><![CDATA[[10:string#foo,10:string#bar]]]></value></attrib><attrib name="testNumeric" type="Array/number" read-only="false" ><value encoded="n"><![CDATA[[8:number#1,8:number#2,10:number#345]]]></value></attrib><attrib name="testBool" type="Array/boolean" read-only="false" ><value encoded="n"><![CDATA[[12:boolean#true,13:boolean#false,12:boolean#true]]]></value></attrib><workflow-item name="item0" type="end" end-mode="0"><position x="240.0" y="10.0" /></workflow-item><workflow-item name="item1" out-name="item0" type="task" ><script encoded="false"><![CDATA[System.log("Starting workflow");
+System.log("String length: ".concat(testStringAtt.length));
+var resultStr = "";
+testStringAtt.forEach(function (e) {
+    System.log("Type ".concat(typeof e));
+    System.log("Value ".concat(e));
+    resultStr += e;
+});
+System.log("Result: ".concat(resultStr));
+System.log("Num length: ".concat(testNumeric.length));
+var resultNum = 0;
+testNumeric.forEach(function (e) {
+    System.log("Type ".concat(typeof e));
+    System.log("Value ".concat(e));
+    resultNum += e;
+});
+System.log("Result: ".concat(resultNum));
+System.log("Boolean length: ".concat(testBool.length));
+testBool.forEach(function (e) {
+    System.log("Type ".concat(typeof e));
+    System.log("Value ".concat(e));
+    if (e) {
+        System.log("Is true");
+    }
+    else {
+        System.log("Is false");
+    }
+});
+]]></script><display-name><![CDATA[test1]]></display-name><in-binding><bind name="testStringAtt" type="Array/string" export-name="testStringAtt" /><bind name="testNumeric" type="Array/number" export-name="testNumeric" /><bind name="testBool" type="Array/boolean" export-name="testBool" /></in-binding><position x="100.0" y="20.0" /></workflow-item><presentation><p-param name="testStringAtt"><desc><![CDATA[testStringAtt]]></desc><p-qual kind="static" name="defaultValue" type="Array/string"><![CDATA[[10:string#foo,10:string#bar]]]></p-qual></p-param><p-param name="testNumeric"><desc><![CDATA[testNumeric]]></desc><p-qual kind="static" name="defaultValue" type="Array/number"><![CDATA[[8:number#1,8:number#2,10:number#345]]]></p-qual></p-param><p-param name="testBool"><desc><![CDATA[testBool]]></desc><p-qual kind="static" name="defaultValue" type="Array/boolean"><![CDATA[[12:boolean#true,13:boolean#false,12:boolean#true]]]></p-qual></p-param></presentation></workflow>

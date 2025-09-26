@@ -39,18 +39,6 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Moved Aria Code Stream components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved Basic archetype components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved common components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

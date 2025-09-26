@@ -45,6 +45,17 @@ User interaction decorator now supports an exception handling parameter similar 
 
 ## Improvements
 
+### *Moved Aria Code Stream components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved Basic archetype components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved common components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
 
 ### *Add support for push/pull of different aria operation types with the same name*
 
