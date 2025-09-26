@@ -24,9 +24,9 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
-
 ### *Add `vRealize Developer Tools` as Workspace recommended extension to all archetypes*
+
+[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ## Improvements
 
@@ -40,6 +40,43 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+### *Fix transpilation of Workflow attributes with default value of type `Array/*`*
+
+In Typescript project if Workflow attribute contains default value with `Array` type Orchestrator expects it to be in a specific format.
+
+```typescript
+@Workflow({
+    name: "Define attribute",
+    path: "Service/Test",
+    attributes: {
+        security_assignees: {
+            type: "Array/LdapUser",
+            value: "configurationadmin,System Domain\\admin"
+        }
+    }
+})
+```
+
+#### Previous Behavior
+
+The attribute definition from the above Workflow is transpiled into a vRO7 XML format which is no longer supported in newer Orchestrator versions and makes the whole Workflow inaccessible via UI:
+
+```xml
+<attrib name="security_assignees" type="Array/LdapUser" read-only="false">
+  <value encoded="n"><![CDATA[#{#LdapUser#configurationadmin#;#LdapUser#System Domain\admin#}#"]]></value>
+</attrib>
+```
+
+#### New Behavior
+
+The attribute definition from the above Workflow is properly transpiled into the expected XML format:
+
+```xml
+<attrib name="security_assignees" type="Array/LdapUser" read-only="false">
+  <value encoded="n"><![CDATA[[25:string#configurationadmin,26:string#System Domain\admin]]]></value>
+</attrib>
+```
 
 ## Upgrade procedure
 
