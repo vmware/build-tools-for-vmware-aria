@@ -6,31 +6,36 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 /**
  * @brief Prints out arrays
  *
- * @details THIS PRINTS THE ARRAYS IN vRO7 FORMAT
- *          vRO8 is backwards compatible, but future versions may not be.
+ * @details THIS PRINTS THE ARRAYS IN vRO8 FORMAT
  *          Array in vRO8
- *          [16:string#123312321,16:string#123132312,16:string#qffwfqwfw]
+ *          [16:string#123312321,14:string#1231323,17:string#qffwfqwfwq]
+ *          the number in front is the total length of the "type#value" string
  *
  *          Array in vRO7
  *          #{#field4:string#test#;#field4:string#test2#;#field4:string#test4#}#
+ *          WARNING! No longer supported - attributes in this format make the Workflow inaccessible via UI when imported
  *
  * @param value
  * @param type
  */
 export function printAttributeArrayValue(value: Array<any>, type: string) {
-	type = type.replace("Array/", "");
-	const output = value.map(element => `#${type}#${element}#`).join(";");
+    type = type.replace("Array/", "");
 
-	return `#{${output}}#"`;
+    const output = value.map(element => {
+        const typeAndValue = `${type}#${element}`;
+        return `${typeAndValue.length}:${typeAndValue}`;
+    }).join(",");
+
+    return `[${output}]`;
 }
 
 /**
@@ -51,13 +56,13 @@ export function printAttributeArrayValue(value: Array<any>, type: string) {
  * @private
  */
 export function printAttributeCompositeValue(compositeValue: any, compositeType: string) {
-	const output = Object.entries(compositeValue).map(([key, value]) => (Array.isArray(value)
-		? [key, "Array", printAttributeArrayValue(value as any[], getArrayTypeFromCompositeType(compositeType, key))]
-		: [key, typeof value, value]))
-		.map(([key, valueType, value]) => `#${key}#=#${valueType}#${value}#`)
-		.join("+");
+    const output = Object.entries(compositeValue).map(([key, value]) => (Array.isArray(value)
+        ? [key, "Array", printAttributeArrayValue(value as any[], getArrayTypeFromCompositeType(compositeType, key))]
+        : [key, typeof value, value]))
+        .map(([key, valueType, value]) => `#${key}#=#${valueType}#${value}#`)
+        .join("+");
 
-	return `#[${output}]#`;
+    return `#[${output}]#`;
 }
 
 /**
@@ -72,10 +77,10 @@ export function printAttributeCompositeValue(compositeValue: any, compositeType:
  * @private
  */
 export function getArrayTypeFromCompositeType(compositeType: string, key: string): string | null {
-	const result = compositeType.match(new RegExp(`${key}:(Array\\/[^,)]+)`))?.[1];
-	if (!result) {
-		throw new Error(`Composite Type Array is in invalid format for ${key}!`);
-	}
+    const result = compositeType.match(new RegExp(`${key}:(Array\\/[^,)]+)`))?.[1];
+    if (!result) {
+        throw new Error(`Composite Type Array is in invalid format for ${key}!`);
+    }
 
-	return result;
+    return result;
 }
