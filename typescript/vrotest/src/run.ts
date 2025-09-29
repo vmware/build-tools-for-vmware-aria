@@ -12,10 +12,10 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import { join, basename, dirname, posix } from "path";
 import * as childProc from "child_process";
-import * as util from "./util";
 import { readdirSync } from "fs";
+import { basename, dirname, join, posix } from "path";
+import * as util from "./util";
 
 export interface RunCommandFlags {
     instrument?: boolean;
@@ -23,7 +23,7 @@ export interface RunCommandFlags {
 }
 
 export default async function (flags: RunCommandFlags): Promise<void> {
-    const testDir = toPathArg(flags._[1] || process.cwd()).replace(/"+/gm,"");
+    const testDir = toPathArg(flags._[1] || process.cwd()).replace(/"+/gm, "");
     if (flags.instrument) {
         const nodeModulesDir = await findNodeModules(__dirname);
         if (!nodeModulesDir) {
@@ -57,12 +57,14 @@ export default async function (flags: RunCommandFlags): Promise<void> {
             console.log("Installing node modules for the tests completed.");
 
             console.log("Starting unit tests.");
-            var child = childProc.spawnSync("npm", [ "test" ], { encoding : 'utf8', shell: true });
+            var child = childProc.spawnSync("npm", ["test"], { encoding: 'utf8', shell: true });
             if (child.status === 0) {
                 console.log(child.stdout);
                 console.log(child.stderr);
             } else {
                 console.error("Error occurred in unit tests execution: " + child.stderr);
+                // Exit with non-zero code so build fails on test failures
+                process.exit(1);
             }
             console.log("Running unit tests completed.");
         });
