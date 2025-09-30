@@ -34,6 +34,8 @@ Added a shim for `Array.prototype.includes`, which is not natively supported by 
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add `vRealize Developer Tools` as Workspace recommended extension to all archetypes*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -47,13 +49,17 @@ Added a shim for `Array.prototype.includes`, which is not natively supported by 
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Add `Workflow` to XML based archetypes path for Workflows content*
+### *Moved Aria Code Stream components to own folder*
 
-#### Previous Behavior
-The XML based archetypes were missing `Workflow` folder in their path which results in creating duplicate content in separate folder in source code after pushing to Orchestrator and after that pulling the same package.
+This is just an internal restructuring effort, no functionality was changed.
 
-#### New Behavior
-The XML based archetypes now create proper folder path and after pulling from Orchestrator content is updated and not duplicated in a separate folder.
+### *Moved Basic archetype components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
+
+### *Moved common components to own folder*
+
+This is just an internal restructuring effort, no functionality was changed.
 
 ## Upgrade procedure
 

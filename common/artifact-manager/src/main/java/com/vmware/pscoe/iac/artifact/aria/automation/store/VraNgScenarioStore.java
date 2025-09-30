@@ -14,14 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgScenario;
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-
-import org.apache.commons.io.FileUtils;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_SCENARIOS;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_SCENARIOS;
+import org.apache.commons.io.FileUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgScenario;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
 
 public class VraNgScenarioStore extends AbstractVraNgStore {
 
@@ -134,8 +134,9 @@ public class VraNgScenarioStore extends AbstractVraNgStore {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			final JsonObject scenarioJsonElement = gson.fromJson(new Gson().toJson(scenario), JsonObject.class);
 
-			logger.info("Created file {}", Files.write(Paths.get(scenarioFile.getPath()), gson.toJson(scenarioJsonElement).getBytes(),
-					StandardOpenOption.CREATE));
+			logger.info("Created file {}",
+					Files.write(Paths.get(scenarioFile.getPath()), gson.toJson(scenarioJsonElement).getBytes(),
+							StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store scenario {} {}", scenario.getName(), scenarioFile.getPath());
 			throw new RuntimeException("Unable to store scenario.", e);

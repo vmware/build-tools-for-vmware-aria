@@ -14,16 +14,20 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
-import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
-import com.vmware.pscoe.iac.artifact.helpers.stubs.ResourceActionMockBuilder;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
@@ -32,20 +36,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.ArgumentMatchers.any;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
+import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
+import com.vmware.pscoe.iac.artifact.helpers.stubs.ResourceActionMockBuilder;
 
 public class VraNgResourceActionStoreTest {
 
@@ -53,36 +53,36 @@ public class VraNgResourceActionStoreTest {
 	 * tempFolder.
 	 */
 	@Rule
-	public TemporaryFolder 				tempFolder		= new TemporaryFolder();
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	/**
 	 * VraNgResourceActionStore.
 	 */
-	private VraNgResourceActionStore 	store;
+	private VraNgResourceActionStore store;
 	/**
 	 * RestClientVraNg.
 	 */
-	private RestClientVraNg 			restClient;
+	private RestClientVraNg restClient;
 	/**
 	 * Package.
 	 */
-	private Package 					pkg;
+	private Package pkg;
 	/**
 	 * ConfigurationVraNg.
 	 */
-	private ConfigurationVraNg 		config;
+	private ConfigurationVraNg config;
 	/**
 	 * vraNgPackageDescriptor.
 	 */
-	private VraNgPackageDescriptor 	vraNgPackageDescriptor;
+	private VraNgPackageDescriptor vraNgPackageDescriptor;
 	/**
 	 * FsMocks.
 	 */
-	private FsMocks 					fsMocks;
+	private FsMocks fsMocks;
 
 	/**
- 	* init.
- 	*/
+	 * init.
+	 */
 	@BeforeEach
 	void init() {
 		try {
@@ -91,12 +91,12 @@ public class VraNgResourceActionStoreTest {
 			throw new RuntimeException("Could not create a temp folder");
 		}
 
-		fsMocks					= new FsMocks(tempFolder.getRoot());
-		store					= new VraNgResourceActionStore();
-		restClient				= Mockito.mock(RestClientVraNg.class);
-		pkg						= PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
-		config					= Mockito.mock(ConfigurationVraNg.class);
-		vraNgPackageDescriptor	= Mockito.mock(VraNgPackageDescriptor.class);
+		fsMocks = new FsMocks(tempFolder.getRoot());
+		store = new VraNgResourceActionStore();
+		restClient = Mockito.mock(RestClientVraNg.class);
+		pkg = PackageFactory.getInstance(PackageType.VRANG, tempFolder.getRoot());
+		config = Mockito.mock(ConfigurationVraNg.class);
+		vraNgPackageDescriptor = Mockito.mock(VraNgPackageDescriptor.class);
 
 		store.init(restClient, pkg, config, vraNgPackageDescriptor);
 		System.out.println("==========================================================");
@@ -116,16 +116,15 @@ public class VraNgResourceActionStoreTest {
 		System.out.println("==========================================================");
 	}
 
-
 	@Test
 	void testExportContentWithNoResourceActions() {
-		//GIVEN 
+		// GIVEN
 		when(vraNgPackageDescriptor.getResourceAction()).thenReturn(new ArrayList<String>());
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		//VERIFY
+		// VERIFY
 		verify(restClient, never()).getAllResourceActions();
 
 		assertEquals(0, tempFolder.getRoot().listFiles().length);
@@ -133,29 +132,29 @@ public class VraNgResourceActionStoreTest {
 
 	@Test
 	void testExportContentWithAllResourceActions() throws IOException {
-		//GIVEN 
+		// GIVEN
 		Map<String, VraNgResourceAction> resourceActions = new HashMap<>();
 		ResourceActionMockBuilder mockBuilder = new ResourceActionMockBuilder();
-		
-		resourceActions.put("mockedResourceActionId", mockBuilder.setId("mockedResourceActionId").setName("mockedResourceAction").build());
+
+		resourceActions.put("mockedResourceActionId",
+				mockBuilder.setId("mockedResourceActionId").setName("mockedResourceAction").build());
 
 		when(vraNgPackageDescriptor.getResourceAction()).thenReturn(null);
 		when(restClient.getAllResourceActions()).thenReturn(resourceActions);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedResourceActions	= {"mockedResourceAction.json"};
+		String[] expectedResourceActions = { "mockedResourceAction.json" };
 
 		// VERIFY
 		verify(restClient, times(1)).getAllResourceActions();
 		AssertionsHelper.assertFolderContainsFiles(fsMocks.getTempFolderProjectPath(), expectedResourceActions);
 	}
 
-
 	@Test
 	void testExportContentWithSpecificResourceActions() throws IOException {
-		//GIVEN 
+		// GIVEN
 		List<String> exportedResourceActions = new ArrayList<String>();
 		exportedResourceActions.add("Cloud.vSphere.Machine__AzureResourceAction");
 
@@ -163,16 +162,18 @@ public class VraNgResourceActionStoreTest {
 		ResourceActionMockBuilder azureMockBuilder = new ResourceActionMockBuilder();
 		ResourceActionMockBuilder vsphereMockBuilder = new ResourceActionMockBuilder();
 
-		resourceActions.put("AzureResourceActionId", azureMockBuilder.setId("AzureResourceActionId").setName("AzureResourceAction").build());
-		resourceActions.put("vsphereMdResourceActionId", vsphereMockBuilder.setId("vsphereMResourceActionId").setName("vsphereMResourceAction").build());
+		resourceActions.put("AzureResourceActionId",
+				azureMockBuilder.setId("AzureResourceActionId").setName("AzureResourceAction").build());
+		resourceActions.put("vsphereMdResourceActionId",
+				vsphereMockBuilder.setId("vsphereMResourceActionId").setName("vsphereMResourceAction").build());
 
 		when(vraNgPackageDescriptor.getResourceAction()).thenReturn(exportedResourceActions);
 		when(restClient.getAllResourceActions()).thenReturn(resourceActions);
 
-		//TEST
+		// TEST
 		store.exportContent();
 
-		String[] expectedResourceActions	= {"Cloud.vSphere.Machine__AzureResourceAction.json"};
+		String[] expectedResourceActions = { "Cloud.vSphere.Machine__AzureResourceAction.json" };
 
 		// VERIFY
 		verify(restClient, times(1)).getAllResourceActions();

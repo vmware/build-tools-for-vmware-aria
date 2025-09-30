@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vrops-package-maven-plugin:4.7.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vrops-package-maven-plugin:4.11.1-SNAPSHOT
 
 Name: vrops-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vrops-package-maven-plugin
-Version: 4.7.1-SNAPSHOT
+Version: 4.11.1-SNAPSHOT
 Goal Prefix: vrops
 
 This plugin has 3 goals:
@@ -74,6 +74,10 @@ vrops:pull
 
     ssh (Default: ${ssh.*})
       User property: ssh
+      (no description available)
+
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
       (no description available)
 
     vcd (Default: ${vcd.*})
@@ -156,6 +160,10 @@ vrops:push
 
     ssh (Default: ${ssh.*})
       User property: ssh
+      (no description available)
+
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
       (no description available)
 
     vcd (Default: ${vcd.*})

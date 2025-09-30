@@ -17,6 +17,8 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.models;
 
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgCustomFormSerializer;
+
 public class VraNgResourceAction implements Identifiable {
 
 	/**
@@ -38,7 +40,7 @@ public class VraNgResourceAction implements Identifiable {
 	/**
 	 * Resource Action JSON.
 	 */
-	private final String json;
+	private String json;
 	/**
 	 * Resource Action Resource Type.
 	 */
@@ -54,7 +56,7 @@ public class VraNgResourceAction implements Identifiable {
 	public VraNgResourceAction(final String identifier, final String recourseName, final String jsonString) {
 		this.id = identifier;
 		this.name = recourseName;
-		this.json = jsonString;
+		this.json = VraNgCustomFormSerializer.deserialize(jsonString);
 		this.resourceType = null;
 	}
 
@@ -70,7 +72,7 @@ public class VraNgResourceAction implements Identifiable {
 			final String actionResourceType) {
 		this.id = identifier;
 		this.name = actionName;
-		this.json = jsonString;
+		this.json = VraNgCustomFormSerializer.deserialize(jsonString);
 		this.resourceType = actionResourceType;
 	}
 
@@ -135,5 +137,4 @@ public class VraNgResourceAction implements Identifiable {
 		int result = PRIME_NUMBER_17;
 		return PRIME_NUMBER_31 * result + this.id.hashCode();
 	}
-
 }

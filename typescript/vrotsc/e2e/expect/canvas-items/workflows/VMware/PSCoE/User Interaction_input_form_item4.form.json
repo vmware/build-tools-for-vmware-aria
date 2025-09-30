@@ -1,0 +1,41 @@
+{
+    "layout": {
+        "pages": [
+            {
+                "id": "page_3efd02e1",
+                "sections": [
+                    {
+                        "id": "section_f2d0f1d1",
+                        "fields": [
+                            {
+                                "id": "textArea_f5932870",
+                                "display": "textArea",
+                                "state": {
+                                    "visible": true,
+                                    "read-only": false
+                                },
+                                "signpostPosition": "right-middle"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Next level approval",
+                "state": {}
+            }
+        ]
+    },
+    "schema": {
+        "textArea_f5932870": {
+            "label": "Admin user name",
+            "placeholder": "",
+            "type": {
+                "dataType": "string"
+            },
+            "constraints": {}
+        }
+    },
+    "options": {
+        "externalValidations": []
+    },
+    "itemId": "item4"
+}

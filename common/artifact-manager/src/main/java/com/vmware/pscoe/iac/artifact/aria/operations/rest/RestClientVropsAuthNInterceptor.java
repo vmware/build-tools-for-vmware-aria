@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
-import com.vmware.pscoe.iac.artifact.rest.RestClientRequestInterceptor;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientRequestInterceptor;
 
 public class RestClientVropsAuthNInterceptor extends RestClientRequestInterceptor<ConfigurationVrops> {
 	private static final String VROPS_AUTH_TOKEN_URI = "/suite-api/api/auth/token/acquire";

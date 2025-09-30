@@ -61,21 +61,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcraft.jsch.JSchException;
-import com.vmware.pscoe.iac.artifact.GenericPackageStore;
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.cli.CliManagerVrops;
-import com.vmware.pscoe.iac.artifact.cli.ZipUtilities;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.Version;
-import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
-import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
-import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.cli.CliManagerVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO;
@@ -83,7 +72,18 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Version;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.utils.ZipUtilities;
 
 /**
  * This is the class that abstracts the operations for working with vROps
@@ -922,7 +922,6 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				.collect(Collectors.toList());
 	}
 
-
 	/**
 	 * Gets dashboard sharing metadata.
 	 * 
@@ -1112,7 +1111,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				restClient.importCustomGroupInVrops(customGroup, customGroupPayload);
 				logger.info("Imported custom group: '{}'", customGroup);
 			} catch (Exception e) {
-				messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup, e.getMessage()));
+				messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup,
+						e.getMessage()));
 			}
 		}
 
@@ -1388,31 +1388,34 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			logger.error("No custom groups found in vROPs");
 			return;
 		}
-		// extract all policies in order to assign name of the policy in the target JSON file
+		// extract all policies in order to assign name of the policy in the target JSON
+		// file
 		List<PolicyDTO.Policy> policies = restClient.getAllPolicies();
 
 		StringBuilder messages = new StringBuilder();
 		for (CustomGroupDTO.Group customGroup : customGroups) {
-			if (customGroupNames.stream().anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
-			    // set the policy name to the policy JSON file if it is defined in the file
-			    if (!StringUtils.isEmpty(customGroup.getPolicy())) {
-			        try {
-			            this.setPolicyNameInCustomGroup(customGroup, policies);			            
-			        } catch (Exception e) {
-			            messages.append(e.getMessage());
-			            continue;
-			        }
-			    }
+			if (customGroupNames.stream()
+					.anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
+				// set the policy name to the policy JSON file if it is defined in the file
+				if (!StringUtils.isEmpty(customGroup.getPolicy())) {
+					try {
+						this.setPolicyNameInCustomGroup(customGroup, policies);
+					} catch (Exception e) {
+						messages.append(e.getMessage());
+						continue;
+					}
+				}
 				String payload = this.serializeObject(customGroup);
 				if (StringUtils.isEmpty(payload)) {
-				    continue;
+					continue;
 				}
 				logger.info("Exporting custom group '{}'", customGroup.getResourceKey().getName());
 				File customGroupFile = new File(customGroupTargetDir, customGroup.getResourceKey().getName() + ".json");
 				try {
-				    Files.write(customGroupFile.toPath(), payload.getBytes(), StandardOpenOption.CREATE_NEW);
+					Files.write(customGroupFile.toPath(), payload.getBytes(), StandardOpenOption.CREATE_NEW);
 				} catch (IOException e) {
-				    messages.append(String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
+					messages.append(
+							String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));
 				}
 			}
 		}
@@ -1423,23 +1426,27 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 	/**
-     * Set the vROPs policy name in the custom group.
-     *
-     * @param customGroup  custom group where policy should be set.
-     * @param policies list of all vROPs policies where the name should be found (by id).
-     * @throws RuntimeException if the policy cannot be found.
-     */
+	 * Set the vROPs policy name in the custom group.
+	 *
+	 * @param customGroup custom group where policy should be set.
+	 * @param policies    list of all vROPs policies where the name should be found
+	 *                    (by id).
+	 * @throws RuntimeException if the policy cannot be found.
+	 */
 	private void setPolicyNameInCustomGroup(CustomGroupDTO.Group customGroup, List<PolicyDTO.Policy> policies) {
-	    // set the policy name to the output file
-	    Optional<PolicyDTO.Policy> foundPolicy = policies.stream().filter(item -> item.getId().equalsIgnoreCase(customGroup.getPolicy())).findFirst();
+		// set the policy name to the output file
+		Optional<PolicyDTO.Policy> foundPolicy = policies.stream()
+				.filter(item -> item.getId().equalsIgnoreCase(customGroup.getPolicy())).findFirst();
 
-	    if (foundPolicy.isPresent()) {
-	        customGroup.setPolicy(foundPolicy.get().getName());
-	        return;
-	    }
-	    String msg = String.format("Unable to export custom group '%s' as its policy '%s' cannot be found on the target system.", customGroup.getResourceKey().getName(), customGroup.getPolicy());
+		if (foundPolicy.isPresent()) {
+			customGroup.setPolicy(foundPolicy.get().getName());
+			return;
+		}
+		String msg = String.format(
+				"Unable to export custom group '%s' as its policy '%s' cannot be found on the target system.",
+				customGroup.getResourceKey().getName(), customGroup.getPolicy());
 
-	    throw new RuntimeException(msg);
+		throw new RuntimeException(msg);
 	}
 
 	/**

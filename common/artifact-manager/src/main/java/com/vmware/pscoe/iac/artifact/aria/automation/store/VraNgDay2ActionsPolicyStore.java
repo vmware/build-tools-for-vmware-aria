@@ -14,9 +14,10 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgDay2ActionsPolicy;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import java.util.List;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgDay2ActionsPolicy;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyTypes;
 
 public final class VraNgDay2ActionsPolicyStore extends AbstractVraNgPolicyStore<VraNgDay2ActionsPolicy> {
 	/**

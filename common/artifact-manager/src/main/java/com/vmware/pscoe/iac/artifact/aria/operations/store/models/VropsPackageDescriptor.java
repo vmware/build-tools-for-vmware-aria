@@ -18,9 +18,9 @@ import java.io.File;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 /**
  * VropsPackageDescriptor.
@@ -328,14 +328,14 @@ public class VropsPackageDescriptor extends PackageDescriptor {
 	 * @return instance of the descriptor based on the contents of the content.yaml
 	 *         file.
 	 */
-	@SuppressWarnings("deprecation")
 	public static VropsPackageDescriptor getInstance(File filesystemPath) {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
 		try {
 			return mapper.readValue(filesystemPath, VropsPackageDescriptor.class);
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to load vROps Package Descriptor [" + filesystemPath.getAbsolutePath() + "]", e);
+			throw new RuntimeException(
+					"Unable to load vROps Package Descriptor [" + filesystemPath.getAbsolutePath() + "]", e);
 		}
 	}
 

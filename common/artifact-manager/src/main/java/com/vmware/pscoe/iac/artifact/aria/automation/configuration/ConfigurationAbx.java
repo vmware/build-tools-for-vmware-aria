@@ -14,10 +14,10 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.configuration;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-
 import java.util.Properties;
+
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 /**
  * Holds ABx configuration

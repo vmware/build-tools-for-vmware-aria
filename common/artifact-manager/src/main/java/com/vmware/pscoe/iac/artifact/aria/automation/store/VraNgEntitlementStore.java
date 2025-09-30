@@ -17,6 +17,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store;
 import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlementType.CATALOG_ITEM_IDENTIFIER;
 import static com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlementType.CATALOG_SOURCE_IDENTIFIER;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_ENTITLEMENTS;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,20 +31,22 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.Package;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlement;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogEntitlementType;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import com.vmware.pscoe.iac.artifact.store.filters.CustomFolderFileFilter;
-import org.apache.commons.lang3.StringUtils;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
 
 /**
  * Store for VRA NG entitlements.

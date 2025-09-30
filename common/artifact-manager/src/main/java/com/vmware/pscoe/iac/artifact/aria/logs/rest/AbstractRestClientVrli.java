@@ -14,22 +14,33 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.logs.rest;
 
-import com.google.gson.*;
-import com.jayway.jsonpath.JsonPath;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
-import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
-import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
+import java.net.URI;
+import java.util.Properties;
+
 import org.slf4j.Logger;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.Properties;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.jayway.jsonpath.JsonPath;
+import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 
 public abstract class AbstractRestClientVrli extends RestClient {
 	protected String apiPrefix;

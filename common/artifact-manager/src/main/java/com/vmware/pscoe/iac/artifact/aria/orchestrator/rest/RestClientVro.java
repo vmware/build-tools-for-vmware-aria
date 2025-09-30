@@ -22,17 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
-import java.util.List;
-import java.util.Properties;
-import java.util.Optional;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.slf4j.Logger;
@@ -54,12 +52,15 @@ import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationNg;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageContent.ContentType;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
@@ -70,13 +71,12 @@ import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.NumberValue;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.Parameter;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowParameters.StringValue;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationNg;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
 
 public class RestClientVro extends RestClient {
 
@@ -295,7 +295,7 @@ public class RestClientVro extends RestClient {
 
 					Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
 
-					System.out.print("File copied.");
+					System.out.println("File copied.");
 				}
 				return null;
 			}
@@ -644,7 +644,8 @@ public class RestClientVro extends RestClient {
 
 		ResponseEntity<String> response = null;
 		try {
-			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, this.buildHttpEntry(), String.class);
+			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Unable to fetch input parameters types for workflow id '%s' : %s",
 					workflowId, e.getMessage()));
@@ -673,7 +674,7 @@ public class RestClientVro extends RestClient {
 
 		ResponseEntity<String> response = null;
 		try {
-			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, this.buildHttpEntry(), String.class);
+			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		} catch (Exception e) {
 			return false;
 		}
@@ -693,7 +694,7 @@ public class RestClientVro extends RestClient {
 	 */
 	public String getExecutionState(String workflowId, String executionId) {
 		URI executionStateUri = this.buildUri("/vco/api/workflows/", workflowId, "/executions/", executionId, "/state");
-		HttpEntity<String> executionEntity = this.buildHttpEntry();
+		HttpEntity<String> executionEntity = getDefaultHttpEntity();
 		ResponseEntity<String> response = null;
 		try {
 			response = restTemplate.exchange(executionStateUri, HttpMethod.GET, executionEntity, String.class);
@@ -736,12 +737,12 @@ public class RestClientVro extends RestClient {
 			String requestBody = String.format("{\"severity\": \"%s\",\"older-than\": %d}", severity, sinceTimestamp);
 			RequestEntity<String> request = RequestEntity.post(syslogsUri)
 					.accept(MediaType.APPLICATION_JSON_UTF8)
-					.header("Content-Type", "application/json")
+					.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 					.body(requestBody);
 			response = restTemplate.exchange(request, String.class);
 		} else {
 			// API change in vRO 7.6 - GET instead of POST
-			response = restTemplate.exchange(syslogsUri, HttpMethod.GET, this.buildHttpEntry(), String.class);
+			response = restTemplate.exchange(syslogsUri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		}
 
 		final List<String> result = new LinkedList<>();
@@ -777,7 +778,7 @@ public class RestClientVro extends RestClient {
 	 */
 	public WorkflowExecution getExecution(String workflowId, String executionId) {
 		URI executionUri = this.buildUri("/vco/api/workflows/", workflowId, "/executions/", executionId);
-		HttpEntity<String> executionEntity = this.buildHttpEntry();
+		HttpEntity<String> executionEntity = getDefaultHttpEntity();
 
 		ResponseEntity<String> response = restTemplate.exchange(executionUri, HttpMethod.GET, executionEntity,
 				String.class);
@@ -821,13 +822,6 @@ public class RestClientVro extends RestClient {
 		}
 
 		return output;
-	}
-
-	private HttpEntity<String> buildHttpEntry() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-		return new HttpEntity<>(headers);
 	}
 
 	private URI buildUri(String... paths) {

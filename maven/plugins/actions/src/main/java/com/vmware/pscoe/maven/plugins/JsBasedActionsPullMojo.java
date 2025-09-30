@@ -14,30 +14,31 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.o11n.project.CleanProjectTree;
-import com.vmware.pscoe.o11n.project.JsBasedActionsProjectTree;
-import com.vmware.pscoe.o11n.project.ProjectTree;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.o11n.project.CleanProjectTree;
+import com.vmware.pscoe.o11n.project.JsBasedActionsProjectTree;
+import com.vmware.pscoe.o11n.project.ProjectTree;
+
 @Mojo(name = "pull")
 public class JsBasedActionsPullMojo extends AbstractIacMojo {
 
-	@Parameter( property = "packageName" )
+	@Parameter(property = "packageName")
 	private String packageName;
 
 	@Override

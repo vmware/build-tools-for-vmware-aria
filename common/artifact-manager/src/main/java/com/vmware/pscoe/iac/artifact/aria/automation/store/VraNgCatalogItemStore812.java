@@ -14,21 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomFormAndData;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,6 +21,21 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.util.ArrayList;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomFormAndData;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 /**
  * Responsible for exporting/importing catalog items' icons and custom forms.

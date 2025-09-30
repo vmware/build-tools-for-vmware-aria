@@ -5,7 +5,7 @@ MIN_NODE_VERSION="22"
 MAX_NODE_VERSION="22"
 MIN_MAVEN_VERSION="3.9"
 MIN_JAVA_VERSION="17"
-MAX_JAVA_VERSION="21"
+MAX_JAVA_VERSION="24"
 
 # Color Codes
 GREEN="\033[0;32m"
@@ -69,7 +69,7 @@ check_java_version() {
 }
 
 # Run all checks
-echo "Starting VMware Aria Build Tools Checks..."
+echo "Starting Build Tools for VMware Aria Checks..."
 
 check_node_version
 check_maven_version

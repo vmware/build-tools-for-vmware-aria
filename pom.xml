@@ -12,7 +12,8 @@
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
-		<revision>4.8.1-SNAPSHOT</revision>
+		<revision>4.12.1-SNAPSHOT</revision>
+		<!--Versions newer than the default v.17 will be validated during build. Can be manually overridden using -Djava.version=${{ matrix.java }}-->
 		<java.version>17</java.version>
 	</properties>
 
@@ -54,7 +55,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>flatten-maven-plugin</artifactId>
-					<version>1.7.2</version>
+					<version>1.7.3</version>
 					<inherited>true</inherited>
 					<configuration>
 						<updatePomFile>true</updatePomFile>
@@ -80,7 +81,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>
-					<version>2.6.0</version>
+					<version>2.7.0</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 						<licenseName>bsd2_license</licenseName>
@@ -115,7 +116,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.11.2</version>
+					<version>3.12.0</version>
 					<executions>
 						<execution>
 							<id>attach-javadocs</id>
@@ -143,7 +144,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.0</version>
+				<version>3.14.1</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -152,7 +153,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.5.3</version>
+				<version>3.5.4</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -268,7 +269,7 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>0.8.0</version>
+                        <version>0.9.0</version>
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>

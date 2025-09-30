@@ -14,16 +14,17 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.operations.configuration;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
+import java.net.UnknownHostException;
+import java.util.Properties;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-
-import java.net.UnknownHostException;
-import java.util.Properties;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 
 class ConfigurationVropsTest {
 	protected Properties properties;

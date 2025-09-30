@@ -14,14 +14,16 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPolicy;
-import com.vmware.pscoe.iac.artifact.aria.automation.rest.models.VraNgPolicyTypes;
 import java.util.List;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPolicyTypes;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceQuotaPolicy;
 
 public final class VraNgResourceQuotaPolicyStore extends AbstractVraNgPolicyStore<VraNgResourceQuotaPolicy> {
 
 	/**
-	 * Constructor for policy store of type VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE
+	 * Constructor for policy store of type
+	 * VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE
 	 */
 	public VraNgResourceQuotaPolicyStore() {
 		super(VraNgPolicyTypes.RESOURCE_QUOTA_POLICY_TYPE);
