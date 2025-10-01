@@ -24,9 +24,9 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
-
 ### *Add `vRealize Developer Tools` as Workspace recommended extension to all archetypes*
+
+[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ## Improvements
 
@@ -41,17 +41,42 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Moved Aria Code Stream components to own folder*
+### *Fix transpilation of Workflow attributes with default value of type `Array/*`*
 
-This is just an internal restructuring effort, no functionality was changed.
+In Typescript project if Workflow attribute contains default value with `Array` type Orchestrator expects it to be in a specific format.
 
-### *Moved Basic archetype components to own folder*
+```typescript
+@Workflow({
+    name: "Define attribute",
+    path: "Service/Test",
+    attributes: {
+        security_assignees: {
+            type: "Array/LdapUser",
+            value: "configurationadmin,System Domain\\admin"
+        }
+    }
+})
+```
 
-This is just an internal restructuring effort, no functionality was changed.
+#### Previous Behavior
 
-### *Moved common components to own folder*
+The attribute definition from the above Workflow is transpiled into a vRO7 XML format which is no longer supported in newer Orchestrator versions and makes the whole Workflow inaccessible via UI:
 
-This is just an internal restructuring effort, no functionality was changed.
+```xml
+<attrib name="security_assignees" type="Array/LdapUser" read-only="false">
+  <value encoded="n"><![CDATA[#{#LdapUser#configurationadmin#;#LdapUser#System Domain\admin#}#"]]></value>
+</attrib>
+```
+
+#### New Behavior
+
+The attribute definition from the above Workflow is properly transpiled into the expected XML format:
+
+```xml
+<attrib name="security_assignees" type="Array/LdapUser" read-only="false">
+  <value encoded="n"><![CDATA[[25:string#configurationadmin,26:string#System Domain\admin]]]></value>
+</attrib>
+```
 
 ## Upgrade procedure
 
