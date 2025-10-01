@@ -6,7 +6,6 @@
 ## Deprecations
 
 
-
 ## Features
 
 ### *Add restart and resume behaviour configuration to @Workflow decorator*
@@ -31,24 +30,10 @@ The following values are allowed:
   - 2: Disabled
 
 
-
 ### *Add support for Java 24*
 Java 24 is now included in the build matrix of `build` Workflow. Java version is dynamically populated to the `maven-compiler-plugin` based on the build matrix value.
 
 ## Improvements
-
-
-### *Moved Aria Code Stream components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved Basic archetype components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved common components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
 
 ### *Fixed UserInteractionItem decorator options binding
 
