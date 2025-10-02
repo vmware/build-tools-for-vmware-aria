@@ -16,13 +16,12 @@
 import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as path from "path";
-import getLogger from "../logger";
+import * as winston from "winston";
 import * as a from "../packaging";
 import * as t from "../types";
 import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc, getWorkflowItems, validateWorkflowPath} from "./util";
 import { exist } from "../util";
-import { FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME, DEFAULT_FORM_FILE_NAME, VSO_RESOURCE_INF } from "../constants";
-
+import { WINSTON_CONFIGURATION, FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME, DEFAULT_FORM_FILE_NAME, VSO_RESOURCE_INF } from "../constants";
 /**
  * Extracts a vRO element of out unziped Package element folder
  * @param elementInfoPath - vro_package/elements/<id>/info
@@ -106,8 +105,7 @@ const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeEle
                 if (fs.existsSync(filePath)) {
                     attributes[key] = fs.readFileSync(filePath)
                 } else {
-					getLogger().debug(`Resource Element data bundle does not specify optional attribute ${mapping[key]}`);
-                }
+                    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Resource Element data bundle does not specify optional attribute ${mapping[key]}`);                }
             });
             name = attributes["name"];
             dataFilePath = path.join(baseDirectory, VSO_RESOURCE_INF, "data");
@@ -127,7 +125,7 @@ function parseInputForms(baseDirectory: string): any {
     // Input form is only applicable for vRO workflows
     const elementInputFormPath = path.join(baseDirectory, DEFAULT_FORM_FILE_NAME);
     if (exist(elementInputFormPath)) {
-        getLogger().info(`Parsing form '${DEFAULT_FORM_NAME}' from file '${elementInputFormPath}'`);
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form '${DEFAULT_FORM_NAME}' from file '${elementInputFormPath}'`);
         form = {
             data: JSON.parse(read(elementInputFormPath)),
             name: DEFAULT_FORM_NAME
@@ -144,8 +142,7 @@ function parseInputForms(baseDirectory: string): any {
         if (!formItem) {
             return;
         }
-        getLogger().info(`Parsing form item '${formName}' from file '${inputFormItemPath}'`);
-        formItems.push({ name: formName, data: formItem });
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${formName}' from file '${inputFormItemPath}'`);        formItems.push({ name: formName, data: formItem });
     });
 
     return {
@@ -156,7 +153,7 @@ function parseInputForms(baseDirectory: string): any {
 
 const parseFlat = async (nativePackagePath: string, destDir: string): Promise<t.VroPackageMetadata> => {
     let tmp = path.join(destDir, "tmp");
-    getLogger().info(`Extracting package ${nativePackagePath} to "${destDir}" folder...`);
+    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Extracting package ${nativePackagePath} to "${destDir}" folder...`);
 
     await a.extract(nativePackagePath, tmp);
 
