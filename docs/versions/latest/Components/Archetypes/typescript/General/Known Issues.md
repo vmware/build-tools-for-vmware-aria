@@ -5,6 +5,7 @@ A list of known typescript archetype issues.
 ## Table Of Contents
 
 1. [Array functions are not transpiled to vRO code](#array-functions-are-not-transpiled-to-vro-code)
+2. [VROTSC config](#vrotsc-config)
 
 ### Array functions are not transpiled to vRO code
 
@@ -115,4 +116,47 @@ Sample `tsconfig.json`:
     "strictNullChecks": true
   }
 }
+```
+
+### VROTSC config
+
+The presence of a `tsconfig.json` file in a directory indicates that the directory is the root of a TypeScript project and is being read by the code editor for *autocompletion*. Modifying `tsconfig.json` in the context of `vrotsc` can affect only the code editor autocompletion.
+
+Because of the nature of extending the typescript compiler and the specific runtime of Orchestrator, `vrotsc` package has a default `tsconfig` that is applied for all  `typescript-project-all` projects.
+
+`/typescript/vrotsc/src/compiler/config.ts`
+
+e.g.
+
+```javascript
+  return {
+   module: ts.ModuleKind.ESNext,
+   moduleResolution: ts.ModuleResolutionKind.NodeJs,
+   target: ts.ScriptTarget.ES5,
+   lib: [
+    "lib.es5.d.ts",
+    "lib.es2015.core.d.ts",
+    "lib.es2015.collection.d.ts",
+    "lib.es2015.iterable.d.ts",
+    "lib.es2015.promise.d.ts",
+    "lib.es2017.string.d.ts",
+    "lib.es2016.array.include.d.ts"
+   ],
+   strict: false,
+   allowUnreachableCode: true,
+   stripInternal: false,
+   removeComments: false,
+   experimentalDecorators: true,
+   emitDecoratorMetadata: true,
+   importHelpers: true,
+   suppressOutputPathCheck: true,
+   rootDir: rootDir,
+   baseUrl: rootDir,
+   allowJs: true,
+   declaration: true,
+   sourceMap: true,
+   declarationMap: false,
+  // verbatimModuleSyntax: true,
+  ignoreDeprecations: "5.0"
+};
 ```

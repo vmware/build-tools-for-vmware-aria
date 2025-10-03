@@ -41,7 +41,8 @@ export function createCompilerOptions(rootDir: string, projectPath?: string): ts
 				"lib.es2015.collection.d.ts",
 				"lib.es2015.iterable.d.ts",
 				"lib.es2015.promise.d.ts",
-				"lib.es2017.string.d.ts"
+				"lib.es2017.string.d.ts",
+				"lib.es2016.array.include.d.ts"
 			],
 			strict: false,
 			allowUnreachableCode: true,

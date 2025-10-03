@@ -110,6 +110,9 @@ export default class Shims {
 	}
 
 	static readonly arrayIncludes = function<T>(array: T[], searchElement: T, fromIndex: number = 0): boolean {
+		if (Array.prototype.includes) {
+			return Array.prototype.includes.apply(array, [searchElement, fromIndex])
+		}
 		if (array == null) {
 			throw new TypeError("Array is null or undefined");
 		}
