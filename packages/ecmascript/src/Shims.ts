@@ -109,6 +109,33 @@ export default class Shims {
 		return array;
 	}
 
+	static readonly arrayIncludes = function<T>(array: T[], searchElement: T, fromIndex: number = 0): boolean {
+		if (Array.prototype.includes) {
+			return Array.prototype.includes.apply(array, [searchElement, fromIndex])
+		}
+		if (array == null) {
+			throw new TypeError("Array is null or undefined");
+		}
+
+		const len = array.length;
+		if (len === 0) {
+			return false;
+		}
+
+		const givenIdx = Math.floor(fromIndex) ?? 0;
+		let idx = Math.max(givenIdx >= 0 ? givenIdx : len + givenIdx, 0);
+		while (idx < len) {
+			const item = array[idx];
+			if (item === searchElement ||
+				// Handle NaN correctly (since NaN !== NaN)
+				(typeof searchElement === "number" && typeof item === "number" && isNaN(item) && isNaN(searchElement))) {
+				return true;
+			}
+			idx++;
+		}
+		return false;
+	}
+
 	static arrayFrom(arrayLike: ArrayLike<any> | Iterable<any>, mapFunction?: (v: any, k: number) => any): any[] {
 		let arrayLikeClone = JSON.parse(JSON.stringify(arrayLike));
 
