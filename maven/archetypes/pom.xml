@@ -38,7 +38,7 @@
 				<artifactId>maven-archetype-plugin</artifactId>
 				<extensions>true</extensions>
 				<!-- BUG: in version 3.2.0, .gitignore file is not included in archetype JAR files -->
-				<version>3.4.0</version>
+				<version>3.4.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
