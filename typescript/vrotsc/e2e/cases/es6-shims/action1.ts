@@ -9,6 +9,7 @@ str.padEnd(50, "lazy");
 let arr = [1, 2, 3, 4, 5];
 arr.find(x => x > 3);
 arr.findIndex(x => x > 3);
+arr.includes(4);
 
 // Set
 let set = new Set<string>();

@@ -165,6 +165,8 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 					return shimInstanceCall("arrayFindIndex", node);
 				case "Array.fill":
 					return shimInstanceCall("arrayFill", node);
+				case "Array.includes":
+					return shimInstanceCall("arrayIncludes", node);
 				case "ArrayConstructor.from":
 					return shimStaticCall("arrayFrom", node);
 				case "ArrayConstructor.of":

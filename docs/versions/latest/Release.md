@@ -26,8 +26,6 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### *Add `vRealize Developer Tools` as Workspace recommended extension to all archetypes*
-
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -48,18 +46,6 @@ Failure in a unit test leads to a failure log but the build still completes succ
 
 #### New Behavior
 Failure in a unit test leads to failing the whole build.
-
-### *Moved Aria Code Stream components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved Basic archetype components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
-
-### *Moved common components to own folder*
-
-This is just an internal restructuring effort, no functionality was changed.
 
 ## Upgrade procedure
 
