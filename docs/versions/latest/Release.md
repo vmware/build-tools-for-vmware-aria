@@ -39,6 +39,14 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Failed unit tests result in build failure*
+
+#### Previous Behavior
+Failure in a unit test leads to a failure log but the build still completes successfully.
+
+#### New Behavior
+Failure in a unit test leads to failing the whole build.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
