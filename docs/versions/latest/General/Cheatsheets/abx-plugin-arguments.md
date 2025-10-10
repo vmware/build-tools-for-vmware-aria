@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:4.12.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:abx-package-maven-plugin:4.13.1-SNAPSHOT
 
 Name: abx-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: abx-package-maven-plugin
-Version: 4.12.1-SNAPSHOT
+Version: 4.13.1-SNAPSHOT
 Goal Prefix: abx
 
 This plugin has 3 goals:
