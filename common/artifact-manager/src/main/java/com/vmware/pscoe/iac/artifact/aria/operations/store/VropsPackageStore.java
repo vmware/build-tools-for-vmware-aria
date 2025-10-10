@@ -21,10 +21,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.StackWalker.Option;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -44,10 +46,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.FileSystemUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -72,6 +76,7 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO.Policy;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
@@ -1137,6 +1142,43 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		}
 	}
 
+
+	private void setPolicyIds(final File policy, List<Policy> allPolicies) {
+		String path = policy.getParent().toString();
+		String fullPath = policy.getPath();
+		try {
+			logger.info("Unzipping file " + policy.getName());
+			ZipUtilities.unzip(policy, new File(path));
+			File exportedPoliciesXml = new File(path + "/exportedPolicies.xml");
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.parse(exportedPoliciesXml);
+			NodeList policies = document.getElementsByTagName("Policies");
+			logger.info("Policies found " + policies.toString());
+			for (int i = 0; i < policies.getLength(); i++) {
+				Element node = (Element)policies.item(i);
+				if (node.hasAttribute("parentPolicy")) {
+					String parentPolicyId = node.getAttribute("parentPolicy");
+					logger.info("Policy " + node.getAttribute("name") + " has a parent Id: " + parentPolicyId);
+					Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getId() == parentPolicyId).findFirst();
+					if (foundPolicy.isPresent()) {
+						node.setAttribute("parentPolicy", foundPolicy.get().getId());
+					}
+				} else {
+					Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getName() == policy.getName()).findFirst();
+					if (foundPolicy.isPresent()) {
+						node.setAttribute("key", foundPolicy.get().getId());
+					}
+				}
+			}
+			FileSystemUtils.deleteRecursively(policy);
+			ZipUtilities.zip(exportedPoliciesXml, fullPath);
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			throw new RuntimeException(String.format("An error occurred while setting the ids of policy %s : %s %n", policy.getName(),
+			e.getMessage()));
+		}
+	}
+
 	/**
 	 * Import policies to vROPs.
 	 * 
@@ -1145,6 +1187,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @throws RuntimeException if the polices cannot be imported.
 	 */
 	private void importPolicies(final Package vropsPackage, final File tmpDir) {
+
+		List<Policy> allPolicies = restClient.getAllPolicies();
 		File policiesDir = new File(tmpDir.getPath(), "policies");
 		if (!policiesDir.exists()) {
 			return;
@@ -1154,6 +1198,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		for (File policy : FileUtils.listFiles(policiesDir, new String[] { "zip" }, Boolean.FALSE)) {
 			String policyName = FilenameUtils.removeExtension(policy.getName());
 			try {
+				logger.info("Setting the parent ids for policy: '{}'", policyName);
+				setPolicyIds(policy, allPolicies);
 				logger.info("Importing policy: '{}'", policyName);
 				restClient.importPolicyFromZip(policyName, policy, Boolean.TRUE);
 				logger.info("Imported policy: '{}'", policyName);
@@ -1605,31 +1651,31 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		try {
 			new PackageManager(pkg).unpack(tmpDir);
 
-			addViewToImportList(pkg, tmpDir);
-			addDashboardToImportList(pkg, tmpDir);
-			addReportToImportList(pkg, tmpDir);
-			addSuperMetricToImportList(pkg, tmpDir);
-			addMetricConfigToImportList(pkg, tmpDir);
+			// addViewToImportList(pkg, tmpDir);
+			// addDashboardToImportList(pkg, tmpDir);
+			// addReportToImportList(pkg, tmpDir);
+			// addSuperMetricToImportList(pkg, tmpDir);
+			// addMetricConfigToImportList(pkg, tmpDir);
 
-			if (cliManager.hasAnyCommands()) {
-				cliManager.connect();
-				cliManager.importFilesToVrops();
-			}
+			// if (cliManager.hasAnyCommands()) {
+			// 	cliManager.connect();
+			// 	cliManager.importFilesToVrops();
+			// }
 
-			importDefinitions(pkg, tmpDir);
+			// importDefinitions(pkg, tmpDir);
 			importPolicies(pkg, tmpDir);
-			importCustomGroups(pkg, tmpDir);
-			// manage dashboard sharing per groups
-			manageDashboardSharing(tmpDir);
-			// manage dashboard activation per groups
-			manageDashboardActivation(tmpDir, true);
-			// manage dashboard activation per users
-			manageDashboardActivation(tmpDir, false);
-			// set default policy after importing policies
-			setDefaultPolicy(pkg, tmpDir);
-			// set policy priorities
-			setPolicyPriorities(pkg, tmpDir);
-		} catch (IOException | JSchException | ConfigurationException e) {
+			// importCustomGroups(pkg, tmpDir);
+			// // manage dashboard sharing per groups
+			// manageDashboardSharing(tmpDir);
+			// // manage dashboard activation per groups
+			// manageDashboardActivation(tmpDir, true);
+			// // manage dashboard activation per users
+			// manageDashboardActivation(tmpDir, false);
+			// // set default policy after importing policies
+			// setDefaultPolicy(pkg, tmpDir);
+			// // set policy priorities
+			// setPolicyPriorities(pkg, tmpDir);
+		} catch (IOException /*| JSchException*/ | ConfigurationException e) {
 			String message = String.format("Unable to push package '%s' to vROps Server '%s' : %s : %s",
 					pkg.getFQName(), cliManager, e.getClass().getName(),
 					e.getMessage());
