@@ -88,6 +88,7 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.Version;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.utils.XmlUtilities;
 import com.vmware.pscoe.iac.artifact.common.utils.ZipUtilities;
 
 /**
@@ -1145,14 +1146,14 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 	private void setPolicyIds(final File policy, List<Policy> allPolicies) {
 		String path = policy.getParent().toString();
+		logger.info("Path without filename: " + path);
 		String fullPath = policy.getPath();
+		logger.info("Path with filename: " + fullPath);
 		try {
 			logger.info("Unzipping file " + policy.getName());
 			ZipUtilities.unzip(policy, new File(path));
 			File exportedPoliciesXml = new File(path + "/exportedPolicies.xml");
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(exportedPoliciesXml);
+			Document document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
 			NodeList policies = document.getElementsByTagName("Policies");
 			logger.info("Policies found " + policies.toString());
 			for (int i = 0; i < policies.getLength(); i++) {
@@ -1173,7 +1174,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			}
 			FileSystemUtils.deleteRecursively(policy);
 			ZipUtilities.zip(exportedPoliciesXml, fullPath);
-		} catch (ParserConfigurationException | SAXException | IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(String.format("An error occurred while setting the ids of policy %s : %s %n", policy.getName(),
 			e.getMessage()));
 		}
