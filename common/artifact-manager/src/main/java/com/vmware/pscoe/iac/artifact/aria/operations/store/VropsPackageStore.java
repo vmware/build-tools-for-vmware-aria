@@ -1151,29 +1151,41 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		logger.info("Path with filename: " + fullPath);
 		try {
 			logger.info("Unzipping file " + policy.getName());
-			ZipUtilities.unzip(policy, new File(path));
+			File pathForUnzipping = new File(path);
+			ZipUtilities.unzip(policy, pathForUnzipping);
 			File exportedPoliciesXml = new File(path + "/exportedPolicies.xml");
-			Document document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
-			NodeList policies = document.getElementsByTagName("Policies");
-			logger.info("Policies found " + policies.toString());
+			String exportedPoliciesXmlContent = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
+			logger.info("Xml content before correction:\n" + exportedPoliciesXmlContent);
+			exportedPoliciesXmlContent = exportedPoliciesXmlContent.replace("><PolicyContent>", ">\n<PolicyContent>");
+			logger.info("Xml content after correction:\n" + exportedPoliciesXmlContent);
+			XmlUtilities.writeToXmlFile(exportedPoliciesXml, exportedPoliciesXmlContent);
+			Element document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
+			Node policyTag = XmlUtilities.findTagInXmlDocument(document, "Policies");
+			NodeList policies = policyTag.getChildNodes();
 			for (int i = 0; i < policies.getLength(); i++) {
-				Element node = (Element)policies.item(i);
-				if (node.hasAttribute("parentPolicy")) {
-					String parentPolicyId = node.getAttribute("parentPolicy");
-					logger.info("Policy " + node.getAttribute("name") + " has a parent Id: " + parentPolicyId);
-					Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getId() == parentPolicyId).findFirst();
-					if (foundPolicy.isPresent()) {
-						node.setAttribute("parentPolicy", foundPolicy.get().getId());
-					}
-				} else {
-					Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getName() == policy.getName()).findFirst();
-					if (foundPolicy.isPresent()) {
-						node.setAttribute("key", foundPolicy.get().getId());
+				Node node = policies.item(i);
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element)policies.item(i);
+					if (element.hasAttribute("parentPolicy")) {
+						String parentPolicyId = element.getAttribute("parentPolicy");
+						logger.info("Policy " + element.getAttribute("name") + " has a parent Id: " + parentPolicyId);
+						Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getId() == parentPolicyId).findFirst();
+						if (foundPolicy.isPresent()) {
+							element.setAttribute("parentPolicy", foundPolicy.get().getId());
+						}
+					} else {
+						Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getName() == policy.getName()).findFirst();
+						if (foundPolicy.isPresent()) {
+							element.setAttribute("key", foundPolicy.get().getId());
+						}
 					}
 				}
 			}
 			FileSystemUtils.deleteRecursively(policy);
 			ZipUtilities.zip(exportedPoliciesXml, fullPath);
+			String xmlContentAfterAdjustment = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
+			logger.info("Xml content after adjustments:\n" + xmlContentAfterAdjustment);
+			FileSystemUtils.deleteRecursively(exportedPoliciesXml);
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("An error occurred while setting the ids of policy %s : %s %n", policy.getName(),
 			e.getMessage()));
@@ -1652,30 +1664,30 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		try {
 			new PackageManager(pkg).unpack(tmpDir);
 
-			// addViewToImportList(pkg, tmpDir);
-			// addDashboardToImportList(pkg, tmpDir);
-			// addReportToImportList(pkg, tmpDir);
-			// addSuperMetricToImportList(pkg, tmpDir);
-			// addMetricConfigToImportList(pkg, tmpDir);
-
-			// if (cliManager.hasAnyCommands()) {
-			// 	cliManager.connect();
-			// 	cliManager.importFilesToVrops();
-			// }
-
-			// importDefinitions(pkg, tmpDir);
+//			 addViewToImportList(pkg, tmpDir);
+//			 addDashboardToImportList(pkg, tmpDir);
+//			 addReportToImportList(pkg, tmpDir);
+//			 addSuperMetricToImportList(pkg, tmpDir);
+//			 addMetricConfigToImportList(pkg, tmpDir);
+//
+//			 if (cliManager.hasAnyCommands()) {
+//			 	cliManager.connect();
+//			 	cliManager.importFilesToVrops();
+//			 }
+//
+//			 importDefinitions(pkg, tmpDir);
 			importPolicies(pkg, tmpDir);
-			// importCustomGroups(pkg, tmpDir);
-			// // manage dashboard sharing per groups
-			// manageDashboardSharing(tmpDir);
-			// // manage dashboard activation per groups
-			// manageDashboardActivation(tmpDir, true);
-			// // manage dashboard activation per users
-			// manageDashboardActivation(tmpDir, false);
-			// // set default policy after importing policies
-			// setDefaultPolicy(pkg, tmpDir);
-			// // set policy priorities
-			// setPolicyPriorities(pkg, tmpDir);
+//			 importCustomGroups(pkg, tmpDir);
+//			 // manage dashboard sharing per groups
+//			 manageDashboardSharing(tmpDir);
+//			 // manage dashboard activation per groups
+//			 manageDashboardActivation(tmpDir, true);
+//			 // manage dashboard activation per users
+//			 manageDashboardActivation(tmpDir, false);
+//			 // set default policy after importing policies
+//			 setDefaultPolicy(pkg, tmpDir);
+//			 // set policy priorities
+//			 setPolicyPriorities(pkg, tmpDir);
 		} catch (IOException /*| JSchException*/ | ConfigurationException e) {
 			String message = String.format("Unable to push package '%s' to vROps Server '%s' : %s : %s",
 					pkg.getFQName(), cliManager, e.getClass().getName(),
