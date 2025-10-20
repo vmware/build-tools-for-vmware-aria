@@ -56,6 +56,7 @@
 							<port>${vrops.port}</port>
 							<sshPort>${vrops.sshPort}</sshPort>
 							<dashboardUser>${vrops.dashboardUser}</dashboardUser>
+							<importDashboardsForAllUsers>${vrops.importDashboardsForAllUsers}</importDashboardsForAllUsers>
 							<username>${vrops.username}</username>
 							<password>${vrops.password}</password>
 							<serverId>${vrops.serverId}</serverId>

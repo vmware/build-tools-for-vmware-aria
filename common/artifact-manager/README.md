@@ -144,6 +144,7 @@ vRealize Artifact Manager can be configured to use filesystem folder as source f
 - restUser - Administrator username for REST API access
 - restPassword - Password for REST user
 - dashboardUser - User account to which to assign the ownership of a dashboard when importing it.
+- importDashboardsForAllUsers - if true, dashboard is imported to all users, if false, it's imported to dashboardUser only
 
 Notes
 
