@@ -86,7 +86,6 @@ jobs:
         run: echo "GPG_PASSPHRASE=''" >> $GITHUB_ENV
 
       - name: Set env GPG_PASSPHRASE if main
-        if: ${{ github.ref == 'refs/heads/main' }}
         run: echo "GPG_PASSPHRASE=${{ secrets.GPG_PASSPHRASE }}" >> $GITHUB_ENV
 
       - name: Set MVN_BUILD_COMMAND
