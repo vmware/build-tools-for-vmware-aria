@@ -31,6 +31,7 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 	private static final int MAX_PORT_VAL = 0x0FFFF;
 	// Important - when modify properties refer to comments in @Configuration
 	public static final String VROPS_DASHBOARD_USER = "dashboardUser";
+	public static final String VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS = "importDashboardsForAllUsers";
 	public static final String VROPS_REST_USER = "restUser";
 	public static final String VROPS_REST_PASSWORD = "restPassword";
 	public static final String VROPS_REST_AUTH_SOURCE = "restAuthSource";
@@ -85,6 +86,10 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 
 	public String getVropsDashboardUser() {
 		return properties.getProperty(VROPS_DASHBOARD_USER);
+	}
+
+	public boolean getVropsImportDashboardsForAllUsers() {
+		return Boolean.parseBoolean(properties.getProperty(VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS, "true"));
 	}
 
 	public String getVropsRestUser() {

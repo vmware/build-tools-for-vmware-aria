@@ -189,6 +189,7 @@ A better approach is to have the different vROps development environments specif
         <vrops.restUser>admin</vrops.restUser>
         <vrops.restPassword>VMware1!</vrops.restPassword>
         <vrops.dashboardUser>admin</vrops.dashboardUser>
+        <vrops.importDashboardsForAllUsers>false</vrops.importDashboardsForAllUsers>
         <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
         <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
     </properties>
@@ -250,6 +251,7 @@ The other option is to set the flags in your Maven's settings.xml file for a spe
         <vrops.restUser>admin</vrops.restUser>
         <vrops.restPassword>VMware1!</vrops.restPassword>
         <vrops.dashboardUser>admin</vrops.dashboardUser>
+        <vrops.importDashboardsForAllUsers>false</vrops.importDashboardsForAllUsers>
         <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
         <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
     </properties>
