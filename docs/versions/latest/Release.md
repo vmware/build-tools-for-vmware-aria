@@ -27,10 +27,10 @@
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ### *Support import vrops dashboards for specific user*
-Added a new parameter to vrops configuration in settings.xml: 
+Added a new parameter to vrops configuration in settings.xml:
   vrops.importDashboardsForAllUsers=true(default)|false
 If parameter is missing or set to *true*, the dashboards are imported to all users (the current behaviour)
-If parameter is set to *false*, the dashboards are imported only for the user specified in vrops.dashboardUser 
+If parameter is set to *false*, the dashboards are imported only for the user specified in vrops.dashboardUser
 
 ## Improvements
 
