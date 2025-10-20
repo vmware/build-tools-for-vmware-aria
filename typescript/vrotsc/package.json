@@ -1,6 +1,6 @@
 {
     "name": "@vmware-pscoe/vrotsc",
-    "version": "4.13.2-SNAPSHOT",
+    "version": "4.14.0",
     "author": "VMware PSCoE",
     "license": "VMware Confidential",
     "description": "vRO TypeScript to JavaScript transpiler",

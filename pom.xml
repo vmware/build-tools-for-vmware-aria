@@ -12,7 +12,7 @@
 
 	<properties>
 		<main.basedir>${project.baseUri}</main.basedir>
-		<revision>4.13.2-SNAPSHOT</revision>
+		<revision>4.14.0</revision>
 		<!--Versions newer than the default v.17 will be validated during build. Can be manually overridden using -Djava.version=${{ matrix.java }}-->
 		<java.version>17</java.version>
 	</properties>

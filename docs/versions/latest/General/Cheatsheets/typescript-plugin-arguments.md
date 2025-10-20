@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:o11n-typescript-package-maven-plugin:4.13.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:o11n-typescript-package-maven-plugin:4.13.2-SNAPSHOT
 
 Name: o11n-typescript-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: o11n-typescript-package-maven-plugin
-Version: 4.13.1-SNAPSHOT
+Version: 4.13.2-SNAPSHOT
 Goal Prefix: vro
 
 This plugin has 5 goals:

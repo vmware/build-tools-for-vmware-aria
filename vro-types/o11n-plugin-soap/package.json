@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-soap",
-  "version": "4.13.2-SNAPSHOT",
+  "version": "4.14.0",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
