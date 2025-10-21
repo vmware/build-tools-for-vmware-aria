@@ -47,6 +47,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,6 +62,7 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.AdapterKindDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition.State;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition.SymptomSet;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO.SuperMetric;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupsDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
@@ -100,9 +102,17 @@ public class RestClientVrops extends RestClient {
 	 */
 	private static final String ALERT_DEFS_API = PUBLIC_API_PREFIX + "alertdefinitions/";
 	/**
+	 * GET_ALL_ALERT_DEFS_API.
+	 */
+	private static final String GET_ALL_ALERTS_DEFS_API = PUBLIC_API_PREFIX + "alertdefinitions";
+	/**
 	 * SYMPTOM_DEFS_API.
 	 */
 	private static final String SYMPTOM_DEFS_API = PUBLIC_API_PREFIX + "symptomdefinitions/";
+	/**
+	 * GET_ALL_SYMPTOM_DEFS_API.
+	 */
+	private static final String GET_ALL_SYMPTOM_DEFS_API = PUBLIC_API_PREFIX + "symptomdefinitions";
 	/**
 	 * POLICIES_API.
 	 */
@@ -151,6 +161,10 @@ public class RestClientVrops extends RestClient {
 	 * RECOMMENDATIONS_API.
 	 */
 	private static final String RECOMMENDATIONS_API = PUBLIC_API_PREFIX + "recommendations/";
+	/**
+	 * GET_ALL_RECOMMENDATIONS_API.
+	 */
+	private static final String GET_ALL_RECOMMENDATIONS_API = PUBLIC_API_PREFIX + "recommendations";
 	/**
 	 * RESOURCES_API.
 	 */
@@ -406,7 +420,8 @@ public class RestClientVrops extends RestClient {
 
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 		try {
-			restTemplate.postForEntity(uri, requestEntity, String.class);
+			ResponseEntity<String> response = restTemplate.postForEntity(uri, requestEntity, String.class);
+			logger.info("Import policy from zip response:\n" + response);
 		} catch (RestClientException e) {
 			throw new RuntimeException(
 					String.format("The policy '%s' could not be imported : %s.", policyName, e.getMessage()), e);
@@ -723,6 +738,78 @@ public class RestClientVrops extends RestClient {
 		if (!HttpStatus.OK.equals(response.getStatusCode())) {
 			throw new RuntimeException(String.format("Error applying policy '%s' to custom groups: %s: ",
 					policy.getName(), response.getBody()));
+		}
+	}
+
+	/**
+	 * Reads all definition entities entities of sepcified type
+	 * @param definitionType the type of definition about to be read from vROps
+	 * @return list of the definitions
+	 */
+	public List<?> getAlltDefinitionsOfType(VropsPackageMemberType definitionType) {
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		// older vROPs versions use internal API for policies, thus internal header
+		// needs to be set.
+		if (!this.isVersionAbove812()) {
+			headers.set(INTERNAL_API_HEADER_NAME, Boolean.TRUE.toString());
+		}
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
+
+		String url = "";
+		switch(definitionType) {
+			case ALERT_DEFINITION:
+				url = GET_ALL_ALERTS_DEFS_API;
+				break;
+			case SYMPTOM_DEFINITION:
+				url = GET_ALL_SYMPTOM_DEFS_API;
+				break;
+			case RECOMMENDATION:
+				url = GET_ALL_RECOMMENDATIONS_API;
+				break;
+			default:
+				throw new RuntimeException("Unknown definition type used");
+		}
+
+		try {
+			UriComponentsBuilder uriBuilder;
+			// for newer vROPs versions the policies API is no longer internal.
+			if (this.isVersionAbove812()) {
+				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(url)));
+			} else {
+				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(url)));
+			}
+			uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
+			URI restUri = uriBuilder.build().toUri();
+			response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
+		} catch (HttpClientErrorException e) {
+			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+				return new ArrayList<>();
+			}
+			throw new RuntimeException(
+					String.format("HTTP error ocurred trying to fetching definitions of type %s. Message: %s, Server error: %s",
+							definitionType.toString(), e.getMessage(), e.getStatusText()));
+		} catch (Exception e) {
+			throw new RuntimeException(
+					String.format("General error while fetching definitions of type %s. Message: %s, Server error: %s",
+						definitionType.toString(), e.getMessage(), response.getBody()));
+		}
+
+		switch(definitionType) {
+			case ALERT_DEFINITION:
+				AlertDefinitionDTO alarmDefinitionDTO = (AlertDefinitionDTO)deserializeDefinitions(definitionType, response.getBody());
+				return alarmDefinitionDTO.getAlertDefinitions();
+			case SYMPTOM_DEFINITION:
+				SymptomDefinitionDTO symptomDefinitionDTO = (SymptomDefinitionDTO)deserializeDefinitions(definitionType, response.getBody());
+				return symptomDefinitionDTO.getSymptomDefinitions();
+			case RECOMMENDATION:
+				RecommendationDTO recommendationDTO = (RecommendationDTO)deserializeDefinitions(definitionType, response.getBody());
+				return recommendationDTO.getRecommendations();
+			default:
+				return new ArrayList<>();
 		}
 	}
 
@@ -1173,6 +1260,14 @@ public class RestClientVrops extends RestClient {
 				.forEach(supermetric -> supermetric.setName(StringEscapeUtils.unescapeHtml4(supermetric.getName())));
 
 		return retVal;
+	}
+
+	/**
+	 * Imports all Supermetrics specified in the content.yaml
+	 */
+	public void importSupermetrics() {
+
+		List<SuperMetric> existingSupermetrics = getAllSupermetrics().getSuperMetrics();
 	}
 
 	/**

@@ -22,13 +22,24 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -91,6 +102,69 @@ public final class XmlUtilities {
         }
     }
 
+    public final static void setAttributesInXmlFile(File xmlFile, String tagName, HashMap<String, HashMap<String, String>> valuesToSet) {
+
+        Element document = initializeXmlFile(xmlFile);
+
+        Node tag = findTagInXmlDocument(document, tagName);
+        NodeList childNodes = tag.getChildNodes();
+
+        int childNodesLength = 0;
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node child = childNodes.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                childNodesLength++;
+            }
+        } 
+
+        if (childNodesLength != valuesToSet.size()) {
+            throw new InvalidParameterException("Number of provided values does not match the number of tags found");
+        }
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node child = childNodes.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)child;
+                NamedNodeMap attributeElements = element.getAttributes();
+                List<Node> attributes = new ArrayList<Node>();
+                for (int attributeIndex = 0; attributeIndex < attributeElements.getLength(); attributeIndex++) {
+                    Node nextAttribute = attributeElements.item(attributeIndex);
+                    attributes.add(nextAttribute);
+                }
+
+                String[] hashMapKeys = valuesToSet.keySet().toArray(new String[0]);
+                for (String key : hashMapKeys) {
+                    Optional<Node> searchAttribute = attributes.stream().filter(attr -> attr.getNodeValue().equals(key)).findFirst();
+                    if (searchAttribute.isPresent()) {
+                        HashMap<String, String> childMap = valuesToSet.get(key);
+                        String[] childMapKeys = childMap.keySet().toArray(new String[0]);
+                        for (String childKey : childMapKeys) {
+                            element.setAttribute(childKey, childMap.get(childKey));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        saveXmlDocument(xmlFile, document);
+    }
+
+    public final static void saveXmlDocument(File xmlFile, Element document) {
+
+        try {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+            System.out.println("XML document saved successfully");
+        } catch (TransformerException e) {
+            System.err.println("Saving document " + document.getNodeName() + " failed. Reason: " + e);
+        }
+       
+    }
+
     public final static Node findTagInXmlDocument(Node node, String tagName) {
 
         Node result = null;
@@ -107,6 +181,80 @@ public final class XmlUtilities {
             if (result != null) {
                 break;
             }
+        }
+
+        return result;
+    }
+
+    public final static Element[] getAllTagsWithAttributes(Element document, String tagName) {
+
+        NodeList tagNodes = document.getElementsByTagName(tagName);
+        List<Element> tags = new ArrayList<>();
+
+        for (int i = 0; i < tagNodes.getLength(); i ++) {
+            Node node = tagNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                tags.add((Element)node);
+            }
+
+        }
+
+        return tags.toArray(new Element[0]);
+    }
+
+    public final static Node[] getAllTagsWithoutAttributes(Element document, String tagName) {
+
+        NodeList tagNodes = document.getElementsByTagName("*");
+
+        List<Node> result = new ArrayList<>();
+        for (int i = 0; i < tagNodes.getLength(); i++) {
+            Node node = tagNodes.item(i);
+            if (node.getNodeName().equals(tagName)) {
+                result.add(node);
+            }
+        }
+        return result.toArray(new Node[0]);
+    }
+
+    public static List<String> getAllValuesOfAttributeOfTag(Element[] tags, String attributeName) {
+
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < tags.length; i++) {
+            if (!tags[i].hasAttribute(attributeName)) {
+                continue;
+            }
+            result.add(tags[i].getAttribute(attributeName));
+        }
+
+        return result;
+    }
+
+    public final static Element[] getChildrenTagsOfTag(Node document, String tagName) throws Exception {
+
+        List<Element> children = new ArrayList<>();
+
+        Node tag = findTagInXmlDocument(document, tagName);
+
+        if (tag == null) {
+            throw new Exception("Tag with name '" + tagName + "' not found in document");
+        }
+
+        NodeList childNodes = tag.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node child = childNodes.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                children.add((Element)child);
+            }
+        }
+
+        return children.toArray(new Element[0]);
+    }
+
+    public static final List<String> getTextContentBetweenTags(Node[] tags) {
+
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < tags.length; i++) {
+            result.add(tags[i].getTextContent());
         }
 
         return result;

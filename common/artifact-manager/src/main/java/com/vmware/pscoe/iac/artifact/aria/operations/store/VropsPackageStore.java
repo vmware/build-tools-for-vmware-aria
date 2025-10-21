@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -75,8 +77,11 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO.SymptomDefinition;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO.Policy;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO.Recommendation;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
@@ -1144,51 +1149,112 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 
-	private void setPolicyIds(final File policy, List<Policy> allPolicies) {
+	/**
+	 * Sets the ids of the policy to be equal to the ids on the server to be pushed
+	 * @param policy zip file with the policy
+	 * @param allPolicies all policies read from the server
+	 * @return new .zip file with adjusted ids
+	 */
+	private File setPolicyIds(final File policy, List<Policy> allPolicies) {
+        String path = policy.getParent().toString();
+        String fullPath = policy.getPath();
+        try {
+            logger.info("Unzipping file " + policy.getName());
+            File pathForUnzipping = new File(path);
+            ZipUtilities.unzip(policy, pathForUnzipping);
+            File exportedPoliciesXml = new File(path + "/exportedPolicies.xml");
+            String exportedPoliciesXmlContent = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
+            exportedPoliciesXmlContent = exportedPoliciesXmlContent.replace("><PolicyContent>", ">\n<PolicyContent>");
+            XmlUtilities.writeToXmlFile(exportedPoliciesXml, exportedPoliciesXmlContent);
+            Element document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
+            Node policyTag = XmlUtilities.findTagInXmlDocument(document, "Policies");
+            NodeList policies = policyTag.getChildNodes();
+
+            HashMap<String, HashMap<String, String>> values = new HashMap<>();
+            List<Element> policyElements = new ArrayList<>();
+
+            for (int i = 0; i < policies.getLength(); i++) {
+                Node node = policies.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element)policies.item(i);
+                    policyElements.add(element);
+                }
+            }
+
+            for (int i = 0; i < policyElements.size(); i++) {
+                Element policyElement = policyElements.get(i);
+				String policyName = policyElement.getAttribute("name");
+				HashMap<String, String> childMap = new HashMap<>();
+                Optional<Policy> currentPolicy = allPolicies.stream().filter(pol -> pol.getName().equals(policyElement.getAttribute("name"))).findAny();
+                if (currentPolicy.isPresent()) {
+                    childMap.put("key", currentPolicy.get().getId());
+                } else {
+					childMap.put("key", policyElement.getAttribute("key"));
+				}
+                if (policyElement.hasAttribute("parentPolicy")) {
+                    String parentPolicyId = policyElement.getAttribute("parentPolicy");
+                    Optional<Element> parentPolicyElement = policyElements.stream().filter(el -> el.getAttribute("key").equals(parentPolicyId)).findAny();
+                    String parentPolicyName = parentPolicyElement.get().getAttribute("name");
+                    Optional<Policy> parentPolicy = allPolicies.stream().filter(pol -> pol.getName().equals(parentPolicyName)).findAny();
+                    if (parentPolicy.isPresent()) {
+                        childMap.put("parentPolicy", parentPolicy.get().getId());
+                    } else {
+                        childMap.put("parentPolicy", parentPolicyId);
+                    }
+                }
+				values.put(policyName, childMap);
+            }
+            XmlUtilities.setAttributesInXmlFile(exportedPoliciesXml, "Policies", values);
+            FileSystemUtils.deleteRecursively(policy);
+            ZipUtilities.zip(exportedPoliciesXml, fullPath);
+            String xmlContentAfterAdjustment = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
+            // logger.info("Xml content after adjustments:\n" + xmlContentAfterAdjustment);
+            FileSystemUtils.deleteRecursively(exportedPoliciesXml);
+			return new File(fullPath);
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("An error occurred while setting the ids of policy %s : %s %n", policy.getName(),
+            e.getMessage()));
+        }
+    }
+
+	private void checkPolicyForMissingComponents(File policy, List<String> alertNames, List<String> symptomNames, List<String> recommendationsDescriptions) {
+
 		String path = policy.getParent().toString();
-		logger.info("Path without filename: " + path);
-		String fullPath = policy.getPath();
-		logger.info("Path with filename: " + fullPath);
 		try {
 			logger.info("Unzipping file " + policy.getName());
 			File pathForUnzipping = new File(path);
 			ZipUtilities.unzip(policy, pathForUnzipping);
 			File exportedPoliciesXml = new File(path + "/exportedPolicies.xml");
 			String exportedPoliciesXmlContent = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
-			logger.info("Xml content before correction:\n" + exportedPoliciesXmlContent);
 			exportedPoliciesXmlContent = exportedPoliciesXmlContent.replace("><PolicyContent>", ">\n<PolicyContent>");
-			logger.info("Xml content after correction:\n" + exportedPoliciesXmlContent);
-			XmlUtilities.writeToXmlFile(exportedPoliciesXml, exportedPoliciesXmlContent);
-			Element document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
-			Node policyTag = XmlUtilities.findTagInXmlDocument(document, "Policies");
-			NodeList policies = policyTag.getChildNodes();
-			for (int i = 0; i < policies.getLength(); i++) {
-				Node node = policies.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element)policies.item(i);
-					if (element.hasAttribute("parentPolicy")) {
-						String parentPolicyId = element.getAttribute("parentPolicy");
-						logger.info("Policy " + element.getAttribute("name") + " has a parent Id: " + parentPolicyId);
-						Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getId() == parentPolicyId).findFirst();
-						if (foundPolicy.isPresent()) {
-							element.setAttribute("parentPolicy", foundPolicy.get().getId());
-						}
-					} else {
-						Optional<Policy> foundPolicy = allPolicies.stream().filter(pol -> pol.getName() == policy.getName()).findFirst();
-						if (foundPolicy.isPresent()) {
-							element.setAttribute("key", foundPolicy.get().getId());
-						}
-					}
-				}
+            Element document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
+
+			Element[] alertDefinitions = XmlUtilities.getAllTagsWithAttributes(document, "AlertDefinition");
+			List<String> alertDefinitionsNames = XmlUtilities.getAllValuesOfAttributeOfTag(alertDefinitions, "name");
+			List<String> missingAlerts = alertDefinitionsNames.stream().filter(alert -> !alertNames.contains(alert)).toList();
+
+			Element[] symptomDefinitions = XmlUtilities.getAllTagsWithAttributes(document, "SymptomDefinition");
+			List<String> symptomDefinitionsNames = XmlUtilities.getAllValuesOfAttributeOfTag(symptomDefinitions, "name");
+			List<String> missingSymptoms = symptomDefinitionsNames.stream().filter(symp -> !symptomNames.contains(symp)).toList();
+
+			Node[] recommendations = XmlUtilities.getAllTagsWithoutAttributes(document, "Description");
+			List<String> recommendationsNames = XmlUtilities.getTextContentBetweenTags(recommendations);
+			List<String> missingReccoms = recommendationsNames.stream().filter(rec -> !recommendationsDescriptions.contains(rec)).toList();
+
+			if (missingAlerts.size() > 0 || missingSymptoms.size() > 0 || missingReccoms.size() > 0) {
+
+				String allMissingAlerts = missingAlerts.stream().reduce((a, b) -> String.format("%s, %s", a, b)).get();
+				String allMissingSymptoms = missingSymptoms.stream().reduce((a, b) -> String.format("%s, %s", a, b)).get();
+				String allMissingReccoms = missingReccoms.stream().reduce((a, b) -> String.format("%s, %s", a, b)).get();
+
+				throw new RuntimeException(String.format("Policy with name '%s' is missing the following alert definitions:\n%s\nthe following symptom definitions:\n%s\nthe following recommendations:\n%s", 
+											policy.getName(), allMissingAlerts, allMissingSymptoms, allMissingReccoms));
 			}
-			FileSystemUtils.deleteRecursively(policy);
-			ZipUtilities.zip(exportedPoliciesXml, fullPath);
-			String xmlContentAfterAdjustment = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
-			logger.info("Xml content after adjustments:\n" + xmlContentAfterAdjustment);
-			FileSystemUtils.deleteRecursively(exportedPoliciesXml);
+			
+			
 		} catch (IOException e) {
-			throw new RuntimeException(String.format("An error occurred while setting the ids of policy %s : %s %n", policy.getName(),
-			e.getMessage()));
+			throw new RuntimeException(String.format("An error occurred while deleting the disabled items from policy '%s'. Reason: %n", policy.getName(),
+           		 e.getMessage()));
 		}
 	}
 
@@ -1202,6 +1268,21 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	private void importPolicies(final Package vropsPackage, final File tmpDir) {
 
 		List<Policy> allPolicies = restClient.getAllPolicies();
+		List<AlertDefinition> alertDefinitions = restClient.getAlltDefinitionsOfType(VropsPackageMemberType.ALERT_DEFINITION)
+															.stream()
+															.map(AlertDefinitionDTO.AlertDefinition.class::cast)
+															.collect(Collectors.toList());
+		List<String> alertNames = alertDefinitions.stream().map(alert -> alert.getName()).toList();
+		List<SymptomDefinition> sympAlertDefinitions = restClient.getAlltDefinitionsOfType(VropsPackageMemberType.SYMPTOM_DEFINITION)
+															.stream()
+															.map(SymptomDefinitionDTO.SymptomDefinition.class::cast)
+															.collect(Collectors.toList());
+		List<String> symptomNames = sympAlertDefinitions.stream().map(symp -> symp.getName()).toList();
+		List<Recommendation> recommendations = restClient.getAlltDefinitionsOfType(VropsPackageMemberType.RECOMMENDATION)
+															.stream()
+															.map(RecommendationDTO.Recommendation.class::cast)
+															.collect(Collectors.toList());
+		List<String> recommDescriptions = recommendations.stream().map(rec -> rec.getDescription()).toList();
 		File policiesDir = new File(tmpDir.getPath(), "policies");
 		if (!policiesDir.exists()) {
 			return;
@@ -1211,11 +1292,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		for (File policy : FileUtils.listFiles(policiesDir, new String[] { "zip" }, Boolean.FALSE)) {
 			String policyName = FilenameUtils.removeExtension(policy.getName());
 			try {
-				logger.info("Setting the parent ids for policy: '{}'", policyName);
-				setPolicyIds(policy, allPolicies);
-				logger.info("Importing policy: '{}'", policyName);
-				restClient.importPolicyFromZip(policyName, policy, Boolean.TRUE);
-				logger.info("Imported policy: '{}'", policyName);
+				checkPolicyForMissingComponents(policy, alertNames, symptomNames, recommDescriptions);
+				//logger.info("Importing policy: '{}'", policyName);
+				//restClient.importPolicyFromZip(policyName, policy, Boolean.TRUE);
+				//logger.info("Imported policy: '{}'", policyName);
 			} catch (Exception e) {
 				String message = String.format("The policy '%s' could not be imported : '%s'", policyName,
 						e.getMessage());
@@ -1664,18 +1744,18 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		try {
 			new PackageManager(pkg).unpack(tmpDir);
 
-//			 addViewToImportList(pkg, tmpDir);
-//			 addDashboardToImportList(pkg, tmpDir);
-//			 addReportToImportList(pkg, tmpDir);
-//			 addSuperMetricToImportList(pkg, tmpDir);
-//			 addMetricConfigToImportList(pkg, tmpDir);
-//
-//			 if (cliManager.hasAnyCommands()) {
-//			 	cliManager.connect();
-//			 	cliManager.importFilesToVrops();
-//			 }
-//
-//			 importDefinitions(pkg, tmpDir);
+			//  addViewToImportList(pkg, tmpDir);
+			//  addDashboardToImportList(pkg, tmpDir);
+			//  addReportToImportList(pkg, tmpDir);
+			//  addSuperMetricToImportList(pkg, tmpDir);
+			//  addMetricConfigToImportList(pkg, tmpDir);
+
+			//  if (cliManager.hasAnyCommands()) {
+			//  	cliManager.connect();
+			//  	cliManager.importFilesToVrops();
+			//  }
+
+			//  importDefinitions(pkg, tmpDir);
 			importPolicies(pkg, tmpDir);
 //			 importCustomGroups(pkg, tmpDir);
 //			 // manage dashboard sharing per groups
