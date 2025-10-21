@@ -16,6 +16,7 @@ You can use the method decorators to define various canvas items that will be in
    - [`@Item`](#item)
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
+   - [`@SwitchItem`](#switchitem)
    - [`@WorkflowItem`](#workflowitem)
    - [`@ScheduledWorkflowItem`](#scheduledworkflowitem)
    - [`@RootItem`](#rootitem)
@@ -273,6 +274,117 @@ The example above would generate the following workflow.
 
 [![Decision Item Workflow](images/Decision_Item_Canvas_Item_Workflow.png)](images/Decision_Item_Canvas_Item_Workflow.png)
 
+#### `@SwitchItem`
+
+This decorator is used to specify a switch item that routes workflow execution to different paths based on the value of a variable or expression.
+
+##### Supported Parameters
+
+- `cases` - An array of case objects that define the routing logic. Each case object contains:
+  - `condition` - The value to match against the switch variable
+  - `target` - The name of the next item to execute when this condition is met
+  - `variable` - The name of the variable to evaluate (optional, can be inferred from method parameters)
+  - `type` - The data type of the variable being switched on (e.g., "number", "string", "boolean")
+- `defaultTarget` - The name of the next item to execute when none of the cases match. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
+
+##### Example
+
+```ts
+import { Workflow, SwitchItem } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Switch Happy Path",
+  path: "VMware/PSCoE",
+  description: "Basic switch test with multiple numeric cases and default target",
+  attributes: {
+    operationType: {
+      type: "number"
+    },
+  }
+})
+export class SwitchHappyPath {
+  @SwitchItem({
+    cases: [
+      { condition: 1, target: "createResource", variable: "operationType", type: "number" },
+      { condition: 2, target: "updateResource", variable: "operationType", type: "number" },
+      { condition: 3, target: "deleteResource", variable: "operationType", type: "number" }
+    ],
+    defaultTarget: "logUnknownOperation"
+  })
+  public switchElement(operationType: number) {
+    // Switch logic will be generated automatically
+  }
+
+  public createResource() {
+    System.log("Creating resource");
+  }
+
+  public updateResource() {
+    System.log("Updating resource");
+  }
+
+  public deleteResource() {
+    System.log("Deleting resource");
+  }
+
+  public logUnknownOperation() {
+    System.log("Unknown operation type");
+  }
+}
+```
+
+The example above would generate a workflow where:
+- If `operationType` equals 1, the workflow goes to `createResource`
+- If `operationType` equals 2, the workflow goes to `updateResource`  
+- If `operationType` equals 3, the workflow goes to `deleteResource`
+- If `operationType` has any other value, the workflow goes to `logUnknownOperation`
+
+##### Switch Item with String Cases
+
+```ts
+import { Workflow, SwitchItem } from "vrotsc-annotations";
+
+@Workflow({
+  name: "String Switch Workflow",
+  path: "VMware/PSCoE",
+  description: "Switch workflow with string cases",
+  attributes: {
+    environment: {
+      type: "string"
+    },
+  }
+})
+export class StringSwitchWorkflow {
+  @SwitchItem({
+    cases: [
+      { condition: "dev", target: "setupDevelopment", variable: "environment", type: "string" },
+      { condition: "test", target: "setupTesting", variable: "environment", type: "string" },
+      { condition: "prod", target: "setupProduction", variable: "environment", type: "string" }
+    ],
+    defaultTarget: "setupDefault"
+  })
+  public routeByEnvironment(environment: string) {
+    // Switch logic will be generated automatically
+  }
+
+  public setupDevelopment() {
+    System.log("Setting up development environment");
+  }
+
+  public setupTesting() {
+    System.log("Setting up testing environment");
+  }
+
+  public setupProduction() {
+    System.log("Setting up production environment");
+  }
+
+  public setupDefault() {
+    System.log("Setting up default environment");
+  }
+}
+````
 #### `@WorkflowItem`
 
 The decorator is used to specify a workflow item that will be called.
