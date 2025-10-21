@@ -360,12 +360,38 @@ interface VroUserInteractionItemDecorator {
 
 interface VroUserInteractionItemConfiguration {
 	target: string;
-	exception?: string;
 }
 
 interface VroUserInteractionItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | VroUserInteractionItemConfiguration, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Switch Canvas Item ------------------------------------------------
+
+export declare const SwitchItem: VroSwitchItemDecorator;
+
+interface VroSwitchItemDecorator {
+	(obj?: VroSwitchItemConfiguration): VroSwitchItemMethodDecorator;
+	new(obj?: VroSwitchItemConfiguration): VroSwitchItemConfiguration;
+}
+
+interface VroSwitchItemConfiguration {
+	target?: string;
+	cases?: Array<{
+		condition: any;
+		target: string;
+		variable?: string;
+		type?: string;
+		comparator?: string;
+	}>;
+	defaultTarget?: string;
+	exception?: string;
+}
+
+interface VroSwitchItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
