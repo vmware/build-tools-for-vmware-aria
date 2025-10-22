@@ -286,6 +286,15 @@ This decorator is used to specify a switch item that routes workflow execution t
   - `variable` - The name of the variable to evaluate (optional, can be inferred from method parameters)
   - `type` - The data type of the variable being switched on (e.g., "number", "string", "boolean")
 - `defaultTarget` - The name of the next item to execute when none of the cases match. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow.
+- `comparator` - The comparison operator to use when evaluating cases. Supported values are:
+  - `"==="`  - Equals (default behavior if not specified)
+  - `"=="`   - Loose equality, same as '===' for consistency
+  - `"!=="`  - Not equals
+  - `"!="`   - Loose inequality, same as '!==' for consistency
+  - `"<"`    - Less than
+  - `"<=`    - Less than or equal
+  - `">"`    - Greater than
+  - `">=`    - Greater than or equal
 - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 ##### Example
