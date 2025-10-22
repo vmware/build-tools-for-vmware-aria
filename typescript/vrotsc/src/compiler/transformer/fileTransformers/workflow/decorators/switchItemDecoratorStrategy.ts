@@ -59,6 +59,24 @@ import { WrapperSourceFilePrinter } from "./helpers/sourceFile";
 export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrategy {
 
 	/**
+	 * Maps user-friendly comparator strings to their numeric equivalents.
+	 * This provides a more intuitive API for developers while maintaining compatibility
+	 * with the underlying workflow engine.
+	 */
+	private static readonly COMPARATOR_MAP: Record<string, string> = {
+		"===": "0",  // Equal to
+		"==": "0",   // Equal to (loose equality, maps to strict for consistency)
+		"!==": "1",  // Not equal to
+		"!=": "1",   // Not equal to (loose inequality, maps to strict for consistency)
+		">": "2",    // Greater than
+		">=": "3",   // Greater than or equal to
+		"<": "4",    // Less than
+		"<=": "5",   // Less than or equal to
+		"true": "6", // Always true (default case)
+		"false": "7" // Always false
+	};
+
+	/**
 	 * Creates a new instance of SwitchItemDecoratorStrategy.
 	 * Initializes the source file printer for wrapper function handling.
 	 */
@@ -303,7 +321,7 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 	 * 
 	 * Creates `<condition>` XML elements for each case in the switch, including:
 	 * - Variable name and type information
-	 * - Comparator type (0 = equals, 6 = always true for default)
+	 * - Comparator type (mapped from user-friendly strings to numeric codes)
 	 * - Target label for workflow navigation
 	 * - Condition value
 	 * 
@@ -319,7 +337,7 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 				const targetItem = super.findTargetItem(caseItem.target, pos, itemInfo);
 				const variableName = caseItem.variable || "";
 				const type = caseItem.type || this.inferTypeFromCondition(caseItem.condition);
-				const comparator = caseItem.comparator || "0"; // 0 = equals
+				const comparator = this.mapComparatorToNumeric(caseItem.comparator);
 				
 				stringBuilder.append(`<condition name="${variableName}" type="${type}" comparator="${comparator}" label="${targetItem}">`);
 				
@@ -357,5 +375,36 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 			return "boolean";
 		}
 		return "string";
+	}
+
+	/**
+	 * Maps user-friendly comparator strings to their numeric equivalents.
+	 * 
+	 * Converts intuitive comparator strings (like "===", ">", "<=") to the numeric
+	 * codes expected by the workflow engine. Falls back to "0" (equals) for 
+	 * unrecognized comparators or backward compatibility with existing numeric codes.
+	 * 
+	 * @private
+	 * @param {string | undefined} comparator - The user-friendly comparator string or numeric code
+	 * @returns {string} The numeric comparator code for the workflow engine
+	 */
+	private mapComparatorToNumeric(comparator: string | undefined): string {
+		if (!comparator) {
+			return "0"; // Default to equals
+		}
+
+		// If it's already a numeric code, return as-is for backward compatibility
+		if (/^\d+$/.test(comparator)) {
+			return comparator;
+		}
+
+		// Map user-friendly comparator to numeric code
+		const numericCode = SwitchItemDecoratorStrategy.COMPARATOR_MAP[comparator];
+		if (numericCode !== undefined) {
+			return numericCode;
+		}
+
+		// Default to equals for unrecognized comparators
+		return "0";
 	}
 }

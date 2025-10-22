@@ -14,9 +14,9 @@ export class SwitchHappyPath {
 
 	@SwitchItem({
 		cases: [
-			{ condition: 1, target: "createResource", variable: "operationType", type: "number" },
-			{ condition: 2, target: "updateResource", variable: "operationType", type: "number" },
-			{ condition: 3, target: "deleteResource", variable: "operationType", type: "number" }
+			{ condition: 1, target: "createResource", variable: "operationType", type: "number", comparator: "===" },
+			{ condition: 2, target: "updateResource", variable: "operationType", type: "number", comparator: "===" },
+			{ condition: 3, target: "deleteResource", variable: "operationType", type: "number", comparator: "===" }
 		],
 		defaultTarget: "logUnknownOperation"
 	})

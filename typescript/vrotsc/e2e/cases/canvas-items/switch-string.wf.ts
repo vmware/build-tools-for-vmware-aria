@@ -14,9 +14,9 @@ export class SwitchStringCases {
 
 	@SwitchItem({
 		cases: [
-			{ condition: "active", target: "processActive", variable: "status", type: "string" },
-			{ condition: "pending", target: "processPending", variable: "status", type: "string" },
-			{ condition: "inactive", target: "processInactive", variable: "status", type: "string" }
+			{ condition: "active", target: "processActive", variable: "status", type: "string", comparator: "===" },
+			{ condition: "pending", target: "processPending", variable: "status", type: "string", comparator: "===" },
+			{ condition: "inactive", target: "processInactive", variable: "status", type: "string", comparator: "===" }
 		],
 		defaultTarget: "handleUnknownStatus",
 		exception: "handleError"

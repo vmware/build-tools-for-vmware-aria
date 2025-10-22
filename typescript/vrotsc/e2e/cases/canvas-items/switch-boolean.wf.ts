@@ -17,8 +17,8 @@ export class SwitchBooleanCases {
 
 	@SwitchItem({
 		cases: [
-			{ condition: true, target: "enableFeature", variable: "isEnabled", type: "boolean" },
-			{ condition: false, target: "disableFeature", variable: "isEnabled", type: "boolean" }
+			{ condition: true, target: "enableFeature", variable: "isEnabled", type: "boolean", comparator: "===" },
+			{ condition: false, target: "disableFeature", variable: "isEnabled", type: "boolean", comparator: "===" }
 		],
 		defaultTarget: "handleUndefined"
 	})
