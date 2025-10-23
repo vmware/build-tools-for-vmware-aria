@@ -186,7 +186,7 @@ public final class XmlUtilities {
         return result;
     }
 
-    public final static Element[] getAllTagsWithAttributes(Element document, String tagName) {
+    public final static List<Element> getAllTagsWithAttributes(Element document, String tagName) {
 
         NodeList tagNodes = document.getElementsByTagName(tagName);
         List<Element> tags = new ArrayList<>();
@@ -199,7 +199,26 @@ public final class XmlUtilities {
 
         }
 
-        return tags.toArray(new Element[0]);
+        return tags;
+    }
+
+    public final static List<Element> getAllTagsWithAttribute(Element document, String tagName, String attributeName) {
+
+        NodeList tagNodes = document.getElementsByTagName(tagName);
+        List<Element> tags = new ArrayList<>();
+
+        for (int i = 0; i < tagNodes.getLength(); i ++) {
+            Node node = tagNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)node;
+                if (element.hasAttribute(attributeName)) {
+                    tags.add((Element)node);
+                }
+            }
+
+        }
+
+        return tags;
     }
 
     public final static Node[] getAllTagsWithoutAttributes(Element document, String tagName) {
