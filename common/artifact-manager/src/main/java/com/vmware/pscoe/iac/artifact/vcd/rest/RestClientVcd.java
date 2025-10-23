@@ -207,15 +207,17 @@ public class RestClientVcd extends RestClient {
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
 
+			logger.debug("Detected API version is: " + this.apiVersion);
 			// Preserving API version check for backwards compatibility
-			if (Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)
+			if (this.apiVersion.indexOf(".") == this.apiVersion.lastIndexOf(".") // This check eliminates the versions post VCFA 9.0.1. 40.0 changed to 9.0.0
+					&& Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)
 					&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
 				logger.warn("Detected VCD API version equal or greater than " + API_VERSION_38
 						+ " and lower than " + API_VERSION_40 + ". Switching to using API version " + API_VERSION_37);
 				this.apiVersion = API_VERSION_37;
 			}
 
-			logger.debug("API version is: " + this.apiVersion);
+			logger.debug("Working with API version: " + this.apiVersion);
 		}
 
 		return this.apiVersion;

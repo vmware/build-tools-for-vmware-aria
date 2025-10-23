@@ -137,9 +137,10 @@ public class CliManagerVrops implements AutoCloseable {
 	public void addDashboardToImportList(File file) {
 		String resourceType = file.getParentFile().getName();
 		String remoteFilePath = importRemotePath + UNIX_PATH_SEPARATOR + resourceType + UNIX_PATH_SEPARATOR + file.getName();
+		String dashboardUser = config.getVropsImportDashboardsForAllUsers() ? "all" : config.getVropsDashboardUser();
 		String command = String.format(VROPS_SSH_COMMAND_2,
 				escapeShellCharacters(OPSCLI_PATH), escapeShellCharacters(DASHBOARD),
-				escapeShellCharacters(IMPORT), "all",
+				escapeShellCharacters(IMPORT), escapeShellCharacters(dashboardUser),
 				escapeShellCharacters(remoteFilePath), escapeShellCharacters(FORCE));
 
 		cmdList.add(command);
