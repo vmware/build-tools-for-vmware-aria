@@ -47,7 +47,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -760,7 +759,7 @@ public class RestClientVrops extends RestClient {
 		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
 
 		String url = "";
-		switch(definitionType) {
+		switch (definitionType) {
 			case ALERT_DEFINITION:
 				url = GET_ALL_ALERTS_DEFS_API;
 				break;
@@ -798,15 +797,15 @@ public class RestClientVrops extends RestClient {
 						definitionType.toString(), e.getMessage(), response.getBody()));
 		}
 
-		switch(definitionType) {
+		switch (definitionType) {
 			case ALERT_DEFINITION:
-				AlertDefinitionDTO alarmDefinitionDTO = (AlertDefinitionDTO)deserializeDefinitions(definitionType, response.getBody());
+				AlertDefinitionDTO alarmDefinitionDTO = (AlertDefinitionDTO) deserializeDefinitions(definitionType, response.getBody());
 				return alarmDefinitionDTO.getAlertDefinitions();
 			case SYMPTOM_DEFINITION:
-				SymptomDefinitionDTO symptomDefinitionDTO = (SymptomDefinitionDTO)deserializeDefinitions(definitionType, response.getBody());
+				SymptomDefinitionDTO symptomDefinitionDTO = (SymptomDefinitionDTO) deserializeDefinitions(definitionType, response.getBody());
 				return symptomDefinitionDTO.getSymptomDefinitions();
 			case RECOMMENDATION:
-				RecommendationDTO recommendationDTO = (RecommendationDTO)deserializeDefinitions(definitionType, response.getBody());
+				RecommendationDTO recommendationDTO = (RecommendationDTO) deserializeDefinitions(definitionType, response.getBody());
 				return recommendationDTO.getRecommendations();
 			default:
 				return new ArrayList<>();

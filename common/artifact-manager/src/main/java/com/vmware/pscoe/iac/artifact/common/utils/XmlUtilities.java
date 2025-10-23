@@ -50,7 +50,7 @@ public final class XmlUtilities {
 
     }
 
-    public final static Element initializeXmlFile(File xmlFile) {
+    public static Element initializeXmlFile(File xmlFile) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -64,7 +64,7 @@ public final class XmlUtilities {
         }
     }
 
-    public final static String readXmlFileAsString(File xmlFile) throws IOException {
+    public static String readXmlFileAsString(File xmlFile) throws IOException {
         FileReader fileReader = new FileReader(xmlFile);
         BufferedReader bufReader = new BufferedReader(fileReader);
         StringBuilder sb = new StringBuilder();
@@ -78,7 +78,7 @@ public final class XmlUtilities {
         return sb.toString();
     }
 
-    public final static void writeToXmlFile(File file, String xmlContent) {
+    public static void writeToXmlFile(File file, String xmlContent) {
 
         try {
 
@@ -102,7 +102,7 @@ public final class XmlUtilities {
         }
     }
 
-    public final static void setAttributesInXmlFile(File xmlFile, String tagName, HashMap<String, HashMap<String, String>> valuesToSet) {
+    public static void setAttributesInXmlFile(File xmlFile, String tagName, HashMap<String, HashMap<String, String>> valuesToSet) {
 
         Element document = initializeXmlFile(xmlFile);
 
@@ -150,7 +150,7 @@ public final class XmlUtilities {
         saveXmlDocument(xmlFile, document);
     }
 
-    public final static void saveXmlDocument(File xmlFile, Element document) {
+    public static void saveXmlDocument(File xmlFile, Element document) {
 
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -165,7 +165,7 @@ public final class XmlUtilities {
        
     }
 
-    public final static Node findTagInXmlDocument(Node node, String tagName) {
+    public static Node findTagInXmlDocument(Node node, String tagName) {
 
         Node result = null;
 
@@ -186,7 +186,7 @@ public final class XmlUtilities {
         return result;
     }
 
-    public final static List<Element> getAllTagsWithAttributes(Element document, String tagName) {
+    public static List<Element> getAllTagsWithAttributes(Element document, String tagName) {
 
         NodeList tagNodes = document.getElementsByTagName(tagName);
         List<Element> tags = new ArrayList<>();
@@ -194,7 +194,7 @@ public final class XmlUtilities {
         for (int i = 0; i < tagNodes.getLength(); i ++) {
             Node node = tagNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                tags.add((Element)node);
+                tags.add((Element) node);
             }
 
         }
@@ -202,7 +202,7 @@ public final class XmlUtilities {
         return tags;
     }
 
-    public final static List<Element> getAllTagsWithAttribute(Element document, String tagName, String attributeName) {
+    public static List<Element> getAllTagsWithAttribute(Element document, String tagName, String attributeName) {
 
         NodeList tagNodes = document.getElementsByTagName(tagName);
         List<Element> tags = new ArrayList<>();
@@ -210,9 +210,9 @@ public final class XmlUtilities {
         for (int i = 0; i < tagNodes.getLength(); i ++) {
             Node node = tagNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element)node;
+                Element element = (Element) node;
                 if (element.hasAttribute(attributeName)) {
-                    tags.add((Element)node);
+                    tags.add((Element) node);
                 }
             }
 
@@ -221,7 +221,7 @@ public final class XmlUtilities {
         return tags;
     }
 
-    public final static Node[] getAllTagsWithoutAttributes(Element document, String tagName) {
+    public static Node[] getAllTagsWithoutAttributes(Element document, String tagName) {
 
         NodeList tagNodes = document.getElementsByTagName("*");
 
@@ -248,7 +248,7 @@ public final class XmlUtilities {
         return result;
     }
 
-    public final static Element[] getChildrenTagsOfTag(Node document, String tagName) throws Exception {
+    public static Element[] getChildrenTagsOfTag(Node document, String tagName) throws Exception {
 
         List<Element> children = new ArrayList<>();
 
@@ -262,14 +262,14 @@ public final class XmlUtilities {
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                children.add((Element)child);
+                children.add((Element) child);
             }
         }
 
         return children.toArray(new Element[0]);
     }
 
-    public static final List<String> getTextContentBetweenTags(Node[] tags) {
+    public final List<String> getTextContentBetweenTags(Node[] tags) {
 
         List<String> result = new ArrayList<>();
         for (int i = 0; i < tags.length; i++) {

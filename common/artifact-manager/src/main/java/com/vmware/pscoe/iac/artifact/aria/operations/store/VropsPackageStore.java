@@ -21,13 +21,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.StackWalker.Option;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -48,7 +44,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -1176,7 +1171,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
             for (int i = 0; i < policies.getLength(); i++) {
                 Node node = policies.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element)policies.item(i);
+                    Element element = (Element) policies.item(i);
                     policyElements.add(element);
                 }
             }
@@ -1270,9 +1265,15 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 																						})
 																						.reduce((a, b) -> String.format("%s\n%s", a, b)).get() : "";
 
-				if (missingAlerts.size() > 0) { errorMessage = String.format("\nthe following alert definitions:\n%s", allMissingAlerts); }
-				if (missingSymptoms.size() > 0) { errorMessage += String.format("\nthe following symptom definitions:\n%s", allMissingSymptoms); }
-				if (missingReccoms.size() > 0) { errorMessage += String.format("\nthe following recommendations:\n%s", allMissingReccoms); }
+				if (missingAlerts.size() > 0) { 
+					errorMessage = String.format("\nthe following alert definitions:\n%s", allMissingAlerts); }
+
+				if (missingSymptoms.size() > 0) { 
+					errorMessage += String.format("\nthe following symptom definitions:\n%s", allMissingSymptoms); 
+				}
+				if (missingReccoms.size() > 0) { 
+					errorMessage += String.format("\nthe following recommendations:\n%s", allMissingReccoms); 
+				}
 				throw new RuntimeException(String.format("Policy with name '%s' is missing the following entities on the target system:%s", policy.getName(), errorMessage));
 			}
 			
