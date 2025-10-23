@@ -1266,7 +1266,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 																						.reduce((a, b) -> String.format("%s\n%s", a, b)).get() : "";
 
 				if (missingAlerts.size() > 0) { 
-					errorMessage = String.format("\nthe following alert definitions:\n%s", allMissingAlerts); }
+					errorMessage = String.format("\nthe following alert definitions:\n%s", allMissingAlerts); 
+				}
 
 				if (missingSymptoms.size() > 0) { 
 					errorMessage += String.format("\nthe following symptom definitions:\n%s", allMissingSymptoms); 

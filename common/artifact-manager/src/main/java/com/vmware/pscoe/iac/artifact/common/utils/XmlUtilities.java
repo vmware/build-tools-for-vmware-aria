@@ -125,7 +125,7 @@ public final class XmlUtilities {
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element)child;
+                Element element = (Element) child;
                 NamedNodeMap attributeElements = element.getAttributes();
                 List<Node> attributes = new ArrayList<Node>();
                 for (int attributeIndex = 0; attributeIndex < attributeElements.getLength(); attributeIndex++) {
@@ -191,7 +191,7 @@ public final class XmlUtilities {
         NodeList tagNodes = document.getElementsByTagName(tagName);
         List<Element> tags = new ArrayList<>();
 
-        for (int i = 0; i < tagNodes.getLength(); i ++) {
+        for (int i = 0; i < tagNodes.getLength(); i++) {
             Node node = tagNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 tags.add((Element) node);
@@ -207,7 +207,7 @@ public final class XmlUtilities {
         NodeList tagNodes = document.getElementsByTagName(tagName);
         List<Element> tags = new ArrayList<>();
 
-        for (int i = 0; i < tagNodes.getLength(); i ++) {
+        for (int i = 0; i < tagNodes.getLength(); i++) {
             Node node = tagNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
@@ -269,7 +269,7 @@ public final class XmlUtilities {
         return children.toArray(new Element[0]);
     }
 
-    public final List<String> getTextContentBetweenTags(Node[] tags) {
+    public static List<String> getTextContentBetweenTags(Node[] tags) {
 
         List<String> result = new ArrayList<>();
         for (int i = 0; i < tags.length; i++) {
