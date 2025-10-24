@@ -97,8 +97,7 @@ public final class XmlUtilities {
             System.out.println("XML content successfully written to " + file.getPath());
 
         } catch (IOException e) {
-            System.err.println("Error writing XML to file: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Error writing XML to file: " + e.getMessage());
         }
     }
 
@@ -160,7 +159,7 @@ public final class XmlUtilities {
             transformer.transform(source, result);
             System.out.println("XML document saved successfully");
         } catch (TransformerException e) {
-            System.err.println("Saving document " + document.getNodeName() + " failed. Reason: " + e);
+            throw new RuntimeException("Saving document " + document.getNodeName() + " failed. Reason: " + e);
         }
        
     }
@@ -255,7 +254,7 @@ public final class XmlUtilities {
         Node tag = findTagInXmlDocument(document, tagName);
 
         if (tag == null) {
-            throw new Exception("Tag with name '" + tagName + "' not found in document");
+            throw new RuntimeException("Tag with name '" + tagName + "' not found in document");
         }
 
         NodeList childNodes = tag.getChildNodes();

@@ -1231,13 +1231,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
             Element document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
 
 			List<Element> alertDefinitions = XmlUtilities.getAllTagsWithAttributes(document, "AlertDefinition");
-			List<Element> missingAlerts = alertDefinitions.stream().filter(alert -> alertIds.indexOf(alert.getAttribute("id")) == -1).toList();
+			List<Element> missingAlerts = alertDefinitions.stream().filter(alert -> alertIds.indexOf(alert.getAttribute("id")) == -1).collect(Collectors.toList());
 
 			List<Element> symptomDefinitions = XmlUtilities.getAllTagsWithAttributes(document, "SymptomDefinition");
-			List<Element> missingSymptoms = symptomDefinitions.stream().filter(symp -> symptomIds.indexOf(symp.getAttribute("id")) == -1).toList();
+			List<Element> missingSymptoms = symptomDefinitions.stream().filter(symp -> symptomIds.indexOf(symp.getAttribute("id")) == -1).collect(Collectors.toList());
 
 			List<Element> recommendations = XmlUtilities.getAllTagsWithAttribute(document, "Recommendation", "key");
-			List<Element> missingReccoms = recommendations.stream().filter(rec -> recommendationsIds.indexOf(rec.getAttribute("key")) == -1).toList();
+			List<Element> missingReccoms = recommendations.stream().filter(rec -> recommendationsIds.indexOf(rec.getAttribute("key")) == -1).collect(Collectors.toList());
 
 			FileSystemUtils.deleteRecursively(exportedPoliciesXml);
 			
@@ -1294,17 +1294,17 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 */
 	private void importPolicies(final Package vropsPackage, final File tmpDir) {
 
-		List<AlertDefinition> alertDefinitions = restClient.getAlltDefinitionsOfType(VropsPackageMemberType.ALERT_DEFINITION)
+		List<AlertDefinition> alertDefinitions = restClient.getAllDefinitionsOfType(VropsPackageMemberType.ALERT_DEFINITION)
 															.stream()
 															.map(AlertDefinitionDTO.AlertDefinition.class::cast)
 															.collect(Collectors.toList());
 		List<String> alertIds = alertDefinitions.stream().map(alert -> alert.getId()).toList();
-		List<SymptomDefinition> sympAlertDefinitions = restClient.getAlltDefinitionsOfType(VropsPackageMemberType.SYMPTOM_DEFINITION)
+		List<SymptomDefinition> sympAlertDefinitions = restClient.getAllDefinitionsOfType(VropsPackageMemberType.SYMPTOM_DEFINITION)
 															.stream()
 															.map(SymptomDefinitionDTO.SymptomDefinition.class::cast)
 															.collect(Collectors.toList());
 		List<String> symptomIds = sympAlertDefinitions.stream().map(symp -> symp.getId()).toList();
-		List<Recommendation> recommendations = restClient.getAlltDefinitionsOfType(VropsPackageMemberType.RECOMMENDATION)
+		List<Recommendation> recommendations = restClient.getAllDefinitionsOfType(VropsPackageMemberType.RECOMMENDATION)
 															.stream()
 															.map(RecommendationDTO.Recommendation.class::cast)
 															.collect(Collectors.toList());

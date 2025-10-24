@@ -28,16 +28,11 @@
 
 ## Improvements
 
-[//]: # (### *Improvement Name* )
-[//]: # (Talk ONLY regarding the improvement)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### Previous Behavior)
-[//]: # (Explain how it used to behave, regarding to the change)
-[//]: # (Optional But higlhy recommended)
-[//]: # (#### New Behavior)
-[//]: # (Explain how it behaves now, regarding to the change)
-[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
-[//]: # (#### Relevant Documentation:)
+### *Bugfix for pushing pushing policies in Aria Operations*
+#### Previous Behavior
+It is not possible to push policies if they have missing dependencies (alert definitions, symptom definitions, recommendations) on the target server
+#### New Behavior
+There is an error message which shows the user when BTVA is trying to import policies if they have missing dependencies (alert definitions, symptom definitions, recommendations) on the target server
 
 ## Upgrade procedure
 

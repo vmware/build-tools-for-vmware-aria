@@ -103,7 +103,7 @@ public class RestClientVrops extends RestClient {
 	/**
 	 * GET_ALL_ALERT_DEFS_API.
 	 */
-	private static final String GET_ALL_ALERTS_DEFS_API = PUBLIC_API_PREFIX + "alertdefinitions";
+	private static final String GET_ALL_ALERT_DEFS_API = PUBLIC_API_PREFIX + "alertdefinitions";
 	/**
 	 * SYMPTOM_DEFS_API.
 	 */
@@ -419,8 +419,7 @@ public class RestClientVrops extends RestClient {
 
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 		try {
-			ResponseEntity<String> response = restTemplate.postForEntity(uri, requestEntity, String.class);
-			logger.info("Import policy from zip response:\n" + response);
+			restTemplate.postForEntity(uri, requestEntity, String.class);
 		} catch (RestClientException e) {
 			throw new RuntimeException(
 					String.format("The policy '%s' could not be imported : %s.", policyName, e.getMessage()), e);
@@ -745,7 +744,7 @@ public class RestClientVrops extends RestClient {
 	 * @param definitionType the type of definition about to be read from vROps
 	 * @return list of the definitions
 	 */
-	public List<?> getAlltDefinitionsOfType(VropsPackageMemberType definitionType) {
+	public List<?> getAllDefinitionsOfType(VropsPackageMemberType definitionType) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -761,7 +760,7 @@ public class RestClientVrops extends RestClient {
 		String url = "";
 		switch (definitionType) {
 			case ALERT_DEFINITION:
-				url = GET_ALL_ALERTS_DEFS_API;
+				url = GET_ALL_ALERT_DEFS_API;
 				break;
 			case SYMPTOM_DEFINITION:
 				url = GET_ALL_SYMPTOM_DEFS_API;
