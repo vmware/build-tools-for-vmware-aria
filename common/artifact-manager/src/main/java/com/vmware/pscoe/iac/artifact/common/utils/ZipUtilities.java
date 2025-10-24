@@ -28,6 +28,12 @@ public final class ZipUtilities {
 	private ZipUtilities() {
 	}
 
+	/**
+	 * Unzips .zip files
+	 * @param zipFile the input .zip file
+	 * @param outputLocation the location of the output file
+	 * @throws IOException
+	 */
 	public static void unzip(File zipFile, File outputLocation) throws IOException {
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile.getAbsolutePath()))) {
 			ZipEntry ze = null;
@@ -54,6 +60,11 @@ public final class ZipUtilities {
 		}
 	}
 
+	/**
+	 * Zips a file
+	 * @param file the input file
+	 * @param destinationDir the destination directory where the zip will be
+	 */
 	public static void zip(File file, String destinationDir) {
 
         try (FileOutputStream fos = new FileOutputStream(destinationDir);

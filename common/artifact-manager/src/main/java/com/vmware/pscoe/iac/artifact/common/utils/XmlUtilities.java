@@ -50,6 +50,11 @@ public final class XmlUtilities {
 
     }
 
+    /**
+     * Initializes the xml file by getting the first element(tag) of the xml file
+     * @param xmlFile the input xml file
+     * @return an object of type Element in order to have access to attributes
+     */
     public static Element initializeXmlFile(File xmlFile) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -64,6 +69,10 @@ public final class XmlUtilities {
         }
     }
 
+    /**
+     * @param xmlFile the input xml file
+     * @return the string content of the xml file
+     */
     public static String readXmlFileAsString(File xmlFile) throws IOException {
         FileReader fileReader = new FileReader(xmlFile);
         BufferedReader bufReader = new BufferedReader(fileReader);
@@ -78,6 +87,11 @@ public final class XmlUtilities {
         return sb.toString();
     }
 
+    /**
+     * Writes string content to an xml file
+     * @param file the file to write to
+     * @param xmlContent the xml content as string
+     */
     public static void writeToXmlFile(File file, String xmlContent) {
 
         try {
@@ -101,6 +115,12 @@ public final class XmlUtilities {
         }
     }
 
+    /**
+     * Sets certain tags with certain attributes
+     * @param xmlFile the xml file about to be edited
+     * @param tagName the tag name where attribute changes will happen
+     * @param valuesToSet map with values. The keys of the main map are the values of the attributes to search by, each child map is a key value pair for the attributes wanted to be set
+     */
     public static void setAttributesInXmlFile(File xmlFile, String tagName, HashMap<String, HashMap<String, String>> valuesToSet) {
 
         Element document = initializeXmlFile(xmlFile);
@@ -149,6 +169,11 @@ public final class XmlUtilities {
         saveXmlDocument(xmlFile, document);
     }
 
+    /**
+     * Saves changes of an xml file
+     * @param xmlFile the xml file to save
+     * @param document the initialized xml file
+     */
     public static void saveXmlDocument(File xmlFile, Element document) {
 
         try {
@@ -164,6 +189,12 @@ public final class XmlUtilities {
        
     }
 
+    /**
+     * Finds node by tag name
+     * @param node the parent node to search under
+     * @param tagName the tag name to be searched
+     * @return the found node or null
+     */
     public static Node findTagInXmlDocument(Node node, String tagName) {
 
         Node result = null;
@@ -185,6 +216,12 @@ public final class XmlUtilities {
         return result;
     }
 
+    /**
+     * Gets all tags with specified name which contain attributes
+     * @param document the initialized xml file
+     * @param tagName the tag name of the tag needed to be found
+     * @return a list of the tags found which contain attributes
+     */
     public static List<Element> getAllTagsWithAttributes(Element document, String tagName) {
 
         NodeList tagNodes = document.getElementsByTagName(tagName);
@@ -201,6 +238,13 @@ public final class XmlUtilities {
         return tags;
     }
 
+    /**
+     * Gets all tags with specified tag name which have certain attribute
+     * @param document the initialized xml document
+     * @param tagName the name of the tags to be found
+     * @param attributeName the name of the attribute
+     * @return a list of tags with attributes
+     */
     public static List<Element> getAllTagsWithAttribute(Element document, String tagName, String attributeName) {
 
         NodeList tagNodes = document.getElementsByTagName(tagName);
@@ -220,6 +264,12 @@ public final class XmlUtilities {
         return tags;
     }
 
+    /**
+     * Gets all tags with specified tag name which do not attributes
+     * @param document the initialized xml document
+     * @param tagName the name of the tags to be found
+     * @return a list of tags without attributes
+     */
     public static Node[] getAllTagsWithoutAttributes(Element document, String tagName) {
 
         NodeList tagNodes = document.getElementsByTagName("*");
@@ -234,6 +284,12 @@ public final class XmlUtilities {
         return result.toArray(new Node[0]);
     }
 
+    /**
+     * Gets the values of certain attribute for a list of tags
+     * @param tags the tags to take the attrubute values from
+     * @param attributeName the name of the attribute
+     * @return a list of values of the attributes
+     */
     public static List<String> getAllValuesOfAttributeOfTag(Element[] tags, String attributeName) {
 
         List<String> result = new ArrayList<>();
@@ -247,6 +303,12 @@ public final class XmlUtilities {
         return result;
     }
 
+    /**
+     * Gets all tags with specified tag name which are in the xml document
+     * @param document the initialized xml document
+     * @param tagName the name of the tags to be found
+     * @return a list of tags found
+     */
     public static Element[] getChildrenTagsOfTag(Node document, String tagName) throws Exception {
 
         List<Element> children = new ArrayList<>();
@@ -268,6 +330,11 @@ public final class XmlUtilities {
         return children.toArray(new Element[0]);
     }
 
+    /**
+     * Gets the text content from a list of tags
+     * @param tags the tag list
+     * @return a list of strings representing the text between the opening and closing tag
+     */
     public static List<String> getTextContentBetweenTags(Node[] tags) {
 
         List<String> result = new ArrayList<>();

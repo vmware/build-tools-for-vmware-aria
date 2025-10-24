@@ -774,12 +774,8 @@ public class RestClientVrops extends RestClient {
 
 		try {
 			UriComponentsBuilder uriBuilder;
-			// for newer vROPs versions the policies API is no longer internal.
-			if (this.isVersionAbove812()) {
-				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(url)));
-			} else {
-				uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(url)));
-			}
+
+			uriBuilder = UriComponentsBuilder.fromUri(getURI(getURIBuilder().setPath(url)));
 			uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
 			URI restUri = uriBuilder.build().toUri();
 			response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
