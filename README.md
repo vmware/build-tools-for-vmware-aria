@@ -39,11 +39,17 @@ Build Tools for VMware Aria provides development and release management tools fo
 - node: 22.x.x (only 14 is supported for vcd-ng)
 - maven: 3.9.x
 - jdk: 17, 21, 24
+- openssl
 
-To check if the dependencies are met, you can run:
+To check if the dependencies are met on Linux, you can run:
 
 ```sh
 curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
+```
+
+To check if the dependencies are met on Windows, you can run:
+```ps
+Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.ps1'))
 ```
 
 ## Support
