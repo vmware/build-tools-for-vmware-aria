@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public final class ZipUtilities {
 	private static final int PRIME_NUMBER_1024 = 1024;
@@ -27,6 +28,12 @@ public final class ZipUtilities {
 	private ZipUtilities() {
 	}
 
+	/**
+	 * Unzips .zip files
+	 * @param zipFile the input .zip file
+	 * @param outputLocation the location of the output file
+	 * @throws IOException
+	 */
 	public static void unzip(File zipFile, File outputLocation) throws IOException {
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile.getAbsolutePath()))) {
 			ZipEntry ze = null;
@@ -51,5 +58,32 @@ public final class ZipUtilities {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+
+	/**
+	 * Zips a file
+	 * @param file the input file
+	 * @param destinationDir the destination directory where the zip will be
+	 */
+	public static void zip(File file, String destinationDir) {
+
+        try (FileOutputStream fos = new FileOutputStream(destinationDir);
+             ZipOutputStream zos = new ZipOutputStream(fos);
+             FileInputStream fis = new FileInputStream(file.getPath())) {
+
+            ZipEntry zipEntry = new ZipEntry(new File(file.getPath()).getName());
+            zos.putNextEntry(zipEntry);
+
+            byte[] buffer = new byte[PRIME_NUMBER_1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                zos.write(buffer, 0, length);
+            }
+            zos.closeEntry();
+            System.out.println("File zipped successfully!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 }
