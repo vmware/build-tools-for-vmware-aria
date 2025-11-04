@@ -130,7 +130,8 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 			if (!StringUtils.isEmpty(form.getForm())) {
 				JsonElement je = JsonParser.parseString(form.getForm());
 				logger.info("Created custom form data file {}",
-						Files.write(Paths.get(customFormDataFile.getPath()), gson.toJson(je).getBytes(),
+						Files.write(Paths.get(customFormDataFile.getPath()),
+								gson.toJson(je).getBytes(StandardCharsets.UTF_8),
 								StandardOpenOption.CREATE));
 			}
 		} catch (IOException e) {

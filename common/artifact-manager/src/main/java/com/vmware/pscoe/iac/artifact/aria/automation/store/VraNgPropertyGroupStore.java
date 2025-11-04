@@ -264,7 +264,7 @@ public final class VraNgPropertyGroupStore extends AbstractVraNgStore {
 			String propertyGroupJson = gson.toJson(propertyGroupJsonElement);
 			logger.info("Created file {}", Files.write(
 					Paths.get(customPropertyGroupFile.getPath()),
-					propertyGroupJson.getBytes(),
+					propertyGroupJson.getBytes(StandardCharsets.UTF_8),
 					StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to create property group {}", customPropertyGroupFile.getPath());

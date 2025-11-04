@@ -260,7 +260,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			logger.info("Created file {}", Files.write(
-					Paths.get(customCatalogItemFile.getPath()), gson.toJson(catalogItem).getBytes(),
+					Paths.get(customCatalogItemFile.getPath()),
+					gson.toJson(catalogItem).getBytes(StandardCharsets.UTF_8),
 					StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to create catalog item {} {}", catalogItem.getName(), customCatalogItemFile.getPath());

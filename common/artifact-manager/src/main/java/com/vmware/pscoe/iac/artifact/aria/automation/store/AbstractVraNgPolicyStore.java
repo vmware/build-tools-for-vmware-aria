@@ -350,7 +350,7 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 					policyDesc,
 					Files.write(
 							Paths.get(policyFile.getPath()),
-							GSON.toJson(policyJsonObject).getBytes(),
+							GSON.toJson(policyJsonObject).getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			throw errorFrom(e, "Unable to store %s Policy to file %s.", policyDesc, policyFile.getAbsolutePath());
