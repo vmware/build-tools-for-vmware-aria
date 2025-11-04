@@ -15,9 +15,11 @@
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -325,13 +327,15 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 			// repository.
 			VraNgCustomFormAndData repoForm = new VraNgCustomFormAndData(form);
 			logger.info("Created custom form metadata file {}",
-					Files.write(Paths.get(customFormFile.getPath()), gson.toJson(repoForm).getBytes(),
+					Files.write(Paths.get(customFormFile.getPath()),
+							gson.toJson(repoForm).getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE));
 			// write form data file
 			if (!StringUtils.isEmpty(form.getForm())) {
 				JsonElement je = JsonParser.parseString(form.getForm());
 				logger.info("Created custom form data file {}",
-						Files.write(Paths.get(customFormDataFile.getPath()), gson.toJson(je).getBytes(),
+						Files.write(Paths.get(customFormDataFile.getPath()),
+								gson.toJson(je).getBytes(StandardCharsets.UTF_8),
 								StandardOpenOption.CREATE));
 			}
 		} catch (IOException e) {
@@ -669,7 +673,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	private VraNgCatalogItem jsonFileToVraCatalogItem(final File jsonFile) {
 		logger.debug("Converting catalog item file to VraNgCatalogItem. Name: '{}'", jsonFile.getName());
 
-		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
+		try (JsonReader reader = new JsonReader(
+				new InputStreamReader(new FileInputStream(jsonFile.getPath()), StandardCharsets.UTF_8))) {
 			return new Gson().fromJson(reader, VraNgCatalogItem.class);
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading from file: %s", jsonFile.getPath()), e);
@@ -693,7 +698,8 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		VraNgCustomFormAndData repoForm; // As read from the file system (the repo)
 		VraNgCustomForm restForm; // in a form suitable for usage in a REST API Call.
 
-		try (JsonReader reader = new JsonReader(new FileReader(jsonFormFile.getPath()))) {
+		try (JsonReader reader = new JsonReader(
+				new InputStreamReader(new FileInputStream(jsonFormFile.getPath()), StandardCharsets.UTF_8))) {
 			repoForm = new Gson().fromJson(reader, VraNgCustomFormAndData.class);
 			restForm = new VraNgCustomForm(repoForm);
 			// if there is a separate form data file then set the form content from it,

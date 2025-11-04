@@ -16,6 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -122,7 +123,8 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 			// write form metadata file
 			VraNgCustomFormAndData repoForm = new VraNgCustomFormAndData(form);
 			logger.info("Created custom form metadata file {}",
-					Files.write(Paths.get(customFormFile.getPath()), gson.toJson(repoForm).getBytes(),
+					Files.write(Paths.get(customFormFile.getPath()),
+							gson.toJson(repoForm).getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE));
 			// write form data file
 			if (!StringUtils.isEmpty(form.getForm())) {

@@ -18,6 +18,7 @@ import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -209,7 +210,7 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 			final String customResourceJsonString = gson.toJson(customResourceJsonElement);
 			logger.info("Created file {}", Files.write(Paths.get(customResource.getPath()),
-					customResourceJsonString.getBytes(), StandardOpenOption.CREATE));
+					customResourceJsonString.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store custom resource {} {}", customResourceName, customResource.getPath());
 			throw new RuntimeException("Unable to store custom resource.", e);

@@ -17,8 +17,10 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store;
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_PROPERTY_GROUPS;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -300,7 +302,8 @@ public final class VraNgPropertyGroupStore extends AbstractVraNgStore {
 	private VraNgPropertyGroup jsonFileToVraPropertyGroup(File jsonFile) {
 		logger.debug("Converting property group file to VraNgPropertyGroup. Name: " + jsonFile.getName());
 
-		try (JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()))) {
+		try (JsonReader reader = new JsonReader(
+				new InputStreamReader(new FileInputStream(jsonFile.getPath()), StandardCharsets.UTF_8))) {
 			JsonObject propertyGroupJson = JsonParser.parseReader(reader).getAsJsonObject();
 			return new VraNgPropertyGroup(
 					propertyGroupJson.get("name").getAsString(),
