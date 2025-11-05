@@ -14,11 +14,11 @@ export class SwitchHappyPath {
 
 	@SwitchItem({
 		cases: [
-			{ condition: 1, target: "createResource", variable: "operationType", type: "number", comparator: "===" },
-			{ condition: 2, target: "updateResource", variable: "operationType", type: "number", comparator: "===" },
-			{ condition: 3, target: "deleteResource", variable: "operationType", type: "number", comparator: "===" }
+			{ condition: 1, target: "createResource", variable: "operationType", type: "number", comparator: "equals" },
+			{ condition: 2, target: "updateResource", variable: "operationType", type: "number", comparator: "equals" },
+			{ condition: 3, target: "deleteResource", variable: "operationType", type: "number", comparator: "equals" }
 		],
-		defaultTarget: "logUnknownOperation"
+		target: "logUnknownOperation"
 	})
 	public switchElement(operationType: number) {
 		// Switch logic will be generated automatically

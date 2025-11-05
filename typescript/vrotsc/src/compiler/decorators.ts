@@ -84,15 +84,19 @@ export interface CanvasItemPolymorphicBagForDecision {
 	else: string;
 }
 
+export interface VroSwitchCase {
+	condition: any;
+	target: string;
+	variable?: string;
+	type?: string;
+	comparator?: string;	
+}
+
 export interface CanvasItemPolymorphicBagForSwitch {
-	cases: Array<{
-		condition: any;
-		target: string;
-		variable?: string;
-		type?: string;
-		comparator?: string;
-	}>;
+	target: string;
+	cases: VroSwitchCase[],
 	defaultTarget?: string;
+	exception?: string;	
 }
 
 export interface WorkflowParameter {

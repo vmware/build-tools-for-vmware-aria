@@ -20,11 +20,10 @@ export class SwitchEdgeCases {
 
 	@SwitchItem({
 		cases: [
-			{ condition: 404, target: "handleNotFound", variable: "errorCode", type: "number", comparator: "===" },
-			{ condition: 500, target: "handleServerError", variable: "errorCode", type: "number", comparator: "!==" },
-			{ condition: 403, target: "handleForbidden", variable: "errorCode", type: "number", comparator: "==" }
+			{ condition: 404, target: "handleNotFound", variable: "errorCode", type: "number", comparator: "equals" },
+			{ condition: 500, target: "handleServerError", variable: "errorCode", type: "number", comparator: "different" }
 		],
-		// No default target - will fall through to next item
+		target: "switchPriority"
 	})
 	public switchErrorCodes(errorCode: number) {
 		// Error code switch without default using various equality operators
@@ -33,11 +32,10 @@ export class SwitchEdgeCases {
 
 	@SwitchItem({
 		cases: [
-			{ condition: 1, target: "lowPriority", variable: "priority", type: "number", comparator: "<=" },
-			{ condition: 5, target: "mediumPriority", variable: "priority", type: "number", comparator: ">" },
-			{ condition: 10, target: "highPriority", variable: "priority", type: "number", comparator: ">=" }
+			{ condition: 1, target: "lowPriority", variable: "priority", type: "number", comparator: "smaller" },
+			{ condition: 5, target: "mediumPriority", variable: "priority", type: "number", comparator: "greater" }
 		],
-		defaultTarget: "handleInvalidPriority"
+		target: "switchStatus"
 	})
 	public switchPriority(priority: number) {
 		// Priority switch using comparison operators
@@ -46,11 +44,10 @@ export class SwitchEdgeCases {
 
 	@SwitchItem({
 		cases: [
-			{ condition: "active", target: "processActive", variable: "status", type: "string", comparator: "===" },
-			{ condition: "pending", target: "processPending", variable: "status", type: "string", comparator: "!=" },
-			{ condition: "inactive", target: "processInactive", variable: "status", type: "string", comparator: "!==" }
+			{ condition: "active", target: "processActive", variable: "status", type: "string", comparator: "equals" },
+			{ condition: "pending", target: "processPending", variable: "status", type: "string", comparator: "different" }
 		],
-		defaultTarget: "handleUnknownStatus"
+		target: "handleNotFound"
 	})
 	public switchStatus(status: string) {
 		// String status switch with mixed operators

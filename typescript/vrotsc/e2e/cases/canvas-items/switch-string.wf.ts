@@ -14,11 +14,11 @@ export class SwitchStringCases {
 
 	@SwitchItem({
 		cases: [
-			{ condition: "active", target: "processActive", variable: "status", type: "string", comparator: "===" },
-			{ condition: "pending", target: "processPending", variable: "status", type: "string", comparator: "===" },
-			{ condition: "inactive", target: "processInactive", variable: "status", type: "string", comparator: "===" }
+			{ condition: "active", target: "processActive", variable: "status", type: "string", comparator: "equals" },
+			{ condition: "pending", target: "processPending", variable: "status", type: "string", comparator: "different" },
+			{ condition: "inactive", target: "processInactive", variable: "status", type: "string", comparator: "equals" }
 		],
-		defaultTarget: "handleUnknownStatus",
+		target: "handleUnknownStatus",
 		exception: "handleError"
 	})
 	public switchByStatus(status: string) {
