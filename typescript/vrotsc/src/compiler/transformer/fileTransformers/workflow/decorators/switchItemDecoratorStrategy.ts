@@ -159,6 +159,8 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 				case "cases":
 					if (Array.isArray(propValue)) {
 						itemInfo.canvasItemPolymorphicBag.cases = propValue;
+					} else {
+						throw new Error(`The 'cases' property for ${this.getDecoratorType()} item must be an array.`);
 					}
 					break;
 
@@ -195,7 +197,7 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 
 		// Add all case targets (deduplicated and validated)
 		if (switchBag?.cases) {
-			switchBag.cases.forEach(caseItem => {
+			(switchBag.cases || []).forEach(caseItem => {
 				if (caseItem.target) {
 					const target = super.findTargetItem(caseItem.target, pos, itemInfo);
 					if (this.isValidTargetName(target, itemInfo) && !uniqueTargets.has(target)) {
