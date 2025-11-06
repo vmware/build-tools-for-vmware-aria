@@ -38,6 +38,17 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+### *Force usage of UTF-8 encoding when writing files to local system during `vra-ng` pull*
+
+#### Previous Behavior
+The local system encoding is used which sometimes results in malformed data during pull operation. E.g.:
+Expected result:
+``` {    content: \u0027⚠️\u0027;    float: left;    margin: 5px 10px 5px 5px;    font-size: 1rem;} ```
+Actual result:
+``` {    content: \u0027??\u0027;    float: left;    margin: 5px 10px 5px 5px;    font-size: 1rem;} ```
+
+#### New Behavior
+All `vra-ng` content is pulled correctly regardless of the target system encoding.
 
 ## Upgrade procedure
 
