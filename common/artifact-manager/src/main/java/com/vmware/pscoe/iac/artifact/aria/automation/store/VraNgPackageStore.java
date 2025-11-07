@@ -169,7 +169,21 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 		String collectionDelayRaw = this.config.getDataCollectionDelaySeconds();
 
 		if (collectionDelayRaw == null) {
+			// No delay configured, proceed immediately, as no delay is desired (most likely
+			// vRA doesn't expect vRO payloads)
 			return;
+		}
+
+		try {
+			// before proceeding with sleeping, try to force data collection through API
+			this.triggerDataCollection();
+
+			// if successful, no need to sleep anymore, exit method
+			return;
+		} catch (Exception e) {
+			logger.warn(
+					"Unable to trigger vRO data collection. Proceeding with old sleeping mechanism, waiting for vrang.data.collection.delay.seconds: {}",
+					collectionDelayRaw, e);
 		}
 
 		try {
@@ -188,6 +202,11 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 		} catch (NumberFormatException e) {
 			logger.warn("vrang.data.collection.delay.seconds passed with invalid value {}", collectionDelayRaw);
 		}
+	}
+
+	private void triggerDataCollection() {
+		logger.info("Triggering vRO data collection through vRA API");
+		this.restClient.triggerVroDataCollection();
 	}
 
 	/**
