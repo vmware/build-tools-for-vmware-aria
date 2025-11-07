@@ -102,12 +102,19 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxActionVersion;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxConstant;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
-import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor.WorkflowExecutionException;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.common.store.Version;
 
 public class RestClientVraNgPrimitive extends RestClient {
+	/**
+	 * Enumeration task retry limit
+	 */
+	private static final int ENUMERATION_TASK_RETRY_LIMIT = 120;
+	/**
+	 * Enumeration task sleep time
+	 */
+	private static final int ENUMERATION_TASK_SLEEP_MS = 2500;
 	/**
 	 * REST API version for private APIs
 	 */
@@ -2981,7 +2988,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		// Wait for the enumeration task to complete
 		// possible stages are: CREATED, STARTED, FINISHED, FAILED, CANCELLED
 		String enumerationTaskState = "STARTED";
-		int retryCounter = 120;
+		int retryCounter = ENUMERATION_TASK_RETRY_LIMIT;
 		ResponseEntity<String> response4 = null;
 
 		// wait till task is not finished, failed or cancelled
@@ -3005,7 +3012,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				LOGGER.info("Data collection task state: {}", enumerationTaskState);
 
 				try {
-					Thread.sleep(2500);
+					Thread.sleep(ENUMERATION_TASK_SLEEP_MS);
 				} catch (InterruptedException e) {
 					// ignore interruption
 				}
