@@ -341,6 +341,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * isVraAbove811.
 	 */
 	private boolean isVraAbove810;
+	/**
+	 * vroIntegration.
+	 */
+	private String vroIntegration;
 
 	/**
 	 * RestClientVraNgPrimitive.
@@ -354,6 +358,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		this.productVersion = this.getProductVersion();
 		this.isVraAbove812 = this.isVraAbove(new Version(VRA_8_12));
 		this.isVraAbove810 = this.isVraAbove(new Version(VRA_8_10));
+		this.vroIntegration = config.getVroIntegration();
 	}
 
 	/**
@@ -2932,14 +2937,46 @@ public class RestClientVraNgPrimitive extends RestClient {
 
 		// check if content is empty or doesn't have required property
 		if (StringUtils.isEmpty(content) || !content.contains("\"id\"")) {
-			throw new RuntimeException("No vRO integration found in vRA!");
+			throw new RuntimeException("No VCFA Orchestrator integration found in vRA!");
 		}
 
 		// get ID from the object
 		JsonArray contentArray = JsonParser.parseString(content).getAsJsonArray();
-		String vroIntegrationId = contentArray.get(0).getAsJsonObject().get("id").getAsString();
 
-		LOGGER.debug("vRO integration ID: {}", vroIntegrationId);
+		LOGGER.info("Used vRA NG Configurations: {}", this.vroIntegration);
+		// check if vro Integration name is defined
+		String vroIntegrationId = null;
+		if (this.vroIntegration == null || this.vroIntegration.isEmpty()) {
+			// get number of integrations found
+			if (contentArray.size() == 0) {
+				throw new RuntimeException(
+						"No VCFA Orchestrator integration found in vRA! This is configurable via vrang.vro.integration property.");
+			} else if (contentArray.size() > 1) {
+				throw new RuntimeException(
+						"Multiple VCFA Orchestrator integrations found in vRA! Please define the desired integration name via vrang.vro.integration property.");
+			}
+			// use the first and only integration found
+			LOGGER.info(
+					"No VCFA Orchestrator integration name defined, using the first and only integration found - {}.",
+					contentArray.get(0).getAsJsonObject().get("name").getAsString());
+			vroIntegrationId = contentArray.get(0).getAsJsonObject().get("id").getAsString();
+		} else {
+			// search for the defined vro integration name
+			for (JsonElement element : contentArray) {
+				if (element.getAsJsonObject().get("name").getAsString().equals(this.vroIntegration)) {
+					vroIntegrationId = element.getAsJsonObject().get("id").getAsString();
+					break;
+				}
+			}
+
+			if (vroIntegrationId == null) {
+				throw new RuntimeException(
+						String.format("No VCFA Orchestrator integration with name '%s' found in vRA!",
+								this.vroIntegration));
+			}
+		}
+
+		LOGGER.debug("VCFA Orchestrator integration ID: {}", vroIntegrationId);
 
 		URI url2 = getURI(getURIBuilder().setPath(SERVICE_VRA_ENDPOINTS + "/" + vroIntegrationId));
 
@@ -2957,10 +2994,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 		JsonElement endpointInfo = JsonParser.parseString(response2.getBody());
 
 		if (!endpointInfo.isJsonObject()) {
-			throw new RuntimeException("No valid vro endpoint information found!");
+			throw new RuntimeException("No valid VCFA Orchestrator endpoint information found!");
 		}
 
-		LOGGER.debug("vRO endpoint information: {}", endpointInfo);
+		LOGGER.debug("VCFA Orchestrator endpoint information: {}", endpointInfo);
 
 		// prepare payload for next request
 		Map<String, Object> map = new LinkedHashMap<>();
@@ -2979,12 +3016,11 @@ public class RestClientVraNgPrimitive extends RestClient {
 		if (!response3.getStatusCode().is2xxSuccessful()) {
 			throw new RuntimeException(
 					String.format(
-							"Error occurred during creation of vro enumeration task. HTTP Status code %s : ( %s )",
+							"Error occurred during creation of VCFA Orchestrator enumeration task. HTTP Status code %s : ( %s )",
 							response3.getStatusCode(), response3.getBody()));
 		}
 
-		LOGGER.debug("vRO enumeration task created successfully. Response: {}", response3.getBody());
-
+		LOGGER.debug("VCFA Orchestrator enumeration task created successfully. Response: {}", response3.getBody());
 		// Wait for the enumeration task to complete
 		// possible stages are: CREATED, STARTED, FINISHED, FAILED, CANCELLED
 		String enumerationTaskState = "STARTED";
@@ -3024,10 +3060,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 			}
 		}
 
-		LOGGER.info("vRO data collection completed with state: {}", enumerationTaskState);
+		LOGGER.info("VCFA Orchestrator data collection completed with state: {}", enumerationTaskState);
 
 		if (!enumerationTaskState.equals("FINISHED")) {
-			throw new RuntimeException("vRO data collection failed or was cancelled!");
+			throw new RuntimeException("VCFA Orchestrator data collection failed or was cancelled!");
 		}
 
 		return;
