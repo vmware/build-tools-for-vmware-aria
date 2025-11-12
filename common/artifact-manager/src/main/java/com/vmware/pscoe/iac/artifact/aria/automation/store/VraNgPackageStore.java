@@ -178,8 +178,8 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 			// before proceeding with sleeping, try to force data collection through API
 			this.triggerDataCollection();
 
-			// if data collection running is fine, proceed with sleeping for certain period
-			// so that changes to be reflected in vRA
+			// if successful, no need to sleep anymore, exit method
+			return;
 		} catch (Exception e) {
 			logger.error(
 					"Unable to trigger VCFA Orchestrator data collection. Proceeding with old sleeping mechanism, waiting for vrang.data.collection.delay.seconds: {}",
