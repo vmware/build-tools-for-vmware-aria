@@ -48,10 +48,17 @@ Actual result:
 #### New Behavior
 All `vra-ng` content is pulled correctly regardless of the target system encoding.
 
-### _vRA data collection is now forcefully triggered_
+### *vRA data collection is now forcefully triggered*
 
-Till this moment, we used to have **vrang.data.collection.delay.seconds** property, which is waiting for defined period so that automatic data collection to happen in vRA for vRO items (through vRO integration made in vRA). New feature allows forcefully to execute data collection instead to wait for given period. If forced data collection fails, old mechanism will continue working as of now.
-Note that data collection will be forced only in case **vrang.data.collection.delay.seconds** is defined and it is more than 0 seconds.
+#### Previous Behavior
+During `vra-ng` push operation **vrang.data.collection.delay.seconds** property is used to wait a defined period for automatic data collection to happen in VCFA for Orchestrator objects (through Orchestrator integration in VCFA). 
+
+Waiting mechanism is executed only in case **vrang.data.collection.delay.seconds** is defined and it is more than 0 seconds.
+
+#### New Behavior
+During `vra-ng` push operation data collection is executed via REST API instead of waiting for given period. If the data collection fails, the old waiting mechanism is triggered.
+
+Data collection is executed only in case **vrang.data.collection.delay.seconds** is defined and it is more than 0 seconds.
 
 ## Upgrade procedure
 
