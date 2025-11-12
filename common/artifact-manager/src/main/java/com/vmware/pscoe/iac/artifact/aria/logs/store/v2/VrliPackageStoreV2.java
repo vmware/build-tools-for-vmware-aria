@@ -111,7 +111,8 @@ public class VrliPackageStoreV2 extends AbstractVrliPackageStore {
 			logger.info("Exporting alert '{}'", alert.getName());
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			String alertJson = gson.toJson(alert, AlertDTO.class);
-			Files.write(Paths.get(alertFile.getPath()), alertJson.getBytes(), StandardOpenOption.CREATE);
+			Files.write(Paths.get(alertFile.getPath()), alertJson.getBytes(StandardCharsets.UTF_8),
+					StandardOpenOption.CREATE);
 		} catch (IOException e) {
 			logger.error("Unable to store alert {} {}", alert.getName(), alertFile.getPath());
 			throw new RuntimeException(

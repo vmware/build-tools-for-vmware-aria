@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -184,7 +185,7 @@ public class CsVariableStoreTest {
 			String yamlString = yamlMapper.writeValueAsString(obj);
 			// StringWriter writer = new StringWriter();
 			// writer.write(triggerYaml);
-			Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
+			Files.write(Paths.get(file.getPath()), yamlString.getBytes(StandardCharsets.UTF_8),
 					StandardOpenOption.CREATE,
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING);
