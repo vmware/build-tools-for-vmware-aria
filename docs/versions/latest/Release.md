@@ -14,7 +14,6 @@
 
 [//]: # (### *Deprecation*)
 [//]: # (Explain what is deprecated and suggest alternatives)
-
 [//]: # (Features -> New Functionality)
 
 ## Features
@@ -23,7 +22,6 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ## Improvements
@@ -49,6 +47,11 @@ Actual result:
 
 #### New Behavior
 All `vra-ng` content is pulled correctly regardless of the target system encoding.
+
+### _vRA data collection is now forcefully triggered_
+
+Till this moment, we used to have **vrang.data.collection.delay.seconds** property, which is waiting for defined period so that automatic data collection to happen in vRA for vRO items (through vRO integration made in vRA). New feature allows forcefully to execute data collection instead to wait for given period. If forced data collection fails, old mechanism will continue working as of now.
+Note that data collection will be forced only in case **vrang.data.collection.delay.seconds** is defined and it is more than 0 seconds.
 
 ## Upgrade procedure
 
