@@ -51,7 +51,7 @@ All `vra-ng` content is pulled correctly regardless of the target system encodin
 ### *vRA data collection is now forcefully triggered*
 
 #### Previous Behavior
-During `vra-ng` push operation **vrang.data.collection.delay.seconds** property is used to wait a defined period for automatic data collection to happen in VCFA for Orchestrator objects (through Orchestrator integration in VCFA). 
+During `vra-ng` push operation **vrang.data.collection.delay.seconds** property is used to wait a defined period for automatic data collection to happen in VCFA for Orchestrator objects (through Orchestrator integration in VCFA).
 
 Waiting mechanism is executed only in case **vrang.data.collection.delay.seconds** is defined and it is more than 0 seconds.
 
