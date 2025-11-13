@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -460,11 +461,11 @@ public class VraNgCatalogItemStoreTest {
 		headers.put("Content-Type", "image/png");
 
 		ResponseEntity<byte[]> iconOneResponse = GeneralMocks.mockResponseEntity(
-				"iconBodyOne".getBytes(),
+				"iconBodyOne".getBytes(StandardCharsets.UTF_8),
 				200,
 				headers);
 		ResponseEntity<byte[]> iconTwoResponse = GeneralMocks.mockResponseEntity(
-				"iconBodyTwo".getBytes(),
+				"iconBodyTwo".getBytes(StandardCharsets.UTF_8),
 				200,
 				headers);
 
@@ -549,7 +550,7 @@ public class VraNgCatalogItemStoreTest {
 		String iconIdTwo = "iconIdCatalogItemTwo";
 
 		ResponseEntity<byte[]> iconOneResponse = GeneralMocks.mockResponseEntity(
-				"iconBodyOne".getBytes(),
+				"iconBodyOne".getBytes(StandardCharsets.UTF_8),
 				500);
 		CustomFormMockBuilder builderOne = new CustomFormMockBuilder("nameOne");
 		CustomFormMockBuilder builderTwo = new CustomFormMockBuilder("nameTwo");
@@ -603,7 +604,7 @@ public class VraNgCatalogItemStoreTest {
 		headers.put("Content-Type", "image/png");
 
 		ResponseEntity<byte[]> iconOneResponse = GeneralMocks.mockResponseEntity(
-				"iconBody".getBytes(),
+				"iconBody".getBytes(StandardCharsets.UTF_8),
 				200,
 				headers);
 		CustomFormMockBuilder builderOne = new CustomFormMockBuilder("nameOne");

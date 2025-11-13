@@ -18,6 +18,7 @@ import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -135,7 +136,8 @@ public class VraNgScenarioStore extends AbstractVraNgStore {
 			final JsonObject scenarioJsonElement = gson.fromJson(new Gson().toJson(scenario), JsonObject.class);
 
 			logger.info("Created file {}",
-					Files.write(Paths.get(scenarioFile.getPath()), gson.toJson(scenarioJsonElement).getBytes(),
+					Files.write(Paths.get(scenarioFile.getPath()),
+							gson.toJson(scenarioJsonElement).getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store scenario {} {}", scenario.getName(), scenarioFile.getPath());

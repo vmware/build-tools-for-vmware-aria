@@ -46,6 +46,14 @@ To check if the dependencies are met, you can run:
 curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
 ```
 
+## Encoding (UTF-8)
+
+Some development environments default to a platform-specific file encoding (for example, Cp1252 on some Windows systems). Build Tools for VMware Aria reads and writes files using UTF-8 where possible, but JVM and toolchain defaults may still affect behavior. If you encounter issues where non-ASCII characters are replaced by question marks (for example emoji in CSS/form styles), ensure Java uses UTF-8 by one of the following:
+
+- Start the JVM with the system property: `-Dfile.encoding=UTF-8`.
+- Set the environment variable for JVM launches: `JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"`.
+- When running Maven, you can pass the property: `mvn -Dfile.encoding=UTF-8 <goal>`.
+
 ## Support
 
 You can find detailed support statement [here](./SUPPORT.md)

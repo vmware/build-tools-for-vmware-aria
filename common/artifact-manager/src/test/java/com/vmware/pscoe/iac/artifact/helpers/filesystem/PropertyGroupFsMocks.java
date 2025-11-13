@@ -14,13 +14,14 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgPropertyGroup;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class PropertyGroupFsMocks extends VraNgFsMock {
 	private static final String WORKDIR = "property-groups";
@@ -46,6 +47,6 @@ public class PropertyGroupFsMocks extends VraNgFsMock {
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(customPropertyGroupFile.getPath());
-		writeFileToPath(itemName, gson.toJson(propertyGroup).getBytes());
+		writeFileToPath(itemName, gson.toJson(propertyGroup).getBytes(StandardCharsets.UTF_8));
 	}
 }

@@ -15,8 +15,10 @@
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -199,7 +201,8 @@ public class VraNgContentSourceStore extends AbstractVraNgStore {
 	 * @param contentSourceFile - File to import
 	 */
 	void importFile(File contentSourceFile) {
-		try (JsonReader reader = new JsonReader(new FileReader(contentSourceFile.getPath()))) {
+		try (JsonReader reader = new JsonReader(
+				new InputStreamReader(new FileInputStream(contentSourceFile.getPath()), StandardCharsets.UTF_8))) {
 			JsonObject jsonObj = JsonParser.parseReader(reader).getAsJsonObject();
 			VraNgContentSourceType type = VraNgContentSourceType.fromString(jsonObj.get("typeId").getAsString());
 			VraNgContentSourceBase contentSource = new Gson().fromJson(jsonObj, type.getTypeClass());
