@@ -24,7 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class GeneralMocks {
+public final class GeneralMocks {
 	private static final int PRIME_NUMBER_200 = 200;
 
 	private GeneralMocks() {
