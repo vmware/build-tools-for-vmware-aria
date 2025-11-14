@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-net",
-  "version": "4.14.1-SNAPSHOT",
+  "version": "4.15.0",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
