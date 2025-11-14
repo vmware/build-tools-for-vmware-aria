@@ -42,8 +42,8 @@ import com.vmware.pscoe.iac.artifact.aria.logs.rest.Errors;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models.AlertDTO;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models.ContentPackDTO;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models.ContentPackMetadataListDTO;
-import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ResourcesDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 
 public class RestClientVrliV2 extends AbstractRestClientVrli {
 	/**
@@ -156,7 +156,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 			return;
 		}
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response;
 		String deleteAlertUri = String.format(this.apiPrefix + ALERTS_API + "/%s", alertId);
@@ -199,7 +199,7 @@ public class RestClientVrliV2 extends AbstractRestClientVrli {
 
 		logger.info("Inserting a new alert '{}'", alert.getName());
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(alertJson, headers);
 		ResponseEntity<String> response;
 		try {
