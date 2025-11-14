@@ -15,6 +15,7 @@
 package com.vmware.pscoe.iac.artifact.common.rest;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -38,6 +39,7 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -223,7 +225,7 @@ public final class RestClientFactory {
 			}
 
 			@Override
-			public void handleError(ClientHttpResponse response) throws IOException {
+			public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
 				StringBuilder messageBuilder = new StringBuilder();
 				HttpHeaders headers = response.getHeaders();
 				messageBuilder.append(response.getStatusCode().value()).append(" ").append(response.getStatusText())
