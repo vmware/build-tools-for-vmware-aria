@@ -20,7 +20,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
@@ -229,10 +228,9 @@ public final class RestClientFactory {
 				HttpHeaders headers = response.getHeaders();
 				messageBuilder.append(response.getStatusCode().value()).append(" ").append(response.getStatusText())
 						.append("\n");
-				messageBuilder.append(headers.keySet().stream().map(
-						(String k) -> headers.get(k).stream().map(
-								h -> k + ": " + h).collect(Collectors.joining("\n")))
-						.collect(Collectors.joining("\n")));
+				headers.forEach((k, values) -> values
+						.forEach(v -> messageBuilder.append(k).append(": ").append(v).append("\n")));
+
 				if (response.getBody() != null && !response.getBody().equals("")) {
 					messageBuilder.append("\n\n");
 					String message = org.apache.commons.io.IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);

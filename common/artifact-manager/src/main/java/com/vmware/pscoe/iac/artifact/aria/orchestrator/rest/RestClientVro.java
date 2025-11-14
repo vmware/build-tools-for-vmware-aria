@@ -410,10 +410,9 @@ public class RestClientVro extends RestClient {
 		} catch (HttpClientErrorException e) {
 			StringBuilder messageBuilder = new StringBuilder();
 			messageBuilder.append(HttpMethod.POST).append(" ").append(url).append("\n");
-			messageBuilder.append(headers.keySet().stream().map(
-					(String k) -> headers.get(k).stream().map(
-							h -> k + ": " + h).collect(Collectors.joining("\n")))
-					.collect(Collectors.joining("\n")));
+			headers.forEach(
+					(k, values) -> values.forEach(v -> messageBuilder.append(k).append(": ").append(v).append("\n")));
+
 			if (requestEntity.hasBody()) {
 				messageBuilder.append("\n\n");
 				try {
