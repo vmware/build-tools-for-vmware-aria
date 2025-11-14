@@ -25,6 +25,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GeneralMocks {
+	private static final int PRIME_NUMBER_200 = 200;
+
+	private GeneralMocks() {
+	}
+
 	/**
 	 * Response entity mock with a status code of 200 and no headers
 	 *
@@ -34,7 +39,7 @@ public class GeneralMocks {
 	 * @return ResponseEntity<T>
 	 */
 	public static <T> ResponseEntity<T> mockResponseEntity(T body) {
-		return mockResponseEntity(body, 200);
+		return mockResponseEntity(body, PRIME_NUMBER_200);
 	}
 
 	/**
