@@ -182,7 +182,7 @@ public class RestClientVcd extends RestClient {
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 		acceptableMediaTypes.add(contentType);
 		headers.setAccept(acceptableMediaTypes);
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		return headers;
 	}
@@ -209,7 +209,9 @@ public class RestClientVcd extends RestClient {
 
 			logger.debug("Detected API version is: " + this.apiVersion);
 			// Preserving API version check for backwards compatibility
-			if (this.apiVersion.indexOf(".") == this.apiVersion.lastIndexOf(".") // This check eliminates the versions post VCFA 9.0.1. 40.0 changed to 9.0.0
+			if (this.apiVersion.indexOf(".") == this.apiVersion.lastIndexOf(".") // This check eliminates the versions
+																					// post VCFA 9.0.1. 40.0 changed to
+																					// 9.0.0
 					&& Double.parseDouble(this.apiVersion) >= Double.parseDouble(API_VERSION_38)
 					&& Double.parseDouble(apiVersion) < Double.parseDouble(API_VERSION_40)) {
 				logger.warn("Detected VCD API version equal or greater than " + API_VERSION_38

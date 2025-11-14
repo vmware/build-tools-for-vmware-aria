@@ -182,7 +182,7 @@ public class RestClientVro extends RestClient {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
@@ -474,7 +474,7 @@ public class RestClientVro extends RestClient {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		if (!dryrun) {
@@ -515,7 +515,7 @@ public class RestClientVro extends RestClient {
 
 		URI url = getURI(getURIBuilder().setPath(deletePath + content.getId()).setParameter("force", "true"));
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
 
 		if (!dryrun) {
@@ -538,7 +538,7 @@ public class RestClientVro extends RestClient {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
@@ -612,8 +612,8 @@ public class RestClientVro extends RestClient {
 	public String startWorkflow(String workflowId, Properties params, Properties inputParametersTypes) {
 		URI executionsUrl = this.buildUri("/vco/api/workflows/", workflowId, "/executions");
 		String requestBody = this.buildParametersJson(params, inputParametersTypes);
-		RequestEntity<String> request = RequestEntity.post(executionsUrl).accept(MediaType.APPLICATION_JSON_UTF8)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
+		RequestEntity<String> request = RequestEntity.post(executionsUrl).accept(MediaType.APPLICATION_JSON)
+				.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 				.body(requestBody);
 		ResponseEntity<String> response = null;
 		try {
@@ -736,7 +736,7 @@ public class RestClientVro extends RestClient {
 			// messages printed since that timestamp
 			String requestBody = String.format("{\"severity\": \"%s\",\"older-than\": %d}", severity, sinceTimestamp);
 			RequestEntity<String> request = RequestEntity.post(syslogsUri)
-					.accept(MediaType.APPLICATION_JSON_UTF8)
+					.accept(MediaType.APPLICATION_JSON)
 					.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 					.body(requestBody);
 			response = restTemplate.exchange(request, String.class);

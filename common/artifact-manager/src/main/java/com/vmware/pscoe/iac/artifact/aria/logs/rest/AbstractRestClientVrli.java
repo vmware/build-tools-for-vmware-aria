@@ -119,7 +119,7 @@ public abstract class AbstractRestClientVrli extends RestClient {
 				overwrite.toString()));
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(contentPackJson, headers);
 		try {
 			restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
