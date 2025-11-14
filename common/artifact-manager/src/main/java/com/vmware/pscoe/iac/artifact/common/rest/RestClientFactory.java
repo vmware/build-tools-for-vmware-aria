@@ -219,15 +219,15 @@ public final class RestClientFactory {
 
 			@Override
 			public boolean hasError(ClientHttpResponse response) throws IOException {
-				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN
-						|| response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
+				return response.getStatusCode().value() < STATUS_CODE_2XX_RANGE_BEGIN
+						|| response.getStatusCode().value() > STATUS_CODE_2XX_RANGE_END;
 			}
 
 			@Override
 			public void handleError(ClientHttpResponse response) throws IOException {
 				StringBuilder messageBuilder = new StringBuilder();
 				HttpHeaders headers = response.getHeaders();
-				messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText())
+				messageBuilder.append(response.getStatusCode().value()).append(" ").append(response.getStatusText())
 						.append("\n");
 				messageBuilder.append(headers.keySet().stream().map(
 						(String k) -> headers.get(k).stream().map(
