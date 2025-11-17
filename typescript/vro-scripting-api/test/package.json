@@ -7,7 +7,6 @@
     "test:coverage": "nyc npm run test && nyc report"
   },
   "devDependencies": {
-    "@babel/helpers": "^7.26.10",
     "jasmine": "^4.0.2",
     "nyc": "^15.1.0"
   }

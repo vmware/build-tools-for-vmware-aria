@@ -23,7 +23,6 @@
     "npm": ">=10.9.2"
   },
   "dependencies": {
-    "@babel/helpers": "^7.26.10",
     "browserslist": "4.24.2",
     "iconv-lite": "0.6.3",
     "nyc": "17.1.0",
