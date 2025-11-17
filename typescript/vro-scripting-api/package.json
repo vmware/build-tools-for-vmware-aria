@@ -31,5 +31,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "source-map": "^0.7.4"
+  },
+  "dependencies": {
+    "brace-expansion": "^2.0.2"
   }
 }
