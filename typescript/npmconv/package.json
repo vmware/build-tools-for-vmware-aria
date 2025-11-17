@@ -40,6 +40,7 @@
 		"download-git-repo": "^3.0.2",
 		"fs-extra": "^11.2.0",
 		"glob": "^11.0.0",
-		"npm": "^10.9.2"
+		"npm": "^10.9.2",
+		"brace-expansion": ">=2.0.2"
 	}
 }
