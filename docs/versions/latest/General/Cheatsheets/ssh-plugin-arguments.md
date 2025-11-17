@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:ssh-maven-plugin:4.13.2-SNAPSHOT
+com.vmware.pscoe.maven.plugins:ssh-maven-plugin:4.14.1-SNAPSHOT
 
 Name: ssh-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: ssh-maven-plugin
-Version: 4.13.2-SNAPSHOT
+Version: 4.14.1-SNAPSHOT
 Goal Prefix: ssh
 
 This plugin has 2 goals:

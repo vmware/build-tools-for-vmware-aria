@@ -1,6 +1,6 @@
 {
     "name": "@vmware-pscoe/vrotsc",
-    "version": "4.14.1-SNAPSHOT",
+    "version": "4.15.1-SNAPSHOT",
     "author": "VMware PSCoE",
     "license": "VMware Confidential",
     "description": "vRO TypeScript to JavaScript transpiler",
@@ -35,7 +35,7 @@
         "gulp-help": "1.6.1",
         "gulp-typescript": "6.0.0-alpha.1",
         "is-keyword-js": "1.0.3",
-        "js-yaml": "4.1.0",
+        "js-yaml": "4.1.1",
         "merge2": "1.4.1",
         "minimatch": "10.0.1",
         "minimist": "1.2.8",
