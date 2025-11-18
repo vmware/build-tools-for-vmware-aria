@@ -1476,10 +1476,12 @@ public final class Installer {
 				outputString = Installer.convertJsonObjectToYaml(wfOutputFilePath, wfOutputJson);
 			}
 
-			Files.write(Paths.get(wfOutputFilePath), outputString.getBytes(), StandardOpenOption.CREATE);
+			Files.write(Paths.get(wfOutputFilePath), outputString.getBytes(StandardCharsets.UTF_8),
+					StandardOpenOption.CREATE);
 			// write the workflow error in a workflow error file (if any)
 			if (!StringUtils.isEmpty(workflowExecutionResult.getError())) {
-				Files.write(Paths.get(wfErrFilePath), workflowExecutionResult.getError().getBytes(),
+				Files.write(Paths.get(wfErrFilePath),
+						workflowExecutionResult.getError().getBytes(StandardCharsets.UTF_8),
 						StandardOpenOption.CREATE);
 			}
 		} catch (IOException e) {
@@ -1490,7 +1492,8 @@ public final class Installer {
 					+ e.getLocalizedMessage(), e);
 		} catch (WorkflowExecutionException e) {
 			try {
-				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(), StandardOpenOption.CREATE);
+				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(StandardCharsets.UTF_8),
+						StandardOpenOption.CREATE);
 			} catch (IOException e1) {
 				throw new RuntimeException(
 						"Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(),

@@ -719,7 +719,7 @@ public class RestClientCs extends RestClient {
 	private HttpEntity<String> getJsonEntity(Object body) {
 		Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		return new HttpEntity<String>(gson.toJson(body), headers);
 	}
 

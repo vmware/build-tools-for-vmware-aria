@@ -15,12 +15,12 @@
 package com.vmware.pscoe.iac.artifact.common.rest;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
@@ -39,6 +39,7 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -219,20 +220,19 @@ public final class RestClientFactory {
 
 			@Override
 			public boolean hasError(ClientHttpResponse response) throws IOException {
-				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN
-						|| response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
+				return response.getStatusCode().value() < STATUS_CODE_2XX_RANGE_BEGIN
+						|| response.getStatusCode().value() > STATUS_CODE_2XX_RANGE_END;
 			}
 
 			@Override
-			public void handleError(ClientHttpResponse response) throws IOException {
+			public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
 				StringBuilder messageBuilder = new StringBuilder();
 				HttpHeaders headers = response.getHeaders();
-				messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText())
+				messageBuilder.append(response.getStatusCode().value()).append(" ").append(response.getStatusText())
 						.append("\n");
-				messageBuilder.append(headers.keySet().stream().map(
-						(String k) -> headers.get(k).stream().map(
-								h -> k + ": " + h).collect(Collectors.joining("\n")))
-						.collect(Collectors.joining("\n")));
+				headers.forEach((k, values) -> values
+						.forEach(v -> messageBuilder.append(k).append(": ").append(v).append("\n")));
+
 				if (response.getBody() != null && !response.getBody().equals("")) {
 					messageBuilder.append("\n\n");
 					String message = org.apache.commons.io.IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);

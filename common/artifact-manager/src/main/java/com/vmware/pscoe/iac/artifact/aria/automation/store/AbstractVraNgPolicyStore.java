@@ -15,8 +15,10 @@
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -348,7 +350,7 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 					policyDesc,
 					Files.write(
 							Paths.get(policyFile.getPath()),
-							GSON.toJson(policyJsonObject).getBytes(),
+							GSON.toJson(policyJsonObject).getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			throw errorFrom(e, "Unable to store %s Policy to file %s.", policyDesc, policyFile.getAbsolutePath());
@@ -385,7 +387,8 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 				policyDesc, policyClass.getSimpleName(), jsonFile.getName());
 
 		try {
-			JsonReader reader = new JsonReader(new FileReader(jsonFile.getPath()));
+			JsonReader reader = new JsonReader(
+					new InputStreamReader(new FileInputStream(jsonFile.getPath()), StandardCharsets.UTF_8));
 			return GSON.fromJson(reader, policyClass);
 		} catch (IOException e) {
 			throw errorFrom(e, "Error reading from file: %s", jsonFile.getPath());

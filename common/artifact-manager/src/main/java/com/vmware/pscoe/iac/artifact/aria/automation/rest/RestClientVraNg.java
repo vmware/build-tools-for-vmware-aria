@@ -1437,4 +1437,20 @@ public class RestClientVraNg extends RestClientVraNgPrimitive {
 			throw new RuntimeException(e);
 		}
 	}
+
+	// =================================================
+	// PRIVATE APIS
+	// =================================================
+
+	/**
+	 * Force data collection.
+	 */
+	public void triggerVroDataCollection() {
+		try {
+			this.triggerVroDataCollectionPrimitive();
+			return;
+		} catch (Exception e) {
+			throw new RuntimeException("Could not trigger vRO data collection. Reason: " + e.getMessage(), e);
+		}
+	}
 }
