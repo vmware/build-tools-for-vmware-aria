@@ -22,7 +22,7 @@ import * as cp from "child_process";
 
 import * as dwonloadGit from "download-git-repo";
 
-import { NpmProxy, DependenciesMapper } from "./deps";
+import { DependenciesMapper, NpmProxy } from "./deps";
 import ImportsRewriter from "./rewriter";
 import tscfgmerge from "./tscfgmerge";
 import * as t from "./types";
@@ -368,7 +368,7 @@ async function exec(command: string, options: cp.ExecOptions): Promise<CmdResult
 				});
 			}
 
-			resolve({ code: 0, stdout, stderr });
+			resolve({ code: 0, stdout: stdout ? stdout.toString() : undefined, stderr: stderr ? stderr.toString() : undefined });
 		});
 	});
 }
