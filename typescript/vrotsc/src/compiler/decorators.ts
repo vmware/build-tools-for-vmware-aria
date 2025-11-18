@@ -84,6 +84,21 @@ export interface CanvasItemPolymorphicBagForDecision {
 	else: string;
 }
 
+export interface VroSwitchCase {
+	condition: any;
+	target: string;
+	variable?: string;
+	type?: string;
+	comparator?: string;	
+}
+
+export interface CanvasItemPolymorphicBagForSwitch {
+	target: string;
+	cases: VroSwitchCase[],
+	defaultTarget?: string;
+	exception?: string;	
+}
+
 export interface WorkflowParameter {
 	name: string;
 	type: string;
@@ -186,6 +201,13 @@ export enum WorkflowItemType {
 	 * It can target a workflow item or workflow end and accepts input and output bindings.
 	 */
 	UserInteractionItem = "UserInteractionItem",
+
+	/**
+	 * This item type represents a switch item.
+	 *
+	 * It can target multiple items based on switch conditions.
+	 */
+	Switch = "SwitchItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
