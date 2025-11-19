@@ -34,5 +34,8 @@
   },
   "dependencies": {
     "brace-expansion": "^2.0.2"
+  },
+  "overrides": {
+    "glob": "11.1.0"
   }
 }
