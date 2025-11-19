@@ -53,7 +53,8 @@ export default async function (flags: RunCommandFlags): Promise<void> {
     else {
         await util.withWorkingDir(testDir, async () => {
             console.log("Installing node modules for the tests.");
-            childProc.execSync('npm install', { stdio: 'ignore' });
+            // Show install output so failures are visible to callers instead of being swallowed.
+            childProc.execSync('npm install', { stdio: 'inherit' });
             console.log("Installing node modules for the tests completed.");
 
             console.log("Starting unit tests.");
