@@ -15,11 +15,11 @@ declare class VumBaseline {
 	// Formatted string for the last update timestamp
 	lastUpdateTimeAsStr: string;
 	// Baseline type. See the BaselineType enumeration for valid values.
-	baselineType: VumBaselineType;
+	baselineType: any;
 	// Baseline content type. See the BaselineContentType enumeration for valid values.
-	contentType: VumBaselineContentType;
+	contentType: any;
 	// Baseline target type. See the TargetType enumeration for valid values.
-	targetType: VumTargetType;
+	targetType: any;
 
 	constructor();
 }
@@ -41,7 +41,7 @@ declare class VumBaselineGroup {
 	// Formatted string for the last update timestamp
 	lastUpdateTimeAsStr: string;
 	// BaselineGroup target type. See the TargetType enumeration for valid values.
-	targetType: VumTargetType;
+	targetType: any;
 
 	constructor();
 }
@@ -55,11 +55,11 @@ declare class VumBaselineSearchSpec {
 	// Names or wildcard name expressions of the baselines to retrieve;
 	nameExpressions: string[];
 	// Types of the baselines to retrieve;
-	baselineTypes: VumBaselineType[];
+	baselineTypes: any[];
 	// TargetTypes of the baselines to retrieve;
-	targetTypes: VumTargetType[];
+	targetTypes: any[];
 	// ContentTypes of the baselines to retrieve;
-	contentTypes: VumBaselineContentType[]
+	contentTypes: any[]
 	// Specifies vSphere objects to which baselines should be attached;
 	viInventories: VumVIInventory[];
 	// Retrieve baselines containing this patch;
@@ -493,7 +493,7 @@ declare class VumObjectManager {
 	 * @param format 
 	 * @param serverOutFile 
 	 */
-	static exportCompliance(compliances: VumCompliance[], format: VumExportType, serverOutFile: string): void;
+	static exportCompliance(compliances: VumCompliance[], format: any, serverOutFile: string): void;
 	/**
 	 * Format a finder (dunesUri) from the vSphere plug-in as VIInventory finder.
 	 * 
@@ -550,11 +550,11 @@ declare class VumPatchBaseline {
 	// Formatted string for the last update timestamp
 	lastUpdateTimeAsStr: string;
 	// Baseline type. See the BaselineType enumeration for valid values.
-	baselineType: VumBaselineType;
+	baselineType: any;
 	// Baseline content type. See the BaselineContentType enumeration for valid values.
-	contentType: VumBaselineContentType;
+	contentType: any;
 	// Baseline target type. See the TargetType enumeration for valid values.
-	targetType: VumTargetType;
+	targetType: any;
 	// Patches included in this baseline
 	inclPatches: VumPatchInfo[];
 	// Patches excluded from this baseline
@@ -618,15 +618,15 @@ declare class VumPatchInfo {
 	// Specifies the patch release date
 	releaseDate: Date;
 	// Specifies the patch severity level. See the Severity enumeration for valid values.
-	severity: VumSeverity;
+	severity: any;
 	// Specifies the patch target type. See the TargetType enumeration for valid values.
-	targetType: VumTargetType;
+	targetType: any;
 	// Specifies the patch impact level for the vSphere object. The list with valid values is retrieved with a call to VumObjectManager.getInstallationImpacts().
 	impactLevel: string[];
 	// Specifies the patch bundle type. The list with valid values is retrieved with a call to VumObjectManager.getBundleTypes().
 	bundleType: string;
 	// Specifies the patch update type. See the UpdateType enumeration for valid values.
-	updateType: VumUpdateType;
+	updateType: any;
 
 	constructor();
 }
@@ -648,11 +648,11 @@ declare class VumPatchSearchSpec {
 	// Specify the names of the software products for which you want to retrieve patches.
 	product: string[];
 	// Specifies the patch severity level. See the Severity enumeration for valid values.
-	severity: VumSeverity;
+	severity: any;
 	// Specifies patch target type. See the TargetType enumeration for valid values.
-	targetType: VumTargetType;
+	targetType: any;
 	// Specifies patch update type. See the UpdateType enumeration for valid values.
-	updateType: VumUpdateType;
+	updateType: any;
 	// Patch language. The list with valid values is retrieved with a call to VumObjectManager.getPatchLanguages().
 	language: string[];
 	// If set to true, and if the result set is too big, the Update Manager server reports an error.
@@ -698,67 +698,4 @@ declare class VumVIInventory {
 	name: string;
 
 	constructor(serverURI: string);
-}
-
-/**
- * Specifies how patches are selected for inclusion in a baseline.
- */
-declare interface VumBaselineContentType {
-	toString(): "BOTH" | "DYNAMIC" | "STATIC";
-}
-
-/**
- * Specifies the contents of a baseline.
- */
-declare interface VumBaselineType {
-	toString(): "Extension" | "Patch" | "Upgrade";
-}
-
-/**
- * Specifies the different levels of compliance an entity can have.
- */
-declare interface VumComplianceStatus {
-	toString(): "Compliant" | "Incompatible" | "NotCompliant" | "Unknown";
-}
-
-/**
- * Specifies the format of the exported file.
- */
-declare interface VumExportType {
-	toString(): "csv" | "html" | "pdf";
-}
-
-/**
- * Specifies the contents of an update.
- */
-declare interface VumHostUpdateCategory {
-	toString(): "Any" | "BugFix" | "Enhancement" | "Other" | "Security";
-}
-
-/**
- * Specifies the possible ways in which scan can be performed.
- */
-declare interface VumScanType {
-	toString(): "HostPatch" | "HostThirdParty" | "HostUpgrade" | "VaUpgrade" | "VmHardwareUpgrade" | "VmPatch" | "VmToolsUpgrade";
-}
-
-/**
- * Specifies the severity of the issues a patch address.
- */
-declare interface VumSeverity {
-	toString(): "Any" | "Critical" | "Important" | "Low" | "Moderate";
-}
-
-/**
- * Specifies the type of target objects to which a patch can be applied.
- */
-declare interface VumTargetType {
-	toString(): "HOST" | "VA" | "VM";
-}
-
-/**
- * Specifies the contents of an update
- */
-declare interface VumUpdateType {
-	toString(): "OperatingSystem" | "Other" | "Security";
 }
