@@ -1,0 +1,7 @@
+{
+	"name": "@types/o11n-plugin-vum",
+	"version": "4.15.1-SNAPSHOT",
+	"author": "VMware PSCoE",
+	"license": "ISC",
+	"private": true
+}

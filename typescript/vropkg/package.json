@@ -62,7 +62,7 @@
 		"command-line-args": "^6.0.1",
 		"crc-32": "^1.2.2",
 		"fs-extra": "^11.2.0",
-		"glob": "^11.0.0",
+		"glob": "^11.1.0",
 		"iconv-lite": "^0.6.3",
 		"logform": "2.7.0",
 		"minimatch": "^10.0.0",
