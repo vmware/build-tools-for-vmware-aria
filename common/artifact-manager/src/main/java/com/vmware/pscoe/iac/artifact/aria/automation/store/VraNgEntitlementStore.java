@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -192,7 +193,8 @@ public class VraNgEntitlementStore extends AbstractVraNgStore {
 		entitlementsFile.getParentFile().mkdirs();
 
 		try {
-			Files.write(Paths.get(entitlementsFile.getPath()), writer.toString().getBytes(), StandardOpenOption.CREATE);
+			Files.write(Paths.get(entitlementsFile.getPath()), writer.toString().getBytes(StandardCharsets.UTF_8),
+					StandardOpenOption.CREATE);
 			logger.info("Created entitlement file '{}' for entitlement '{}'", entitlementsFile.getAbsoluteFile(),
 					entitlement.getName());
 		} catch (IOException e) {

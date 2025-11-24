@@ -19,6 +19,11 @@
 
 ## Features
 
+### *Add type definitions for `o11n-plugin-vum` plugin*
+
+### *Add type definitions for `o11n-plugin-crypto` plugin*
+
+
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)

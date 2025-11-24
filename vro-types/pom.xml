@@ -43,6 +43,8 @@
 		<module>o11n-plugin-vc</module>
 		<module>o11n-plugin-vcloud</module>
 		<module>o11n-plugin-vco</module>
+		<module>o11n-plugin-vum</module>
+		<module>o11n-plugin-crypto</module>
 		<module>o11n-plugin-xml</module>
 		<module>o11n-plugin-aria</module>
 	</modules>
@@ -121,7 +123,7 @@
 						fail with "You have to use a classifier to attach supplemental artifacts to the 
 						project instead of replacing them." 
 					-->
-					<version>3.4.2</version>
+					<version>3.5.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

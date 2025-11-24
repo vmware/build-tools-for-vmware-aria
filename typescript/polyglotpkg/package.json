@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/polyglotpkg",
-  "version": "4.14.1-SNAPSHOT",
+  "version": "4.15.1-SNAPSHOT",
   "description": "Create a vRO Polyglot or serverless package",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,7 +46,8 @@
     "uuid": "^11.0.3",
     "which": "^5.0.0",
     "winston": "^3.17.0",
-    "xmlbuilder2": "^3.1.1"
+    "xmlbuilder2": "^4.0.0",
+    "brace-expansion": "^2.0.2"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
