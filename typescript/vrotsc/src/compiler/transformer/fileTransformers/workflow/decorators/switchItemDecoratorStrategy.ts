@@ -77,14 +77,16 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 		"equals": "0",      		// Equal to
 		"different": "1",  		    // Not equal to
 		"greater": "2", 			// Greater than
-		"greater or equals": "3", 	// Greater than or equal to
-		"smaller": "4",   			// Less than
-		"smaller or equals": "5", 	// Less than or equal to
+		"greater or equals": "5", 	// Greater than or equal to
+		"smaller": "3",   			// Less than
+		"smaller or equals": "6", 	// Less than or equal to
 				
 		// Special comparators
-		"true": "6",        		// Always true (default case)
-		"false": "1",       		// Always false
-		"is defined": "1",     		// String indexOf operation (not equal to -1)
+		"is true": "0",        		// Always true (default case)
+		"is false": "1",       		// Always false
+		"is defined": "0",     		// Is defined (not null or undefined)
+		"is defined string": "3",   // is defined for string type (not equal to empty string)
+		"is defined numeric": "4",  // is defined for numeric type (not equal to zero)
 		"match": "2",       		// String match operation (not equal to null)
 		"contains": "1",    		// String contains operation
 		"startsWith": "2",  		// String startsWith operation
@@ -196,17 +198,16 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 		const uniqueTargets = new Set<string>();
 
 		// Add all case targets (deduplicated and validated)
-		if (switchBag?.cases) {
-			(switchBag.cases || []).forEach(caseItem => {
-				if (caseItem.target) {
-					const target = super.findTargetItem(caseItem.target, pos, itemInfo);
-					if (this.isValidTargetName(target, itemInfo) && !uniqueTargets.has(target)) {
-						uniqueTargets.add(target);
-						node.targets.push(target);
-					}
+		(switchBag?.cases || []).forEach(caseItem => {
+			if (caseItem.target) {
+				const target = super.findTargetItem(caseItem.target, pos, itemInfo);
+				if (this.isValidTargetName(target, itemInfo) && !uniqueTargets.has(target)) {
+					uniqueTargets.add(target);
+					node.targets.push(target);
 				}
-			});
-		}
+			}
+		});
+		
 
 		// Determine default target: prefer explicit defaultTarget, otherwise fall back to general item target
 		const defaultOrFallback = (switchBag?.defaultTarget ?? itemInfo.target);
@@ -317,12 +318,8 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 		const defaultOrFallback = (switchBag.defaultTarget ?? itemInfo.target);
 		if (defaultOrFallback) {
 			const defaultTargetItem = super.findTargetItem(defaultOrFallback, pos, itemInfo);
-			if (conditionIndex > 0) {
-				lines.push(`} else if (true) {`);
-			} else {
-				// Match historical/expected formatting when there are no prior conditions
-				lines.push(`} else if (true) {`);
-			}
+			// Match historical/expected formatting when there are no prior conditions
+			lines.push(`} else if (true) {`);
 			lines.push(`  return "${defaultTargetItem}";`);
 		}
 
@@ -476,32 +473,37 @@ export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrate
 	 * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
 	 */
 	private addConditionElements(stringBuilder: StringBuilderClass, switchBag: CanvasItemPolymorphicBagForSwitch, pos: number, itemInfo: WorkflowItemDescriptor): void {
-		if (switchBag.cases) {
-			(switchBag.cases || []).forEach(caseItem => {
-				const targetItem = super.findTargetItem(caseItem.target, pos, itemInfo);
-				const variableName = caseItem.variable || "";
-				const type = caseItem.type || this.inferTypeFromCondition(caseItem.condition);
-				const comparator = this.mapComparatorToNumeric(caseItem.comparator);
+		(switchBag?.cases || []).forEach(caseItem => {
+			const targetItem = super.findTargetItem(caseItem.target, pos, itemInfo);
+			const variableName = caseItem.variable || "";
+			const type = caseItem.type || this.inferTypeFromCondition(caseItem.condition);
+			let comparator = this.mapComparatorToNumeric(caseItem.comparator);
+
+			// Special handling for "is defined" with string type to use the correct comparator
+			if (caseItem.comparator === "is defined" && type === "string") {
+				comparator = this.mapComparatorToNumeric("is defined string");
+			}
+			// Special handling for "is defined" with numeric type to use the correct comparator
+			if (caseItem.comparator === "is defined" && type === "number") {
+				comparator = this.mapComparatorToNumeric("is defined numeric");
+			}						
 				
-				stringBuilder.append(`<condition name="${variableName}" type="${type}" comparator="${comparator}" label="${targetItem}">`);
-				
-				// Handle condition values based on comparator type
-				if (caseItem.comparator === "indexOf" || caseItem.comparator === "match" || 
-					caseItem.comparator === "greater than" || caseItem.comparator === "greater than or equal" || 
-					caseItem.comparator === "less than" || caseItem.comparator === "less than or equal" ||
-					caseItem.comparator === ">" || caseItem.comparator === ">=" || 
-					caseItem.comparator === "<" || caseItem.comparator === "<=") {
-					// For string operations and comparison operators, include condition content if present
-					if (caseItem.condition !== undefined && caseItem.condition !== null && caseItem.condition !== "") {
-						stringBuilder.append(caseItem.condition.toString());
-					}
-				} else if (caseItem.condition !== undefined && caseItem.condition !== null) {
+			stringBuilder.append(`<condition name="${variableName}" type="${type}" comparator="${comparator}" label="${targetItem}">`);			
+			// Handle condition values based on comparator type
+			if (caseItem.comparator === "indexOf" || caseItem.comparator === "match" || 
+				caseItem.comparator === "greater than" || caseItem.comparator === "greater than or equal" || 
+				caseItem.comparator === "less than" || caseItem.comparator === "less than or equal" ||
+				caseItem.comparator === ">" || caseItem.comparator === ">=" || 
+				caseItem.comparator === "<" || caseItem.comparator === "<=") {
+				// For string operations and comparison operators, include condition content if present
+				if (caseItem.condition !== undefined && caseItem.condition !== null && caseItem.condition !== "") {
 					stringBuilder.append(caseItem.condition.toString());
 				}
-				
-				stringBuilder.append(`</condition>`).appendLine();
-			});
-		}
+			} else if (caseItem.condition !== undefined && caseItem.condition !== null) {
+				stringBuilder.append(caseItem.condition.toString());
+			}			
+			stringBuilder.append(`</condition>`).appendLine();
+		});
 
 		// Add default condition if present: prefer explicit defaultTarget, else fallback to general item target
 		const defaultOrFallback = (switchBag.defaultTarget ?? itemInfo.target);
