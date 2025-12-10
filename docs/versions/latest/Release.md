@@ -23,6 +23,13 @@
 
 ### *Add type definitions for `o11n-plugin-crypto` plugin*
 
+### *Extend type definitions for `o11n-plugin-vc` plugin*
+
+Extend `o11n-plugin-vc` type definitions with:
+- VcCustomizationCloudinitPrep
+- VcVirtualTPM
+- VcVirtualTPMOption
+- VcVirtualDeviceDeviceGroupInfo
 
 [//]: # (### *Feature Name*)
 [//]: # (Describe the feature)
