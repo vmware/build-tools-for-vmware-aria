@@ -83,12 +83,12 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>7.0.1</version>
+			<version>7.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>7.0.1</version>
+			<version>7.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents.client5</groupId>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents.core5</groupId>
 			<artifactId>httpcore5</artifactId>
-			<version>5.3.6</version>
+			<version>5.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>

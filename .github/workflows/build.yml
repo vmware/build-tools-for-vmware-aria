@@ -101,7 +101,7 @@ jobs:
           echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
 
       - name: Cache Maven dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -151,7 +151,7 @@ jobs:
           tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == 17 }}
         with:
           name: ${{ env.ARTIFACT_FILE_NAME }}
