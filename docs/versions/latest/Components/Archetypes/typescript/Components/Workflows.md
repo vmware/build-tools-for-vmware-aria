@@ -16,6 +16,7 @@ You can use the method decorators to define various canvas items that will be in
    - [`@Item`](#item)
    - [`@WaitingTimerItem`](#waitingtimeritem)
    - [`@DecisionItem`](#decisionitem)
+   - [`@SwitchItem`](#switchitem)
    - [`@WorkflowItem`](#workflowitem)
    - [`@ScheduledWorkflowItem`](#scheduledworkflowitem)
    - [`@RootItem`](#rootitem)
@@ -272,6 +273,195 @@ export class DecisionItemWorkflow {
 The example above would generate the following workflow.
 
 [![Decision Item Workflow](images/Decision_Item_Canvas_Item_Workflow.png)](images/Decision_Item_Canvas_Item_Workflow.png)
+
+#### `@SwitchItem`
+
+This decorator is used to specify a switch item that routes workflow execution to different paths based on the value of a variable or expression.
+
+##### Supported Parameters
+
+- `cases` - An array of case objects that define the routing logic. Each case object contains:
+  - `condition` - The value to match against the switch variable
+  - `target` - The name of the next item to execute when this condition is met
+  - `variable` - The name of the variable to evaluate (optional, can be inferred from method parameters)
+  - `type` - The data type of the variable being switched on (e.g., "number", "string", "boolean")
+- `defaultTarget` - The name of the next item to execute when none of the cases match. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow.
+- `comparator` - The comparison operator to use when evaluating cases. Supported values are:
+  - `"equals"`                 - Equals (default behaviour if not specified)
+  - `"different"`             - Not equals
+  - `"smaller"`                - Less than
+  - `"smaller or equals"`   - Less than or equal
+  - `"greater"`                - Greater than
+  - `"greater or equals"`   - Greater than or equal
+  - `"contains"`              - Contains a value
+  - `"match"`                  - Matches a value
+  - `"is defined"`            - Value is defined
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
+
+##### Example
+
+```ts
+import { Workflow, SwitchItem } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Switch Edge Cases",
+  path: "VMware/PSCoE",
+  description: "Switch test covering edge cases - various operators, no default target, and complex conditions",
+  attributes: {
+    errorCode: {
+      type: "number"
+    },
+    priority: {
+      type: "number"
+    },
+    status: {
+      type: "string"
+    },
+  }
+})
+export class SwitchEdgeCases {
+
+  @SwitchItem({
+    cases: [
+      { condition: 404, target: "handleNotFound", variable: "errorCode", type: "number", comparator: "equals" },
+      { condition: 500, target: "handleServerError", variable: "errorCode", type: "number", comparator: "different" }
+    ],
+    target: "switchPriority"
+  })
+  public switchErrorCodes(errorCode: number) {
+    // Error code switch without default using various equality operators
+    System.log("Processing error code: " + errorCode);
+  }
+
+  @SwitchItem({
+    cases: [
+      { condition: 1, target: "lowPriority", variable: "priority", type: "number", comparator: "smaller" },
+      { condition: 5, target: "mediumPriority", variable: "priority", type: "number", comparator: "greater" }
+    ],
+    target: "switchStatus"
+  })
+  public switchPriority(priority: number) {
+    // Priority switch using comparison operators
+    System.log("Processing priority: " + priority);
+  }
+
+  @SwitchItem({
+    cases: [
+      { condition: "active", target: "processActive", variable: "status", type: "string", comparator: "equals" },
+      { condition: "pending", target: "processPending", variable: "status", type: "string", comparator: "different" }
+    ],
+    target: "handleNotFound"
+  })
+  public switchStatus(status: string) {
+    // String status switch with mixed operators
+    System.log("Processing status: " + status);
+  }
+
+  public handleNotFound() {
+    System.log("404 - Resource not found");
+  }
+
+  public handleServerError() {
+    System.log("500 - Internal server error");
+  }
+
+  public handleForbidden() {
+    System.log("403 - Access forbidden");
+  }
+
+  public lowPriority() {
+    System.log("Low priority task (<=1)");
+  }
+
+  public mediumPriority() {
+    System.log("Medium priority task (>5)");
+  }
+
+  public highPriority() {
+    System.log("High priority task (>=10)");
+  }
+
+  public handleInvalidPriority() {
+    System.log("Invalid priority level");
+  }
+
+  public processActive() {
+    System.log("Processing active status");
+  }
+
+  public processPending() {
+    System.log("Processing pending status (not equal to 'pending')");
+  }
+
+  public processInactive() {
+    System.log("Processing inactive status (not strictly equal to 'inactive')");
+  }
+
+  public handleUnknownStatus() {
+    System.log("Unknown status - using default handler");
+  }
+
+  public fallbackHandler() {
+    System.log("Not handled error code - using fallback");
+  }
+}
+```
+
+##### Switch Item with String Cases
+
+
+```ts
+import { Workflow, SwitchItem } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Switch String Cases",
+  path: "VMware/PSCoE",
+  description: "Switch test with string conditions and exception handling",
+  attributes: {
+    status: {
+      type: "string"
+    },
+  }
+})
+export class SwitchStringCases {
+
+  @SwitchItem({
+    cases: [
+      { condition: "active", target: "processActive", variable: "status", type: "string", comparator: "equals" },
+      { condition: "pending", target: "processPending", variable: "status", type: "string", comparator: "different" },
+      { condition: "inactive", target: "processInactive", variable: "status", type: "string", comparator: "equals" }
+    ],
+    target: "handleUnknownStatus",
+    exception: "handleError"
+  })
+  public switchByStatus(status: string) {
+    // Switch logic for string conditions
+    if (status === null || status === undefined) {
+      throw new Error("Status cannot be null");
+    }
+  }
+
+  public processActive() {
+    System.log("Processing active status");
+  }
+
+  public processPending() {
+    System.log("Processing pending status");
+  }
+
+  public processInactive() {
+    System.log("Processing inactive status");
+  }
+
+  public handleUnknownStatus() {
+    System.log("Unknown status encountered");
+  }
+
+  public handleError() {
+    System.log("Error occurred in switch processing");
+  }
+}
+````
 
 #### `@WorkflowItem`
 
