@@ -23,7 +23,7 @@ import { WrapperSourceFilePrinter } from "./helpers/sourceFile";
 
 /**
  * Responsible for printing out switch items in workflow definitions.
- * 
+ *
  * Switch elements support multiple conditions and targets different items based on the conditions.
  * This strategy handles the transformation of TypeScript switch decorators into workflow XML elements
  * with conditional logic, script generation, and proper binding configuration.
@@ -53,538 +53,534 @@ import { WrapperSourceFilePrinter } from "./helpers/sourceFile";
  *   <position y="60.0" x="500.0"/>
  * </workflow-item>
  * ```
- * 
+ *
  * @extends BaseItemDecoratorStrategy
  */
 export default class SwitchItemDecoratorStrategy extends BaseItemDecoratorStrategy {
 
-	/**
-	 * Maps user-friendly comparator strings to their numeric equivalents.
-	 * This provides a more intuitive API for developers while maintaining compatibility
-	 * with the underlying workflow engine.
-	 */
-	private static readonly COMPARATOR_MAP: Record<string, string> = {
-		// Symbolic comparators
-		"===": "0",         		// Equal to
-		"!==": "1",         		// Not equal to
-		"!=": "1",          		// Not equal to (loose inequality)
-		">": "2",           		// Greater than
-		">=": "3",          		// Greater than or equal to
-		"<": "4",           		// Less than
-		"<=": "5",          		// Less than or equal to
-		
-		// Descriptive comparators
-		"equals": "0",      		// Equal to
-		"different": "1",  		    // Not equal to
-		"greater": "2", 			// Greater than
-		"greater or equals": "5", 	// Greater than or equal to
-		"smaller": "3",   			// Less than
-		"smaller or equals": "6", 	// Less than or equal to
-				
-		// Special comparators
-		"is true": "0",        		// Always true (default case)
-		"is false": "1",       		// Always false
-		"is defined": "0",     		// Is defined (not null or undefined)
-		"is defined string": "3",   // is defined for string type (not equal to empty string)
-		"is defined numeric": "4",  // is defined for numeric type (not equal to zero)
-		"match": "2",       		// String match operation (not equal to null)
-		"contains": "1",    		// String contains operation
-		"startsWith": "2",  		// String startsWith operation
-		"endsWith": "2"     		// String endsWith operation
-	};
+    /**
+     * Maps user-friendly comparator strings to their numeric equivalents.
+     * This provides a more intuitive API for developers while maintaining compatibility
+     * with the underlying workflow engine.
+     */
+    private static readonly COMPARATOR_MAP: Record<string, string> = {
+        // Symbolic comparators
+        "===": "0",         		// Equal to
+        "!==": "1",         		// Not equal to
+        "!=": "1",          		// Not equal to (loose inequality)
+        ">": "2",           		// Greater than
+        ">=": "3",          		// Greater than or equal to
+        "<": "4",           		// Less than
+        "<=": "5",          		// Less than or equal to
 
-	/**
-	 * Creates a new instance of SwitchItemDecoratorStrategy.
-	 * Initializes the source file printer for wrapper function handling.
-	 */
-	constructor() {
-		super();
-		this.sourceFilePrinter = new WrapperSourceFilePrinter();
-	}
+        // Descriptive comparators
+        "equals": "0",      		// Equal to
+        "different": "1",  		    // Not equal to
+        "greater": "2", 			// Greater than
+        "greater or equals": "5", 	// Greater than or equal to
+        "smaller": "3",   			// Less than
+        "smaller or equals": "6", 	// Less than or equal to
 
-	/**
-	 * Gets the workflow item type that this strategy handles.
-	 * 
-	 * @returns {WorkflowItemType} The switch workflow item type
-	 */
-	public getDecoratorType(): WorkflowItemType {
-		return WorkflowItemType.Switch;
-	}
+        // Special comparators
+        "is true": "0",        		// Always true (default case)
+        "is false": "1",       		// Always false
+        "is defined": "0",     		// Is defined (not null or undefined)
+        "is defined string": "3",   // is defined for string type (not equal to empty string)
+        "is defined numeric": "4",  // is defined for numeric type (not equal to zero)
+        "match": "2",       		// String match operation (not equal to null)
+        "contains": "1",    		// String contains operation
+        "startsWith": "2",  		// String startsWith operation
+        "endsWith": "2"     		// String endsWith operation
+    };
 
-	/**
-	 * Gets the canvas type identifier for switch items.
-	 * 
-	 * @returns {string} The canvas type string "switch"
-	 */
-	public getCanvasType(): string {
-		return "switch";
-	}
+    /**
+     * Creates a new instance of SwitchItemDecoratorStrategy.
+     * Initializes the source file printer for wrapper function handling.
+     */
+    constructor() {
+        super();
+        this.sourceFilePrinter = new WrapperSourceFilePrinter();
+    }
 
-	/**
-	 * Registers and processes item arguments from the decorator node.
-	 * 
-	 * Processes the following decorator properties:
-	 * - `target`: The target item for the switch
-	 * - `exception`: Exception handling configuration
-	 * - `cases`: Array of case conditions and their targets
-	 * - `defaultTarget`: Default target when no cases match
-	 * 
-	 * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor to populate
-	 * @param {Decorator} decoratorNode - The TypeScript decorator node containing the arguments
-	 * @throws {Error} When an unsupported item attribute is encountered
-	 */
-	public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
-		const decoratorProperties = getDecoratorProps(decoratorNode);
-		
-		if (!decoratorProperties?.length) {
-			return;
-		}
+    /**
+     * Gets the workflow item type that this strategy handles.
+     *
+     * @returns {WorkflowItemType} The switch workflow item type
+     */
+    public getDecoratorType(): WorkflowItemType {
+        return WorkflowItemType.Switch;
+    }
 
-		// Ensure polymorphic bag exists
-		if (!itemInfo.canvasItemPolymorphicBag) {
-			itemInfo.canvasItemPolymorphicBag = {};
-		}
+    /**
+     * Gets the canvas type identifier for switch items.
+     *
+     * @returns {string} The canvas type string "switch"
+     */
+    public getCanvasType(): string {
+        return "switch";
+    }
 
-		// Process each decorator property
-		decoratorProperties.forEach((propTuple) => {
-			const [propName, propValue] = propTuple;
-			
-			switch (propName) {
-				case "target":
-					itemInfo.target = propValue;
-					break;
+    /**
+     * Registers and processes item arguments from the decorator node.
+     *
+     * Processes the following decorator properties:
+     * - `target`: The target item for the switch
+     * - `exception`: Exception handling configuration
+     * - `cases`: Array of case conditions and their targets
+     * - `defaultTarget`: Default target when no cases match
+     *
+     * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor to populate
+     * @param {Decorator} decoratorNode - The TypeScript decorator node containing the arguments
+     * @throws {Error} When an unsupported item attribute is encountered
+     */
+    public registerItemArguments(itemInfo: WorkflowItemDescriptor, decoratorNode: Decorator): void {
+        const decoratorProperties = getDecoratorProps(decoratorNode);
 
-				case "exception":
-					itemInfo.canvasItemPolymorphicBag.exception = propValue;
-					break;
+        if (!decoratorProperties?.length) {
+            return;
+        }
 
-				case "cases":
-					if (Array.isArray(propValue)) {
-						itemInfo.canvasItemPolymorphicBag.cases = propValue;
-					} else {
-						throw new Error(`The 'cases' property for ${this.getDecoratorType()} item must be an array.`);
-					}
-					break;
+        // Ensure polymorphic bag exists
+        if (!itemInfo.canvasItemPolymorphicBag) {
+            itemInfo.canvasItemPolymorphicBag = {};
+        }
 
-				case "defaultTarget":
-					itemInfo.canvasItemPolymorphicBag.defaultTarget = propValue;
-					break;
+        // Process each decorator property
+        decoratorProperties.forEach((propTuple) => {
+            const [propName, propValue] = propTuple;
 
-				default:
-					throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
-			}
-		});		
-	}
+            switch (propName) {
+                case "target":
+                    itemInfo.target = propValue;
+                    break;
 
-	/**
-	 * Creates a graph node representation for the switch item with all its target connections.
-	 * 
-	 * The graph node includes connections to all case targets and the default target if specified.
-	 * This is used for workflow graph analysis and visualization.
-	 * 
-	 * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
-	 * @param {number} pos - The position of the item in the workflow
-	 * @returns {GraphNode} The graph node with target connections configured
-	 * @see BaseItemDecoratorStrategy.getGraphNode
-	 */
-	public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
-		const node: GraphNode = super.getGraphNode(itemInfo, pos, [0, -10]);
-		const switchBag = itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForSwitch;
+                case "cases":
+                    if (Array.isArray(propValue)) {
+                        itemInfo.canvasItemPolymorphicBag.cases = propValue;
+                    } else {
+                        throw new Error(`The 'cases' property for ${this.getDecoratorType()} item must be an array.`);
+                    }
+                    break;
 
-		// Reset targets populated by base implementation to avoid duplicates from cases
-		node.targets = [];
+                case "defaultTarget":
+                    itemInfo.canvasItemPolymorphicBag.defaultTarget = propValue;
+                    break;
 
-		// Collect unique targets only to avoid exploding the number of branches/rows
-		const uniqueTargets = new Set<string>();
+                default:
+                    throw new Error(`Item attribute '${propName}' is not supported for ${this.getDecoratorType()} item`);
+            }
+        });
+    }
 
-		// Add all case targets (deduplicated and validated)
-		(switchBag?.cases || []).forEach(caseItem => {
-			if (caseItem.target) {
-				const target = super.findTargetItem(caseItem.target, pos, itemInfo);
-				if (this.isValidTargetName(target, itemInfo) && !uniqueTargets.has(target)) {
-					uniqueTargets.add(target);
-					node.targets.push(target);
-				}
-			}
-		});
-		
+    /**
+     * Creates a graph node representation for the switch item with all its target connections.
+     *
+     * The graph node includes connections to all case targets and the default target if specified.
+     * This is used for workflow graph analysis and visualization.
+     *
+     * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
+     * @param {number} pos - The position of the item in the workflow
+     * @returns {GraphNode} The graph node with target connections configured
+     * @see BaseItemDecoratorStrategy.getGraphNode
+     */
+    public getGraphNode(itemInfo: WorkflowItemDescriptor, pos: number): GraphNode {
+        const node: GraphNode = super.getGraphNode(itemInfo, pos, [0, -10]);
+        const switchBag = itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForSwitch;
 
-		// Determine default target: prefer explicit defaultTarget, otherwise fall back to general item target
-		const defaultOrFallback = (switchBag?.defaultTarget ?? itemInfo.target);
-		if (defaultOrFallback) {
-			const defTarget = super.findTargetItem(defaultOrFallback, pos, itemInfo);
-			if (this.isValidTargetName(defTarget, itemInfo) && !uniqueTargets.has(defTarget)) {
-				uniqueTargets.add(defTarget);
-				node.targets.push(defTarget);
-			}
-		}
+        // Reset targets populated by base implementation to avoid duplicates from cases
+        node.targets = [];
 
-		return node;
-	}
+        // Collect unique targets only to avoid exploding the number of branches/rows
+        const uniqueTargets = new Set<string>();
 
-	/**
-	 * Prints the source file content for the switch item.
-	 * 
-	 * Delegates to the source file printer to handle wrapper function processing
-	 * and generate the appropriate source code representation.
-	 * 
-	 * @param {MethodDeclaration} methodNode - The TypeScript method declaration node
-	 * @param {SourceFile} sourceFile - The TypeScript source file
-	 * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
-	 * @returns {string} The processed source file content
-	 */
-	public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
-		return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
-	}
+        // Add all case targets (deduplicated and validated)
+        (switchBag?.cases || []).forEach(caseItem => {
+            if (caseItem.target) {
+                const target = super.findTargetItem(caseItem.target, pos, itemInfo);
+                if (this.isValidTargetName(target, itemInfo) && !uniqueTargets.has(target)) {
+                    uniqueTargets.add(target);
+                    node.targets.push(target);
+                }
+            }
+        });
 
-	/**
-	 * Prints out the complete XML representation of the switch item.
-	 *
-	 * The switch item generates conditional logic and includes condition elements
-	 * for each case defined in the switch. The generated XML includes:
-	 * - Display name and description
-	 * - Generated script with conditional logic
-	 * - Input/output parameter bindings
-	 * - Condition elements for each case
-	 * - Position information for UI display
-	 *
-	 * @param {WorkflowItemDescriptor} itemInfo - The item descriptor containing switch configuration
-	 * @param {number} pos - The position of the item in the workflow (used for item naming)
-	 * @param {number} x - X-axis position for UI display
-	 * @param {number} y - Y-axis position for UI display
-	 * @returns {string} The complete XML representation of the switch item
-	 */
-	public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
-		const stringBuilder = new StringBuilderClass("", "");
-		const switchBag = itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForSwitch;
 
-		// Generate the switch script
-		const switchScript = this.generateSwitchScript(itemInfo, switchBag, pos);
+        // Determine default target: prefer explicit defaultTarget, otherwise fall back to general item target
+        const defaultOrFallback = (switchBag?.defaultTarget ?? itemInfo.target);
+        if (defaultOrFallback) {
+            const defTarget = super.findTargetItem(defaultOrFallback, pos, itemInfo);
+            if (this.isValidTargetName(defTarget, itemInfo) && !uniqueTargets.has(defTarget)) {
+                uniqueTargets.add(defTarget);
+                node.targets.push(defTarget);
+            }
+        }
 
-		stringBuilder.append(`<workflow-item name="item${pos}" type="${this.getCanvasType()}">`);
+        return node;
+    }
 
-		stringBuilder.indent();
-		stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
-		stringBuilder.append(`<script encoded="false"><![CDATA[${switchScript}]]></script>`).appendLine();
-		stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
-		stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
+    /**
+     * Prints the source file content for the switch item.
+     *
+     * Delegates to the source file printer to handle wrapper function processing
+     * and generate the appropriate source code representation.
+     *
+     * @param {MethodDeclaration} methodNode - The TypeScript method declaration node
+     * @param {SourceFile} sourceFile - The TypeScript source file
+     * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
+     * @returns {string} The processed source file content
+     */
+    public printSourceFile(methodNode: MethodDeclaration, sourceFile: SourceFile, itemInfo: WorkflowItemDescriptor): string {
+        return this.sourceFilePrinter.printSourceFile(methodNode, sourceFile, itemInfo);
+    }
 
-		// Add condition elements
-		this.addConditionElements(stringBuilder, switchBag, pos, itemInfo);
+    /**
+     * Prints out the complete XML representation of the switch item.
+     *
+     * The switch item generates conditional logic and includes condition elements
+     * for each case defined in the switch. The generated XML includes:
+     * - Display name and description
+     * - Generated script with conditional logic
+     * - Input/output parameter bindings
+     * - Condition elements for each case
+     * - Position information for UI display
+     *
+     * @param {WorkflowItemDescriptor} itemInfo - The item descriptor containing switch configuration
+     * @param {number} pos - The position of the item in the workflow (used for item naming)
+     * @param {number} x - X-axis position for UI display
+     * @param {number} y - Y-axis position for UI display
+     * @returns {string} The complete XML representation of the switch item
+     */
+    public printItem(itemInfo: WorkflowItemDescriptor, pos: number, x: number, y: number): string {
+        const stringBuilder = new StringBuilderClass("", "");
+        const switchBag = itemInfo.canvasItemPolymorphicBag as CanvasItemPolymorphicBagForSwitch;
 
-		stringBuilder.append(`<description><![CDATA[Basic switch activity based on a workflow attribute or parameter.]]></description>`).appendLine();
-		stringBuilder.append(super.formatItemPosition([x, y])).appendLine();
-		stringBuilder.unindent();
-		stringBuilder.append(`</workflow-item>`).appendLine();
+        // Generate the switch script
+        const switchScript = this.generateSwitchScript(itemInfo, switchBag, pos);
 
-		return stringBuilder.toString();
-	}
+        stringBuilder.append(`<workflow-item name="item${pos}" type="${this.getCanvasType()}">`);
 
-	/**
-	 * Generates the JavaScript switch script logic for the workflow item.
-	 * 
-	 * Creates a conditional if-else chain that evaluates each case condition
-	 * and returns the appropriate target item name. The script is marked as
-	 * system-generated and non-editable.
-	 * 
-	 * @private
-	 * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
-	 * @param {CanvasItemPolymorphicBagForSwitch} switchBag - The switch configuration bag
-	 * @param {number} pos - The position of the item in the workflow
-	 * @returns {string} The generated JavaScript switch script
-	 */
-	private generateSwitchScript(itemInfo: WorkflowItemDescriptor, switchBag: CanvasItemPolymorphicBagForSwitch, pos: number): string {
-		const lines = ["// Generated by the system, cannot be edited"]; 
-		let conditionIndex = 0;
-		
-		if (switchBag.cases && switchBag.cases.length > 0) {
-			switchBag.cases.forEach((caseItem, index) => {				
-				const targetItem = super.findTargetItem(caseItem.target, pos, itemInfo);
-				const condition = this.formatConditionForScript(caseItem);
-				// Only add valid conditions to prevent malformed JavaScript
-				if (condition && condition.trim() !== "") {
-					if (conditionIndex === 0) {
-						lines.push(`if (${condition}) {`);
-					} else {
-						lines.push(`} else if (${condition}) {`);
-					}
-					lines.push(`  return "${targetItem}";`);
-					conditionIndex++;
-				}
-			});
-		}
+        stringBuilder.indent();
+        stringBuilder.append(`<display-name><![CDATA[${itemInfo.name}]]></display-name>`).appendLine();
+        stringBuilder.append(`<script encoded="false"><![CDATA[${switchScript}]]></script>`).appendLine();
+        stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.IN_BINDINGS));
+        stringBuilder.appendContent(super.buildParameterBindings(itemInfo, InputOutputBindings.OUT_BINDINGS));
 
-		// Add default case: prefer explicit defaultTarget, fallback to general item target if present
-		const defaultOrFallback = (switchBag.defaultTarget ?? itemInfo.target);
-		if (defaultOrFallback) {
-			const defaultTargetItem = super.findTargetItem(defaultOrFallback, pos, itemInfo);
-			// Match historical/expected formatting when there are no prior conditions
-			lines.push(`} else if (true) {`);
-			lines.push(`  return "${defaultTargetItem}";`);
-		}
+        // Add condition elements
+        this.addConditionElements(stringBuilder, switchBag, pos, itemInfo);
 
-		if (lines.length > 1) {
-			lines.push("}");
-		}
-		const result = lines.join("\n");
+        stringBuilder.append(`<description><![CDATA[Basic switch activity based on a workflow attribute or parameter.]]></description>`).appendLine();
+        stringBuilder.append(super.formatItemPosition([x, y])).appendLine();
+        stringBuilder.unindent();
+        stringBuilder.append(`</workflow-item>`).appendLine();
 
-		return result;
-	}
+        return stringBuilder.toString();
+    }
 
-	/**
-	 * Formats a case condition for use in the generated JavaScript script.
-	 * 
-	 * Handles different condition types and comparators to generate appropriate comparison expressions.
-	 * This method generates JavaScript that matches the XML condition elements for workflow execution.
-	 * 
-	 * @private
-	 * @param {any} caseItem - The case item containing variable, condition, and comparator properties
-	 * @param {string} caseItem.variable - The variable name to compare (defaults to "value")
-	 * @param {any} caseItem.condition - The condition value to compare against
-	 * @param {string} caseItem.comparator - The comparator type ("equals", "not equals", "greater than", "indexOf", etc.)
-	 * @returns {string} The formatted condition expression for the script
-	 */
-	private formatConditionForScript(caseItem: any): string {
-		const variable = caseItem.variable || "value";
-		const condition = caseItem.condition;
-		const comparator = caseItem.comparator || "equals";
-		
-		// Handle special string operations
-		switch (comparator) {
-			case "indexOf":
-				if (typeof condition === "string") {
-					return `${variable}.indexOf("${condition}") !== -1`;
-				}
-				return `${variable}.indexOf("") !== -1`;
-				
-			case "match":
-				if (typeof condition === "string") {
-					return `${variable}.match("${condition}") !== null`;
-				}
-				return `${variable}.match("null") !== null`;
-				
-			case "contains":
-				if (typeof condition === "string") {
-					return `${variable}.includes("${condition}")`;
-				}
-				return `${variable}.includes("")`;
-				
-			case "startsWith":
-				if (typeof condition === "string") {
-					return `${variable}.startsWith("${condition}")`;
-				}
-				return `${variable}.startsWith("")`;
-				
-			case "endsWith":
-				if (typeof condition === "string") {
-					return `${variable}.endsWith("${condition}")`;
-				}
-				return `${variable}.endsWith("")`;
-		}
-		
-		// Handle standard comparison operators (both descriptive and symbolic names)
-		switch (comparator) {
-			case "===":
-			case "equals":
-				if (typeof condition === "string") {
-					return `${variable} === "${condition}"`;
-				} else if (typeof condition === "number") {
-					return `${variable} === ${condition}`;
-				} else if (typeof condition === "boolean") {
-					return `${variable} === ${condition}`;
-				} else if (condition === null) {
-					return `${variable} === null`;
-				}
-				return `${variable} === ${JSON.stringify(condition)}`;
-				
-			case "!==":
-			case "!=":
-			case "not equals":
-			case "different": // Handle original descriptive name
-				if (typeof condition === "string") {
-					return `${variable} !== "${condition}"`;
-				} else if (typeof condition === "number") {
-					return `${variable} !== ${condition}`;
-				} else if (typeof condition === "boolean") {
-					return `${variable} !== ${condition}`;
-				} else if (condition === null) {
-					return `${variable} !== null`;
-				}
-				return `${variable} !== ${JSON.stringify(condition)}`;
-				
-			case ">":
-			case "greater than":
-			case "greater": // Handle original descriptive name
-				if (typeof condition === "number") {
-					return `${variable} > ${condition}`;
-				}
-				return `${variable} > 0`;
-				
-			case ">=":
-			case "greater than or equal":
-			case "greater or equals": // Handle original descriptive name
-				if (typeof condition === "number") {
-					return `${variable} >= ${condition}`;
-				}
-				return `${variable} >= 0`;
-				
-			case "<":
-			case "less than":
-			case "smaller": // Handle original descriptive name
-				if (typeof condition === "number") {
-					return `${variable} < ${condition}`;
-				}
-				return `${variable} < 0`;
-				
-			case "<=":
-			case "less than or equal":
-			case "smaller or equals": // Handle original descriptive name
-				if (typeof condition === "number") {
-					return `${variable} <= ${condition}`;
-				}
-				return `${variable} <= 0`;
-		}
-		
-		// Default fallback for any unhandled comparator types
-		if (typeof condition === "string") {
-			return `${variable} === "${condition}"`;
-		} else if (typeof condition === "number") {
-			return `${variable} === ${condition}`;
-		} else if (typeof condition === "boolean") {
-			return `${variable} === ${condition}`;
-		}
-		
-		return `${variable} === ${JSON.stringify(condition)}`;
-	}
+    /**
+     * Generates the JavaScript switch script logic for the workflow item.
+     *
+     * Creates a conditional if-else chain that evaluates each case condition
+     * and returns the appropriate target item name. The script is marked as
+     * system-generated and non-editable.
+     *
+     * @private
+     * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
+     * @param {CanvasItemPolymorphicBagForSwitch} switchBag - The switch configuration bag
+     * @param {number} pos - The position of the item in the workflow
+     * @returns {string} The generated JavaScript switch script
+     */
+    private generateSwitchScript(itemInfo: WorkflowItemDescriptor, switchBag: CanvasItemPolymorphicBagForSwitch, pos: number): string {
+        const lines = ["// Generated by the system, cannot be edited"];
+        let conditionIndex = 0;
 
-	/**
-	 * Adds XML condition elements to the workflow item definition.
-	 * 
-	 * Creates `<condition>` XML elements for each case in the switch, including:
-	 * - Variable name and type information
-	 * - Comparator type (mapped from user-friendly strings to numeric codes)
-	 * - Target label for workflow navigation
-	 * - Condition value
-	 * 
-	 * @private
-	 * @param {StringBuilderClass} stringBuilder - The string builder to append XML to
-	 * @param {CanvasItemPolymorphicBagForSwitch} switchBag - The switch configuration bag
-	 * @param {number} pos - The position of the item in the workflow
-	 * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
-	 */
-	private addConditionElements(stringBuilder: StringBuilderClass, switchBag: CanvasItemPolymorphicBagForSwitch, pos: number, itemInfo: WorkflowItemDescriptor): void {
-		(switchBag?.cases || []).forEach(caseItem => {
-			const targetItem = super.findTargetItem(caseItem.target, pos, itemInfo);
-			const variableName = caseItem.variable || "";
-			const type = caseItem.type || this.inferTypeFromCondition(caseItem.condition);
-			let comparator = this.mapComparatorToNumeric(caseItem.comparator);
+        if (switchBag.cases && switchBag.cases.length > 0) {
+            switchBag.cases.forEach((caseItem, index) => {
+                const targetItem = super.findTargetItem(caseItem.target, pos, itemInfo);
+                const condition = this.formatConditionForScript(caseItem);
+                // Only add valid conditions to prevent malformed JavaScript
+                if (condition && condition.trim() !== "") {
+                    if (conditionIndex === 0) {
+                        lines.push(`if (${condition}) {`);
+                    } else {
+                        lines.push(`} else if (${condition}) {`);
+                    }
+                    lines.push(`  return "${targetItem}";`);
+                    conditionIndex++;
+                }
+            });
+        }
 
-			// Special handling for "is defined" with string type to use the correct comparator
-			if (caseItem.comparator === "is defined" && type === "string") {
-				comparator = this.mapComparatorToNumeric("is defined string");
-			}
-			// Special handling for "is defined" with numeric type to use the correct comparator
-			if (caseItem.comparator === "is defined" && type === "number") {
-				comparator = this.mapComparatorToNumeric("is defined numeric");
-			}						
-				
-			stringBuilder.append(`<condition name="${variableName}" type="${type}" comparator="${comparator}" label="${targetItem}">`);			
-			// Handle condition values based on comparator type
-			if (caseItem.comparator === "indexOf" || caseItem.comparator === "match" || 
-				caseItem.comparator === "greater than" || caseItem.comparator === "greater than or equal" || 
-				caseItem.comparator === "less than" || caseItem.comparator === "less than or equal" ||
-				caseItem.comparator === ">" || caseItem.comparator === ">=" || 
-				caseItem.comparator === "<" || caseItem.comparator === "<=") {
-				// For string operations and comparison operators, include condition content if present
-				if (caseItem.condition !== undefined && caseItem.condition !== null && caseItem.condition !== "") {
-					stringBuilder.append(caseItem.condition.toString());
-				}
-			} else if (caseItem.condition !== undefined && caseItem.condition !== null) {
-				stringBuilder.append(caseItem.condition.toString());
-			}			
-			stringBuilder.append(`</condition>`).appendLine();
-		});
+        // Add default case: prefer explicit defaultTarget, fallback to general item target if present
+        const defaultOrFallback = (switchBag.defaultTarget ?? itemInfo.target);
+        if (defaultOrFallback) {
+            const defaultTargetItem = super.findTargetItem(defaultOrFallback, pos, itemInfo);
+            // Match historical/expected formatting when there are no prior conditions
+            lines.push(`} else if (true) {`);
+            lines.push(`  return "${defaultTargetItem}";`);
+        }
 
-		// Add default condition if present: prefer explicit defaultTarget, else fallback to general item target
-		const defaultOrFallback = (switchBag.defaultTarget ?? itemInfo.target);
-		if (defaultOrFallback) {
-			const defaultTargetItem = super.findTargetItem(defaultOrFallback, pos, itemInfo);
-			stringBuilder.append(`<condition name="" type="boolean" comparator="6" label="${defaultTargetItem}"/>`).appendLine();
-		}
-	}
+        if (lines.length > 1) {
+            lines.push("}");
+        }
+        const result = lines.join("\n");
 
-	/**
-	 * Infers the data type from a condition value for XML type attributes.
-	 * 
-	 * Analyzes the JavaScript type of the condition value and maps it to
-	 * the appropriate XML type string for workflow condition elements.
-	 * 
-	 * @private
-	 * @param {any} condition - The condition value to analyze
-	 * @returns {string} The inferred type ("string", "number", "boolean", defaults to "string")
-	 */
-	private inferTypeFromCondition(condition: any): string {
-		if (typeof condition === "string") {
-			return "string";
-		} else if (typeof condition === "number") {
-			return "number";
-		} else if (typeof condition === "boolean") {
-			return "boolean";
-		}
-		return "string";
-	}
+        return result;
+    }
 
-	/**
-	 * Maps user-friendly comparator strings to their numeric equivalents.
-	 * 
-	 * Converts intuitive comparator strings (like "===", ">", "<=") to the numeric
-	 * codes expected by the workflow engine. Falls back to "0" (equals) for 
-	 * unrecognized comparators or backward compatibility with existing numeric codes.
-	 * 
-	 * @private
-	 * @param {string | undefined} comparator - The user-friendly comparator string or numeric code
-	 * @returns {string} The numeric comparator code for the workflow engine
-	 */
-	private mapComparatorToNumeric(comparator: string | undefined): string {
-		if (!comparator) {
-			return "0"; // Default to equals
-		}
+    /**
+     * Formats a case condition for use in the generated JavaScript script.
+     *
+     * Handles different condition types and comparators to generate appropriate comparison expressions.
+     * This method generates JavaScript that matches the XML condition elements for workflow execution.
+     *
+     * @private
+     * @param {any} caseItem - The case item containing variable, condition, and comparator properties
+     * @param {string} caseItem.variable - The variable name to compare (defaults to "value")
+     * @param {any} caseItem.condition - The condition value to compare against
+     * @param {string} caseItem.comparator - The comparator type ("equals", "not equals", "greater than", "indexOf", etc.)
+     * @returns {string} The formatted condition expression for the script
+     */
+    private formatConditionForScript(caseItem: any): string {
+        const variable = caseItem.variable || "value";
+        const condition = caseItem.condition;
+        const comparator = caseItem.comparator || "equals";
 
-		// If it's already a numeric code, return as-is for backward compatibility
-		if (/^\d+$/.test(comparator)) {
-			return comparator;
-		}
+        // Handle special string operations
+        switch (comparator) {
+            case "indexOf":
+                if (typeof condition === "string") {
+                    return `${variable}.indexOf("${condition}") !== -1`;
+                }
+                return `${variable}.indexOf("") !== -1`;
 
-		// Map user-friendly comparator to numeric code
-		const numericCode = SwitchItemDecoratorStrategy.COMPARATOR_MAP[comparator];
-		if (numericCode !== undefined) {
-			return numericCode;
-		}
+            case "match":
+                if (typeof condition === "string") {
+                    return `${variable}.match("${condition}") !== null`;
+                }
+                return `${variable}.match("null") !== null`;
 
-		// Default to equals for unrecognized comparators
-		return "0";
-	}
+            case "contains":
+                if (typeof condition === "string") {
+                    return `${variable}.includes("${condition}")`;
+                }
+                return `${variable}.includes("")`;
 
-	/**
-	 * Checks wheter the target is valids.
-	 * 
-	 * Check whether the target name is valid in the context of the workflow items.
-	 * 
-	 * @private
-	 * @param {string | undefined} target - Target name to validate.
-	 * @param {string | undefined} itemInfo - Item info to validate against.
-	 * @returns {boolean} True if the target name is valid, false otherwise.
-	 */
-	private isValidTargetName(target: string, itemInfo: WorkflowItemDescriptor): boolean {
-		if (!target) {
-			return false;
-		}
-		const match = /^item(\d+)$/.exec(target);
-		if (!match) {
-			return false;
-		}
-		const idx = parseInt(match[1], 10);
-		// Allow default end (item0) and item1..itemN where N = number of items in the workflow
-		return idx >= 0 && idx <= (itemInfo.parent?.items?.length || 0);
-	}
+            case "startsWith":
+                if (typeof condition === "string") {
+                    return `${variable}.startsWith("${condition}")`;
+                }
+                return `${variable}.startsWith("")`;
+
+            case "endsWith":
+                if (typeof condition === "string") {
+                    return `${variable}.endsWith("${condition}")`;
+                }
+                return `${variable}.endsWith("")`;
+        }
+
+        // Handle standard comparison operators (both descriptive and symbolic names)
+        switch (comparator) {
+            case "===":
+            case "equals":
+                if (typeof condition === "string") {
+                    return `${variable} === "${condition}"`;
+                } else if (typeof condition === "number") {
+                    return `${variable} === ${condition}`;
+                } else if (typeof condition === "boolean") {
+                    return `${variable} === ${condition}`;
+                } else if (condition === null) {
+                    return `${variable} === null`;
+                }
+                return `${variable} === ${JSON.stringify(condition)}`;
+
+            case "!==":
+            case "!=":
+            case "not equals":
+            case "different": // Handle original descriptive name
+                if (typeof condition === "string") {
+                    return `${variable} !== "${condition}"`;
+                } else if (typeof condition === "number") {
+                    return `${variable} !== ${condition}`;
+                } else if (typeof condition === "boolean") {
+                    return `${variable} !== ${condition}`;
+                } else if (condition === null) {
+                    return `${variable} !== null`;
+                }
+                return `${variable} !== ${JSON.stringify(condition)}`;
+
+            case ">":
+            case "greater than":
+            case "greater": // Handle original descriptive name
+                if (typeof condition === "number") {
+                    return `${variable} > ${condition}`;
+                }
+                return `${variable} > 0`;
+
+            case ">=":
+            case "greater than or equal":
+            case "greater or equals": // Handle original descriptive name
+                if (typeof condition === "number") {
+                    return `${variable} >= ${condition}`;
+                }
+                return `${variable} >= 0`;
+
+            case "<":
+            case "less than":
+            case "smaller": // Handle original descriptive name
+                if (typeof condition === "number") {
+                    return `${variable} < ${condition}`;
+                }
+                return `${variable} < 0`;
+
+            case "<=":
+            case "less than or equal":
+            case "smaller or equals": // Handle original descriptive name
+                if (typeof condition === "number") {
+                    return `${variable} <= ${condition}`;
+                }
+                return `${variable} <= 0`;
+        }
+
+        // Default fallback for any unhandled comparator types
+        if (typeof condition === "string") {
+            return `${variable} === "${condition}"`;
+        } else if (typeof condition === "number") {
+            return `${variable} === ${condition}`;
+        } else if (typeof condition === "boolean") {
+            return `${variable} === ${condition}`;
+        }
+
+        return `${variable} === ${JSON.stringify(condition)}`;
+    }
+
+    /**
+     * Adds XML condition elements to the workflow item definition.
+     *
+     * Creates `<condition>` XML elements for each case in the switch, including:
+     * - Variable name and type information
+     * - Comparator type (mapped from user-friendly strings to numeric codes)
+     * - Target label for workflow navigation
+     * - Condition value
+     *
+     * @private
+     * @param {StringBuilderClass} stringBuilder - The string builder to append XML to
+     * @param {CanvasItemPolymorphicBagForSwitch} switchBag - The switch configuration bag
+     * @param {number} pos - The position of the item in the workflow
+     * @param {WorkflowItemDescriptor} itemInfo - The workflow item descriptor
+     */
+    private addConditionElements(stringBuilder: StringBuilderClass, switchBag: CanvasItemPolymorphicBagForSwitch, pos: number, itemInfo: WorkflowItemDescriptor): void {
+        (switchBag?.cases || []).forEach(caseItem => {
+            const targetItem = super.findTargetItem(caseItem.target, pos, itemInfo);
+            const variableName = caseItem.variable || "";
+            const type = caseItem.type || this.inferTypeFromCondition(caseItem.condition);
+            let comparator = this.mapComparatorToNumeric(caseItem.comparator);
+
+            // Special handling for "is defined" with string type to use the correct comparator
+            if (caseItem.comparator === "is defined" && type === "string") {
+                comparator = this.mapComparatorToNumeric("is defined string");
+            }
+            // Special handling for "is defined" with numeric type to use the correct comparator
+            if (caseItem.comparator === "is defined" && type === "number") {
+                comparator = this.mapComparatorToNumeric("is defined numeric");
+            }
+
+            stringBuilder.append(`<condition name="${variableName}" type="${type}" comparator="${comparator}" label="${targetItem}">`);
+            // Handle condition values based on comparator type
+            if (caseItem.comparator === "indexOf" || caseItem.comparator === "match" ||
+                caseItem.comparator === "greater than" || caseItem.comparator === "greater than or equal" ||
+                caseItem.comparator === "less than" || caseItem.comparator === "less than or equal" ||
+                caseItem.comparator === ">" || caseItem.comparator === ">=" ||
+                caseItem.comparator === "<" || caseItem.comparator === "<=") {
+                // For string operations and comparison operators, include condition content if present
+                if (caseItem.condition !== undefined && caseItem.condition !== null && caseItem.condition !== "") {
+                    stringBuilder.append(caseItem.condition.toString());
+                }
+            } else if (caseItem.condition !== undefined && caseItem.condition !== null) {
+                stringBuilder.append(caseItem.condition.toString());
+            }
+            stringBuilder.append(`</condition>`).appendLine();
+        });
+
+        // Add default condition if present: prefer explicit defaultTarget, else fallback to general item target
+        const defaultOrFallback = (switchBag.defaultTarget ?? itemInfo.target);
+        if (defaultOrFallback) {
+            const defaultTargetItem = super.findTargetItem(defaultOrFallback, pos, itemInfo);
+            stringBuilder.append(`<condition name="" type="boolean" comparator="6" label="${defaultTargetItem}"/>`).appendLine();
+        }
+    }
+
+    /**
+     * Infers the data type from a condition value for XML type attributes.
+     *
+     * Analyzes the JavaScript type of the condition value and maps it to
+     * the appropriate XML type string for workflow condition elements.
+     *
+     * @private
+     * @param {any} condition - The condition value to analyze
+     * @returns {string} The inferred type ("string", "number", "boolean", defaults to "string")
+     */
+    private inferTypeFromCondition(condition: any): string {
+        if (typeof condition === "string") {
+            return "string";
+        } else if (typeof condition === "number") {
+            return "number";
+        } else if (typeof condition === "boolean") {
+            return "boolean";
+        }
+        return "string";
+    }
+
+    /**
+     * Maps user-friendly comparator strings to their numeric equivalents.
+     *
+     * Converts intuitive comparator strings (like "===", ">", "<=") to the numeric
+     * codes expected by the workflow engine. Falls back to "0" (equals) for
+     * unrecognized comparators or backward compatibility with existing numeric codes.
+     *
+     * @private
+     * @param {string | undefined} comparator - The user-friendly comparator string or numeric code
+     * @returns {string} The numeric comparator code for the workflow engine
+     */
+    private mapComparatorToNumeric(comparator: string | undefined): string {
+        if (!comparator) {
+            return "0"; // Default to equals
+        }
+
+        // If it's already a numeric code, return as-is for backward compatibility
+        if (/^\d+$/.test(comparator)) {
+            return comparator;
+        }
+
+        // Map user-friendly comparator to numeric code
+        const numericCode = SwitchItemDecoratorStrategy.COMPARATOR_MAP[comparator];
+        if (numericCode !== undefined) {
+            return numericCode;
+        }
+
+        // Default to equals for unrecognized comparators
+        return "0";
+    }
+
+    /**
+     * Checks wheter the target is valids.
+     *
+     * Check whether the target name is valid in the context of the workflow items.
+     *
+     * @private
+     * @param {string | undefined} target - Target name to validate.
+     * @param {string | undefined} itemInfo - Item info to validate against.
+     * @returns {boolean} True if the target name is valid, false otherwise.
+     */
+    private isValidTargetName(target: string, itemInfo: WorkflowItemDescriptor): boolean {
+        if (!target) {
+            return false;
+        }
+        const match = /^item(\d+)$/.exec(target);
+        if (!match) {
+            return false;
+        }
+        const idx = parseInt(match[1], 10);
+        // Allow default end (item0) and item1..itemN where N = number of items in the workflow
+        return idx >= 0 && idx <= (itemInfo.parent?.items?.length || 0);
+    }
 }
