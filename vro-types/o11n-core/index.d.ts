@@ -1022,6 +1022,7 @@ declare class Workflow {
 	attributes: Attribute[];
 	versionHistoryItems: VersionHistoryItem[];
 	parameterInfos: Properties;
+	id: string;
 	executions: WorkflowToken[];
 	logEvents: LogEvent[];
 	/**
@@ -1289,10 +1290,10 @@ declare class WorkflowToken {
 declare class ByteBuffer {
 	length: number;
 
-    /**
-     * Create a ByteBuffer from a base64 string or existing ByteBuffer
-     * @param obj - if null or undefined an empty ByteBuffer is created
-     */
+	/**
+	 * Create a ByteBuffer from a base64 string or existing ByteBuffer
+	 * @param obj - if null or undefined an empty ByteBuffer is created
+	 */
 	constructor(obj?: string | any);
 }
 
@@ -1338,12 +1339,12 @@ declare interface WorkflowInput {
  * ZipWriter
  */
 declare class ZipWriter {
-  /**
-   * Creates an instance of ZipWriter.
-   * @param {string} file - full path of the file
-   * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
-   */
-  constructor (file: string);
+	/**
+	 * Creates an instance of ZipWriter.
+	 * @param {string} file - full path of the file
+	 * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
+	 */
+	constructor(file: string);
 	/**
 	 * Add a string element to the specified zip file
 	 * @param {string} entryName
