@@ -40,6 +40,8 @@ Extend `o11n-plugin-vc` type definitions with:
 
 ## Improvements
 
+### *Add missing `id` Workflow property in `o11n-core` plugin*
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
