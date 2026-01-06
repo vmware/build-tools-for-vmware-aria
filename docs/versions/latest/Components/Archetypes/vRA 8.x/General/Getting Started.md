@@ -74,20 +74,20 @@ catalog
             └── customResource.json
         └── resource-actions
             └── resourceAction.json
-        └── policy:
-            └── approval:
+        └── policy
+            └── approval
                 └── aprovalPolicy1.json
-            └── content-sharing:
+            └── content-sharing
                 └── contentSharingPolicy1.json
-            └── day2-actions:
+            └── day2-actions
                 └── day2ActionsPolicy1.json
-            └── deployment-limit:
+            └── deployment-limit
                 └── deploymentLimitPolicy1.json
-            └── lease:
+            └── lease
                 └── leasePolicy1.json 
-            └── resource-quota:
+            └── resource-quota
                 └── resourceQuotaPolicy1.json 
-        └── scenarios:
+        └── scenarios
             └── Scenario Name.json
             
             
@@ -117,6 +117,8 @@ The following need to be added to the profile that you intend to use:
     <vrang.refresh.token>{refresh+token}</vrang.refresh.token>
     <vrang.bp.unrelease.versions>true|false</vrang.bp.unrelease.versions>
     <vrang.vro.integration>{vro+integration+name}</vrang.vro.integration>
+    <vrang.import.timeout>{import+timeout}</vrang.import.timeout>
+    <vrang.data.collection.delay.seconds>{data+collection+delay}</vrang.data.collection.delay.seconds>
 </profile>
 ```
 
@@ -132,7 +134,10 @@ credentials.
 
 - `vrang.bp.unrelease.versions` - Defaults to `true`. Controls whether old versions of a blueprint sould be unreleased.
 
+- `vrang.import.timeout` - Timeout in miliseconds when syncing from Content Source for Catalog Items to appear before performing additional operations (e.g. attaching Custom Forms, Icons, etc.). Default value is 6000.
+
 - `vrang.data.collection.delay.seconds` - Delay in seconds to wait for vRA data collection to pass before importing data. Can also be passed as an interactive parameter `-Dvrang.data.collection.delay.seconds=600`. useful when Dynamic types and custom resources are used in the projects and vRO content is imported, however vRA needs to then retrieve it in order to be able to create the custom Resource and use the Create/Delete Workflows. This only happens after a short delay and the vRA data collector scrapes vRO. Defaults to no delay.
+  - if a value is provided data collection is forced via REST API and if it completes successfully the provided delay time is skipped. In case the data collection fails, the delay is triggered.
 
 #### Organizations
 
