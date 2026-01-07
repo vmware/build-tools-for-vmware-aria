@@ -27,7 +27,7 @@ report:
 custom-group:
 ```
 
-All object types are list of values except for `default-policy` which is a single policy name. 
+All object types are list of values except for `default-policy` which is a single policy name.
 
 
 #### Import Rules for content types
