@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdapterKinds>
+    <AdapterKind adapterKindKey="VirtualAndPhysicalSANAdapter">
+        <ResourceKind resourceKindKey="VirtualSANDCCluster">
+            <Metric attrkey="vsan|dedupCompressOverview|ratio" label="Dedupe / Comp. Ratio" unit=" X " yellow=".02" orange=".01" red="0"/>
+            <Metric attrkey="vsan|dedupCompressOverview|savings" label="Dedupe / Comp. Savings" unit="GB" yellow=".02" orange=".01" red="0"/>
+            <Metric attrkey="vsan|dedupCompressOverview|usedAfter" label="Usage with Dedupe" unit="GB" yellow="" orange="" red="" showState="false"/>
+            <Metric attrkey="vsan|dedupCompressOverview|usedBefore" label="Usage w/o Dedupe" unit="GB" yellow="" orange="" red="" showState="false"/>
+        </ResourceKind>
+    </AdapterKind>
+</AdapterKinds>

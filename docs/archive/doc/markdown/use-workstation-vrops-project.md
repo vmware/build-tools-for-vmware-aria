@@ -171,7 +171,7 @@ When working on a vROps project, you mainly make changes on a live server using 
 To support this use case, the toolchain comes with a custom goal "vrops:pull". The following command will "pull" the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
 
 ```bash
-vrops:pull -Dvrops.host=vrops-l-01a.corp.local -Dvrops.port=22 -Dvrops.httpPort=443 -Dvrops.username=root -Dvrops.password=VMware1! -Dvrops.restUser=admin  -Dvrops.restPassword=VMware1!  -Dvrops.dashboardUser=admin  
+vrops:pull -Dvrops.host=vrops-l-01a.corp.local -Dvrops.port=443 -Dvrops.sshPort=22 -Dvrops.username=root -Dvrops.password=VMware1! -Dvrops.restUser=admin  -Dvrops.restPassword=VMware1!  -Dvrops.dashboardUser=admin  
 ```
 
 A better approach is to have the different vROps development environments specified as profiles in the local `settings.xml` file by adding the following snippet under "profiles":
@@ -182,8 +182,8 @@ A better approach is to have the different vROps development environments specif
     <properties>
         <!--vROps Connection-->
         <vrops.host>192.168.75.1</vrops.host>
-        <vrops.port>22</vrops.port>
-        <vrops.httpPort>443</vrops.httpPort>
+        <vrops.port>443</vrops.port>
+        <vrops.sshPort>22</vrops.sshPort>
         <vrops.username>root</vrops.username>
         <vrops.password>VMware1!</vrops.password>
         <vrops.restUser>admin</vrops.restUser>
@@ -244,8 +244,8 @@ The other option is to set the flags in your Maven's settings.xml file for a spe
     <properties>
         <!--vROps Connection-->
         <vrops.host>192.168.75.1</vrops.host>
-        <vrops.port>22</vrops.port>
-        <vrops.httpPort>443</vrops.httpPort>
+        <vrops.port>443</vrops.port>
+        <vrops.sshPort>22</vrops.sshPort>
         <vrops.username>root</vrops.username>
         <vrops.password>VMware1!</vrops.password>
         <vrops.restUser>admin</vrops.restUser>

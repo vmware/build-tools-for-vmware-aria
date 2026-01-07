@@ -1,0 +1,373 @@
+{
+   "entries": {
+      "resourceKind": [
+         {
+            "resourceKindKey": "ClusterComputeResource",
+            "internalId": "resourceKind:id:1_::_",
+            "adapterKindKey": "VMWARE"
+         },
+         {
+            "resourceKindKey": "vSphere World",
+            "internalId": "resourceKind:id:0_::_",
+            "adapterKindKey": "VMWARE"
+         }
+      ],
+      "resource": [{
+         "resourceKindKey": "vSphere World",
+         "internalId": "resource:id:0_::_",
+         "adapterKindKey": "VMWARE",
+         "identifiers": [],
+         "name": "vSphere World"
+      }]
+   },
+   "dashboards": [{
+      "shared": true,
+      "temporary": false,
+      "hidden": true,
+      "creationTime": 1752334407750,
+      "autoswitchEnabled": false,
+      "importAttempts": 0,
+      "columnProportion": "1",
+      "importComplete": true,
+      "description": "Analyze the costs of running your environment.",
+      "widgets": [
+         {
+            "collapsed": false,
+            "id": "fff00fa5-02ea-458e-b0fe-cabfb7f5af58",
+            "gridsterCoords": {
+               "w": 12,
+               "x": 1,
+               "h": 3,
+               "y": 1
+            },
+            "type": "Scoreboard",
+            "title": "Total Inventory and Costs",
+            "config": {
+               "visualTheme": 4,
+               "maxCellCount": 10,
+               "showMetricName": {"showMetricName": true},
+               "refreshInterval": 300,
+               "refreshContent": {"refreshContent": true},
+               "relationshipMode": {"relationshipMode": 0},
+               "valueSize": 24,
+               "boxHeight": null,
+               "title": "Total Inventory and Costs",
+               "showResourceName": {"showResourceName": false},
+               "roundDecimals": 0,
+               "showMetricUnit": {"showMetricUnit": true},
+               "mode": {"layoutMode": "fixedView"},
+               "labelSize": 12,
+               "metric": {
+                  "mode": "resourceKind",
+                  "resourceMetrics": [],
+                  "resourceKindMetrics": [
+                     {
+                        "yellowBound": null,
+                        "metricUnitId": null,
+                        "metricName": "Summary|Total Number of Datacenters",
+                        "metricKey": "summary|total_number_datacenters",
+                        "isStringMetric": false,
+                        "resourceKindName": "vSphere World",
+                        "label": "Datacenters",
+                        "resourceKindId": "resourceKind:id:0_::_",
+                        "orangeBound": null,
+                        "unit": "",
+                        "id": "extModel4407-1",
+                        "redBound": null,
+                        "colorMethod": 2
+                     },
+                     {
+                        "yellowBound": null,
+                        "metricUnitId": null,
+                        "metricName": "Summary|Total Number of Hosts",
+                        "metricKey": "summary|total_number_hosts",
+                        "isStringMetric": false,
+                        "resourceKindName": "vSphere World",
+                        "label": "vSphere Hosts",
+                        "resourceKindId": "resourceKind:id:0_::_",
+                        "orangeBound": null,
+                        "unit": "",
+                        "id": "extModel4407-4",
+                        "redBound": null,
+                        "colorMethod": 2
+                     },
+                     {
+                        "yellowBound": null,
+                        "metricUnitId": null,
+                        "metricName": "Summary|Total Number of Clusters",
+                        "metricKey": "summary|total_number_clusters",
+                        "isStringMetric": false,
+                        "resourceKindName": "vSphere World",
+                        "label": "vSphere Clusters",
+                        "resourceKindId": "resourceKind:id:0_::_",
+                        "orangeBound": null,
+                        "unit": "",
+                        "id": "extModel4407-2",
+                        "redBound": null,
+                        "colorMethod": 2
+                     },
+                     {
+                        "yellowBound": null,
+                        "metricUnitId": null,
+                        "metricName": "CPU|Number of CPU Sockets",
+                        "metricKey": "cpu|numpackages",
+                        "isStringMetric": false,
+                        "resourceKindName": "vSphere World",
+                        "label": "CPU Sockets",
+                        "resourceKindId": "resourceKind:id:0_::_",
+                        "orangeBound": null,
+                        "unit": "",
+                        "id": "extModel4407-3",
+                        "redBound": null,
+                        "colorMethod": 2
+                     },
+                     {
+                        "yellowBound": null,
+                        "metricUnitId": null,
+                        "metricName": "Cost|Total Aggregated Cost",
+                        "metricKey": "cost|total_aggregated_cost",
+                        "isStringMetric": false,
+                        "resourceKindName": "vSphere World",
+                        "label": "Total Cost of Ownership",
+                        "resourceKindId": "resourceKind:id:0_::_",
+                        "orangeBound": null,
+                        "unit": "",
+                        "id": "extModel2444-1",
+                        "redBound": null,
+                        "colorMethod": 2
+                     },
+                     {
+                        "yellowBound": null,
+                        "metricUnitId": null,
+                        "metricName": "Cost|Total Reclaimable Cost",
+                        "metricKey": "cost|total_reclaimable_cost",
+                        "isStringMetric": false,
+                        "resourceKindName": "vSphere World",
+                        "label": "Potential Cost Saving Opportunity",
+                        "resourceKindId": "resourceKind:id:0_::_",
+                        "orangeBound": null,
+                        "unit": "",
+                        "id": "extModel39319-1",
+                        "redBound": null,
+                        "colorMethod": 2
+                     }
+                  ]
+               },
+               "showSparkline": {"showSparkline": false},
+               "boxColumns": 6,
+               "periodLength": null,
+               "selfProvider": {"selfProvider": true},
+               "resInteractionMode": null
+            },
+            "height": 153
+         },
+         {
+            "collapsed": false,
+            "id": "8a6b9e73-1fdb-41f2-9496-5440a22f18a4",
+            "gridsterCoords": {
+               "w": 6,
+               "x": 1,
+               "h": 8,
+               "y": 10
+            },
+            "type": "ParetoAnalysis",
+            "title": "Top Most Expensive Clusters",
+            "config": {
+               "barsCount": 9,
+               "regenerationTime": 15,
+               "refreshInterval": 300,
+               "refreshContent": {"refreshContent": true},
+               "tagOption": {
+                  "tagFilter": null,
+                  "value": {"tagOption": "leastHealthyApplications"}
+               },
+               "additionalColumns": [
+                  {
+                     "boxLabel": "Hosts",
+                     "metricName": "Summary|Total Number of Hosts",
+                     "boxLabelOrig": "Hosts",
+                     "metricKey": "summary|total_number_hosts",
+                     "boxLabelLocalized": "Hosts",
+                     "resourceKindId": "resourceKind:id:1_::_"
+                  },
+                  {
+                     "boxLabel": "Datastores",
+                     "metricName": "Summary|Total Number of Datastores",
+                     "boxLabelOrig": "Datastores",
+                     "metricKey": "summary|total_number_datastores",
+                     "boxLabelLocalized": "Datastores",
+                     "resourceKindId": "resourceKind:id:1_::_"
+                  },
+                  {
+                     "boxLabel": "Virtual Machines",
+                     "metricName": "Summary|Total Number of VMs",
+                     "boxLabelOrig": "Virtual Machines",
+                     "metricKey": "summary|total_number_vms",
+                     "boxLabelLocalized": "Virtual Machines",
+                     "resourceKindId": "resourceKind:id:1_::_"
+                  }
+               ],
+               "title": "Top Most Expensive Clusters",
+               "roundDecimals": 1,
+               "mode": "metric",
+               "filterMode": "tagFilter",
+               "depth": 10,
+               "metricOption": {
+                  "tagFilter": null,
+                  "metricInfo": {
+                     "path": ["/source/GROUP_cost/cost|totalCost"],
+                     "value": "cost|totalCost"
+                  },
+                  "resourceKindId": ["resourceKind:id:1_::_"],
+                  "value": {"metricOption": "metricsHighestUtilization"}
+               },
+               "selfProvider": {"selfProvider": true},
+               "additionalColumns_resource": [],
+               "filterOldMetrics": {"filterOldMetrics": false}
+            },
+            "height": 438
+         },
+         {
+            "collapsed": false,
+            "id": "56bd4003-a49b-4595-9ea8-7fa02f55f9b7",
+            "gridsterCoords": {
+               "w": 6,
+               "x": 7,
+               "h": 8,
+               "y": 10
+            },
+            "type": "ParetoAnalysis",
+            "title": "Top Least Expensive Clusters",
+            "config": {
+               "barsCount": 9,
+               "regenerationTime": 15,
+               "refreshInterval": 300,
+               "refreshContent": {"refreshContent": false},
+               "tagOption": {
+                  "tagFilter": null,
+                  "value": {"tagOption": "leastHealthyApplications"}
+               },
+               "additionalColumns": [
+                  {
+                     "boxLabel": "Hosts",
+                     "metricName": "Summary|Total Number of Hosts",
+                     "boxLabelOrig": "Hosts",
+                     "metricKey": "summary|total_number_hosts",
+                     "boxLabelLocalized": "Hosts",
+                     "resourceKindId": "resourceKind:id:1_::_"
+                  },
+                  {
+                     "boxLabel": "Datastores",
+                     "metricName": "Summary|Total Number of Datastores",
+                     "boxLabelOrig": "Datastores",
+                     "metricKey": "summary|total_number_datastores",
+                     "boxLabelLocalized": "Datastores",
+                     "resourceKindId": "resourceKind:id:1_::_"
+                  },
+                  {
+                     "boxLabel": "Virtual Machines",
+                     "metricName": "Summary|Total Number of VMs",
+                     "boxLabelOrig": "Virtual Machines",
+                     "metricKey": "summary|total_number_vms",
+                     "boxLabelLocalized": "Virtual Machines",
+                     "resourceKindId": "resourceKind:id:1_::_"
+                  }
+               ],
+               "title": "Top Least Expensive Clusters",
+               "roundDecimals": 1,
+               "mode": "metric",
+               "filterMode": "tagFilter",
+               "depth": 10,
+               "metricOption": {
+                  "tagFilter": null,
+                  "metricInfo": {
+                     "path": ["/source/GROUP_cost/cost|totalCost"],
+                     "value": "cost|totalCost"
+                  },
+                  "resourceKindId": ["resourceKind:id:1_::_"],
+                  "value": {"metricOption": "metricsLowestUtilization"}
+               },
+               "selfProvider": {"selfProvider": true},
+               "additionalColumns_resource": [],
+               "filterOldMetrics": {"filterOldMetrics": false}
+            },
+            "height": 438
+         },
+         {
+            "collapsed": false,
+            "id": "c4becaa7-3450-4a84-ac81-63e8ab8568c6",
+            "gridsterCoords": {
+               "w": 12,
+               "x": 1,
+               "h": 6,
+               "y": 4
+            },
+            "type": "View",
+            "title": "Datacenter Resource Cost",
+            "config": {
+               "resource": {
+                  "qshowDelay": 0,
+                  "resourceKindKey": "vSphere World",
+                  "resourceId": "resource:id:0_::_",
+                  "expandable": true,
+                  "isLast": true,
+                  "iconSrc": "images/resknd/default/16x16/VMWARE_vSphere World.png",
+                  "traversalSpecId": "vSphere Hosts and Clusters-VMWARE-vSphere World",
+                  "icon": "",
+                  "loaded": false,
+                  "isFirst": true,
+                  "expanded": false,
+                  "rootResourceId": "2da4ef32-b6b2-4202-b9d0-1710caa98e4c",
+                  "children": null,
+                  "adapterKindId": "VMWARE",
+                  "root": false,
+                  "checked": null,
+                  "hrefTarget": "",
+                  "href": "",
+                  "id": "2da4ef32-b6b2-4202-b9d0-1710caa98e4c",
+                  "text": "vSphere World",
+                  "iconCls": "resknd_default_vmware_vsphereworld",
+                  "qtitle": "",
+                  "visible": true,
+                  "index": 0,
+                  "resourceName": "vSphere World",
+                  "cls": "",
+                  "resourceKindId": "002006VMWAREvSphere World",
+                  "leaf": false,
+                  "loading": false,
+                  "nodeType": "resource",
+                  "parentId": "source",
+                  "depth": 1,
+                  "resourceKindType": 8,
+                  "allowDrag": true,
+                  "allowDrop": true,
+                  "uniqueId": "2da4ef32-b6b2-4202-b9d0-1710caa98e4c_1515619957712",
+                  "qtip": ""
+               },
+               "chartViewItems": [],
+               "selfProvider": {"selfProvider": true},
+               "title": "Datacenter Resource Cost",
+               "viewDefinitionId": "eb5db8f5-a8fd-45cb-82e2-f559bb938d03"
+            },
+            "height": 324
+         }
+      ],
+      "states": [],
+      "homeTab": false,
+      "rank": 0,
+      "disabled": false,
+      "id": "48aef680-6269-473a-95ea-c46cdc14cdd9",
+      "adapterName": "VMware vSphere",
+      "locked": false,
+      "widgetInteractions": [],
+      "namePath": "Cost/Provider Layer",
+      "lastUpdateUserId": "50d2bb5e-2ae4-4f71-8b35-48a48b456edb",
+      "docCenterKey": "vcom_533",
+      "columnCount": 1,
+      "userId": "50d2bb5e-2ae4-4f71-8b35-48a48b456edb",
+      "name": "Cost/Provider Layer/Assess Cost",
+      "gridsterMaxColumns": 12,
+      "lastUpdateTime": 1752334407736
+   }],
+   "uuid": "cc1f1618-2b21-42ef-97ee-c16d9683be48"
+}

@@ -1,0 +1,19 @@
+{
+  "id" : "SymptomDefinition-vCenter Operations Adapter-CloudProxyDownSymptom",
+  "name" : "Cloud Proxy is down",
+  "adapterKindKey" : "vCenter Operations Adapter",
+  "resourceKindKey" : "Cloud-Proxy",
+  "waitCycles" : 1,
+  "cancelCycles" : 1,
+  "state" : {
+    "severity" : "IMMEDIATE",
+    "condition" : {
+      "type" : "CONDITION_HT",
+      "key" : "remotecollectordown",
+      "operator" : "EQ",
+      "value" : "1.0",
+      "valueType" : "NUMERIC",
+      "thresholdType" : "STATIC"
+    }
+  }
+}
