@@ -32,7 +32,7 @@ mvn archetype:generate \
 
 #### Content Structure
 
-The following represents sample project file structure:
+This command will produces the following project file structure:
 
 ```ascii
 operations
@@ -46,7 +46,7 @@ operations
             └── alert_definitions
                 └── Cluster is disbalanced.json
             └── custom_groups
-                └── VCF World.json
+                └── vCenter Folder Tag.json
             └── dashboards
                 └── metadata
                     └── dashboardGroupActivationMetadata.vrops.json
@@ -56,14 +56,16 @@ operations
                     └── resources.properties
                 └── Assess Cost.json
             └── metricconfigs
-                └── vSAN Savings.xml
+                └── vSAN Savings
             └── policies
+                └── policiesMetadata.vrops.json            
                 └── Policy for Virtual Machines - Risk Profile 1.zip
-                └── policiesMetadata.vrops.json
             └── recommendations
-                └── Allocate more disk space if required.json
+                └── Bring the VMware Cloud Foundation Operations Node back online.json
             └── reports
                 └── Cluster Cost Report
+                    └── resources
+                        └── resources.properties                
                     └── content.xml
             └── supermetrics
                 └── Group CPU Average.json

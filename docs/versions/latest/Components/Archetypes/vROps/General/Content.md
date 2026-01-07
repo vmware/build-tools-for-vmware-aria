@@ -55,7 +55,7 @@ symptom-definition:
   - Automation service is down
   - Cloud Proxy is down
 recommendation:
-  - Allocate more disk space if required
+  - Bring the VMware Cloud Foundation Operations Node back online
 super-metric:
   - Group CPU Average
 report:
