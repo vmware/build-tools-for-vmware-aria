@@ -86,15 +86,28 @@ The following need to be added to the profile that you intend to use:
 <profile>
 <!--    ..... OTHER DIRECTIVES .....  -->
     <vrops.host>vcfop-master.corp.internal</vrops.host>
-    <vrops.sshHost>vcfop-master.corp.internal</vrops.sshHost>
     <vrops.port>443</vrops.port>
+    <vrops.sshPort>22</vrops.sshPort>
     <vrops.username>admin</vrops.username>
     <vrops.password>someSecurePassword</vrops.password>
     <vrops.restUser>admin</vrops.restUser>
     <vrops.restPassword>someSecurePassword</vrops.restPassword>
     <vrops.dashboardUser>admin</vrops.dashboardUser>
-    <vrops.sshPort>22</vrops.sshPort>
-    <vrops.httpPort>443</vrops.httpPort>
+    <vrops.importDashboardsForAllUsers>true|false</vrops.importDashboardsForAllUsers>
     <vrops.restAuthSource>local</vrops.restAuthSource>
+    <vrops.restAuthProvider>BASIC)AUTH_N</vrops.restAuthProvider>
 </profile>
 ```
+
+Note that some of Operation content is managed via in guest CLI commands instead of REST API which requires credentials for REST API (`vrops.restUser` and `vrops.password`) and SSH communication (`vrops.username` and `vrops.password`) with sufficient privileges.
+
+- `vrops.dashboardUser` - User account to which to assign the ownership of a dashboard when importing it.
+
+- `vrops.importDashboardsForAllUsers` - If parameter is missing or set to *true*, the dashboards are imported to all users. If parameter is set to *false*, the dashboards are imported only for the user specified in vrops.dashboardUser.
+
+- `vrops.restAuthSource` - Authentication source used for acquiring a token for REST API communication.
+
+- `vrops.restAuthProvider` - Defines the type of authentication used for REST API communication.
+  - Supported values: BASIC, AUTH_N (token based authentication)
+  - Default value: AUTH_N
+

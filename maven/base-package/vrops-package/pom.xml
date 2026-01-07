@@ -52,7 +52,6 @@
 					<configuration>
 						<vrops>
 							<host>${vrops.host}</host>
-							<sshHost>${vrops.sshHost}</sshHost>
 							<port>${vrops.port}</port>
 							<sshPort>${vrops.sshPort}</sshPort>
 							<dashboardUser>${vrops.dashboardUser}</dashboardUser>
