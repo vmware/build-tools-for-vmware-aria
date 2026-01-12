@@ -135,8 +135,8 @@ vRealize Artifact Manager can be configured to use filesystem folder as source f
 
 #### Parameters
 - host - vROps server FQDN or IP address
-- port - vROps port for SSH access
-- httpPort - vROps port for HTTP/HTTPS access
+- port - vROps port for HTTP/HTTPS access
+- ssHport - vROps port for SSH access
 - auth - Authentication mechanism. Supported values: BASIC
 - username - Administrator username for SSH access.
 - password - Password for SSH user

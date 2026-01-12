@@ -1,0 +1,31 @@
+{
+  "id" : "8eda2f93-61ad-4733-af04-caa640aa2d10",
+  "resourceKey" : {
+    "name" : "vCenter Folder Tag",
+    "adapterKindKey" : "Container",
+    "resourceKindKey" : "Feature",
+    "resourceIdentifiers" : [ ]
+  },
+  "policy" : "Default Policy",
+  "autoResolveMembership" : false,
+  "membershipDefinition" : {
+    "includedResources" : [ ],
+    "excludedResources" : [ ],
+    "custom-group-properties" : [ ],
+    "rules" : [ {
+      "resourceKindKey" : {
+        "resourceKind" : "Folder",
+        "adapterKind" : "VMWARE"
+      },
+      "statConditionRules" : [ ],
+      "propertyConditionRules" : [ ],
+      "resourceNameConditionRules" : [ ],
+      "relationshipConditionRules" : [ ],
+      "resourceTagConditionRules" : [ {
+        "category" : "env",
+        "compareOperator" : "CONTAINS",
+        "stringValue" : "dev"
+      } ]
+    } ]
+  }
+}

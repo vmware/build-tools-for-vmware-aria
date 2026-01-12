@@ -52,7 +52,6 @@
 					<configuration>
 						<vrops>
 							<host>${vrops.host}</host>
-							<sshHost>${vrops.sshHost}</sshHost>
 							<port>${vrops.port}</port>
 							<sshPort>${vrops.sshPort}</sshPort>
 							<dashboardUser>${vrops.dashboardUser}</dashboardUser>
@@ -60,7 +59,6 @@
 							<username>${vrops.username}</username>
 							<password>${vrops.password}</password>
 							<serverId>${vrops.serverId}</serverId>
-							<httpPort>${vrops.httpPort}</httpPort>
 							<restUser>${vrops.restUser}</restUser>
 							<restPassword>${vrops.restPassword}</restPassword>
 							<restAuthSource>${vrops.restAuthSource}</restAuthSource>
