@@ -36,22 +36,11 @@ policy:
 
 Contents are exported by different rules.
 
-#### Import Rules for content types
+##### Import Rules for content types
 
-- Empty array [] - nothing is imported  
-- List of items - the given items are imported. If they are not present on the server an Exception is thrown.  
-- Null (nothing given) - everything is being imported  
-  - blueprints
-  - catalog-item
-  - content-source
-  - custom-resource
-  - catalog-entitlement
-  - property-group
-  - subscription
-  - scenario
-  - policies
+- All the data exported will be imported when running `vrealize:push`! The `content.yaml` will not be taken into consideration.
 
-#### Export Rules for content types
+##### Export Rules for content types
 
 - Empty array [] - nothing is exported  
 - List of items - the given items are exported. If they are not present on the server an Exception is thrown.  
