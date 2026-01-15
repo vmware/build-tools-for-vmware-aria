@@ -1,6 +1,6 @@
 # vRA 8.x Archetype
 
-vRA 8.x archetype used to pull and push content from/to vRA.
+vRA 8.x archetype used to pull and push content from/to vRA / VCFA Classic Organization.
 
 ## Overview
 
