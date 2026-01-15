@@ -7,8 +7,8 @@ Installer supports executing any existing Workflow automatically at the end of t
 ## Table Of Contents
 
 1. [Configuration](#configuration)
-1. [Supported input value types](#supported-input-value-types)
-2. [Example](#example)
+2. [Supported input value types](#supported-input-value-types)
+3. [Example](#example)
 
 ### Configuration
 
