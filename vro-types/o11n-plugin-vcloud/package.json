@@ -1,6 +1,6 @@
 {
   "name": "@types/o11n-plugin-vcloud",
-  "version": "4.16.1",
+  "version": "4.16.2-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "ISC",
   "private": true
