@@ -45,6 +45,14 @@ Relying on ids exported by Build Tools for VMware Aria should not happen. Build 
 
 When working with vRA-NG archetype, each generated archetype is intended to work with **only one project and one organization**. In a case where more are needed, you must generate multiple archetypes.
 
+For every object type that contains `organization` or `projectId` key in the JSON definition (e.g. Policies) the following behaviour applies:
+- if the JSON definition contains `projectId` key and value defined, the value is replaced by the project defined in (based on import mechanism used):
+  - `<vrang.project.name>` from the selected `settings.xml` Maven profile.
+  - `vrang_project_name` provided to the `installer` script.
+- if the JSON definition contains `organization` key and value defined, the object is imported with the option of `Available for any project` or `Organization` enabled for the specific organization (the exact option name differentiates in UI based on product version) defined in (based on import mechanism used):
+  - `<vrang.org.name>` from the selected `settings.xml` Maven profile.
+  - `vrang_org_name` provided to the `installer` script.
+
 ### Blueprint Versioning
 
 When pushing a blueprint to a vRA server that contains previously released blueprint with the same name as the one being pushed, a new version will be created and released in order to maintain the intended state. A new version will  *not* be created if the content of the blueprint has not been modified since the latest released version in order to avoid unnecessary versioning.
