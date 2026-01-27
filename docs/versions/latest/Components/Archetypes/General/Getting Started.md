@@ -6,8 +6,17 @@ This section contains common information valid for all available archetypes unle
 
 ## Table Of Contents
 
-1. [Ignore Certificate Errors](#ignore-certificate-errors-not-recommended)
-2. [Troubleshooting](#troubleshooting)
+1. [Include Dependencies](#include-dependencies)
+2. [Ignore Certificate Errors](#ignore-certificate-errors-not-recommended)
+3. [Troubleshooting](#troubleshooting)
+
+### Include Dependencies
+
+By default, the `push` goal (e.g. `vrealize:push`, `vrops:push`, etc) deploys all dependencies of the current project to the target environment. This can be controlled that by the `-DincludeDependencies` flag. The value is `true` by default, so in order to skip the dependencies the flag can be provided in the following way:
+
+```bash
+mvn package vrealize:push -Pdev -DincludeDependencies=false
+```
 
 ### Ignore Certificate Errors (Not recommended)
 
