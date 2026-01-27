@@ -29,4 +29,5 @@ This Archetype is also known as `vRA-NG` (which stands for **vR**ealize **A**uto
 5. Components
    - [Custom Resources](Components/Custom%20Resources.md)
    - [Blueprints](Components/Blueprints.md)
+   - [Content Policies](Components/Content%20Policies.md)
 6. [Known Issues](General/Known%20Issues.md)
