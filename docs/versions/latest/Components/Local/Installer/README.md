@@ -2,11 +2,12 @@
 
 ## Overview
 
-We can run any existing workflow automatically at the end of the installation process and pass to the workflow all necessary parameters.
+Installer provides the ability to package the solution and all its dependencies into an all-in-one bundle deployable to target environment via script.
 
 ## Navigation
 
-1. General
-   - [Core Concepts](General/Core%20Concepts.md)
+1. [Getting Started](General/Getting%20Started.md)
 2. Components
-   - [Example of using Install workflow](Components/Install%20Workflow.md)
+   - [Additional files](Components/Additional%20files.md)
+   - [Logging configuration](Components/Logging%20configuration.md)
+   - [Run Workflow](Components/Run%20Workflow.md)

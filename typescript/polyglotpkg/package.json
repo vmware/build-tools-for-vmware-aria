@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/polyglotpkg",
-  "version": "4.16.1-SNAPSHOT",
+  "version": "4.16.2-SNAPSHOT",
   "description": "Create a vRO Polyglot or serverless package",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,7 +41,7 @@
   "dependencies": {
     "adm-zip": "^0.5.16",
     "command-line-args": "^6.0.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "typescript": "^5.7.2",
     "uuid": "^11.0.3",
     "which": "^5.0.0",
