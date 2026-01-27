@@ -17,3 +17,5 @@ To support this use case, the toolchain comes with a custom goal `vrops:pull`. T
 ```bash
 mvn vrops:pull -P{profile}
 ```
+
+> Note that `vrops:pull` will fail if the content.yaml is empty or it cannot find some of the described content on the target vROps / VCF Operations server.

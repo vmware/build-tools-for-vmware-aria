@@ -17,3 +17,5 @@ To support this use case, the toolchain comes with a custom goal `vrli:pull`. Th
 ```bash
 mvn vrli:pull -P{profile}
 ```
+
+> Note that `vrli:pull` will fail if the content.yaml is empty or it cannot find some of the described content on the target VRLI server.
