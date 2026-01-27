@@ -4,7 +4,7 @@ vROps archetype used to pull and push content from/to vROps / VCF Operations.
 
 ## Overview
 
-This archetype is used when you want to pull and push content to vROps / VCF Operations. The content you want to pull is defined in `content.yaml`. All exported content goes to `./src`.
+This archetype is used when you want to pull and push content from/to vROps / VCF Operations. The content you want to pull is defined in `content.yaml`. All exported content goes to `./src`.
 
 Supported content:
 
