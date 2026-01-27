@@ -20,3 +20,4 @@ This Archetype is also known as `vrli`.
 3. Operations
    - [Pulling](Operations/Pulling.md)
    - [Pushing](Operations/Pushing.md)
+   - [Building](Operations/Building.md)

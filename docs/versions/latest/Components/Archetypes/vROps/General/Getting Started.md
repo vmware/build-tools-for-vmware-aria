@@ -79,6 +79,8 @@ operations
 
 **Note**: *vrops Project supports only content types outlined into content descriptor.*
 
+To capture the state of your vROps / VCF Operations environment simply fill in the names of the content objects you would like to capture and look at the [Pulling operation](../Operations/Pulling.md) documentation.
+
 ### Configuring ~/.m2/settings.xml to work with vrops
 
 The following need to be added to the profile that you intend to use:
@@ -87,7 +89,7 @@ The following need to be added to the profile that you intend to use:
  <!--            vrops    -->
 <profile>
 <!--    ..... OTHER DIRECTIVES .....  -->
-    <vrops.host>vcfop-master.corp.internal</vrops.host>
+    <vrops.host>flt-ops01a.corp.internal</vrops.host>
     <vrops.port>443</vrops.port>
     <vrops.sshPort>22</vrops.sshPort>
     <vrops.username>admin</vrops.username>

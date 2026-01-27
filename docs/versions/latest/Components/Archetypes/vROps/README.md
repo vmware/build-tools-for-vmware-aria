@@ -29,3 +29,4 @@ This Archetype is also known as `vrops`.
 3. Operations
    - [Pulling](Operations/Pulling.md)
    - [Pushing](Operations/Pushing.md)
+   - [Building](Operations/Building.md)
