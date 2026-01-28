@@ -76,9 +76,6 @@ public class AlertDTO implements Serializable {
 	@JsonProperty("ownerName")
 	private String ownerName;
 
-	@JsonProperty("integrationType")
-	private String integrationType;
-
 	@JsonProperty("query")
 	private QueryDTO query;
 
@@ -250,15 +247,5 @@ public class AlertDTO implements Serializable {
 	@JsonProperty("recommendation")
 	public void setRecommendation(String recommendation) {
 		this.recommendation = recommendation;
-	}
-
-	@JsonProperty("integrationType")
-	public String getIntegrationType() {
-		return integrationType;
-	}
-
-	@JsonProperty("integrationType")
-	public void setIntegrationType(String integrationType) {
-		this.integrationType = integrationType;
 	}
 }
