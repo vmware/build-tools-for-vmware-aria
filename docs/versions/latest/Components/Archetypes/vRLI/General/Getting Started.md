@@ -45,16 +45,8 @@ operations
         └── resources
             └── alerts
                 └── Cluster is disbalanced.json
-            └── custom_groups
-                └── vCenter Folder Tag.json
-            └── dashboards
-                └── metadata
-                    └── dashboardGroupActivationMetadata.vrops.json
-                    └── dashboardSharingMetadata.vrops.json
-                    └── dashboardUserActivationMetadata.vrops.json
-                └── resources
-                    └── resources.properties
-                └── Assess Cost.json
+            └── content-packs
+                └── VCF Operations.json
 ```
 
 **Note**: *vrli Project supports only content types outlined into content descriptor.*
