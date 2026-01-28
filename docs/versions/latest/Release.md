@@ -26,6 +26,10 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add VCF Operations for Logs documentation*
+
+### *Update VCF Operations documentation*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
