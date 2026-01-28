@@ -18,5 +18,7 @@
 #   All alerts in src/alerts
 
 alerts:
+  - VC stats query time-out occurred updated hit count
 content-packs:
+  - VCF Operations
 ...
