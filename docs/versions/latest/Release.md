@@ -26,6 +26,8 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add `WorkflowItemInfo` type definition for `o11n-core` plugin*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
