@@ -1,10 +1,10 @@
 # Pushing
 
-Maven command for pushing VCF Operations for Logs Content
+Maven command for pushing Operations for Logs Content
 
 ## Overview
 
-This will push all local content described in `./content.yaml` and available in `./src` folder to the remote VCF Operations for Logs Server for the given profile.
+This will push all local content described in `./content.yaml` and available in `./src` folder to the remote Operations for Logs Server for the given profile.
 
 ## Table Of Contents
 

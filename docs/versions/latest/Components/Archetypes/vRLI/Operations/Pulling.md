@@ -1,10 +1,10 @@
 # Pulling
 
-Maven command for pulling VCF Operations for Logs Content
+Maven command for pulling Operations for Logs Content
 
 ## Overview
 
-When working on a VCF Operations for Logs project, you mainly make changes on a live server using the VCF Operations for Logs UI and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.
+When working on a Operations for Logs project, you mainly make changes on a live server using the Operations for Logs UI and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.
 
 ## Table Of Contents
 

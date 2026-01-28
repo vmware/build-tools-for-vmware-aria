@@ -3,7 +3,7 @@
 
 ## Overview
 
-The vRLI / VCF Operations for Logs elements that you want to work with are described in the `content.yaml`
+The Operations for Logs elements that you want to work with are described in the `content.yaml`
 
 ## Table Of Contents
 

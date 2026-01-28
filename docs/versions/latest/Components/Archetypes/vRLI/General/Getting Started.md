@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Maven Archetype supports Aria Operations for Logs 8.x and VCF Operations for Logs 9.x content. It is a representation of Operations for Logs content into human friendly JSON format. The project consist of content descriptor and content container.
+The Maven Archetype supports vRLI / Aria Operations for Logs 8.x / VCF Operations for Logs 9.x content. It is a representation of Operations for Logs content into human friendly JSON format. The project consist of content descriptor and content container.
 
 - *Content Descriptor* defines what part of the Operations for Logs server content will be part of this project - `content.yaml`
 - *Content Container* holds the actual content representation -`./src` folder
@@ -59,7 +59,7 @@ operations
 
 **Note**: *vrli Project supports only content types outlined into content descriptor.*
 
-To capture the state of your vRLI / VCF Operations for Logs environment simply fill in the names of the content objects you would like to capture and look at the [Pulling operation](../Operations/Pulling.md) documentation.
+To capture the state of your Operations for Logs environment simply fill in the names of the content objects you would like to capture and look at the [Pulling operation](../Operations/Pulling.md) documentation.
 
 ### Configuring ~/.m2/settings.xml to work with vrli
 

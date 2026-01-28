@@ -2,7 +2,7 @@
 
 ## Overview
 
-Maven command for building vRLI / VCF Operations for Logs Content.
+Maven command for building Operations for Logs Content.
 
 ## Table Of Contents
 
@@ -10,13 +10,13 @@ Maven command for building vRLI / VCF Operations for Logs Content.
 
 ### Usage
 
-You can build any vRLI / VCF Operations for Logs project from sources using Maven:
+You can build any Operations for Logs project from sources using Maven:
 
 ```bash
 mvn clean package
 ```
 
-This will produce a VRLI / VCF Operations for Logs package with the groupId, artifactId and version specified in the pom. For example:
+This will produce a Operations for Logs package with the groupId, artifactId and version specified in the pom. For example:
 
 ```xml
 <project>
