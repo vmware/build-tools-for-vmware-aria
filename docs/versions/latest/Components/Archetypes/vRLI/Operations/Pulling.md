@@ -9,6 +9,7 @@ When working on a VCF Operations for Logs project, you mainly make changes on a 
 ## Table Of Contents
 
 1. [Usage](#usage)
+2. [Wildcard Support](#wildcard-support)
 
 ### Usage
 
@@ -19,3 +20,13 @@ mvn vrli:pull -P{profile}
 ```
 
 > Note that `vrli:pull` will fail if the content.yaml is empty or it cannot find some of the described content on the target VRLI server.
+
+
+### Wildcard Support
+
+The content descriptor supports wildcard. This means that if a wildcard is present in the asset name, all assets matching the wildcard expression will be exported to the local file system. The example above shows how to use wildcard in the asset names. E.g.
+
+```yaml
+alerts:
+  - VC*
+```
