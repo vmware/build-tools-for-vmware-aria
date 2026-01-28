@@ -8,7 +8,7 @@
 
 ## Table Of Contents
 
-1. [Archetype Support for vrealize:clean](#archetype-support-for-vrealizeclean)
+1. [Archetype Support for vrealize:clean](#archetype-support-for-vrealize-clean)
 2. [Usage](#usage)
 
 ### Archetype Support for vrealize:clean
