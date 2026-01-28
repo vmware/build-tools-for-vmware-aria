@@ -28,7 +28,7 @@ The content descriptor supports wildcard. This means that if a wildcard is prese
 
 ```yaml
 alerts:
-  - VC*
+  - "*HA*"
 content-packs:
   - VMware *
 ```
