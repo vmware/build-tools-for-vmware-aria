@@ -20,7 +20,7 @@ mvn package vrealize:push -Pdev -DincludeDependencies=false
 
 ### Ignore Certificate Errors (Not recommended)
 
-This section describes how to bypass a security feature in development/testing environment during pull and push operations. **Do not use those flags when targeting production servers.** Instead, make sure the certificates have the correct CN, use FQDN to access the servers and add the certificates to Java's key store (i.e. cacerts).
+> This section describes how to bypass a security feature in development/testing environment during pull and push operations. **Do not use those flags when targeting production servers.** Instead, make sure the certificates have the correct CN, use FQDN to access the servers and add the certificates to Java's key store (i.e. cacerts).
 
 You can ignore certificate errors, i.e. the certificate is not trusted, by adding the flag `-Dvrealize.ssl.ignore.certificate` to the Maven command, e.g.:
 

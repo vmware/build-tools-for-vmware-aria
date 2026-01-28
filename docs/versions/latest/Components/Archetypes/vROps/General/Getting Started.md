@@ -10,7 +10,7 @@ The Maven Archetype supports Aria Operations 8.x and VCF Operations 9.x content.
 ## Table Of Contents
 
 1. [Maven Archetype](#maven-archetype)
-2. [Configuring settings xml](#configuring-m2settingsxml-to-work-with-vrops)
+2. [Configuring settings.xml](#configuring-m2settingsxml-to-work-with-vrops)
 
 ### Maven Archetype
 

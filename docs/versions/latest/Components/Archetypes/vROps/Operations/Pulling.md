@@ -30,8 +30,5 @@ report:
   - "*reports"
 ```
 
-> Due to limitation of vROPs REST API wildcard is currently NOT supported for the dashboard and metric-config asset types.
-
-> If you specify a wildcard in the asset name defined in the content.yaml file, it needs to be enclosed with quotes (").
-
-> You can also enclose the asset name with quotes (") in the content.yaml file, even if you specify it with its full name.
+**Note**: Due to limitation of vROPs REST API wildcard is currently NOT supported for the dashboard and metric-config asset types.
+**Note**:  If you specify a wildcard in the asset name defined in the content.yaml file, it needs to be enclosed with quotes ("). You can also enclose the asset name with quotes (") in the content.yaml file, even if you specify it with its full name.

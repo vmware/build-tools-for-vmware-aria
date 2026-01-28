@@ -10,7 +10,7 @@ The Maven Archetype supports vRLI / Aria Operations for Logs 8.x / VCF Operation
 ## Table Of Contents
 
 1. [Maven Archetype](#maven-archetype)
-2. [Configuring settings xml](#configuring-m2settingsxml-to-work-with-vrops)
+2. [Configuring settings.xml](#configuring-m2settingsxml-to-work-with-vrli)
 
 ### Maven Archetype
 
@@ -84,4 +84,4 @@ The following need to be added to the profile that you intend to use:
 
 - `vrli.vrops*` parameters are used for retrieving or updating data related to VCF Operations enabled alerts.
 
-- `vrli.provider` - specifyies the authentication provider used to connect to the vRLI / VCF Operations for Logs server. Currently supported providers are Local, active directory and VIDM. 
+- `vrli.provider` - specifyies the authentication provider used to connect to the vRLI / VCF Operations for Logs server. Currently supported providers are Local, active directory and VIDM.
