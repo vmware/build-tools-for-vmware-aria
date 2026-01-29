@@ -30,6 +30,8 @@
 
 ### *Update VCF Operations documentation*
 
+### *Add `WorkflowItemInfo` type definition for `o11n-core` plugin*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )

@@ -1121,6 +1121,16 @@ declare interface WorkflowItem {
 }
 
 /**
+ * WorkflowItemInfo
+ */
+declare interface WorkflowItemInfo {
+	name: string;
+	displayName: string;
+	getName(): string;
+	getDisplayName(): string;
+}
+
+/**
  * Workflow item for conditions (Custom)
  */
 declare interface WorkflowCustomConditionItem {
@@ -1407,6 +1417,10 @@ declare namespace System {
 	 * Get current server time.
 	 */
 	function getCurrentTime(): number;
+	/**
+	 * Read only information for currently executed workflow item.
+	 */
+	function currentWorkflowItem(): WorkflowItemInfo;
 	/**
 	 * Pause the current script context execution and wait for a given date to continue.
 	 * @param waitDate Date to wait
