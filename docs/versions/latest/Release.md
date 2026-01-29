@@ -45,6 +45,14 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Fix `vrops` archetype project generation*
+
+#### Previous Behavior
+Project generation from `vrops` archetype fails because Maven tries to replace a variable inside a defined supermetric due to filtering functionality and `${}` symbol.
+
+#### New Behavior
+Project generation from `vrops` archetype executes successfully. Maven configuration is updated to not use variable replacement on `src/main/resources` since content there needs to be directly copied.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
