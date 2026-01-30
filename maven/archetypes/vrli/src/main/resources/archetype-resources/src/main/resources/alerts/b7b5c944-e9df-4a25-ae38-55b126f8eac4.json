@@ -1,0 +1,40 @@
+{
+	"id": "b7b5c944-e9df-4a25-ae38-55b126f8eac4",
+	"enabled": false,
+	"type": "RATE_BASED",
+	"name": "VC stats query time-out occurred updated hit count",
+	"hitCount": 4,
+	"hitOperator": "GREATER_THAN",
+	"searchPeriod": 1800000,
+	"searchInterval": 300000,
+	"info": "The purpose of this alert is to notify when the VCF Operations instance is not able to get the data back from vCenter instance within the 5 minute interval and the metrics back up and get dropped with the error: Communication Error: \u0026#160;com.integrien.adapter.vmware.VcCollector.collectMetrics - Vc stats query timed out (ms): 300377. This is usually due to intermittent connection issues with the vCenter and hosts or down to the network not able to handle the request and timing out.\u003cbr\u003e",
+	"recommendation": null,
+	"contentPackNamespace": "com.vmware.VCFOperationsForLogs",
+	"contentPackName": "VCF Operations",
+	"recipients": {
+		"emails": [],
+		"vrops": {
+			"vcopsResourceName": null,
+			"vcopsResourceKindKey": null,
+			"vcopsCriticality": "none",
+			"autoClearAlertAfterTimeout": false,
+			"autoClearAlertsTimeoutMinutes": 0
+		},
+		"webhookIds": []
+	},
+	"stats": {
+		"lastRanAt": 0,
+		"nextRunAt": 0,
+		"runCount": 0,
+		"lastRunTime": 0,
+		"totalRunTime": 0,
+		"lastHitAt": 0
+	},
+	"ownerUuid": null,
+	"ownerName": null,
+	"integrationType": null,
+	"query": {
+		"chartQuery": "{\"query\":\"com.integrien.adapter.vmware.VcCollector.collectMetrics - Vc stats query timed out (ms)\",\"startTimeMillis\":1679406664109,\"endTimeMillis\":1679408464108,\"piqlFunctionGroups\":[{\"functions\":[{\"label\":\"Count\",\"value\":\"COUNT\",\"requiresField\":false,\"numericOnly\":false}],\"field\":null}],\"dateFilterPreset\":\"CUSTOM\",\"shouldGroupByTime\":false,\"includeAllContentPackFields\":true,\"eventSortOrder\":\"DESC\",\"summarySortOrder\":\"DESC\",\"compareQueryOrderBy\":\"TREND\",\"compareQuerySortOrder\":\"DESC\",\"compareQueryOptions\":null,\"messageViewType\":\"EVENTS\",\"constraintToggle\":\"ALL\",\"piqlFunction\":{\"label\":\"Count\",\"value\":\"COUNT\",\"requiresField\":false,\"numericOnly\":false},\"piqlFunctionField\":null,\"fieldConstraints\":[{\"internalName\":\"vmw_vr_ops_appname\",\"operator\":\"EXISTS\"},{\"internalName\":\"vmw_vr_ops_logtype\",\"operator\":\"CONTAINS\",\"value\":\"collector\"}],\"supplementalConstraints\":[],\"groupByFields\":[],\"contentPacksToIncludeFields\":[],\"extractedFields\":[]}",
+		"messageQuery": null
+	}
+}

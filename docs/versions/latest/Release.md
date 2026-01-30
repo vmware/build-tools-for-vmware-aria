@@ -26,6 +26,10 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add VCF Operations for Logs documentation and archetype content*
+
+### *Update VCF Operations documentation*
+
 ### *Add `WorkflowItemInfo` type definition for `o11n-core` plugin*
 
 ### *Add type definitions for `o11n-plugin-hms` (vSphere Replication) plugin*
