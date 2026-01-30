@@ -43,7 +43,7 @@ public class RecommendationDTO implements Serializable {
 		return recommendations;
 	}
 
-	@JsonProperty("symptomDefinitions")
+	@JsonProperty("recommendations")
 	public void setRecommendations(List<Recommendation> recommendations) {
 		this.recommendations = recommendations;
 	}
