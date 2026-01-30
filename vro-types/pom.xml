@@ -29,6 +29,7 @@
 		<module>o11n-plugin-apic</module>
 		<module>o11n-plugin-azure</module>
 		<module>o11n-plugin-dynamictypes</module>
+		<module>o11n-plugin-hms</module>
 		<module>o11n-plugin-mail</module>
 		<module>o11n-plugin-mqtt</module>
 		<module>o11n-plugin-net</module>
