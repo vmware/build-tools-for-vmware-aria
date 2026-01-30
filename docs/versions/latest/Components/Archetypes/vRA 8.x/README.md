@@ -4,7 +4,7 @@ vRA 8.x archetype used to pull and push content from/to vRA / VCFA Classic Organ
 
 ## Overview
 
-This archetype is used when you want to pull and push content to vRA. The content you want to pull is defined in `content.yaml`. All exported content goes to `./src`.
+This archetype is used when you want to pull and push content from/to vRA. The content you want to pull is defined in `content.yaml`. All exported content goes to `./src`.
 
 Supported content:
 
@@ -29,4 +29,5 @@ This Archetype is also known as `vRA-NG` (which stands for **vR**ealize **A**uto
 5. Components
    - [Custom Resources](Components/Custom%20Resources.md)
    - [Blueprints](Components/Blueprints.md)
+   - [Content Policies](Components/Content%20Policies.md)
 6. [Known Issues](General/Known%20Issues.md)

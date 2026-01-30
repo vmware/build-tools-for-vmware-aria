@@ -9,6 +9,7 @@ When working on a VCF Operations project, you mainly make changes on a live serv
 ## Table Of Contents
 
 1. [Usage](#usage)
+2. [Wildcard Support](#wildcard-support)
 
 ### Usage
 
@@ -17,3 +18,17 @@ To support this use case, the toolchain comes with a custom goal `vrops:pull`. T
 ```bash
 mvn vrops:pull -P{profile}
 ```
+
+> Note that `vrops:pull` will fail if the content.yaml is empty or it cannot find some of the described content on the target vROps / VCF Operations server.
+
+### Wildcard Support
+
+The content descriptor supports wildcard for most of the asset types. This means that you can specify a wildcard (*) symbol in the asset names defined in the `content.yaml` file exporting all assets matching the wildcard expression. E.g.
+
+```yaml
+report:
+  - "*reports"
+```
+
+**Note**: Due to limitation of vROPs REST API wildcard is currently NOT supported for the dashboard and metric-config asset types.
+**Note**:  If you specify a wildcard in the asset name defined in the content.yaml file, it needs to be enclosed with quotes ("). You can also enclose the asset name with quotes (") in the content.yaml file, even if you specify it with its full name.
