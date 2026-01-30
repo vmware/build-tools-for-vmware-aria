@@ -1,0 +1,7 @@
+{
+	"name": "@types/o11n-plugin-hms",
+	"version": "4.16.2-SNAPSHOT",
+	"author": "VMware PSCoE",
+	"license": "ISC",
+	"private": true
+}

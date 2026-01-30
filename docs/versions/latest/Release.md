@@ -28,6 +28,8 @@
 
 ### *Add `WorkflowItemInfo` type definition for `o11n-core` plugin*
 
+### *Add type definitions for `o11n-plugin-hms` (vSphere Replication) plugin*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
