@@ -34,6 +34,8 @@
 
 ### *Add type definitions for `o11n-plugin-hms` (vSphere Replication) plugin*
 
+### *Extend type definitions for `o11n-plugin-vc` plugin*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
