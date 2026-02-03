@@ -36,6 +36,10 @@
 
 ### *Extend type definitions for `o11n-plugin-vc` plugin*
 
+### *Update vRLI Archetype to be compatible with VCF9 Alert definitions*
+
+New optional field is added to VCF Operations for Logs Alert DTO to make the archetype compatible with VCF9.
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
