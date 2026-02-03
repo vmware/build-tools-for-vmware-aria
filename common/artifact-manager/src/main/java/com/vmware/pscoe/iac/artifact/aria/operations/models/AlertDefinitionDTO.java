@@ -207,7 +207,91 @@ public class AlertDefinitionDTO implements Serializable {
 		}
 
 		@JsonInclude(JsonInclude.Include.NON_NULL)
-		@JsonPropertyOrder({ "type", "relation", "aggregation", "symptomSetOperator", "symptomDefinitionIds", "symptomSets" })
+		@JsonPropertyOrder({ "waitCycles", "cancelCycles", "severity", "condition" })
+		public static class AlertCondition implements Serializable {
+			private static final long serialVersionUID = 2188722915313653545L;
+			
+			@JsonProperty("id")
+			private String id;
+
+			@JsonProperty("waitCycles")
+			private Integer waitCycles;
+
+			@JsonProperty("cancelCycles")
+			private Integer cancelCycles;
+
+			@JsonProperty("severity")
+			private String severity;
+
+			@JsonProperty("condition")
+			private SymptomDefinitionDTO.SymptomDefinition.Condition condition;
+
+			@JsonIgnore
+			private transient Map<String, Object> additionalProperties = new HashMap<>();
+
+			@JsonProperty("id")
+			public String getId() {
+				return id;
+			}
+
+			@JsonProperty("id")
+			public void setId(String id) {
+				this.id = id;
+			}
+			
+			@JsonProperty("waitCycles")
+			public Integer getWaitCycles() {
+				return waitCycles;
+			}
+
+			@JsonProperty("waitCycles")
+			public void setWaitCycles(Integer waitCycles) {
+				this.waitCycles = waitCycles;
+			}
+
+			@JsonProperty("cancelCycles")
+			public Integer getCancelCycles() {
+				return cancelCycles;
+			}
+
+			@JsonProperty("cancelCycles")
+			public void setCancelCycles(Integer cancelCycles) {
+				this.cancelCycles = cancelCycles;
+			}
+
+			@JsonProperty("severity")
+			public String getSeverity() {
+				return severity;
+			}
+
+			@JsonProperty("severity")
+			public void setSeverity(String severity) {
+				this.severity = severity;
+			}
+
+			@JsonProperty("condition")
+			public SymptomDefinitionDTO.SymptomDefinition.Condition getCondition() {
+				return condition;
+			}
+
+			@JsonProperty("condition")
+			public void setCondition(SymptomDefinitionDTO.SymptomDefinition.Condition condition) {
+				this.condition = condition;
+			}
+
+			@JsonAnyGetter
+			public Map<String, Object> getAdditionalProperties() {
+				return this.additionalProperties;
+			}
+
+			@JsonAnySetter
+			public void setAdditionalProperties(String name, Object value) {
+				this.additionalProperties.put(name, value);
+			}
+		}
+
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		@JsonPropertyOrder({ "type", "relation", "aggregation", "symptomSetOperator", "symptomDefinitionIds", "symptomSets", "alertConditions" })
 		public static class BaseSymptomSet implements Serializable {
 			private static final long serialVersionUID = 7061962708255866132L;
 
@@ -228,6 +312,9 @@ public class AlertDefinitionDTO implements Serializable {
 
 			@JsonProperty("symptomSets")
 			private List<SymptomSet> symptomSets = new ArrayList<>();
+
+			@JsonProperty("alertConditions")
+			private List<AlertCondition> alertConditions = new ArrayList<>();
 
 			@JsonIgnore
 			private transient Map<String, Object> additionalProperties = new HashMap<>();
@@ -292,6 +379,16 @@ public class AlertDefinitionDTO implements Serializable {
 				this.symptomSets = symptomSets;
 			}
 
+			@JsonProperty("alertConditions")
+			public List<AlertCondition> getAlertConditions() {
+				return alertConditions;
+			}
+
+			@JsonProperty("alertConditions")
+			public void setAlertConditions(List<AlertCondition> alertConditions) {
+				this.alertConditions = alertConditions;
+			}
+
 			@JsonAnySetter
 			public void setAdditionalProperties(Map<String, Object> additionalProperties) {
 				this.additionalProperties = additionalProperties;
@@ -309,7 +406,7 @@ public class AlertDefinitionDTO implements Serializable {
 		}
 
 		@JsonInclude(JsonInclude.Include.NON_NULL)
-		@JsonPropertyOrder({ "type", "relation", "aggregation", "symptomSetOperator", "symptomDefinitionIds" })
+		@JsonPropertyOrder({ "type", "relation", "aggregation", "symptomSetOperator", "symptomDefinitionIds", "alertConditions" })
 		public static class SymptomSet implements Serializable {
 			private static final long serialVersionUID = 7061962708255866132L;
 
@@ -327,6 +424,9 @@ public class AlertDefinitionDTO implements Serializable {
 
 			@JsonProperty("symptomDefinitionIds")
 			private List<String> symptomDefinitionIds = new ArrayList<>();
+
+			@JsonProperty("alertConditions")
+			private List<AlertCondition> alertConditions = new ArrayList<>();
 
 			@JsonIgnore
 			private transient Map<String, Object> additionalProperties = new HashMap<>();
@@ -379,6 +479,16 @@ public class AlertDefinitionDTO implements Serializable {
 			@JsonProperty("symptomDefinitionIds")
 			public void setSymptomDefinitionIds(List<String> symptomDefinitionIds) {
 				this.symptomDefinitionIds = symptomDefinitionIds;
+			}
+
+			@JsonProperty("alertConditions")
+			public List<AlertCondition> getAlertConditions() {
+				return alertConditions;
+			}
+
+			@JsonProperty("alertConditions")
+			public void setAlertConditions(List<AlertCondition> alertConditions) {
+				this.alertConditions = alertConditions;
 			}
 
 			@JsonAnyGetter

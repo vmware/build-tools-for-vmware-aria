@@ -2251,10 +2251,41 @@ public class RestClientVrops extends RestClient {
 		}
 	}
 
+	private void removeAlertConditionIds(Object definition, VropsPackageMemberType definitionType) {
+		if (!VropsPackageMemberType.ALERT_DEFINITION.equals(definitionType)) {
+			return;
+		}
+		if (definition == null) {
+			return;
+		}
+		if (!(definition instanceof AlertDefinitionDTO.AlertDefinition)) {
+			return;
+		}
+		//remove alert id
+		((AlertDefinitionDTO.AlertDefinition) definition).setId(null);
+		//remove alert condition ids 
+		for (State state : ((AlertDefinitionDTO.AlertDefinition) definition).getStates()) {
+			if (state.getBaseSymptomSet() == null) {
+				continue;
+			}
+			if (state.getBaseSymptomSet().getAlertConditions() != null) {
+				state.getBaseSymptomSet().getAlertConditions().forEach(condition -> condition.setId(null));
+			}
+			if (state.getBaseSymptomSet().getSymptomSets() != null) {
+				for (SymptomSet symptomSet : state.getBaseSymptomSet().getSymptomSets()) {
+					if (symptomSet.getAlertConditions() != null) {
+						symptomSet.getAlertConditions().forEach(condition -> condition.setId(null));
+					}
+				}
+			}
+		}
+	}
+
 	private void removeIdFromDefinitionPayload(Object definition, VropsPackageMemberType definitionType) {
 		switch (definitionType) {
 			case ALERT_DEFINITION: {
-				((AlertDefinitionDTO.AlertDefinition) definition).setId(null);
+				// remove alert id and alert condition IDs
+				removeAlertConditionIds(definition, definitionType);
 				break;
 			}
 			case SYMPTOM_DEFINITION: {
