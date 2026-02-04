@@ -61,11 +61,18 @@ Project generation from `vrops` archetype fails because Maven tries to replace a
 #### New Behavior
 Project generation from `vrops` archetype executes successfully. Maven configuration is updated to not use variable replacement on `src/main/resources` since content there needs to be directly copied.
 
-### *Fix `vrops` issue 1009 failing to push alert Definitions with alertConditions set*
+### *Fix `vrops` failure to push Alert Definitions with `alertConditions` set*
+
 #### Previous Behavior
-Pushing AlertDefinitions with alertConditions not null  was failing as the id was not being clean up before pushing .
+Pushing AlertDefinitions with `alertConditions` fails as the ID is not being cleaned up before pushing resulting in the following error thrown by the API:
+```text
+{"message":"Invalid request... #1 violations found.","validationFailures":[{"failureMessage":"must be null","violationPath":"alertDefinitionStates[0].symptoms.alertConditions[].id"}],"httpStatusCode":400,"apiErrorCode":400}
+```
+
 #### New Behavior
-Before pushing alertDefinitions the alertConditions ID will be set to null.
+`alertConditions` ID is set to null before pushing AlertDefinitions with `alertDefinitions` and the operation completes successfully.
 ## Upgrade procedure
+
+### *Add missing dependency to `o11n-plugin-aria` type definitions*
 
 [//]: # (Explain in details if something needs to be done)
