@@ -741,15 +741,15 @@ declare class SRMSite {
 	/** Returns all RecoveryPlans in this Site */
 	getRecoveryPlans(): SRMRecoveryPlan[];
 	/** Returns all NetworkMapping pairs in this Site */
-	getNetworkMappingPairs(): any[];
+	getNetworkMappingPairs(): SRMScriptingObject[][];
 	/** Returns all TestNetworkMapping pairs in this Site */
-	getTestNetworkMappingPairs(): any[];
+	getTestNetworkMappingPairs(): SRMScriptingObject[][];
 	/** Returns all ResourcePoolMapping pairs in this Site */
-	getResourcePoolMappingPairs(): any[];
+	getResourcePoolMappingPairs(): SRMScriptingObject[][];
 	/** Returns all DatacenterMappings in this Site */
 	getDatacenterMappings(): SRMLocalDatacenter[];
 	/** Returns all DatacenterMapping pairs in this Site */
-	getDatacenterMappingPairs(): any[];
+	getDatacenterMappingPairs(): SRMScriptingObject[][];
 	/** Return protection root folder in this Site */
 	getProtectionRootFolder(): SRMProtectionFolder;
 	/** Return recovery root folder in this Site */
@@ -769,14 +769,14 @@ declare class SRMSite {
 	 * Assigns the supplied datastores as Placeholder Datastores
 	 * @param datastores 
 	 */
-	addPlaceHolderDatastores(datastores: any): void;
+	addPlaceHolderDatastores(datastores: SRMUnreplicatedDatastore[]): void;
 	/** Get all datastores suitable for Placeholder Datastores */
 	getUnreplicatedDatastores(): SRMScriptingObject[];
 	/**
 	 * Removes the supplied datastores from the placeholder datastores pool
 	 * @param datastores 
 	 */
-	removePlaceHolderDatastores(datastores: any): void;
+	removePlaceHolderDatastores(datastores: SRMPlaceholderDatastore[]): void;
 }
 
 /**
