@@ -61,6 +61,11 @@ Project generation from `vrops` archetype fails because Maven tries to replace a
 #### New Behavior
 Project generation from `vrops` archetype executes successfully. Maven configuration is updated to not use variable replacement on `src/main/resources` since content there needs to be directly copied.
 
+### *Fix `vrops` issue 1009 failing to push alert Definitions with alertConditions set*
+#### Previous Behavior
+Pushing AlertDefinitions with alertConditions not null  was failing as the id was not being clean up before pushing .
+#### New Behavior
+Before pushing alertDefinitions the alertConditions ID will be set to null.
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
