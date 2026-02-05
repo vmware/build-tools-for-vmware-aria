@@ -73,6 +73,6 @@ Pushing AlertDefinitions with `alertConditions` fails as the ID is not being cle
 `alertConditions` ID is set to null before pushing AlertDefinitions with `alertDefinitions` and the operation completes successfully.
 ## Upgrade procedure
 
-### *Add missing dependency to `o11n-plugin-aria` type definitions*
+### *Add missing dependency to `o11n-plugin-aria` type definitions and fix static methods*
 
 [//]: # (Explain in details if something needs to be done)
