@@ -48,6 +48,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.FileSystemUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -71,7 +72,11 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO.SymptomDefinition;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.AlertDefinitionDTO.AlertDefinition;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO.Policy;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO.Recommendation;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
@@ -83,6 +88,7 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.Version;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.utils.XmlUtilities;
 import com.vmware.pscoe.iac.artifact.common.utils.ZipUtilities;
 
 /**
@@ -1139,6 +1145,148 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		}
 	}
 
+
+	/**
+	 * Sets the ids of the policy to be equal to the ids on the server to be pushed
+	 * @param policy zip file with the policy
+	 * @param allPolicies all policies read from the server
+	 * @return new .zip file with adjusted ids
+	 */
+	private File setPolicyIds(final File policy, List<Policy> allPolicies) {
+        String path = policy.getParent().toString();
+        String fullPath = policy.getPath();
+        try {
+            logger.info("Unzipping file " + policy.getName());
+            File pathForUnzipping = new File(path);
+            ZipUtilities.unzip(policy, pathForUnzipping);
+            File exportedPoliciesXml = new File(path + "/exportedPolicies.xml");
+            String exportedPoliciesXmlContent = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
+            exportedPoliciesXmlContent = exportedPoliciesXmlContent.replace("><PolicyContent>", ">\n<PolicyContent>");
+            XmlUtilities.writeToXmlFile(exportedPoliciesXml, exportedPoliciesXmlContent);
+            Element document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
+            Node policyTag = XmlUtilities.findTagInXmlDocument(document, "Policies");
+            NodeList policies = policyTag.getChildNodes();
+
+            HashMap<String, HashMap<String, String>> values = new HashMap<>();
+            List<Element> policyElements = new ArrayList<>();
+
+            for (int i = 0; i < policies.getLength(); i++) {
+                Node node = policies.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) policies.item(i);
+                    policyElements.add(element);
+                }
+            }
+
+            for (int i = 0; i < policyElements.size(); i++) {
+                Element policyElement = policyElements.get(i);
+				String policyName = policyElement.getAttribute("name");
+				HashMap<String, String> childMap = new HashMap<>();
+                Optional<Policy> currentPolicy = allPolicies.stream().filter(pol -> pol.getName().equals(policyElement.getAttribute("name"))).findAny();
+                if (currentPolicy.isPresent()) {
+                    childMap.put("key", currentPolicy.get().getId());
+                } else {
+					childMap.put("key", policyElement.getAttribute("key"));
+				}
+                if (policyElement.hasAttribute("parentPolicy")) {
+                    String parentPolicyId = policyElement.getAttribute("parentPolicy");
+                    Optional<Element> parentPolicyElement = policyElements.stream().filter(el -> el.getAttribute("key").equals(parentPolicyId)).findAny();
+                    String parentPolicyName = parentPolicyElement.get().getAttribute("name");
+                    Optional<Policy> parentPolicy = allPolicies.stream().filter(pol -> pol.getName().equals(parentPolicyName)).findAny();
+                    if (parentPolicy.isPresent()) {
+                        childMap.put("parentPolicy", parentPolicy.get().getId());
+                    } else {
+                        childMap.put("parentPolicy", parentPolicyId);
+                    }
+                }
+				values.put(policyName, childMap);
+            }
+            XmlUtilities.setAttributesInXmlFile(exportedPoliciesXml, "Policies", values);
+            FileSystemUtils.deleteRecursively(policy);
+            ZipUtilities.zip(exportedPoliciesXml, fullPath);
+            FileSystemUtils.deleteRecursively(exportedPoliciesXml);
+			return new File(fullPath);
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("An error occurred while setting the ids of policy %s : %s %n", policy.getName(),
+            e.getMessage()));
+        }
+    }
+
+	/**
+	 * Checking the target system for missing alert definitions, symptom definitions and recommendations. 
+	 * It compares it with the alert definitions, symptom definitions and recommendations of the policy
+	 * @param policy The policy .zip file
+	 * @param alertIds The ids of all the alert definitions on the target system
+	 * @param symptomIds The ids of all the symptom definitions on the target system
+	 * @param recommendationsIds The ids of all the recommendations on the target system
+	 */
+	private void checkPolicyForMissingComponents(File policy, List<String> alertIds, List<String> symptomIds, List<String> recommendationsIds) {
+
+		String path = policy.getParent().toString();
+		try {
+			logger.info("Unzipping file " + policy.getName());
+			File pathForUnzipping = new File(path);
+			ZipUtilities.unzip(policy, pathForUnzipping);
+			File exportedPoliciesXml = new File(path + "/exportedPolicies.xml");
+			String exportedPoliciesXmlContent = XmlUtilities.readXmlFileAsString(exportedPoliciesXml);
+			exportedPoliciesXmlContent = exportedPoliciesXmlContent.replace("><PolicyContent>", ">\n<PolicyContent>");
+            Element document = XmlUtilities.initializeXmlFile(exportedPoliciesXml);
+
+			List<Element> alertDefinitions = XmlUtilities.getAllTagsWithAttributes(document, "AlertDefinition");
+			List<Element> missingAlerts = alertDefinitions.stream().filter(alert -> alertIds.indexOf(alert.getAttribute("id")) == -1).collect(Collectors.toList());
+
+			List<Element> symptomDefinitions = XmlUtilities.getAllTagsWithAttributes(document, "SymptomDefinition");
+			List<Element> missingSymptoms = symptomDefinitions.stream().filter(symp -> symptomIds.indexOf(symp.getAttribute("id")) == -1).collect(Collectors.toList());
+
+			List<Element> recommendations = XmlUtilities.getAllTagsWithAttribute(document, "Recommendation", "key");
+			List<Element> missingReccoms = recommendations.stream().filter(rec -> recommendationsIds.indexOf(rec.getAttribute("key")) == -1).collect(Collectors.toList());
+
+			FileSystemUtils.deleteRecursively(exportedPoliciesXml);
+			
+			if (missingAlerts.size() > 0 || missingSymptoms.size() > 0 || missingReccoms.size() > 0) {
+
+				logger.info("Policy '" + policy.getName() + "' has missing dependencies");
+				logger.info("Total missing alert definitions: " + missingAlerts.size());
+				logger.info("Total missing symptom definitions: " + missingSymptoms.size());
+				logger.info("Total missing recommendations: " + missingReccoms.size());
+				String errorMessage = "";
+				String allMissingAlerts = missingAlerts.size() > 0 ? missingAlerts.stream()
+																					.map(alert -> alert.getAttribute("name"))
+																					.reduce((a, b) -> String.format("%s\n%s", a, b)).get() : "";
+				String allMissingSymptoms = missingSymptoms.size() > 0 ? missingSymptoms.stream()
+																						.map(symp -> symp.getAttribute("name"))
+																						.reduce((a, b) -> String.format("%s\n%s", a, b)).get() : "";
+				String allMissingReccoms = missingReccoms.size() > 0 ? missingReccoms.stream()
+																						.map(recomm -> {
+																							Node description = recomm.getFirstChild().getNextSibling();
+																							if (description != null) {
+																								return description.getTextContent();
+																							} else {
+																								return "";
+																							}
+																						})
+																						.reduce((a, b) -> String.format("%s\n%s", a, b)).get() : "";
+
+				if (missingAlerts.size() > 0) { 
+					errorMessage = String.format("\nthe following alert definitions:\n%s", allMissingAlerts); 
+				}
+
+				if (missingSymptoms.size() > 0) { 
+					errorMessage += String.format("\nthe following symptom definitions:\n%s", allMissingSymptoms); 
+				}
+				if (missingReccoms.size() > 0) { 
+					errorMessage += String.format("\nthe following recommendations:\n%s", allMissingReccoms); 
+				}
+				throw new RuntimeException(String.format("Policy with name '%s' is missing the following entities on the target system:%s", policy.getName(), errorMessage));
+			}
+			
+			
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("An error occurred while deleting the disabled items from policy '%s'. Reason: %n", policy.getName(),
+           		 e.getMessage()));
+		}
+	}
+
 	/**
 	 * Import policies to vROPs.
 	 * 
@@ -1147,6 +1295,22 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @throws RuntimeException if the polices cannot be imported.
 	 */
 	private void importPolicies(final Package vropsPackage, final File tmpDir) {
+
+		List<AlertDefinition> alertDefinitions = restClient.getAllDefinitionsOfType(VropsPackageMemberType.ALERT_DEFINITION)
+															.stream()
+															.map(AlertDefinitionDTO.AlertDefinition.class::cast)
+															.collect(Collectors.toList());
+		List<String> alertIds = alertDefinitions.stream().map(alert -> alert.getId()).toList();
+		List<SymptomDefinition> sympAlertDefinitions = restClient.getAllDefinitionsOfType(VropsPackageMemberType.SYMPTOM_DEFINITION)
+															.stream()
+															.map(SymptomDefinitionDTO.SymptomDefinition.class::cast)
+															.collect(Collectors.toList());
+		List<String> symptomIds = sympAlertDefinitions.stream().map(symp -> symp.getId()).toList();
+		List<Recommendation> recommendations = restClient.getAllDefinitionsOfType(VropsPackageMemberType.RECOMMENDATION)
+															.stream()
+															.map(RecommendationDTO.Recommendation.class::cast)
+															.collect(Collectors.toList());
+		List<String> recommIds = recommendations.stream().map(rec -> rec.getId()).toList();
 		File policiesDir = new File(tmpDir.getPath(), "policies");
 		if (!policiesDir.exists()) {
 			return;
@@ -1156,6 +1320,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		for (File policy : FileUtils.listFiles(policiesDir, new String[] { "zip" }, Boolean.FALSE)) {
 			String policyName = FilenameUtils.removeExtension(policy.getName());
 			try {
+				logger.info("Checking for missing dependencies for policy: '{}'", policyName);
+				checkPolicyForMissingComponents(policy, alertIds, symptomIds, recommIds);
 				logger.info("Importing policy: '{}'", policyName);
 				restClient.importPolicyFromZip(policyName, policy, Boolean.TRUE);
 				logger.info("Imported policy: '{}'", policyName);
@@ -1607,31 +1773,30 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 		try {
 			new PackageManager(pkg).unpack(tmpDir);
+			 addViewToImportList(pkg, tmpDir);
+			 addDashboardToImportList(pkg, tmpDir);
+			 addReportToImportList(pkg, tmpDir);
+			 addSuperMetricToImportList(pkg, tmpDir);
+			 addMetricConfigToImportList(pkg, tmpDir);
 
-			addViewToImportList(pkg, tmpDir);
-			addDashboardToImportList(pkg, tmpDir);
-			addReportToImportList(pkg, tmpDir);
-			addSuperMetricToImportList(pkg, tmpDir);
-			addMetricConfigToImportList(pkg, tmpDir);
+			 if (cliManager.hasAnyCommands()) {
+			 	cliManager.connect();
+			 	cliManager.importFilesToVrops();
+			 }
 
-			if (cliManager.hasAnyCommands()) {
-				cliManager.connect();
-				cliManager.importFilesToVrops();
-			}
-
-			importDefinitions(pkg, tmpDir);
-			importPolicies(pkg, tmpDir);
-			importCustomGroups(pkg, tmpDir);
-			// manage dashboard sharing per groups
-			manageDashboardSharing(tmpDir);
-			// manage dashboard activation per groups
-			manageDashboardActivation(tmpDir, true);
-			// manage dashboard activation per users
-			manageDashboardActivation(tmpDir, false);
-			// set default policy after importing policies
-			setDefaultPolicy(pkg, tmpDir);
-			// set policy priorities
-			setPolicyPriorities(pkg, tmpDir);
+			 importDefinitions(pkg, tmpDir);
+			 importPolicies(pkg, tmpDir);
+			 importCustomGroups(pkg, tmpDir);
+			 // manage dashboard sharing per groups
+			 manageDashboardSharing(tmpDir);
+			 // manage dashboard activation per groups
+			 manageDashboardActivation(tmpDir, true);
+			 // manage dashboard activation per users
+			 manageDashboardActivation(tmpDir, false);
+			 // set default policy after importing policies
+			 setDefaultPolicy(pkg, tmpDir);
+			 // set policy priorities
+			 setPolicyPriorities(pkg, tmpDir);
 		} catch (IOException | JSchException | ConfigurationException e) {
 			String message = String.format("Unable to push package '%s' to vROps Server '%s' : %s : %s",
 					pkg.getFQName(), cliManager, e.getClass().getName(),
