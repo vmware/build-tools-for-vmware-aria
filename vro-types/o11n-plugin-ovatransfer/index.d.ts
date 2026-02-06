@@ -344,9 +344,10 @@ declare class SVAImportManagerFactory {
 	private constructor();
 
 	/**
+	 * Returns de.sva.vco.plugin.ovatransfer.core.TemplateImportManager but the class definition is not available in the API explorer
 	 * @param importType 
 	 */
-	public createImportManager(importType: OvaTransferImportType): TemplateImportManager;
+	public createImportManager(importType: OvaTransferImportType): any;
 	public createFileImportManager(): OvaTransferFileImportManager;
 
 	public static getInstance(): SVAImportManagerFactory;
