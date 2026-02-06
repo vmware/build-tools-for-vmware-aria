@@ -250,15 +250,7 @@ public final class RestClientFactory {
 	}
 
 	private static String getVraApiVersion(Configuration configuration, RestTemplate restTemplate) {
-		Properties properties = new Properties();
-
-		properties.setProperty(Configuration.USERNAME, configuration.getUsername());
-		properties.setProperty(Configuration.PASSWORD, configuration.getPassword());
-		properties.setProperty(Configuration.PORT, configuration.getPort() + "");
-		properties.setProperty(Configuration.HOST, configuration.getHost());
-
-		ConfigurationVro configurationVro = ConfigurationVro.fromProperties(properties);
-
+		ConfigurationVro configurationVro = ConfigurationVro.fromProperties(configuration.properties);
 		VraSsoAuth vraClient = new VraSsoAuth(configurationVro, restTemplate);
 		return vraClient.getVersion();
 	}

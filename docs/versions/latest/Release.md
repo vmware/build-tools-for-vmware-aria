@@ -73,6 +73,18 @@ Pushing AlertDefinitions with `alertConditions` fails as the ID is not being cle
 
 #### New Behavior
 `alertConditions` ID is set to null before pushing AlertDefinitions with `alertDefinitions` and the operation completes successfully.
+
+### *Fix Push and Pull with refresh token only*
+
+#### Previous Behavior
+Push and pull operations failed with a `NullPointerException` when authenticating using only a refresh token:
+```text
+Execution default-cli of goal com.vmware.pscoe.maven.plugins:vra-ng-package-maven-plugin:4.16.1:pull failed.: NullPointerException
+```
+
+#### New Behavior
+Push and pull operations now complete successfully when using a refresh token. Additionally, sensitive token values are now automatically redacted from the execution logs.
+
 ## Upgrade procedure
 
 ### *Add missing dependency to `o11n-plugin-aria` type definitions and fix static methods*

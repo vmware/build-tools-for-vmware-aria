@@ -156,7 +156,7 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 		logger.info("Checking if exists refresh token");
 		boolean useRefreshTokenForAuth = !StringUtils.isEmpty(this.getRefreshToken());
 		if (useRefreshTokenForAuth) {
-			logger.info(String.format("Refresh token in config for vro is: %s", this.getRefreshToken()));
+			logger.info("Refresh token detected and using Token Authentication");
 		} else {
 			logger.info("Refresh token not detected using BASIC Authentication");
 			super.validate(domainOptional, useRefreshTokenForAuth);
