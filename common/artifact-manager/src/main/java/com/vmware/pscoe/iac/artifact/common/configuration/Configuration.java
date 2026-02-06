@@ -113,7 +113,7 @@ public abstract class Configuration {
 	/**
 	 * Contains all the properties passed by the user.
 	 */
-	protected Properties properties;
+	public final Properties properties;
 
 	/**
 	 * Logger instance.
