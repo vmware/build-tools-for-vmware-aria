@@ -36,6 +36,8 @@
 
 ### *Add type definitions for `o11n-plugin-srm` (Site Recovery Manager) plugin*
 
+### *Add type definitions for `o11n-plugin-ovatransfer` (vSphere Replication) plugin*
+
 ### *Extend type definitions for `o11n-plugin-vc` plugin*
 
 ### *Update vRLI Archetype to be compatible with VCF9 Alert definitions*
