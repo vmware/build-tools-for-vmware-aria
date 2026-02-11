@@ -28,6 +28,18 @@
 
 ## Improvements
 
+### *Fixed: Failed to push TS project to vRO 9.0 #836*
+
+#### Previous Behavior
+Push and pull operations failed with a `...push failed: Expected to find an object with property ['versionInfo']...` when authenticating against standalone VRO 9.
+Reason the version of VRA is checked regardless the selected auth type. In environments with standalone VRO the error above occures.
+
+#### New Behavior
+Authentication strategies have been updated to better support standalone vRO 9 environments.
+
+* **Basic Auth:** When `<vro.auth>basic</vro.auth>` is configured in `settings.xml`, the authentication strategy now executes without performing a vRA version check.
+* **vRA Auth:** The vRA version check is now strictly limited to configurations using `<vro.auth>vra</vro.auth>`.
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
