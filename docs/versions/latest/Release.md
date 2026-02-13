@@ -51,6 +51,14 @@ Authentication strategies have been updated to better support standalone vRO 9 e
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Add missing `o11n-core` dependency in `o11n-plugin-hms` and `o11n-plugin-ovatransfer` type definitions*
+
+#### Previous Behavior
+Build of an Orchestrator project type might fail if the `o11n-core` type definitions are not available in local Maven repository.
+
+#### New Behavior
+Build of Orchestrator projects completes successfully.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
