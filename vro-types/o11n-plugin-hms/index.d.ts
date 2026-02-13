@@ -975,3 +975,15 @@ declare class VRVrReplicationDetailsData {
 	public setRpoViolationMinutes(rpoViolationMinutes: number): void;
 	public getRpoViolationMinutes(): number;
 }
+
+declare interface URI {
+	scheme: string;
+	"scheme-specific-part": string;
+	authority: string;
+	"user-info": string;
+	host: string;
+	port: number;
+	path: string;
+	query: string;
+	fragment: string;
+}
