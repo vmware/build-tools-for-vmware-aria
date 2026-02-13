@@ -18,15 +18,6 @@
 		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.vmware.pscoe.ts.types</groupId>
-			<artifactId>o11n-core</artifactId>
-			<type>tgz</type>
-			<version>${revision}</version>
-		</dependency>	
-	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
