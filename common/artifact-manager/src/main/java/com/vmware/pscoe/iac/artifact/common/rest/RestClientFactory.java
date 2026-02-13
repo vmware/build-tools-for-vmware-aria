@@ -341,27 +341,28 @@ public final class RestClientFactory {
 	 */
 	public static RestClientVro getClientVro(ConfigurationVro configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
-		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		// For VCF 9 use VCD based interceptor to authenticate
-		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
-			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
-			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
-		} else {
-			RestClientRequestInterceptor<ConfigurationVro> interceptor;
-
-			LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
-			switch (configuration.getAuth()) {
-				case VRA:
-					interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
-					break;
-				case BASIC:
-					interceptor = new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
-					break;
-				default:
-					throw new UnsupportedOperationException("Unsupported authentication provider");
-			}
-			restTemplate.getInterceptors().add(interceptor);
+		LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
+		switch (configuration.getAuth()) {
+			case VRA:
+				String apiVersion = getVraApiVersion(configuration, restTemplate);
+				if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
+					// For VCF 9 use VCD based interceptor to authenticate
+					ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
+					attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
+				} else {
+					RestClientRequestInterceptor<ConfigurationVro> interceptor =
+						new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
+					restTemplate.getInterceptors().add(interceptor);
+				}
+				break;
+			case BASIC:
+				RestClientRequestInterceptor<ConfigurationVro> interceptor =
+					new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
+				restTemplate.getInterceptors().add(interceptor);
+				break;
+			default:
+				throw new UnsupportedOperationException("Unsupported authentication provider");
 		}
 
 		return new RestClientVro(configuration, restTemplate);
