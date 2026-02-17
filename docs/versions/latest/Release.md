@@ -26,6 +26,8 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add support for Node:22 runtime environment for `polyglot` projects*
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
