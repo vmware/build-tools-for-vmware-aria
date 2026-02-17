@@ -62,6 +62,7 @@ The `polyglot.json` file is used to define the package. It is a JSON file with t
 - `node:14`
 - `node:18`
 - `node:20`
+- `node:22`
 - `powercli:11-powershell-6.2`
 - `powercli:12-powershell-7.1`
 - `powercli:12-powershell-7.4`
