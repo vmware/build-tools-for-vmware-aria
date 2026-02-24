@@ -97,34 +97,29 @@ async function runSpec(caseName: string): Promise<boolean> {
 
 	return passed;
 
+	function toPathArg(...args: string[]) {
+		const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+		return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
+	}
+
 	async function compile(): Promise<boolean> {
 		let caseOutDir = path.join(outDir, caseName);
 		await fs.emptyDir(caseOutDir);
 		const cmdArgs = [
-			path.join(currDir, "lib", "vrotsc.js"),
+			toPathArg(currDir, "lib", "vrotsc.js"),
 			caseName,
-			"--actionsNamespace",
-			"com.vmware.pscoe.vrotsc",
-			"--workflowsNamespace",
-			"PSCoE/vRO TypeScript",
-			"--actionsOut",
-			path.join(caseOutDir, "actions"),
-			"--testHelpersOut",
-			path.join(caseOutDir, "testHelpers"),
-			"--workflowsOut",
-			path.join(caseOutDir, "workflows"),
-			"--configsOut",
-			path.join(caseOutDir, "configs"),
-			"--testsOut",
-			path.join(caseOutDir, "tests"),
-			"--typesOut",
-			path.join(caseOutDir, "types"),
-			"--resourcesOut",
-			path.join(caseOutDir, "resources"),
-			"--policiesOut",
-			path.join(caseOutDir, "policies"),
-			"--mapsOut",
-			path.join(caseOutDir, "maps")
+			"--actionsNamespace", "com.vmware.pscoe.vrotsc",
+			"--workflowsNamespace", '"PSCoE/vRO TypeScript"',
+			"--actionsOut", toPathArg(caseOutDir, "actions"),
+			"--testHelpersOut", toPathArg(caseOutDir, "testHelpers"),
+			"--workflowsOut", toPathArg(caseOutDir, "workflows"),
+			"--configsOut", toPathArg(caseOutDir, "configs"),
+			"--testsOut", toPathArg(caseOutDir, "tests"),
+			"--typesOut", toPathArg(caseOutDir, "types"),
+			"--resourcesOut", toPathArg(caseOutDir, "resources"),
+			"--policiesOut", toPathArg(caseOutDir, "policies"),
+			"--mapsOut", toPathArg(caseOutDir, "maps"),
+            "--vroIgnoreFile", "vroignore2e"
 		];
 
 		if (childProcLogs) {
@@ -155,7 +150,7 @@ async function runSpec(caseName: string): Promise<boolean> {
 		let expectCaseDir = path.join(expectDir, caseName);
 		let caseOutDir = path.join(outDir, caseName);
 
-		glob.sync(path.resolve(caseOutDir, "**/*"))
+		glob.sync(path.resolve(caseOutDir, "**/*")?.replace(/[\\/]+/gm, path.posix.sep))
 			.forEach(actualPath => {
 				let expectPath = path.join(
 					expectCaseDir,
@@ -168,7 +163,7 @@ async function runSpec(caseName: string): Promise<boolean> {
 			});
 
 		glob
-			.sync(path.resolve(expectCaseDir, "**/*"), { nodir: true })
+            .sync(path.resolve(expectCaseDir, "**/*")?.replace(/[\\/]+/gm, path.posix.sep), { nodir: true })
 			.forEach(expectFilePath => {
 				let actualFilePath = path.join(
 					caseOutDir,

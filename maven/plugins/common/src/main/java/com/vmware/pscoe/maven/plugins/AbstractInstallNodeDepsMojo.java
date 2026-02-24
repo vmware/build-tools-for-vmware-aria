@@ -14,23 +14,24 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.commons.lang3.SystemUtils;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Executes the external project's dependency list.
  */
 public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 	/**
-	 * The external project that is built with VMware Aria Build Tools.
+	 * The external project that is built with Build Tools for VMware Aria.
 	 */
 	@Parameter(defaultValue = "${project}")
 	private MavenProject project;
@@ -42,24 +43,22 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 	private boolean skipInstallNodeDeps;
 
 	/**
-	 * Constant indicating the maximum number of commands for dependencies installation within one file.
+	 * Constant indicating the maximum number of commands for dependencies
+	 * installation within one file.
 	 */
 	private static final int MAX_NUMBER_OF_CMD_DEPS = 7000;
-
 
 	@Override
 	public final void execute() throws MojoExecutionException, MojoFailureException {
 		boolean allTgzLibsResolved = true;
-		int commandLength = 0;
 		File nodeModules = new File(project.getBasedir(), "node_modules");
 		if (skipInstallNodeDeps) {
 			if (nodeModules.exists()) {
 				getLog().info("Skipping the Dependency installation");
 				return;
 			} else {
-				getLog().info("Ignoring the flag skipInstallNodeDeps," 
-				+
-				 "as node dependencies doesn't exist and are required for the successful build...");
+				getLog().info("Ignoring the flag skipInstallNodeDeps,"
+						+ "as node dependencies doesn't exist and are required for the successful build...");
 			}
 		}
 
@@ -67,13 +66,34 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 			getLog().debug("node_modules doesn't exists. Creating it...");
 			nodeModules.mkdirs();
 		}
-		
+
+		// TODO: Think of a way to put the logic for unit test framework in one place
+		// instead of two separate components.
+		// Checking if there's specific unit test framework specified. If there is - it
+		// will be added to the dependencies list.
+		// If not - the default Jasmine type definitions will be kept from the original
+		// dependencies list.
+
+		Properties projectProperties = project.getProperties();
+		String unitTestFrameworkPackage = projectProperties.getProperty("test.framework.package");
+		String unitTestFrameworkVersion = projectProperties.getProperty("test.framework.version");
+		String unitTestFrameworkTypes = projectProperties.getProperty("test.framework.types.version");
+		boolean useDefaultUnitTestFramework = unitTestFrameworkPackage == null
+				|| unitTestFrameworkPackage.equals(new String("jasmine")) && unitTestFrameworkVersion == null;
+
+		getLog().debug("unitTestFrameworkPackage => " + unitTestFrameworkPackage);
+		getLog().debug("unitTestFrameworkVersion => " + unitTestFrameworkVersion);
+		getLog().debug("unitTestFrameworkTypes => " + unitTestFrameworkTypes);
+
 		List<String> deps = new LinkedList<>();
 
 		for (Object o : project.getArtifacts()) {
 			Artifact a = (Artifact) o;
 			if ("tgz".equals(a.getType())) {
-				
+				if (!useDefaultUnitTestFramework
+						&& a.getArtifactId().equals(new String("jasmine"))) {
+					continue;
+				}
 				deps.add(a.getFile().getAbsolutePath());
 				allTgzLibsResolved = allTgzLibsResolved && a.isResolved();
 			}
@@ -103,7 +123,7 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 			}
 
 			if (dependencies.size() - 1 < pointer) {
-				dependencies.add(pointer, new LinkedList<String>());				
+				dependencies.add(pointer, new LinkedList<String>());
 			}
 
 			dependencies.get(pointer).add(dep);
@@ -111,7 +131,53 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 
 		String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
 
-		for (List<String> dependency: dependencies) {
+		// Add a dependency for the unit test framework type
+		// definitions according to the project configuration.
+		if (!useDefaultUnitTestFramework) {
+			if (unitTestFrameworkVersion == null) {
+				getLog().info(
+						"No specific versions of the unit testing framework received, will be using the"
+								+ " latest available for both the framework dependency and its type definitions.");
+				unitTestFrameworkTypes = "latest";
+				unitTestFrameworkVersion = "latest";
+			} else if (unitTestFrameworkTypes == null) {
+				if (unitTestFrameworkVersion.equals(new String("latest"))) {
+					unitTestFrameworkTypes = "latest";
+				} else {
+					int dotPosition = unitTestFrameworkVersion.lastIndexOf('.');
+					getLog().warn("dotPosition: " + dotPosition);
+					unitTestFrameworkTypes = unitTestFrameworkVersion.substring(0, dotPosition) + ".X";
+				}
+				getLog().warn(
+						"Received specific version for the unit testing framework, but not for its type definitions, "
+								+ "attempting to use [" + unitTestFrameworkTypes
+								+ "], generated from the framework version. "
+								+ "Please, be aware the type definitions are handled by the DefinitelyTyped project "
+								+ "(https://definitelytyped.org/). In case there are any issues with installing the generated types "
+								+ "version, please try specifying which version should be applied.");
+			} else {
+				getLog().warn(
+						"Received specific versions for unit test framework and framework type definition,"
+								+ " will attempt to install those. Please, be aware these need to be a proper match"
+								+ " and are handled by the DefinitelyTyped project (https://definitelytyped.org/).");
+			}
+
+			unitTestFrameworkPackage = unitTestFrameworkPackage != null ? unitTestFrameworkPackage : "jasmine";
+			String unitTestFrameworkTypeDefsPackage = "@types/" + unitTestFrameworkPackage + "@"
+					+ unitTestFrameworkTypes;
+
+			getLog().info(
+					"Adding dependency to be installed for the unit tests framework "
+							+ "type definitions: " + unitTestFrameworkTypeDefsPackage);
+
+			List<String> framework = new LinkedList<>();
+			framework.add(unitTestFrameworkTypeDefsPackage);
+			dependencies.add(framework);
+		}
+
+		// Idea: Should we separate dependencies as dev deps and regular ones?
+
+		for (List<String> dependency : dependencies) {
 			getLog().debug("Dependency size: " + dependency.size());
 			dependency.add(0, npmExec);
 			dependency.add(1, "install");
@@ -128,10 +194,11 @@ public abstract class AbstractInstallNodeDepsMojo extends AbstractIacMojo {
 
 	/**
 	 * This method is used to execute the dependencies.
-	 * @param command this will have list of dependencies
+	 * 
+	 * @param command  this will have list of dependencies
 	 * @param nameText this is the name for Process Executor
-	 * @exception MojoExecutionException for exception during process execution 
-	 * @exception MojoFailureException for exception during process failure
+	 * @exception MojoExecutionException for exception during process execution
+	 * @exception MojoFailureException   for exception during process failure
 	 */
 	protected void executeProcess(final List<String> command, final String nameText)
 			throws MojoExecutionException, MojoFailureException {

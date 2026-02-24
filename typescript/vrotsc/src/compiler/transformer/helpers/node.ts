@@ -108,6 +108,45 @@ export function isRequireCall(callExpression: ts.Node): boolean {
 	return true;
 }
 
+/**
+* Verify if a jest method that requires module name is being called,
+*   e.g. jest.methodName("path/name"[, args])
+*/
+export function isJestMethodCallWithModuleName(callExpression: ts.CallExpression): boolean {
+	if (callExpression.kind !== ts.SyntaxKind.CallExpression) {
+		return false;
+	}
+	if (callExpression.expression.kind !== ts.SyntaxKind.PropertyAccessExpression) {
+		return false;
+	}
+	if (callExpression.arguments.length === 0 || callExpression.arguments[0].kind !== ts.SyntaxKind.StringLiteral) {
+		return false;
+	}
+
+	const methodExpression = callExpression.expression as ts.PropertyAccessExpression;
+	if (methodExpression.expression.kind !== ts.SyntaxKind.Identifier || methodExpression.name.kind !== ts.SyntaxKind.Identifier) {
+		return false;
+	}
+	if ((methodExpression.expression as ts.Identifier).escapedText !== "jest") {
+		return false;
+	}
+
+	const methodName = (methodExpression.name as ts.Identifier).escapedText;
+	switch(methodName) {
+		case "createMockFromModule":
+		case "mock":
+		case "unmock":
+		case "deepUnmock":
+		case "doMock":
+		case "dontmock":
+		case "setMock":
+		case "requireActual":
+		case "requireMock":
+			return true;
+	}
+	return false;
+}
+
 export function getPropertyName(node: ts.PropertyName): string {
 	switch (node.kind) {
 		case ts.SyntaxKind.Identifier:
@@ -166,13 +205,56 @@ export function getLeadingComments(sourceFile: ts.SourceFile, node: ts.Node): Co
 }
 
 /**
+ * Evaluate a decorator initializer expression into a JS value.
+ * Supports strings, numbers, booleans, null, arrays and object literals.
+ */
+function evalInitializer(node: ts.Expression): any {
+	switch (node.kind) {
+		case ts.SyntaxKind.StringLiteral:
+			return (node as ts.StringLiteral).text;
+		case ts.SyntaxKind.NoSubstitutionTemplateLiteral:
+			return (node as ts.NoSubstitutionTemplateLiteral).text;
+		case ts.SyntaxKind.NumericLiteral:
+			return Number((node as ts.NumericLiteral).text);
+		case ts.SyntaxKind.TrueKeyword:
+			return true;
+		case ts.SyntaxKind.FalseKeyword:
+			return false;
+		case ts.SyntaxKind.NullKeyword:
+			return null;
+		case ts.SyntaxKind.ArrayLiteralExpression: {
+			const arr = node as ts.ArrayLiteralExpression;
+			return arr.elements.map(el => evalInitializer(el as ts.Expression));
+		}
+		case ts.SyntaxKind.ObjectLiteralExpression: {
+			const obj: any = {};
+			const lit = node as ts.ObjectLiteralExpression;
+			lit.properties.forEach((prop: ts.ObjectLiteralElementLike) => {
+				if (prop.kind === ts.SyntaxKind.PropertyAssignment) {
+					const pa = prop as ts.PropertyAssignment;
+					const key = getPropertyName(pa.name);
+					obj[key] = evalInitializer(pa.initializer as ts.Expression);
+				} else if (prop.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
+					const sp = prop as ts.ShorthandPropertyAssignment;
+					obj[sp.name.text] = sp.name.text;
+				}
+			});
+			return obj;
+		}
+		default:
+			// Fallback to full text if nothing else matches
+			return (node.getText && node.getText()) || undefined;
+	}
+}
+
+/**
  * This will fetch all the props of a decoratorNode
  *
  * @param decoratorNode The decorator node to get the properties from.
  * @returns An array of key-value touple arrays.
  */
 export function getDecoratorProps(decoratorNode: ts.Decorator): [string, any][] {
-	const decoratorValues = [];
+	const decoratorValues: [string, any][] = [];
 	const objLiteralNode = (decoratorNode.expression as ts.CallExpression)?.arguments?.[0] as ts.ObjectLiteralExpression;
 
 	if (!objLiteralNode) {
@@ -180,11 +262,9 @@ export function getDecoratorProps(decoratorNode: ts.Decorator): [string, any][] 
 	}
 	objLiteralNode.properties.forEach((property: ts.PropertyAssignment) => {
 		const propName = getPropertyName(property.name);
-		const propValue = (<ts.StringLiteral>property.initializer).text;
-
-		decoratorValues.push([propName, propValue]);
+		const value = evalInitializer(property.initializer as ts.Expression);
+		decoratorValues.push([propName, value]);
 	});
 
 	return decoratorValues;
 }
-

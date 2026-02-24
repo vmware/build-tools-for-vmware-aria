@@ -54,6 +54,8 @@ export interface WorkflowDescriptor {
 	parameters: WorkflowParameter[];
 	items: WorkflowItemDescriptor[];
 	description: string;
+	restartMode: number;
+	resumeFromFailedMode: number;
 }
 /**
  * Represents a Workflow item (task, decision, waiting timer, polyglot)
@@ -80,6 +82,21 @@ export interface CanvasItemPolymorphicBagForItem {
 
 export interface CanvasItemPolymorphicBagForDecision {
 	else: string;
+}
+
+export interface VroSwitchCase {
+	condition: any;
+	target: string;
+	variable?: string;
+	type?: string;
+	comparator?: string;	
+}
+
+export interface CanvasItemPolymorphicBagForSwitch {
+	target: string;
+	cases: VroSwitchCase[],
+	defaultTarget?: string;
+	exception?: string;	
 }
 
 export interface WorkflowParameter {
@@ -184,6 +201,13 @@ export enum WorkflowItemType {
 	 * It can target a workflow item or workflow end and accepts input and output bindings.
 	 */
 	UserInteractionItem = "UserInteractionItem",
+
+	/**
+	 * This item type represents a switch item.
+	 *
+	 * It can target multiple items based on switch conditions.
+	 */
+	Switch = "SwitchItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
@@ -213,7 +237,7 @@ export interface PolicyTemplateDescriptor {
 	version: string;
 	schedule?: PolicyTemplateScheduleDescriptor;
 	events: PolicyTemplateEventDescriptor[];
-	templateVersion?: string;
+	templateVersion: string;
 	variables?: Record<string, PolicyAttribute>;
 	elements?: Record<string, PolicyElement>;
 }

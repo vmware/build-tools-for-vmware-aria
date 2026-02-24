@@ -23,7 +23,8 @@ export class NpmProxy {
 	async init() {
 		return new Promise((resolve, reject) => {
 			console.debug("Initializing npm config...");
-			npm.load({ color: true }, (err, result) => {
+			npm.config.defs.defaults.color = true;
+			npm.load((err, result) => {
 				err ? reject(err) : resolve(result);
 			});
 		});
@@ -117,11 +118,11 @@ export class DependenciesMapper {
 	}
 
 	private static parseNpmRef(npmRef: string): t.NpmPackageRef {
-		const isScoped = npmRef.includes('/');
+		const isScoped = (/[\\/]/gm).test(npmRef);
 
 		// e.g.: @pscoe-vmware/loging@2.3.4
 		if (isScoped) {
-			const [scope, nameVer] = npmRef.split('/');
+			const [scope, nameVer] = npmRef.split(/[\\/]+/gm);
 			const [npmName, npmVer] = nameVer.split("@");
 			return { name: `${scope}/${npmName}`, version: npmVer };
 		} else {

@@ -58,12 +58,12 @@ describe("End-to-End Tests", () => {
         const destination = ['test', destinationPath];
 
         const sourceFilesArray = glob
-            .sync(expand(...source, ...globExpr))
+			.sync(expand(...source, ...globExpr)?.replace(/[\\/]+/gm, path.posix.sep))
             .filter(file => !file.includes('META-INF') && !file.includes('version-history'))
             .map(file => path.normalize(file).replace(expand(...source), ''))
             .sort();
         const destinationFilesArray = glob
-            .sync(expand(...destination, ...globExpr))
+			.sync(expand(...destination, ...globExpr)?.replace(/[\\/]+/gm, path.posix.sep))
             .filter(file => !file.includes('META-INF') && !file.includes('version-history'))
             .map(file => path.normalize(file).replace(expand(...destination), ''))
             .sort();
@@ -101,6 +101,11 @@ describe("End-to-End Tests", () => {
     }
     const expand = (...args: string[]) => path.join(currentPath, ...args);
 
+    function toPathArg(...args: string[]) {
+        const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+        return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
+    }
+
     function readFile(path: string): string {
         return fs.readFileSync(path).toString().replace(/\r\n/g, "\n");
     }
@@ -108,28 +113,27 @@ describe("End-to-End Tests", () => {
     it("Convert XML project from tree to flat structure", async () => {
         try {
             await runCase("Project tree -> flat", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'tree',
                 '--out', 'flat',
-                '--srcPath', expand('test', 'com.vmware.pscoe.toolchain-expand'),
-                '--destPath', expand('test', 'target-flat'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain-expand'),
+                '--destPath', toPathArg('test', 'target-flat'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
                 '--description', '',
                 '--groupId', 'test.group',
-                '--keyPass', "VMware1!"
+                '--keyPass', "VMware1!",
+                '--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;
         }
 
-        await fs
-            .createReadStream(expand('test', 'com.vmware.pscoe.toolchain.package'))
-            .pipe(unzipper.Extract({ path: expand('test', 'target-flat.tmp') }))
-            .promise();
+        const fileToExtract = await unzipper.Open.file(expand('test', 'com.vmware.pscoe.toolchain.package'));
+        await fileToExtract.extract({ path: expand('test', 'target-flat.tmp') });
 
         compare('target-flat.tmp', 'target-flat', ['elements', '**']);
         deleteDirectoryRecursive(expand('test', 'target-flat.tmp'));
@@ -139,19 +143,20 @@ describe("End-to-End Tests", () => {
     it("Convert XML project from flat to tree structure", async () => {
         try {
             await runCase("Project flat -> tree", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'flat',
                 '--out', 'tree',
-                '--srcPath', expand('test', 'com.vmware.pscoe.toolchain.package'),
-                '--destPath', expand('test', 'target-tree'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain.package'),
+                '--destPath', toPathArg('test', 'target-tree'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
                 '--description', '',
                 '--groupId', 'test.group',
-                '--keyPass', "VMware1!"
+                '--keyPass', "VMware1!",
+                '--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;
@@ -164,28 +169,27 @@ describe("End-to-End Tests", () => {
     it("Convert XML project with custom forms from tree to flat structure", async () => {
         try {
             await runCase("Project tree -> flat", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'tree',
                 '--out', 'flat',
-                '--srcPath', expand('test', 'com.vmware.pscoe.toolchain-expand'),
-                '--destPath', expand('test', 'target-flat-custom-forms'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain-expand'),
+                '--destPath', toPathArg('test', 'target-flat-custom-forms'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
                 '--description', '',
                 '--groupId', 'test.group',
-                '--keyPass', "VMware1!"
+                '--keyPass', "VMware1!",
+                '--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;
         }
 
-        await fs
-            .createReadStream(expand('test', 'com.vmware.pscoe.toolchain.package'))
-            .pipe(unzipper.Extract({ path: expand('test', 'target-flat-custom-forms.tmp') }))
-            .promise();
+        const fileToExtract = await unzipper.Open.file(expand('test', 'com.vmware.pscoe.toolchain.package'));
+        await fileToExtract.extract({ path: expand('test', 'target-flat-custom-forms.tmp') });
 
         compare('target-flat-custom-forms.tmp', 'target-flat-custom-forms', ['elements', 'input_form*']);
         deleteDirectoryRecursive(expand('test', 'target-flat-custom-forms.tmp'));
@@ -195,19 +199,20 @@ describe("End-to-End Tests", () => {
     it("Convert XML project with custom forms from flat to tree structure", async () => {
         try {
             await runCase("Project flat -> tree", [
-                expand("bin", "vropkg"),
+                toPathArg(path.resolve("bin", "vropkg")),
                 '--in', 'flat',
                 '--out', 'tree',
-                '--srcPath', expand('test', 'com.vmware.pscoe.vrbt.custom.interaction.package'),
-                '--destPath', expand('test', 'target-tree-custom-forms'),
-                '--privateKeyPEM', expand('test', 'private_key.pem'),
-                '--certificatesPEM', expand('test', 'cert.pem'),
+                '--srcPath', toPathArg('test', 'com.vmware.pscoe.vrbt.custom.interaction.package'),
+                '--destPath', toPathArg('test', 'target-tree-custom-forms'),
+                '--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+                '--certificatesPEM', toPathArg('test', 'cert.pem'),
                 '--version', '1.0.0',
                 '--packaging', 'package',
                 '--artifactId', 'proj-artifact',
                 '--description', '',
                 '--groupId', 'test.group',
-                '--keyPass', "VMware1!"
+                '--keyPass', "VMware1!",
+                '--vroIgnoreFile', toPathArg('.vroignore')
             ]);
         } catch (error) {
             throw error;

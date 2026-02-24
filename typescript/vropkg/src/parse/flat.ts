@@ -22,7 +22,6 @@ import * as t from "../types";
 import { read, xml, xmlGet, xmlToCategory, xmlToTag, xmlToAction, xmlChildNamed, getCommentFromJavadoc, getWorkflowItems, validateWorkflowPath} from "./util";
 import { exist } from "../util";
 import { WINSTON_CONFIGURATION, FORM_ITEM_TEMPLATE, WORKFLOW_ITEM_INPUT_TYPE, DEFAULT_FORM_NAME, DEFAULT_FORM_FILE_NAME, VSO_RESOURCE_INF } from "../constants";
-
 /**
  * Extracts a vRO element of out unziped Package element folder
  * @param elementInfoPath - vro_package/elements/<id>/info
@@ -90,6 +89,10 @@ const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeEle
             comment = getCommentFromJavadoc(comment, action?.bundle?.projectPath, action.returnType, action?.inline?.javadoc);
             break;
         }
+		case t.VroElementType.ActionEnvironment: {
+			name = JSON.parse(read(dataFilePath)).name;
+			break;
+		}
         case t.VroElementType.PolicyTemplate: {
             name = xml(read(elementDataPath)).attr.name;
             break;
@@ -102,8 +105,7 @@ const parseFlatElement = async (elementInfoPath: string): Promise<t.VroNativeEle
                 if (fs.existsSync(filePath)) {
                     attributes[key] = fs.readFileSync(filePath)
                 } else {
-                    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Resource Element data bundle does not specify optional attribute ${mapping[key]}`);
-                }
+                    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Resource Element data bundle does not specify optional attribute ${mapping[key]}`);                }
             });
             name = attributes["name"];
             dataFilePath = path.join(baseDirectory, VSO_RESOURCE_INF, "data");
@@ -132,7 +134,7 @@ function parseInputForms(baseDirectory: string): any {
     let formNames: string[] = getWorkflowItems(path.join(baseDirectory, "data"), WORKFLOW_ITEM_INPUT_TYPE);
     let formItems: t.VroNativeFormElement[] = [];
     formNames.forEach((formName: string) => {
-        const inputFormItemPath = [baseDirectory, FORM_ITEM_TEMPLATE.replace("{{formName}}", formName)].join(path.sep);
+        const inputFormItemPath = path.join(baseDirectory, FORM_ITEM_TEMPLATE.replace("{{formName}}", formName)).replace(/[\\/]+/gm, path.posix.sep);
         if (!exist(inputFormItemPath)) {
             return;
         }
@@ -140,8 +142,7 @@ function parseInputForms(baseDirectory: string): any {
         if (!formItem) {
             return;
         }
-        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${formName}' from file '${inputFormItemPath}'`);
-        formItems.push({ name: formName, data: formItem });
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing form item '${formName}' from file '${inputFormItemPath}'`);        formItems.push({ name: formName, data: formItem });
     });
 
     return {
@@ -164,7 +165,7 @@ const parseFlat = async (nativePackagePath: string, destDir: string): Promise<t.
 
     let elements = await Promise.all(
         glob
-            .sync(path.join(tmp, "elements", "**", "info"))
+			.sync(path.join(tmp, "elements", "**", "info")?.replace(/[\\/]+/gm, path.posix.sep))
             .map(file => parseFlatElement(file))
     );
     let result = <t.VroPackageMetadata>{

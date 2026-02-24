@@ -14,34 +14,25 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.ArtifactUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
-public class PackageMojo extends AbstractMojo {
-
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
-
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
+public class PackageMojo extends AbstractVroMojo {
 
 	/**
 	 * The function is extended with support for multiple ABX bundles in a single
@@ -65,9 +56,10 @@ public class PackageMojo extends AbstractMojo {
 		List<File> dirList = new ArrayList<>();
 		List<String> packageNameList = new ArrayList<>();
 		List<Artifact> depArtifacts = new ArrayList<>();
+		File distDir = new File(project.getBasedir(), "dist");
 
 		// Prepare list of artifact root folders
-		getBundlesList(project.getBasedir(), packageName, dirList, packageNameList);
+		getBundlesList(distDir, packageName, dirList, packageNameList);
 
 		int index = 0;
 		for (File dir : dirList) {
@@ -82,7 +74,8 @@ public class PackageMojo extends AbstractMojo {
 			getLog().info("ABX action name '" + newPackageName + "'");
 
 			MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-			File pkgFile = new File(dir, pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
+			File pkgFile = new File(directory,
+					pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
 			Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
 			try {
 				this.preparePackageFile(pkg, dir, new File(pkgFile.getAbsolutePath()));

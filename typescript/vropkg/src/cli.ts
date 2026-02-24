@@ -25,6 +25,7 @@ import { serializeTree } from "./serialize/tree";
 import { serializeFlat } from "./serialize/flat";
 import { VroJsProjRealizer } from "./serialize/js";
 import { CleanDefinition } from "./cleaner/definitionCleaner";
+import VroIgnore from "./util/VroIgnore";
 import { WINSTON_CONFIGURATION } from "./constants";
 
 winston.loggers.add(WINSTON_CONFIGURATION.logPrefix, <winston.LoggerOptions>{
@@ -79,6 +80,9 @@ interface CliInputs extends cmdArgs.CommandLineOptions {
 
 	/** POM Project groupId **/
 	groupId: string;
+
+	/** File containing patterns to ignore when packaging/calculating unit test coverage */
+	vroIgnoreFile: string;
 }
 
 const cliOpts = <cmdArgs.OptionDefinition[]>[
@@ -97,14 +101,16 @@ const cliOpts = <cmdArgs.OptionDefinition[]>[
 	{ name: "artifactId", type: String },
 	{ name: "description", type: String },
 	{ name: "groupId", type: String },
+	{ name: "vroIgnoreFile", type: String}
 ];
 
 async function run() {
 	let input = cmdArgs(cliOpts, { stopAtFirstUnknown: false }) as CliInputs;
+	
+	/** Instantiates the default logger */
 	if (!(input.verbose || input.vv)) {
 		console.debug = () => { };
 	}
-
 	// validate input data
 	let printHelp = validate(input);
 	if (input.help || printHelp) {
@@ -164,13 +170,13 @@ function validate(input: CliInputs): boolean {
 		console.error("Missing destPath");
 	}
 	if (!input.version) {
-		console.error("Missing project version")
+		console.error("Missing project version");
 	}
 	if (!input.artifactId) {
-		console.error("Missing artifactId")
+		console.error("Missing artifactId");
 	}
 	if (!input.groupId) {
-		console.error("Missing groupId")
+		console.error("Missing groupId");
 	}
 	let certificateRequired = t.ProjectType[input.out] == t.ProjectType.flat;
 	if (certificateRequired && (!input.certificatesPEM || !input.privateKeyPEM)) {
@@ -182,8 +188,11 @@ function validate(input: CliInputs): boolean {
 		printHelp = true;
 	}
 	if (!input.keyPass) {
-		console.warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");
+		console.warn("No password has been specified for the private key with the --keyPass parameter. Assuming empty password has been used.");	}
+	if (!input.vroIgnoreFile) {
+		console.warn("No vroIgnoreFile specified, defaulting to .vroignore");
 	}
+	input.vroIgnoreFile = path.resolve(__dirname, input.vroIgnoreFile?.replace(/"/gm,"") || ".vroignore").replace(/[\\]+/gm,"/");
 
 	return printHelp;
 }
@@ -199,15 +208,15 @@ async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.Vr
 	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Parsing project type '${input.in}'`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
-			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description);
+			pkgPromise = parseTree(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.description, input.vroIgnoreFile);
 			break;
 		}
 		case t.ProjectType.flat: {
-			pkgPromise = parseFlat(input.srcPath, input.destPath);
+			pkgPromise = parseFlat(input.srcPath, input.destPath);  // N.B.: .vroIgnore operates in vropkg - nothing to exclude from package here
 			break;
 		}
 		case t.ProjectType.js: {
-			pkgPromise = new VroJsProjParser().parse(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging);
+			pkgPromise = new VroJsProjParser().parse(input.srcPath, input.groupId, input.artifactId, input.version, input.packaging, input.vroIgnoreFile);
 			break;
 		}
 		default: {
@@ -220,7 +229,7 @@ async function parse(input: CliInputs, projectType: t.ProjectType): Promise<t.Vr
 }
 
 async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.VroPackageMetadata): Promise<void> {
-	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing project type '${input.out}'`);
+	winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Serializing of project type '${input.out}' completed`);
 	switch (projectType) {
 		case t.ProjectType.tree: {
 			serializeTree(pkg, input.destPath);
@@ -231,7 +240,8 @@ async function serialize(input: CliInputs, projectType: t.ProjectType, pkg: t.Vr
 			break;
 		}
 		case t.ProjectType.js: {
-			await new VroJsProjRealizer().realize(pkg, input.destPath);
+			const ignorePatterns = new VroIgnore(input.vroIgnoreFile).getPatterns('General', 'TestHelpers', 'Packaging'); // excluded from package
+			await new VroJsProjRealizer().realize(pkg, input.destPath, ignorePatterns);
 			break;
 		}
 		default: {

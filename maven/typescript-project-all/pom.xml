@@ -9,6 +9,7 @@
 	</parent>
 	<artifactId>typescript-project-all</artifactId>
 	<groupId>com.vmware.pscoe.o11n</groupId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
@@ -26,7 +27,7 @@
 		</dependency>
 	</dependencies>
 	<properties>
-		<main.basedir>${project.parent.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
 	<build>
 		<plugins>

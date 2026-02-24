@@ -1,0 +1,411 @@
+/*
+ * #%L
+ * artifact-manager
+ * %%
+ * Copyright (C) 2023 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
+package com.vmware.pscoe.iac.artifact.aria.orchestrator.store;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.HttpClientErrorException;
+
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.VroPackageDescriptor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.Version;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
+import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
+import com.vmware.pscoe.iac.artifact.common.strategy.Strategy;
+
+public class VroPackageStore extends GenericPackageStore<VroPackageDescriptor> {
+	/**
+	 * Variable for logging.
+	 */
+	private final Logger logger = LoggerFactory.getLogger(VroPackageStore.class);
+
+	/**
+	 * The vRO rest client.
+	 */
+	private final RestClientVro restClient;
+
+	/**
+	 * The vRO package store strategies.
+	 */
+	private final List<Strategy> strategies;
+
+	/**
+	 *
+	 * @param vroRestClient the vRO rest client
+	 * @param vroStrategies the vRO strategies
+	 */
+	public VroPackageStore(final RestClientVro vroRestClient, final List<Strategy> vroStrategies) {
+		this.restClient = vroRestClient;
+		this.strategies = vroStrategies;
+	}
+
+	/**
+	 *
+	 * @param vroRestClient     the vRO rest client
+	 * @param vroStrategies     the vRO strategies
+	 * @param vroProductVersion the vRO product version
+	 */
+	public VroPackageStore(final RestClientVro vroRestClient, final List<Strategy> vroStrategies,
+			final Version vroProductVersion) {
+		this.restClient = vroRestClient;
+		this.strategies = vroStrategies;
+		super.setProductVersion(vroProductVersion);
+	}
+
+	/**
+	 * Gets the vRO packages.
+	 * 
+	 * @return the extracted packages
+	 */
+	@Override
+	public final List<Package> getPackages() {
+		List<Package> pkgs = restClient.getPackages();
+		for (Package pkg : pkgs) {
+			logger.trace(String.format(PackageStore.PACKAGE_LIST, pkg));
+		}
+
+		return pkgs;
+	}
+
+	/**
+	 * Exports all packages.
+	 * 
+	 * @param vroPackages the packages to export
+	 * @param dryrun      whether it should be dry run
+	 * @return the exported packages
+	 */
+	@Override
+	public final List<Package> exportAllPackages(final List<Package> vroPackages, final boolean dryrun) {
+		this.vlidateServer(vroPackages);
+
+		List<Package> sourceEndpointPackages = vroPackages;
+		List<Package> destinationEndpointPackages = vroPackages.stream()
+				.filter(pkg -> new File(pkg.getFilesystemPath()).exists()).collect(Collectors.toList());
+		for (Strategy strategy : strategies) {
+			sourceEndpointPackages = strategy.getExportPackages(sourceEndpointPackages, destinationEndpointPackages);
+		}
+		if (sourceEndpointPackages.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		List<Package> exportedPackages = new ArrayList<>();
+		for (Package pkg : sourceEndpointPackages) {
+			exportedPackages.add(this.exportPackage(pkg, dryrun));
+		}
+
+		return exportedPackages;
+	}
+
+	/**
+	 * Imports all packages.
+	 * 
+	 * @param pkg          the packages to import
+	 * @param dryrun       whether it should be dry run
+	 * @param enableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
+	@Override
+	public final List<Package> importAllPackages(final List<Package> pkg, final boolean dryrun,
+			final boolean enableBackup) {
+		return this.importAllPackages(pkg, dryrun, false, enableBackup);
+	}
+
+	/**
+	 * Imports all packages.
+	 * 
+	 * @param vroPackages     the packages to import
+	 * @param dryrun          whether it should be dry run
+	 * @param mergePackages   whether to merge the packages
+	 * @param vroEnableBackup whether it should back up the packages on import
+	 * @return the imported packages
+	 */
+	@Override
+	public final List<Package> importAllPackages(final List<Package> vroPackages, final boolean dryrun,
+			final boolean mergePackages, final boolean vroEnableBackup) {
+		this.validateFilesystem(vroPackages);
+
+		logger.info("Start executing import all packages...");
+
+		this.validateFilesystem(vroPackages);
+
+		List<Package> packagesToImport = vroPackages;
+		List<Package> destinationEndpointPackages = restClient.getPackages();
+		for (Strategy strategy : strategies) {
+			packagesToImport = strategy.getImportPackages(packagesToImport, destinationEndpointPackages); // filtered
+																											// packages
+																											// on file
+																											// system
+		}
+		if (packagesToImport.isEmpty()) {
+			return new ArrayList<>();
+		}
+		if (vroEnableBackup && !packagesToImport.isEmpty()) {
+			// TO change the packages to backup to ALL the packages currently present in vRO
+			// -> in this if statements replace packagesToImport with
+			// destinationEndpointPackages
+			logger.info("Number of packages to backup: " + packagesToImport.size());
+			logger.info("Packages to backup: " + packagesToImport);
+
+			boolean exportConfigAttributeValues = true;
+			boolean exportConfigSecureStringValues = true;
+
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy.MM.dd_HH-mm-ss");
+			String currentDateTimeString = timeStampFormat.format(timestamp);
+			Package firstPackage = packagesToImport.get(0);
+			String backupFilesDirectory = this.createBackupFileDirectory(firstPackage, currentDateTimeString);
+
+			packagesToImport.forEach(pkg -> {
+				String originalPkgFilePath = pkg.getFilesystemPath();
+
+				try {
+					List<Package> samePackagesInDest = new ArrayList<Package>();
+					for (int i = 0; i < destinationEndpointPackages.size(); i++) {
+						String currentVroPackageName = destinationEndpointPackages.get(i).getName();
+
+						if (currentVroPackageName.equals(pkg.getName())) {
+							samePackagesInDest.add(destinationEndpointPackages.get(i));
+						}
+					}
+					logger.info("Package versions to backup: " + samePackagesInDest);
+					if (!samePackagesInDest.isEmpty()) {
+						for (Package eachPkgVersion : samePackagesInDest) {
+							String backupFilePath = this.createBackupFilePath(eachPkgVersion, currentDateTimeString,
+									backupFilesDirectory);
+							eachPkgVersion.setFilesystemPath(backupFilePath);
+							restClient.exportPackage(eachPkgVersion, dryrun, exportConfigAttributeValues,
+									exportConfigSecureStringValues);
+						}
+
+					} else {
+						logger.info("The package does not exist in vRO and backup is skipped: " + pkg.getName());
+					}
+				} catch (Exception ex) {
+					String exceptionMessage = ex.getMessage();
+					logger.info("ExceptionMessage: " + exceptionMessage);
+					logger.info("Package Name: " + pkg.getName());
+
+					if (!exceptionMessage.contains("404 Not Found")
+							||
+							!exceptionMessage.contains(pkg.getName())) { // Unexpected exception
+						throw ex;
+					} else { // The package to be imported has been deleted from the server
+						logger.info("ExceptionMessage: " + ex.getMessage());
+					}
+				}
+
+				logger.info("Restoring original file path... ");
+
+				pkg.setFilesystemPath(originalPkgFilePath);
+				logger.info("File path after restoration: " + pkg.getFilesystemPath());
+
+			});
+		}
+
+		List<Package> importedPackages = new ArrayList<>();
+		for (Package pkg : packagesToImport) {
+			importedPackages.add(this.importPackage(pkg, dryrun, mergePackages));
+		}
+
+		return importedPackages;
+	}
+
+	/**
+	 * Exports a package.
+	 * 
+	 * @param vraPackage the package to export
+	 * @param dryrun     whether it should be a dry run
+	 * @return the exported package
+	 */
+	@Override
+	public final Package exportPackage(final Package vraPackage, final boolean dryrun) {
+		logger.info(String.format(PackageStore.PACKAGE_EXPORT, vraPackage));
+
+		boolean exportConfigAttributeValues = false;
+		boolean exportConfigSecureStringValues = false;
+
+		Package pkg = restClient.exportPackage(vraPackage, dryrun, exportConfigAttributeValues,
+				exportConfigSecureStringValues);
+
+		return pkg;
+	}
+
+	/**
+	 * Exports a package.
+	 * 
+	 * @param vraPackage           the package to export
+	 * @param vroPackageDescriptor the package descriptor
+	 * @param dryrun               whether it should be dry run
+	 * @return the exported package
+	 */
+	@Override
+	public final Package exportPackage(final Package vraPackage, final VroPackageDescriptor vroPackageDescriptor,
+			final boolean dryrun) {
+		logger.info(String.format(PackageStore.PACKAGE_EXPORT, vraPackage));
+
+		boolean exportConfigAttributeValues = false;
+		boolean exportConfigSecureStringValues = false;
+
+		Package pkg = restClient.exportPackage(vraPackage, dryrun, exportConfigAttributeValues,
+				exportConfigSecureStringValues);
+
+		return pkg;
+	}
+
+	/**
+	 * Imports a package.
+	 * 
+	 * @param vraPackage    the package to import
+	 * @param dryrun        whether it should be dry run
+	 * @param mergePackages whether to merge the packages
+	 * @return the imported package
+	 */
+	@Override
+	public final Package importPackage(final Package vraPackage, final boolean dryrun, final boolean mergePackages) {
+		if (mergePackages) {
+			logger.info(String.format(PackageStore.PACKAGE_MERGE, vraPackage));
+		} else {
+			logger.info(String.format(PackageStore.PACKAGE_IMPORT, vraPackage));
+		}
+
+		logger.debug(String.format("System path: %s", vraPackage.getFilesystemPath()));
+		Package pkg;
+
+		try {
+			pkg = restClient.importPackage(vraPackage, dryrun, mergePackages);
+		} catch (HttpClientErrorException e) {
+			if (e.getMessage().contains("Unknown object type 'Module' caused by: Unknown object type 'Module'")) {
+				throw new RuntimeException(
+						"One of the actions that we tried to import contains a path that is too long.", e);
+			}
+
+			throw e;
+		}
+
+		return pkg;
+	}
+
+	/**
+	 * Exports a package.
+	 * 
+	 * @param vroPackage           the package to export
+	 * @param vroPackageDescriptor the descriptor of the package to export
+	 * @param dryrun               whether it should be dry run
+	 * @return the exported package
+	 */
+	@Override
+	public final Package exportPackage(final Package vroPackage, final File vroPackageDescriptor,
+			final boolean dryrun) {
+		throw new UnsupportedOperationException("Not supported operation in vRO");
+	}
+
+	/**
+	 * Deletes a package.
+	 * 
+	 * @param pkg         the package to delete
+	 * @param withContent whether to delete the package with its content
+	 * @param dryrun      whether it should be dry run
+	 * @return the deleted package
+	 */
+	@Override
+	protected final Package deletePackage(final Package pkg, final boolean withContent, final boolean dryrun) {
+		return restClient.deletePackage(pkg, withContent, dryrun);
+	}
+
+	/**
+	 * Gets package conent.
+	 * 
+	 * @param pkg the package which content to get
+	 * @return the content of the package
+	 */
+	@Override
+	protected final PackageContent getPackageContent(final Package pkg) {
+		return restClient.getPackageContent(pkg);
+	}
+
+	/**
+	 * Deletes conent.
+	 * 
+	 * @param content the conent to delete
+	 * @param dryrun  whether it should be dry run
+	 */
+	@Override
+	protected final void deleteContent(final Content content, final boolean dryrun) {
+		restClient.deleteContent(content, dryrun);
+	}
+
+	/**
+	 * Creates backup file directory.
+	 * 
+	 * @param pkg                   the package to back up
+	 * @param currentDateTimeString the current date-time in human friendly format
+	 * @return the directory for backup
+	 */
+	private String createBackupFileDirectory(final Package pkg, final String currentDateTimeString) {
+		Path pkgFullPath = Paths.get(pkg.getFilesystemPath());
+		logger.debug("pkgFullPath: " + pkgFullPath.toString());
+
+		Path parent = pkgFullPath.getParent();
+		logger.debug("parent: " + parent.toString());
+
+		String platformSeparator = File.separator;
+		String newParentPath = parent.toString() + platformSeparator + "backup_" + currentDateTimeString
+				+ platformSeparator;
+		logger.debug("newParentPath: " + newParentPath);
+
+		File newParentPackage = new File(newParentPath);
+		boolean backupDirectoryCreated = newParentPackage.mkdir();
+		logger.debug("backupDirectoryCreated: " + backupDirectoryCreated);
+
+		return newParentPath;
+	}
+
+	/**
+	 * Creates the path of the backup file.
+	 * 
+	 * @param pkg                   the package to back up
+	 * @param currentDateTimeString the current date-time in human friendly format
+	 * @param backupDirectoryPath   the directory for backup
+	 * @return the path of the file to be backed up
+	 */
+	private String createBackupFilePath(final Package pkg, final String currentDateTimeString,
+			final String backupDirectoryPath) {
+		Path pkgFullPath = Paths.get(pkg.getFilesystemPath());
+		logger.debug("pkgFullPath: " + pkgFullPath.toString());
+
+		Path fileName = pkgFullPath.getFileName();
+		logger.debug("fileName: " + fileName.toString());
+
+		String newFileName = fileName.toString() + ".backup_" + currentDateTimeString;
+		logger.debug("newFileName: " + newFileName);
+
+		String newFullPath = backupDirectoryPath + newFileName;
+		logger.debug("newFullPath: " + newFullPath);
+
+		return newFullPath;
+	}
+}

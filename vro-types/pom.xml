@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -11,6 +13,7 @@
 
 	<groupId>com.vmware.pscoe.ts.types</groupId>
 	<artifactId>base-type</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -26,6 +29,7 @@
 		<module>o11n-plugin-apic</module>
 		<module>o11n-plugin-azure</module>
 		<module>o11n-plugin-dynamictypes</module>
+		<module>o11n-plugin-hms</module>
 		<module>o11n-plugin-mail</module>
 		<module>o11n-plugin-mqtt</module>
 		<module>o11n-plugin-net</module>
@@ -38,17 +42,19 @@
 		<module>o11n-plugin-ssh</module>
 		<module>o11n-plugin-vapi</module>
 		<module>o11n-plugin-vc</module>
-		<module>o11n-plugin-vcac</module>
-		<module>o11n-plugin-vcaccafe</module>
 		<module>o11n-plugin-vcloud</module>
 		<module>o11n-plugin-vco</module>
+		<module>o11n-plugin-vum</module>
+		<module>o11n-plugin-crypto</module>
 		<module>o11n-plugin-xml</module>
 		<module>o11n-plugin-aria</module>
+		<module>o11n-plugin-srm</module>
+		<module>o11n-plugin-ovatransfer</module>
 	</modules>
 
 	<properties>
 		<attachFileName>types-${project.artifactId}-${project.version}.tgz</attachFileName>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../</main.basedir>
 	</properties>
 
 	<build>
@@ -57,7 +63,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.6.3</version>
 					<executions>
 						<execution>
 							<id>npm version</id>
@@ -92,7 +98,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>3.4.0</version>
+					<version>3.6.1</version>
 					<extensions>true</extensions>
 					<executions>
 						<execution>
@@ -120,7 +126,7 @@
 						fail with "You have to use a classifier to attach supplemental artifacts to the 
 						project instead of replacing them." 
 					-->
-					<version>2.4</version>
+					<version>3.5.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

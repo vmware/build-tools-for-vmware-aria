@@ -67,7 +67,7 @@ export enum FileType {
 	PolicyTemplate, // .pl.ts
 	ConfigurationTS, // .conf.ts
 	ConfigurationYAML, // .conf.yaml
-	JasmineTest, // .test.[ts|js]
+	UnitTest, // .test.[ts|js]
 	Resource, // * & ~FileType
 	NativeContent, // .xml && .element_info.xml
 	TypeDef, // .d.ts
@@ -83,6 +83,7 @@ export interface FileTransformationContext {
 	outputs: ProgramOutputs;
 	diagnostics: DiagnosticCollection;
 	sourceFiles: ts.SourceFile[];
+    vroIgnoreFile: string;
 	configIdsMap: {[key: string]: string};											// Holds ConfigElement Path -> Id mappings.
 	getFile(fileName: string): FileDescriptor | undefined;
 	readFile(fileName: string): string | undefined;
@@ -126,6 +127,7 @@ export interface ProgramOptions {
 	actionsNamespace?: string;
 	workflowsNamespace?: string;
 	outputs?: ProgramOutputs;
+    vroIgnoreFile?: string;
 }
 
 export interface ProgramOutputs {

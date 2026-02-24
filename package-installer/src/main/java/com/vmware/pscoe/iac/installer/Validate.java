@@ -15,7 +15,6 @@
 package com.vmware.pscoe.iac.installer;
 
 import org.beryx.textio.TextIO;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.net.ssl.*;
@@ -31,15 +30,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class Validate {
+public final class Validate {
+
+	private Validate() {
+	}
 
 	public static boolean host(String host, TextIO input) {
 		try {
 			InetAddress inet = InetAddress.getByName(host);
-			input.getTextTerminal().println("  Using: " + inet.getHostName() + " with address: " + inet.getHostAddress());
+			input.getTextTerminal()
+					.println("  Using: " + inet.getHostName() + " with address: " + inet.getHostAddress());
 			return true;
 		} catch (UnknownHostException unknown) {
-			input.getTextTerminal().println("  WARNING: Unknown host \"" + host + "\" " + unknown.getLocalizedMessage());
+			input.getTextTerminal()
+					.println("  WARNING: Unknown host \"" + host + "\" " + unknown.getLocalizedMessage());
 			return false;
 		}
 	}
@@ -49,14 +53,16 @@ public class Validate {
 			Integer.parseInt(timeout);
 			return true;
 		} catch (NumberFormatException nfe) {
-			input.getTextTerminal().println("  WARNING: Unknown value for timeout \"" + timeout + "\" " + nfe.getLocalizedMessage());
+			input.getTextTerminal()
+					.println("  WARNING: Unknown value for timeout \"" + timeout + "\" " + nfe.getLocalizedMessage());
 			return false;
 		}
 	}
 
 	public static boolean port(int port, TextIO input) {
-		if (port <0 || port > 0x00FFFF) {
-			input.getTextTerminal().println("  WARNING: Port " + port + " is outside allowed range: 0 - " + (int)0x00FFFF);
+		if (port < 0 || port > 0x00FFFF) {
+			input.getTextTerminal()
+					.println("  WARNING: Port " + port + " is outside allowed range: 0 - " + (int) 0x00FFFF);
 			return false;
 		}
 		return true;
@@ -64,22 +70,22 @@ public class Validate {
 
 	public static boolean hostAndPort(String host, int port, TextIO input) {
 		try (Socket socket = new Socket(host, port)) {
-			// Nothing to do.
+			return true;
 		} catch (IOException e) {
-			input.getTextTerminal().println("  WARNING: Cannot open connection to " + host + ":" + port + " : " + e.getLocalizedMessage());
+			input.getTextTerminal().println(
+					"  WARNING: Cannot open connection to " + host + ":" + port + " : " + e.getLocalizedMessage());
 			return false;
 		}
-		return true;
 	}
 
 	public static String vrang(String csp, int port, String user, String pass, TextIO input) {
 		String urlString = "https://" + csp + ":" + port + "/csp/gateway/am/api/login?access_token";
 		try {
 			URL url = new URL(urlString);
-			HttpsURLConnection https = (HttpsURLConnection)(url.openConnection());
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
 			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); //millis
+			https.setReadTimeout(5000); // millis
 			https.setDoOutput(true);
 			https.setDoInput(true);
 			https.setRequestMethod("POST");
@@ -92,19 +98,22 @@ public class Validate {
 
 			int code = https.getResponseCode();
 			String message = https.getResponseMessage();
-			if (code !=  HttpURLConnection.HTTP_OK) {
+			if (code != HttpURLConnection.HTTP_OK) {
 				if (input != null) {
-					input.getTextTerminal().println("  WARNING: Cannot successfully login with \"" + user + "\" against \"" + url.toString() + "\". " + code + " " + message);
+					input.getTextTerminal().println("  WARNING: Cannot successfully login with \"" + user
+							+ "\" against \"" + url.toString() + "\". " + code + " " + message);
 				}
 				return null;
 			}
-			Map<?,?> response = jsonParse(readFully(https.getInputStream()));
+			Map<?, ?> response = jsonParse(readFully(https.getInputStream()));
 			String refreshToken = "" + response.get("refresh_token");
 			return refreshToken;
 		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
 			if (input != null) {
-				input.getTextTerminal().println("  WARNING: Cannot successfully login with \"" + user + "\" against \"" + urlString + "\" : " + e.getClass().getName()
-						+ " : " + e.getLocalizedMessage());
+				input.getTextTerminal()
+						.println("  WARNING: Cannot successfully login with \"" + user + "\" against \"" + urlString
+								+ "\" : " + e.getClass().getName()
+								+ " : " + e.getLocalizedMessage());
 			}
 			return null;
 		}
@@ -114,10 +123,10 @@ public class Validate {
 		String urlString = "https://" + csp + ":" + port + "/iaas/api/login";
 		try {
 			URL url = new URL(urlString);
-			HttpsURLConnection https = (HttpsURLConnection)(url.openConnection());
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
 			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); //millis
+			https.setReadTimeout(5000); // millis
 			https.setDoOutput(true);
 			https.setDoInput(true);
 			https.setRequestMethod("POST");
@@ -130,34 +139,36 @@ public class Validate {
 
 			int code = https.getResponseCode();
 			String message = https.getResponseMessage();
-			if (code !=  HttpURLConnection.HTTP_OK) {
+			if (code != HttpURLConnection.HTTP_OK) {
 				if (input != null) {
-					input.getTextTerminal().println("  WARNING: Cannot successfully authenticate with token against \"" + url.toString() + "\". " + code + " " + message);
+					input.getTextTerminal().println("  WARNING: Cannot successfully authenticate with token against \""
+							+ url.toString() + "\". " + code + " " + message);
 				}
 				return null;
 			}
-			Map<?,?> response = jsonParse(readFully(https.getInputStream()));
+			Map<?, ?> response = jsonParse(readFully(https.getInputStream()));
 			String accessToken = "" + response.get("token");
 			return accessToken;
 		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
 			if (input != null) {
-				input.getTextTerminal().println("  WARNING: Cannot successfully authenticate with token against \"" + urlString + "\" : " + e.getClass().getName()
-						+ " : " + e.getLocalizedMessage());
+				input.getTextTerminal()
+						.println("  WARNING: Cannot successfully authenticate with token against \"" + urlString
+								+ "\" : " + e.getClass().getName()
+								+ " : " + e.getLocalizedMessage());
 			}
 			return null;
 		}
 	}
 
-
 	public static boolean vroauth(String host, int port, String user, String pass, TextIO input) {
 		String baseString = "https://" + host + ":" + port;
-		String urlString =  baseString + "/vco/api/users/";
+		String urlString = baseString + "/vco/api/users/";
 		try {
 			URL url = new URL(urlString);
-			HttpsURLConnection https = (HttpsURLConnection)(url.openConnection());
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
 			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); //millis
+			https.setReadTimeout(5000); // millis
 			https.setDoOutput(false);
 			https.setDoInput(true);
 			https.setRequestMethod("GET");
@@ -167,22 +178,27 @@ public class Validate {
 				user = user.substring(0, index);
 			}
 			String credentials = user + ":" + pass;
-			https.setRequestProperty("Authorization", "Basic " + new String(Base64.getEncoder().encode(credentials.getBytes(StandardCharsets.UTF_8))));
+			https.setRequestProperty("Authorization",
+					"Basic " + new String(Base64.getEncoder().encode(credentials.getBytes(StandardCharsets.UTF_8))));
 
 			int code = https.getResponseCode();
 			String message = https.getResponseMessage();
-			if (code !=  HttpURLConnection.HTTP_OK) {
+			if (code != HttpURLConnection.HTTP_OK) {
 				if (input != null) {
-					input.getTextTerminal().println("  WARNING: Cannot successfully login with \"" + user + "\" against \"" + url.toString() + "\". " + code + " " + message);
+					input.getTextTerminal().println("  WARNING: Cannot successfully login with \"" + user
+							+ "\" against \"" + url.toString() + "\". " + code + " " + message);
 				}
 				return false;
 			}
-			input.getTextTerminal().println("  Using: Basic Authentication with user \"" + user + "\" agains \"" + baseString + "\".");
+			input.getTextTerminal()
+					.println("  Using: Basic Authentication with user \"" + user + "\" agains \"" + baseString + "\".");
 			return true;
 		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
 			if (input != null) {
-				input.getTextTerminal().println("  WARNING: Cannot successfully login with \"" + user + "\" against \"" + urlString + "\" : " + e.getClass().getName()
-						+ " : " + e.getLocalizedMessage());
+				input.getTextTerminal()
+						.println("  WARNING: Cannot successfully login with \"" + user + "\" against \"" + urlString
+								+ "\" : " + e.getClass().getName()
+								+ " : " + e.getLocalizedMessage());
 			}
 			return false;
 		}
@@ -192,8 +208,15 @@ public class Validate {
 		public String projectId = null;
 		public String org = null;
 		public String orgId = null;
-		public ProjectAndOrg() {}
-		public ProjectAndOrg(String projectId, String org, String orgId) {this.projectId=projectId; this.org = org; this.orgId=orgId;}
+
+		ProjectAndOrg() {
+		}
+
+		ProjectAndOrg(String projectId, String org, String orgId) {
+			this.projectId = projectId;
+			this.org = org;
+			this.orgId = orgId;
+		}
 	}
 
 	public static ProjectAndOrg project(Properties props, String project, TextIO input) {
@@ -211,7 +234,7 @@ public class Validate {
 			refresh = props.getProperty("vrang_refresh_token");
 			user = props.getProperty("vrang_username");
 			pass = props.getProperty("vrang_password");
-			csp = csp == null || csp.trim().length() <=0 ? host : csp;
+			csp = csp == null || csp.trim().length() <= 0 ? host : csp;
 			if (refresh == null) {
 				refresh = "" + vrang(csp, port, user, pass, null);
 			}
@@ -223,10 +246,10 @@ public class Validate {
 		String urlString = "https://" + host + ":" + port + "/iaas/api/projects";
 		try {
 			URL url = new URL(urlString);
-			HttpsURLConnection https = (HttpsURLConnection)(url.openConnection());
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
 			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); //millis
+			https.setReadTimeout(5000); // millis
 			https.setDoOutput(false);
 			https.setDoInput(true);
 			https.setRequestMethod("GET");
@@ -235,29 +258,33 @@ public class Validate {
 
 			int code = https.getResponseCode();
 			String message = https.getResponseMessage();
-			if (code !=  HttpURLConnection.HTTP_OK) {
+			if (code != HttpURLConnection.HTTP_OK) {
 				return new ProjectAndOrg();
 			}
-			Map<?,?> response = jsonParse(readFully(https.getInputStream()));
-			List<Map<?,?>> content = (List<Map<?,?>>)response.get("content");
+			Map<?, ?> response = jsonParse(readFully(https.getInputStream()));
+			List<Map<?, ?>> content = (List<Map<?, ?>>) response.get("content");
 			String projectList = "";
-			for (Map<?,?> prj : content) {
+			for (Map<?, ?> prj : content) {
 				String name = "" + prj.get("name");
 				projectList += name + "\t";
 				if (name != null && name.equals(project.trim())) {
 					String id = "" + prj.get("id");
 					String orgId = "" + prj.get("orgId");
-					input.getTextTerminal().println("  Using project \"" + name + "\" (" + id + ") Organization Id: " + orgId);
+					input.getTextTerminal()
+							.println("  Using project \"" + name + "\" (" + id + ") Organization Id: " + orgId);
 					ProjectAndOrg result = getOrgFromId(props, access, orgId);
 					result.projectId = id;
 					return result;
 				}
 			}
-			input.getTextTerminal().println("  WARNING: There is no project with the name \"" + project + "\". Possible value: " + projectList);
+			input.getTextTerminal().println(
+					"  WARNING: There is no project with the name \"" + project + "\". Possible value: " + projectList);
 			return new ProjectAndOrg();
 		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
-			input.getTextTerminal().println("  WARNING: Cannot successfully authenticate with token against \"" + urlString + "\" : " + e.getClass().getName()
-					+ " : " + e.getLocalizedMessage());
+			input.getTextTerminal()
+					.println("  WARNING: Cannot successfully authenticate with token against \"" + urlString + "\" : "
+							+ e.getClass().getName()
+							+ " : " + e.getLocalizedMessage());
 			return new ProjectAndOrg();
 		}
 	}
@@ -277,10 +304,10 @@ public class Validate {
 		String urlString = "https://" + host + ":" + port + "/csp/gateway/am/api/orgs/" + orgId;
 		try {
 			URL url = new URL(urlString);
-			HttpsURLConnection https = (HttpsURLConnection)(url.openConnection());
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
 			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); //millis
+			https.setReadTimeout(5000); // millis
 			https.setDoOutput(false);
 			https.setDoInput(true);
 			https.setRequestMethod("GET");
@@ -289,10 +316,10 @@ public class Validate {
 
 			int code = https.getResponseCode();
 			String message = https.getResponseMessage();
-			if (code !=  HttpURLConnection.HTTP_OK) {
+			if (code != HttpURLConnection.HTTP_OK) {
 				return new ProjectAndOrg(null, null, orgId);
 			}
-			Map<?,?> response = (Map<?,?>)jsonParse(readFully(https.getInputStream()));
+			Map<?, ?> response = (Map<?, ?>) jsonParse(readFully(https.getInputStream()));
 			String name = "" + response.get("name");
 			return new ProjectAndOrg(null, name, orgId);
 		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
@@ -300,12 +327,23 @@ public class Validate {
 		}
 	}
 
-	private static final void disableSecurity(HttpsURLConnection https) throws NoSuchAlgorithmException, KeyManagementException {
-		https.setHostnameVerifier(new HostnameVerifier() { public boolean verify(String host, SSLSession session) { return true;}});
+	private static void disableSecurity(HttpsURLConnection https)
+			throws NoSuchAlgorithmException, KeyManagementException {
+		https.setHostnameVerifier(new HostnameVerifier() {
+			public boolean verify(String host, SSLSession session) {
+				return true;
+			}
+		});
 		TrustManager tm = new X509TrustManager() {
-			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException { }
-			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException { }
-			public X509Certificate[] getAcceptedIssuers() { return null; }
+			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			}
+
+			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			}
+
+			public X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
 		};
 		SSLContext tls = SSLContext.getInstance("TLS");
 		tls.init(null, new TrustManager[] { tm }, null);
@@ -314,7 +352,7 @@ public class Validate {
 	}
 
 	private static Map jsonParse(String str) {
-		return (Map)JSONValue.parse(str);
+		return (Map) JSONValue.parse(str);
 	}
 
 	private static String readFully(InputStream stream) throws IOException {
@@ -323,7 +361,7 @@ public class Validate {
 		final StringBuilder out = new StringBuilder();
 		Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8);
 		int charsRead;
-		while((charsRead = in.read(buffer, 0, buffer.length)) > 0) {
+		while ((charsRead = in.read(buffer, 0, buffer.length)) > 0) {
 			out.append(buffer, 0, charsRead);
 		}
 		return out.toString();

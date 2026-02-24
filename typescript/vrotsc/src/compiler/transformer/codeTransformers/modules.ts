@@ -13,10 +13,10 @@
  * #L%
  */
 import * as ts from "typescript";
-import { ScriptTransformationContext, HierarchyFacts, FileType } from "../../../types";
+import { ScriptTransformationContext, HierarchyFacts } from "../../../types";
 import { NodeVisitor } from "../../visitor";
-import { SCRIPT_HELPER_MODULE, SCRIPT_VROES_VAR, SCRIPT_LAZY_IMPORT_NAME, SCRIPT_VRO_GLOBAL, SCRIPT_VROES_CACHE, SCRIPT_VRO_MODULE_PACKAGE, SCRIPT_VROES_MODULE } from "../helpers/VROES";
-import { getIdentifierTextOrNull, hasModifier, isRequireCall, getStringTextOrNull } from "../helpers/node";
+import { SCRIPT_HELPER_MODULE, SCRIPT_VROES_VAR, SCRIPT_LAZY_IMPORT_NAME, SCRIPT_VRO_GLOBAL } from "../helpers/VROES";
+import { getIdentifierTextOrNull, hasModifier, isRequireCall, getStringTextOrNull, isJestMethodCallWithModuleName } from "../helpers/node";
 import { system } from "../../../system/system";
 import { createModulePrologueStatements } from "./prologueStatements";
 import { createEpilogueStatements } from "./epilogueStatements";
@@ -47,7 +47,7 @@ function createClosure(parent?: Closure): Closure {
 	const identifiers: Record<string, ClosureIdentifierType> = {};
 	const closure: Closure = {
 		parent,
-		getIdentifier: function (name: string): ClosureIdentifierType {
+		getIdentifier: function(name: string): ClosureIdentifierType {
 			if (name !== undefined && name !== null) {
 				let type = identifiers[name];
 				if (type === undefined && parent) {
@@ -56,12 +56,12 @@ function createClosure(parent?: Closure): Closure {
 				return type;
 			}
 		},
-		addIdentifier: function (name: string, type: ClosureIdentifierType): void {
+		addIdentifier: function(name: string, type: ClosureIdentifierType): void {
 			if (name !== undefined && name !== null) {
 				identifiers[name] = type;
 			}
 		},
-		newClosure: function (): Closure {
+		newClosure: function(): Closure {
 			return createClosure(closure);
 		}
 	};
@@ -263,7 +263,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				const moduleName = resolveFullModuleName(node.moduleSpecifier.text);
 				const requireCall = ts.setSourceMapRange(ts.factory.createCallExpression(
 					ts.factory.createIdentifier("require"),
-                        /*typeArguments*/ undefined,
+					/*typeArguments*/ undefined,
 					[ts.factory.createStringLiteral(moduleName)]
 				), ts.getSourceMapRange(node));
 				const importVarPrefix = moduleName.substring(1 + Math.max(moduleName.lastIndexOf("."), moduleName.lastIndexOf("/")));
@@ -282,10 +282,10 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 
 			node.exportClause.elements.forEach(exportSpecifier => {
 				const exportPropertyName = exportSpecifier.propertyName || exportSpecifier.name;
-				let exportValue = importVarName ? ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(importVarName), exportPropertyName) : exportPropertyName;
+				let exportValue = importVarName ? ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(importVarName), exportPropertyName as ts.Identifier) : exportPropertyName;
 				const exportStatement = visitor.visitEachChild(
 					ts.factory.createExpressionStatement(ts.factory.createBinaryExpression(
-						ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), exportSpecifier.name),
+						ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), exportSpecifier.name as ts.Identifier),
 						ts.factory.createToken(ts.SyntaxKind.EqualsToken),
 						exportValue,
 					)));
@@ -301,17 +301,17 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 			const moduleName = resolveFullModuleName(node.moduleSpecifier.text);
 			const requireCall = ts.setSourceMapRange(ts.factory.createCallExpression(
 				ts.factory.createIdentifier("require"),
-                    /*typeArguments*/ undefined,
+				/*typeArguments*/ undefined,
 				[ts.factory.createStringLiteral(moduleName)]
 			), ts.getSourceMapRange(node));
 			if (node.exportClause && ts.isNamespaceExport(node.exportClause)) {
 				// export * as foo from "..."
 				const exportAssignmentNode = ts.factory.createBinaryExpression(
-					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), node.exportClause.name),
+					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier("exports"), node.exportClause.name as ts.Identifier),
 					ts.factory.createToken(ts.SyntaxKind.EqualsToken),
 					ts.factory.createCallExpression(
 						ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(tslibVarName), "__importStar"),
-                            /*typeArguments*/ undefined,
+						/*typeArguments*/ undefined,
 						[requireCall, ts.factory.createIdentifier("exports")]
 					),
 				);
@@ -319,7 +319,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 			} else {
 				const exportCall = ts.setSourceMapRange(ts.factory.createCallExpression(
 					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(tslibVarName), "__exportStar"),
-                        /*typeArguments*/ undefined,
+					/*typeArguments*/ undefined,
 					[requireCall, ts.factory.createIdentifier("exports")]
 				), ts.getSourceMapRange(node));
 				return ts.setSourceMapRange(ts.factory.createExpressionStatement(exportCall), ts.getSourceMapRange(node));
@@ -372,12 +372,12 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				const isDefault = hasModifier(node.modifiers, ts.SyntaxKind.DefaultKeyword);
 				const exportName = isDefault || !node.name ? "default" : node.name.text;
 				const funcExp = ts.setSourceMapRange(ts.factory.createFunctionExpression(
-                        /*modifiers*/undefined,
-                        /*asteriskToken*/undefined,
-                        /*name*/undefined,
-                        /*typeParameters*/undefined,
+					/*modifiers*/undefined,
+					/*asteriskToken*/undefined,
+					/*name*/undefined,
+					/*typeParameters*/undefined,
 					node.parameters,
-                        /*type*/undefined,
+					/*type*/undefined,
 					body
 				), ts.getSourceMapRange(node));
 				result.push(ts.setSourceMapRange(ts.factory.createExpressionStatement(ts.factory.createBinaryExpression(
@@ -389,12 +389,12 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				result.push(
 					ts.factory.updateFunctionDeclaration(
 						node,
-                        /*modifiers*/undefined,
-                        /*asteriskToken*/undefined,
+						/*modifiers*/undefined,
+						/*asteriskToken*/undefined,
 						node.name,
-                        /*typeParameters*/undefined,
+						/*typeParameters*/undefined,
 						node.parameters,
-                        /*type*/undefined,
+						/*type*/undefined,
 						body
 					));
 				if (isExported) {
@@ -448,6 +448,21 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		if (isRequireCall(node)) {
 			node = tryUpdateLocalRequireCall(node);
 			context.file.hierarchyFacts |= HierarchyFacts.ContainsRequire;
+		}
+		if (isJestMethodCallWithModuleName(node)) {
+			const moduleSpecifier = (node.arguments[0] as ts.StringLiteral).text;
+			const moduleName = system.normalizePath(system.joinPath(context.file.relativeDirPath, moduleSpecifier));
+			const actionNamespaceDirs = context.actionsNamespace ? context.actionsNamespace.split('.') : [];
+			const relativeDirPathDirs = context.file.relativeDirPath ? context.file.relativeDirPath.split('/') : [];
+			const subfolderLevels = 1 + actionNamespaceDirs.length + relativeDirPathDirs.length;
+			const newPath = "../".repeat(subfolderLevels) + 'src/' + actionNamespaceDirs.join('/') + '/' + moduleName;
+
+			const newArguments: ts.Expression[] = [ts.factory.createStringLiteral(newPath)];
+			for (let i=1; i<node.arguments.length; i++) {
+				newArguments.push(node.arguments[i]);
+			}
+			const newNode = ts.factory.updateCallExpression(node, node.expression, node.typeArguments, newArguments);
+			return visitor.visitEachChild(newNode);
 		}
 		return visitor.visitEachChild(node);
 	}
@@ -545,7 +560,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				requireCallNode = ts.factory.updateCallExpression(
 					requireCallNode,
 					ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(SCRIPT_VROES_VAR), SCRIPT_LAZY_IMPORT_NAME),
-                        /* typeArguments */ undefined,
+					/* typeArguments */ undefined,
 					requireCallNode.arguments);
 				node = ts.factory.createVariableDeclaration(
 					node.name,
@@ -606,7 +621,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 				requireCallNode = ts.factory.updateCallExpression(
 					requireCallNode,
 					requireCallNode.expression,
-                        /* typeArguments */ undefined,
+					/* typeArguments */ undefined,
 					[ts.factory.createStringLiteral(moduleName)]);
 			}
 		}

@@ -136,7 +136,7 @@ const getContentIfFile = (pem: t.PEM | string): t.PEM => {
 	}
 	if (fs.existsSync(pem) && fs.lstatSync(pem).isFile()) {
 		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Using certificate file ${pem}`);
-		return <t.PEM>fs.readFileSync(pem, 'UTF-8');
+		return <t.PEM>fs.readFileSync(pem, { encoding: 'utf-8'});
 	} else {
 		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Using certificate PEM from console input`);
 		return pem;

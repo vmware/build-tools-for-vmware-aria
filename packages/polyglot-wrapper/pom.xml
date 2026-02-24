@@ -10,10 +10,11 @@
 
   <groupId>com.vmware.pscoe.library</groupId>
   <artifactId>polyglot-wrapper</artifactId>
+  <name>${project.artifactId}</name>
   <packaging>package</packaging>
 
   <properties>
-    <main.basedir>${project.parent.parent.parent.basedir}</main.basedir>
+    <main.basedir>${project.baseUri}../../</main.basedir>
   </properties>
 
   <dependencies>

@@ -14,25 +14,26 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import com.vmware.pscoe.iac.artifact.PackageManager;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Properties;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "pull")
 public class PullMojo extends AbstractIacMojo {
@@ -77,13 +78,15 @@ public class PullMojo extends AbstractIacMojo {
 		}
 
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-		File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention()).toFile();
+		File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention())
+				.toFile();
 		Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
 
 		try {
 			PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForAbx());
 			store.exportPackage(pkg, project.getBasedir(), dryrun);
-			PackageManager.copyContents(new File(pkg.getFilesystemPath()), new File(pkgInfoProvider.getSourceDirectory().getAbsolutePath()));
+			PackageManager.copyContents(new File(pkg.getFilesystemPath()),
+					new File(pkgInfoProvider.getSourceDirectory().getAbsolutePath()));
 		} catch (ConfigurationException | IOException e) {
 			getLog().error(e);
 			String message = String.format("Error pulling vRA ng package : %s", e.getMessage());

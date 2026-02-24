@@ -6,16 +6,17 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
 import * as os from "os";
 import { basename, dirname, extname, join, normalize, relative, resolve, sep } from "path";
 import { statSync, readFileSync, removeSync, readdirSync, writeFileSync, ensureDirSync, emptyDirSync } from "fs-extra";
-const _uuid: typeof import("uuid/v3") = require("uuid/v3");
+import { v3 as _uuid } from "uuid";
+import VroIgnore from "../utilities/VroIgnore";
 
 /**
 * This class is a wrapper around Node.js file system and path modules.
@@ -82,15 +83,18 @@ export const system = {
 	deleteFile(path: string): void {
 		removeSync(path);
 	},
-	getFiles(path: string, recursive?: boolean): string[] {
+	getFiles(path: string, recursive: boolean = false, ignorePatterns?: string[]): string[] {
 		let files = readdirSync(path, { withFileTypes: true })
 			.filter(ent => !ent.isDirectory())
 			.filter(ent => ent.name[0] !== ".")
 			.map(ent => system.joinPath(path, ent.name));
 
+		if (ignorePatterns?.length) {
+			files = files.filter(filePath => !VroIgnore.filePathMatchesGlob(filePath, ignorePatterns))
+		}
 		if (recursive) {
 			system.getDirectories(path).forEach(dirName => {
-				files = files.concat(system.getFiles(system.joinPath(path, dirName), true));
+				files = files.concat(system.getFiles(system.joinPath(path, dirName), true, ignorePatterns));
 			});
 		}
 		return files;

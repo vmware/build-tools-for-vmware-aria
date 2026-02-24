@@ -26,7 +26,7 @@
     "run-script-os": "^1.1.6"
   },
   "dependencies": {
-    "axios": "0.28.0"
+    "axios": "1.13.5"
   },
   "platform": {
     "runtime": "nodejs",

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -11,12 +13,13 @@
 
 	<groupId>com.vmware.pscoe.ts.types</groupId>
 	<artifactId>vro</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
@@ -158,18 +161,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
-			<artifactId>o11n-plugin-vcac</artifactId>
-			<type>tgz</type>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vmware.pscoe.ts.types</groupId>
-			<artifactId>o11n-plugin-vcaccafe</artifactId>
-			<type>tgz</type>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-vcloud</artifactId>
 			<type>tgz</type>
 			<version>${revision}</version>
@@ -182,10 +173,45 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.ts.types</groupId>
+			<artifactId>o11n-plugin-vum</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.ts.types</groupId>
+			<artifactId>o11n-plugin-crypto</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.ts.types</groupId>
 			<artifactId>o11n-plugin-xml</artifactId>
 			<type>tgz</type>
 			<version>${revision}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.ts.types</groupId>
+			<artifactId>o11n-plugin-hms</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.ts.types</groupId>
+			<artifactId>o11n-plugin-aria</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.ts.types</groupId>
+			<artifactId>o11n-plugin-srm</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.ts.types</groupId>
+			<artifactId>o11n-plugin-ovatransfer</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+		</dependency>		
 	</dependencies>
-
 </project>

@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.vmware.pscoe.vra-ng</groupId>
 	<artifactId>vra-ng-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>
@@ -38,8 +39,6 @@
 						<password>${vrang.password}</password>
 						<serverId>${vrang.serverId}</serverId>
 						<project.name>${vrang.project.name}</project.name>
-						<project.id>${vrang.project.id}</project.id>
-						<org.id>${vrang.org.id}</org.id>
 						<org.name>${vrang.org.name}</org.name>
 						<refresh.token>${vrang.refresh.token}</refresh.token>
 						<bp.release>${vrang.bp.release}</bp.release>
@@ -59,7 +58,7 @@
 	</build>
 
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 		<!-- checksum calculation properties -->
 		<checksum.definitions>content,packages</checksum.definitions>
 
@@ -70,6 +69,6 @@
 
 		<checksum.packagesEnabled>true</checksum.packagesEnabled>
 		<checksum.packagesDir>target</checksum.packagesDir>
-		<checksum.packagesGlob>*.vra-ng</checksum.packagesGlob>
+		<checksum.packagesGlob>*.vrang</checksum.packagesGlob>
 	</properties>
 </project>

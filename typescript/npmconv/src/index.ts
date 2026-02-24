@@ -22,7 +22,7 @@ import * as cp from "child_process";
 
 import * as dwonloadGit from "download-git-repo";
 
-import { NpmProxy, DependenciesMapper } from "./deps";
+import { DependenciesMapper, NpmProxy } from "./deps";
 import ImportsRewriter from "./rewriter";
 import tscfgmerge from "./tscfgmerge";
 import * as t from "./types";
@@ -74,7 +74,7 @@ export class NpmConverter {
 			console.log(`Cloning source repo from: ${gitRepo} to ${this.opts.source.directory}`);
 			await new Promise((resolve, reject) => {
 				dwonloadGit(`direct:${gitRepo}`, this.opts.source.directory, { clone: true }, err => {
-					err ? reject(err) : resolve();
+					err ? reject(err) : resolve(undefined);
 				});
 			});
 			console.debug("Cloning done.");
@@ -187,7 +187,7 @@ export class NpmConverter {
 		const srcFiles = (this.opts.include.sourceGlobs || []).map<{ base: string; files: string[], destDir: string | null }>(pattern => {
 			const { globPattern, destDir } = this.splitGlobMap(pattern);
 
-			let files = glob.sync(globPattern, { cwd: this.opts.source.directory, nodir: true });
+			let files = glob.sync(globPattern?.replace(/[\\/]+/gm, path.posix.sep), { cwd: this.opts.source.directory, nodir: true });
 
 			let base = path.dirname(globPattern);
 			while (base != "." && !fs.existsSync(path.resolve(this.opts.source.directory, base))) {
@@ -218,7 +218,7 @@ export class NpmConverter {
 						files.map(file => {
 							return fs.ensureDir(path.resolve(sourceFilesDestDir, path.dirname(file))).then(() => {
 								const srcPath = path.resolve(this.opts.source.directory, base, file);
-								let sourceCode = fs.readFileSync(srcPath, { encoding: "UTF-8" });
+								let sourceCode = fs.readFileSync(srcPath, { encoding: "utf-8" });
 								console.log(`Processing file: ${srcPath}`)
 								console.log(`Dependency map: ${JSON.stringify(dependencyMap)}`)
 
@@ -236,7 +236,7 @@ export class NpmConverter {
 								);
 								const newSource = rewriter.rewrite();
 
-								return fs.writeFile(path.resolve(sourceFilesDestDir, file), newSource, { encoding: "UTF-8" });
+								return fs.writeFile(path.resolve(sourceFilesDestDir, file), newSource, { encoding: "utf-8" });
 							});
 						})
 					);
@@ -254,7 +254,7 @@ export class NpmConverter {
 
 		const auxFiles: { srcFiles: string[]; destDir: string }[] = auxFilesSplits.reduce((res, fileSplit) => {
 			return res.concat({
-				srcFiles: glob.sync(fileSplit.globPattern, { nodir: true }),
+				srcFiles: glob.sync(fileSplit.globPattern?.replace(/[\\/]+/gm, path.posix.sep), { nodir: true }),
 				destDir: fileSplit.destDir
 			});
 		}, []);
@@ -368,16 +368,16 @@ async function exec(command: string, options: cp.ExecOptions): Promise<CmdResult
 				});
 			}
 
-			resolve({ code: 0, stdout, stderr });
+			resolve({ code: 0, stdout: stdout ? stdout.toString() : undefined, stderr: stderr ? stderr.toString() : undefined });
 		});
 	});
 }
 
 function updatePomDependencies(pomPath: string, depsSpec: t.MvnPackageRef[]): void {
-	const pomContent = fs.readFileSync(pomPath, { encoding: "UTF-8" });
+	const pomContent = fs.readFileSync(pomPath, { encoding: "utf-8" });
 	const endTagPos = pomContent.indexOf("</dependencies>");
 
-	fs.writeFileSync(pomPath, pomContent.substr(0, endTagPos), { encoding: "UTF-8" });
+	fs.writeFileSync(pomPath, pomContent.substr(0, endTagPos), { encoding: "utf-8" });
 
 	depsSpec.forEach(dep => {
 		fs.appendFileSync(
@@ -389,10 +389,10 @@ function updatePomDependencies(pomPath: string, depsSpec: t.MvnPackageRef[]): vo
       <version>${dep.version}</version>${dep.scope ? "\n      <scope>" + dep.scope + "</scope>" : ""}
 	  </dependency>
   `,
-			{ encoding: "UTF-8" }
+			{ encoding: "utf-8" }
 		);
 	});
-	fs.appendFileSync(pomPath, pomContent.substr(endTagPos), { encoding: "UTF-8" });
+	fs.appendFileSync(pomPath, pomContent.substr(endTagPos), { encoding: "utf-8" });
 }
 
 interface CmdResult {

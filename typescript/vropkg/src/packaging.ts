@@ -17,7 +17,6 @@ import * as archiver from 'archiver';
 import * as unzipper from 'unzipper';
 import * as winston from 'winston';
 import { WINSTON_CONFIGURATION } from "./constants";
-
 /*
  * Utility class for variety of packaging operations.
  */
@@ -54,8 +53,8 @@ export const archive = (outputPath: string): archiver.Archiver => {
  * @param destinationDir folder under which the package content will be extracted
  */
 export const extract = async (assemblyFilePath: string, destinationDir): Promise<void> => {
-	let extractor = unzipper.Extract({ path: destinationDir })
-	return fs.createReadStream(assemblyFilePath).pipe(extractor).promise().catch(error => {
+	const fileToExtract = await unzipper.Open.file(assemblyFilePath);
+	return fileToExtract.extract({ path: destinationDir }).catch(error => {
 		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(
 			`Error extracting ${assemblyFilePath} into ${destinationDir}.` +
 			`Error ${error.message},file ${error.fileName}, line ${error.lineNumber}`

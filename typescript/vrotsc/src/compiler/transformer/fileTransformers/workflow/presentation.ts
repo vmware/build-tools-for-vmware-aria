@@ -19,6 +19,7 @@ import { findItemByName } from "./helpers/findItemByName";
 import { Graph, GraphNode } from "./decorators/helpers/graph";
 import { formatPosition } from "./helpers/formatPosition";
 import DefaultErrorHandlerDecoratorStrategy from "./decorators/defaultErrorHandlerDecoratorStrategy";
+import { printAttributeArrayValue } from "../../codeTransformers/attributes";
 
 const xmldoc: typeof import("xmldoc") = require("xmldoc");
 
@@ -39,8 +40,8 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		+ ` id="${workflow.id}"`
 		+ ` version="${workflow.version}"`
 		+ ` api-version="6.0.0"`
-		+ ` restartMode="1"`
-		+ ` resumeFromFailedMode="0"`
+		+ ` restartMode="${workflow.restartMode ?? 1}"`
+		+ ` resumeFromFailedMode="${workflow.resumeFromFailedMode ?? 0}"`
 		+ `>`).appendLine();
 	stringBuilder.indent();
 	stringBuilder.append(`<display-name><![CDATA[${workflow.name}]]></display-name>`).appendLine();
@@ -92,16 +93,27 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 	function buildAttributes(attributes: WorkflowParameter[]): void {
 		attributes.forEach(att => {
 			stringBuilder.append(`<attrib name="${att.name}" type="${att.type}" read-only="false"`);
-			buildBindAttribute(att);
-			stringBuilder.append(` />`).appendLine();
+			if (att?.bind) {
+				buildBindAttribute(att);
+				stringBuilder.append(` />`).appendLine();
+			} else if (att?.defaultValue) {
+				if (att.type.indexOf("Array/") === 0) {
+					att.defaultValue = printAttributeArrayValue(att.defaultValue.split(","), att.type);
+				}
+
+				stringBuilder.append(` >`).appendLine();
+				stringBuilder.indent();
+				stringBuilder.append(`<value encoded="n"><![CDATA[${att.defaultValue}]]></value>`).appendLine();
+				stringBuilder.unindent();
+				stringBuilder.append(`</attrib>`).appendLine();
+			} else {
+				stringBuilder.append(` />`).appendLine();
+			}
 		});
 	}
 
 	function buildBindAttribute(att: WorkflowParameter) {
 		let value = "" + att.defaultValue;
-		if (!att?.bind) {
-			return;
-		}
 		const index = value.lastIndexOf("/");
 		if (index == -1) {
 			throw new Error(`Invalid syntax for attribute "${att.name}" in workflow "${workflow.name}". It is specified that this value is bound to a Configuration (Element) but its value "${value}" `

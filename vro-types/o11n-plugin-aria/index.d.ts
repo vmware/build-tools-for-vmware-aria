@@ -503,6 +503,8 @@ declare class VraRestRequest {
 	 * @param header
 	 */
 	getHeader(header: string): string;
+
+	constructor()
 }
 
 declare class VraRestResponse {
@@ -517,6 +519,8 @@ declare class VraRestResponse {
 	 * @param headerName
 	 */
 	getHeaderValues(headerName: string): string;
+
+	constructor();
 }
 
 declare class VraBlockDevice {
@@ -1061,48 +1065,48 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getTags(vRAHost: VraHost, filter: string): VraTag[];
+	static getTags(vRAHost: VraHost, filter: string): VraTag[];
 
 	/**
 	 * Get CloudZone for a given zone id.
 	 * @param vRAHost
 	 * @param zoneId
 	 */
-	getCloudZone(vRAHost: VraHost, zoneId: string): VraZone;
+	static getCloudZone(vRAHost: VraHost, zoneId: string): VraZone;
 
 	/**
 	 * Get all FabricNetwork for a given Host.
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getFabricNetworks(vRAHost: VraHost, filter: string): VraFabricNetwork[];
+	static getFabricNetworks(vRAHost: VraHost, filter: string): VraFabricNetwork[];
 
 	/**
 	 * Get all CloudZones for the given Host.
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getCloudZones(vRAHost: VraHost, filter: string): VraZone[];
+	static getCloudZones(vRAHost: VraHost, filter: string): VraZone[];
 
 	/**
 	 * Get all FlavorProfile objects for a given Host.
 	 * @param vRAHost
 	 */
-	getFlavorProfiles(vRAHost: VraHost): VraFlavorProfile[];
+	static getFlavorProfiles(vRAHost: VraHost): VraFlavorProfile[];
 
 	/**
 	 * Get StorageProfile by ID.
 	 * @param vRAHost
 	 * @param id
 	 */
-	getStorageProfile(vRAHost: VraHost, id: string): VraStorageProfile;
+	static getStorageProfile(vRAHost: VraHost, id: string): VraStorageProfile;
 
 	/**
 	 * Get vSphere Cloud Account By Id.
 	 * @param vRAHost
 	 * @param vsphereCloudAccountId
 	 */
-	getVsphereCloudAccount(
+	static getVsphereCloudAccount(
 		vRAHost: VraHost,
 		vsphereCloudAccountId: string
 	): VraCloudAccountVsphere;
@@ -1112,7 +1116,7 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param id
 	 */
-	getProject(vRAHost: VraHost, id: string): VraProject;
+	static getProject(vRAHost: VraHost, id: string): VraProject;
 
 	/**
 	 * Get FabricNetwork by ID.
@@ -1120,7 +1124,7 @@ declare class VraEntitiesFinder {
 	 * @param id
 	 * @param select
 	 */
-	getFabricNetwork(
+	static getFabricNetwork(
 		vRAHost: VraHost,
 		id: string,
 		select: string
@@ -1131,7 +1135,7 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param id
 	 */
-	getProjectResourceMetadata(
+	static getProjectResourceMetadata(
 		vRAHost: VraHost,
 		id: string
 	): VraProjectResourceMetadata;
@@ -1141,7 +1145,7 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param isDisabledDataCollector
 	 */
-	getDataCollectors(
+	static getDataCollectors(
 		vRAHost: VraHost,
 		isDisabledDataCollector: boolean
 	): VraDataCollector[];
@@ -1150,47 +1154,47 @@ declare class VraEntitiesFinder {
 	 * Get all image mapping keys for a given Host.
 	 * @param vRAHost
 	 */
-	getAllImageMapping(vRAHost: VraHost): string[];
+	static getAllImageMapping(vRAHost: VraHost): string[];
 
 	/**
 	 * Get NSX-V Cloud Account by Id.
 	 * @param vRAHost
 	 * @param id
 	 */
-	getNsxVCloudAccount(vRAHost: VraHost, id: string): VraCloudAccountNsxV;
+	static getNsxVCloudAccount(vRAHost: VraHost, id: string): VraCloudAccountNsxV;
 
 	/**
 	 * Get ImageProfile by ID.
 	 * @param vRAHost
 	 * @param id
 	 */
-	getImageProfile(vRAHost: VraHost, id: string): VraImageProfile;
+	static getImageProfile(vRAHost: VraHost, id: string): VraImageProfile;
 
 	/**
 	 * Get all image reference keys for a given Host and Image.
 	 * @param vRAHost
 	 * @param image
 	 */
-	getAllImageReferencesByImage(vRAHost: VraHost, image: string): string[];
+	static getAllImageReferencesByImage(vRAHost: VraHost, image: string): string[];
 
 	/**
 	 * Get all RequestTracker objects.
 	 * @param vRAHost
 	 */
-	getRequestTrackers(vRAHost: VraHost): VraRequestTracker[];
+	static getRequestTrackers(vRAHost: VraHost): VraRequestTracker[];
 
 	/**
 	 * Get all NSX-V Cloud Account.
 	 * @param vRAHost
 	 */
-	getNsxVCloudAccounts(vRAHost: VraHost): VraCloudAccountNsxV[];
+	static getNsxVCloudAccounts(vRAHost: VraHost): VraCloudAccountNsxV[];
 
 	/**
 	 * Get vSphere Cloud Account Regions/DataCenter.
 	 * @param vRAHost
 	 * @param cloudAccountVsphereSpecification
 	 */
-	getVsphereCloudAccountRegions(
+	static getVsphereCloudAccountRegions(
 		vRAHost: VraHost,
 		cloudAccountVsphereSpecification: VraCloudAccountVsphereSpecification
 	): VraCloudAccountRegions;
@@ -1200,7 +1204,7 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param blockDeviceId
 	 */
-	getBlockDeviceSnapshots(
+	static getBlockDeviceSnapshots(
 		vRAHost: VraHost,
 		blockDeviceId: string
 	): VraDiskSnapshot[];
@@ -1209,7 +1213,7 @@ declare class VraEntitiesFinder {
 	 * Get all ImageProfile objects for a given Host.
 	 * @param vRAHost
 	 */
-	getImageProfiles(vRAHost: VraHost): VraImageProfile[];
+	static getImageProfiles(vRAHost: VraHost): VraImageProfile[];
 
 	/**
 	 * Get Block Device/Disk Snapshot details for given Block Device Id.
@@ -1217,7 +1221,7 @@ declare class VraEntitiesFinder {
 	 * @param blockDeviceId
 	 * @param snapshotId
 	 */
-	getBlockDeviceSnapshot(
+	static getBlockDeviceSnapshot(
 		vRAHost: VraHost,
 		blockDeviceId: string,
 		snapshotId: string
@@ -1229,7 +1233,7 @@ declare class VraEntitiesFinder {
 	 * @param machineId
 	 * @param snapshotId
 	 */
-	getMachineSnapshot(
+	static getMachineSnapshot(
 		vRAHost: VraHost,
 		machineId: string,
 		snapshotId: string
@@ -1240,14 +1244,14 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param id
 	 */
-	getNetworkProfile(vRAHost: VraHost, id: string): VraNetworkProfile;
+	static getNetworkProfile(vRAHost: VraHost, id: string): VraNetworkProfile;
 
 	/**
 	 * Get all Machine objects for a given Host.
 	 * @param vRAHost
 	 * @param machineId
 	 */
-	getMachineDisksByMachineId(
+	static getMachineDisksByMachineId(
 		vRAHost: VraHost,
 		machineId: string
 	): VraBlockDevice[];
@@ -1257,7 +1261,7 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getAvailableBlockDevices(
+	static getAvailableBlockDevices(
 		vRAHost: VraHost,
 		filter: string
 	): VraBlockDevice[];
@@ -1266,7 +1270,7 @@ declare class VraEntitiesFinder {
 	 * Get all Networks.
 	 * @param vRAHost
 	 */
-	getNetworks(vRAHost: VraHost): VraNetwork[];
+	static getNetworks(vRAHost: VraHost): VraNetwork[];
 
 	/**
 	 * Get Machine Disk by ID for a specific machine.
@@ -1274,7 +1278,7 @@ declare class VraEntitiesFinder {
 	 * @param machineId
 	 * @param diskId
 	 */
-	getMachineDisk(
+	static getMachineDisk(
 		vRAHost: VraHost,
 		machineId: string,
 		diskId: string
@@ -1286,19 +1290,19 @@ declare class VraEntitiesFinder {
 	 * @param key
 	 * @param filter
 	 */
-	getTagsByKey(vRAHost: VraHost, key: string, filter: string): VraTag[];
+	static getTagsByKey(vRAHost: VraHost, key: string, filter: string): VraTag[];
 
 	/**
 	 * Get all vSphere Cloud Accounts.
 	 * @param vRAHost
 	 */
-	getVsphereCloudAccounts(vRAHost: VraHost): VraCloudAccountVsphere[];
+	static getVsphereCloudAccounts(vRAHost: VraHost): VraCloudAccountVsphere[];
 
 	/**
 	 * Get all flavor mapping keys for a given Host.
 	 * @param vRAHost
 	 */
-	getAllFlavorMapping(vRAHost: VraHost): string[];
+	static getAllFlavorMapping(vRAHost: VraHost): string[];
 
 	/**
 	 * Get Machine Network Interface details for given Machine ID and Network Interface ID.
@@ -1306,7 +1310,7 @@ declare class VraEntitiesFinder {
 	 * @param machineId
 	 * @param networkInterfaceId
 	 */
-	getMachineNetworkInterface(
+	static getMachineNetworkInterface(
 		vRAHost: VraHost,
 		machineId: string,
 		networkInterfaceId: string
@@ -1318,14 +1322,14 @@ declare class VraEntitiesFinder {
 	 * @param Id
 	 * @param select
 	 */
-	getMachine(vRAHost: VraHost, id: string, select: string): VraMachine;
+	static getMachine(vRAHost: VraHost, id: string, select: string): VraMachine;
 
 	/**
 	 * Get all Snapshots for a given Machine
 	 * @param vRAHost
 	 * @param machineId
 	 */
-	getMachineSnapshots(vRAHost: VraHost, machineId: string): VraSnapshot[];
+	static getMachineSnapshots(vRAHost: VraHost, machineId: string): VraSnapshot[];
 
 	/**
 	 * Get Cloud Account - Vsphere, NSXT, NXTV, AWS, Azure, GCP etc by ID.
@@ -1333,7 +1337,7 @@ declare class VraEntitiesFinder {
 	 * @param id
 	 * @param select
 	 */
-	getCloudAccount(
+	static getCloudAccount(
 		vRAHost: VraHost,
 		id: string,
 		select: string
@@ -1344,14 +1348,14 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getMachines(vRAHost: VraHost, filter: string): VraMachine[];
+	static getMachines(vRAHost: VraHost, filter: string): VraMachine[];
 
 	/**
 	 * Get RequestTracker object for a given request id.
 	 * @param vRAHost
 	 * @param requestTrackerId
 	 */
-	getRequestTracker(
+	static getRequestTracker(
 		vRAHost: VraHost,
 		requestTrackerId: string
 	): VraRequestTracker;
@@ -1360,21 +1364,21 @@ declare class VraEntitiesFinder {
 	 * Get all NSX-T Cloud Account.
 	 * @param vRAHost
 	 */
-	getNsxTCloudAccounts(vRAHost: VraHost): VraCloudAccountNsxT[];
+	static getNsxTCloudAccounts(vRAHost: VraHost): VraCloudAccountNsxT[];
 
 	/**
 	 * Get all projects with specified paging parameters for the given Host.
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getProjects(vRAHost: VraHost, filter: string): VraProject[];
+	static getProjects(vRAHost: VraHost, filter: string): VraProject[];
 
 	/**
 	 * Get all Network Interfaces for a given Machine.
 	 * @param vRAHost
 	 * @param machineId
 	 */
-	getMachineNetworkInterfaces(
+	static getMachineNetworkInterfaces(
 		vRAHost: VraHost,
 		machineId: string
 	): VraNetworkInterface[];
@@ -1384,27 +1388,27 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param Id
 	 */
-	getNsxTCloudAccount(vRAHost: VraHost, id: string): VraCloudAccountNsxT;
+	static getNsxTCloudAccount(vRAHost: VraHost, id: string): VraCloudAccountNsxT;
 
 	/**
 	 * Get CloudZone Region by given Zone.
 	 * @param vRAHost
 	 * @param zone
 	 */
-	getCloudZoneRegionByZone(vRAHost: VraHost, zone: VraZone): VraRegion;
+	static getCloudZoneRegionByZone(vRAHost: VraHost, zone: VraZone): VraRegion;
 
 	/**
 	 * Get all NetworkProfile objects for a given Host.
 	 * @param vRAHost
 	 */
-	getNetworkProfiles(VraHost: VraHost): VraNetworkProfile[];
+	static getNetworkProfiles(VraHost: VraHost): VraNetworkProfile[];
 
 	/**
 	 * Get CloudZone Region by given region Id.
 	 * @param vRAHost
 	 * @param regionId
 	 */
-	getCloudZoneRegion(vRAHost: VraHost, regionId: string): VraRegion;
+	static getCloudZoneRegion(vRAHost: VraHost, regionId: string): VraRegion;
 
 	/**
 	 * Get Tag Object by String Key and value.
@@ -1412,26 +1416,26 @@ declare class VraEntitiesFinder {
 	 * @param key
 	 * @param value
 	 */
-	getTag(vRAHost: VraHost, key: string, value: string): VraTag;
+	static getTag(vRAHost: VraHost, key: string, value: string): VraTag;
 
 	/**
 	 * Get all StorageProfile objects for a given Host.
 	 * @param vRAHost
 	 */
-	getStorageProfiles(vRAHost: VraHost): VraStorageProfile[];
+	static getStorageProfiles(vRAHost: VraHost): VraStorageProfile[];
 
 	/**
 	 * Get all Cloud zone Region.
 	 * @param vRAHost
 	 */
-	getCloudZoneRegions(vRAHost: VraHost): VraRegion[];
+	static getCloudZoneRegions(vRAHost: VraHost): VraRegion[];
 
 	/**
 	 * Get Data Collector/Cloud Proxy by Id.
 	 * @param vRAHost
 	 * @param dataCollectorId
 	 */
-	getDataCollector(
+	static getDataCollector(
 		vRAHost: VraHost,
 		dataCollectorId: string
 	): VraDataCollector;
@@ -1441,42 +1445,42 @@ declare class VraEntitiesFinder {
 	 * @param vRAHost
 	 * @param flavor
 	 */
-	getAllFlavorReferencesByFlavor(vRAHost: VraHost, flavor: string): string[];
+	static getAllFlavorReferencesByFlavor(vRAHost: VraHost, flavor: string): string[];
 
 	/**
 	 * Get BlockDevice by ID.
 	 * @param vRAHost
 	 * @param Id
 	 */
-	getBlockDevice(vRAHost: VraHost, id: string): VraBlockDevice;
+	static getBlockDevice(vRAHost: VraHost, id: string): VraBlockDevice;
 
 	/**
 	 * Get all Cloud Accounts - Vsphere, NSXT, NXTV, AWS, Azure, GCP etc.
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getCloudAccounts(vRAHost: VraHost, filter: string): VraCloudAccount[];
+	static getCloudAccounts(vRAHost: VraHost, filter: string): VraCloudAccount[];
 
 	/**
 	 * Get all BlockDevice for a given Host.
 	 * @param vRAHost
 	 * @param filter
 	 */
-	getBlockDevices(vRAHost: VraHost, filter: string): VraBlockDevice[];
+	static getBlockDevices(vRAHost: VraHost, filter: string): VraBlockDevice[];
 
 	/**
 	 * Get FlavorProfile by ID.
 	 * @param vRAHost
 	 * @param id
 	 */
-	getFlavorProfile(vRAHost: VraHost, id: string): VraFlavorProfile;
+	static getFlavorProfile(vRAHost: VraHost, id: string): VraFlavorProfile;
 
 	/**
 	 * Get Network for a given Network Id.
 	 * @param vRAHost
 	 * @param networkId
 	 */
-	getNetwork(vRAHost: VraHost, networkId: string): VraNetwork;
+	static getNetwork(vRAHost: VraHost, networkId: string): VraNetwork;
 }
 
 declare class VraFabricNetwork {
@@ -2485,6 +2489,8 @@ declare class VraNetworkProfileService {
 	 * @param genericRestClient
 	 */
 	setGenericRestClient(genericRestClient: VraGenericRestClient): void;
+
+	constructor();
 }
 
 declare class VraNetworkService {
@@ -2507,6 +2513,8 @@ declare class VraNetworkService {
 	createNetwork(
 		networkSpecification: VraNetworkSpecification
 	): VraRequestTracker;
+
+	constructor();
 }
 
 /**
@@ -2783,55 +2791,55 @@ declare class VraFlavorProfileService {
  * HostManager provides all the CRUD operations for VMware Aria Automation Plugin along with Generic Rest Client support.
  */
 declare class VraHostManager {
-	readonly defaultHostData: VraHost; 
+	static readonly defaultHostData: VraHost; 
 
 	/**
 	 * Save Automation Host object.
 	 * @param props
 	 */
-	save(props: Object): string;
+	static save(props: Object): string;
 
 	/**
 	 * Update Automation Host object.
 	 * @param props
 	 * @param host
 	 */
-	update(props: Object, host: VraHost): void;
+	static update(props: Object, host: VraHost): void;
 
 	/**
 	 * Creates a dynamic Automation Host.
 	 * @param properties
 	 */
-	createHost(properties: Object): VraHost;
+	static createHost(properties: Object): VraHost;
 
 	/**
 	 * Creates a temporary host with the current user host and credentials.
 	 */
-	createHostForCurrentUser(): VraHost;
+	static createHostForCurrentUser(): VraHost;
 
 	/**
 	 * Get All Automation Host by ConnectionType.
 	 * @param connectionType
 	 */
-	findHostsByType(connectionType: string): VraHost[];
+	static findHostsByType(connectionType: string): VraHost[];
 
 	/**
 	 * Delete Automation Host.
 	 * @param host
 	 */
-	delete(host: VraHost): void;
+	static delete(host: VraHost): void;
 
 	/**
 	 * Validate Automation Host.
 	 * @param host
 	 */
-	validate(host: VraHost): boolean;
+	static validate(host: VraHost): boolean;
 
 	/**
 	 * Get Automation Host by Sid.
 	 * @param sid
 	 */
-	getHostBySid(sid: string): VraHost;
+	static getHostBySid(sid: string): VraHost;
 }
 
 /**
@@ -2855,7 +2863,7 @@ declare class VraImageProfileService {
 }
 
 declare class VraInfrastructure {
-	readonly displayName;
+	readonly displayName: string;
 	name: string;
 
 	constructor();

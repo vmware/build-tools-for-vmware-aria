@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/vrotest",
-  "version": "2.43.1-SNAPSHOT",
+  "version": "4.18.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "VMware Confidential",
   "description": "vRO Test Suite for NodeJS",
@@ -19,42 +19,39 @@
     "clean": "gulp clean"
   },
   "engines": {
-    "node": ">=16.15.1",
-    "npm": ">=6.14.0"
+    "node": ">=22.13.0 <23.0.0",
+    "npm": ">=10.9.2"
   },
   "dependencies": {
+    "browserslist": "4.24.2",
     "iconv-lite": "0.6.3",
-    "nyc": "15.1.0",
-    "browserslist": "4.21.4"
+    "nyc": "17.1.0",
+    "minimatch": "^10.2.1",
+    "brace-expansion": "^2.0.2"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "28.0.0",
+    "@rollup/plugin-commonjs": "28.0.1",
     "@rollup/plugin-node-resolve": "15.3.0",
-    "@types/ansi-colors": "3.2.2",
-    "@types/fs-extra": "9.0.13",
-    "@types/gulp": "4.0.9",
-    "@types/jasmine": "3.10.3",
-    "@types/jszip": "3.4.1",
-    "@types/minimist": "1.2.2",
-    "@types/rollup": "0.54.0",
-    "ansi-colors": "4.1.1",
+    "@rollup/plugin-terser": "0.4.4",
+    "@types/gulp": "4.0.17",
+    "@types/jasmine": "^5.1.5",
+    "@types/minimist": "1.2.5",
+    "ansi-colors": "4.1.3",
     "charset-detector": "0.0.2",
-    "fast-xml-parser": "4.2.5",
-    "fs-extra": "10.0.0",
+    "fast-xml-parser": "^5.3.6",
     "gulp": "5.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
-    "jasmine": "4.5.0",
+    "jasmine": "^5.4.0",
     "jasmine-reporters": "2.5.2",
-    "jszip": "3.8.0",
-    "minimist": "1.2.6",
-    "rimraf": "3.0.2",
-    "rollup": "3.29.5",
-    "@rollup/plugin-terser": "0.4.4",
-    "ts-node": "10.5.0",
-    "typescript": "4.5.5",
-    "source-map": "^0.8.0-beta.0"
+    "jszip": "3.10.1",
+    "minimist": "1.2.8",
+    "rimraf": "6.0.1",
+    "rollup": "^4.28.0",
+    "source-map": "0.7.4",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.2"
   },
-  "bundledDependencies": [
+  "bundleDependencies": [
     "iconv-lite",
     "jasmine",
     "nyc",

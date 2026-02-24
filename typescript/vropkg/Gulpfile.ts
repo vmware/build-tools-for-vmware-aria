@@ -1,9 +1,14 @@
 import * as fs from "fs-extra";
 import * as gulp from "gulp";
-import * as jasmine from "gulp-jasmine";
+import jasmine from "gulp-jasmine";
 import * as tsc from "gulp-typescript";
 import * as path from 'path';
 import { execSync } from "child_process";
+
+function toPathArg(...args: string[]) {
+	const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+	return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
+}
 
 gulp.task("clean", async () => {
 	await fs.remove("dist");
@@ -68,19 +73,20 @@ function compile(settings: tsc.Settings): NodeJS.ReadWriteStream {
 
 function generateBasePackage() {
 	const options = [
-		path.join( 'bin', 'vropkg'),
+		toPathArg( path.resolve('bin', 'vropkg')),
 		'--in', 'tree',
 		'--out', 'flat',
-		'--srcPath', path.join('test', 'com.vmware.pscoe.toolchain-expand'),
-		'--destPath', path.join( 'test/tmp' ),
-		'--privateKeyPEM', path.join('test', 'private_key.pem'),
-		'--certificatesPEM', path.join('test', 'cert.pem'),
+		'--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain-expand'),
+		'--destPath', toPathArg( 'test', 'tmp' ),
+		'--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+		'--certificatesPEM', toPathArg('test', 'cert.pem'),
 		'--version', '1.0.0',
 		'--packaging', 'package',
 		'--artifactId', 'proj-artifact',
 		'--description', '',
 		'--groupId', 'test.group',
-		'--keyPass', "VMware1!"
+		'--keyPass', "VMware1!",
+		'--vroIgnoreFile', '.vroignore'
 	]
 
 	execSync( options.join( " " ), {
@@ -93,19 +99,20 @@ function generateBasePackage() {
 
 function generateAdditionalPackage() {
 	const options = [
-		path.join( 'bin', 'vropkg'),
+		toPathArg( path.resolve('bin', 'vropkg')),
 		'--in', 'tree',
 		'--out', 'flat',
-		'--srcPath', path.join('test', 'com.vmware.pscoe.vrbt-forms'),
-		'--destPath', path.join( 'test/tmp' ),
-		'--privateKeyPEM', path.join('test', 'private_key.pem'),
-		'--certificatesPEM', path.join('test', 'cert.pem'),
+		'--srcPath', toPathArg('test', 'com.vmware.pscoe.vrbt-forms'),
+		'--destPath', toPathArg('test', 'tmp' ),
+		'--privateKeyPEM', toPathArg('test', 'private_key.pem'),
+		'--certificatesPEM', toPathArg('test', 'cert.pem'),
 		'--version', '1.0.0',
 		'--packaging', 'package',
 		'--artifactId', 'proj-artifact',
 		'--description', '',
 		'--groupId', 'custom.forms',
-		'--keyPass', "VMware1!"
+		'--keyPass', "VMware1!",
+		'--vroIgnoreFile', '".vroignore"'
 	]
 
 	execSync( options.join( " " ), {

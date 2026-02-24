@@ -1,0 +1,9 @@
+---
+name: Integration Service 1 Alternative
+path: PSCoE/my-project/integration-service-1
+attributes:
+  field1: string
+  field2: Any
+  field3:
+    type: number
+    value: 5

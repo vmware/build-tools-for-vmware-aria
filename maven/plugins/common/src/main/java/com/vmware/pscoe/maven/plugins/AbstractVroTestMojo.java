@@ -14,11 +14,9 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -29,16 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class AbstractVroTestMojo extends AbstractMojo {
+public abstract class AbstractVroTestMojo extends AbstractVroMojo {
 
 	protected static final String DEP_ROOT_PATH =
 			Paths.get("target", "dependency", "vro").toString();
 	protected static final String VRO_API_PATH =
 			Paths.get("node_modules", "@vmware-pscoe", "vro-scripting-api", "lib").toString();
 	protected static final String TESTBED_PATH = Paths.get("target", "vro-tests").toString();
-
-	@Parameter(defaultValue = "${project}")
-	protected MavenProject project;
+	public static final int COVERAGE_TRESHOLDS_SIZE = 5;
 
 	@Parameter(property = "skipTests", defaultValue = "false")
 	protected boolean skipTests;
@@ -46,14 +42,18 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 	@Parameter(required = false, property = "test", defaultValue = "${test.*}")
 	private Map<String, String> test;
 
+	/**
+	 * Triggers the unit tests execution.
+	 * 
+	 * @throws MojoExecutionException
+	 * @throws MojoFailureException
+	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (skipTests) {
 			getLog().info("Tests are skipped.");
-		}
-		else if (!hasTests()) {
+		} else if (!hasTests()) {
 			getLog().info("No test files found.");
-		}
-		else {
+		} else {
 			Configuration config = new Configuration(test);
 			printStarted(config);
 			buildTestbed(config);
@@ -61,10 +61,18 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		}
 	}
 
+	/**
+	 * @return A flag indicating whether or not tests exist for the project.
+	 */
 	protected Boolean hasTests() {
 		return new File(getCliPath()).exists();
 	}
 
+	/**
+	 * Prints a message indicating the testing step is starting.
+	 * 
+	 * @param config
+	 */
 	protected void printStarted(Configuration config) {
 		getLog().info("");
 		getLog().info("-------------------------------------------------------");
@@ -72,6 +80,13 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		getLog().info("-------------------------------------------------------");
 	}
 
+	/**
+	 * Bootstrapping the unit tests.
+	 *
+	 * @param config
+	 * @throws org.apache.maven.plugin.MojoExecutionException
+	 * @throws org.apache.maven.plugin.MojoFailureException
+	 */
 	protected void buildTestbed(Configuration config)
 			throws org.apache.maven.plugin.MojoExecutionException,
 			org.apache.maven.plugin.MojoFailureException {
@@ -84,18 +99,37 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 				.execute(getLog());
 	}
 
+	/**
+	 * Build the command for running the tests.
+	 *
+	 * @param config
+	 * @return The command to be executed for running the tests.
+	 */
 	protected List<String> buildTestbedCommand(Configuration config) {
 		String projectRoot = project.getBasedir().toPath().toString();
 		List<String> cmd = new ArrayList<>();
 		cmd.add(getCliPath());
 		cmd.add("build");
 		addTestbedPaths(cmd, config);
+		cmd.add("--projectRoot");
+		cmd.add(projectRoot);
 		cmd.add("--dependencies");
 		cmd.add(Paths.get(projectRoot, DEP_ROOT_PATH).toString());
 		cmd.add("--helpers");
 		cmd.add(Paths.get(projectRoot, VRO_API_PATH).toString());
 		cmd.add("--output");
 		cmd.add(Paths.get(projectRoot, TESTBED_PATH).toString());
+		cmd.add("--testFrameworkPackage");
+		cmd.add(config.getFrameworkPackageName());
+		cmd.add("--testFrameworkVersion");
+		cmd.add(config.getFrameworkVersion());
+		cmd.add("--runner");
+		cmd.add(config.getTestsRunner());
+		cmd.add("--jasmineReportersVerion");
+		cmd.add(config.getJasmineReportersVersion());
+		cmd.add("--ansiColorsVersion");
+		cmd.add(config.getAnsiColorsVersion());
+		addVroIgnoreArgToCmd(cmd);
 
 		if (config.isCoverageEnabled()) {
 			String coverageReports = String.join(",", config.getCoverageReports());
@@ -109,7 +143,7 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 				cmd.add(coverageThresholds);
 			}
 
-			if(config.isPerFileEnabled()){
+			if (config.isPerFileEnabled()) {
 				cmd.add("--per-file");
 				cmd.add("true");
 			}
@@ -119,8 +153,14 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 
 	protected abstract void addTestbedPaths(List<String> cmd, Configuration config);
 
+	/**
+	 * Uses the project configuration it its pom file to build the tests coverage threshold values.
+	 *
+	 * @param config
+	 * @return The threshold values list.
+	 */
 	protected String buildCoverageThresholdToken(Configuration config) {
-		List<String> thresholds = new ArrayList<String>(5);
+		List<String> thresholds = new ArrayList<String>(COVERAGE_TRESHOLDS_SIZE);
 
 		Integer allError = config.getCoverageThresholdError();
 		Integer allWarn = config.getCoverageThresholdWarn();
@@ -155,6 +195,13 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		return String.join(",", thresholds);
 	}
 
+	/**
+	 * Builds and executes the tests run.
+	 *
+	 * @param config
+	 * @throws org.apache.maven.plugin.MojoExecutionException
+	 * @throws org.apache.maven.plugin.MojoFailureException
+	 */
 	protected void runTests(Configuration config)
 			throws org.apache.maven.plugin.MojoExecutionException, org.apache.maven.plugin.MojoFailureException {
 		new ProcessExecutor()
@@ -166,6 +213,12 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 				.execute(getLog());
 	}
 
+	/**
+	 * Builds the command for running the tests.
+	 *
+	 * @param config
+	 * @return
+	 */
 	protected List<String> buildRunCommand(Configuration config) {
 		List<String> cmd = new ArrayList<>();
 		cmd.add(getCliPath());
@@ -178,7 +231,11 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		return cmd;
 	}
 
-
+	/**
+	 * Returns the path tot the vrotest dependency.
+	 *
+	 * @return The path to the vrotest dependency.
+	 */
 	protected String getCliPath() {
 		String projectRoot = project.getBasedir().toPath().toString();
 		String vrotestCmd = SystemUtils.IS_OS_WINDOWS ? "vrotest.cmd" : "vrotest";
@@ -201,6 +258,11 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 		private static final String COVERAGE_THRESHOLD_STMTS_ERROR = "coverage.thresholds.statements.error";
 		private static final String COVERAGE_THRESHOLD_STMTS_WARN = "coverage.thresholds.statements.warn";
 		private static final String COVERAGE_TEST_PERFILE = "coverage.perfile";
+		private static final String FRAMEWORK_PACKAGE_NAME = "framework.package";
+		private static final String FRAMEWORK_VERSION = "framework.version";
+		private static final String JASMINE_REPORTERS_VERSION = "framework.jasmine.reporters.version";
+		private static final String ANSI_COLORS_VERSION = "ansicolors.version";
+		private static final String TESTS_RUNNER = "framework.runner";
 
 		private final Map<String, String> props;
 
@@ -208,11 +270,21 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 			this.props = props;
 		}
 
+		/**
+		 * Returns a flag whether or not code report is enabled.
+		 *
+		 * @return The flag value.
+		 */
 		public Boolean isCoverageEnabled() {
 			String value = props.get(COVERAGE_ENABLED);
 			return value != null && Boolean.parseBoolean(value);
 		}
 
+		/**
+		 * Returns a a list of code coverage reports.
+		 *
+		 * @return The coverate list.
+		 */
 		public List<String> getCoverageReports() {
 			String value = props.get(COVERAGE_REPORTS);
 			return Arrays.asList((value != null ? value.trim() : "").split(",")).stream()
@@ -220,59 +292,167 @@ public abstract class AbstractVroTestMojo extends AbstractMojo {
 					.collect(Collectors.toList());
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed errors value.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageThresholdError() {
 			String value = props.get(COVERAGE_THRESHOLD_ERROR);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed warnings value.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageThresholdWarn() {
 			String value = props.get(COVERAGE_THRESHOLD_WARN);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed errors per branch value.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageBranchesThresholdError() {
 			String value = props.get(COVERAGE_THRESHOLD_BRANCHES_ERROR);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed warnings per branch value.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageBranchesThresholdWarn() {
 			String value = props.get(COVERAGE_THRESHOLD_BRANCHES_WARN);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed errors for lines.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageLinesThresholdError() {
 			String value = props.get(COVERAGE_THRESHOLD_LINES_ERROR);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed warnings for lines.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageLinesThresholdWarn() {
 			String value = props.get(COVERAGE_THRESHOLD_LINES_WARN);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed errors for functions.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageFunctionsThresholdError() {
 			String value = props.get(COVERAGE_THRESHOLD_FUNCS_ERROR);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed warnings for functions.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageFunctionsThresholdWarn() {
 			String value = props.get(COVERAGE_THRESHOLD_FUNCS_WARN);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed errors for statements.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageStatementsThresholdError() {
 			String value = props.get(COVERAGE_THRESHOLD_STMTS_ERROR);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration value for maximum allowed warnings for statements.
+		 *
+		 * @return The configuration value.
+		 */
 		public Integer getCoverageStatementsThresholdWarn() {
 			String value = props.get(COVERAGE_THRESHOLD_STMTS_WARN);
 			return value != null ? Integer.parseInt(value) : 0;
 		}
 
+		/**
+		 * Loads the configuration flag value for per-file coverate.
+		 *
+		 * @return The configuration value.
+		 */
 		public Boolean isPerFileEnabled() {
 			String value = props.get(COVERAGE_TEST_PERFILE);
 			return value != null && Boolean.parseBoolean(value);
+		}
+
+		/**
+		 * Returns the framework package name - "jasmine" or "jest".
+		 *
+		 * @return The configuration value.
+		 */
+		public String getFrameworkPackageName() {
+			String value = props.get(FRAMEWORK_PACKAGE_NAME);
+			return value != null ? value : "";
+		}
+
+		/**
+		 * Returns the framework package version.
+		 *
+		 * @return The configuration value.
+		 */
+		public String getFrameworkVersion() {
+			String value = props.get(FRAMEWORK_VERSION);
+			return value != null ? value : "";
+		}
+
+		/**
+		 * Returns the version of the Jasmine reporters package.
+		 * Supported when Jasmine is used as tests framework.
+		 *
+		 * @return The configuration value.
+		 */
+		public String getJasmineReportersVersion() {
+			String value = props.get(JASMINE_REPORTERS_VERSION);
+			return value != null ? value : "";
+		}
+
+		/**
+		 * Returns the version of the Ansi Colors package.
+		 * Supported when Jasmine is used as tests framework.
+		 *
+		 * @return The configuration value.
+		 */
+		public String getAnsiColorsVersion() {
+			String value = props.get(ANSI_COLORS_VERSION);
+			return value != null ? value : "";
+		}
+
+		/**
+		 * Returns the type of tests runner to be used - supports either none or "swc".
+		 * Supported when Jest is used as tests framework.
+		 *
+		 * @return The configuration value.
+		 */
+		public String getTestsRunner() {
+			String value = props.get(TESTS_RUNNER);
+			return value != null ? value : "";
 		}
 	}
 }

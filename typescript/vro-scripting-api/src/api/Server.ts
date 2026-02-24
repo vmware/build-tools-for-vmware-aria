@@ -219,7 +219,7 @@ namespace vroapi {
 		 * Return a configuration element category matching the given path or null if not found.
 		 * @param path The path to the configuration element category using forward slash(/) as separator.
 		 */
-		static getConfigurationElementCategoryWithPath(path: string): ConfigurationElementCategory {
+		static getConfigurationElementCategoryWithPath(path: string): ConfigurationElementCategory | null {
 			return configurations.getCategory(path);
 		}
 
@@ -282,9 +282,8 @@ namespace vroapi {
 		 * Return a package given its name or null if not found.
 		 * @param name The package name.
 		 */
-		static getPackageWithName(name: string): Package {
+		static getPackageWithName(name: string): Package | null {
 			throw new NotSupportedError();
-
 		}
 
 		/**
@@ -299,7 +298,7 @@ namespace vroapi {
 		 * Return a policy template category matching the given path or null if not found.
 		 * @param path The path to the policy template category using forward slash(/) as separator.
 		 */
-		static getPolicyTemplateCategoryWithPath(path: string): PolicyTemplateCategory {
+		static getPolicyTemplateCategoryWithPath(path: string): PolicyTemplateCategory | null {
 			throw new NotSupportedError();
 		}
 
@@ -307,7 +306,7 @@ namespace vroapi {
 		 * Return a resource element category matching the given path or null if not found.
 		 * @param path The path to the resource element category using forward slash(/) as separator.
 		 */
-		static getResourceElementCategoryWithPath(path: string): ResourceElementCategory {
+		static getResourceElementCategoryWithPath(path: string): ResourceElementCategory | null {
 			return resources.getCategory(path);
 		}
 
@@ -338,7 +337,7 @@ namespace vroapi {
 		 * Return a workflow category matching the given path or null if not found.
 		 * @param path The path to the workflow category using forward slash(/) as separator.
 		 */
-		static getWorkflowCategoryWithPath(path: string): WorkflowCategory {
+		static getWorkflowCategoryWithPath(path: string): WorkflowCategory | null {
 			throw new NotSupportedError();
 		}
 

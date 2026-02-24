@@ -4,26 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vmware.pscoe</groupId>
 	<artifactId>iac</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<version>${revision}</version>
 
-	<modules>
-		<module>common/o11n/project</module>
-		<module>common/artifact-manager</module>
-		<module>maven/archetypes</module>
-		<module>maven/plugins</module>
-		<module>maven/npmconv</module>
-		<module>maven/npmlib</module>
-		<module>maven/assembly</module>
-		<module>maven/polyglot</module>
-		<module>vro-types</module>
-		<module>typescript</module>
-		<module>package-installer</module>
-	</modules>
+	<!-- All <modules> are in the <profiles> section -->
 
 	<properties>
-		<main.basedir>${project.basedir}</main.basedir>
-		<revision>2.43.1-SNAPSHOT</revision>
+		<main.basedir>${project.baseUri}</main.basedir>
+		<revision>4.18.1-SNAPSHOT</revision>
+		<!--Versions newer than the default v.17 will be validated during build. Can be manually overridden using -Djava.version=${{ matrix.java }}-->
 		<java.version>17</java.version>
 	</properties>
 
@@ -41,7 +31,6 @@
 		<url>https://github.com/vmware/build-tools-for-vmware-aria/tree/main</url>
 	</scm>
 
-	<name>Build Tools for VMware Aria</name>
 	<description>
 		Build Tools for VMware Aria provides development and release management tools for implementing automation solutions
 		based on the VMware Aria Suite and VMware Cloud Director. The solution enables Virtual Infrastructure Administrators and 
@@ -66,7 +55,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>flatten-maven-plugin</artifactId>
-					<version>1.5.0</version>
+					<version>1.7.3</version>
 					<inherited>true</inherited>
 					<configuration>
 						<updatePomFile>true</updatePomFile>
@@ -92,17 +81,19 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>
-					<version>2.4.0</version>
+					<version>2.7.1</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 						<licenseName>bsd2_license</licenseName>
-						<licenseResolver>file:${main.basedir}/licenses</licenseResolver>
+						<licenseResolver>${main.basedir}licenses</licenseResolver>
 						<!-- <aggregate>true</aggregate> -->
 						<inceptionYear>2023</inceptionYear>
 						<organizationName>VMware</organizationName>
 						<excludedScopes>test</excludedScopes>
 						<excludedArtifacts>maven-surefire-plugin</excludedArtifacts>
 						<excludeTransitiveDependencies>true</excludeTransitiveDependencies>
+						<missingFile>THIRD-PARTY.properties</missingFile> <!-- This defines where the
+						licenses file is generated -->
 						<extraExtensions>
 							<ts>java</ts>
 							<yaml>properties</yaml>
@@ -125,7 +116,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.5.0</version>
+					<version>3.12.0</version>
 					<executions>
 						<execution>
 							<id>attach-javadocs</id>
@@ -153,7 +144,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version>
+				<version>3.14.1</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -162,12 +153,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.5.4</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.1.4</version>
 				<configuration>
 					<prePhase>install</prePhase>
 				</configuration>
@@ -176,6 +167,52 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>modules.plugins</id>
+			<activation>
+				<property>
+					<name>modules.plugins</name>
+				</property>
+			</activation>
+			<modules>
+				<module>common/o11n/project</module>
+				<module>common/artifact-manager</module>
+				<module>maven/plugins</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>modules.tools</id>
+			<activation>
+				<property>
+					<name>modules.tools</name>
+				</property>
+			</activation>
+			<modules>
+				<module>common/keystore-example</module>
+				<module>maven/npmlib</module>
+				<module>maven/archetypes</module>
+				<module>maven/npmconv</module>
+				<module>maven/assembly</module>
+				<module>maven/polyglot</module>
+				<module>vro-types</module>
+				<module>typescript</module>
+				<module>package-installer</module>
+				<module>maven/base-package</module>
+				<module>packages</module>
+				<module>maven/typescript-project-all</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>modules.repository</id>
+			<activation>
+				<property>
+					<name>modules.repository</name>
+				</property>
+			</activation>
+			<modules>
+				<module>maven/repository</module>
+			</modules>
+		</profile>
 		<profile>
 			<!-- Enable maven-gpg-plugin and maven-source-plugin with -Dgpg.passphrase=XXX -->
 			<id>release-sign-source</id>
@@ -189,7 +226,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>3.2.8</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -203,7 +240,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.2.1</version>
+						<version>3.4.0</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -216,8 +253,36 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<!-- This plugin needs to be activated only during release. There is a bug that fails
+			snapshot deployments if they contain multimodule builds with mixed type of maven-plugin and
+			another type making the build fail because of goal prefix not populated in maven metadata file -->
+            <id>use-central-publishing-maven-plugin</id>
+            <activation>
+                <property>
+                    <name>project.version</name>
+					<value>/^(?!.*-SNAPSHOT).*$/</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.10.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+							<autoPublish>true</autoPublish>
+							<waitUntil>published</waitUntil>
+							<waitMaxTime>21600</waitMaxTime>
+							<deploymentName>build-tools-for-vmware-aria-${project.version}</deploymentName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
-
 	<distributionManagement>
 		<repository>
 			<id>central</id>

@@ -11,10 +11,11 @@
 
   <groupId>com.vmware.pscoe.library</groupId>
   <artifactId>ecmascript</artifactId>
+  <name>${project.artifactId}</name>
   <packaging>package</packaging>
 
   <properties>
-    <main.basedir>${project.parent.parent.parent.basedir}</main.basedir>
+    <main.basedir>${project.baseUri}../../</main.basedir>
     <test.coverage.enabled>true</test.coverage.enabled>
     <test.coverage.reports>text,html,clover,cobertura,lcovonly</test.coverage.reports>
   </properties>

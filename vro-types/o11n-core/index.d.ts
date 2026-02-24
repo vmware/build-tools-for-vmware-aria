@@ -23,9 +23,9 @@ declare interface Trigger {
 }
 
 /**
- * Object representing the current instance of a Workflow
+ * Object representing the current instance of a Workflow or undefined if not in a workflow.
  */
-declare var workflow: WorkflowToken;
+declare var workflow: WorkflowToken | undefined;
 
 /**
  * Object used to call custom action in the system.
@@ -264,10 +264,10 @@ declare interface ConfigurationElement {
 	attributes: Attribute[];
 	configurationElementCategory: any;
 	/**
-	 * Returns the attribute of the configuration element for the specified key.
+	 * Returns the attribute of the configuration element for the specified key or null if not found.
 	 * @param key
 	 */
-	getAttributeWithKey(key: string): Attribute;
+	getAttributeWithKey(key: string): Attribute | null;
 	/**
 	 * Sets the attribute value of the configuration element for the specified key.
 	 * @param key
@@ -751,13 +751,12 @@ declare interface Properties {
 	 * Remove a property to the property list.
 	 * @param key
 	 */
-	remove(key: string): any;
+	remove(key: string): void;
 	/**
-	 * Returns the property entry for the given key.
+	 * Returns the property entry for the given key or null if not found.
 	 * @param key
 	 */
-	get(key: string): any;
-	get<T>(key: string): T;
+	get<T>(key: string): T | null;
 	/**
 	 * Loads properties from a File, an URL or a String object
 	 * @param input
@@ -1013,7 +1012,7 @@ declare interface VersionHistoryItem {
 declare class Workflow {
 	name: string;
 	description: string;
-	workflowCategory: any;
+	workflowCategory: WorkflowCategory;
 	version: string;
 	firstItem: any;
 	numberOfItem: number;
@@ -1023,6 +1022,7 @@ declare class Workflow {
 	attributes: Attribute[];
 	versionHistoryItems: VersionHistoryItem[];
 	parameterInfos: Properties;
+	id: string;
 	executions: WorkflowToken[];
 	logEvents: LogEvent[];
 	/**
@@ -1118,6 +1118,16 @@ declare interface WorkflowItem {
 	name: string;
 	description: string;
 	nextItem: any;
+}
+
+/**
+ * WorkflowItemInfo
+ */
+declare interface WorkflowItemInfo {
+	name: string;
+	displayName: string;
+	getName(): string;
+	getDisplayName(): string;
 }
 
 /**
@@ -1218,16 +1228,16 @@ declare interface WorkflowItemWaitingTimer {
  */
 declare class WorkflowToken {
 	name: string;
-	rootWorkflow: any;
-	currentWorkflow: any;
+	rootWorkflow: Workflow;
+	currentWorkflow: Workflow;
 	state: string;
 	exception: string;
 	businessState: string;
 	workflowInputId: string;
 	startDate: string;
 	endDate: string;
-	startDateAsDate: any;
-	endDateAsDate: any;
+	startDateAsDate: Date;
+	endDateAsDate: Date;
 	logEvents: LogEvent[];
 	isStillValid: boolean;
 	attributesStack: Attribute[];
@@ -1290,10 +1300,10 @@ declare class WorkflowToken {
 declare class ByteBuffer {
 	length: number;
 
-    /**
-     * Create a ByteBuffer from a base64 string or existing ByteBuffer
-     * @param obj - if null or undefined an empty ByteBuffer is created
-     */
+	/**
+	 * Create a ByteBuffer from a base64 string or existing ByteBuffer
+	 * @param obj - if null or undefined an empty ByteBuffer is created
+	 */
 	constructor(obj?: string | any);
 }
 
@@ -1339,12 +1349,12 @@ declare interface WorkflowInput {
  * ZipWriter
  */
 declare class ZipWriter {
-  /**
-   * Creates an instance of ZipWriter.
-   * @param {string} file - full path of the file
-   * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
-   */
-  constructor (file: string);
+	/**
+	 * Creates an instance of ZipWriter.
+	 * @param {string} file - full path of the file
+	 * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
+	 */
+	constructor(file: string);
 	/**
 	 * Add a string element to the specified zip file
 	 * @param {string} entryName
@@ -1407,6 +1417,10 @@ declare namespace System {
 	 * Get current server time.
 	 */
 	function getCurrentTime(): number;
+	/**
+	 * Read only information for currently executed workflow item.
+	 */
+	function currentWorkflowItem(): WorkflowItemInfo;
 	/**
 	 * Pause the current script context execution and wait for a given date to continue.
 	 * @param waitDate Date to wait
@@ -1764,27 +1778,27 @@ declare namespace Server {
 	 * Return a workflow category matching the given path or null if not found.
 	 * @param path The path to the workflow category using forward slash(/) as separator.
 	 */
-	function getWorkflowCategoryWithPath(path: string): WorkflowCategory;
+	function getWorkflowCategoryWithPath(path: string): WorkflowCategory | null;
 	/**
 	 * Return a configuration element category matching the given path or null if not found.
 	 * @param path The path to the configuration element category using forward slash(/) as separator.
 	 */
-	function getConfigurationElementCategoryWithPath(path: string): ConfigurationElementCategory;
+	function getConfigurationElementCategoryWithPath(path: string): ConfigurationElementCategory | null;
 	/**
 	 * Return a resource element category matching the given path or null if not found.
 	 * @param path The path to the resource element category using forward slash(/) as separator.
 	 */
-	function getResourceElementCategoryWithPath(path: string): ResourceElementCategory;
+	function getResourceElementCategoryWithPath(path: string): ResourceElementCategory | null;
 	/**
 	 * Return a package given its name or null if not found.
 	 * @param name The package name.
 	 */
-	function getPackageWithName(name: string): Package;
+	function getPackageWithName(name: string): Package | null;
 	/**
 	 * Return a policy template category matching the given path or null if not found.
 	 * @param path The path to the policy template category using forward slash(/) as separator.
 	 */
-	function getPolicyTemplateCategoryWithPath(path: string): PolicyTemplateCategory;
+	function getPolicyTemplateCategoryWithPath(path: string): PolicyTemplateCategory | null;
 	/**
 	 * Return all policy template categories.
 	 */
@@ -2044,4 +2058,15 @@ declare namespace Config {
 	 * Gets the list of keystores
 	 */
 	function getKeystores(): any
+}
+declare interface URI {
+	scheme: string;
+	"scheme-specific-part": string;
+	authority: string;
+	"user-info": string;
+	host: string;
+	port: number;
+	path: string;
+	query: string;
+	fragment: string;
 }

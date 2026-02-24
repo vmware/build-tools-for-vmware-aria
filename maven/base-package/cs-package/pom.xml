@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.vmware.pscoe.cs</groupId>
 	<artifactId>cs-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>
@@ -38,8 +39,6 @@
 						<password>${vrang.password}</password>
 						<serverId>${vrang.serverId}</serverId>
 						<project.name>${vrang.project.name}</project.name>
-						<project.id>${vrang.project.id}</project.id>
-						<org.id>${vrang.org.id}</org.id>
 						<org.name>${vrang.org.name}</org.name>
 						<refresh.token>${vrang.refresh.token}</refresh.token>
 						<proxy>${vrang.proxy}</proxy>
@@ -52,6 +51,6 @@
 		</plugins>
 	</build>
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
 </project>

@@ -12,10 +12,11 @@
 
     <groupId>com.vmware.pscoe.iac</groupId>
     <artifactId>typescript</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
 	<properties>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../</main.basedir>
 	</properties>
 
     <modules>
@@ -43,7 +44,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.6.3</version>
                     <executions>
                         <execution>
                             <id>npm install</id>
@@ -105,7 +106,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.6.1</version>
                     <extensions>true</extensions>
                     <executions>
                         <execution>
@@ -133,7 +134,7 @@
 						fail with "You have to use a classifier to attach supplemental artifacts to the 
 						project instead of replacing them." 
 					-->
-					<version>2.4</version>
+					<version>3.5.0</version>
 				</plugin>
             </plugins>
         </pluginManagement>

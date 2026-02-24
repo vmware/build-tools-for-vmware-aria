@@ -19,7 +19,7 @@ import * as t from "../types";
 import * as winston from 'winston';
 import * as xmlbuilder from "xmlbuilder";
 import * as CRC from "crc-32";
-import { JSON_MINOR_IDENT, WINSTON_CONFIGURATION } from "../constants";
+import { JSON_MINOR_IDENT, WINSTON_CONFIGURATION} from "../constants";
 
 export const saveOptions = {
     pretty: false
@@ -94,7 +94,9 @@ export const getActionXml = (id: string, name: string, description: string, acti
     if (action?.memoryLimit != null) {
         root.att("memory-limit", action.memoryLimit);
     }
-    if (action?.runtime?.lang != null && action?.runtime?.lang != t.Lang.javascript) {
+    if (action?.environment != null) {
+        root.ele("environment").cdata(action.environment);
+    } else if (action?.runtime?.lang != null && action?.runtime?.lang != t.Lang.javascript) {
         root.ele("runtime").cdata(t.Lang[action.runtime.lang] + ":" + action.runtime.version);
     }
     if (action?.bundle != null) {

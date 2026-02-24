@@ -12,6 +12,7 @@
 
     <groupId>com.vmware.pscoe.npm</groupId>
     <artifactId>lib</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <build>
@@ -24,7 +25,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.6.3</version>
                     <executions>
                         <!--
                         Validate: validate the project is correct and all necessary information is available.
@@ -154,7 +155,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.6.1</version>
                     <extensions>true</extensions>
                     <executions>
                         <execution>
@@ -181,7 +182,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <version>3.3.1</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>v@{project.version}</tagNameFormat>
@@ -196,7 +197,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-scm-plugin</artifactId>
-                    <version>1.11.2</version>
+                    <version>2.2.1</version>
                     <configuration>
                         <message>(release) updated package.json to v${project.version}</message>
                         <includes>package.json,package-lock.json</includes>
@@ -212,7 +213,7 @@
         <sonar.sources>src</sonar.sources>
         <sonar.language>ts</sonar.language>
         <sonar.javascript.lcov.reportPaths>./target/lcov.info</sonar.javascript.lcov.reportPaths>
-		<main.basedir>${project.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
     </properties>
 
 </project>

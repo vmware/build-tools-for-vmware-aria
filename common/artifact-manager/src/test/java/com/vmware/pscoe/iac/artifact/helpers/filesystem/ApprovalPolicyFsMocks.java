@@ -14,13 +14,14 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgApprovalPolicy;
-
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgApprovalPolicy;
 
 public class ApprovalPolicyFsMocks extends VraNgFsMock {
 	/**
@@ -34,6 +35,7 @@ public class ApprovalPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param tempDir temporary folder for test data.
 	 */
 
@@ -43,6 +45,7 @@ public class ApprovalPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * Getter.
+	 * 
 	 * @return the full path where test policy json files are stored during tests.
 	 */
 	@Override
@@ -52,17 +55,16 @@ public class ApprovalPolicyFsMocks extends VraNgFsMock {
 
 	/**
 	 * JSON encodes a policy and adds it to the resource actions directory.
-	 * @param    policy - The  policy to store
+	 * 
+	 * @param policy - The policy to store
 	 */
 	public void addPolicy(VraNgApprovalPolicy policy) {
 		File file = Paths.get(
-			this.getWorkdir().getAbsolutePath(),
-			policy.getName() + ".json"
-		).toFile();
+				this.getWorkdir().getAbsolutePath(),
+				policy.getName() + ".json").toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());
-		writeFileToPath(itemName, gson.toJson(policy).getBytes());
+		writeFileToPath(itemName, gson.toJson(policy).getBytes(StandardCharsets.UTF_8));
 	}
 }
-

@@ -11,9 +11,10 @@
 
 	<groupId>com.vmware.pscoe.ts.types</groupId>
 	<artifactId>o11n-plugin-amqp</artifactId>
+	<name>${project.artifactId}</name>
 
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../</main.basedir>
 	</properties>
 
 	<build>

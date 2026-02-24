@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Content>
+        
+    <Views>
+                
+        <ViewDef id="81dc9298-e14b-4598-920c-fbf77bbc5dc6">
+                        
+            <Title localizationKey="title">Cluster Basic Inventory</Title>
+                        
+            <Description localizationKey="desc">Lists vSphere Clusters with necessary information for inventory purpose.</Description>
+                        
+            <SubjectType adapterKind="VMWARE" resourceKind="ClusterComputeResource" type="descendant"/>
+                        
+            <SubjectType adapterKind="VMWARE" resourceKind="ClusterComputeResource" type="self"/>
+                        
+            <Usage>dashboard</Usage>
+                        
+            <Usage>report</Usage>
+                        
+            <Usage>details</Usage>
+                        
+            <Usage>content</Usage>
+                        
+            <Controls>
+                                
+                <Control id="time-interval-selector_id_1009" type="time-interval-selector" visible="false">
+                                        
+                    <Property name="advancedTimeMode" value="false"/>
+                                        
+                    <Property name="unit" value="DAYS"/>
+                                        
+                    <Property name="count" value="7"/>
+                                    
+                </Control>
+                                
+                <Control id="attributes-selector_id_1010" type="attributes-selector" visible="false">
+                                        
+                    <Property name="attributeInfos">
+                                                
+                        <List>
+                                                        
+                            <Item>
+                                
+                                <Value>
+                                        
+                                    <Property name="objectType" value="RESOURCE"/>
+                                        
+                                    <Property name="attributeKey" value="cpu|capacity_provisioned"/>
+                                        
+                                    <Property name="preferredUnitId" value="ghz"/>
+                                        
+                                    <Property name="isStringAttribute" value="false"/>
+                                        
+                                    <Property name="adapterKind" value="VMWARE"/>
+                                        
+                                    <Property name="resourceKind" value="ClusterComputeResource"/>
+                                        
+                                    <Property name="rollUpType" value="NONE"/>
+                                        
+                                    <Property name="rollUpCount" value="0"/>
+                                        
+                                    <Property name="transformations">
+                                                
+                                        <List>
+                                                        
+                                            <Item value="CURRENT"/>
+                                                    
+                                        </List>
+                                            
+                                    </Property>
+                                        
+                                    <Property name="isProperty" value="false"/>
+                                        
+                                    <Property localizationKey="CPUCapacity" name="displayName" value="CPU Capacity"/>
+                                        
+                                    <Property name="addTimestampAsColumn" value="false"/>
+                                        
+                                    <Property name="isShowRelativeTimestamp" value="false"/>
+                                    
+                                </Value>
+                                                            
+                            </Item>
+                                                        
+                            <Item>
+                                
+                                <Value>
+                                        
+                                    <Property name="objectType" value="RESOURCE"/>
+                                        
+                                    <Property name="attributeKey" value="mem|host_usable"/>
+                                        
+                                    <Property name="preferredUnitId" value="tb"/>
+                                        
+                                    <Property name="isStringAttribute" value="false"/>
+                                        
+                                    <Property name="adapterKind" value="VMWARE"/>
+                                        
+                                    <Property name="resourceKind" value="ClusterComputeResource"/>
+                                        
+                                    <Property name="rollUpType" value="NONE"/>
+                                        
+                                    <Property name="rollUpCount" value="0"/>
+                                        
+                                    <Property name="transformations">
+                                                
+                                        <List>
+                                                        
+                                            <Item value="CURRENT"/>
+                                                    
+                                        </List>
+                                            
+                                    </Property>
+                                        
+                                    <Property name="isProperty" value="false"/>
+                                        
+                                    <Property localizationKey="MemoryCapacity" name="displayName" value="Memory Capacity"/>
+                                        
+                                    <Property name="addTimestampAsColumn" value="false"/>
+                                        
+                                    <Property name="isShowRelativeTimestamp" value="false"/>
+                                    
+                                </Value>
+                                                            
+                            </Item>
+                                                        
+                            <Item>
+                                
+                                <Value>
+                                        
+                                    <Property name="objectType" value="RESOURCE"/>
+                                        
+                                    <Property name="attributeKey" value="summary|total_number_hosts"/>
+                                        
+                                    <Property name="isStringAttribute" value="false"/>
+                                        
+                                    <Property name="adapterKind" value="VMWARE"/>
+                                        
+                                    <Property name="resourceKind" value="ClusterComputeResource"/>
+                                        
+                                    <Property name="rollUpType" value="NONE"/>
+                                        
+                                    <Property name="rollUpCount" value="0"/>
+                                        
+                                    <Property name="transformations">
+                                                
+                                        <List>
+                                                        
+                                            <Item value="CURRENT"/>
+                                                    
+                                        </List>
+                                            
+                                    </Property>
+                                        
+                                    <Property name="isProperty" value="false"/>
+                                        
+                                    <Property localizationKey="ESXiHosts" name="displayName" value="ESXi Hosts"/>
+                                        
+                                    <Property name="addTimestampAsColumn" value="false"/>
+                                    
+                                </Value>
+                                                            
+                            </Item>
+                                                        
+                            <Item>
+                                
+                                <Value>
+                                        
+                                    <Property name="objectType" value="RESOURCE"/>
+                                        
+                                    <Property name="attributeKey" value="summary|total_number_vms"/>
+                                        
+                                    <Property name="isStringAttribute" value="false"/>
+                                        
+                                    <Property name="adapterKind" value="VMWARE"/>
+                                        
+                                    <Property name="resourceKind" value="ClusterComputeResource"/>
+                                        
+                                    <Property name="rollUpType" value="NONE"/>
+                                        
+                                    <Property name="rollUpCount" value="0"/>
+                                        
+                                    <Property name="transformations">
+                                                
+                                        <List>
+                                                        
+                                            <Item value="CURRENT"/>
+                                                    
+                                        </List>
+                                            
+                                    </Property>
+                                        
+                                    <Property name="isProperty" value="false"/>
+                                        
+                                    <Property localizationKey="VMs" name="displayName" value="VMs"/>
+                                        
+                                    <Property name="addTimestampAsColumn" value="false"/>
+                                    
+                                </Value>
+                                                            
+                            </Item>
+                                                    
+                        </List>
+                                            
+                    </Property>
+                                    
+                </Control>
+                                
+                <Control id="pagination-control_id_1011" type="pagination-control" visible="true">
+                                        
+                    <Property name="start" value="0"/>
+                                        
+                    <Property name="size" value="50"/>
+                                    
+                </Control>
+                                
+                <Control id="metadata_id_1012" type="metadata" visible="false">
+                                        
+                    <Property name="maxPointsCount" value="5000"/>
+                                        
+                    <Property name="distributionColor" value="6870C4"/>
+                                        
+                    <Property name="hideObjectNameColumn" value="false"/>
+                                        
+                    <Property name="listTopResultSize" value="-1"/>
+                                    
+                </Control>
+                            
+            </Controls>
+                        
+            <DataProviders>
+                                
+                <DataProvider dataType="list-view" id="list-view_id_1008"/>
+                            
+            </DataProviders>
+                        
+            <Presentation type="list"/>
+                    
+        </ViewDef>
+            
+    </Views>
+    
+</Content>

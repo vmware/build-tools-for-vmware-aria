@@ -1,0 +1,33 @@
+name: Trivy
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  build:
+    name: Run vulnerability scan
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      actions: write
+      security-events: write
+    env:
+      TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
+      TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Run Trivy vulnerability scanner in fs mode
+      uses: aquasecurity/trivy-action@e368e328979b113139d6f9068e03accaed98a518 # 0.34.1
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        trivy-config: .github/trivy.yml
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: 'trivy-results.sarif'

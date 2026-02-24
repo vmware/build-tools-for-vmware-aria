@@ -10,6 +10,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>base-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>
@@ -26,6 +27,6 @@
 		</plugins>
 	</build>
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
 </project>

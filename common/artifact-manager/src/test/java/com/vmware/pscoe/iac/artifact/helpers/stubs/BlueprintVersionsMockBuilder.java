@@ -1,6 +1,6 @@
 /*
  * #%L
- * artifact-manager
+ * artifact-manaer
  * %%
  * Copyright (C) 2023 VMware
  * %%
@@ -15,7 +15,7 @@
 package com.vmware.pscoe.iac.artifact.helpers.stubs;
 
 import com.google.gson.*;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -25,6 +25,7 @@ import java.util.Date;
 
 public class BlueprintVersionsMockBuilder {
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'";
+	private static final long SECOND_IN_MS = 1000L;
 
 	private final JsonElement mockData;
 	private int versionsCount = 1;
@@ -35,7 +36,8 @@ public class BlueprintVersionsMockBuilder {
 
 		ClassLoader cl = getClass().getClassLoader();
 		try {
-			String read = IOUtils.toString(cl.getResourceAsStream("test/fixtures/blueprintVersion.json"), StandardCharsets.UTF_8);
+			String read = IOUtils.toString(cl.getResourceAsStream("test/fixtures/blueprintVersion.json"),
+					StandardCharsets.UTF_8);
 			this.mockData = JsonParser.parseString(read);
 		} catch (IOException ex) {
 			throw ex;
@@ -72,7 +74,7 @@ public class BlueprintVersionsMockBuilder {
 			newVersion.addProperty("version", String.valueOf(i));
 			newVersion.addProperty("id", String.valueOf(i));
 			newVersion.addProperty("createdAt", new SimpleDateFormat(DATE_FORMAT).format(
-				new Date(i*1000L)));
+					new Date(i * SECOND_IN_MS)));
 
 			versionsArray.add(newVersion);
 		}

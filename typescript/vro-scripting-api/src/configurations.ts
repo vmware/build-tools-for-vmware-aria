@@ -72,13 +72,13 @@ namespace vroapi {
         return Object.values(parentDescriptor.children || {}).map(child => getOrCreateCategory(child));
     }
 
-    function getCategory(categoryPath: string): ConfigurationElementCategory {
+    function getCategory(categoryPath: string): ConfigurationElementCategory | null {
         const categoryDescriptor = findDescriptorByPath(categoryPath);
         return categoryDescriptor ? getOrCreateCategory(categoryDescriptor) : null;
     }
 
     function removeCategory(categoryPath: string) {
-        const path = categoryPath.split("/");
+        const path = categoryPath.split(/[\\/]+/gm);
         const name = path.pop();
         const parentDescriptor = path.length ? findDescriptorByPath(path.join("/")) : getRoot();
         delete parentDescriptor.children[name];
@@ -96,7 +96,7 @@ namespace vroapi {
         return Object.values(categoryDescriptor.elements).map(elem => getOrCreateElement(elem, category));
     }
 
-    function getElement(categoryPath: string, name: string): ConfigurationElement {
+    function getElement(categoryPath: string, name: string): ConfigurationElement | null {
         const categoryDescriptor = findDescriptorByPath(categoryPath);
         if (!categoryDescriptor) {
             return null;
@@ -110,7 +110,7 @@ namespace vroapi {
     }
 
     function createElement(categoryPath: string, name: string): ConfigurationElement {
-        const categoryDescriptor = categoryPath.split("/").reduce((parent, name) => {
+        const categoryDescriptor = categoryPath.split(/[\\/]+/gm).reduce((parent, name) => {
             let child: CategoryDescriptor = parent.children[name];
             if (!child) {
                 child = {
@@ -165,7 +165,7 @@ namespace vroapi {
 
 
     function findDescriptorByPath(categoryPath: string): CategoryDescriptor {
-        return categoryPath.split("/").reduce((parent, name) => parent ? parent.children[name] : null, getRoot());
+        return categoryPath.split(/[\\/]+/gm).reduce((parent, name) => parent ? parent.children[name] : null, getRoot());
     }
 
     function getOrCreateCategory(descriptor: CategoryDescriptor): ConfigurationElementCategory {

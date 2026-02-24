@@ -10,6 +10,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>xml-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
@@ -65,7 +66,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>3.4.0</version>
 				<executions>
 					<execution>
 						<phase>prepare-package</phase>
@@ -92,7 +93,7 @@
 	</build>
 
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 		<!-- checksum calculation properties -->
 		<checksum.definitions>xml,packages</checksum.definitions>
 

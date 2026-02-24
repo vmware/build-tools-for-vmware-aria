@@ -9,7 +9,8 @@
 			"ES2015.Collection",
 			"ES2015.Iterable",
 			"ES2015.Promise",
-			"ES2017.String"
+			"ES2017.String",
+			"ES2016.Array.Include"
 		],
 		"experimentalDecorators": true
 	}

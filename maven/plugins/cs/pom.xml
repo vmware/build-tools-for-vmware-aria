@@ -9,10 +9,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cs-package-maven-plugin</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>maven-plugin</packaging>
     <properties>
         <goal.prefix>cs</goal.prefix>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
     </properties>
 
     <dependencies>

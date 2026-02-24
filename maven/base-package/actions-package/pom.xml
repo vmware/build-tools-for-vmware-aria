@@ -10,6 +10,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>actions-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
@@ -84,6 +85,11 @@
 						<coverage.thresholds.statements.warn>
 							${test.coverage.thresholds.statements.warn}</coverage.thresholds.statements.warn>
 						<coverage.perfile>${test.coverage.perfile}</coverage.perfile>
+						<framework.package>${test.framework.package}</framework.package>
+						<framework.version>${test.framework.version}</framework.version>
+						<framework.runner>${test.framework.runner}</framework.runner>
+						<framework.jasmine.reporters.version>${test.framework.jasmine.reporters.version}</framework.jasmine.reporters.version>
+						<ansicolors.version>${test.ansicolors.version}</ansicolors.version>
 					</test>
 					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
 					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
@@ -95,7 +101,7 @@
 		</plugins>
 	</build>
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 		<sonar.sources>src/main</sonar.sources>
 		<sonar.language>js</sonar.language>
 		<sonar.javascript.globals>${vro.javascript.globals}</sonar.javascript.globals>

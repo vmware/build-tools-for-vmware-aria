@@ -31,12 +31,12 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "push", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class PushMojo extends AbstractIacMojo {

@@ -1,0 +1,26 @@
+{
+	"id": "7827d7ef-4d33-4178-9735-f4afc047816d",
+	"name": "vra8-db-mssql Content Sharing Policy",
+	"typeId": "com.vmware.policy.catalog.entitlement",
+	"organization": "vidm-l-01a",
+	"enforcementType": "HARD",
+	"definition": {
+		"entitledUsers": [
+			{
+				"items": [
+					{
+						"name": "Orchestrator_Development",
+						"type": "CATALOG_SOURCE_IDENTIFIER"
+					}
+				],
+				"userType": "USER",
+				"principals": [
+					{
+						"type": "PROJECT",
+						"referenceId": ""
+					}
+				]
+			}
+		]
+	}
+}

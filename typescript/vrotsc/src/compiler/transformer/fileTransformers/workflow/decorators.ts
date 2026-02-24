@@ -26,6 +26,7 @@ import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
 import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
 import ScheduledWorkflowItemDecoratorStrategy from "./decorators/scheduledWorkflowItemDecoratorStrategy";
+import SwitchItemDecoratorStrategy from "./decorators/switchItemDecoratorStrategy";
 import UserInteractionDecoratorStrategy from "./decorators/userInteractionDecoratorStrategy";
 import WaitingTimerItemDecoratorStrategy from "./decorators/waitingTimerItemDecoratorStrategy";
 import WorkflowItemDecoratorStrategy from "./decorators/workflowItemDecoratorStrategy";
@@ -102,6 +103,8 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 			return new UserInteractionDecoratorStrategy();
 		case WorkflowItemType.End:
 			return new EndItemDecoratorStrategy();
+		case WorkflowItemType.Switch:
+			return new SwitchItemDecoratorStrategy();
 		default:
 			throw new Error(`Invalid decorator type: ${identifierText}`);
 	}
@@ -246,6 +249,14 @@ function buildWorkflowDecorator(
 					workflowInfo.description = (<ts.StringLiteral>property.initializer).text;
 					break;
 				}
+				case "restartMode": {
+					workflowInfo.restartMode = parseInt((<ts.NumericLiteral>property.initializer).text);
+					break;
+				}
+				case "resumeFromFailedMode": {
+					workflowInfo.resumeFromFailedMode = parseInt((<ts.NumericLiteral>property.initializer).text);
+					break;
+				}
 				case "input": {
 					buildWorkflowDecoratorParameters(
 						workflowInfo.parameters,
@@ -350,7 +361,7 @@ function buildWorkflowDecoratorParameters(
 						context.diagnostics.addAtNode(
 							sourceFile,
 							property.initializer,
-							`Workflow parameter default value should be of type string, number or boolean.`,
+							`Workflow parameter default value should be of type string, number, boolean or an Array of them.`,
 							DiagnosticCategory.Error);
 					}
 					break;
@@ -385,19 +396,19 @@ function getWorkflowParamValue(node: ts.Node): string {
 	switch (node.kind) {
 		case ts.SyntaxKind.StringLiteral:
 			return (<ts.StringLiteral>node).text;
-		case ts.SyntaxKind.NumericLiteral: {
+		case ts.SyntaxKind.NumericLiteral:
 			let value = (<ts.NumericLiteral>node).text;
 			if (value.indexOf(".") < 0) {
 				value += ".0";
 			}
 			return value;
-		}
-		case ts.SyntaxKind.TrueKeyword: {
+		case ts.SyntaxKind.TrueKeyword:
 			return "true";
-		}
-		case ts.SyntaxKind.FalseKeyword: {
+		case ts.SyntaxKind.FalseKeyword:
 			return "false";
-		}
+		// Array
+		case ts.SyntaxKind.ArrayLiteralExpression:
+			return (<ts.ArrayLiteralExpression>node).elements.map(getWorkflowParamValue).join(",");
 	}
 };
 

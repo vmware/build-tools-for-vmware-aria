@@ -1,0 +1,103 @@
+{
+	"name": "vra8-db-mssql Resource Quota Policy",
+	"typeId": "com.vmware.policy.resource.quota",
+	"enforcementType": "HARD",
+	"description": "",
+	"organization": "vidm-l-01a",
+	"scopeCriteria": {
+		"matchExpression": [
+			{
+				"or": [
+					{
+						"and": [
+							{
+								"key": "project.description",
+								"operator": "contains",
+								"value": "a"
+							},
+							{
+								"key": "project.description",
+								"operator": "notEq",
+								"value": "test"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	"definition": {
+		"orgLevel": {
+			"limits": {
+				"cpu": {
+					"value": 128.0
+				},
+				"memory": {
+					"unit": "GB",
+					"value": 1024.0
+				},
+				"storage": {
+					"unit": "GB",
+					"value": 10240.0
+				},
+				"instances": {
+					"value": 16.0
+				}
+			},
+			"userLevel": {
+				"limits": {
+					"cpu": {
+						"value": 16.0
+					},
+					"memory": {
+						"unit": "GB",
+						"value": 1024.0
+					},
+					"storage": {
+						"unit": "GB",
+						"value": 10240.0
+					},
+					"instances": {
+						"value": 16.0
+					}
+				}
+			}
+		},
+		"projectLevel": {
+			"limits": {
+				"cpu": {
+					"value": 128.0
+				},
+				"memory": {
+					"unit": "GB",
+					"value": 1024.0
+				},
+				"storage": {
+					"unit": "GB",
+					"value": 10240.0
+				},
+				"instances": {
+					"value": 16.0
+				}
+			},
+			"userLevel": {
+				"limits": {
+					"cpu": {
+						"value": 128.0
+					},
+					"memory": {
+						"unit": "GB",
+						"value": 1024.0
+					},
+					"storage": {
+						"unit": "GB",
+						"value": 10240.0
+					},
+					"instances": {
+						"value": 16.0
+					}
+				}
+			}
+		}
+	}
+}

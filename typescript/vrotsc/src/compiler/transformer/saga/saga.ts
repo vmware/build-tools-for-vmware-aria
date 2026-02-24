@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
+ *
  * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -18,8 +18,7 @@ import { WorkflowDescriptor, parseWorkflowXml, printWorkflowXml, WorkflowParamet
 import { printElementInfo } from "../../elementInfo";
 import { generateElementId } from "../../../utilities/utilities";
 import { StringBuilderClass } from "../../../utilities/stringBuilder";
-
-const yaml: typeof import("js-yaml") = require("js-yaml");
+import { load } from "js-yaml";
 
 const SAGA_PREFIX = "__saga";
 const PARAM_INPUT_DATA = `${SAGA_PREFIX}In`;
@@ -85,7 +84,7 @@ export function getSagaTransformer(file: FileDescriptor, context: FileTransforma
 	}
 
 	function loadSaga(): SagaDescriptor {
-		const saga: SagaDescriptor = yaml.safeLoad(system.readFile(file.filePath).toString());
+		const saga = load(system.readFile(file.filePath).toString()) as SagaDescriptor;
 		saga.name = saga.name || system.changeFileExt(file.fileName, "", [".saga.yaml"]);
 		saga.path = saga.path || system.joinPath(context.workflowsNamespace || "", system.dirname(file.relativeFilePath));
 		saga.id = saga.id || generateElementId(FileType.Workflow, `${saga.path}/${saga.name}`);

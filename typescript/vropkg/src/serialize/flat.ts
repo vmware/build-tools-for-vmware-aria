@@ -18,7 +18,7 @@ import * as path from "path";
 import * as winston from "winston";
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
-import * as uuidv5 from "uuid/v5";
+import {v5 as uuidv5} from "uuid";
 import * as s from "../security";
 import * as p from "../packaging"
 import { exist, isDirectory } from "../util";
@@ -97,7 +97,7 @@ const serializeFlatElementData = (target: string) => {
         if (data) {
             bundle.append(Buffer.from(data, 'utf8'), { name: `${VSO_RESOURCE_INF}/${name}` })
         } else {
-            winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element not available ${VSO_RESOURCE_INF}/${name}`);
+			winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element not available ${VSO_RESOURCE_INF}/${name}`);
         }
     };
 
@@ -199,7 +199,7 @@ const serializeFlatElementCategory = async (context: any, element: t.VroNativeEl
         categories.ele("category").att("name", realName).ele("name").dat(realName)
     });
 
-    return context.categories(Buffer.from('\ufeff' + categories.end(), "utf16le").swap16(), DEFAULT_ENCODING);
+    return context.categories(Buffer.from('\ufeff' + categories.end(saveOptions), "utf16le").swap16(), DEFAULT_ENCODING);
 }
 
 const serializeFlatElementBundle = async (context: any, element: t.VroNativeElement): Promise<void> => {
@@ -218,14 +218,13 @@ const serializeFlatElementBundle = async (context: any, element: t.VroNativeElem
 
 const serializeFlatElementTags = async (context: any, element: t.VroNativeElement): Promise<void> => {
     if (!element.tags?.length) {
-        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element does not have tags ${element.name}`);
-        return;
+        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Element does not have tags ${element.name}`);       return;
     }
     let node = xmlbuilder.create("tags", xmlOptions);
     element.tags.forEach(name => {
         node.ele("tag").att("name", name).att("global", true).up()
     })
-    const contentBuffer = Buffer.from('\ufeff' + node.end(xmlOptions), "utf16le").swap16();
+    const contentBuffer = Buffer.from('\ufeff' + node.end(saveOptions), "utf16le").swap16();
 
     return context.tags(contentBuffer, DEFAULT_ENCODING);
 }
@@ -254,6 +253,9 @@ const serializeFlatElementContent = async (context: any, pkg: t.VroPackageMetada
             content = getActionXml(element.id, element.name, element.description, element.action);
             break;
         }
+		case t.VroElementType.ActionEnvironment: {
+			return context.data(fs.readFileSync(element.dataFilePath));
+		}
         default: {
             content = decode(fs.readFileSync(element.dataFilePath));
         }
@@ -276,7 +278,7 @@ const serializeFlatSignatures = async (context: any, pkg: t.VroPackageMetadata):
     const promises = [];
     const target = context.target;
 
-    glob.sync(target + "/**/*", { nodir: true }).forEach(file => {
+	glob.sync((target + "/**/*").replace(/[\\/]+/gm, path.posix.sep), { nodir: true }).forEach(file => {
         const location = path.normalize(file).replace(target, "");
         const data = s.sign(fs.readFileSync(file), pkg.certificate);
         const signature = context.signatures(location)(data);

@@ -1,8 +1,14 @@
 Usage: vrotest build [options]
 
 Options:
+  --projectRoot                 Project root path. The tool will be able to work with files in the Maven project being built.
   --actions                     Path to the vRO JavaScript folder.
   --testHelpers                 Path to the vRO JavaScript test helpers folder.
+  --testFrameworkPackage        Unit test framework to use. Defaults to "jasmine". Will be added to the package.json file generated for the tests.
+  --testFrameworkVersion        Unit test framework version to use. If unset will use the latest. Will be added to the package.json file generated for the tests.
+  --runner                      Determines usage of a specific unit tests runner, e.g. swc for Jest (https://swc.rs/docs/usage/jest); supported values: "swc"; currently only supported for Jest.
+  --jasmineReportersVerion      Specifies the version of the Jasmine reporters package to use when running the tests using Jasmine (https://www.npmjs.com/package/jasmine-reporters).
+  --ansiColorsVersion           Specifies the version of the ansi-colors package to use when running the tests using Jasmine (https://www.npmjs.com/package/ansi-colors).
   --tests                       Path to the folder containing all tests.
   --maps                        Path to the folder containing source maps when using TypeScript.
   --resources                   Path to the folder containing vRO resources.
@@ -10,7 +16,7 @@ Options:
   --dependencies                Path to the folder containing dependent vRO packages.
   --helpers                     Path to the folder containing vRO scripting API.
   --ts-src                      Path to the original TypeScript code.
-  --ts-namespace                Namespace for the TypeScript project e.g. com.example.myproject
+  --ts-namespace                Namespace for the TypeScript project e.g. com.example.my-project
   --output                      Folder where testbed will be created.
   --coverage-thresholds         Defines the threshold (in %) for the test coverage. Tests will fail if coverage is below the threshold.
                                 Format: <error>:<warn>:<type>
@@ -30,5 +36,6 @@ Options:
                                   * lcov
                                   * lcovonly
   --per-file                    Code coverage per file bases. Set custom --coverage-thresholds, if any file in the project drops below those thresholds, the build will fail
+  --vroIgnoreFile               Path to a file containing glob patterns to be excluded from test coverage and packaging.
 Examples:
-$ vrotest build --actions src --testHelpers src --tests test --output target/vro-test --coverage-thresholds 50:60:all,65:70:statements --coverage-reports text,html,lcovonly
+$ vrotest build --actions src --testHelpers src --tests test --output target/vro-test --coverage-thresholds 50:60:all,65:70:statements --coverage-reports text,html,lcovonly --vroIgnoreFile=.vroIgnore

@@ -23,35 +23,29 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
-import com.vmware.pscoe.iac.artifact.model.PackageType;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
-public class VcdNgPackageMojo extends AbstractMojo {
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private File directory;
+public class VcdNgPackageMojo extends AbstractVroMojo {
 
-	@Parameter(defaultValue = "${project}")
-	private MavenProject project;
-
+	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-		
+
 		getLog().info("basedir " + project.getBasedir());
-		File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.VCDNG.getPackageExtention());
+		File pkgFile = new File(directory,
+				pkgInfoProvider.getPackageName() + "." + PackageType.VCDNG.getPackageExtention());
 		getLog().info("Target vcd-ng package file " + pkgFile.getAbsolutePath());
-		
+
 		Path zipBundle = Paths.get(directory.getAbsolutePath(), "bundle", "plugin.zip");
 
 		String npmExec = SystemUtils.IS_OS_WINDOWS ? "npm.cmd" : "npm";
-		
+
 		ArrayList<String> nodeBuildArgs = new ArrayList<>();
 		nodeBuildArgs.add(npmExec);
 		nodeBuildArgs.add("run");
@@ -61,23 +55,23 @@ public class VcdNgPackageMojo extends AbstractMojo {
 		}
 
 		new ProcessExecutor()
-			.name("Packaging project")
-			.directory(project.getBasedir())
-			.command(nodeBuildArgs)
-			.execute(getLog());
+				.name("Packaging project")
+				.directory(project.getBasedir())
+				.command(nodeBuildArgs)
+				.execute(getLog());
 
-		if(!java.nio.file.Files.exists(zipBundle)) {
+		if (!java.nio.file.Files.exists(zipBundle)) {
 			throw new RuntimeException(String.format(
-				"Unable to find packaged files %s. Please check npm output with -X option.", 
-				zipBundle.toString()));
+					"Unable to find packaged files %s. Please check npm output with -X option.",
+					zipBundle.toString()));
 		}
-		
+
 		try {
 			Files.move(zipBundle, pkgFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			project.getArtifact().setFile(pkgFile);
 		} catch (IOException e) {
 			throw new MojoExecutionException("Could not package project.", e);
-		} 
+		}
 	}
 
 }

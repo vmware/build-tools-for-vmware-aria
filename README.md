@@ -16,7 +16,7 @@ Build Tools for VMware Aria provides development and release management tools fo
             <properties>
                 <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
                 <keystoreArtifactId>keystore.example</keystoreArtifactId>
-                <keystoreVersion>1.0.0</keystoreVersion>
+                <keystoreVersion>4.6.0</keystoreVersion>
                 <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
                 <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
                 <vroKeyPass>VMware1!</vroKeyPass>
@@ -29,20 +29,30 @@ Build Tools for VMware Aria provides development and release management tools fo
     ```
 2. Execute:
     ```shell
-    mvn clean install -f common/keystore-example/pom.xml
-    mvn clean install -f maven/npmlib/pom.xml
-    mvn clean install -f pom.xml
-    mvn clean install -f maven/base-package/pom.xml
-    mvn clean install -f packages/pom.xml
-    mvn clean install -f maven/typescript-project-all/pom.xml
-    mvn clean install -f maven/repository/pom.xml
+    mvn clean install -D modules.plugins
+    mvn clean install -D modules.tools
+    mvn clean package -D modules.repository
     ```
 
 ## Package dependencies
-- npm: 6.14.13
-- node: 14.17.1
-- maven: 3.8.7
-- jdk: 17
+- npm: 6.14.x (One compatible with your node version)
+- node: 22.x.x (only 14 is supported for vcd-ng)
+- maven: 3.9.x
+- jdk: 17, 21, 24
+
+To check if the dependencies are met, you can run:
+
+```sh
+curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
+```
+
+## Encoding (UTF-8)
+
+Some development environments default to a platform-specific file encoding (for example, Cp1252 on some Windows systems). Build Tools for VMware Aria reads and writes files using UTF-8 where possible, but JVM and toolchain defaults may still affect behavior. If you encounter issues where non-ASCII characters are replaced by question marks (for example emoji in CSS/form styles), ensure Java uses UTF-8 by one of the following:
+
+- Start the JVM with the system property: `-Dfile.encoding=UTF-8`.
+- Set the environment variable for JVM launches: `JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"`.
+- When running Maven, you can pass the property: `mvn -Dfile.encoding=UTF-8 <goal>`.
 
 ## Support
 

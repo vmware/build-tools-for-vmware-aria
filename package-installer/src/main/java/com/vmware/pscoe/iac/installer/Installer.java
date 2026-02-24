@@ -31,38 +31,45 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.parser.ParserException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.vmware.pscoe.iac.artifact.PackageStore;
-import com.vmware.pscoe.iac.artifact.PackageStoreFactory;
-import com.vmware.pscoe.iac.artifact.VroWorkflowExecutor;
-import com.vmware.pscoe.iac.artifact.VroWorkflowExecutor.WorkflowExecutionException;
-import com.vmware.pscoe.iac.artifact.configuration.Configuration;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationAbx;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationCs;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationSsh;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVcd;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVra;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrli;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVro;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVroNg;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVrops;
-import com.vmware.pscoe.iac.artifact.model.Package;
-import com.vmware.pscoe.iac.artifact.model.PackageFactory;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.model.vro.WorkflowExecution;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationAbx;
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVroNg;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.helpers.VroWorkflowExecutor.WorkflowExecutionException;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.WorkflowExecution;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.rest.RestClientVro;
+import com.vmware.pscoe.iac.artifact.bsc.configuration.ConfigurationSsh;
+import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
+import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 
 /**
  * Created by tsimchev on 2/22/18.
@@ -84,59 +91,13 @@ enum Option {
 	SOCKET_TIMEOUT(
 			"http_socket_timeout",
 			Configuration.SOCKET_TIMEOUT),
-
 	/**
-	 * Configurations.
 	 *
-	 * VRA server.
+	 * timeouts.
 	 */
-	VRA_SERVER(
-			"vra_server",
-			Configuration.HOST),
-	/**
-	 * VRA port.
-	 */
-	VRA_PORT(
-			"vra_port",
-			Configuration.PORT),
-	/**
-	 * VRA tenant.
-	 */
-	VRA_TENANT(
-			"vra_tenant",
-			ConfigurationVra.TENANT),
-	/**
-	 * VRA username.
-	 */
-	VRA_USERNAME(
-			"vra_username",
-			Configuration.USERNAME),
-	/**
-	 * VRA password.
-	 */
-	VRA_PASSWORD(
-			"vra_password",
-			Configuration.PASSWORD),
-	/**
-	 * VRA import old versions.
-	 */
-	VRA_IMPORT_OLD_VERSIONS(
-			"vra_import_old_versions",
-			ConfigurationVra.IMPORT_OLD_VERSIONS),
-
-	/**
-	 * Skip VRA import old versions.
-	 */
-	SKIP_VRA_IMPORT_OLD_VERSIONS(
-			"skip_vra_import_old_versions",
-			StringUtils.EMPTY),
-	/**
-	 * VRA import overwrite mode.
-	 */
-	VRA_IMPORT_OVERWRITE_MODE(
-			"vra_import_overwrite_mode",
-			ConfigurationVra.PACKAGE_IMPORT_OVERWRITE_MODE),
-
+	SSH_TIMEOUT(
+			"vrealize_ssh_timeout",
+			Configuration.SSH_TIMEOUT),
 	/**
 	 * VRO force import latest package versions.
 	 */
@@ -174,23 +135,11 @@ enum Option {
 			"vrang_port",
 			Configuration.PORT),
 	/**
-	 * VRANG project Id.
-	 */
-	VRANG_PROJECT_ID(
-			"vrang_project.id",
-			ConfigurationVraNg.PROJECT_ID),
-	/**
 	 * VRANG data collection delay in seconds.
 	 */
 	VRANG_DATA_COLLECTION_DELAY_SECONDS(
 			"vrang_data.collection.delay.seconds",
 			ConfigurationVraNg.DATA_COLLECTION_DELAY_SECONDS),
-	/**
-	 * VRANG org Id.
-	 */
-	VRANG_ORGANIZATION_ID(
-			"vrang_org_id",
-			ConfigurationVraNg.ORGANIZATION_ID),
 	/**
 	 * VRANG org name.
 	 */
@@ -378,7 +327,17 @@ enum Option {
 	VCD_IMPORT_OVERWRITE_MODE(
 			"vcd_import_overwrite_mode",
 			ConfigurationVcd.PACKAGE_IMPORT_OVERWRITE_MODE),
-
+	/**
+	 * Configurations.
+	 *
+	 * VRA server.
+	 *
+	 * Yes, this is still for `vra` which is deprecated. That being said it's being
+	 * used for some reason in the Installer
+	 */
+	VRA_SERVER(
+			"vra_server",
+			Configuration.HOST),
 	/**
 	 * VRO server.
 	 */
@@ -471,6 +430,12 @@ enum Option {
 			"vrops_dashboardUser",
 			ConfigurationVrops.VROPS_DASHBOARD_USER),
 	/**
+	 * VROPS dashboard user.
+	 */
+	VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS(
+			"vrops_importDashboardsForAllUsers",
+			ConfigurationVrops.VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS),
+	/**
 	 * VROPS http host.
 	 */
 	VROPS_HTTP_HOST(
@@ -550,15 +515,6 @@ enum Option {
 	SSH_DIRECTORY(
 			"ssh_directory",
 			ConfigurationSsh.SSH_DIRECTORY),
-
-	/**
-	 * Operations.
-	 *
-	 * VRA import packages.
-	 */
-	VRA_IMPORT(
-			"vra_import_packages",
-			StringUtils.EMPTY),
 	/**
 	 * VRANG import packages.
 	 */
@@ -661,24 +617,6 @@ enum Option {
 	 */
 	VRO_RUN_WORKFLOW_TIMEOUT(
 			"vro_run_workflow_timeout",
-			StringUtils.EMPTY),
-	/**
-	 * VRA delete old versions.
-	 */
-	VRA_DELETE_OLD_VERSIONS(
-			"vra_delete_old_versions",
-			StringUtils.EMPTY),
-	/**
-	 * VRA delete last version.
-	 */
-	VRA_DELETE_LAST_VERSION(
-			"vra_delete_last_version",
-			StringUtils.EMPTY),
-	/**
-	 * VRA delete include dependencies.
-	 */
-	VRA_DELETE_INCLUDE_DEPENDENCIES(
-			"vra_delete_include_dependencies",
 			StringUtils.EMPTY),
 	/**
 	 * VRO delete old versions.
@@ -889,14 +827,15 @@ public final class Installer {
 	 */
 	private static final int EXIT_WF_EXEC_FAILED_CODE = -1;
 
+	/**
+	 * Instance of the logger used in the installer.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(Installer.class);
+
 	private Installer() {
 	}
 
 	private enum ConfigurationPrefix {
-		/**
-		 * VRA.
-		 */
-		VRA("vra_"),
 		/**
 		 * VRANG.
 		 */
@@ -920,7 +859,11 @@ public final class Installer {
 		/**
 		 * SSH.
 		 */
-		SSH("ssh_");
+		SSH("ssh_"),
+		/**
+		 * VREALIZE.
+		 */
+		VREALIZE("vrealize_");
 
 		/**
 		 * value.
@@ -966,12 +909,6 @@ public final class Installer {
 
 		boolean vroEnableBackup = false; // the backup will be possible only for vRO packages
 
-		if (input.allTrue(Option.VRA_IMPORT)) {
-			PackageStoreFactory
-					.getInstance(ConfigurationVra.fromProperties(input.getMappings(ConfigurationPrefix.VRA.getValue())))
-					.importAllPackages(getFilesystemPackages(PackageType.VRA), false, vroEnableBackup);
-		}
-
 		if (input.allTrue(Option.CS_IMPORT)) {
 			PackageStoreFactory
 					.getInstance(
@@ -991,6 +928,11 @@ public final class Installer {
 					.getInstance(
 							ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VRANG), false, vroEnableBackup);
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationVraNg.fromProperties(input.getMappings(ConfigurationPrefix.VRANG.getValue())))
+					.importAllPackages(getFilesystemPackages(PackageType.VRANGv3), false, vroEnableBackup);
+
 		}
 
 		if (input.allTrue(Option.VCD_IMPORT)) {
@@ -1025,40 +967,17 @@ public final class Installer {
 			packageStore.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
 		}
 
-		if (input.allTrue(Option.VRA_DELETE_LAST_VERSION)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), true, false, false);
-		}
-
-		if (input.allTrue(Option.VRA_DELETE_OLD_VERSIONS)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
-		}
-
-		if (input.anyTrue(Option.VRA_DELETE_LAST_VERSION, Option.VRA_DELETE_INCLUDE_DEPENDENCIES)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), true, false, false);
-		}
-
-		if (input.anyTrue(Option.VRA_DELETE_OLD_VERSIONS, Option.VRA_DELETE_INCLUDE_DEPENDENCIES)) {
-			String[] prefixes = { ConfigurationPrefix.VRA.getValue(), ConfigurationPrefix.VRANG.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVra.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VRO), false, true, false);
-		}
-
 		if (input.allTrue(Option.VRANG_DELETE_CONTENT)) {
 			String[] prefixes = { ConfigurationPrefix.VRANG.getValue() };
 			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(prefixes)))
 					.deleteAllPackages(getFilesystemPackages(PackageType.VRANG), true, false, false);
+			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(prefixes)))
+					.deleteAllPackages(getFilesystemPackages(PackageType.VRANGv3), true, false, false);
 		}
 
 		if (input.allTrue(Option.VROPS_IMPORT)) {
-			PackageStoreFactory
-					.getInstance(
-							ConfigurationVrops.fromProperties(input.getMappings(ConfigurationPrefix.VROPS.getValue())))
+			String[] prefixes = { ConfigurationPrefix.VROPS.getValue(), ConfigurationPrefix.VREALIZE.getValue() };
+			PackageStoreFactory.getInstance(ConfigurationVrops.fromProperties(input.getMappings(prefixes)))
 					.importAllPackages(getFilesystemPackages(PackageType.VROPS), false, vroEnableBackup);
 		}
 
@@ -1070,8 +989,8 @@ public final class Installer {
 		}
 
 		if (input.allTrue(Option.VCD_DELETE_OLD_VERSIONS)) {
-			// TODO - add clean up support for vCD
-			input.getText().getTextTerminal().println("vCloud Director clean up is not supported yet.");
+			// TODO - add clean up support for VCD
+			input.getText().getTextTerminal().println("VMware Cloud Director clean up is not supported yet.");
 		}
 
 		if (input.allTrue(Option.SSH_IMPORT)) {
@@ -1166,21 +1085,6 @@ public final class Installer {
 		// common properties (i.e. timeouts)
 		readCommonProperties(input);
 
-		// +------------------------------
-		// | vRealize Automation
-		// +------------------------------
-		boolean hasVraPackages = !getFilesystemPackages(PackageType.VRA).isEmpty();
-		if (hasVraPackages) {
-			userInput(input, Option.VRA_IMPORT, "Import vRA packages?", true);
-			if (input.anyTrue(Option.VRA_IMPORT)) {
-				readVraProperties(input);
-				readVraImportProperties(input);
-				userInput(input, Option.VRA_DELETE_OLD_VERSIONS, "Clean up old vRA package versions?", true);
-				userInput(input, Option.VRA_DELETE_LAST_VERSION, "Clean up last vRA package version?", true);
-				userInput(input, Option.VRA_DELETE_INCLUDE_DEPENDENCIES, "Clean up vRA dependent packages as well?",
-						true);
-			}
-		}
 		// +-------------------------------------
 		// | vRealize Code Stream Automation (New Generation)
 		// +-------------------------------------
@@ -1189,16 +1093,24 @@ public final class Installer {
 			userInput(input, Option.CS_IMPORT, "Import Code Stream packages?", true);
 		}
 		// +-------------------------------------
+		// | ABX
+		// +-------------------------------------
+		boolean hasAbxPackages = !getFilesystemPackages(PackageType.ABX).isEmpty();
+		if (hasAbxPackages) {
+			userInput(input, Option.ABX_IMPORT, "Import ABX packages?", true);
+		}
+		// +-------------------------------------
 		// | vRealize Automation (New Generation)
 		// +-------------------------------------
-		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty();
+		boolean hasVraNgPackages = !getFilesystemPackages(PackageType.VRANG).isEmpty()
+				|| !getFilesystemPackages(PackageType.VRANGv3).isEmpty();
 		if (hasVraNgPackages) {
 			userInput(input, Option.VRANG_IMPORT, "Import vRA8 packages?", true);
 			if (!input.anyTrue(Option.VRANG_IMPORT)) {
 				userInput(input, Option.VRANG_DELETE_CONTENT, "Clean up Aria Automation content?", true);
 			}
 		}
-		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT, Option.VRANG_DELETE_CONTENT)) {
+		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT, Option.VRANG_DELETE_CONTENT, Option.ABX_IMPORT)) {
 			readVrangProperties(input);
 		}
 		if (input.anyTrue(Option.VRANG_IMPORT)) {
@@ -1226,7 +1138,7 @@ public final class Installer {
 			}
 			userInput(input, Option.VRO_DELETE_OLD_VERSIONS, "Clean up old vRO package versions?", true);
 		}
-		userInput(input, Option.VRO_RUN_WORKFLOW, "Run vRO workflow?", true);
+		userInput(input, Option.VRO_RUN_WORKFLOW, "Run vRO workflow?", false);
 		if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
 			if (input.anyTrue(Option.VRO_EMBEDDED)) {
 				readVroEmbeddedInVrangProperties(input, false);
@@ -1236,10 +1148,10 @@ public final class Installer {
 			readVroWorkflowProperties(input);
 		}
 		// +-------------------------------------
-		// | vCloud Director (New Generation)
+		// | VMware Cloud Director (New Generation)
 		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.VCDNG).isEmpty()) {
-			userInput(input, Option.VCD_IMPORT, "Import vCD packages?", true);
+			userInput(input, Option.VCD_IMPORT, "Import VCD packages?", true);
 		}
 		if (input.anyTrue(Option.VCD_IMPORT)) {
 			readVcdImportProperties(input);
@@ -1306,6 +1218,11 @@ public final class Installer {
 		userInput(input, Option.SOCKET_TIMEOUT, "  HTTP socket timeout",
 				Configuration.DEFAULT_SOCKET_TIMEOUT.toString());
 		Validate.timeout(input.get(Option.SOCKET_TIMEOUT), input.getText());
+
+		input.getText().getTextTerminal().println("SSH Common Properties:");
+		userInput(input, Option.SSH_TIMEOUT, "  SSH execution timeout",
+				Configuration.DEFAULT_SSH_TIMEOUT.toString());
+		Validate.timeout(input.get(Option.SSH_TIMEOUT), input.getText());
 	}
 
 	private static void setCommonProperties(final Input input) {
@@ -1333,7 +1250,7 @@ public final class Installer {
 		Validate.hostAndPort(input.get(Option.VRO_SERVER), Integer.valueOf(input.get(Option.VRO_PORT)),
 				input.getText());
 		if (!input.getText().newBooleanInputReader().withDefaultValue(true)
-				.read("  Is single tenant environment (Y/N)?")) {
+				.read("  Is single tenant environment?")) {
 			userInput(input, Option.VRO_TENANT, "  vRO Tenant", "vsphere.local");
 		}
 		userInput(input, Option.VRO_USERNAME, "  vRO Username[@Domain]", "administrator@vsphere.local");
@@ -1360,19 +1277,6 @@ public final class Installer {
 		userInput(input, Option.VRO_RUN_WORKFLOW_ERR_FILE, "  Workflow Error File Path",
 				Option.VRO_RUN_WORKFLOW_OUTPUT_FILE + ".err");
 		userInput(input, Option.VRO_RUN_WORKFLOW_TIMEOUT, "  Workflow Execution Timeout", VRO_RUN_WORKFLOW_TIMEOUT);
-	}
-
-	private static void readVraProperties(final Input input) {
-		input.getText().getTextTerminal().println("vRealize Automation Configuration:");
-		userInput(input, Option.VRA_SERVER, "  vRA FQDN:");
-		Validate.host(input.get(Option.VRA_SERVER), input.getText());
-		userInput(input, Option.VRA_PORT, "  vRA Port", HTTPS_PORT);
-		Validate.port(Integer.valueOf(input.get(Option.VRA_PORT)), input.getText());
-		Validate.hostAndPort(input.get(Option.VRA_SERVER), Integer.valueOf(input.get(Option.VRA_PORT)),
-				input.getText());
-		userInput(input, Option.VRA_TENANT, "  vRA Tenant", "vsphere.local");
-		userInput(input, Option.VRA_USERNAME, "  vRA Username@Domain", "configurationadmin@vsphere.local");
-		passInput(input, Option.VRA_PASSWORD, "  vRA Password");
 	}
 
 	private static void readVroEmbeddedInVrangProperties(final Input input, final boolean needCspHost) {
@@ -1407,12 +1311,8 @@ public final class Installer {
 		userInput(input, Option.VRANG_PROJECT_NAME, "  Project name");
 		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VRANG_PROJECT_NAME),
 				input.getText());
-		userInput(input, Option.VRANG_PROJECT_ID, "  Project ID (Optional if you supplied project name)",
-				validated.projectId);
 		userInput(input, Option.VRANG_ORGANIZATION_NAME,
-				"  Organization Name (Optional if you supplied organization ID)", validated.org);
-		userInput(input, Option.VRANG_ORGANIZATION_ID, "  Organization ID (Optional if you supplied organization Name)",
-				validated.orgId);
+				"  Organization Name", validated.org);
 		userInput(input, Option.VRANG_PROXY_REQUIRED, "  Use proxy server for vRA? (Optional)", false);
 		if (input.allTrue(Option.VRANG_PROXY_REQUIRED)) {
 			userInput(input, Option.VRANG_PROXY, "    VRA proxy server");
@@ -1420,11 +1320,11 @@ public final class Installer {
 	}
 
 	private static void readVcdProperties(final Input input) {
-		input.getText().getTextTerminal().println("vCloud Director Configuration:");
-		userInput(input, Option.VCD_SERVER, "  vCD FQDN:");
-		userInput(input, Option.VCD_PORT, "  vCD Port", HTTPS_PORT);
-		userInput(input, Option.VCD_USERNAME, "  vCD Username@Org (Provider)", "administrator@system");
-		passInput(input, Option.VCD_PASSWORD, "  vCD Password (Provider)");
+		input.getText().getTextTerminal().println("VMware Cloud Director Configuration:");
+		userInput(input, Option.VCD_SERVER, "  VCD FQDN:");
+		userInput(input, Option.VCD_PORT, "  VCD Port", HTTPS_PORT);
+		userInput(input, Option.VCD_USERNAME, "  VCD Username@Org (Provider)", "administrator@system");
+		passInput(input, Option.VCD_PASSWORD, "  VCD Password (Provider)");
 	}
 
 	private static void readVroImportProperties(final Input input) {
@@ -1437,13 +1337,6 @@ public final class Installer {
 		userInput(input, Option.VRO_IMPORT_CONFIG_SECURE_STRING_ATTRIBUTE_VALUES,
 				"  Import Configuration Elements Secure String Values?", false);
 		userInput(input, Option.VRO_FORCE_IMPORT_LATEST_VERSION, "  Force import latest versions of packages?", false);
-	}
-
-	private static void readVraImportProperties(final Input input) {
-		input.getText().getTextTerminal().println("vRealize Automation Import Configuration:");
-		userInput(input, Option.SKIP_VRA_IMPORT_OLD_VERSIONS, "  Skip Old Package Versions?", true);
-		input.put(Option.VRA_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VRA_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
-		userInput(input, Option.VRA_IMPORT_OVERWRITE_MODE, "  Import Mode", "SKIP,OVERWRITE");
 	}
 
 	private static void readVrangImportProperties(final Input input) {
@@ -1462,10 +1355,10 @@ public final class Installer {
 	}
 
 	private static void readVcdImportProperties(final Input input) {
-		input.getText().getTextTerminal().println("vCloud Director Import Configuration:");
-		userInput(input, Option.SKIP_VCD_IMPORT_OLD_VERSIONS, "  vCD Skip Old Package Versions?", true);
+		input.getText().getTextTerminal().println("VMware Cloud Director Import Configuration:");
+		userInput(input, Option.SKIP_VCD_IMPORT_OLD_VERSIONS, "  VCD Skip Old Package Versions?", true);
 		input.put(Option.VCD_IMPORT_OLD_VERSIONS, input.get(Option.SKIP_VCD_IMPORT_OLD_VERSIONS).equals(Boolean.FALSE));
-		userInput(input, Option.VCD_IMPORT_OVERWRITE_MODE, "  vCD Import Mode", "SKIP,OVERWRITE");
+		userInput(input, Option.VCD_IMPORT_OVERWRITE_MODE, "  VCD Import Mode", "SKIP,OVERWRITE");
 	}
 
 	private static void readVropsImportProperties(final Input input) {
@@ -1475,13 +1368,14 @@ public final class Installer {
 		userInput(input, Option.VROPS_REST_USER, "  vROps REST Username");
 		passInput(input, Option.VROPS_REST_PASSWORD, "  vROps REST Password");
 		userInput(input, Option.VROPS_REST_AUTH_SOURCE, "  vROps REST Auth Source", "local");
-		userInput(input, Option.VROPS_REST_AUTH_PROVIDER, "  vROps REST Auth Provider", "BASIC");
+		userInput(input, Option.VROPS_REST_AUTH_PROVIDER, "  vROps REST Auth Provider", "AUTH_N");
 
 		input.getText().getTextTerminal().println("vRealize Operations SSH Endpoint Configuration:");
 		userInput(input, Option.VROPS_SSH_PORT, "  vROps SSH Port", SSH_PORT);
 		userInput(input, Option.VROPS_SSH_USER, "  vROps SSH Username");
 		passInput(input, Option.VROPS_SSH_PASSWORD, "  vROps SSH Password");
 		userInput(input, Option.VROPS_DASHBOARD_USER, "  Dashboard username");
+		userInput(input, Option.VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS, "  Import Dashboards For All Users");
 	}
 
 	private static void readVrliImportProperties(final Input input) {
@@ -1529,7 +1423,6 @@ public final class Installer {
 			throw new RuntimeException(
 					String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
 		}
-
 		List<File> packages = new ArrayList<>();
 		packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtention() }, true));
 
@@ -1539,7 +1432,7 @@ public final class Installer {
 	private static void runWorkflow(final Input input) throws ConfigurationException {
 		input.getText().getTextTerminal().println("Executing vRealize Orchestrator Workflow ...");
 
-		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 		String wfID = input.get(Option.VRO_RUN_WORKFLOW_ID);
 		String wfInputFilePath = input.get(Option.VRO_RUN_WORKFLOW_INPUT_FILE_PATH);
 		String wfOutputFilePath = input.get(Option.VRO_RUN_WORKFLOW_OUTPUT_FILE);
@@ -1551,8 +1444,12 @@ public final class Installer {
 
 		Properties wfInput = new Properties();
 		try {
-			String wfInputJSON = new String(Files.readAllBytes(Paths.get(wfInputFilePath)));
-			for (Map.Entry<String, JsonElement> entry : gson.fromJson(wfInputJSON, JsonObject.class).entrySet()) {
+			String wfInputString = new String(Files.readAllBytes(Paths.get(wfInputFilePath)));
+			if (Installer.isValidYaml(wfInputFilePath, wfInputString)) {
+				wfInputString = Installer.convertYamlToJson(wfInputFilePath, wfInputString);
+			}
+
+			for (Map.Entry<String, JsonElement> entry : gson.fromJson(wfInputString, JsonObject.class).entrySet()) {
 				wfInput.put(entry.getKey(), StringEscapeUtils.escapeJava(gson.toJson(entry.getValue())));
 			}
 			List<String> prefixes = new ArrayList<>();
@@ -1573,10 +1470,18 @@ public final class Installer {
 				wfOutputJson.add(key, gson.fromJson(value, JsonObject.class));
 			}
 			// write the workflow output
-			Files.write(Paths.get(wfOutputFilePath), gson.toJson(wfOutputJson).getBytes(), StandardOpenOption.CREATE);
+			String outputString = gson.toJson(wfOutputJson);
+			if (Installer.endsWithIgnoreCase(wfOutputFilePath, "yaml")
+					|| Installer.endsWithIgnoreCase(wfOutputFilePath, "yml")) {
+				outputString = Installer.convertJsonObjectToYaml(wfOutputFilePath, wfOutputJson);
+			}
+
+			Files.write(Paths.get(wfOutputFilePath), outputString.getBytes(StandardCharsets.UTF_8),
+					StandardOpenOption.CREATE);
 			// write the workflow error in a workflow error file (if any)
 			if (!StringUtils.isEmpty(workflowExecutionResult.getError())) {
-				Files.write(Paths.get(wfErrFilePath), workflowExecutionResult.getError().getBytes(),
+				Files.write(Paths.get(wfErrFilePath),
+						workflowExecutionResult.getError().getBytes(StandardCharsets.UTF_8),
 						StandardOpenOption.CREATE);
 			}
 		} catch (IOException e) {
@@ -1587,7 +1492,8 @@ public final class Installer {
 					+ e.getLocalizedMessage(), e);
 		} catch (WorkflowExecutionException e) {
 			try {
-				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(), StandardOpenOption.CREATE);
+				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(StandardCharsets.UTF_8),
+						StandardOpenOption.CREATE);
 			} catch (IOException e1) {
 				throw new RuntimeException(
 						"Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(),
@@ -1599,5 +1505,66 @@ public final class Installer {
 			throw new RuntimeException("General error during workflow execution: " + e.getClass().getName() + " : "
 					+ e.getLocalizedMessage(), e);
 		}
+	}
+
+	private static boolean isValidYaml(String fileName, String yamlString) {
+		Yaml yaml = new Yaml();
+		try {
+			yaml.load(yamlString);
+			return true;
+		} catch (ParserException e) {
+			LOGGER.debug(
+					"Encountered an error while parsing workflow input file '{}' as YAML. File will be processed as JSON. Error: {}",
+					fileName, e.getLocalizedMessage());
+			return false;
+		}
+	}
+
+	private static String convertYamlToJson(String fileName, String yamlString) {
+		Yaml yaml = new Yaml();
+		ObjectMapper jsonMapper = new ObjectMapper();
+		jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+		try {
+			// Parse YAML
+			Map<String, Object> yamlMap = yaml.load(yamlString);
+			// Convert to JSON
+			return jsonMapper.writeValueAsString(yamlMap);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(
+					String.format("Unable to convert YAML file '%s' to JSON: '%s'", fileName, e.getLocalizedMessage()));
+		}
+	}
+
+	private static String convertJsonObjectToYaml(String fileName, JsonObject jsonObject) {
+		if (jsonObject.isEmpty()) {
+			return "---";
+		}
+		ObjectMapper jsonMapper = new ObjectMapper();
+		DumperOptions options = new DumperOptions();
+		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+		Yaml yaml = new Yaml(options);
+
+		try {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> jsonMap = jsonMapper.readValue(jsonObject.toString(), Map.class);
+			return yaml.dump(jsonMap);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Unable to convert JSON object to YAML file '%s': '%s'", fileName,
+					e.getLocalizedMessage()));
+		}
+	}
+
+	private static boolean endsWithIgnoreCase(String str, String suffix) {
+		if (str == null || suffix == null) {
+			return false;
+		}
+		if (suffix.length() > str.length()) {
+			return false;
+		}
+		String lowerStr = str.toLowerCase();
+		String lowerSuffix = suffix.toLowerCase();
+
+		return lowerStr.endsWith(lowerSuffix);
 	}
 }

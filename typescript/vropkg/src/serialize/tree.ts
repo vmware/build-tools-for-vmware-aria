@@ -36,17 +36,21 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
         data: (element: t.VroNativeElement, sourceFile: string, type: t.VroElementType) => {
             switch (type) {
                 case t.VroElementType.ResourceElement: {
-                    return fs.copyFile(sourceFile, path.join(target, `${elementName}`));
+                    return fs.copyFileSync(sourceFile, path.join(target, `${elementName}`));
                 }
                 case t.VroElementType.ScriptModule: {
                     let elementXmlPath = path.join(target, `${elementName}.xml`)
-                    let actionXml = getActionXml(element.id, element.name, element.description, element.action);
-                    return fs.writeFile(elementXmlPath, actionXml);
+					let actionXml = getActionXml(element.id, element.name, element.description, element.action);
+					fs.mkdirsSync(path.dirname(elementXmlPath));
+                    return fs.writeFileSync(elementXmlPath, actionXml);
                 }
+				case t.VroElementType.ActionEnvironment: {
+                    return fs.copyFileSync(sourceFile, path.join(target, `${elementName}`));
+				}
                 default: {
                     // Re-encode the content to UTF-8
                     let buffer = fs.readFileSync(sourceFile);
-                    return fs.writeFile(path.join(target, `${elementName}.xml`), decode(buffer));
+                    return fs.writeFileSync(path.join(target, `${elementName}.xml`), decode(buffer));
                 }
             }
         },
@@ -109,17 +113,18 @@ const serializeTreeElement = async (context: any, element: t.VroNativeElement): 
         ? element?.categoryPath.pop().split('.')
         : element?.categoryPath;
 
+	// @NOTE: The below code will not support empty values for version, mimetype, and description attributes
     if (element.type == t.VroElementType.ResourceElement && element.attributes["version"]) {
-        xInfo.ele("entry").att("key", "version").text(element.attributes["version"]);
+        xInfo.ele("entry").att("key", "version").text(element.attributes["version"].toString());
     }
     xInfo.ele("entry").att("key", "categoryPath").text(pathKey)
-    if (element.type == t.VroElementType.ResourceElement) {
-        xInfo.ele("entry").att("key", "mimetype").text(element.attributes["mimetype"]);
+    if (element.type == t.VroElementType.ResourceElement && element.attributes["mimetype"]) {
+        xInfo.ele("entry").att("key", "mimetype").text(element.attributes["mimetype"].toString());
     }
-    xInfo.ele("entry").att("key", "name").text(element.name);
+    xInfo.ele("entry").att("key", "name").text(element.name.toString());
     xInfo.ele("entry").att("key", "type").text(element.type.toString());
     if (element.type == t.VroElementType.ResourceElement && element.attributes["description"]) {
-        xInfo.ele("entry").att("key", "description").text(element.attributes["description"]);
+        xInfo.ele("entry").att("key", "description").text(element.attributes["description"].toString());
     }
     xInfo.ele("entry").att("key", "id").text(element.id);
 

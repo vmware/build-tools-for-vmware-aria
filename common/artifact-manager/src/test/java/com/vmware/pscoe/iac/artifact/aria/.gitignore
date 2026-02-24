@@ -1,0 +1,2 @@
+# `logs` are excluded generally, so, re-include them
+!logs

@@ -7,8 +7,9 @@
     </parent>
     <groupId>com.vmware.pscoe.vrops.archetypes</groupId>
     <artifactId>package-vrops-archetype</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>maven-archetype</packaging>
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
 </project>

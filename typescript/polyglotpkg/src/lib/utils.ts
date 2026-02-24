@@ -13,14 +13,11 @@
  * #L%
  */
 
-import globby from 'globby';
-import fs from 'fs-extra';
 import which from 'which';
 import path from 'path';
 import { spawn } from 'child_process';
 import {
 	ActionType,
-	ActionRuntime,
 	AbxActionDefinition,
 	VroActionDefinition,
 	PackageDefinition,
@@ -28,54 +25,12 @@ import {
 	ProjectActions,
 	ActionOptions,
 	PackagerOptions,
-	MappedAbxRuntimes,
 } from './model';
 import createLogger from './logger';
+import { readFileSync, writeFileSync } from 'fs';
+import { findFiles } from './file-system';
 
 const logger = createLogger();
-
-/**
- * Determine the action runtime based on the action manifest or
- * the action handler if runtime is not specified.
- *
- * If the action type is ABX, the runtime is determined based on the given runtime. Runtimes of the same type are mapped.
- *
- * @TODO: This needs to be deprecated in favor of the runtime being correctly specific in the manifest. That however is a breaking change.
- *          new Issue created for this to be discussed: https://github.com/vmware/build-tools-for-vmware-aria/issues/391
- *
- * @param pkg
- */
-export function determineRuntime(pkg: PlatformDefinition, actionType?: ActionType): ActionRuntime {
-	const isAbx = actionType === ActionType.ABX || !pkg.vro;
-	const runtime = pkg.platform.runtime;
-
-	// @TODO: This needs to be deprecated in favor of the runtime being correctly specific in the manifest. Do so during the next major release.
-	// ===========================================================
-	if (runtime === ActionRuntime.ABX_NODEJS) {
-		return isAbx ? ActionRuntime.ABX_NODEJS : ActionRuntime.VRO_NODEJS_12;
-	}
-
-	if (runtime === ActionRuntime.ABX_POWERSHELL) {
-		return isAbx ? ActionRuntime.ABX_POWERSHELL : ActionRuntime.VRO_POWERCLI_11_PS_62;
-	}
-
-	if (runtime === ActionRuntime.ABX_PYTHON) {
-		return isAbx ? ActionRuntime.ABX_PYTHON : ActionRuntime.VRO_PYTHON_37;
-	}
-	// ===========================================================
-
-	if (!isAbx) {
-		return runtime;
-	}
-
-	for (const [key, value] of Object.entries(MappedAbxRuntimes)) {
-		if (value.includes(runtime)) {
-			return key as ActionRuntime;
-		}
-	}
-
-	return runtime;
-}
 
 /**
  * Determine the action type based on the action manifest.
@@ -151,23 +106,25 @@ export function determineActionType(pkg: PlatformDefinition, actionType?: Action
 export async function getProjectActions(options: PackagerOptions, actionType?: ActionType): Promise<ProjectActions> {
 
 	// Search for all polyglot.json files located in subfolders of src
-	const plg = await globby(['src/**/polyglot.json', '!**/node_modules/**'], {
-		cwd: options.workspace,
+	const plg = findFiles([ 'src/**/polyglot.json' ], {
+		exclude: [ '**/node_modules/**' ],
+		path: options.workspace,
 		absolute: true
 	});
 
 	if (plg.length === 0) {
 		// No polyglot.json found. Assuming legacy project.
 		// Locate package.json from project root
-		const pkg = await globby(['package.json', '!**/node_modules/**'], {
-			cwd: options.workspace,
+		const pkg = findFiles([ 'package.json' ], {
+			exclude: [ '**/node_modules/**' ],
+			path: options.workspace,
 			absolute: true
 		});
 
 		if (pkg.length === 0) {
 			return [];
 		}
-		const pkgObj = await fs.readJSONSync(pkg[0]);
+		const pkgObj = JSON.parse(readFileSync(pkg[0]).toString("utf8"));
 
 		// Set options for a legacy project
 		let projectAction: ActionOptions =
@@ -179,8 +136,9 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			outBase: options.workspace,    // create out and polyglot-cache subfolders in project_root
 			src: 'src',
 			out: 'out',
-			actionRuntime: await determineRuntime(pkgObj, actionType),
-			actionType: await determineActionType(pkgObj, actionType)
+			actionRuntime: pkgObj.platform.runtime,
+            actionEnvironment: pkgObj.platform.environment,
+			actionType: determineActionType(pkgObj, actionType)
 		};
 		return [projectAction];
 	}
@@ -200,7 +158,7 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 		const outBasePath: string = path.join(options.workspace, 'out', actionFolder);
 		// To separate bundle.zip files of multiple actions they are created under project_root/dist/action_name/dist
 		const bundleZipPath: string = path.resolve('.', 'dist', actionFolder, 'dist', 'bundle.zip');
-		const plgObj = await fs.readJSONSync(plg[i]);
+		const pkgObj = JSON.parse(readFileSync(plg[i]).toString("utf8"));
 		let projectAction: ActionOptions =
 		{
 			...options,
@@ -211,8 +169,9 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
 			outBase: outBasePath,
 			src: path.relative(projectBasePath, actionBasePath),
 			out: path.relative(projectBasePath, path.join(outBasePath, 'out')),
-			actionRuntime: await determineRuntime(plgObj, actionType),
-			actionType: await determineActionType(plgObj, actionType)
+			actionRuntime: pkgObj.platform.runtime,
+            actionEnvironment: pkgObj.platform.environment,
+			actionType: determineActionType(pkgObj, actionType)
 		};
 		projectActions.push(projectAction);
 	}
@@ -224,13 +183,13 @@ export async function getProjectActions(options: PackagerOptions, actionType?: A
  */
 export async function createPackageJsonForABX(options: ActionOptions, isMixed: boolean) {
 	const projectPkg = await getActionManifest(options.workspace) as PackageDefinition;
-	const polyglotPkg = isMixed && await fs.readJSONSync(options.polyglotJson) as AbxActionDefinition;
+	const polyglotPkg = isMixed && JSON.parse(readFileSync(options.polyglotJson).toString("utf8")) as AbxActionDefinition;
 	if (polyglotPkg && polyglotPkg.platform.action === "auto") {
 		polyglotPkg.platform.action = path.basename(options.actionBase);
 	}
 	const bundlePkg = isMixed ? { ...projectPkg, ...polyglotPkg } : projectPkg;
 	const actionDistPkgPath = path.join(options.workspace, 'dist', isMixed ? path.basename(options.actionBase) : "", 'package.json');
-	fs.writeJsonSync(actionDistPkgPath, bundlePkg);
+	writeFileSync(actionDistPkgPath, JSON.stringify(bundlePkg, null, 2));
 }
 
 /**
@@ -238,16 +197,17 @@ export async function createPackageJsonForABX(options: ActionOptions, isMixed: b
  */
 export async function getActionManifest(projectPath: string): Promise<AbxActionDefinition | VroActionDefinition | null> {
 
-	const pkg = await globby(['package.json', '!**/node_modules/**'], {
-		cwd: projectPath,
-		absolute: true
-	});
+	const pkg = findFiles([ "package.json" ], {
+		exclude: [ "**/node_modules/**" ],
+		path: projectPath,
+		absolute: true,
+	})
 
 	if (pkg.length === 0) {
 		return null;
 	}
 
-	const pkgObj = await fs.readJSONSync(pkg[0]);
+	const pkgObj = JSON.parse(readFileSync(pkg[0]).toString("utf8"));
 	return pkgObj;
 }
 
@@ -264,24 +224,30 @@ export function notUndefined<T>(x: T | undefined): x is T {
  * @param cmd
  */
 export function run(cmd: string, args: Array<string> = [], cwd: string = process.cwd()): Promise<number> {
-	return new Promise((resolve, reject) => {
-		which(cmd, { all: true }, (err: Error | null, commandPath: string[] | undefined) => {
-			if (err || !commandPath) {
-				return reject(new Error(`Cannot find "${cmd}"`));
+	return new Promise(async (resolve, reject) => {
+		let err: any;
+		let commandPath: readonly string[] = [];
+		try {
+			commandPath = await which(cmd, { all: true, nothrow: false });
+		} catch(thrown) {
+			err = thrown;
+		}
+		if (err || !(commandPath && commandPath.length)) {
+			return reject(new Error(`Cannot find "${cmd}"`));
+		}
+        const proc = spawn(toPathArg(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
+		proc.on('close', exitCode => {
+			if (exitCode !== 0) {
+                const commandLine = `${toPathArg(commandPath[0])} ${args.join(' ')}`;
+				logger.error(`Error running command: ${commandLine}`);
+				return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
 			}
-			const proc = spawn(quoteString(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
-			proc.on('close', exitCode => {
-				if (exitCode !== 0) {
-					const commandLine = `${quoteString(commandPath[0])} ${args.join(' ')}`;
-					logger.error(`Error running command: ${commandLine}`);
-					return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
-				}
-				resolve(exitCode);
-			});
+			resolve(exitCode);
 		});
 	});
 }
 
-function quoteString(str: string) {
-	return /\s+/.test(str) ? `"${str}"` : str;
+function toPathArg(...args: string[]) {
+    const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
+    return !res ? '""' : (res.indexOf(" ") >= 0 && res.indexOf('"') < 0 ? `"${res}"` : res);
 }

@@ -9,11 +9,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>bsc-package-maven-plugin</artifactId>
+	<name>${project.artifactId}</name>
     <packaging>maven-plugin</packaging>
 
     <properties>
         <goal.prefix>bsc</goal.prefix>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
     </properties>
 
     <dependencies>

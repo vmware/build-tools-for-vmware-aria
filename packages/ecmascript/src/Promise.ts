@@ -12,7 +12,7 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-﻿function sentinelExecutor(fulfill: (value: any) => void, reject: (reason: Error) => void): void { }
+function sentinelExecutor(fulfill: (value: any) => void, reject: (reason: Error) => void): void { }
 
 function isPromise(value: any): boolean {
     return value instanceof Promise;

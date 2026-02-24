@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.vmware.pscoe.vrops</groupId>
 	<artifactId>vrops-package</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
 		<pluginManagement>
@@ -51,14 +52,13 @@
 					<configuration>
 						<vrops>
 							<host>${vrops.host}</host>
-							<sshHost>${vrops.sshHost}</sshHost>
 							<port>${vrops.port}</port>
 							<sshPort>${vrops.sshPort}</sshPort>
 							<dashboardUser>${vrops.dashboardUser}</dashboardUser>
+							<importDashboardsForAllUsers>${vrops.importDashboardsForAllUsers}</importDashboardsForAllUsers>
 							<username>${vrops.username}</username>
 							<password>${vrops.password}</password>
 							<serverId>${vrops.serverId}</serverId>
-							<httpPort>${vrops.httpPort}</httpPort>
 							<restUser>${vrops.restUser}</restUser>
 							<restPassword>${vrops.restPassword}</restPassword>
 							<restAuthSource>${vrops.restAuthSource}</restAuthSource>
@@ -68,6 +68,7 @@
 						<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
 						<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
 						<connectionTimeout>${vrealize.connection.timeout}</connectionTimeout>
+						<sshTimeout>${vrealize.ssh.timeout}</sshTimeout>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -87,6 +88,6 @@
 	</build>
 
 	<properties>
-		<main.basedir>${project.parent.parent.basedir}</main.basedir>
+		<main.basedir>${project.baseUri}../../../</main.basedir>
 	</properties>
 </project>

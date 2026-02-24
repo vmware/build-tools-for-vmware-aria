@@ -3,26 +3,32 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   super-linter:
     name: Lint all code
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           # Full git history is needed to get a proper
           # list of changed files within `super-linter`
           fetch-depth: 0
 
       - name: Setup Java Action
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           java-version: "21"
           distribution: "temurin"
 
       - name: Super-Linter
-        uses: github/super-linter@v4.10.1
+        uses: github/super-linter@v7
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
@@ -32,4 +38,4 @@ jobs:
           VALIDATE_JAVASCRIPT_STANDARD: true
           VALIDATE_MARKDOWN: true
           # ignore js files under test and e2e folders
-          FILTER_REGEX_EXCLUDE: .*test/.*.js|e2e/.*\.js
+          FILTER_REGEX_EXCLUDE: .*test/.*.js|e2e/.*\.js|.*maven/archetypes/.*.js

@@ -16,13 +16,6 @@ package com.vmware.pscoe.maven.plugins;
 
 import java.util.Arrays;
 
-import com.vmware.pscoe.iac.artifact.AbxReleaseManager;
-import com.vmware.pscoe.iac.artifact.VraNgReleaseManager;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationException;
-import com.vmware.pscoe.iac.artifact.configuration.ConfigurationVraNg;
-import com.vmware.pscoe.iac.artifact.model.PackageType;
-import com.vmware.pscoe.iac.artifact.rest.RestClientFactory;
-import com.vmware.pscoe.iac.artifact.rest.RestClientVraNg;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -31,6 +24,13 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
+import com.vmware.pscoe.iac.artifact.aria.automation.utils.AbxReleaseManager;
+import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
+import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "release", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.RUNTIME_PLUS_SYSTEM)
 public class ReleaseMojo extends AbstractIacMojo {
@@ -52,6 +52,9 @@ public class ReleaseMojo extends AbstractIacMojo {
 	@Parameter(required = false, property = "vrang.releaseIfNotUpdated", defaultValue = "false")
 	private boolean releaseIfNotUpdated;
 
+	/**
+	 * Release the content of vRANG (vRANGv3) and ABX projects
+	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
@@ -61,20 +64,24 @@ public class ReleaseMojo extends AbstractIacMojo {
 
 		try {
 
-			if (PackageType.VRANG == packageType) {
+			if (PackageType.VRANG == packageType || PackageType.VRANGv3 == packageType) {
 
-				RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
+				RestClientVraNg restClient = RestClientFactory
+						.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
 				VraNgReleaseManager releaseManager = new VraNgReleaseManager(restClient);
-				releaseManager.releaseContent(this.contentType, Arrays.asList(this.contentNames), this.version, this.releaseIfNotUpdated);
+				releaseManager.releaseContent(this.contentType, Arrays.asList(this.contentNames), this.version,
+						this.releaseIfNotUpdated);
 
 			} else if (PackageType.ABX == packageType) {
 
-				RestClientVraNg restClient = RestClientFactory.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
+				RestClientVraNg restClient = RestClientFactory
+						.getClientVraNg((ConfigurationVraNg) getConfigurationForType(packageType).get());
 				AbxReleaseManager releaseManager = new AbxReleaseManager(restClient);
 				releaseManager.releaseContent(this.version, project.getBasedir());
 
 			} else {
-				getLog().warn(String.format("Skipping release because of unsupported artifact type '%s'", artifactType));
+				getLog().warn(
+						String.format("Skipping release because of unsupported artifact type '%s'", artifactType));
 			}
 
 		} catch (ConfigurationException e) {

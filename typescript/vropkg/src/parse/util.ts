@@ -61,6 +61,7 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 	let memoryLimit = actionXml.attr["memory-limit"];
 
 	let runtime = null;
+	let environment = null;
 	let entryHandler = null;
 	let params: Array<t.VroActionParameter> = [];
 	let inline = null;
@@ -77,7 +78,9 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 			};
 			params.push(param);
 		} else if (element.type == "element" && element.name == "script") {
-			inline = getScriptInline(file, element, comment, this.lazy);
+			inline = getScriptInline(file, element, comment);
+		} else if (element.type == "element" && element.name == "environment") {
+			environment = element.val;
 		} else if (element.type == "element" && element.name == "runtime") {
 			runtime = element.val;
 		} else if (element.type == "element" && element.name == "entry-point") {
@@ -100,6 +103,7 @@ export const xmlToAction = (file: string, bundlePath: string, name: string, comm
 			params: params,
 			returnType: returnType,
 			runtime: getScriptRuntime(runtime),
+			environment: environment,
 			timeout,
 			memoryLimit,
 			inline: inline,
@@ -123,15 +127,16 @@ export function getScriptRuntime(runtime: string): t.VroScriptRuntime {
 	let lang: t.Lang = t.Lang[langString];
 	switch (lang) {
 		case t.Lang.javascript: defaultVersion = ""; break;
-		case t.Lang.node: defaultVersion = "12"; break;
-		case t.Lang.powercli: defaultVersion = "11-powershell-6.2"; break;
-		case t.Lang.python: defaultVersion = "3.7"; break;
-		default: throw new Error(`Unsupported runtime language "${langString}". Only supported languages are "javascript", "node", "powercli" and "python".`);
+		case t.Lang.node: defaultVersion = "20"; break;
+		case t.Lang.powercli: defaultVersion = "13-powershell-7.4"; break;
+		case t.Lang.powershell: defaultVersion = "7.4"; break;
+		case t.Lang.python: defaultVersion = "3.10"; break;
+		default: throw new Error(`Unsupported runtime language "${langString}". Only supported languages are "javascript", "node", "powercli", "powershell", and "python".`);
 	};
 	return { lang: lang, version: langVersion != "" ? langVersion : defaultVersion };
 }
 
-function getScriptInline(file: string, element: xmldoc.XmlElement, comment: string, lazy: boolean): t.VroScriptInline {
+function getScriptInline(file: string, element: xmldoc.XmlElement, comment: string): t.VroScriptInline {
 
 	let scriptSource: string = element.val;
 	let scriptStartLine: number = element.line;
@@ -152,7 +157,7 @@ function getScriptInline(file: string, element: xmldoc.XmlElement, comment: stri
 		scriptEndIndex = lastLine.length;
 	}
 	return {
-		actionSource: lazy ? null : scriptSource,
+		actionSource: scriptSource,
 		sourceFile: file,
 		sourceStartLine: scriptStartLine,
 		sourceStartIndex: scriptStartIndex,

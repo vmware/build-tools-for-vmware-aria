@@ -14,24 +14,27 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.model.vrang.VraNgSubscription;
-
-import static com.vmware.pscoe.iac.artifact.store.vrang.VraNgDirs.DIR_SUBSCRIPTIONS;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_SUBSCRIPTIONS;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 
 public class SubscriptionFsMocks extends VraNgFsMock {
 	/**
 	 * SubscriptionFsMocks constructor.
+	 * 
 	 * @param tempDir temporary directory.
 	 */
 	public SubscriptionFsMocks(File tempDir) {
 		super(tempDir);
 	}
+
 	/**
 	 * Returns working directory.
 	 */
@@ -42,16 +45,16 @@ public class SubscriptionFsMocks extends VraNgFsMock {
 
 	/**
 	 * Save subscription file to temporary directory.
+	 * 
 	 * @param subscription subscription object
 	 */
 	public void addSubscription(VraNgSubscription subscription) {
 		File file = Paths.get(
-			this.getWorkdir().getAbsolutePath(),
-			subscription.getName() + ".json"
-		).toFile();
+				this.getWorkdir().getAbsolutePath(),
+				subscription.getName() + ".json").toFile();
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());
-		writeFileToPath(itemName, subscription.getJson().getBytes());
+		writeFileToPath(itemName, subscription.getJson().getBytes(StandardCharsets.UTF_8));
 	}
 }

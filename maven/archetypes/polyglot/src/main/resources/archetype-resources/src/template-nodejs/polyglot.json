@@ -1,6 +1,11 @@
 {
   "platform": {
+#if ( $type == "vro" )
+    "runtime": "node:20",
+    "environment": "",
+#else
     "runtime": "nodejs",
+#end
     "action": "auto",  
     "tags": [],
     "entrypoint": "out/handler.handler"

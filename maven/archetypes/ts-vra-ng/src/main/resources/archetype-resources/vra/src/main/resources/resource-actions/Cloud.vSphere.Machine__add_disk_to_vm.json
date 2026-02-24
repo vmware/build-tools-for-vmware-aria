@@ -1,0 +1,62 @@
+{
+  "id": "Cloud.vSphere.Machine.custom.add_disk_to_vm",
+  "name": "add_disk_to_vm",
+  "displayName": "Add Disk To VM",
+  "providerName": "vro-workflow",
+  "resourceType": "Cloud.vSphere.Machine",
+  "status": "DRAFT",
+  "runnableItem": {
+    "id": "BD8080808080808080808080808080801BC280800122528313869552e41805bb1",
+    "name": "Add disk",
+    "description": "Adds a virtual disk to a virtual machine.",
+    "type": "vro.workflow",
+    "inputParameters": [
+      {
+        "type": "VC:VirtualMachine",
+        "name": "vm",
+        "description": "Virtual machine to which to add the disk"
+      },
+      {
+        "type": "VC:Datastore",
+        "name": "datastore",
+        "description": "Datastore in which to put the virtual disk file"
+      },
+      {
+        "type": "number",
+        "name": "diskIndex",
+        "description": "Disk index"
+      },
+      {
+        "type": "number",
+        "name": "diskSize",
+        "description": "Disk size (in GB)"
+      },
+      {
+        "type": "VC:VirtualDiskMode",
+        "name": "diskMode",
+        "description": "Disk persistence mode"
+      },
+      {
+        "type": "number",
+        "name": "scsiBusNumber",
+        "description": "SCSI controller bus number"
+      },
+      {
+        "type": "boolean",
+        "name": "thinProvisioned",
+        "description": "Use thin provisioning?"
+      }
+    ],
+    "endpointLink": "/resources/endpoints/6210741c-784c-49d1-898a-441bb4c7c32c"
+  },
+  "formDefinition": {
+    "tenant": "77712441-7f43-4ee8-a65f-7903785bb27c",
+    "name": "add_disk_to_vm",
+    "form": "{\"layout\":{\"pages\":[{\"id\":\"page_1\",\"title\":\"VM\",\"sections\":[{\"id\":\"section_0\",\"fields\":[{\"id\":\"vm\",\"display\":\"valuePicker\"}]}]},{\"id\":\"page_2\",\"title\":\"Disk information\",\"sections\":[{\"id\":\"section_2\",\"fields\":[{\"id\":\"datastore\",\"display\":\"valuePicker\"}]},{\"id\":\"section_3\",\"fields\":[{\"id\":\"diskMode\",\"display\":\"valuePicker\"}]},{\"id\":\"section_4\",\"fields\":[{\"id\":\"diskIndex\",\"display\":\"decimalField\"}]},{\"id\":\"section_5\",\"fields\":[{\"id\":\"diskSize\",\"display\":\"decimalField\"}]},{\"id\":\"section_6\",\"fields\":[{\"id\":\"scsiBusNumber\",\"display\":\"decimalField\"}]},{\"id\":\"section_7\",\"fields\":[{\"id\":\"thinProvisioned\",\"display\":\"checkbox\"}]}]}]},\"schema\":{\"scsiBusNumber\":{\"label\":\"SCSI controller bus number\",\"type\":{\"dataType\":\"decimal\",\"isMultiple\":false},\"constraints\":{\"min-value\":0.0}},\"diskSize\":{\"label\":\"Disk size (in GB)\",\"type\":{\"dataType\":\"decimal\",\"isMultiple\":false},\"constraints\":{\"min-value\":0.01,\"required\":true}},\"datastore\":{\"label\":\"Datastore in which to put the virtual disk file\",\"type\":{\"dataType\":\"reference\",\"referenceType\":\"VC:Datastore\",\"isMultiple\":false},\"constraints\":{\"required\":true}},\"vm\":{\"label\":\"Virtual machine to which to add the disk\",\"type\":{\"dataType\":\"reference\",\"referenceType\":\"VC:VirtualMachine\",\"isMultiple\":false},\"constraints\":{\"required\":true}},\"diskIndex\":{\"label\":\"Disk index\",\"type\":{\"dataType\":\"decimal\",\"isMultiple\":false},\"constraints\":{\"min-value\":0.0,\"required\":true,\"max-value\":15.0}},\"thinProvisioned\":{\"label\":\"Use thin provisioning?\",\"type\":{\"dataType\":\"boolean\",\"isMultiple\":false},\"default\":false,\"constraints\":{}},\"diskMode\":{\"label\":\"Disk persistence mode\",\"type\":{\"dataType\":\"reference\",\"referenceType\":\"VC:VirtualDiskMode\",\"isMultiple\":false},\"constraints\":{\"required\":true}}},\"options\":{\"externalValidations\":[{\"label\":\"diskIndex\",\"source\":{\"id\":\"com.vmware.o11n.forms/evalOGNL\",\"type\":\"scriptAction\",\"parameters\":[{\"ognl\":\"`(#diskIndex !\u003d 7 ? \\\"\\\": \\\"7 is not valid\\\" )`\"},{\"diskIndex\":\"diskIndex\"},{\"diskIndex__type_\":\"`number`\"},{\"return\":\"`String`\"}]},\"target\":[\"diskIndex\"]}]}}",
+    "sourceType": "resource.action",
+    "sourceId": "Cloud.vSphere.Machine.custom.add_disk_to_vm",
+    "type": "requestForm",
+    "status": "ON",
+    "formFormat": "JSON"
+  }
+}

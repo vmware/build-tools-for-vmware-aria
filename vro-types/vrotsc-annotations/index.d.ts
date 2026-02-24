@@ -50,6 +50,8 @@ interface VroWorkflow {
 	output?: VroParameterList;
 	attributes?: VroAttributeList;
 	presentation?: string;
+	restartMode?: number;
+	resumeFromFailedMode?: number;
 }
 
 interface VroWorkflowDecorator {
@@ -65,7 +67,7 @@ interface VroPolicyTemplate {
 	path?: string;
 	type?: VroPolicyTemplateType;
 	version?: string;
-	templateVersion?: "v1" | "v2";
+	templateVersion: "v1" | "v2";
 	variables?: {
 		[name: string]: string | PolicyAttribute;
 	};
@@ -358,11 +360,41 @@ interface VroUserInteractionItemDecorator {
 
 interface VroUserInteractionItemConfiguration {
 	target: string;
+	exception?: string;
 }
 
 interface VroUserInteractionItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | VroUserInteractionItemConfiguration, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Switch Canvas Item ------------------------------------------------
+
+export declare const SwitchItem: VroSwitchItemDecorator;
+
+interface VroSwitchItemDecorator {
+	(obj?: VroSwitchItemConfiguration): VroSwitchItemMethodDecorator;
+	new(obj?: VroSwitchItemConfiguration): VroSwitchItemConfiguration;
+}
+
+interface VroSwitchCase {
+	condition: any;
+	target: string;
+	variable?: string;
+	type?: string;
+	comparator?: string;	
+}
+
+interface VroSwitchItemConfiguration {
+	target: string;
+	cases: VroSwitchCase[],
+	defaultTarget?: string;
+	exception?: string;
+}
+
+interface VroSwitchItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | VroSwitchItemConfiguration, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------
