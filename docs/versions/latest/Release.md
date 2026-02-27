@@ -49,7 +49,7 @@ Executing a PowerShell 7 polyglot action with an imported module results in an e
 
 #### New Behavior
 
-On Windows, if which() fails, try using the command directly as the shell can resolve Windows App execution aliases that which() cannot detect.
+When building a PowerShell polyglot action with imported modules the build process downloads modules to out/Modules/ via Save-Module and the ZIP bundle now correctly includes all files from Modules/ with proper folder structure.
 
 ## Upgrade procedure
 
