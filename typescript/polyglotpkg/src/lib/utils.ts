@@ -232,13 +232,25 @@ export function run(cmd: string, args: Array<string> = [], cwd: string = process
 		} catch(thrown) {
 			err = thrown;
 		}
+		
+		// On Windows, if which() fails, try using the command directly
+		// as the shell can resolve Windows App execution aliases that which() cannot detect
+		let cmdToRun: string;
 		if (err || !(commandPath && commandPath.length)) {
-			return reject(new Error(`Cannot find "${cmd}"`));
+			if (process.platform === 'win32') {
+				// Let Windows shell resolve the command (handles App execution aliases)
+				cmdToRun = cmd;
+			} else {
+				return reject(new Error(`Cannot find "${cmd}"`));
+			}
+		} else {
+			cmdToRun = toPathArg(commandPath[0]);
 		}
-        const proc = spawn(toPathArg(commandPath[0]), args, { cwd, shell: true, stdio: 'inherit' });
+		
+        const proc = spawn(cmdToRun, args, { cwd, shell: true, stdio: 'inherit' });
 		proc.on('close', exitCode => {
 			if (exitCode !== 0) {
-                const commandLine = `${toPathArg(commandPath[0])} ${args.join(' ')}`;
+                const commandLine = `${cmdToRun} ${args.join(' ')}`;
 				logger.error(`Error running command: ${commandLine}`);
 				return reject(new Error(`Exit code for ${cmd}: ${exitCode}`));
 			}

@@ -41,6 +41,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Bugfix for failure to find imported module of Powershell 7 polyglot action*
+
+#### Previous Behavior
+
+Executing a PowerShell 7 polyglot action with an imported module results in an error of the type "The specified module '...' was not loaded because no valid module file was found in any module directory."
+
+#### New Behavior
+
+On Windows, if which() fails, try using the command directly as the shell can resolve Windows App execution aliases that which() cannot detect.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
