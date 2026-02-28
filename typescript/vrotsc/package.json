@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "brace-expansion": "^2.0.2",
-        "minimatch": "^10.0.0"
+        "minimatch": "^10.2.3"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "28.0.1",
@@ -38,7 +38,7 @@
         "is-keyword-js": "1.0.3",
         "js-yaml": "4.1.1",
         "merge2": "1.4.1",
-        "minimatch": "10.0.1",
+        "minimatch": "10.2.3",
         "minimist": "1.2.8",
         "prettier": "^3.5.3",
         "rollup": "4.28.0",
