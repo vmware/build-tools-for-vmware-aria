@@ -40,7 +40,7 @@
 		"download-git-repo": "^3.0.2",
 		"fs-extra": "^11.2.0",
 		"glob": "^11.1.0",
-		"minimatch": "^10.2.1",
+		"minimatch": "^10.2.4",
 		"brace-expansion": ">=2.0.2"
 	}
 }
