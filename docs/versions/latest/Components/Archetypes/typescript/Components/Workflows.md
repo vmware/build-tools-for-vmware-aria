@@ -22,7 +22,7 @@ You can use the method decorators to define various canvas items that will be in
    - [`@RootItem`](#rootitem)
    - [`@AsyncWorkflowItem`](#asyncworkflowitem)
    - [`@ActionItem`](#actionitem)
-   - [`@UserInteractionWorkflowItem`](#userinteractionworkflowitem)
+   - [`@UserInteractionItem`](#userinteractionitem)
 4. [Custom Form support](#custom-form-support)
 5. [Example Workflow](#example-workflow)
 
@@ -59,7 +59,7 @@ You can use the method decorators to define various canvas items that will be in
 - `attributes` - list of workflow attributes. See details below.
 - `input` - list of workflow input parameters. See details below.
 - `output` - list of workflow output parameters. See details below.
-- `presentation` - custom presentation of the workflow. If omitted, presentation is build based on parameters definitions.
+- `presentation` - custom presentation of the workflow. If omitted, presentation is built based on parameters definitions.
 - `restartMode` - server restart behaviour (0 - do not resume workflow run, 1 - resume workflow run (default)).
 - `resumeFromFailedMode` - resume workflow from failed behavior (0 - system default, 1 - enabled, 2 - disabled).
 
@@ -94,8 +94,7 @@ This decorator is used to specify a default error handler. It can be bound eithe
 ##### Supported Parameters
 
 - `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
-- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
-- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
+- `exceptionBinding` - Name of the variable that will hold the exception data when triggered.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -174,7 +173,6 @@ The decorator is used to specify a custom workflow end item.
 ##### Supported Parameters
 
 - `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
-- `exceptionVariable` - Exception variable that will hold the exception data when triggered.
 - `businessStatus` - Value of the business status in the end component.
 
 #### `@Item`
@@ -280,6 +278,7 @@ This decorator is used to specify a switch item that routes workflow execution t
 
 ##### Supported Parameters
 
+- `target` - The name of the next in line item. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow. If a non-existing name is provided, it will point to the end of the workflow.
 - `cases` - An array of case objects that define the routing logic. Each case object contains:
   - `condition` - The value to match against the switch variable
   - `target` - The name of the next item to execute when this condition is met
@@ -298,6 +297,7 @@ This decorator is used to specify a switch item that routes workflow execution t
     - `"match"`               - Matches a value
     - `"is defined"`          - Value is defined
 - `defaultTarget` - The name of the next item to execute when none of the cases match. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow.
+- `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 ##### Example
 
@@ -598,14 +598,14 @@ In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorat
 
 There is a requirement to have only one output, and it will be of type `ActionResult`.
 
-#### `@UserInteractionWorkflowItem`
+#### `@UserInteractionItem`
 
-The decorator is used to specify an user interaction workflow item.
+The decorator is used to specify a user interaction item.
 
 ##### Supported Parameters
 
-- `target` - The name of the target to that user interaction workflow item is connected to. You can specify another user interaction workflow item as a target, thus chaining multiple user interaction components.
-- `exception` - The name of the next in line item in case an exception or a timeout is encountered occured during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
+- `target` - The name of the target that the user interaction item is connected to. You can specify another user interaction item as a target, thus chaining multiple user interaction components.
+- `exception` - The name of the next in line item in case an exception or a timeout is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators.
 
@@ -623,7 +623,7 @@ Note that those parameters should match the input or attribute parameters of the
 
 ##### Known Limitations for the Input Parameters
 
-The names of the variables in the additional method decorators should be as following:
+The names of the variables in the additional method decorators should be as follows:
 
 - `security_assignees` - for the security assignees parameter.
 - `security_assignee_groups` - for the security assignee group parameter.
@@ -720,7 +720,7 @@ You can push `Workflow Custom Form` and `User Interaction Custom Forms` provided
 
 Only a single `Workflow Custom Form` is supported per `Workflow` and a single `User Interaction Custom Form` per `User Interaction` element (which can lead to having multiple `User Interaction Custom Form` definition files mapped to a single `wf.ts` file based on the number of `User Interactions` in the `Workflow`).
 
-If no `User Interaction Custom Form` file definition is provided (or the naming convention is not properly followed) the following default empty definition is used which can then be editted in the Orchestrator UI:
+If no `User Interaction Custom Form` file definition is provided (or the naming convention is not properly followed) the following default empty definition is used which can then be edited in the Orchestrator UI:
 ```json
 {
     "schema": {},

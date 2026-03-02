@@ -41,6 +41,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Improve TypeScript workflow decorator documentation*
+
+#### Previous Behavior
+
+Workflow decorator typings in `vrotsc-annotations` provided limited IDE documentation, and the written workflow documentation could drift from the actual decorator/type surface (for example, older decorator naming and stale parameter lists).
+
+#### New Behavior
+
+Workflow-related decorators and configuration types now include richer, more consistent JSDoc (including readable links), and the latest workflow documentation is aligned with the typings (updated decorator naming and supported parameters).
+
 ### *Bugfix for failure to find imported module of Powershell 7 polyglot action*
 
 #### Previous Behavior
