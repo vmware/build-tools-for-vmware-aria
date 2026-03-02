@@ -46,7 +46,7 @@
     "jszip": "3.10.1",
     "minimist": "1.2.8",
     "rimraf": "6.0.1",
-    "rollup": "^4.28.0",
+    "rollup": "^4.59.0",
     "source-map": "0.7.4",
     "ts-node": "10.9.2",
     "typescript": "5.7.2"
