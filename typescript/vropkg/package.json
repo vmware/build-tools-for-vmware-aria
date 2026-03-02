@@ -48,7 +48,7 @@
 		"gulp-jasmine": "^4.0.0",
 		"gulp-typescript": "^6.0.0-alpha.1",
 		"jasmine": "^5.5.0",
-		"rollup": "^4.28.0",
+		"rollup": "^4.59.0",
 		"rollup-plugin-natives": "^0.7.8",
 		"source-map": "0.7.4",
 		"ts-node": "^10.9.2",
