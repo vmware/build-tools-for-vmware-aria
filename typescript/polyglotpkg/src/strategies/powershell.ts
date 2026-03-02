@@ -64,7 +64,7 @@ export class PowershellStrategy extends BaseStrategy {
 			absolute: true
 		});
 
-		const modulesToBundle = findFiles([ 'Modules' ], {
+		const modulesToBundle = findFiles([ 'Modules/**' ], {
 			path: this.options.outBase, // use action specific out subfolder
 			absolute: true
 		});

@@ -41,6 +41,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Bugfix for failure to find imported module of Powershell 7 polyglot action*
+
+#### Previous Behavior
+
+Executing a PowerShell 7 polyglot action with an imported module results in an error of the type "The specified module '...' was not loaded because no valid module file was found in any module directory."
+
+#### New Behavior
+
+When building a PowerShell polyglot action with imported modules the build process downloads modules to out/Modules/ via Save-Module and the ZIP bundle now correctly includes all files from Modules/ with proper folder structure.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
