@@ -32,7 +32,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "28.0.1",
     "@rollup/plugin-node-resolve": "15.3.0",
-    "@rollup/plugin-terser": "0.4.4",
+    "@rollup/plugin-terser": "1.0.0",
     "@types/gulp": "4.0.17",
     "@types/jasmine": "^5.1.5",
     "@types/minimist": "1.2.5",
