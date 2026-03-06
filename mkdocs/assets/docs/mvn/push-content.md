@@ -1,7 +1,7 @@
 ## Push Content
 To push local content to the target environment execute the following maven command:
 ```bash
-mvn package vrealize:push -P{{ archetype.customer_project.maven_profile_name}}
+mvn clean package vrealize:push -P{{ archetype.customer_project.maven_profile_name}}
 ```
 ### Include Dependencies
 By default, the ```vrealize:push``` goal will deploy all dependencies of the current project to the target environment. You can control that by the ```-DincludeDependencies``` flag. The value is ```true``` by default, so you skip the dependencies by executing the following:

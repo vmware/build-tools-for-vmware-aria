@@ -86,53 +86,6 @@ Null (nothing given) - everything is being exported
 * property-group
 * subscription
 
-### Exporting regional content
-To export regional content, cloud account(s) with given tag(s) should be given.
-Empty array [] - nothing is exported 
-List of items - the given items are exported in all regions linked to cloud accounts with given tag 
-Null (nothing given) - everything is being exported in all regions linked to cloud accounts with given tag 
-* flavor-mapping
-* image-mapping
-* storage-profile
-
-### Export all content in all regions linked to cloud accounts with given tag 
-To export all content in all regions linked to cloud accounts, the tag for export should be defined.
-If not defined, nothing will be exported.
-
-### Regional Content
-The {{ products.vra_8_short_name }} philosophy is built around the concept of infrastructure definition capable of resource provisioning - 
-compute, network, storage and other types of resources - that builds up an abstract model for resource description.
-This allows workload placement to happen dynamically based on various explicit or implicit rules. Part of this abstract
-model is the definition of various mappings and profiles that provide common higher-level definitions of underlying 
-infrastructure objects. These definitions take the form of various mappings and profiles:
-* flavor mappings - common designation of compute resource t-shirt or other sizing
-* image mappings - common designation of VM images
-* storage profiles - a set of storage policies and configurations used for workload placement
-* network profiles - a set of network-related configurations used for network resource placement
-
-These abstractions are related to the regions within the cloud accounts and their capabilities. They utilize the various
-underlying resources which are automatically collected and organized into "fabrics" by vRA. As such, they contain
-information about resources in the various connected regions and for the purpose of this project are collectively called 
-**regional content**.
-
-Exporting (pulling) and importing (pushing) of regional content is achieved using a mapping definition specified in the
-content manifest (content.yaml): `region-mappping`. It contains a set of mapping criteria used for exporting and
-importing of content. The vRA-NG package manager handles the `export-tag` and `import-tags` entries of the
-`cloud-account-tags` section of `region-mapping`.
-
-#### Export Regional Content
-When exporting regional content defined in the respective content categories - `image-mapping`, `flavor-mapping`, 
-`storage-profile`, etc., the vRA-NG package manager takes into account the tag that is defined in the `export-tag`
-entry and exports content that is related to a cloud account(s) containing this tag. The content is stored in a
-directory within a unique regional directory bearing the name of the cloud account and the cloud zone id. The cloud
-account and zone combination are persisted for reference to the originating environment. 
-
-#### Import Regional Content
-The vRA-NG package manager uses the `import-tags` entry from the content manifest (content.yaml) to (re)create regional
-content targeting cloud accounts that contain one or more of the import tags. The content is taken from all of the
-regional folders and regardless of its origin, it is imported to the target environment based on the `import-tags`, i.e. 
-related to cloud accounts possessing one or more of the import tags list.
-
 
 !!! note
     Unreleased blueprints that have custom form will be automatically released with version 1.
@@ -230,9 +183,9 @@ There are few ways to pass the vRA connection parameters to maven pull/push comm
 
     1.  {{ archetype.customer_project.maven_settings_location_hint}}
 
-    Use the profile by passing it with:
+    Use the profile by passing it with `-P`, e.g.:
     ``` bash
-    mvn vra:pull -P{{ archetype.customer_project.maven_profile_name}}
+    mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
     ```
 
 === "Directly Pass {{ products.vra_cloud_short_name }} Token Parameters"
@@ -267,19 +220,7 @@ mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
     If a catalog item has a custom form and/or an icon they will be exported in subdirs of the catalog-items directory
 
 !!! note
-    If no catalog entitlements are specified, all of the available entitlements will be exported.
-
-!!! note
-    If catalog entitlement has a projectId in its configuration it will override the one specified in settings.xml during push of the entitlement on the target system.
-
-!!! note
-    In the catalog entitlement yaml file you can specify also project name using the projectName tag instead of projectId.
-
-!!! note
-    The value of the <vrang.org.name> tag will take precedence over the value of the <vrang.org.id> tag in case both are present (either trough settings.xml or Installer) during filtering of the cloud accounts during pull action.
-
-!!! note
-    The value of the <vrang.vro.integration> is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
+    The value of the `<vrang.vro.integration>` is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
 
 ### Additional Parameters
 * `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section below). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
