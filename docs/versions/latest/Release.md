@@ -26,6 +26,8 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add type definitions for `o11n-plugin-vcfa` plugin*
+
 ### *Add support for Node:22 runtime environment for `polyglot` projects*
 
 ## Improvements
