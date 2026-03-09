@@ -150,7 +150,7 @@ declare class VCFAHost {
  */
 declare class VCFAHostManager {
 	/** Default Host Connection. */
-	readonly defaultHostData: VCFAHost;
+	static readonly defaultHostData: VCFAHost;
 
 	constructor();
 
@@ -158,38 +158,40 @@ declare class VCFAHostManager {
 	 * Save Automation Host object.
 	 * @param props 
 	 */
-	public save(props: any): string;
+	public static save(props: any): string;
+
 	/**
 	 * Update Automation Host object..
 	 * 
 	 * @param props 
 	 * @param host 
 	 */
-	public update(props: any, host: VCFAHost): void;
+	public static update(props: any, host: VCFAHost): void;
+
 	/**
 	 * Creates a dynamic Automation Host.
 	 * @param properties 
 	 */
-	public createHost(properties: any): VCFAHost;
+	public static createHost(properties: any): VCFAHost;
 	/**
 	 * Creates a temporary host with the current user host and credentials.
 	 */
-	public createHostForCurrentUser(): VCFAHost;
+	public static createHostForCurrentUser(): VCFAHost;
 	/**
 	 * Delete Automation Host.
 	 * @param host 
 	 */
-	public delete(host: VCFAHost): void;
+	public static delete(host: VCFAHost): void;
 	/**
 	 * Validate Automation Host.
 	 * @param host 
 	 */
-	public validate(host: VCFAHost): boolean;
+	public static validate(host: VCFAHost): boolean;
 	/**
 	 * Get Automation Host by Sid.
 	 * @param sid 
 	 */
-	public getHostBySid(sid: string): VCFAHost;
+	public static getHostBySid(sid: string): VCFAHost;
 }
 
 declare class VCFAPrincipal {
