@@ -2,7 +2,7 @@
 
     Usage -  no tooling setup [@NV]
         General landing page - maven archetype 
-        segregated by Product
+        Segregated by Product
             for each product have a section with the relevant project types, e.g. - for vRA - vra-ng, for vRO - actions, XML, TS and polyglot, for vROps (VCF Operations) - vrops, etc. 
             Polyglot can be referenced from both vRO and vRA product pages since it is one archetype with 2 subtypes - vro and abx (abx is for vra). For each of the 2 types the documentation should only contain
             the common information plus the information for the specific project type (e.g. the ABX page must only contain the mvn archetype:generate command for ABX and not for vRO)
@@ -15,5 +15,13 @@
                     In the current documentation this is usually located in docs/versions/latest/Components/Archetypes/<archetype name>/Operations
                 No testing info
                 Content parameters - TS WF params and etc.
+                For all vRO/Orchestrator related projec types - actions, XML and TS - add information about .vroignore file:
+                    - docs/versions/latest/Components/Archetypes/typescript/General/Getting Started.md
+                    - maven/archetypes/ts/src/main/resources/archetype-resources/.vroignore
+                For actions and typescript project types add information about unit tests
+                    - typescript/vrotest/readme.md
+                    - docs/versions/latest/Components/Archetypes/typescript/General/Testing
+                    - For the 2 project types unit test files have different location and extension. E.g. for actions they are located in /src/test/resources and are .js files. For typescript location doesn't matter - just the extension - .test.ts
         How to create create multi-module project (e.g. for mixed projects are "ts-vra-ng" and "mixed" archetypes)
         Installer - general (currently located in docs/versions/latest/Components/Local/Installer)
+        Licensing plugin - archive/doc/markdown/use-license-plugin.md
