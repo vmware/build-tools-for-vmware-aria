@@ -1,0 +1,19 @@
+# Structure
+
+    Usage -  no tooling setup [@NV]
+        General landing page - maven archetype 
+        segregated by Product
+            for each product have a section with the relevant project types, e.g. - for vRA - vra-ng, for vRO - actions, XML, TS and polyglot, for vROps (VCF Operations) - vrops, etc. 
+            Polyglot can be referenced from both vRO and vRA product pages since it is one archetype with 2 subtypes - vro and abx (abx is for vra). For each of the 2 types the documentation should only contain
+            the common information plus the information for the specific project type (e.g. the ABX page must only contain the mvn archetype:generate command for ABX and not for vRO)
+                available configs in settings.xml. Ex: <vro.host>vra-l-01a.corp.local</vro.host>. In the current documentation this is usually located under docs/versions/latest/Components/Archetypes/<archetype name>/General/Getting Started.md
+                available configs for the package installer
+                new project creation - the mvn command - In the current documentation this is usually located in docs/versions/latest/Components/Archetypes/<archetype name>/General/Getting Started.md
+                    rearrange/optimize the properties of the mvn command - static and user inputs
+                project structure and file specifics - polyglot has entirely different structure, vRA, vROps and vRLI use content.yml as project descriptor, JS, XML and TS have no project descriptor but some of them support unit tests in specific file extension and location, etc. 
+                Usage - pull, push, clean?
+                    In the current documentation this is usually located in docs/versions/latest/Components/Archetypes/<archetype name>/Operations
+                No testing info
+                Content parameters - TS WF params and etc.
+        How to create create multi-module project (e.g. for mixed projects are "ts-vra-ng" and "mixed" archetypes)
+        Installer - general (currently located in docs/versions/latest/Components/Local/Installer)
