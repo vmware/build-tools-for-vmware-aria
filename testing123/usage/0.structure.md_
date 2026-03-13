@@ -1,0 +1,39 @@
+# Structure
+
+    Usage
+        General landing page
+            project types based primerily on product or specific product functionality
+            explanation that for each project type we have a template that can be used to generate a new project and import that content in an environment
+            explain the creation command parameters, e.g. DarchetypeGroupId, DarchetypeArtifactId, DgroupId, DarchetypeVersion, etc.
+                all commands can be found in maven/archetypes/{{projectType}}/create.sh
+        Segregated by Product
+            in this section skip "ts-vra-ng" and "mixed" archetypes since those are just a combination of 2 other archetypes - multi module project is discussed in the seciton below "How to create create multi-module project"
+            for each product have a section with the relevant project types, e.g. - for vRA - vra-ng, for vRO - actions, XML, TS and polyglot, for vROps (VCF Operations) - vrops, etc. 
+            Polyglot can be referenced from both vRO and vRA product pages since it is one archetype with 2 subtypes - vro and abx (abx is for vra). For each of the 2 types the documentation should only contain
+            the common information plus the information for the specific project type (e.g. the ABX page must only contain the mvn archetype:generate command for ABX and not for vRO)
+                available configs in settings.xml. Ex: <vro.host>vra-l-01a.corp.local</vro.host>. In the current documentation this is usually located under docs/versions/latest/Components/Archetypes/<archetype name>/General/Getting Started.md
+                available configs for the package installer
+                new project creation - the mvn command - In the current documentation this is usually located in docs/versions/latest/Components/Archetypes/<archetype name>/General/Getting Started.md
+                    rearrange/optimize the properties of the mvn command - static and user inputs
+                    for any missing information please refer to the original archetype commands under maven/archetypes/{{projectType}}/create.sh
+                    mention that -DarchetypeVersion=<desired-version> can be used to specify a btva version. By default, version 2.37.0 is used if this argument is omitted
+                project structure and file specifics - polyglot has entirely different structure, vRA, vROps and vRLI use content.yml as project descriptor, JS, XML and TS have no project descriptor but some of them support unit tests in specific file extension and location, etc. 
+                Usage - mvn pull, push, clean and any specifics
+                    In the current documentation this is usually located in docs/versions/latest/Components/Archetypes/<archetype name>/Operations
+                For all vRO/Orchestrator related projec types - actions, XML and TS - add information about .vroignore file:
+                    - docs/versions/latest/Components/Archetypes/typescript/General/Getting Started.md
+                    - maven/archetypes/ts/src/main/resources/archetype-resources/.vroignore
+                For actions and typescript project types add information about unit tests
+                    - typescript/vrotest/readme.md
+                    - docs/versions/latest/Components/Archetypes/typescript/General/Testing
+                    - For the 2 project types unit test files have different location and extension. E.g. for actions they are located in /src/test/resources and are .js files. For typescript location doesn't matter - just the extension - .test.ts
+                For vrang - additional note - Catalog Entitlements are used in Aria Automation versions 8.0 through 8.8.1, replaced by Content Sharing Policies in 8.8.2
+            Take note specifically for project types that work on multiple major versions of a product - e.g. vra-ng works for Aria Automation and VCF Automation VM Apps organization, vrops works for Aria Operations and VCF Operations, vrli also works for Aria Operations for Logs and VCF Ops for Logs, Orchestrator/vRO project types work for all orchestrator versions
+            Have a separate section for the "bsc" project type (stands for basic) that can be used to package any content into a zip file and deploy it to a target directory on a destination host via SSH
+        How to create create multi-module project (examples for mixed projects are "ts-vra-ng" - maven/archetypes/ts-vra-ng and "mixed" - maven/archetypes/mixed archetypes)
+        Installer - general (currently located in docs/versions/latest/Components/Local/Installer)
+        Licensing plugin - archive/doc/markdown/use-license-plugin.md
+        vRDT Github extension
+            https://github.com/vmware/vrealize-developer-tools/blob/master/wiki/Using-the-VS-Code-Extension.md
+            ./Using-the-VS-Code-Extension.md
+            Info available also in the presentation transcript
