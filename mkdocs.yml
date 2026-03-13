@@ -35,13 +35,15 @@ extra:
   version:
     provider: mike
   iac:
-    latest_release: 2.33.0
+    latest_release: 4.18.0
   general:
     bta_name: Build Tools for VMware Aria
   products:
-    vra_8_full_name: vRealize Automation 8.x
+    vra_8_full_name: Aria Automation 8.x
     vra_8_short_name: vRA 8
     vra_cloud_short_name: vRA Cloud
+    vra_9_full_name: VCF Automation
+    vra_9_short_name: VCFA
   archetype:
     customer_project:
       group_id: com.company.bu
@@ -70,6 +72,8 @@ markdown_extensions:
       alternate_style: true
   - admonition
   - pymdownx.details
+  - toc:
+      permalink: true
 # extra_css:
 #   - css/version-select.css
 # extra_javascript:
