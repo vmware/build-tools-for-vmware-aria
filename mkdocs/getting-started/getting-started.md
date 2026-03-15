@@ -5,7 +5,7 @@ The `{{ extra.general.bta_name }}` workflow begins with a clean workstation, a c
 
 ## Platform foundation
 ### Prerequisites
-- Build Tools for VMware Aria Platform and a dedicated [Workstation guide](docs/archive/doc/markdown/setup-workstation.md) (Java 17, Maven 3.9+, Node.js 22.x and the companion system setup described in `setup-platform.md`).
+- Build Tools for VMware Aria Platform and the legacy Workstation guide (`docs/archive/doc/markdown/setup-workstation.md`) (Java 17, Maven 3.9+, Node.js 22.x and the companion system setup described in `setup-platform.md`).
 - Live vRealize Automation and vRealize Orchestrator tenants with administrator users, reachable on their standard ports (443, 8281/8283). The Workstation must resolve both hosts and have network access to them.
 - PowerShell 7+ when working with the polyglot or PowerShell-based archetypes.
 
@@ -68,7 +68,7 @@ Deploy the local code with the standard push goal:
 mvn clean package vrealize:push -P{profile}
 ```
 
-By default the goal uploads every dependency. To push only your project use `-DincludeDependencies=false`. You can also filter the files that trigger a refresh with `-Dfiles=Name1,Name2`, and for development environments add `-Dvrealize.ssl.ignore.certificate` / `-Dvrealize.ssl.ignore.hostname` while you sort out TLS. Keep in mind `vrealize:push` always sends the content under `./src`; it ignores any `content.yaml`.
+By default the goal uploads every dependency. To push only your project use `-DincludeDependencies=false`. You can also filter refreshes with `-Dfiles=Name1,Name2`. For development environments add `-Dvrealize.ssl.ignore.certificate` / `-Dvrealize.ssl.ignore.hostname` while you sort out TLS. `vrealize:push` always sends content from `./src` and ignores `content.yaml`.
 
 ## Download content - Pull
 To capture live assets back into a workspace you rely on the product-specific pull goals.
