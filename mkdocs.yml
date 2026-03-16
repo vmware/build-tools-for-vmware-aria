@@ -45,6 +45,9 @@ extra:
     vra_cloud_short_name: vRA Cloud
     vra_9_classic_full_name: VCF Automation VM Apps / Classic Tenant
     vra_9_short_name: VCFA
+    vrops_8_full_name: Aria Operations 8.x
+    vrops_9_full_name: VCF Operations
+    vrops_9_short_name: VCF Ops
   archetype:
     customer_project:
       group_id: com.company.bu

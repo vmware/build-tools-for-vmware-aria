@@ -12,13 +12,26 @@ title: VM Apps
 | Name | vra-ng |
 | Product compatibility | {{ extra.products.vra_8_full_name }} and {{ extra.products.vra_9_classic_full_name }} |
 
-{{ products.vra_9_short_name }} projects are called vRA NG (New Generation) projects in **Build Tools for VMware Aria**. The Maven Archetype that supports {{ products.vra_9_short_name }}  content is *package-vra-ng-archetype*. It is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
+{{ products.vra_9_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
 
-- *Content Descriptor* defines what part {{ products.vra_9_short_name }} content will be part of this project - `content.yaml`
-- *Content Container* holds the actual content representation -`./src` folder
+- *Content Descriptor* defines what part {{ products.vra_9_short_name }} content will be part of this project - `content.yaml`.
+- *Content Container* holds the actual content representation -`./src` folder.
+
+## Supported Content
+
+- `blueprint`
+- `content-sources`
+- `property-group`
+- `catalog-item`
+- `catalog-entitlement`
+- `subscription`
+- `custom-resource`
+- `resource-actions`
+- `policies`
+- `scenarios`
 
 ## Create New {{ products.vra_9_short_name }} Project
-{{ general.bta_name }} provides ready to use {{ products.vra_9_short_name }} project templates *maven archetypes*.
+{{ general.bta_name }} provides ready to use {{ products.vra_9_short_name }} project templates (*maven archetypes*).
 
 To create a new {{ products.vra_9_short_name }} project from archetype use the following command:
 ```Bash
@@ -124,11 +137,11 @@ policy:
 !!! note
     {{ products.vra_9_short_name }} Project supports only content types outlined into Content Descriptor.
 
-To capture the state of your vRA environment simply fill in the names of the content objects and follow the [Pull Content](#pull-content) section.
+To capture the state of your {{ products.vra_9_short_name }} environment simply fill in the names of the content objects and follow the [Pull Content](#pull-content) section.
 
 #### Content Filtering
 
-Contents are exported by different rules.
+Contents are managed by different rules.
 
 ##### Import Rules for content types
 
