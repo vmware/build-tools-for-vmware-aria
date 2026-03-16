@@ -200,20 +200,16 @@ For every object type that contains `organization` or `projectId` key in the JSO
   - `<vrang.org.name>` from the selected `settings.xml` Maven profile.
   - `vrang_org_name` provided to the `installer` script.
 
-### Blueprint Versioning
+### Components
 
-When pushing a blueprint to a {{ products.vra_9_short_name }} server that contains previously released blueprint with the same name as the one being pushed, a new version will be created and released in order to maintain the intended state. A new version will *not* be created if the content of the blueprint has not been modified since the latest released version in order to avoid unnecessary versioning.
+<!-- Blueprints -->
+{% include-markdown "./vcfa-vmapps/Blueprints.md" %}
 
-If there's a custom form associated with the blueprint being imported and there's no previously released version, an initial blueprint version (1) will be created and released in order to import the custom form.
+<!-- Content Policies -->
+{% include-markdown "./vcfa-vmapps/Content Policies.md" %}
 
-When creating a new version in the above-described cases, the new version will be auto-generated based on the latest version of the blueprint. The following version formats are supported with their respective incrementing rules:
-
-| Latest version | New version         | Incrementing rules                                         |
-|----------------|---------------------|------------------------------------------------------------|
-| 1              | 2                   | Increment major version                                    |
-| 1.0            | 1.1                 | Major and minor version - increment the minor              |
-| 1.0.0          | 1.0.1               | Major, minor and patch version - incrementing the patch    |
-| 1.0.0-alpha    | 2020-05-27-10-10-43 | Arbitrary version - generate a new date-time based version |
+<!-- Custom Resources -->
+{% include-markdown "./vcfa-vmapps/Custom Resources.md" %}
 
 ### Catalog Items Custom Forms
 
