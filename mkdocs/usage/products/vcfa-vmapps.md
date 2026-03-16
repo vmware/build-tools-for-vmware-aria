@@ -143,39 +143,38 @@ Contents are exported by different rules.
 !!! note
     An error is thrown if the given entities are not found on the target server.
 
-#### Examples
+#### Example
 
-Example of `content.yaml` file.
-
-```yaml
-blueprint: # will export all 
-subscription: # will export all 
-catalog-item:  # export according to filter
-  - Project Blueprints__WindowsVM
-  - Project Blueprints__LinuxVm
-  - Main Workflows__ConfigureVM
-custom-resource: # will export all 
-resource-action: # will export all 
-property-group:  # export according to filter
-  - memory
-catalog-entitlement: [] # will export none
-content-source:  # export according to filter
-  - Project Blueprints
-  - Main Workflows
-  - Utility Workflows
-  - Project Abx Actions
-  - Project Code Stream pipelines
-policy:  # export according to filter
-  approval: [] # will export none
-  content-sharing:
-    - cs policy 1
-    - cs policy 2
-  day2-actions: [] # will export none
-  deployment-limit: [] # will export none
-  lease: [] # will export none
-  resource-quota: [] # will export none
-scenario: [] # will export none
-```
+??? Content Descriptor
+    ```yaml
+    blueprint: # will export all 
+    subscription: # will export all 
+    catalog-item:  # export according to filter
+      - Project Blueprints__WindowsVM
+      - Project Blueprints__LinuxVm
+      - Main Workflows__ConfigureVM
+    custom-resource: # will export all 
+    resource-action: # will export all 
+    property-group:  # export according to filter
+      - memory
+    catalog-entitlement: [] # will export none
+    content-source:  # export according to filter
+      - Project Blueprints
+      - Main Workflows
+      - Utility Workflows
+      - Project Abx Actions
+      - Project Code Stream pipelines
+    policy:  # export according to filter
+      approval: [] # will export none
+      content-sharing:
+        - cs policy 1
+        - cs policy 2
+      day2-actions: [] # will export none
+      deployment-limit: [] # will export none
+      lease: [] # will export none
+      resource-quota: [] # will export none
+    scenario: [] # will export none
+    ```
 
 !!! note
     Unreleased blueprints that have custom form will be automatically released with version 1.
