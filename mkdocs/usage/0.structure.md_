@@ -28,10 +28,11 @@
                     - docs/versions/latest/Components/Archetypes/typescript/General/Testing
                     - For the 2 project types unit test files have different location and extension. E.g. for actions they are located in /src/test/resources and are .js files. For typescript location doesn't matter - just the extension - .test.ts
                 For vrang - additional note - Catalog Entitlements are used in Aria Automation versions 8.0 through 8.8.1, replaced by Content Sharing Policies in 8.8.2
+                For missing archetype data in the docs/versions/latest refer older documentation like docs/archive/doc/markdown/use-workstation-vro-project.md and similar
             Take note specifically for project types that work on multiple major versions of a product - e.g. vra-ng works for Aria Automation and VCF Automation VM Apps organization, vrops works for Aria Operations and VCF Operations, vrli also works for Aria Operations for Logs and VCF Ops for Logs, Orchestrator/vRO project types work for all orchestrator versions
             Have a separate section for the "bsc" project type (stands for basic) that can be used to package any content into a zip file and deploy it to a target directory on a destination host via SSH
         How to create create multi-module project (examples for mixed projects are "ts-vra-ng" - maven/archetypes/ts-vra-ng and "mixed" - maven/archetypes/mixed archetypes)
-        Installer - general (currently located in docs/versions/latest/Components/Local/Installer)
+        Installer - general (currently located in docs/versions/latest/Components/Local/Installer, source code in in Installer.java for further reference of input properties)
         Licensing plugin - archive/doc/markdown/use-license-plugin.md
         vRDT Github extension
             https://github.com/vmware/vrealize-developer-tools/blob/master/wiki/Using-the-VS-Code-Extension.md

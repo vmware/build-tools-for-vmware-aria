@@ -42,7 +42,7 @@ extra:
     vra_8_full_name: Aria Automation 8.x
     vra_8_short_name: vRA 8
     vra_cloud_short_name: vRA Cloud
-    vra_9_full_name: VCF Automation
+    vra_9_classic_full_name: VCF Automation VM Apps / Classic Tenant
     vra_9_short_name: VCFA
   archetype:
     customer_project:

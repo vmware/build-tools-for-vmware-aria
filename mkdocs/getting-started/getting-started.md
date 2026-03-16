@@ -1,13 +1,12 @@
 # Getting Started
 
 ## Overview
-The `{{ extra.general.bta_name }}` workflow begins with a clean workstation, a configured Maven profile, and a sample project that can be built and pushed in a few commands. This page captures the most common steps that need to happen before you dive into a product-specific archetype.
+The `{{ extra.general.bta_name }}` workflow begins with a clean workstation, a configured Maven profile, and a sample project that can be built and pushed in a few commands. This page captures the most common steps that need to happen before you dive into a product-specific project type.
 
 ## Platform foundation
 ### Prerequisites
 - Build Tools for VMware Aria Platform and the legacy Workstation guide (`docs/archive/doc/markdown/setup-workstation.md`) (Java 17, Maven 3.9+, Node.js 22.x and the companion system setup described in `setup-platform.md`).
 - Live vRealize Automation and vRealize Orchestrator tenants with administrator users, reachable on their standard ports (443, 8281/8283). The Workstation must resolve both hosts and have network access to them.
-- PowerShell 7+ when working with the polyglot or PowerShell-based archetypes.
 
 ### Workstation checklist
 - Confirm `JAVA_HOME`, `MVN`, and `NODE` are on your `PATH`.
@@ -36,14 +35,14 @@ Every project uses a Maven profile that encodes the target environment. Add a pr
 
 ### Key settings to keep in the profile
 - `vro.serverId` / `vra.serverId` point to servers defined inside `~/.m2/settings.xml` so you can store encrypted credentials in `servers`.
-- `vrang.*`, `vrops.*`, and `vrli.*` properties tie into the specific archetype you are building - copy the relevant block from the product docs once the connection is ready.
+- `vrang.*`, `vrops.*`, and `vrli.*` properties tie into the specific project type you are building - copy the relevant block from the product docs once the connection is ready.
 - Use `vro.authHost` / `vro.authPort` when an external Orchestrator uses vRA credentials.
 
 !!! note "Protect credentials"
     Never check the profile with live passwords into source control. Prefer `settings-security.xml` or encrypted servers for CI jobs.
 
 ## Generate a project template
-All archetypes are generated via `mvn archetype:generate`. Start with a command such as:
+All project types are generated via `mvn archetype:generate`. Start with a command such as:
 
 ```bash
 mvn archetype:generate \
@@ -59,7 +58,7 @@ mvn archetype:generate \
 - Run `maven/archetypes/ts-vra-ng/create.sh` when you need a TypeScript + vRA NG multi-module starter, and copy/paste the `maven/archetypes/mixed/create.sh` script whenever a custom mixed project is required. Always append `-DarchetypeVersion={{ extra.iac.latest_release }}` to pin the toolchain release.
 
 ## Build a first payload
-Edit the generated `src` tree, update `content.yaml` (if the archetype exposes one), and run `mvn clean package` to produce packages and verify the local build. That command also compiles unit tests (see the Usage page for testing details) and validates that your dependencies are available in Artifactory.
+Edit the generated `src` tree, update `content.yaml` (if the project type exposes one), and run `mvn clean package` to produce packages and verify the local build. That command also compiles unit tests (see the Usage page for testing details) and validates that your dependencies are available in Artifactory.
 
 ## Upload content - Push
 Deploy the local code with the standard push goal:
@@ -68,7 +67,7 @@ Deploy the local code with the standard push goal:
 mvn clean package vrealize:push -P{profile}
 ```
 
-By default the goal uploads every dependency. To push only your project use `-DincludeDependencies=false`. You can also filter refreshes with `-Dfiles=Name1,Name2`. For development environments add `-Dvrealize.ssl.ignore.certificate` / `-Dvrealize.ssl.ignore.hostname` while you sort out TLS. `vrealize:push` always sends content from `./src` and ignores `content.yaml`.
+By default the goal uploads every dependency. To push only your project use `-DincludeDependencies=false`. For development environments add `-Dvrealize.ssl.ignore.certificate` / `-Dvrealize.ssl.ignore.hostname` while you sort out TLS. `vrealize:push` always sends content from `./src` and ignores `content.yaml`.
 
 ## Download content - Pull
 To capture live assets back into a workspace you rely on the product-specific pull goals.
@@ -80,7 +79,7 @@ To capture live assets back into a workspace you rely on the product-specific pu
 | Aria/VCF Operations | `mvn vrops:pull -P{profile}` | Supports wildcards (dashboards/metric configs excluded). Fails if `content.yaml` is empty. |
 | Operations for Logs | `mvn vrli:pull -P{profile}` | Wildcards are supported; fails when the descriptor is missing content. |
 
-Each goal evaluates the archetype-specific descriptor and overwrites the local `./src` tree. Re-run with `-X` for debugging and `-U` to force fresh dependencies when Maven caches stale artifacts.
+Each goal evaluates the project type-specific descriptor and overwrites the local `./src` tree. Re-run with `-X` for debugging and `-U` to force fresh dependencies when Maven caches stale artifacts.
 
 ## Package with Installer
 Build the bundle that ships with the installer CLI:

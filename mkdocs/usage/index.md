@@ -87,10 +87,60 @@ Use `mvn vrealize:clean -DincludeDependencies=true -DcleanUpOldVersions=true -Dc
     | Model | Descriptor-driven pull (`content.yaml`) + source content under `src/main` |
 
     ### Structure
-    - Root: `content.yaml`, `pom.xml`, `release.sh`
-    - `src/main/blueprints/`, `content-sources/`, `catalog-items/`, `entitlements/`, `subscriptions/`
-    - `src/main/custom-resources/`, `resource-actions/`, `property-group/`, `scenarios/`
-    - `src/main/policy/approval|content-sharing|day2-actions|deployment-limit|lease|resource-quota`
+    ```ascii
+    catalog
+    ├── README.md
+    ├── content.yaml
+    ├── pom.xml
+    ├── release.sh
+    └── src
+        └── main
+            └── blueprints
+                └── blueprint.yaml
+                └── content.yaml
+                └── versions.yaml
+            └── content-sources
+                └── source.json
+            └── property-group
+                └── property_group_name.json
+            └── catalog-items
+                └── forms
+                    └── source name__workflow one name with custom form.json
+                    └── source name__workflow one name with custom form__FormData.json
+                    └── source name__workflow three name with custom icon and form.json
+                    └── source name__workflow three name with custom icon and form__FormData.json
+                └── icons
+                    └── source name__workflow two name with custom icon.png
+                    └── source name__workflow three name with custom icon and form.png
+                └── source name__workflow one name with custom form.json
+                └── source name__workflow two name with custom icon.json
+                └── source name__workflow three name with custom icon and form.json
+            └── entitlements
+                └── Blueprint.yaml
+                └── Workflow.yaml
+                └── ABX Action.yaml       
+            └── subscriptions
+                └── subscription.json
+            └── custom-resources
+                └── customResource.json
+            └── resource-actions
+                └── resourceAction.json
+            └── policy
+                └── approval
+                    └── aprovalPolicy1.json
+                └── content-sharing
+                    └── contentSharingPolicy1.json
+                └── day2-actions
+                    └── day2ActionsPolicy1.json
+                └── deployment-limit
+                    └── deploymentLimitPolicy1.json
+                └── lease
+                    └── leasePolicy1.json 
+                └── resource-quota
+                    └── resourceQuotaPolicy1.json 
+            └── scenarios
+                └── Scenario Name.json
+    ```
 
     ### Supported content (`content.yaml`)
     - `blueprint`
