@@ -38,6 +38,7 @@ extra:
     latest_release: 4.18.0
   general:
     bta_name: Build Tools for VMware Aria
+    installer_bundle_profile: bundle-with-installer
   products:
     vra_8_full_name: Aria Automation 8.x
     vra_8_short_name: vRA 8

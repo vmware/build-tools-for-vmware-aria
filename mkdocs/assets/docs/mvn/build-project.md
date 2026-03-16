@@ -1,5 +1,10 @@
 ### Build Project
-To build the project, execute the following maven command:
+
+#### Overview
+Maven goal for compiling the code into a deployment ready package.
+
+#### Usage
+
 ```bash
 mvn clean package
 ```

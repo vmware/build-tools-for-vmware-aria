@@ -1,4 +1,4 @@
-## Troubleshooting
+### Troubleshooting
 
 - If maven error does not contain enough information re-run it with *-X* debug flag.
 ```bash

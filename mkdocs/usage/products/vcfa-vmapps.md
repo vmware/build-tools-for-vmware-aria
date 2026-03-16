@@ -2,15 +2,15 @@
 title: VCF Automation VM Apps
 ---
 
-# {{ products.vra_8_full_name }} Project
+# {{ products.vra_9_classic_full_name }} Project
 
 ## Overview
 
 | Field | Value |
 |---|---|
 | Archetype | `package-vra-ng-archetype` |
-| Product compatibility | `{{ extra.products.vra_8_full_name }}` and `{{ extra.products.vra_9_classic_full_name }}` |
-| Model | Descriptor-driven pull (`content.yaml`) + source content under `src/main` |
+| Name | vra-ng |
+| Product compatibility | {{ extra.products.vra_8_full_name }} and {{ extra.products.vra_9_classic_full_name }} |
 
 {{ products.vra_9_short_name }} projects are called vRA NG (New Generation) projects in **Build Tools for VMware Aria**. The Maven Archetype that supports {{ products.vra_9_short_name }}  content is *package-vra-ng-archetype*. It is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
 
@@ -315,7 +315,7 @@ in order to avoid unnecessary blueprint versions.
     If there are any custom forms or icons associated with a catalog-item they will also be imported. 
 
 !!! note
-    If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the VRA server as well.
+    If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the {{ products.vra_9_short_name }} server as well.
 
 !!! note
     If there are custom forms in the custom-forms directory that are associated with workflows, the content-sources that are associated with them will be imported as well (they will be read from the content-sources directory).
@@ -343,5 +343,5 @@ Defalut behavior for other parameters:
 <!-- Troubleshooting Section -->
 {% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
 
-## Known issues:
+## Known issues
 * There is an issue with svg icons, they will not be downloaded/uploaded (IAC-482).

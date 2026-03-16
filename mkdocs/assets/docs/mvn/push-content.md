@@ -1,9 +1,14 @@
-## Push Content
-To push local content to the target environment execute the following maven command:
+### Push Content
+
+#### Overview
+Maven goal for deploying the solution to target environment.
+
+#### Usage
+
 ```bash
 mvn clean package vrealize:push -P{{ archetype.customer_project.maven_profile_name}}
 ```
-### Include Dependencies
+##### Include Dependencies
 By default, the ```vrealize:push``` goal will deploy all dependencies of the current project to the target environment. You can control that by the ```-DincludeDependencies``` flag. The value is ```true``` by default, so you skip the dependencies by executing the following:
 ```bash
 mvn package vrealize:push -P{{ archetype.customer_project.maven_profile_name}} -DincludeDependencies=false
@@ -16,7 +21,7 @@ mvn package vrealize:push -P{{ archetype.customer_project.maven_profile_name}} -
     ```
     The command above will forcefully deploy the exact versions of the dependent packages, downgrading anything it finds on the server.
 
-### Ignore Certificates
+##### Ignore Certificates
 This section describes how to bypass a security feature in development/testing environment. **Do not use those flags when targeting production servers.** Instead, make sure the certificates have the correct CN, use FQDN to access the servers and add the certificates to Java's key store (i.e. cacerts).
 
 
