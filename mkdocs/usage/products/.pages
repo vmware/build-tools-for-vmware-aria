@@ -1,3 +1,4 @@
 title: Supported Products
 nav:
-    - vcfa-vmapps.md
+    - VCF Automation:
+        - vcfa-vmapps.md

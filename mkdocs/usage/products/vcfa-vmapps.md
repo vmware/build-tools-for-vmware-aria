@@ -1,8 +1,8 @@
 ---
-title: VCF Automation VM Apps
+title: VM Apps
 ---
 
-# {{ products.vra_9_classic_full_name }} Project
+# VM Apps / Classic Tenant Project
 
 ## Overview
 
