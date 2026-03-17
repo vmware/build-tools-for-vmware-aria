@@ -1,5 +1,7 @@
 title: Supported Products
 nav:
+    - VCF Operations Orchestrator:
+        - vro-ts.md
     - VCF Automation:
         - vrang.md
     - vrops.md

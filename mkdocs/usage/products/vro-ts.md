@@ -1,21 +1,24 @@
 ---
-title: VM Apps
+title: Typescript
 ---
 
-# VM Apps / Classic Tenant Project
+# Typescript Based Project
 
 ## Overview
 
 | Field | Value |
 |---|---|
-| Name | `vra-ng` |
-| Archetype Group ID | `com.vmware.pscoe.vra-ng.archetypes` |
-| Archetype Artifact ID | `package-vra-ng-archetype` |
-| Product compatibility | {{ extra.products.vra_8_full_name }} (8.x) and {{ extra.products.vra_9_classic_full_name }} (9.x) |
+| Name | `ts` |
+| Archetype Group ID | `com.vmware.pscoe.o11n.archetypes` |
+| Archetype Artifact ID | `package-typescript-archetype` |
+| Product compatibility | {{ extra.products.vro_7_full_name }} (7.x), {{ extra.products.vro_8_full_name }} (8.x) and {{ extra.products.vro_9_full_name }} (9.x) |
 
-{{ products.vra_9_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
+Typescript archetype used to compile and push typescript code to vRO.
 
-- *Content Descriptor* defines what part {{ products.vra_9_short_name }} content will be part of this project - `content.yaml`.
+
+{{ products.vro_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
+
+- *Content Descriptor* defines what part {{ products.vro_short_name }} content will be part of this project - `content.yaml`.
 - *Content Container* holds the actual content representation -`./src` folder.
 
 ## Supported Content
@@ -31,15 +34,16 @@ title: VM Apps
 - `policies`
 - `scenarios`
 
-## Create New {{ products.vra_9_short_name }} Project
-{{ general.bta_name }} provides ready to use {{ products.vra_9_short_name }} project templates (*maven archetypes*).
+## Create New {{ products.vro_short_name }} Project
+{{ general.bta_name }} provides ready to use {{ products.vro_short_name }} project templates (*maven archetypes*).
 
-To create a new {{ products.vra_9_short_name }} project from archetype use the following command:
+To create a new {{ products.vro_short_name }} project from archetype use the following command:
 
 ```Bash
 mvn archetype:generate \
     -DinteractiveMode=false \
-    -DarchetypeGroupId=com.vmware.pscoe.vra-ng.archetypes \
+    -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes \
+    -DarchetypeArtifactId=package-typescript-archetype \
     -DarchetypeArtifactId=package-vra-ng-archetype \
     -DarchetypeVersion={{ iac.latest_release }} \
     -DgroupId={{ archetype.customer_project.group_id}} # (1)! \
@@ -137,9 +141,9 @@ policy:
 ```
 
 !!! note
-    {{ products.vra_9_short_name }} Project supports only content types outlined into Content Descriptor.
+    {{ products.vro_short_name }} Project supports only content types outlined into Content Descriptor.
 
-To capture the state of your {{ products.vra_9_short_name }} environment simply fill in the names of the content objects and follow the [Pull Content](#pull-content) section.
+To capture the state of your {{ products.vro_short_name }} environment simply fill in the names of the content objects and follow the [Pull Content](#pull-content) section.
 
 For more information on each component please refer to the [Components](#components) section.
 
@@ -198,7 +202,7 @@ Contents are managed by different rules.
 
 !!! note
     To import / export custom forms and/or icons you have to specify the associated catalog-item name in ```catalog-item``` tag. The naming convention for this is SOURCE_NAME__CATALOG_ITEM_NAME
-    The integration endpoint data for each workflow that is associated with the content source will be updated as well with the one fetched from the {{ products.vra_9_short_name }} server. 
+    The integration endpoint data for each workflow that is associated with the content source will be updated as well with the one fetched from the {{ products.vro_short_name }} server. 
 
 ### ID handling
 
@@ -276,32 +280,6 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 <!-- Bundle Project Section -->
 {% include-markdown "../../assets/docs/mvn/bundle-project.md" %}
 
-### Pull Content
-
-#### Overview
-
-When working on a {{ products.vra_9_short_name }} project, you mainly make changes on a live server using the {{ products.vra_9_short_name }} UI (Service Broker, Cloud Assembly, etc.) and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.
-
-#### Usage
-
-To support this use case, the a custom maven goal `vra-ng:pull` is used. The following command will `pull` the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
-
-```bash
-mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
-```
-
-!!! note
-    The command will fail if the `content.yaml` is empty or it cannot find some of the described content on the target {{ products.vra_9_short_name }} server.
-
-!!! note
-    If a catalog item has a custom form and/or an icon they will be exported in subdirs of the catalog-items directory
-
-!!! note
-    The value of the `<vrang.vro.integration>` is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
-
-#### Additional Parameters
-* `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
-
 <!-- Push Content Section -->
 {% include-markdown "../../assets/docs/mvn/push-content.md" %}
 
@@ -314,7 +292,7 @@ in order to avoid unnecessary blueprint versions.
     If there are any custom forms or icons associated with a catalog-item they will also be imported. 
 
 !!! note
-    If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the {{ products.vra_9_short_name }} server as well.
+    If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the {{ products.vro_short_name }} server as well.
 
 !!! note
     If there are custom forms in the custom-forms directory that are associated with workflows, the content-sources that are associated with them will be imported as well (they will be read from the content-sources directory).
@@ -355,7 +333,7 @@ Defalut behavior for other parameters:
 
 ### Catalog Items Custom Forms
 
-The catalog items in the {{ products.vra_9_short_name }} Service Broker consists of different type of content sources - Blueprint, Extensibility Actions, Pipelines, Workflows and AWS CloudFormation Template. As with the 8.12 release, the catalog items custom forms can be versioned. For all types, the same concepts replies - *only current versions for custom forms are de-serializing/serializing.*
+The catalog items in the {{ products.vro_short_name }} Service Broker consists of different type of content sources - Blueprint, Extensibility Actions, Pipelines, Workflows and AWS CloudFormation Template. As with the 8.12 release, the catalog items custom forms can be versioned. For all types, the same concepts replies - *only current versions for custom forms are de-serializing/serializing.*
 
 Blueprint type catalog items have different versions that corelate to the released versions of the Blueprints. Only the current version of the latest blueprint version is targeted.
 

@@ -11,7 +11,7 @@ title: VCF Operations
 | Name | `vrops` |
 | Archetype Group ID | `com.vmware.pscoe.vrops.archetypes` |
 | Archetype Artifact ID | `package-vrops-archetype` |
-| Product compatibility | {{ extra.products.vrops_8_full_name }} and {{ extra.products.vrops_9_full_name }} |
+| Product compatibility | {{ extra.products.vrops_8_full_name }} (8.x) and {{ extra.products.vrops_9_full_name }} (9.x) |
 
 {{ products.vrops_9_short_name }} projects are called `vrops` projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vrops_9_short_name }} content into human friendly format saved into different file types - JSON, XML, properties, ZIP. The project consist of content descriptor and content container.
 

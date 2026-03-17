@@ -40,15 +40,20 @@ extra:
     bta_name: Build Tools for VMware Aria
     installer_bundle_profile: bundle-with-installer
   products:
-    vra_8_full_name: Aria Automation 8.x
+    vro_short_name: Orchestrator
+    vro_7_full_name: vRealize Orchestrator
+    vro_7_short_name: vRO
+    vro_8_full_name: Aria Automation Orchestrator
+    vro_9_full_name: VCF Operations Orchestrator
+    vra_8_full_name: Aria Automation
     vra_8_short_name: vRA 8
     vra_cloud_short_name: vRA Cloud
     vra_9_classic_full_name: VCF Automation VM Apps / Classic Tenant
     vra_9_short_name: VCFA
-    vrops_8_full_name: Aria Operations 8.x
+    vrops_8_full_name: Aria Operations
     vrops_9_full_name: VCF Operations
     vrops_9_short_name: VCF Ops
-    vrli_8_full_name: Aria Operations for Logs 8.x
+    vrli_8_full_name: Aria Operations for Logs
     vrli_9_full_name: VCF Operations for Logs
   archetype:
     customer_project:
