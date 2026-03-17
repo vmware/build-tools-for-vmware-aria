@@ -48,6 +48,8 @@ extra:
     vrops_8_full_name: Aria Operations 8.x
     vrops_9_full_name: VCF Operations
     vrops_9_short_name: VCF Ops
+    vrli_8_full_name: Aria Operations for Logs 8.x
+    vrli_9_full_name: VCF Operations for Logs
   archetype:
     customer_project:
       group_id: com.company.bu

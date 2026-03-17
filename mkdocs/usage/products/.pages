@@ -1,5 +1,6 @@
 title: Supported Products
 nav:
     - VCF Automation:
-        - vcfa-vmapps.md
+        - vrang.md
     - vrops.md
+    - vrli.md

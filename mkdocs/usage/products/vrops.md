@@ -8,13 +8,14 @@ title: VCF Operations
 
 | Field | Value |
 |---|---|
-| Archetype | `package-vrops-archetype` |
-| Name | vrops |
+| Name | `vrops` |
+| Archetype Group ID | `com.vmware.pscoe.vrops.archetypes` |
+| Archetype Artifact ID | `package-vrops-archetype` |
 | Product compatibility | {{ extra.products.vrops_8_full_name }} and {{ extra.products.vrops_9_full_name }} |
 
-{{ products.vrops_9_short_name }} projects are called `vrops` projects in **Build Tools for VMware Aria**. The project type is a representation of Operations content into human friendly format saved into different file types - JSON, XML, properties, ZIP. The project consist of content descriptor and content container.
+{{ products.vrops_9_short_name }} projects are called `vrops` projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vrops_9_short_name }} content into human friendly format saved into different file types - JSON, XML, properties, ZIP. The project consist of content descriptor and content container.
 
-- *Content Descriptor* defines what part of the Operations server content will be part of this project - `content.yaml`.
+- *Content Descriptor* defines what part of the {{ products.vrops_9_short_name }} server content will be part of this project - `content.yaml`.
 - *Content Container* holds the actual content representation -`./src` folder.
 
 ## Supported Content
@@ -35,6 +36,7 @@ title: VCF Operations
 {{ general.bta_name }} provides ready to use {{ products.vrops_9_short_name }} project templates (*maven archetypes*).
 
 To create a new {{ products.vrops_9_short_name }} project from archetype use the following command:
+
 ```Bash
 mvn archetype:generate \
     -DinteractiveMode=false \
@@ -102,7 +104,7 @@ operations
 
 ### Content Descriptor
 
-Content Descriptor is implemented by content.yaml file with the following structure:
+Content Descriptor is implemented by `content.yaml` file with the following structure:
 
 ```yaml
 view:
@@ -173,6 +175,7 @@ Contents are managed by different rules.
       - Policy for Virtual Machines - Risk Profile 1
     default-policy: Default Policy
     ```
+
 ## Environment Connection Parameters
 
 The following need to be added to the profile that you intend to use:
@@ -207,8 +210,8 @@ The following need to be added to the profile that you intend to use:
 - `vrops.restAuthSource` - Authentication source used for acquiring a token for REST API communication.
 
 - `vrops.restAuthProvider` - Defines the type of authentication used for REST API communication.
-  - Supported values: BASIC, AUTH_N (token based authentication - supported since version 2.8.0)
-  - Default value: AUTH_N
+    - Supported values: BASIC, AUTH_N (token based authentication - supported since version 2.8.0)
+    - Default value: AUTH_N
 
 Use the profile by passing it with `-P`, e.g.:
 ``` bash
@@ -253,7 +256,7 @@ report:
 !!! note
     Due to limitation of {{ products.vrops_9_short_name }} REST API wildcard is currently NOT supported for the dashboard and metric-config asset types.
 !!! note
-    If you specify a wildcard in the asset name defined in the content.yaml file, it needs to be enclosed with quotes ("). You can also enclose the asset name with quotes (") in the content.yaml file, even if you specify it with its full name.
+    If you specify a wildcard in the asset name defined in the `content.yaml`file, it needs to be enclosed with quotes ("). You can also enclose the asset name with quotes (") in the `content.yaml` file, even if you specify it with its full name.
 
 ### Push Content
 

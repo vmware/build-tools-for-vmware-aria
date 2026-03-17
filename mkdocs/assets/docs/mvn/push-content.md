@@ -2,7 +2,7 @@
 
 #### Overview
 
-Maven goal for deploying the solution to target environment.
+Maven goal for packaging and deploying all local content to target environment.
 
 #### Usage
 
