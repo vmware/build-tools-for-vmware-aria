@@ -30,5 +30,5 @@ mvn vrealize:clean -DincludeDependencies=true -DcleanUpOldVersions=true -DcleanU
   mvn vrealize:clean -DcleanUpLastVersion=false -DcleanUpOldVersions=true -DincludeDependencies=true
   ```
 
-<!-- Clean Up Support Tab;e -->
+<!-- Clean Up Support Table -->
 {% include-markdown "./clean-up-content-support-table.md" %}

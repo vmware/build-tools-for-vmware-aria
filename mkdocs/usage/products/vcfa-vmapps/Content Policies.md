@@ -1,4 +1,4 @@
-#### Content Policies
+### Content Policies
 
 There are 6 types of content policies:
 
@@ -9,7 +9,7 @@ There are 6 types of content policies:
 - Lease
 - Resource Quota
 
-##### Structure
+#### Structure
 
 Below is an example structure of content policies export.
 
@@ -54,13 +54,13 @@ src/
 │  │  │  │  ├─ examplePolicy.json
 ```
 
-##### Operations
+#### Operations
 
-###### Importing
+##### Importing
 
 When importing policies, files are read form the filesystem, and the content.yml filter is by filename. All non-hidden files are read from the folder, and if the name of the file, without the extension matches the list in content.yml, the policy will be imported. The filename is only important for filtering. Actual policy fields are read from the file contents. If there is a policy with the same id on the server, an update will be performed. Otherwise, the policy will be created instead, using the same id, that is found in the file.
 
-####### Content Sharing Polices Import
+###### Content Sharing Polices Import
 
 If project name is is defined as a *scope* proprty in the content sharing JSON file it will be used as a project scope during push , hence allowing more granular content sharing across different projects. If the *scope* property is not defined then the project id defined in the settings.xml configuration file will be used.
 
@@ -72,12 +72,12 @@ If a organization name is defined as *organization* property in the content shar
 
 The name of the content source(s) and catalog item(s) in the file are stored in the JSON file, hence if they are present on the target system the policy can be imported correctly during subsequent push.
 
-###### Exporting
+##### Exporting
 
 When exporting a policy, a json file will be created on the filesystem. The filename will be the policyName[-index].json.
 Index will be added only if there are multiple policies with the same name.
 
-####### Content Sharing Polices Export
+###### Content Sharing Polices Export
 
 The scope and organization of the content sharing policy will be exported as *scope* and *organization* properties in the output JSON file(s). The project name will be used as as *scope* parameter and organization name will be used as a *organization* parameter. The following policy types can be created on the target system and they will be exported as well:
 
@@ -87,7 +87,7 @@ The scope and organization of the content sharing policy will be exported as *sc
 
 The catalog items and content source policies will be stored with their names in the output JSON file.
 
-##### Content Sharing Polices Examples
+#### Content Sharing Polices Examples
 
 Content Sharing policy JSON file with scope / organization parameters.
 ??? JSON
@@ -173,7 +173,7 @@ Content Sharing policy JSON file without scope / organization parameters.
     }
     ```
 
-##### Known Issues
+#### Known Issues
 
 Re-Creating Deleted policy.
 If you delete a policy, and then try to re-import it immediately, the import command will not fail, however, the policy will not be created.

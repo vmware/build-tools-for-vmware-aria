@@ -1,8 +1,8 @@
-#### Blueprints
+### Blueprints
 
 Blueprint (aka `Cloud Templates`) architects build Software components, machine blueprints, and custom XaaS blueprints and assemble those components into the blueprints that define the items users request from the catalog.
 
-##### Structure
+#### Structure
 
 Below is an example structure of a blueprint export.
 
@@ -33,13 +33,13 @@ Each blueprint will be placed in a different folder.
 - `details.json` contains metadata information.
 - `versions.json` contains version information. Note that this is just the metadata, for now the version history is not preserved.
 
-##### Importing
+#### Importing
 
 When importing a blueprint, it is matched by its `name`. If there is a blueprint with the same name on the server, an update will be performed. Otherwise, the blueprint will be created instead.
 
 Also when importing an already existing blueprint, we will check for any differences between local copy and server copy. If there are differences, a new version will be released. New version is determined by the already existing versions. If a patter of MAJOR.MINOR.PATCH is detected, vRBT will try to continue the numbering, otherwise a date formatted version is released.
 
-##### Version Management
+#### Version Management
 
 When pushing a blueprint to a {{ products.vra_9_short_name }} server that contains previously released blueprint with the same name as the one being pushed, a new version will be created and released in order to maintain the intended state. A new version will *not* be created if the content of the blueprint has not been modified since the latest released version in order to avoid unnecessary versioning.
 

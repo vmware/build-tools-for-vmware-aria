@@ -126,6 +126,12 @@ To capture the state of your {{ products.vrops_9_short_name }} environment simpl
 !!! note
     All object types are list of string values except for `default-policy` which is a single policy name string.
 
+!!! note
+    Due to limitation of the {{ products.vrops_9_short_name }} CLI the import / export of report definitions is not currently supported.
+
+!!! note
+    The import of the symptoms definitions defined for all the adapter types is not currently supported.
+
 #### Content Filtering
 
 Contents are managed by different rules.
@@ -167,140 +173,102 @@ Contents are managed by different rules.
       - Policy for Virtual Machines - Risk Profile 1
     default-policy: Default Policy
     ```
-
-///////////////////////
-
-<!-- ### ID handling
-
-### Single Project And Single Organization
-
-### Components
-
-<!-- Blueprints -->
-{% include-markdown "./vcfa-vmapps/Blueprints.md" %}
-
-<!-- Content Policies -->
-{% include-markdown "./vcfa-vmapps/Content Policies.md" %}
-
-<!-- Custom Resources -->
-{% include-markdown "./vcfa-vmapps/Custom Resources.md" %} -->
-//////////////
-
 ## Environment Connection Parameters
 
 The following need to be added to the profile that you intend to use:
 
 ``` xml
-... # (1)!
-<!--    vra-ng    -->
+<!-- (1)! -->
 <profile>
 <!--    ..... OTHER DIRECTIVES .....  -->
-    <vrang.host>example.vra.url.com</vrang.host>
-    <vrang.csp.host>console.cloud.vmware.com</vrang.csp.host>
-    <vrang.proxy>http://proxy.host:80</vrang.proxy>
-    <vrang.port>443</vrang.port>
-    <vrang.username>administrator</vrang.username>
-    <vrang.password>someSecurePassword</vrang.password>
-    <vrang.tenant>{tenant}</vrang.tenant>
-    <vrang.project.name>{project+name}</vrang.project.name>
-    <vrang.org.name>{org+name}</vrang.org.name>
-    <vrang.refresh.token>{refresh+token}</vrang.refresh.token>
-    <vrang.bp.unrelease.versions>true|false</vrang.bp.unrelease.versions>
-    <vrang.vro.integration>{vro+integration+name}</vrang.vro.integration>
-    <vrang.import.timeout>{import+timeout}</vrang.import.timeout>
-    <vrang.data.collection.delay.seconds>{data+collection+delay}</vrang.data.collection.delay.seconds>
+    <vrops.host>flt-ops01a.corp.internal</vrops.host>
+    <vrops.port>443</vrops.port>
+    <vrops.sshPort>22</vrops.sshPort>
+    <vrops.username>admin</vrops.username>
+    <vrops.password>someSecurePassword</vrops.password>
+    <vrops.restUser>admin</vrops.restUser>
+    <vrops.restPassword>someSecurePassword</vrops.restPassword>
+    <vrops.dashboardUser>admin</vrops.dashboardUser>
+    <vrops.importDashboardsForAllUsers>true|false</vrops.importDashboardsForAllUsers>
+    <vrops.restAuthSource>local</vrops.restAuthSource>
+    <vrops.restAuthProvider>BASIC|AUTH_N</vrops.restAuthProvider>
 </profile>
 ```
+
 1.  {{ archetype.customer_project.maven_settings_location_hint}}
 
-- `vrang.username` - For VCF 9 Automation - Classic organization instead of using <vrang.tenant>
-you need to provide username in the following format: user@domain. E.g.:
-  - admin@System - Provider admin (the "System" domain is used to identify the user as Provider admin)
-  - configurationadmin@Classic - Classic organization admin
-
-- `vrang.refresh.token` - uses the given refresh token instead of credentials.
-
 !!! note
-    Refresh token takes precedence over credentials.
+    Some {{ products.vrops_9_short_name }} content is managed via in-guest CLI commands instead of REST API which requires credentials for REST API (`vrops.restUser` and `vrops.password`) and SSH communication (`vrops.username` and `vrops.password`) with sufficient privileges.
 
-- `vrang.bp.unrelease.versions` - Defaults to `true`. Controls whether old versions of a blueprint sould be unreleased.
+- `vrops.dashboardUser` - User account to which to assign the ownership of a dashboard when importing it.
 
-- `vrang.import.timeout` - Timeout in miliseconds when syncing from Content Source for Catalog Items to appear before performing additional operations (e.g. attaching Custom Forms, Icons, etc.). Default value is 6000.
+- `vrops.importDashboardsForAllUsers` - If parameter is missing or set to *true*, the dashboards are imported to all users. If parameter is set to *false*, the dashboards are imported only for the user specified in vrops.dashboardUser.
 
-- `vrang.data.collection.delay.seconds` - Delay in seconds to wait for vRA data collection to pass before importing data. Can also be passed as an interactive parameter `-Dvrang.data.collection.delay.seconds=600`. useful when Dynamic types and custom resources are used in the projects and vRO content is imported, however vRA needs to then retrieve it in order to be able to create the custom Resource and use the Create/Delete Workflows. This only happens after a short delay and the vRA data collector scrapes vRO. Defaults to no delay.
-  - if a value is provided data collection is forced via REST API and if it completes successfully the provided delay time is skipped. In case the data collection fails, the delay is triggered.
+- `vrops.restAuthSource` - Authentication source used for acquiring a token for REST API communication.
 
-- `vrang.org.name` - needs to be specified. The `vra-ng` project is scoped to a single organization.
+- `vrops.restAuthProvider` - Defines the type of authentication used for REST API communication.
+  - Supported values: BASIC, AUTH_N (token based authentication - supported since version 2.8.0)
+  - Default value: AUTH_N
 
 Use the profile by passing it with `-P`, e.g.:
 ``` bash
-mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
+mvn vrops:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
 
 ## Operations
 
 <!-- Build Project Section -->
 {% include-markdown "../../assets/docs/mvn/build-project.md" %}
-The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vra-ng** file generated in the target folder of the project.
+The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vrops** file generated in the target folder of the project.
 
 <!-- Bundle Project Section -->
 {% include-markdown "../../assets/docs/mvn/bundle-project.md" %}
 
 ### Pull Content
 
-When working on a {{ products.vra_9_short_name }} project, you mainly make changes on a live server using the {{ products.vra_9_short_name }} UI (Service Broker, Cloud Assembly, etc.) and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.
+#### Overview
 
-To support this use case, the a custom maven goal `vra-ng:pull` is used. The following command will `pull` the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
+When working on a {{ products.vrops_9_short_name }} project, you mainly make changes on a live server using the {{ products.vrops_9_short_name }} UI and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.
+
+#### Usage
+
+To support this use case, the a custom maven goal `vrops:pull` is used. The following command will `pull` the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
 
 ```bash
-mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
+mvn vrops:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
 
 !!! note
-    The command will fail if the `content.yaml` is empty or it cannot find some of the described content on the target {{ products.vra_9_short_name }} server.
+    The command will fail if the `content.yaml` is empty or it cannot find some of the described content on the target {{ products.vrops_9_short_name }} server.
 
-!!! note
-    If a catalog item has a custom form and/or an icon they will be exported in subdirs of the catalog-items directory
+#### Wildcard Support
 
-!!! note
-    The value of the `<vrang.vro.integration>` is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
+The content descriptor supports wildcard for most of the asset types. This means that you can specify a wildcard (*) symbol in the asset names defined in the `content.yaml` file exporting all assets matching the wildcard expression. E.g.
 
-#### Additional Parameters
-* `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
-
-<!-- Push Content Section -->
-{% include-markdown "../../assets/docs/mvn/push-content.md" %}
-
-#### Additional Parameters
-
-* `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
-in order to avoid unnecessary blueprint versions.
-
-!!! note
-    If there are any custom forms or icons associated with a catalog-item they will also be imported. 
-
-!!! note
-    If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the {{ products.vra_9_short_name }} server as well.
-
-!!! note
-    If there are custom forms in the custom-forms directory that are associated with workflows, the content-sources that are associated with them will be imported as well (they will be read from the content-sources directory).
-
-### Release
-To release a specific content uploaded on a live server, you can use the ```vrealize:release``` command:
-
-```bash
-mvn clean package vrealize:release -Pcorp-env -Dvrang.contentType=blueprint -Dvrang.contentNames=testBlueprint -Dvrang.version=1 -DreleaseIfNotUpdated=false
+```yaml
+report:
+  - "*reports"
 ```
 
-Only parameter vrang.version is required. 
-Defalut behavior for other parameters:
-    - vrang.contentType: default value "all". Releases all supported content types.
-    - vrang.contentNames: default value "[]". Releases all content of given types on server.
-    - vrang.releaseIfNotUpdated: default value "false". Skips content if there are no updates since latest version.
-
 !!! note
-    Nothing will be released if any of the content already has the given version existing.
+    Due to limitation of {{ products.vrops_9_short_name }} REST API wildcard is currently NOT supported for the dashboard and metric-config asset types.
+!!! note
+    If you specify a wildcard in the asset name defined in the content.yaml file, it needs to be enclosed with quotes ("). You can also enclose the asset name with quotes (") in the content.yaml file, even if you specify it with its full name.
 
+### Push Content
+
+#### Overview
+
+Maven goal for deploying the solution to target environment.
+
+#### Usage
+
+```bash
+mvn clean package vrops:push -P{{ archetype.customer_project.maven_profile_name}}
+```
+
+<!-- Push Common Section -->
+{% include-markdown "../../assets/docs/mvn/push-content-common-parameters.md" %}
 
 <!-- Clean Up Content Section -->
 {% include-markdown "../../assets/docs/mvn/clean-up-content-unsupported.md" %}

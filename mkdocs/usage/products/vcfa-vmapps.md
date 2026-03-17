@@ -139,6 +139,8 @@ policy:
 
 To capture the state of your {{ products.vra_9_short_name }} environment simply fill in the names of the content objects and follow the [Pull Content](#pull-content) section.
 
+For more information on each component please refer to the [Components](#components) section.
+
 #### Content Filtering
 
 Contents are managed by different rules.
@@ -212,30 +214,12 @@ For every object type that contains `organization` or `projectId` key in the JSO
   - `<vrang.org.name>` from the selected `settings.xml` Maven profile.
   - `vrang_org_name` provided to the `installer` script.
 
-### Components
-
-<!-- Blueprints -->
-{% include-markdown "./vcfa-vmapps/Blueprints.md" %}
-
-<!-- Content Policies -->
-{% include-markdown "./vcfa-vmapps/Content Policies.md" %}
-
-<!-- Custom Resources -->
-{% include-markdown "./vcfa-vmapps/Custom Resources.md" %}
-
-#### Catalog Items Custom Forms
-
-The catalog items in the {{ products.vra_9_short_name }} Service Broker consists of different type of content sources - Blueprint, Extensibility Actions, Pipelines, Workflows and AWS CloudFormation Template. As with the 8.12 release, the catalog items custom forms can be versioned. For all types, the same concepts replies - *only current versions for custom forms are de-serializing/serializing.*
-
-Blueprint type catalog items have different versions that corelate to the released versions of the Blueprints. Only the current version of the latest blueprint version is targeted.
-
 ## Environment Connection Parameters
 
 The following need to be added to the profile that you intend to use:
 
 ``` xml
-... # (1)!
-<!--    vra-ng    -->
+<!-- (1)! -->
 <profile>
 <!--    ..... OTHER DIRECTIVES .....  -->
     <vrang.host>example.vra.url.com</vrang.host>
@@ -254,6 +238,7 @@ The following need to be added to the profile that you intend to use:
     <vrang.data.collection.delay.seconds>{data+collection+delay}</vrang.data.collection.delay.seconds>
 </profile>
 ```
+
 1.  {{ archetype.customer_project.maven_settings_location_hint}}
 
 - `vrang.username` - For VCF 9 Automation - Classic organization instead of using <vrang.tenant>
@@ -291,7 +276,11 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 
 ### Pull Content
 
+#### Overview
+
 When working on a {{ products.vra_9_short_name }} project, you mainly make changes on a live server using the {{ products.vra_9_short_name }} UI (Service Broker, Cloud Assembly, etc.) and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.
+
+#### Usage
 
 To support this use case, the a custom maven goal `vra-ng:pull` is used. The following command will `pull` the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
 
@@ -350,6 +339,23 @@ Defalut behavior for other parameters:
 
 <!-- Troubleshooting Section -->
 {% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
+
+## Components
+
+<!-- Blueprints -->
+{% include-markdown "./vcfa-vmapps/Blueprints.md" %}
+
+<!-- Content Policies -->
+{% include-markdown "./vcfa-vmapps/Content Policies.md" %}
+
+<!-- Custom Resources -->
+{% include-markdown "./vcfa-vmapps/Custom Resources.md" %}
+
+### Catalog Items Custom Forms
+
+The catalog items in the {{ products.vra_9_short_name }} Service Broker consists of different type of content sources - Blueprint, Extensibility Actions, Pipelines, Workflows and AWS CloudFormation Template. As with the 8.12 release, the catalog items custom forms can be versioned. For all types, the same concepts replies - *only current versions for custom forms are de-serializing/serializing.*
+
+Blueprint type catalog items have different versions that corelate to the released versions of the Blueprints. Only the current version of the latest blueprint version is targeted.
 
 ## Known issues
 * There is an issue with svg icons, they will not be downloaded/uploaded (IAC-482).
