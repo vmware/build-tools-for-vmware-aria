@@ -170,21 +170,9 @@ Contents are managed by different rules.
 
 ///////////////////////
 
-### ID handling
-
-Relying on ids exported by Build Tools for VMware Aria should not happen. Build Tools for VMware Aria will remove where needed such ids or in some cases data will be fetched from the remote server, modified in flight and pushed to the server ( in cases where an import is needed ).
+<!-- ### ID handling
 
 ### Single Project And Single Organization
-
-When working with vra-ng project type, each generated project is intended to work with **only one project and one organization**. In a case where more are needed, you must generate multiple projects.
-
-For every object type that contains `organization` or `projectId` key in the JSON definition (e.g. Policies) the following behaviour applies:
-- if the JSON definition contains `projectId` key and value defined, the value is replaced by the project defined in (based on import mechanism used):
-  - `<vrang.project.name>` from the selected `settings.xml` Maven profile.
-  - `vrang_project_name` provided to the `installer` script.
-- if the JSON definition contains `organization` key and value defined, the object is imported with the option of `Available for any project` or `Organization` enabled for the specific organization (the exact option name differentiates in UI based on product version) defined in (based on import mechanism used):
-  - `<vrang.org.name>` from the selected `settings.xml` Maven profile.
-  - `vrang_org_name` provided to the `installer` script.
 
 ### Components
 
@@ -195,13 +183,8 @@ For every object type that contains `organization` or `projectId` key in the JSO
 {% include-markdown "./vcfa-vmapps/Content Policies.md" %}
 
 <!-- Custom Resources -->
-{% include-markdown "./vcfa-vmapps/Custom Resources.md" %}
-
-#### Catalog Items Custom Forms
-
-The catalog items in the {{ products.vra_9_short_name }} Service Broker consists of different type of content sources - Blueprint, Extensibility Actions, Pipelines, Workflows and AWS CloudFormation Template. As with the 8.12 release, the catalog items custom forms can be versioned. For all types, the same concepts replies - *only current versions for custom forms are de-serializing/serializing.*
-
-Blueprint type catalog items have different versions that corelate to the released versions of the Blueprints. Only the current version of the latest blueprint version is targeted.
+{% include-markdown "./vcfa-vmapps/Custom Resources.md" %} -->
+//////////////
 
 ## Environment Connection Parameters
 
@@ -320,10 +303,8 @@ Defalut behavior for other parameters:
 
 
 <!-- Clean Up Content Section -->
-{% include-markdown "../../assets/docs/mvn/clean-up-content.md" %}
+{% include-markdown "../../assets/docs/mvn/clean-up-content-unsupported.md" %}
 
 <!-- Troubleshooting Section -->
 {% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
-
-## Known issues
-* There is an issue with svg icons, they will not be downloaded/uploaded (IAC-482).
+ 
