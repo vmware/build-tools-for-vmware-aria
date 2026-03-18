@@ -12,6 +12,8 @@ title: VM Apps
 | Archetype Group ID | `com.vmware.pscoe.vra-ng.archetypes` |
 | Archetype Artifact ID | `package-vra-ng-archetype` |
 | Product compatibility | {{ extra.products.vra_8_full_name }} (8.x) and {{ extra.products.vra_9_classic_full_name }} (9.x) |
+| Package extension | vrang |
+
 
 {{ products.vra_9_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
 
