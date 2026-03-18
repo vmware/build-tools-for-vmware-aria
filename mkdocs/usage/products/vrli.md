@@ -12,7 +12,7 @@ title: VCF Operations for Logs
 | Archetype Group ID | `com.vmware.pscoe.vrli.archetypes` |
 | Archetype Artifact ID | `package-vrli-archetype` |
 | Product compatibility | {{ extra.products.vrli_8_full_name }} (8.x) and {{ extra.products.vrli_9_full_name }} (9.x) |
-| Package extension | vrli |
+| Package extension | `vrli` |
 
 {{ products.vrli_9_full_name }} projects are called `vrli` projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vrli_9_full_name }} content into human friendly JSON format. The project consist of content descriptor and content container.
 

@@ -2,7 +2,7 @@
 
 #### Overview
 
-Maven goal for packaging and deploying all local content to target environment.
+Maven goal for packaging and deploying all local content from `./src` folder to the remote server.
 
 #### Usage
 

@@ -12,11 +12,14 @@ title: Typescript
 | Archetype Group ID | `com.vmware.pscoe.o11n.archetypes` |
 | Archetype Artifact ID | `package-typescript-archetype` |
 | Product compatibility | {{ extra.products.vro_7_full_name }} (7.x), {{ extra.products.vro_8_full_name }} (8.x) and {{ extra.products.vro_9_full_name }} (9.x) |
-| Package extension | package |
+| Package extension | `package` |
 
-Typescript project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type enables the user to write Orchestrator code and define different Orchestrator objects in the form of typescript files. Typescript code is transpiled into {{ products.vro_short_name }} Javascript and packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported for {{ products.vro_short_name }} UI -> Assets -> Packages).
+Typescript project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type enables the user to write Orchestrator code and define different Orchestrator objects in the form of typescript files. Typescript code is transpiled into {{ products.vro_short_name }} Javascript and packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 
 The typescript project type also allows the user to write unit tests and has embedded code coverage.
+
+!!! note
+    Supported Typescript version is 5.4.5.
 
 ## Supported Content
 
@@ -85,9 +88,6 @@ service-automation
         └── IntegrationService1Alternative.conf.yaml        
 ```
 
-## Content
-////// add details about type definitions
-
 ## Environment Connection Parameters
 
 The following need to be added to the profile that you intend to use:
@@ -123,7 +123,7 @@ mvn vrealize:push -P{{ archetype.customer_project.maven_profile_name}}
 
 <!-- Build Project Section -->
 {% include-markdown "../../assets/docs/mvn/build-project.md" %}
-The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vra-ng** file generated in the target folder of the project.
+The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.package** file generated in the target folder of the project. This is an {{ products.vro_short_name }} native package that can be imported from {{ products.vro_short_name }} UI -> Assets -> Packages.
 
 <!-- Bundle Project Section -->
 {% include-markdown "../../assets/docs/mvn/bundle-project.md" %}
@@ -133,18 +133,17 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 
 ### Additional Parameters
 
-#### skipInstallNodeDeps
+Additional parameters that can be passed as flags to the maven command, e.g. `mvn clean package -DskipInstallNodeDeps=true`.
 
-Add the `skipInstallNodeDeps` flag to skip the deletion and re-installation of node-deps. Ex: `mvn clean package -DskipInstallNodeDeps=true`.
+* `skipInstallNodeDeps` - skip the deletion and re-installation of node-deps.
 
 !!! note
     If node_modules folder doesn't exist, then this flag is ineffective.
 
-#### -Dvro.forceImportLatestVersions
+* `vro.forceImportLatestVersions` - This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for better CI/CD pipelines, where we can ensure that the latest versions are always used on the server. Default value is `false`.
 
-This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for better CI/CD pipelines, where we can ensure that the latest versions are always used on the server.
-Snapshot versions are considered newer if they are the same as the version on the server.
-Default value is `false`.
+!!! note
+    Snapshot versions are considered newer if they are the same as the version on the server.
 
 * `vro.importOldVersions` - This strategy will upload a version of the package even if it is older than the version on the server.
 !!! note
@@ -160,6 +159,16 @@ Default value is `false`.
 
 ## Components
 
+<!-- Workflows -->
+{% include-markdown "./vro/Workflows.md" %}
 
+<!-- Actions -->
+{% include-markdown "./vro/Actions.md" %}
+
+<!-- Config Elements -->
+{% include-markdown "./vro/Config.md" %}
+
+<!-- Policies -->
+{% include-markdown "./vro/Policy.md" %}
 
 ## Known issues

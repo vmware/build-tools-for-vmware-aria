@@ -12,7 +12,7 @@ title: VM Apps
 | Archetype Group ID | `com.vmware.pscoe.vra-ng.archetypes` |
 | Archetype Artifact ID | `package-vra-ng-archetype` |
 | Product compatibility | {{ extra.products.vra_8_full_name }} (8.x) and {{ extra.products.vra_9_classic_full_name }} (9.x) |
-| Package extension | vrang |
+| Package extension | `vrang` |
 
 
 {{ products.vra_9_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
@@ -302,12 +302,17 @@ mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
     The value of the `<vrang.vro.integration>` is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
 
 #### Additional Parameters
+
+Additional parameters that can be passed as flags to the maven command, e.g. `mvn vra-ng:pull -Dbp.ignore.versions=true`.
+
 * `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
 
 <!-- Push Content Section -->
 {% include-markdown "../../assets/docs/mvn/push-content.md" %}
 
 #### Additional Parameters
+
+Additional parameters that can be passed as flags to the maven command, e.g. `mvn clean package -Dvrang.bp.release=true`.
 
 * `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
 in order to avoid unnecessary blueprint versions.
