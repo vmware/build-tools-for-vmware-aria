@@ -14,7 +14,7 @@
  */
 import * as fs from "fs-extra";
 import * as path from "path";
-import * as archiver from 'archiver';
+import archiver = require('archiver');
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
 import { serialize, xmlOptions, complexActionComment, getActionXml } from "./util"
@@ -57,7 +57,7 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
         bundle: (element: t.VroNativeElement, bundle: t.VroScriptBundle) => {
             if (bundle == null) {
                 // Empty promise that does nothing. Nothing needs to be done since bundle file does not exist.
-                return new Promise<void>((resolve, reject) => { });
+                return Promise.resolve();
             }
             let bundleFilePathSrc = bundle.contentPath;
             if (!exist(bundleFilePathSrc)) {
@@ -66,11 +66,33 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
             }
             let bundleFilePathDest = path.join(target, `${elementName}.bundle.zip`);
             if (isDirectory(bundleFilePathSrc)) {
-                let output = fs.createWriteStream(bundleFilePathDest);
-                let archive = archiver('zip', { zlib: { level: ZLIB_COMPRESS_LEVEL } });
-                archive.directory(bundleFilePathSrc, false);
-                archive.pipe(output);
-                archive.finalize();
+                return new Promise<void>((resolve, reject) => {
+                    const output = fs.createWriteStream(bundleFilePathDest);
+                    const archive = archiver('zip', { zlib: { level: ZLIB_COMPRESS_LEVEL } });
+                    
+                    // Handle stream events
+                    output.on('close', () => {
+                        resolve();
+                    });
+                    
+                    output.on('error', (err) => {
+                        reject(new Error(`Error writing bundle archive to ${bundleFilePathDest}: ${err.message}`));
+                    });
+                    
+                    archive.on('error', (err) => {
+                        reject(new Error(`Error creating bundle archive for ${bundleFilePathSrc}: ${err.message}`));
+                    });
+                    
+                    archive.on('warning', (err) => {
+                        if (err.code !== 'ENOENT') {
+                            reject(err);
+                        }
+                    });
+                    
+                    archive.pipe(output);
+                    archive.directory(bundleFilePathSrc, false);
+                    archive.finalize();
+                });
             } else {
                 return fs.copyFile(bundleFilePathSrc, bundleFilePathDest);
             }
