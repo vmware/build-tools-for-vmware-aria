@@ -225,9 +225,9 @@ The following need to be added to the profile that you intend to use:
 ``` xml
 <!-- (1)! -->
 <profile>
-<!--    ..... OTHER DIRECTIVES .....  -->
-    <vrang.host>example.vra.url.com</vrang.host>
-    <vrang.csp.host>console.cloud.vmware.com</vrang.csp.host>
+    <!--    ..... OTHER DIRECTIVES .....  -->
+    <vrang.host>flt-auto01.corp.internal</vrang.host>
+    <vrang.csp.host>cloud.corp.internal</vrang.csp.host>
     <vrang.proxy>http://proxy.host:80</vrang.proxy>
     <vrang.port>443</vrang.port>
     <vrang.username>administrator</vrang.username>

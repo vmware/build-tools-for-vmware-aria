@@ -184,7 +184,7 @@ The following need to be added to the profile that you intend to use:
 ``` xml
 <!-- (1)! -->
 <profile>
-<!--    ..... OTHER DIRECTIVES .....  -->
+    <!--    ..... OTHER DIRECTIVES .....  -->
     <vrops.host>flt-ops01a.corp.internal</vrops.host>
     <vrops.port>443</vrops.port>
     <vrops.sshPort>22</vrops.sshPort>

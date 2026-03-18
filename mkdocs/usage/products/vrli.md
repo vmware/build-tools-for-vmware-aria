@@ -112,7 +112,7 @@ The following need to be added to the profile that you intend to use:
 ``` xml
 <!-- (1)! -->
 <profile>
-<!--    ..... OTHER DIRECTIVES .....  -->
+    <!--    ..... OTHER DIRECTIVES .....  -->
     <vrli.host>flt-logs01.corp.internal</vrli.host>
     <vrli.port>9543</vrli.port>
     <vrli.username>admin</vrli.username>
