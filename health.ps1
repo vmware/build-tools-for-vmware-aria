@@ -18,12 +18,13 @@ Write-Host "Starting Build Tools for VMware Aria Checks..."
 
 # version should be at lest <major.minor>
 @(
-	@{ name = "Java";       cmd = "java";   min = "17.0"; max = "24.0"; project = "all" },
-	@{ name = "Maven";      cmd = "mvn";    min = "3.9";  max = "";     project = "all" },
-	@{ name = "Node.js";    cmd = "node";   min = "22.0"; max = "";     project = "all" },
-	@{ name = "Python";     cmd = "python"; min = "3.2";  max = "";     project = "polyglot" },
-	@{ name = "Pip";        cmd = "pip";    min = "25.0"; max = "26.0"; project = "polyglot" },
-	@{ name = "PowerShell"; cmd = "pwsh";   min = "7.0";  max = "";     project = "polyglot" }
+	@{ name = "Java";       cmd = "java";    min = "17.0"; max = "24.0"; project = "all" },
+	@{ name = "Maven";      cmd = "mvn";     min = "3.9";  max = "";     project = "all" },
+	@{ name = "Node.js";    cmd = "node";    min = "22.0"; max = "";     project = "all" },
+	@{ name = "OpenSSL";    cmd = "openssl"; min = "3.0";  max = "";     project = "polyglot" },
+	@{ name = "Python";     cmd = "python";  min = "3.2";  max = "";     project = "polyglot" },
+	@{ name = "Pip";        cmd = "pip";     min = "25.0"; max = "26.0"; project = "polyglot" },
+	@{ name = "PowerShell"; cmd = "pwsh";    min = "7.0";  max = "";     project = "polyglot" }
 ) |
 Group-Object -Property { $_.project } |
 ForEach-Object {

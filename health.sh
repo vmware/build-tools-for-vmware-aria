@@ -18,7 +18,7 @@ declare -a prerequisites=(
 	"Java       java    --version all      17     24"
 	"Maven      mvn     --version all      3.9"
     "Node.js    nodejs  --version all      22"
-	"OpenSSL    openssl version   polyglot 10     17.0"
+	"OpenSSL    openssl version   polyglot 3.0"
 	"Python     python  --version polyglot 3.2"
 	"Pip        pip     --version polyglot 25.0   26.0"
 	"PowerShell pwsh    --version polyglot 7.0"
