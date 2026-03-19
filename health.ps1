@@ -1,5 +1,5 @@
 param(
-	[switch]$additional
+	[switch]$contribute
 )
 
 $ErrorActionPreference = 'silentlycontinue'
@@ -22,14 +22,14 @@ Write-Host "Starting Build Tools for VMware Aria Checks..."
 	@{ name = "Maven";      cmd = "mvn";     min = "3.9";  max = "";     project = "all" },
 	@{ name = "Node.js";    cmd = "node";    min = "22.0"; max = "";     project = "all" },
 	@{ name = "OpenSSL";    cmd = "openssl"; min = "3.0";  max = "";     project = "polyglot" },
-	@{ name = "Python";     cmd = "python";  min = "3.2";  max = "";     project = "polyglot" },
+	@{ name = "Python";     cmd = "python";  min = "3.7";  max = "3.10"; project = "polyglot" },
 	@{ name = "Pip";        cmd = "pip";     min = "25.0"; max = "26.0"; project = "polyglot" },
-	@{ name = "PowerShell"; cmd = "pwsh";    min = "7.0";  max = "";     project = "polyglot" }
+	@{ name = "PowerShell"; cmd = "pwsh";    min = "7.1";  max = "7.4";  project = "polyglot" }
 ) |
 Group-Object -Property { $_.project } |
 ForEach-Object {
 	$project = $_.Name
-	if ($additional -eq $false -and $project -ne "all") {
+	if ($contribute -eq $false -and $project -ne "all") {
 		return
 	}
 	else {
@@ -79,3 +79,7 @@ if ( $hasErrors -eq $true ) {
 else {
 	Write-Host "All mandatory checks passed successfully." -ForegroundColor Green
 }
+
+Write-Host
+Write-Host "If your project is of type polyglot there might be additional dependencies required based on your selected runtime environment (e.g. Python or PowerShell)." -ForegroundColor Yellow
+Write-Host

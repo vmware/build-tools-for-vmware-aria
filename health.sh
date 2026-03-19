@@ -3,13 +3,16 @@ RED="\033[0;31m"
 YELLOW="\033[0;33m"
 NC="\033[0m"
 
-if [[ $# -eq 1 ]] && [[ $1 != "--additional" ]]; then
+YES="✔"
+NO="✘"
+
+if [[ $# -eq 1 ]] && [[ $1 != "--contribute" ]]; then
 	echo "Usage: '$0' to show mandatory prerequisites"
-	echo "Usage: '$0 --additional' to show all, including non-mandatory prerequisites"
+	echo "Usage: '$0 --contribute' to show all, including non-mandatory prerequisites"
 	exit 1
 fi
 
-additional=$1
+contribute=$1
 
 all_checks_passed=true
 regex="[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"
@@ -17,11 +20,11 @@ regex="[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"
 declare -a prerequisites=(
 	"Java       java    --version all      17     24"
 	"Maven      mvn     --version all      3.9"
-    "Node.js    nodejs  --version all      22"
+	"Node.js    node    --version all      22"
 	"OpenSSL    openssl version   polyglot 3.0"
-	"Python     python  --version polyglot 3.2"
+	"Python     python  --version polyglot 3.7    3.10"
 	"Pip        pip     --version polyglot 25.0   26.0"
-	"PowerShell pwsh    --version polyglot 7.0"
+	"PowerShell pwsh    --version polyglot 7.1    7.4"
 )
 
 v_compare() { 
@@ -41,19 +44,13 @@ for prerequisite in "${prerequisites[@]}"; do
 	command=${properties[1]}
 	action=${properties[2]}
 
-	if [[ -z $additional ]] && [[ ${properties[3]} != "all" ]]; then
+	if [[ -z $contribute ]] && [[ ${properties[3]} != "all" ]]; then
 		break
 	fi
 
 	if [[ $required != "" ]] && [[ $required != ${properties[3]} ]]; then
 		echo -e "\n${YELLOW}Required by '${properties[3]}' project${NC}"
 	fi
-
-	#if [[ $required != "" ]] && [[ $required != ${properties[3]} ]]; then
-	#	echo -e "\n${YELLOW}Required by '${properties[3]}' project${NC}"
-	#elif [[ ! -z $additional ]] && [[ ${properties[3]} != "all" ]]; then
-	#	break
-	#fi
 
 	required=${properties[3]}
 	min=${properties[4]}
@@ -68,13 +65,13 @@ for prerequisite in "${prerequisites[@]}"; do
 	actualVersion=${BASH_REMATCH[0]}
 
 	if [ -z "${actualVersion}" ] && [ $required = "all" ]; then
-		echo -e "${RED}✘ ${name} is not installed.${NC}"
+		echo -e "${RED}${NO} ${name} is not installed.${NC}"
 		all_checks_passed=false
 		continue
 	fi
 	
 	if [ -z "${actualVersion}" ] && [ $required != "all" ]; then
-		echo -e "${YELLOW}✘ ${name} is not installed.${NC}"
+		echo -e "${YELLOW}${NO} ${name} is not installed.${NC}"
 		continue
 	fi
 
@@ -87,12 +84,12 @@ for prerequisite in "${prerequisites[@]}"; do
 	fi
 	
 	if $is_min_ok && $is_max_ok; then
-		echo -e "${GREEN}✔ ${name} version '${actualVersion}' is within the required range (${min} - ${max}).${NC}"
+		echo -e "${GREEN}${YES} ${name} version '${actualVersion}' is within the required range (${min} - ${max}).${NC}"
 	elif [ $required != "all" ]; then
-		echo -e "${YELLOW}✘ ${name} version '${actualVersion}' is outside of the range (${min} - ${max}).${NC}"
+		echo -e "${YELLOW}${NO} ${name} version '${actualVersion}' is outside of the range (${min} - ${max}).${NC}"
 	else
 		all_checks_passed=false
-		echo -e "${RED}✘ ${name} version '${actualVersion}' is outside of the range (${min} - ${max}).${NC}"
+		echo -e "${RED}${NO} ${name} version '${actualVersion}' is outside of the range (${min} - ${max}).${NC}"
 	fi
 done
 
@@ -102,3 +99,6 @@ if [ "$all_checks_passed" = true ]; then
 else
 	echo -e "${RED}Some checks failed. Please review the above messages.${NC}"
 fi
+
+echo -e "\n${YELLOW}If your project is of type polyglot there might be additional dependencies required based on your selected runtime environment (e.g. Python or PowerShell).${NC}\n"
+

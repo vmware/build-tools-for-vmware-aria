@@ -51,13 +51,13 @@ To check if the dependencies are met on Windows, you can run:
 Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.ps1'))
 ```
 
-To check if dev dependencies are met, download the script and run:
+By default the healtcheck script validates dependencies for consuming Build Tools for Aria via one of the available project types. To validate all dependencies required for contributing to Build Tools for Aria pass the --contribute flag, e. g.:
 ```sh
-./health.sh --additional
+./health.sh --contribute
 ```
 or for Windows
 ```ps
-./health.ps1 -additional
+./health.ps1 -contribute
 ```
 
 ## Encoding (UTF-8)

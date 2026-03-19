@@ -63,6 +63,8 @@ Executing a PowerShell 7 polyglot action with an imported module results in an e
 
 When building a PowerShell polyglot action with imported modules the build process downloads modules to out/Modules/ via Save-Module and the ZIP bundle now correctly includes all files from Modules/ with proper folder structure.
 
+### Improve healthcheck script, add healthcheck script and instructions for Windows
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
