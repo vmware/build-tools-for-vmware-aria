@@ -272,11 +272,11 @@ mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
 ## Operations
 
 <!-- Build Project Section -->
-{% include-markdown "../../assets/docs/mvn/build-project.md" %}
+{% include-markdown "../../../../assets/docs/mvn/build-project.md" %}
 The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vra-ng** file generated in the target folder of the project.
 
 <!-- Bundle Project Section -->
-{% include-markdown "../../assets/docs/mvn/bundle-project.md" %}
+{% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
 
 ### Pull Content
 
@@ -308,7 +308,7 @@ Additional parameters that can be passed as flags to the maven command, e.g. `mv
 * `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
 
 <!-- Push Content Section -->
-{% include-markdown "../../assets/docs/mvn/push-content.md" %}
+{% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
 
 #### Additional Parameters
 
@@ -344,21 +344,12 @@ Defalut behavior for other parameters:
 
 
 <!-- Clean Up Content Section -->
-{% include-markdown "../../assets/docs/mvn/clean-up-content.md" %}
+{% include-markdown "../../../../assets/docs/mvn/clean-up-content.md" %}
 
 <!-- Troubleshooting Section -->
-{% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
+{% include-markdown "../../../../assets/docs/mvn/troubleshooting.md" %}
 
 ## Components
-
-<!-- Blueprints -->
-{% include-markdown "./vcfa-vmapps/Blueprints.md" %}
-
-<!-- Content Policies -->
-{% include-markdown "./vcfa-vmapps/Content Policies.md" %}
-
-<!-- Custom Resources -->
-{% include-markdown "./vcfa-vmapps/Custom Resources.md" %}
 
 ### Catalog Items Custom Forms
 

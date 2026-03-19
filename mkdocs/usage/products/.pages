@@ -5,7 +5,6 @@ nav:
         - vro-xml.md        
         - vro-ts.md
         - testing.md
-    - VCF Automation:
-        - vrang.md
+    - vcfa
     - vrops.md
     - vrli.md
