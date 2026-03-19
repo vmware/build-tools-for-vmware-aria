@@ -211,8 +211,8 @@ The following need to be added to the profile that you intend to use:
 - `vrops.restAuthSource` - Authentication source used for acquiring a token for REST API communication.
 
 - `vrops.restAuthProvider` - Defines the type of authentication used for REST API communication.
-    - Supported values: BASIC, AUTH_N (token based authentication - supported since version 2.8.0)
-    - Default value: AUTH_N
+    - Supported values: `BASIC`, `AUTH_N` (token based authentication - supported since version 2.8.0).
+    - Default value: `AUTH_N`.
 
 Use the profile by passing it with `-P`, e.g.:
 ``` bash
