@@ -1,24 +1,19 @@
-# Policies
+---
+title: Policies
+---
 
-vRO Policies and how to define them in Aria Orchestrator
+# Policies
 
 ## Overview
 
-Aria Orchestrator supports creating Policies with different elements and variables.
+{{ products.vro_short_name }} supports creating Policies with different elements and variables.
 
-## Table of Contents
-
-1. [Policy Template Versioning](#policy-template-versioning)
-2. [Example Policy](#example-policy)
-3. [Naming Convention](#naming-convention)
-4. [Creating Variables in Policy](#creating-a-variable-in-policy)
-5. [Creating Elements to a Policy](#creating-elements-to-a-policy)
-
-### Policy Template Versioning
+## Policy Template Versioning
 
 Policy template now has two versions for backward compatability. Template versions can be changed using the **templateVersion** attribute. Use v2 for full support of creating Policy with variables and multiple elements.
 
-**NOTE:** templateVersion attribute is optional. if not provided, templateVersion will be considered as v1 by default.
+!!! note
+    `templateVersion` attribute is optional. if not provided, templateVersion will be considered as v1 by default.
 
 ```ts
 import { PolicyTemplate } from "vrotsc-annotations";
@@ -31,11 +26,11 @@ import { PolicyTemplate } from "vrotsc-annotations";
 })
 ```
 
-### Example Policy
+## Example Policy
 
 A Example typescript policy with all posible configurations for Policy Template Version 2 (v2).
 
-#### Version 1
+### Version 1
 
 ```ts
 import { PolicyTemplate } from "vrotsc-annotations";
@@ -53,7 +48,7 @@ export class PolicyTemplateAmqp {
 }
 ```
 
-#### Version 2
+### Version 2
 
 ```ts
 import { PolicyTemplate } from "vrotsc-annotations";
@@ -110,7 +105,7 @@ import { PolicyTemplate } from "vrotsc-annotations";
 })
 ```
 
-### Naming Convention
+## Naming Convention
 
 Naming convention for creating variables, elements with different types of elements and events.
 
@@ -172,11 +167,11 @@ import { PolicyTemplate } from "vrotsc-annotations";
 })
 ```
 
-### Creating a Variable in Policy
+## Creating a Variable in Policy
 
 Variables can be created in a policy by adding them under **variables** attribute as shown in the example.
 
-#### Creating a String variable
+### Creating a String variable
 
 String variables can be added by directly assigning values to the them.
 
@@ -186,7 +181,7 @@ variables: {
 }
 ```
 
-#### Creating Variables with other data types
+### Creating Variables with other data types
 
 Other data type variables can be added by providing the additional information to them.
 
@@ -205,7 +200,7 @@ variables: {
 }
 ```
 
-#### Creating Variables with Configuration binding
+### Creating Variables with Configuration binding
 
 Variables can be binded to configurations by providing configuration ID and key.
 
@@ -220,13 +215,14 @@ variables: {
 }
 ```
 
-**Note:** Configuration binding will be considered if both value and configuration ID are provided to a variable.
+!!! note
+    Configuration binding will be considered if both value and configuration ID are provided to a variable.
 
-### Creating Elements to a Policy
+## Creating Elements to a Policy
 
 Elements can be created in a policy by adding them under **elements** attribute as shown in example
 
-#### Supported Element types
+### Supported Element types
 
 - AMQP:Subscription
 - MQTT:Subscription
@@ -234,7 +230,7 @@ Elements can be created in a policy by adding them under **elements** attribute 
 - SNMP:TrapHost
 - Periodic Event
 
-#### Creating a Periodic Event Element with defined event Method
+### Creating a Periodic Event Element with defined event Method
 
 Periodic Event element can be added by providing the list of events and schedules as below. Schedules are mandatory for Periodic Event type elements
 
@@ -261,7 +257,7 @@ export class SamplePolicy {
 }
 ```
 
-#### Creating a Periodic Event Element with bound event Method
+### Creating a Periodic Event Element with bound event Method
 
 Events can either be a method defined in the typescipt Policy or can be bound to a workflow.
 
@@ -291,7 +287,7 @@ elements: {
 
 From the above example, the workflow ID and its input bindings are provided. The inputs are binded to variables created in the policy.
 
-#### Creating Other Element Types
+### Creating Other Element Types
 
 Other supported element types can be as below. Events can be a method defined in the policy or can be binded to a workflow.
 

@@ -1,19 +1,14 @@
-# Config elements
+---
+title: Configuration Elements
+---
 
-vRO Configuration Elements and how to define them in a typescript project
+# Configuration Elements
 
 ## Overview
 
-Configuration Elements are vRO constructs that allow you to store configuration data. Build Tools for VMware Aria supports a few ways of defining configuration elements as well as different types of values.
+Configuration Elements are {{ products.vro_short_name }} constructs that allow you to store configuration data. Build Tools for VMware Aria supports a few ways of defining configuration elements as well as different types of values.
 
-## Table Of Contents
-
-- [Pushing Configuration Values](#pushing-configuration-values)
-- [Secure Strings](#secure-strings)
-- [CompositeTypes](#compositetypes)
-- [Examples](#examples)
-
-### Pushing Configuration Values
+### Import
 
 When doing `mvn clean package vrealize:push` you need to include some extra arguments if you want to push configuration values
 
@@ -46,13 +41,13 @@ export class Test {
 }
 ```
 
-When pushing them to vRO, you have to add `-Dvro.packageImportConfigSecureStringAttributeValues=true` to indicate to the Build Tools for VMware Aria that the SecureStrings should be imported as well.
+When pushing them to {{ products.vro_short_name }}, you have to add `-Dvro.packageImportConfigSecureStringAttributeValues=true` to indicate to the Build Tools for VMware Aria that the SecureStrings should be imported as well.
 
-The value is encoded, and the best way to know what to set there would be to manually add it to vRO, then fetch it using the VSCode vRDT /vRealize Developer tools/ plugin by clicking on the extension in the sidebar and navigating to it. After you find it you will be able to extract the value from the retrieved `xml` and put it here.
+The value is encoded, and the best way to know what to set there would be to manually add it to {{ products.vro_short_name }}, then fetch it using the VSCode vRDT /vRealize Developer tools/ plugin by clicking on the extension in the sidebar and navigating to it. After you find it you will be able to extract the value from the retrieved `xml` and put it here.
 
 ### CompositeTypes
 
-Currently, composite types are implemented for both vRO7 and vRO8. vRO8 is compatible with the old vRO7 way of importing composite types, so that format is used to import composite types in both systems.
+Currently, composite types are implemented for both {{ products.vro_7_full_name }} (7.x) and {{ products.vro_8_full_name }} (8.x). {{ products.vro_8_full_name }} is compatible with the old {{ products.vro_7_full_name }} way of importing composite types, so that format is used to import composite types in both systems.
 
 Composite types conform to these constraints:
 

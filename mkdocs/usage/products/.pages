@@ -1,10 +1,6 @@
 title: Supported Products
 nav:
-    - VCF Operations Orchestrator:
-        - vro-js.md
-        - vro-xml.md        
-        - vro-ts.md
-        - testing.md
+    - vro
     - vcfa
     - vrops.md
     - vrli.md

@@ -122,14 +122,14 @@ mvn vrealize:push -P{{ archetype.customer_project.maven_profile_name}}
 ## Operations
 
 <!-- Build Project Section -->
-{% include-markdown "../../assets/docs/mvn/build-project.md" %}
+{% include-markdown "../../../../assets/docs/mvn/build-project.md" %}
 The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.package** file generated in the target folder of the project. This is an {{ products.vro_short_name }} native package that can be imported from {{ products.vro_short_name }} UI -> Assets -> Packages.
 
 <!-- Bundle Project Section -->
-{% include-markdown "../../assets/docs/mvn/bundle-project.md" %}
+{% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
 
 <!-- Push Content Section -->
-{% include-markdown "../../assets/docs/mvn/push-content.md" %}
+{% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
 
 ### Additional Parameters
 
@@ -152,23 +152,9 @@ Additional parameters that can be passed as flags to the maven command, e.g. `mv
     If `forceImportLatestVersions` is set to `true` this configuration is ignored.
 
 <!-- Clean Up Content Section -->
-{% include-markdown "../../assets/docs/mvn/clean-up-content.md" %}
+{% include-markdown "../../../../assets/docs/mvn/clean-up-content.md" %}
 
 <!-- Troubleshooting Section -->
-{% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
-
-## Components
-
-<!-- Workflows -->
-{% include-markdown "./vro/Workflows.md" %}
-
-<!-- Actions -->
-{% include-markdown "./vro/Actions.md" %}
-
-<!-- Config Elements -->
-{% include-markdown "./vro/Config.md" %}
-
-<!-- Policies -->
-{% include-markdown "./vro/Policy.md" %}
+{% include-markdown "../../../../assets/docs/mvn/troubleshooting.md" %}
 
 ## Known issues

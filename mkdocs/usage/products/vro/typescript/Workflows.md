@@ -1,10 +1,14 @@
-### Workflows
+---
+title: Workflows
+---
 
-#### Overview
+# Workflows
 
-You can use the method decorators to define various canvas items that will be included in the workflow.
+## Overview
 
-#### Workflow Decorator
+You can use the method decorators to define various canvas items that will be included in the Workflow.
+
+## Workflow Decorator
 
 ```ts
 @Workflow({
@@ -27,7 +31,7 @@ You can use the method decorators to define various canvas items that will be in
 })
 ```
 
-##### Supported Parameters
+### Supported Parameters
 
 - `id` - workflow id.
 - `name` - workflow name.
@@ -56,19 +60,19 @@ The following parameters are supported for each element of attributes, input, an
   - `numberFormat` - parameter number format.
   - `availableValues` - list of parameter available values.
 
-#### Argument Decorators
+## Argument Decorators
 
 - `@In` - Used to bind an input to a function.
 - `@Out` - Used to bind an output to a function.
 - `@Err` - Used to bind an error to a function.
 
-#### Available Method Decorators
+## Available Method Decorators
 
-##### `@DefaultErrorHandler`
+### `@DefaultErrorHandler`
 
 This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `target` - target item to be attached to the default error handler, could be one of workflow item or workflow end.
 - `exceptionVariable` - Exception variable that will hold the exception data when triggered.
@@ -76,7 +80,7 @@ This decorator is used to specify a default error handler. It can be bound eithe
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
-###### Example
+#### Example
 
 ```ts
 import {
@@ -144,35 +148,35 @@ The example above would generate the following workflow.
 
 [![Default Error Handler Workflow](images/Canvas_Item_Default_Error_Handler_Workflow.png)](images/Canvas_Item_Default_Error_Handler_Workflow.png)
 
-##### `@WorkflowEndItem`
+### `@WorkflowEndItem`
 
 The decorator is used to specify a custom workflow end item.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `endMode` - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.
 - `exceptionVariable` - Exception variable that will hold the exception data when triggered.
 - `businessStatus` - Value of the business status in the end component.
 
-##### `@Item`
+### `@Item`
 
 This decorator is used to specify a scriptable task.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `target` - The name of the next in line item. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the wf. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
-##### `@WaitingTimerItem`
+### `@WaitingTimerItem`
 
 This decorator is used to specify a waiting timer.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `target` - The name of the next in line item. Same as `@Item`. This decorator expects an `@In` parameter with the name of the waiting timer. If one isn't added, the workflow will not work.
 - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
-###### Example
+#### Example
 
 ```ts
 import { Workflow, In, WaitingTimerItem } from "vrotsc-annotations";
@@ -205,17 +209,17 @@ The example above would generate the following workflow.
 
 [![Waiting Timer Workflow](images/Waiting_Timer_Canvas_Item_Workflow.png)](images/Waiting_Timer_Canvas_Item_Workflow.png)
 
-##### `@DecisionItem`
+### `@DecisionItem`
 
 This decorator is used to specify a decision item.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `target` - The name of the next in line item. Same as `@Item`.
 - `else` - The name of the next in line item if the decision is false. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the wf. If this is set to a string, but it does not exist in the workflow, it will point to the end of the wf.
 - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
-###### Example
+#### Example
 
 ```ts
 import { Workflow, DecisionItem } from "vrotsc-annotations";
@@ -251,11 +255,11 @@ The example above would generate the following workflow.
 
 [![Decision Item Workflow](images/Decision_Item_Canvas_Item_Workflow.png)](images/Decision_Item_Canvas_Item_Workflow.png)
 
-##### `@SwitchItem`
+### `@SwitchItem`
 
 This decorator is used to specify a switch item that routes workflow execution to different paths based on the value of a variable or expression.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `cases` - An array of case objects that define the routing logic. Each case object contains:
   - `condition` - The value to match against the switch variable
@@ -276,7 +280,7 @@ This decorator is used to specify a switch item that routes workflow execution t
     - `"is defined"`          - Value is defined
 - `defaultTarget` - The name of the next item to execute when none of the cases match. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow.
 
-###### Example
+#### Example
 
 ```ts
 import { Workflow, SwitchItem } from "vrotsc-annotations";
@@ -385,7 +389,7 @@ export class SwitchEdgeCases {
 }
 ```
 
-###### Switch Item with String Cases
+#### Switch Item with String Cases
 
 ```ts
 import { Workflow, SwitchItem } from "vrotsc-annotations";
@@ -440,11 +444,11 @@ export class SwitchStringCases {
 }
 ````
 
-##### `@WorkflowItem`
+### `@WorkflowItem`
 
 The decorator is used to specify a workflow item that will be called.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `target` - The name of the next in line item. Same as `@Item`.
 - `linkedItem` - The ID of the workflow to call.
@@ -452,11 +456,11 @@ The decorator is used to specify a workflow item that will be called.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
-##### `@ScheduledWorkflowItem`
+### `@ScheduledWorkflowItem`
 
 The decorator is used to specify a scheduled workflow item that will be called.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `target` - The name of the next in line item. Same as `@Item`.
 - `linkedItem` - The ID of the workflow to schedule.
@@ -464,19 +468,19 @@ The decorator is used to specify a scheduled workflow item that will be called.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
-###### Inputs
+#### Inputs
 
 Special input is needed for the ScheduledWorkflowItem.
 
 - `workflowScheduleDate` - {Date} is required. The name **must** be `workflowScheduleDate`. If this is missing an error is thrown. We don't check if the type is `Date` but Aria Orchestrator will complain.
 
-###### Outputs
+#### Outputs
 
 Special output is needed for the ScheduledWorkflowItem.
 
 - `scheduledTask` - {Task} is optional. If it's missing nothing will happen, if it's added, then the name **must** be `scheduledTask`. This is the task that is scheduled.
 
-###### Example
+#### Example
 
 ```ts
 import {
@@ -536,32 +540,32 @@ The example above would generate the following workflow.
 
 [![Scheduled Workflow](images/Scheduled_Workflow_Canvas_Item_Workflow.png)](images/Scheduled_Workflow_Canvas_Item_Workflow.png)
 
-##### `@RootItem`
+### `@RootItem`
 
 This is a meta decorator. Add this to whichever function you want to be the entry point of the workflow.
 
-##### `@AsyncWorkflowItem`
+### `@AsyncWorkflowItem`
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `@AsyncWorkflowItem({target: "", linkedItem: "" })`
   - `target` - The name of the next in line item.
   - `linkedItem` - The ID of the workflow to call
   - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
-###### Outputs
+#### Outputs
 
 Special output is needed for the AsyncWorkflowItem.
 
 - `wfToken` - {WorkflowToken} is required. The name **must** be `wfToken`. If this is missing an error is thrown. We don't check if the type is `WorkflowToken` but Aria Orchestrator will complain.
 
-###### Inputs
+#### Inputs
 
 No special inputs are needed for the AsyncWorkflowItem.
 
-##### `@ActionItem`
+### `@ActionItem`
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `@ActionItem({target: "", scriptModule: "" })`
   - `target` - The name of the next in line item. Same as `@Item`.
@@ -570,22 +574,22 @@ No special inputs are needed for the AsyncWorkflowItem.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
-###### Outputs
+#### Outputs
 
 There is a requirement to have only one output, and it will be of type `ActionResult`.
 
-##### `@UserInteractionWorkflowItem`
+### `@UserInteractionWorkflowItem`
 
 The decorator is used to specify an user interaction workflow item.
 
-###### Supported Parameters
+#### Supported Parameters
 
 - `target` - The name of the target to that user interaction workflow item is connected to. You can specify another user interaction workflow item as a target, thus chaining multiple user interaction components.
 - `exception` - The name of the next in line item in case an exception or a timeout is encountered occured during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators.
 
-###### Inputs
+#### Inputs
 
 If you need to specify certain access limitation for the user interaction component you can specify them with `@In` decorators.
 Those inputs are optional.
@@ -597,7 +601,7 @@ Those inputs are optional.
 
 Note that those parameters should match the input or attribute parameters of the workflow to ensure proper typization.
 
-###### Known Limitations for the Input Parameters
+#### Known Limitations for the Input Parameters
 
 The names of the variables in the additional method decorators should be as following:
 
@@ -606,11 +610,11 @@ The names of the variables in the additional method decorators should be as foll
 - `security_group` - for the security group parameter.
 - `timeout_date` - for the timeout date parameter.
 
-###### Outputs
+#### Outputs
 
 You can specify multiple output variables that would hold the answer of the user interaction components.
 
-###### Example
+#### Example
 
 ```ts
 import {
@@ -681,7 +685,7 @@ The example above would generate the following workflow.
 
 [![User Interaction Workflow](images/User_Interaction_Canvas_Item_Workflow.png)](images/User_Interaction_Canvas_Item_Workflow.png)
 
-#### Custom Form Support
+## Custom Form Support
 
 You can push `Workflow Custom Form` and `User Interaction Custom Forms` provided as separate files containing the forms as JSON definitions. The files need to be placed in the same folder as the related `.wf.ts` file and must follow naming conventions:
 - `Workflow Custom Form`: `{{workflowFileName}}.wf.form.json` where:
@@ -711,7 +715,7 @@ If no `User Interaction Custom Form` file definition is provided (or the naming 
 - use an `XML` based project to pull the forms, move them to the proper folder and rename them to match the naming convention.
 - Navigate to the Orchestrator UI, open the `Workflow` edit page and navigate to `Version History` from where you can extract the `YAML` definition, convert it to `JSON` and place it in a file.
 
-##### Example
+### Example
 
 Example file structure based on the `UserInteractionWorkflow` Workflow sample above:
 
@@ -775,7 +779,7 @@ Example `User Interaction Custom Form` definition:
 }
 ```
 
-#### Example Workflow
+## Example Workflow
 
 This example workflow combines all currently supported method decorators in a single workflow.
 
