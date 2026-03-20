@@ -14,7 +14,7 @@ title: Typescript
 | Product compatibility | {{ extra.products.vro_7_full_name }} (7.x), {{ extra.products.vro_8_full_name }} (8.x) and {{ extra.products.vro_9_full_name }} (9.x) |
 | Package extension | `package` |
 
-Typescript project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type enables the user to write Orchestrator code and define different Orchestrator objects in the form of typescript files. Typescript code is transpiled into {{ products.vro_short_name }} Javascript and packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
+Typescript project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name_short_name }} content into Typescript format. The project consist of content content container. During [build operation](#build-project) the contents of the container are transpiled into {{ products.vro_short_name }} Javascript and packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 
 The typescript project type also allows the user to write unit tests and has embedded code coverage.
 
@@ -41,17 +41,14 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes \
     -DarchetypeArtifactId=package-typescript-archetype \
-    -DarchetypeArtifactId=package-vra-ng-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} \
-    -DgroupId={{ archetype.customer_project.group_id}} # (1)! \
-    -DartifactId={{ archetype.customer_project.artifact_id}} # (2)!
+    -DarchetypeVersion={{ iac.latest_release }} # (1)! \
+    -DgroupId={{ archetype.customer_project.group_id}} # (2)! \
+    -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.group_id_hint }}
-2.  {{ archetype.customer_project.artifact_id_hint }}
-
-!!! note
-    If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
+1.  {{ archetype.customer_project.archetype_version_hint }}
+2.  {{ archetype.customer_project.group_id_hint }}
+3.  {{ archetype.customer_project.artifact_id_hint }}
 
 ### Content Structure
 
@@ -282,7 +279,7 @@ Sample `tsconfig.json`:
 
 The presence of a `tsconfig.json` file in a directory indicates that the directory is the root of a TypeScript project and is being read by the code editor for *autocompletion*. Modifying `tsconfig.json` in the context of `vrotsc` can affect only the code editor autocompletion.
 
-Because of the nature of extending the typescript compiler and the specific runtime of Orchestrator, `vrotsc` package has a default `tsconfig` that is applied for all  `typescript-project-all` projects.
+Because of the nature of extending the typescript compiler and the specific runtime of {{ products.vro_short_name }}, `vrotsc` package has a default `tsconfig` that is applied for all  `typescript-project-all` projects.
 
 `/typescript/vrotsc/src/compiler/config.ts`
 

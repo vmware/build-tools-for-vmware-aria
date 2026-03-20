@@ -43,16 +43,14 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.vrops.archetypes \
     -DarchetypeArtifactId=package-vrops-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} \
-    -DgroupId={{ archetype.customer_project.group_id}} # (1)! \
-    -DartifactId={{ archetype.customer_project.artifact_id}} # (2)!
+    -DarchetypeVersion={{ iac.latest_release }} # (1)! \
+    -DgroupId={{ archetype.customer_project.group_id}} # (2)! \
+    -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.group_id_hint }}
-2.  {{ archetype.customer_project.artifact_id_hint }}
-
-!!! note
-    If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
+1.  {{ archetype.customer_project.archetype_version_hint }}
+2.  {{ archetype.customer_project.group_id_hint }}
+3.  {{ archetype.customer_project.artifact_id_hint }}
 
 ### Content Structure
 

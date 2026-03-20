@@ -15,7 +15,7 @@ title: VM Apps
 | Package extension | `vrang` |
 
 
-{{ products.vra_9_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format.The project consist of content descriptor and content container.
+{{ products.vra_9_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of content descriptor and content container.
 
 - *Content Descriptor* defines what part {{ products.vra_9_short_name }} content will be part of this project - `content.yaml`.
 - *Content Container* holds the actual content representation -`./src` folder.
@@ -43,13 +43,14 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.vra-ng.archetypes \
     -DarchetypeArtifactId=package-vra-ng-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} \
-    -DgroupId={{ archetype.customer_project.group_id}} # (1)! \
-    -DartifactId={{ archetype.customer_project.artifact_id}} # (2)!
+    -DarchetypeVersion={{ iac.latest_release }} # (1)! \
+    -DgroupId={{ archetype.customer_project.group_id}} # (2)! \
+    -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.group_id_hint }}
-2.  {{ archetype.customer_project.artifact_id_hint }}
+1.  {{ archetype.customer_project.archetype_version_hint }}
+2.  {{ archetype.customer_project.group_id_hint }}
+3.  {{ archetype.customer_project.artifact_id_hint }}
 
 !!! note
     If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
