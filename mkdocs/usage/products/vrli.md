@@ -17,7 +17,7 @@ title: VCF Operations for Logs
 {{ products.vrli_9_full_name }} projects are called `vrli` projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vrli_9_full_name }} content into human friendly JSON format. The project consist of content descriptor and content container.
 
 - *Content Descriptor* defines what part of the {{ products.vrli_9_full_name }} server content will be part of this project - `content.yaml`.
-- *Content Container* holds the actual content representation -`./src` folder.
+- *Content Container* holds the actual content representation - `./src` folder.
 
 ## Supported Content
 

@@ -17,7 +17,7 @@ title: VCF Operations
 {{ products.vrops_9_short_name }} projects are called `vrops` projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vrops_9_short_name }} content into human friendly format saved into different file types - JSON, XML, properties, ZIP. The project consist of content descriptor and content container.
 
 - *Content Descriptor* defines what part of the {{ products.vrops_9_short_name }} server content will be part of this project - `content.yaml`.
-- *Content Container* holds the actual content representation -`./src` folder.
+- *Content Container* holds the actual content representation - `./src` folder.
 
 ## Supported Content
 

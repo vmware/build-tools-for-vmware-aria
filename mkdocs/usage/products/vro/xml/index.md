@@ -14,9 +14,10 @@ title: XML
 | Product compatibility | {{ extra.products.vro_7_full_name }} (7.x), {{ extra.products.vro_8_full_name }} (8.x) and {{ extra.products.vro_9_full_name }} (9.x) |
 | Package extension | `package` |
 
-XML project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name_short_name }} content into XML format. The project consist of content content container. During [build operation](#build-project) the contents of the container are packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
+XML project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name }} content into XML format. The project consist of local content container and remote content descriptor on the target server. During [build operation](#build-project) the contents of the container are packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 
-- *Content Container* holds the actual content representation -`./src` folder.
+- *Content Descriptor* defines what {{ products.vro_short_name }} content will be part of this project when exporting content. The {{ products.vro_short_name }} package from UI -> Assets -> Packages plays this role and defines what content is exported. For more information refer to the [pull operation](#) section below.
+- *Content Container* holds the actual content representation - `./src` folder.
 
 ## Supported Content
 
@@ -26,6 +27,7 @@ XML project type is one of the available {{ products.vro_short_name }} project t
 - `Actions`
 - `Configuration Elements`
 - `Resource Elements`
+- `Policy Templates`
 
 ## Create New {{ products.vro_short_name }} Project
 {{ general.bta_name }} provides ready to use {{ products.vro_short_name }} project templates (*maven archetypes*).
@@ -113,6 +115,9 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 
 <!-- Bundle Project Section -->
 {% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
+
+<!-- Pull Content Section -->
+{% include-markdown "../common/pull-content.md" %}
 
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}

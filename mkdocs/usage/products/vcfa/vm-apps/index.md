@@ -18,7 +18,7 @@ title: VM Apps
 {{ products.vra_9_short_name }} projects are called `vra-ng`(New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of content descriptor and content container.
 
 - *Content Descriptor* defines what part {{ products.vra_9_short_name }} content will be part of this project - `content.yaml`.
-- *Content Container* holds the actual content representation -`./src` folder.
+- *Content Container* holds the actual content representation - `./src` folder.
 
 ## Supported Content
 
@@ -287,13 +287,13 @@ When working on a {{ products.vra_9_short_name }} project, you mainly make chang
 
 #### Usage
 
-To support this use case, the a custom maven goal `vra-ng:pull` is used. The following command will `pull` the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
+To support this use case, a custom maven goal `vra-ng:pull` is used. The following command will `pull` the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
 
 ```bash
 mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
 
-!!! note
+!!! warning
     The command will fail if the `content.yaml` is empty or it cannot find some of the described content on the target {{ products.vra_9_short_name }} server.
 
 !!! note

@@ -1,12 +1,12 @@
 ---
-title: Policies
+title: Policy Templates
 ---
 
-# Policies
+# Policy Templates
 
 ## Overview
 
-{{ products.vro_short_name }} supports creating Policies with different elements and variables.
+{{ products.vro_short_name }} supports creating Policy Templates with different elements and variables.
 
 ## Policy Template Versioning
 

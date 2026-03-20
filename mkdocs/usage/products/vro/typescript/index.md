@@ -157,6 +157,10 @@ Additional parameters that can be passed as flags to the maven command, e.g. `mv
 !!! note
     If `forceImportLatestVersions` is set to `true` this configuration is ignored.
 
+* `vro.packageImportConfigurationAttributeValues` - if set to `true` pushes all configuration values besides SecureStrings.
+
+* `vro.packageImportConfigSecureStringAttributeValues=true` - if set to `true` pushes all Secure String configuration values.
+
 <!-- vroIgnore Section -->
 {% include-markdown "../common/vroignore.md" %}
 
