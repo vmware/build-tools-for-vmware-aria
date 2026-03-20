@@ -129,6 +129,11 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 <!-- Bundle Project Section -->
 {% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
 
+### Pull Content
+
+!!! warning
+    **Not supported!** Typescript development is unidirectional - local code is transpiled into {{ products.vro_short_name }} Javascript. Extracting {{ products.vro_short_name }} content into local Typescript files is not supported.
+
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
 
