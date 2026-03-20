@@ -20,11 +20,3 @@ mvn vro:pull -P{{ archetype.customer_project.maven_profile_name}}
 !!! note
     If the package does not exist in the target server it can be manually created via the UI by following the naming convention and the current values of parameters from your project's `pom.xml`: **{groupId}.{artifactId}-{version}.package**. However, before your first pull you need to have certain maven dependencies downloaded locally which happens during your first build operation.
     Thus it is recommended to first push your current content (which also triggers a build operation) to the target {{ products.vro_short_name }} server at least once before manually adding new content to the package from UI and pulling it locally.
-
-#### Additional Parameters
-
-Additional parameters that can be passed as flags to the maven command, e.g. `mvn vro:pull -Dvro.packageExportConfigurationAttributeValues=true`.
-
-* `vro.packageExportConfigurationAttributeValues` - if set to `true` exports all configuration values besides SecureStrings.
-
-* `vro.packageExportConfigSecureStringAttributeValues` - if set to `true` exports all Secure String configuration values.

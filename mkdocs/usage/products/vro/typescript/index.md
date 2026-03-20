@@ -85,40 +85,8 @@ service-automation
         └── IntegrationService1Alternative.conf.yaml        
 ```
 
-## Environment Connection Parameters
-
-The following need to be added to the profile that you intend to use:
-
-``` xml
-<!-- (1)! -->
-<profile>
-    <!--    ..... OTHER DIRECTIVES .....  -->
-    <vro.host>flt-auto01.corp.internal</vro.host>
-    <vro.auth>vra|basic</vro.auth>
-    <vro.authHost>flt-auto01.corp.internal</vro.authHost>
-    <vro.authPort>443</vro.authPort>
-    <vro.port>443</vro.port>
-    <vro.username>configurationadmin</vro.username>
-    <vro.password>someSecurePassword</vro.password>
-</profile>
-```
-
-1.  {{ archetype.customer_project.maven_settings_location_hint}}
-
-Configuration:
-
-- `vro.username` - For {{ extra.products.vro_9_full_name }} (9.x) you need to provide username in the following format: user@domain.
-    - admin@System - Provider admin.
-    - configurationadmin@Classic - Classic organization admin.
-
-- `vro.auth` - Defines the authentication type used for REST API communication.
-      - Supported values: `vra`, `basic` (depending on {{ products.vro_short_name }} version might need to be explicitly enabled in the product).
-      - If set to `vra`, `vro.authHost` and `vro.authPort` need to be provided with the hostname and port of the target {{ products.vra_9_short_name }} server.
-
-Use the profile by passing it with `-P`, e.g.:
-``` bash
-mvn vrealize:push -P{{ archetype.customer_project.maven_profile_name}}
-```
+<!-- Environment Connection Parameters Section -->
+{% include-markdown "../common/connection-parameters.md" %}
 
 ## Operations
 
@@ -137,25 +105,8 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
 
-#### Additional Parameters
-
-Additional parameters that can be passed as flags to the maven command, e.g. `mvn clean package -DskipInstallNodeDeps=true`.
-
-* `skipInstallNodeDeps` - skip the deletion and re-installation of node-deps.
-
-!!! note
-    If node_modules folder doesn't exist, then this flag is ineffective.
-
-* `vro.forceImportLatestVersions` - This strategy will force you to upload the same or newer version of a package, otherwise it will fail the build, allowing us for better CI/CD pipelines, where we can ensure that the latest versions are always used on the server. Default value is `false`.
-
-!!! note
-    Snapshot versions are considered newer if they are the same as the version on the server.
-
-* `vro.importOldVersions` - This strategy will upload a version of the package even if it is older than the version on the server.
-!!! note
-    Snapshot versions are considered newer if they are the same as the version on the server.
-!!! note
-    If `forceImportLatestVersions` is set to `true` this configuration is ignored.
+<!-- Push Content - Additional Parameters Section -->
+{% include-markdown "../common/push-content-parameters.md" %}
 
 * `vro.packageImportConfigurationAttributeValues` - if set to `true` pushes all configuration values besides SecureStrings.
 
