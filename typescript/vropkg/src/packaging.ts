@@ -17,6 +17,16 @@ import archiver = require('archiver');
 import * as unzipper from 'unzipper';
 import * as winston from 'winston';
 import { WINSTON_CONFIGURATION } from "./constants";
+
+/**
+ * Extended archiver interface with custom properties for tracking
+ * output stream and path for proper cleanup
+ */
+interface ExtendedArchiver extends archiver.Archiver {
+	__outputStream?: fs.WriteStream;
+	__outputPath?: string;
+}
+
 /*
  * Utility class for variety of packaging operations.
  */
@@ -33,43 +43,35 @@ import { WINSTON_CONFIGURATION } from "./constants";
  */
 export const archive = (outputPath: string): archiver.Archiver => {
 	const output = fs.createWriteStream(outputPath);
-	const instance = archiver.create('zip', { zlib: { level: 6 } });
+	const instance: ExtendedArchiver = archiver.create('zip', { zlib: { level: 6 } });
 	
 	// Store the output stream reference for proper cleanup
-	(instance as any).__outputStream = output;
-	(instance as any).__outputPath = outputPath;
+	instance.__outputStream = output;
+	instance.__outputPath = outputPath;
 	
 	// Attach error handlers to output stream
 	output.on('error', (err) => {
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).error(
-			`Error writing archive to ${outputPath}: ${err.message}`
-		);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).error(`Error writing archive to ${outputPath}: ${err.message}`);
 		throw err;
 	});
 	
 	// Attach event handlers to archiver
 	instance.on('warning', (err) => {
-		if (err.code === 'ENOENT') {
-			winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).warn(
-				`Archive warning: ${err.message}`
-			);
-		} else {
+		if (err.code !== 'ENOENT') {
 			throw err;
+		} else {
+			winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).warn(`Archive warning: ${err.message}`);
 		}
 	});
 	
 	instance.on('error', (err) => {
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).error(
-			`Error creating archive: ${err.message}`
-		);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).error(`Error creating archive: ${err.message}`);
 		throw err;
 	});
 	
 	// Log when archive is finalized
 	output.on('close', () => {
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(
-			`Archived ${instance.pointer()} bytes to ${outputPath}`
-		);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Archived ${instance.pointer()} bytes to ${outputPath}`);
 	});
 	
 	// Pipe archive to output stream
@@ -88,8 +90,9 @@ export const archive = (outputPath: string): archiver.Archiver => {
  */
 export const finalizeArchive = async (archive: archiver.Archiver): Promise<void> => {
 	return new Promise<void>((resolve, reject) => {
-		const output = (archive as any).__outputStream;
-		const outputPath = (archive as any).__outputPath;
+		const extendedArchiver = archive as ExtendedArchiver;
+		const output = extendedArchiver.__outputStream;
+		const outputPath = extendedArchiver.__outputPath;
 		
 		if (!output) {
 			// Fallback: just call finalize if no output stream is stored

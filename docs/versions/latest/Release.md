@@ -63,7 +63,6 @@ Executing a PowerShell 7 polyglot action with an imported module results in an e
 
 When building a PowerShell polyglot action with imported modules the build process downloads modules to out/Modules/ via Save-Module and the ZIP bundle now correctly includes all files from Modules/ with proper folder structure.
 
-<<<<<<< HEAD
 #### Previous Behavior
 
 Running vropkg on Windows for packages with many elements fails with:
@@ -73,9 +72,8 @@ Error: EMFILE: too many open files
 #### New Behavior
 
 The Promise now resolves only when the `output` stream emits the `'close'` event, ensuring all data is written and file handles are released, hence avoiding the error for a package with many elements.
-=======
+
 ### Improve healthcheck script, add healthcheck script and instructions for Windows
->>>>>>> main
 
 ## Upgrade procedure
 
