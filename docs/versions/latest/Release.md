@@ -28,7 +28,7 @@
 
 ### *Add type definitions for `o11n-plugin-vcfa` plugin*
 
-### *Change `SNMPSnmpQuery` type definitions from `interface` to `class` in `o11n-plugin-snmp` plugin*
+### *Change `SNMPSnmpQuery` type definition from `interface` to `class` in `o11n-plugin-snmp` plugin*
 
 ### *Add support for Node:22 runtime environment for `polyglot` projects*
 
