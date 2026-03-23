@@ -144,7 +144,7 @@ policy:
 
 To capture the state of your {{ products.vra_9_short_name }} environment simply fill in the names of the content objects and follow the [Pull Content](#pull-content) section.
 
-For more information on each component please refer to the [Components](#components) section.
+For more information on each component please refer to corresponding sub-section.
 
 #### Content Filtering
 
