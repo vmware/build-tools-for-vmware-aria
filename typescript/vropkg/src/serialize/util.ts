@@ -57,40 +57,38 @@ export const zipbundle = (target: string) => {
     fs.mkdirsSync(target);
     return (file: string) => async (sourcePath: string, isDir: boolean): Promise<void> => {
         const absoluteZipPath = path.join(target, file);
-        if (isDir) {
-            return new Promise<void>((resolve, reject) => {
-                const output = fs.createWriteStream(absoluteZipPath);
-                const archive = archiver('zip', { zlib: { level: 9 } });
-                
-                // Handle stream events
-                output.on('close', () => {
-                    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Archived ${archive.pointer()} bytes to ${absoluteZipPath}`);
-                    resolve();
-                });
-                
-                output.on('error', (err) => {
-                    reject(new Error(`Error writing archive to ${absoluteZipPath}: ${err.message}`));
-                });
-                
-                archive.on('error', (err) => {
-                    reject(new Error(`Error creating archive for ${sourcePath}: ${err.message}`));
-                });
-                
-                archive.on('warning', (err) => {
-                    if (err.code === 'ENOENT') {
-                        winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).warn(`Archive warning: ${err.message}`);
-                    } else {
-                        reject(err);
-                    }
-                });
-                
-                archive.pipe(output);
-                archive.directory(sourcePath, false);
-                archive.finalize();
+		if (!isDir) {
+			return Promise.resolve().then(() => {
+			    fs.copySync(sourcePath, absoluteZipPath);
+			});			
+		}
+		
+        return new Promise<void>((resolve, reject) => {
+            const output = fs.createWriteStream(absoluteZipPath);
+            const archive = archiver('zip', { zlib: { level: 9 } });
+ 
+            // Handle stream events
+            output.on('close', () => {
+                winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Archived ${archive.pointer()} bytes to ${absoluteZipPath}`);
+                resolve();
+            });                
+            output.on('error', (err) => {
+                reject(new Error(`Error writing archive to ${absoluteZipPath}: ${err.message}`));
+            });                
+            archive.on('error', (err) => {
+                reject(new Error(`Error creating archive for ${sourcePath}: ${err.message}`));
+            }); 
+            archive.on('warning', (err) => {
+                if (err.code === 'ENOENT') {
+                    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).warn(`Archive warning: ${err.message}`);
+                } else {
+                    reject(err);
+                }
             });
-        } else {
-            fs.copySync(sourcePath, absoluteZipPath);
-        }
+            archive.pipe(output);
+            archive.directory(sourcePath, false);
+            archive.finalize();
+        });
     }
 }
 
