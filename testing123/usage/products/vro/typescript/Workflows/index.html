@@ -1,0 +1,3925 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../Actions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Workflows - Build Tools for Aria Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#workflows" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="Build Tools for Aria Docs" class="md-header__button md-logo" aria-label="Build Tools for Aria Docs" data-md-component="logo">
+      
+  <img src="../../../../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Build Tools for Aria Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Workflows
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="amber"  aria-label="Dark Mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark Mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="deep-orange"  aria-label="Light Mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light Mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/vmware/build-tools-for-vmware-aria" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../getting-started/0.structure/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Usage
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../dev-setup/0.structure/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Dev Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../enterprise-setup/0.structure/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Enterprise Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../CHANGELOG/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Build Tools for Aria Docs" class="md-nav__button md-logo" aria-label="Build Tools for Aria Docs" data-md-component="logo">
+      
+  <img src="../../../../../assets/logo.svg" alt="logo">
+
+    </a>
+    Build Tools for Aria Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/vmware/build-tools-for-vmware-aria" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../getting-started/0.structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../getting-started/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Usage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported Products
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Supported Products
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_1" id="__nav_3_1_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VCF Operations Orchestrator
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VCF Operations Orchestrator
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Typescript
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1_1_1" id="__nav_3_1_1_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Typescript
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflows
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-decorator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Decorator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow Decorator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#argument-decorators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Argument Decorators
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-method-decorators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Method Decorators
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Method Decorators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defaulterrorhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @DefaultErrorHandler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@DefaultErrorHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflowenditem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @WorkflowEndItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@WorkflowEndItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#item" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @Item
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@Item">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#waitingtimeritem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @WaitingTimerItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@WaitingTimerItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decisionitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @DecisionItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@DecisionItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switchitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @SwitchItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@SwitchItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-item-with-string-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Switch Item with String Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rootitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @RootItem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asyncworkflowitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @AsyncWorkflowItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@AsyncWorkflowItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actionitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @ActionItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@ActionItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#userinteractionworkflowitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @UserInteractionWorkflowItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@UserInteractionWorkflowItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inputs_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-limitations-for-the-input-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known Limitations for the Input Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-form-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Form Support
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Form Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Config%20Elements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Elements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Policy%20Templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policy Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../actions/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1_1_2" id="__nav_3_1_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../actions/Actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Action Definition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../xml/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Xml
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Xml
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../unit-testing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unit Testing Framework
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Unit Testing Framework
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2" id="__nav_3_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VCF Automation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VCF Automation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../vcfa/vm-apps/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VM Apps
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1_2_1" id="__nav_3_1_2_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VM Apps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vcfa/vm-apps/Blueprints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueprints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vcfa/vm-apps/Content%20Policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Content Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vcfa/vm-apps/Custom%20Resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vcfa/vm-apps/Catalog%20Items/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Catalog Items
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vrops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VCF Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vrli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VCF Operations for Logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../installer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../vrdt/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code Extension
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VS Code Extension
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dev Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dev Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../dev-setup/0.structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../dev-setup/tagged/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tagged Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enterprise Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Enterprise Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../enterprise-setup/0.structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../enterprise-setup/tagged/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tagged Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-decorator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Decorator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow Decorator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#argument-decorators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Argument Decorators
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-method-decorators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Method Decorators
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Method Decorators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defaulterrorhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @DefaultErrorHandler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@DefaultErrorHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflowenditem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @WorkflowEndItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@WorkflowEndItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#item" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @Item
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@Item">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#waitingtimeritem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @WaitingTimerItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@WaitingTimerItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decisionitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @DecisionItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@DecisionItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switchitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @SwitchItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@SwitchItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-item-with-string-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Switch Item with String Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rootitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @RootItem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asyncworkflowitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @AsyncWorkflowItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@AsyncWorkflowItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actionitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @ActionItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@ActionItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#userinteractionworkflowitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @UserInteractionWorkflowItem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@UserInteractionWorkflowItem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-parameters_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inputs_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-limitations-for-the-input-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known Limitations for the Input Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-form-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Form Support
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Form Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="workflows">Workflows<a class="headerlink" href="#workflows" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>You can use the method decorators to define various canvas items that will be included in the Workflow.</p>
+<h2 id="workflow-decorator">Workflow Decorator<a class="headerlink" href="#workflow-decorator" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample Workflow&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample workflow description&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">foo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">bar</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">output</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Any&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">presentation</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">restartMode</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">resumeFromFailedMode</span><span class="o">:</span><span class="w"> </span><span class="kt">0</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="supported-parameters">Supported Parameters<a class="headerlink" href="#supported-parameters" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>id</code> - workflow id.</li>
+<li><code>name</code> - workflow name.</li>
+<li><code>path</code> - workflow location path.</li>
+<li><code>version</code> - workflow version.</li>
+<li><code>description</code> - workflow description.</li>
+<li><code>attributes</code> - list of workflow attributes. See details below.</li>
+<li><code>input</code> - list of workflow input parameters. See details below.</li>
+<li><code>output</code> - list of workflow output parameters. See details below.</li>
+<li><code>presentation</code> - custom presentation of the workflow. If omitted, presentation is build based on parameters definitions.</li>
+<li><code>restartMode</code> - server restart behaviour (0 - do not resume workflow run, 1 - resume workflow run (default)).</li>
+<li><code>resumeFromFailedMode</code> - resume workflow from failed behavior (0 - system default, 1 - enabled, 2 - disabled).</li>
+</ul>
+<p>The following parameters are supported for each element of attributes, input, and output:
+- <code>type</code> - parameter type.
+- <code>title</code> - parameter name.
+- <code>description</code> - parameter description.
+- <code>value</code> or <code>defaultValue</code> - parameter value (attributes only).
+- <code>bind</code> - parameter bind to configuration flag (attributes only). Configuration reference is stored in value or defaultValue parameter.
+- parameters that apply to presentation, ignored when custom presentation is used:
+  - <code>required</code> - if parameter to be marked mandatory.
+  - <code>multiLine</code> - if parameter to be marked as multiline.
+  - <code>hidden</code> - if parameter to be hidden.
+  - <code>maxStringLength</code> - parameter max string length.
+  - <code>minStringLength</code> - parameter min string length.
+  - <code>numberFormat</code> - parameter number format.
+  - <code>availableValues</code> - list of parameter available values.</p>
+<h2 id="argument-decorators">Argument Decorators<a class="headerlink" href="#argument-decorators" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>@In</code> - Used to bind an input to a function.</li>
+<li><code>@Out</code> - Used to bind an output to a function.</li>
+<li><code>@Err</code> - Used to bind an error to a function.</li>
+</ul>
+<h2 id="available-method-decorators">Available Method Decorators<a class="headerlink" href="#available-method-decorators" title="Permanent link">&para;</a></h2>
+<h3 id="defaulterrorhandler"><code>@DefaultErrorHandler</code><a class="headerlink" href="#defaulterrorhandler" title="Permanent link">&para;</a></h3>
+<p>This decorator is used to specify a default error handler. It can be bound either to a workflow item component or workflow end.</p>
+<h4 id="supported-parameters_1">Supported Parameters<a class="headerlink" href="#supported-parameters_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>target</code> - target item to be attached to the default error handler, could be one of workflow item or workflow end.</li>
+<li><code>exceptionVariable</code> - Exception variable that will hold the exception data when triggered.</li>
+<li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+</ul>
+<p>In order to bind inputs and outputs, you do it with the <code>@In</code> and <code>@Out</code> decorators. This is the same way we do it for other items.</p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">Workflow</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">RootItem</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">In</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Out</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Err</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Item</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">DefaultErrorHandler</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">WorkflowEndItem</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+
+<span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Default Error Handler Workflow&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span>
+<span class="w">    </span><span class="s2">&quot;Default error handler workflow with error handler redirecting to a workflow item&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">})</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">DefaultErrorHandlerWorkflow</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;workflowEnd&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">initiateWorkflow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Initiating workflow execution&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">goToEnd</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;workflowEnd&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processError</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
+<span class="w">      </span><span class="sb">`Processing error using custom task with message &#39;</span><span class="si">${</span><span class="nx">errorMessage</span><span class="si">}</span><span class="sb">&#39;`</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@DefaultErrorHandler</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processError&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">exceptionBinding</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;errorMessage&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">defaultErrorHandler</span><span class="p">(</span><span class="kd">@Out</span><span class="w"> </span><span class="kd">@Err</span><span class="w"> </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@WorkflowEndItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">endMode</span><span class="o">:</span><span class="w"> </span><span class="kt">0</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">workflowEnd</span><span class="p">(</span><span class="kd">@Out</span><span class="w"> </span><span class="kd">@Err</span><span class="w"> </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Terminating workflow with error </span><span class="si">${</span><span class="nx">errorMessage</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The example above would generate the following workflow.</p>
+<p><a href="../images/Canvas_Item_Default_Error_Handler_Workflow.png"><img alt="Default Error Handler Workflow" src="../images/Canvas_Item_Default_Error_Handler_Workflow.png" /></a></p>
+<h3 id="workflowenditem"><code>@WorkflowEndItem</code><a class="headerlink" href="#workflowenditem" title="Permanent link">&para;</a></h3>
+<p>The decorator is used to specify a custom workflow end item.</p>
+<h4 id="supported-parameters_2">Supported Parameters<a class="headerlink" href="#supported-parameters_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>endMode</code> - End mode of the component, could be one of 0 or 1, where 0 is exit success and 1 is error.</li>
+<li><code>exceptionVariable</code> - Exception variable that will hold the exception data when triggered.</li>
+<li><code>businessStatus</code> - Value of the business status in the end component.</li>
+</ul>
+<h3 id="item"><code>@Item</code><a class="headerlink" href="#item" title="Permanent link">&para;</a></h3>
+<p>This decorator is used to specify a scriptable task.</p>
+<h4 id="supported-parameters_3">Supported Parameters<a class="headerlink" href="#supported-parameters_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>target</code> - The name of the next in line item. If this is set to <code>end</code>, it will point to the end of the workflow. If this is set to <code>null</code>, it will point to the next item or if none, the end of the wf. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+<li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+</ul>
+<h3 id="waitingtimeritem"><code>@WaitingTimerItem</code><a class="headerlink" href="#waitingtimeritem" title="Permanent link">&para;</a></h3>
+<p>This decorator is used to specify a waiting timer.</p>
+<h4 id="supported-parameters_4">Supported Parameters<a class="headerlink" href="#supported-parameters_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>target</code> - The name of the next in line item. Same as <code>@Item</code>. This decorator expects an <code>@In</code> parameter with the name of the waiting timer. If one isn't added, the workflow will not work.</li>
+<li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+</ul>
+<h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">In</span><span class="p">,</span><span class="w"> </span><span class="nx">WaitingTimerItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+
+<span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Waiting Timer Workflow&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Waiting timer will point with target to shouldGoHere&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">})</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">WaitingTimerWorkflow</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">@WaitingTimerItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;shouldGoHere&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">waitForEvent</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">shouldGoHere</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The example above would generate the following workflow.</p>
+<p><a href="../images/Waiting_Timer_Canvas_Item_Workflow.png"><img alt="Waiting Timer Workflow" src="../images/Waiting_Timer_Canvas_Item_Workflow.png" /></a></p>
+<h3 id="decisionitem"><code>@DecisionItem</code><a class="headerlink" href="#decisionitem" title="Permanent link">&para;</a></h3>
+<p>This decorator is used to specify a decision item.</p>
+<h4 id="supported-parameters_5">Supported Parameters<a class="headerlink" href="#supported-parameters_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>target</code> - The name of the next in line item. Same as <code>@Item</code>.</li>
+<li><code>else</code> - The name of the next in line item if the decision is false. If this is set to <code>end</code>, it will point to the end of the workflow. If this is set to <code>null</code>, it will point to the next item or if none, the end of the wf. If this is set to a string, but it does not exist in the workflow, it will point to the end of the wf.</li>
+<li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+</ul>
+<h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">DecisionItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+
+<span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Decision Item Workflow&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span>
+<span class="w">    </span><span class="s2">&quot;decisionElement is the root, it will point with else to end and target to shouldGoHere. shouldGoHere will point to end too&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">})</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">DecisionItemWorkflow</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">@DecisionItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;shouldGoHere&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">else</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">decisionElement</span><span class="p">(</span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// This will point to end too, but no incoming</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">shouldGoHere</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The example above would generate the following workflow.</p>
+<p><a href="../images/Decision_Item_Canvas_Item_Workflow.png"><img alt="Decision Item Workflow" src="../images/Decision_Item_Canvas_Item_Workflow.png" /></a></p>
+<h3 id="switchitem"><code>@SwitchItem</code><a class="headerlink" href="#switchitem" title="Permanent link">&para;</a></h3>
+<p>This decorator is used to specify a switch item that routes workflow execution to different paths based on the value of a variable or expression.</p>
+<h4 id="supported-parameters_6">Supported Parameters<a class="headerlink" href="#supported-parameters_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>cases</code> - An array of case objects that define the routing logic. Each case object contains:</li>
+<li><code>condition</code> - The value to match against the switch variable</li>
+<li><code>target</code> - The name of the next item to execute when this condition is met</li>
+<li><code>variable</code> - The name of the variable to evaluate (optional, can be inferred from method parameters)</li>
+<li><code>type</code> - The data type of the variable being switched on (e.g., "number", "string", "boolean")</li>
+<li><code>comparator</code> - The comparison operator to use when evaluating cases. Supported values are:<ul>
+<li><code>"equals"</code>              - Equals (default behaviour if not specified)</li>
+<li><code>"different"</code>           - Not equals</li>
+<li><code>"smaller"</code>             - Less than</li>
+<li><code>"smaller or equals"</code>   - Less than or equal</li>
+<li><code>"greater"</code>             - Greater than</li>
+<li><code>"greater or equals"</code>   - Greater than or equal</li>
+<li><code>"is true"</code>             - Boolean true</li>
+<li><code>"is false"</code>            - Boolean false</li>
+<li><code>"contains"</code>            - Contains a value</li>
+<li><code>"match"</code>               - Matches a value</li>
+<li><code>"is defined"</code>          - Value is defined</li>
+</ul>
+</li>
+<li><code>defaultTarget</code> - The name of the next item to execute when none of the cases match. If this is set to <code>end</code>, it will point to the end of the workflow. If this is set to <code>null</code>, it will point to the next item or if none, the end of the workflow.</li>
+</ul>
+<h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">SwitchItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+
+<span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch Edge Cases&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch test covering edge cases - various operators, no default target, and complex conditions&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">errorCode</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">priority</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">})</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">SwitchEdgeCases</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">404</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleNotFound&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">500</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleServerError&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;different&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;switchPriority&quot;</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchErrorCodes</span><span class="p">(</span><span class="nx">errorCode</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Error code switch without default using various equality operators</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing error code: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">errorCode</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;lowPriority&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;priority&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;smaller&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;mediumPriority&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;priority&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;greater&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;switchStatus&quot;</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchPriority</span><span class="p">(</span><span class="nx">priority</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Priority switch using comparison operators</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing priority: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">priority</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processActive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;pending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processPending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;different&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleNotFound&quot;</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchStatus</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// String status switch with mixed operators</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing status: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">status</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleNotFound</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;404 - Resource not found&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleServerError</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;500 - Internal server error&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleForbidden</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;403 - Access forbidden&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">lowPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Low priority task (&lt;=1)&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">mediumPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Medium priority task (&gt;5)&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">highPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;High priority task (&gt;=10)&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleInvalidPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Invalid priority level&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processActive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing active status&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processPending</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing pending status (not equal to &#39;pending&#39;)&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processInactive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing inactive status (not strictly equal to &#39;inactive&#39;)&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleUnknownStatus</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Unknown status - using default handler&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">fallbackHandler</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Not handled error code - using fallback&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="switch-item-with-string-cases">Switch Item with String Cases<a class="headerlink" href="#switch-item-with-string-cases" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">SwitchItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+
+<span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch String Cases&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch test with string conditions and exception handling&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">})</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">SwitchStringCases</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processActive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;pending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processPending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;different&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;inactive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processInactive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleUnknownStatus&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">exception</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleError&quot;</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchByStatus</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Switch logic for string conditions</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Status cannot be null&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processActive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing active status&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processPending</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing pending status&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processInactive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing inactive status&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleUnknownStatus</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Unknown status encountered&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleError</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error occurred in switch processing&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="sb">````</span>
+
+<span class="err">###</span><span class="w"> </span><span class="sb">`@WorkflowItem`</span>
+
+<span class="nx">The</span><span class="w"> </span><span class="nx">decorator</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">used</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">specify</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">called</span><span class="p">.</span>
+
+<span class="err">####</span><span class="w"> </span><span class="nx">Supported</span><span class="w"> </span><span class="nx">Parameters</span>
+
+<span class="o">-</span><span class="w"> </span><span class="sb">`target`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="w"> </span><span class="nx">Same</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="sb">`@Item`</span><span class="p">.</span>
+<span class="o">-</span><span class="w"> </span><span class="sb">`linkedItem`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">ID</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">call</span><span class="p">.</span>
+<span class="o">-</span><span class="w"> </span><span class="sb">`exception`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">exception</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">encountered</span><span class="w"> </span><span class="nx">during</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">execution</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">current</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="w"> </span><span class="nx">If</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="sb">`null`</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="nx">empty</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">parameter</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">ignored</span><span class="p">.</span><span class="w"> </span><span class="nx">If</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">but</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="nx">does</span><span class="w"> </span><span class="nx">not</span><span class="w"> </span><span class="nx">exist</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">end</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">workflow</span><span class="p">.</span>
+
+<span class="nx">In</span><span class="w"> </span><span class="nx">order</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">bind</span><span class="w"> </span><span class="nx">inputs</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="nx">outputs</span><span class="p">,</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="kd">with</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="sb">`@In`</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="sb">`@Out`</span><span class="w"> </span><span class="nx">decorators</span><span class="p">.</span><span class="w"> </span><span class="nx">This</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">same</span><span class="w"> </span><span class="nx">way</span><span class="w"> </span><span class="nx">we</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">other</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span>
+
+<span class="err">###</span><span class="w"> </span><span class="sb">`@ScheduledWorkflowItem`</span>
+
+<span class="nx">The</span><span class="w"> </span><span class="nx">decorator</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">used</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">specify</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">scheduled</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">called</span><span class="p">.</span>
+
+<span class="err">####</span><span class="w"> </span><span class="nx">Supported</span><span class="w"> </span><span class="nx">Parameters</span>
+
+<span class="o">-</span><span class="w"> </span><span class="sb">`target`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="w"> </span><span class="nx">Same</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="sb">`@Item`</span><span class="p">.</span>
+<span class="o">-</span><span class="w"> </span><span class="sb">`linkedItem`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">ID</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">schedule</span><span class="p">.</span>
+<span class="o">-</span><span class="w"> </span><span class="sb">`exception`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">exception</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">encountered</span><span class="w"> </span><span class="nx">during</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">execution</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">current</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="w"> </span><span class="nx">If</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="sb">`null`</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="nx">empty</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">parameter</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">ignored</span><span class="p">.</span><span class="w"> </span><span class="nx">If</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">but</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="nx">does</span><span class="w"> </span><span class="nx">not</span><span class="w"> </span><span class="nx">exist</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">end</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">workflow</span><span class="p">.</span>
+
+<span class="nx">In</span><span class="w"> </span><span class="nx">order</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">bind</span><span class="w"> </span><span class="nx">inputs</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="nx">outputs</span><span class="p">,</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="kd">with</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="sb">`@In`</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="sb">`@Out`</span><span class="w"> </span><span class="nx">decorators</span><span class="p">.</span><span class="w"> </span><span class="nx">This</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">same</span><span class="w"> </span><span class="nx">way</span><span class="w"> </span><span class="nx">we</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">other</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span>
+
+<span class="err">####</span><span class="w"> </span><span class="nx">Inputs</span>
+
+<span class="nx">Special</span><span class="w"> </span><span class="nx">input</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">needed</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">ScheduledWorkflowItem</span><span class="p">.</span>
+
+<span class="o">-</span><span class="w"> </span><span class="sb">`workflowScheduleDate`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">{</span><span class="nb">Date</span><span class="p">}</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">required</span><span class="p">.</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">**</span><span class="nx">must</span><span class="o">**</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="sb">`workflowScheduleDate`</span><span class="p">.</span><span class="w"> </span><span class="nx">If</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">missing</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">thrown</span><span class="p">.</span><span class="w"> </span><span class="nx">We</span><span class="w"> </span><span class="nx">don</span><span class="s1">&#39;t check if the type is `Date` but Aria Orchestrator will complain.</span>
+
+<span class="s1">#### Outputs</span>
+
+<span class="s1">Special output is needed for the ScheduledWorkflowItem.</span>
+
+<span class="s1">- `scheduledTask` - {Task} is optional. If it&#39;</span><span class="nx">s</span><span class="w"> </span><span class="nx">missing</span><span class="w"> </span><span class="nx">nothing</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">happen</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">it</span><span class="err">&#39;</span><span class="nx">s</span><span class="w"> </span><span class="nx">added</span><span class="p">,</span><span class="w"> </span><span class="nx">then</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">**</span><span class="nx">must</span><span class="o">**</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="sb">`scheduledTask`</span><span class="p">.</span><span class="w"> </span><span class="nx">This</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">scheduled</span><span class="p">.</span>
+
+<span class="err">####</span><span class="w"> </span><span class="nx">Example</span>
+
+<span class="sb">```ts</span>
+<span class="sb">import {</span>
+<span class="sb">  Workflow,</span>
+<span class="sb">  Out,</span>
+<span class="sb">  In,</span>
+<span class="sb">  Item,</span>
+<span class="sb">  RootItem,</span>
+<span class="sb">  ScheduledWorkflowItem,</span>
+<span class="sb">} from &quot;vrotsc-annotations&quot;;</span>
+
+<span class="sb">@Workflow({</span>
+<span class="sb">  name: &quot;Scheduled Workflow&quot;,</span>
+<span class="sb">  path: &quot;VMware/PSCoE&quot;,</span>
+<span class="sb">  description: &quot;Scheduling another workflow and binding values correctly&quot;,</span>
+<span class="sb">  attributes: {</span>
+<span class="sb">    workflowScheduleDate: {</span>
+<span class="sb">      type: &quot;Date&quot;,</span>
+<span class="sb">    },</span>
+<span class="sb">    scheduledTask: {</span>
+<span class="sb">      type: &quot;Task&quot;,</span>
+<span class="sb">    },</span>
+<span class="sb">  },</span>
+<span class="sb">})</span>
+<span class="sb">export class ScheduledWorkflow {</span>
+<span class="sb">  @RootItem({ target: &quot;prepareItems&quot; })</span>
+<span class="sb">  public start() {</span>
+<span class="sb">    System.log(&quot;Starting workflow&quot;);</span>
+<span class="sb">  }</span>
+
+<span class="sb">  @Item({ target: &quot;scheduleOtherWf&quot; })</span>
+<span class="sb">  public prepareItems(@In @Out workflowScheduleDate: Date) {</span>
+<span class="sb">    workflowScheduleDate = System.getDate(&quot;1 minute from now&quot;, null);</span>
+<span class="sb">  }</span>
+
+<span class="sb">  @ScheduledWorkflowItem({</span>
+<span class="sb">    target: &quot;printScheduledDetails&quot;,</span>
+<span class="sb">    linkedItem: &quot;c2c9d5c4-468e-3cde-a64a-d1de50989214&quot;,</span>
+<span class="sb">  })</span>
+<span class="sb">  public scheduleOtherWf(</span>
+<span class="sb">    @In first: number,</span>
+<span class="sb">    @In second: number,</span>
+<span class="sb">    @In workflowScheduleDate: Date,</span>
+<span class="sb">    @Out scheduledTask: Task</span>
+<span class="sb">  ) {</span>
+<span class="sb">    // NOOP</span>
+<span class="sb">  }</span>
+
+<span class="sb">  @Item({ target: &quot;end&quot; })</span>
+<span class="sb">  public printScheduledDetails(@In scheduledTask: Task) {</span>
+<span class="sb">    System.log(`</span><span class="nx">Scheduled</span><span class="w"> </span><span class="nx">task</span><span class="o">:</span><span class="w"> </span><span class="kt">$</span><span class="p">{</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">id</span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">$</span><span class="p">{</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">state</span><span class="p">}]</span><span class="sb">`);</span>
+<span class="sb">  }</span>
+<span class="sb">}</span>
+</code></pre></div>
+<p>The example above would generate the following workflow.</p>
+<p><a href="../images/Scheduled_Workflow_Canvas_Item_Workflow.png"><img alt="Scheduled Workflow" src="../images/Scheduled_Workflow_Canvas_Item_Workflow.png" /></a></p>
+<h3 id="rootitem"><code>@RootItem</code><a class="headerlink" href="#rootitem" title="Permanent link">&para;</a></h3>
+<p>This is a meta decorator. Add this to whichever function you want to be the entry point of the workflow.</p>
+<h3 id="asyncworkflowitem"><code>@AsyncWorkflowItem</code><a class="headerlink" href="#asyncworkflowitem" title="Permanent link">&para;</a></h3>
+<h4 id="supported-parameters_7">Supported Parameters<a class="headerlink" href="#supported-parameters_7" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>@AsyncWorkflowItem({target: "", linkedItem: "" })</code></li>
+<li><code>target</code> - The name of the next in line item.</li>
+<li><code>linkedItem</code> - The ID of the workflow to call</li>
+<li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="headerlink" href="#outputs" title="Permanent link">&para;</a></h4>
+<p>Special output is needed for the AsyncWorkflowItem.</p>
+<ul>
+<li><code>wfToken</code> - {WorkflowToken} is required. The name <strong>must</strong> be <code>wfToken</code>. If this is missing an error is thrown. We don't check if the type is <code>WorkflowToken</code> but Aria Orchestrator will complain.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h4>
+<p>No special inputs are needed for the AsyncWorkflowItem.</p>
+<h3 id="actionitem"><code>@ActionItem</code><a class="headerlink" href="#actionitem" title="Permanent link">&para;</a></h3>
+<h4 id="supported-parameters_8">Supported Parameters<a class="headerlink" href="#supported-parameters_8" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>@ActionItem({target: "", scriptModule: "" })</code></li>
+<li><code>target</code> - The name of the next in line item. Same as <code>@Item</code>.</li>
+<li><code>scriptModule</code> - The path of the action you want to call and the action name, separated by <code>/</code>. Example: <code>com.vmware.pscoe.library.general/echo</code>.</li>
+<li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+</ul>
+<p>In order to bind inputs and outputs, you do it with the <code>@In</code> and <code>@Out</code> decorators. This is the same way we do it for other items.</p>
+<h4 id="outputs_1">Outputs<a class="headerlink" href="#outputs_1" title="Permanent link">&para;</a></h4>
+<p>There is a requirement to have only one output, and it will be of type <code>ActionResult</code>.</p>
+<h3 id="userinteractionworkflowitem"><code>@UserInteractionWorkflowItem</code><a class="headerlink" href="#userinteractionworkflowitem" title="Permanent link">&para;</a></h3>
+<p>The decorator is used to specify an user interaction workflow item.</p>
+<h4 id="supported-parameters_9">Supported Parameters<a class="headerlink" href="#supported-parameters_9" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>target</code> - The name of the target to that user interaction workflow item is connected to. You can specify another user interaction workflow item as a target, thus chaining multiple user interaction components.</li>
+<li><code>exception</code> - The name of the next in line item in case an exception or a timeout is encountered occured during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
+</ul>
+<p>In order to bind inputs and outputs, you do it with the <code>@In</code> and <code>@Out</code> decorators.</p>
+<h4 id="inputs_1">Inputs<a class="headerlink" href="#inputs_1" title="Permanent link">&para;</a></h4>
+<p>If you need to specify certain access limitation for the user interaction component you can specify them with <code>@In</code> decorators.
+Those inputs are optional.</p>
+<ul>
+<li><code>security_assignees</code> (type <code>Array/LdapUser</code>) - Any user from this array of users will be authorized to fill in this form.</li>
+<li><code>security_assignee_groups</code> (type <code>Array/LdapGroup</code>) - Any user member of any of the groups will be authorized to fill in this form.</li>
+<li><code>security_group</code> (type <code>LdapGroup</code>) - Any user member of this group will be authorized to fill in this form.</li>
+<li><code>timeout_date</code> (type <code>Date</code>) - If not null, this input item will wait until date and will continue workflow execution.</li>
+</ul>
+<p>Note that those parameters should match the input or attribute parameters of the workflow to ensure proper typization.</p>
+<h4 id="known-limitations-for-the-input-parameters">Known Limitations for the Input Parameters<a class="headerlink" href="#known-limitations-for-the-input-parameters" title="Permanent link">&para;</a></h4>
+<p>The names of the variables in the additional method decorators should be as following:</p>
+<ul>
+<li><code>security_assignees</code> - for the security assignees parameter.</li>
+<li><code>security_assignee_groups</code> - for the security assignee group parameter.</li>
+<li><code>security_group</code> - for the security group parameter.</li>
+<li><code>timeout_date</code> - for the timeout date parameter.</li>
+</ul>
+<h4 id="outputs_2">Outputs<a class="headerlink" href="#outputs_2" title="Permanent link">&para;</a></h4>
+<p>You can specify multiple output variables that would hold the answer of the user interaction components.</p>
+<h4 id="example_4">Example<a class="headerlink" href="#example_4" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Workflow</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">In</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">Item</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">RootItem</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">UserInteractionItem</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+
+<span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;User Interaction&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Adding user interaction parameters&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">security_assignee_groups</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Array/LdapGroup&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nx">security_group</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;LdapGroup&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nx">timeout_date</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">security_assignees</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Array/LdapUser&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;configurationadmin&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">})</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">UserInteractionWorkflow</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;userInteraction1Enter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">exception</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">start</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Starting workflow&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">@UserInteractionItem</span><span class="p">({</span>
+<span class="w">        </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;userInteraction2Enter&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">userInteraction1Enter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;User interaction component 1 activation&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">@UserInteractionItem</span><span class="p">({</span>
+<span class="w">        </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;userInteractionExit&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">userInteraction2Enter</span><span class="p">(</span>
+<span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">security_assignees</span><span class="o">:</span><span class="w"> </span><span class="kt">LdapUser</span><span class="p">[],</span>
+<span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">security_assignee_groups</span><span class="o">:</span><span class="w"> </span><span class="kt">LdapGroup</span><span class="p">[],</span>
+<span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">security_group</span><span class="o">:</span><span class="w"> </span><span class="kt">LdapGroup</span><span class="p">,</span>
+<span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">timeout_date?</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">,</span>
+<span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">userInteractionAnswer?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;User interaction component 2 activation&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">userInteractionExit</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">userInteractionAnswer</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;User Interaction exit&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The example above would generate the following workflow.</p>
+<p><a href="../images/User_Interaction_Canvas_Item_Workflow.png"><img alt="User Interaction Workflow" src="../images/User_Interaction_Canvas_Item_Workflow.png" /></a></p>
+<h2 id="custom-form-support">Custom Form Support<a class="headerlink" href="#custom-form-support" title="Permanent link">&para;</a></h2>
+<p>You can push <code>Workflow Custom Form</code> and <code>User Interaction Custom Forms</code> provided as separate files containing the forms as JSON definitions. The files need to be placed in the same folder as the related <code>.wf.ts</code> file and must follow naming conventions:
+- <code>Workflow Custom Form</code>: <code>{{ workflowFileName }}.wf.form.json</code> where:
+  - <code>workflowFileName</code> - is the actual file name of the <code>.wf.ts</code> definition file (which might be different from the <code>Workflow</code> name defined in the <code>name</code> key inside the <code>@Workflow</code> decorator parameters).
+- <code>User Interaction Custom Form</code> - supports two conventions, if a file with the first convention is not found, the code validates for a file that follows the second:
+  - <code>{{ workflowFileName }}_input_form_{{ userInteractionItemId }}.wf.form.json</code> where:
+    - <code>workflowFileName</code> - is the actual file name of the <code>.wf.ts</code> definition file (which might be different from the <code>Workflow</code> name defined in the <code>name</code> key inside the <code>@Workflow</code> decorator parameters).
+    - <code>userInteractionItemId</code> - the ID of the <code>User Interaction</code> component as defined in the UI (autogenerated if the component is manually added to the <code>Workflow</code> schema) or in the JSON definition under <code>itemId</code> key.
+  - <code>{{ workflowFileName }}_input_form_{{ userInteractionName }}.wf.form.json</code> where:
+    - <code>workflowFileName</code> - is the actual file name of the <code>.wf.ts</code> definition file (which might be different from the <code>Workflow</code> name defined in the <code>name</code> key inside the <code>@Workflow</code> decorator parameters).
+    - <code>userInteractionName</code> - the name of the <code>User Interaction</code> component - corresponds to the decorated function name in the <code>.wf.ts</code> file and is translated to the display name of the <code>User Interaction</code> component in the Orchestrator UI. Please note that the function name (and thus - display name) cannot contain whitespaces and comes with any other function naming limitation of Typescript functions.</p>
+<p>Only a single <code>Workflow Custom Form</code> is supported per <code>Workflow</code> and a single <code>User Interaction Custom Form</code> per <code>User Interaction</code> element (which can lead to having multiple <code>User Interaction Custom Form</code> definition files mapped to a single <code>wf.ts</code> file based on the number of <code>User Interactions</code> in the <code>Workflow</code>).</p>
+<p>If no <code>User Interaction Custom Form</code> file definition is provided (or the naming convention is not properly followed) the following default empty definition is used which can then be editted in the Orchestrator UI:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">    </span><span class="nt">&quot;layout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;itemId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ itemId }}&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>:scroll:<strong>NOTE!</strong> Currently <code>pull</code> operation for <code>Custom Forms</code> is not supported. As a workaround you can:
+- use an <code>XML</code> based project to pull the forms, move them to the proper folder and rename them to match the naming convention.
+- Navigate to the Orchestrator UI, open the <code>Workflow</code> edit page and navigate to <code>Version History</code> from where you can extract the <code>YAML</code> definition, convert it to <code>JSON</code> and place it in a file.</p>
+<h3 id="example_5">Example<a class="headerlink" href="#example_5" title="Permanent link">&para;</a></h3>
+<p>Example file structure based on the <code>UserInteractionWorkflow</code> Workflow sample above:</p>
+<div class="highlight"><pre><span></span><code>service-automation
+├── README.md
+├── pom.xml
+├── release.sh
+├── tsconfig.json
+└── src
+    └── integration-service-1
+        └── workflows
+            └── CreateIntegration.wf.ts
+            └── CreateIntegration.wf.form.json
+            └── CreateIntegration_input_form_item2.wf.form.json                   // Corresponds to &#39;userInteraction1Enter&#39; item
+            └── CreateIntegration_input_form_userInteraction2Enter.wf.form.json   // Corresponds to &#39;userInteraction2Enter&#39; item
+</code></pre></div>
+<p>Example <code>User Interaction Custom Form</code> definition:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;layout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;page_3efd02e1&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;sections&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;section_f2d0f1d1&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                            </span><span class="p">{</span>
+<span class="w">                                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textArea_f5932870&quot;</span><span class="p">,</span>
+<span class="w">                                </span><span class="nt">&quot;display&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textArea&quot;</span><span class="p">,</span>
+<span class="w">                                </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                                    </span><span class="nt">&quot;visible&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                                    </span><span class="nt">&quot;read-only&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">                                </span><span class="p">},</span>
+<span class="w">                                </span><span class="nt">&quot;signpostPosition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;right-middle&quot;</span>
+<span class="w">                            </span><span class="p">}</span>
+<span class="w">                        </span><span class="p">]</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Approval details&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;textArea_f5932870&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User name&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;placeholder&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;dataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;externalValidations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;itemId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;item2&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h2 id="example-workflow">Example Workflow<a class="headerlink" href="#example-workflow" title="Permanent link">&para;</a></h2>
+<p>This example workflow combines all currently supported method decorators in a single workflow.</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/*-</span>
+<span class="cm"> * #%L</span>
+<span class="cm"> * vro.ts.workflows</span>
+<span class="cm"> * %%</span>
+<span class="cm"> * Copyright (C) 2024 TODO: Enter Organization name</span>
+<span class="cm"> * %%</span>
+<span class="cm"> * TODO: Define header text</span>
+<span class="cm"> * #L%</span>
+<span class="cm"> */</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">Workflow</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Out</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">In</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Item</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">RootItem</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">DecisionItem</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">WaitingTimerItem</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">WorkflowItem</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">WorkflowEndItem</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">ScheduledWorkflowItem</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+
+<span class="kd">@Workflow</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Complex Workflow&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">counter</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">workflowScheduleDate</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">scheduledTask</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Task&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">wfToken</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;WorkflowToken&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">actionResult</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;ActionResult&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">})</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">ComplexWorkflow</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;execute&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">start</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Starting workflow&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;decisionItem&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">execute</span><span class="p">(</span><span class="kd">@Out</span><span class="w"> </span><span class="kd">@In</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">,</span><span class="w"> </span><span class="kd">@Out</span><span class="w"> </span><span class="kd">@In</span><span class="w"> </span><span class="nx">counter</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">counter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">counter</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">counter</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">tt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1000</span><span class="p">;</span>
+<span class="w">      </span><span class="nx">waitingTimer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(</span><span class="nx">tt</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">waitingTimer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Counter: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">counter</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Waiting Timer: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@DecisionItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;waitForEvent&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">else</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;prepareItems&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">decisionItem</span><span class="p">(</span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@WaitingTimerItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;callAction&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">waitForEvent</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@ActionItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printActionResult&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">scriptModule</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;com.vmware.pscoe.library.ecmascript/Set&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">callAction</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">actionResult</span><span class="o">:</span><span class="w"> </span><span class="kt">ActionResult</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;callOtherWf&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">prepareItems</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">workflowScheduleDate</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">workflowScheduleDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">System</span><span class="p">.</span><span class="nx">getDate</span><span class="p">(</span><span class="s2">&quot;1 minute from now&quot;</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@WorkflowItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;print&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;c2c9d5c4-468e-3cde-a64a-d1de50989214&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">callOtherWf</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;scheduleOtherWf&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">print</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Result: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@ScheduledWorkflowItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printScheduledDetails&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;9e4503db-cbaa-435a-9fad-144409c08df0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">scheduleOtherWf</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">workflowScheduleDate</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">scheduledTask</span><span class="o">:</span><span class="w"> </span><span class="kt">Task</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;asyncCall&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">printScheduledDetails</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">scheduledTask</span><span class="o">:</span><span class="w"> </span><span class="kt">Task</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Scheduled task: </span><span class="si">${</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">, [</span><span class="si">${</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">state</span><span class="si">}</span><span class="sb">]`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@AsyncWorkflowItem</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printAsync&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;9e4503db-cbaa-435a-9fad-144409c08df0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">asyncCall</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">wfToken</span><span class="o">:</span><span class="w"> </span><span class="kt">WorkflowToken</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// NOOP</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printActionResult&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">printAsync</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">wfToken</span><span class="o">:</span><span class="w"> </span><span class="kt">WorkflowToken</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Workflow token: </span><span class="si">${</span><span class="nx">wfToken</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb"> and state: </span><span class="si">${</span><span class="nx">wfToken</span><span class="p">.</span><span class="nx">state</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">printActionResult</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">actionResult</span><span class="o">:</span><span class="w"> </span><span class="kt">ActionResult</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Action result: </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">actionResult</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The example above would generate the following workflow.</p>
+<p><a href="../images/Canvas_Item_Complex_Workflow.png"><img alt="Complex Workflow" src="../images/Canvas_Item_Complex_Workflow.png" /></a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
