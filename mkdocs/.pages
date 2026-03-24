@@ -2,6 +2,6 @@ nav:
     - index.md
     - getting-started
     - usage
-    - dev-setup
+    # - dev-setup
     - enterprise-setup
     - CHANGELOG.md
