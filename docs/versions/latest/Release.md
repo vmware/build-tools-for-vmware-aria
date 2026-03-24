@@ -30,11 +30,6 @@
 
 ### *Change `SNMPSnmpQuery` type definition from `interface` to `class` in `o11n-plugin-snmp` plugin*
 
-### *Update type definitions for `o11n-plugin-vc` plugin*
-Add new parameters and constructor to `VcHostNasVolumeSpec`.
-
-### *Update type definitions for `KeyPairManager` from `o11n-plugin-ssh` plugin*
-
 ### *Add support for Node:22 runtime environment for `polyglot` projects*
 
 ## Improvements
