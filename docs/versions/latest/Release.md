@@ -53,6 +53,16 @@ Add the following new definitions:
 ### *Update type definitions for `FileReader` from `o11n-core` plugin*
 Add `close()` method.
 
+### *Bugfix for Shimming `Object.values`*
+
+#### Previous Behavior
+
+Using `Object.values` would not be replaced by a Shim call and would result in a runtime error when ran inside of vRO's Rhino JavaScript engine.
+
+#### New Behavior
+
+Using `Object.values` now correctly gets replaced by a Shim call (`VROES.Shims.objectValues`), preventing runtime errors when executed inside of vRO's Rhino JavaScript engine.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

@@ -38,3 +38,5 @@ var obj = {
 obj.startsWith("test");
 obj.find("test");
 obj.findIndex("test");
+Object.assign({}, obj);
+Object.values(obj);
