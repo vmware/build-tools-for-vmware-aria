@@ -14,7 +14,7 @@ is where classes, functions, objects, etc. are defined.
 - Only actions that end in `.js` and `.ts` will be imported.
 - Action name can contain only letters, numbers and the symbols "_" and "$".
 - Action name cannot start with a number.
-<!-- - Action names must not end in '.helper.js', '.helper.ts' or '_helper.js' - these suffixes are reserved for [Test Helpers](../General/Testing/Test%20Helpers.md) -->
+- Action names must not end in '.helper.js', '.helper.ts' or '_helper.js' - these suffixes are reserved for [Test Helpers](../unit-testing/index.md#test-helpers).
 
 ## Action Parameters
 
