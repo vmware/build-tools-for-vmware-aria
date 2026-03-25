@@ -26,7 +26,7 @@ To validate if prerequisites are met you can run the following command:
     Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.ps1'))
     ```
 
-## settings.xml
+## Maven Configuration
 
 Add the following `settings.xml` file to your local file system and replace the values under `dev` profile with your hostnames, credentials, project and organization name based on your target environment:
 
@@ -168,7 +168,7 @@ mvn archetype:generate \
 
 This creates a project with two submodules - one [`Action`](../usage/products/vro/actions/index.md) based that can handle Actions as Javascript files and one [`XML`](../usage/products/vro/xml/index.md) based that can handle other {{ products.vro_short_name }} content as XML files.
 
-## Deploy
+## Deploy Content
 
 To deploy the project to your environment execute the following command from the root of your project:
 
@@ -206,3 +206,72 @@ mvn vro:pull -Pdev -pl workflows
 
 !!! note
     If you want to export Configuration Element attribute values append `-Dvro.packageExportConfigurationAttributeValues=true` to the command above.
+
+## Installation Bundle
+
+### Create Installation Bundle
+To create a bundle that contains all project artifacts, their dependencies and a script for deploying them to target environment execute the following command from the project root:
+
+```bash
+mvn clean package -Pbundle-with-installer
+```
+
+The combined bundle (containing both submodules - `actions` and `xml`) is created under project root `/workflows/target/com.bu.hello-world-1.0.0-SNAPSHOT-local-bundle.zip`.
+
+### Deploy from Installation Bundle
+
+To deploy from the installation bundle extract its contents and from the `com.bu.hello-world-1.0.0-SNAPSHOT-local-bundle` folder execute the following command and provide the required data when prompted:
+
+=== "Linux / MacOS"
+
+    ```bash
+    ./bin/installer
+    ```
+
+=== "Windows"
+
+    ```batch
+    bin\installer.bat
+    ```
+
+As an alternative to manually providing installer inputs you can create the following `environment.properties` file under `com.bu.hello-world-1.0.0-SNAPSHOT-local-bundle/bin`:
+
+```conf
+http_connection_timeout=360
+http_socket_timeout=360
+ignore_ssl_certificate_verification=true
+ignore_ssl_host_verification=true
+skip_vro_import_old_versions=true
+vrang_auth_with_refresh_token=false
+vrang_host=flt-auto01.corp.internal
+vrang_password=VMware1!VMware1!
+vrang_port=443
+vrang_username=admin@System
+vrealize_ssh_timeout=300
+vro_delete_old_versions=false
+vro_embedded=true
+vro_enable_backup=false
+vro_force_import_latest_versions=false
+vro_import_configuration_attribute_values=false
+vro_import_configuration_secure_attribute_values=false
+vro_import_old_versions=false
+vro_import_packages=true
+vro_run_workflow=false
+```
+
+After that you can feed the properties to the installation script by executing:
+
+=== "Linux / MacOS"
+
+    ```bash
+    ./bin/installer ./bin/environment.properties
+    ```
+
+=== "Windows"
+
+    ```cmd
+    bin\installer.bat bin\environment.properties
+    ```
+
+!!! note
+    For more information please refer to the [Installer documentation](../usage/installer.md).
