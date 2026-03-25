@@ -19,6 +19,7 @@ import * as t from "../types";
 import * as winston from 'winston';
 import * as xmlbuilder from "xmlbuilder";
 import * as CRC from "crc-32";
+import * as p from "../packaging";
 import { JSON_MINOR_IDENT, WINSTON_CONFIGURATION} from "../constants";
 
 export const saveOptions = {
@@ -58,37 +59,14 @@ export const zipbundle = (target: string) => {
     return (file: string) => async (sourcePath: string, isDir: boolean): Promise<void> => {
         const absoluteZipPath = path.join(target, file);
 		if (!isDir) {
-			return Promise.resolve().then(() => {
-			    fs.copySync(sourcePath, absoluteZipPath);
-			});			
+			return fs.copy(sourcePath, absoluteZipPath);
 		}
 		
-        return new Promise<void>((resolve, reject) => {
-            const output = fs.createWriteStream(absoluteZipPath);
-            const archive = archiver('zip', { zlib: { level: 9 } });
- 
-            // Handle stream events
-            output.on('close', () => {
-                winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`Archived ${archive.pointer()} bytes to ${absoluteZipPath}`);
-                resolve();
-            });                
-            output.on('error', (err) => {
-                reject(new Error(`Error writing archive to ${absoluteZipPath}: ${err.message}`));
-            });                
-            archive.on('error', (err) => {
-                reject(new Error(`Error creating archive for ${sourcePath}: ${err.message}`));
-            }); 
-            archive.on('warning', (err) => {
-                if (err.code === 'ENOENT') {
-                    winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).warn(`Archive warning: ${err.message}`);
-                } else {
-                    reject(err);
-                }
-            });
-            archive.pipe(output);
-            archive.directory(sourcePath, false);
-            archive.finalize();
-        });
+        const archive = p.archive(absoluteZipPath);
+        archive.directory(sourcePath, false);
+        
+        // Use finalizeArchive to properly handle async completion
+        return p.finalizeArchive(archive);
     }
 }
 

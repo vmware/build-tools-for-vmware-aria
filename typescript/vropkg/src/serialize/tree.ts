@@ -17,6 +17,7 @@ import * as path from "path";
 import archiver = require('archiver');
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
+import * as p from "../packaging";
 import { serialize, xmlOptions, complexActionComment, getActionXml } from "./util"
 import { exist, isDirectory } from "../util";
 import { decode } from "../encoding";
@@ -66,33 +67,14 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
             }
             let bundleFilePathDest = path.join(target, `${elementName}.bundle.zip`);
 			if (!isDirectory(bundleFilePathSrc) ) {
-				return Promise.resolve().then(() => {
-				    fs.copySync(bundleFilePathSrc, bundleFilePathDest);
-				});	
+				return fs.copy(bundleFilePathSrc, bundleFilePathDest);
 			}
 			
-            return new Promise<void>((resolve, reject) => {
-                const output = fs.createWriteStream(bundleFilePathDest);
-                const archive = archiver('zip', { zlib: { level: ZLIB_COMPRESS_LEVEL } });
-                // Handle stream events
-                output.on('close', () => {
-                    resolve();
-                });
-                output.on('error', (err) => {
-                    reject(new Error(`Error writing bundle archive to ${bundleFilePathDest}: ${err.message}`));
-                });
-                archive.on('error', (err) => {
-                    reject(new Error(`Error creating bundle archive for ${bundleFilePathSrc}: ${err.message}`));
-                });
-                archive.on('warning', (err) => {
-                    if (err.code !== 'ENOENT') {
-                        reject(err);
-                    }
-                });
-                archive.pipe(output);
-                archive.directory(bundleFilePathSrc, false);
-                archive.finalize();
-            });           
+            const archive = p.archive(bundleFilePathDest);
+            archive.directory(bundleFilePathSrc, false);
+            
+            // Use finalizeArchive instead of direct finalize() to avoid EMFILE errors
+            return p.finalizeArchive(archive);           
         },
         info: store(`${elementName}.element_info.xml`),
         tags: store(`${elementName}.tags.xml`),

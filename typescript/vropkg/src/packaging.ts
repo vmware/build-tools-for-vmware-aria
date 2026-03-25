@@ -50,15 +50,17 @@ export const archive = (outputPath: string): archiver.Archiver => {
 	instance.__outputPath = outputPath;
 	
 	// Attach error handlers to output stream
+	// Don't throw in event handlers - let finalizeArchive() handle errors via Promise rejection
 	output.on('error', (err) => {
 		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).error(`Error writing archive to ${outputPath}: ${err.message}`);
-		throw err;
+		// Error will be caught by finalizeArchive() error handler
 	});
 	
 	// Attach event handlers to archiver
 	instance.on('warning', (err) => {
 		if (err.code !== 'ENOENT') {
-			throw err;
+			winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).warn(`Archive warning (non-ENOENT): ${err.message}`);
+			// Warning will be handled by finalizeArchive() if it becomes an error
 		} else {
 			winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).warn(`Archive warning: ${err.message}`);
 		}
@@ -66,7 +68,7 @@ export const archive = (outputPath: string): archiver.Archiver => {
 	
 	instance.on('error', (err) => {
 		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).error(`Error creating archive: ${err.message}`);
-		throw err;
+		// Error will be caught by finalizeArchive() error handler
 	});
 	
 	// Log when archive is finalized
@@ -100,17 +102,33 @@ export const finalizeArchive = async (archive: archiver.Archiver): Promise<void>
 			return;
 		}
 		
-		// Wait for the output stream to close
-		output.on('close', () => {
-			resolve();
+		// Guard against multiple Promise settlements
+		let settled = false;
+		const settleOnce = (settler: () => void) => {
+			if (!settled) {
+				settled = true;
+				settler();
+			}
+		};
+		
+		// Use once() to avoid accumulating listeners
+		output.once('close', () => {
+			settleOnce(() => resolve());
 		});
 		
-		output.on('error', (err: Error) => {
-			reject(new Error(`Error writing archive to ${outputPath}: ${err.message}`));
+		output.once('error', (err: Error) => {
+			settleOnce(() => reject(new Error(`Error writing archive to ${outputPath}: ${err.message}`)));
 		});
 		
-		// Start the finalization process
-		archive.finalize().catch(reject);
+		// Also capture errors from the archiver itself
+		archive.once('error', (err: Error) => {
+			settleOnce(() => reject(new Error(`Archive error for ${outputPath}: ${err.message}`)));
+		});
+		
+		// Start the finalization process and capture any immediate rejection
+		archive.finalize().catch((err: Error) => {
+			settleOnce(() => reject(new Error(`Failed to finalize archive ${outputPath}: ${err.message}`)));
+		});
 	});
 }
 
