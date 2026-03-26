@@ -301,6 +301,9 @@ vro_run_workflow_err_file_path=./workflow.err # file in which error encountered 
 vro_run_workflow_timeout=300  # Workflow execution timeout
 ```
 
+!!! note
+    Both `YAML` and `JSON` are supported file formats for Workflow input and output files.
+
 #### Supported input value types
 
 Supported Workflow input types are:
@@ -322,25 +325,32 @@ jsonString:
     evaluationTime: "18:00:00"
     retrainedSnapshotCount: 2
     manageSnapshotTimeoutMinutes: 120
-  vcenter-plugin:
-    endpoints:
-      - hostname: "vc-l-01a.corp.local"
-        username: "administrator@vsphere.local"
-        password: "VMware1!"
+  vsphere:
+    authentication:
+      - hostname: "vc-l-01a.corp.internal"
+        port: 443
+        domain: "vsphere.local"
+        username: "administrator"
+        password: "VMware1!VMware1!"
+        apiCompatibilityVersion: 702
+        createSdkConnection: true
         ignoreCertificateWarnings: true
         sessionPerUser: false
-        port: 443
-  aria:
-    automation:
-      rest:
-        hostname: "vra-l-01a.corp.local"
-        port: 443
-        username: "configurationadmin"
-        password: "VMware1!"
-tags: ["bak.scheduled-snapshot", "library.ts.vcenter", "library.ts.vra.authentication"]
+  vra:
+    authentication:
+      hostname: vcfa.corp.internal
+      port: 443
+      authHostname: vcfa.corp.internal
+      authPort: 443
+      username: admin
+      password: VMware1!VMware1!
+      domain: vm-apps
+      projectName: Development
+      orgName: vm-apps
+      isPersistent: false
+tags: ["bak.scheduled-snapshot", "vsphere.authentication", "library.ts.vra.authentication"]
 blacklist: []
-environment: null 
-
+environment: null
 ```
 
 ### Bundle Additional files
