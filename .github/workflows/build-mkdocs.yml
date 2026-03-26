@@ -2,8 +2,6 @@ name: "Build MkDocs"
 
 on:
   push:
-    # branches:
-    #   - main
     # paths:
     #   - 'mkdocs/**'
     #   - 'mkdocs.yml'
@@ -19,12 +17,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v6
 
       - name: Install Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.10"
           cache: "pip"
@@ -48,6 +44,9 @@ jobs:
           echo "Latest Release: $IAC_LATEST_RELEASE"
           yq eval ".extra.iac.latest_release = \"$IAC_LATEST_RELEASE\"" -i mkdocs.yml
 
-      - name: Deploy Docs
-        # This builds the site and cleanly pushes it to the 'gh-pages' branch
+      - name: Build Docs (All Branches)
+        run: mkdocs build
+
+      - name: Deploy Docs (Main Branch Only)
+        if: github.ref == 'refs/heads/main'
         run: mkdocs gh-deploy --force
