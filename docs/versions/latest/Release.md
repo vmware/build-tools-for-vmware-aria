@@ -39,6 +39,20 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Update type definitions for `RESTOperation` from `o11n-plugin-rest` plugin*
+
+### *Extend type definitions for `o11n-plugin-vc` plugin*
+Update `VcToolsConfigInfo` type definition.
+Add the following new definitions:
+* `VcVirtualPCIPassthroughAllowedDevice`
+* `VcVirtualPCIPassthroughDynamicBackingInfo`
+* `VcVirtualPCIPassthroughDvxBackingInfo`
+* `VcVirtualPCIPassthroughDvxBackingOption`
+* `VcVirtualPCIPassthroughDynamicBackingOption`
+
+### *Update type definitions for `FileReader` from `o11n-core` plugin*
+Add `close()` method.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
