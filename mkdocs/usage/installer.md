@@ -348,7 +348,7 @@ jsonString:
       projectName: Development
       orgName: vm-apps
       isPersistent: false
-tags: ["bak.scheduled-snapshot", "vsphere.authentication", "library.ts.vra.authentication"]
+tags: ["bak.scheduled-snapshot", "vsphere.authentication", "vra.authentication"]
 blacklist: []
 environment: null
 ```
