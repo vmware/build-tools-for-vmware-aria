@@ -42,7 +42,7 @@ Add the following `settings.xml` file to your local file system and replace the 
                   <properties>
                       <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
                       <keystoreArtifactId>keystore.example</keystoreArtifactId>
-                      <keystoreVersion>4.6.0</keystoreVersion>
+                      <keystoreVersion>4.19.0</keystoreVersion>
                       <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
                       <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
                       <vroKeyPass>VMware1!</vroKeyPass>
@@ -92,7 +92,7 @@ Add the following `settings.xml` file to your local file system and replace the 
                   <properties>
                       <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
                       <keystoreArtifactId>keystore.example</keystoreArtifactId>
-                      <keystoreVersion>4.6.0</keystoreVersion>
+                      <keystoreVersion>4.19.0</keystoreVersion>
                       <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
                       <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
                       <vroKeyPass>VMware1!</vroKeyPass>
@@ -106,7 +106,6 @@ Add the following `settings.xml` file to your local file system and replace the 
                     <vro.authHost>flt-auto01.corp.internal</vro.authHost>
                     <vro.authPort>443</vro.authPort>
                     <vro.port>443</vro.port>
-                    <!-- (1)! -->
                     <vro.username>admin@System</vro.username>
                     <vro.password>VMware1!VMware1!</vro.password>   
 
@@ -236,28 +235,53 @@ To deploy from the installation bundle extract its contents and from the `com.bu
 
 As an alternative to manually providing installer inputs you can create the following `environment.properties` file under `com.bu.hello-world-1.0.0-SNAPSHOT-local-bundle/bin`:
 
-```conf
-http_connection_timeout=360
-http_socket_timeout=360
-ignore_ssl_certificate_verification=true
-ignore_ssl_host_verification=true
-skip_vro_import_old_versions=true
-vrang_auth_with_refresh_token=false
-vrang_host=flt-auto01.corp.internal
-vrang_password=VMware1!VMware1!
-vrang_port=443
-vrang_username=admin@System
-vrealize_ssh_timeout=300
-vro_delete_old_versions=false
-vro_embedded=true
-vro_enable_backup=false
-vro_force_import_latest_versions=false
-vro_import_configuration_attribute_values=false
-vro_import_configuration_secure_attribute_values=false
-vro_import_old_versions=false
-vro_import_packages=true
-vro_run_workflow=false
-```
+=== "Aria Suite 8"
+    ```conf
+    http_connection_timeout=360
+    http_socket_timeout=360
+    ignore_ssl_certificate_verification=true
+    ignore_ssl_host_verification=true
+    skip_vro_import_old_versions=true
+    vrang_auth_with_refresh_token=false
+    vrang_host=flt-auto01.corp.internal
+    vrang_password=VMware1!VMware1!
+    vrang_port=443
+    vrang_username=configurationadmin
+    vrealize_ssh_timeout=300
+    vro_delete_old_versions=false
+    vro_embedded=true
+    vro_enable_backup=false
+    vro_force_import_latest_versions=false
+    vro_import_configuration_attribute_values=false
+    vro_import_configuration_secure_attribute_values=false
+    vro_import_old_versions=false
+    vro_import_packages=true
+    vro_run_workflow=false
+    ```
+
+=== "VCF 9"
+    ```conf
+    http_connection_timeout=360
+    http_socket_timeout=360
+    ignore_ssl_certificate_verification=true
+    ignore_ssl_host_verification=true
+    skip_vro_import_old_versions=true
+    vrang_auth_with_refresh_token=false
+    vrang_host=flt-auto01.corp.internal
+    vrang_password=VMware1!VMware1!
+    vrang_port=443
+    vrang_username=admin@System
+    vrealize_ssh_timeout=300
+    vro_delete_old_versions=false
+    vro_embedded=true
+    vro_enable_backup=false
+    vro_force_import_latest_versions=false
+    vro_import_configuration_attribute_values=false
+    vro_import_configuration_secure_attribute_values=false
+    vro_import_old_versions=false
+    vro_import_packages=true
+    vro_run_workflow=false
+    ```
 
 After that you can feed the properties to the installation script by executing:
 

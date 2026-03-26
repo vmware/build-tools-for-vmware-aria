@@ -319,39 +319,88 @@ All other types except the above mentioned are send as parameter of type `string
 
 A common use case is to run an Installation Workflow which is meant to prepare and store configurations and objects required for consuming the solution such as REST Hosts, vCenter SDK Connection / Endpoint, credentials stored as Secured Strings in Configuration Elements, etc.
 
-```YAML
-jsonString:
-  scheduled-snapshot:
-    evaluationTime: "18:00:00"
-    retrainedSnapshotCount: 2
-    manageSnapshotTimeoutMinutes: 120
-  vsphere:
-    authentication:
-      - hostname: "vc-l-01a.corp.internal"
-        port: 443
-        domain: "vsphere.local"
-        username: "administrator"
-        password: "VMware1!VMware1!"
-        apiCompatibilityVersion: 702
-        createSdkConnection: true
-        ignoreCertificateWarnings: true
-        sessionPerUser: false
-  vra:
-    authentication:
-      hostname: vcfa.corp.internal
-      port: 443
-      authHostname: vcfa.corp.internal
-      authPort: 443
-      username: admin
-      password: VMware1!VMware1!
-      domain: vm-apps
-      projectName: Development
-      orgName: vm-apps
-      isPersistent: false
-tags: ["bak.scheduled-snapshot", "vsphere.authentication", "vra.authentication"]
-blacklist: []
-environment: null
-```
+=== "YAML"
+    ```YAML
+    jsonString:
+      scheduled-snapshot:
+        evaluationTime: "18:00:00"
+        retrainedSnapshotCount: 2
+        manageSnapshotTimeoutMinutes: 120
+      vsphere:
+        authentication:
+          - hostname: "vc-l-01a.corp.internal"
+            port: 443
+            domain: "vsphere.local"
+            username: "administrator"
+            password: "VMware1!VMware1!"
+            apiCompatibilityVersion: 702
+            createSdkConnection: true
+            ignoreCertificateWarnings: true
+            sessionPerUser: false
+      vra:
+        authentication:
+          hostname: vcfa.corp.internal
+          port: 443
+          authHostname: vcfa.corp.internal
+          authPort: 443
+          username: admin
+          password: VMware1!VMware1!
+          domain: vm-apps
+          projectName: Development
+          orgName: vm-apps
+          isPersistent: false
+    tags: ["bak.scheduled-snapshot", "vsphere.authentication", "vra.authentication"]
+    blacklist: []
+    environment: null
+    ```
+=== "JSON"
+    ```json
+    {
+      "jsonString": {
+        "scheduled-snapshot": {
+          "evaluationTime": "18:00:00",
+          "retrainedSnapshotCount": 2,
+          "manageSnapshotTimeoutMinutes": 120
+        },
+        "vsphere": {
+          "authentication": [
+            {
+              "hostname": "vc-l-01a.corp.internal",
+              "port": 443,
+              "domain": "vsphere.local",
+              "username": "administrator",
+              "password": "VMware1!VMware1!",
+              "apiCompatibilityVersion": 702,
+              "createSdkConnection": true,
+              "ignoreCertificateWarnings": true,
+              "sessionPerUser": false
+            }
+          ]
+        },
+        "vra": {
+          "authentication": {
+            "hostname": "vcfa.corp.internal",
+            "port": 443,
+            "authHostname": "vcfa.corp.internal",
+            "authPort": 443,
+            "username": "admin",
+            "password": "VMware1!VMware1!",
+            "domain": "vm-apps",
+            "projectName": "Development",
+            "orgName": "vm-apps",
+            "isPersistent": false
+          }
+        }
+      },
+      "tags": [
+        "bak.scheduled-snapshot",
+        "vsphere.authentication",
+        "vra.authentication"
+      ],
+      "blacklist": [],
+      "environment": null
+    }
+    ```
 
 ### Bundle Additional files
 
