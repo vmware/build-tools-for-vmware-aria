@@ -8,13 +8,14 @@ title: Typescript
 
 | Field | Value |
 |---|---|
-| Name | `typescript` |
-| Archetype Group ID | `com.vmware.pscoe.o11n.archetypes` |
-| Archetype Artifact ID | `package-typescript-archetype` |
-| Product compatibility | {{ extra.products.vro_7_full_name }} (7.x), {{ extra.products.vro_8_full_name }} (8.x) and {{ extra.products.vro_9_full_name }} (9.x) |
-| Package extension | `package` |
+| Name | typescript |
+| Archetype Group ID | com.vmware.pscoe.o11n.archetypes |
+| Archetype Artifact ID | package-typescript-archetype |
+| Package extension | package |
+| Product compatibility | {{ extra.products.vro_9_full_name }} (9.x)<br>{{ extra.products.vro_8_full_name }} (8.x)<br>{{ extra.products.vro_7_full_name }} (7.x) |
 
-Typescript project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name_short_name }} content into Typescript format. The project consist of content content container. During [build operation](#build-project) the contents of the container are transpiled into {{ products.vro_short_name }} Javascript and packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
+
+Typescript project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name }} content into Typescript format. The project consist of content content container. During [build operation](#build-project) the contents of the container are transpiled into {{ products.vro_short_name }} Javascript and packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 
 The typescript project type also allows the user to write unit tests and has embedded code coverage.
 
