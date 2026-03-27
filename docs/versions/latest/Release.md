@@ -63,6 +63,10 @@ Using `Object.values` would not be replaced by a Shim call and would result in a
 
 Using `Object.values` now correctly gets replaced by a Shim call (`VROES.Shims.objectValues`), preventing runtime errors when executed inside of vRO's Rhino JavaScript engine.
 
+#### Known Issues
+
+- The `Object.entries` function is not supported in vRO's Rhino JavaScript engine and currently does not have a Shim replacement, which results in a runtime error when used.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
