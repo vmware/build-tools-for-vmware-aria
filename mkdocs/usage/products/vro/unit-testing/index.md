@@ -6,81 +6,136 @@ title: Unit Testing Framework
 
 ## Overview
 
-After code has been compiled to Javascript (for `typescript` project type) and before it is packaged to an {{ products.vro_short_name }} `.package`, a testbed is created. An {{ products.vro_short_name }} Runtime is inserted so you can use some modules natively (things like Workflow, Properties, LockingSystem, Server, System, etc.). After the test bed is created, Тasmine is run either through IstanbulJS or directly (depending if code coverage is enabled or not).
+After code has been compiled to Javascript (for `typescript` project types) and before it is packaged to an {{ products.vro_short_name }} `.package`, a testbed is created. An {{ products.vro_short_name }} Runtime is inserted so you can use some modules natively (things like Workflow, Properties, LockingSystem, Server, System, etc.). After the test bed is created, Jasmine is run either through IstanbulJS or directly (depending on if code coverage is enabled).
+
+Jasmine 4.0.2 is integrated into Build Tools for VMware Aria. The testing framework is supported by three main components:
+
+* **`vro-scripting-api`**: Simulates Aria Automation Orchestrator inside the NodeJS environment.
+* **`vro-types`**: Provides type information and intellisense in VS Code for TypeScript projects.
+* **`vrotest`**: Orchestrates and executes the unit tests.
 
 !!! note
-    By default Jasmine 4.0.2 is used as unit test framework unless explicitly specified otherwise.
+    Unit test framework is configurable. Jasmine is used by default. Default configuration is also available for Jest.
 
-## Limitations
+---
 
-> ***actions-package***
+## Folder Structure & Naming Conventions
 
-For `actions` type projects, all test must be placed under `src/test` folder in order to be compiled and executed and packaged correctly.
+The location and naming of your test files depend on your project type:
 
-> ***What types of files can I test***
+* **TypeScript Projects**: Unit tests can be placed in any folder or subfolder relative to the `/src/` directory. The file name **must** end with `*.test.ts`. The test will execute, but the test code will not be added to the target package.
+* **JavaScript (Actions) Projects**: All unit test files must be placed under the `/src/test/resources/` directory (or subfolders). File names **must** end with `*Test.js` or `*Tests.js`.
 
-Only file types that can be tested are Actions - `filename.js` or `filename.ts`. Workflows can't be tested as well as configuration element and resource element files. As a general rule of thumb, keep your Workflows as minimal as possible. Abstract the logic away from the Workflows and put it in an Action that is easily testable.
+---
 
-> ***Naming Convention***
+## Executing Unit Tests
 
-Testing file names must be of the type `filename.test.ts`, `filename.test.js`, `filename_test.js`  - see <!-- [Best Practices](./Code%20Coverage.md#best-practices) -->
+Unit tests are automatically built and run by Maven as part of the regular packaging phase.
 
-```txt
-"**/?(*.)+(spec|test).[j|t]s(x)"
- 
-//example names for javascript file
-MyTests.test.js
-MyTests.spec.js
- 
-//example names for typescript file
-MyTest.test.ts
-MyTest.spec.ts
-```
+* **Run all tests and package:** `mvn clean package`
+* **Run tests explicitly:** `mvn clean test`
+* **Skip tests:** Append the `-DskipTests` flag to your Maven command.
+
+**Logs & Reporting:** * Execution logs (including output from `System.log`/`warn`/`error`) can be found in `target/vro-tests/logs`.
+* During the build process, test results and coverage data are automatically reported to Bamboo and made available to SonarQube for further analysis.
+
+---
+
+## Limitations & Specific Behaviors
+
+* **Workflows Cannot Be Tested**: The only file types that can be tested are Actions. Workflows, configuration elements, and resource elements are not supported. Keep your Workflows as minimal as possible and abstract logic into testable Actions.
+* **Shared JavaScript Context**: All unit tests within a project are executed in the *same* Javascript context. **It is critical** to use `beforeAll` and `afterAll` to prepare and clean up your environment. Leftover state from one test will affect the execution of subsequent tests.
+
+---
 
 ## Best Practices
 
 > ***Unit testing***
 
-Testing individual components of software. A unit test should test one thing.
+A unit test should test one specific thing. Label your test suites (`describe` blocks) and specs (`it` blocks) clearly so they read as full sentences. Do not include logic or mocks directly inside `describe` blocks; instead, use `beforeEach()`.
 
-Label your test suites (describe blocks) and specs (it blocks) in a way that clearly conveys the intention of each unit test. Note that the name of each test is the title of its it preceded by all its parent describe names. Favor assertive verbs and avoid ones like "should."
+> ***Setup and Teardown***
 
-Test file contains one describe() block containing multiple describes with common functionality. Each describe() must have a meaningful name. Do not include logic or mocks in describe blocks.
+Use `beforeEach()`, `afterEach()`, `beforeAll()`, and `afterAll()` to keep your test suite DRY. You can use the `this` keyword to safely share variables between the `beforeEach` and `it` blocks. 
 
-> ***beforeEach()***
+```javascript
+describe("A spec", function() {
+  beforeEach(function() {
+    this.foo = 0;
+  });
 
-We can execute some pieces of code before execution of each spec. For example you can create new instances here. Don't use any logic in the describe() block, only in beforeEach(). Use "this" to share variables between it and before/after blocks.
-
-```typescript
-beforeEach(() => {
-    this.someClass = new SomeClass();
-});
-
-describe("Different Methods of Expect Block",function() { 
-   it("Returns even or optional ", function() {
-      expect(this.someClass.evenOrOdd()).toBe("even");     
-   });
+  it("can use the `this` to share state", function() {
+    expect(this.foo).toEqual(0);
+  });
 });
 ```
 
 > ***Write Minimum Passable Tests***
 
-If appropriate, use Jasmine's built-in matchers (such as toContain, jasmine.any, jasmine.stringMatching, ...etc) to compare arguments and results. You can also create your own matcher via the asymmetricMatch function.
+Utilize Jasmine's built-in matchers (e.g., `toContain`, `jasmine.any`, `jasmine.stringMatching`, etc.) to compare arguments and results efficiently. You can also create your own matcher via the `asymmetricMatch` function.
 
 ```typescript
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     beforeEach(function() {
       this.initialArray = [];
-
-      this.initialArray.push(1);
     });
 
     it('appends x to the Array', function() {
+      this.initialArray.push(1);
       expect(this.initialArray).toContain(1);
     });
   });
 });
+```
+
+---
+
+## Jasmine Spies (Mocking)
+
+A Spy simulates the behavior of existing code (like DB calls, Web Services, or external systems) and tracks calls made to it. Spies only exist in the `describe` or `it` block in which they are defined and are removed after each spec.
+
+> ***createSpy()***
+
+Creates a "bare" spy when there is no existing function to mock. It tracks calls and arguments but has no implementation behind it.
+
+```javascript
+var readFromDB = jasmine.createSpy('readFromDB');
+readFromDB('some', 'fake', 'data'); 
+expect(readFromDB).toHaveBeenCalledWith("some", "fake", "data");
+```
+
+> ***createSpyObj()***
+
+`createSpyObj()` creates a mock object that will spy on one or more methods. It returns an object that has a property for each string that is a spy. It takes as first argument the name of a Service and as a second an array of strings of all the methods that we want to mock.
+
+```typescript
+let testDouble = jasmine.createSpyObj<T>("Name holder. Same as the type, in this case T", ["Array of strings with all functions that will be overwritten"]);
+```
+
+```typescript
+describe("ApiCall", () => {
+  it('should do an api call', function () {
+    const restHostTestDouble = jasmine.createSpyObj<RESTHost>("RESTHost", ["createRequest"]);
+
+    const restRequestTestDouble = jasmine.createSpyObj<RESTRequest>("RESTRequest", ["execute"]);
+
+        // Properties mock
+    const restResponseTestDouble = jasmine.createSpyObj<RESTResponse>("RESTResponse", [], {contentAsString: JSON.stringify({test: 2})});
+
+    restHostTestDouble.createRequest.and.returnValue(restRequestTestDouble);
+    restRequestTestDouble.execute.and.returnValue(restResponseTestDouble);
+
+    const restHostExample = new RestHostExample(restHostTestDouble);
+
+    const response = restHostExample.doApiCall();
+
+    expect(response.test).toBe(2);
+    expect(restHostTestDouble.createRequest).toHaveBeenCalledTimes(1);
+    expect(restHostTestDouble.createRequest).toHaveBeenCalledWith("GET", "/api/v1/test", "");
+    expect(restRequestTestDouble.execute).toHaveBeenCalledTimes(1);
+  });
+})
 ```
 
 ## Code Coverage
@@ -169,51 +224,6 @@ During testing, you will be able to use these files by specifying them normally 
 ### Known Issues
 
 Helper files must be located in any folder under `src/`, recommended place is `src/tests/helpers`.
-
-## Jasmine Spies
-
-A Spy is a feature that allows you to simulate the behavior of existing code and track calls to it back. It’s used to mock a function or an object.
-
-> ***createSpy()***
-
-Can be used when there is no function to spy on. Takes two arguments - name of the Service, method we want to mock
-
-```typescript
-let testDouble = jasmine.createSpy("Name holder.", "method");
-```
-
-> ***createSpyObj()***
-
-`createSpyObj()` creates a mock object that will spy on one or more methods. It returns an object that has a property for each string that is a spy. It takes as first argument the name of a Service and as a second an array of strings of all the methods that we want to mock.
-
-```typescript
-let testDouble = jasmine.createSpyObj<T>("Name holder. Same as the type, in this case T", ["Array of strings with all functions that will be overwritten"]);
-```
-
-```typescript
-describe("ApiCall", () => {
-  it('should do an api call', function () {
-    const restHostTestDouble = jasmine.createSpyObj<RESTHost>("RESTHost", ["createRequest"]);
-
-    const restRequestTestDouble = jasmine.createSpyObj<RESTRequest>("RESTRequest", ["execute"]);
-
-        // Properties mock
-    const restResponseTestDouble = jasmine.createSpyObj<RESTResponse>("RESTResponse", [], {contentAsString: JSON.stringify({test: 2})});
-
-    restHostTestDouble.createRequest.and.returnValue(restRequestTestDouble);
-    restRequestTestDouble.execute.and.returnValue(restResponseTestDouble);
-
-    const restHostExample = new RestHostExample(restHostTestDouble);
-
-    const response = restHostExample.doApiCall();
-
-    expect(response.test).toBe(2);
-    expect(restHostTestDouble.createRequest).toHaveBeenCalledTimes(1);
-    expect(restHostTestDouble.createRequest).toHaveBeenCalledWith("GET", "/api/v1/test", "");
-    expect(restRequestTestDouble.execute).toHaveBeenCalledTimes(1);
-  });
-})
-```
 
 ## FAQ
 
