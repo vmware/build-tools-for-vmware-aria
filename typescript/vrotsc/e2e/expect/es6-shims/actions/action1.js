@@ -43,5 +43,7 @@
     obj.startsWith("test");
     obj.find("test");
     obj.findIndex("test");
+    VROES.Shims.objectAssign({}, obj);
+    VROES.Shims.objectValues(obj);
     return exports;
 });
