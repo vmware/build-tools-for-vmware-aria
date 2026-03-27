@@ -23,7 +23,7 @@ Jasmine 4.0.2 is integrated into Build Tools for VMware Aria. The testing framew
 
 The location and naming of your test files depend on your project type:
 
-* **TypeScript Projects**: Unit tests can be placed in any folder or subfolder relative to the `/src/` directory. The file name **must** end with `*.test.ts`. The test will execute, but the test code will not be added to the target package.
+* **TypeScript Projects**: Unit tests can be placed in any folder or subfolder relative to the `/src/` directory. The file name **must** end with `*.test.ts`. The test are executed, but the test code is not added to the target package.
 * **JavaScript (Actions) Projects**: All unit test files must be placed under the `/src/test/resources/` directory (or subfolders). File names **must** end with `*Test.js` or `*Tests.js`.
 
 ---
@@ -44,7 +44,7 @@ Unit tests are automatically built and run by Maven as part of the regular packa
 ## Limitations & Specific Behaviors
 
 * **Workflows Cannot Be Tested**: The only file types that can be tested are Actions. Workflows, configuration elements, and resource elements are not supported. Keep your Workflows as minimal as possible and abstract logic into testable Actions.
-* **Shared JavaScript Context**: All unit tests within a project are executed in the *same* Javascript context. **It is critical** to use `beforeAll` and `afterAll` to prepare and clean up your environment. Leftover state from one test will affect the execution of subsequent tests.
+* **Shared JavaScript Context**: All unit tests within a project are executed in the *same* Javascript context. **It is critical** to use `beforeAll` and `afterAll` to prepare and clean up your environment. Leftover state from one test affects the execution of subsequent tests.
 
 ---
 
@@ -140,25 +140,40 @@ describe("ApiCall", () => {
 
 ### Enabling Code Coverage
 
-Start by adding the testing profile to your `~/.m2/settings.xml` or project-specific `pom.xml`.
+Start by adding the testing profile to your `~/.m2/settings.xml` (makes the configuration applicable to all projects) or project-specific `pom.xml`.
 
-```xml
-<profile>
-    <id>pscoe-testing</id>
+=== "settings.xml"
+
+    ```xml
+    <profile>
+        <id>vro-testing</id>
+        <properties>
+            <test.coverage.enabled>true</test.coverage.enabled>
+            <test.coverage.reports>text,html,clover,cobertura,lcovonly</test.coverage.reports>
+            <test.coverage.thresholds.error>85</test.coverage.thresholds.error>
+        </properties>
+    </profile>
+    ```
+
+    Activate the profile by adding it to `<activeProfiles>`. 
+
+    ```xml
+    <activeProfiles>
+        <activeProfile>vro-testing</activeProfile>
+    </activeProfiles>
+    ```
+
+=== "pom.xml"
+
+    ```xml
     <properties>
         <test.coverage.enabled>true</test.coverage.enabled>
         <test.coverage.reports>text,html,clover,cobertura,lcovonly</test.coverage.reports>
+        <test.coverage.thresholds.error>85</test.coverage.thresholds.error>
     </properties>
-</profile>
-```
+    ```
 
-Activate the profile by adding it to `<activeProfiles>`. Output files are generated in `<PROJECT_DIR>/target/vro-tests/coverage/`.
-
-```xml
-<activeProfiles>
-    <activeProfile>pscoe-testing</activeProfile>
-</activeProfiles>
-```
+Output files are generated in `<PROJECT_DIR>/target/vro-tests/coverage/`.
 
 ### Reporters
 
@@ -184,7 +199,6 @@ Refer to InstanbulJS documentation for more information: [https://github.com/ist
         <test.coverage.enabled>true</test.coverage.enabled>
         <test.coverage.reports>text,html,clover,cobertura,lcovonly</test.coverage.reports>
 
-        <!--   Add these:-->
         <test.coverage.thresholds.error>70</test.coverage.thresholds.error>
         <test.coverage.thresholds.warn>80</test.coverage.thresholds.warn>
 
@@ -201,6 +215,11 @@ Refer to InstanbulJS documentation for more information: [https://github.com/ist
 </profile>
 ```
 
+All available configurations per project type:
+
+* [**typescript**](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/maven/base-package/typescript-project/pom.xml#L76-L100)
+* [**actions**](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/maven/base-package/actions-package/pom.xml#L69-L93)
+
 ### File Exclusion
 
 Files can be excluded from code coverage by naming them with the pattern `*.helper.[tj]s`. Custom patterns can also be defined via the `.vroignore` file. For more details refer to the [`vroIgnoreFile` section](../common/vroignore.md).
@@ -209,7 +228,7 @@ Files can be excluded from code coverage by naming them with the pattern `*.help
 
 ## Test Helpers
 
-Helpers are testing files that are compiled and can be used in your testing setup, but they do not generate code coverage and are not be pushed to vRO. Mocks and repetitive test data setups are typically defined in these Helper files.
+Helpers are testing files that are compiled and can be used in your testing setup, but they do not generate code coverage and are not be pushed to {{ products.vro_short_name }}. Mocks and repetitive test data setups are typically defined in these Helper files.
 
 * **Naming Convention**: `filename.helper.ts`, `filename.helper.js`, or `filename_helper.js`.
 * **Location**: Helper files must be located in any folder under `src/`, though the recommended place is `src/tests/helpers`.
@@ -232,8 +251,8 @@ Helpers are testing files that are compiled and can be used in your testing setu
   npm i @types/jasmine
   ```
 
-* **How do I identify if code is running in the NodeJS test environment vs. vRO?**
-  If you need to simulate different behavior specific to NodeJS, you can check the environment. The following statement will evaluate to false when running in Aria Automation Orchestrator:
+* **How do I identify if code is running in the NodeJS test environment vs. {{ products.vro_short_name }}?**
+  If you need to simulate different behavior specific to NodeJS, you can check the environment. The following statement evaluates to false when running in {{ products.vro_short_name }}:
   ```javascript
   if (typeof module !== "undefined" && module.exports) {
       // do the coding
@@ -241,4 +260,4 @@ Helpers are testing files that are compiled and can be used in your testing setu
   ```
 
   * **Can I use Jasmine Helpers?**
-  Native Jasmine helpers are not supported, though the toolchain does inject the vRO Runtime with a helper.
+  Native Jasmine helpers are not supported, though the toolchain does inject the {{ products.vro_short_name }} Runtime with a helper.
