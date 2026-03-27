@@ -48,5 +48,5 @@ jobs:
         run: mkdocs build
 
       - name: Deploy Docs (Main Branch Only)
-        # if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         run: mkdocs gh-deploy --force
