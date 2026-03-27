@@ -39,4 +39,5 @@ obj.startsWith("test");
 obj.find("test");
 obj.findIndex("test");
 Object.assign({}, obj);
+Object.entries(obj);
 Object.values(obj);
