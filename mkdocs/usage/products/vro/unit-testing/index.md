@@ -107,11 +107,7 @@ expect(readFromDB).toHaveBeenCalledWith("some", "fake", "data");
 
 > ***createSpyObj()***
 
-`createSpyObj()` creates a mock object that will spy on one or more methods. It returns an object that has a property for each string that is a spy. It takes as first argument the name of a Service and as a second an array of strings of all the methods that we want to mock.
-
-```typescript
-let testDouble = jasmine.createSpyObj<T>("Name holder. Same as the type, in this case T", ["Array of strings with all functions that will be overwritten"]);
-```
+Creates a mock object that spies on multiple methods at once. Pass the name of the object and an array of method string names.
 
 ```typescript
 describe("ApiCall", () => {
@@ -138,13 +134,13 @@ describe("ApiCall", () => {
 })
 ```
 
-## Code Coverage
+---
 
-Details on how to enable, configure and read code coverage.
+## Code Coverage
 
 ### Enabling Code Coverage
 
-Start by Adding the following profile to your `~/.m2/settings.xml` file.
+Start by adding the testing profile to your `~/.m2/settings.xml` or project-specific `pom.xml`.
 
 ```xml
 <profile>
@@ -156,7 +152,7 @@ Start by Adding the following profile to your `~/.m2/settings.xml` file.
 </profile>
 ```
 
-Activate the profile by adding it to the `<activeProfiles></activeProfiles>`.
+Activate the profile by adding it to `<activeProfiles>`. Output files are generated in `<PROJECT_DIR>/target/vro-tests/coverage/`.
 
 ```xml
 <activeProfiles>
@@ -172,16 +168,13 @@ After enabling a reporter and running `mvn clean test`, you can see the output f
 
 ### Setting Thresholds
 
-When setting the thresholds for code coverage if you set the `<test.coverage.thresholds.error>`, if the percentage is not met when running the tests, the tests will be considered as failed. Including such thresholds into your CI/CD pipeline will introduce hard limits that developers must follow when writing code. This way you can introduce a very good quality gate. It is suggested to start with a lower threshold for older projects and higher threshold for new projects. A good example of setting an error threshold would be around 60-70 and a possible warning threshold in the 80s.
+Using `<test.coverage.thresholds.error>` creates hard limits for code coverage in your local builds and CI/CD pipelines. If the specified percentage is not met, the tests are considered failed and build operations fail. This introduces a very good quality gate. It is suggested to start with a lower threshold for older projects and higher threshold for new projects. A good example of setting an error threshold would be around 60-70 and a possible warning threshold in the 80s.
 
-Individual overwrites for thresholds can be set for branches, lines, functions and statements. These individually overwrite the default ones (`test.coverage.thrsholds.error|warn`).
+Individual overrides can also be set for branches, lines, functions, and statements.
 
 #### Per-file Configuration
 
-It is possible to set code coverage per file basis. Set custom --coverage-thresholds, if any file in the project drops below those thresholds, the build will fail.
-
-Enable by setting `<test.coverage.perfile>true</test.coverage.perfile>` in your `~/.m2/settings.xml` testing profile.
-
+It is possible to set code coverage per file basis. Set custom --coverage-thresholds, if any file in the project drops below those thresholds, the build fails. Enable by setting `<test.coverage.perfile>true</test.coverage.perfile>` in your `~/.m2/settings.xml` testing profile.
 Refer to InstanbulJS documentation for more information: [https://github.com/istanbuljs/nyc](https://github.com/istanbuljs/nyc).
 
 ```xml
@@ -208,29 +201,44 @@ Refer to InstanbulJS documentation for more information: [https://github.com/ist
 </profile>
 ```
 
-### How to exclude files from code coverage
+### File Exclusion
 
-Files can be excluded from code coverage by naming them following the pattern: `*.helper.[tj]s`.
-You can also define custom patterns via the `.vroignore` file. For more details please review the [`vroIgnoreFile` section](../common/vroignore.md).
+Files can be excluded from code coverage by naming them with the pattern `*.helper.[tj]s`. Custom patterns can also be defined via the `.vroignore` file. For more details refer to the [`vroIgnoreFile` section](../common/vroignore.md).
+
+---
 
 ## Test Helpers
 
-Helpers are testing files. Naming convention is - `filename.helper.ts`, `filename.helper.js`, `filename_helper.js`. They are compiled, can be used in testing, no code coverage and will not be pushed to vRO. Mocks are defined in Helper files.
+Helpers are testing files that are compiled and can be used in your testing setup, but they do not generate code coverage and are not be pushed to vRO. Mocks and repetitive test data setups are typically defined in these Helper files.
 
-You can also define custom patterns via the `.vroignore` file. For more details please review the [`vroIgnoreFile` section](../common/vroignore.md).
+* **Naming Convention**: `filename.helper.ts`, `filename.helper.js`, or `filename_helper.js`.
+* **Location**: Helper files must be located in any folder under `src/`, though the recommended place is `src/tests/helpers`.
+* **Usage**: During testing, you can use these files by importing them normally (e.g., `import testHelper from "./testHelper.helper";`).
+* **Exclusions**: You can also define custom patterns to ignore these files via the `.vroignore` file. For more details refer to the [`vroIgnoreFile` section](../common/vroignore.md).
 
-During testing, you will be able to use these files by specifying them normally (`import testHelper from "./testHelper.helper";`).
+---
 
-### Known Issues
+## Useful Hints & FAQ
 
-Helper files must be located in any folder under `src/`, recommended place is `src/tests/helpers`.
+* **Where can I find execution logs?**
+  You have access to the output from `System.info`, `error`, `warn`, and the logger in the `target/vro-tests/logs` folder.
 
-## FAQ
+* **Can I test workflows?**
+  Testing workflows is currently not supported. As a general rule of thumb, keep your Workflows as minimal as possible. Abstract the logic away from the Workflows and put it in an Action that is easily testable.
 
-> ***Can I use Jasmine Helpers?***
+* **What if VS Code is not showing intellisense for Jasmine keywords?**
+  Execute this command in the VS Code terminal to install the necessary types:
+  ```bash
+  npm i @types/jasmine
+  ```
 
-Jasmine helpers are not supported. We are injecting the vRO Runtime with a helper tho.
+* **How do I identify if code is running in the NodeJS test environment vs. vRO?**
+  If you need to simulate different behavior specific to NodeJS, you can check the environment. The following statement will evaluate to false when running in Aria Automation Orchestrator:
+  ```javascript
+  if (typeof module !== "undefined" && module.exports) {
+      // do the coding
+  }
+  ```
 
-> ***Can I test workflows?***
-
-This is currently not supported. As a general rule of thumb, keep your Workflows as minimal as possible. Abstract the logic away from the workflows and put it in an Action that is easily testable.
+  * **Can I use Jasmine Helpers?**
+  Native Jasmine helpers are not supported, though the toolchain does inject the vRO Runtime with a helper.
