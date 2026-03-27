@@ -48,94 +48,6 @@ Unit tests are automatically built and run by Maven as part of the regular packa
 
 ---
 
-## Best Practices
-
-> ***Unit testing***
-
-A unit test should test one specific thing. Label your test suites (`describe` blocks) and specs (`it` blocks) clearly so they read as full sentences. Do not include logic or mocks directly inside `describe` blocks; instead, use `beforeEach()`.
-
-> ***Setup and Teardown***
-
-Use `beforeEach()`, `afterEach()`, `beforeAll()`, and `afterAll()` to keep your test suite DRY. You can use the `this` keyword to safely share variables between the `beforeEach` and `it` blocks. 
-
-```javascript
-describe("A spec", function() {
-  beforeEach(function() {
-    this.foo = 0;
-  });
-
-  it("can use the `this` to share state", function() {
-    expect(this.foo).toEqual(0);
-  });
-});
-```
-
-> ***Write Minimum Passable Tests***
-
-Utilize Jasmine's built-in matchers (e.g., `toContain`, `jasmine.any`, `jasmine.stringMatching`, etc.) to compare arguments and results efficiently. You can also create your own matcher via the `asymmetricMatch` function.
-
-```typescript
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    beforeEach(function() {
-      this.initialArray = [];
-    });
-
-    it('appends x to the Array', function() {
-      this.initialArray.push(1);
-      expect(this.initialArray).toContain(1);
-    });
-  });
-});
-```
-
----
-
-## Jasmine Spies (Mocking)
-
-A Spy simulates the behavior of existing code (like DB calls, Web Services, or external systems) and tracks calls made to it. Spies only exist in the `describe` or `it` block in which they are defined and are removed after each spec.
-
-> ***createSpy()***
-
-Creates a "bare" spy when there is no existing function to mock. It tracks calls and arguments but has no implementation behind it.
-
-```javascript
-var readFromDB = jasmine.createSpy('readFromDB');
-readFromDB('some', 'fake', 'data'); 
-expect(readFromDB).toHaveBeenCalledWith("some", "fake", "data");
-```
-
-> ***createSpyObj()***
-
-Creates a mock object that spies on multiple methods at once. Pass the name of the object and an array of method string names.
-
-```typescript
-describe("ApiCall", () => {
-  it('should do an api call', function () {
-    const restHostTestDouble = jasmine.createSpyObj<RESTHost>("RESTHost", ["createRequest"]);
-
-    const restRequestTestDouble = jasmine.createSpyObj<RESTRequest>("RESTRequest", ["execute"]);
-
-        // Properties mock
-    const restResponseTestDouble = jasmine.createSpyObj<RESTResponse>("RESTResponse", [], {contentAsString: JSON.stringify({test: 2})});
-
-    restHostTestDouble.createRequest.and.returnValue(restRequestTestDouble);
-    restRequestTestDouble.execute.and.returnValue(restResponseTestDouble);
-
-    const restHostExample = new RestHostExample(restHostTestDouble);
-
-    const response = restHostExample.doApiCall();
-
-    expect(response.test).toBe(2);
-    expect(restHostTestDouble.createRequest).toHaveBeenCalledTimes(1);
-    expect(restHostTestDouble.createRequest).toHaveBeenCalledWith("GET", "/api/v1/test", "");
-    expect(restRequestTestDouble.execute).toHaveBeenCalledTimes(1);
-  });
-})
-```
-
----
-
 ## Code Coverage
 
 ### Enabling Code Coverage
@@ -234,6 +146,254 @@ Helpers are testing files that are compiled and can be used in your testing setu
 * **Location**: Helper files must be located in any folder under `src/`, though the recommended place is `src/tests/helpers`.
 * **Usage**: During testing, you can use these files by importing them normally (e.g., `import testHelper from "./testHelper.helper";`).
 * **Exclusions**: You can also define custom patterns to ignore these files via the `.vroignore` file. For more details refer to the [`vroIgnoreFile` section](../common/vroignore.md).
+
+---
+
+## Jasmine Constructs
+
+### Overview
+
+Jasmine tests are written as a normal {{ products.vro_short_name }} action that is able to call any other {{ products.vro_short_name }} action and utilizes out of the box global Jasmine functions for defining test cases and evaluating conditions.
+
+The example below shows how to create a unit test for a simple "Hello World" library defining the following action:
+
+```javascript
+/**
+ * Hello World
+ * Module: "com.vmware.pscoe.library.helloworld"
+ * 
+ */
+(function() {
+	return "Hello World"; 
+}) 
+```
+
+The unit test can be defined as follows:
+
+```javascript
+describe("Hello World", function(){ 
+   it("should Return Hello world",function(){ 
+	  var result = System.getModule("com.vmware.pscoe.library.helloworld").helloworld()
+      expect(result).toEqual('Hello World'); 
+   }); 
+}); 
+```
+
+### Suites and Specs
+
+The `describe()` function groups related specs into a suite. It is common practise for each test file to have a single `describe()` at the top level. The string input parameter is for naming the collection of specs, and is concatenated with specs to make a spec's full name. This aids in finding specs in a large suite. If named well, specs should read as full sentences in traditional [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) style.
+
+Specs are defined by calling the global Jasmine function `it()`, which, like `describe()` takes a string and a function inputs. The string is the title of the spec and the function is the spec, or test. A spec contains one or more expectations that test the state of the code. An expectation in Jasmine is an assertion that is either true or false. A spec with all true expectations is a passing spec. A spec with one or more false expectations is a failing spec.
+
+```javascript
+describe("A suite", function() {
+  it("contains spec with an expectation", function() {
+    expect(true).toBe(true);
+  });
+});
+```
+
+Since `describe()` and `it()` blocks are functions, they can contain any executable code necessary to implement the test. JavaScript scoping rules apply, so variables declared in a describe are available to any it block inside the suite.
+
+```javascript
+describe("A suite is just a function", function() {
+  var a;
+
+  it("and so is a spec", function() {
+    a = true;
+
+    expect(a).toBe(true);
+  });
+});
+```
+
+### Expectations and Matchers
+
+Expectations are built with the `expect()` function which takes a value, called the actual. It is chained with a Matcher function, which takes the expected value.
+
+Each matcher implements a boolean comparison between the actual value and the expected value. It is responsible for reporting to Jasmine if the expectation is true or false. Based on that Jasmine passes or fails the spec. Any matcher can evaluate to a negative assertion by chaining the call to expect with a `not` before calling the matcher. Jasmine has a rich set of matchers included, full list can be found in the [API docs](https://jasmine.github.io/api/edge/matchers.html).
+
+```javascript
+describe("The 'toBe' matcher compares with ===", function() {
+
+  it("and has a positive case", function() {
+    expect(true).toBe(true);
+  });
+
+  it("and can have a negative case", function() {
+    expect(false).not.toBe(true);
+  });
+
+});
+```
+
+```typescript
+describe('Array.prototype', function() {
+  describe('.push(x)', function() {
+    beforeEach(function() {
+      this.initialArray = [];
+    });
+
+    it('appends x to the Array', function() {
+      this.initialArray.push(1);
+      expect(this.initialArray).toContain(1);
+    });
+  });
+});
+```
+
+### Setup and Teardown
+
+Use `beforeEach()`, `afterEach()`, `beforeAll()`, and `afterAll()` to keep your test suite DRY. As the name implies, the `beforeEach()` function is called once before each spec in the `describe()` block in which it is called and the `afterEach()` function is called once after each spec. The `beforeAll()` function is called only once before all the specs in `describe()` block are run and the `afterAll()` function is called after all specs finish. `beforeAll()` and `afterAll()` can be used to speed up test suites with expensive setup and teardown. 
+
+!!! note
+    `beforeAll()` and `afterAll()` are not reset between specs. It is easy to accidentally leak state between specs so that they erroneously pass or fail.
+
+```javascript
+describe("A suite with some shared setup", function() {
+  var foo = 0;
+
+  beforeEach(function() {
+    foo += 1;
+  });
+
+  afterEach(function() {
+    foo = 0;
+  });
+
+  beforeAll(function() {
+    foo = 1;
+  });
+
+  afterAll(function() {
+    foo = 0;
+  });
+
+});
+```
+
+You can use the `this` keyword to safely share variables between the `beforeEach()`, `it()` and `afterEach()` blocks. Each spec's `beforeEach()`/`it()`/`afterEach()` has the this as the same empty object that is set back to empty for the next spec's `beforeEach()`/`it()`/`afterEach()`.
+
+```javascript
+describe("A spec", function() {
+  beforeEach(function() {
+    this.foo = 0;
+  });
+
+  it("can use the `this` to share state", function() {
+    expect(this.foo).toEqual(0);
+    this.bar = "test pollution?";
+  });
+
+  it("prevents test pollution by having an empty `this` created for the next spec", function() {
+    expect(this.foo).toEqual(0);
+    expect(this.bar).toBe(undefined);
+  });
+});
+```
+
+### Failing a spec
+
+The `fail()` function causes a spec to fail. It can take a failure message or an Error object as a parameter.
+
+```javascript
+describe("A spec using the fail function", function() {
+  var foo = function(x, callBack) {
+    if (x) {
+      callBack();
+    }
+  };
+
+  it("should not call the callBack", function() {
+    foo(false, function() {
+      fail("Callback has been called");
+    });
+  });
+});
+```
+
+### Nested suites
+
+`describe()` functions can be nested with specs defined at any level. This allows a suite to be composed as a tree of functions. Before a spec is executed, Jasmine walks down the tree executing each `beforeEach()` function in order. After the spec is executed, Jasmine walks through the `afterEach()` functions similarly.
+
+```javascript
+describe("A spec", function() {
+  var foo;
+
+  beforeEach(function() {
+    foo = 0;
+    foo += 1;
+  });
+
+  afterEach(function() {
+    foo = 0;
+  });
+
+  it("is just a function, so it can contain any code", function() {
+    expect(foo).toEqual(1);
+  });
+
+  it("can have more than one expectation", function() {
+    expect(foo).toEqual(1);
+    expect(true).toEqual(true);
+  });
+
+  describe("nested inside a second describe", function() {
+    var bar;
+
+    beforeEach(function() {
+      bar = 1;
+    });
+
+    it("can reference both scopes as needed", function() {
+      expect(foo).toEqual(bar);
+    });
+  });
+});
+```
+
+### Jasmine Spies (Mocking)
+
+A Spy simulates the behavior of existing code (like DB calls, Web Services, or external systems) and tracks calls made to it. Spies only exist in the `describe` or `it` block in which they are defined and are removed after each spec.
+
+> ***createSpy()***
+
+Creates a "bare" spy when there is no existing function to mock. It tracks calls and arguments but has no implementation behind it.
+
+```javascript
+var readFromDB = jasmine.createSpy('readFromDB');
+readFromDB('some', 'fake', 'data'); 
+expect(readFromDB).toHaveBeenCalledWith("some", "fake", "data");
+```
+
+> ***createSpyObj()***
+
+Creates a mock object that spies on multiple methods at once. Pass the name of the object and an array of method string names.
+
+```typescript
+describe("ApiCall", () => {
+  it('should do an api call', function () {
+    const restHostTestDouble = jasmine.createSpyObj<RESTHost>("RESTHost", ["createRequest"]);
+
+    const restRequestTestDouble = jasmine.createSpyObj<RESTRequest>("RESTRequest", ["execute"]);
+
+        // Properties mock
+    const restResponseTestDouble = jasmine.createSpyObj<RESTResponse>("RESTResponse", [], {contentAsString: JSON.stringify({test: 2})});
+
+    restHostTestDouble.createRequest.and.returnValue(restRequestTestDouble);
+    restRequestTestDouble.execute.and.returnValue(restResponseTestDouble);
+
+    const restHostExample = new RestHostExample(restHostTestDouble);
+
+    const response = restHostExample.doApiCall();
+
+    expect(response.test).toBe(2);
+    expect(restHostTestDouble.createRequest).toHaveBeenCalledTimes(1);
+    expect(restHostTestDouble.createRequest).toHaveBeenCalledWith("GET", "/api/v1/test", "");
+    expect(restRequestTestDouble.execute).toHaveBeenCalledTimes(1);
+  });
+})
+```
 
 ---
 
