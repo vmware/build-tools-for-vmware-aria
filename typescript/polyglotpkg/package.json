@@ -47,7 +47,7 @@
     "which": "^5.0.0",
     "winston": "^3.17.0",
     "xmlbuilder2": "^4.0.0",
-    "brace-expansion": "^2.0.2"
+    "brace-expansion": "^2.0.3"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
