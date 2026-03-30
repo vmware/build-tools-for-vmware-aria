@@ -6,7 +6,6 @@ A list of known typescript archetype issues.
 
 1. [Array functions are not transpiled to vRO code](#array-functions-are-not-transpiled-to-vro-code)
 2. [VROTSC config](#vrotsc-config)
-3. [`Object.entries` not supported](#objectentries-not-supported)
 
 ### Array functions are not transpiled to vRO code
 
@@ -161,7 +160,3 @@ e.g.
   ignoreDeprecations: "5.0"
 };
 ```
-
-### `Object.entries` not supported
-
-The `Object.entries` function is not supported in vRO's Rhino JavaScript engine and currently does not have a Shim replacement, which results in a runtime error when used.

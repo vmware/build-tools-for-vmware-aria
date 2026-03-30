@@ -26,6 +26,14 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Shim for Object.entries*
+
+Added a shim for `Object.entries`, which is not natively supported by the current version of the JavaScript Engine Rhino in vRO.
+
+#### Relevant Documentation
+
+[MDN Object.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries)
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -62,10 +70,6 @@ Using `Object.values` would not be replaced by a Shim call and would result in a
 #### New Behavior
 
 Using `Object.values` now correctly gets replaced by a Shim call (`VROES.Shims.objectValues`), preventing runtime errors when executed inside of vRO's Rhino JavaScript engine.
-
-#### Known Issues
-
-* The `Object.entries` function is not supported in vRO's Rhino JavaScript engine and currently does not have a Shim replacement, which results in a runtime error when used.
 
 ## Upgrade procedure
 
