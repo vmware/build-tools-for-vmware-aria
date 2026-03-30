@@ -356,12 +356,12 @@ declare interface RESTResponse {
  */
 declare class RESTOperation {
 	readonly id: string;
-	name: string;
-	host: RESTHost;
-	readonly inParametersCount: number;
-	method: string;
-	urlTemplate: string;
-	defaultContentType: string;
+	name: void | string;
+	host: void | RESTHost;
+	readonly inParametersCount: void | number;
+	method: void | string;
+	urlTemplate: void | string;
+	defaultContentType: void | string;
 	constructor(urlTemplate: string);
 	/**
 	 * Creates a copy of the REST operation.
