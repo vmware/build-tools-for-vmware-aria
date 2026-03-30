@@ -26,6 +26,14 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Shim for Object.entries*
+
+Added a shim for `Object.entries`, which is not natively supported by the current version of the JavaScript Engine Rhino in vRO.
+
+#### Relevant Documentation
+
+[MDN Object.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries)
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -76,6 +84,18 @@ Add the following new definitions:
 ### *Update type definitions for `FileReader` from `o11n-core` plugin*
 
 Add `close()` method.
+
+### *Bugfix for Shimming `Object.values`*
+
+#### Previous Behavior
+
+Using `Object.values` would not be replaced by a Shim call and would result in a runtime error when ran inside of vRO's Rhino JavaScript engine.
+
+#### New Behavior
+
+Using `Object.values` now correctly gets replaced by a Shim call (`VROES.Shims.objectValues`), preventing runtime errors when executed inside of vRO's Rhino JavaScript engine.
+
+### *Bugfix for too many opened files on Windows*
 
 #### Previous Behavior
 

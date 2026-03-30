@@ -173,6 +173,10 @@ export function transformShims(sourceFile: ts.SourceFile, context: ScriptTransfo
 					return shimStaticCall("arrayOf", node);
 				case "ObjectConstructor.assign":
 					return shimStaticCall("objectAssign", node);
+				case "ObjectConstructor.entries":
+					return shimStaticCall("objectEntries", node);
+				case "ObjectConstructor.values":
+					return shimStaticCall("objectValues", node);
 			}
 		}
 
