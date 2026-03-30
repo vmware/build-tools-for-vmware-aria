@@ -20,21 +20,21 @@ export type TransformationResult = Object | string;
 
 export type YesNo = "Yes" | "No";
 
-declare interface Attribute {
+export interface Attribute {
 	name: string;
 	description: string;
 	type: string;
 	value: any;
 }
 
-declare interface VersionHistoryItem {
+export interface VersionHistoryItem {
 	comment: string;
 	date: any;
 	version: string;
 	user: string;
 }
 
-declare interface ConfigurationElement {
+export interface ConfigurationElement {
 	name: string;
 	description: string;
 	version: string;
