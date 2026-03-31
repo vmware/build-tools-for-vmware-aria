@@ -16,7 +16,7 @@
         "vrotsc": "bin/vrotsc"
     },
     "dependencies": {
-        "brace-expansion": "^2.0.2",
+        "brace-expansion": "^2.0.3",
         "minimatch": "^10.2.3"
     },
     "devDependencies": {
