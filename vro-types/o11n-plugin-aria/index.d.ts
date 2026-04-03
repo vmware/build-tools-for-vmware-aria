@@ -58,6 +58,51 @@ declare class VraInfrastructureClient {
 	 * Create a Cloud Account service to invoke APIs.
 	 */
 	createCloudAccountService(): VraCloudAccountService;
+
+	/**
+	 * Create a Network service to invoke APIs.
+	 */
+	createNetworkService(): VraNetworkService;
+
+	/**
+	 * Create a FlavorProfile service to invoke APIs.
+	 */
+	createFlavorProfileService(): VraFlavorProfileService;
+
+	/**
+	 * Create a StorageProfile service to invoke APIs.
+	 */
+	createStorageProfileService(): VraStorageProfileService;
+
+	/**
+	 * Create Tags service to invoke APIs.
+	 */
+	createTagsService(): VraTagsService;
+
+	/**
+	 * Create a Disk service to invoke APIs.
+	 */
+	createDiskService(): VraDiskService;
+
+	/**
+	 * Create a Machine service to invoke APIs.
+	 */
+	createMachineService(): VraMachineService;
+
+	/**
+	 * Create a Project service to invoke APIs.
+	 */
+	createProjectService(): VraProjectService;
+
+	/**
+	 * Create a NetworkProfile service to invoke APIs.
+	 */
+	createNetworkProfileService(): VraNetworkProfileService;
+
+	/**
+	 * Create a ImageProfile service to invoke APIs.
+	 */
+	createImageProfileService(): VraImageProfileService;
 }
 
 declare class VraCloudAccountService {
@@ -2791,7 +2836,7 @@ declare class VraFlavorProfileService {
  * HostManager provides all the CRUD operations for VMware Aria Automation Plugin along with Generic Rest Client support.
  */
 declare class VraHostManager {
-	static readonly defaultHostData: VraHost; 
+	static readonly defaultHostData: VraHost;
 
 	/**
 	 * Save Automation Host object.
