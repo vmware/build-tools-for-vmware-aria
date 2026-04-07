@@ -1,14 +1,229 @@
 /**
- * Create new non persisted ldap connections.
+ * Represents the Active Directory base.
  */
-declare class LdapClientFactory {
+declare class ActiveDirectory {
+	/**
+	 * Search the active directory for a certain type of object.
+	 * 
+	 * @param type May be one of this: ComputerAD, User, UserGroup, OrganizationalUnit or Group.
+	 * @param query The query. You don't have to place * before and after your query.
+	 * @param adServer If not provided default Active Directory server will be used.
+	 */
+	static search<T>(type: string, query: string, adServer: AD_Host): T[];
+	/**
+	 * Search the active directory for a certain type of object. Object will be returned only if the there is exact match.
+	 *
+	 * @param type May be one of this: ComputerAD, User, UserGroup, OrganizationalUnit or Group.
+	 * @param objectName Object name to search for.
+	 * @param limit Maximum number of returned results.
+	 * @param adServer If not provided default Active Directory server will be searched.
+	 */
+	static searchExactMatch<T>(type: string, objectName: string, limit: number, adServer: AD_Host): T[];
+	/**
+	 * Returns a computer when his exact name is given. If no computer found, returns null
+	 *
+	 * @param computerName The exact name of the computer.
+	 * @param adServer If not provided default Active Directory server will be used.
+	 */
+	static getComputerAD(computerName: string, adServer: AD_Host): AD_Computer;
+	/**
+	 * Return the AD_Computer representing the Domain Conroller
+	 * @param adServer If not provided default Active Directory server will be used.
+	 */
+	static getDC(adServer: AD_Host): AD_Computer;
+	/**
+	 * Processes a search operation with the provided information. It is expected that at most one entry will be 
+	 * returned from the search, and that no additional content from the successful search result 
+	 * (e.g., diagnostic message or response controls) are needed.
+	 *
+	 * @param baseDN
+	 * @param searchScope
+	 * @param timeLimit
+	 * @param filter
+	 * @param attributes
+	 * @param host
+	 */
+
+	static searchForEntry<T>(baseDN: string, searchScope: LdapSearchScope, timeLimit: number, filter: string, attributes: string[], host: AD_Host): T;
+	/**
+	 * Search recursively the whole domain tree of Active Directory for a certain type of objects.
+	 * 
+	 * @param type 
+	 * @param query 
+	 * @param adServer 
+	 */
+	static searchRecursively<T>(type: string, query: string, adServer: AD_Host): T[];
+	/**
+	 * Gets computers recursively for the whole domain tree.
+	 * 
+	 * @param computerName 
+	 * @param adServer 
+	 */
+	static getComputerADRecursively(computerName: string, adServer: AD_Host): AD_Computer[];
+	/**
+	 * Retrieves all AD_Computer instances for the domain and all sub-domain Domain Controllers.
+	 * 
+	 * @param param0 
+	 */
+	static getAllDomainControllerComputers(param0: AD_Host): AD_Computer[];
+	/** Retrieves the entry with the specified DN. */
+	static getEntry<T>(baseDN: string, attributes: string[], host: AD_Host): T;
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory, or to move a subtree of entries to a new location in the directory. For example, to rename "cn=SomeUser, ou=People, dc=demo, dc=org" to "cn=AnotherUser, ou=People, dc=demo, dc=org" you must provide from as "cn=SomeUser, ou=People, dc=demo, dc=org" and to as "cn=AnotherUser". To move the entry under different tree node new_parent "cn=NewName, ou=NewParent, dc=demo, dc=org" must be provided.
+	 * 
+	 * @param from 
+	 * @param to 
+	 * @param new_parent 
+	 * @param param3 
+	 */
+	static rename(from: string, to: string, new_parent: string, param3: AD_Host): void;
 }
 
 /**
  * Connection to ldap server.
  */
-declare interface LdapClient {
+declare class LdapClient {
+	/**
+	 * Creates a new LDAP connection that is established to the specified server and is authenticated as the specified user (via LDAP simple authentication).
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 * @param param2 
+	 * @param param3 
+	 * @param param4 
+	 */
+	constructor(param0: any, param1: string, param2: number, param3: string, param4: string);
+
+	/**
+	 * Applies the provided modification to the specified entry.
+	 * 
+	 * @param dn 
+	 * @param newRDN 
+	 * @param deleteOldRDN 
+	 * @param newSuperiorDN 
+	 */
+	modifyDN(dn: string, newRDN: string, deleteOldRDN: boolean, newSuperiorDN: string): LdapResult;
+	/**
+	 * Processes a search operation with the provided information. It is expected that at most one entry will be returned from the search, and that no additional content from the successful search result (e.g., diagnostic message or response controls) are needed.
+	 * 
+	 * @param dn 
+	 * @param searchScope 
+	 * @param timeLimit 
+	 * @param filter 
+	 * @param attributes 
+	 */
+	searchForEntry(dn: string, searchScope: LdapSearchScope, timeLimit: number, filter: string, attributes: string[]): LdapEntry;
+	/** Retrieves the time that this connection was established in the number of milliseconds since January 1, 1970 UTC (the same format used by System.currentTimeMillis. */
+	getConnectTime(): number;
+	/** Retrieves the user-friendly name that has been assigned to this connection. */
+	getConnectionName(): string;
+	/**
+	 * Deletes the entry with the specified DN.
+	 * 
+	 * @param param0 
+	 */
+	deleteByDeleteRequest(param0: LdapDeleteRequest): LdapResult;
+	/**
+	 * Processes a search operation with the provided information. The search result entries and references will be collected internally and included in the SearchResult object that is returned.
+	 * 
+	 * @param searchRequest 
+	 */
+	searchBySearchRequest(searchRequest: LdapSearchRequest): LdapSearchResult;
+	/** Indicates whether this connection is currently established. */
+	isConnected(): boolean;
+	/**
+	 * Deletes the entry with the specified DN.
+	 * 
+	 * @param dn 
+	 */
+	delete(dn: string): LdapResult;
+	/**
+	 * Establishes an unauthenticated connection to the directory server using the provided information.
+	 * 
+	 * @param host 
+	 * @param port 
+	 * @param timeout 
+	 */
+	connect(host: string, port: number, timeout: number): void;
+	/** If this method is invoked while any operations are in progress on this connection, then the directory server may or may not abort processing for those operations, depending on the type of operation and how far along the server has already gotten while processing that operation. It is recommended that all active operations be abandoned, canceled, or allowed to complete before attempting to close an active connection. */
+	close(): void;
+	/**
+	 * Processes an add operation with the provided information.
+	 * 
+	 * @param entry 
+	 */
+	addEntry(entry: LdapEntry): LdapResult;
+	/**
+	 * Processes a search operation with the provided information. The search result entries and references will be collected internally and included in the SearchResult object that is returned.
+	 * 
+	 * @param baseDN 
+	 * @param searchScope 
+	 * @param derefPolicy 
+	 * @param sizeLimit 
+	 * @param timeLimit 
+	 * @param filter 
+	 * @param attributes 
+	 */
+	search(baseDN: string, searchScope: LdapSearchScope, derefPolicy: LdapDereferencePolicy, sizeLimit: number, timeLimit: number, filter: string, attributes: string[]): LdapSearchResult;
+	/**
+	 * The LDAP protocol specification forbids clients from attempting to perform a bind on a connection in which one or more other operations are already in progress. If a bind is attempted while any operations are in progress, then the directory server may or may not abort processing for those operations.
+	 * 
+	 * @param bindDN 
+	 * @param password 
+	 */
+	bind(bindDN: string, password: string): LdapResult;
+	/**
+	 * Retrieves the entry with the specified DN. The requested entry, or null if the target entry does not exist or no entry was returned (e.g., if the authenticated user does not have permission to read the target entry).
+	 * 
+	 * @param dn 
+	 * @param attributes 
+	 */
+	getEntry(dn: string, attributes: string[]): LdapEntry;
+	/**
+	 * Processes an add operation with the provided information.
+	 * @param dn 
+	 * @param attributes 
+	 */
+	addAttribute(dn: string, attributes: any[]): LdapResult;
+	/**
+	 * Specifies the user-friendly name that should be used for this connection. This name may be used in debugging to help identify the purpose of this connection.
+	 * 
+	 * @param connectionName 
+	 */
+	setConnectionName(connectionName: string): void;
+	/**
+	 * Applies the provided modification to the specified entry.
+	 * 
+	 * @param dn 
+	 * @param modificaitons 
+	 */
+	modify(dn: string, modificaitons: any[]): any;
+	/** Attempts to re-establish a connection to the server and re-authenticate if appropriate. */
+	reconnect(): void;
+	/** Retrieves the disconnect message for this connection, which may provide additional information about the reason for the disconnect, if available. */
+	getDisconnectMessage(): string;
+	/** Retrieves the time that this connection was last used to send or receive an LDAP message. The value will represent the number of milliseconds since January 1, 1970 UTC (the same format used by System.currentTimeMillis. */
+	getLastCommunicationTime(): number;
 }
+
+/**
+ * Create new non persisted ldap connections.
+ */
+declare class LdapClientFactory {
+	/**
+	 * Creates a new LDAP connection that is established to the specified server and is authenticated as the specified user (via LDAP simple authentication)..
+	 * 
+	 * @param host 
+	 * @param port 
+	 * @param bindDN 
+	 * @param password 
+	 * @param useSSL 
+	 */
+	public static newLdapClient(host: string, port: number, bindDN: string, password: string, useSSL: boolean): LdapClient;
+}
+
+
+
 
 /**
  * This class provides a data structure for holding information about an LDAP
@@ -358,64 +573,7 @@ declare class ConfigurationManager {
 	static validateConfiguration(param0: AD_ServerConfiguration): void;
 }
 
-/**
- * Represents the Active Directory base.
- */
-declare class ActiveDirectory {
-	/**
-	 * Search the active directory for a certain type of object
-	 * @param type
-	 * @param query
-	 * @param adServer
-	 */
-	static search(type: string, query: string, adServer: AD_Host): any[];
-	/**
-	 * Search the active directory for a certain type of object. Object will be returned only
-	 * if the there is
-	 * exact match.
-	 *
-	 * @param type
-	 * @param objectName
-	 * @param limit
-	 * @param adServer
-	 */
-	static searchExactMatch(type: string, objectName: string, limit: number, adServer: AD_Host): any[];
-	/**
-	 * Returns a computer when his exact name is given. If no computer found, returns null
-	 *
-	 * @param computerName
-	 * @param adServer
-	 */
-	static getComputerAD(computerName: string, adServer: AD_Host): AD_Computer;
-	/**
-	 * Return the AD_Computer representing the Domain Conroller
-	 * @param adServer
-	 */
-	static getDC(adServer: AD_Host): AD_Computer;
-	/**
-	* Move Ad Object to a diferent OU or rename
-	* @param from // Objcect Distinguish Name
-	* @param to   // Object new Name
-	* @param new_parent // Object New Ou Parent
-	* @param adServer // AdServer
-	*/
-	static rename(from: string, to: string, new_parent: string, adServer: AD_Host): void;
 
-	/**
-	 * Processes a search operation with the provided information. It is expected that at most one entry will be 
-	 * returned from the search, and that no additional content from the successful search result 
-	 * (e.g., diagnostic message or response controls) are needed.
-	 *
-	 * @param baseDN
-	 * @param searchScope
-	 * @param timeLimit
-	 * @param filter
-	 * @param attributes
-	 * @param host
-	 */
-
-	static searchForEntry(baseDN: string, searchScope: LdapSearchScope, timeLimit: number, filter: string, attributes: string, host: AD_Host): any;
-}
 
 /**
  * Represents Active directory server connection.
