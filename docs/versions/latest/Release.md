@@ -85,6 +85,8 @@ Add the following new definitions:
 
 Add `close()` method.
 
+### *Update type definitions for `VraInfrastructureClient` from `o11n-plugin-aria` plugin*
+
 ### *Bugfix for Shimming `Object.values`*
 
 #### Previous Behavior
