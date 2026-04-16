@@ -80,6 +80,397 @@ declare class ActiveDirectory {
 }
 
 /**
+ * Computer on the AD
+ */
+declare interface AD_Computer {
+	// The unique Id of the element
+	readonly id: string;
+	// The node name
+	readonly name: string;
+	// The remote host name
+	readonly hostname: string;
+	// Activate or deactivate a computer
+	enabled: boolean;
+	// Return object GUID formatted as dashed string
+	readonly gUID: string;
+	// Return the DN of the item
+	readonly distinguishedName: string;
+	// Returns all attributes
+	readonly allAttributes: any[];
+
+	/**
+	 * Get an AD attribute for an array of values
+	 * @param attibName
+	 */
+	getArrayAttribute(attibName: string): string[];
+
+	/**
+	 * Get an AD attribute value as byte array.
+	 * @param attibName
+	 */
+	getAttributeValueBytes(attibName: string): any[];
+
+	/**
+	 * Removes an attribute as specified by the attribName parameter
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 * @param name 
+	 */
+	rename(name: string): void;
+
+	/**
+	 * Change the value of an existing attribute
+	 * 
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+
+	/**
+	 * Get an AD attribute
+	 * @param attibName
+	 */
+	getAttribute(attibName: string): string;
+
+	/**
+	 * Adds an attribute
+	 *
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	addAttribute(attribName: string, newValue: any): void;
+}
+
+/**
+ * Group
+ */
+declare interface AD_Group {
+	// the unique Id of the element
+	readonly id: string;
+	// List of all user groups (read-only)
+	readonly userGroups: any[];
+	// List of all Group (read-only)
+	readonly containers: any[];
+	// List of all OU (read-only)
+	readonly organizationalUnits: any[];
+	// List of all computers (read-only)
+	readonly computers: any[];
+	// List of all users (read-only)
+	readonly users: any[];
+	// Return object GUID formatted as dashed string
+	readonly gUID: string;
+	// Return the DN of the item
+	readonly distinguishedName: string;
+	// Returns all attributes
+	readonly allAttributes: any[];
+
+	/**
+	 * Creates a new user, sets its password and adds it to this container.
+	 * 
+	 * @param accountName 
+	 * @param password 
+	 * @param domainName 
+	 * @param displayName 
+	 */
+	createUserWithPassword(accountName: string, password: string, domainName: string, displayName: string): void;
+	/**
+	 * Creates a new user, sets its password and adds it to this container.
+	 * 
+	 * @param accountName 
+	 * @param password 
+	 * @param domainName 
+	 * @param displayName 
+	 * @param firstName 
+	 * @param lastName 
+	 */
+	createUserWithDetails(accountName: string, password: string, domainName: string, displayName: string, firstName: string, lastName: string): void;
+	/**
+	 * Creates a new user group and adds it to this container.
+	 * 
+	 * @param groupName 
+	 */
+	createUserGroup(groupName: string): void;
+	/**
+	 * Creates a new organizational unit and adds it to this container.
+	 * 
+	 * @param ouName 
+	 */
+	createOrganizationalUnit(ouName: string): void;
+	/**
+	 * Create a new computer and add it to this container.
+	 * 
+	 * @param computerName 
+	 * @param domainName 
+	 * @param computerNamePreWin2K 
+	 */
+	createComputer(computerName: string, domainName: string, computerNamePreWin2K: string): void;
+	/**
+	 * Create a new computer with password and add it to this container.
+	 * 
+	 * @param computerName 
+	 * @param domainName 
+	 * @param password 
+	 * @param computerNamePreWin2K 
+	 */
+	createComputerWithPassword(computerName: string, domainName: string, password: string, computerNamePreWin2K: string): void;
+	/**
+	 * Creates a new user and adds it to this container.
+	 * 
+	 * @param accountName 
+	 * @param domainName 
+	 * @param displayName 
+	 */
+	createUser(accountName: string, domainName: string, displayName: string): void;
+	/**
+	 * Get an AD attribute for an array of values.
+	 * 
+	 * @param attribName 
+	 */
+	getArrayAttribute(attribName: string): string[];
+	/**
+	 * Get an AD attribute value as byte array.
+	 * @param attribName 
+	 */
+	getAttributeValueBytes(attribName: string): any[];
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 * 
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+	/**
+	 * Change the value of an existing attribute.
+	 * 
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+	/**
+	 * Get an AD attribute.
+	 * 
+	 * @param attribName 
+	 */
+	getAttribute(attribName: string): string;
+	/**
+	 * Adds an attribute.
+	 * 
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	addAttribute(attribName: string, newValue: any): void;
+}
+
+/**
+ * Represents Active directory server connection.
+ */
+declare interface AD_Host {
+	// Active directory configuration name
+	readonly name: string;
+	// Active Directory host connection URL. Actual URL used for connection with Active Directory server. It might differ from configured values when current object represents sub-domain entity.
+	readonly Url: string;
+	// Active Directory host configuration settings for current AD_Host connection.
+	readonly hostConfiguration: AD_ServerConfiguration;
+
+	/**
+	 * Retrieve LdapClient based on current host configuration settings.
+	 */
+	getLdapClient(): LdapClient;
+}
+
+/**
+ * Manage Active Directory hosts
+ */
+declare class AD_HostManager {
+	/**
+	 * Return Active Directory hosts by it's configuration id.
+	 * @param param0
+	 */
+	static findHost(param0: string): AD_Host;
+
+	/**
+	 * Return all Active Directory hosts.
+	 */
+	static findAllHosts(): any[];
+}
+
+/**
+ * Represents an Organizational Unit
+ */
+declare interface AD_OrganizationalUnit {
+	// the unique Id of the element
+	readonly id: string;
+	// List of all user groups (read-only)
+	readonly userGroups: AD_UserGroup[];
+	// List of all Group (read-only)
+	readonly containers: AD_Group[];
+	// List of all OU (read-only)
+	readonly organizationalUnits: AD_OrganizationalUnit[];
+	// List of all computers (read-only)
+	readonly computers: AD_Computer[];
+	// List of all users (read-only)
+	readonly users: AD_User[];
+	// Return object GUID formatted as dashed string
+	readonly gUID: string;
+	// Return the DN of the item
+	readonly distinguishedName: string;
+	// Returns all attributes
+	readonly allAttributes: any[];
+
+	/**
+	 * Get a computer by name.
+	 * 
+	 * @param computerName
+	 */
+	searchComputer(computerName: string): AD_Computer;
+	/**
+	 * Creates a new user, sets its password and adds it to this container.
+	 *
+	 * @param accountName
+	 * @param password 
+	 * @param domainName 
+	 * @param displayName 
+	 */
+	createUserWithPassword(accountName: string, password: string, domainName: string, displayName: string): void;
+	/**
+	 * Creates a new user, sets its password and adds it to this container.
+	 * 
+	 * @param accountName 
+	 * @param password 
+	 * @param domainName 
+	 * @param displayName 
+	 * @param firstName 
+	 * @param lastName 
+	 */
+	createUserWithDetails(accountName: string, password: string, domainName: string, displayName: string, firstName: string, lastName: string): void;
+	/**
+	 * Creates a new user group and adds it to this container.
+	 * 
+	 * @param groupName 
+	 */
+	createUserGroup(groupName: string): void;
+	/**
+	 * Creates a new organizational unit and adds it to this container.
+	 * 
+	 * @param ouName 
+	 */
+	createOrganizationalUnit(ouName: string): void;
+	/**
+	 * Create a new computer and add it to this container.
+	 * 
+	 * @param domainName 
+	 * @param computerName 
+	 * @param computerNamePreWin2K 
+	 */
+	createComputer(computerName: string, domainName: string, computerNamePreWin2K: string): void;
+	/**
+	 * Create a new computer with password and add it to this container.
+	 * 
+	 * @param computerNamePreWin2K 
+	 * @param computerName
+	 * @param password 
+	 * @param domainName 
+	 */
+	createComputerWithPassword(computerName: string, domainName: string, password: string, computerNamePreWin2K: string): void;
+	/**
+	 * Creates a new user and adds it to this container.
+	 * 
+	 * @param domainName 
+	 * @param displayName 
+	 * @param accountName 
+	 */
+	createUser(accountName: string, domainName: string, displayName: string): void;
+	/**
+	 * Get an AD attribute for an array of values.
+	 * 
+	 * @param attibName 
+	 */
+	getArrayAttribute(attibName: string): string[];
+	/**
+	 * Get an AD attribute value as byte array.
+	 * 
+	 * @param attibName
+	 */
+	getAttributeValueBytes(attibName: string): any[];
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 * 
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 * 
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+	/**
+	 * Change the value of an existing attribute
+	 * 
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+	/**
+	 * Get an AD attribute.
+	 * 
+	 * @param attibName
+	 */
+	getAttribute(attibName: string): string;
+
+	/**
+	 * Adds an attribute.
+	 *
+	 * @param attribName 
+	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
+	 */
+	addAttribute(attribName: string, newValue: any): void;
+}
+
+/**
+ * Active Directory Plug-in options
+ */
+declare interface AD_PluginOptions {
+	// Default Active Directory end point id.
+	readonly defaultAdServerId: string;
+	// Maximum number of items that will be returned by a search.
+	readonly searchSizeLimit: number;
+	// Maximum number of items that will be returned by a search from single Active Directory server.
+	readonly searchSizeLimitPerServer: number;
+}
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
  * Connection to ldap server.
  */
 declare class LdapClient {
@@ -534,21 +925,7 @@ declare class LdapSimplePagedResultsControl {
 declare interface LdapSearchResultReference {
 }
 
-/**
- * Manage Active Directory hosts
- */
-declare class AD_HostManager {
-	/**
-	 * Return Active Directory hosts by it's configuration id.
-	 * @param param0
-	 */
-	static findHost(param0: string): AD_Host;
 
-	/**
-	 * Return all Active Directory hosts.
-	 */
-	static findAllHosts(): any[];
-}
 
 /**
  * Manage Active Directory plug-in configuration
@@ -575,23 +952,9 @@ declare class ConfigurationManager {
 
 
 
-/**
- * Represents Active directory server connection.
- */
-declare interface AD_Host {
-	readonly name: string;
-	readonly Url: string;
-	readonly hostConfiguration: AD_ServerConfiguration;
-}
 
-/**
- * Active Directory Plug-in options
- */
-declare interface AD_PluginOptions {
-	readonly defaultAdServerId: string;
-	readonly searchSizeLimit: number;
-	readonly searchSizeLimitPerServer: number;
-}
+
+
 
 /**
  * Represents single Active Directory service end point configuration.
@@ -612,292 +975,6 @@ declare class AD_ServerConfiguration {
 	loadBalancingMode: LdapLoadBalancingMode;
 
 	constructor();
-}
-
-/**
- * Computer on the AD
- */
-declare interface AD_Computer {
-	id: string;
-	readonly name: string;
-	readonly hostname: string;
-	enabled: boolean;
-	readonly allAttributes: any[];
-	readonly gUID: string;
-	readonly distinguishedName: string;
-
-	/**
-	 * Get an AD attribute for an array of values
-	 * @param attibName
-	 */
-	getArrayAttribute(attibName: string): string[];
-
-	/**
-	 * Get an AD attribute value as byte array.
-	 * @param attibName
-	 */
-	getAttributeValueBytes(attibName: string): any[];
-
-	/**
-	 * Removes an attribute as specified by the attribName parameter
-	 * @param attribName 
-	 */
-	removeAttribute(attribName: string): void;
-
-	/**
-	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element
-	 * @param param0 
-	 */
-	destroy(param0: boolean): void;
-
-	/**
-	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
-	 * @param name 
-	 */
-	rename(name: string): void;
-
-	/**
-	 * Change the value of an existing attribute
-	 * 
-	 * @param attribName 
-	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
-	 */
-	setAttribute(attribName: string, newValue: any): void;
-
-	/**
-	 * Get an AD attribute
-	 * @param attibName
-	 */
-	getAttribute(attibName: string): string;
-
-	/**
-	 * Adds an attribute
-	 *
-	 * @param attribName 
-	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
-	 */
-	addAttribute(attribName: string, newValue: any): void;
-}
-
-/**
- * Group
- */
-declare interface AD_Group {
-	readonly id: string;
-	readonly users: object[];
-	readonly computers: object[];
-	readonly userGroups: object[];
-	readonly containers: object[];
-	readonly organizationalUnits: object[];
-	readonly distinguishedName: string;
-	readonly allAttributes: object[];
-	readonly gUID: string;
-
-	/**
-	 * Creates a new user and adds it to this container.
-	 */
-	createUser(accountName: string, domainName: string, displayName: string): void;
-
-	/**
-	 * Creates a new user, sets its password and adds it to this container.
-	 */
-	createUserWithPassword(accountName: string, password: string, domainName: string, displayName: string): void;
-
-	/**
-	 * Creates a new user, sets its password and adds it to this container.
-	 */
-	createUserWithDetails(accountName: string, password: string, domainName: string, displayName: string, firstName: string, lastName: string): void;
-
-	/**
-	 * Creates a new user group and adds it to this container.
-	 */
-	createUserGroup(groupName: string): void;
-
-	/**
-	 * Creates a new organizational unit and adds it to this container.
-	 */
-	createOrganizationalUnit(ouName: string): void;
-
-	/**
-	 * Create a new computer and add it to this container.
-	 */
-	createComputer(computerName: string, domainName: string, computerNamePreWin2K: string): void;
-
-	/**
-	 * Create a new computer with password and add it to this container.
-	 */
-	createComputerWithPassword(computerName: string, domainName: string, password: string, computerNamePreWin2K: string): void;
-
-	/**
-	 * Removes an attribute as specified by the attribName parameter.
-	 */
-	removeAttribute(attribName: string): void;
-
-	/**
-	 * Change the value of an existing attribute.
-	 */
-	setAttribute(attribName: string, newValue: object): void;
-
-	/**
-	 * Get an AD attribute.
-	 */
-	getAttribute(attribName: string): string;
-
-	/**
-	 * Adds an attribute.
-	 */
-	addAttribute(attribName: string, newValue: string): void;
-
-	/**
-	 * Get an AD attribute value as byte array.
-	 */
-	getAttributeValueBytes(attribName: string): object[];
-
-	/**
-	 * Get an AD attribute for an array of values.
-	 */
-	getArrayAttribute(attribName: string): string[];
-}
-
-/**
- * Represents an Organizational Unit
- */
-declare interface AD_OrganizationalUnit {
-	readonly id: string;
-	/**
-	 * List of all computers (read-only)
-	 */
-	readonly computers: AD_Computer[];
-	/**
-	 * List of all user groups (read-only)
-	 */
-	readonly userGroups: AD_UserGroup[];
-	/**
-	 * List of all Group (read-only)
-	 */
-	readonly containers: AD_Group[];
-	/**
-	 * List of all OU (read-only)
-	 */
-	readonly organizationalUnits: AD_OrganizationalUnit[];
-	/**
-	 * List of all users (read-only)
-	 */
-	readonly users: AD_User[];
-	/**
-	 * Returns all attributes
-	 */
-	readonly allAttributes: any[];
-	/**
-	 * Return object GUID formatted as dashed string
-	 */
-	readonly gUID: string;
-	/**
-	 * Return the DN of the item
-	 */
-	readonly distinguishedName: string;
-	/**
-	 * Get a computer by name
-	 * @param computerName
-	 */
-	searchComputer(computerName: string): AD_Computer;
-
-	/**
-	 * Creates a new user, sets its password and adds it to this container
-	 *
-	 * @param accountName
-	 * @param password 
-	 * @param domainName 
-	 * @param displayName 
-	 */
-	createUserWithPassword(accountName: string, password: string, domainName: string, displayName: string): void;
-
-	/**
-	 * Creates a new user, sets its password and adds it to this container
-	 */
-	createUserWithDetails(accountName: string, password: string, domainName: string, displayName: string, firstName: string, lastName: string): void;
-
-	/**
-	 * Creates a new user group and adds it to this container
-	 * @param groupName 
-	 */
-	createUserGroup(groupName: string): void;
-
-	/**
-	 * Creates a new organizational unit and adds it to this container
-	 * @param ouName 
-	 */
-	createOrganizationalUnit(ouName: string): void;
-
-	/**
-	 * Create a new computer and add it to this container
-	 * @param domainName 
-	 * @param computerName 
-	 * @param computerNamePreWin2K 
-	 */
-	createComputer(computerName: string, domainName: string, computerNamePreWin2K: string): void;
-
-	/**
-	 * Create a new computer with password and add it to this container
-	 * @param computerNamePreWin2K 
-	 * @param computerName
-	 * @param password 
-	 * @param domainName 
-	 */
-	createComputerWithPassword(computerName: string, domainName: string, password: string, computerNamePreWin2K: string): void;
-
-	/**
-	 * Creates a new user and adds it to this container
-	 * @param domainName 
-	 * @param displayName 
-	 * @param accountName 
-	 */
-	createUser(accountName: string, domainName: string, displayName: string): void;
-
-	/**
-	 * Get an AD attribute for an array of values.
-	 */
-	getArrayAttribute(attibName: string): string[];
-
-	/**
-	 * Get an AD attribute value as byte array.
-	 * @param attibName
-	 */
-	getAttributeValueBytes(attibName: string): any[];
-
-	/**
-	 * Removes an attribute as specified by the attribName parameter
-	 * @param attribName 
-	 */
-	removeAttribute(attribName: string): void;
-
-	/**
-	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element
-	 * @param param0 
-	 */
-	destroy(param0: boolean): void;
-
-	/**
-	 * Change the value of an existing attribute
-	 * 
-	 * @param attribName 
-	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
-	 */
-	setAttribute(attribName: string, newValue: any): void;
-
-	/**
-	 * Get an AD attribute
-	 * @param attibName
-	 */
-	getAttribute(attibName: string): string;
-
-	/**
-	 * Adds an attribute
-	 *
-	 * @param attribName 
-	 * @param newValue - Note: newValue is `Object` in the API, but it should be just a string
-	 */
-	addAttribute(attribName: string, newValue: any): void;
 }
 
 /**
