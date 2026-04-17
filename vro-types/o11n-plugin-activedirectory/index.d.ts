@@ -448,27 +448,431 @@ declare interface AD_PluginOptions {
 	readonly searchSizeLimitPerServer: number;
 }
 
+/**
+ * Represents single Active Directory service end point configuration.
+ */
+declare class AD_ServerConfiguration {
+	// Id
+	id: string;
+	// Name
+	name: string;
+	// Active Directory host
+	host: string;
+	// Active Directory port
+	port: number;
+	// Root
+	ldapBase: string;
+	// Use SSL
+	useSSL: boolean;
+	// Default domain
+	defaultDomain: string;
+	// Use a shared session (deprecated)
+	useSharedSession: boolean;
+	// User name for shared session
+	sharedUserName: string;
+	// Password for shared session
+	sharedUserPassword: string;
+	// Follow refferals
+	followReferrals: boolean;
+	// Alternative host adresses
+	alternativeHosts: string[];
+	// Strategy for load balancing between configured alternative hosts.
+	loadBalancingMode: LdapLoadBalancingMode;
+	// Bind Type. Supported bind types are 'Simple' and 'Digest'.
+	bindType: LdapBindType;
 
+	constructor();
+}
 
+/**
+ * Unknown type of object
+ */
+declare interface AD_Unknown {
+	// the unique Id of the element
+	readonly id: string;
+	// Return object GUID formatted as dashed string
+	readonly gUID: string;
+	// Return the DN of the item
+	readonly distinguishedName: string;
+	// Returns all attributes
+	readonly allAttributes: any[];
 
+	/**
+	 * Get an AD attribute for an array of values..
+	 * 
+	 * @param attribName 
+	 */
+	getArrayAttribute(attribName: string): string[];
+	/**
+	 * Get an AD attribute value as byte array.
+	 * 
+	 * @param attribName 
+	 */
+	getAttributeValueBytes(attribName: string): any[];
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 * 
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 * 
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 * 
+	 * @param name 
+	 */
+	rename(name: string): void;
+	/**
+	 * Change the value of an existing attribute.
+	 * 
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+	/**
+	 * Get an AD attribute.
+	 * 
+	 * @param attribName 
+	 */
+	getAttribute(attribName: string): string;
+	/**
+	 * Adds an attribute.
+	 * 
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	addAttribute(attribName: string, newValue: any): void;
+}
 
+/**
+ * User
+ */
+declare interface AD_User {
+	// the unique Id of the element
+	readonly id: string;
+	// Return groups that contains the user
+	readonly memberOf: AD_UserGroup[];
+	// Return the SAM Account Name
+	readonly accountName: string;
+	// The SID represented as a character string with following format 'S-1-IdentifierAuthority-SubAuthority1-SubAuthority2-...-SubAuthorityn'
+	readonly sID: string;
+	// The user principal name
+	readonly userPrincipalName: string;
+	// Activate or deactivate a user
+	readonly enabled: boolean;
+	// Return object GUID formatted as dashed string
+	readonly gUID: string;
+	// Return the DN of the item
+	readonly distinguishedName: string;
+	// Returns all attributes
+	readonly allAttributes: any[];
 
+	/**
+	 * Sets the user account to change or not change the password at next logon.
+	 * @param param0
+	 */
+	setChangePasswordAtNextLogon(param0: boolean): void;
+	/**
+	 * Sets the passed in String value as a password of this user.
+	 * 
+	 * @param password 
+	 */
+	setPassword(password: string): void;
+	/**
+	 * Get an AD attribute for an array of values.
+	 * 
+	 * @param attribName 
+	 */
+	getArrayAttribute(attribName: string): string[];
+	/**
+	 * Get an AD attribute value as byte array.
+	 * 
+	 * @param attribName 
+	 */
+	getAttributeValueBytes(attribName: string): any[];
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 * 
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 * 
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 * 
+	 * @param name 
+	 */
+	rename(name: string): void;
+	/**
+	 * Change the value of an existing attribute.
+	 * 
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+	/**
+	 * Get an AD attribute.
+	 * @param attribName 
+	 */
+	getAttribute(attribName: string): string;
+	/**
+	 * Adds an attribute.
+	 * 
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	addAttribute(attribName: string, newValue: any): void;
+}
 
+/**
+ * UserGroup
+ */
+declare interface AD_UserGroup {
+	// the unique Id of the element
+	readonly id: string;
+	// Gets the users that are members of the current group
+	readonly userMembers: AD_User[];
+	// Gets the groups that are members of the current group
+	readonly groupMembers: AD_UserGroup[];
+	// Get the group of which current group is member
+	readonly memberOf: AD_UserGroup[];
+	// Gets the computers that are members of the current group
+	readonly computerMembers: AD_Computer[];
+	// The SID represented as a character string with following format 'S-1-IdentifierAuthority-SubAuthority1-SubAuthority2-...-SubAuthorityn'
+	readonly sID: string;
+	// Return object GUID formatted as dashed string
+	readonly gUID: string;
+	// Return the DN of the item
+	readonly distinguishedName: string;
+	// Returns all attributes
+	readonly allAttributes: any[];
 
+	/**
+	 * Adds elements to the group.
+	 * 
+	 * @elements - All elements to remove from the group
+	 */
+	addElements(elements: any[]): void;
+	/**
+	 * Removes elements from the group.
+	 * 
+	 * @elements - All elements to remove from the group
+	 */
+	removeElements(elements: any[]): void;
+	/**
+	 * Get an AD attribute for an array of values.
+	 * 
+	 * @param attribName 
+	 */
+	getArrayAttribute(attribName: string): string[];
+	/**
+	 * Get an AD attribute value as byte array.
+	 * 
+	 * @param attribName 
+	 */
+	getAttributeValueBytes(attribName: string): any[];
+	/**
+	 * Removes an attribute as specified by the attribName parameter.
+	 * 
+	 * @param attribName 
+	 */
+	removeAttribute(attribName: string): void;
+	/**
+	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
+	 * 
+	 * @param param0 
+	 */
+	destroy(param0: boolean): void;
+	/**
+	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
+	 * 
+	 * @param name 
+	 */
+	rename(name: string): void;
+	/**
+	 * Change the value of an existing attribute.
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	setAttribute(attribName: string, newValue: any): void;
+	/**
+	 * Get an AD attribute.
+	 * 
+	 * @param attribName 
+	 */
+	getAttribute(attribName: string): string;
+	/**
+	 * Adds an attribute.
+	 * @param attribName 
+	 * @param newValue 
+	 */
+	addAttribute(attribName: string, newValue: any): void;
+}
 
+/**
+ * Manage Active Directory plug-in configuration
+ */
+declare class ConfigurationManager {
+	private constructor();
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Validate Active Directory configuration.
+	 * 
+	 * @param param0
+	 */
+	static validateConfiguration(param0: AD_ServerConfiguration): void;
+	/**
+	 * Save ActiveDirectory plugin options.
+	 * 
+	 * @param param0 
+	 */
+	static savePluginOptions(param0: any): void;
+	/**
+	 * Save Active Directory server configuration. If provided configuration id is not set new configuration will be created otherwise existing configuration will be updated.
+	 * 
+	 * @param param0
+	 */
+	static saveConfiguration(param0: AD_ServerConfiguration): string;
+	/**
+	 * Delete Active Directory server configuration with the specified id.
+	 * 
+	 * @param param0
+	 */
+	static deleteConfiguration(param0: string): void;
+	/**
+	 * Get global ActiveDirectory plugin options.
+	 */
+	static getPluginOptions(): AD_PluginOptions;
+	/**
+	 * Return Active Directory server configuration with specified id. If id is not provided default Active Directory server will be returned.
+	 * 
+	 * @param param0 
+	 */
+	static getConfigurationById(param0: string): AD_ServerConfiguration;
+	/**
+	 * Delete Active Directory server configuration. Since version 2.0.0 of the plug-in multiple Active Directory servers can be configured. This method will delete default Active Directory server configuration.
+	 */
+	static reset(): void;
+	/**
+	 * Return available Active Directory server configurations.
+	 */
+	static findAll(): any[];
+	/**
+	 * Configure Active Directory server. Since version 2.0.0 of Active Directory plug-in multiple Active Directory servers can be configured.This method will update default Active Directory configuration if exists otherwise new configuration will be created.Deprecated use saveConfiguration(ServerConfiguration).
+	 * 
+	 * @param param0 
+	 */
+	static updateConfiguration(param0: AD_ServerConfiguration): void;
+}
+
+/**
+ * This class provides a data structure for holding information about an LDAP attribute, which
+ * includes an attribute name (which may include a set of attribute options) and zero or more values.
+ */
+declare class LdapAttribute {
+	constructor();
+	/**
+	 * Creates a new LDAP attribute with the specified name and no values.
+	 * @param name
+	 */
+	constructor(name: string);
+	/**
+	 * Creates a new LDAP attribute with the specified name and no values.
+	 * @param name
+	 * @param values
+	 */
+	constructor(name: string, values: string[]);
+
+	/**
+	 * Retrieves the set of values for this attribute as byte arrays.
+	 */
+	getValueByteArrays(): any[];
+	/**
+	 * Retrieves the value for this attribute as a Date.
+	 */
+	getValueAsDate(): any;
+	/**
+	 * Retrieves the value for this attribute as a byte arrays.
+	 */
+	getValueByteArrays(): any[];
+	/**
+	 * Indicates whether this attribute contains the specified value.
+	 * 
+	 * @param param0 
+	 */
+	hasValueAsByte(param0: any[]): boolean;
+	/**
+	 * Retrieves the value for this attribute as a long.
+	 */
+	getValueAsLong(): number;
+	/**
+	 * Retrieves the set of values for this attribute as strings.
+	 */
+	getValues(): string[];
+	/**
+	 * Retrieves the name for this attribute (i.e., the attribute description), which may include zero or more attribute options.
+	 */
+	getName(): string;
+	/**
+	 * Retrieves the value for this attribute as a string.
+	 */
+	getValue(): string;
+	/**
+	 * Retrieves the number of values for this attribute.
+	 */
+	size(): number;
+	/**
+	 * Indicates whether this attribute contains the specified value.
+	 * 
+	 * @param param0 
+	 */
+	hasValue(param0: string): boolean;
+	/**
+	 * Retrieves the base name for this attribute, which is the name or OID of the attribute type, without any attribute options.
+	 */
+	getBaseName(): string;
+	/**
+	 * Retrieves the set of options for this attribute.
+	 */
+	getOptions(): any[];
+}
+
+/**
+ * LdapBindType
+ */
+declare class LdapBindType {
+	private constructor();
+	/** Use Simple bind */
+	public static readonly Simple: LdapBindType;
+	/** Use Digest. */
+	public static readonly Digest: LdapBindType;
+
+	/**
+	 * Returns Bind Type as string.
+	 */
+	getValue(): string;
+	/**
+	 * Returns supported bind types.
+	 */
+	public static getValuesAsString(): string[];
+	/**
+	 * Create BindType object from it's string representation.
+	 * 
+	 * @param value 
+	 */
+	public static fromString(value: string): LdapBindType;
+}
+
 
 /**
  * Connection to ldap server.
@@ -485,29 +889,12 @@ declare class LdapClient {
 	 */
 	constructor(param0: any, param1: string, param2: number, param3: string, param4: string);
 
-	/**
-	 * Applies the provided modification to the specified entry.
-	 * 
-	 * @param dn 
-	 * @param newRDN 
-	 * @param deleteOldRDN 
-	 * @param newSuperiorDN 
-	 */
-	modifyDN(dn: string, newRDN: string, deleteOldRDN: boolean, newSuperiorDN: string): LdapResult;
-	/**
-	 * Processes a search operation with the provided information. It is expected that at most one entry will be returned from the search, and that no additional content from the successful search result (e.g., diagnostic message or response controls) are needed.
-	 * 
-	 * @param dn 
-	 * @param searchScope 
-	 * @param timeLimit 
-	 * @param filter 
-	 * @param attributes 
-	 */
-	searchForEntry(dn: string, searchScope: LdapSearchScope, timeLimit: number, filter: string, attributes: string[]): LdapEntry;
-	/** Retrieves the time that this connection was established in the number of milliseconds since January 1, 1970 UTC (the same format used by System.currentTimeMillis. */
-	getConnectTime(): number;
 	/** Retrieves the user-friendly name that has been assigned to this connection. */
 	getConnectionName(): string;
+	/** Retrieves the disconnect message for this connection, which may provide additional information about the reason for the disconnect, if available. */
+	getDisconnectMessage(): string;
+	/** Retrieves the time that this connection was last used to send or receive an LDAP message. The value will represent the number of milliseconds since January 1, 1970 UTC (the same format used by System.currentTimeMillis. */
+	getLastCommunicationTime(): number;
 	/**
 	 * Deletes the entry with the specified DN.
 	 * 
@@ -520,6 +907,36 @@ declare class LdapClient {
 	 * @param searchRequest 
 	 */
 	searchBySearchRequest(searchRequest: LdapSearchRequest): LdapSearchResult;
+	/**
+	 * Processes a search operation with the provided information. It is expected that at most one entry will be returned from the search, and that no additional content from the successful search result (e.g., diagnostic message or response controls) are needed.
+	 * 
+	 * @param dn 
+	 * @param searchScope 
+	 * @param timeLimit 
+	 * @param filter 
+	 * @param attributes 
+	 */
+	searchForEntry(dn: string, searchScope: LdapSearchScope, timeLimit: number, filter: string, attributes: string[]): LdapEntry;
+	/**
+	 * Applies the provided modification to the specified entry.
+	 * 
+	 * @param dn 
+	 * @param newRDN 
+	 * @param deleteOldRDN 
+	 * @param newSuperiorDN 
+	 */
+	modifyDN(dn: string, newRDN: string, deleteOldRDN: boolean, newSuperiorDN: string): LdapResult;
+	/** Retrieves the time that this connection was established in the number of milliseconds since January 1, 1970 UTC (the same format used by System.currentTimeMillis. */
+	getConnectTime(): number;
+	/**
+	 * Applies the provided modification to the specified entry.
+	 * 
+	 * @param dn 
+	 * @param modificaitons 
+	 */
+	modify(dn: string, modificaitons: any[]): any;
+	/** Attempts to re-establish a connection to the server and re-authenticate if appropriate. */
+	reconnect(): void;
 	/** Indicates whether this connection is currently established. */
 	isConnected(): boolean;
 	/**
@@ -582,19 +999,6 @@ declare class LdapClient {
 	 * @param connectionName 
 	 */
 	setConnectionName(connectionName: string): void;
-	/**
-	 * Applies the provided modification to the specified entry.
-	 * 
-	 * @param dn 
-	 * @param modificaitons 
-	 */
-	modify(dn: string, modificaitons: any[]): any;
-	/** Attempts to re-establish a connection to the server and re-authenticate if appropriate. */
-	reconnect(): void;
-	/** Retrieves the disconnect message for this connection, which may provide additional information about the reason for the disconnect, if available. */
-	getDisconnectMessage(): string;
-	/** Retrieves the time that this connection was last used to send or receive an LDAP message. The value will represent the number of milliseconds since January 1, 1970 UTC (the same format used by System.currentTimeMillis. */
-	getLastCommunicationTime(): number;
 }
 
 /**
@@ -613,8 +1017,206 @@ declare class LdapClientFactory {
 	public static newLdapClient(host: string, port: number, bindDN: string, password: string, useSSL: boolean): LdapClient;
 }
 
+/**
+ * This class implements the processing necessary to perform an LDAPv3 search operation, which can
+ * be used to retrieve entries that match a given set of criteria.
+ */
+declare class LdapDeleteRequest {
+	private constructor();
 
+	/** Retrieves the DN of the entry to delete. */
+	getDN(): string;
+	/**
+	 * Specifies the DN of the entry to delete.
+	 * 
+	 * @param dn 
+	 */
+	setDN(dn: string): void;
+	/**
+	 * Creates a new instance of this LDAP request that may be modified without impacting this request. The provided controls will be used for the new request instead of duplicating the controls from this request.
+	 * 
+	 * @param controls
+	 */
+	duplicate(controls: any[]): LdapDeleteRequest;
+	/**
+	 * Factory method for creating new LdapDeleteRequest instances from provided info.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	public static createRequest(param0: string, param1: any[]): LdapDeleteRequest;
+	/** Retrieves the type of operation that is represented by this request. */
+	getOperationType(): any;
+	/**
+	 * Specifies whether to automatically follow any referrals encountered while processing this request. This may be used to override the default behavior defined in the connection options for the connection used to process the request.
+	 * 
+	 * @param followReferrals 
+	 */
+	setFollowReferrals(followReferrals: boolean): void;
+	/**
+	 * Indicates whether to automatically follow any referrals encountered while processing this request. If a value has been set for this request, then it will be returned. Otherwise, the default from the connection options for the provided connection will be used.
+	 * 
+	 * @param client 
+	 */
+	followReferrals(client: LdapClient): boolean;
+	/** Retrieves the set of controls for this request. The caller must not alter this set of controls. */
+	getControls(): any[];
+	/**
+	 * Retrieves the maximum length of time in milliseconds that processing on this operation should be allowed to block while waiting for a response from the server.
+	 * 
+	 * @param client 
+	 */
+	getResponseTimeoutMillis(client: LdapClient): number;
+	/**
+	 * Specifies the maximum length of time in milliseconds that processing on this operation should be allowed to block while waiting for a response from the server. A value of zero indicates that no timeout should be enforced. A value that is less than zero indicates that the default response timeout for the underlying connection should be used.
+	 * 
+	 * @param responseTimeout 
+	 */
+	setResponseTimeoutMillis(responseTimeout: number): void;
+	/** Retrieves the message ID for the last LDAP message sent using this request. */
+	getLastMessageID(): number;
+	/**
+	 * Replaces the control with the same OID as the provided control with the provided control. If no control with the same OID exists in the request, then the control will be added to the request. If the request has multiple controls with the same OID as the new control, then only the first will be replaced.
+	 * 
+	 * @param control 
+	 */
+	replaceControl(control: any): any;
+	/** Removes all controls from this request. */
+	clearControls(): void;
+	/**
+	 * Replaces the control with the specified OID with the provided control. If no control with the given OID exists in the request, then a new control will be added. If this request has multiple controls with the specified OID, then only the first will be replaced.
+	 * 
+	 * @param oid 
+	 * @param control 
+	 */
+	replaceControlByOid(oid: string, control: any): void;
+	/**
+	 * Indicates whether this request contains at least one control with the specified OID.
+	 * 
+	 * @param oid 
+	 */
+	hasControlByOid(oid: string): boolean;
+	/**
+	 * Removes the control with the specified OID from the set of controls for this request. If this request has multiple controls with the same OID, then only the first will be removed.
+	 * 
+	 * @param oid 
+	 */
+	removeControlByOid(oid: string): any;
+	/**
+	 * Adds the provided control to the set of controls for this request.
+	 * 
+	 * @param control 
+	 */
+	addControl(control: any): void;
+	/** Indicates whether this request contains at least one control. */
+	hasControl(): boolean;
 
+	/**
+	 * Retrieves the control with the specified OID from this request. If this request has multiple controls with the specified OID, then the first will be returned.
+	 * 
+	 * @param oid 
+	 */
+	getControl(oid: string): void;
+}
+
+/**
+ * This class defines a data type for dereference policy values. Clients should
+ * generally use one of the {@code NEVER}, {@code SEARCHING}, {@code FINDING},
+ * {@code ALWAYS} values.
+ *
+ */
+declare class LdapDereferencePolicy {
+	static readonly NEVER: LdapDereferencePolicy;
+	static readonly SEARCHING: LdapDereferencePolicy;
+	static readonly FINDING: LdapDereferencePolicy;
+	static readonly ALWAYS: LdapDereferencePolicy;
+}
+
+/**
+ * This class provides a data structure for holding information about an LDAP distinguished name
+ * (DN). A DN consists of a comma-delimited list of zero or more RDN components.
+ *
+ */
+declare class LdapDN {
+	private constructor();
+
+	/**
+	 * Creates a new DN from the provided string representation.
+	 * @param dnString
+	 */
+	public static fromString(dnString: string): LdapRDN;
+	/**
+	 * Creates a new DN with the provided set of RDNs.
+	 * @param rdns
+	 */
+	public static fromRdns(rdns: LdapRDN[]): LdapRDN;
+	/**
+	 * Creates a new DN below the provided parent DN with the given RDN.
+	 * @param rdn
+	 * @param parentDN
+	 */
+	public static fromParentDn(rdn: LdapRDN, parentDN: LdapDN): LdapRDN;
+	/**
+	 * Retrieves the leftmost (i.e., furthest from the naming context) RDN component for this
+	 * DN.
+	 */
+	getRDN(): LdapRDN;
+	/**
+	 * Retrieves the string representation of the leftmost (i.e., furthest from the naming
+	 * context) RDN component for this DN.
+	 */
+	getRDNString(): string;
+	/**
+	 * Retrieves the set of RDNs that comprise this DN.
+	 */
+	getRDNs(): LdapRDN[];
+	/**
+	 * Retrieves the set of string representations of the RDNs that comprise this DN.
+	 */
+	getRDNStrings(): string[];
+	/**
+	 * Indicates whether this DN represents the null DN, which does not have any RDN
+	 * components.
+	 */
+	isNullDN(): boolean;
+	/**
+	 * Retrieves the DN that is the parent for this DN. Note that neither the null DN nor DNs
+	 * consisting of a single RDN component will be considered to have parent DNs.
+	 */
+	getParent(): LdapDN;
+	/**
+	 * Retrieves the string representation of the DN that is the parent for this DN. Note that
+	 * neither the null DN nor DNs consisting of a single RDN component will be considered to have
+	 * parent DNs.
+	 */
+	getParentString(): string;
+	/**
+	 * Indicates whether this DN is an ancestor of the provided DN. It will be considered an
+	 * ancestor of the provided DN if the array of RDN components for the provided DN ends with the
+	 * elements that comprise the array of RDN components for this DN (i.e., if the provided DN is
+	 * subordinate to, or optionally equal to, this DN). The null DN will be considered an ancestor for
+	 * all other DNs (with the exception of the null DN if allowEquals is false).
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	isAncestorOf(param0: LdapDN, param1: boolean): boolean;
+	/**
+	 * Indicates whether the provided object is equal to this DN. In order for the provided
+	 * object to be considered equal, it must be a non-null DN with the same set of RDN components.
+	 *
+	 * @param dn
+	 */
+	equals(dn: LdapDN): boolean;
+	/**
+	 * Retrieves a string representation of this DN.
+	 */
+	toString(): string;
+	/**
+	 * Retrieves a normalized string representation of this DN.
+	 */
+	toNormalizedString(): string;
+}
 
 /**
  * This class provides a data structure for holding information about an LDAP
@@ -636,27 +1238,218 @@ declare class LdapEntry {
 	 * @param entryLines
 	 */
 	constructor(entryLines: string[]);
+
+	/** Retrieves the DN for this entry. */
+	getDN(): string;
+	/**
+	 * Specifies the DN for this entry.
+	 * 
+	 * @param param0 
+	 */
+	setDN(param0: string): void;
+	/** Retrieves the parsed DN for this entry. */
+	getParsedDN(): LdapDN;
+	/** Retrieves the parent DN for this entry as a string. */
+	getParentDNString(): string;
+	/**
+	 * Indicates whether this entry contains an attribute with the given name and value.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	hasAttributeValue(param0: string, param1: string): boolean;
+	/**
+	 * Indicates whether this entry contains the specified object class.
+	 * 
+	 * @param param0 
+	 */
+	hasObjectClass(param0: string): boolean;
+	/**
+	 * Retrieves the value for the specified attribute, if available. If the attribute has more than one value, then the first value will be returned.
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValueAsBoolean(param0: string): boolean;
+	/**
+	 * Retrieves the value for the specified attribute, if available. If the attribute has more than one value, then the first value will be returned.
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValueAsDate(param0: string): any;
+	/**
+	 * Retrieves the value for the specified attribute, if available. If the attribute has more than one value, then the first value will be returned.
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValueAsInteger(param0: string): number;
+	/**
+	 * Retrieves the value for the specified attribute, if available. If the attribute has more than one value, then the first value will be returned.
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValueAsLong(param0: string): number;
+	/** Retrieves the values of the "objectClass" attribute from the entry, if available. */
+	getObjectClassValues(): string[];
+	/**
+	 * Retrieves an LDIF-formatted string representation of this entry. No wrapping will be performed, and no extra blank lines will be added.
+	 * 
+	 * @param param0 
+	 */
+	toLDIFString(param0: number): string;
+	/** Retrieves an LDIF representation of this entry, with each attribute value on a separate line. Long lines will not be wrapped. */
+	toLDIF(): string[];
+	/**
+	 * Indicates whether this entry contains the specified attribute.
+	 * 
+	 * @param param0 
+	 */
+	hasAttributeWithName(param0: string): boolean;
+	/**
+	 * Indicates whether this entry contains an attribute with the given name and value.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	hasAttributeValueBytes(param0: string, param1: any[]): boolean;
+	/**
+	 * Retrieves the value for the specified attribute, if available. If the attribute has more than one value, then the first value will be returned.
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValueAsBytes(param0: string): any[];
+	/**
+	 * Adds the specified attribute value to this entry, if it is not already present.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	addAttributeValue(param0: string, param1: string): boolean;
+	/**
+	 * Adds the specified attribute value to this entry, if it is not already present.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	addAttributeValueAsByte(param0: string, param1: any[]): boolean;
+	/**
+	 * Adds the provided attribute to this entry. If this entry already contains an attribute with the same name, then their values will be merged.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	addAttributeValues(param0: string, param1: any[]): boolean;
+	/**
+	 * Adds the provided attribute to this entry, replacing any existing set of values for the associated attribute.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	setAttributeValue(param0: string, param1: string): void;
+	/**
+	 * Adds the provided attribute to this entry, replacing any existing set of values for the associated attribute.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	setAttributeValueAsBytes(param0: string, param1: any[]): void;
+	/**
+	 * Adds the provided attribute to this entry, replacing any existing set of values for the associated attribute.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	setAttributeValues(param0: string, param1: any[]): void;
+	/**
+	 * Retrieves the set of values for the specified attribute, if available
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValueByteArrays(param0: string): any[];
+	/**
+	 * Removes the specified attribute value from this entry if it is present. If it is the last value for the attribute, then the entire attribute will be removed. If the specified value is not present, then no change will be made.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	removeAttributeValueAsBytes(param0: string, param1: any[]): boolean;
+	/**
+	 * Retrieves the set of values for the specified attribute, if available
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValues(param0: string): string[];
+	/**
+	 * Removes the specified attribute value from this entry if it is present. If it is the last value for the attribute, then the entire attribute will be removed. If the specified value is not present, then no change will be made.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 */
+	removeAttributeValue(param0: string, param1: string): boolean;
+	/**
+	 * Indicates whether this entry contains the specified attribute.
+	 * 
+	 * @param param0 
+	 */
+	hasAttribute(param0: LdapAttribute): boolean;
+	/**
+	 * Retrieves the value for the specified attribute, if available. If the attribute has more than one value, then the first value will be returned.
+	 * 
+	 * @param param0 
+	 */
+	getAttributeValue(param0: string): string;
+	/**
+	 * Removes the specified attribute from this entry.
+	 * 
+	 * @param param0 
+	 */
+	removeAttribute(param0: string): boolean;
+	/** Retrieves the set of attributes contained in this entry */
+	getAttributes(): any[];
+	/**
+	 * Retrieves the attribute with the specified name.
+	 * 
+	 * @param param0 
+	 */
+	getAttribute(param0: string): LdapAttribute;
+	/**
+	 * Adds the specified attribute to this entry, if it is not already present.
+	 * 
+	 * @param param0 
+	 */
+	addAttribute(param0: LdapAttribute): boolean;
+
+
+
+
+
+
+
 }
 
-/**
- * This class provides a data structure for holding information about an LDAP attribute, which
- * includes an attribute name (which may include a set of attribute options) and zero or more values.
- *
- */
-declare class LdapAttribute {
-	constructor();
-	/**
-	 * Creates a new LDAP attribute with the specified name and no values.
-	 * @param name
-	 */
-	constructor(name: string);
-	/**
-	 * Creates a new LDAP attribute with the specified name and no values.
-	 * @param name
-	 * @param values
-	 */
-	constructor(name: string, values: string[]);
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
 
 declare class ModificationTypeWrapper {
 	constructor();
@@ -737,13 +1530,6 @@ declare interface LdapSearchRequest {
 	create(baseDN: string, filter: string, scope: LdapSearchScope, attributes: string[], derefPolicy: LdapDereferencePolicy, sizeLimit: number, timeLimit: number, typesOnly: boolean): LdapSearchRequest;
 }
 
-/**
- * This class implements the processing necessary to perform an LDAPv3 search operation, which can
- * be used to retrieve entries that match a given set of criteria.
- *
- */
-declare interface LdapDeleteRequest {
-}
 
 /**
  * This class provides a data structure for holding information about the result of processing a
@@ -753,93 +1539,7 @@ declare interface LdapDeleteRequest {
 declare interface LdapSearchResult {
 }
 
-/**
- * This class provides a data structure for holding information about an LDAP distinguished name
- * (DN). A DN consists of a comma-delimited list of zero or more RDN components.
- *
- */
-declare interface LdapDN {
-	/**
-	 * Creates a new DN from the provided string representation.
-	 * @param dnString
-	 */
-	fromString(dnString: string): LdapRDN;
-	/**
-	 * Creates a new DN with the provided set of RDNs.
-	 * @param rdns
-	 */
-	fromRdns(rdns: LdapRDN[]): LdapRDN;
-	/**
-	 * Creates a new DN below the provided parent DN with the given RDN.
-	 * @param rdn
-	 * @param parentDN
-	 */
-	fromParentDn(rdn: LdapRDN, parentDN: LdapDN): LdapRDN;
-	/**
-	 * Retrieves the leftmost (i.e., furthest from the naming context) RDN component for this
-	 * DN.
-	 *
-	 */
-	getRDN(): LdapRDN;
-	/**
-	 * Retrieves the string representation of the leftmost (i.e., furthest from the naming
-	 * context) RDN component for this DN.
-	 *
-	 */
-	getRDNString(): string;
-	/**
-	 * Retrieves the set of RDNs that comprise this DN.
-	 */
-	getRDNs(): LdapRDN[];
-	/**
-	 * Retrieves the set of string representations of the RDNs that comprise this DN.
-	 *
-	 */
-	getRDNStrings(): any[];
-	/**
-	 * Indicates whether this DN represents the null DN, which does not have any RDN
-	 * components.
-	 *
-	 */
-	isNullDN(): boolean;
-	/**
-	 * Retrieves the DN that is the parent for this DN. Note that neither the null DN nor DNs
-	 * consisting of a single RDN component will be considered to have parent DNs.
-	 *
-	 */
-	getParent(): LdapDN;
-	/**
-	 * Retrieves the string representation of the DN that is the parent for this DN. Note that
-	 * neither the null DN nor DNs consisting of a single RDN component will be considered to have
-	 * parent DNs.
-	 *
-	 */
-	getParentString(): string;
-	/**
-	 * Indicates whether this DN is an ancestor of the provided DN. It will be considered an
-	 * ancestor of the provided DN if the array of RDN components for the provided DN ends with the
-	 * elements that comprise the array of RDN components for this DN (i.e., if the provided DN is
-	 * subordinate to, or optionally equal to, this DN). The null DN will be considered an ancestor for
-	 * all other DNs (with the exception of the null DN if allowEquals is false).
-	 *
-	 */
-	isAncestorOf(): boolean;
-	/**
-	 * Indicates whether the provided object is equal to this DN. In order for the provided
-	 * object to be considered equal, it must be a non-null DN with the same set of RDN components.
-	 *
-	 * @param dn
-	 */
-	equals(dn: LdapDN): boolean;
-	/**
-	 * Retrieves a string representation of this DN.
-	 */
-	toString(): string;
-	/**
-	 * Retrieves a normalized string representation of this DN.
-	 */
-	toNormalizedString(): string;
-}
+
 
 /**
  * This class provides a data structure for holding information about an LDAP relative
@@ -927,28 +1627,6 @@ declare interface LdapSearchResultReference {
 
 
 
-/**
- * Manage Active Directory plug-in configuration
- */
-declare class ConfigurationManager {
-	/**
-	 * Save Active Directory server configuration.
-	 * @param param0
-	 */
-	static saveConfiguration(param0: AD_ServerConfiguration): string;
-
-	/**
-	 * Delete Active Directory server configuration with the specified id.
-	 * @param param0
-	 */
-	static deleteConfiguration(param0: string): void;
-
-	/**
-	 * Validate Active Directory configuration.
-	 * @param param0
-	 */
-	static validateConfiguration(param0: AD_ServerConfiguration): void;
-}
 
 
 
@@ -956,209 +1634,13 @@ declare class ConfigurationManager {
 
 
 
-/**
- * Represents single Active Directory service end point configuration.
- */
-declare class AD_ServerConfiguration {
-	id: string;
-	name: string;
-	host: string;
-	port: number;
-	ldapBase: string;
-	useSSL: boolean;
-	defaultDomain: string;
-	useSharedSession: boolean;
-	sharedUserName: string;
-	sharedUserPassword: string;
-	followReferrals: boolean;
-	alternativeHosts: string[];
-	loadBalancingMode: LdapLoadBalancingMode;
 
-	constructor();
-}
 
-/**
- * Unknown type of object
- */
-declare interface AD_Unknown {
-	readonly id: string;
-	readonly distinguishedName: string;
-	readonly allAttributes: object[];
-	readonly gUID: string;
 
-	/**
-	 * Removes an attribute as specified by the attribName parameter.
-	 */
-	removeAttribute(attribName: string): void;
 
-	/**
-	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
-	 */
-	destroy(param0: boolean): void;
 
-	/**
-	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
-	 */
-	rename(name: string): void;
 
-	/**
-	 * Change the value of an existing attribute.
-	 */
-	setAttribute(attribName: string, newValue: object): void;
 
-	/**
-	 * Get an AD attribute.
-	 */
-	getAttribute(attribName: string): string;
-
-	/**
-	 * Adds an attribute.
-	 */
-	addAttribute(attribName: string, newValue: object): void;
-
-	/**
-	 * Get an AD attribute value as byte array.
-	 */
-	getAttributeValueBytes(attribName: string): any[];
-
-	/**
-	 * Get an AD attribute for an array of values.
-	 */
-	getArrayAttribute(attribName: string): string[];
-}
-
-/**
- * User
- */
-declare interface AD_User {
-	readonly id: string;
-	readonly enabled: boolean;
-	readonly userPrincipalName: string;
-	readonly sID: string;
-	readonly accountName: string;
-	readonly memberOf: AD_Group[];
-	readonly distinguishedName: string;
-	readonly allAttributes: any;
-	readonly gUID: string;
-
-	/**
-	 * Sets the passed in String value as a password of this user.
-	 */
-	setPassword(password: string): void;
-
-	/**
-	 * Sets the user account to change or not change the password at next logon.
-	 * @param param0 - Set this value to true if you want to enforce the user to change his password at next logon
-	 */
-	setChangePasswordAtNextLogon(param0: boolean): void;
-
-	/**
-	 * Removes an attribute as specified by the attribName parameter.
-	 */
-	removeAttribute(attribName: string): void;
-
-	/**
-	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
-	 */
-	destroy(param0: boolean): void;
-
-	/**
-	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
-	 */
-	rename(name: string): void;
-
-	/**
-	 * Change the value of an existing attribute.
-	 */
-	setAttribute(attribName: string, newValue: object): void;
-
-	/**
-	 * Get an AD attribute.
-	 */
-	getAttribute(attribName: string): string;
-
-	/**
-	 * Adds an attribute.
-	 */
-	addAttribute(attribName: string, newValue: object): void;
-
-	/**
-	 * Get an AD attribute value as byte array.
-	 */
-	getAttributeValueBytes(attribName: string): object[];
-
-	/**
-	 * Get an AD attribute for an array of values.
-	 */
-	getArrayAttribute(attribName: string): string[];
-}
-
-/**
- * UserGroup
- */
-declare interface AD_UserGroup {
-	readonly id: string;
-	readonly sID: string;
-	readonly computerMembers: AD_Computer[];
-	readonly userMembers: AD_User[];
-	readonly memberOf: AD_UserGroup[];
-	readonly groupMembers: AD_UserGroup[];
-	readonly distinguishedName: string;
-	readonly allAttributes: object[];
-	readonly gUID: object;
-
-	/**
-	 * Removes elements from the group.
-	 * @elements - All elements to remove from the group
-	 */
-	removeElements(elements: object[]): void;
-
-	/**
-	 * Adds elements to the group.
-	 * @elements - All elements to remove from the group
-	 */
-	addElements(elements: object[]): void;
-
-	/**
-	 * Removes an attribute as specified by the attribName parameter.
-	 */
-	removeAttribute(attribName: string): void;
-
-	/**
-	 * Destroy this element from the AD. Take care, this action PERMANENTLY DESTROY the element.
-	 */
-	destroy(param0: boolean): void;
-
-	/**
-	 * Allows a client to change the leftmost (least significant) component of the name of an entry in the directory. Тo rename the entry you must provide it with the attribute as prefix - e.g. "cn=newName".
-	 */
-	rename(name: string): void;
-
-	/**
-	 * Change the value of an existing attribute.
-	 */
-	setAttribute(attribName: string, newValue: object): void;
-
-	/**
-	 * Get an AD attribute.
-	 */
-	getAttribute(attribName: string): string;
-
-	/**
-	 * Adds an attribute.
-	 */
-	addAttribute(attribName: string, newValue: object): void;
-
-	/**
-	 * Get an AD attribute value as byte array.
-	 */
-	getAttributeValueBytes(attribName: string): object[];
-
-	/**
-	 * Get an AD attribute for an array of values.
-	 */
-	getArrayAttribute(attribName: string): string[];
-}
 
 /**
  * Ldap search scope
@@ -1170,18 +1652,7 @@ declare class LdapSearchScope {
 	static readonly SUBORDINATE_SUBTREE: LdapSearchScope;
 }
 
-/**
- * This class defines a data type for dereference policy values. Clients should
- * generally use one of the {@code NEVER}, {@code SEARCHING}, {@code FINDING},
- * {@code ALWAYS} values.
- *
- */
-declare class LdapDereferencePolicy {
-	static readonly NEVER: LdapDereferencePolicy;
-	static readonly SEARCHING: LdapDereferencePolicy;
-	static readonly FINDING: LdapDereferencePolicy;
-	static readonly ALWAYS: LdapDereferencePolicy;
-}
+
 
 /**
  * This class provides a data structure that represents an LDAP search filter. It provides methods
