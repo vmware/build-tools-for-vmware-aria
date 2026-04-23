@@ -852,6 +852,7 @@ declare class LdapAttribute {
  */
 declare class LdapBindType {
 	private constructor();
+
 	/** Use Simple bind */
 	public static readonly Simple: LdapBindType;
 	/** Use Digest. */
@@ -1649,9 +1650,6 @@ declare class LdapSearchRequest {
 	 * @param filter 
 	 */
 	setFilter(filter: string): void;
-
-
-
 	/**
 	 * Factory method for creating new LdapSearchRequest instances from provided info.
 	 * 
@@ -1752,68 +1750,55 @@ declare class LdapSearchRequest {
 	getControl(oid: string): void;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-declare class ModificationTypeWrapper {
-	constructor();
-}
-
-declare class byte {
-	constructor();
-}
-
-
-
-
-
-
-
-
-
-
 /**
  * This class provides a data structure for holding information about the result of processing a
  * search request.
  *
  */
 declare interface LdapSearchResult {
+	/** Retrieves the diagnostic message from the response, if available. */
+	getDiagnosticMessage(): string;
+	/** Retrieves the search result entry with the specified DN from the set of entries returned. This will only be available if a SearchResultListener was not used during the search. */
+	getSearchEntries(): any[];
+	/** Retrieves the result code from the response. */
+	getResultCode(): any;
+	/** Retrieves the matched DN from the response, if available. */
+	getMatchedDN(): string;
+	/** Retrieves the number of search references returned for the search operation. This may be zero even if search references were received if the connection used when processing the search was configured to automatically follow referrals. */
+	getReferenceCount(): number;
+	/**
+	 * Retrieves the search result entry with the specified DN from the set of entries returned. This will only be available if a SearchResultListener was not used during the search.
+	 * 
+	 * @param dn 
+	 */
+	getSearchEntry(dn: string): LdapEntry;
+	/** Retrieves a list containing the search references returned from the search operation. May be empty even if search references were received if the connection used when processing the search was configured to automatically follow referrals. */
+	getSearchReferences(): any[];
+	/** Retrieves the number of matching entries returned for the search operation. */
+	getEntryCount(): number;
 }
 
-
-
-
-
 /**
- * TThis class provides an implementation of the subtree delete request control as defined in
- * draft-armijo-ldap-treedelete. This can be used to delete an entry and all subordinate entries in a
- * single operation."
+ * This class provides a data structure for representing an LDAP search result reference. A search
+ * result reference consists of a set of referral URLs and may also include zero or more controls. It
+ * describes an alternate location in which additional results for the search may be found. If there are
+ * multiple referral URLs, then they should all be considered equivalent ways to access the information
+ * (e.g., referrals referencing different servers that may be contacted).
  *
  */
-declare interface LdapSubtreeDeleteRequestControl {
+declare interface LdapSearchResultReference {
+	/** Retrieves the set of referral URLs for this search result reference. */
+	getReferralURLs(): string[];
+}
+
+/**
+ * Ldap search scope
+ */
+declare class LdapSearchScope {
+	public static readonly BASE: LdapSearchScope;
+	public static readonly ONE: LdapSearchScope;
+	public static readonly SUB: LdapSearchScope;
+	public static readonly SUBORDINATE_SUBTREE: LdapSearchScope;
 }
 
 /**
@@ -1835,48 +1820,49 @@ declare class LdapSimplePagedResultsControl {
 	 * @param cookie
 	 * @param isCritical
 	 */
-	constructor(pageSize: number, cookie: byte[], isCritical: boolean);
+	constructor(pageSize: number, cookie: any[], isCritical: boolean);
+
+	/** Indicates whether there are more results to return as part of this search */
+	moreResultsToReturn(): boolean;
+	/** Retrieves the cookie for this control, which may be used in a subsequent request to resume reading entries from the next page of results. The value should have a length of zero when used to retrieve the first page of results for a given search, and also in the response from the server when there are no more entries to send. It should be non-empty for all other conditions. */
+	getCookieBytes(): any[];
+	/**
+	 * Extracts a simple paged results response control from the provided result.
+	 * 
+	 * @param param0 
+	 */
+	get(param0: LdapSearchResult): LdapSimplePagedResultsControl;
+	/** Retrieves the size for this paged results control. For a request control, it may be used to specify the number of entries that should be included in the next page of results. For a response control, it may be used to specify the estimated number of entries in the complete result set. */
+	getSize(): number;
+	/** Retrieves the cookie for this control, which may be used in a subsequent request to resume reading entries from the next page of results. The value should have a length of zero when used to retrieve the first page of results for a given search, and also in the response from the server when there are no more entries to send. It should be non-empty for all other conditions. */
+	getCookie(): any;
+	/** Retrieves the user-friendly name for this control, if available. If no user-friendly name has been defined, then the OID will be returned. */
+	getControlName(): string;
+	/** Indicates whether this control should be considered critical. */
+	isCritical(): boolean;
+	/** @ScriptingFunction("Retrieves the user-friendly name for this control, if available. If no user-friendly name has been defined, then the OID will be returned.") */
+	getOID(): string;
 }
 
 /**
- * This class provides a data structure for representing an LDAP search result reference. A search
- * result reference consists of a set of referral URLs and may also include zero or more controls. It
- * describes an alternate location in which additional results for the search may be found. If there are
- * multiple referral URLs, then they should all be considered equivalent ways to access the information
- * (e.g., referrals referencing different servers that may be contacted).
+ * TThis class provides an implementation of the subtree delete request control as defined in
+ * draft-armijo-ldap-treedelete. This can be used to delete an entry and all subordinate entries in a
+ * single operation."
  *
  */
-declare interface LdapSearchResultReference {
+declare interface LdapSubtreeDeleteRequestControl {
+	/** Retrieves the user-friendly name for this control, if available. If no user-friendly name has been defined, then the OID will be returned. */
+	getControlName(): string;
+	/** Indicates whether this control should be considered critical. */
+	isCritical(): boolean;
+	/** @ScriptingFunction("Retrieves the user-friendly name for this control, if available. If no user-friendly name has been defined, then the OID will be returned.") */
+	getOID(): string;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Ldap search scope
- */
-declare class LdapSearchScope {
-	static readonly BASE: LdapSearchScope;
-	static readonly ONE: LdapSearchScope;
-	static readonly SUB: LdapSearchScope;
-	static readonly SUBORDINATE_SUBTREE: LdapSearchScope;
+declare class ModificationTypeWrapper {
+	constructor();
 }
 
-
-
-
-
+declare class byte {
+	constructor();
+}
