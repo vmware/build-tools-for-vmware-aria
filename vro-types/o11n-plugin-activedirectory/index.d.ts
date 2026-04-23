@@ -1417,14 +1417,341 @@ declare class LdapEntry {
 	 * @param param0 
 	 */
 	addAttribute(param0: LdapAttribute): boolean;
-
-
-
-
-
-
-
 }
+
+/**
+ * This class provides a data structure that represents an LDAP search filter. It provides methods
+ * for as parsing a filter from a string. See RFC 4515 for more information about representing search
+ * filters as strings.
+ *
+ */
+declare class LdapFilter {
+	private constructor();
+
+	/**
+	 * Creates a new search filter from the provided string representation.
+	 * @param filterString
+	 */
+	public static create(filterString: string): LdapFilter;
+	/**
+	 * Encodes the provided value into a form suitable for use as the assertion value in the
+	 * string representation of a search filter. Parentheses, asterisks, backslashes, null characters,
+	 * and any non-ASCII characters will be escaped using a backslash before the hexadecimal
+	 * representation of each byte in the character to escape.
+	 *
+	 * @param value
+	 */
+	public static encodeValue(value: string): string;
+	/**
+	 * Encodes the provided value into a form suitable for use as the assertion value in the
+	 * string representation of a search filter. Parentheses, asterisks, backslashes, null characters,
+	 * and any non-ASCII characters will be escaped using a backslash before the hexadecimal
+	 * representation of each byte in the character to escape.
+	 *
+	 * @param value
+	 */
+	public static encodeValueBytes(value: any): string;
+}
+
+declare class LdapLoadBalancingMode {
+	private constructor();
+
+	// Connect to a single server
+	public static readonly SingleServer: LdapLoadBalancingMode;
+	// Use a round-robin algorithm to select the server to which the connection should be established. Any number of servers may be included in this server set, and each request will attempt to retrieve a connection to the next server in the list.
+	public static readonly RoundRobin: LdapLoadBalancingMode;
+	// Establish connections to servers in the order they are provided. If the first server is unavailable, then it will attempt to connect to the second, then to the third.
+	public static readonly Failover: LdapLoadBalancingMode;
+
+	/**
+	 * Returns load balancing mode as string.
+	 */
+	getValue(): string;
+	/**
+	 * Returns supported load balancing modes .
+	 */
+	public static getValuesAsString(): any;
+	/**
+	 * Create LdapLoadBalancingMode object from it's string representation.
+	 * @param value
+	 */
+	public static fromString(value: string): LdapLoadBalancingMode;
+}
+
+
+declare class LdapModification {
+	constructor();
+	/**
+	 * Creates a new LDAP modification with the provided information.
+	 * @param modificationType
+	 * @param attributeName
+	 */
+	constructor(modificationType: ModificationTypeWrapper, attributeName: string);
+	/**
+	 * Creates a new LDAP modification with the provided information.
+	 * @param modificationType
+	 * @param attributeName
+	 * @param attributeValue
+	 */
+	constructor(modificationType: ModificationTypeWrapper, attributeName: string, attributeValue: string);
+	/**
+	 * Creates a new LDAP modification with the provided information.
+	 * @param modificationType
+	 * @param attributeName
+	 * @param attributeValues
+	 */
+	constructor(modificationType: ModificationTypeWrapper, attributeName: string, attributeValues: string[]);
+
+	/**
+	 * Retrieves the name of the attribute to target with this modification.
+	 */
+	getAttributeName(): string;
+	/**
+	 * the set of values for this modification as an array of strings.
+	 */
+	getValues(): string[];
+	/**
+	 * Retrieves the set of values for this modification as an array of byte arrays
+	 *
+	 */
+	getValueByteArrays(): any;
+}
+
+declare class LdapModificationType {
+	private constructor();
+
+	public static readonly ADD: LdapModificationType;
+	public static readonly DELETE: LdapModificationType;
+	public static readonly REPLACE: LdapModificationType;
+	public static readonly INCREMENT: LdapModificationType;
+}
+
+/**
+ * This class provides a data structure for holding information about an LDAP relative
+ * distinguished name (RDN). An RDN consists of one or more attribute name-value pairs.
+ *
+ */
+declare class LdapRDN {
+	private constructor();
+
+	/**
+	 * Creates a new RDN from the provided string representation.
+	 * @param rdnString
+	 */
+	public static fromString(rdnString: string): LdapRDN;
+	/**
+	 * Creates a new single-valued RDN with the provided information.
+	 * @param attributeName
+	 * @param attributeValue
+	 */
+	public static fromNameValue(attributeName: string, attributeValue: string): LdapRDN;
+	/**
+	 * Retrieves the set of attribute names for this RDN.
+	 */
+	getAttributeNames(): string[];
+	/**
+	 * Retrieves the set of attribute values for this RDN.
+	 */
+	getAttributeValues(): string[];
+	/**
+	 * Retrieves a string representation of this RDN.
+	 */
+	toString(): string;
+	/**
+	 * Retrieves a normalized string representation of this RDN.
+	 */
+	toNormalizedString(): string;
+	/**
+	 * Indicates whether the provided object is equal to this RDN. The given object will only
+	 * be considered equal to this RDN if it is also an RDN with the same set of names and values.
+	 *
+	 * @param rdn
+	 */
+	equals(rdn: LdapRDN): boolean;
+}
+
+/**
+ * This class provides a data structure for holding the elements that are common to most types of
+ * LDAP responses.
+ *
+ */
+declare interface LdapResult {
+	/** Retrieves the diagnostic message from the response, if available. */
+	getDiagnosticMessage(): string;
+	/** Retrieves a string representation of this LDAP result, consisting of the result code, diagnostic message (if present), matched DN (if present), and referral URLs (if present). */
+	getResultString(): string;
+	/** Retrieves the result code from the response. */
+	getResultCode(): any;
+	/** Retrieves the matched DN from the response, if available. */
+	getMatchedDN(): string;
+	/** Retrieves the set of referral URLs from the response, if available. */
+	getReferralURLs(): string[];
+}
+
+/**
+ * This class implements the processing necessary to perform an LDAPv3 search operation, which can
+ * be used to retrieve entries that match a given set of criteria.
+ *
+ */
+
+declare class LdapSearchRequest {
+	private constructor();
+
+	/** Indicates whether the server should return only attribute names in matching entries, rather than both names and values. */
+	typesOnly(): boolean;
+	/** Retrieves the maximum number of entries that should be returned by the server when processing this search request. */
+	getSizeLimit(): number;
+	/** Retrieves the maximum length of time in seconds that the server should spend processing this search request. */
+	getTimeLimitSeconds(): number;
+	/**
+	 * Specifies the maximum number of entries that should be returned by the server when processing this search request. A value of zero indicates that there should be no limit.
+	 * 
+	 * @param sizeLimit 
+	 */
+	setSizeLimit(sizeLimit: number): void;
+	/**
+	 * Specifies the dereference policy that should be used by the server for any aliases encountered during search processing.
+	 * 
+	 * @param param0 
+	 */
+	setDerefPolicy(param0: LdapDereferencePolicy): void;
+	/**
+	 * Specifies whether the server should return only attribute names in matching entries, rather than both names and values.
+	 * 
+	 * @param typesOnly 
+	 */
+	setTypesOnly(typesOnly: boolean): void;
+	/** Retrieves the set of requested attributes to include in matching entries. */
+	getAttributeList(): any[];
+	/**
+	 * Specifies the maximum length of time in seconds that the server should spend processing this search request. A value of zero indicates that there should be no limit.
+	 * 
+	 * @param timeLimit 
+	 */
+	setTimeLimitSeconds(timeLimit: number): void;
+	/** Retrieves the base DN for this search request */
+	getBaseDN(): string;
+	/**
+	 * Specifies the base DN for this search request.
+	 * 
+	 * @param baseDN 
+	 */
+	setBaseDN(baseDN: string): void;
+	/**
+	 * Creates a new instance of this LDAP request that may be modified without impacting this request. The provided controls will be used for the new request instead of duplicating the controls from this request.
+	 * 
+	 * @param controls 
+	 */
+	duplicate(controls: any[]): LdapSearchRequest;
+	/**
+	 * Specifies the filter that should be used to identify matching entries.
+	 * 
+	 * @param filter 
+	 */
+	setFilter(filter: string): void;
+
+
+
+	/**
+	 * Factory method for creating new LdapSearchRequest instances from provided info.
+	 * 
+	 * @param param0 
+	 * @param param1 
+	 * @param param2 
+	 * @param param3 
+	 * @param param4 
+	 * @param param5 
+	 * @param param6 
+	 * @param param7 
+	 */
+	public static createRequest(param0: string, param1: string, param2: LdapSearchScope, param3: string[], param4: LdapDereferencePolicy, param5: number, param6: number, param7: boolean): LdapSearchRequest;
+	/**
+	 * Specifies the scope for this search request.
+	 * 
+	 * @param param0 
+	 */
+	setScope(param0: LdapSearchScope): void;
+	/**
+	 * Specifies the set of requested attributes to include in matching entries.
+	 * 
+	 * @param attributes 
+	 */
+	setAttributes(attributes: any[]): void;
+	/** Retrieves the scope for this search request. */
+	getScope(): LdapSearchScope;
+	/**
+	 * Specifies whether to automatically follow any referrals encountered while processing this request. This may be used to override the default behavior defined in the connection options for the connection used to process the request.
+	 * 
+	 * @param followReferrals 
+	 */
+	setFollowReferrals(followReferrals: boolean): void;
+	/**
+	 * Indicates whether to automatically follow any referrals encountered while processing this request. If a value has been set for this request, then it will be returned. Otherwise, the default from the connection options for the provided connection will be used.
+	 * 
+	 * @param client 
+	 */
+	followReferrals(client: LdapClient): boolean;
+	/** Indicates whether this request contains at least one control. */
+	hasControl(): boolean;
+	/** Retrieves the set of controls for this request. The caller must not alter this set of controls. */
+	getControls(): any[];
+	/**
+	 * Retrieves the maximum length of time in milliseconds that processing on this operation should be allowed to block while waiting for a response from the server.
+	 * 
+	 * @param client 
+	 */
+	getResponseTimeoutMillis(client: LdapClient): number;
+	/**
+	 * Specifies the maximum length of time in milliseconds that processing on this operation should be allowed to block while waiting for a response from the server. A value of zero indicates that no timeout should be enforced. A value that is less than zero indicates that the default response timeout for the underlying connection should be used.
+	 * 
+	 * @param responseTimeout 
+	 */
+	setResponseTimeoutMillis(responseTimeout: number): void;
+	/** Retrieves the message ID for the last LDAP message sent using this request. */
+	getLastMessageID(): number;
+	/**
+	 * Replaces the control with the same OID as the provided control with the provided control. If no control with the same OID exists in the request, then the control will be added to the request. If the request has multiple controls with the same OID as the new control, then only the first will be replaced.
+	 * 
+	 * @param control 
+	 */
+	replaceControl(control: any): any;
+	/** Removes all controls from this request. */
+	clearControls(): void;
+	/**
+	 * Replaces the control with the specified OID with the provided control. If no control with the given OID exists in the request, then a new control will be added. If this request has multiple controls with the specified OID, then only the first will be replaced.
+	 * 
+	 * @param oid 
+	 * @param control 
+	 */
+	replaceControlByOid(oid: string, control: any): void;
+	/**
+	 * Indicates whether this request contains at least one control with the specified OID.
+	 * 
+	 * @param oid 
+	 */
+	hasControlByOid(oid: string): boolean;
+	/**
+	 * Removes the control with the specified OID from the set of controls for this request. If this request has multiple controls with the same OID, then only the first will be removed.
+	 * 
+	 * @param oid 
+	 */
+	removeControlByOid(oid: string): any;
+	/**
+	 * Adds the provided control to the set of controls for this request.
+	 * 
+	 * @param control 
+	 */
+	addControl(control: any): void;
+	/** Retrieves the type of operation that is represented by this request. */
+	getOperationType(): any;
+	/**
+	 * Retrieves the control with the specified OID from this request. If this request has multiple controls with the specified OID, then the first will be returned.
+	 * 
+	 * @param oid 
+	 */
+	getControl(oid: string): void;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1459,76 +1786,13 @@ declare class byte {
 	constructor();
 }
 
-declare class LdapModification {
-	constructor();
-	/**
-	 * Creates a new LDAP modification with the provided information.
-	 * @param modificationType
-	 * @param attributeName
-	 */
-	constructor(modificationType: ModificationTypeWrapper, attributeName: string);
-	/**
-	 * Creates a new LDAP modification with the provided information.
-	 * @param modificationType
-	 * @param attributeName
-	 * @param attributeValue
-	 */
-	constructor(modificationType: ModificationTypeWrapper, attributeName: string, attributeValue: string);
-	/**
-	 * Creates a new LDAP modification with the provided information.
-	 * @param modificationType
-	 * @param attributeName
-	 * @param attributeValues
-	 */
-	constructor(modificationType: ModificationTypeWrapper, attributeName: string, attributeValues: string[]);
-	/**
-	 * Retrieves the name of the attribute to target with this modification.
-	 */
-	getAttributeName(): string;
-	/**
-	 * the set of values for this modification as an array of strings.
-	 */
-	getValues(): string[];
-	/**
-	 * Retrieves the set of values for this modification as an array of byte arrays
-	 *
-	 */
-	getValueByteArrays(): any;
-}
 
-declare class LdapModificationType {
-	static readonly ADD: LdapModificationType;
-	static readonly DELETE: LdapModificationType;
-	static readonly REPLACE: LdapModificationType;
-	static readonly INCREMENT: LdapModificationType;
-}
 
-/**
- * This class provides a data structure for holding the elements that are common to most types of
- * LDAP responses.
- *
- */
-declare interface LdapResult {
-}
 
-/**
- * This class implements the processing necessary to perform an LDAPv3 search operation, which can
- * be used to retrieve entries that match a given set of criteria.
- *
- */
-declare interface LdapSearchRequest {
-	/**
-	 * @param baseDN
-	 * @param filter
-	 * @param scope
-	 * @param attributes
-	 * @param derefPolicy
-	 * @param sizeLimit
-	 * @param timeLimit
-	 * @param typesOnly
-	 */
-	create(baseDN: string, filter: string, scope: LdapSearchScope, attributes: string[], derefPolicy: LdapDereferencePolicy, sizeLimit: number, timeLimit: number, typesOnly: boolean): LdapSearchRequest;
-}
+
+
+
+
 
 
 /**
@@ -1541,47 +1805,7 @@ declare interface LdapSearchResult {
 
 
 
-/**
- * This class provides a data structure for holding information about an LDAP relative
- * distinguished name (RDN). An RDN consists of one or more attribute name-value pairs.
- *
- */
-declare interface LdapRDN {
-	/**
-	 * Creates a new RDN from the provided string representation.
-	 * @param rdnString
-	 */
-	fromString(rdnString: string): LdapRDN;
-	/**
-	 * Creates a new single-valued RDN with the provided information.
-	 * @param attributeName
-	 * @param attributeValue
-	 */
-	fromNameValue(attributeName: string, attributeValue: string): LdapRDN;
-	/**
-	 * Retrieves the set of attribute names for this RDN.
-	 */
-	getAttributeNames(): string[];
-	/**
-	 * Retrieves the set of attribute values for this RDN.
-	 */
-	getAttributeValues(): string[];
-	/**
-	 * Retrieves a string representation of this RDN.
-	 */
-	toString(): string;
-	/**
-	 * Retrieves a normalized string representation of this RDN.
-	 */
-	toNormalizedString(): string;
-	/**
-	 * Indicates whether the provided object is equal to this RDN. The given object will only
-	 * be considered equal to this RDN if it is also an RDN with the same set of names and values.
-	 *
-	 * @param rdn
-	 */
-	equals(rdn: LdapRDN): boolean;
-}
+
 
 /**
  * TThis class provides an implementation of the subtree delete request control as defined in
@@ -1654,53 +1878,5 @@ declare class LdapSearchScope {
 
 
 
-/**
- * This class provides a data structure that represents an LDAP search filter. It provides methods
- * for as parsing a filter from a string. See RFC 4515 for more information about representing search
- * filters as strings.
- *
- */
-declare interface LdapFilter {
-	/**
-	 * Creates a new search filter from the provided string representation.
-	 * @param filterString
-	 */
-	create(filterString: string): LdapFilter;
-	/**
-	 * Encodes the provided value into a form suitable for use as the assertion value in the
-	 * string representation of a search filter. Parentheses, asterisks, backslashes, null characters,
-	 * and any non-ASCII characters will be escaped using a backslash before the hexadecimal
-	 * representation of each byte in the character to escape.
-	 *
-	 * @param value
-	 */
-	encodeValue(value: string): string;
-	/**
-	 * Encodes the provided value into a form suitable for use as the assertion value in the
-	 * string representation of a search filter. Parentheses, asterisks, backslashes, null characters,
-	 * and any non-ASCII characters will be escaped using a backslash before the hexadecimal
-	 * representation of each byte in the character to escape.
-	 *
-	 * @param value
-	 */
-	encodeValueBytes(value: any): string;
-}
 
-declare interface LdapLoadBalancingMode {
-	readonly SingleServer: LdapLoadBalancingMode;
-	readonly RoundRobin: LdapLoadBalancingMode;
-	readonly Failover: LdapLoadBalancingMode;
-	/**
-	 * Returns load balancing mode as string.
-	 */
-	getValue(): string;
-	/**
-	 * Returns supported load balancing modes .
-	 */
-	getValuesAsString(): any;
-	/**
-	 * Create LdapLoadBalancingMode object from it's string representation.
-	 * @param value
-	 */
-	fromString(value: string): LdapLoadBalancingMode;
-}
+
