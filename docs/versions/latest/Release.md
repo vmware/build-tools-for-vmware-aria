@@ -111,4 +111,11 @@ The Promise now resolves only when the `output` stream emits the `'close'` event
 
 ## Upgrade procedure
 
+### *Fix `vrops` issue 1108 failing to push alert Definitions with alertConditions set*
+#### Previous Behavior
+Pushing AlertDefinitions from one environment to anther is failing becuause of wrong DTO structure. Updating alert definitions (PUT request) taken from one environment to another was failing due to mismatch of the alert conditions id's
+#### New Behavior
+Fixed AlertDefinitionDTO.java
+Before pushing the same alert condition again the id's of the alert condition are set to null.
+
 [//]: # (Explain in details if something needs to be done)
