@@ -87,6 +87,8 @@ Add `close()` method.
 
 ### *Update type definitions for `VraInfrastructureClient` from `o11n-plugin-aria` plugin*
 
+### *Update type definitions for `o11n-plugin-activedirectory` plugin*
+
 ### *Bugfix for Shimming `Object.values`*
 
 #### Previous Behavior
