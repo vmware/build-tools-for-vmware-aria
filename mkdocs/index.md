@@ -26,5 +26,5 @@ The Build Tools ecosystem consists of archetypes, Maven goals, and helper tools 
 Ready to dive in? Use the links below to navigate the documentation:
 
 * 🚀 **[Getting Started](getting-started/index.md):** Set up your workstation prerequisites, configure your Maven environment, and deploy your first project.
-* 📚 **[Usage Guide](usage/index.md):** Explore operational command cheat sheets, common build flags, and specific documentation for each supported product.
+* 📚 **[Usage Guide](usage/products/vro/typescript/index.md):** Explore operational command cheat sheets, common build flags, and specific documentation for each supported product.
 * 🏗️ **[Enterprise Setup](enterprise-setup/minimal-infra.md):** Learn how to configure your internal infrastructure, pipelines, and CI/CD tools for large-scale automation development.
