@@ -2,9 +2,10 @@ name: "Build MkDocs"
 
 on:
   push:
-    # paths:
-    #   - 'mkdocs/**'
-    #   - 'mkdocs.yml'
+    branches:
+      - main
+    tags:
+      - '*.*.*' # Triggers the release logic on version tags (e.g., 4.20.0 or v4.20.0)
   workflow_dispatch:
 
 permissions:
@@ -18,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # CRITICAL: mike needs full history to fetch the gh-pages branch and git tags
 
       - name: Install Python
         uses: actions/setup-python@v6
@@ -40,13 +43,26 @@ jobs:
 
       - name: Update Latest Release Variable
         run: |
-          IAC_LATEST_RELEASE=$(git tag --sort=-version:refname | head -n 1 | cut -c 2-)
+          # Using sed to strip a 'v' prefix if it exists, making it slightly more robust
+          IAC_LATEST_RELEASE=$(git tag --sort=-version:refname | head -n 1 | sed 's/^v//')
           echo "Latest Release: $IAC_LATEST_RELEASE"
           yq eval ".extra.iac.latest_release = \"$IAC_LATEST_RELEASE\"" -i mkdocs.yml
 
-      - name: Build Docs (All Branches)
-        run: mkdocs build
-
-      - name: Deploy Docs (Main Branch Only)
+      - name: Deploy Main (dev version)
         if: github.ref == 'refs/heads/main'
-        run: mkdocs gh-deploy --force
+        run: |
+          # Regular pushes to main are deployed under a 'dev' alias. 
+          # This keeps your live docs updated without polluting stable releases.
+          mike deploy --push dev
+
+      - name: Deploy Release Version (tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          # Extracts the tag name and removes 'v' since tags are formatted like v4.20.0
+          VERSION=${GITHUB_REF_NAME#v}
+          
+          # Deploys the specific version, updates the 'latest' alias, and pushes to gh-pages
+          mike deploy --push --update-aliases $VERSION latest
+          
+          # Sets 'latest' as the default redirect for the root of your site
+          mike set-default --push latest
