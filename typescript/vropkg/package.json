@@ -68,7 +68,7 @@
 		"node-forge": "1.4.0",
 		"parse-comments": "^1.0.0",
 		"unzipper": "0.12.3",
-		"uuid": "^11.0.3",
+		"uuid": "^14.0.0",
 		"winston": "^3.17.0",
 		"xmlbuilder": "^15.1.1",
 		"xmlbuilder2": "^4.0.0",
