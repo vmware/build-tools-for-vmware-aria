@@ -46,19 +46,20 @@ You can use the method decorators to define various canvas items that will be in
 - `resumeFromFailedMode` - resume workflow from failed behavior (0 - system default, 1 - enabled, 2 - disabled).
 
 The following parameters are supported for each element of attributes, input, and output:
+
 - `type` - parameter type.
 - `title` - parameter name.
 - `description` - parameter description.
 - `value` or `defaultValue` - parameter value (attributes only).
 - `bind` - parameter bind to configuration flag (attributes only). Configuration reference is stored in value or defaultValue parameter.
 - parameters that apply to presentation, ignored when custom presentation is used:
-  - `required` - if parameter to be marked mandatory.
-  - `multiLine` - if parameter to be marked as multiline.
-  - `hidden` - if parameter to be hidden.
-  - `maxStringLength` - parameter max string length.
-  - `minStringLength` - parameter min string length.
-  - `numberFormat` - parameter number format.
-  - `availableValues` - list of parameter available values.
+    - `required` - if parameter to be marked mandatory.
+    - `multiLine` - if parameter to be marked as multiline.
+    - `hidden` - if parameter to be hidden.
+    - `maxStringLength` - parameter max string length.
+    - `minStringLength` - parameter min string length.
+    - `numberFormat` - parameter number format.
+    - `availableValues` - list of parameter available values.
 
 ## Argument Decorators
 
@@ -262,22 +263,22 @@ This decorator is used to specify a switch item that routes workflow execution t
 #### Supported Parameters
 
 - `cases` - An array of case objects that define the routing logic. Each case object contains:
-  - `condition` - The value to match against the switch variable
-  - `target` - The name of the next item to execute when this condition is met
-  - `variable` - The name of the variable to evaluate (optional, can be inferred from method parameters)
-  - `type` - The data type of the variable being switched on (e.g., "number", "string", "boolean")
-  - `comparator` - The comparison operator to use when evaluating cases. Supported values are:
-    - `"equals"`              - Equals (default behaviour if not specified)
-    - `"different"`           - Not equals
-    - `"smaller"`             - Less than
-    - `"smaller or equals"`   - Less than or equal
-    - `"greater"`             - Greater than
-    - `"greater or equals"`   - Greater than or equal
-    - `"is true"`             - Boolean true
-    - `"is false"`            - Boolean false
-    - `"contains"`            - Contains a value
-    - `"match"`               - Matches a value
-    - `"is defined"`          - Value is defined
+    - `condition` - The value to match against the switch variable
+    - `target` - The name of the next item to execute when this condition is met
+    - `variable` - The name of the variable to evaluate (optional, can be inferred from method parameters)
+    - `type` - The data type of the variable being switched on (e.g., "number", "string", "boolean")
+    - `comparator` - The comparison operator to use when evaluating cases. Supported values are:
+        - `"equals"`              - Equals (default behaviour if not specified)
+        - `"different"`           - Not equals
+        - `"smaller"`             - Less than
+        - `"smaller or equals"`   - Less than or equal
+        - `"greater"`             - Greater than
+        - `"greater or equals"`   - Greater than or equal
+        - `"is true"`             - Boolean true
+        - `"is false"`            - Boolean false
+        - `"contains"`            - Contains a value
+        - `"match"`               - Matches a value
+        - `"is defined"`          - Value is defined
 - `defaultTarget` - The name of the next item to execute when none of the cases match. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow.
 
 #### Example
