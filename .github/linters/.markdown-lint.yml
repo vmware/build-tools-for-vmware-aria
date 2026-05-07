@@ -3,6 +3,10 @@
 # Default state for all rules
 default: true
 
+# MD007 - Unordered list indentation - default 2, increased to 4 - needed for proper indentation of unordered lists in mkdocs
+MD007:
+  indent: 4
+
 # MD012/no-multiple-blanks - Multiple consecutive blank lines
 MD012:
   # Consecutive blank lines
