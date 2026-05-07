@@ -26,6 +26,10 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Migrate documentation to mkdocs*
+
+Documentation approach is changed to use `github-pages` with `mkdocs` (for the documentation itself) and `mike` (for version management). All new documentation must be placed in an appropriate location under the `mkdocs` folder. The old `docs` folder must not be used anymore and is to be archived.
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
