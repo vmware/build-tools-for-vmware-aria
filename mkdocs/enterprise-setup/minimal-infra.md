@@ -163,7 +163,7 @@ For a manual installation, follow the steps below:
    - Nexus server authentication.
    - A Maven Central mirror routing through Nexus.
    - A `nexus` profile defining the `releases` and `snapshots` repositories.
-   
+
    To quickly copy the file:
    ```bash
    mkdir -p ~/.m2
@@ -189,7 +189,7 @@ For a manual installation, follow the steps below:
        -DoutputDirectory=../
    ```
 4. **Test locally:** Validate the generated project files and test the build:
- 
+
     ```bash
     mvn clean package
     mvn test
@@ -259,7 +259,7 @@ For a manual installation, follow the steps below:
        expire_in: 1 month
    ```
 6. **Trigger the pipeline:** Commit and push your changes to GitLab.
-7. **Validate the pipeline:** Navigate to **CI/CD > Pipelines** in GitLab. Wait for the `setup`, `build`, `test`, and `install` jobs to succeed. 
+7. **Validate the pipeline:** Navigate to **CI/CD > Pipelines** in GitLab. Wait for the `setup`, `build`, `test`, and `install` jobs to succeed.
 8. **Download the artifact:** Once completed, download the `install:archive` artifact. It will contain the `local.corp.demo-1.0.0-SNAPSHOT-1.zip` installation bundle.
 9. **Deploy:** You can now deploy this bundle using the [Bundle Installer Guide](../usage/installer.md) or by adding an Aria profile to your `settings.xml` and running `mvn package vrealize:push -P<PROFILE_NAME>`.
 

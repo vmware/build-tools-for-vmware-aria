@@ -4,8 +4,6 @@ hide:
   - navigation
 ---
 
-# Build Tools for VMware Aria
-
 This is the official documentation for **Build Tools for VMware Aria** (formerly known as vRealize Build Tools).
 
 Build Tools for VMware Aria provides advanced development and release management tools for implementing automation solutions for VMware Cloud Foundation 9 components (VCF Automation, VCF Operations Orchestrator, VCF Operations, VCF Operations for Logs).

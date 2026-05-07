@@ -2,8 +2,6 @@
 title: Installer
 ---
 
-# Installer
-
 ## Overview
 
 Installer provides the ability to package the solution and all its dependencies into an all-in-one bundle deployable to target environment via script.

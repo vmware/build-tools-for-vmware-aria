@@ -18,15 +18,15 @@ mvn vrealize:clean -DincludeDependencies=true -DcleanUpOldVersions=true -DcleanU
 ##### Examples
 
 - Clean up only current package version from the server
-  ```
+  ```bash
   mvn vrealize:clean -DcleanUpLastVersion=true -DcleanUpOldVersions=false -DincludeDependencies=false
   ```
 - Clean up current package version from the server and its dependencies. This is a force removal operation.
-  ```
+  ```bash
   mvn vrealize:clean -DcleanUpLastVersion=true -DcleanUpOldVersions=false -DincludeDependencies=true
   ```
 - Clean up old package versions and the old version of package dependencies.
-  ```
+  ```bash
   mvn vrealize:clean -DcleanUpLastVersion=false -DcleanUpOldVersions=true -DincludeDependencies=true
   ```
 

@@ -2,8 +2,6 @@
 title: License Plugin
 ---
 
-# License Plugin
-
 ## Overview
 
 Build Tools for VMware Aria utilizes the **[license-maven-plugin](https://www.mojohaus.org/license-maven-plugin/index.html)** as a production-ready solution for managing licenses. The plugin is activated during the project build phase if the `license_data/licenses.properties` file exists in the project's root directory. Upon activation, it generates a license file and a license header using the templates provided in the `license_data/` folder.
@@ -41,9 +39,9 @@ mvn archetype:generate \
     -DlicenseHeader="Example License Header"
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
 
 **Technical Preview License Example:**
 ```bash
@@ -57,9 +55,9 @@ mvn archetype:generate \
     -DlicenseTechnicalPreview
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
 
 ---
 

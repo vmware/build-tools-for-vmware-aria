@@ -181,7 +181,7 @@ mvn clean package vrealize:push -Pdev
 
 ## Step 5: Export Content (Pull)
 
-When you make changes directly in the {{ products.vro_short_name }} UI, you can pull those changes back into your local project. 
+When you make changes directly in the {{ products.vro_short_name }} UI, you can pull those changes back into your local project.
 
 ### Pulling Actions
 To export Actions as JavaScript files:
@@ -210,7 +210,7 @@ To export Workflows, Configuration Elements, Resource Elements, and Policy Templ
 
 ## Step 6: Create an Installation Bundle
 
-You can package your project, its dependencies, and a deployment script into a single distributable bundle. 
+You can package your project, its dependencies, and a deployment script into a single distributable bundle.
 
 From the project root, run:
 
