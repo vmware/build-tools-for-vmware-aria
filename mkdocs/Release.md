@@ -1,5 +1,5 @@
 [//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
-[//]: # (Used when working on a new release.)
+[//]: # (Used when working on a new release)
 [//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
 [//]: # (Do not fill the version, it will be done automatically)
 [//]: # (Quick Intro to what is the focus of this release)
@@ -25,8 +25,6 @@
 [//]: # (#### Relevant Documentation:)
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
-
-### *Add support for Node:22 runtime environment for `polyglot` projects*
 
 ## Improvements
 
