@@ -2,8 +2,6 @@
 title: Custom Resources
 ---
 
-# Custom Resources
-
 ## Overview
 
 Custom Resources are items that are defined inside of Cloud Assembly. They extend the capabilities of Cloud Templates by giving you the ability to define your own Resource, that calls either a vRO Workflow or an ABX Action (in the latest version of vRA). Custom Resources are defined in the `content.yaml` file under `custom-resource`.

@@ -2,8 +2,6 @@
 title: Blueprints
 ---
 
-# Blueprints
-
 ## Overview
 
 Blueprint (aka `Cloud Templates`) architects build Software components, machine blueprints, and custom XaaS blueprints and assemble those components into the blueprints that define the items users request from the catalog.

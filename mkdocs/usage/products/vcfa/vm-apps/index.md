@@ -1,8 +1,6 @@
 ---
-title: VM Apps
+title: VM Apps / Classic Tenant Project
 ---
-
-# VM Apps / Classic Tenant Project
 
 ## Overview
 
@@ -47,9 +45,9 @@ mvn archetype:generate \
     -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
 
 !!! note
     If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
@@ -166,14 +164,14 @@ Contents are managed by different rules.
 
 ??? Content Descriptor
     ```yaml
-    blueprint: # will export all 
-    subscription: # will export all 
+    blueprint: # will export all
+    subscription: # will export all
     catalog-item:  # export according to filter
       - Project Blueprints__WindowsVM
       - Project Blueprints__LinuxVm
       - Main Workflows__ConfigureVM
-    custom-resource: # will export all 
-    resource-action: # will export all 
+    custom-resource: # will export all
+    resource-action: # will export all
     property-group:  # export according to filter
       - memory
     catalog-entitlement: [] # will export none
@@ -200,7 +198,7 @@ Contents are managed by different rules.
 
 !!! note
     To import / export custom forms and/or icons you have to specify the associated catalog-item name in ```catalog-item``` tag. The naming convention for this is SOURCE_NAME__CATALOG_ITEM_NAME
-    The integration endpoint data for each workflow that is associated with the content source will be updated as well with the one fetched from the {{ products.vra_9_short_name }} server. 
+    The integration endpoint data for each workflow that is associated with the content source will be updated as well with the one fetched from the {{ products.vra_9_short_name }} server.
 
 ### ID handling
 
@@ -243,12 +241,14 @@ The following need to be added to the profile that you intend to use:
 </profile>
 ```
 
-1.  {{ archetype.customer_project.maven_settings_location_hint}}
+1. {{ archetype.customer_project.maven_settings_location_hint}}
+
+<!-- this comment is used to properly visualise the unordered list below -->
 
 - `vrang.username` - For VCF 9 Automation - Classic organization instead of using <vrang.tenant>
 you need to provide username in the following format: user@domain. E.g.:
-  - admin@System - Provider admin (the "System" domain is used to identify the user as Provider admin)
-  - configurationadmin@Classic - Classic organization admin
+    - admin@System - Provider admin (the "System" domain is used to identify the user as Provider admin)
+    - configurationadmin@Classic - Classic organization admin
 
 - `vrang.refresh.token` - uses the given refresh token instead of credentials.
 
@@ -305,7 +305,7 @@ mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
 
 Additional parameters that can be passed as flags to the maven command, e.g. `mvn vra-ng:pull -Dbp.ignore.versions=true`.
 
-* `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
+- `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
 
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
@@ -314,11 +314,11 @@ Additional parameters that can be passed as flags to the maven command, e.g. `mv
 
 Additional parameters that can be passed as flags to the maven command, e.g. `mvn clean package -Dvrang.bp.release=true`.
 
-* `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
+- `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
 in order to avoid unnecessary blueprint versions.
 
 !!! note
-    If there are any custom forms or icons associated with a catalog-item they will also be imported. 
+    If there are any custom forms or icons associated with a catalog-item they will also be imported.
 
 !!! note
     If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the {{ products.vra_9_short_name }} server as well.
@@ -333,7 +333,7 @@ To release a specific content uploaded on a live server, you can use the ```vrea
 mvn clean package vrealize:release -Pcorp-env -Dvrang.contentType=blueprint -Dvrang.contentNames=testBlueprint -Dvrang.version=1 -DreleaseIfNotUpdated=false
 ```
 
-Only parameter vrang.version is required. 
+Only parameter vrang.version is required.
 Defalut behavior for other parameters:
     - vrang.contentType: default value "all". Releases all supported content types.
     - vrang.contentNames: default value "[]". Releases all content of given types on server.

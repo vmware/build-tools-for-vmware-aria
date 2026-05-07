@@ -2,8 +2,6 @@
 title: Content Policies
 ---
 
-# Content Policies
-
 ## Overview
 
 There are 6 types of content policies:
