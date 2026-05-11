@@ -6,6 +6,7 @@ title: Typescript
 
 ## Overview
 
+<!-- markdownlint-disable MD033 -->
 | Field | Value |
 |---|---|
 | Name | typescript |
@@ -13,7 +14,7 @@ title: Typescript
 | Archetype Artifact ID | package-typescript-archetype |
 | Package extension | package |
 | Product compatibility | {{ extra.products.vro_9_full_name }} (9.x)<br>{{ extra.products.vro_8_full_name }} (8.x)<br>{{ extra.products.vro_7_full_name }} (7.x) |
-
+<!-- markdownlint-enable MD033 -->
 
 Typescript project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name }} content into Typescript format. The project consist of content content container. During [build operation](#build-project) the contents of the container are transpiled into {{ products.vro_short_name }} Javascript and packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 

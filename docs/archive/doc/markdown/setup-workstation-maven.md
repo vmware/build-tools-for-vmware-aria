@@ -9,8 +9,8 @@ going through phases like validate, compile, test, package, verify, install and 
 ### Prerequisites
 
 - Build Tools for VMware Aria Platform
-  - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
-  - Workstation can access Build Tools for VMware Aria Platform services
+    - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
+    - Workstation can access Build Tools for VMware Aria Platform services
 - Java 17
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 

@@ -224,6 +224,7 @@ Installer supports detailed logging configuration for the execution of the `inst
 Once a bundle is generated with `-Pbundle-with-installer` maven profile, a `logback.xml` file is generated inside the bundle's `./etc` directory which can be used for logging configurations such as severity, appenders, etc. For detailed information feel free to refer to the official documentation of the [Logback project](https://logback.qos.ch/documentation.html).
 
 #### Example
+<!-- markdownlint-disable MD046 -->
 
 ??? Logging Configuration
     ```xml
@@ -281,6 +282,7 @@ Once a bundle is generated with `-Pbundle-with-installer` maven profile, a `logb
         -->
     </configuration>
     ```
+<!-- markdownlint-enable MD046 -->
 
 ### Run Workflow
 

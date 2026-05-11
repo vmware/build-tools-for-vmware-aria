@@ -2,8 +2,6 @@
 title: Using the VS Code Extension
 ---
 
-# Using the VS Code Extension
-
 ## Overview
 
 A Visual Studio Code extension that provides code intelligence features and enables a more developer-friendly experience when creating VMware vRealize Orchestrator and VMware vRealize Automation content.
@@ -53,7 +51,7 @@ Active profile name and the IP address of the vRealize Orchestrator instance is 
 ![Active profile](./images/with-profile.png)
 
 ### Project on-boarding
-
+<!-- markdownlint-disable MD033 -->
 The `vRealize: New Project` command from the VS Code comand palette (<kbd>Cmd+Shift+P</kbd> / <kbd>Ctrl+Shift+P</kbd>) can be used to on-board a new vRealize project.
 
 ![Project on-boarding](./images/new-project.png)
@@ -74,14 +72,14 @@ The `vRealize: Run Action` command from the VS Code comand palette (<kbd>Cmd+Shi
 
 An {{ products.vro_short_name }} explorer view is available in the activity bar that allows browsing the whole {{ products.vro_short_name }} inventory (actions, workflows, resources, configurations, packages and plugin objects).
 
--   Browse, search by name, fetch source (read-only) of all elements
--   Fetch schema (read-only) of workflows
--   3 different layouts for the actions hierarchy (controlled by `vrdev.views.explorer.actions.layout` setting)
-    -   **tree** - Displays action packages as a tree
-    -   **compact** - Displays action packages as a tree, but flattens any folders that have no children
-    -   **flat** - Displays action packages as a list
--   Delete packages
--   Browse the inventory and see properties of each plugin object
+- Browse, search by name, fetch source (read-only) of all elements
+- Fetch schema (read-only) of workflows
+- 3 different layouts for the actions hierarchy (controlled by `vrdev.views.explorer.actions.layout` setting)
+    - **tree** - Displays action packages as a tree
+    - **compact** - Displays action packages as a tree, but flattens any folders that have no children
+    - **flat** - Displays action packages as a list
+- Delete packages
+- Browse the inventory and see properties of each plugin object
 
 ![{{ products.vro_short_name }} Explorer](./images/explorer.png)
 
@@ -92,6 +90,7 @@ There is a support for {{ products.vro_short_name }} inventory items caching in 
 ### Push and Pull content
 
 The VS Code build tasks palette (<kbd>Cmd+Shift+B</kbd> / <kbd>Ctrl+Shift+B</kbd>) contains commands for pushing content to a live {{ products.vro_short_name }}/vRA instance and for pulling workflows, configurations, resources and vRA content back to your local machine – in a form suitable for committing into source control.
+<!-- markdownlint-enable MD033 -->
 
 ![Push and Pull content](./images/push-pull.png)
 

@@ -107,6 +107,7 @@ Contents are managed by different rules.
 
 The following need to be added to the profile that you intend to use:
 
+<!-- markdownlint-disable MD033 -->
 ``` xml
 <!-- (1)! -->
 <profile>
@@ -123,6 +124,7 @@ The following need to be added to the profile that you intend to use:
     <vrli.vropsAuthSource>local</vrli.vropsAuthSource> 
 </profile>
 ```
+<!-- markdownlint-enable MD033 -->
 
 1.  {{ archetype.customer_project.maven_settings_location_hint}}
 
