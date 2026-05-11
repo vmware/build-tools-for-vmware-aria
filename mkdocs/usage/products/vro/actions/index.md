@@ -16,7 +16,7 @@ title: Actions
 
 Actions (Javascript) project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name }} Actions into JS format. The project consist of local content container and remote content descriptor on the target server. During [build operation](#build-project) the contents of the container are packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 
-- *Content Descriptor* defines what {{ products.vro_short_name }} content will be part of this project when exporting content. The {{ products.vro_short_name }} package from UI -> Assets -> Packages plays this role and defines what content is exported. For more information refer to the [pull operation](#) section below.
+- *Content Descriptor* defines what {{ products.vro_short_name }} content will be part of this project when exporting content. The {{ products.vro_short_name }} package from UI -> Assets -> Packages plays this role and defines what content is exported. For more information refer to the [pull operation](#pull-content) section below.
 - *Content Container* holds the actual content representation - `./src` folder.
 
 The actions project type also allows the user to write unit tests and has embedded code coverage.

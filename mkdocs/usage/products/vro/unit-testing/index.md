@@ -2,8 +2,6 @@
 title: Unit Testing Framework
 ---
 
-# Unit Testing Framework
-
 ## Overview
 
 After code has been compiled to Javascript (for `typescript` project types) and before it is packaged to an {{ products.vro_short_name }} `.package`, a testbed is created. An {{ products.vro_short_name }} Runtime is inserted so you can use some modules natively (things like Workflow, Properties, LockingSystem, Server, System, etc.). After the test bed is created, Jasmine is run either through IstanbulJS or directly (depending on if code coverage is enabled).
@@ -165,7 +163,7 @@ The example below shows how to create a unit test for a simple "Hello World" lib
  */
 (function() {
 	return "Hello World"; 
-}) 
+})
 ```
 
 The unit test can be defined as follows:
@@ -174,7 +172,7 @@ The unit test can be defined as follows:
 describe("Hello World", function(){ 
    it("should Return Hello world",function(){ 
 	  var result = System.getModule("com.vmware.pscoe.library.helloworld").helloworld()
-      expect(result).toEqual('Hello World'); 
+      expect(result).toEqual('Hello World');
    }); 
 }); 
 ```
@@ -244,7 +242,7 @@ describe('Array.prototype', function() {
 
 ### Setup and Teardown
 
-Use `beforeEach()`, `afterEach()`, `beforeAll()`, and `afterAll()` to keep your test suite DRY. As the name implies, the `beforeEach()` function is called once before each spec in the `describe()` block in which it is called and the `afterEach()` function is called once after each spec. The `beforeAll()` function is called only once before all the specs in `describe()` block are run and the `afterAll()` function is called after all specs finish. `beforeAll()` and `afterAll()` can be used to speed up test suites with expensive setup and teardown. 
+Use `beforeEach()`, `afterEach()`, `beforeAll()`, and `afterAll()` to keep your test suite DRY. As the name implies, the `beforeEach()` function is called once before each spec in the `describe()` block in which it is called and the `afterEach()` function is called once after each spec. The `beforeAll()` function is called only once before all the specs in `describe()` block are run and the `afterAll()` function is called after all specs finish. `beforeAll()` and `afterAll()` can be used to speed up test suites with expensive setup and teardown.
 
 !!! note
     `beforeAll()` and `afterAll()` are not reset between specs. It is easy to accidentally leak state between specs so that they erroneously pass or fail.
@@ -419,5 +417,5 @@ describe("ApiCall", () => {
   }
   ```
 
-  * **Can I use Jasmine Helpers?**
+* **Can I use Jasmine Helpers?**
   Native Jasmine helpers are not supported, though the toolchain does inject the {{ products.vro_short_name }} Runtime with a helper.

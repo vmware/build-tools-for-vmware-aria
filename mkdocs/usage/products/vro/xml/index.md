@@ -1,8 +1,6 @@
 ---
-title: XML
+title: XML Based Project
 ---
-
-# XML Based Project
 
 ## Overview
 
@@ -17,7 +15,7 @@ title: XML
 
 XML project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name }} content into XML format. The project consist of local content container and remote content descriptor on the target server. During [build operation](#build-project) the contents of the container are packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 
-- *Content Descriptor* defines what {{ products.vro_short_name }} content will be part of this project when exporting content. The {{ products.vro_short_name }} package from UI -> Assets -> Packages plays this role and defines what content is exported. For more information refer to the [pull operation](#) section below.
+- *Content Descriptor* defines what {{ products.vro_short_name }} content will be part of this project when exporting content. The {{ products.vro_short_name }} package from UI -> Assets -> Packages plays this role and defines what content is exported. For more information refer to the [pull operation](#pull-content) section below.
 - *Content Container* holds the actual content representation - `./src` folder.
 
 ## Supported Content
@@ -46,10 +44,10 @@ mvn archetype:generate \
     -DworkflowsPath=integration-service-1/workflows # (4)!
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
-4.  Defines the base path (Workflow Category path or labels depending on {{ products.vro_short_name }} version) and local folder structure for all the Workflows inside your project. This describes the initial state and can be manually updated later.
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
+4. Defines the base path (Workflow Category path or labels depending on {{ products.vro_short_name }} version) and local folder structure for all the Workflows inside your project. This describes the initial state and can be manually updated later.
 
 ### Content Structure
 
@@ -88,13 +86,15 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 <!-- Pull Content Section -->
 {% include-markdown "../common/pull-content.md" %}
 
+<!-- markdownlint-disable MD001 -->
 #### Additional Parameters
 
 Additional parameters that can be passed as flags to the maven command, e.g. `mvn vro:pull -Dvro.packageExportConfigurationAttributeValues=true`.
 
-* `vro.packageExportConfigurationAttributeValues` - if set to `true` exports all configuration values besides SecureStrings.
+- `vro.packageExportConfigurationAttributeValues` - if set to `true` exports all configuration values besides SecureStrings.
 
-* `vro.packageExportConfigSecureStringAttributeValues` - if set to `true` exports all Secure String configuration values.
+- `vro.packageExportConfigSecureStringAttributeValues` - if set to `true` exports all Secure String configuration values.
+<!-- markdownlint-enable MD001 -->
 
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
@@ -102,9 +102,9 @@ Additional parameters that can be passed as flags to the maven command, e.g. `mv
 <!-- Push Content - Additional Parameters Section -->
 {% include-markdown "../common/push-content-parameters.md" %}
 
-* `vro.packageImportConfigurationAttributeValues` - if set to `true` pushes all configuration values besides SecureStrings.
+- `vro.packageImportConfigurationAttributeValues` - if set to `true` pushes all configuration values besides SecureStrings.
 
-* `vro.packageImportConfigSecureStringAttributeValues=true` - if set to `true` pushes all Secure String configuration values.
+- `vro.packageImportConfigSecureStringAttributeValues=true` - if set to `true` pushes all Secure String configuration values.
 
 <!-- vroIgnore Section -->
 {% include-markdown "../common/vroignore.md" %}
