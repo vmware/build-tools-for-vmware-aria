@@ -19,9 +19,9 @@ This file serves as a guide to create a minimal infrastructure example using con
 
 - [nginx](https://hub.docker.com/_/nginx)
 - `Nexus`
-  - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/)
+    - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/)
 - `GitLab`
-  - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce)
+    - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce)
 - [gitlab/gitlab-runner](https://hub.docker.com/r/gitlab/gitlab-runner)
 
 Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/README.md) project.

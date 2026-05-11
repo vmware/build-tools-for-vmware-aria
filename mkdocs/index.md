@@ -12,7 +12,7 @@ The solution enables Virtual Infrastructure Administrators and Automation Develo
 
 ## Key Capabilities
 
-The Build Tools ecosystem consists of archetypes, Maven goals, and helper tools that cover every product combination. 
+The Build Tools ecosystem consists of archetypes, Maven goals, and helper tools that cover every product combination.
 
 * **Multi-Product Support:** Dedicated project types and automated pull/push workflows for VCF 9 Components and their earlier versions from vRealize and VMware Aria suites (Aria Automation, Aria Automation Orchestrator, Aria Operations, Aria Automation Pipelines, Aria Operations for Logs, VMware Cloud Director).
 * **Modern Development:** Develop Orchestrator content using JavaScript, XML, or modern TypeScript. TypeScript projects feature robust tooling including transpilation, type definitions, and built-in unit testing.

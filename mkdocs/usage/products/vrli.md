@@ -2,10 +2,9 @@
 title: VCF Operations for Logs
 ---
 
-# VCF Operations for Logs
-
 ## Overview
 
+<!-- markdownlint-disable MD033 -->
 | Field | Value |
 |---|---|
 | Name | vrli |
@@ -13,6 +12,7 @@ title: VCF Operations for Logs
 | Archetype Artifact ID | package-vrli-archetype |
 | Package extension | vrli |
 | Product compatibility | {{ extra.products.vrli_9_full_name }} (9.x)<br>{{ extra.products.vrli_8_full_name }} (8.x) |
+<!-- markdownlint-enable MD033 -->
 
 {{ products.vrli_9_full_name }} projects are called `vrli` projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vrli_9_full_name }} content into human friendly JSON format. The project consist of content descriptor and content container.
 
@@ -39,9 +39,9 @@ mvn archetype:generate \
     -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
 
 ### Content Structure
 
@@ -107,7 +107,6 @@ Contents are managed by different rules.
 
 The following need to be added to the profile that you intend to use:
 
-<!-- markdownlint-disable MD033 -->
 ``` xml
 <!-- (1)! -->
 <profile>
@@ -124,9 +123,8 @@ The following need to be added to the profile that you intend to use:
     <vrli.vropsAuthSource>local</vrli.vropsAuthSource> 
 </profile>
 ```
-<!-- markdownlint-enable MD033 -->
 
-1.  {{ archetype.customer_project.maven_settings_location_hint}}
+1. {{ archetype.customer_project.maven_settings_location_hint}}
 
 <!-- this comment is used to properly visualise the unordered list below -->
 
@@ -184,4 +182,3 @@ content-packs:
 
 <!-- Troubleshooting Section -->
 {% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
- 

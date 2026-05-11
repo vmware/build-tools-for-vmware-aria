@@ -211,12 +211,13 @@ Relying on ids exported by Build Tools for VMware Aria should not happen. Build 
 When working with vra-ng project type, each generated project is intended to work with **only one project and one organization**. In a case where more are needed, you must generate multiple projects.
 
 For every object type that contains `organization` or `projectId` key in the JSON definition (e.g. Policies) the following behaviour applies:
+
 - if the JSON definition contains `projectId` key and value defined, the value is replaced by the project defined in (based on import mechanism used):
-  - `<vrang.project.name>` from the selected `settings.xml` Maven profile.
-  - `vrang_project_name` provided to the `installer` script.
+    - `<vrang.project.name>` from the selected `settings.xml` Maven profile.
+    - `vrang_project_name` provided to the `installer` script.
 - if the JSON definition contains `organization` key and value defined, the object is imported with the option of `Available for any project` or `Organization` enabled for the specific organization (the exact option name differentiates in UI based on product version) defined in (based on import mechanism used):
-  - `<vrang.org.name>` from the selected `settings.xml` Maven profile.
-  - `vrang_org_name` provided to the `installer` script.
+    - `<vrang.org.name>` from the selected `settings.xml` Maven profile.
+    - `vrang_org_name` provided to the `installer` script.
 
 ## Environment Connection Parameters
 
