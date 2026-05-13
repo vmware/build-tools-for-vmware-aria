@@ -675,12 +675,13 @@ public class RestClientVro extends RestClient {
 		try {
 			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		} catch (Exception e) {
+			LOGGER.error("Error checking if workflow '{}' exists. Message: '{}'", workflowId, e.getMessage());
 			return false;
 		}
 		DocumentContext responseBody = JsonPath.parse(response.getBody());
 		String targetWorkflowId = responseBody.jsonString().contains("id") ? responseBody.read("$.id") : null;
 
-		return !StringUtils.isEmpty(targetWorkflowId);
+		return StringUtils.hasLength(targetWorkflowId);
 	}
 
 	/**

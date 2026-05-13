@@ -1142,6 +1142,9 @@ public final class Installer {
 		if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
 			if (input.anyTrue(Option.VRO_EMBEDDED)) {
 				readVroEmbeddedInVrangProperties(input, false);
+				if (hasVraNgPackages) {
+					input.put(Option.VRO_AUTH, "vra");
+				}
 			} else {
 				readVroProperties(input, hasVraNgPackages);
 			}
