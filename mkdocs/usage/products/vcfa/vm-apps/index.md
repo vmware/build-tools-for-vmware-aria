@@ -263,7 +263,7 @@ you need to provide username in the following format: user@domain. E.g.:
 - `vrang.import.timeout` - Timeout in miliseconds when syncing from Content Source for Catalog Items to appear before performing additional operations (e.g. attaching Custom Forms, Icons, etc.). Default value is 6000.
 
 - `vrang.data.collection.delay.seconds` - Delay in seconds to wait for vRA data collection to pass before importing data. Can also be passed as an interactive parameter `-Dvrang.data.collection.delay.seconds=600`. useful when Dynamic types and custom resources are used in the projects and vRO content is imported, however vRA needs to then retrieve it in order to be able to create the custom Resource and use the Create/Delete Workflows. This only happens after a short delay and the vRA data collector scrapes vRO. Defaults to no delay.
-  - if a value is provided data collection is forced via REST API and if it completes successfully the provided delay time is skipped. In case the data collection fails, the delay is triggered.
+    - if a value is provided data collection is forced via REST API and if it completes successfully the provided delay time is skipped. In case the data collection fails, the delay is triggered.
 
 - `vrang.org.name` - needs to be specified. The `vra-ng` project is scoped to a single organization.
 

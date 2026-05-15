@@ -2,8 +2,6 @@
 title: Configuration Elements
 ---
 
-# Configuration Elements
-
 ## Overview
 
 Configuration Elements are {{ products.vro_short_name }} constructs that allow you to store configuration data. Build Tools for VMware Aria supports a few ways of defining configuration elements as well as different types of values.

@@ -2,8 +2,6 @@
 title: Policy Templates
 ---
 
-# Policy Templates
-
 ## Overview
 
 {{ products.vro_short_name }} supports creating Policy Templates with different elements and variables.

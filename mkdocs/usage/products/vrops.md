@@ -2,8 +2,6 @@
 title: VCF Operations
 ---
 
-# VCF Operations
-
 ## Overview
 
 <!-- markdownlint-disable MD033 -->
@@ -50,9 +48,9 @@ mvn archetype:generate \
     -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
 
 ### Content Structure
 
@@ -199,7 +197,7 @@ The following need to be added to the profile that you intend to use:
 </profile>
 ```
 
-1.  {{ archetype.customer_project.maven_settings_location_hint}}
+1. {{ archetype.customer_project.maven_settings_location_hint}}
 
 !!! note
     Some {{ products.vrops_9_short_name }} content is managed via in-guest CLI commands instead of REST API which requires credentials for REST API (`vrops.restUser` and `vrops.password`) and SSH communication (`vrops.username` and `vrops.password`) with sufficient privileges.
@@ -279,4 +277,3 @@ mvn clean package vrops:push -P{{ archetype.customer_project.maven_profile_name}
 
 <!-- Troubleshooting Section -->
 {% include-markdown "../../assets/docs/mvn/troubleshooting.md" %}
- 

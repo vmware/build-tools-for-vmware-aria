@@ -225,6 +225,7 @@ Once a bundle is generated with `-Pbundle-with-installer` maven profile, a `logb
 
 #### Example
 
+<!-- markdownlint-disable MD033 -->
 ??? Logging Configuration
     ```xml
     <configuration>
@@ -281,6 +282,7 @@ Once a bundle is generated with `-Pbundle-with-installer` maven profile, a `logb
         -->
     </configuration>
     ```
+<!-- markdownlint-enable MD033 -->
 
 ### Run Workflow
 

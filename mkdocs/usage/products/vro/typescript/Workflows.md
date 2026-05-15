@@ -2,8 +2,6 @@
 title: Workflows
 ---
 
-# Workflows
-
 ## Overview
 
 You can use the method decorators to define various canvas items that will be included in the Workflow.

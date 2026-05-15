@@ -162,7 +162,7 @@ The example below shows how to create a unit test for a simple "Hello World" lib
  * 
  */
 (function() {
-	return "Hello World"; 
+  return "Hello World"; 
 })
 ```
 
@@ -171,7 +171,7 @@ The unit test can be defined as follows:
 ```javascript
 describe("Hello World", function(){ 
    it("should Return Hello world",function(){ 
-	  var result = System.getModule("com.vmware.pscoe.library.helloworld").helloworld()
+    var result = System.getModule("com.vmware.pscoe.library.helloworld").helloworld()
       expect(result).toEqual('Hello World');
    }); 
 }); 

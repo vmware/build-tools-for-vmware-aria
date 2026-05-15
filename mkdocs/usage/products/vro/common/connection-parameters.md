@@ -16,7 +16,7 @@ The following need to be added to the profile that you intend to use:
 </profile>
 ```
 
-1.  {{ archetype.customer_project.maven_settings_location_hint}}
+1. {{ archetype.customer_project.maven_settings_location_hint}}
 
 Configuration:
 

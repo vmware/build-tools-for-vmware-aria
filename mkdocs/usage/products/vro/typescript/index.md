@@ -1,8 +1,6 @@
 ---
-title: Typescript
+title: Typescript Based Project
 ---
-
-# Typescript Based Project
 
 ## Overview
 
@@ -48,9 +46,9 @@ mvn archetype:generate \
     -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
 
 ### Content Structure
 
@@ -110,9 +108,9 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 <!-- Push Content - Additional Parameters Section -->
 {% include-markdown "../common/push-content-parameters.md" %}
 
-* `vro.packageImportConfigurationAttributeValues` - if set to `true` pushes all configuration values besides SecureStrings.
+- `vro.packageImportConfigurationAttributeValues` - if set to `true` pushes all configuration values besides SecureStrings.
 
-* `vro.packageImportConfigSecureStringAttributeValues=true` - if set to `true` pushes all Secure String configuration values.
+- `vro.packageImportConfigSecureStringAttributeValues=true` - if set to `true` pushes all Secure String configuration values.
 
 <!-- vroIgnore Section -->
 {% include-markdown "../common/vroignore.md" %}

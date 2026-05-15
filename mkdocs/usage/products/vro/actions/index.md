@@ -1,8 +1,6 @@
 ---
-title: Actions
+title: Actions/Javascript Based Project
 ---
-
-# Actions/Javascript Based Project
 
 ## Overview
 
@@ -43,9 +41,9 @@ mvn archetype:generate \
     -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
-1.  {{ archetype.customer_project.archetype_version_hint }}
-2.  {{ archetype.customer_project.group_id_hint }}
-3.  {{ archetype.customer_project.artifact_id_hint }}
+1. {{ archetype.customer_project.archetype_version_hint }}
+2. {{ archetype.customer_project.group_id_hint }}
+3. {{ archetype.customer_project.artifact_id_hint }}
 
 ### Content Structure
 
