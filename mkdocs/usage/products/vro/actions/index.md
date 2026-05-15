@@ -14,10 +14,12 @@ title: Actions/Javascript Based Project
 | Product compatibility | {{ extra.products.vro_9_full_name }} (9.x)<br>{{ extra.products.vro_8_full_name }} (8.x)<br>{{ extra.products.vro_7_full_name }} (7.x) |
 <!-- markdownlint-enable MD033 -->
 
+<!-- markdownlint-disable MD051 -->
 Actions (Javascript) project type is one of the available {{ products.vro_short_name }} project types in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vro_short_name }} Actions into JS format. The project consist of local content container and remote content descriptor on the target server. During [build operation](#build-project) the contents of the container are packaged into {{ products.vro_short_name }} native package (the same package that can be exported/imported from {{ products.vro_short_name }} UI -> Assets -> Packages).
 
 - *Content Descriptor* defines what {{ products.vro_short_name }} content will be part of this project when exporting content. The {{ products.vro_short_name }} package from UI -> Assets -> Packages plays this role and defines what content is exported. For more information refer to the [pull operation](#pull-content) section below.
 - *Content Container* holds the actual content representation - `./src` folder.
+<!-- markdownlint-enable MD051 -->
 
 The actions project type also allows the user to write unit tests and has embedded code coverage.
 
@@ -91,9 +93,10 @@ The output of the command will result in **{{ archetype.customer_project.group_i
 
 <!-- Pull Content Section -->
 {% include-markdown "../common/pull-content.md" %}
-
+<!-- markdownlint-disable MD051 -->
 !!! warning
     During pull operation any content added to the {{ products.vro_short_name }} package is exported to the local file system but only Actions is exported as Javascript files - other content types are exported as XML. Any non-Javascript content is ignored during [build](#build-project), [bundle](#bundle-project) and [push](#push-content) operations.
+<!-- markdownlint-enable MD051 -->
 
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
