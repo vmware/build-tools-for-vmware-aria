@@ -14,9 +14,10 @@
  */
 import * as fs from "fs-extra";
 import * as path from "path";
-import * as archiver from 'archiver';
+import archiver = require('archiver');
 import * as t from "../types";
 import * as xmlbuilder from "xmlbuilder";
+import * as p from "../packaging";
 import { serialize, xmlOptions, complexActionComment, getActionXml } from "./util"
 import { exist, isDirectory } from "../util";
 import { decode } from "../encoding";
@@ -36,28 +37,28 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
         data: (element: t.VroNativeElement, sourceFile: string, type: t.VroElementType) => {
             switch (type) {
                 case t.VroElementType.ResourceElement: {
-                    return fs.copyFileSync(sourceFile, path.join(target, `${elementName}`));
+                    return fs.copyFile(sourceFile, path.join(target, `${elementName}`));
                 }
                 case t.VroElementType.ScriptModule: {
                     let elementXmlPath = path.join(target, `${elementName}.xml`)
 					let actionXml = getActionXml(element.id, element.name, element.description, element.action);
-					fs.mkdirsSync(path.dirname(elementXmlPath));
-                    return fs.writeFileSync(elementXmlPath, actionXml);
+					return fs.mkdirs(path.dirname(elementXmlPath))
+                        .then(() => fs.writeFile(elementXmlPath, actionXml));
                 }
 				case t.VroElementType.ActionEnvironment: {
-                    return fs.copyFileSync(sourceFile, path.join(target, `${elementName}`));
+                    return fs.copyFile(sourceFile, path.join(target, `${elementName}`));
 				}
                 default: {
                     // Re-encode the content to UTF-8
-                    let buffer = fs.readFileSync(sourceFile);
-                    return fs.writeFileSync(path.join(target, `${elementName}.xml`), decode(buffer));
+                    return fs.readFile(sourceFile)
+                        .then(buffer => fs.writeFile(path.join(target, `${elementName}.xml`), decode(buffer)));
                 }
             }
         },
         bundle: (element: t.VroNativeElement, bundle: t.VroScriptBundle) => {
             if (bundle == null) {
                 // Empty promise that does nothing. Nothing needs to be done since bundle file does not exist.
-                return new Promise<void>((resolve, reject) => { });
+                return Promise.resolve();
             }
             let bundleFilePathSrc = bundle.contentPath;
             if (!exist(bundleFilePathSrc)) {
@@ -65,15 +66,15 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
                     + `"${element.name}" of type "${element.type}"; category "${element.categoryPath}"; id: "${element.id}"`);
             }
             let bundleFilePathDest = path.join(target, `${elementName}.bundle.zip`);
-            if (isDirectory(bundleFilePathSrc)) {
-                let output = fs.createWriteStream(bundleFilePathDest);
-                let archive = archiver('zip', { zlib: { level: ZLIB_COMPRESS_LEVEL } });
-                archive.directory(bundleFilePathSrc, false);
-                archive.pipe(output);
-                archive.finalize();
-            } else {
-                return fs.copyFile(bundleFilePathSrc, bundleFilePathDest);
-            }
+			if (!isDirectory(bundleFilePathSrc) ) {
+				return fs.copy(bundleFilePathSrc, bundleFilePathDest);
+			}
+			
+            const archive = p.archive(bundleFilePathDest);
+            archive.directory(bundleFilePathSrc, false);
+            
+            // Use finalizeArchive instead of direct finalize() to avoid EMFILE errors
+            return p.finalizeArchive(archive);           
         },
         info: store(`${elementName}.element_info.xml`),
         tags: store(`${elementName}.tags.xml`),
@@ -81,17 +82,20 @@ const serializeTreeElementContext = (target: string, elementName: string) => {
         form: (element: t.VroNativeElement) => {
             if (element.form?.data) {
                 const formFileName = VRO_FORM_TEMPLATE.replace("{{elementName}}", elementName);
-                fs.writeFile(path.join(target, formFileName), JSON.stringify(element.form?.data, null, JSON_DEFAULT_IDENT));
+                return fs.writeFile(path.join(target, formFileName), JSON.stringify(element.form?.data, null, JSON_DEFAULT_IDENT));
             }
+            return Promise.resolve();
         },
         // if the object contains more forms (i.e. custom interaction enabled workflow) then store them on the file system
         formItems: (element: t.VroNativeElement) => {
             if (element.formItems && Array.isArray(element.formItems)) {
-                element.formItems.forEach((formItem: t.VroNativeFormElement) => {
+                const writePromises = element.formItems.map((formItem: t.VroNativeFormElement) => {
                     const customFormFileName = VRO_CUSTOM_FORMS_FILENAME_TEMPLATE.replace("{{elementName}}", elementName).replace("{{formName}}", formItem.name);
-                    fs.writeFile(path.join(target, customFormFileName), JSON.stringify(formItem.data, null, JSON_DEFAULT_IDENT));
+                    return fs.writeFile(path.join(target, customFormFileName), JSON.stringify(formItem.data, null, JSON_DEFAULT_IDENT));
                 });
+                return Promise.all(writePromises);
             }
+            return Promise.resolve();
         }
     }
 }

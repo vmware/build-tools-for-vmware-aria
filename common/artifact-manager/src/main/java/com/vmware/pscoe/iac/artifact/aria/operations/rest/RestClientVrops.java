@@ -1708,6 +1708,7 @@ public class RestClientVrops extends RestClient {
 		String definitionId = getDefinitionId(definition, definitionType);
 		HttpMethod method = HttpMethod.POST;
 		if (!StringUtils.isEmpty(definitionId)) {
+			removeIdFromDefinitionPayload(definitionId, definitionType);
 			updateDefinitionId(definition, definitionType, definitionId);
 			method = HttpMethod.PUT;
 		}

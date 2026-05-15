@@ -46,6 +46,20 @@ To check if the dependencies are met, you can run:
 curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
 ```
 
+To check if the dependencies are met on Windows, you can run:
+```ps
+Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.ps1'))
+```
+
+By default the healtcheck script validates dependencies for consuming Build Tools for Aria via one of the available project types. To validate all dependencies required for contributing to Build Tools for Aria pass the --contribute flag, e. g.:
+```sh
+./health.sh --contribute
+```
+or for Windows
+```ps
+./health.ps1 -contribute
+```
+
 ## Encoding (UTF-8)
 
 Some development environments default to a platform-specific file encoding (for example, Cp1252 on some Windows systems). Build Tools for VMware Aria reads and writes files using UTF-8 where possible, but JVM and toolchain defaults may still affect behavior. If you encounter issues where non-ASCII characters are replaced by question marks (for example emoji in CSS/form styles), ensure Java uses UTF-8 by one of the following:

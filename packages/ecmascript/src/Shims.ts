@@ -194,6 +194,10 @@ export default class Shims {
 		return target;
 	}
 
+	static objectEntries(target): [string, any][] {
+		return Object.keys(target).map(key => [key, target[key]]);
+	}
+
 	static objectValues(target): any[] {
 		return Object.keys(target).map(key => target[key]);
 	}

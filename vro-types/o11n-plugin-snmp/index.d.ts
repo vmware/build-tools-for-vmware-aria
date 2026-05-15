@@ -39,7 +39,7 @@ declare interface SNMPSnmpDevice {
 /**
  * SNMP Query
  */
-declare interface SNMPSnmpQuery {
+declare class SNMPSnmpQuery {
 	oid: string;
 	name: string;
 	type: string;

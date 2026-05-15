@@ -212,6 +212,12 @@
 			<artifactId>o11n-plugin-ovatransfer</artifactId>
 			<type>tgz</type>
 			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.ts.types</groupId>
+			<artifactId>o11n-plugin-vcfa</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
 		</dependency>		
 	</dependencies>
 </project>

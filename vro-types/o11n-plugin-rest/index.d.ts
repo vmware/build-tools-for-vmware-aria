@@ -185,11 +185,11 @@ declare class RESTHost {
 	proxyPort: number;
 	privateKeyId: string;
 
-  /**
-   * constructor
-   * @param name
-   */
-  constructor(name: string);
+	/**
+	 * constructor
+	 * @param name
+	 */
+	constructor(name: string);
 	/**
 	 * Creates a copy of the REST host.
 	 */
@@ -356,12 +356,12 @@ declare interface RESTResponse {
  */
 declare class RESTOperation {
 	readonly id: string;
-	name: void;
-	host: void;
-	inParametersCount: void;
-	method: void;
-	urlTemplate: void;
-	defaultContentType: void;
+	name: void | string;
+	host: void | RESTHost;
+	readonly inParametersCount: void | number;
+	method: void | string;
+	urlTemplate: void | string;
+	defaultContentType: void | string;
 	constructor(urlTemplate: string);
 	/**
 	 * Creates a copy of the REST operation.

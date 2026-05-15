@@ -35,7 +35,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@6c4e9964d4ecb8f1026310cd8618791fd51a8016 #v1.19.0
+        uses: s4u/setup-maven-action@ba34de01b7f4ba2ab8e2860df8993a29f4477056 #v1.20.0
         with:
           java-version: ${{ matrix.java }}
           java-distribution: "temurin"
@@ -78,7 +78,7 @@ jobs:
 
       - name: Import GPG Key
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -151,7 +151,7 @@ jobs:
           tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == 17 }}
         with:
           name: ${{ env.ARTIFACT_FILE_NAME }}

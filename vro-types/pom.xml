@@ -50,6 +50,7 @@
 		<module>o11n-plugin-aria</module>
 		<module>o11n-plugin-srm</module>
 		<module>o11n-plugin-ovatransfer</module>
+		<module>o11n-plugin-vcfa</module>
 	</modules>
 
 	<properties>

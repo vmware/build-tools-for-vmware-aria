@@ -23,7 +23,7 @@ import * as s from "../security";
 import * as p from "../packaging"
 import { exist, isDirectory } from "../util";
 import { getPackageName, serialize, zipbundle, getActionXml, saveOptions, xmlOptions, infoOptions } from "./util"
-import * as archiver from "archiver";
+import archiver = require("archiver");
 import { decode } from "../encoding";
 import * as xmlDoc from "xmldoc";
 import { DEFAULT_ENCODING, FORM_ITEM_TEMPLATE, VSO_RESOURCE_INF, WINSTON_CONFIGURATION } from "../constants";
@@ -55,7 +55,8 @@ const initializeContext = (target: string) => {
     const bundle = (name: string): Promise<void> => {
         const arch = p.archive(path.join(target, name));
         [CERTIFICATES, ELEMENTS, SIGNATURES].forEach(folder => arch.directory(path.join(target, folder), folder));
-        return arch.append(fs.createReadStream(path.join(target, DUNES_META_INF)), { name: DUNES_META_INF }).finalize();
+        arch.append(fs.createReadStream(path.join(target, DUNES_META_INF)), { name: DUNES_META_INF });
+        return p.finalizeArchive(arch);
     }
     const store = serialize(target);
 
@@ -111,7 +112,7 @@ const serializeFlatElementData = (target: string) => {
         name: append(DATA_NAME),
         version: append(DATA_VERSION),
         data: append(DATA),
-        save: () => bundle.finalize()
+        save: () => p.finalizeArchive(bundle)
     }
 }
 

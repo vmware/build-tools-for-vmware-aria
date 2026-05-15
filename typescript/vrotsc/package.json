@@ -1,6 +1,6 @@
 {
     "name": "@vmware-pscoe/vrotsc",
-    "version": "4.18.1-SNAPSHOT",
+    "version": "4.20.1-SNAPSHOT",
     "author": "VMware PSCoE",
     "license": "VMware Confidential",
     "description": "vRO TypeScript to JavaScript transpiler",
@@ -16,13 +16,13 @@
         "vrotsc": "bin/vrotsc"
     },
     "dependencies": {
-        "brace-expansion": "^2.0.2",
-        "minimatch": "^10.0.0"
+        "brace-expansion": "^2.0.3",
+        "minimatch": "^10.2.3"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "28.0.1",
         "@rollup/plugin-node-resolve": "15.3.0",
-        "@rollup/plugin-terser": "0.4.4",
+        "@rollup/plugin-terser": "1.0.0",
         "@types/fs-extra": "^11.0.4",
         "@types/gulp": "4.0.17",
         "@types/js-yaml": "4.0.9",
@@ -38,10 +38,10 @@
         "is-keyword-js": "1.0.3",
         "js-yaml": "4.1.1",
         "merge2": "1.4.1",
-        "minimatch": "10.0.1",
+        "minimatch": "10.2.3",
         "minimist": "1.2.8",
         "prettier": "^3.5.3",
-        "rollup": "4.28.0",
+        "rollup": "4.59.0",
         "source-map": "^0.7.4",
         "ts-node": "10.9.2",
         "typescript": "5.7.2",

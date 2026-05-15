@@ -424,7 +424,7 @@ declare interface FileHelper {
  * FileReader
  */
 declare class FileReader {
-	exists: boolean;
+	readonly exists: boolean;
 	constructor(file: File);
 	/**
 	 * Opens the file for reading. <p>Once open an index in the file is maintained. This means you can do succesive <b>readLine</b>.</p>
@@ -438,6 +438,10 @@ declare class FileReader {
 	 * Reads all lines from the opened file.
 	 */
 	readAll(): string;
+	/**
+	 * Closes a previously opened file.
+	 */
+	close(): void;
 }
 
 /**

@@ -291,7 +291,7 @@ public class AlertDefinitionDTO implements Serializable {
 		}
 
 		@JsonInclude(JsonInclude.Include.NON_NULL)
-		@JsonPropertyOrder({ "type", "relation", "aggregation", "symptomSetOperator", "symptomDefinitionIds", "symptomSets", "alertConditions" })
+		@JsonPropertyOrder({ "type", "relation", "aggregation", "symptomSetOperator", "symptomDefinitionIds", "symptom-sets", "alertConditions" })
 		public static class BaseSymptomSet implements Serializable {
 			private static final long serialVersionUID = 7061962708255866132L;
 
@@ -310,7 +310,7 @@ public class AlertDefinitionDTO implements Serializable {
 			@JsonProperty("symptomDefinitionIds")
 			private List<String> symptomDefinitionIds = new ArrayList<>();
 
-			@JsonProperty("symptomSets")
+			@JsonProperty("symptom-sets")
 			private List<SymptomSet> symptomSets = new ArrayList<>();
 
 			@JsonProperty("alertConditions")
@@ -369,12 +369,12 @@ public class AlertDefinitionDTO implements Serializable {
 				this.symptomDefinitionIds = symptomDefinitionIds;
 			}
 
-			@JsonProperty("symptomSets")
+			@JsonProperty("symptom-sets")
 			public List<SymptomSet> getSymptomSets() {
 				return symptomSets;
 			}
 
-			@JsonProperty("symptomSets")
+			@JsonProperty("symptom-sets")
 			public void setSymptomSets(List<SymptomSet> symptomSets) {
 				this.symptomSets = symptomSets;
 			}

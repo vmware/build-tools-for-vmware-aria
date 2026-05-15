@@ -14,11 +14,12 @@
  */
 import * as fs from "fs-extra";
 import * as path from "path";
-import * as archiver from 'archiver';
+import archiver = require('archiver');
 import * as t from "../types";
 import * as winston from 'winston';
 import * as xmlbuilder from "xmlbuilder";
 import * as CRC from "crc-32";
+import * as p from "../packaging";
 import { JSON_MINOR_IDENT, WINSTON_CONFIGURATION} from "../constants";
 
 export const saveOptions = {
@@ -57,15 +58,15 @@ export const zipbundle = (target: string) => {
     fs.mkdirsSync(target);
     return (file: string) => async (sourcePath: string, isDir: boolean): Promise<void> => {
         const absoluteZipPath = path.join(target, file);
-        if (isDir) {
-            let output = fs.createWriteStream(absoluteZipPath);
-            let archive = archiver('zip', { zlib: { level: 9 } });
-            archive.directory(sourcePath, false);
-            archive.pipe(output);
-            archive.finalize();
-        } else {
-            fs.copySync(sourcePath, absoluteZipPath);
-        }
+		if (!isDir) {
+			return fs.copy(sourcePath, absoluteZipPath);
+		}
+		
+        const archive = p.archive(absoluteZipPath);
+        archive.directory(sourcePath, false);
+        
+        // Use finalizeArchive to properly handle async completion
+        return p.finalizeArchive(archive);
     }
 }
 
