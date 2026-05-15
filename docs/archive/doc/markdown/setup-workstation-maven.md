@@ -9,8 +9,8 @@ going through phases like validate, compile, test, package, verify, install and 
 ### Prerequisites
 
 - Build Tools for VMware Aria Platform
-  - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
-  - Workstation can access Build Tools for VMware Aria Platform services
+    - [Build Tools for VMware Aria Platform](setup-platform.md) ready to use
+    - Workstation can access Build Tools for VMware Aria Platform services
 - Java 17
 - Maven 3.5+ ([official installation guide](https://maven.apache.org/install.html))
 
@@ -35,7 +35,7 @@ keytool -genkey -keyalg RSA -keysize 2048 -alias _dunesrsa_alias_ -keystore pack
 ##  Optional  ##
 
 # Generate Certificate Signing Request
-keytool -certreq -alias _dunesrsa_alias_ -keypass 'VMware1!' -keystore package.jre -storepass 'VMware1!' -file packageCertRequest.csr
+keytool -certreq -alias _dunesrsa_alias_ -keypass 'VMware1!' -keystore package.jks -storepass 'VMware1!' -file packageCertRequest.csr
 
 # Import the signed certificate
 keytool -importcert -alias _dunesrsa_alias_ -keypass 'VMware1!' -file packageCertRequest.crt -keystore package.jks -storepass 'VMware1!'
