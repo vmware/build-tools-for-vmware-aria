@@ -61,11 +61,11 @@ describe("ExportShapeValidationTests", function() {
 		expect(report.issues[0]).toContain("E_EXPORT_SHAPE_INVALID");
 	});
 
-	it("Class.load() should warn and still return the value when export is not a constructor", function() {
-		// Verify Class.load() emits a warning but remains backward-compatible for object exports.
+	it("Class.load() should log and still return the value when export is not a constructor", function() {
+		// Verify Class.load() emits a diagnostic log but remains backward-compatible for object exports.
 		const originalGetModule = System.getModule;
-		const warnMessages = [];
-		const originalWarn = System.warn;
+		const errorMessages = [];
+		const originalError = System.error;
 		try {
 			System.getModule = function(moduleName) {
 				if (moduleName === "com.vmware.pscoe.library.classtests.badexport") {
@@ -81,7 +81,7 @@ describe("ExportShapeValidationTests", function() {
 				}
 				return originalGetModule(moduleName);
 			};
-			System.warn = function(msg) { warnMessages.push(msg); };
+			System.error = function(msg) { errorMessages.push(msg); };
 
 			// Must clear the class cache so Class.load() actually invokes the action
 			if (global.__classes__) {
@@ -95,14 +95,14 @@ describe("ExportShapeValidationTests", function() {
 			expect(typeof loaded).toBe("object");
 			expect(loaded.SomeClass).toBeDefined();
 
-			// Warning was emitted
-			expect(warnMessages.length).toBeGreaterThan(0);
-			expect(warnMessages[0]).toContain("W_EXPORT_SHAPE_MISMATCH");
-			expect(warnMessages[0]).toContain("com.vmware.pscoe.library.classtests.badexport");
-			expect(warnMessages[0]).toContain("BadAction");
+			// Diagnostic log was emitted
+			expect(errorMessages.length).toBeGreaterThan(0);
+			expect(errorMessages[0]).toContain("W_EXPORT_SHAPE_MISMATCH");
+			expect(errorMessages[0]).toContain("com.vmware.pscoe.library.classtests.badexport");
+			expect(errorMessages[0]).toContain("BadAction");
 		} finally {
 			System.getModule = originalGetModule;
-			System.warn = originalWarn;
+			System.error = originalError;
 		}
 	});
 
