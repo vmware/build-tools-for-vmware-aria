@@ -328,7 +328,41 @@ const IMPORT_BASE_REGEX = /^(?:[\w-]+\.)*[\w-]+$/g;
 		const classFqdn = `${moduleInfo.name}/${actionName}`;
 		let actionResult = __classes__[classFqdn];
 		if (!actionResult) {
-			actionResult = moduleInfo[actionName]();
+			try {
+				actionResult = moduleInfo[actionName]();
+			} catch (error) {
+				const errorMsg = error?.toString?.() || String(error);
+				const isNotFunctionError = errorMsg && errorMsg.indexOf("is not a function") >= 0;
+				const isObjectNotFunctionError = errorMsg && errorMsg.indexOf("[object Object] is not a function") >= 0;
+				
+				let hint = `[Module][E_ACTION_INVOKE_FAILED] Failed to invoke action '${actionName}' in module '${moduleInfo.name}'. `;
+				
+				if (isObjectNotFunctionError) {
+					hint += `Error indicates a module export shape mismatch. This typically occurs when dynamic module loading (like Class.load()) ` +
+						`retrieves an object instead of a constructor function, often due to module path misconfiguration. ` +
+						`Diagnostic steps: ` +
+						`1) verify that module paths resolve to canonical sources (no parallel paths like com.vmware.pscoe.library.ts.* aliases), ` +
+						`2) check if using dynamic Class.load() - ensure module paths match configured canonical paths, ` +
+						`3) run __vroes__.validateModuleConfiguration() to inspect module resolution state, ` +
+						`4) inspect the loaded module export shape - ensure it exports a constructor function, not an object wrapper. `;
+				} else if (isNotFunctionError) {
+					hint += `Error indicates something expected to be callable (constructor/function) is not. ` +
+						`This often happens with incorrect module exports or dynamic module loading. ` +
+						`Diagnostic steps: ` +
+						`1) verify module export shapes are correct (should export functions/constructors directly, not objects), ` +
+						`2) check for path misconfiguration or parallel module aliases, ` +
+						`3) run __vroes__.validateModuleConfiguration() and __vroes__.diagnoseModule(instance). `;
+				} else {
+					hint += `Summary: if you see constructor identity errors, verify that module resolution loads from consistent sources. ` +
+						`Recommended actions: ` +
+						`1) verify the action exists and is exported correctly, ` +
+						`2) confirm imports resolve to one canonical module source (no parallel aliases), ` +
+						`3) if instanceof fails, run __vroes__.validateModuleConfiguration() and inspect __vroes__.diagnoseModule(instance). `;
+				}
+				
+				hint += `Original error: ${error}`;
+				throw new Error(hint);
+			}
 			__classes__[classFqdn] = actionResult;
 		}
 
