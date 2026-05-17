@@ -13,9 +13,9 @@ The function accepts the following parameters:
 var Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
 return Class.define(function Car(model, color){
-	this.model = model;
-	this.color = color;
-	this.purpose = "drive";
+    this.model = model;
+    this.color = color;
+    this.purpose = "drive";
 }, { drive: function () {// some driving code}});
 ```
 
@@ -29,17 +29,17 @@ The following example defines a private and a public function in the constructor
 var Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
 return Class.define(function Plane(model){
-	this.model = model;
-	this.purpose = "fly";
+    this.model = model;
+    this.purpose = "fly";
 
-	var privateAttribute = "i am private";
-	var privateFunction = function () {
-		// do some stuff
-	};
+    var privateAttribute = "i am private";
+    var privateFunction = function () {
+        // do some stuff
+    };
 
-	this.publicFunction = function () {
-		// do some stuff
-	};
+    this.publicFunction = function () {
+        // do some stuff
+    };
 }, { // no prototype in this example });
 ```
 
@@ -50,8 +50,8 @@ var Class = System.getModule("com.vmware.pscoe.library.class").Class();
 var Car = System.getModule("com.vmware.pscoe.example").Car();
 
 return Class.define(function Porsche(model, color){
-	Car.call(this, model, color);
-	this.purpose = "be cool";
+    Car.call(this, model, color);
+    this.purpose = "be cool";
 }, null, Car)
 ```
 
@@ -65,8 +65,8 @@ var Class = System.getModule("com.vmware.pscoe.library.class").Class();
 var Car = System.getModule("com.vmware.pscoe.example").Car();
 
 return Class.define("Volkswagen", function (model, color){
-	Car.call(this, model, color);
-	this.purpose = "be useful";
+    Car.call(this, model, color);
+    this.purpose = "be useful";
 }, null, Car)
 ```
 
@@ -99,15 +99,15 @@ The Class.find() method can be used to provide extensibility mechanisms to solut
 // Find classes which name ends in Resolver and are located in .context modules.
 // Then check if the found classes implement a resolveValue function.
 Class.find(/\.context$/g, /.*Resolver$/g)
-	.map(function (classCtor) {
-		return new classCtor();
-	})
-	.filter(function (classInstance) {
-		return typeof classInstance.resolveValue === "function";
-	})
-	.forEach(function (classInstance) {
-		logger.info(classInstance.resolveValue())
-	});
+    .map(function (classCtor) {
+        return new classCtor();
+    })
+    .filter(function (classInstance) {
+        return typeof classInstance.resolveValue === "function";
+    })
+    .forEach(function (classInstance) {
+        logger.info(classInstance.resolveValue())
+    });
 });
 ```
 
@@ -115,26 +115,26 @@ Class.find(/\.context$/g, /.*Resolver$/g)
 // Finds all classes inside modules ending with ".context",
 // then instantiates them and converts the result to a map { className: classInstance }
 var contextResolvers = Class.find(/\.context$/)
-	.map(function (clazz) {
-		return new clazz();
-	})
-	.reduce(function (map, clazzInstance) {
-		map[clazz.name] = clazzInstance;
-		return map;
-	}, {});
+    .map(function (clazz) {
+        return new clazz();
+    })
+    .reduce(function (map, clazzInstance) {
+        map[clazz.name] = clazzInstance;
+        return map;
+    }, {});
 ```
 
 If order is important, an array of modules can be passed as parameter
 ```javascript
 var contextResolvers = Class.find([
-		"com.vmware.pscoe.library.context.workflow",
-		"com.vmware.pscoe.library.vc.context",
-		"com.vmware.pscoe.library.vra.context",
-		"com.vmware.pscoe.customer.context"
-	])
-	.map(function (clazz) {
-		return new clazz();
-	})
+        "com.vmware.pscoe.library.context.workflow",
+        "com.vmware.pscoe.library.vc.context",
+        "com.vmware.pscoe.library.vra.context",
+        "com.vmware.pscoe.customer.context"
+    ])
+    .map(function (clazz) {
+        return new clazz();
+    })
 ```
 
 ## Class multi-import
@@ -160,7 +160,7 @@ var obj = { a: "a", b: 5 }
 
 // returns an instance of ModuleExports object as result suitable for distructing assignment through Class.load() and Class.import()
 return Class.export(ClassVarRef, FunctionName)
-	.named({map: obj, CONST_7: 7});
+    .named({map: obj, CONST_7: 7});
 ```
 As can be seen the `Class.export()` function accepts objects that are already named and if they are not an error will be produced. In this particular case the class referenced by `ClassVarRef` will be exported as the name of the constructor - `ClassName`. If the object name cannot be inferred we use the `.named()` method to export the object with a name that will be used in the import later.
 
@@ -170,9 +170,9 @@ The corresponding import for named objects looks like:
 var module = Class.import("com/vmware/pscoe/module/vroAction", "*");
 
 System.log(JSON.stringify(module)); // results in: {
-//	  ClassName: function ClassName() {} - the class constructor
+//      ClassName: function ClassName() {} - the class constructor
 //    FunctionName: function FunctionName() {} - the function instance
-//	  map: { a: "a", b: 5 }
+//      map: { a: "a", b: 5 }
 //    CONST_7: 7
 // }
 ```
@@ -206,13 +206,13 @@ var obj = { a: "a", b: 5 }
 
 // named-export as before but make ClassName the default
 return Class.export(FunctionName)
-	.default(ClassVarRef)
-	.named({map: obj, CONST_7: 7});
+    .default(ClassVarRef)
+    .named({map: obj, CONST_7: 7});
 
 // or if we want to export the 'obj' as default:
 return Class.export(ClassVarRef, FunctionName)
-	.default(obj)
-	.named({CONST_7: 7});
+    .default(obj)
+    .named({CONST_7: 7});
 
 // or if we have only a single default export we can use the good old as before
 return ClassVarRef;
@@ -251,11 +251,11 @@ var obj = { a: "a", b: 5 }
 
 // named-export as before but make ClassName the default
 return Class.export(ClassVarRef, FunctionName)
-	.named({map: obj, CONST_7: 7});
-	.from("com/vmware/pscoe/module/anotherVroAction", "*") // re-export full named map
-	.from("com/vmware/pscoe/module/anotherVroAction") // re-export default
-	.from("com/vmware/pscoe/module/anotherVroAction", [obj1, obj2]) // re-export only specific named exports
-	.from("com/vmware/pscoe/module/anotherVroAction", {alias: name}) // re-export specific exports with aliases
+    .named({map: obj, CONST_7: 7});
+    .from("com/vmware/pscoe/module/anotherVroAction", "*") // re-export full named map
+    .from("com/vmware/pscoe/module/anotherVroAction") // re-export default
+    .from("com/vmware/pscoe/module/anotherVroAction", [obj1, obj2]) // re-export only specific named exports
+    .from("com/vmware/pscoe/module/anotherVroAction", {alias: name}) // re-export specific exports with aliases
 ```
 
 ### Import syntax
@@ -308,8 +308,8 @@ Existing vRO actions return a simple value (i.e. not ModuleExports) thus when `C
 |-----------------------------|---------------|-----------------------------------|
 |`Class.load("path","module")`| Simple Return | ModuleExports Return              |
 |`Class.import("path/module")`| Simple Return | default export from ModuleExports |
-|`Class.import("path/module", "*")`| {} | Named map from ModuleExports            |
-|`Class.import("path/module", ["*"])`| [Simple Return, {}]| [default, named map]  |
+| `Class.import("path/module", "*")`       | {}                  | Named map from ModuleExports      |
+| `Class.import("path/module", ["*"])`     | [Simple Return, {}] | [default, named map]              |
 
 ## Export Shape Validation and Diagnostics
 
@@ -328,7 +328,7 @@ var rawExport = Class.load("com.vmware.pscoe.library.logging.appenders", "Append
 var report = Class.validateExportShape(rawExport, "com.vmware.pscoe.library.logging.appenders", "AppenderClass");
 
 if (!report.isFunction) {
-	System.warn(JSON.stringify(report));
+    System.warn(JSON.stringify(report));
 }
 ```
 
@@ -354,8 +354,8 @@ System.log("Report: " + JSON.stringify(report));
 
 // Validate an object export (problematic)
 var objExport = { 
-	BaseClass: function BaseClass() {},
-	ExtendedClass: function ExtendedClass() {}
+    BaseClass: function BaseClass() {},
+    ExtendedClass: function ExtendedClass() {}
 };
 var report = Class.validateExportShape(objExport, "com.example.appenders", "AppenderClass");
 // Output: {
@@ -372,8 +372,9 @@ var report = Class.validateExportShape(objExport, "com.example.appenders", "Appe
 ```
 
 ### Diagnostic Error Codes
+
 | Error Code | Meaning | Common Cause |
-|-----------|---------|--------------|
+|------------|---------|--------------|
 | `E_EXPORT_SHAPE_MISMATCH` | Module returned an object instead of a constructor | Path misconfiguration (e.g., `com.vmware.pscoe.library.ts.*` aliases) |
 | `E_EXPORT_SHAPE_INVALID` | Module returned an unexpected type (not function/object) | Action returns primitive (string, number, etc.) or null |
 
@@ -394,13 +395,13 @@ var AppenderClass = Class.load("com.vmware.pscoe.library.logging.appenders", "Sy
 
 // Step 2: Validate the export shape when troubleshooting
 var report = Class.validateExportShape(AppenderClass,
-	"com.vmware.pscoe.library.logging.appenders", "SystemAppender");
+    "com.vmware.pscoe.library.logging.appenders", "SystemAppender");
 System.log("Diagnostic Report: " + JSON.stringify(report));
 
 // Step 3: Check for path misconfigurations
 var tsPathModule = System.getModule("com.vmware.pscoe.library.ts.logging.appenders");
 if (tsPathModule) {
-	System.warn("WARNING: Both canonical and ts.* path modules are loaded. " +
-		"This indicates path misconfiguration. Use only canonical paths.");
+    System.warn("WARNING: Both canonical and ts.* path modules are loaded. " +
+        "This indicates path misconfiguration. Use only canonical paths.");
 }
 ```

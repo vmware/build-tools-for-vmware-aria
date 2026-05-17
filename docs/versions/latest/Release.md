@@ -39,7 +39,8 @@ The Class library provides:
 
 This library is essential for scenarios where actions/modules export objects with named functions instead of constructor functions, and for diagnosing the `[object Object] is not a function` error pattern.
 
-#### Relevant Documentation:
+#### Relevant Documentation
+
 - [Class Package README](../../packages/class/README.md) - Full reference with examples and troubleshooting workflows
 
 ### Constructor identity diagnostics and export shape validation for module loading issues
@@ -62,7 +63,7 @@ New helper functions:
 - `__vroes__.validateModuleConfiguration()` - Checks for unstable module identity issues
 - `__vroes__.diagnoseModule(instance)` - Reports constructor registry and identity information
 
-#### Relevant Documentation:
+#### Relevant Documentation
 
 - NONE
 
