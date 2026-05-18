@@ -38,7 +38,3 @@
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
-## Upgrade procedure
-
-[//]: # (Explain in details if something needs to be done)
