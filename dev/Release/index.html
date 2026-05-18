@@ -1992,6 +1992,51 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#workflow-execution-on-embedded-vro-with-local-vra-package-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow execution on embedded vRO with local vRA package fix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow execution on embedded vRO with local vRA package fix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#previous-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previous Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2096,6 +2141,51 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#workflow-execution-on-embedded-vro-with-local-vra-package-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow execution on embedded vRO with local vRA package fix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow execution on embedded vRO with local vRA package fix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#previous-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previous Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2137,6 +2227,12 @@
 <h3 id="migrate-documentation-to-mkdocs"><em>Migrate documentation to mkdocs</em><a class="headerlink" href="#migrate-documentation-to-mkdocs" title="Permanent link">&para;</a></h3>
 <p>Documentation approach is changed to use <code>github-pages</code> with <code>mkdocs</code> (for the documentation itself) and <code>mike</code> (for version management). All new documentation must be placed in an appropriate location under the <code>mkdocs</code> folder. The old <code>docs</code> folder must not be used anymore and is to be archived.</p>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
+<h3 id="workflow-execution-on-embedded-vro-with-local-vra-package-fix"><em>Workflow execution on embedded vRO with local vRA package fix</em><a class="headerlink" href="#workflow-execution-on-embedded-vro-with-local-vra-package-fix" title="Permanent link">&para;</a></h3>
+<p>Fixed an issue where executing a workflow on an embedded vRO environment with local vRA NG packages failed due to missing authentication properties. Additionally, added error logging when workflow lookups fail to help diagnose such issues more easily.</p>
+<h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>
+<p>When a workflow execution was run after pushing packages to an embedded vRO alongside vRA NG packages, the authentication defaulted incorrectly because <code>vro_auth=vra</code> wasn't explicitly set. In addition, when workflow lookups failed, errors were swallowed and a misleading message was emitted.</p>
+<h4 id="new-behavior">New Behavior<a class="headerlink" href="#new-behavior" title="Permanent link">&para;</a></h4>
+<p>The Installer now automatically tracks vRO embedded properties and defaults <code>vro_auth</code> to <code>vra</code> if <code>VRO_EMBEDDED</code> is true and vRA NG packages are being processed. Error logs have also been added to <code>isWorkflowExisting()</code> returning accurate error outputs for missing workflows.</p>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
 
 
