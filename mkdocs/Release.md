@@ -68,7 +68,7 @@ This library is essential for scenarios where actions/modules export objects wit
 
 #### Relevant Documentation
 
-- [Class Package README](../packages/class/README.md) - Full reference with examples and troubleshooting workflows
+- [Class Package README](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/packages/class/README.md) - Full reference with examples and troubleshooting workflows
 
 ### Constructor identity diagnostics and export shape validation for module loading issues
 
