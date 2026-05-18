@@ -3,6 +3,10 @@
 # Default state for all rules
 default: true
 
+# MD007 - Unordered list indentation - default 2, increased to 4 - needed for proper indentation of unordered lists in mkdocs
+MD007:
+  indent: 4
+
 # MD012/no-multiple-blanks - Multiple consecutive blank lines
 MD012:
   # Consecutive blank lines
@@ -25,3 +29,6 @@ MD031: false
 
 # MD041/first-line-heading/first-line-h1 - First line in a file should be a top-level heading
 MD041: false
+
+# MD046/code-block-style Code block style [Expected: indented; Actual: fenced] - mkdocs requires indentation even for fenced code when using tabs
+MD046: false
