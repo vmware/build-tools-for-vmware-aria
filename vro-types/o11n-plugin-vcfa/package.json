@@ -1,6 +1,6 @@
 {
 	"name": "@types/o11n-plugin-vcfa",
-	"version": "4.21.1-SNAPSHOT",
+	"version": "4.22.0",
 	"author": "VMware PSCoE",
 	"license": "ISC",
 	"private": true
