@@ -26,6 +26,10 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### Add `Class` JS library as default dependency
+
+`Class` JS library is now packages as a default dependency for all Orchestrator projects (`actions`, `xml` and `typescript`).
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )

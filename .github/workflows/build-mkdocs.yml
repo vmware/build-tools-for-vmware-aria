@@ -8,6 +8,10 @@ on:
       - '*.*.*' # Triggers the release logic on version tags (e.g., 4.20.0 or v4.20.0)
   workflow_dispatch:
 
+concurrency:
+  group: mkdocs-deploy
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
