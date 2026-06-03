@@ -39,6 +39,7 @@ Build Tools for VMware Aria provides advanced development and release management
 - node: 22.x.x (only 14 is supported for vcd-ng)
 - maven: 3.9.x
 - jdk: 17, 21, 24
+- Python: >= 3.10
 
 To check if the dependencies are met, you can run:
 
