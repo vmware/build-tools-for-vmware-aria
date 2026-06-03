@@ -1,6 +1,6 @@
 {
   "name": "@vmware-pscoe/vro-scripting-api",
-  "version": "4.10.1-SNAPSHOT",
+  "version": "4.22.1-SNAPSHOT",
   "author": "VMware PSCoE",
   "license": "VMware Confidential",
   "description": "vRO script API for NodeJS",
@@ -26,8 +26,8 @@
     "gulp-typescript": "^6.0.0-alpha.1",
     "jasmine": "^5.5.0",
     "rimraf": "^6.0.1",
-    "rollup": "^4.28.0",
-    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.59.0",
+    "@rollup/plugin-terser": "^1.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "source-map": "^0.7.4"

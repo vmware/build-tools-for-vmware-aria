@@ -15,12 +15,12 @@
 package com.vmware.pscoe.iac.artifact.common.rest;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
@@ -39,6 +39,7 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -221,20 +222,19 @@ public final class RestClientFactory {
 
 			@Override
 			public boolean hasError(ClientHttpResponse response) throws IOException {
-				return response.getRawStatusCode() < STATUS_CODE_2XX_RANGE_BEGIN
-						|| response.getRawStatusCode() > STATUS_CODE_2XX_RANGE_END;
+				return response.getStatusCode().value() < STATUS_CODE_2XX_RANGE_BEGIN
+						|| response.getStatusCode().value() > STATUS_CODE_2XX_RANGE_END;
 			}
 
 			@Override
-			public void handleError(ClientHttpResponse response) throws IOException {
+			public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
 				StringBuilder messageBuilder = new StringBuilder();
 				HttpHeaders headers = response.getHeaders();
-				messageBuilder.append(response.getRawStatusCode()).append(" ").append(response.getStatusText())
+				messageBuilder.append(response.getStatusCode().value()).append(" ").append(response.getStatusText())
 						.append("\n");
-				messageBuilder.append(headers.keySet().stream().map(
-						(String k) -> headers.get(k).stream().map(
-								h -> k + ": " + h).collect(Collectors.joining("\n")))
-						.collect(Collectors.joining("\n")));
+				headers.forEach((k, values) -> values
+						.forEach(v -> messageBuilder.append(k).append(": ").append(v).append("\n")));
+
 				if (response.getBody() != null && !response.getBody().equals("")) {
 					messageBuilder.append("\n\n");
 					String message = org.apache.commons.io.IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);
@@ -252,15 +252,7 @@ public final class RestClientFactory {
 	}
 
 	private static String getVraApiVersion(Configuration configuration, RestTemplate restTemplate) {
-		Properties properties = new Properties();
-
-		properties.setProperty(Configuration.USERNAME, configuration.getUsername());
-		properties.setProperty(Configuration.PASSWORD, configuration.getPassword());
-		properties.setProperty(Configuration.PORT, configuration.getPort() + "");
-		properties.setProperty(Configuration.HOST, configuration.getHost());
-
-		ConfigurationVro configurationVro = ConfigurationVro.fromProperties(properties);
-
+		ConfigurationVro configurationVro = ConfigurationVro.fromProperties(configuration.properties);
 		VraSsoAuth vraClient = new VraSsoAuth(configurationVro, restTemplate);
 		return vraClient.getVersion();
 	}
@@ -351,27 +343,28 @@ public final class RestClientFactory {
 	 */
 	public static RestClientVro getClientVro(ConfigurationVro configuration) {
 		RestTemplate restTemplate = getInsecureRestTemplate(configuration.getProxy());
-		String apiVersion = getVraApiVersion(configuration, restTemplate);
 
-		// For VCF 9 use VCD based interceptor to authenticate
-		if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
-			ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
-			attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
-		} else {
-			RestClientRequestInterceptor<ConfigurationVro> interceptor;
-
-			LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
-			switch (configuration.getAuth()) {
-				case VRA:
-					interceptor = new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
-					break;
-				case BASIC:
-					interceptor = new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
-					break;
-				default:
-					throw new UnsupportedOperationException("Unsupported authentication provider");
-			}
-			restTemplate.getInterceptors().add(interceptor);
+		LOGGER.info("Authentication strategy: '{}'", configuration.getAuth());
+		switch (configuration.getAuth()) {
+			case VRA:
+				String apiVersion = getVraApiVersion(configuration, restTemplate);
+				if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
+					// For VCF 9 use VCD based interceptor to authenticate
+					ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
+					attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
+				} else {
+					RestClientRequestInterceptor<ConfigurationVro> interceptor =
+						new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
+					restTemplate.getInterceptors().add(interceptor);
+				}
+				break;
+			case BASIC:
+				RestClientRequestInterceptor<ConfigurationVro> interceptor =
+					new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
+				restTemplate.getInterceptors().add(interceptor);
+				break;
+			default:
+				throw new UnsupportedOperationException("Unsupported authentication provider");
 		}
 
 		return new RestClientVro(configuration, restTemplate);

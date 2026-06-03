@@ -15,11 +15,11 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.logs.rest.v2.models;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "enabled", "type", "name", "hitCount", "hitOperator", "searchPeriod", "searchInterval",
@@ -78,6 +78,9 @@ public class AlertDTO implements Serializable {
 
 	@JsonProperty("query")
 	private QueryDTO query;
+
+	@JsonProperty("integrationType")
+	private String integrationType;
 
 	@JsonProperty("id")
 	public String getId() {
@@ -247,5 +250,15 @@ public class AlertDTO implements Serializable {
 	@JsonProperty("recommendation")
 	public void setRecommendation(String recommendation) {
 		this.recommendation = recommendation;
+	}
+
+	@JsonProperty("integrationType")
+	public String getIntegrationType() {
+		return integrationType;
+	}
+
+	@JsonProperty("integrationType")
+	public void setIntegrationType(String integrationType) {
+		this.integrationType = integrationType;
 	}
 }

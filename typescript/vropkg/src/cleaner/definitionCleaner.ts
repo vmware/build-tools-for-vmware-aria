@@ -14,10 +14,13 @@
  */
 import * as Path from "path";
 import * as FileSystem from "fs-extra";
-import getLogger from "../logger";
+import * as winston from 'winston';
 import * as glob from "glob";
+import { LOGGER_PREFIX } from "../constants";
 
 export class CleanDefinition {
+    readonly logger = winston.loggers.get(LOGGER_PREFIX);
+
     //Add here others definitions to be removed
     //Each empty definition can not contain white spaces
     private emptyDefinition = [
@@ -32,8 +35,7 @@ export class CleanDefinition {
 		let globPath = Path.normalize(Path.join(vroJsFolderPath, "src", "main", "resources", "**", "*" + JS_EXTENSION))
 			.replace(/[\\/]+/gm, Path.posix.sep)
 		const files = glob.sync(globPath);
-		getLogger().debug(`Base Path : "${vroJsFolderPath}", ${JSON.stringify({ globPath, files })} `);
-		files.forEach(jsFile => {
+        this.logger.debug(`Base Path : "${vroJsFolderPath}", ${JSON.stringify({ globPath, files })} `);		files.forEach(jsFile => {
             let content = FileSystem.readFileSync(jsFile);
             let source = content.toString();
 
@@ -41,8 +43,7 @@ export class CleanDefinition {
                 try {
                     if (FileSystem.existsSync(jsFile)) {
                         FileSystem.unlinkSync(jsFile);
-						getLogger().info(`File deleted : "${jsFile}"`);
-                    }
+                            this.logger.info(`File deleted : "${jsFile}"`);                    }
                 }
                 catch (error) {
                     throw error;
@@ -59,8 +60,7 @@ export class CleanDefinition {
                 .replace(/(\r\n|\n|\r)/gm, "")
                 .replace(/ /g, "")
                 .trim();
-				getLogger().debug(`File content : ${stringWithoutLineBreaks}`);
-
+                this.logger.debug(`File content : ${stringWithoutLineBreaks}`);
             //This cicle goes until the end if result is always 'false'
             //If result has a match with any empty definition this file 
             //will be erased

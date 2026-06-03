@@ -182,7 +182,7 @@ public class RestClientVro extends RestClient {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
@@ -410,10 +410,9 @@ public class RestClientVro extends RestClient {
 		} catch (HttpClientErrorException e) {
 			StringBuilder messageBuilder = new StringBuilder();
 			messageBuilder.append(HttpMethod.POST).append(" ").append(url).append("\n");
-			messageBuilder.append(headers.keySet().stream().map(
-					(String k) -> headers.get(k).stream().map(
-							h -> k + ": " + h).collect(Collectors.joining("\n")))
-					.collect(Collectors.joining("\n")));
+			headers.forEach(
+					(k, values) -> values.forEach(v -> messageBuilder.append(k).append(": ").append(v).append("\n")));
+
 			if (requestEntity.hasBody()) {
 				messageBuilder.append("\n\n");
 				try {
@@ -474,7 +473,7 @@ public class RestClientVro extends RestClient {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		if (!dryrun) {
@@ -515,7 +514,7 @@ public class RestClientVro extends RestClient {
 
 		URI url = getURI(getURIBuilder().setPath(deletePath + content.getId()).setParameter("force", "true"));
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
 
 		if (!dryrun) {
@@ -538,7 +537,7 @@ public class RestClientVro extends RestClient {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
@@ -612,8 +611,8 @@ public class RestClientVro extends RestClient {
 	public String startWorkflow(String workflowId, Properties params, Properties inputParametersTypes) {
 		URI executionsUrl = this.buildUri("/vco/api/workflows/", workflowId, "/executions");
 		String requestBody = this.buildParametersJson(params, inputParametersTypes);
-		RequestEntity<String> request = RequestEntity.post(executionsUrl).accept(MediaType.APPLICATION_JSON_UTF8)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
+		RequestEntity<String> request = RequestEntity.post(executionsUrl).accept(MediaType.APPLICATION_JSON)
+				.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 				.body(requestBody);
 		ResponseEntity<String> response = null;
 		try {
@@ -676,12 +675,13 @@ public class RestClientVro extends RestClient {
 		try {
 			response = restTemplate.exchange(workflowContentUri, HttpMethod.GET, getDefaultHttpEntity(), String.class);
 		} catch (Exception e) {
+			LOGGER.error("Error checking if workflow '{}' exists. Message: '{}'", workflowId, e.getMessage());
 			return false;
 		}
 		DocumentContext responseBody = JsonPath.parse(response.getBody());
 		String targetWorkflowId = responseBody.jsonString().contains("id") ? responseBody.read("$.id") : null;
 
-		return !StringUtils.isEmpty(targetWorkflowId);
+		return StringUtils.hasLength(targetWorkflowId);
 	}
 
 	/**
@@ -736,7 +736,7 @@ public class RestClientVro extends RestClient {
 			// messages printed since that timestamp
 			String requestBody = String.format("{\"severity\": \"%s\",\"older-than\": %d}", severity, sinceTimestamp);
 			RequestEntity<String> request = RequestEntity.post(syslogsUri)
-					.accept(MediaType.APPLICATION_JSON_UTF8)
+					.accept(MediaType.APPLICATION_JSON)
 					.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 					.body(requestBody);
 			response = restTemplate.exchange(request, String.class);

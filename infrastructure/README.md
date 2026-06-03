@@ -1,15 +1,15 @@
-# Minimal Infrastructure
+# Minimal Infrastructure Template
 
 ## Contents
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-   [Validation](#validation)
+    - [Installation](#installation)
+    - [Validation](#validation)
 - [Running the Infrastructure](#running-the-infrastructure)
 - [Application Setup](#application-setup)
-  - [GitLab](#gitlab)
-  - [GitLab Runner](#gitlab-runner)
-  - [Nexus](#nexus)
+    - [GitLab](#gitlab)
+    - [GitLab Runner](#gitlab-runner)
+    - [Nexus](#nexus)
 - [Environment Setup](#environment-setup)
 - [Project Setup](#project-setup)
 - [Conclusion](#conclusion)
@@ -19,12 +19,12 @@ This file serves as a guide to create a minimal infrastructure example using con
 
 - [nginx](https://hub.docker.com/_/nginx)
 - `Nexus`
-  - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/)
+    - [sonatype/nexus3](https://hub.docker.com/r/sonatype/nexus3/)
 - `GitLab`
-  - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce)
+    - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce)
 - [gitlab/gitlab-runner](https://hub.docker.com/r/gitlab/gitlab-runner)
 
-Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](../README.md) project.
+Using these applications, the infrastructure will support source control, running the build pipeline as well as hosting and serving the artifact packages, which are all the minimal requirements to have an [Build Tools for VMware Aria](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/README.md) project.
 
 We will also be guiding you through configuring the applications and setting up a new project and building it end-to-end.
 
@@ -45,7 +45,7 @@ Before proceeding, make sure you have the following installed on your system:
 - [Maven 3.9+](https://maven.apache.org/)
 - [NodeJS 22.x](https://nodejs.org/en/download/package-manager) - Recommended to use [fnm](https://github.com/Schniz/fnm) to manage Node versions.
 
-For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
+For Linux, besides Docker, you can use GitLab Runner's [Dockerfile](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/gitlab-runner/Dockerfile) RUN commands to setup your environment.
 
 ### Validation
 Validate all of the prerequisites are available in the Terminal:
@@ -95,10 +95,10 @@ To get started, follow the steps below:
     cd build-tools-for-vmware-aria/infrastructure
     ```
 
-4. Open the [docker-compose.yml](docker-compose.yml) file
-    - Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](./nginx/conf.d/main.conf).
+3. Open the [docker-compose.yml](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/docker-compose.yml) file
+    - Check the IPs and port forwarding options for each of the containers and make sure they work for your specific setup. Leaving them as-is should work, provided you don't have port collisions with other applications. In case you change the ports, you will also need to make the changes in the nginx configuration file [nginx/conf.d/main.conf](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/nginx/conf.d/main.conf).
 
-5. Add the nginx container and the docker internal host endpoints to your `hosts` file
+4. Add the nginx container and the docker internal host endpoints to your `hosts` file
     - Docker provides an internal DNS server in user-defined networks (infranet) to resolve container names to their internal IP addresses. Since your nginx and GitLab services are part of the infranet network, they can communicate using their Docker defined hostnames.
 
     - We are going to be accessing the containers from the nginx reverse proxy. For this you need to manually edit the /etc/hosts file on your host machine:
@@ -108,12 +108,12 @@ To get started, follow the steps below:
         127.0.0.1 infra.corp.local
         ```
 
-6. Run the [docker-compose.yml](docker-compose.yml) file
+5. Run the [docker-compose.yml](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/docker-compose.yml) file
     ```bash
     docker compose up -d
     ```
 
-7. Validate the containers are created
+6. Validate the containers are created
     ```bash
     docker ps
     ```
@@ -127,7 +127,7 @@ To get started, follow the steps below:
     17ba02a491e8   gitlab/gitlab-runner     "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes             0.0.0.0:2811->2811/tcp                                gitlab-runner
     ```
 
-8. Wait until all containers are up and running, which might take a few minutes
+7. Wait until all containers are up and running, which might take a few minutes
     - nginx - [infra.corp.local](http://infra.corp.local)
     - Nexus - [infra.corp.local/nexus](http://infra.corp.local/nexus)
     - GitLab - [infra.corp.local/gitlab](http://infra.corp.local/gitlab)
@@ -182,14 +182,14 @@ To get started, follow the steps below:
     - Disable anonymous access
 
 ## Environment Setup
-1. Follow the [Getting Started](../docs/versions/latest/General/Getting%20Started/) guides to setup your local environment.
-2. Edit your local `~/.m2/settings.xml` by using the repository provided [settings.xml](/infrastructure/.m2/settings.xml). It should contain:
+1. Follow the [Getting Started](https://github.com/vmware/build-tools-for-vmware-aria/tree/main/docs/versions/latest/General/Getting%20Started) guides to setup your local environment.
+2. Edit your local `~/.m2/settings.xml` by using the repository provided [settings.xml](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/.m2/settings.xml). It should contain:
     - A nexus server authentication under `servers` with id `nexus` with your Nexus username and password.
     - A `Maven Central` mirror under `mirrors` with id `nexus`.
     - A profile under `profiles` with id `nexus` with `releases` and `snapshots` repositories.
     - A profile under `profiles` with id `packaging`.
 
-    You can also copy it directly from the example [settings.xml](/infrastructure/.m2/settings.xml):
+    You can also copy it directly from the example [settings.xml](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/.m2/settings.xml):
     ```bash
     mkdir -p ~/.m2
     cp .m2/settings.xml ~/.m2/settings.xml
@@ -291,11 +291,11 @@ To get started, follow the steps below:
     - After done, check that you can see the `install:archive` artifact from the successful pipeline outputs (*download button on the right side of the run*) or by going to the artifacts page at [http://infra.corp.local/gitlab/root/demo/-/artifacts](http://infra.corp.local/gitlab/root/demo/-/artifacts)
     - Pressing the `install:archive` artifact or downloading the *.zip* directly should start a download of the `local.corp.demo-1.0.0-SNAPSHOT-1.zip` install bundle.
 10. You can continue by:
-    - following the [Bundle Installer Guide](../docs/archive/doc/markdown/use-bundle-isntaller.md) to push your package to your `Aria` instance manually.
-    - adding a new `profile` in the [settings.xml](./.m2/settings.xml) for your `Aria` instance and then executing `mvn package vrealize:push -P<NEW_PROFILE_NAME>` which will push your changes directly to a life environment. Follow the [Push](../docs/archive/doc/markdown/use-workstation-vra-ng-project.md#Push) section of your specific archetype documentation at [docs/archive/doc/markdown](../docs/archive/doc/markdown/).
+    - following the [Bundle Installer Guide](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/docs/archive/doc/markdown/use-bundle-installer.md) to push your package to your `Aria` instance manually.
+    - adding a new `profile` in the [settings.xml](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/infrastructure/.m2/settings.xml) for your `Aria` instance and then executing `mvn package vrealize:push -P<NEW_PROFILE_NAME>` which will push your changes directly to a life environment. Follow the [Push](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/docs/archive/doc/markdown/use-workstation-vra-ng-project.md#push) section of your specific archetype documentation at [docs/archive/doc/markdown](https://github.com/vmware/build-tools-for-vmware-aria/tree/main/docs/archive/doc/markdown).
 
 ## Conclusion
-This concludes the setup. You now have a fully operational end-to-end architecture to support the [Build Tools for Aria](../README.md), create, build and push projects and run pipelines that produce install bundles.
+This concludes the setup. You now have a fully operational end-to-end architecture to support the [Build Tools for Aria](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/README.md), create, build and push projects and run pipelines that produce install bundles.
 
 *This is not intended as a production environment, but as an educational sandbox. You should setup your proper and persistent development and production environments in a similar fashion.*
 

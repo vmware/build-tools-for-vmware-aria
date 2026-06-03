@@ -424,7 +424,7 @@ declare interface FileHelper {
  * FileReader
  */
 declare class FileReader {
-	exists: boolean;
+	readonly exists: boolean;
 	constructor(file: File);
 	/**
 	 * Opens the file for reading. <p>Once open an index in the file is maintained. This means you can do succesive <b>readLine</b>.</p>
@@ -438,6 +438,10 @@ declare class FileReader {
 	 * Reads all lines from the opened file.
 	 */
 	readAll(): string;
+	/**
+	 * Closes a previously opened file.
+	 */
+	close(): void;
 }
 
 /**
@@ -1022,6 +1026,7 @@ declare class Workflow {
 	attributes: Attribute[];
 	versionHistoryItems: VersionHistoryItem[];
 	parameterInfos: Properties;
+	id: string;
 	executions: WorkflowToken[];
 	logEvents: LogEvent[];
 	/**
@@ -1117,6 +1122,16 @@ declare interface WorkflowItem {
 	name: string;
 	description: string;
 	nextItem: any;
+}
+
+/**
+ * WorkflowItemInfo
+ */
+declare interface WorkflowItemInfo {
+	name: string;
+	displayName: string;
+	getName(): string;
+	getDisplayName(): string;
 }
 
 /**
@@ -1289,10 +1304,10 @@ declare class WorkflowToken {
 declare class ByteBuffer {
 	length: number;
 
-    /**
-     * Create a ByteBuffer from a base64 string or existing ByteBuffer
-     * @param obj - if null or undefined an empty ByteBuffer is created
-     */
+	/**
+	 * Create a ByteBuffer from a base64 string or existing ByteBuffer
+	 * @param obj - if null or undefined an empty ByteBuffer is created
+	 */
 	constructor(obj?: string | any);
 }
 
@@ -1338,12 +1353,12 @@ declare interface WorkflowInput {
  * ZipWriter
  */
 declare class ZipWriter {
-  /**
-   * Creates an instance of ZipWriter.
-   * @param {string} file - full path of the file
-   * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
-   */
-  constructor (file: string);
+	/**
+	 * Creates an instance of ZipWriter.
+	 * @param {string} file - full path of the file
+	 * @example const file = new ZipWriter('/var/run/vco/myFile.zip')
+	 */
+	constructor(file: string);
 	/**
 	 * Add a string element to the specified zip file
 	 * @param {string} entryName
@@ -1406,6 +1421,10 @@ declare namespace System {
 	 * Get current server time.
 	 */
 	function getCurrentTime(): number;
+	/**
+	 * Read only information for currently executed workflow item.
+	 */
+	function currentWorkflowItem(): WorkflowItemInfo;
 	/**
 	 * Pause the current script context execution and wait for a given date to continue.
 	 * @param waitDate Date to wait
@@ -2043,4 +2062,15 @@ declare namespace Config {
 	 * Gets the list of keystores
 	 */
 	function getKeystores(): any
+}
+declare interface URI {
+	scheme: string;
+	"scheme-specific-part": string;
+	authority: string;
+	"user-info": string;
+	host: string;
+	port: number;
+	path: string;
+	query: string;
+	fragment: string;
 }

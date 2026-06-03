@@ -15,7 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: ["17", "21"]
+        java: ["17", "21", "24"]
         maven: ["3.9.2"]
         node: ["22.13.1"]
         node_vmware_samples: ["22.13.1"]
@@ -25,17 +25,17 @@ jobs:
 
     steps:
       - name: Checkout vmware/build-tools-for-vmware-aria repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@4f7fb9d9675e899ca81c6161dadbba0189a4ebb1 #v1.18.0
+        uses: s4u/setup-maven-action@ba34de01b7f4ba2ab8e2860df8993a29f4477056 #v1.20.0
         with:
           java-version: ${{ matrix.java }}
           java-distribution: "temurin"
@@ -78,7 +78,7 @@ jobs:
 
       - name: Import GPG Key
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -101,7 +101,7 @@ jobs:
           echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
 
       - name: Cache Maven dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -110,10 +110,10 @@ jobs:
 
       # Install or deploy maven packages
       - name: Build plugins
-        run: mvn clean install -D modules.plugins --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: mvn clean install -D modules.plugins -D java.version=${{ matrix.java }} --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
 
       - name: Build plugins + tools
-        run: mvn ${{ env.MVN_BUILD_COMMAND }} -D modules.plugins -D modules.tools --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
+        run: mvn ${{ env.MVN_BUILD_COMMAND }} -D modules.plugins -D modules.tools -D java.version=${{ matrix.java }} --batch-mode -D gpg.passphrase=${{ env.GPG_PASSPHRASE }} -s $PWD/.m2/settings.xml
       
       - name: Build repository
         if: ${{ matrix.java == 17 }}
@@ -121,14 +121,14 @@ jobs:
 
       # Test the packages on build-tools-for-vmware-aria-samples
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: vmware-samples/build-tools-for-vmware-aria-samples
           ref: main
           path: build-tools-for-vmware-aria-samples
 
       - name: Use Node.js ${{ matrix.node_vmware_samples }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node_vmware_samples }}
 
@@ -151,7 +151,7 @@ jobs:
           tar -zcvf "${{ env.ARTIFACT_FILE_NAME }}.zip" iac-maven-repository.zip docs/ "LICENSE.txt"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ !contains(env.IAC_VERSION, '-SNAPSHOT') && matrix.java == 17 }}
         with:
           name: ${{ env.ARTIFACT_FILE_NAME }}

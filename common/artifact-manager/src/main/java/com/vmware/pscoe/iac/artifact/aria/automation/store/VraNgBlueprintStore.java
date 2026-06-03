@@ -240,7 +240,8 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		bpDetails.add("description", new JsonPrimitive(blueprint.getDescription()));
 		bpDetails.add("requestScopeOrg", new JsonPrimitive(blueprint.getRequestScopeOrg()));
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-		byte[] detailsContent = gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class)).getBytes();
+		byte[] detailsContent = gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class))
+				.getBytes(StandardCharsets.UTF_8);
 		logger.debug("Creating details file: " + detailsFileName);
 		try {
 			logger.debug("Created file: {}",
@@ -253,7 +254,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		String contentFileName = bpFolderPath + File.separator + BP_CONTENT_FILE_NAME;
 		logger.debug("Creating content file: " + contentFileName);
 		try {
-			byte[] contentBytes = blueprint.getContent().getBytes();
+			byte[] contentBytes = blueprint.getContent().getBytes(StandardCharsets.UTF_8);
 			logger.debug("Created file: {}",
 					Files.write(Paths.get(contentFileName), contentBytes, StandardOpenOption.CREATE));
 		} catch (Exception e) {

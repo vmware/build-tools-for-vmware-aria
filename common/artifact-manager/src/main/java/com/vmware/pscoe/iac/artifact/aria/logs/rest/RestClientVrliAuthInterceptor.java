@@ -96,7 +96,7 @@ public class RestClientVrliAuthInterceptor extends RestClientRequestInterceptor<
 		logger.info("VRLI Auth Token URL: {}", vrliTokenUri);
 
 		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		final Map<String, String> payload = new HashMap<>();
 		payload.put("username", getConfiguration().getUsername());
@@ -121,7 +121,7 @@ public class RestClientVrliAuthInterceptor extends RestClientRequestInterceptor<
 		logger.info("VROPS Integration Auth Token URL: {}", vropsTokenUri);
 
 		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		final Map<String, String> payload = new HashMap<>();
 		payload.put("username", getConfiguration().getIntegrationVropsAuthUser());

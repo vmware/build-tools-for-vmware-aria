@@ -17,6 +17,7 @@ package com.vmware.pscoe.iac.artifact.aria.codestream.store;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -89,7 +90,7 @@ public final class CsStoreHelper {
 			String yamlString = yamlMapper.writeValueAsString(jsonNodeTree);
 			// StringWriter writer = new StringWriter();
 			// writer.write(triggerYaml);
-			Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
+			Files.write(Paths.get(file.getPath()), yamlString.getBytes(StandardCharsets.UTF_8),
 					StandardOpenOption.CREATE,
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING);
@@ -111,7 +112,7 @@ public final class CsStoreHelper {
 			String yamlString = yamlMapper.writeValueAsString(obj);
 			// StringWriter writer = new StringWriter();
 			// writer.write(triggerYaml);
-			Files.write(Paths.get(file.getPath()), yamlString.getBytes(),
+			Files.write(Paths.get(file.getPath()), yamlString.getBytes(StandardCharsets.UTF_8),
 					StandardOpenOption.CREATE,
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING);

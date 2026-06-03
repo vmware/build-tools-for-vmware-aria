@@ -430,6 +430,12 @@ enum Option {
 			"vrops_dashboardUser",
 			ConfigurationVrops.VROPS_DASHBOARD_USER),
 	/**
+	 * VROPS dashboard user.
+	 */
+	VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS(
+			"vrops_importDashboardsForAllUsers",
+			ConfigurationVrops.VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS),
+	/**
 	 * VROPS http host.
 	 */
 	VROPS_HTTP_HOST(
@@ -855,7 +861,7 @@ public final class Installer {
 		 */
 		SSH("ssh_"),
 		/**
-		 * VRLI.
+		 * VREALIZE.
 		 */
 		VREALIZE("vrealize_");
 
@@ -1135,6 +1141,9 @@ public final class Installer {
 		userInput(input, Option.VRO_RUN_WORKFLOW, "Run vRO workflow?", false);
 		if (input.allTrue(Option.VRO_RUN_WORKFLOW)) {
 			if (input.anyTrue(Option.VRO_EMBEDDED)) {
+				if (hasVraNgPackages) {
+					input.put(Option.VRO_AUTH, "vra");
+				}
 				readVroEmbeddedInVrangProperties(input, false);
 			} else {
 				readVroProperties(input, hasVraNgPackages);
@@ -1362,13 +1371,14 @@ public final class Installer {
 		userInput(input, Option.VROPS_REST_USER, "  vROps REST Username");
 		passInput(input, Option.VROPS_REST_PASSWORD, "  vROps REST Password");
 		userInput(input, Option.VROPS_REST_AUTH_SOURCE, "  vROps REST Auth Source", "local");
-		userInput(input, Option.VROPS_REST_AUTH_PROVIDER, "  vROps REST Auth Provider", "BASIC");
+		userInput(input, Option.VROPS_REST_AUTH_PROVIDER, "  vROps REST Auth Provider", "AUTH_N");
 
 		input.getText().getTextTerminal().println("vRealize Operations SSH Endpoint Configuration:");
 		userInput(input, Option.VROPS_SSH_PORT, "  vROps SSH Port", SSH_PORT);
 		userInput(input, Option.VROPS_SSH_USER, "  vROps SSH Username");
 		passInput(input, Option.VROPS_SSH_PASSWORD, "  vROps SSH Password");
 		userInput(input, Option.VROPS_DASHBOARD_USER, "  Dashboard username");
+		userInput(input, Option.VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS, "  Import Dashboards For All Users");
 	}
 
 	private static void readVrliImportProperties(final Input input) {
@@ -1469,10 +1479,12 @@ public final class Installer {
 				outputString = Installer.convertJsonObjectToYaml(wfOutputFilePath, wfOutputJson);
 			}
 
-			Files.write(Paths.get(wfOutputFilePath), outputString.getBytes(), StandardOpenOption.CREATE);
+			Files.write(Paths.get(wfOutputFilePath), outputString.getBytes(StandardCharsets.UTF_8),
+					StandardOpenOption.CREATE);
 			// write the workflow error in a workflow error file (if any)
 			if (!StringUtils.isEmpty(workflowExecutionResult.getError())) {
-				Files.write(Paths.get(wfErrFilePath), workflowExecutionResult.getError().getBytes(),
+				Files.write(Paths.get(wfErrFilePath),
+						workflowExecutionResult.getError().getBytes(StandardCharsets.UTF_8),
 						StandardOpenOption.CREATE);
 			}
 		} catch (IOException e) {
@@ -1483,7 +1495,8 @@ public final class Installer {
 					+ e.getLocalizedMessage(), e);
 		} catch (WorkflowExecutionException e) {
 			try {
-				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(), StandardOpenOption.CREATE);
+				Files.write(Paths.get(wfErrFilePath), e.getMessage().getBytes(StandardCharsets.UTF_8),
+						StandardOpenOption.CREATE);
 			} catch (IOException e1) {
 				throw new RuntimeException(
 						"Unable to perform file operation: " + e.getClass().getName() + " : " + e.getLocalizedMessage(),

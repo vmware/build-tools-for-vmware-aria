@@ -1,0 +1,12 @@
+{"0a5dbbc3-22f4-4d7e-8d36-dc3a5fc3c60a": {
+   "resourceKinds": [{
+      "resourceKindKey": "AutoScaleGroup",
+      "adapterKindKey": "Container"
+   }],
+   "modificationTime": 1767779339539,
+   "name": "Group CPU Average",
+   "formula": "avg(${adaptertype=VMWARE, objecttype=VirtualMachine, attribute=cpu|usage_average, depth=1})",
+   "description": "",
+   "unitId": "",
+   "modifiedBy": "50d2bb5e-2ae4-4f71-8b35-48a48b456edb"
+}}

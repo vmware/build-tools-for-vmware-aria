@@ -40,8 +40,8 @@ export function printWorkflowXml(workflow: WorkflowDescriptor, context: FileTran
 		+ ` id="${workflow.id}"`
 		+ ` version="${workflow.version}"`
 		+ ` api-version="6.0.0"`
-		+ ` restartMode="1"`
-		+ ` resumeFromFailedMode="0"`
+		+ ` restartMode="${workflow.restartMode ?? 1}"`
+		+ ` resumeFromFailedMode="${workflow.resumeFromFailedMode ?? 0}"`
 		+ `>`).appendLine();
 	stringBuilder.indent();
 	stringBuilder.append(`<display-name><![CDATA[${workflow.name}]]></display-name>`).appendLine();

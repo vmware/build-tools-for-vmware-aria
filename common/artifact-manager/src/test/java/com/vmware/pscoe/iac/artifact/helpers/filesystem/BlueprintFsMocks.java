@@ -14,14 +14,15 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
-
-import java.io.File;
-import java.nio.file.Paths;
 
 public class BlueprintFsMocks extends VraNgFsMock {
 	/**
@@ -95,10 +96,10 @@ public class BlueprintFsMocks extends VraNgFsMock {
 
 		writeFileToPath(
 				Paths.get(blueprintContent.getPath()),
-				blueprint.getContent().getBytes());
+				blueprint.getContent().getBytes(StandardCharsets.UTF_8));
 
 		writeFileToPath(
 				Paths.get(blueprintDetails.getPath()),
-				gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class)).getBytes());
+				gson.toJson(gson.fromJson(bpDetails.toString(), JsonObject.class)).getBytes(StandardCharsets.UTF_8));
 	}
 }

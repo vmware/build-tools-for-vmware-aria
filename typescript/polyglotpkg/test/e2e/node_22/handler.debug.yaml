@@ -1,0 +1,4 @@
+limit: 5
+vraEndpoint:
+  host: https://vra-l-01a.corp.local
+  base: /deployment/api

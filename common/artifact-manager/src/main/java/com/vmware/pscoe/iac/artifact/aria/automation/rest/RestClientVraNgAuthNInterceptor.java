@@ -135,7 +135,7 @@ public class RestClientVraNgAuthNInterceptor extends RestClientRequestIntercepto
 
 		// Prepare Headers
 		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		// Prepare Request
 		final Map<String, String> payload = new HashMap<>();

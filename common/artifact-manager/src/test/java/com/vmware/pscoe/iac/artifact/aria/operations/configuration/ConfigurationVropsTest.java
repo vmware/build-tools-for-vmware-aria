@@ -14,15 +14,14 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.operations.configuration;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 
@@ -67,17 +66,23 @@ class ConfigurationVropsTest {
 	}
 
 	@Test
-	public void testValidateShouldNotBeNullVropDashboardUser() throws Exception {
+	public void testValidateShouldNotBeNullVropsDashboardUser() throws Exception {
 		this.configurationVrops.validate(true);
 
 		assertSame(configurationVrops.getVropsDashboardUser(), "dashboardUser");
 	}
 
 	@Test
-	public void testValidateShouldNotBeNullVropRestUser() throws Exception {
+	public void testValidateShouldNotBeNullVropsRestUser() throws Exception {
 		this.configurationVrops.validate(true);
 
-		assertSame(configurationVrops.getVropsDashboardUser(), "dashboardUser");
+		assertSame(configurationVrops.getVropsRestUser(), "restUser");
 	}
 
+	@Test
+	public void testValidateShouldHaveDefaultValueVropsImportDashboardsForAllUsers() throws Exception {
+		this.configurationVrops.validate(true);
+
+		assertSame(configurationVrops.getVropsImportDashboardsForAllUsers(), true);
+	}
 }

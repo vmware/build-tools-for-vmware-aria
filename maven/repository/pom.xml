@@ -43,6 +43,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.vmware.pscoe.o11n.archetypes</groupId>
+			<artifactId>package-ts-vra-ng-archetype</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.vmware.pscoe.vra-ng.archetypes</groupId>
 			<artifactId>package-vra-ng-archetype</artifactId>
 			<version>${project.version}</version>
@@ -295,7 +300,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>3.9.11</version>
+			<version>3.9.12</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.o11n</groupId>
@@ -308,7 +313,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.9.0</version>
 				<executions>
 					<execution>
 						<id>copy</id>
@@ -327,7 +332,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-archetype-plugin</artifactId>
-				<version>3.4.0</version>
+				<version>3.4.1</version>
 				<executions>
 					<execution>
 						<id>iac-maven-repository</id>
@@ -343,7 +348,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.7.1</version>
+				<version>3.8.0</version>
 				<executions>
 					<execution>
 						<id>iac-maven-repository</id>

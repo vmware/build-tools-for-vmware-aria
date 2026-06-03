@@ -16,6 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.logs.store;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -260,7 +261,8 @@ public abstract class AbstractVrliPackageStore extends GenericPackageStore<VrliP
 
 		try {
 			logger.info("Exporting content pack '{}'", contentPackName);
-			Files.write(Paths.get(contentPacksFile.getPath()), contentPackData.getBytes(), StandardOpenOption.CREATE);
+			Files.write(Paths.get(contentPacksFile.getPath()), contentPackData.getBytes(StandardCharsets.UTF_8),
+					StandardOpenOption.CREATE);
 		} catch (IOException e) {
 			logger.error("Unable to store content pack {} {}", contentPackName, contentPacksFile.getPath());
 			throw new RuntimeException(

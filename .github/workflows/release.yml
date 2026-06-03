@@ -42,10 +42,10 @@ jobs:
           fi
 
       - name: Install xmllint
-        run: sudo apt-get install libxml2-utils
+        run: sudo apt-get update && sudo apt-get install libxml2-utils
 
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@4f7fb9d9675e899ca81c6161dadbba0189a4ebb1 #v1.18.0
+        uses: s4u/setup-maven-action@ba34de01b7f4ba2ab8e2860df8993a29f4477056 #v1.20.0
         with:
           java-version: 17
           java-distribution: "temurin"
@@ -73,32 +73,13 @@ jobs:
           echo "Generating Documentation..."
           DOC_VERSION="v${{ inputs.version }}"
           DOC_DATE_VERSION="$DOC_VERSION - $(date +"%d %b %Y")"
-          VERSIONS_FOLDER="./docs/versions"
-          LATEST_VERSION_FOLDER="$VERSIONS_FOLDER/latest"
-          LATEST_VERSION_RELEASE_MD="$LATEST_VERSION_FOLDER/Release.md"
-          NEW_VERSION_FOLDER="$VERSIONS_FOLDER/$DOC_VERSION"
-          NEW_VERSION_RELEASE_MD="$NEW_VERSION_FOLDER/Release.md"
-          NEW_VERSION_README_MD="$NEW_VERSION_FOLDER/README.md"
+          RELEASE_MD="./mkdocs/Release.md"
           VERSION_PLACEHOLDER_TEXT="VERSION_PLACEHOLDER DO NOT DELETE"
 
-          #	Create a new version folder
-          [ -d "$NEW_VERSION_FOLDER" ] && rm -rf $NEW_VERSION_FOLDER
-          mkdir $NEW_VERSION_FOLDER
-
-          #	Copy latest to the new release folder
-          cp -rf $LATEST_VERSION_FOLDER/* $NEW_VERSION_FOLDER
-
-          #	Insert the latest version in Release.md and README.md for the new release
-          sed -i "/$VERSION_PLACEHOLDER_TEXT/c\\# $DOC_VERSION" $NEW_VERSION_RELEASE_MD
-
-          sed -i "/$VERSION_PLACEHOLDER_TEXT/c\\# $DOC_VERSION" $NEW_VERSION_README_MD
-
-          #	Remove comments from the Release file ( potential future improvements remove all comments recursively in all files )
-          sed -i '/^\[\/\/\]:\s#/d' $NEW_VERSION_RELEASE_MD
-
-          #	Delete latest Release.md and replace it with a blank one
-          rm -rf $LATEST_VERSION_RELEASE_MD
-          cp -rf ./docs/Templates/Release.md $LATEST_VERSION_RELEASE_MD
+          # Insert the latest version in Release.md for the new release
+          sed -i "/$VERSION_PLACEHOLDER_TEXT/c\\# $DOC_VERSION" $RELEASE_MD
+          # Remove comments from the Release file
+          sed -i '/^\[\/\/\]:\s#/d' $RELEASE_MD
 
           echo "Done Generating Documentation." 
 
@@ -120,7 +101,7 @@ jobs:
             PLUGIN_FOLDER="${PLUGIN_FOLDER##*/}"
             echo "Plugin Folder: $PLUGIN_FOLDER"
 
-            mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH -D"output=../../../docs/versions/latest/General/Cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md"
+            mvn help:describe -D"groupId=$GROUP_ID" -D"artifactId=$ARTIFACT_ID" -D"version=$PLUGIN_VERSION" -Ddetail --batch-mode -f $POM_PATH -D"output=../../../mkdocs/cheatsheets/$PLUGIN_FOLDER-plugin-arguments.md"
           done
 
       - name: Print git configs
@@ -139,7 +120,7 @@ jobs:
           git commit -m "(release) v${{ inputs.version }}"
           git tag v${{ inputs.version }}
           git push --tags
-          git push   
+          git push 
 
       - name: Prepare next development iteration
         run: |
@@ -150,6 +131,10 @@ jobs:
           mvn versions:set-property -Dproperty=revision -DnewVersion=$SNAPSHOT_VERSION -DgenerateBackupPoms=false --non-recursive
           mvn initialize -f vro-types
           mvn initialize -f typescript
+
+          # Reset the Release.md with a blank one from Templates for the next dev cycle
+          rm -rf ./mkdocs/Release.md
+          cp -f ./mkdocs/assets/docs/templates/Release.md ./mkdocs/Release.md
 
           git add .
           git commit -m "(release) start development iteration v$SNAPSHOT_VERSION"

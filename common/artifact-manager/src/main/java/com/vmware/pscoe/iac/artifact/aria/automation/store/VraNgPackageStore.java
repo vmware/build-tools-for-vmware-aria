@@ -169,14 +169,28 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 		String collectionDelayRaw = this.config.getDataCollectionDelaySeconds();
 
 		if (collectionDelayRaw == null) {
+			// No delay configured, proceed immediately, as no delay is desired (most likely
+			// vRA doesn't expect vRO payloads)
 			return;
+		}
+
+		try {
+			// before proceeding with sleeping, try to force data collection through API
+			this.triggerDataCollection();
+
+			// if successful, no need to sleep anymore, exit method
+			return;
+		} catch (Exception e) {
+			logger.error(
+					"Unable to trigger VCFA Orchestrator data collection. Proceeding with old sleeping mechanism, waiting for vrang.data.collection.delay.seconds: {}",
+					collectionDelayRaw, e);
 		}
 
 		try {
 			int collectionDelay = Integer.parseInt(collectionDelayRaw);
 			if (collectionDelay > 0) {
-				logger.warn(
-						"Waiting {} seconds for the vRO data collection. This is configurable with vrang.data.collection.delay.seconds property",
+				logger.info(
+						"Waiting additional {} seconds for the VCFA Orchestrator data collection so that VCFA Orchestrator data is up to date. This is configurable with vrang.data.collection.delay.seconds property",
 						collectionDelay);
 
 				final long collectionDelayMultiplier = 1000L;
@@ -188,6 +202,11 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 		} catch (NumberFormatException e) {
 			logger.warn("vrang.data.collection.delay.seconds passed with invalid value {}", collectionDelayRaw);
 		}
+	}
+
+	private void triggerDataCollection() {
+		logger.info("Triggering VCFA Orchestrator data collection through vRA API");
+		this.restClient.triggerVroDataCollection();
 	}
 
 	/**
@@ -265,7 +284,7 @@ public class VraNgPackageStore extends GenericPackageStore<VraNgPackageDescripto
 			new PackageManager(vraNgPackage).unpack(tmp);
 		} catch (IOException e) {
 			logger.error("Unable to extract package '{}' in temporary directory.", vraNgPackage.getFQName());
-			throw new RuntimeException("Unable to extract pacakge.", e);
+			throw new RuntimeException("Unable to extract package.", e);
 		}
 		VraNgPackageDescriptor vraPackageDescriptor = VraNgPackageDescriptor
 				.getInstance(new File(tmp.toPath().toString() + "/content.yaml"));

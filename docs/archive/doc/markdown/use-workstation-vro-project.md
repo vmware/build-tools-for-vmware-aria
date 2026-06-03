@@ -272,6 +272,8 @@ import { Workflow, Out } from "tsc-annotations";
     result: { type: "Any" },
   },
   presentation: "",
+  restartMode: 1,
+  resumeFromFailedMode: 0
 })
 class SampleWorkflow {
   public install(foo: string, bar: string, @Out result: any): void {

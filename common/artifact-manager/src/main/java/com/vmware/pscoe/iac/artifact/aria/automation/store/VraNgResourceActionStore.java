@@ -21,6 +21,7 @@ import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -36,6 +37,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
+import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgCustomFormSerializer;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgProjectUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
@@ -201,7 +203,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
 			String resourceActionJSON = gson.toJson(resourceActionJsonElement);
 			logger.info("Created file {}", Files.write(Paths.get(resourceAction.getPath()),
-					resourceActionJSON.getBytes(), StandardOpenOption.CREATE));
+					resourceActionJSON.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store resource action {} {}", resourceActionName, resourceAction.getPath());
 			throw new RuntimeException("Unable to store resource action.", e);
@@ -235,7 +237,6 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 			// Get resource action id property and use it to try to delete existing one
 			// resource action
 			String resourceActionId = resourceActionJsonElement.get("id").getAsString();
-			resourceActionJson = gson.toJson(resourceActionJsonElement);
 			// Let's try to delete resource action first before import it.
 			try {
 				logger.info("Deleting resource action '{}' ('{}') if exists ...", resourceActionName, resourceActionId);
@@ -245,11 +246,13 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 						resourceActionId, e);
 			}
 
+			VraNgCustomFormSerializer.serialize(resourceActionJsonElement);
+			resourceActionJson = gson.toJson(resourceActionJsonElement);
+
 			String resultResourceActionJson = restClient.importResourceAction(resourceActionName, resourceActionJson);
 			JsonObject resultJsonObject = updateFormInfoOnTopOfResult(
 					gson.fromJson(resultResourceActionJson, JsonObject.class), resourceActionJsonElement);
 			restClient.importResourceAction(resourceActionName, gson.toJson(resultJsonObject));
-
 		} catch (ConfigurationException e) {
 			logger.error("Error importing resource action {}...", resourceActionName);
 			throw new RuntimeException(e);

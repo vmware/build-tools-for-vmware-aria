@@ -14,15 +14,16 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
-
 import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_SUBSCRIPTIONS;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 
 public class SubscriptionFsMocks extends VraNgFsMock {
 	/**
@@ -54,6 +55,6 @@ public class SubscriptionFsMocks extends VraNgFsMock {
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());
-		writeFileToPath(itemName, subscription.getJson().getBytes());
+		writeFileToPath(itemName, subscription.getJson().getBytes(StandardCharsets.UTF_8));
 	}
 }

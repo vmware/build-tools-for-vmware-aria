@@ -54,7 +54,7 @@ public abstract class RestClient {
 
 	protected static HttpEntity<String> getDefaultHttpEntity() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		return new HttpEntity<String>(headers);
 	}
 

@@ -143,13 +143,15 @@ declare class SSHSession {
 	 */
 	connectWithPassword(password: SecureString): any;
 	/**
+	 * @deprecated
+	 * 
 	 * Deprecated use connectWithIdentity(). Connect the session using Public key Authentication.
 	 * @param privateKeyPath
 	 * @param passphrase
 	 */
 	connectWithIdentidy(privateKeyPath: string, passphrase: SecureString): any;
 	/**
-	 * Deprecated use connectWithIdentity(). Connect the session using Public key Authentication.
+	 * Connect the session using Public key Authentication.
 	 * @param privateKeyPath
 	 * @param passphrase
 	 */
@@ -291,7 +293,9 @@ declare class SSHSession {
 /**
  * Set of functions to manage private/public keys.
  */
-declare interface KeyPairManager {
+declare class KeyPairManager {
+	private constructor();
+
 	/**
 	 * Generate a pair of public/private key. Returns the generated key fingerprint.
 	 * @param type
@@ -300,14 +304,14 @@ declare interface KeyPairManager {
 	 * @param keySize
 	 * @param comment
 	 */
-	generateKeyPair(type: string, path: any, passphrase: any, keySize: number, comment: string): string;
+	public static generateKeyPair(type: string, path: any, passphrase: any, keySize: number, comment: string): string;
 	/**
 	 * Change the passphrase of a private key.
 	 * @param path
 	 * @param oldPasspharse
 	 * @param newPassphrase
 	 */
-	changePassphrase(path: any, oldPasspharse: any, newPassphrase: any): void;
+	public static changePassphrase(path: any, oldPasspharse: any, newPassphrase: any): void;
 }
 
 declare class SSHHostConfiguration {

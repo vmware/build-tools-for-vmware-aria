@@ -108,6 +108,18 @@ import com.vmware.pscoe.iac.artifact.common.store.Version;
 
 public class RestClientVraNgPrimitive extends RestClient {
 	/**
+	 * Enumeration task retry limit
+	 */
+	private static final int ENUMERATION_TASK_RETRY_LIMIT = 120;
+	/**
+	 * Enumeration task sleep time
+	 */
+	private static final int ENUMERATION_TASK_SLEEP_MS = 2500;
+	/**
+	 * REST API version for private APIs
+	 */
+	private static final String API_VERSION_PRIVATE = "2021-07-15";
+	/**
 	 * logger.
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVraNgPrimitive.class);
@@ -183,6 +195,14 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * SERVICE_VRA_INTEGRATIONS.
 	 */
 	private static final String SERVICE_VRA_INTEGRATIONS = "provisioning/uerp/provisioning/mgmt/endpoints";
+	/**
+	 * SERVICE_VRA_ENDPOINTS.
+	 */
+	private static final String SERVICE_VRA_ENDPOINTS = "provisioning/uerp/resources/endpoints";
+	/**
+	 * SERVICE_VRA_ENUMERATION_TASKS.
+	 */
+	private static final String SERVICE_VRA_ENUMERATION_TASKS = "provisioning/resource-enumeration-tasks";
 	/**
 	 * SERVICE_VRA_ORGANIZATIONS.
 	 * Removed in API version 40.0
@@ -321,6 +341,10 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 * isVraAbove811.
 	 */
 	private boolean isVraAbove810;
+	/**
+	 * vroIntegration.
+	 */
+	private String vroIntegration;
 
 	/**
 	 * RestClientVraNgPrimitive.
@@ -334,6 +358,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 		this.productVersion = this.getProductVersion();
 		this.isVraAbove812 = this.isVraAbove(new Version(VRA_8_12));
 		this.isVraAbove810 = this.isVraAbove(new Version(VRA_8_10));
+		this.vroIntegration = config.getVroIntegration();
 	}
 
 	/**
@@ -676,7 +701,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 			this.postJsonPrimitive(url, HttpMethod.POST, "");
 		} catch (HttpClientErrorException e) {
 			throw new RuntimeException(
-					String.format("Error ocurred while unreleasing version %s for blueprint %s. Message: %s",
+					String.format("Error occurred while unreleasing version %s for blueprint %s. Message: %s",
 							versionId, blueprintId, e.getMessage()));
 		}
 	}
@@ -1131,7 +1156,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(
-							String.format("Error ocurred during during reading of scenario. Message: %s",
+							String.format("Error occurred during during reading of scenario. Message: %s",
 									e.getMessage()));
 				}
 			}
@@ -1170,7 +1195,7 @@ public class RestClientVraNgPrimitive extends RestClient {
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(
-						String.format("Error ocurred during reading of scenario. Message: %s", e.getMessage()));
+						String.format("Error occurred during reading of scenario. Message: %s", e.getMessage()));
 			}
 		});
 		return scenarios;
@@ -1563,12 +1588,13 @@ public class RestClientVraNgPrimitive extends RestClient {
 			response = this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 		} catch (HttpClientErrorException e) {
 			throw new RuntimeException(
-					String.format("Error ocurred during creating of catalog entitlement. Message: %s", e.getMessage()));
+					String.format("Error occurred during creating of catalog entitlement. Message: %s",
+							e.getMessage()));
 		}
 
 		if (!HttpStatus.CREATED.equals(response.getStatusCode())) {
 			throw new RuntimeException(
-					String.format("Error ocurred during creating of catalog entitlement. HTTP Status code %s : ( %s )",
+					String.format("Error occurred during creating of catalog entitlement. HTTP Status code %s : ( %s )",
 							response.getStatusCode(), response.getBody()));
 		}
 	}
@@ -2884,5 +2910,162 @@ public class RestClientVraNgPrimitive extends RestClient {
 				policy.getName(),
 				policy.getId(),
 				failureCause));
+	}
+
+	// =================================================
+	// Data collection
+	// =================================================
+
+	/**
+	 * Trigger vRO data collection for the specified (hardcoded)integration.
+	 */
+	protected void triggerVroDataCollectionPrimitive() {
+		String queryString = String.format("apiVersion=%s&$filter=integrationType eq 'vro'", API_VERSION_PRIVATE);
+		URI url = getURI(getURIBuilder().setPath(SERVICE_IAAS_BASE + "/integrations").setCustomQuery(queryString));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+
+		JsonElement root = JsonParser.parseString(response.getBody());
+
+		String content = "";
+		if (root.isJsonObject()) {
+			JsonObject jsonObject = root.getAsJsonObject();
+			if (isJsonElementPresent(jsonObject.get("content"))) {
+				content = jsonObject.get("content").toString();
+			}
+		}
+
+		// check if content is empty or doesn't have required property
+		if (StringUtils.isEmpty(content) || !content.contains("\"id\"")) {
+			throw new RuntimeException("No VCFA Orchestrator integration found in vRA!");
+		}
+
+		// get ID from the object
+		JsonArray contentArray = JsonParser.parseString(content).getAsJsonArray();
+
+		LOGGER.info("Used vRA NG Configurations: {}", this.vroIntegration);
+		// check if vro Integration name is defined
+		String vroIntegrationId = null;
+		if (this.vroIntegration == null || this.vroIntegration.isEmpty()) {
+			// get number of integrations found
+			if (contentArray.size() == 0) {
+				throw new RuntimeException(
+						"No VCFA Orchestrator integration found in vRA! This is configurable via vrang.vro.integration property.");
+			} else if (contentArray.size() > 1) {
+				throw new RuntimeException(
+						"Multiple VCFA Orchestrator integrations found in vRA! Please define the desired integration name via vrang.vro.integration property.");
+			}
+			// use the first and only integration found
+			LOGGER.info(
+					"No VCFA Orchestrator integration name defined, using the first and only integration found - {}.",
+					contentArray.get(0).getAsJsonObject().get("name").getAsString());
+			vroIntegrationId = contentArray.get(0).getAsJsonObject().get("id").getAsString();
+		} else {
+			// search for the defined vro integration name
+			for (JsonElement element : contentArray) {
+				if (element.getAsJsonObject().get("name").getAsString().equals(this.vroIntegration)) {
+					vroIntegrationId = element.getAsJsonObject().get("id").getAsString();
+					break;
+				}
+			}
+
+			if (vroIntegrationId == null) {
+				throw new RuntimeException(
+						String.format("No VCFA Orchestrator integration with name '%s' found in vRA!",
+								this.vroIntegration));
+			}
+		}
+
+		LOGGER.debug("VCFA Orchestrator integration ID: {}", vroIntegrationId);
+
+		URI url2 = getURI(getURIBuilder().setPath(SERVICE_VRA_ENDPOINTS + "/" + vroIntegrationId));
+
+		ResponseEntity<String> response2 = restTemplate.exchange(url2, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+
+		// check if endpointInfo is valid
+		if (!response2.getStatusCode().is2xxSuccessful()) {
+			// get http status code returned
+			throw new RuntimeException(
+					String.format(
+							"Error occurred during retrieval of vro endpoint information. HTTP Status code %s : ( %s )",
+							response2.getStatusCode(), response2.getBody()));
+		}
+		JsonElement endpointInfo = JsonParser.parseString(response2.getBody());
+
+		if (!endpointInfo.isJsonObject()) {
+			throw new RuntimeException("No valid VCFA Orchestrator endpoint information found!");
+		}
+
+		LOGGER.debug("VCFA Orchestrator endpoint information: {}", endpointInfo);
+
+		// prepare payload for next request
+		Map<String, Object> map = new LinkedHashMap<>();
+		map.put("parentComputeLink", endpointInfo.getAsJsonObject().get("computeLink").getAsString());
+		map.put("resourcePoolLink", endpointInfo.getAsJsonObject().get("resourcePoolLink").getAsString());
+		map.put("endpointLink", endpointInfo.getAsJsonObject().get("documentSelfLink").getAsString());
+		map.put("adapterManagementReference", "");
+		map.put("tenantLinks", endpointInfo.getAsJsonObject().get("tenantLinks"));
+
+		String jsonBody = this.getJsonString(map);
+
+		URI url3 = getURI(getURIBuilder().setPath(SERVICE_VRA_ENUMERATION_TASKS));
+
+		ResponseEntity<String> response3 = this.postJsonPrimitive(url3, HttpMethod.POST, jsonBody);
+
+		if (!response3.getStatusCode().is2xxSuccessful()) {
+			throw new RuntimeException(
+					String.format(
+							"Error occurred during creation of VCFA Orchestrator enumeration task. HTTP Status code %s : ( %s )",
+							response3.getStatusCode(), response3.getBody()));
+		}
+
+		LOGGER.debug("VCFA Orchestrator enumeration task created successfully. Response: {}", response3.getBody());
+		// Wait for the enumeration task to complete
+		// possible stages are: CREATED, STARTED, FINISHED, FAILED, CANCELLED
+		String enumerationTaskState = "STARTED";
+		int retryCounter = ENUMERATION_TASK_RETRY_LIMIT;
+		ResponseEntity<String> response4 = null;
+
+		// wait till task is not finished, failed or cancelled
+		while (!Arrays.asList("FINISHED", "FAILED", "CANCELLED").contains(enumerationTaskState)) {
+			retryCounter = retryCounter - 1;
+
+			if (retryCounter < 1) {
+				throw new RuntimeException(
+						"Timeout while waiting for the enumeration task (data collection) to complete!");
+			}
+
+			response4 = restTemplate.exchange(url2, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
+
+			if (response4.getStatusCode().is2xxSuccessful()) {
+				JsonElement responseBody = JsonParser.parseString(response4.getBody());
+				enumerationTaskState = responseBody.getAsJsonObject().get("customProperties").getAsJsonObject()
+						.get("enumerationTaskState").getAsString();
+
+				// log current state
+				LOGGER.info("Data collection task state: {}", enumerationTaskState);
+
+				try {
+					Thread.sleep(ENUMERATION_TASK_SLEEP_MS);
+				} catch (InterruptedException e) {
+					// ignore interruption
+				}
+			} else {
+				throw new RuntimeException(
+						String.format(
+								"Error occurred during retrieval of enumeration task state. HTTP Status code %s : ( %s )",
+								response4.getStatusCode(), response4.getBody()));
+			}
+		}
+
+		LOGGER.info("VCFA Orchestrator data collection completed with state: {}", enumerationTaskState);
+
+		if (!enumerationTaskState.equals("FINISHED")) {
+			throw new RuntimeException("VCFA Orchestrator data collection failed or was cancelled!");
+		}
+
+		return;
 	}
 }

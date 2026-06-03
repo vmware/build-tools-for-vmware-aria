@@ -14,13 +14,14 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgLeasePolicy;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class LeasePolicyFsMocks extends VraNgFsMock {
 	/**
@@ -67,6 +68,6 @@ public class LeasePolicyFsMocks extends VraNgFsMock {
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());
-		writeFileToPath(itemName, gson.toJson(policy).getBytes());
+		writeFileToPath(itemName, gson.toJson(policy).getBytes(StandardCharsets.UTF_8));
 	}
 }

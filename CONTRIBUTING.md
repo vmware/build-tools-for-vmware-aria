@@ -35,7 +35,7 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
 - [Node.js](https://nodejs.org/), `~22.0.0`
 - [Npm](https://www.npmjs.com), `~6.14.13`
 - [Maven](https://maven.apache.org/), `~3.9.0`
-- [JDK](https://openjdk.org/projects/jdk/17/), `17-21`
+- [JDK](https://openjdk.org/projects/jdk/17/), `17-24`
 
 :scroll:**NOTE!** For an up-to-date pre-req check please use the [healthcheck script](https://github.com/vmware/build-tools-for-vmware-aria/blob/main/health.sh)
 
@@ -65,7 +65,15 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
      - If for some reason you have to re-build the whole project run the following two commands in order from the Build Tools for Aria root folder:
        - `mvn clean install -D modules.plugins`
        - `mvn clean install -D modules.tools`
-   - Now test the modifications by executing `mvn clean package/pull/push` command from the test project.
+     - If you are using IntelliJ IDEA you can perform the following steps to use actual debugging (using breakpoints etc):
+       - From the "Run" menu select "Edit Configurations..."
+       - Add new configuration of type "Remote JVM Debug"
+       - Give it some meaningful name
+       - Set the "Debugger mode" to "Attach to Remote JVM"
+       - Set the "Host" to "localhost"
+       - Set the "Port" to 8000
+     - Now test the modifications by executing `mvndebug clean package/pull/push` command from the test project.
+     - Start the debugger you created in the previous step: "Run" => "Debug 'vrbt'"
 
 ### Documentation
 Please navigate to [the following page](./docs/versions/latest/) for the latest version of Build Tools for VMware Aria documentation.

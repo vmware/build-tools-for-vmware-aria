@@ -29,6 +29,7 @@
 		<module>o11n-plugin-apic</module>
 		<module>o11n-plugin-azure</module>
 		<module>o11n-plugin-dynamictypes</module>
+		<module>o11n-plugin-hms</module>
 		<module>o11n-plugin-mail</module>
 		<module>o11n-plugin-mqtt</module>
 		<module>o11n-plugin-net</module>
@@ -43,8 +44,13 @@
 		<module>o11n-plugin-vc</module>
 		<module>o11n-plugin-vcloud</module>
 		<module>o11n-plugin-vco</module>
+		<module>o11n-plugin-vum</module>
+		<module>o11n-plugin-crypto</module>
 		<module>o11n-plugin-xml</module>
 		<module>o11n-plugin-aria</module>
+		<module>o11n-plugin-srm</module>
+		<module>o11n-plugin-ovatransfer</module>
+		<module>o11n-plugin-vcfa</module>
 	</modules>
 
 	<properties>
@@ -58,7 +64,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>3.5.1</version>
+					<version>3.6.3</version>
 					<executions>
 						<execution>
 							<id>npm version</id>
@@ -121,7 +127,7 @@
 						fail with "You have to use a classifier to attach supplemental artifacts to the 
 						project instead of replacing them." 
 					-->
-					<version>3.4.2</version>
+					<version>3.5.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

@@ -16,6 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -103,7 +104,7 @@ public class VrangContentSourceUtils {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			String contentSourceJson = gson.toJson(contentSource, contentSource.getType().getTypeClass());
 			logger.info("Created file {}", Files.write(Paths.get(contentSourceFile.getPath()),
-					contentSourceJson.getBytes(), StandardOpenOption.CREATE));
+					contentSourceJson.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store workflow content source {} {}", contentSource.getName(),
 					contentSourceFile.getPath());

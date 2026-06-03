@@ -156,7 +156,7 @@ public class VraSsoAuth {
 		String stringPayload = gsonObject.toJson(payload);
 
 		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		HttpEntity<String> entity = new HttpEntity<>(stringPayload, headers);
 
@@ -257,7 +257,7 @@ public class VraSsoAuth {
 	private HttpEntity<String> getDefaultHttpEntity() {
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		return new HttpEntity<>(headers);
 	}

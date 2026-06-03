@@ -14,11 +14,12 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
-
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
 
 public class CustomResourceFsMocks extends VraNgFsMock {
 	private static final String WORKDIR = "custom-resources";
@@ -44,7 +45,7 @@ public class CustomResourceFsMocks extends VraNgFsMock {
 				cr.getName() + ".json").toFile();
 
 		Path crName = Paths.get(crFile.getPath());
-		writeFileToPath(crName, cr.getJson().getBytes());
+		writeFileToPath(crName, cr.getJson().getBytes(StandardCharsets.UTF_8));
 	}
 
 }

@@ -36,7 +36,7 @@
                 <include>pom.xml</include>
             </includes>
         </fileSet>
-        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+        <fileSet filtered="false" packaged="false" encoding="UTF-8">
             <directory>src/main/resources</directory>
             <includes>
                 <include>**/*</include>
@@ -47,6 +47,12 @@
             <includes>
                 <include>**/*</include>
             </includes>
-        </fileSet>        
+        </fileSet>
+		<fileSet filtered="false" packaged="false" encoding="UTF-8">
+			<directory>.vscode</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
     </fileSets>
 </archetype-descriptor>

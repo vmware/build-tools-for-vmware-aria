@@ -192,7 +192,8 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 			String apiVersion, Boolean useProviderAuth) {
 		super(configuration, restTemplate);
 		// Preserving API version check for backwards compatibility
-		if (Double.parseDouble(apiVersion) >= Double.parseDouble(RestClientVcd.API_VERSION_38)
+		if (apiVersion.indexOf(".") == apiVersion.lastIndexOf(".") // This check eliminates the versions post VCFA 9.0.1. 40.0 changed to 9.0.0
+				&& Double.parseDouble(apiVersion) >= Double.parseDouble(RestClientVcd.API_VERSION_38)
 				&& Double.parseDouble(apiVersion) < Double.parseDouble(RestClientVcd.API_VERSION_40)) {
 			logger.info("Unsupported version: {}", apiVersion);
 			logger.warn("Detected VCD API version equal or greater than " + RestClientVcd.API_VERSION_38

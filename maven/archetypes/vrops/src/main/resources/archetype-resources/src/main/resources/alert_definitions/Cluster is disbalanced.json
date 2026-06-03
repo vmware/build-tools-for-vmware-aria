@@ -1,0 +1,28 @@
+{
+  "id" : "AlertDefinition-vCenter Operations Adapter-DisbalanceFactorAlert",
+  "name" : "Cluster is disbalanced",
+  "description" : "Cluster is disbalanced. Disbalance factor is more than 5 %, needs to run rebalance from UI manually.",
+  "adapterKindKey" : "vCenter Operations Adapter",
+  "resourceKindKey" : "vC-Ops-Cluster",
+  "waitCycles" : 1,
+  "cancelCycles" : 1,
+  "type" : 20,
+  "subType" : 18,
+  "states" : [ {
+    "severity" : "AUTO",
+    "base-symptom-set" : {
+      "type" : "SYMPTOM_SET",
+      "relation" : "SELF",
+      "aggregation" : "ANY",
+      "symptomSetOperator" : "OR",
+      "symptomDefinitionIds" : [ "SymptomDefinition-vCenter Operations Adapter-DisbalanceFactorWarning", "SymptomDefinition-vCenter Operations Adapter-DisbalanceFactorImmediate", "SymptomDefinition-vCenter Operations Adapter-DisbalanceFactorCritical" ],
+      "symptomSets" : [ ],
+      "alertConditions" : [ ]
+    },
+    "impact" : {
+      "impactType" : "BADGE",
+      "detail" : "health"
+    }
+  } ],
+  "forVCDTenants" : false
+}

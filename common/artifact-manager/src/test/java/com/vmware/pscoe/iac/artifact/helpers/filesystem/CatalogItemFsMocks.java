@@ -14,15 +14,16 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_CATALOG_ITEMS;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_CATALOG_ITEMS;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 
 public class CatalogItemFsMocks extends VraNgFsMock {
 	private static final String WORKDIR = "catalog-items";
@@ -80,7 +81,7 @@ public class CatalogItemFsMocks extends VraNgFsMock {
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(customCatalogItemFile.getPath());
-		writeFileToPath(itemName, gson.toJson(catalogItem).getBytes());
+		writeFileToPath(itemName, gson.toJson(catalogItem).getBytes(StandardCharsets.UTF_8));
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class CatalogItemFsMocks extends VraNgFsMock {
 				getCatalogItemResourceName(catalogItem) + "." + catalogItem.getIconExtension()).toFile();
 
 		Path itemName = Paths.get(customIconFile.getPath());
-		writeFileToPath(itemName, "iconBody".getBytes());
+		writeFileToPath(itemName, "iconBody".getBytes(StandardCharsets.UTF_8));
 	}
 
 	/**
@@ -139,7 +140,7 @@ public class CatalogItemFsMocks extends VraNgFsMock {
 						+
 						"\\\"test\\\"}\",\"styles\": null,\"sourceType\": \"com.vmw.vro.workflow\",\"type\": \"requestForm\","
 						+
-						"\"status\": \"ON\",\"formFormat\": \"JSON\"}").getBytes());
+						"\"status\": \"ON\",\"formFormat\": \"JSON\"}").getBytes(StandardCharsets.UTF_8));
 	}
 
 	/**

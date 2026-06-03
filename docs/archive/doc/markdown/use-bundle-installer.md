@@ -161,6 +161,7 @@ vrops_sshPort
 vrops_sshUsername
 vrops_sshPassword
 vrops_dashboardUser
+vrops_importDashboardsForAllUsers
 
 ### SSH server connection properties ###
 ssh_server

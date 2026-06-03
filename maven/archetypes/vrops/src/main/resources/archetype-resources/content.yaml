@@ -38,13 +38,23 @@
 
 ---
 view:
+  - Cluster Basic Inventory
 dashboard:
+  - Assess Cost
 alert-definition:
+  - Cluster is disbalanced
 symptom-definition:
-policy:
-default-policy:
+  - Cloud Proxy is down
 recommendation:
+  - Bring the VMware Cloud Foundation Operations Node back online
 super-metric:
-metric-config:
+  - Group CPU Average
 report:
+  - Cluster Cost Report
+metric-config:
+  - vSAN Savings
 custom-group:
+  - vCenter Folder Tag
+policy:
+  - Policy for Virtual Machines - Risk Profile 1
+default-policy: Default Policy

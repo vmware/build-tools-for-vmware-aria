@@ -81,7 +81,7 @@ public class RestClientVropsAuthNInterceptor extends RestClientRequestIntercepto
 		logger.info("VROPS Auth Token URL: {}", vropsTokenUri);
 
 		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		final Map<String, String> payload = new HashMap<>();
 		payload.put("username", getConfiguration().getVropsRestUser());

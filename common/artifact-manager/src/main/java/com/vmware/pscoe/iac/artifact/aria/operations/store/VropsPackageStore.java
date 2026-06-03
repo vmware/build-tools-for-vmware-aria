@@ -1027,7 +1027,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			logger.debug("Creating parent folders...");
 			dashboardShareMetadataFile.getParentFile().mkdirs();
 			logger.info("Generating dashboard sharing metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
-			Files.write(dashboardShareMetadataFile.toPath(), dashboardShareMetadataContent.getBytes(),
+			Files.write(dashboardShareMetadataFile.toPath(),
+					dashboardShareMetadataContent.getBytes(StandardCharsets.UTF_8),
 					StandardOpenOption.CREATE_NEW);
 		} catch (JsonProcessingException e) {
 			String message = String.format("Error generating dashboard sharing metadata file '%s' : %s",
@@ -1075,7 +1076,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			logger.debug("Creating parent folders...");
 			dashboardActivationMetadataFile.getParentFile().mkdirs();
 			logger.info("Generating dashboard activation metadata file '{}'", DASHBOARD_SHARE_METADATA_FILENAME);
-			Files.write(dashboardActivationMetadataFile.toPath(), dashboardActivationMetadataContent.getBytes(),
+			Files.write(dashboardActivationMetadataFile.toPath(),
+					dashboardActivationMetadataContent.getBytes(StandardCharsets.UTF_8),
 					StandardOpenOption.CREATE_NEW);
 		} catch (JsonProcessingException e) {
 			String message = String.format(
@@ -1412,7 +1414,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				logger.info("Exporting custom group '{}'", customGroup.getResourceKey().getName());
 				File customGroupFile = new File(customGroupTargetDir, customGroup.getResourceKey().getName() + ".json");
 				try {
-					Files.write(customGroupFile.toPath(), payload.getBytes(), StandardOpenOption.CREATE_NEW);
+					Files.write(customGroupFile.toPath(), payload.getBytes(StandardCharsets.UTF_8),
+							StandardOpenOption.CREATE_NEW);
 				} catch (IOException e) {
 					messages.append(
 							String.format("Error writing file %s : %s", customGroupFile.getName(), e.getMessage()));

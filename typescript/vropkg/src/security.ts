@@ -17,7 +17,8 @@ import * as t from "./types";
 import * as crypto from "crypto";
 import * as os from "os";
 import * as nforge from "node-forge"
-import getLogger from "./logger";
+import * as winston from "winston";
+import { WINSTON_CONFIGURATION } from "./constants";
 
 /**
  * loadCertificate the private key and corresponding certificate chain (from files) and return a
@@ -134,10 +135,10 @@ const getContentIfFile = (pem: t.PEM | string): t.PEM => {
 		return pem;
 	}
 	if (fs.existsSync(pem) && fs.lstatSync(pem).isFile()) {
-		getLogger().info(`Using certificate file ${pem}`);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Using certificate file ${pem}`);
 		return <t.PEM>fs.readFileSync(pem, { encoding: 'utf-8'});
 	} else {
-		getLogger().info(`Using certificate PEM from console input`);
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Using certificate PEM from console input`);
 		return pem;
 	}
 }

@@ -175,7 +175,7 @@ export class Graph {
 	 * Calculates node canvas positions.
 	 * @param {[number, number]} [nodeSpacing = [100, 50]] - horizontal and vertical spacing in canvas units between adjacent nodes
 	 * @param {[number, number]} [initialOffset = [0, 20]] - horizontal and vertical initial offset in canvas units
-	 * @param {[number, number]} [maxGridDimensions = [10, 50]] - maximum number of grid rows and columns
+	 * @param {[number, number]} [maxGridDimensions = [40, 50]] - maximum number of grid rows and columns
 	 * @returns {GraphNode} the Graph with updated node positions, where:
 	 * node.x = node.col * nodeSpacing[0] + initialOffset[0]
 	 * node.y = node.row * nodeSpacing[1] + initialOffset[1]
@@ -185,7 +185,7 @@ export class Graph {
 	public calculateCanvasPositions(
 		nodeSpacing: [number, number] = [100, 50],
 		initialOffset: [number, number] = [0, 20],
-		maxGridDimensions: [number, number] = [10, 50]
+		maxGridDimensions: [number, number] = [30, 50]
 	): this {
 		if (!this.visitedNodes) {
 			throw new Error(`The graph needs to be built first!`);

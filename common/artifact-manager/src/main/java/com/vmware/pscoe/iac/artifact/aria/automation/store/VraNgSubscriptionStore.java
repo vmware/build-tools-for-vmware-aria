@@ -18,6 +18,7 @@ import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -184,8 +185,9 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 			addProjectNamesToStorage(subscriptionJsonElement);
 			addRunnableNameToStorage(subscriptionJsonElement);
 			subscriptionJson = gson.toJson(subscriptionJsonElement);
-			logger.info("Created file {}", Files.write(Paths.get(subscription.getPath()), subscriptionJson.getBytes(),
-					StandardOpenOption.CREATE));
+			logger.info("Created file {}",
+					Files.write(Paths.get(subscription.getPath()), subscriptionJson.getBytes(StandardCharsets.UTF_8),
+							StandardOpenOption.CREATE));
 		} catch (IOException e) {
 			logger.error("Unable to store subscription {} {}", subscriptionName, subscription.getPath());
 			throw new RuntimeException("Unable to store subscription.", e);

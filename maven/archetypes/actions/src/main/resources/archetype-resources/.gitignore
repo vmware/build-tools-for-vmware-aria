@@ -14,7 +14,8 @@ package.json
 package-lock.json
 
 # VSCode
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 
 # IntelliJ IDEA
 out/

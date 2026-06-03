@@ -14,13 +14,14 @@
  */
 package com.vmware.pscoe.iac.artifact.helpers.filesystem;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
-
-import java.io.File;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 
 public class ResourceActionFsMocks extends VraNgFsMock {
 	private static final String WORKDIR = "resource-actions";
@@ -52,6 +53,6 @@ public class ResourceActionFsMocks extends VraNgFsMock {
 
 		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 		Path itemName = Paths.get(file.getPath());
-		writeFileToPath(itemName, gson.toJson(resourceAction).getBytes());
+		writeFileToPath(itemName, gson.toJson(resourceAction).getBytes(StandardCharsets.UTF_8));
 	}
 }
