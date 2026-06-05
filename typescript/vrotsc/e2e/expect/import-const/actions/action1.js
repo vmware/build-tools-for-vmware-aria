@@ -6,9 +6,9 @@
         return this;
     }).call(null);
     var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES()), exports = {};
-    var enum_1 = VROES.importLazy("com.vmware.pscoe.vrotsc.enum");
-    var var_1 = VROES.importLazy("com.vmware.pscoe.vrotsc.var");
-    System.log("TestEnum=".concat(enum_1._.TestEnum.VAL2));
-    System.log("TestVar=".concat(var_1._.TestVar));
+    var _$enum_1 = VROES.importLazy("com.vmware.pscoe.vrotsc.enum");
+    var _$var_1 = VROES.importLazy("com.vmware.pscoe.vrotsc.var");
+    System.log("TestEnum=".concat(_$enum_1._.TestEnum.VAL2));
+    System.log("TestVar=".concat(_$var_1._.TestVar));
     return exports;
 });
