@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
@@ -60,7 +60,7 @@ public final class VcfaPackageDescriptor extends PackageDescriptor {
      */
     public static VcfaPackageDescriptor getInstance(File filesystemPath) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
             VcfaPackageDescriptor pkgDescriptor = mapper.readValue(filesystemPath, VcfaPackageDescriptor.class);
