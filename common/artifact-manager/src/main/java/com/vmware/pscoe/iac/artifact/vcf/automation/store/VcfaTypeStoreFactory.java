@@ -17,7 +17,6 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.store;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
-import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageContent;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType;
 
@@ -27,15 +26,24 @@ import static com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPack
  * Factory for VCFA stores and execution order.
  */
 public class VcfaTypeStoreFactory {
-
-	private static final VcfaPackageMemberType[] IMPORT_ORDER = new VcfaPackageMemberType[] {
-			PROPERTY_GROUP, CONTENT_SOURCE, CUSTOM_RESOURCE, RESOURCE_ACTION, BLUEPRINT, SUBSCRIPTION,
-			CATALOG_ENTITLEMENT, CATALOG_ITEM, POLICY, SCENARIO
+	private static final VcfaPackageMemberType[] ALL_ORDER = new VcfaPackageMemberType[] {
+			BLUEPRINT,
+			// CONTENT_SOURCE, // all fails with 500
+			// CATALOG_ENTITLEMENT //may not be needed
+			CATALOG_ITEM,
+			CUSTOM_RESOURCE, //needs vRO
+			POLICY,
+			PROPERTY_GROUP,
+			RESOURCE_ACTION, //needs vRO
+			SCENARIO,
+			SUBSCRIPTION, //needs vRO
 	};
+	private static final VcfaPackageMemberType[] IMPORT_ORDER = ALL_ORDER;
 
-	private static final VcfaPackageMemberType[] EXPORT_ORDER = new VcfaPackageMemberType[] {
-			BLUEPRINT
-	};
+	private static final VcfaPackageMemberType[] EXPORT_ORDER = ALL_ORDER;
+
+	private static final VcfaPackageMemberType[] DELETE_ORDER = ALL_ORDER;
+	// delete policies and entitlements first
 
 	public static VcfaPackageMemberType[] getImportOrder() {
 		return IMPORT_ORDER;
@@ -44,12 +52,6 @@ public class VcfaTypeStoreFactory {
 	public static VcfaPackageMemberType[] getExportOrder() {
 		return EXPORT_ORDER;
 	}
-
-	private static final VcfaPackageMemberType[] DELETE_ORDER = new VcfaPackageMemberType[] {
-			// delete policies and entitlements first
-			POLICY, SCENARIO, CATALOG_ITEM, CATALOG_ENTITLEMENT, SUBSCRIPTION, CONTENT_SOURCE, BLUEPRINT,
-			RESOURCE_ACTION, CUSTOM_RESOURCE, PROPERTY_GROUP
-	};
 
 	public static VcfaPackageMemberType[] getDeleteOrder() {
 		return DELETE_ORDER;

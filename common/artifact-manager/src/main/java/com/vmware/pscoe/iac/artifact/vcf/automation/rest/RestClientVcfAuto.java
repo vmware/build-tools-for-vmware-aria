@@ -24,14 +24,15 @@ import java.util.Map;
 
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogItem;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.ContentSource;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.CustomResourceType;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.PropertyGroup;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.ResourceAction;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.Scenario;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.Subscription;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.Policy;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItem;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItemForm;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaContentSource;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaResourceAction;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaScenario;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaSubscription;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 
 /**
@@ -62,6 +63,11 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return createBlueprintPrimitive(blueprint.toMap());
 	}
 
+	public Map<String, Object> versionBlueprint(String blueprintId, Map<String, Object> payload)
+			throws IOException {
+		return versionBlueprintPrimitive(blueprintId, payload);
+	}
+
 	public VcfaBlueprint updateBlueprint(String id, VcfaBlueprint blueprint) throws IOException {
 		return updateBlueprintPrimitive(id, objectMapper.convertValue(blueprint, Map.class));
 	}
@@ -70,33 +76,43 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		deleteBlueprintPrimitive(id);
 	}
 
-	// --- Catalog items
-	public List<CatalogItem> getCatalogItems() throws IOException {
+	// --- Catalog Items
+	public List<VcfaCatalogItem> getCatalogItems() throws IOException {
 		return getCatalogItemsPrimitive();
 	}
 
-	public CatalogItem createCatalogItem(CatalogItem payload) throws IOException {
-		return createCatalogItemPrimitive(objectMapper.convertValue(payload, Map.class));
+	public VcfaCatalogItem createCatalogItem(VcfaCatalogItem item) throws IOException {
+		return createCatalogItemPrimitive(item);
 	}
 
-	public CatalogItem updateCatalogItem(String id, CatalogItem payload) throws IOException {
-		return updateCatalogItemPrimitive(id, objectMapper.convertValue(payload, Map.class));
+	public VcfaCatalogItem updateCatalogItem(VcfaCatalogItem item) throws IOException {
+		return updateCatalogItemPrimitive(item.getId(), item);
 	}
 
 	public void deleteCatalogItem(String id) throws IOException {
 		deleteCatalogItemPrimitive(id);
 	}
 
+	// --- Request Forms
+	public VcfaCatalogItemForm getCatalogItemForm(String sourceType, String catalogItemId) throws IOException {
+		return getCatalogItemFormPrimitive(sourceType, catalogItemId);
+	}
+
+	public void updateCatalogItemForm(String sourceType, String catalogItemId, VcfaCatalogItemForm form)
+			throws IOException {
+		updateCatalogItemFormPrimitive(sourceType, catalogItemId, form);
+	}
+
 	// --- Content sources
-	public List<ContentSource> getContentSources() throws IOException {
+	public List<VcfaContentSource> getContentSources() throws IOException {
 		return getContentSourcesPrimitive();
 	}
 
-	public ContentSource createContentSource(ContentSource payload) throws IOException {
+	public VcfaContentSource createContentSource(VcfaContentSource payload) throws IOException {
 		return createContentSourcePrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
-	public ContentSource updateContentSource(String id, ContentSource payload) throws IOException {
+	public VcfaContentSource updateContentSource(String id, VcfaContentSource payload) throws IOException {
 		return updateContentSourcePrimitive(id, objectMapper.convertValue(payload, Map.class));
 	}
 
@@ -105,11 +121,11 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	// --- Custom resource types
-	public List<CustomResourceType> getCustomResources() throws IOException {
+	public List<VcfaCustomResourceType> getCustomResources() throws IOException {
 		return getCustomResourcesPrimitive();
 	}
 
-	public CustomResourceType createCustomResourceType(CustomResourceType payload) throws IOException {
+	public VcfaCustomResourceType createCustomResourceType(VcfaCustomResourceType payload) throws IOException {
 		return createCustomResourceTypePrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
@@ -118,11 +134,11 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	// --- Resource actions
-	public List<ResourceAction> getResourceActions() throws IOException {
+	public List<VcfaResourceAction> getResourceActions() throws IOException {
 		return getResourceActionsPrimitive();
 	}
 
-	public ResourceAction createResourceAction(ResourceAction payload) throws IOException {
+	public VcfaResourceAction createResourceAction(VcfaResourceAction payload) throws IOException {
 		return createResourceActionPrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
@@ -131,15 +147,15 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	// --- Property groups
-	public List<PropertyGroup> getPropertyGroups() throws IOException {
+	public List<VcfaPropertyGroup> getPropertyGroups() throws IOException {
 		return getPropertyGroupsPrimitive();
 	}
 
-	public PropertyGroup createPropertyGroup(PropertyGroup payload) throws IOException {
+	public VcfaPropertyGroup createPropertyGroup(VcfaPropertyGroup payload) throws IOException {
 		return createPropertyGroupPrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
-	public PropertyGroup updatePropertyGroup(String id, PropertyGroup payload) throws IOException {
+	public VcfaPropertyGroup updatePropertyGroup(String id, VcfaPropertyGroup payload) throws IOException {
 		return updatePropertyGroupPrimitive(id, objectMapper.convertValue(payload, Map.class));
 	}
 
@@ -148,11 +164,17 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	// --- Policies
-	public List<Policy> getPolicies() throws IOException {
-		return getPoliciesPrimitive();
+	public List<VcfaPolicy> getPolicies() {
+		try {
+			// A clean, single-line method call delegation to your primitive engine
+			return getPoliciesPrimitive();
+		} catch (IOException e) {
+			throw new RuntimeException(
+					"Fatal failure loading remote policy asset configuration streams from primitive client handler", e);
+		}
 	}
 
-	public Policy createPolicy(Policy payload) throws IOException {
+	public VcfaPolicy createPolicy(VcfaPolicy payload) throws IOException {
 		return createPolicyPrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
@@ -166,13 +188,37 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	// --- Scenarios
-	public List<Scenario> getScenarios() throws IOException {
+	public List<VcfaScenario> getScenarios() throws IOException {
 		return getScenariosPrimitive();
 	}
 
+	public VcfaScenario createScenario(VcfaScenario payload) throws IOException {
+		return createScenarioPrimitive(objectMapper.convertValue(payload, Map.class));
+	}
+
+	public VcfaScenario updateScenario(String id, VcfaScenario payload) throws IOException {
+		return updateScenarioPrimitive(id, objectMapper.convertValue(payload, Map.class));
+	}
+
+	public void deleteScenario(String id) throws IOException {
+		deleteScenarioPrimitive(id);
+	}
+
 	// --- Subscriptions
-	public List<Subscription> getSubscriptions() throws IOException {
+	public List<VcfaSubscription> getSubscriptions() throws IOException {
 		return getSubscriptionsPrimitive();
+	}
+
+	public VcfaSubscription createSubscription(VcfaSubscription payload) throws IOException {
+		return createSubscriptionPrimitive(objectMapper.convertValue(payload, Map.class));
+	}
+
+	public VcfaSubscription updateSubscription(String id, VcfaSubscription payload) throws IOException {
+		return updateSubscriptionPrimitive(id, objectMapper.convertValue(payload, Map.class));
+	}
+
+	public void deleteSubscription(String id) throws IOException {
+		deleteSubscriptionPrimitive(id);
 	}
 
 	// --- Projects
