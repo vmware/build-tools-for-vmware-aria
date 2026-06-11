@@ -1,0 +1,28 @@
+{
+	"name": "vra8-db-mssql Approval Policy",
+	"typeId": "com.vmware.policy.approval",
+	"enforcementType": "HARD",
+	"organization": "vidm-l-01a",
+	"scopeCriteria": {
+		"matchExpression": [
+			{
+				"key": "project.name",
+				"operator": "contains",
+				"value": "g"
+			}
+		]
+	},
+	"definition": {
+		"level": 1,
+		"actions": [
+			"Cloud.vSphere.Machine.Shutdown"
+		],
+		"approvers": [
+			"USER:configurationadmin"
+		],
+		"approvalMode": "ANY_OF",
+		"approverType": "USER",
+		"autoApprovalExpiry": 5,
+		"autoApprovalDecision": "APPROVE"
+	}
+}

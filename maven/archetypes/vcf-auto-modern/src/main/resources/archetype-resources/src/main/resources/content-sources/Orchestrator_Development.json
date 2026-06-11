@@ -1,0 +1,22 @@
+{
+  "config": {
+    "workflows": [
+      {
+        "id": "8F8080808080808080808080808080808080808001299080088268176866967b3",
+        "name": "Add a REST host",
+        "version": "2.0.12",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443"
+        }
+      }
+    ]
+  },
+  "id": "19f67ab7-764c-40e9-97b8-76176d418141",
+  "name": "Orchestrator_Development",
+  "description": null,
+  "typeId": "com.vmw.vro.workflow",
+  "itemsImported": 1,
+  "itemsFound": 1,
+  "global": true
+}

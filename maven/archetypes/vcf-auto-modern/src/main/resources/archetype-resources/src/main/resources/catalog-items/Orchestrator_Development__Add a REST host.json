@@ -1,0 +1,12 @@
+{
+  "sourceId": "19f67ab7-764c-40e9-97b8-76176d418141",
+  "sourceName": "Orchestrator_Development",
+  "name": "Add a REST host",
+  "id": "cb422623-d99d-3cdf-9b4c-a6ebad6fe8be",
+  "iconId": null,
+  "iconExtension": null,
+  "formId": "cf235f4c-65e8-4001-b1c1-b732074891d8",
+  "type": {
+    "id": "com.vmw.vro.workflow"
+  }
+}

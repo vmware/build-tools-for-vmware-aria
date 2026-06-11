@@ -1,0 +1,21 @@
+{
+	"id": "sub_1739188372003",
+	"type": "RUNNABLE",
+	"eventTopicId": "compute.allocation.pre",
+	"name": "vra8-db-mssql Subscription",
+	"ownerId": "configurationadmin",
+	"blocking": true,
+	"description": "",
+	"criteria": "event.data.tags \u003d\u003d\u003d \"my-project\"",
+	"constraints": {
+		"projectId": null
+	},
+	"timeout": 0,
+	"broadcast": false,
+	"priority": 0,
+	"disabled": false,
+	"system": false,
+	"contextual": false,
+	"runnableType": "extensibility.vro",
+	"runnableId": "A9808080808080808080808080808080BE80808001231146624761b79546544c2"
+}
