@@ -23,12 +23,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFolderFilter;
@@ -59,6 +65,16 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
         List<VcfaBlueprint> serverBps = fetchServerBlueprints();
 
+        // --- DEFENSIVE SAFEGUARD: Intercept Server-Side Duplicates to Prevent Collision Errors ---
+        Map<String, VcfaBlueprint> bpsOnServerByName = new HashMap<>();
+        for (VcfaBlueprint bp : serverBps) {
+            if (bpsOnServerByName.containsKey(bp.getName())) {
+                logger.warn("Target host environment contains multiple distinct blueprint entities sharing the name '{}'. Content updates will target the first matched ID instance.", bp.getName());
+            } else {
+                bpsOnServerByName.put(bp.getName(), bp);
+            }
+        }
+
         for (File bpDir : bpList) {
             String bpName = bpDir.getName();
             if (isExcludedByDescriptor(bpName)) {
@@ -83,12 +99,21 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         List<VcfaBlueprint> serverBps = fetchServerBlueprints();
         Package serverPackage = this.vcfaPackage;
 
+        // --- DEFENSIVE SAFEGUARD: Track Duplicates Globally to Prevent Local Disk Overwrites ---
+        java.util.Set<String> exportedNamesTracker = new java.util.HashSet<>();
+
         for (VcfaBlueprint bpSummary : serverBps) {
             String name = bpSummary.getName();
             if (isExcludedByDescriptor(name)) {
                 logger.info("Blueprint '{}' is excluded by descriptor configuration rules. Skipping.", name);
                 continue;
             }
+
+            // Detect naming collision on server and break execution before silent data loss happens
+            if (exportedNamesTracker.contains(name)) {
+                throw new IllegalStateException("The remote server environment contains multiple cloud templates named '" + name + "'. Automatic export aborted to avoid corrupted local disk tracking files.");
+            }
+            exportedNamesTracker.add(name);
 
             try {
                 VcfaBlueprint bp = restClient.getBlueprintById(bpSummary.getId());
@@ -233,6 +258,12 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     private void importBlueprint(File bpDir, List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
         VcfaBlueprint bp = loadBlueprintMeta(bpDir, bpName);
+
+        // --- DEFENSIVE SANITY CHECK: Ensure Directory Name Matches Metadata Declaration ---
+        if (!Objects.equals(bp.getName(), bpName)) {
+            throw new IllegalStateException(String.format("Blueprint workspace corruption identified! Local folder name '%s' does not match the 'name' attribute value declared inside details.json ('%s'). Check configuration.", bpName, bp.getName()));
+        }
+
         setContentIfPresent(bp, bpDir);
 
         bp.setProjectId(restClient.getProjectId());
@@ -256,6 +287,11 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         if (processingTarget != null && processingTarget.getId() != null) {
             logger.info("Triggering mandatory lifecycle version mapping release sequence for blueprint: {}", bpName);
             restClient.versionBlueprint(processingTarget.getId(), processingTarget.toMap());
+
+            // --- REPRODUCED SYSTEM LOGIC: Unrelease Outdated Historic Versions to Prevent Target Catalog Bloat ---
+            if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
+                unreleaseOldVersions(processingTarget.getId());
+            }
         } else {
             logger.warn("Skipping blueprint version release sequence: Client did not return a valid structural instance object tracking ID for '{}'.", bpName);
         }
@@ -311,8 +347,25 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
         // Write details.json
         String detailsFile = blueprintDir + File.separator + "details.json";
-        String detailsJson = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(bp.asExportMap());
+
+        // --- REPRODUCED SYSTEM LOGIC: Environment Scrubbing Isolation Matrix ---
+        // Explicitly extract functional definitions to isolate file configurations from transient read-only system tracking data
+        JsonObject filteredDetails = new JsonObject();
+        filteredDetails.add("id", new JsonPrimitive(bp.getId() != null ? bp.getId() : ""));
+        filteredDetails.add("name", new JsonPrimitive(bp.getName() != null ? bp.getName() : ""));
+        filteredDetails.add("description", new JsonPrimitive(bp.getDescription() != null ? bp.getDescription() : ""));
+        
+        // Dynamic mapping handle verification for execution parameters across different target instances
+        if (bp.getRequestScopeOrg() != null) {
+            filteredDetails.add("requestScopeOrg", new JsonPrimitive(bp.getRequestScopeOrg()));
+        } else if (bp.asExportMap().containsKey("requestScopeOrg")) {
+            Object rawScope = bp.asExportMap().get("requestScopeOrg");
+            filteredDetails.add("requestScopeOrg", new JsonPrimitive(rawScope != null ? rawScope.toString() : "false"));
+        }
+
+        com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+        String detailsJson = gson.toJson(filteredDetails);
+
         Files.write(Paths.get(detailsFile), detailsJson.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING);
 
@@ -321,6 +374,45 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             String contentFile = blueprintDir + File.separator + "content.yaml";
             Files.write(Paths.get(contentFile), bp.getContent().getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+    }
+
+    /**
+     * Helper logic to unrelease historical version trees from target servers, leaving only the newest deployment active.
+     */
+    private void unreleaseOldVersions(String blueprintId) {
+        try {
+            logger.info("Evaluating historical released version tree to unpublish outdated assets for blueprint ID: {}", blueprintId);
+            String rawVersionsJson = restClient.getBlueprintVersions(blueprintId);
+            if (rawVersionsJson == null || rawVersionsJson.trim().isEmpty()) {
+                return;
+            }
+
+            com.google.gson.JsonArray versionsArray = new com.google.gson.Gson().fromJson(rawVersionsJson, com.google.gson.JsonArray.class);
+            if (versionsArray == null || versionsArray.size() <= 1) {
+                return; // Nothing to unrelease if there's only 1 version total
+            }
+
+            // Order array sequentially via creation timestamp
+            java.util.List<com.google.gson.JsonElement> orderedList = new java.util.ArrayList<>();
+            versionsArray.forEach(orderedList::add);
+            orderedList.sort((one, two) -> {
+                String dateOne = one.getAsJsonObject().get("createdAt").getAsString();
+                String dateTwo = two.getAsJsonObject().get("createdAt").getAsString();
+                return java.time.Instant.parse(dateOne).compareTo(java.time.Instant.parse(dateTwo));
+            });
+
+            // Retain the newest version at index length-1, unpublish all prior entries
+            orderedList.remove(orderedList.size() - 1);
+
+            for (com.google.gson.JsonElement versionElement : orderedList) {
+                String versionId = versionElement.getAsJsonObject().get("id").getAsString();
+                String versionValue = versionElement.getAsJsonObject().get("version").getAsString();
+                logger.info("Unreleasing outdated cloud template version '{}' (Internal ID: {})", versionValue, versionId);
+                restClient.unreleaseBlueprintVersion(blueprintId, versionId);
+            }
+        } catch (Exception e) {
+            logger.error("Non-fatal exception encountered during version tree cleanup processing sequence: {}", e.getMessage());
         }
     }
 }

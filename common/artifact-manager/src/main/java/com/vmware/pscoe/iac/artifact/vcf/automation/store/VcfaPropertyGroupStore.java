@@ -24,12 +24,11 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
-import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 
@@ -38,7 +37,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     private static final String DIR_PROPERTY_GROUPS = "property-groups";
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-    // Default or Empty Constructor requested by VcfaTypeStoreFactory
     public VcfaPropertyGroupStore() {
         super();
     }
@@ -50,6 +48,13 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     @Override
     public void exportContent() {
         logger.info("Pulling property group configurations from the remote environment...");
+
+        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
+        if (isExplicitlyEmptyInDescriptor()) {
+            logger.info("Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
+            return;
+        }
+
         if (restClient == null) {
             logger.warn("RestClient not initialized in PropertyGroup Store. Skipping export.");
             return;
@@ -71,7 +76,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
             for (VcfaPropertyGroup group : remoteGroups) {
                 String name = group.getName();
 
-                // Check descriptor rules before saving to disk
                 if (isExcludedByDescriptor(name)) {
                     logger.info("Property Group '{}' is excluded by descriptor configuration rules. Skipping export.", name);
                     continue;
@@ -80,8 +84,17 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 String safeName = name.replaceAll("[^a-zA-Z0-9-_\\.]", "_");
                 File jsonFile = Paths.get(baseGroupsPath, safeName + ".json").toFile();
 
+                // --- REPRODUCED SYSTEM LOGIC: Sanitize environmental/auditing fields to allow multi-tenant migration ---
+                ObjectNode jsonNode = mapper.valueToTree(group);
+                jsonNode.remove("id");
+                jsonNode.remove("projectName");
+                jsonNode.remove("createdAt");
+                jsonNode.remove("createdBy");
+                jsonNode.remove("updatedAt");
+                jsonNode.remove("updatedBy");
+
                 logger.info("Successfully synchronized property group asset: {}", jsonFile.getAbsolutePath());
-                String serializedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(group);
+                String serializedJson = mapper.writeValueAsString(jsonNode);
                 Files.write(
                         jsonFile.toPath(),
                         serializedJson.getBytes(StandardCharsets.UTF_8),
@@ -100,6 +113,13 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     @Override
     public void importContent(File sourceDirectory) {
         logger.info("Importing property groups from {}", sourceDirectory.getAbsolutePath());
+
+        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
+        if (isExplicitlyEmptyInDescriptor()) {
+            logger.info("Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
+            return;
+        }
+
         if (restClient == null) {
             logger.warn("RestClient not initialized in PropertyGroup Store. Skipping import.");
             return;
@@ -119,6 +139,9 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 return;
             }
 
+            String currentOrgId = restClient.getOrganizationId();
+            String currentProjectId = restClient.getProjectId();
+
             for (File file : groupFiles) {
                 String groupName = file.getName().replace(".json", "");
 
@@ -129,21 +152,46 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
 
                 logger.info("Processing local Property Group asset configuration: '{}'", file.getName());
                 VcfaPropertyGroup localGroup = mapper.readValue(file, VcfaPropertyGroup.class);
-
+                
+                // Track down matching records on the target environment by unique Name attributes
                 Optional<VcfaPropertyGroup> existingRemote = remoteGroups.stream()
-                        .filter(r -> r.getName().equalsIgnoreCase(localGroup.getName()) ||
-                                (r.getId() != null && r.getId().equals(localGroup.getId())))
+                        .filter(r -> r.getName().equalsIgnoreCase(localGroup.getName()))
                         .findFirst();
+
+                // Re-stitch Organization scopes
+                localGroup.setOrgId(currentOrgId);
 
                 if (existingRemote.isPresent()) {
                     VcfaPropertyGroup remoteMatch = existingRemote.get();
+
+                    // --- REPRODUCED SYSTEM LOGIC: Prevent illegal project/scope mutations ---
+                    String existingProjectId = remoteMatch.getProjectId();
+                    if (existingProjectId != null && !existingProjectId.isBlank() && !existingProjectId.equals(currentProjectId)) {
+                        throw new UnsupportedOperationException(String.format(
+                            "The property group '%s' is already assigned to a different project scope (%s). Scope change operations are not supported by the platform API.",
+                            localGroup.getName(), existingProjectId
+                        ));
+                    }
+
+                    // If local asset expects a non-blank project allocation, inject target environment project mapping parameters
+                    if (localGroup.getProjectId() != null && !localGroup.getProjectId().isBlank()) {
+                        logger.debug("Re-mapping local group project alignment pointer to current target scope: {}", currentProjectId);
+                        localGroup.setProjectId(currentProjectId);
+                    }
+
                     if (isIdentical(remoteMatch, localGroup)) {
                         logger.info("Property Group '{}' matches remote system configuration exactly. Skipping update.", localGroup.getName());
                     } else {
                         logger.info("Delta detected for Property Group '{}'. Initiating remote update context.", localGroup.getName());
+                        localGroup.setId(remoteMatch.getId());
                         restClient.updatePropertyGroup(remoteMatch.getId(), localGroup);
                     }
                 } else {
+                    // CREATE PIPELINE
+                    if (localGroup.getProjectId() != null && !localGroup.getProjectId().isBlank()) {
+                        logger.debug("Re-mapping local group project alignment pointer to current target scope: {}", currentProjectId);
+                        localGroup.setProjectId(currentProjectId);
+                    }
                     logger.info("Property Group '{}' not found on target server. Executing remote creation.", localGroup.getName());
                     restClient.createPropertyGroup(localGroup);
                 }
@@ -153,7 +201,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
         }
     }
 
-/**
+    /**
      * Property evaluation matching field paths verified inside model layout.
      */
     private boolean isIdentical(VcfaPropertyGroup remote, VcfaPropertyGroup local) {
@@ -165,8 +213,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
         boolean sameDisplayName = java.util.Objects.equals(remote.getDisplayName(), local.getDisplayName());
         boolean sameDescription = java.util.Objects.equals(remote.getDescription(), local.getDescription());
         boolean sameType = java.util.Objects.equals(remote.getType(), local.getType());
-
-        // Deep properties configuration map verification check
         boolean sameProperties = java.util.Objects.equals(remote.getProperties(), local.getProperties());
 
         return sameName && sameDisplayName && sameDescription && sameType && sameProperties;
@@ -251,6 +297,38 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     }
 
     /**
+     * Helper to safely extract and determine if the configuration block array is explicitly initialized to '[]'.
+     */
+    private boolean isExplicitlyEmptyInDescriptor() {
+        VcfaPackageDescriptor localDescriptor = null;
+
+        if (this.descriptor instanceof VcfaPackageDescriptor) {
+            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
+        }
+
+        if (localDescriptor == null) {
+            String workingDir = System.getProperty("user.dir");
+            if (workingDir != null) {
+                File contentYamlFile = new File(workingDir, "content.yaml");
+                if (contentYamlFile.exists()) {
+                    try {
+                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
+                    } catch (Exception e) {
+                        logger.error("Failed parsing manifest layout rules map token details.", e);
+                    }
+                }
+            }
+        }
+
+        if (localDescriptor == null) {
+            return false;
+        }
+
+        List<String> allowedGroups = localDescriptor.getPropertyGroup();
+        return allowedGroups != null && allowedGroups.isEmpty();
+    }
+
+    /**
      * Evaluates property group filtering rules straight against the content.yaml file.
      */
     private boolean isExcludedByDescriptor(String groupName) {
@@ -278,7 +356,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
             return false; 
         }
 
-        // --- Aligned to VcfaPackageDescriptor property-group mapping field getter ---
         List<String> allowedGroups = localDescriptor.getPropertyGroup();
 
         if (allowedGroups == null) {

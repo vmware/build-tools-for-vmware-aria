@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaScenario;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
@@ -46,6 +48,13 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
     @Override
     public void exportContent() {
         logger.info("Pulling scenario configurations from the remote environment...");
+
+        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
+        if (isExplicitlyEmptyInDescriptor()) {
+            logger.info("Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
+            return;
+        }
+
         if (restClient == null) {
             logger.warn("RestClient not initialized in Scenario Store. Skipping export.");
             return;
@@ -73,8 +82,17 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 String safeFileName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
                 File jsonFile = Paths.get(baseScenariosPath, safeFileName + ".json").toFile();
 
+                // --- REPRODUCED SYSTEM LOGIC: Align underlying payload schema maps with native keys ---
+                ObjectNode jsonNode = mapper.valueToTree(scenario);
+                if (!jsonNode.has("scenarioName") && scenario.getName() != null) {
+                    jsonNode.put("scenarioName", scenario.getName());
+                }
+                if (!jsonNode.has("scenarioId") && scenario.getId() != null) {
+                    jsonNode.put("scenarioId", scenario.getId());
+                }
+
                 logger.info("Successfully synchronized scenario asset: {}", jsonFile.getAbsolutePath());
-                String serializedJson = mapper.writeValueAsString(scenario);
+                String serializedJson = mapper.writeValueAsString(jsonNode);
                 Files.write(
                         jsonFile.toPath(),
                         serializedJson.getBytes(StandardCharsets.UTF_8),
@@ -92,6 +110,13 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
     @Override
     public void importContent(File sourceDirectory) {
         logger.info("Importing scenarios from {}", sourceDirectory.getAbsolutePath());
+
+        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
+        if (isExplicitlyEmptyInDescriptor()) {
+            logger.info("Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
+            return;
+        }
+
         if (restClient == null) {
             logger.warn("RestClient not initialized in Scenario Store. Skipping import.");
             return;
@@ -112,11 +137,29 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
             }
 
             for (File file : scenarioFiles) {
-                VcfaScenario localScenario = mapper.readValue(file, VcfaScenario.class);
-                String trackingName = localScenario.getName();
+                // --- REPRODUCED SYSTEM LOGIC: Process file using flexible schema token fallbacks ---
+                String jsonContent = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                JsonNode rootNode = mapper.readTree(jsonContent);
+                
+                String trackingName = rootNode.has("scenarioName") ? rootNode.get("scenarioName").asText() : null;
+                String trackingId = rootNode.has("scenarioId") ? rootNode.get("scenarioId").asText() : null;
 
-                if (isExcludedByDescriptor(trackingName)) {
-                    logger.info("Scenario asset '{}' is excluded by descriptor configuration rules. Skipping import.", trackingName);
+                VcfaScenario localScenario = mapper.treeToValue(rootNode, VcfaScenario.class);
+                if (localScenario.getName() == null && trackingName != null) {
+                    localScenario.setName(trackingName);
+                }
+                if (localScenario.getId() == null && trackingId != null) {
+                    localScenario.setId(trackingId);
+                }
+
+                if (localScenario.getName() == null) {
+                    logger.warn("Unable to extract valid target name context identifier for file asset {}. Skipping import.", file.getName());
+                    continue;
+                }
+
+                String actualName = localScenario.getName();
+                if (isExcludedByDescriptor(actualName)) {
+                    logger.info("Scenario asset '{}' is excluded by descriptor configuration rules. Skipping import.", actualName);
                     continue;
                 }
 
@@ -124,21 +167,21 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
 
                 Optional<VcfaScenario> existingRemote = remoteScenarios.stream()
                         .filter(r -> r.getName().equalsIgnoreCase(localScenario.getName()) ||
-                                (r.getId() != null && r.getId().equalsIgnoreCase(localScenario.getId())))
+                                (r.getId() != null && localScenario.getId() != null && r.getId().equalsIgnoreCase(localScenario.getId())))
                         .findFirst();
 
                 if (existingRemote.isPresent()) {
                     VcfaScenario remoteMatch = existingRemote.get();
                     if (isIdentical(remoteMatch, localScenario)) {
-                        logger.info("Scenario '{}' matches remote system configuration exactly. Skipping update.", trackingName);
+                        logger.info("Scenario '{}' matches remote system configuration exactly. Skipping update.", actualName);
                     } else {
-                        logger.info("Delta detected for Scenario '{}'. Executing replacement update lifecycle.", trackingName);
+                        logger.info("Delta detected for Scenario '{}'. Executing replacement update lifecycle.", actualName);
                         restClient.deleteScenario(remoteMatch.getId());
-                        restClient.createScenario(localScenario);
+                        restClient.createScenario(mapper.writeValueAsString(rootNode));
                     }
                 } else {
-                    logger.info("Scenario '{}' not found on target server. Executing remote creation.", trackingName);
-                    restClient.createScenario(localScenario);
+                    logger.info("Scenario '{}' not found on target server. Executing remote creation.", actualName);
+                    restClient.createScenario(mapper.writeValueAsString(rootNode));
                 }
             }
         } catch (IOException e) {
@@ -226,6 +269,38 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
         } catch (IOException e) {
             throw new RuntimeException("Fatal error encountered clearing existing infrastructure scenario definitions", e);
         }
+    }
+
+    /**
+     * Helper to safely extract and determine if the configuration block array is explicitly initialized to '[]'.
+     */
+    private boolean isExplicitlyEmptyInDescriptor() {
+        VcfaPackageDescriptor localDescriptor = null;
+
+        if (this.descriptor instanceof VcfaPackageDescriptor) {
+            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
+        }
+
+        if (localDescriptor == null) {
+            String workingDir = System.getProperty("user.dir");
+            if (workingDir != null) {
+                File contentYamlFile = new File(workingDir, "content.yaml");
+                if (contentYamlFile.exists()) {
+                    try {
+                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
+                    } catch (Exception e) {
+                        logger.error("Failed parsing manifest layout rules map token details.", e);
+                    }
+                }
+            }
+        }
+
+        if (localDescriptor == null) {
+            return false;
+        }
+
+        List<String> allowedScenarios = localDescriptor.getScenarios();
+        return allowedScenarios != null && allowedScenarios.isEmpty();
     }
 
     private boolean isExcludedByDescriptor(String trackingName) {
