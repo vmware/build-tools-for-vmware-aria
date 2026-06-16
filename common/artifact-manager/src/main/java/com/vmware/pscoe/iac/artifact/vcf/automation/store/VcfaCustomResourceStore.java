@@ -46,7 +46,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * Exports all Custom Resources from the target environment to the filesystem package.
+     * Exports all Custom Resources from the target environment to the filesystem
+     * package.
      */
     @Override
     public void exportContent() {
@@ -54,7 +55,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
         // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Custom Resource descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
+            logger.info(
+                    "Custom Resource descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
             return;
         }
 
@@ -71,11 +73,13 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             }
 
             Package serverPackage = this.vcfaPackage;
-            String baseResourcesPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_CUSTOM_RESOURCES).toString();
+            String baseResourcesPath = Paths
+                    .get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_CUSTOM_RESOURCES).toString();
             Files.createDirectories(Paths.get(baseResourcesPath));
 
             for (VcfaCustomResourceType resource : remoteResources) {
-                // --- REPRODUCED SYSTEM LOGIC: Align with native programmatic backend file names ---
+                // --- REPRODUCED SYSTEM LOGIC: Align with native programmatic backend file
+                // names ---
                 String trackingName = resource.getName();
 
                 if (isExcludedByDescriptor(trackingName)) {
@@ -86,7 +90,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 String safeFileName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
                 File jsonFile = Paths.get(baseResourcesPath, safeFileName + ".json").toFile();
 
-                // Convert model instance to JSON tree representation to sanitize system tracking properties
+                // Convert model instance to JSON tree representation to sanitize system
+                // tracking properties
                 ObjectNode jsonNode = mapper.valueToTree(resource);
                 jsonNode.remove("id");
                 if (jsonNode.has("orgId")) {
@@ -107,7 +112,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * Imports local Custom Resource configuration files back up to the target environment.
+     * Imports local Custom Resource configuration files back up to the target
+     * environment.
      */
     @Override
     public void importContent(File sourceDirectory) {
@@ -115,7 +121,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
         // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Custom Resource descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
+            logger.info(
+                    "Custom Resource descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
             return;
         }
 
@@ -136,7 +143,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             try {
                 remoteResources = restClient.getCustomResources();
             } catch (IOException e) {
-                throw new RuntimeException("Failed to load remote custom resources due to an unexpected connection error", e);
+                throw new RuntimeException(
+                        "Failed to load remote custom resources due to an unexpected connection error", e);
             }
 
             File[] resourceFiles = localDir.listFiles((dir, name) -> name.endsWith(".json"));
@@ -149,18 +157,23 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 String jsonContent = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
                 ObjectNode customResourceJsonElement = (ObjectNode) mapper.readTree(jsonContent);
 
-                // --- REPRODUCED SYSTEM LOGIC: Perform pre-flight naming regex verification validations ---
+                // --- REPRODUCED SYSTEM LOGIC: Perform pre-flight naming regex verification
+                // validations ---
                 validateCustomResourceDay2ActionName(customResourceJsonElement);
 
-                // --- REPRODUCED SYSTEM LOGIC: Re-anchor tenant scopes and endpoints across environments ---
+                // --- REPRODUCED SYSTEM LOGIC: Re-anchor tenant scopes and endpoints across
+                // environments ---
                 fixCustomResourceDefinition(customResourceJsonElement);
                 populateVroEndpoints(customResourceJsonElement);
 
-                VcfaCustomResourceType localResource = mapper.treeToValue(customResourceJsonElement, VcfaCustomResourceType.class);
+                VcfaCustomResourceType localResource = mapper.treeToValue(customResourceJsonElement,
+                        VcfaCustomResourceType.class);
                 String trackingName = localResource.getName();
 
                 if (isExcludedByDescriptor(trackingName)) {
-                    logger.info("Custom resource asset '{}' is excluded by descriptor configuration rules. Skipping import.", trackingName);
+                    logger.info(
+                            "Custom resource asset '{}' is excluded by descriptor configuration rules. Skipping import.",
+                            trackingName);
                     continue;
                 }
 
@@ -168,30 +181,39 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
                 Optional<VcfaCustomResourceType> existingRemote = remoteResources.stream()
                         .filter(r -> r.getName().equalsIgnoreCase(localResource.getName()) ||
-                                (r.getDisplayName() != null && r.getDisplayName().equalsIgnoreCase(localResource.getDisplayName())) ||
+                                (r.getDisplayName() != null
+                                        && r.getDisplayName().equalsIgnoreCase(localResource.getDisplayName()))
+                                ||
                                 (r.getId() != null && r.getId().equals(localResource.getId())))
                         .findFirst();
 
                 if (existingRemote.isPresent()) {
                     VcfaCustomResourceType remoteMatch = existingRemote.get();
                     if (isIdentical(remoteMatch, localResource)) {
-                        logger.info("Custom Resource '{}' matches remote system configuration exactly. Skipping update.", trackingName);
+                        logger.info(
+                                "Custom Resource '{}' matches remote system configuration exactly. Skipping update.",
+                                trackingName);
                     } else {
-                        // --- REPRODUCED SYSTEM LOGIC: Safe platform delete-and-recreate lifecycle orchestration ---
-                        logger.info("Delta detected for Custom Resource '{}'. Initiating deletion phase.", trackingName);
+                        // --- REPRODUCED SYSTEM LOGIC: Safe platform delete-and-recreate lifecycle
+                        // orchestration ---
+                        logger.info("Delta detected for Custom Resource '{}'. Initiating deletion phase.",
+                                trackingName);
 
                         try {
                             // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
                             try {
                                 restClient.deleteCustomResourceType(remoteMatch.getId());
                             } catch (IOException e) {
-                                throw new RuntimeException("Failed to delete existing remote custom resource asset pattern context", e);
+                                throw new RuntimeException(
+                                        "Failed to delete existing remote custom resource asset pattern context", e);
                             }
                             customResourceJsonElement.remove("id");
                         } catch (Exception ex) {
                             // Check if the asset is currently locked by active server processes or leases
                             if (isCustomResourceActiveAttached(ex)) {
-                                logger.warn("Cannot purge Custom Resource '{}' due to active deployments on the cluster. Switching to in-place override update fallback logic.", trackingName);
+                                logger.warn(
+                                        "Cannot purge Custom Resource '{}' due to active deployments on the cluster. Switching to in-place override update fallback logic.",
+                                        trackingName);
                                 customResourceJsonElement.put("id", remoteMatch.getId());
                             } else {
                                 throw ex;
@@ -200,34 +222,40 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
                         logger.info("Pushing custom resource definition payload: '{}'", trackingName);
                         String payloadStr = mapper.writeValueAsString(customResourceJsonElement);
-                        
+
                         // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
                         try {
-                            restClient.createCustomResourceType(mapper.readValue(payloadStr, VcfaCustomResourceType.class));
+                            restClient.createCustomResourceType(
+                                    mapper.readValue(payloadStr, VcfaCustomResourceType.class));
                         } catch (IOException e) {
-                            throw new RuntimeException("Failed to recreate existing remote custom resource asset pattern context", e);
+                            throw new RuntimeException(
+                                    "Failed to recreate existing remote custom resource asset pattern context", e);
                         }
                     }
                 } else {
-                    logger.info("Custom Resource '{}' not found on target server. Executing remote creation.", trackingName);
+                    logger.info("Custom Resource '{}' not found on target server. Executing remote creation.",
+                            trackingName);
                     customResourceJsonElement.remove("id");
                     String payloadStr = mapper.writeValueAsString(customResourceJsonElement);
-                    
+
                     // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
                     try {
                         restClient.createCustomResourceType(mapper.readValue(payloadStr, VcfaCustomResourceType.class));
                     } catch (IOException e) {
-                        throw new RuntimeException("Failed to provision a fresh custom resource asset pattern context to target", e);
+                        throw new RuntimeException(
+                                "Failed to provision a fresh custom resource asset pattern context to target", e);
                     }
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("CRITICAL: Failed to import Custom Resources from filesystem to target environment", e);
+            throw new RuntimeException(
+                    "CRITICAL: Failed to import Custom Resources from filesystem to target environment", e);
         }
     }
 
     private void validateCustomResourceDay2ActionName(ObjectNode customResourceJsonElement) {
-        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+        if (customResourceJsonElement.has("additionalActions")
+                && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
             Pattern pattern = Pattern.compile("[^a-zA-Z0-9:\\-_.]");
 
@@ -255,11 +283,13 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             try {
                 customResourceJsonElement.put("projectId", restClient.getProjectId());
             } catch (IOException e) {
-                throw new RuntimeException("Failed to recover target landscape project boundary mappings context info.", e);
+                throw new RuntimeException("Failed to recover target landscape project boundary mappings context info.",
+                        e);
             }
         }
 
-        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+        if (customResourceJsonElement.has("additionalActions")
+                && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
             for (JsonNode action : additionalActionsArray) {
                 if (action instanceof ObjectNode) {
@@ -274,7 +304,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                             try {
                                 formDefinition.put("projectId", restClient.getProjectId());
                             } catch (IOException e) {
-                                throw new RuntimeException("Failed to map form boundary definitions token references properties.", e);
+                                throw new RuntimeException(
+                                        "Failed to map form boundary definitions token references properties.", e);
                             }
                         }
                     }
@@ -295,10 +326,12 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             }
         }
 
-        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+        if (customResourceJsonElement.has("additionalActions")
+                && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActions = (ArrayNode) customResourceJsonElement.get("additionalActions");
             for (JsonNode action : additionalActions) {
-                if (action instanceof ObjectNode && action.has("runnableItem") && action.get("runnableItem").isObject()) {
+                if (action instanceof ObjectNode && action.has("runnableItem")
+                        && action.get("runnableItem").isObject()) {
                     ((ObjectNode) action.get("runnableItem")).put("endpointLink", targetVroEndpointLink);
                 }
             }
@@ -332,26 +365,22 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * Wipes remote infrastructure custom resource components based on Tristate rules.
+     * Wipes remote infrastructure custom resource components based on Tristate
+     * rules.
      */
     @Override
     public void deleteContent() {
         logger.info("Executing cleanup deletion scanning for Custom Resource entities...");
         try {
-            // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
-            List<VcfaCustomResourceType> remoteResources;
-            try {
-                remoteResources = restClient.getCustomResources();
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to scan landscape cluster definitions due to unexpected connection error.", e);
-            }
-
+            List<VcfaCustomResourceType> remoteResources = restClient.getCustomResources();
             if (remoteResources == null || remoteResources.isEmpty()) {
                 logger.info("No remote custom resources identified to delete.");
                 return;
             }
 
-            List<String> itemsToDelete = null;
+            // Fix the structural parsing engine variable from strict List<String> to
+            // generic raw List
+            List<?> yamlParsedList = null;
             boolean isExplicitlyEmpty = false;
 
             File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
@@ -369,12 +398,10 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                         Object resourceListObj = rawMap.containsKey("custom-resource") ? rawMap.get("custom-resource")
                                 : rawMap.get("customResources");
 
-                        if (rawMap.containsKey("custom-resource") || rawMap.containsKey("customResources")) {
-                            if (resourceListObj instanceof List) {
-                                itemsToDelete = (List<String>) resourceListObj;
-                                if (itemsToDelete.isEmpty()) {
-                                    isExplicitlyEmpty = true;
-                                }
+                        if (resourceListObj instanceof List) {
+                            yamlParsedList = (List<?>) resourceListObj;
+                            if (yamlParsedList.isEmpty()) {
+                                isExplicitlyEmpty = true;
                             }
                         }
                     }
@@ -389,43 +416,77 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 return;
             }
 
-            // Scenario 2: Key is completely null/omitted -> Wildcard target mode active. Purge Everything.
-            if (itemsToDelete == null) {
-                logger.info("Custom Resource descriptor is undefined/null. Omitted wildcard trigger: Purging ALL remote custom resources.");
+            // Scenario 2: Key is completely null/omitted -> Wildcard target mode active.
+            // Purge Everything.
+            if (yamlParsedList == null) {
+                logger.info(
+                        "Custom Resource descriptor is undefined/null. Omitted wildcard trigger: Purging ALL remote custom resources.");
                 for (VcfaCustomResourceType remoteRes : remoteResources) {
-                    logger.info("[WILDCARD DELETE] Deleting custom resource named '{}' matching ID: {}", remoteRes.getName(), remoteRes.getId());
-                    // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
-                    try {
-                        restClient.deleteCustomResourceType(remoteRes.getId());
-                    } catch (IOException e) {
-                        throw new RuntimeException("Failed cleaning environment wildcard elements", e);
-                    }
+                    logger.info("[WILDCARD DELETE] Deleting custom resource named '{}' matching ID: {}",
+                            remoteRes.getName(), remoteRes.getId());
+                    restClient.deleteCustomResourceType(remoteRes.getId());
                 }
                 return;
             }
 
-            // Scenario 3: Explicit List -> Filter targeted matches sequentially by programmatic Name
-            logger.info("Custom Resource targeted filter list active. Evaluating matching entries for deletion sequence...");
+            // Scenario 3: Explicit List -> Filter targeted matches sequentially by
+            // programmatic Name or Display Name
+            logger.info(
+                    "Custom Resource targeted filter list active. Evaluating matching entries for deletion sequence...");
+
+            // Surgically normalize YAML input elements into clean, space-stripped lowercase
+            // strings
+            List<String> sanitizedTargets = new java.util.ArrayList<>();
+            for (Object rawItem : yamlParsedList) {
+                if (rawItem != null) {
+                    sanitizedTargets.add(rawItem.toString().trim().toLowerCase());
+                }
+            }
+
+            // Trace statement to see exactly what strings the application code parsed out
+            // of your YAML file
+            logger.info("Normalized targets parsed from content.yaml: {}", sanitizedTargets);
+
             for (VcfaCustomResourceType remoteRes : remoteResources) {
                 String remoteName = remoteRes.getName();
-                if (itemsToDelete.contains(remoteName)) {
-                    logger.info("[TARGETED DELETE] Deleting custom resource named '{}' matching ID: {}", remoteName, remoteRes.getId());
-                    // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+                String displayName = remoteRes.getDisplayName();
+
+                // Print a debug trace for every item found on the live server to cross-verify
+                // keys
+                logger.info("Found remote Custom Resource candidate -> Programmatic Name: '{}', UI Display Name: '{}'",
+                        remoteName, displayName);
+
+                boolean isMatched = false;
+                if (remoteName != null && sanitizedTargets.contains(remoteName.trim().toLowerCase())) {
+                    isMatched = true;
+                }
+                if (displayName != null && sanitizedTargets.contains(displayName.trim().toLowerCase())) {
+                    isMatched = true;
+                }
+
+                if (isMatched) {
+                    logger.info(
+                            "[TARGETED DELETE] Match successful! Deleting custom resource named '{}' matching ID: {}",
+                            remoteName, remoteRes.getId());
                     try {
                         restClient.deleteCustomResourceType(remoteRes.getId());
                     } catch (IOException e) {
-                        throw new RuntimeException("Failed processing targeted entity removal on remote environment node", e);
+                        throw new RuntimeException(
+                                "Failed executing server request to drop targeted custom resource configuration element",
+                                e);
                     }
                 }
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Fatal error encountered clearing existing infrastructure custom resource definitions", e);
+            throw new RuntimeException(
+                    "Fatal error encountered clearing existing infrastructure custom resource definitions", e);
         }
     }
 
     /**
-     * Helper to safely extract and determine if the configuration block array is explicitly initialized to '[]'.
+     * Helper to safely extract and determine if the configuration block array is
+     * explicitly initialized to '[]'.
      */
     private boolean isExplicitlyEmptyInDescriptor() {
         VcfaPackageDescriptor localDescriptor = null;

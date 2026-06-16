@@ -207,7 +207,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
         }
     }
 
-    /**
+/**
      * Wipes remote infrastructure resource actions based on Tristate rules.
      */
     @Override
@@ -220,7 +220,8 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = null;
+            // Fix the structural parsing engine variable from strict List<String> to generic raw List
+            List<?> yamlParsedList = null;
             boolean isExplicitlyEmpty = false;
 
             File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
@@ -238,12 +239,10 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                         Object actionListObj = rawMap.containsKey("resource-action") ? rawMap.get("resource-action")
                                 : rawMap.get("resourceActions");
 
-                        if (rawMap.containsKey("resource-action") || rawMap.containsKey("resourceActions")) {
-                            if (actionListObj instanceof List) {
-                                itemsToDelete = (List<String>) actionListObj;
-                                if (itemsToDelete.isEmpty()) {
-                                    isExplicitlyEmpty = true;
-                                }
+                        if (actionListObj instanceof List) {
+                            yamlParsedList = (List<?>) actionListObj;
+                            if (yamlParsedList.isEmpty()) {
+                                isExplicitlyEmpty = true;
                             }
                         }
                     }
@@ -252,12 +251,14 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
 
             // --- TRISTATE EVALUATION MATRIX ---
 
+            // Scenario 1: Explicitly Empty "[]" -> Safety bypass toggle. Delete Nothing.
             if (isExplicitlyEmpty) {
                 logger.info("Resource Action descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
 
-            if (itemsToDelete == null) {
+            // Scenario 2: Key is completely null/omitted -> Wildcard target mode active. Purge Everything.
+            if (yamlParsedList == null) {
                 logger.info("Resource Action descriptor is undefined/null. Omitted wildcard trigger: Purging ALL remote resource actions.");
                 for (VcfaResourceAction remoteAct : remoteActions) {
                     logger.info("[WILDCARD DELETE] Deleting resource action named '{}__{}' matching ID: {}",
@@ -267,12 +268,42 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 return;
             }
 
+            // Scenario 3: Explicit List -> Filter targeted matches sequentially by programmatic Name or Complex Name
             logger.info("Resource Action targeted filter list active. Evaluating matching entries for deletion sequence...");
+            
+            // Surgically normalize YAML input elements into clean, space-stripped lowercase strings
+            List<String> sanitizedTargets = new java.util.ArrayList<>();
+            for (Object rawItem : yamlParsedList) {
+                if (rawItem != null) {
+                    sanitizedTargets.add(rawItem.toString().trim().toLowerCase());
+                }
+            }
+
+            // Trace statement to see exactly what strings the application code parsed out of your YAML file
+            logger.info("Normalized Resource Action targets parsed from content.yaml: {}", sanitizedTargets);
+
             for (VcfaResourceAction remoteAct : remoteActions) {
                 String complexName = remoteAct.getResourceType() + RESOURCE_ACTION_SEPARATOR + remoteAct.getName();
-                if (itemsToDelete.contains(complexName)) {
-                    logger.info("[TARGETED DELETE] Deleting resource action named '{}' matching ID: {}", complexName, remoteAct.getId());
-                    restClient.deleteResourceAction(remoteAct.getId());
+                String plainActionName = remoteAct.getName();
+                
+                // Print a debug trace for every item found on the live server to cross-verify keys
+                logger.info("Found remote Resource Action candidate -> Complex Name: '{}', Plain Name: '{}'", complexName, plainActionName);
+
+                boolean isMatched = false;
+                if (complexName != null && sanitizedTargets.contains(complexName.trim().toLowerCase())) {
+                    isMatched = true;
+                }
+                if (plainActionName != null && sanitizedTargets.contains(plainActionName.trim().toLowerCase())) {
+                    isMatched = true;
+                }
+
+                if (isMatched) {
+                    logger.info("[TARGETED DELETE] Match successful! Deleting resource action named '{}' matching ID: {}", complexName, remoteAct.getId());
+                    try {
+                        restClient.deleteResourceAction(remoteAct.getId());
+                    } catch (Exception ex) {
+                        logger.warn("Failed executing deletion endpoint for action resource entity '{}': {}", complexName, ex.getMessage());
+                    }
                 }
             }
 
