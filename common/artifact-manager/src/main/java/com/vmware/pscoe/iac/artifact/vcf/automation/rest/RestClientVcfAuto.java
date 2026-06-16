@@ -7,7 +7,7 @@
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
  * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
  * 
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
@@ -51,6 +51,9 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		super(configuration, restTemplate);
 	}
 
+	// ==========================================
+	// --- Blueprints & Versions
+	// ==========================================
 	public List<VcfaBlueprint> getBlueprints() throws IOException {
 		return getBlueprintsPrimitive();
 	}
@@ -76,7 +79,27 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		deleteBlueprintPrimitive(id);
 	}
 
+	// Update these signatures in RestClientVcfAuto.java
+
+	/**
+	 * Fetches version records bound to a specific blueprint node as a raw JSON
+	 * String.
+	 */
+	public String getBlueprintVersions(String blueprintId) throws IOException {
+		return getBlueprintVersionsPrimitive(blueprintId);
+	}
+
+	/**
+	 * Unreleases a specified blueprint version node across remote platform catalog
+	 * allocations.
+	 */
+	public void unreleaseBlueprintVersion(String blueprintId, String versionId) throws IOException {
+		unreleaseBlueprintVersionPrimitive(blueprintId, versionId);
+	}
+
+	// ==========================================
 	// --- Catalog Items
+	// ==========================================
 	public List<VcfaCatalogItem> getCatalogItems() throws IOException {
 		return getCatalogItemsPrimitive();
 	}
@@ -224,5 +247,26 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	// --- Projects
 	public String getProjectId(final String projectName) throws IOException {
 		return getProjectIdPrimitive(projectName);
+	}
+
+	/**
+	 * Resolves the target platform tenant Organization scope tracking token.
+	 */
+	public String getOrganizationId() {
+		return getOrganizationIdPrimitive();
+	}
+
+	/**
+	 * Acquires the specific execution runtime vRO integration selfLink string.
+	 * Handles checked IOExceptions gracefully to avoid downstream store compilation
+	 * errors.
+	 */
+	public String getVroTargetIntegrationEndpointLink() {
+		try {
+			return getVroTargetIntegrationEndpointLinkPrimitive();
+		} catch (java.io.IOException e) {
+			throw new RuntimeException(
+					"Fatal operational failure querying the environment's target vRO integration endpoint links", e);
+		}
 	}
 }

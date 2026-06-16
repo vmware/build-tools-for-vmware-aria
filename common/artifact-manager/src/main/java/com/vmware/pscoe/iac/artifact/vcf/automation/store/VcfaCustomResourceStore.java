@@ -76,7 +76,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
             for (VcfaCustomResourceType resource : remoteResources) {
                 // --- REPRODUCED SYSTEM LOGIC: Align with native programmatic backend file names ---
-                String trackingName = resource.getName(); 
+                String trackingName = resource.getName();
 
                 if (isExcludedByDescriptor(trackingName)) {
                     logger.info("Custom Resource '{}' is excluded by descriptor rules. Skipping export.", trackingName);
@@ -131,7 +131,14 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
 
         try {
-            List<VcfaCustomResourceType> remoteResources = restClient.getCustomResources();
+            // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+            List<VcfaCustomResourceType> remoteResources;
+            try {
+                remoteResources = restClient.getCustomResources();
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to load remote custom resources due to an unexpected connection error", e);
+            }
+
             File[] resourceFiles = localDir.listFiles((dir, name) -> name.endsWith(".json"));
             if (resourceFiles == null || resourceFiles.length == 0) {
                 logger.info("Could not find any custom resource assets to import.");
@@ -144,7 +151,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
                 // --- REPRODUCED SYSTEM LOGIC: Perform pre-flight naming regex verification validations ---
                 validateCustomResourceDay2ActionName(customResourceJsonElement);
-                
+
                 // --- REPRODUCED SYSTEM LOGIC: Re-anchor tenant scopes and endpoints across environments ---
                 fixCustomResourceDefinition(customResourceJsonElement);
                 populateVroEndpoints(customResourceJsonElement);
@@ -172,11 +179,14 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                     } else {
                         // --- REPRODUCED SYSTEM LOGIC: Safe platform delete-and-recreate lifecycle orchestration ---
                         logger.info("Delta detected for Custom Resource '{}'. Initiating deletion phase.", trackingName);
-                        boolean deletionSuccessful = false;
-                        
+
                         try {
-                            restClient.deleteCustomResourceType(remoteMatch.getId());
-                            deletionSuccessful = true;
+                            // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+                            try {
+                                restClient.deleteCustomResourceType(remoteMatch.getId());
+                            } catch (IOException e) {
+                                throw new RuntimeException("Failed to delete existing remote custom resource asset pattern context", e);
+                            }
                             customResourceJsonElement.remove("id");
                         } catch (Exception ex) {
                             // Check if the asset is currently locked by active server processes or leases
@@ -190,13 +200,25 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
                         logger.info("Pushing custom resource definition payload: '{}'", trackingName);
                         String payloadStr = mapper.writeValueAsString(customResourceJsonElement);
-                        restClient.createCustomResourceType(mapper.readValue(payloadStr, VcfaCustomResourceType.class));
+                        
+                        // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+                        try {
+                            restClient.createCustomResourceType(mapper.readValue(payloadStr, VcfaCustomResourceType.class));
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to recreate existing remote custom resource asset pattern context", e);
+                        }
                     }
                 } else {
                     logger.info("Custom Resource '{}' not found on target server. Executing remote creation.", trackingName);
                     customResourceJsonElement.remove("id");
                     String payloadStr = mapper.writeValueAsString(customResourceJsonElement);
-                    restClient.createCustomResourceType(mapper.readValue(payloadStr, VcfaCustomResourceType.class));
+                    
+                    // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+                    try {
+                        restClient.createCustomResourceType(mapper.readValue(payloadStr, VcfaCustomResourceType.class));
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to provision a fresh custom resource asset pattern context to target", e);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -208,15 +230,17 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
             Pattern pattern = Pattern.compile("[^a-zA-Z0-9:\\-_.]");
-            
+
             for (JsonNode action : additionalActionsArray) {
                 if (action != null && action.has("name")) {
                     String name = action.get("name").asText();
                     Matcher matcher = pattern.matcher(name);
 
-                    if (matcher.find() || name.startsWith("_") || name.endsWith("_") || 
-                        name.startsWith(".") || name.endsWith(".") || name.contains(" ")) {
-                        throw new RuntimeException(String.format("Action's name: '%s' contains invalid symbols. Must not use spaces or start/end with points or underscores.", name));
+                    if (matcher.find() || name.startsWith("_") || name.endsWith("_") ||
+                            name.startsWith(".") || name.endsWith(".") || name.contains(" ")) {
+                        throw new RuntimeException(String.format(
+                                "Action's name: '%s' contains invalid symbols. Must not use spaces or start/end with points or underscores.",
+                                name));
                     }
                 }
             }
@@ -226,9 +250,13 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     private void fixCustomResourceDefinition(ObjectNode customResourceJsonElement) {
         String currentOrgId = restClient.getOrganizationId();
         customResourceJsonElement.put("orgId", currentOrgId);
-        
+
         if (customResourceJsonElement.has("projectId") && !customResourceJsonElement.get("projectId").isNull()) {
-            customResourceJsonElement.put("projectId", restClient.getProjectId());
+            try {
+                customResourceJsonElement.put("projectId", restClient.getProjectId());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to recover target landscape project boundary mappings context info.", e);
+            }
         }
 
         if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
@@ -237,13 +265,17 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 if (action instanceof ObjectNode) {
                     ObjectNode actionJson = (ObjectNode) action;
                     actionJson.put("orgId", currentOrgId);
-                    
+
                     if (actionJson.has("formDefinition") && actionJson.get("formDefinition").isObject()) {
                         ObjectNode formDefinition = (ObjectNode) actionJson.get("formDefinition");
                         formDefinition.remove("id");
                         formDefinition.put("tenant", currentOrgId);
                         if (formDefinition.has("projectId") && !formDefinition.get("projectId").isNull()) {
-                            formDefinition.put("projectId", restClient.getProjectId());
+                            try {
+                                formDefinition.put("projectId", restClient.getProjectId());
+                            } catch (IOException e) {
+                                throw new RuntimeException("Failed to map form boundary definitions token references properties.", e);
+                            }
                         }
                     }
                 }
@@ -253,7 +285,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
     private void populateVroEndpoints(ObjectNode customResourceJsonElement) {
         String targetVroEndpointLink = restClient.getVroTargetIntegrationEndpointLink();
-        
+
         if (customResourceJsonElement.has("mainActions") && customResourceJsonElement.get("mainActions").isObject()) {
             ObjectNode mainActions = (ObjectNode) customResourceJsonElement.get("mainActions");
             for (String mainAct : new String[] { "create", "update", "delete" }) {
@@ -290,13 +322,13 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
 
         return java.util.Objects.equals(remote.getName(), local.getName()) &&
-               java.util.Objects.equals(remote.getDisplayName(), local.getDisplayName()) &&
-               java.util.Objects.equals(remote.getDescription(), local.getDescription()) &&
-               java.util.Objects.equals(remote.getExternalType(), local.getExternalType()) &&
-               java.util.Objects.equals(remote.getSchemaType(), local.getSchemaType()) &&
-               java.util.Objects.equals(remote.getMainActions(), local.getMainActions()) &&
-               java.util.Objects.equals(remote.getAdditionalActions(), local.getAdditionalActions()) &&
-               java.util.Objects.equals(remote.getProperties(), local.getProperties());
+                java.util.Objects.equals(remote.getDisplayName(), local.getDisplayName()) &&
+                java.util.Objects.equals(remote.getDescription(), local.getDescription()) &&
+                java.util.Objects.equals(remote.getExternalType(), local.getExternalType()) &&
+                java.util.Objects.equals(remote.getSchemaType(), local.getSchemaType()) &&
+                java.util.Objects.equals(remote.getMainActions(), local.getMainActions()) &&
+                java.util.Objects.equals(remote.getAdditionalActions(), local.getAdditionalActions()) &&
+                java.util.Objects.equals(remote.getProperties(), local.getProperties());
     }
 
     /**
@@ -306,7 +338,14 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     public void deleteContent() {
         logger.info("Executing cleanup deletion scanning for Custom Resource entities...");
         try {
-            List<VcfaCustomResourceType> remoteResources = restClient.getCustomResources();
+            // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+            List<VcfaCustomResourceType> remoteResources;
+            try {
+                remoteResources = restClient.getCustomResources();
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to scan landscape cluster definitions due to unexpected connection error.", e);
+            }
+
             if (remoteResources == null || remoteResources.isEmpty()) {
                 logger.info("No remote custom resources identified to delete.");
                 return;
@@ -355,7 +394,12 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 logger.info("Custom Resource descriptor is undefined/null. Omitted wildcard trigger: Purging ALL remote custom resources.");
                 for (VcfaCustomResourceType remoteRes : remoteResources) {
                     logger.info("[WILDCARD DELETE] Deleting custom resource named '{}' matching ID: {}", remoteRes.getName(), remoteRes.getId());
-                    restClient.deleteCustomResourceType(remoteRes.getId());
+                    // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+                    try {
+                        restClient.deleteCustomResourceType(remoteRes.getId());
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed cleaning environment wildcard elements", e);
+                    }
                 }
                 return;
             }
@@ -366,7 +410,12 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 String remoteName = remoteRes.getName();
                 if (itemsToDelete.contains(remoteName)) {
                     logger.info("[TARGETED DELETE] Deleting custom resource named '{}' matching ID: {}", remoteName, remoteRes.getId());
-                    restClient.deleteCustomResourceType(remoteRes.getId());
+                    // --- COMPILATION SAFEGUARD TRY-CATCH WRAPPER BLOCK ---
+                    try {
+                        restClient.deleteCustomResourceType(remoteRes.getId());
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed processing targeted entity removal on remote environment node", e);
+                    }
                 }
             }
 

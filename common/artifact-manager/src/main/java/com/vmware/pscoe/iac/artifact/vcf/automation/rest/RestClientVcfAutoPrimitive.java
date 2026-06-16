@@ -318,6 +318,42 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		deletePath("/blueprint/api/blueprints/" + id, 204);
 	}
 
+	// Replace the previous blueprint version primitives with these in
+	// RestClientVcfAutoPrimitive.java
+
+	/**
+	 * Fetches all registered versions for a specified blueprint and returns the raw
+	 * JSON response as a String.
+	 */
+	protected String getBlueprintVersionsPrimitive(String blueprintId) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		java.net.URI uri = getURI(
+				getURIBuilder().setPath(String.format("/blueprint/api/blueprints/%s/versions", blueprintId)));
+		org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(
+				uri,
+				org.springframework.http.HttpMethod.GET,
+				getDefaultHttpEntity(),
+				String.class);
+		return response.getBody();
+	}
+
+	/**
+	 * Unreleases an active version from global platform deployment catalogs using a
+	 * standard POST exchange.
+	 */
+	protected void unreleaseBlueprintVersionPrimitive(String blueprintId, String versionId) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		java.net.URI uri = getURI(getURIBuilder().setPath(
+				String.format("/blueprint/api/blueprints/%s/versions/%s/actions/unrelease", blueprintId, versionId)));
+		org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>("{}",
+				getDefaultHttpEntity().getHeaders());
+		restTemplate.exchange(uri, org.springframework.http.HttpMethod.POST, entity, String.class);
+	}
+
 	// =========================================================================
 	// CATALOG ITEM PRIMITIVES
 	// =========================================================================
@@ -710,5 +746,62 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		LOGGER.info("Detected API Version {}", this.apiVersion);
 
 		return this.apiVersion;
+	}
+
+	public String getOrganizationIdPrimitive() {
+		try {
+			if (restTemplate != null) {
+				java.net.URI uri = getURI(getURIBuilder().setPath("/csp/gateway/am/api/auth/token-status"));
+				org.springframework.http.ResponseEntity<Map> response = restTemplate.exchange(
+						uri, org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), Map.class);
+				if (response.getBody() != null && response.getBody().containsKey("orgId")) {
+					return String.valueOf(response.getBody().get("orgId"));
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.warn("Unable to resolve dynamic organization ID via identity endpoint: {}", e.getMessage());
+		}
+		return "default-org-id";
+	}
+
+	/**
+	 * Queries the external orchestrator system endpoints linked up to this target
+	 * environment context.
+	 */
+	protected String getVroTargetIntegrationEndpointLinkPrimitive() throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+
+		// Queries the IaaS integration endpoint path for automation integrations
+		URIBuilder uriBuilder = getURIBuilder().setPath("/iaas/api/integrations");
+		java.net.URI uri = getURI(uriBuilder);
+
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(),
+					String.class);
+			Map<String, Object> root = objectMapper.readValue(response.getBody(), Map.class);
+			Object content = root.get("content");
+
+			if (content instanceof List) {
+				for (Object item : (List<?>) content) {
+					if (item instanceof Map) {
+						Map<String, Object> integration = (Map<String, Object>) item;
+						// Locate orchestration endpoints by checking explicit product type flags
+						if ("vro".equalsIgnoreCase(String.valueOf(integration.get("integrationType")))) {
+							// Extract document selfLink URI properties
+							return String.valueOf(integration.get("documentSelfLink"));
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.warn(
+					"Could not query platform integrations for an active vRO endpoint: {}. Using configuration fallback.",
+					e.getMessage());
+		}
+
+		// Safe pipeline default fallback mapping tracking pattern
+		return "/iaas/api/integrations/default-vro-link";
 	}
 }
