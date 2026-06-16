@@ -156,13 +156,22 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		deleteCustomResourceTypePrimitive(id);
 	}
 
+	// ==========================================
 	// --- Resource actions
+	// ==========================================
+
 	public List<VcfaResourceAction> getResourceActions() throws IOException {
 		return getResourceActionsPrimitive();
 	}
 
-	public VcfaResourceAction createResourceAction(VcfaResourceAction payload) throws IOException {
-		return createResourceActionPrimitive(objectMapper.convertValue(payload, Map.class));
+	/**
+	 * Creates a resource action and returns the raw JSON string payload
+	 * so that downstream stores can extract dynamic meta IDs.
+	 */
+	public String createResourceAction(VcfaResourceAction payload) throws IOException {
+		// Calls the underlying primitive string handler instead of wrapping it into an
+		// object map conversion
+		return createResourceActionPrimitiveString(objectMapper.convertValue(payload, Map.class));
 	}
 
 	public void deleteResourceAction(String id) throws IOException {
@@ -199,6 +208,13 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 
 	public VcfaPolicy createPolicy(VcfaPolicy payload) throws IOException {
 		return createPolicyPrimitive(objectMapper.convertValue(payload, Map.class));
+	}
+
+	/**
+	 * Updates an infrastructure policy definition instance.
+	 */
+	public VcfaPolicy updatePolicy(String id, VcfaPolicy payload) throws IOException {
+		return updatePolicyPrimitive(id, objectMapper.convertValue(payload, Map.class));
 	}
 
 	public void deletePolicy(String id) throws IOException {

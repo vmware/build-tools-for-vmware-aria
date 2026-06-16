@@ -123,4 +123,14 @@ public class VcfaPropertyGroup {
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
+
+    private String projectId;
+
+    public String getProjectId() {
+        return this.projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 }

@@ -680,6 +680,17 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return objectMapper.convertValue(result, VcfaPolicy.class);
 	}
 
+	/**
+	 * Updates an existing policy resource over the wire using a standard PUT call.
+	 */
+	protected VcfaPolicy updatePolicyPrimitive(String id, Map<String, Object> payload) throws IOException {
+		Map<String, Object> result = putMap(String.format("/policy/api/policies/%s", id), payload, 200);
+		if (result == null) {
+			return null;
+		}
+		return objectMapper.convertValue(result, VcfaPolicy.class);
+	}
+
 	protected void deletePolicyPrimitive(String id) throws IOException {
 		deletePath("/policy/api/policies/" + id, 204, 200);
 	}
@@ -700,6 +711,25 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 	protected void deleteResourceActionPrimitive(String id) throws IOException {
 		deletePath("/form-service/api/custom/resource-actions/" + id, 200, 204);
+	}
+
+	/**
+	 * Executes an HTTP POST to create a resource action and yields the raw body
+	 * string response.
+	 */
+	protected String createResourceActionPrimitiveString(Map<String, Object> payload) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		java.net.URI uri = getURI(getURIBuilder().setPath("/policy/api/resource-actions"));
+		org.springframework.http.HttpEntity<Map<String, Object>> entity = new org.springframework.http.HttpEntity<>(
+				payload, getDefaultHttpEntity().getHeaders());
+		org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(
+				uri,
+				org.springframework.http.HttpMethod.POST,
+				entity,
+				String.class);
+		return response.getBody();
 	}
 
 	// =========================================================================

@@ -30,7 +30,8 @@ public class VcfaPolicy implements Identifiable {
     private String orgId;
     private Map<String, Object> definition;
 
-    public VcfaPolicy() {}
+    public VcfaPolicy() {
+    }
 
     // =========================================================================
     // IDENTIFIABLE INTERFACE OVERRIDES
@@ -88,5 +89,18 @@ public class VcfaPolicy implements Identifiable {
 
     public void setDefinition(Map<String, Object> definition) {
         this.definition = definition;
+    }
+
+    // Add this field and these methods inside
+    // com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy
+
+    private String projectId;
+
+    public String getProjectId() {
+        return this.projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 }
