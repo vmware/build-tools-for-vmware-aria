@@ -226,7 +226,10 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return getCatalogEntitlementsPrimitive();
 	}
 
+	// ==========================================
 	// --- Scenarios
+	// ==========================================
+
 	public List<VcfaScenario> getScenarios() throws IOException {
 		return getScenariosPrimitive();
 	}
@@ -235,8 +238,26 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return createScenarioPrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
+	/**
+	 * Overloaded creator that accepts a raw JSON String from the store layer,
+	 * converting it internally to avoid type mismatch errors.
+	 */
+	public VcfaScenario createScenario(String jsonPayload) throws IOException {
+		Map<String, Object> mapPayload = objectMapper.readValue(jsonPayload, Map.class);
+		return createScenarioPrimitive(mapPayload);
+	}
+
 	public VcfaScenario updateScenario(String id, VcfaScenario payload) throws IOException {
 		return updateScenarioPrimitive(id, objectMapper.convertValue(payload, Map.class));
+	}
+
+	/**
+	 * Overloaded updater that accepts a raw JSON String from the store layer,
+	 * converting it internally to avoid type mismatch errors.
+	 */
+	public VcfaScenario updateScenario(String id, String jsonPayload) throws IOException {
+		Map<String, Object> mapPayload = objectMapper.readValue(jsonPayload, Map.class);
+		return updateScenarioPrimitive(id, mapPayload);
 	}
 
 	public void deleteScenario(String id) throws IOException {
@@ -259,6 +280,27 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	public void deleteSubscription(String id) throws IOException {
 		deleteSubscriptionPrimitive(id);
 	}
+
+	/**
+     * Resolves the distinct tracking ID string linked up to a specific ABX script layout.
+     */
+    public String getAbxActionIdByName(String name) throws IOException {
+        return getAbxActionIdByNamePrimitive(name);
+    }
+
+    /**
+     * Extracts the display name string for a target execution ABX script item.
+     */
+    public String getAbxActionNameById(String id) throws IOException {
+        return getAbxActionNameByIdPrimitive(id);
+    }
+
+    /**
+     * Maps an infrastructure project GUID value to its corresponding human-readable name string.
+     */
+    public String getProjectNameById(String id) throws IOException {
+        return getProjectNameByIdPrimitive(id);
+    }
 
 	// --- Projects
 	public String getProjectId(final String projectName) throws IOException {

@@ -582,6 +582,69 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		deletePath("/event-broker/api/subscriptions/" + id, 200, 204);
 	}
 
+	/**
+	 * Resolves an ABX script action GUID identifier by querying using a name
+	 * filter.
+	 */
+	protected String getAbxActionIdByNamePrimitive(String name) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		java.net.URI uri = getURI(getURIBuilder().setPath("/abx/api/resources/actions").addParameter("name", name));
+		org.springframework.http.ResponseEntity<Map> response = restTemplate.exchange(
+				uri, org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), Map.class);
+
+		if (response.getBody() != null && response.getBody().get("content") instanceof List) {
+			List<?> content = (List<?>) response.getBody().get("content");
+			if (!content.isEmpty() && content.get(0) instanceof Map) {
+				return String.valueOf(((Map<?, ?>) content.get(0)).get("id"));
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Translates a technical ABX action GUID back into its human-readable
+	 * definition name.
+	 */
+	protected String getAbxActionNameByIdPrimitive(String id) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		java.net.URI uri = getURI(getURIBuilder().setPath(String.format("/abx/api/resources/actions/%s", id)));
+		try {
+			org.springframework.http.ResponseEntity<Map> response = restTemplate.exchange(
+					uri, org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), Map.class);
+			if (response.getBody() != null && response.getBody().containsKey("name")) {
+				return String.valueOf(response.getBody().get("name"));
+			}
+		} catch (Exception e) {
+			LOGGER.warn("Unable to resolve ABX action name for ID '{}': {}", id, e.getMessage());
+		}
+		return id; // Fallback to raw ID if resource cannot be resolved on target instance
+	}
+
+	/**
+	 * Translates an IaaS project asset UUID into its environmental configuration
+	 * mapping name string.
+	 */
+	protected String getProjectNameByIdPrimitive(String id) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		java.net.URI uri = getURI(getURIBuilder().setPath(String.format("/iaas/api/projects/%s", id)));
+		try {
+			org.springframework.http.ResponseEntity<Map> response = restTemplate.exchange(
+					uri, org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), Map.class);
+			if (response.getBody() != null && response.getBody().containsKey("name")) {
+				return String.valueOf(response.getBody().get("name"));
+			}
+		} catch (Exception e) {
+			LOGGER.warn("Unable to resolve project scope name matching ID '{}': {}", id, e.getMessage());
+		}
+		return "default-project"; // Safe fallback token representation context string
+	}
+
 	// =========================================================================
 	// PROPERTY GROUP PRIMITIVES
 	// =========================================================================
