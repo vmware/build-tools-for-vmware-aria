@@ -108,10 +108,6 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return createCatalogItemPrimitive(item);
 	}
 
-	public VcfaCatalogItem updateCatalogItem(VcfaCatalogItem item) throws IOException {
-		return updateCatalogItemPrimitive(item.getId(), item);
-	}
-
 	public void deleteCatalogItem(String id) throws IOException {
 		deleteCatalogItemPrimitive(id);
 	}
@@ -201,14 +197,8 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	// --- Policies
-	public List<VcfaPolicy> getPolicies() {
-		try {
-			// A clean, single-line method call delegation to your primitive engine
-			return getPoliciesPrimitive();
-		} catch (IOException e) {
-			throw new RuntimeException(
-					"Fatal failure loading remote policy asset configuration streams from primitive client handler", e);
-		}
+	public List<VcfaPolicy> getPolicies() throws IOException {
+		return getPoliciesPrimitive();
 	}
 
 	public VcfaPolicy createPolicy(VcfaPolicy payload) throws IOException {
@@ -239,10 +229,6 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return getScenariosPrimitive();
 	}
 
-	public VcfaScenario createScenario(VcfaScenario payload) throws IOException {
-		return createScenarioPrimitive(objectMapper.convertValue(payload, Map.class));
-	}
-
 	/**
 	 * Overloaded creator that accepts a raw JSON String from the store layer,
 	 * converting it internally to avoid type mismatch errors.
@@ -250,10 +236,6 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	public VcfaScenario createScenario(String jsonPayload) throws IOException {
 		Map<String, Object> mapPayload = objectMapper.readValue(jsonPayload, Map.class);
 		return createScenarioPrimitive(mapPayload);
-	}
-
-	public VcfaScenario updateScenario(String id, VcfaScenario payload) throws IOException {
-		return updateScenarioPrimitive(id, objectMapper.convertValue(payload, Map.class));
 	}
 
 	/**
@@ -320,19 +302,5 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	public String getOrganizationId() throws IOException {
 		String projectId = getProjectId();
 		return getOrgIdFromProjectPrimitive(projectId);
-	}
-
-	/**
-	 * Acquires the specific execution runtime vRO integration selfLink string.
-	 * Handles checked IOExceptions gracefully to avoid downstream store compilation
-	 * errors.
-	 */
-	public String getVroTargetIntegrationEndpointLink() {
-		try {
-			return getVroTargetIntegrationEndpointLinkPrimitive();
-		} catch (java.io.IOException e) {
-			throw new RuntimeException(
-					"Fatal operational failure querying the environment's target vRO integration endpoint links", e);
-		}
 	}
 }

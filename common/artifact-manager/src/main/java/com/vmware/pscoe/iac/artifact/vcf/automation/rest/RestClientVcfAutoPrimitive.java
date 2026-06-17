@@ -202,11 +202,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return projects.stream().findFirst().isPresent() ? projects.stream().findFirst().get().getOrgId() : null;
 	}
 
-	protected String getProjectNamePrimitive(final String project) throws IOException {
-		List<VcfaProject> projects = getProjectsPrimitive(project);
-		return projects.stream().findFirst().isPresent() ? projects.stream().findFirst().get().getName() : null;
-	}
-
 	public String getProjectId() throws IOException {
 		if (StringUtils.isNotEmpty(projectId)) {
 			return this.projectId;
@@ -287,6 +282,17 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return objectMapper.convertValue(result, VcfaBlueprint.class);
 	}
 
+	protected VcfaBlueprint updateBlueprintPrimitive(String id, Map<String, Object> blueprint) throws IOException {
+		Map<String, Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
+		if (result == null)
+			return null;
+		return objectMapper.convertValue(result, VcfaBlueprint.class);
+	}
+
+	protected void deleteBlueprintPrimitive(String id) throws IOException {
+		deletePath("/blueprint/api/blueprints/" + id, 204);
+	}
+
 	protected Map<String, Object> versionBlueprintPrimitive(String blueprintId, Map<String, Object> incomingPayload)
 			throws IOException {
 		if (restTemplate == null) {
@@ -311,20 +317,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 		return postMap("/blueprint/api/blueprints/" + blueprintId + "/versions", versioningPayload, 200, 201);
 	}
-
-	protected VcfaBlueprint updateBlueprintPrimitive(String id, Map<String, Object> blueprint) throws IOException {
-		Map<String, Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaBlueprint.class);
-	}
-
-	protected void deleteBlueprintPrimitive(String id) throws IOException {
-		deletePath("/blueprint/api/blueprints/" + id, 204);
-	}
-
-	// Replace the previous blueprint version primitives with these in
-	// RestClientVcfAutoPrimitive.java
 
 	/**
 	 * Fetches all registered versions for a specified blueprint and returns the raw
@@ -409,14 +401,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return objectMapper.convertValue(result, VcfaCatalogItem.class);
 	}
 
-	protected VcfaCatalogItem updateCatalogItemPrimitive(String id, VcfaCatalogItem item) throws IOException {
-		Map<String, Object> payload = objectMapper.convertValue(item, Map.class);
-		Map<String, Object> result = putMap("/catalog/api/items/" + id, payload, 200);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaCatalogItem.class);
-	}
-
 	protected void deleteCatalogItemPrimitive(String id) throws IOException {
 		deletePath("/catalog/api/items/" + id, 204, 200);
 	}
@@ -424,14 +408,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	// =========================================================================
 	// CUSTOM FORM LOOKUP & RESOLUTION PRIMITIVES
 	// =========================================================================
-	protected java.net.URI getURI(URIBuilder builder) {
-		try {
-			return builder.build();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	private VcfaCatalogItemForm fetchFormMetaBySourceAndType(String sourceType, String sourceId) throws IOException {
 		if (restTemplate == null) {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
@@ -629,27 +605,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return id; // Fallback to raw ID if resource cannot be resolved on target instance
 	}
 
-	/**
-	 * Translates an IaaS project asset UUID into its environmental configuration
-	 * mapping name string.
-	 */
-	protected String getProjectNameByIdPrimitive(String id) throws IOException {
-		if (restTemplate == null) {
-			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
-		}
-		java.net.URI uri = getURI(getURIBuilder().setPath(String.format("/iaas/api/projects/%s", id)));
-		try {
-			org.springframework.http.ResponseEntity<Map> response = restTemplate.exchange(
-					uri, org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), Map.class);
-			if (response.getBody() != null && response.getBody().containsKey("name")) {
-				return String.valueOf(response.getBody().get("name"));
-			}
-		} catch (Exception e) {
-			LOGGER.warn("Unable to resolve project scope name matching ID '{}': {}", id, e.getMessage());
-		}
-		return "default-project"; // Safe fallback token representation context string
-	}
-
 	// =========================================================================
 	// PROPERTY GROUP PRIMITIVES
 	// =========================================================================
@@ -737,10 +692,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return fullyHydratedList;
 	}
 
-	public VcfaPolicy getPolicyPrimitive(String id) throws IOException {
-		return get(String.format("/policy/api/policies/%s", id), VcfaPolicy.class);
-	}
-
 	protected VcfaPolicy createPolicyPrimitive(Map<String, Object> payload) throws IOException {
 		Map<String, Object> result = postMap("/policy/api/policies", payload, 200, 201, 202);
 		if (result == null)
@@ -770,17 +721,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return getList("/form-service/api/custom/resource-actions", VcfaResourceAction.class);
 	}
 
-	protected VcfaResourceAction createResourceActionPrimitive(Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = postMap("/form-service/api/custom/resource-actions", payload, 200, 201);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaResourceAction.class);
-	}
-
-	protected void deleteResourceActionPrimitive(String id) throws IOException {
-		deletePath("/form-service/api/custom/resource-actions/" + id, 200, 204);
-	}
-
 	/**
 	 * Executes an HTTP POST to create a resource action and yields the raw body
 	 * string response.
@@ -801,76 +741,15 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return response.getBody();
 	}
 
+	protected void deleteResourceActionPrimitive(String id) throws IOException {
+		deletePath("/form-service/api/custom/resource-actions/" + id, 200, 204);
+	}
+
 	// =========================================================================
 	// CUSTOM RESOURCE PRIMITIVES
 	// =========================================================================
 	protected List<VcfaCustomResourceType> getCustomResourcesPrimitive() throws IOException {
 		return getList("/form-service/api/custom/resource-types", VcfaCustomResourceType.class);
-	}
-
-	public String createCustomResourceTypePrimitive(
-			VcfaCustomResourceType resourceTypePojo) {
-		try {
-			// 1. Convert POJO to a mutable Jackson ObjectNode tree structure
-			com.fasterxml.jackson.databind.node.ObjectNode rootNode = (com.fasterxml.jackson.databind.node.ObjectNode) objectMapper
-					.valueToTree(resourceTypePojo);
-			String fallbackLink = "/iaas/api/integrations/embedded-vro-placeholder";
-
-			// 2. PATCH LOCATION A: mainActions -> create & delete blocks
-			if (rootNode.has("mainActions") && rootNode.get("mainActions").isObject()) {
-				com.fasterxml.jackson.databind.node.ObjectNode mainActionsNode = (com.fasterxml.jackson.databind.node.ObjectNode) rootNode
-						.get("mainActions");
-
-				String[] targetLifecycleKeys = { "create", "delete" };
-				for (String actionKey : targetLifecycleKeys) {
-					if (mainActionsNode.has(actionKey) && mainActionsNode.get(actionKey).isObject()) {
-						com.fasterxml.jackson.databind.node.ObjectNode lifecycleNode = (com.fasterxml.jackson.databind.node.ObjectNode) mainActionsNode
-								.get(actionKey);
-
-						if (!lifecycleNode.has("endpointLink") || lifecycleNode.get("endpointLink").isNull()
-								|| "null".equals(lifecycleNode.get("endpointLink").asText().trim())) {
-							lifecycleNode.put("endpointLink", fallbackLink);
-						}
-					}
-				}
-			}
-
-			// 3. PATCH LOCATION B: additionalActions -> nested runnableItems array
-			if (rootNode.has("additionalActions") && rootNode.get("additionalActions").isArray()) {
-				com.fasterxml.jackson.databind.node.ArrayNode additionalActionsArray = (com.fasterxml.jackson.databind.node.ArrayNode) rootNode
-						.get("additionalActions");
-
-				for (com.fasterxml.jackson.databind.JsonNode actionItem : additionalActionsArray) {
-					if (actionItem.isObject() && actionItem.has("runnableItem")
-							&& actionItem.get("runnableItem").isObject()) {
-						com.fasterxml.jackson.databind.node.ObjectNode runnableNode = (com.fasterxml.jackson.databind.node.ObjectNode) actionItem
-								.get("runnableItem");
-
-						if (!runnableNode.has("endpointLink") || runnableNode.get("endpointLink").isNull()
-								|| "null".equals(runnableNode.get("endpointLink").asText().trim())) {
-							runnableNode.put("endpointLink", fallbackLink);
-						}
-					}
-				}
-			}
-
-			// 4. Convert the completely patched node tree structure securely back into a
-			// standard Java Map
-			java.util.Map<java.lang.String, java.lang.Object> finalizedPayloadMap = objectMapper.convertValue(
-					rootNode,
-					new com.fasterxml.jackson.core.type.TypeReference<java.util.Map<java.lang.String, java.lang.Object>>() {
-					});
-
-			// 5. Fire down to Aria platform server endpoint
-			java.util.Map<?, ?> rawResponseMap = this.postMap("/form-service/api/forms",
-					finalizedPayloadMap);
-
-			return objectMapper.writeValueAsString(rawResponseMap);
-
-		} catch (Exception e) {
-			throw new RuntimeException(
-					"Pre-flight payload serialization failure during Custom Resource creation processing", e);
-		}
 	}
 
 	public Map<String, Object> createCustomResourceTypePrimitive(Map<String, Object> payloadMap) throws IOException {
@@ -929,14 +808,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		}
 	}
 
-	protected VcfaCustomResourceType updateCustomResourceTypePrimitive(String id, Map<String, Object> payload)
-			throws IOException {
-		Map<String, Object> result = putMap("/form-service/api/custom/resource-types/" + id, payload, 200);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaCustomResourceType.class);
-	}
-
 	protected void deleteCustomResourceTypePrimitive(String id) throws IOException {
 		deletePath("/form-service/api/custom/resource-types/" + id, 200, 204);
 	}
@@ -959,47 +830,5 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		LOGGER.info("Detected API Version {}", this.apiVersion);
 
 		return this.apiVersion;
-	}
-
-	/**
-	 * Queries the external orchestrator system endpoints linked up to this target
-	 * environment context.
-	 */
-	protected String getVroTargetIntegrationEndpointLinkPrimitive() throws IOException {
-		if (restTemplate == null) {
-			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
-		}
-
-		// Queries the IaaS integration endpoint path for automation integrations
-		URIBuilder uriBuilder = getURIBuilder().setPath("/iaas/api/integrations").addParameter("apiVersion",
-				"2021-07-15"); // Add this query param line
-		java.net.URI uri = getURI(uriBuilder);
-
-		try {
-			ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(),
-					String.class);
-			Map<String, Object> root = objectMapper.readValue(response.getBody(), Map.class);
-			Object content = root.get("content");
-
-			if (content instanceof List) {
-				for (Object item : (List<?>) content) {
-					if (item instanceof Map) {
-						Map<String, Object> integration = (Map<String, Object>) item;
-						// Locate orchestration endpoints by checking explicit product type flags
-						if ("vro".equalsIgnoreCase(String.valueOf(integration.get("integrationType")))) {
-							// Extract document selfLink URI properties
-							return String.valueOf(integration.get("documentSelfLink"));
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.warn(
-					"Could not query platform integrations for an active vRO endpoint: {}. Using configuration fallback.",
-					e.getMessage());
-		}
-
-		// Safe pipeline default fallback mapping tracking pattern
-		return "/iaas/api/integrations/default-vro-link";
 	}
 }
