@@ -65,11 +65,14 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
         List<VcfaBlueprint> serverBps = fetchServerBlueprints();
 
-        // --- DEFENSIVE SAFEGUARD: Intercept Server-Side Duplicates to Prevent Collision Errors ---
+        // --- DEFENSIVE SAFEGUARD: Intercept Server-Side Duplicates to Prevent
+        // Collision Errors ---
         Map<String, VcfaBlueprint> bpsOnServerByName = new HashMap<>();
         for (VcfaBlueprint bp : serverBps) {
             if (bpsOnServerByName.containsKey(bp.getName())) {
-                logger.warn("Target host environment contains multiple distinct blueprint entities sharing the name '{}'. Content updates will target the first matched ID instance.", bp.getName());
+                logger.warn(
+                        "Target host environment contains multiple distinct blueprint entities sharing the name '{}'. Content updates will target the first matched ID instance.",
+                        bp.getName());
             } else {
                 bpsOnServerByName.put(bp.getName(), bp);
             }
@@ -99,7 +102,8 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         List<VcfaBlueprint> serverBps = fetchServerBlueprints();
         Package serverPackage = this.vcfaPackage;
 
-        // --- DEFENSIVE SAFEGUARD: Track Duplicates Globally to Prevent Local Disk Overwrites ---
+        // --- DEFENSIVE SAFEGUARD: Track Duplicates Globally to Prevent Local Disk
+        // Overwrites ---
         java.util.Set<String> exportedNamesTracker = new java.util.HashSet<>();
 
         for (VcfaBlueprint bpSummary : serverBps) {
@@ -109,9 +113,12 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 continue;
             }
 
-            // Detect naming collision on server and break execution before silent data loss happens
+            // Detect naming collision on server and break execution before silent data loss
+            // happens
             if (exportedNamesTracker.contains(name)) {
-                throw new IllegalStateException("The remote server environment contains multiple cloud templates named '" + name + "'. Automatic export aborted to avoid corrupted local disk tracking files.");
+                throw new IllegalStateException(
+                        "The remote server environment contains multiple cloud templates named '" + name
+                                + "'. Automatic export aborted to avoid corrupted local disk tracking files.");
             }
             exportedNamesTracker.add(name);
 
@@ -253,19 +260,21 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
     /**
      * Import a single blueprint directory, creating or updating as needed.
-     * Captures tracking handles to immediately release a version over the wire.
+     * Evaluates active system properties to skip releasing redundant versions.
      */
     private void importBlueprint(File bpDir, List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
         VcfaBlueprint bp = loadBlueprintMeta(bpDir, bpName);
 
-        // --- DEFENSIVE SANITY CHECK: Ensure Directory Name Matches Metadata Declaration ---
+        // --- DEFENSIVE SANITY CHECK: Ensure Directory Name Matches Metadata
+        // Declaration ---
         if (!Objects.equals(bp.getName(), bpName)) {
-            throw new IllegalStateException(String.format("Blueprint workspace corruption identified! Local folder name '%s' does not match the 'name' attribute value declared inside details.json ('%s'). Check configuration.", bpName, bp.getName()));
+            throw new IllegalStateException(String.format(
+                    "Blueprint workspace corruption identified! Local folder name '%s' does not match the 'name' attribute value declared inside details.json ('%s'). Check configuration.",
+                    bpName, bp.getName()));
         }
 
         setContentIfPresent(bp, bpDir);
-
         bp.setProjectId(restClient.getProjectId());
 
         VcfaBlueprint existing = serverBps.stream()
@@ -274,26 +283,57 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 .orElse(null);
 
         VcfaBlueprint processingTarget = null;
+        boolean contentChangedOrNew = true;
 
         if (existing == null) {
             logger.info("Blueprint '{}' not found on target host server. Executing draft creation.", bpName);
             processingTarget = restClient.createBlueprint(bp);
         } else {
-            logger.info("Blueprint '{}' found on target host server. Overwriting active working draft.", bpName);
-            processingTarget = restClient.updateBlueprint(existing.getId(), bp);
+            // Fetch the full blueprint payload from the server to access its actual content
+            // body
+            VcfaBlueprint fullServerBp = restClient.getBlueprintById(existing.getId());
+
+            // Normalize content bodies on both sides to prevent formatting/line-ending
+            // mismatch loops
+            String localContent = bp.getContent() != null ? bp.getContent().trim().replace("\r\n", "\n") : "";
+            String serverContent = (fullServerBp != null && fullServerBp.getContent() != null)
+                    ? fullServerBp.getContent().trim().replace("\r\n", "\n")
+                    : "";
+
+            if (localContent.equals(serverContent)) {
+                logger.info(
+                        "Blueprint '{}' working draft content matches the server content exactly. Skipping version release gate.",
+                        bpName);
+                contentChangedOrNew = false;
+                processingTarget = existing; // Keep existing reference without spawning a redundant server cycle
+            } else {
+                logger.info(
+                        "Blueprint '{}' found on target host server with content changes. Overwriting active working draft.",
+                        bpName);
+                processingTarget = restClient.updateBlueprint(existing.getId(), bp);
+            }
         }
 
         // --- PIPELINE ADDITION: AUTOMATED VERSION & RELEASE ACTION ---
         if (processingTarget != null && processingTarget.getId() != null) {
-            logger.info("Triggering mandatory lifecycle version mapping release sequence for blueprint: {}", bpName);
-            restClient.versionBlueprint(processingTarget.getId(), processingTarget.toMap());
+            if (contentChangedOrNew) {
+                logger.info("Triggering mandatory lifecycle version mapping release sequence for blueprint: {}",
+                        bpName);
+                restClient.versionBlueprint(processingTarget.getId(), processingTarget.toMap());
 
-            // --- REPRODUCED SYSTEM LOGIC: Unrelease Outdated Historic Versions to Prevent Target Catalog Bloat ---
-            if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
-                unreleaseOldVersions(processingTarget.getId());
+                // --- REPRODUCED SYSTEM LOGIC: Unrelease Outdated Historic Versions to Prevent
+                // Target Catalog Bloat ---
+                if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
+                    unreleaseOldVersions(processingTarget.getId());
+                }
+            } else {
+                logger.info("Skipped redundant cloud template version creation for blueprint asset '{}' (Unchanged).",
+                        bpName);
             }
         } else {
-            logger.warn("Skipping blueprint version release sequence: Client did not return a valid structural instance object tracking ID for '{}'.", bpName);
+            logger.warn(
+                    "Skipping blueprint version release sequence: Client did not return a valid structural instance object tracking ID for '{}'.",
+                    bpName);
         }
     }
 
@@ -349,13 +389,15 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         String detailsFile = blueprintDir + File.separator + "details.json";
 
         // --- REPRODUCED SYSTEM LOGIC: Environment Scrubbing Isolation Matrix ---
-        // Explicitly extract functional definitions to isolate file configurations from transient read-only system tracking data
+        // Explicitly extract functional definitions to isolate file configurations from
+        // transient read-only system tracking data
         JsonObject filteredDetails = new JsonObject();
         filteredDetails.add("id", new JsonPrimitive(bp.getId() != null ? bp.getId() : ""));
         filteredDetails.add("name", new JsonPrimitive(bp.getName() != null ? bp.getName() : ""));
         filteredDetails.add("description", new JsonPrimitive(bp.getDescription() != null ? bp.getDescription() : ""));
-        
-        // Dynamic mapping handle verification for execution parameters across different target instances
+
+        // Dynamic mapping handle verification for execution parameters across different
+        // target instances
         if (bp.getRequestScopeOrg() != null) {
             filteredDetails.add("requestScopeOrg", new JsonPrimitive(bp.getRequestScopeOrg()));
         } else if (bp.asExportMap().containsKey("requestScopeOrg")) {
@@ -363,7 +405,8 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             filteredDetails.add("requestScopeOrg", new JsonPrimitive(rawScope != null ? rawScope.toString() : "false"));
         }
 
-        com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+        com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setLenient().setPrettyPrinting().serializeNulls()
+                .create();
         String detailsJson = gson.toJson(filteredDetails);
 
         Files.write(Paths.get(detailsFile), detailsJson.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
@@ -378,17 +421,22 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     }
 
     /**
-     * Helper logic to unrelease historical version trees from target servers, leaving only the newest deployment active.
+     * Helper logic to unrelease historical version trees from target servers,
+     * leaving only the newest deployment active.
      */
     private void unreleaseOldVersions(String blueprintId) {
         try {
-            logger.info("Evaluating historical released version tree to unpublish outdated assets for blueprint ID: {}", blueprintId);
+            logger.info("Evaluating historical released version tree to unpublish outdated assets for blueprint ID: {}",
+                    blueprintId);
             String rawVersionsJson = restClient.getBlueprintVersions(blueprintId);
             if (rawVersionsJson == null || rawVersionsJson.trim().isEmpty()) {
                 return;
             }
-
-            com.google.gson.JsonArray versionsArray = new com.google.gson.Gson().fromJson(rawVersionsJson, com.google.gson.JsonArray.class);
+            // Parse as a JsonObject first, then extract the 'content' array property
+            com.google.gson.JsonObject versionsObj = new com.google.gson.Gson().fromJson(rawVersionsJson,
+                    com.google.gson.JsonObject.class);
+            com.google.gson.JsonArray versionsArray = versionsObj.has("content") ? versionsObj.getAsJsonArray("content")
+                    : new com.google.gson.JsonArray();
             if (versionsArray == null || versionsArray.size() <= 1) {
                 return; // Nothing to unrelease if there's only 1 version total
             }
@@ -402,17 +450,38 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 return java.time.Instant.parse(dateOne).compareTo(java.time.Instant.parse(dateTwo));
             });
 
-            // Retain the newest version at index length-1, unpublish all prior entries
+            // Retain the newest version at index length-1, evaluate all prior entries for
+            // unpublishing
             orderedList.remove(orderedList.size() - 1);
 
             for (com.google.gson.JsonElement versionElement : orderedList) {
-                String versionId = versionElement.getAsJsonObject().get("id").getAsString();
-                String versionValue = versionElement.getAsJsonObject().get("version").getAsString();
-                logger.info("Unreleasing outdated cloud template version '{}' (Internal ID: {})", versionValue, versionId);
+                com.google.gson.JsonObject versionObj = versionElement.getAsJsonObject();
+                String versionId = versionObj.get("id").getAsString();
+                String versionValue = versionObj.get("version").getAsString();
+
+                // --- OPTIMIZATION GATE: Check if the version is already unpublished ---
+                boolean isReleased = true; // Default to true if the property is missing to be safe
+                if (versionObj.has("released")) {
+                    isReleased = versionObj.get("released").getAsBoolean();
+                } else if (versionObj.has("status")) {
+                    // Alternative API signature check fallback
+                    isReleased = "RELEASED".equalsIgnoreCase(versionObj.get("status").getAsString());
+                }
+
+                if (!isReleased) {
+                    logger.info(
+                            "Cloud template version '{}' (Internal ID: {}) is already unpublished. Skipping request.",
+                            versionValue, versionId);
+                    continue;
+                }
+
+                logger.info("Unreleasing outdated cloud template version '{}' (Internal ID: {})", versionValue,
+                        versionId);
                 restClient.unreleaseBlueprintVersion(blueprintId, versionId);
             }
         } catch (Exception e) {
-            logger.error("Non-fatal exception encountered during version tree cleanup processing sequence: {}", e.getMessage());
+            logger.error("Non-fatal exception encountered during version tree cleanup processing sequence: {}",
+                    e.getMessage());
         }
     }
 }

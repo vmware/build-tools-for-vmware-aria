@@ -149,7 +149,12 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	public VcfaCustomResourceType createCustomResourceType(VcfaCustomResourceType payload) throws IOException {
-		return createCustomResourceTypePrimitive(objectMapper.convertValue(payload, Map.class));
+		// 1. Pass the map to the primitive, which returns a Map
+		Map<String, Object> responseMap = createCustomResourceTypePrimitive(
+				objectMapper.convertValue(payload, Map.class));
+
+		// 2. Convert the response Map back into the expected POJO type
+		return objectMapper.convertValue(responseMap, VcfaCustomResourceType.class);
 	}
 
 	public void deleteCustomResourceType(String id) throws IOException {
@@ -282,25 +287,27 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	}
 
 	/**
-     * Resolves the distinct tracking ID string linked up to a specific ABX script layout.
-     */
-    public String getAbxActionIdByName(String name) throws IOException {
-        return getAbxActionIdByNamePrimitive(name);
-    }
+	 * Resolves the distinct tracking ID string linked up to a specific ABX script
+	 * layout.
+	 */
+	public String getAbxActionIdByName(String name) throws IOException {
+		return getAbxActionIdByNamePrimitive(name);
+	}
 
-    /**
-     * Extracts the display name string for a target execution ABX script item.
-     */
-    public String getAbxActionNameById(String id) throws IOException {
-        return getAbxActionNameByIdPrimitive(id);
-    }
+	/**
+	 * Extracts the display name string for a target execution ABX script item.
+	 */
+	public String getAbxActionNameById(String id) throws IOException {
+		return getAbxActionNameByIdPrimitive(id);
+	}
 
-    /**
-     * Maps an infrastructure project GUID value to its corresponding human-readable name string.
-     */
-    public String getProjectNameById(String id) throws IOException {
-        return getProjectNameByIdPrimitive(id);
-    }
+	/**
+	 * Maps an infrastructure project GUID value to its corresponding human-readable
+	 * name string.
+	 */
+	public String getProjectNameById() throws IOException {
+		return this.configuration.getProjectName();
+	}
 
 	// --- Projects
 	public String getProjectId(final String projectName) throws IOException {
@@ -310,8 +317,9 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	/**
 	 * Resolves the target platform tenant Organization scope tracking token.
 	 */
-	public String getOrganizationId() {
-		return getOrganizationIdPrimitive();
+	public String getOrganizationId() throws IOException {
+		String projectId = getProjectId();
+		return getOrgIdFromProjectPrimitive(projectId);
 	}
 
 	/**

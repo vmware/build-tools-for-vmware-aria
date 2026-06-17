@@ -37,6 +37,19 @@ public class VcfaTypeStoreFactory { //TODO REVERT AFTER DEVELOPMENT IS DONE, thi
 			RESOURCE_ACTION, //needs vRO
 			SCENARIO,
 			SUBSCRIPTION, //needs vRO
+
+
+
+			// 			BLUEPRINT,
+			// // CONTENT_SOURCE, // all fails with 500
+			// // CATALOG_ENTITLEMENT //may not be needed
+			// CATALOG_ITEM,
+			// CUSTOM_RESOURCE, //needs vRO
+			// POLICY,
+			// PROPERTY_GROUP,
+			// RESOURCE_ACTION, //needs vRO
+			// SCENARIO,
+			// SUBSCRIPTION, //needs vRO
 	};
 	private static final VcfaPackageMemberType[] IMPORT_ORDER = ALL_ORDER;
 

@@ -43,7 +43,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
     }
 
     /**
-     * Exports Scenario settings from target environment to local package filesystem.
+     * Exports Scenario settings from target environment to local package
+     * filesystem.
      */
     @Override
     public void exportContent() {
@@ -51,7 +52,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
 
         // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
+            logger.info(
+                    "Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
             return;
         }
 
@@ -68,7 +70,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
             }
 
             Package serverPackage = this.vcfaPackage;
-            String baseScenariosPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_SCENARIOS).toString();
+            String baseScenariosPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_SCENARIOS)
+                    .toString();
             Files.createDirectories(Paths.get(baseScenariosPath));
 
             for (VcfaScenario scenario : remoteScenarios) {
@@ -79,10 +82,14 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                String safeFileName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
+                // --- CHANGED LOGIC: Preserve the exact scenario name for the filename ---
+                // Only strips characters that are strictly illegal across all major OS
+                // filesystems (\ / : * ? " < > |)
+                String safeFileName = trackingName.replaceAll("[\\\\/:*?\"<>|]", "_");
                 File jsonFile = Paths.get(baseScenariosPath, safeFileName + ".json").toFile();
 
-                // --- REPRODUCED SYSTEM LOGIC: Align underlying payload schema maps with native keys ---
+                // --- REPRODUCED SYSTEM LOGIC: Align underlying payload schema maps with native
+                // keys ---
                 ObjectNode jsonNode = mapper.valueToTree(scenario);
                 if (!jsonNode.has("scenarioName") && scenario.getName() != null) {
                     jsonNode.put("scenarioName", scenario.getName());
@@ -113,7 +120,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
 
         // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
+            logger.info(
+                    "Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
             return;
         }
 
@@ -137,10 +145,11 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
             }
 
             for (File file : scenarioFiles) {
-                // --- REPRODUCED SYSTEM LOGIC: Process file using flexible schema token fallbacks ---
+                // --- REPRODUCED SYSTEM LOGIC: Process file using flexible schema token
+                // fallbacks ---
                 String jsonContent = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
                 JsonNode rootNode = mapper.readTree(jsonContent);
-                
+
                 String trackingName = rootNode.has("scenarioName") ? rootNode.get("scenarioName").asText() : null;
                 String trackingId = rootNode.has("scenarioId") ? rootNode.get("scenarioId").asText() : null;
 
@@ -153,13 +162,16 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 }
 
                 if (localScenario.getName() == null) {
-                    logger.warn("Unable to extract valid target name context identifier for file asset {}. Skipping import.", file.getName());
+                    logger.warn(
+                            "Unable to extract valid target name context identifier for file asset {}. Skipping import.",
+                            file.getName());
                     continue;
                 }
 
                 String actualName = localScenario.getName();
                 if (isExcludedByDescriptor(actualName)) {
-                    logger.info("Scenario asset '{}' is excluded by descriptor configuration rules. Skipping import.", actualName);
+                    logger.info("Scenario asset '{}' is excluded by descriptor configuration rules. Skipping import.",
+                            actualName);
                     continue;
                 }
 
@@ -167,15 +179,18 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
 
                 Optional<VcfaScenario> existingRemote = remoteScenarios.stream()
                         .filter(r -> r.getName().equalsIgnoreCase(localScenario.getName()) ||
-                                (r.getId() != null && localScenario.getId() != null && r.getId().equalsIgnoreCase(localScenario.getId())))
+                                (r.getId() != null && localScenario.getId() != null
+                                        && r.getId().equalsIgnoreCase(localScenario.getId())))
                         .findFirst();
 
                 if (existingRemote.isPresent()) {
                     VcfaScenario remoteMatch = existingRemote.get();
                     if (isIdentical(remoteMatch, localScenario)) {
-                        logger.info("Scenario '{}' matches remote system configuration exactly. Skipping update.", actualName);
+                        logger.info("Scenario '{}' matches remote system configuration exactly. Skipping update.",
+                                actualName);
                     } else {
-                        logger.info("Delta detected for Scenario '{}'. Executing replacement update lifecycle.", actualName);
+                        logger.info("Delta detected for Scenario '{}'. Executing replacement update lifecycle.",
+                                actualName);
                         restClient.deleteScenario(remoteMatch.getId());
                         restClient.createScenario(mapper.writeValueAsString(rootNode));
                     }
@@ -228,8 +243,9 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
                     Map<String, Object> rawMap = yaml.load(inputStream);
                     if (rawMap != null) {
-                        Object scenarioListObj = rawMap.containsKey("scenario") ? rawMap.get("scenario") : rawMap.get("scenarios");
-                        
+                        Object scenarioListObj = rawMap.containsKey("scenario") ? rawMap.get("scenario")
+                                : rawMap.get("scenarios");
+
                         if (rawMap.containsKey("scenario") || rawMap.containsKey("scenarios")) {
                             if (scenarioListObj instanceof List) {
                                 itemsToDelete = (List<String>) scenarioListObj;
@@ -251,7 +267,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
             if (itemsToDelete == null) {
                 logger.info("Scenario descriptor is undefined/null. Purging ALL remote scenarios.");
                 for (VcfaScenario remoteScen : remoteScenarios) {
-                    logger.info("[WILDCARD DELETE] Deleting scenario named '{}' matching ID: {}", remoteScen.getName(), remoteScen.getId());
+                    logger.info("[WILDCARD DELETE] Deleting scenario named '{}' matching ID: {}", remoteScen.getName(),
+                            remoteScen.getId());
                     restClient.deleteScenario(remoteScen.getId());
                 }
                 return;
@@ -261,18 +278,21 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
             for (VcfaScenario remoteScen : remoteScenarios) {
                 String remoteName = remoteScen.getName();
                 if (itemsToDelete.contains(remoteName)) {
-                    logger.info("[TARGETED DELETE] Deleting scenario named '{}' matching ID: {}", remoteName, remoteScen.getId());
+                    logger.info("[TARGETED DELETE] Deleting scenario named '{}' matching ID: {}", remoteName,
+                            remoteScen.getId());
                     restClient.deleteScenario(remoteScen.getId());
                 }
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Fatal error encountered clearing existing infrastructure scenario definitions", e);
+            throw new RuntimeException("Fatal error encountered clearing existing infrastructure scenario definitions",
+                    e);
         }
     }
 
     /**
-     * Helper to safely extract and determine if the configuration block array is explicitly initialized to '[]'.
+     * Helper to safely extract and determine if the configuration block array is
+     * explicitly initialized to '[]'.
      */
     private boolean isExplicitlyEmptyInDescriptor() {
         VcfaPackageDescriptor localDescriptor = null;

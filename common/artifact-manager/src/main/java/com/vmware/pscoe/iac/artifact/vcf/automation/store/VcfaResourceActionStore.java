@@ -1,19 +1,19 @@
 package com.vmware.pscoe.iac.artifact.vcf.automation.store;
 
 /*-
- * #%L
- * artifact-manager
- * %%
- * Copyright (C) 2023 - 2026 VMware
- * %%
- * Build Tools for VMware Aria
- * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
- * 
- * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
- * #L%
- */
+* #%L
+* artifact-manager
+* %%
+* Copyright (C) 2023 - 2026 VMware
+* %%
+* Build Tools for VMware Aria
+* Copyright 2023 VMware, Inc.
+*
+* This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+*
+* This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+* #L%
+*/
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,6 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaResourceAction;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
@@ -35,7 +34,6 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDesc
 public class VcfaResourceActionStore extends AbstractVcfaStore {
 
     private static final String DIR_RESOURCE_ACTIONS = "resource-actions";
-    private static final String RESOURCE_ACTION_SEPARATOR = "__";
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     public VcfaResourceActionStore() {
@@ -43,18 +41,12 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
     }
 
     /**
-     * Exports all Resource Actions from the target environment to the filesystem package.
+     * Exports all Resource Actions from the target environment to the filesystem
+     * package.
      */
     @Override
     public void exportContent() {
         logger.info("Pulling resource action configurations from the remote environment...");
-
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
-        if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Resource Action descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
-            return;
-        }
-
         if (restClient == null) {
             logger.warn("RestClient not initialized in ResourceAction Store. Skipping export.");
             return;
@@ -68,30 +60,23 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
             }
 
             Package serverPackage = this.vcfaPackage;
-            String baseActionsPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_RESOURCE_ACTIONS).toString();
+            String baseActionsPath = Paths
+                    .get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_RESOURCE_ACTIONS).toString();
             Files.createDirectories(Paths.get(baseActionsPath));
 
             for (VcfaResourceAction action : remoteActions) {
-                // --- REPRODUCED SYSTEM LOGIC: Construct compound name format to prevent name collisions ---
-                String complexTrackingName = action.getResourceType() + RESOURCE_ACTION_SEPARATOR + action.getName();
+                String trackingName = action.getDisplayName();
 
-                if (isExcludedByDescriptor(complexTrackingName)) {
-                    logger.info("Resource Action '{}' is excluded by descriptor rules. Skipping export.", complexTrackingName);
+                if (isExcludedByDescriptor(trackingName)) {
+                    logger.info("Resource Action '{}' is excluded by descriptor rules. Skipping export.", trackingName);
                     continue;
                 }
 
-                String safeFileName = complexTrackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
+                String safeFileName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
                 File jsonFile = Paths.get(baseActionsPath, safeFileName + ".json").toFile();
 
-                // Sanitize platform indicators before writing to storage
-                ObjectNode jsonNode = mapper.valueToTree(action);
-                jsonNode.remove("orgId");
-                if (jsonNode.has("formDefinition") && jsonNode.get("formDefinition").isObject()) {
-                    ((ObjectNode) jsonNode.get("formDefinition")).remove("id");
-                }
-
                 logger.info("Successfully synchronized resource action asset: {}", jsonFile.getAbsolutePath());
-                String serializedJson = mapper.writeValueAsString(jsonNode);
+                String serializedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(action);
                 Files.write(
                         jsonFile.toPath(),
                         serializedJson.getBytes(StandardCharsets.UTF_8),
@@ -104,18 +89,12 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
     }
 
     /**
-     * Imports local Resource Action configuration files back up to the target environment.
+     * Imports local Resource Action configuration files back up to the target
+     * environment.
      */
     @Override
     public void importContent(File sourceDirectory) {
         logger.info("Importing resource actions from {}", sourceDirectory.getAbsolutePath());
-
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
-        if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Resource Action descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
-            return;
-        }
-
         if (restClient == null) {
             logger.warn("RestClient not initialized in ResourceAction Store. Skipping import.");
             return;
@@ -135,79 +114,75 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 return;
             }
 
-            String targetVroLink = restClient.getVroTargetIntegrationEndpointLink();
-            String currentProjectId = restClient.getProjectId();
-
             for (File file : actionFiles) {
-                String jsonContent = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-                ObjectNode actionJsonElement = (ObjectNode) mapper.readTree(jsonContent);
+                VcfaResourceAction localAction = mapper.readValue(file, VcfaResourceAction.class);
+                String trackingName = localAction.getDisplayName();
 
-                // --- REPRODUCED SYSTEM LOGIC: Environment normalization & validation phases ---
-                actionJsonElement.remove("orgId");
-                actionJsonElement.put("projectId", currentProjectId);
-
-                if (actionJsonElement.has("runnableItem") && actionJsonElement.get("runnableItem").isObject()) {
-                    ObjectNode runnableNode = (ObjectNode) actionJsonElement.get("runnableItem");
-                    runnableNode.remove("endpointLink");
-                    runnableNode.put("endpointLink", targetVroLink);
-                }
-
-                VcfaResourceAction localAction = mapper.treeToValue(actionJsonElement, VcfaResourceAction.class);
-                String complexTrackingName = localAction.getResourceType() + RESOURCE_ACTION_SEPARATOR + localAction.getName();
-
-                if (isExcludedByDescriptor(complexTrackingName)) {
-                    logger.info("Resource action asset '{}' is excluded by descriptor configuration rules. Skipping import.", complexTrackingName);
+                if (isExcludedByDescriptor(trackingName)) {
+                    logger.info(
+                            "Resource action asset '{}' is excluded by descriptor configuration rules. Skipping import.",
+                            trackingName);
                     continue;
                 }
 
                 logger.info("Processing local Resource Action asset configuration: '{}'", file.getName());
 
                 Optional<VcfaResourceAction> existingRemote = remoteActions.stream()
-                        .filter(r -> r.getName().equalsIgnoreCase(localAction.getName()) && 
-                                     r.getResourceType().equalsIgnoreCase(localAction.getResourceType()))
+                        .filter(r -> r.getDisplayName().equalsIgnoreCase(localAction.getDisplayName()) ||
+                                (r.getId() != null && r.getId().equalsIgnoreCase(localAction.getId())))
                         .findFirst();
 
                 if (existingRemote.isPresent()) {
                     VcfaResourceAction remoteMatch = existingRemote.get();
-                    
-                    // --- REPRODUCED SYSTEM LOGIC: Execute pre-cleanup operations using the matching remote ID ---
-                    try {
-                        logger.info("Purging remote trace elements for resource action '{}' matching ID: {}", complexTrackingName, remoteMatch.getId());
+                    if (isIdentical(remoteMatch, localAction)) {
+                        logger.info(
+                                "Resource Action '{}' matches remote system configuration exactly. Skipping update.",
+                                trackingName);
+                    } else {
+                        // We already designed this to bypass the missing PUT method!
+                        logger.info(
+                                "Delta detected for Resource Action '{}'. Utilizing clean delete-and-recreate flow.",
+                                trackingName);
                         restClient.deleteResourceAction(remoteMatch.getId());
-                    } catch (Exception e) {
-                        logger.error("Pre-cleanup cycle for resource action '{}' encountered an issue: {}. Attempting overwrite.", complexTrackingName, e.getMessage());
+
+                        logger.info("Re-creating updated Resource Action '{}' on target server.", trackingName);
+                        preparePayloadForCreation(localAction);
+                        restClient.createResourceAction(localAction);
                     }
-                }
-
-                // --- REPRODUCED SYSTEM LOGIC: Execute the asynchronous two-step platform import sequence ---
-                if (actionJsonElement.has("formDefinition") && actionJsonElement.get("formDefinition").isObject()) {
-                    ((ObjectNode) actionJsonElement.get("formDefinition")).remove("id");
-                }
-
-                logger.info("Executing Primary Pass Creation for Action: '{}'", complexTrackingName);
-                String primaryPayload = mapper.writeValueAsString(actionJsonElement);
-                String resultRawJson = restClient.createResourceAction(mapper.readValue(primaryPayload, VcfaResourceAction.class));
-
-                // Step 2: Inject the newly generated form metadata mapping identifiers back into the definition tree
-                ObjectNode resultNode = (ObjectNode) mapper.readTree(resultRawJson);
-                if (resultNode.has("formDefinition") && resultNode.get("formDefinition").has("id")) {
-                    String generatedFormId = resultNode.get("formDefinition").get("id").asText();
-                    
-                    if (actionJsonElement.has("formDefinition") && actionJsonElement.get("formDefinition").isObject()) {
-                        ((ObjectNode) actionJsonElement.get("formDefinition")).put("id", generatedFormId);
-                        
-                        logger.info("Executing Secondary Pass Form Adjustment update for action: '{}'", complexTrackingName);
-                        String secondaryPayload = mapper.writeValueAsString(actionJsonElement);
-                        restClient.createResourceAction(mapper.readValue(secondaryPayload, VcfaResourceAction.class));
-                    }
+                } else {
+                    logger.info("Resource Action '{}' not found on target server. Executing remote creation.",
+                            trackingName);
+                    preparePayloadForCreation(localAction);
+                    restClient.createResourceAction(localAction);
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("CRITICAL: Failed to import Resource Actions from filesystem to target environment", e);
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "CRITICAL: Failed to import Resource Actions from filesystem to target environment", e);
         }
     }
 
-/**
+    /**
+     * Deep configuration evaluation check.
+     */
+    private boolean isIdentical(VcfaResourceAction remote, VcfaResourceAction local) {
+        if (remote == null || local == null) {
+            return false;
+        }
+
+        boolean sameDisplayName = java.util.Objects.equals(remote.getDisplayName(), local.getDisplayName());
+        boolean sameDescription = java.util.Objects.equals(remote.getDescription(), local.getDescription());
+        boolean sameProviderName = java.util.Objects.equals(remote.getProviderName(), local.getProviderName());
+        boolean sameResourceType = java.util.Objects.equals(remote.getResourceType(), local.getResourceType());
+        boolean sameRunnableItem = java.util.Objects.equals(remote.getRunnableItem(), local.getRunnableItem());
+        boolean sameFormDefinition = java.util.Objects.equals(remote.getFormDefinition(), local.getFormDefinition());
+        boolean sameCriteria = java.util.Objects.equals(remote.getCriteria(), local.getCriteria());
+
+        return sameDisplayName && sameDescription && sameProviderName && sameResourceType
+                && sameRunnableItem && sameFormDefinition && sameCriteria;
+    }
+
+    /**
      * Wipes remote infrastructure resource actions based on Tristate rules.
      */
     @Override
@@ -220,8 +195,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 return;
             }
 
-            // Fix the structural parsing engine variable from strict List<String> to generic raw List
-            List<?> yamlParsedList = null;
+            List<String> itemsToDelete = null;
             boolean isExplicitlyEmpty = false;
 
             File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
@@ -239,10 +213,12 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                         Object actionListObj = rawMap.containsKey("resource-action") ? rawMap.get("resource-action")
                                 : rawMap.get("resourceActions");
 
-                        if (actionListObj instanceof List) {
-                            yamlParsedList = (List<?>) actionListObj;
-                            if (yamlParsedList.isEmpty()) {
-                                isExplicitlyEmpty = true;
+                        if (rawMap.containsKey("resource-action") || rawMap.containsKey("resourceActions")) {
+                            if (actionListObj instanceof List) {
+                                itemsToDelete = (List<String>) actionListObj;
+                                if (itemsToDelete.isEmpty()) {
+                                    isExplicitlyEmpty = true;
+                                }
                             }
                         }
                     }
@@ -251,99 +227,42 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
 
             // --- TRISTATE EVALUATION MATRIX ---
 
-            // Scenario 1: Explicitly Empty "[]" -> Safety bypass toggle. Delete Nothing.
             if (isExplicitlyEmpty) {
                 logger.info("Resource Action descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
 
-            // Scenario 2: Key is completely null/omitted -> Wildcard target mode active. Purge Everything.
-            if (yamlParsedList == null) {
-                logger.info("Resource Action descriptor is undefined/null. Omitted wildcard trigger: Purging ALL remote resource actions.");
+            if (itemsToDelete == null) {
+                logger.info(
+                        "Resource Action descriptor is undefined/null. Omitted wildcard trigger: Purging ALL remote resource actions.");
                 for (VcfaResourceAction remoteAct : remoteActions) {
-                    logger.info("[WILDCARD DELETE] Deleting resource action named '{}__{}' matching ID: {}",
-                            remoteAct.getResourceType(), remoteAct.getName(), remoteAct.getId());
+                    logger.info("[WILDCARD DELETE] Deleting resource action named '{}' matching ID: {}",
+                            remoteAct.getDisplayName(), remoteAct.getId());
                     restClient.deleteResourceAction(remoteAct.getId());
                 }
                 return;
             }
 
-            // Scenario 3: Explicit List -> Filter targeted matches sequentially by programmatic Name or Complex Name
-            logger.info("Resource Action targeted filter list active. Evaluating matching entries for deletion sequence...");
-            
-            // Surgically normalize YAML input elements into clean, space-stripped lowercase strings
-            List<String> sanitizedTargets = new java.util.ArrayList<>();
-            for (Object rawItem : yamlParsedList) {
-                if (rawItem != null) {
-                    sanitizedTargets.add(rawItem.toString().trim().toLowerCase());
-                }
-            }
-
-            // Trace statement to see exactly what strings the application code parsed out of your YAML file
-            logger.info("Normalized Resource Action targets parsed from content.yaml: {}", sanitizedTargets);
-
+            logger.info(
+                    "Resource Action targeted filter list active. Evaluating matching entries for deletion sequence...");
             for (VcfaResourceAction remoteAct : remoteActions) {
-                String complexName = remoteAct.getResourceType() + RESOURCE_ACTION_SEPARATOR + remoteAct.getName();
-                String plainActionName = remoteAct.getName();
-                
-                // Print a debug trace for every item found on the live server to cross-verify keys
-                logger.info("Found remote Resource Action candidate -> Complex Name: '{}', Plain Name: '{}'", complexName, plainActionName);
-
-                boolean isMatched = false;
-                if (complexName != null && sanitizedTargets.contains(complexName.trim().toLowerCase())) {
-                    isMatched = true;
-                }
-                if (plainActionName != null && sanitizedTargets.contains(plainActionName.trim().toLowerCase())) {
-                    isMatched = true;
-                }
-
-                if (isMatched) {
-                    logger.info("[TARGETED DELETE] Match successful! Deleting resource action named '{}' matching ID: {}", complexName, remoteAct.getId());
-                    try {
-                        restClient.deleteResourceAction(remoteAct.getId());
-                    } catch (Exception ex) {
-                        logger.warn("Failed executing deletion endpoint for action resource entity '{}': {}", complexName, ex.getMessage());
-                    }
+                String remoteDisplayName = remoteAct.getDisplayName();
+                if (itemsToDelete.contains(remoteDisplayName)) {
+                    logger.info("[TARGETED DELETE] Deleting resource action named '{}' matching ID: {}",
+                            remoteDisplayName, remoteAct.getId());
+                    restClient.deleteResourceAction(remoteAct.getId());
                 }
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Fatal error encountered clearing existing infrastructure resource action definitions", e);
+            throw new RuntimeException(
+                    "Fatal error encountered clearing existing infrastructure resource action definitions", e);
         }
     }
 
     /**
-     * Helper to safely extract and determine if the configuration block array is explicitly initialized to '[]'.
+     * Manifest resolution check matching friendly display names.
      */
-    private boolean isExplicitlyEmptyInDescriptor() {
-        VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing manifest layout rules map token details.", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedActions = localDescriptor.getResourceAction();
-        return allowedActions != null && allowedActions.isEmpty();
-    }
-
     private boolean isExcludedByDescriptor(String trackingName) {
         VcfaPackageDescriptor localDescriptor = null;
 
@@ -369,6 +288,8 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
             return false;
         }
 
+        // Assumes your VcfaPackageDescriptor mapping method follows your pattern (e.g.,
+        // getResourceAction)
         List<String> allowedActions = localDescriptor.getResourceAction();
         if (allowedActions == null) {
             return false;
@@ -379,5 +300,22 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
         }
 
         return !allowedActions.contains(trackingName);
+    }
+
+    /**
+     * Strips colliding form definition metadata IDs before hitting creation
+     * endpoints.
+     */
+    private void preparePayloadForCreation(VcfaResourceAction action) {
+        // Unlike Custom Resources, the custom action ID can remain intact if it carries
+        // the composite name template
+        if (action.getFormDefinition() != null) {
+            Map<String, Object> formDefMap = action.getFormDefinition();
+            if (formDefMap.containsKey("id")) {
+                formDefMap.remove("id");
+                logger.debug(
+                        "Stripped nested formDefinition ID from resource action configuration layout to avoid collision.");
+            }
+        }
     }
 }
