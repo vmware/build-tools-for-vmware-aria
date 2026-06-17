@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,8 +66,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
         List<VcfaBlueprint> serverBps = fetchServerBlueprints();
 
-        // --- DEFENSIVE SAFEGUARD: Intercept Server-Side Duplicates to Prevent
-        // Collision Errors ---
         Map<String, VcfaBlueprint> bpsOnServerByName = new HashMap<>();
         for (VcfaBlueprint bp : serverBps) {
             if (bpsOnServerByName.containsKey(bp.getName())) {
@@ -102,8 +101,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         List<VcfaBlueprint> serverBps = fetchServerBlueprints();
         Package serverPackage = this.vcfaPackage;
 
-        // --- DEFENSIVE SAFEGUARD: Track Duplicates Globally to Prevent Local Disk
-        // Overwrites ---
         java.util.Set<String> exportedNamesTracker = new java.util.HashSet<>();
 
         for (VcfaBlueprint bpSummary : serverBps) {
@@ -113,8 +110,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 continue;
             }
 
-            // Detect naming collision on server and break execution before silent data loss
-            // happens
             if (exportedNamesTracker.contains(name)) {
                 throw new IllegalStateException(
                         "The remote server environment contains multiple cloud templates named '" + name
@@ -138,8 +133,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     public void deleteContent() {
         logger.info("Executing cleanup deletion scanning for Blueprint entities...");
         try {
-            // Fetch all remote cloud template/blueprint definitions from the target
-            // platform
             List<com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint> remoteBlueprints = restClient
                     .getBlueprints();
             if (remoteBlueprints == null || remoteBlueprints.isEmpty()) {
@@ -150,7 +143,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             List<String> itemsToDelete = null;
             boolean isExplicitlyEmpty = false;
 
-            // Locate and parse content.yaml manually to ensure exact tracking control
             File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
             if (!contentYamlFile.exists() && this.vcfaPackage != null) {
                 File packageDir = new File(this.vcfaPackage.getFilesystemPath());
@@ -163,7 +155,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
                     Map<String, Object> rawMap = yaml.load(inputStream);
                     if (rawMap != null) {
-                        // Accept both singular and plural iterations of the mapping key tokens
                         Object blueprintListObj = rawMap.containsKey("blueprint") ? rawMap.get("blueprint")
                                 : rawMap.get("blueprints");
 
@@ -179,16 +170,11 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 }
             }
 
-            // --- TRISTATE EVALUATION MATRIX ---
-
-            // Scenario 1: Explicitly Empty "[]" -> Safety bypass toggle. Delete Nothing.
             if (isExplicitlyEmpty) {
                 logger.info("Blueprint descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
 
-            // Scenario 2: Key is completely null/omitted -> Wildcard trigger mode active.
-            // Delete Everything.
             if (itemsToDelete == null) {
                 logger.info(
                         "Blueprint descriptor is undefined/null. Omitted wildcard trigger: Initiating purge for ALL remote blueprints.");
@@ -200,7 +186,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 return;
             }
 
-            // Scenario 3: Explicit List -> Filter targeted matches sequentially.
             logger.info("Blueprint targeted filter list active. Evaluating matching entries for deletion sequence...");
             for (com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint remoteBP : remoteBlueprints) {
                 String remoteName = remoteBP.getName();
@@ -220,12 +205,10 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     private boolean isExcludedByDescriptor(String bpName) {
         com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor localDescriptor = null;
 
-        // 1. Try to use pre-loaded framework descriptor
         if (this.descriptor instanceof com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) {
             localDescriptor = (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) this.descriptor;
         }
 
-        // 2. Read from targeted execution root directory
         if (localDescriptor == null) {
             String workingDir = System.getProperty("user.dir");
             if (workingDir != null) {
@@ -240,12 +223,10 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             }
         }
 
-        // 3. Fallback evaluation logic rules matrix
         if (localDescriptor == null) {
             return false;
         }
 
-        // --- DIRECT PROPERTY LOOKUP ---
         List<String> allowedBps = localDescriptor.getBlueprint();
         if (allowedBps == null) {
             return false;
@@ -260,14 +241,15 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
     /**
      * Import a single blueprint directory, creating or updating as needed.
-     * Evaluates active system properties to skip releasing redundant versions.
+     * Defers the final lifecycle release gate to process form mutations.
      */
     private void importBlueprint(File bpDir, List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
+        ObjectMapper mapper = new ObjectMapper();
+        com.google.gson.Gson gson = new com.google.gson.Gson();
+
         VcfaBlueprint bp = loadBlueprintMeta(bpDir, bpName);
 
-        // --- DEFENSIVE SANITY CHECK: Ensure Directory Name Matches Metadata
-        // Declaration ---
         if (!Objects.equals(bp.getName(), bpName)) {
             throw new IllegalStateException(String.format(
                     "Blueprint workspace corruption identified! Local folder name '%s' does not match the 'name' attribute value declared inside details.json ('%s'). Check configuration.",
@@ -283,18 +265,15 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 .orElse(null);
 
         VcfaBlueprint processingTarget = null;
-        boolean contentChangedOrNew = true;
+        boolean shouldReleaseVersion = false;
 
         if (existing == null) {
             logger.info("Blueprint '{}' not found on target host server. Executing draft creation.", bpName);
             processingTarget = restClient.createBlueprint(bp);
+            shouldReleaseVersion = true;
         } else {
-            // Fetch the full blueprint payload from the server to access its actual content
-            // body
             VcfaBlueprint fullServerBp = restClient.getBlueprintById(existing.getId());
 
-            // Normalize content bodies on both sides to prevent formatting/line-ending
-            // mismatch loops
             String localContent = bp.getContent() != null ? bp.getContent().trim().replace("\r\n", "\n") : "";
             String serverContent = (fullServerBp != null && fullServerBp.getContent() != null)
                     ? fullServerBp.getContent().trim().replace("\r\n", "\n")
@@ -302,38 +281,108 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
             if (localContent.equals(serverContent)) {
                 logger.info(
-                        "Blueprint '{}' working draft content matches the server content exactly. Skipping version release gate.",
+                        "Blueprint '{}' working draft content matches server content exactly. Checking custom request forms...",
                         bpName);
-                contentChangedOrNew = false;
-                processingTarget = existing; // Keep existing reference without spawning a redundant server cycle
+                processingTarget = fullServerBp;
             } else {
                 logger.info(
                         "Blueprint '{}' found on target host server with content changes. Overwriting active working draft.",
                         bpName);
                 processingTarget = restClient.updateBlueprint(existing.getId(), bp);
+                shouldReleaseVersion = true;
             }
         }
 
-        // --- PIPELINE ADDITION: AUTOMATED VERSION & RELEASE ACTION ---
-        if (processingTarget != null && processingTarget.getId() != null) {
-            if (contentChangedOrNew) {
-                logger.info("Triggering mandatory lifecycle version mapping release sequence for blueprint: {}",
-                        bpName);
-                restClient.versionBlueprint(processingTarget.getId(), processingTarget.toMap());
+        String blueprintId = (processingTarget != null) ? processingTarget.getId()
+                : (existing != null ? existing.getId() : null);
 
-                // --- REPRODUCED SYSTEM LOGIC: Unrelease Outdated Historic Versions to Prevent
-                // Target Catalog Bloat ---
-                if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
-                    unreleaseOldVersions(processingTarget.getId());
+        if (blueprintId != null) {
+            // --- CUSTOM REQUEST FORM PROCESSING BLOCK ---
+            String formFileName = bpName + "__FormData.json";
+            File formDataFile = new File(bpDir, formFileName);
+
+            if (formDataFile.exists()) {
+                logger.info("Custom request form artifact layout definition found: '{}'. Evaluating variations...",
+                        formFileName);
+                try {
+                    String formFileContent = new String(java.nio.file.Files.readAllBytes(formDataFile.toPath()),
+                            java.nio.charset.StandardCharsets.UTF_8);
+                    Map<String, Object> localFormPayload = gson.fromJson(formFileContent, Map.class);
+                    localFormPayload.put("sourceId", blueprintId);
+
+                    boolean formChanged = true;
+                    try {
+                        Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", blueprintId);
+                        if (rawFormResponse != null) {
+                            Map<String, Object> formMetaMap = mapper.convertValue(rawFormResponse, Map.class);
+                            if (formMetaMap != null && formMetaMap.containsKey("form")
+                                    && formMetaMap.get("form") != null) {
+                                Object serverFormObj = formMetaMap.get("form");
+                                String serverFormJsonNormalized = "";
+
+                                if (serverFormObj instanceof String) {
+                                    serverFormJsonNormalized = gson
+                                            .toJson(com.google.gson.JsonParser.parseString((String) serverFormObj));
+                                } else {
+                                    serverFormJsonNormalized = gson.toJson(com.google.gson.JsonParser
+                                            .parseString(mapper.writeValueAsString(serverFormObj)));
+                                }
+
+                                String localFormJsonNormalized = gson
+                                        .toJson(com.google.gson.JsonParser.parseString(formFileContent));
+
+                                if (localFormJsonNormalized.equals(serverFormJsonNormalized)) {
+                                    logger.info(
+                                            "Custom request form layouts match perfectly on server for blueprint '{}'. Skipping redundant updates.",
+                                            bpName);
+                                    formChanged = false;
+                                }
+                            }
+                        }
+                    } catch (Exception fe) {
+                        logger.info("No active form found on server or unable to parse. Treating form as updated/new.");
+                    }
+
+                    if (formChanged) {
+                        logger.info(
+                                "Form configuration updates detected for blueprint '{}'. Triggering updates sequence...",
+                                bpName);
+                        restClient.createBlueprintForm(
+                                blueprintId,
+                                localFormPayload,
+                                bp.getContent(),
+                                bp.getName(),
+                                bp.getDescription(),
+                                bp.getRequestScopeOrg());
+                        logger.info(
+                                "Successfully bound updated custom request form configurations to Blueprint entity '{}'.",
+                                bpName);
+                        shouldReleaseVersion = true;
+                    }
+
+                } catch (Exception e) {
+                    logger.error("Failed to compile custom request form lifecycle sequence for blueprint: " + bpName,
+                            e);
                 }
             } else {
-                logger.info("Skipped redundant cloud template version creation for blueprint asset '{}' (Unchanged).",
+                logger.info("No custom request form file layout ('{}') found for asset workspace. Skipping form sync.",
+                        formFileName);
+            }
+
+            // --- FINAL DEFERRED RELEASE SEQUENCE GATE ---
+            if (shouldReleaseVersion) {
+                logger.info("Triggering mandatory lifecycle version mapping release sequence for blueprint: {}",
+                        bpName);
+                restClient.versionBlueprint(blueprintId, processingTarget.toMap());
+
+                if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
+                    unreleaseOldVersions(blueprintId);
+                }
+            } else {
+                logger.info(
+                        "Skipped redundant cloud template version creation for blueprint asset '{}' (Blueprint and Form are up-to-date).",
                         bpName);
             }
-        } else {
-            logger.warn(
-                    "Skipping blueprint version release sequence: Client did not return a valid structural instance object tracking ID for '{}'.",
-                    bpName);
         }
     }
 
@@ -374,7 +423,8 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     }
 
     /**
-     * Write blueprint meta and YAML content to disk.
+     * Write blueprint meta, YAML content, and server-side custom request forms to
+     * disk.
      */
     private void saveBlueprintToDisk(VcfaBlueprint bp, Package serverPackage, ObjectMapper mapper) throws IOException {
         String blueprintDir = Paths.get(
@@ -385,19 +435,12 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             bpFolder.mkdirs();
         }
 
-        // Write details.json
         String detailsFile = blueprintDir + File.separator + "details.json";
-
-        // --- REPRODUCED SYSTEM LOGIC: Environment Scrubbing Isolation Matrix ---
-        // Explicitly extract functional definitions to isolate file configurations from
-        // transient read-only system tracking data
         JsonObject filteredDetails = new JsonObject();
         filteredDetails.add("id", new JsonPrimitive(bp.getId() != null ? bp.getId() : ""));
         filteredDetails.add("name", new JsonPrimitive(bp.getName() != null ? bp.getName() : ""));
         filteredDetails.add("description", new JsonPrimitive(bp.getDescription() != null ? bp.getDescription() : ""));
 
-        // Dynamic mapping handle verification for execution parameters across different
-        // target instances
         if (bp.getRequestScopeOrg() != null) {
             filteredDetails.add("requestScopeOrg", new JsonPrimitive(bp.getRequestScopeOrg()));
         } else if (bp.asExportMap().containsKey("requestScopeOrg")) {
@@ -408,21 +451,65 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setLenient().setPrettyPrinting().serializeNulls()
                 .create();
         String detailsJson = gson.toJson(filteredDetails);
-
         Files.write(Paths.get(detailsFile), detailsJson.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING);
 
-        // Write content.yaml
         if (bp.getContent() != null) {
             String contentFile = blueprintDir + File.separator + "content.yaml";
             Files.write(Paths.get(contentFile), bp.getContent().getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         }
+
+        try {
+            logger.info("Evaluating custom request form availability on server for blueprint: {}", bp.getName());
+
+            Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", bp.getId());
+
+            if (rawFormResponse != null) {
+                Map<String, Object> formMetaMap = mapper.convertValue(rawFormResponse, Map.class);
+
+                if (formMetaMap != null && formMetaMap.containsKey("form") && formMetaMap.get("form") != null) {
+                    logger.info(
+                            "Custom request form discovered for blueprint '{}'. Generating artifact payload layout...",
+                            bp.getName());
+
+                    Object internalFormObj = formMetaMap.get("form");
+                    String serializedFormJson = "";
+
+                    if (internalFormObj instanceof String) {
+                        com.google.gson.JsonElement jsonElement = com.google.gson.JsonParser
+                                .parseString((String) internalFormObj);
+                        serializedFormJson = gson.toJson(jsonElement);
+                    } else {
+                        String rawJson = mapper.writeValueAsString(internalFormObj);
+                        com.google.gson.JsonElement jsonElement = com.google.gson.JsonParser.parseString(rawJson);
+                        gson.toJson(jsonElement);
+                        serializedFormJson = gson.toJson(jsonElement);
+                    }
+
+                    String formFileName = bp.getName() + "__FormData.json";
+                    String formFilePath = blueprintDir + File.separator + formFileName;
+
+                    Files.write(Paths.get(formFilePath),
+                            serializedFormJson.getBytes(StandardCharsets.UTF_8),
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING);
+
+                    logger.info("Successfully exported custom request form layout file asset: {}", formFileName);
+                } else {
+                    logger.info(
+                            "No customized form layout metadata found on the server for blueprint '{}'. Skipping file creation.",
+                            bp.getName());
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Non-fatal exception encountered pulling request form metadata allocations for '{}': {}",
+                    bp.getName(), e.getMessage());
+        }
     }
 
     /**
-     * Helper logic to unrelease historical version trees from target servers,
-     * leaving only the newest deployment active.
+     * Helper logic to unrelease historical version trees from target servers.
      */
     private void unreleaseOldVersions(String blueprintId) {
         try {
@@ -432,16 +519,14 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             if (rawVersionsJson == null || rawVersionsJson.trim().isEmpty()) {
                 return;
             }
-            // Parse as a JsonObject first, then extract the 'content' array property
             com.google.gson.JsonObject versionsObj = new com.google.gson.Gson().fromJson(rawVersionsJson,
                     com.google.gson.JsonObject.class);
             com.google.gson.JsonArray versionsArray = versionsObj.has("content") ? versionsObj.getAsJsonArray("content")
                     : new com.google.gson.JsonArray();
             if (versionsArray == null || versionsArray.size() <= 1) {
-                return; // Nothing to unrelease if there's only 1 version total
+                return;
             }
 
-            // Order array sequentially via creation timestamp
             java.util.List<com.google.gson.JsonElement> orderedList = new java.util.ArrayList<>();
             versionsArray.forEach(orderedList::add);
             orderedList.sort((one, two) -> {
@@ -450,8 +535,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 return java.time.Instant.parse(dateOne).compareTo(java.time.Instant.parse(dateTwo));
             });
 
-            // Retain the newest version at index length-1, evaluate all prior entries for
-            // unpublishing
             orderedList.remove(orderedList.size() - 1);
 
             for (com.google.gson.JsonElement versionElement : orderedList) {
@@ -459,12 +542,10 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 String versionId = versionObj.get("id").getAsString();
                 String versionValue = versionObj.get("version").getAsString();
 
-                // --- OPTIMIZATION GATE: Check if the version is already unpublished ---
-                boolean isReleased = true; // Default to true if the property is missing to be safe
+                boolean isReleased = true;
                 if (versionObj.has("released")) {
                     isReleased = versionObj.get("released").getAsBoolean();
                 } else if (versionObj.has("status")) {
-                    // Alternative API signature check fallback
                     isReleased = "RELEASED".equalsIgnoreCase(versionObj.get("status").getAsString());
                 }
 

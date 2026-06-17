@@ -299,17 +299,12 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
 		}
 
-		// Create a fresh payload map for the versioning endpoint
 		Map<String, Object> versioningPayload = new java.util.HashMap<>();
-
-		// Inject required lifecycle flags for immediate catalog propagation
 		versioningPayload.put("changeLog", "Imported via IaC Automation CI/CD");
 		versioningPayload.put("description", "Automated release version");
 		versioningPayload.put("release", true);
 		versioningPayload.put("sourceControlPush", false);
 
-		// Generate current epoch time as a string version identifier (e.g.,
-		// "1781086031000")
 		String epochVersion = String.valueOf(System.currentTimeMillis());
 		versioningPayload.put("version", epochVersion);
 
@@ -318,10 +313,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return postMap("/blueprint/api/blueprints/" + blueprintId + "/versions", versioningPayload, 200, 201);
 	}
 
-	/**
-	 * Fetches all registered versions for a specified blueprint and returns the raw
-	 * JSON response as a String.
-	 */
 	protected String getBlueprintVersionsPrimitive(String blueprintId) throws IOException {
 		if (restTemplate == null) {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
@@ -336,10 +327,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return response.getBody();
 	}
 
-	/**
-	 * Unreleases an active version from global platform deployment catalogs using a
-	 * standard POST exchange.
-	 */
 	protected void unreleaseBlueprintVersionPrimitive(String blueprintId, String versionId) throws IOException {
 		if (restTemplate == null) {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
@@ -351,11 +338,136 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		restTemplate.exchange(uri, org.springframework.http.HttpMethod.POST, entity, String.class);
 	}
 
+	/**
+	 * Primitive method to register and apply a pre-configured custom request form
+	 * layout template straight out of workspace artifact files, packing them into
+	 * the required stringified envelope structure.
+	 */
+	protected void createBlueprintFormPrimitive(String blueprintId, Map<String, Object> formPayload, String yamlContent,
+			String blueprintName, String blueprintDescription, Boolean requestScopeOrg) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+
+		// --- Step 1: POST
+		// /blueprint/api/blueprints/{blueprintId}/form?apiVersion=2020-08-25 ---
+		String creationResponseRaw = "";
+
+		// Ensure incoming values match the expected target definitions
+		formPayload.put("sourceId", blueprintId);
+		if (formPayload.containsKey("name")
+				&& (formPayload.get("name") == null || formPayload.get("name").toString().isEmpty())) {
+			formPayload.put("name", blueprintName);
+		}
+
+		String serializedPayloadString = "";
+		try {
+			serializedPayloadString = this.objectMapper.writeValueAsString(formPayload);
+		} catch (Exception se) {
+			throw new IOException("Failed to stringify inner form layout content block: " + se.getMessage(), se);
+		}
+
+		// Build the precise root-level JSON envelope expected by the Aria API endpoint
+		Map<String, Object> apiEnvelopePayload = new java.util.HashMap<>();
+		apiEnvelopePayload.put("name", blueprintName);
+		apiEnvelopePayload.put("form", serializedPayloadString);
+		apiEnvelopePayload.put("styles", null);
+		apiEnvelopePayload.put("status", "ON");
+		apiEnvelopePayload.put("type", "requestForm");
+		apiEnvelopePayload.put("sourceId", blueprintId);
+		apiEnvelopePayload.put("sourceType", "com.vmw.blueprint");
+
+		String fullySerializedEnvelope = "";
+		try {
+			fullySerializedEnvelope = this.objectMapper.writeValueAsString(apiEnvelopePayload);
+		} catch (Exception se) {
+			LOGGER.error("Full envelope serialization failed!", se);
+		}
+
+		try {
+			java.net.URI step1Uri = getURI(getURIBuilder()
+					.setPath("/blueprint/api/blueprints/" + blueprintId + "/form")
+					.setParameter("apiVersion", "2020-08-25"));
+
+			org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+			headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpEntity<String> formEntity = new org.springframework.http.HttpEntity<>(
+					fullySerializedEnvelope, headers);
+
+			creationResponseRaw = this.restTemplate.postForObject(step1Uri, formEntity, String.class);
+			LOGGER.info("Step 1: Custom Request Form envelope successfully pushed!");
+		} catch (Exception e) {
+			throw new IOException("Failed to apply custom form layout template configuration: " + e.getMessage(), e);
+		}
+
+		// Parse response to handle subsequent lifecycle rules if required by framework
+		com.google.gson.JsonObject creationResponseObj = new com.google.gson.Gson()
+				.fromJson(creationResponseRaw, com.google.gson.JsonObject.class);
+		String formId = creationResponseObj.get("id").getAsString();
+
+		// --- Step 2: Extract and validate layout using TEXT_PLAIN ---
+		String step2TextPayload = "";
+		if (creationResponseObj.has("form")) {
+			com.google.gson.JsonElement formElement = creationResponseObj.get("form");
+			// If the server gave it back to us as a primitive string, extract it directly
+			// to prevent double escaping
+			if (formElement.isJsonPrimitive()) {
+				step2TextPayload = formElement.getAsString();
+			} else {
+				step2TextPayload = new com.google.gson.Gson().toJson(formElement);
+			}
+		} else {
+			// Fallback to our clean local serialized payload string if the server response
+			// block differs
+			step2TextPayload = serializedPayloadString;
+		}
+
+		try {
+			java.net.URI step2Uri = getURI(getURIBuilder()
+					.setPath("/blueprint/api/blueprints/form/generate-form-json-schema"));
+
+			org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+			headers.setContentType(org.springframework.http.MediaType.TEXT_PLAIN);
+			org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(
+					step2TextPayload, headers);
+
+			this.restTemplate.postForObject(step2Uri, entity, String.class);
+			LOGGER.info(
+					"Step 2: Successfully executed schema pre-generation rules using server-generated form layout.");
+		} catch (org.springframework.web.client.HttpClientErrorException.BadRequest bre) {
+			throw new IOException("Failed schema generation validation pass: " + bre.getResponseBodyAsString(), bre);
+		} catch (Exception e) {
+		}
+
+		// --- Step 3: Bind structural configuration values back via PUT ---
+		Map<String, Object> finalizePayload = new java.util.HashMap<>();
+		finalizePayload.put("name", blueprintName);
+		finalizePayload.put("description", blueprintDescription != null ? blueprintDescription : "");
+		finalizePayload.put("valid", true);
+		finalizePayload.put("projectId", this.getProjectId());
+		finalizePayload.put("requestScopeOrg", requestScopeOrg != null ? requestScopeOrg : true);
+		finalizePayload.put("formId", formId);
+		finalizePayload.put("content", yamlContent);
+
+		try {
+			java.net.URI step3Uri = getURI(getURIBuilder().setPath("/blueprint/api/blueprints/" + blueprintId));
+
+			org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+			headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpEntity<Map<String, Object>> putEntity = new org.springframework.http.HttpEntity<>(
+					finalizePayload, headers);
+
+			this.restTemplate.exchange(step3Uri, org.springframework.http.HttpMethod.PUT, putEntity, String.class);
+		} catch (Exception e) {
+			throw new IOException(
+					"Failed to bind form metadata configurations to target blueprint entity: " + e.getMessage(), e);
+		}
+	}
+
 	// =========================================================================
 	// CATALOG ITEM PRIMITIVES
 	// =========================================================================
 	public List<VcfaCatalogItem> getCatalogItemsPrimitive() throws IOException {
-		// Keeps your fallback extraction collection flow active
 		List<VcfaCatalogItem> summaryList = getList("/catalog/api/items", VcfaCatalogItem.class);
 		if (summaryList == null || summaryList.isEmpty()) {
 			return java.util.Collections.emptyList();
@@ -368,7 +480,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 				continue;
 			}
 			try {
-				// Utilizes your newly updated string relative path get() method
 				String rawJson = get("/catalog/api/items/" + summary.getId(), String.class);
 				VcfaCatalogItem richItem = objectMapper.readValue(rawJson, VcfaCatalogItem.class);
 
@@ -413,18 +524,12 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
 		}
 
-		// --- FIX: Use your framework's native URI Builder to include the host
-		// authority ---
-		// This hooks into your base class's FQDN resolver instead of creating a raw
-		// relative path
 		URIBuilder uriBuilder = getURIBuilder()
 				.setPath("/form-service/api/forms/fetchBySourceAndType")
 				.setParameter("sourceType", sourceType)
 				.setParameter("sourceId", sourceId)
 				.setParameter("formType", "requestForm");
 
-		// Convert the Apache URI builder into the java.net.URI your RestTemplate
-		// expects
 		java.net.URI uri = getURI(uriBuilder);
 
 		try {
@@ -436,16 +541,12 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 					VcfaCatalogItemForm.class);
 			return response.getBody();
 		} catch (org.springframework.web.client.HttpClientErrorException e) {
-			// --- BULLETPROOF STATUS CHECK ---
-			// Force evaluation of the actual HTTP status code directly
 			if (e.getStatusCode() == org.springframework.http.HttpStatus.NOT_FOUND) {
 				LOGGER.info(
 						"No customized request form configuration active on the server for source type '{}' and ID '{}'. Skipping form export gracefully.",
 						sourceType, sourceId);
-				return null; // Return null safely so the store skips writing the file
+				return null;
 			}
-
-			// If it's a 401, 403, or any other real issue, re-throw it so you know about it
 			LOGGER.error("Genuinely failed checking form availability for source '{}': status {}", sourceId,
 					e.getStatusCode());
 			throw e;
@@ -457,10 +558,13 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		if (meta == null || meta.getId() == null) {
 			return null;
 		}
-		// Uses the corrected relative path signature context
 		return get("/form-service/api/forms/" + meta.getId(), VcfaCatalogItemForm.class);
 	}
 
+	/**
+	 * Cleaned catalog item configuration path - completely removes the
+	 * cross-contamination blueprint generation schema references.
+	 */
 	protected void updateCatalogItemFormPrimitive(String sourceType, String catalogItemId, VcfaCatalogItemForm form)
 			throws IOException {
 		if (restTemplate == null) {
@@ -472,24 +576,13 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		LOGGER.info("Checking server-side form footprint using resolved ID: {} ({})", resolvedSourceId, sourceType);
 		VcfaCatalogItemForm existingFormMeta = fetchFormMetaBySourceAndType(sourceType, resolvedSourceId);
 
-		// Prepare and flatten the custom form layout payload
 		Map<String, Object> payload = objectMapper.convertValue(form, Map.class);
+
 		if (payload.get("form") != null) {
 			Object formProperty = payload.get("form");
 			if (!(formProperty instanceof String)) {
-				String stringifiedForm = objectMapper.writeValueAsString(formProperty);
-				payload.put("form", stringifiedForm);
+				payload.put("form", objectMapper.writeValueAsString(formProperty));
 			}
-		}
-
-		// --- EXPERIMENTAL GLOBAL INJECTION ---
-		// Trigger the blueprint schema schema compilation over the wire right before
-		// evaluation
-		try {
-			generateBlueprintFormSchemaPrimitive(form.toMap());
-		} catch (Exception e) {
-			LOGGER.warn("Schema pre-generation notification threw an exception (checking if fatal): {}",
-					e.getMessage());
 		}
 
 		// ROUTING MATRIX
@@ -500,16 +593,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			LOGGER.info("No active form footprint discovered on server. Executing fresh creation via POST...");
 			postMap("/form-service/api/forms", payload, 200, 201);
 		}
-	}
-
-	protected void generateBlueprintFormSchemaPrimitive(Map<String, Object> payload) throws IOException {
-		if (restTemplate == null) {
-			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
-		}
-
-		LOGGER.info("Generating backend form JSON schema framework validation rules...");
-		// This executes PUT /blueprint/api/blueprints/form/generate-form-json-schema
-		postMap("/blueprint/api/blueprints/form/generate-form-json-schema", payload, 200, 204);
 	}
 
 	// =========================================================================

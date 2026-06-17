@@ -79,20 +79,20 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		deleteBlueprintPrimitive(id);
 	}
 
-	// Update these signatures in RestClientVcfAuto.java
-
 	/**
-	 * Fetches version records bound to a specific blueprint node as a raw JSON
-	 * String.
+	 * Passes execution parameters straight to the internal primitive environment
+	 * handler.
 	 */
+	public void createBlueprintForm(String blueprintId, Map<String, Object> formPayload, String yamlContent,
+			String blueprintName, String blueprintDescription, Boolean requestScopeOrg) throws IOException {
+		createBlueprintFormPrimitive(blueprintId, formPayload, yamlContent, blueprintName, blueprintDescription,
+				requestScopeOrg);
+	}
+
 	public String getBlueprintVersions(String blueprintId) throws IOException {
 		return getBlueprintVersionsPrimitive(blueprintId);
 	}
 
-	/**
-	 * Unreleases a specified blueprint version node across remote platform catalog
-	 * allocations.
-	 */
 	public void unreleaseBlueprintVersion(String blueprintId, String versionId) throws IOException {
 		unreleaseBlueprintVersionPrimitive(blueprintId, versionId);
 	}
