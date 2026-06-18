@@ -43,7 +43,8 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
 
     /**
      * Exports all Property Groups from the remote target system to the local
-     * package filesystem workspace.
+     * package filesystem workspace using the cosmetic Display Name attribute
+     * (preserving spaces).
      */
     @Override
     public void exportContent() {
@@ -51,7 +52,8 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
 
         // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
+            logger.info(
+                    "Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
             return;
         }
 
@@ -68,23 +70,27 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
             }
 
             Package serverPackage = this.vcfaPackage;
-            String baseGroupsPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_PROPERTY_GROUPS)
+            String baseGroupsPath = Paths
+                    .get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_PROPERTY_GROUPS)
                     .toString();
 
             Files.createDirectories(Paths.get(baseGroupsPath));
 
             for (VcfaPropertyGroup group : remoteGroups) {
-                String name = group.getName();
+                String trackingName = group.getDisplayName();
 
-                if (isExcludedByDescriptor(name)) {
-                    logger.info("Property Group '{}' is excluded by descriptor configuration rules. Skipping export.", name);
+                if (isExcludedByDescriptor(trackingName)) {
+                    logger.info("Property Group '{}' is excluded by descriptor configuration rules. Skipping export.",
+                            trackingName);
                     continue;
                 }
 
-                String safeName = name.replaceAll("[^a-zA-Z0-9-_\\.]", "_");
+                // CHANGED: Strip illegal filesystem characters, but explicitly preserve spaces
+                String safeName = trackingName.replaceAll("[^a-zA-Z0-9-\\.\\s]", "");
                 File jsonFile = Paths.get(baseGroupsPath, safeName + ".json").toFile();
 
-                // --- REPRODUCED SYSTEM LOGIC: Sanitize environmental/auditing fields to allow multi-tenant migration ---
+                // --- REPRODUCED SYSTEM LOGIC: Sanitize environmental/auditing fields to allow
+                // multi-tenant migration ---
                 ObjectNode jsonNode = mapper.valueToTree(group);
                 jsonNode.remove("id");
                 jsonNode.remove("projectName");
@@ -108,7 +114,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
 
     /**
      * Imports and synchronizes local Property Group JSON configurations back up to
-     * the remote instance environment.
+     * the remote instance environment, mapped via friendly display names.
      */
     @Override
     public void importContent(File sourceDirectory) {
@@ -116,7 +122,8 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
 
         // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
+            logger.info(
+                    "Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
             return;
         }
 
@@ -143,19 +150,23 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
             String currentProjectId = restClient.getProjectId();
 
             for (File file : groupFiles) {
-                String groupName = file.getName().replace(".json", "");
+                // Friendly display identifiers retain spaces flawlessly here
+                String groupDisplayName = file.getName().replace(".json", "");
 
-                if (isExcludedByDescriptor(groupName)) {
-                    logger.info("Property group asset '{}' is excluded by descriptor configuration rules. Skipping import.", groupName);
+                if (isExcludedByDescriptor(groupDisplayName)) {
+                    logger.info(
+                            "Property group asset '{}' is excluded by descriptor configuration rules. Skipping import.",
+                            groupDisplayName);
                     continue;
                 }
 
                 logger.info("Processing local Property Group asset configuration: '{}'", file.getName());
                 VcfaPropertyGroup localGroup = mapper.readValue(file, VcfaPropertyGroup.class);
-                
-                // Track down matching records on the target environment by unique Name attributes
+
+                // Track down matching records on the target environment by friendly Display
+                // Name attributes
                 Optional<VcfaPropertyGroup> existingRemote = remoteGroups.stream()
-                        .filter(r -> r.getName().equalsIgnoreCase(localGroup.getName()))
+                        .filter(r -> r.getDisplayName().equalsIgnoreCase(localGroup.getDisplayName()))
                         .findFirst();
 
                 // Re-stitch Organization scopes
@@ -166,38 +177,45 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
 
                     // --- REPRODUCED SYSTEM LOGIC: Prevent illegal project/scope mutations ---
                     String existingProjectId = remoteMatch.getProjectId();
-                    if (existingProjectId != null && !existingProjectId.isBlank() && !existingProjectId.equals(currentProjectId)) {
+                    if (existingProjectId != null && !existingProjectId.isBlank()
+                            && !existingProjectId.equals(currentProjectId)) {
                         throw new UnsupportedOperationException(String.format(
-                            "The property group '%s' is already assigned to a different project scope (%s). Scope change operations are not supported by the platform API.",
-                            localGroup.getName(), existingProjectId
-                        ));
+                                "The property group '%s' is already assigned to a different project scope (%s). Scope change operations are not supported by the platform API.",
+                                localGroup.getDisplayName(), existingProjectId));
                     }
 
-                    // If local asset expects a non-blank project allocation, inject target environment project mapping parameters
+                    // If local asset expects a non-blank project allocation, inject target
+                    // environment project mapping parameters
                     if (localGroup.getProjectId() != null && !localGroup.getProjectId().isBlank()) {
-                        logger.debug("Re-mapping local group project alignment pointer to current target scope: {}", currentProjectId);
+                        logger.debug("Re-mapping local group project alignment pointer to current target scope: {}",
+                                currentProjectId);
                         localGroup.setProjectId(currentProjectId);
                     }
 
                     if (isIdentical(remoteMatch, localGroup)) {
-                        logger.info("Property Group '{}' matches remote system configuration exactly. Skipping update.", localGroup.getName());
+                        logger.info("Property Group '{}' matches remote system configuration exactly. Skipping update.",
+                                localGroup.getDisplayName());
                     } else {
-                        logger.info("Delta detected for Property Group '{}'. Initiating remote update context.", localGroup.getName());
+                        logger.info("Delta detected for Property Group '{}'. Initiating remote update context.",
+                                localGroup.getDisplayName());
                         localGroup.setId(remoteMatch.getId());
                         restClient.updatePropertyGroup(remoteMatch.getId(), localGroup);
                     }
                 } else {
                     // CREATE PIPELINE
                     if (localGroup.getProjectId() != null && !localGroup.getProjectId().isBlank()) {
-                        logger.debug("Re-mapping local group project alignment pointer to current target scope: {}", currentProjectId);
+                        logger.debug("Re-mapping local group project alignment pointer to current target scope: {}",
+                                currentProjectId);
                         localGroup.setProjectId(currentProjectId);
                     }
-                    logger.info("Property Group '{}' not found on target server. Executing remote creation.", localGroup.getName());
+                    logger.info("Property Group '{}' not found on target server. Executing remote creation.",
+                            localGroup.getDisplayName());
                     restClient.createPropertyGroup(localGroup);
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("CRITICAL: Failed to import Property Groups from filesystem to target environment", e);
+            throw new RuntimeException(
+                    "CRITICAL: Failed to import Property Groups from filesystem to target environment", e);
         }
     }
 
@@ -219,7 +237,8 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     }
 
     /**
-     * Executes cleanup deletion scanning for registered property groups.
+     * Executes cleanup deletion scanning for registered property groups targeting
+     * Display Names.
      */
     @Override
     public void deleteContent() {
@@ -234,7 +253,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
             List<String> itemsToDelete = null;
             boolean isExplicitlyEmpty = false;
 
-            // Locate and parse content.yaml manually to guarantee absolute control over null vs [] empty arrays
             File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
             if (!contentYamlFile.exists() && this.vcfaPackage != null) {
                 File packageDir = new File(this.vcfaPackage.getFilesystemPath());
@@ -247,9 +265,9 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
                     Map<String, Object> rawMap = yaml.load(inputStream);
                     if (rawMap != null) {
-                        // Check for both structural permutations of the key name
-                        Object groupListObj = rawMap.containsKey("property-group") ? rawMap.get("property-group") : rawMap.get("propertyGroups");
-                        
+                        Object groupListObj = rawMap.containsKey("property-group") ? rawMap.get("property-group")
+                                : rawMap.get("propertyGroups");
+
                         if (rawMap.containsKey("property-group") || rawMap.containsKey("propertyGroups")) {
                             if (groupListObj instanceof List) {
                                 itemsToDelete = (List<String>) groupListObj;
@@ -257,47 +275,48 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                                     isExplicitlyEmpty = true;
                                 }
                             }
-                            // Note: If the key exists but groupListObj is null, itemsToDelete remains null (Delete All)
                         }
                     }
                 }
             }
 
             // --- TRISTATE EVALUATION MATRIX ---
-            
-            // Scenario 1: Explicitly Empty "[]" -> Target absolute safety bypass. Delete Nothing.
+
             if (isExplicitlyEmpty) {
                 logger.info("Property Group descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
 
-            // Scenario 2: Key is completely null/omitted -> Wildcard target mode active. Delete Everything.
             if (itemsToDelete == null) {
-                logger.info("Property Group descriptor is undefined/null. Omitted wildcard trigger: Initiating purge for ALL remote groups.");
+                logger.info(
+                        "Property Group descriptor is undefined/null. Omitted wildcard trigger: Initiating purge for ALL remote groups.");
                 for (VcfaPropertyGroup remoteGroup : remoteGroups) {
-                    logger.info("[WILDCARD DELETE] Deleting property group named '{}' matching ID: {}", remoteGroup.getName(), remoteGroup.getId());
+                    logger.info("[WILDCARD DELETE] Deleting property group named '{}' matching ID: {}",
+                            remoteGroup.getDisplayName(), remoteGroup.getId());
                     restClient.deletePropertyGroup(remoteGroup.getId());
                 }
                 return;
             }
 
-            // Scenario 3: Explicit List -> Filter targeted matches sequentially.
             logger.info("Targeted filter list active. Evaluating matching entries for deletion sequence...");
             for (VcfaPropertyGroup remoteGroup : remoteGroups) {
-                String remoteName = remoteGroup.getName();
-                if (itemsToDelete.contains(remoteName)) {
-                    logger.info("[TARGETED DELETE] Deleting property group named '{}' matching ID: {}", remoteName, remoteGroup.getId());
+                String remoteDisplayName = remoteGroup.getDisplayName();
+                if (itemsToDelete.contains(remoteDisplayName)) {
+                    logger.info("[TARGETED DELETE] Deleting property group named '{}' matching ID: {}",
+                            remoteDisplayName, remoteGroup.getId());
                     restClient.deletePropertyGroup(remoteGroup.getId());
                 }
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Fatal error encountered clearing existing infrastructure property group definitions", e);
+            throw new RuntimeException(
+                    "Fatal error encountered clearing existing infrastructure property group definitions", e);
         }
     }
 
     /**
-     * Helper to safely extract and determine if the configuration block array is explicitly initialized to '[]'.
+     * Helper to safely extract and determine if the configuration block array is
+     * explicitly initialized to '[]'.
      */
     private boolean isExplicitlyEmptyInDescriptor() {
         VcfaPackageDescriptor localDescriptor = null;
@@ -329,9 +348,10 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     }
 
     /**
-     * Evaluates property group filtering rules straight against the content.yaml file.
+     * Evaluates property group filtering rules straight against friendly display
+     * name lists inside content.yaml.
      */
-    private boolean isExcludedByDescriptor(String groupName) {
+    private boolean isExcludedByDescriptor(String groupDisplayName) {
         VcfaPackageDescriptor localDescriptor = null;
 
         if (this.descriptor instanceof VcfaPackageDescriptor) {
@@ -353,7 +373,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
         }
 
         if (localDescriptor == null) {
-            return false; 
+            return false;
         }
 
         List<String> allowedGroups = localDescriptor.getPropertyGroup();
@@ -366,6 +386,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
             return true;
         }
 
-        return !allowedGroups.contains(groupName);
+        return !allowedGroups.contains(groupDisplayName);
     }
 }

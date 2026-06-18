@@ -14,15 +14,20 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.store;
 * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
 * #L%
 */
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
@@ -31,6 +36,7 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDesc
 
 public class VcfaCustomResourceStore extends AbstractVcfaStore {
     private static final String DIR_CUSTOM_RESOURCES = "custom-resources";
+    private static final String SUBDIR_ADDITIONAL_ACTIONS = "additionalActions";
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     public VcfaCustomResourceStore() {
@@ -38,11 +44,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * 
      * Exports all Custom Resources from the target environment to the filesystem
-     * 
-     * package.
-     * 
+     * package using split layouts.
      */
     @Override
     public void exportContent() {
@@ -61,23 +64,88 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             String baseResourcesPath = Paths
                     .get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_CUSTOM_RESOURCES).toString();
             Files.createDirectories(Paths.get(baseResourcesPath));
+
             for (VcfaCustomResourceType resource : remoteResources) {
-                String trackingName = resource.getDisplayName(); // e.g., "Load Balancer"
+                String trackingName = resource.getDisplayName();
                 if (isExcludedByDescriptor(trackingName)) {
                     logger.info("Custom Resource '{}' is excluded by descriptor rules. Skipping export.", trackingName);
                     continue;
                 }
-                // CHANGED: Sanitize the cosmetic Display Name for the filename instead of the
-                // backend type
-                String safeFileName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
-                File jsonFile = Paths.get(baseResourcesPath, safeFileName + ".json").toFile();
-                logger.info("Successfully synchronized custom resource asset: {}", jsonFile.getAbsolutePath());
-                String serializedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resource);
-                Files.write(
-                        jsonFile.toPath(),
-                        serializedJson.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING);
+
+                // Create individual subfolder based on the resource display name
+                File resourceFolder = Paths.get(baseResourcesPath, trackingName).toFile();
+                if (!resourceFolder.exists()) {
+                    resourceFolder.mkdirs();
+                }
+
+                // Map conversion for manual payload field manipulation
+                Map<String, Object> resourceMap = mapper.convertValue(resource,
+                        new TypeReference<Map<String, Object>>() {
+                        });
+                List<Map<String, Object>> extractedActions = null;
+
+                if (resourceMap.containsKey(SUBDIR_ADDITIONAL_ACTIONS)
+                        && resourceMap.get(SUBDIR_ADDITIONAL_ACTIONS) != null) {
+                    extractedActions = (List<Map<String, Object>>) resourceMap.get(SUBDIR_ADDITIONAL_ACTIONS);
+                    resourceMap.remove(SUBDIR_ADDITIONAL_ACTIONS); // Clean out additionalActions from root file
+                }
+
+                // File 1: Write root details.json
+                File detailsFile = Paths.get(resourceFolder.getPath(), "details.json").toFile();
+                String detailsJson = mapper.writeValueAsString(resourceMap);
+                Files.write(detailsFile.toPath(), detailsJson.getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+                // Export Day-2 additional actions if they are present
+                if (extractedActions != null && !extractedActions.isEmpty()) {
+                    File actionsSubFolder = Paths.get(resourceFolder.getPath(), SUBDIR_ADDITIONAL_ACTIONS).toFile();
+                    if (!actionsSubFolder.exists()) {
+                        actionsSubFolder.mkdirs();
+                    }
+
+                    for (Map<String, Object> action : extractedActions) {
+                        String actionDisplayName = (String) action.get("displayName");
+                        File singleActionFolder = Paths.get(actionsSubFolder.getPath(), actionDisplayName).toFile();
+                        if (!singleActionFolder.exists()) {
+                            singleActionFolder.mkdirs();
+                        }
+
+                        Map<String, Object> formDefinitionMap = null;
+                        if (action.containsKey("formDefinition") && action.get("formDefinition") != null) {
+                            formDefinitionMap = (Map<String, Object>) action.get("formDefinition");
+                            action.remove("formDefinition"); // Separate from action metadata
+
+                            if (formDefinitionMap.containsKey("form") && formDefinitionMap.get("form") != null) {
+                                Object rawForm = formDefinitionMap.get("form");
+                                if (rawForm instanceof String) {
+                                    // Parse stringified layout back into raw map structures
+                                    Map<String, Object> parsedForm = mapper.readValue((String) rawForm,
+                                            new TypeReference<Map<String, Object>>() {
+                                            });
+                                    formDefinitionMap.put("form", parsedForm);
+                                }
+                            }
+                        }
+
+                        // Write additional action metadata file
+                        File actionDetailsFile = Paths.get(singleActionFolder.getPath(), "details.json").toFile();
+                        Files.write(actionDetailsFile.toPath(),
+                                mapper.writeValueAsString(action).getBytes(StandardCharsets.UTF_8),
+                                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+                        // Write clean decoupled form layout file
+                        if (formDefinitionMap != null) {
+                            String formFileName = actionDisplayName + "__FormData.json";
+                            File actionFormFile = Paths.get(singleActionFolder.getPath(), formFileName).toFile();
+                            Files.write(actionFormFile.toPath(),
+                                    mapper.writeValueAsString(formDefinitionMap).getBytes(StandardCharsets.UTF_8),
+                                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                        }
+                    }
+                }
+
+                logger.info("Successfully synchronized custom resource folder layout asset: {}",
+                        resourceFolder.getAbsolutePath());
             }
         } catch (IOException e) {
             throw new RuntimeException("Fatal operational exception processing custom resource sync export stream", e);
@@ -85,11 +153,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * 
-     * Imports local Custom Resource configuration files back up to the target
-     * 
+     * Imports local Custom Resource folder structures back up to the target
      * environment.
-     * 
      */
     @Override
     public void importContent(File sourceDirectory) {
@@ -105,26 +170,81 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
         try {
             List<VcfaCustomResourceType> remoteResources = restClient.getCustomResources();
-            File[] resourceFiles = localDir.listFiles((dir, name) -> name.endsWith(".json"));
-            if (resourceFiles == null || resourceFiles.length == 0) {
-                logger.info("Could not find any custom resource assets to import.");
+            File[] resourceFolders = localDir.listFiles(File::isDirectory);
+            if (resourceFolders == null || resourceFolders.length == 0) {
+                logger.info("Could not find any custom resource folder mappings to import.");
                 return;
             }
-            for (File file : resourceFiles) {
-                VcfaCustomResourceType localResource = mapper.readValue(file, VcfaCustomResourceType.class);
-                String trackingName = localResource.getDisplayName();
+
+            for (File folder : resourceFolders) {
+                String trackingName = folder.getName();
                 if (isExcludedByDescriptor(trackingName)) {
                     logger.info(
-                            "Custom resource asset '{}' is excluded by descriptor configuration rules. Skipping import.",
+                            "Custom resource asset folder '{}' is excluded by descriptor configuration rules. Skipping import.",
                             trackingName);
                     continue;
                 }
-                logger.info("Processing local Custom Resource asset configuration: '{}'", file.getName());
+
+                File detailsFile = new File(folder, "details.json");
+                if (!detailsFile.exists()) {
+                    logger.warn("Skipping directory {}. Root details.json could not be resolved.", folder.getPath());
+                    continue;
+                }
+
+                logger.info("Processing local Custom Resource asset layout definition: '{}'", trackingName);
+                Map<String, Object> resourceMap = mapper.readValue(detailsFile,
+                        new TypeReference<Map<String, Object>>() {
+                        });
+                List<Map<String, Object>> combinedActionsList = new ArrayList<>();
+
+                // Evaluate and recombine nested additionalActions files if present
+                File actionsSubFolder = Paths.get(folder.getPath(), SUBDIR_ADDITIONAL_ACTIONS).toFile();
+                if (actionsSubFolder.exists() && actionsSubFolder.isDirectory()) {
+                    File[] singleActionFolders = actionsSubFolder.listFiles(File::isDirectory);
+                    if (singleActionFolders != null) {
+                        for (File actionFolder : singleActionFolders) {
+                            String actionName = actionFolder.getName();
+                            File actionDetailsFile = new File(actionFolder, "details.json");
+                            File actionFormFile = new File(actionFolder, actionName + "__FormData.json");
+
+                            if (!actionDetailsFile.exists() || !actionFormFile.exists()) {
+                                throw new IOException(String.format(
+                                        "CRITICAL WORKSPACE ERROR: Additional Action '%s' inside Custom Resource '%s' requires both 'details.json' and '%s__FormData.json' layout definitions.",
+                                        actionName, trackingName, actionName));
+                            }
+
+                            Map<String, Object> actionMap = mapper.readValue(actionDetailsFile,
+                                    new TypeReference<Map<String, Object>>() {
+                                    });
+                            Map<String, Object> formDefMap = mapper.readValue(actionFormFile,
+                                    new TypeReference<Map<String, Object>>() {
+                                    });
+
+                            // Re-stringify the raw layout form properties back for transmission
+                            // compatibility
+                            if (formDefMap.containsKey("form") && formDefMap.get("form") != null) {
+                                Object formObj = formDefMap.get("form");
+                                if (!(formObj instanceof String)) {
+                                    formDefMap.put("form", mapper.writeValueAsString(formObj));
+                                }
+                            }
+
+                            actionMap.put("formDefinition", formDefMap);
+                            combinedActionsList.add(actionMap);
+                        }
+                    }
+                }
+
+                // Bind array list back to master properties payload map
+                resourceMap.put(SUBDIR_ADDITIONAL_ACTIONS, combinedActionsList);
+                VcfaCustomResourceType localResource = mapper.convertValue(resourceMap, VcfaCustomResourceType.class);
+
                 Optional<VcfaCustomResourceType> existingRemote = remoteResources.stream()
                         .filter(r -> r.getDisplayName().equalsIgnoreCase(localResource.getDisplayName()) ||
                                 (r.getName() != null && r.getName().equalsIgnoreCase(localResource.getName())) ||
                                 (r.getId() != null && r.getId().equals(localResource.getId())))
                         .findFirst();
+
                 if (existingRemote.isPresent()) {
                     VcfaCustomResourceType remoteMatch = existingRemote.get();
                     if (isIdentical(remoteMatch, localResource)) {
@@ -132,10 +252,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                 "Custom Resource '{}' matches remote system configuration exactly. Skipping update.",
                                 trackingName);
                     } else {
-                        // FIXing the 405: Delete existing object first, then clear fields and recreate
-                        // it freshly
                         logger.info(
-                                "Delta detected for Custom Resource '{}'. Platform restrictions require delete-and-recreate lifecycle. Initiating removal.",
+                                "Delta detected for Custom Resource '{}'. Utilizing clean delete-and-recreate lifecycle flow.",
                                 trackingName);
                         restClient.deleteCustomResourceType(remoteMatch.getId());
                         logger.info("Re-creating updated Custom Resource '{}' on target server.", trackingName);
@@ -156,17 +274,10 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * 
-     * Helper to clean system metadata IDs from the payload to prevent 400 Bad
-     * 
-     * Request collisions.
-     * 
+     * Helper to clean system metadata IDs from the payload to prevent collisions.
      */
     private void preparePayloadForCreation(VcfaCustomResourceType resource) {
-        // Clear root level database tracking ID
         resource.setId(null);
-        // Loop through any nested additional actions and remove embedded form
-        // definition IDs
         if (resource.getAdditionalActions() != null) {
             for (Map<String, Object> action : resource.getAdditionalActions()) {
                 if (action.containsKey("formDefinition")) {
@@ -185,11 +296,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * 
      * Deep evaluation tracking properties schemas, actions maps, and key
-     * 
      * structures.
-     * 
      */
     private boolean isIdentical(VcfaCustomResourceType remote, VcfaCustomResourceType local) {
         if (remote == null || local == null) {
@@ -208,11 +316,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * 
      * Wipes remote infrastructure custom resource components based on Tristate
-     * 
      * rules.
-     * 
      */
     @Override
     public void deleteContent() {
@@ -249,33 +354,28 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                     }
                 }
             }
-            // --- TRISTATE EVALUATION MATRIX ---
-            // Scenario 1: Explicitly Empty "[]" -> Safety bypass toggle. Delete Nothing.
+
             if (isExplicitlyEmpty) {
                 logger.info("Custom Resource descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
-            // Scenario 2: Key is completely null/omitted -> Wildcard target mode active.
-            // Purge Everything.
+
             if (itemsToDelete == null) {
                 logger.info(
                         "Custom Resource descriptor is undefined/null. Omitted wildcard trigger: Purging ALL remote custom resources.");
                 for (VcfaCustomResourceType remoteRes : remoteResources) {
-                    // CHANGED: Log the friendly displayName instead of the backend type name
                     logger.info("[WILDCARD DELETE] Deleting custom resource named '{}' matching ID: {}",
                             remoteRes.getDisplayName(), remoteRes.getId());
                     restClient.deleteCustomResourceType(remoteRes.getId());
                 }
                 return;
             }
-            // Scenario 3: Explicit List -> Filter targeted matches sequentially by Display
-            // Name
+
             logger.info(
                     "Custom Resource targeted filter list active. Evaluating matching entries for deletion sequence...");
             for (VcfaCustomResourceType remoteRes : remoteResources) {
                 String remoteDisplayName = remoteRes.getDisplayName();
                 if (itemsToDelete.contains(remoteDisplayName)) {
-                    // CHANGED: Log the friendly displayName here as well
                     logger.info("[TARGETED DELETE] Deleting custom resource named '{}' matching ID: {}",
                             remoteDisplayName, remoteRes.getId());
                     restClient.deleteCustomResourceType(remoteRes.getId());
@@ -287,11 +387,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
     }
 
-    /**
-     * 
-     * Resolves manifest tracking parameters for filtering by Display Name.
-     * 
-     */
     private boolean isExcludedByDescriptor(String trackingName) {
         VcfaPackageDescriptor localDescriptor = null;
         if (this.descriptor instanceof VcfaPackageDescriptor) {

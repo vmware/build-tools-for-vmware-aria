@@ -21,10 +21,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
@@ -42,7 +45,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
 
     /**
      * Exports all Resource Actions from the target environment to the filesystem
-     * package.
+     * package using the new folder pattern.
      */
     @Override
     public void exportContent() {
@@ -65,23 +68,58 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
             Files.createDirectories(Paths.get(baseActionsPath));
 
             for (VcfaResourceAction action : remoteActions) {
-                String trackingName = action.getDisplayName();
+                String displayName = action.getDisplayName();
 
-                if (isExcludedByDescriptor(trackingName)) {
-                    logger.info("Resource Action '{}' is excluded by descriptor rules. Skipping export.", trackingName);
+                if (isExcludedByDescriptor(displayName)) {
+                    logger.info("Resource Action '{}' is excluded by descriptor rules. Skipping export.", displayName);
                     continue;
                 }
 
-                String safeFileName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
-                File jsonFile = Paths.get(baseActionsPath, safeFileName + ".json").toFile();
+                // Create a subfolder for this specific resource action based on its display
+                // name
+                File actionFolder = Paths.get(baseActionsPath, displayName).toFile();
+                if (!actionFolder.exists()) {
+                    actionFolder.mkdirs();
+                }
 
-                logger.info("Successfully synchronized resource action asset: {}", jsonFile.getAbsolutePath());
-                String serializedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(action);
-                Files.write(
-                        jsonFile.toPath(),
-                        serializedJson.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING);
+                // Convert VcfaResourceAction to a fully editable Map for clean file writing
+                Map<String, Object> actionMap = mapper.convertValue(action, new TypeReference<Map<String, Object>>() {
+                });
+                Map<String, Object> formDefinitionMap = null;
+
+                // Extract and un-stringify form data if it exists
+                if (actionMap.containsKey("formDefinition") && actionMap.get("formDefinition") != null) {
+                    formDefinitionMap = (Map<String, Object>) actionMap.get("formDefinition");
+                    actionMap.remove("formDefinition"); // Strip from metadata file
+
+                    if (formDefinitionMap.containsKey("form") && formDefinitionMap.get("form") != null) {
+                        Object rawForm = formDefinitionMap.get("form");
+                        if (rawForm instanceof String) {
+                            // Parse stringified form back into an object tree for local disk readability
+                            Map<String, Object> unescapedFormObj = mapper.readValue((String) rawForm,
+                                    new TypeReference<Map<String, Object>>() {
+                                    });
+                            formDefinitionMap.put("form", unescapedFormObj);
+                        }
+                    }
+                }
+
+                // File 1: details.json (Metadata only)
+                File detailsFile = Paths.get(actionFolder.getPath(), "details.json").toFile();
+                String detailsJson = mapper.writeValueAsString(actionMap);
+                Files.write(detailsFile.toPath(), detailsJson.getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+                // File 2: <DisplayName>__FormData.json
+                if (formDefinitionMap != null) {
+                    String formFileName = displayName + "__FormData.json";
+                    File formFile = Paths.get(actionFolder.getPath(), formFileName).toFile();
+                    String formJson = mapper.writeValueAsString(formDefinitionMap);
+                    Files.write(formFile.toPath(), formJson.getBytes(StandardCharsets.UTF_8),
+                            StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                }
+
+                logger.info("Successfully exported resource action folder asset: {}", actionFolder.getAbsolutePath());
             }
         } catch (IOException e) {
             throw new RuntimeException("Fatal operational exception processing resource action sync export stream", e);
@@ -89,7 +127,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
     }
 
     /**
-     * Imports local Resource Action configuration files back up to the target
+     * Imports local Resource Action folder configurations back up to the target
      * environment.
      */
     @Override
@@ -108,24 +146,55 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
 
         try {
             List<VcfaResourceAction> remoteActions = restClient.getResourceActions();
-            File[] actionFiles = localDir.listFiles((dir, name) -> name.endsWith(".json"));
-            if (actionFiles == null || actionFiles.length == 0) {
-                logger.info("Could not find any resource action assets to import.");
+            File[] actionFolders = localDir.listFiles(File::isDirectory);
+            if (actionFolders == null || actionFolders.length == 0) {
+                logger.info("Could not find any resource action folders to import.");
                 return;
             }
 
-            for (File file : actionFiles) {
-                VcfaResourceAction localAction = mapper.readValue(file, VcfaResourceAction.class);
-                String trackingName = localAction.getDisplayName();
+            for (File folder : actionFolders) {
+                String displayName = folder.getName();
 
-                if (isExcludedByDescriptor(trackingName)) {
+                if (isExcludedByDescriptor(displayName)) {
                     logger.info(
-                            "Resource action asset '{}' is excluded by descriptor configuration rules. Skipping import.",
-                            trackingName);
+                            "Resource action asset folder '{}' is excluded by descriptor configuration rules. Skipping import.",
+                            displayName);
                     continue;
                 }
 
-                logger.info("Processing local Resource Action asset configuration: '{}'", file.getName());
+                File detailsFile = new File(folder, "details.json");
+                File formDataFile = new File(folder, displayName + "__FormData.json");
+
+                // Enforce mandatory file coexistence check
+                if (!detailsFile.exists() || !formDataFile.exists()) {
+                    throw new IOException(String.format(
+                            "CRITICAL WORKSPACE ERROR: Resource Action '%s' requires both 'details.json' and '%s__FormData.json' inside its workspace folder structure.",
+                            displayName, displayName));
+                }
+
+                logger.info("Processing local Resource Action folder layout: '{}'", displayName);
+
+                // Read and recombine files
+                Map<String, Object> actionMap = mapper.readValue(detailsFile, new TypeReference<Map<String, Object>>() {
+                });
+                Map<String, Object> formDefMap = mapper.readValue(formDataFile,
+                        new TypeReference<Map<String, Object>>() {
+                        });
+
+                // Re-stringify the form block layout precisely for API transmission compliance
+                if (formDefMap.containsKey("form") && formDefMap.get("form") != null) {
+                    Object formObj = formDefMap.get("form");
+                    if (!(formObj instanceof String)) {
+                        String stringifiedForm = mapper.writeValueAsString(formObj);
+                        formDefMap.put("form", stringifiedForm);
+                    }
+                }
+
+                // Inject combined formDefinition back into payload map
+                actionMap.put("formDefinition", formDefMap);
+
+                // Re-serialize fully into object template model instance
+                VcfaResourceAction localAction = mapper.convertValue(actionMap, VcfaResourceAction.class);
 
                 Optional<VcfaResourceAction> existingRemote = remoteActions.stream()
                         .filter(r -> r.getDisplayName().equalsIgnoreCase(localAction.getDisplayName()) ||
@@ -137,21 +206,20 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                     if (isIdentical(remoteMatch, localAction)) {
                         logger.info(
                                 "Resource Action '{}' matches remote system configuration exactly. Skipping update.",
-                                trackingName);
+                                displayName);
                     } else {
-                        // We already designed this to bypass the missing PUT method!
                         logger.info(
                                 "Delta detected for Resource Action '{}'. Utilizing clean delete-and-recreate flow.",
-                                trackingName);
+                                displayName);
                         restClient.deleteResourceAction(remoteMatch.getId());
 
-                        logger.info("Re-creating updated Resource Action '{}' on target server.", trackingName);
+                        logger.info("Re-creating updated Resource Action '{}' on target server.", displayName);
                         preparePayloadForCreation(localAction);
                         restClient.createResourceAction(localAction);
                     }
                 } else {
                     logger.info("Resource Action '{}' not found on target server. Executing remote creation.",
-                            trackingName);
+                            displayName);
                     preparePayloadForCreation(localAction);
                     restClient.createResourceAction(localAction);
                 }
@@ -225,8 +293,6 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 }
             }
 
-            // --- TRISTATE EVALUATION MATRIX ---
-
             if (isExplicitlyEmpty) {
                 logger.info("Resource Action descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
@@ -260,9 +326,6 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
         }
     }
 
-    /**
-     * Manifest resolution check matching friendly display names.
-     */
     private boolean isExcludedByDescriptor(String trackingName) {
         VcfaPackageDescriptor localDescriptor = null;
 
@@ -288,8 +351,6 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
             return false;
         }
 
-        // Assumes your VcfaPackageDescriptor mapping method follows your pattern (e.g.,
-        // getResourceAction)
         List<String> allowedActions = localDescriptor.getResourceAction();
         if (allowedActions == null) {
             return false;
@@ -302,13 +363,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
         return !allowedActions.contains(trackingName);
     }
 
-    /**
-     * Strips colliding form definition metadata IDs before hitting creation
-     * endpoints.
-     */
     private void preparePayloadForCreation(VcfaResourceAction action) {
-        // Unlike Custom Resources, the custom action ID can remain intact if it carries
-        // the composite name template
         if (action.getFormDefinition() != null) {
             Map<String, Object> formDefMap = action.getFormDefinition();
             if (formDefMap.containsKey("id")) {

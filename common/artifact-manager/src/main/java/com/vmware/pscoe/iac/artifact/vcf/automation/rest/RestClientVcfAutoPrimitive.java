@@ -405,6 +405,30 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 				.fromJson(creationResponseRaw, com.google.gson.JsonObject.class);
 		String formId = creationResponseObj.get("id").getAsString();
 
+		// --- Step 3: Bind structural configuration values back via PUT ---
+		Map<String, Object> finalizePayload = new java.util.HashMap<>();
+		finalizePayload.put("name", blueprintName);
+		finalizePayload.put("description", blueprintDescription != null ? blueprintDescription : "");
+		finalizePayload.put("valid", true);
+		finalizePayload.put("projectId", this.getProjectId());
+		finalizePayload.put("requestScopeOrg", requestScopeOrg != null ? requestScopeOrg : true);
+		finalizePayload.put("formId", formId);
+		finalizePayload.put("content", yamlContent);
+
+		try {
+			java.net.URI step3Uri = getURI(getURIBuilder().setPath("/blueprint/api/blueprints/" + blueprintId));
+
+			org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+			headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpEntity<Map<String, Object>> putEntity = new org.springframework.http.HttpEntity<>(
+					finalizePayload, headers);
+
+			this.restTemplate.exchange(step3Uri, org.springframework.http.HttpMethod.PUT, putEntity, String.class);
+		} catch (Exception e) {
+			throw new IOException(
+					"Failed to bind form metadata configurations to target blueprint entity: " + e.getMessage(), e);
+		}
+
 		// --- Step 2: Extract and validate layout using TEXT_PLAIN ---
 		String step2TextPayload = "";
 		if (creationResponseObj.has("form")) {
@@ -436,31 +460,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 					"Step 2: Successfully executed schema pre-generation rules using server-generated form layout.");
 		} catch (org.springframework.web.client.HttpClientErrorException.BadRequest bre) {
 			throw new IOException("Failed schema generation validation pass: " + bre.getResponseBodyAsString(), bre);
-		} catch (Exception e) {
-		}
-
-		// --- Step 3: Bind structural configuration values back via PUT ---
-		Map<String, Object> finalizePayload = new java.util.HashMap<>();
-		finalizePayload.put("name", blueprintName);
-		finalizePayload.put("description", blueprintDescription != null ? blueprintDescription : "");
-		finalizePayload.put("valid", true);
-		finalizePayload.put("projectId", this.getProjectId());
-		finalizePayload.put("requestScopeOrg", requestScopeOrg != null ? requestScopeOrg : true);
-		finalizePayload.put("formId", formId);
-		finalizePayload.put("content", yamlContent);
-
-		try {
-			java.net.URI step3Uri = getURI(getURIBuilder().setPath("/blueprint/api/blueprints/" + blueprintId));
-
-			org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-			headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-			org.springframework.http.HttpEntity<Map<String, Object>> putEntity = new org.springframework.http.HttpEntity<>(
-					finalizePayload, headers);
-
-			this.restTemplate.exchange(step3Uri, org.springframework.http.HttpMethod.PUT, putEntity, String.class);
-		} catch (Exception e) {
-			throw new IOException(
-					"Failed to bind form metadata configurations to target blueprint entity: " + e.getMessage(), e);
 		}
 	}
 
