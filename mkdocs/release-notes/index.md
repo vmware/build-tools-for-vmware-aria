@@ -39,7 +39,7 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Change type of `Import Dashboard for All Users` input to boolean*
+### *Change type of `Import Dashboard for All Users` Installer input to boolean*
 
 #### Previous Behavior
 The input is parsed as boolean but the input type is string which is confusing for the user and does not have auto suggested values.
