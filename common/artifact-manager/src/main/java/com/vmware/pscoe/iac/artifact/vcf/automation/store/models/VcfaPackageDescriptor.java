@@ -69,8 +69,8 @@ public final class VcfaPackageDescriptor extends PackageDescriptor {
     @JsonProperty("policy")
     private Map<String, List<String>> policy;
 
-    @JsonProperty("scenarios")
-    private List<String> scenarios;
+    @JsonProperty("scenario")
+    private List<String> scenario;
 
     /**
      * Constructor.
@@ -118,8 +118,8 @@ public final class VcfaPackageDescriptor extends PackageDescriptor {
     public Map<String, List<String>> getPolicy() { return policy; }
     public void setPolicy(Map<String, List<String>> policy) { this.policy = policy; }
 
-    public List<String> getScenarios() { return scenarios; }
-    public void setScenarios(List<String> scenarios) { this.scenarios = scenarios; }
+    public List<String> getScenarios() { return scenario; }
+    public void setScenarios(List<String> scenario) { this.scenario = scenario; }
 
     /**
      * Create a VcfaPackageDescriptor instance from file.

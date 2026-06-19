@@ -35,7 +35,7 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDesc
 
 public class VcfaScenarioStore extends AbstractVcfaStore {
 
-    private static final String DIR_SCENARIOS = "scenarios";
+    private static final String DIR_SCENARIOS = "scenario";
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     public VcfaScenarioStore() {
@@ -116,7 +116,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
      */
     @Override
     public void importContent(File sourceDirectory) {
-        logger.info("Importing scenarios from {}", sourceDirectory.getAbsolutePath());
+        logger.info("Importing scenario from {}", sourceDirectory.getAbsolutePath());
 
         // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
@@ -224,7 +224,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
         try {
             List<VcfaScenario> remoteScenarios = restClient.getScenarios();
             if (remoteScenarios == null || remoteScenarios.isEmpty()) {
-                logger.info("No remote scenarios identified to delete.");
+                logger.info("No remote scenario identified to delete.");
                 return;
             }
 
@@ -243,10 +243,9 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
                     Map<String, Object> rawMap = yaml.load(inputStream);
                     if (rawMap != null) {
-                        Object scenarioListObj = rawMap.containsKey("scenario") ? rawMap.get("scenario")
-                                : rawMap.get("scenarios");
+                        Object scenarioListObj = rawMap.containsKey("scenario");
 
-                        if (rawMap.containsKey("scenario") || rawMap.containsKey("scenarios")) {
+                        if (rawMap.containsKey("scenario") || rawMap.containsKey("scenario")) {
                             if (scenarioListObj instanceof List) {
                                 itemsToDelete = (List<String>) scenarioListObj;
                                 if (itemsToDelete.isEmpty()) {
@@ -265,7 +264,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
             }
 
             if (itemsToDelete == null) {
-                logger.info("Scenario descriptor is undefined/null. Purging ALL remote scenarios.");
+                logger.info("Scenario descriptor is undefined/null. Purging ALL remote scenario.");
                 for (VcfaScenario remoteScen : remoteScenarios) {
                     logger.info("[WILDCARD DELETE] Deleting scenario named '{}' matching ID: {}", remoteScen.getName(),
                             remoteScen.getId());
