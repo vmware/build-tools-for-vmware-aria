@@ -2047,6 +2047,51 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#change-type-of-import-dashboard-for-all-users-installer-input-to-boolean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Change type of Import Dashboard for All Users Installer input to boolean
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Change type of Import Dashboard for All Users Installer input to boolean">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#previous-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previous Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2086,6 +2131,19 @@
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
+<h3 id="change-type-of-import-dashboard-for-all-users-installer-input-to-boolean"><em>Change type of <code>Import Dashboard for All Users</code> Installer input to boolean</em><a class="headerlink" href="#change-type-of-import-dashboard-for-all-users-installer-input-to-boolean" title="Permanent link">&para;</a></h3>
+<h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>
+<p>The input is parsed as boolean but the input type is string which is confusing for the user and does not have auto suggested values.</p>
+<div class="highlight"><pre><span></span><code>Import Dashboards For All Users:
+Invalid value.
+Expected a string with at least 1 character.
+
+Import Dashboards For All Users: yes
+</code></pre></div>
+<h4 id="new-behavior">New Behavior<a class="headerlink" href="#new-behavior" title="Permanent link">&para;</a></h4>
+<p>Input type is boolean with suggested values and default value of true.</p>
+<div class="highlight"><pre><span></span><code>Import Dashboards For All Users (Y/N) [Y]:
+</code></pre></div>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
 
 
