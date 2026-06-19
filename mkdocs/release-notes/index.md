@@ -27,7 +27,7 @@
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ## Improvements
-test
+
 [//]: # (### *Improvement Name* )
 [//]: # (Talk ONLY regarding the improvement)
 [//]: # (Optional But higlhy recommended)
