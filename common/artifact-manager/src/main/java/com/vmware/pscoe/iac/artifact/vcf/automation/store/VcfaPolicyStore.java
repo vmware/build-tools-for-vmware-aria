@@ -492,7 +492,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
             case "com.vmware.policy.resource-quota":
             case "com.vmware.policy.quota":
             case "com.vmware.policy.supervisor.iaas":
-                return "resource-quota";
+                return "iaas-resource";
             default:
                 // Fallback to lowercase stripped name if an unexpected type comes up
                 return typeId.substring(typeId.lastIndexOf('.') + 1).toLowerCase();
