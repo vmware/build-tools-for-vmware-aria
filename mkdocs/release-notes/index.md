@@ -56,7 +56,7 @@ Import Dashboards For All Users: yes
 
 Input type is boolean with suggested values and default value of true.
 
-```
+```txt
 Import Dashboards For All Users (Y/N) [Y]:
 ```
 
