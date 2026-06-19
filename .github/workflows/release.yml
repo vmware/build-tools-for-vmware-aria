@@ -73,7 +73,7 @@ jobs:
           echo "Generating Documentation..."
           DOC_VERSION="v${{ inputs.version }}"
           DOC_DATE_VERSION="$DOC_VERSION - $(date +"%d %b %Y")"
-          RELEASE_MD="./mkdocs/Release.md"
+          RELEASE_MD="./mkdocs/release-notes/index.md"
           VERSION_PLACEHOLDER_TEXT="VERSION_PLACEHOLDER DO NOT DELETE"
 
           # Insert the latest version in Release.md for the new release
@@ -133,8 +133,8 @@ jobs:
           mvn initialize -f typescript
 
           # Reset the Release.md with a blank one from Templates for the next dev cycle
-          rm -rf ./mkdocs/Release.md
-          cp -f ./mkdocs/assets/docs/templates/Release.md ./mkdocs/Release.md
+          rm -rf ./mkdocs/release-notes/index.md
+          cp -f ./mkdocs/assets/docs/templates/Release.md ./mkdocs/release-notes/index.md
 
           git add .
           git commit -m "(release) start development iteration v$SNAPSHOT_VERSION"

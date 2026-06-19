@@ -42,8 +42,8 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.vra-ng.archetypes \
     -DarchetypeArtifactId=package-vra-ng-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} # (1)! \
-    -DgroupId={{ archetype.customer_project.group_id}} # (2)! \
+    -DarchetypeVersion={{ iac.latest_release }} \ # (1)!
+    -DgroupId={{ archetype.customer_project.group_id}} \ # (2)!
     -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
@@ -52,7 +52,10 @@ mvn archetype:generate \
 3. {{ archetype.customer_project.artifact_id_hint }}
 
 !!! note
-    If <build_tools_for_aria_version> is not specified a default value of 2.38.1 will be used.
+    If **build_tools_for_aria_version** is not specified a default value of 2.38.1 will be used.
+
+!!! note
+    Make sure to remove any trialing spaces after the backslashes (**\\**) otherwise the command will fail.
 
 ### Content Structure
 
