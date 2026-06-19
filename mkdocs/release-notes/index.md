@@ -39,6 +39,27 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Change type of `Import Dashboard for All Users` Installer input to boolean*
+
+#### Previous Behavior
+The input is parsed as boolean but the input type is string which is confusing for the user and does not have auto suggested values.
+
+```txt
+Import Dashboards For All Users:
+Invalid value.
+Expected a string with at least 1 character.
+
+Import Dashboards For All Users: yes
+```
+
+#### New Behavior
+
+Input type is boolean with suggested values and default value of true.
+
+```txt
+Import Dashboards For All Users (Y/N) [Y]:
+```
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
