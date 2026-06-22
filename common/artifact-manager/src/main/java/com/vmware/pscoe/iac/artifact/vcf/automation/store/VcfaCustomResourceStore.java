@@ -36,7 +36,8 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDesc
 
 public class VcfaCustomResourceStore extends AbstractVcfaStore {
     private static final String DIR_CUSTOM_RESOURCES = "custom-resources";
-    private static final String SUBDIR_ADDITIONAL_ACTIONS = "additionalActions";
+    private static final String SUBDIR_ADDITIONAL_ACTIONS = "additional-actions";
+    private static final String PAYLOAD_ADDITIONAL_ACTIONS = "additionalActions";
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     public VcfaCustomResourceStore() {
@@ -84,10 +85,10 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                         });
                 List<Map<String, Object>> extractedActions = null;
 
-                if (resourceMap.containsKey(SUBDIR_ADDITIONAL_ACTIONS)
-                        && resourceMap.get(SUBDIR_ADDITIONAL_ACTIONS) != null) {
-                    extractedActions = (List<Map<String, Object>>) resourceMap.get(SUBDIR_ADDITIONAL_ACTIONS);
-                    resourceMap.remove(SUBDIR_ADDITIONAL_ACTIONS); // Clean out additionalActions from root file
+                if (resourceMap.containsKey(PAYLOAD_ADDITIONAL_ACTIONS)
+                        && resourceMap.get(PAYLOAD_ADDITIONAL_ACTIONS) != null) {
+                    extractedActions = (List<Map<String, Object>>) resourceMap.get(PAYLOAD_ADDITIONAL_ACTIONS);
+                    resourceMap.remove(PAYLOAD_ADDITIONAL_ACTIONS); // Clean out field from root details file
                 }
 
                 // File 1: Write root details.json
@@ -197,7 +198,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                         });
                 List<Map<String, Object>> combinedActionsList = new ArrayList<>();
 
-                // Evaluate and recombine nested additionalActions files if present
+                // Evaluate and recombine nested additional-actions files if present
                 File actionsSubFolder = Paths.get(folder.getPath(), SUBDIR_ADDITIONAL_ACTIONS).toFile();
                 if (actionsSubFolder.exists() && actionsSubFolder.isDirectory()) {
                     File[] singleActionFolders = actionsSubFolder.listFiles(File::isDirectory);
@@ -236,7 +237,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 }
 
                 // Bind array list back to master properties payload map
-                resourceMap.put(SUBDIR_ADDITIONAL_ACTIONS, combinedActionsList);
+                resourceMap.put(PAYLOAD_ADDITIONAL_ACTIONS, combinedActionsList);
                 VcfaCustomResourceType localResource = mapper.convertValue(resourceMap, VcfaCustomResourceType.class);
 
                 Optional<VcfaCustomResourceType> existingRemote = remoteResources.stream()
