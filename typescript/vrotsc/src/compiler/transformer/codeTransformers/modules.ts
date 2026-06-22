@@ -596,7 +596,7 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		let index = 1;
 		let name: string;
 		do {
-			name = `${prefix}_${index++}`;
+			name = `_$${prefix}_${index++}`;
 		}
 		while (identifiers[name]);
 		identifiers[name] = true;
@@ -734,3 +734,5 @@ export function transformModuleSystem(sourceFile: ts.SourceFile, context: Script
 		return true;
 	}
 }
+
+
