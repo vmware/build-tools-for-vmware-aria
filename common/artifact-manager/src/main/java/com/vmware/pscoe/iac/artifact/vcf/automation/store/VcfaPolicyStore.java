@@ -197,7 +197,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                         logger.info("Policy '{}' not found on target server. Executing remote creation via POST.",
                                 trackingName);
                         localPolicy.setId(null);
-                        restClient.createPolicy(localPolicy);
+                        restClient.createOrUpdatePolicy(localPolicy);
                     }
                 }
             }
@@ -216,7 +216,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
         logger.debug("Backing up existing Policy state with ID={} to tracking name '{}'", remoteMatch.getId(), backupName);
         try {
             remoteMatch.setName(backupName);
-            restClient.updatePolicy(remoteMatch.getId(), remoteMatch);
+            restClient.createOrUpdatePolicy(remoteMatch);
         } catch (Exception e) {
             throw new RuntimeException(String.format("Transaction Interrupted: Failed creating staging rollback checkpoint for policy '%s'", originalName), e);
         }
@@ -224,7 +224,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
         try {
             logger.info("Pushing refreshed configuration structure for policy asset: '{}'", originalName);
             localPolicy.setId(null); // Clear reference to create a fresh record node
-            restClient.createPolicy(localPolicy);
+            restClient.createOrUpdatePolicy(localPolicy);
             
             // Clean up old checkpoint payload upon transaction success
             try {
@@ -237,7 +237,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
             logger.error("Creation failed for update record. Attempting atomic cluster state rollback restoration...", e);
             try {
                 remoteMatch.setName(originalName);
-                restClient.updatePolicy(remoteMatch.getId(), remoteMatch);
+                restClient.createOrUpdatePolicy(remoteMatch);
                 logger.info("Rollback complete. Original environment configuration state successfully restored.");
             } catch (Exception rollbackException) {
                 logger.error("CRITICAL: Rollback failed. Asset cluster definition is out of sync. Please resolve from UI at placeholder: '{}'", backupName, rollbackException);

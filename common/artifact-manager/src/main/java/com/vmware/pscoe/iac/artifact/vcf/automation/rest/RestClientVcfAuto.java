@@ -201,15 +201,8 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return getPoliciesPrimitive();
 	}
 
-	public VcfaPolicy createPolicy(VcfaPolicy payload) throws IOException {
-		return createPolicyPrimitive(objectMapper.convertValue(payload, Map.class));
-	}
-
-	/**
-	 * Updates an infrastructure policy definition instance.
-	 */
-	public VcfaPolicy updatePolicy(String id, VcfaPolicy payload) throws IOException {
-		return updatePolicyPrimitive(id, objectMapper.convertValue(payload, Map.class));
+	public VcfaPolicy createOrUpdatePolicy(VcfaPolicy payload) throws IOException {
+		return createOrUpdatePolicyPrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
 	public void deletePolicy(String id) throws IOException {

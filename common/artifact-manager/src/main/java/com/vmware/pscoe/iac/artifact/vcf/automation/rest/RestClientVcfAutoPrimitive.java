@@ -776,21 +776,10 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return fullyHydratedList;
 	}
 
-	protected VcfaPolicy createPolicyPrimitive(Map<String, Object> payload) throws IOException {
+	protected VcfaPolicy createOrUpdatePolicyPrimitive(Map<String, Object> payload) throws IOException {
 		Map<String, Object> result = postMap("/policy/api/policies", payload, 200, 201, 202);
 		if (result == null)
 			return null;
-		return objectMapper.convertValue(result, VcfaPolicy.class);
-	}
-
-	/**
-	 * Updates an existing policy resource over the wire using a standard PUT call.
-	 */
-	protected VcfaPolicy updatePolicyPrimitive(String id, Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = putMap(String.format("/policy/api/policies/%s", id), payload, 200);
-		if (result == null) {
-			return null;
-		}
 		return objectMapper.convertValue(result, VcfaPolicy.class);
 	}
 
