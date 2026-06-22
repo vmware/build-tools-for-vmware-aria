@@ -96,6 +96,8 @@ public class VcfaContentSourceStore extends AbstractVcfaStore {
 
                 logger.info("Processing content source: '{}'", sourceName);
 
+                this.verifyAssetPathSafety(sourceName, "Content Source");
+
                 // Handle mapping projectId from global configuration context if needed
                 if (sourceNode.has("projectName")) {
                     String projectId = restClient.getProjectId(sourceNode.get("projectName").asText());
@@ -145,7 +147,7 @@ public class VcfaContentSourceStore extends AbstractVcfaStore {
         boolean sameType = java.util.Objects.equals(remoteTypeId, localTypeId);
         boolean sameProject = java.util.Objects.equals(remote.getProjectId(), local.getProjectId());
         boolean sameConfig = java.util.Objects.equals(remote.getConfig(), local.getConfig());
-        
+
         // NEW: Check content-item specific descriptors
         boolean sameName = java.util.Objects.equals(remote.getName(), local.getName());
         boolean sameDescription = java.util.Objects.equals(remote.getDescription(), local.getDescription());

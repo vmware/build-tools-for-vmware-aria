@@ -85,9 +85,8 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                // CHANGED: Strip illegal filesystem characters, but explicitly preserve spaces
-                String safeName = trackingName.replaceAll("[^a-zA-Z0-9-\\.\\s]", "");
-                File jsonFile = Paths.get(baseGroupsPath, safeName + ".json").toFile();
+                this.verifyAssetPathSafety(trackingName, "Property Group");
+                File jsonFile = Paths.get(baseGroupsPath, trackingName + ".json").toFile();
 
                 // --- REPRODUCED SYSTEM LOGIC: Sanitize environmental/auditing fields to allow
                 // multi-tenant migration ---

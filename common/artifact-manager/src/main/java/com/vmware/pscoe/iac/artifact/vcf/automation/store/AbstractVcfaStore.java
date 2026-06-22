@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPathValidator;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
@@ -102,6 +103,19 @@ public abstract class AbstractVcfaStore implements IVcfaStore {
             return m.readValue(details, cls);
         } catch (java.io.IOException e) {
             throw new RuntimeException("Unable to read details.json", e);
+        }
+    }
+
+    /**
+     * Global wrapper to enforce naming standards across all VCF Automation stores.
+     */
+    protected void verifyAssetPathSafety(String assetName, String assetType) {
+        try {
+            VcfaPathValidator.validateSafePathName(assetName,
+                    assetType);
+        } catch (java.io.IOException e) {
+            // Halt processing immediately with a clear runtime tracking exception
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 }

@@ -461,6 +461,8 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         }
 
         try {
+
+            this.verifyAssetPathSafety(bp.getName(), "Blueprint");
             logger.info("Evaluating custom request form availability on server for blueprint: {}", bp.getName());
 
             Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", bp.getId());

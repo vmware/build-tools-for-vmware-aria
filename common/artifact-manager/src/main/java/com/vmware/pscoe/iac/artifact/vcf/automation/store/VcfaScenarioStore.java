@@ -85,8 +85,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 // --- CHANGED LOGIC: Preserve the exact scenario name for the filename ---
                 // Only strips characters that are strictly illegal across all major OS
                 // filesystems (\ / : * ? " < > |)
-                String safeFileName = trackingName.replaceAll("[\\\\/:*?\"<>|]", "_");
-                File jsonFile = Paths.get(baseScenariosPath, safeFileName + ".json").toFile();
+                this.verifyAssetPathSafety(trackingName, "Scenatio");
+                File jsonFile = Paths.get(baseScenariosPath, trackingName + ".json").toFile();
 
                 // --- REPRODUCED SYSTEM LOGIC: Align underlying payload schema maps with native
                 // keys ---

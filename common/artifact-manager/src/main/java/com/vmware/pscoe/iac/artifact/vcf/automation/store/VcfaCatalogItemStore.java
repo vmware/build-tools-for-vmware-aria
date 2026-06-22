@@ -65,10 +65,10 @@ public class VcfaCatalogItemStore extends AbstractVcfaStore {
                 if (isExcludedByDescriptor(trackingName))
                     continue;
 
-                String safeBaseName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
-                String catalogFileName = safeBaseName + ".json";
+                this.verifyAssetPathSafety(trackingName, "Catalog Item");
+                String catalogFileName = trackingName + ".json";
                 // --- SUFFIX MODIFICATION FOR PULL ---
-                String formFileName = safeBaseName + "__FormData.json";
+                String formFileName = trackingName + "__FormData.json";
 
                 File jsonFile = Paths.get(baseCatalogPath, catalogFileName).toFile();
 
@@ -217,7 +217,8 @@ public class VcfaCatalogItemStore extends AbstractVcfaStore {
                                 }
                             }
 
-                            logger.info("Syncing matching custom request form layout definitions for item: {}", trackingName);
+                            logger.info("Syncing matching custom request form layout definitions for item: {}",
+                                    trackingName);
                             restClient.updateCatalogItemForm(sourceType, finalCatalogItemId, localForm);
                         }
                     } else {

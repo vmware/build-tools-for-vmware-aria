@@ -74,6 +74,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                     logger.info("Resource Action '{}' is excluded by descriptor rules. Skipping export.", displayName);
                     continue;
                 }
+                this.verifyAssetPathSafety(displayName, "Policy Item");
 
                 // Create a subfolder for this specific resource action based on its display
                 // name

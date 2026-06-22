@@ -98,8 +98,8 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 Files.createDirectories(Paths.get(categoryFolderPath));
 
                 String trackingName = policy.getName();
-                String safeFileName = trackingName.replaceAll("[^a-zA-Z0-9-_\\s\\.]", "_");
-                File jsonFile = Paths.get(categoryFolderPath, safeFileName + ".json").toFile();
+                this.verifyAssetPathSafety(trackingName, "Policy Item");
+                File jsonFile = Paths.get(categoryFolderPath, trackingName + ".json").toFile();
 
                 // Convert model back to clean JSON node layout to scrub system properties
                 ObjectNode jsonNode = mapper.valueToTree(policy);

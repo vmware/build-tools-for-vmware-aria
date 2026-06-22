@@ -73,6 +73,9 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                     continue;
                 }
 
+                // FAIL FAST: Check the main resource folder name first
+                this.verifyAssetPathSafety(trackingName, "Custom Resource");
+
                 // Create individual subfolder based on the resource display name
                 File resourceFolder = Paths.get(baseResourcesPath, trackingName).toFile();
                 if (!resourceFolder.exists()) {
@@ -106,6 +109,9 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
                     for (Map<String, Object> action : extractedActions) {
                         String actionDisplayName = (String) action.get("displayName");
+                        // FAIL FAST: Check nested additional action names too
+                        this.verifyAssetPathSafety(actionDisplayName, "Additional Action");
+
                         File singleActionFolder = Paths.get(actionsSubFolder.getPath(), actionDisplayName).toFile();
                         if (!singleActionFolder.exists()) {
                             singleActionFolder.mkdirs();
