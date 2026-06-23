@@ -26,10 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
@@ -281,7 +284,11 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     /**
-     * Helper to clean system metadata IDs from the payload to prevent collisions.
+     *
+     * Helper to clean system metadata IDs from the payload to prevent 400 Bad
+     *
+     * Request collisions.
+     *
      */
     private void preparePayloadForCreation(VcfaCustomResourceType resource) {
         resource.setId(null);
@@ -302,10 +309,92 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
     }
 
+    private void validateCustomResourceDay2ActionName(ObjectNode customResourceJsonElement) {
+        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+            ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
+            Pattern pattern = Pattern.compile("[^a-zA-Z0-9:\\-_.]");
+
+            for (JsonNode action : additionalActionsArray) {
+                if (action != null && action.has("name")) {
+                    String name = action.get("name").asText();
+                    Matcher matcher = pattern.matcher(name);
+
+                    if (matcher.find() || name.startsWith("_") || name.endsWith("_") ||
+                        name.startsWith(".") || name.endsWith(".") || name.contains(" ")) {
+                        throw new RuntimeException(String.format("Action's name: '%s' contains invalid symbols. Must not use spaces or start/end with points or underscores.", name));
+                    }
+                }
+            }
+        }
+    }
+
+    private void fixCustomResourceDefinition(ObjectNode customResourceJsonElement) throws IOException {
+        String currentOrgId = restClient.getOrganizationId();
+        customResourceJsonElement.put("orgId", currentOrgId);
+
+        if (customResourceJsonElement.has("projectId") && !customResourceJsonElement.get("projectId").isNull()) {
+            customResourceJsonElement.put("projectId", restClient.getProjectId());
+        }
+
+        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+            ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
+            for (JsonNode action : additionalActionsArray) {
+                if (action instanceof ObjectNode) {
+                    ObjectNode actionJson = (ObjectNode) action;
+                    actionJson.put("orgId", currentOrgId);
+
+                    if (actionJson.has("formDefinition") && actionJson.get("formDefinition").isObject()) {
+                        ObjectNode formDefinition = (ObjectNode) actionJson.get("formDefinition");
+                        formDefinition.remove("id");
+                        formDefinition.put("tenant", currentOrgId);
+                        if (formDefinition.has("projectId") && !formDefinition.get("projectId").isNull()) {
+                            formDefinition.put("projectId", restClient.getProjectId());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
+     *
      * Deep evaluation tracking properties schemas, actions maps, and key
+     *
      * structures.
+     *
      */
+    private void populateVroEndpoints(ObjectNode customResourceJsonElement) throws IOException {
+        String targetVroEndpointLink = restClient.getVroTargetIntegrationEndpointLink();
+
+        if (customResourceJsonElement.has("mainActions") && customResourceJsonElement.get("mainActions").isObject()) {
+            ObjectNode mainActions = (ObjectNode) customResourceJsonElement.get("mainActions");
+            for (String mainAct : new String[] { "create", "update", "delete" }) {
+                if (mainActions.has(mainAct) && mainActions.get(mainAct).isObject()) {
+                    ((ObjectNode) mainActions.get(mainAct)).put("endpointLink", targetVroEndpointLink);
+                }
+            }
+        }
+
+        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+            ArrayNode additionalActions = (ArrayNode) customResourceJsonElement.get("additionalActions");
+            for (JsonNode action : additionalActions) {
+                if (action instanceof ObjectNode && action.has("runnableItem") && action.get("runnableItem").isObject()) {
+                    ((ObjectNode) action.get("runnableItem")).put("endpointLink", targetVroEndpointLink);
+                }
+            }
+        }
+    }
+
+    private boolean isCustomResourceActiveAttached(Exception clientException) {
+        final String magicMessage = "Resource type cannot be deleted as there are active resources attached to it";
+        StringBuilder builder = new StringBuilder();
+        Throwable th = clientException;
+        while (th != null) {
+            builder.append(th.getMessage()).append("\n");
+            th = th.getCause();
+        }
+        return builder.toString().contains(magicMessage);
+    }
     private boolean isIdentical(VcfaCustomResourceType remote, VcfaCustomResourceType local) {
         if (remote == null || local == null) {
             return false;

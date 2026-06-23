@@ -371,12 +371,16 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
             // --- FINAL DEFERRED RELEASE SEQUENCE GATE ---
             if (shouldReleaseVersion) {
-                logger.info("Triggering mandatory lifecycle version mapping release sequence for blueprint: {}",
+                logger.info("Triggering lifecycle version mapping release sequence for blueprint: {}",
                         bpName);
-                restClient.versionBlueprint(blueprintId, processingTarget.toMap());
+                try {
+                    restClient.versionBlueprint(blueprintId, processingTarget.toMap());
 
-                if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
-                    unreleaseOldVersions(blueprintId);
+                    if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
+                        unreleaseOldVersions(blueprintId);
+                    }
+                } catch (Exception e) {
+                    logger.warn("Blueprint '{}' draft was created/updated, but versioning failed (content validation error on target). Blueprint remains in draft state: {}", bpName, e.getMessage());
                 }
             } else {
                 logger.info(

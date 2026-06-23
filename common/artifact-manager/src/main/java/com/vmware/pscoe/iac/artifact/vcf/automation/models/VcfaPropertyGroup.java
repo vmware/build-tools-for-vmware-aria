@@ -26,6 +26,8 @@ public class VcfaPropertyGroup {
     private String description;
     private String type;
     private String orgId;
+    private String organization;
+    private String projectId;
     private String createdAt;
     private String createdBy;
     private String updatedAt;
@@ -84,6 +86,22 @@ public class VcfaPropertyGroup {
         this.orgId = orgId;
     }
 
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
     public String getCreatedAt() {
         return createdAt;
     }
@@ -122,15 +140,5 @@ public class VcfaPropertyGroup {
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
-    }
-
-    private String projectId;
-
-    public String getProjectId() {
-        return this.projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
     }
 }

@@ -28,6 +28,7 @@ public class VcfaPolicy implements Identifiable {
     private String typeId;
     private String enforcementType;
     private String orgId;
+    private String projectId;
     private Map<String, Object> definition;
 
     public VcfaPolicy() {
@@ -83,24 +84,19 @@ public class VcfaPolicy implements Identifiable {
         this.orgId = orgId;
     }
 
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
     public Map<String, Object> getDefinition() {
         return definition;
     }
 
     public void setDefinition(Map<String, Object> definition) {
         this.definition = definition;
-    }
-
-    // Add this field and these methods inside
-    // com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy
-
-    private String projectId;
-
-    public String getProjectId() {
-        return this.projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
     }
 }
