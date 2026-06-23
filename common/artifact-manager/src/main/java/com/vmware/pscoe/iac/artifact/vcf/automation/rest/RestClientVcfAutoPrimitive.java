@@ -725,8 +725,55 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	// =========================================================================
 	// SCENARIOS PRIMITIVES
 	// =========================================================================
-	protected List<VcfaScenario> getScenariosPrimitive() throws IOException {
+	protected List<VcfaScenario> getScenariosListPrimitive() throws IOException {
 		return getList("/notification/api/scenario-configs", VcfaScenario.class);
+	}
+
+	public List<VcfaScenario> getScenarios() throws IOException {
+		List<VcfaScenario> result = new ArrayList<>();
+		List<VcfaScenario> items = getScenariosListPrimitive();
+		items.forEach(s -> {
+			try {
+				result.add(getScenarioExpandedPrimitive(s.getId()));
+			} catch (Exception e) {
+				throw new RuntimeException(
+						String.format("Could not get scenario expanded object!"),
+						e);
+			}
+		});
+		return result;
+	}
+
+	protected VcfaScenario getScenarioExpandedPrimitive(String id) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+
+		// Step 1: Attempt standard expanded lookup
+		java.net.URI uri = getURI(getURIBuilder().setPath("/notification/api/scenario-configs/" + id)
+				.setParameter("expandBody", "true"));
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		VcfaScenario scenario = objectMapper.readValue(response.getBody(), VcfaScenario.class);
+
+		// Step 2: Fallback check — if the scenario body is missing/empty, pull the
+		// default out-of-the-box layout
+		if (scenario != null && (scenario.getBody() == null || scenario.getBody().trim().isEmpty())) {
+			LOGGER.info(
+					"Scenario body for ID '{}' is empty. Forcing retrieval using default configuration layout parameters...",
+					id);
+
+			java.net.URI defaultUri = getURI(getURIBuilder().setPath("/notification/api/scenario-configs/" + id)
+					.setParameter("expandBody", "true")
+					.setParameter("defaultConfig", "true"));
+
+			ResponseEntity<String> defaultResponse = restTemplate.exchange(defaultUri, HttpMethod.GET,
+					getDefaultHttpEntity(),
+					String.class);
+			scenario = objectMapper.readValue(defaultResponse.getBody(), VcfaScenario.class);
+		}
+
+		return scenario;
 	}
 
 	protected VcfaScenario createScenarioPrimitive(Map<String, Object> payload) throws IOException {

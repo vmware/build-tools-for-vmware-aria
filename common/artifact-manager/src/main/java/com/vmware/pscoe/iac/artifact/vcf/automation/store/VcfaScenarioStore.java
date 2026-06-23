@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -35,7 +36,7 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDesc
 
 public class VcfaScenarioStore extends AbstractVcfaStore {
 
-    private static final String DIR_SCENARIOS = "scenario";
+    private static final String DIR_SCENARIOS = "scenarios";
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     public VcfaScenarioStore() {
@@ -86,7 +87,12 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 // Only strips characters that are strictly illegal across all major OS
                 // filesystems (\ / : * ? " < > |)
                 this.verifyAssetPathSafety(trackingName, "Scenatio");
-                File jsonFile = Paths.get(baseScenariosPath, trackingName + ".json").toFile();
+
+                // Create individual subfolder based on the scenario display name
+                File scenarioFolder = Paths.get(baseScenariosPath, trackingName).toFile();
+                if (!scenarioFolder.exists()) {
+                    scenarioFolder.mkdirs();
+                }
 
                 // --- REPRODUCED SYSTEM LOGIC: Align underlying payload schema maps with native
                 // keys ---
@@ -98,13 +104,32 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                     jsonNode.put("scenarioId", scenario.getId());
                 }
 
-                logger.info("Successfully synchronized scenario asset: {}", jsonFile.getAbsolutePath());
+                // Extract HTML content body if present to save separately
+                String htmlBody = "";
+                if (jsonNode.has("body") && !jsonNode.get("body").isNull()) {
+                    htmlBody = jsonNode.get("body").asText();
+                    jsonNode.remove("body"); // Strip from metadata details.json file
+                }
+
+                // File 1: details.json (Metadata only)
+                File detailsFile = Paths.get(scenarioFolder.getPath(), "details.json").toFile();
                 String serializedJson = mapper.writeValueAsString(jsonNode);
                 Files.write(
-                        jsonFile.toPath(),
+                        detailsFile.toPath(),
                         serializedJson.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING);
+
+                // File 2: template.html (HTML payload content body)
+                File htmlFile = Paths.get(scenarioFolder.getPath(), "template.html").toFile();
+                Files.write(
+                        htmlFile.toPath(),
+                        htmlBody.getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING);
+
+                logger.info("Successfully synchronized scenario folder asset layout: {}",
+                        scenarioFolder.getAbsolutePath());
             }
         } catch (IOException e) {
             throw new RuntimeException("Fatal operational exception processing scenario sync export stream", e);
@@ -138,17 +163,32 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
 
         try {
             List<VcfaScenario> remoteScenarios = restClient.getScenarios();
-            File[] scenarioFiles = localDir.listFiles((dir, name) -> name.endsWith(".json"));
-            if (scenarioFiles == null || scenarioFiles.length == 0) {
-                logger.info("Could not find any scenario assets to import.");
+            File[] scenarioFolders = localDir.listFiles(File::isDirectory);
+            if (scenarioFolders == null || scenarioFolders.length == 0) {
+                logger.info("Could not find any scenario folders to import.");
                 return;
             }
 
-            for (File file : scenarioFiles) {
+            for (File folder : scenarioFolders) {
+                File detailsFile = new File(folder, "details.json");
+                File htmlFile = new File(folder, "template.html");
+
+                // Enforce mandatory file check inside workspace layout folder
+                if (!detailsFile.exists()) {
+                    logger.warn("Skipping directory {}. Root details.json could not be resolved.", folder.getPath());
+                    continue;
+                }
+
                 // --- REPRODUCED SYSTEM LOGIC: Process file using flexible schema token
                 // fallbacks ---
-                String jsonContent = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-                JsonNode rootNode = mapper.readTree(jsonContent);
+                String jsonContent = new String(Files.readAllBytes(detailsFile.toPath()), StandardCharsets.UTF_8);
+                ObjectNode rootNode = (ObjectNode) mapper.readTree(jsonContent);
+
+                // Read and re-stitch HTML content body back into payload map if it exists
+                if (htmlFile.exists()) {
+                    String htmlContent = new String(Files.readAllBytes(htmlFile.toPath()), StandardCharsets.UTF_8);
+                    rootNode.put("body", htmlContent);
+                }
 
                 String trackingName = rootNode.has("scenarioName") ? rootNode.get("scenarioName").asText() : null;
                 String trackingId = rootNode.has("scenarioId") ? rootNode.get("scenarioId").asText() : null;
@@ -163,8 +203,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
 
                 if (localScenario.getName() == null) {
                     logger.warn(
-                            "Unable to extract valid target name context identifier for file asset {}. Skipping import.",
-                            file.getName());
+                            "Unable to extract valid target name context identifier for folder asset {}. Skipping import.",
+                            folder.getName());
                     continue;
                 }
 
@@ -175,7 +215,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                logger.info("Processing local Scenario asset configuration: '{}'", file.getName());
+                logger.info("Processing local Scenario asset folder layout: '{}'", folder.getName());
 
                 Optional<VcfaScenario> existingRemote = remoteScenarios.stream()
                         .filter(r -> r.getName().equalsIgnoreCase(localScenario.getName()) ||
@@ -211,8 +251,9 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
         boolean sameEnabled = java.util.Objects.equals(remote.getEnabled(), local.getEnabled());
         boolean sameCategory = java.util.Objects.equals(remote.getScenarioCategory(), local.getScenarioCategory());
         boolean sameName = java.util.Objects.equals(remote.getName(), local.getName());
+        boolean sameBody = java.util.Objects.equals(remote.getBody(), local.getBody());
 
-        return sameEnabled && sameCategory && sameName;
+        return sameEnabled && sameCategory && sameName && sameBody;
     }
 
     /**
@@ -243,9 +284,12 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
                     Map<String, Object> rawMap = yaml.load(inputStream);
                     if (rawMap != null) {
-                        Object scenarioListObj = rawMap.containsKey("scenario");
+                        // --- FIXED: Fetch the value using .get() instead of evaluating containsKey()
+                        // to a Boolean ---
+                        Object scenarioListObj = rawMap.containsKey("scenarios") ? rawMap.get("scenarios")
+                                : rawMap.get("scenario");
 
-                        if (rawMap.containsKey("scenario") || rawMap.containsKey("scenario")) {
+                        if (rawMap.containsKey("scenarios") || rawMap.containsKey("scenario")) {
                             if (scenarioListObj instanceof List) {
                                 itemsToDelete = (List<String>) scenarioListObj;
                                 if (itemsToDelete.isEmpty()) {

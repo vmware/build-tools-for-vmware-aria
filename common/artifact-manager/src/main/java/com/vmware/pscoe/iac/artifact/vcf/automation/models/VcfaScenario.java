@@ -31,6 +31,8 @@ public class VcfaScenario implements Identifiable {
 
     private Boolean enabled;
     private String scenarioCategory;
+    private String subject;
+    private String body;
 
     public VcfaScenario() {}
 
@@ -74,5 +76,21 @@ public class VcfaScenario implements Identifiable {
 
     public void setScenarioCategory(String scenarioCategory) {
         this.scenarioCategory = scenarioCategory;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }
