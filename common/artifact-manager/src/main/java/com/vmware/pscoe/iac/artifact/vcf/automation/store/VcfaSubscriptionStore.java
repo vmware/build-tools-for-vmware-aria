@@ -110,6 +110,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                 logger.info("Processing subscription: '{}'", subscriptionName);
 
                 String currentOrgId = restClient.getOrganizationId();
+                String currentProjectId = restClient.getProjectId();
                 String rawIdFromNode = subscriptionNode.has("id") && !subscriptionNode.get("id").isNull()
                         ? subscriptionNode.get("id").asText()
                         : null;
@@ -141,7 +142,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                             targetId);
                 }
 
-                VcfaPayloadSanitizer.sanitize(subscriptionNode);
+                VcfaPayloadSanitizer.sanitize(subscriptionNode, currentOrgId, currentProjectId);
                 subscriptionNode.put("id", targetId);
 
                 substituteProjects(subscriptionNode);
@@ -325,7 +326,9 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                 try {
                     ObjectNode exportNode = mapper.valueToTree(item);
 
-                    VcfaPayloadSanitizer.sanitize(exportNode);
+                    VcfaPayloadSanitizer.sanitize(exportNode,
+                            restClient.getOrganizationId(),
+                            restClient.getProjectId());
 
                     JsonNode runnableTypeNode = exportNode.get("runnableType");
                     if (runnableTypeNode != null && runnableTypeNode.asText().contains("extensibility.abx")) {
