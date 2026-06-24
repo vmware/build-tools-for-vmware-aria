@@ -24,13 +24,14 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 
@@ -51,9 +52,9 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
     public void exportContent() {
         logger.info("Pulling policy configurations from the remote environment...");
 
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Policy descriptor is explicitly empty in configuration. Bypassing server lookups and skipping export entirely.");
+            logger.info(
+                    "Policy descriptor is explicitly empty in configuration. Bypassing server lookups and skipping export entirely.");
             return;
         }
 
@@ -69,7 +70,6 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 return;
             }
 
-            // --- REPRODUCED SYSTEM LOGIC: Check for existing unrecovered environment backups ---
             List<String> activeBackups = new ArrayList<>();
             for (VcfaPolicy policy : remotePolicies) {
                 if (policy.getName() != null && policy.getName().contains(POLICY_BACKUP_SUFFIX)) {
@@ -77,7 +77,9 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 }
             }
             if (!activeBackups.isEmpty()) {
-                throw new RuntimeException("Policy backups found on server indicate that either an update is in progress or a previous update failure needs manual resolution: " + String.join(", ", activeBackups));
+                throw new RuntimeException(
+                        "Policy backups found on server indicate that either an update is in progress or a previous update failure needs manual resolution: "
+                                + String.join(", ", activeBackups));
             }
 
             Package serverPackage = this.vcfaPackage;
@@ -90,10 +92,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                // Determine the correct sub-folder name based on your content.yaml properties
                 String manifestCategory = translateTypeIdToManifestKey(policy.getTypeId());
-
-                // Construct the targeted category path (e.g., target/policies/approval/)
                 String categoryFolderPath = Paths.get(basePoliciesPath, manifestCategory).toString();
                 Files.createDirectories(Paths.get(categoryFolderPath));
 
@@ -101,7 +100,6 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 this.verifyAssetPathSafety(trackingName, "Policy Item");
                 File jsonFile = Paths.get(categoryFolderPath, trackingName + ".json").toFile();
 
-                // Convert model back to clean JSON node layout to scrub system properties
                 ObjectNode jsonNode = mapper.valueToTree(policy);
                 sanitizePolicyPayload(jsonNode);
 
@@ -125,9 +123,9 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
     public void importContent(File sourceDirectory) {
         logger.info("Importing policies from {}", sourceDirectory.getAbsolutePath());
 
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
         if (isExplicitlyEmptyInDescriptor()) {
-            logger.info("Policy descriptor is explicitly empty in configuration. Bypassing server lookups and skipping import entirely.");
+            logger.info(
+                    "Policy descriptor is explicitly empty in configuration. Bypassing server lookups and skipping import entirely.");
             return;
         }
 
@@ -144,12 +142,38 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
 
         try {
             List<VcfaPolicy> remotePolicies = restClient.getPolicies();
-
-            // Look for files across all category sub-folders
             File[] categoryDirs = localDir.listFiles(File::isDirectory);
             if (categoryDirs == null || categoryDirs.length == 0) {
                 logger.info("No policy category sub-directories found to import.");
                 return;
+            }
+
+            // --- STRICT ENFORCEMENT FIX: Verify every single explicitly declared policy
+            // exists on disk ---
+            if (this.descriptor instanceof VcfaPackageDescriptor) {
+                VcfaPackageDescriptor localDescriptor = (VcfaPackageDescriptor) this.descriptor;
+                Map<String, List<String>> declaredPoliciesMap = localDescriptor.getPolicy();
+                if (declaredPoliciesMap != null) {
+                    for (Map.Entry<String, List<String>> entry : declaredPoliciesMap.entrySet()) {
+                        String category = entry.getKey();
+                        List<String> policyNames = entry.getValue();
+
+                        // Skip if the array is omitted/blank wildcard or explicitly empty '[]'
+                        if (policyNames == null || policyNames.isEmpty()) {
+                            continue;
+                        }
+
+                        File categoryDir = new File(localDir, category);
+                        for (String expectedName : policyNames) {
+                            File expectedFile = new File(categoryDir, expectedName + ".json");
+                            if (!expectedFile.exists()) {
+                                throw new IOException(String.format(
+                                        "CRITICAL WORKSPACE ERROR: Policy asset '%s.json' declared in manifest is missing from workspace category folder '%s/'.",
+                                        expectedName, category));
+                            }
+                        }
+                    }
+                }
             }
 
             for (File subDir : categoryDirs) {
@@ -172,7 +196,6 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                     logger.info("Processing local Policy asset configuration: '{}/{}'", subDir.getName(),
                             file.getName());
 
-                    // --- REPRODUCED SYSTEM LOGIC: Populate multi-tenant boundaries ---
                     localPolicy.setOrgId(restClient.getOrganizationId());
                     if (localPolicy.getProjectId() != null && !localPolicy.getProjectId().isBlank()) {
                         localPolicy.setProjectId(restClient.getProjectId());
@@ -189,7 +212,8 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                             logger.info("Policy '{}' matches remote system configuration exactly. Skipping update.",
                                     trackingName);
                         } else {
-                            logger.info("Delta detected for Policy '{}'. Executing atomic transaction update lifecycle.",
+                            logger.info(
+                                    "Delta detected for Policy '{}'. Executing atomic transaction update lifecycle.",
                                     trackingName);
                             executeAtomicPolicyUpdate(remoteMatch, localPolicy);
                         }
@@ -206,27 +230,26 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
         }
     }
 
-    /**
-     * Executes the legacy safe policy change engine to prevent data loss or drift.
-     */
     private void executeAtomicPolicyUpdate(VcfaPolicy remoteMatch, VcfaPolicy localPolicy) {
         String originalName = remoteMatch.getName();
         String backupName = originalName + POLICY_BACKUP_SUFFIX;
-        
-        logger.debug("Backing up existing Policy state with ID={} to tracking name '{}'", remoteMatch.getId(), backupName);
+
+        logger.debug("Backing up existing Policy state with ID={} to tracking name '{}'", remoteMatch.getId(),
+                backupName);
         try {
             remoteMatch.setName(backupName);
             restClient.createOrUpdatePolicy(remoteMatch);
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Transaction Interrupted: Failed creating staging rollback checkpoint for policy '%s'", originalName), e);
+            throw new RuntimeException(String.format(
+                    "Transaction Interrupted: Failed creating staging rollback checkpoint for policy '%s'",
+                    originalName), e);
         }
 
         try {
             logger.info("Pushing refreshed configuration structure for policy asset: '{}'", originalName);
-            localPolicy.setId(null); // Clear reference to create a fresh record node
+            localPolicy.setId(null);
             restClient.createOrUpdatePolicy(localPolicy);
-            
-            // Clean up old checkpoint payload upon transaction success
+
             try {
                 logger.debug("Purging transient asset backup reference ID: {}", remoteMatch.getId());
                 restClient.deletePolicy(remoteMatch.getId());
@@ -234,13 +257,16 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 logger.warn("Cleanup Warning: Failed purging active backup resource placeholder: '{}'", backupName, e);
             }
         } catch (Exception e) {
-            logger.error("Creation failed for update record. Attempting atomic cluster state rollback restoration...", e);
+            logger.error("Creation failed for update record. Attempting atomic cluster state rollback restoration...",
+                    e);
             try {
                 remoteMatch.setName(originalName);
                 restClient.createOrUpdatePolicy(remoteMatch);
                 logger.info("Rollback complete. Original environment configuration state successfully restored.");
             } catch (Exception rollbackException) {
-                logger.error("CRITICAL: Rollback failed. Asset cluster definition is out of sync. Please resolve from UI at placeholder: '{}'", backupName, rollbackException);
+                logger.error(
+                        "CRITICAL: Rollback failed. Asset cluster definition is out of sync. Please resolve from UI at placeholder: '{}'",
+                        backupName, rollbackException);
             }
             throw new RuntimeException("Policy deployment failed: " + e.getMessage(), e);
         }
@@ -259,12 +285,10 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
         if (remote == null || local == null) {
             return false;
         }
-        boolean sameName = java.util.Objects.equals(remote.getName(), local.getName());
-        boolean sameTypeId = java.util.Objects.equals(remote.getTypeId(), local.getTypeId());
-        boolean sameEnforcement = java.util.Objects.equals(remote.getEnforcementType(), local.getEnforcementType());
-        boolean sameDefinition = java.util.Objects.equals(remote.getDefinition(), local.getDefinition());
-
-        return sameName && sameTypeId && sameEnforcement && sameDefinition;
+        return Objects.equals(remote.getName(), local.getName())
+                && Objects.equals(remote.getTypeId(), local.getTypeId())
+                && Objects.equals(remote.getEnforcementType(), local.getEnforcementType())
+                && Objects.equals(remote.getDefinition(), local.getDefinition());
     }
 
     /**
@@ -280,32 +304,12 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 return;
             }
 
-            Map<String, Object> policyYamlBlock = null;
-            boolean isGlobalOmitted = true;
-
-            File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
-            if (!contentYamlFile.exists() && this.vcfaPackage != null) {
-                File packageDir = new File(this.vcfaPackage.getFilesystemPath());
-                File projectRoot = packageDir.getParentFile() != null ? packageDir.getParentFile() : packageDir;
-                contentYamlFile = new File(projectRoot, "content.yaml");
+            Map<String, List<String>> policyYamlBlock = null;
+            if (this.descriptor instanceof VcfaPackageDescriptor) {
+                policyYamlBlock = ((VcfaPackageDescriptor) this.descriptor).getPolicy();
             }
 
-            if (contentYamlFile.exists()) {
-                org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
-                try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
-                    Map<String, Object> rawMap = yaml.load(inputStream);
-                    if (rawMap != null && (rawMap.containsKey("policy") || rawMap.containsKey("policies"))) {
-                        Object policyObj = rawMap.containsKey("policy") ? rawMap.get("policy") : rawMap.get("policies");
-                        if (policyObj instanceof Map) {
-                            policyYamlBlock = (Map<String, Object>) policyObj;
-                            isGlobalOmitted = false;
-                        }
-                    }
-                }
-            }
-
-            // Scenario 1: Root policy key completely missing -> Wildcard Purge All
-            if (isGlobalOmitted || policyYamlBlock == null) {
+            if (policyYamlBlock == null) {
                 logger.info("Policy descriptor is completely omitted. Wildcard trigger: Purging ALL remote policies.");
                 for (VcfaPolicy remotePol : remotePolicies) {
                     logger.info("[WILDCARD DELETE] Deleting policy '{}' matching ID: {}", remotePol.getName(),
@@ -315,12 +319,9 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 return;
             }
 
-            // Scenario 2 & 3: Process entries based on category listings
             for (VcfaPolicy remotePol : remotePolicies) {
                 String manifestKey = translateTypeIdToManifestKey(remotePol.getTypeId());
 
-                // If a category type is omitted from the map entirely, treat it as a wildcard
-                // for that category
                 if (!policyYamlBlock.containsKey(manifestKey)) {
                     logger.info("[CATEGORY OMITTED] Policy category '{}' omitted from manifest. Purging policy: {}",
                             manifestKey, remotePol.getName());
@@ -328,12 +329,9 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                Object categoryListObj = policyYamlBlock.get(manifestKey);
+                List<String> targetedNames = policyYamlBlock.get(manifestKey);
 
-                // --- TUNING LOGIC FOR BLANK PROPERTIES ---
-                // If the category key is present but blank (null), it's a category wildcard!
-                // Delete it.
-                if (categoryListObj == null) {
+                if (targetedNames == null) {
                     logger.info(
                             "[CATEGORY WILDCARD] Policy category '{}' is blank. Deleting remote infrastructure instance: {}",
                             manifestKey, remotePol.getName());
@@ -341,59 +339,27 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                if (categoryListObj instanceof List) {
-                    List<String> targetedNames = (List<String>) categoryListObj;
+                if (targetedNames.isEmpty()) {
+                    continue;
+                }
 
-                    // If explicitly empty '[]', user wants to keep everything on server. Skip
-                    // deletion!
-                    if (targetedNames.isEmpty()) {
-                        continue;
-                    }
-
-                    // If target list matches, execute deletion sequence
-                    if (targetedNames.contains(remotePol.getName())) {
-                        logger.info("[TARGETED DELETE] Deleting policy '{}' found in manifest category '{}'",
-                                remotePol.getName(), manifestKey);
-                        restClient.deletePolicy(remotePol.getId());
-                    }
+                if (targetedNames.contains(remotePol.getName())) {
+                    logger.info("[TARGETED DELETE] Deleting policy '{}' found in manifest category '{}'",
+                            remotePol.getName(), manifestKey);
+                    restClient.deletePolicy(remotePol.getId());
                 }
             }
-
         } catch (IOException e) {
             throw new RuntimeException("Fatal error encountered clearing existing infrastructure policy definitions",
                     e);
         }
     }
 
-    /**
-     * Helper to safely extract and determine if the configuration block array is explicitly initialized to '[]' or empty map loops.
-     */
     private boolean isExplicitlyEmptyInDescriptor() {
-        VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing manifest layout rules map token details.", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
+        if (!(this.descriptor instanceof VcfaPackageDescriptor)) {
             return false;
         }
-
-        Map<String, List<String>> allowedPoliciesMap = localDescriptor.getPolicy();
+        Map<String, List<String>> allowedPoliciesMap = ((VcfaPackageDescriptor) this.descriptor).getPolicy();
         if (allowedPoliciesMap == null) {
             return false;
         }
@@ -402,7 +368,6 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
             return true;
         }
 
-        // Verify if all declared internal configuration mappings are structurally marked explicitly blank/empty lists
         for (List<String> list : allowedPoliciesMap.values()) {
             if (list == null || !list.isEmpty()) {
                 return false;
@@ -417,32 +382,12 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
             return true;
         }
 
-        String trackingName = policy.getName();
-        VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing content.yaml within policy descriptor check block", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
+        if (!(this.descriptor instanceof VcfaPackageDescriptor)) {
             return false;
         }
 
-        Map<String, List<String>> allowedPoliciesMap = localDescriptor.getPolicy();
+        String trackingName = policy.getName();
+        Map<String, List<String>> allowedPoliciesMap = ((VcfaPackageDescriptor) this.descriptor).getPolicy();
         if (allowedPoliciesMap == null) {
             return false;
         }
@@ -451,28 +396,22 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
             return true;
         }
 
-        // Translate the backend policy typeId to your friendly yaml key (e.g. "approval")
         String manifestKey = translateTypeIdToManifestKey(policy.getTypeId());
 
-        // If the category key isn't even declared in the yaml, exclude its contents
         if (!allowedPoliciesMap.containsKey(manifestKey)) {
             return true;
         }
 
         List<String> policyNamesList = allowedPoliciesMap.get(manifestKey);
 
-        // --- NEW TUNING LOGIC ---
-        // If the key exists but is null/blank (e.g., "approval: "), it's an open wildcard. Do not exclude!
         if (policyNamesList == null) {
             return false;
         }
 
-        // If explicitly initialized as an empty array "approval: []", it means allow nothing. Exclude!
         if (policyNamesList.isEmpty()) {
             return true;
         }
 
-        // If it's a populated array, check if it contains our specific policy name
         return !policyNamesList.contains(trackingName);
     }
 
@@ -484,8 +423,8 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
             case "com.vmware.policy.approval":
                 return "approval";
             case "com.vmware.policy.day2-actions":
-            case "com.vmware.policy.deployment.action":
             case "com.vmware.policy.day2":
+            case "com.vmware.policy.deployment.action":
                 return "day2-actions";
             case "com.vmware.policy.lease":
                 return "lease";
@@ -494,7 +433,6 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
             case "com.vmware.policy.supervisor.iaas":
                 return "iaas-resource";
             default:
-                // Fallback to lowercase stripped name if an unexpected type comes up
                 return typeId.substring(typeId.lastIndexOf('.') + 1).toLowerCase();
         }
     }

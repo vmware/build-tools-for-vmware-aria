@@ -39,6 +39,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFolderFilter;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 
 /**
@@ -46,13 +47,19 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
  * framework-injected descriptor context.
  */
 public class VcfaBlueprintStore extends AbstractVcfaStore {
+    private static final String DIR_BLUEPRINTS = "blueprints";
 
     /**
      * Import blueprint contents from the source directory.
      */
     @Override
     public void importContent(File sourceDirectory) {
-        File bpFolder = new File(Paths.get(sourceDirectory.getPath(), "blueprints").toString());
+        File bpFolder = Paths.get(sourceDirectory.getPath(), DIR_BLUEPRINTS).toFile();
+
+        // --- NEW: COUPLING WORKSPACE DEPLOYMENT ACCURACY VALIDATION ---
+        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, bpFolder, "Blueprint", true, "blueprint",
+                "blueprints");
+
         if (!bpFolder.exists()) {
             logger.info("No blueprints available - skip import");
             return;
@@ -127,113 +134,63 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     }
 
     /**
-     * Log deletion info (actual deletion handled elsewhere).
+     * Wipes remote infrastructure blueprints based on Tristate descriptor rules.
      */
     @Override
     public void deleteContent() {
         logger.info("Executing cleanup deletion scanning for Blueprint entities...");
         try {
-            List<com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint> remoteBlueprints = restClient
-                    .getBlueprints();
+            List<VcfaBlueprint> remoteBlueprints = restClient.getBlueprints();
             if (remoteBlueprints == null || remoteBlueprints.isEmpty()) {
                 logger.info("No remote blueprints identified to delete.");
                 return;
             }
 
-            List<String> itemsToDelete = null;
-            boolean isExplicitlyEmpty = false;
+            // --- STREAMLINED: FETCH DELETION TARGETS VIA SHARED UTILITY ---
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "blueprint",
+                    "blueprints");
 
-            File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
-            if (!contentYamlFile.exists() && this.vcfaPackage != null) {
-                File packageDir = new File(this.vcfaPackage.getFilesystemPath());
-                File projectRoot = packageDir.getParentFile() != null ? packageDir.getParentFile() : packageDir;
-                contentYamlFile = new File(projectRoot, "content.yaml");
-            }
-
-            if (contentYamlFile.exists()) {
-                org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
-                try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
-                    Map<String, Object> rawMap = yaml.load(inputStream);
-                    if (rawMap != null) {
-                        Object blueprintListObj = rawMap.containsKey("blueprint") ? rawMap.get("blueprint")
-                                : rawMap.get("blueprints");
-
-                        if (rawMap.containsKey("blueprint") || rawMap.containsKey("blueprints")) {
-                            if (blueprintListObj instanceof List) {
-                                itemsToDelete = (List<String>) blueprintListObj;
-                                if (itemsToDelete.isEmpty()) {
-                                    isExplicitlyEmpty = true;
-                                }
-                            }
-                        }
-                    }
+            if (itemsToDelete == null) {
+                logger.info(
+                        "Blueprint descriptor is undefined/null. Wildcard trigger active: Purging ALL remote blueprints.");
+                for (VcfaBlueprint bp : remoteBlueprints) {
+                    logger.info("[WILDCARD DELETE] Deleting blueprint named '{}'", bp.getName());
+                    restClient.deleteBlueprint(bp.getId());
                 }
+                return;
             }
 
-            if (isExplicitlyEmpty) {
+            if (itemsToDelete.isEmpty()) {
                 logger.info("Blueprint descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
 
-            if (itemsToDelete == null) {
-                logger.info(
-                        "Blueprint descriptor is undefined/null. Omitted wildcard trigger: Initiating purge for ALL remote blueprints.");
-                for (com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint remoteBP : remoteBlueprints) {
-                    logger.info("[WILDCARD DELETE] Deleting blueprint named '{}' matching ID: {}", remoteBP.getName(),
-                            remoteBP.getId());
-                    restClient.deleteBlueprint(remoteBP.getId());
-                }
-                return;
-            }
-
             logger.info("Blueprint targeted filter list active. Evaluating matching entries for deletion sequence...");
-            for (com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint remoteBP : remoteBlueprints) {
-                String remoteName = remoteBP.getName();
-                if (itemsToDelete.contains(remoteName)) {
-                    logger.info("[TARGETED DELETE] Deleting blueprint named '{}' matching ID: {}", remoteName,
-                            remoteBP.getId());
-                    restClient.deleteBlueprint(remoteBP.getId());
+            for (VcfaBlueprint bp : remoteBlueprints) {
+                String name = bp.getName();
+                if (itemsToDelete.contains(name)) {
+                    logger.info("[TARGETED DELETE] Deleting blueprint named '{}'", name);
+                    restClient.deleteBlueprint(bp.getId());
                 }
             }
-
         } catch (IOException e) {
             throw new RuntimeException("Fatal error encountered clearing existing infrastructure blueprint definitions",
                     e);
         }
     }
 
+    /**
+     * Streamlined local exclusion rule evaluator.
+     */
     private boolean isExcludedByDescriptor(String bpName) {
-        com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor localDescriptor = null;
+        List<String> allowedBps = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "blueprint", "blueprints");
 
-        if (this.descriptor instanceof com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) {
-            localDescriptor = (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor
-                                .getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedBps = localDescriptor.getBlueprint();
         if (allowedBps == null) {
-            return false;
+            return false; // Wildcard active, nothing is excluded
         }
 
         if (allowedBps.isEmpty()) {
-            return true;
+            return true; // Explicitly empty means exclude everything
         }
 
         return !allowedBps.contains(bpName);
@@ -362,7 +319,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                                 "Form configuration updates detected for blueprint '{}'. Triggering updates sequence...",
                                 bpName);
 
-                        // --- FIXED: Extract style variable or track it to pass as 7th parameter ---
                         String cssStylesPayload = "";
                         if (stylesFile.exists()) {
                             cssStylesPayload = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
@@ -467,7 +423,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      */
     private void saveBlueprintToDisk(VcfaBlueprint bp, Package serverPackage, ObjectMapper mapper) throws IOException {
         String blueprintDir = Paths.get(
-                new File(serverPackage.getFilesystemPath()).getPath(), "blueprints", bp.getName()).toString();
+                new File(serverPackage.getFilesystemPath()).getPath(), DIR_BLUEPRINTS, bp.getName()).toString();
 
         File bpFolder = new File(blueprintDir);
         if (!bpFolder.exists()) {
@@ -524,15 +480,11 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                         formElement = com.google.gson.JsonParser.parseString(rawJson).getAsJsonObject();
                     }
 
-                    // --- STRUCTURAL CORRECTION: Extract "styles" from the ROOT wrapper map sibling
-                    // level ---
                     String cssStyles = "";
                     if (formMetaMap.containsKey("styles") && formMetaMap.get("styles") != null) {
                         cssStyles = formMetaMap.get("styles").toString();
                     }
 
-                    // Re-nest the sanitized form sub-property back into the wrapper structure
-                    // (excluding styles sibling)
                     String serializedFormJson = gson.toJson(formElement);
 
                     String formFileName = bp.getName() + "__FormData.json";
