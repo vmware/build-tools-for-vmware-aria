@@ -31,31 +31,71 @@ public class VcfaBlueprint implements Identifiable {
     private String name;
     private String description;
     private String content;
+    private String styles;
     @SkipExport
     private String projectId;
 
     @JsonProperty("requestScopeOrg")
     private Boolean requestScopeOrg;
 
-    public VcfaBlueprint() {}
+    public VcfaBlueprint() {
+    }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getProjectId() { return projectId; }
-    public void setProjectId(String projectId) { this.projectId = projectId; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Boolean getRequestScopeOrg() { return requestScopeOrg; }
-    public void setRequestScopeOrg(Boolean requestScopeOrg) { this.requestScopeOrg = requestScopeOrg; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getStyles() {
+        return styles;
+    }
+
+    public void setStyles(String styles) {
+        this.styles = styles;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
+    public Boolean getRequestScopeOrg() {
+        return requestScopeOrg;
+    }
+
+    public void setRequestScopeOrg(Boolean requestScopeOrg) {
+        this.requestScopeOrg = requestScopeOrg;
+    }
 
     /**
      * Converts the blueprint fields into a Map for API payload transmission.
@@ -66,13 +106,15 @@ public class VcfaBlueprint implements Identifiable {
         map.put("name", name);
         map.put("description", description);
         map.put("content", content);
+        map.put("styles", styles);
         map.put("projectId", projectId);
         map.put("requestScopeOrg", requestScopeOrg);
         return map;
     }
 
     /**
-     * Returns a Map of all fields, including those normally excluded by annotations.
+     * Returns a Map of all fields, including those normally excluded by
+     * annotations.
      */
     public Map<String, Object> asExportMap() {
         return toMap();
