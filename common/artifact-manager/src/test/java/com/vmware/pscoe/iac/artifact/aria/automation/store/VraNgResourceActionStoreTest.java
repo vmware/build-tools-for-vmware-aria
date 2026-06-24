@@ -14,8 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -36,6 +35,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
@@ -46,6 +49,7 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.ResourceActionMockBuilder;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgResourceActionStoreTest {
 
@@ -249,5 +253,41 @@ public class VraNgResourceActionStoreTest {
 
 		// VERIFY
 		verify(restClient, times(1)).getAllResourceActions();
+	}
+
+	// ==================== VcfaPayloadSanitizer Tests ====================
+
+	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+
+	@Test
+	void testSanitizeResourceActionJsonElement_RemovesOrgId() {
+		JsonObject resourceActionJson = GSON.fromJson(
+			"{\"name\":\"TestAction\",\"orgId\":\"old-org-id\",\"resourceType\":\"Custom.Resource\"}",
+			JsonObject.class
+		);
+
+		VcfaPayloadSanitizer.sanitize(resourceActionJson);
+
+		assertFalse(resourceActionJson.has("orgId"), "orgId should be removed");
+		assertTrue(resourceActionJson.has("name"), "name should be preserved");
+		assertTrue(resourceActionJson.has("resourceType"), "resourceType should be preserved");
+	}
+
+	@Test
+	void testSanitizeResourceActionJsonElement_ScrubsLegacyId() {
+		JsonObject resourceActionJson = GSON.fromJson(
+			"{\"id\":\"null-action-123\",\"name\":\"TestAction\"}",
+			JsonObject.class
+		);
+
+		VcfaPayloadSanitizer.sanitize(resourceActionJson);
+
+		assertEquals("action-123", resourceActionJson.get("id").getAsString(), "Legacy null- prefix should be scrubbed");
+	}
+
+	@Test
+	void testSanitizeResourceActionJsonElement_NullHandling() {
+		JsonElement result = VcfaPayloadSanitizer.sanitize((JsonElement) null);
+		assertNull(result, "Null element should return null");
 	}
 }
