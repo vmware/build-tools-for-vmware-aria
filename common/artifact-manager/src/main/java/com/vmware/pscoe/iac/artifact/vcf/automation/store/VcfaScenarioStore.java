@@ -22,17 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaScenario;
-import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 
 public class VcfaScenarioStore extends AbstractVcfaStore {
 
@@ -51,8 +49,9 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
     public void exportContent() {
         logger.info("Pulling scenario configurations from the remote environment...");
 
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
-        if (isExplicitlyEmptyInDescriptor()) {
+        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+                "scenario");
+        if (allowedScenarios != null && allowedScenarios.isEmpty()) {
             logger.info(
                     "Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
             return;
@@ -76,26 +75,20 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
             Files.createDirectories(Paths.get(baseScenariosPath));
 
             for (VcfaScenario scenario : remoteScenarios) {
-                String trackingName = scenario.getName(); // scenarioName
+                String trackingName = scenario.getName();
 
                 if (isExcludedByDescriptor(trackingName)) {
                     logger.info("Scenario '{}' is excluded by descriptor rules. Skipping export.", trackingName);
                     continue;
                 }
 
-                // --- CHANGED LOGIC: Preserve the exact scenario name for the filename ---
-                // Only strips characters that are strictly illegal across all major OS
-                // filesystems (\ / : * ? " < > |)
-                this.verifyAssetPathSafety(trackingName, "Scenatio");
+                this.verifyAssetPathSafety(trackingName, "Scenario");
 
-                // Create individual subfolder based on the scenario display name
                 File scenarioFolder = Paths.get(baseScenariosPath, trackingName).toFile();
                 if (!scenarioFolder.exists()) {
                     scenarioFolder.mkdirs();
                 }
 
-                // --- REPRODUCED SYSTEM LOGIC: Align underlying payload schema maps with native
-                // keys ---
                 ObjectNode jsonNode = mapper.valueToTree(scenario);
                 if (!jsonNode.has("scenarioName") && scenario.getName() != null) {
                     jsonNode.put("scenarioName", scenario.getName());
@@ -104,14 +97,12 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                     jsonNode.put("scenarioId", scenario.getId());
                 }
 
-                // Extract HTML content body if present to save separately
                 String htmlBody = "";
                 if (jsonNode.has("body") && !jsonNode.get("body").isNull()) {
                     htmlBody = jsonNode.get("body").asText();
-                    jsonNode.remove("body"); // Strip from metadata details.json file
+                    jsonNode.remove("body");
                 }
 
-                // File 1: details.json (Metadata only)
                 File detailsFile = Paths.get(scenarioFolder.getPath(), "details.json").toFile();
                 String serializedJson = mapper.writeValueAsString(jsonNode);
                 Files.write(
@@ -120,7 +111,6 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING);
 
-                // File 2: template.html (HTML payload content body)
                 File htmlFile = Paths.get(scenarioFolder.getPath(), "template.html").toFile();
                 Files.write(
                         htmlFile.toPath(),
@@ -143,8 +133,9 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
     public void importContent(File sourceDirectory) {
         logger.info("Importing scenario from {}", sourceDirectory.getAbsolutePath());
 
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
-        if (isExplicitlyEmptyInDescriptor()) {
+        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+                "scenario");
+        if (allowedScenarios != null && allowedScenarios.isEmpty()) {
             logger.info(
                     "Scenario descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
             return;
@@ -156,6 +147,12 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
         }
 
         File localDir = Paths.get(sourceDirectory.getPath(), DIR_SCENARIOS).toFile();
+
+        // --- NEW STRATEGIC COUPLING: Call the unified workspace missing asset
+        // validator (Folders only) ---
+        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, localDir, "Scenario", true, "scenarios",
+                "scenario");
+
         if (!localDir.exists() || !localDir.isDirectory()) {
             logger.info("Scenarios directory not found. Skipping.");
             return;
@@ -173,18 +170,14 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 File detailsFile = new File(folder, "details.json");
                 File htmlFile = new File(folder, "template.html");
 
-                // Enforce mandatory file check inside workspace layout folder
                 if (!detailsFile.exists()) {
                     logger.warn("Skipping directory {}. Root details.json could not be resolved.", folder.getPath());
                     continue;
                 }
 
-                // --- REPRODUCED SYSTEM LOGIC: Process file using flexible schema token
-                // fallbacks ---
                 String jsonContent = new String(Files.readAllBytes(detailsFile.toPath()), StandardCharsets.UTF_8);
                 ObjectNode rootNode = (ObjectNode) mapper.readTree(jsonContent);
 
-                // Read and re-stitch HTML content body back into payload map if it exists
                 if (htmlFile.exists()) {
                     String htmlContent = new String(Files.readAllBytes(htmlFile.toPath()), StandardCharsets.UTF_8);
                     rootNode.put("body", htmlContent);
@@ -248,12 +241,10 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
         if (remote == null || local == null) {
             return false;
         }
-        boolean sameEnabled = java.util.Objects.equals(remote.getEnabled(), local.getEnabled());
-        boolean sameCategory = java.util.Objects.equals(remote.getScenarioCategory(), local.getScenarioCategory());
-        boolean sameName = java.util.Objects.equals(remote.getName(), local.getName());
-        boolean sameBody = java.util.Objects.equals(remote.getBody(), local.getBody());
-
-        return sameEnabled && sameCategory && sameName && sameBody;
+        return Objects.equals(remote.getEnabled(), local.getEnabled())
+                && Objects.equals(remote.getScenarioCategory(), local.getScenarioCategory())
+                && Objects.equals(remote.getName(), local.getName())
+                && Objects.equals(remote.getBody(), local.getBody());
     }
 
     /**
@@ -269,43 +260,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = null;
-            boolean isExplicitlyEmpty = false;
-
-            File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
-            if (!contentYamlFile.exists() && this.vcfaPackage != null) {
-                File packageDir = new File(this.vcfaPackage.getFilesystemPath());
-                File projectRoot = packageDir.getParentFile() != null ? packageDir.getParentFile() : packageDir;
-                contentYamlFile = new File(projectRoot, "content.yaml");
-            }
-
-            if (contentYamlFile.exists()) {
-                org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
-                try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
-                    Map<String, Object> rawMap = yaml.load(inputStream);
-                    if (rawMap != null) {
-                        // --- FIXED: Fetch the value using .get() instead of evaluating containsKey()
-                        // to a Boolean ---
-                        Object scenarioListObj = rawMap.containsKey("scenarios") ? rawMap.get("scenarios")
-                                : rawMap.get("scenario");
-
-                        if (rawMap.containsKey("scenarios") || rawMap.containsKey("scenario")) {
-                            if (scenarioListObj instanceof List) {
-                                itemsToDelete = (List<String>) scenarioListObj;
-                                if (itemsToDelete.isEmpty()) {
-                                    isExplicitlyEmpty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // --- TRISTATE EVALUATION ---
-            if (isExplicitlyEmpty) {
-                logger.info("Scenario descriptor is explicitly empty '[]'. Skipping deletion entirely.");
-                return;
-            }
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+                    "scenario");
 
             if (itemsToDelete == null) {
                 logger.info("Scenario descriptor is undefined/null. Purging ALL remote scenario.");
@@ -314,6 +270,11 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                             remoteScen.getId());
                     restClient.deleteScenario(remoteScen.getId());
                 }
+                return;
+            }
+
+            if (itemsToDelete.isEmpty()) {
+                logger.info("Scenario descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
 
@@ -326,80 +287,21 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                     restClient.deleteScenario(remoteScen.getId());
                 }
             }
-
         } catch (IOException e) {
             throw new RuntimeException("Fatal error encountered clearing existing infrastructure scenario definitions",
                     e);
         }
     }
 
-    /**
-     * Helper to safely extract and determine if the configuration block array is
-     * explicitly initialized to '[]'.
-     */
-    private boolean isExplicitlyEmptyInDescriptor() {
-        VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing manifest layout rules map token details.", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedScenarios = localDescriptor.getScenarios();
-        return allowedScenarios != null && allowedScenarios.isEmpty();
-    }
-
     private boolean isExcludedByDescriptor(String trackingName) {
-        VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing content.yaml within scenario descriptor check block", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedScenarios = localDescriptor.getScenarios();
+        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+                "scenario");
         if (allowedScenarios == null) {
             return false;
         }
-
         if (allowedScenarios.isEmpty()) {
             return true;
         }
-
         return !allowedScenarios.contains(trackingName);
     }
 }

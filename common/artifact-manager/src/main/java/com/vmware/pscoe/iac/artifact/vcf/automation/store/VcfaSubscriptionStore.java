@@ -27,33 +27,39 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaSubscription;
 
 public class VcfaSubscriptionStore extends AbstractVcfaStore {
 
+    private static final String DIR_SUBSCRIPTIONS = "subscriptions";
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void importContent(File sourceDirectory) {
         logger.info("Importing subscriptions from {}", sourceDirectory.getAbsolutePath());
 
-        // --- OPTIMIZATION STEP 1: Short-circuit gate validation check ---
-        if (isExplicitlyEmptyInDescriptor()) {
+        List<String> allowedSubs = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+                "subscriptions");
+
+        if (allowedSubs != null && allowedSubs.isEmpty()) {
             logger.info(
                     "Subscription descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
             return;
         }
 
-        File subsFolder = Paths.get(sourceDirectory.getPath(), "subscriptions").toFile();
+        File subsFolder = Paths.get(sourceDirectory.getPath(), DIR_SUBSCRIPTIONS).toFile();
+
+        // --- NEW STRATEGIC COUPLING: Call the unified flexible asset validator ---
+        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, subsFolder, "Subscription", false, "subscription",
+                "subscriptions");
+
         if (!subsFolder.exists() || !subsFolder.isDirectory()) {
             logger.info("Subscriptions directory not found. Skipping.");
             return;
@@ -97,6 +103,160 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
         }
     }
 
+    @Override
+    public void exportContent() {
+        logger.info("Pulling subscription configurations from the remote environment...");
+
+        List<String> allowedSubs = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+                "subscriptions");
+        if (allowedSubs != null && allowedSubs.isEmpty()) {
+            logger.info(
+                    "Subscription descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
+            return;
+        }
+
+        try {
+            List<VcfaSubscription> items = restClient.getSubscriptions();
+            if (items == null || items.isEmpty()) {
+                logger.info("No remote subscriptions found to export.");
+                return;
+            }
+
+            Package serverPackage = this.vcfaPackage;
+            String baseSubsPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), DIR_SUBSCRIPTIONS)
+                    .toString();
+
+            for (VcfaSubscription item : items) {
+                String name = item.getName() != null ? item.getName() : item.getId();
+
+                if (isExcludedByDescriptor(name)) {
+                    logger.info("Subscription '{}' is excluded by descriptor configuration rules. Skipping export.",
+                            name);
+                    continue;
+                }
+
+                File flatFile = Paths.get(baseSubsPath, name + ".json").toFile();
+                File nestedDir = Paths.get(baseSubsPath, name).toFile();
+                String finalTargetFilePath;
+
+                if (nestedDir.exists() && nestedDir.isDirectory()) {
+                    finalTargetFilePath = Paths.get(nestedDir.getPath(), "details.json").toString();
+                } else if (flatFile.exists()) {
+                    finalTargetFilePath = flatFile.getPath();
+                } else {
+                    Files.createDirectories(Paths.get(baseSubsPath));
+                    finalTargetFilePath = flatFile.getPath();
+                }
+
+                try {
+                    ObjectNode exportNode = mapper.valueToTree(item);
+                    VcfaPayloadSanitizer.sanitize(exportNode);
+
+                    JsonNode runnableTypeNode = exportNode.get("runnableType");
+                    if (runnableTypeNode != null && runnableTypeNode.asText().contains("extensibility.abx")) {
+                        JsonNode runnableIdNode = exportNode.get("runnableId");
+                        if (runnableIdNode != null) {
+                            String rId = runnableIdNode.asText();
+                            String abxName = restClient.getAbxActionNameById(rId);
+                            if (abxName == null) {
+                                throw new RuntimeException(
+                                        "Export failed: Subscription targets an internal ABX Action ID '" + rId
+                                                + "' which does not exist on this environment server source instance.");
+                            }
+                            exportNode.remove("runnableId");
+                            exportNode.put("runnableName", abxName);
+                        }
+                    }
+
+                    JsonNode constraintsNode = exportNode.get("constraints");
+                    if (constraintsNode != null && constraintsNode.isObject() && constraintsNode.has("projectId")) {
+                        JsonNode projectIdNode = constraintsNode.get("projectId");
+                        if (projectIdNode.isArray() && projectIdNode.size() > 0) {
+                            ArrayNode projectNamesNode = mapper.createArrayNode();
+                            for (JsonNode idNode : projectIdNode) {
+                                String pName = restClient.getProjectNameById();
+                                if (pName != null) {
+                                    projectNamesNode.add(pName);
+                                }
+                            }
+                            ((ObjectNode) constraintsNode).set("projectNames", projectNamesNode);
+                        }
+                    }
+
+                    String sanitizedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(exportNode);
+                    Files.write(
+                            Paths.get(finalTargetFilePath),
+                            sanitizedJson.getBytes(StandardCharsets.UTF_8),
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING);
+
+                    logger.info("Successfully synchronized subscription asset: {}", finalTargetFilePath);
+                } catch (IOException e) {
+                    logger.error("Unable to write synchronized subscription file artifact: {}", name, e);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Fatal operational exception processing subscription sync export stream", e);
+        }
+    }
+
+    @Override
+    public void deleteContent() {
+        logger.info("Executing cleanup deletion scanning for Subscription entities...");
+        try {
+            List<VcfaSubscription> remoteSubscriptions = restClient.getSubscriptions();
+            if (remoteSubscriptions == null || remoteSubscriptions.isEmpty()) {
+                logger.info("No remote subscriptions identified to delete.");
+                return;
+            }
+
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+                    "subscriptions");
+
+            if (itemsToDelete == null) {
+                logger.info(
+                        "Subscription descriptor is undefined/null. Omitted wildcard trigger: Initiating purge for ALL remote subscriptions.");
+                for (VcfaSubscription remoteSub : remoteSubscriptions) {
+                    logger.info("[WILDCARD DELETE] Deleting subscription named '{}' matching ID: {}",
+                            remoteSub.getName(), remoteSub.getId());
+                    restClient.deleteSubscription(remoteSub.getId());
+                }
+                return;
+            }
+
+            if (itemsToDelete.isEmpty()) {
+                logger.info("Subscription descriptor is explicitly empty '[]'. Skipping deletion entirely.");
+                return;
+            }
+
+            logger.info(
+                    "Subscription targeted filter list active. Evaluating matching entries for deletion sequence...");
+            for (VcfaSubscription remoteSub : remoteSubscriptions) {
+                String remoteName = remoteSub.getName();
+                if (itemsToDelete.contains(remoteName)) {
+                    logger.info("[TARGETED DELETE] Deleting subscription named '{}' matching ID: {}", remoteName,
+                            remoteSub.getId());
+                    restClient.deleteSubscription(remoteSub.getId());
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Fatal error encountered clearing existing infrastructure subscription definitions", e);
+        }
+    }
+
+    private boolean isExcludedByDescriptor(String subscriptionName) {
+        List<String> allowedSubscriptions = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+                "subscriptions");
+        if (allowedSubscriptions == null) {
+            return false;
+        }
+        if (allowedSubscriptions.isEmpty()) {
+            return true;
+        }
+        return !allowedSubscriptions.contains(subscriptionName);
+    }
+
     private void importSubscription(File jsonFile, Map<String, VcfaSubscription> existingSubMap) {
         try {
             String jsonContent = new String(Files.readAllBytes(jsonFile.toPath()), StandardCharsets.UTF_8);
@@ -120,8 +280,6 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
 
                 if (rawIdFromNode != null && !rawIdFromNode.trim().isEmpty()
                         && !"null".equalsIgnoreCase(rawIdFromNode)) {
-                    // --- REINFORCED REPLACEMENT LOGIC: Clean out tenant UUID prefixes as well as
-                    // legacy literal "null-" artifacts ---
                     String strippedId = rawIdFromNode.replaceAll("^[\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}-", "");
                     strippedId = strippedId.replaceAll("^null-", "");
 
@@ -133,8 +291,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                         targetId = strippedId;
                     }
                 } else {
-                    targetId = hasValidOrgId
-                            ? (currentOrgId + "-sub_" + Math.abs(subscriptionName.hashCode()))
+                    targetId = hasValidOrgId ? (currentOrgId + "-sub_" + Math.abs(subscriptionName.hashCode()))
                             : ("sub_" + Math.abs(subscriptionName.hashCode()));
                     logger.debug(
                             "Subscription Id missing or invalid in payload. Generated hashcode designation identity: {}",
@@ -181,16 +338,13 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
             return false;
         }
 
-        boolean sameDisabledState = java.util.Objects.equals(remote.getDisabled(), local.getDisabled());
-        boolean sameBlockingState = java.util.Objects.equals(remote.getBlocking(), local.getBlocking());
-        boolean samePriority = java.util.Objects.equals(remote.getPriority(), local.getPriority());
-        boolean sameTopic = java.util.Objects.equals(remote.getEventTopicId(), local.getEventTopicId());
-        boolean sameCriteria = java.util.Objects.equals(remote.getCriteria(), local.getCriteria());
-        boolean sameRunnableType = java.util.Objects.equals(remote.getRunnableType(), local.getRunnableType());
-        boolean sameRunnableId = java.util.Objects.equals(remote.getRunnableId(), local.getRunnableId());
-
-        return sameDisabledState && sameBlockingState && samePriority && sameTopic && sameCriteria && sameRunnableType
-                && sameRunnableId;
+        return Objects.equals(remote.getDisabled(), local.getDisabled())
+                && Objects.equals(remote.getBlocking(), local.getBlocking())
+                && Objects.equals(remote.getPriority(), local.getPriority())
+                && Objects.equals(remote.getEventTopicId(), local.getEventTopicId())
+                && Objects.equals(remote.getCriteria(), local.getCriteria())
+                && Objects.equals(remote.getRunnableType(), local.getRunnableType())
+                && Objects.equals(remote.getRunnableId(), local.getRunnableId());
     }
 
     private void substituteProjects(ObjectNode content) {
@@ -200,7 +354,6 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
             JsonNode projectNamesNode = constraintObj.get("projectNames");
             JsonNode projectIdNode = constraintObj.get("projectId");
 
-            // Preserve explicit null projectId — means "use default", do not override
             if (projectIdNode != null && projectIdNode.isNull()) {
                 return;
             }
@@ -277,243 +430,5 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
             logger.error("Failed resolving infrastructure abxActionId mapping lookup for string name: {}", name, e);
             return null;
         }
-    }
-
-    @Override
-    public void exportContent() {
-        logger.info("Pulling subscription configurations from the remote environment...");
-
-        if (isExplicitlyEmptyInDescriptor()) {
-            logger.info(
-                    "Subscription descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
-            return;
-        }
-
-        try {
-            List<VcfaSubscription> items = restClient.getSubscriptions();
-            if (items == null || items.isEmpty()) {
-                logger.info("No remote subscriptions found to export.");
-                return;
-            }
-
-            Package serverPackage = this.vcfaPackage;
-            String baseSubsPath = Paths.get(new File(serverPackage.getFilesystemPath()).getPath(), "subscriptions")
-                    .toString();
-
-            for (VcfaSubscription item : items) {
-                String name = item.getName() != null ? item.getName() : item.getId();
-
-                if (isExcludedByDescriptor(name)) {
-                    logger.info("Subscription '{}' is excluded by descriptor configuration rules. Skipping export.",
-                            name);
-                    continue;
-                }
-
-                File flatFile = Paths.get(baseSubsPath, name + ".json").toFile();
-                File nestedDir = Paths.get(baseSubsPath, name).toFile();
-                String finalTargetFilePath;
-
-                if (nestedDir.exists() && nestedDir.isDirectory()) {
-                    finalTargetFilePath = Paths.get(nestedDir.getPath(), "details.json").toString();
-                } else if (flatFile.exists()) {
-                    finalTargetFilePath = flatFile.getPath();
-                } else {
-                    Files.createDirectories(Paths.get(baseSubsPath));
-                    finalTargetFilePath = flatFile.getPath();
-                }
-
-                try {
-                    ObjectNode exportNode = mapper.valueToTree(item);
-
-                    VcfaPayloadSanitizer.sanitize(exportNode);
-
-                    JsonNode runnableTypeNode = exportNode.get("runnableType");
-                    if (runnableTypeNode != null && runnableTypeNode.asText().contains("extensibility.abx")) {
-                        JsonNode runnableIdNode = exportNode.get("runnableId");
-                        if (runnableIdNode != null) {
-                            String rId = runnableIdNode.asText();
-                            String abxName = restClient.getAbxActionNameById(rId);
-                            if (abxName == null) {
-                                throw new RuntimeException(
-                                        "Export failed: Subscription targets an internal ABX Action ID '" + rId
-                                                + "' which does not exist on this environment server source instance.");
-                            }
-                            exportNode.remove("runnableId");
-                            exportNode.put("runnableName", abxName);
-                        }
-                    }
-
-                    JsonNode constraintsNode = exportNode.get("constraints");
-                    if (constraintsNode != null && constraintsNode.isObject() && constraintsNode.has("projectId")) {
-                        JsonNode projectIdNode = constraintsNode.get("projectId");
-                        if (projectIdNode.isArray() && projectIdNode.size() > 0) {
-                            ArrayNode projectNamesNode = mapper.createArrayNode();
-                            for (JsonNode idNode : projectIdNode) {
-                                String pName = restClient.getProjectNameById();
-                                if (pName != null) {
-                                    projectNamesNode.add(pName);
-                                }
-                            }
-                            ((ObjectNode) constraintsNode).set("projectNames", projectNamesNode);
-                        }
-                    }
-
-                    String sanitizedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(exportNode);
-                    Files.write(
-                            Paths.get(finalTargetFilePath),
-                            sanitizedJson.getBytes(StandardCharsets.UTF_8),
-                            StandardOpenOption.CREATE,
-                            StandardOpenOption.TRUNCATE_EXISTING);
-
-                    logger.info("Successfully synchronized subscription asset: {}", finalTargetFilePath);
-                } catch (IOException e) {
-                    logger.error("Unable to write synchronized subscription file artifact: {}", name, e);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Fatal operational exception processing subscription sync export stream", e);
-        }
-    }
-
-    @Override
-    public void deleteContent() {
-        logger.info("Executing cleanup deletion scanning for Subscription entities...");
-        try {
-            List<VcfaSubscription> remoteSubscriptions = restClient.getSubscriptions();
-            if (remoteSubscriptions == null || remoteSubscriptions.isEmpty()) {
-                logger.info("No remote subscriptions identified to delete.");
-                return;
-            }
-
-            List<String> itemsToDelete = null;
-            boolean isExplicitlyEmpty = false;
-
-            File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
-            if (!contentYamlFile.exists() && this.vcfaPackage != null) {
-                File packageDir = new File(this.vcfaPackage.getFilesystemPath());
-                File projectRoot = packageDir.getParentFile() != null ? packageDir.getParentFile() : packageDir;
-                contentYamlFile = new File(projectRoot, "content.yaml");
-            }
-
-            if (contentYamlFile.exists()) {
-                org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
-                try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
-                    Map<String, Object> rawMap = yaml.load(inputStream);
-                    if (rawMap != null) {
-                        Object subListObj = rawMap.containsKey("subscription") ? rawMap.get("subscription")
-                                : rawMap.get("subscriptions");
-
-                        if (rawMap.containsKey("subscription") || rawMap.containsKey("subscriptions")) {
-                            if (subListObj instanceof List) {
-                                itemsToDelete = (List<String>) subListObj;
-                                if (itemsToDelete.isEmpty()) {
-                                    isExplicitlyEmpty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (isExplicitlyEmpty) {
-                logger.info("Subscription descriptor is explicitly empty '[]'. Skipping deletion entirely.");
-                return;
-            }
-
-            if (itemsToDelete == null) {
-                logger.info(
-                        "Subscription descriptor is undefined/null. Omitted wildcard trigger: Initiating purge for ALL remote subscriptions.");
-                for (VcfaSubscription remoteSub : remoteSubscriptions) {
-                    logger.info("[WILDCARD DELETE] Deleting subscription named '{}' matching ID: {}",
-                            remoteSub.getName(), remoteSub.getId());
-                    restClient.deleteSubscription(remoteSub.getId());
-                }
-                return;
-            }
-
-            logger.info(
-                    "Subscription targeted filter list active. Evaluating matching entries for deletion sequence...");
-            for (VcfaSubscription remoteSub : remoteSubscriptions) {
-                String remoteName = remoteSub.getName();
-                if (itemsToDelete.contains(remoteName)) {
-                    logger.info("[TARGETED DELETE] Deleting subscription named '{}' matching ID: {}", remoteName,
-                            remoteSub.getId());
-                    restClient.deleteSubscription(remoteSub.getId());
-                }
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Fatal error encountered clearing existing infrastructure subscription definitions", e);
-        }
-    }
-
-    private boolean isExplicitlyEmptyInDescriptor() {
-        com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) {
-            localDescriptor = (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor
-                                .getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing manifest layout rules map token details.", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedSubscriptions = localDescriptor.getSubscription();
-        return allowedSubscriptions != null && allowedSubscriptions.isEmpty();
-    }
-
-    private boolean isExcludedByDescriptor(String subscriptionName) {
-        com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) {
-            localDescriptor = (com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor
-                                .getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing content.yaml within subscription descriptor check block", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedSubscriptions = localDescriptor.getSubscription();
-
-        if (allowedSubscriptions == null) {
-            return false;
-        }
-
-        if (allowedSubscriptions.isEmpty()) {
-            return true;
-        }
-
-        return !allowedSubscriptions.contains(subscriptionName);
     }
 }

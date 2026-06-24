@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,8 +34,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
-import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
+import java.util.Objects;
 
 public class VcfaCustomResourceStore extends AbstractVcfaStore {
     private static final String DIR_CUSTOM_RESOURCES = "custom-resources";
@@ -59,6 +59,15 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             logger.warn("RestClient not initialized in CustomResource Store. Skipping export.");
             return;
         }
+
+        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+                "customResources");
+        if (allowedResources != null && allowedResources.isEmpty()) {
+            logger.info(
+                    "Custom Resource descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
+            return;
+        }
+
         try {
             List<VcfaCustomResourceType> remoteResources = restClient.getCustomResources();
             if (remoteResources == null || remoteResources.isEmpty()) {
@@ -77,16 +86,13 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                // FAIL FAST: Check the main resource folder name first
                 this.verifyAssetPathSafety(trackingName, "Custom Resource");
 
-                // Create individual subfolder based on the resource display name
                 File resourceFolder = Paths.get(baseResourcesPath, trackingName).toFile();
                 if (!resourceFolder.exists()) {
                     resourceFolder.mkdirs();
                 }
 
-                // Map conversion for manual payload field manipulation
                 Map<String, Object> resourceMap = mapper.convertValue(resource,
                         new TypeReference<Map<String, Object>>() {
                         });
@@ -95,16 +101,14 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 if (resourceMap.containsKey(PAYLOAD_ADDITIONAL_ACTIONS)
                         && resourceMap.get(PAYLOAD_ADDITIONAL_ACTIONS) != null) {
                     extractedActions = (List<Map<String, Object>>) resourceMap.get(PAYLOAD_ADDITIONAL_ACTIONS);
-                    resourceMap.remove(PAYLOAD_ADDITIONAL_ACTIONS); // Clean out field from root details file
+                    resourceMap.remove(PAYLOAD_ADDITIONAL_ACTIONS);
                 }
 
-                // File 1: Write root details.json
                 File detailsFile = Paths.get(resourceFolder.getPath(), "details.json").toFile();
                 String detailsJson = mapper.writeValueAsString(resourceMap);
                 Files.write(detailsFile.toPath(), detailsJson.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-                // Export Day-2 additional actions if they are present
                 if (extractedActions != null && !extractedActions.isEmpty()) {
                     File actionsSubFolder = Paths.get(resourceFolder.getPath(), SUBDIR_ADDITIONAL_ACTIONS).toFile();
                     if (!actionsSubFolder.exists()) {
@@ -113,7 +117,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
                     for (Map<String, Object> action : extractedActions) {
                         String actionDisplayName = (String) action.get("displayName");
-                        // FAIL FAST: Check nested additional action names too
                         this.verifyAssetPathSafety(actionDisplayName, "Additional Action");
 
                         File singleActionFolder = Paths.get(actionsSubFolder.getPath(), actionDisplayName).toFile();
@@ -126,9 +129,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
                         if (action.containsKey("formDefinition") && action.get("formDefinition") != null) {
                             formDefinitionMap = (Map<String, Object>) action.get("formDefinition");
-                            action.remove("formDefinition"); // Separate from action metadata
+                            action.remove("formDefinition");
 
-                            // --- EXTRACT STYLES FROM NESTED ACTION RESPONSE LEVEL ---
                             if (formDefinitionMap.containsKey("styles") && formDefinitionMap.get("styles") != null) {
                                 cssStyles = formDefinitionMap.get("styles").toString().trim();
                                 formDefinitionMap.remove("styles");
@@ -137,7 +139,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                             if (formDefinitionMap.containsKey("form") && formDefinitionMap.get("form") != null) {
                                 Object rawForm = formDefinitionMap.get("form");
                                 if (rawForm instanceof String) {
-                                    // Parse stringified layout back into raw map structures
                                     Map<String, Object> parsedForm = mapper.readValue((String) rawForm,
                                             new TypeReference<Map<String, Object>>() {
                                             });
@@ -146,13 +147,11 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                             }
                         }
 
-                        // Write additional action metadata file
                         File actionDetailsFile = Paths.get(singleActionFolder.getPath(), "details.json").toFile();
                         Files.write(actionDetailsFile.toPath(),
                                 mapper.writeValueAsString(action).getBytes(StandardCharsets.UTF_8),
                                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-                        // Write clean decoupled form layout file
                         if (formDefinitionMap != null) {
                             String formFileName = actionDisplayName + "__FormData.json";
                             File actionFormFile = Paths.get(singleActionFolder.getPath(), formFileName).toFile();
@@ -161,7 +160,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                         }
 
-                        // Write independent styles.css file layout configuration separately
                         File stylesFile = Paths.get(singleActionFolder.getPath(), "styles.css").toFile();
                         Files.write(stylesFile.toPath(), cssStyles.getBytes(StandardCharsets.UTF_8),
                                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -187,7 +185,22 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             logger.warn("RestClient not initialized in CustomResource Store. Skipping import.");
             return;
         }
+
+        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+                "customResources");
+        if (allowedResources != null && allowedResources.isEmpty()) {
+            logger.info(
+                    "Custom Resource descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
+            return;
+        }
+
         File localDir = Paths.get(sourceDirectory.getPath(), DIR_CUSTOM_RESOURCES).toFile();
+
+        // --- NEW STRATEGIC COUPLING: Call the unified asset validator (Folders only)
+        // ---
+        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, localDir, "Custom Resource", true,
+                "custom-resource", "customResources");
+
         if (!localDir.exists() || !localDir.isDirectory()) {
             logger.info("Custom resources directory not found. Skipping.");
             return;
@@ -221,7 +234,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                         });
                 List<Map<String, Object>> combinedActionsList = new ArrayList<>();
 
-                // Evaluate and recombine nested additional-actions files if present
                 File actionsSubFolder = Paths.get(folder.getPath(), SUBDIR_ADDITIONAL_ACTIONS).toFile();
                 if (actionsSubFolder.exists() && actionsSubFolder.isDirectory()) {
                     File[] singleActionFolders = actionsSubFolder.listFiles(File::isDirectory);
@@ -245,8 +257,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                     new TypeReference<Map<String, Object>>() {
                                     });
 
-                            // --- STRUCTURAL FIX: Unwrap nested "form" if it exists inside FormData
-                            // artifact layout ---
                             if (formDefMap.containsKey("form") && formDefMap.get("form") instanceof Map) {
                                 Map<String, Object> innerFormMap = (Map<String, Object>) formDefMap.get("form");
                                 if (innerFormMap.containsKey("layout") || innerFormMap.containsKey("schema")) {
@@ -256,8 +266,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                 }
                             }
 
-                            // Re-stringify the raw layout form properties back for transmission
-                            // compatibility
                             if (formDefMap.containsKey("form") && formDefMap.get("form") != null) {
                                 Object formObj = formDefMap.get("form");
                                 if (!(formObj instanceof String)) {
@@ -265,7 +273,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                 }
                             }
 
-                            // --- INJECT SIBLING STYLES FROM CSS FILE IF POPULATED ---
                             String localStyles = "";
                             if (stylesFile.exists()) {
                                 localStyles = new String(Files.readAllBytes(stylesFile.toPath()),
@@ -279,7 +286,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                     }
                 }
 
-                // Bind array list back to master properties payload map
                 resourceMap.put(PAYLOAD_ADDITIONAL_ACTIONS, combinedActionsList);
                 VcfaCustomResourceType localResource = mapper.convertValue(resourceMap, VcfaCustomResourceType.class);
 
@@ -317,12 +323,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
     }
 
-    /**
-     *
-     * Helper to clean system metadata IDs from the payload to prevent 400 Bad
-     * Request collisions.
-     *
-     */
     private void preparePayloadForCreation(VcfaCustomResourceType resource) {
         resource.setId(null);
         if (resource.getAdditionalActions() != null) {
@@ -393,12 +393,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
     }
 
-    /**
-     *
-     * Deep evaluation tracking properties schemas, actions maps, and key
-     * structures.
-     *
-     */
     private void populateVroEndpoints(ObjectNode customResourceJsonElement) throws IOException {
         String targetVroEndpointLink = restClient.getVroTargetIntegrationEndpointLink();
 
@@ -438,16 +432,13 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         if (remote == null || local == null) {
             return false;
         }
-        boolean sameDisplayName = java.util.Objects.equals(remote.getDisplayName(), local.getDisplayName());
-        boolean sameDescription = java.util.Objects.equals(remote.getDescription(), local.getDescription());
-        boolean sameExternalType = java.util.Objects.equals(remote.getExternalType(), local.getExternalType());
-        boolean sameSchemaType = java.util.Objects.equals(remote.getSchemaType(), local.getSchemaType());
-        boolean sameMainActions = java.util.Objects.equals(remote.getMainActions(), local.getMainActions());
-        boolean sameAdditionalActions = java.util.Objects.equals(remote.getAdditionalActions(),
-                local.getAdditionalActions());
-        boolean sameProperties = java.util.Objects.equals(remote.getProperties(), local.getProperties());
-        return sameDisplayName && sameDescription && sameExternalType && sameSchemaType
-                && sameMainActions && sameAdditionalActions && sameProperties;
+        return Objects.equals(remote.getDisplayName(), local.getDisplayName())
+                && Objects.equals(remote.getDescription(), local.getDescription())
+                && Objects.equals(remote.getExternalType(), local.getExternalType())
+                && Objects.equals(remote.getSchemaType(), local.getSchemaType())
+                && Objects.equals(remote.getMainActions(), local.getMainActions())
+                && Objects.equals(remote.getAdditionalActions(), local.getAdditionalActions())
+                && Objects.equals(remote.getProperties(), local.getProperties());
     }
 
     /**
@@ -463,37 +454,9 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 logger.info("No remote custom resources identified to delete.");
                 return;
             }
-            List<String> itemsToDelete = null;
-            boolean isExplicitlyEmpty = false;
-            File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
-            if (!contentYamlFile.exists() && this.vcfaPackage != null) {
-                File packageDir = new File(this.vcfaPackage.getFilesystemPath());
-                File projectRoot = packageDir.getParentFile() != null ? packageDir.getParentFile() : packageDir;
-                contentYamlFile = new File(projectRoot, "content.yaml");
-            }
-            if (contentYamlFile.exists()) {
-                org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
-                try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
-                    Map<String, Object> rawMap = yaml.load(inputStream);
-                    if (rawMap != null) {
-                        Object resourceListObj = rawMap.containsKey("custom-resource") ? rawMap.get("custom-resource")
-                                : rawMap.get("customResources");
-                        if (rawMap.containsKey("custom-resource") || rawMap.containsKey("customResources")) {
-                            if (resourceListObj instanceof List) {
-                                itemsToDelete = (List<String>) resourceListObj;
-                                if (itemsToDelete.isEmpty()) {
-                                    isExplicitlyEmpty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
-            if (isExplicitlyEmpty) {
-                logger.info("Custom Resource descriptor is explicitly empty '[]'. Skipping deletion entirely.");
-                return;
-            }
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+                    "customResources");
 
             if (itemsToDelete == null) {
                 logger.info(
@@ -503,6 +466,11 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                             remoteRes.getDisplayName(), remoteRes.getId());
                     restClient.deleteCustomResourceType(remoteRes.getId());
                 }
+                return;
+            }
+
+            if (itemsToDelete.isEmpty()) {
+                logger.info("Custom Resource descriptor is explicitly empty '[]'. Skipping deletion entirely.");
                 return;
             }
 
@@ -523,27 +491,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     private boolean isExcludedByDescriptor(String trackingName) {
-        VcfaPackageDescriptor localDescriptor = null;
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing content.yaml within custom resource descriptor check block", e);
-                    }
-                }
-            }
-        }
-        if (localDescriptor == null) {
-            return false;
-        }
-        List<String> allowedResources = localDescriptor.getCustomResource();
+        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+                "customResources");
         if (allowedResources == null) {
             return false;
         }
