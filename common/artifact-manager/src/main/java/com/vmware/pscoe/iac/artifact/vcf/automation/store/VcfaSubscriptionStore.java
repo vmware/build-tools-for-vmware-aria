@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
-import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaSubscriptionSanitizer;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaSubscription;
 
 public class VcfaSubscriptionStore extends AbstractVcfaStore {
@@ -141,7 +141,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                             targetId);
                 }
 
-                VcfaSubscriptionSanitizer.sanitizeImport(subscriptionNode);
+                VcfaPayloadSanitizer.sanitize(subscriptionNode);
                 subscriptionNode.put("id", targetId);
 
                 substituteProjects(subscriptionNode);
@@ -325,7 +325,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                 try {
                     ObjectNode exportNode = mapper.valueToTree(item);
 
-                    VcfaSubscriptionSanitizer.sanitizeExport(exportNode);
+                    VcfaPayloadSanitizer.sanitize(exportNode);
 
                     JsonNode runnableTypeNode = exportNode.get("runnableType");
                     if (runnableTypeNode != null && runnableTypeNode.asText().contains("extensibility.abx")) {
