@@ -15,41 +15,50 @@
 package com.vmware.pscoe.iac.artifact.vcf.automation.rest;
 
 import java.io.IOException;
-import java.lang.annotation.Target;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.jayway.jsonpath.JsonPath;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
+import com.vmware.pscoe.iac.artifact.common.store.Version;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.*;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItem;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItemForm;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaContentSource;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaProject;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaResourceAction;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaScenario;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaSubscription;
 
 public class RestClientVcfAutoPrimitive extends RestClient {
+
+    private static final String SERVICE_VERSION = "/vco/api/about";
 
 	protected final ConfigurationVcfAuto configuration;
 	protected static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAutoPrimitive.class);
 	protected final ObjectMapper objectMapper;
 	protected final RestTemplate restTemplate;
 	protected String apiVersion;
+	protected  Version productVersion;
 	private String projectId;
 
 	public RestClientVcfAutoPrimitive(ConfigurationVcfAuto configuration) {
@@ -423,8 +432,9 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		}
 
 		try {
-			java.net.URI step2Uri = getURI(getURIBuilder()
-					.setPath("/blueprint/api/blueprints/form/generate-form-json-schema"));
+			String generateFormJsonSchemaPath = this.getProductVersion().getString().startsWith("9.0") ? 
+				"/form-service/api/forms/designer/generate-form-json-schema": "/blueprint/api/blueprints/form/generate-form-json-schema";
+			java.net.URI step2Uri = getURI(getURIBuilder().setPath(generateFormJsonSchemaPath));
 
 			org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
 			headers.setContentType(org.springframework.http.MediaType.TEXT_PLAIN);
@@ -950,5 +960,22 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		LOGGER.info("Detected API Version {}", this.apiVersion);
 
 		return this.apiVersion;
+	}
+
+	/**
+	 * Retrieve Product Version.
+	 *
+	 * @return Version
+	 */
+	public Version getProductVersion() {
+		if (this.productVersion != null) {
+			return this.productVersion;
+		}
+		URI url = getURI(getURIBuilder().setPath(SERVICE_VERSION));
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
+				String.class);
+		this.productVersion = new Version(JsonPath.parse(response.getBody()).read("$.version"));
+
+		return this.productVersion;
 	}
 }
