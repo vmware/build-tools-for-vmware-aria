@@ -122,9 +122,17 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                         }
 
                         Map<String, Object> formDefinitionMap = null;
+                        String cssStyles = "";
+
                         if (action.containsKey("formDefinition") && action.get("formDefinition") != null) {
                             formDefinitionMap = (Map<String, Object>) action.get("formDefinition");
                             action.remove("formDefinition"); // Separate from action metadata
+
+                            // --- EXTRACT STYLES FROM NESTED ACTION RESPONSE LEVEL ---
+                            if (formDefinitionMap.containsKey("styles") && formDefinitionMap.get("styles") != null) {
+                                cssStyles = formDefinitionMap.get("styles").toString().trim();
+                                formDefinitionMap.remove("styles");
+                            }
 
                             if (formDefinitionMap.containsKey("form") && formDefinitionMap.get("form") != null) {
                                 Object rawForm = formDefinitionMap.get("form");
@@ -152,6 +160,11 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                     mapper.writeValueAsString(formDefinitionMap).getBytes(StandardCharsets.UTF_8),
                                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                         }
+
+                        // Write independent styles.css file layout configuration separately
+                        File stylesFile = Paths.get(singleActionFolder.getPath(), "styles.css").toFile();
+                        Files.write(stylesFile.toPath(), cssStyles.getBytes(StandardCharsets.UTF_8),
+                                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                     }
                 }
 
@@ -217,6 +230,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                             String actionName = actionFolder.getName();
                             File actionDetailsFile = new File(actionFolder, "details.json");
                             File actionFormFile = new File(actionFolder, actionName + "__FormData.json");
+                            File stylesFile = new File(actionFolder, "styles.css");
 
                             if (!actionDetailsFile.exists() || !actionFormFile.exists()) {
                                 throw new IOException(String.format(
@@ -231,6 +245,17 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                     new TypeReference<Map<String, Object>>() {
                                     });
 
+                            // --- STRUCTURAL FIX: Unwrap nested "form" if it exists inside FormData
+                            // artifact layout ---
+                            if (formDefMap.containsKey("form") && formDefMap.get("form") instanceof Map) {
+                                Map<String, Object> innerFormMap = (Map<String, Object>) formDefMap.get("form");
+                                if (innerFormMap.containsKey("layout") || innerFormMap.containsKey("schema")) {
+                                    logger.info(
+                                            "Identified and unwrapped nested 'form' sub-block pattern inside custom resource additional action payload schema.");
+                                    formDefMap = innerFormMap;
+                                }
+                            }
+
                             // Re-stringify the raw layout form properties back for transmission
                             // compatibility
                             if (formDefMap.containsKey("form") && formDefMap.get("form") != null) {
@@ -239,6 +264,14 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                                     formDefMap.put("form", mapper.writeValueAsString(formObj));
                                 }
                             }
+
+                            // --- INJECT SIBLING STYLES FROM CSS FILE IF POPULATED ---
+                            String localStyles = "";
+                            if (stylesFile.exists()) {
+                                localStyles = new String(Files.readAllBytes(stylesFile.toPath()),
+                                        StandardCharsets.UTF_8).trim();
+                            }
+                            formDefMap.put("styles", localStyles);
 
                             actionMap.put("formDefinition", formDefMap);
                             combinedActionsList.add(actionMap);
@@ -287,7 +320,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     /**
      *
      * Helper to clean system metadata IDs from the payload to prevent 400 Bad
-     *
      * Request collisions.
      *
      */
@@ -311,7 +343,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     private void validateCustomResourceDay2ActionName(ObjectNode customResourceJsonElement) {
-        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+        if (customResourceJsonElement.has("additionalActions")
+                && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
             Pattern pattern = Pattern.compile("[^a-zA-Z0-9:\\-_.]");
 
@@ -321,8 +354,10 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                     Matcher matcher = pattern.matcher(name);
 
                     if (matcher.find() || name.startsWith("_") || name.endsWith("_") ||
-                        name.startsWith(".") || name.endsWith(".") || name.contains(" ")) {
-                        throw new RuntimeException(String.format("Action's name: '%s' contains invalid symbols. Must not use spaces or start/end with points or underscores.", name));
+                            name.startsWith(".") || name.endsWith(".") || name.contains(" ")) {
+                        throw new RuntimeException(String.format(
+                                "Action's name: '%s' contains invalid symbols. Must not use spaces or start/end with points or underscores.",
+                                name));
                     }
                 }
             }
@@ -337,7 +372,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             customResourceJsonElement.put("projectId", restClient.getProjectId());
         }
 
-        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+        if (customResourceJsonElement.has("additionalActions")
+                && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
             for (JsonNode action : additionalActionsArray) {
                 if (action instanceof ObjectNode) {
@@ -360,7 +396,6 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     /**
      *
      * Deep evaluation tracking properties schemas, actions maps, and key
-     *
      * structures.
      *
      */
@@ -376,10 +411,12 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             }
         }
 
-        if (customResourceJsonElement.has("additionalActions") && customResourceJsonElement.get("additionalActions").isArray()) {
+        if (customResourceJsonElement.has("additionalActions")
+                && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActions = (ArrayNode) customResourceJsonElement.get("additionalActions");
             for (JsonNode action : additionalActions) {
-                if (action instanceof ObjectNode && action.has("runnableItem") && action.get("runnableItem").isObject()) {
+                if (action instanceof ObjectNode && action.has("runnableItem")
+                        && action.get("runnableItem").isObject()) {
                     ((ObjectNode) action.get("runnableItem")).put("endpointLink", targetVroEndpointLink);
                 }
             }
@@ -396,6 +433,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
         }
         return builder.toString().contains(magicMessage);
     }
+
     private boolean isIdentical(VcfaCustomResourceType remote, VcfaCustomResourceType local) {
         if (remote == null || local == null) {
             return false;
