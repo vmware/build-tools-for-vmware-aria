@@ -28,25 +28,15 @@ import static com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPack
 public class VcfaTypeStoreFactory { //TODO REVERT AFTER DEVELOPMENT IS DONE, this is to make it compile while some store files are being worked on
 	private static final VcfaPackageMemberType[] ALL_ORDER = new VcfaPackageMemberType[] {
 			BLUEPRINT,
-			// CONTENT_SOURCE, // all fails with 500
-			// CATALOG_ITEM,
+			CONTENT_SOURCE,
+			CATALOG_ITEM,
 			CUSTOM_RESOURCE, //needs vRO
 			POLICY,
 			PROPERTY_GROUP,
 			RESOURCE_ACTION, //needs vRO
 			SCENARIO,
 			SUBSCRIPTION, //needs vRO
-
-			// 			BLUEPRINT,
-			// // CONTENT_SOURCE, // all fails with 500
-			// // CATALOG_ENTITLEMENT //may not be needed
-			// CATALOG_ITEM,
-			// CUSTOM_RESOURCE, //needs vRO
-			// POLICY,
-			// PROPERTY_GROUP,
-			// RESOURCE_ACTION, //needs vRO
-			// SCENARIO,
-			// SUBSCRIPTION, //needs vRO
+			CATALOG_ENTITLEMENT,
 	};
 	private static final VcfaPackageMemberType[] IMPORT_ORDER = ALL_ORDER;
 
