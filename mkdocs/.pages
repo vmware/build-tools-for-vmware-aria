@@ -4,4 +4,4 @@ nav:
     - usage
     # - dev-setup
     - enterprise-setup
-    - Release Notes: Release.md
+    - release-notes

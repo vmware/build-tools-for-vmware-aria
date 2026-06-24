@@ -1378,7 +1378,7 @@ public final class Installer {
 		userInput(input, Option.VROPS_SSH_USER, "  vROps SSH Username");
 		passInput(input, Option.VROPS_SSH_PASSWORD, "  vROps SSH Password");
 		userInput(input, Option.VROPS_DASHBOARD_USER, "  Dashboard username");
-		userInput(input, Option.VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS, "  Import Dashboards For All Users");
+		userInput(input, Option.VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS, "  Import Dashboards For All Users", true);
 	}
 
 	private static void readVrliImportProperties(final Input input) {
