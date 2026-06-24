@@ -1,80 +1,108 @@
 ---
+# VCF Automation 9.x Content Definition
+# This file defines which content items are included in the package.
+#
+# Content types supported in VCF 9.1:
+# - blueprint: Cloud templates/blueprints for VM provisioning
+# - catalog-item: vRO workflows published as catalog items
+# - content-source: vRO integration endpoints
+# - custom-resource: Custom resource types for XaaS
+# - policy: Governance policies (approval, content-sharing, day2-actions, deployment-limit, lease, resource-quota)
+# - property-group: Input property groups for forms
+# - resource-action: Day-2 resource actions
+# - subscription: Event-driven subscriptions for extensibility
+# - catalog-entitlement: Catalog access entitlements
+# - scenario: Test scenarios
+#
+# To include content: uncomment and add item names
+# To exclude content: leave commented out or use empty array []
+
 # Example blueprints:
 # blueprint:
 #  - Volume
 #  - Machine
-# Example subscriptions:
-# subscription:
-#  - subscription 1
-#  - subscription 2
-#  - subscription 3
-# Example vra workflow Catalog Item
-# catalog-item:
-#   - source__Sum two numbers
-# Example vra workflow Content Source
-# content-source:
-#   - source
-# Example Custom Resource
-# custom-resource:
-#   - CustomResource 1
-# Example Resource Action
-# resource-action:
-#   - resource action 1
-# Example Catalog Entitlement:
-# catalog-entitlement
-#  - content source entitlement 1
-#  - content source entitlement 2
-# Example Property Groups:
-# property-group:
-#  - property-group-1
-# policy:
-#   approval:
-#     - policy name 1
-#     - policy name 2
-#   content-sharing:
-#     - policy name 1
-#     - policy name 2
-#   day2-actions:
-#     - policy name 1
-#     - policy name 2
-#   deployment-limit:
-#     - policy name 1
-#     - policy name 2
-#   lease:
-#     - policy name 1
-#     - policy name 2
-#   resource-quota:
-#     - policy name 1
-#     - policy name 2
-# scenario:
-#   - scenarion name 1
-
 blueprint:
   - Small VM
-catalog-item: 
-  - Orchestrator_Development__Add a REST host
-content-source:
-    - Orchestrator_Development
-custom-resource:
-  - CustomResource
-policy:
-  approval:
-    - vra8-db-mssql Approval Policy
-  content-sharing:
-    - vra8-db-mssql Content Sharing Policy
-  day2-actions:
-    - vra8-db-mssql Day 2 Actions Policy
-  deployment-limit:
-    - vra8-db-mssql Deployment Limit Policy
-  lease:
-    - vra8-db-mssql Lease Policy
-  resource-quota:
-    - vra8-db-mssql Resource Quota Policy
+
+# Catalog items from vRO workflows (format: ContentSource__WorkflowName)
+# catalog-item:
+#   - Orchestrator_Development__Add a REST host
+catalog-item: []
+
+# Content sources (vRO integrations)
+# content-source:
+#   - Orchestrator_Development
+content-source: []
+
+# Custom resource types
+# custom-resource:
+#   - CustomResource
+custom-resource: []
+
+# Property groups for forms
+# property-group:
+#   - property-group-1
 property-group:
   - vra8_db_mssql_property_group
-resource-action:
-  - Cloud.vSphere.Machine__add_disk_to_vm
-subscription:
-  - vra8-db-mssql Subscription
+
+# Resource actions (format: ResourceType__ActionName)
+# resource-action:
+#   - Cloud.vSphere.Machine__add_disk_to_vm
+resource-action: []
+
+# Event-driven subscriptions
+# subscription:
+#   - subscription 1
+#   - subscription 2
+#   - subscription 3
+subscription: []
+
+# Catalog entitlements (access control)
+# catalog-entitlement:
+#   - content source entitlement 1
+#   - content source entitlement 2
 catalog-entitlement: []
+
+# Test scenarios
+# scenario:
+#   - scenario name 1
+#   - scenario name 2
 scenario: []
+
+# Policies (all policy types supported in VCF 9.1)
+policy:
+  # Approval policies for catalog requests
+  # approval:
+  #   - policy name 1
+  #   - policy name 2
+  approval: []
+
+  # Content sharing between projects
+  # content-sharing:
+  #   - policy name 1
+  #   - policy name 2
+  content-sharing: []
+
+  # Day-2 action policies
+  # day2-actions:
+  #   - policy name 1
+  #   - policy name 2
+  day2-actions: []
+
+  # Deployment limit policies
+  # deployment-limit:
+  #   - policy name 1
+  #   - policy name 2
+  deployment-limit: []
+
+  # Lease policies for resources
+  # lease:
+  #   - policy name 1
+  #   - policy name 2
+  lease: []
+
+  # Resource quota policies
+  # resource-quota:
+  #   - policy name 1
+  #   - policy name 2
+  resource-quota: []
