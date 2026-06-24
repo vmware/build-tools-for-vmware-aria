@@ -200,6 +200,11 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
             JsonNode projectNamesNode = constraintObj.get("projectNames");
             JsonNode projectIdNode = constraintObj.get("projectId");
 
+            // Preserve explicit null projectId — means "use default", do not override
+            if (projectIdNode != null && projectIdNode.isNull()) {
+                return;
+            }
+
             List<String> combinedProjectIds = new ArrayList<>();
             try {
                 String activeConfigProjectId = restClient.getProjectId();

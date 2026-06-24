@@ -303,6 +303,11 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 			JsonElement projectNamesElement = constraintJsonObject.get("projectNames");
 			JsonElement projectIdElement = constraintJsonObject.get("projectId");
 
+			// Preserve explicit null projectId — means "use default", do not override
+			if (projectIdElement != null && projectIdElement.isJsonNull()) {
+				return;
+			}
+
 			if (projectNamesElement != null && projectNamesElement.getAsJsonArray().size() > 0) {
 				constraintJsonObject.remove("projectNames");
 				if (projectIdElement != null) {
