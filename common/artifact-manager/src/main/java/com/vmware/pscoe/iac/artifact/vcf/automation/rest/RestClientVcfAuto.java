@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -219,7 +220,18 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	// ==========================================
 
 	public List<VcfaScenario> getScenarios() throws IOException {
-		return getScenariosPrimitive();
+		List<VcfaScenario> result = new ArrayList<>();
+		List<VcfaScenario> items = getScenariosListPrimitive();
+		items.forEach(s -> {
+			try {
+				result.add(getScenarioExpandedPrimitive(s.getId()));
+			} catch (Exception e) {
+				throw new RuntimeException(
+						String.format("Could not get scenario expanded object!"),
+						e);
+			}
+		});
+		return result;
 	}
 
 	/**
