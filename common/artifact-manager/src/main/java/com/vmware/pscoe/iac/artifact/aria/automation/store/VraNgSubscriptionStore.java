@@ -45,6 +45,9 @@ import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDe
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
+import static com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer.sanitize;
+
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgSubscriptionStore extends AbstractVraNgStore {
 
@@ -179,9 +182,9 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			final JsonObject subscriptionJsonElement = gson.fromJson(subscriptionJson, JsonObject.class);
-			// leaving orgId in the JSON prevents pushing to different vRA organizations
-			// orgId is optional when importing in vRA, so it can be safely removed
-			subscriptionJsonElement.remove("orgId");
+			// Preserve source server's orgId/projectId for cross-org portability
+			// (scrubLegacyId only — sanitize with values would mutate structure)
+			VcfaPayloadSanitizer.sanitize(subscriptionJsonElement);
 			addProjectNamesToStorage(subscriptionJsonElement);
 			addRunnableNameToStorage(subscriptionJsonElement);
 			subscriptionJson = gson.toJson(subscriptionJsonElement);
@@ -208,7 +211,9 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 			// Get the subscription name from the JSON not from the filename
 			String subscriptionName = subscriptionJsonElement.get("name").getAsString();
 			String subscriptionId = generateId(subscriptionJsonElement, allSubscriptions);
-			subscriptionJsonElement.remove("orgId");
+			VcfaPayloadSanitizer.sanitize(subscriptionJsonElement,
+					currentOrganizationId,
+					configProjectId);
 			subscriptionJsonElement.addProperty("id", subscriptionId);
 			logger.info("Trying to importing subscription '{}' with ID {}...", subscriptionName, subscriptionId);
 			substituteProjects(subscriptionJsonElement);

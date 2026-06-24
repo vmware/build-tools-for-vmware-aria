@@ -56,9 +56,52 @@ public final class VcfaPayloadSanitizer {
             return null;
         }
 
-        // Loop through property rules and clear matches out dynamically
         for (String property : PROPERTIES_TO_REMOVE) {
             node.remove(property);
+        }
+
+        scrubLegacyId(node);
+        return node;
+    }
+
+    /**
+     * Replaces orgId and projectId with the actual values from the active
+     * profile configuration — and scrubs legacy ID prefixes.
+     * Used during import/push so stale cross-org/cross-project values
+     * are overwritten with the caller's resolved IDs.
+     *
+     * @param node       the subscription node (mutated in-place)
+     * @param orgId      the orgId to write (may be null — orgId is not set when absent)
+     * @param projectId  the projectId to write (may be null — projectId is not set when absent)
+     * @return the mutated ObjectNode for chaining
+     */
+    public static ObjectNode sanitize(ObjectNode node, String orgId, String projectId) {
+        if (node == null) {
+            return null;
+        }
+
+        if (orgId != null) {
+            node.put("orgId", orgId);
+        } else {
+            node.remove("orgId");
+        }
+
+        if (projectId != null) {
+            ObjectNode constraints = node.get("constraints") != null && node.get("constraints").isObject()
+                    ? (ObjectNode) node.get("constraints")
+                    : null;
+            if (constraints != null) {
+                constraints.remove("projectId");
+                com.fasterxml.jackson.databind.node.ArrayNode arr = node.putArray("projectId");
+                arr.add(projectId);
+            } else {
+                node.put("projectId", projectId);
+            }
+        } else {
+            node.remove("projectId");
+            if (node.has("constraints")) {
+                node.get("constraints").remove("projectId");
+            }
         }
 
         scrubLegacyId(node);
@@ -87,6 +130,48 @@ public final class VcfaPayloadSanitizer {
         // Loop through property rules and clear matches out dynamically
         for (String property : PROPERTIES_TO_REMOVE) {
             obj.remove(property);
+        }
+
+        scrubLegacyIdElement(obj);
+        return element;
+    }
+
+    public static JsonElement sanitize(JsonElement element, String orgId, String projectId) {
+        if (element == null || !element.isJsonObject()) {
+            return element;
+        }
+
+        JsonObject obj = element.getAsJsonObject();
+
+        if (orgId != null) {
+            obj.addProperty("orgId", orgId);
+        } else {
+            obj.remove("orgId");
+        }
+
+        if (projectId != null) {
+            JsonElement constraintsElement = obj.get("constraints");
+            if (constraintsElement != null && constraintsElement.isJsonObject()) {
+                JsonObject constraints = constraintsElement.getAsJsonObject();
+                constraints.remove("projectId");
+                com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+                arr.add(projectId);
+                constraints.add("projectId", arr);
+            } else if (constraintsElement != null) {
+                com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+                arr.add(projectId);
+                obj.add("projectId", arr);
+            } else {
+                com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+                arr.add(projectId);
+                obj.add("projectId", arr);
+            }
+        } else {
+            obj.remove("projectId");
+            JsonElement constraintsElement = obj.get("constraints");
+            if (constraintsElement != null && constraintsElement.isJsonObject()) {
+                constraintsElement.getAsJsonObject().remove("projectId");
+            }
         }
 
         scrubLegacyIdElement(obj);
