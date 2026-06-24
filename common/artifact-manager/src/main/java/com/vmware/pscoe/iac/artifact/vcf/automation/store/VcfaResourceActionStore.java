@@ -87,11 +87,18 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 Map<String, Object> actionMap = mapper.convertValue(action, new TypeReference<Map<String, Object>>() {
                 });
                 Map<String, Object> formDefinitionMap = null;
+                String cssStyles = "";
 
                 // Extract and un-stringify form data if it exists
                 if (actionMap.containsKey("formDefinition") && actionMap.get("formDefinition") != null) {
                     formDefinitionMap = (Map<String, Object>) actionMap.get("formDefinition");
                     actionMap.remove("formDefinition"); // Strip from metadata file
+
+                    // --- EXTRACT STYLES FROM RESPONSE LEVEL BEFORE REMOVAL ---
+                    if (formDefinitionMap.containsKey("styles") && formDefinitionMap.get("styles") != null) {
+                        cssStyles = formDefinitionMap.get("styles").toString().trim();
+                        formDefinitionMap.remove("styles"); // Prevent mixing with raw JSON form map properties
+                    }
 
                     if (formDefinitionMap.containsKey("form") && formDefinitionMap.get("form") != null) {
                         Object rawForm = formDefinitionMap.get("form");
@@ -119,6 +126,11 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                     Files.write(formFile.toPath(), formJson.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 }
+
+                // File 3: styles.css
+                File stylesFile = Paths.get(actionFolder.getPath(), "styles.css").toFile();
+                Files.write(stylesFile.toPath(), cssStyles.getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
                 logger.info("Successfully exported resource action folder asset: {}", actionFolder.getAbsolutePath());
             }
@@ -165,6 +177,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
 
                 File detailsFile = new File(folder, "details.json");
                 File formDataFile = new File(folder, displayName + "__FormData.json");
+                File stylesFile = new File(folder, "styles.css");
 
                 // Enforce mandatory file coexistence check
                 if (!detailsFile.exists() || !formDataFile.exists()) {
@@ -182,7 +195,19 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                         new TypeReference<Map<String, Object>>() {
                         });
 
-                // Re-stringify the form block layout precisely for API transmission compliance
+                // --- STRUCTURAL FIX: Unwrap nested "form" if it exists inside FormData
+                // artifact layout ---
+                if (formDefMap.containsKey("form") && formDefMap.get("form") instanceof Map) {
+                    Map<String, Object> innerFormMap = (Map<String, Object>) formDefMap.get("form");
+                    if (innerFormMap.containsKey("layout") || innerFormMap.containsKey("schema")) {
+                        logger.info(
+                                "Identified and unwrapped nested 'form' sub-block pattern inside resource action payload schema.");
+                        formDefMap = innerFormMap;
+                    }
+                }
+
+                // Re-stringify the clean form block layout precisely for API transmission
+                // compliance
                 if (formDefMap.containsKey("form") && formDefMap.get("form") != null) {
                     Object formObj = formDefMap.get("form");
                     if (!(formObj instanceof String)) {
@@ -190,6 +215,13 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                         formDefMap.put("form", stringifiedForm);
                     }
                 }
+
+                // --- INJECT SIBLING STYLES FROM CSS FILE IF POPULATED ---
+                String localStyles = "";
+                if (stylesFile.exists()) {
+                    localStyles = new String(Files.readAllBytes(stylesFile.toPath()), StandardCharsets.UTF_8).trim();
+                }
+                formDefMap.put("styles", localStyles);
 
                 // Inject combined formDefinition back into payload map
                 actionMap.put("formDefinition", formDefMap);
