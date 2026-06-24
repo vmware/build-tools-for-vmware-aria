@@ -57,4 +57,25 @@ public class VcfaBlueprint implements Identifiable {
     public Boolean getRequestScopeOrg() { return requestScopeOrg; }
     public void setRequestScopeOrg(Boolean requestScopeOrg) { this.requestScopeOrg = requestScopeOrg; }
 
+    /**
+     * Converts the blueprint fields into a Map for API payload transmission.
+     */
+    public Map<String, Object> toMap() {
+        java.util.Map<String, Object> map = new java.util.HashMap<>();
+        map.put("id", id);
+        map.put("name", name);
+        map.put("description", description);
+        map.put("content", content);
+        map.put("projectId", projectId);
+        map.put("requestScopeOrg", requestScopeOrg);
+        return map;
+    }
+
+    /**
+     * Returns a Map of all fields, including those normally excluded by annotations.
+     */
+    public Map<String, Object> asExportMap() {
+        return toMap();
+    }
+
 }

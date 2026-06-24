@@ -97,6 +97,11 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 jsonNode.remove("createdBy");
                 jsonNode.remove("updatedAt");
                 jsonNode.remove("updatedBy");
+                // Don't write null `organization` — server returns orgId (UUID) but not org name.
+                // If it's null, remove it so the local file isn't polluted.
+                if (jsonNode.has("organization") && jsonNode.get("organization").isNull()) {
+                    jsonNode.remove("organization");
+                }
 
                 logger.info("Successfully synchronized property group asset: {}", jsonFile.getAbsolutePath());
                 String serializedJson = mapper.writeValueAsString(jsonNode);
@@ -145,7 +150,13 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 return;
             }
 
-            String currentOrgId = restClient.getOrganizationId();
+            String currentOrgId;
+            try {
+                currentOrgId = restClient.getOrganizationId();
+            } catch (Exception e) {
+                logger.warn("Unable to resolve organization ID from target server. Property groups will be created without explicit org scoping: {}", e.getMessage());
+                currentOrgId = null;
+            }
             String currentProjectId = restClient.getProjectId();
 
             for (File file : groupFiles) {
@@ -169,7 +180,28 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                         .findFirst();
 
                 // Re-stitch Organization scopes
-                localGroup.setOrgId(currentOrgId);
+                // If local file has 'organization' (org name), try to resolve it to orgId
+                if (localGroup.getOrganization() != null && !localGroup.getOrganization().isBlank()) {
+                    String orgName = localGroup.getOrganization();
+                    if (orgName.matches(".*-.*")) {
+                        // Looks like a UUID, use it directly
+                        localGroup.setOrgId(orgName);
+                        logger.debug("Using orgId from local file for property group '{}': {}", localGroup.getName(), orgName);
+                    } else {
+                        // Treat as org name, resolve to UUID
+                        String resolvedOrgId = resolveOrgNameToId(orgName);
+                        if (resolvedOrgId != null) {
+                            currentOrgId = resolvedOrgId;
+                            localGroup.setOrgId(resolvedOrgId);
+                            logger.debug("Resolved org name '{}' to orgId '{}' for property group '{}'", orgName, resolvedOrgId, localGroup.getName());
+                        } else {
+                            logger.warn("Could not resolve org name '{}' to orgId for property group '{}'. Using default: {}", orgName, localGroup.getName(), currentOrgId);
+                            localGroup.setOrgId(currentOrgId);
+                        }
+                    }
+                } else {
+                    localGroup.setOrgId(currentOrgId);
+                }
 
                 if (existingRemote.isPresent()) {
                     VcfaPropertyGroup remoteMatch = existingRemote.get();
@@ -386,5 +418,20 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
         }
 
         return !allowedGroups.contains(groupDisplayName);
+    }
+
+    /**
+     * Resolves an organization name to its UUID by querying the identity service.
+     */
+    private String resolveOrgNameToId(String orgName) {
+        if (restClient == null) {
+            return null;
+        }
+        try {
+            return restClient.getOrganizationId(orgName);
+        } catch (IOException e) {
+            logger.debug("Failed to resolve org name '{}' to ID: {}", orgName, e.getMessage());
+            return null;
+        }
     }
 }

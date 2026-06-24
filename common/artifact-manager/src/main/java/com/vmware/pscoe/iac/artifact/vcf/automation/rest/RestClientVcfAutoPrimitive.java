@@ -291,6 +291,35 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return objectMapper.convertValue(result, VcfaBlueprint.class);
 	}
 
+	protected Map<String, Object> versionBlueprintPrimitive(String blueprintId, Map<String, Object> incomingPayload)
+			throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+
+		// Create a fresh payload map for the versioning endpoint
+		Map<String, Object> versioningPayload = new java.util.HashMap<>();
+
+		// Merge blueprint metadata (name, description, content, projectId) into the versioning payload
+		if (incomingPayload != null) {
+			versioningPayload.putAll(incomingPayload);
+		}
+
+		// Inject required lifecycle flags for immediate catalog propagation
+		versioningPayload.put("changeLog", "Imported via IaC Automation CI/CD");
+		versioningPayload.put("description", "Automated release version");
+		versioningPayload.put("release", true);
+		versioningPayload.put("sourceControlPush", false);
+
+		// Generate current epoch time as a string version identifier (e.g.,
+		// "1781086031000")
+		String epochVersion = String.valueOf(System.currentTimeMillis());
+		versioningPayload.put("version", epochVersion);
+
+		LOGGER.info("Creating and releasing blueprint version '{}' for blueprint ID: {}", epochVersion, blueprintId);
+
+		return postMap("/blueprint/api/blueprints/" + blueprintId + "/versions", versioningPayload, 200, 201);
+	}
 	protected VcfaBlueprint updateBlueprintPrimitive(String id, Map<String, Object> blueprint) throws IOException {
 		Map<String, Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
 		if (result == null)
@@ -300,26 +329,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 	protected void deleteBlueprintPrimitive(String id) throws IOException {
 		deletePath("/blueprint/api/blueprints/" + id, 204);
-	}
-
-	protected Map<String, Object> versionBlueprintPrimitive(String blueprintId, Map<String, Object> incomingPayload)
-			throws IOException {
-		if (restTemplate == null) {
-			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
-		}
-
-		Map<String, Object> versioningPayload = new java.util.HashMap<>();
-		versioningPayload.put("changeLog", "Imported via IaC Automation CI/CD");
-		versioningPayload.put("description", "Automated release version");
-		versioningPayload.put("release", true);
-		versioningPayload.put("sourceControlPush", false);
-
-		String epochVersion = String.valueOf(System.currentTimeMillis());
-		versioningPayload.put("version", epochVersion);
-
-		LOGGER.info("Creating and releasing blueprint version '{}' for blueprint ID: {}", epochVersion, blueprintId);
-
-		return postMap("/blueprint/api/blueprints/" + blueprintId + "/versions", versioningPayload, 200, 201);
 	}
 
 	protected String getBlueprintVersionsPrimitive(String blueprintId) throws IOException {
@@ -940,6 +949,57 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 	protected void deleteCustomResourceTypePrimitive(String id) throws IOException {
 		deletePath("/form-service/api/custom/resource-types/" + id, 200, 204);
+	}
+
+	protected String getOrganizationIdPrimitive() throws IOException {
+		return getOrganizationIdPrimitive(configuration.getOrgName());
+	}
+
+	protected String getOrganizationIdPrimitive(String orgName) throws IOException {
+		if (StringUtils.isEmpty(orgName)) {
+			return null;
+		}
+		List<Map<String, Object>> results = this.getPagedContent("/identity-service/api/orgs", new HashMap<>());
+		return results.stream()
+				.filter(m -> orgName.equalsIgnoreCase(String.valueOf(m.get("name"))))
+				.map(m -> String.valueOf(m.get("id")))
+				.findFirst()
+				.orElse(null);
+	}
+
+	protected String getVroTargetIntegrationEndpointLinkPrimitive() throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		String vroIntegrationName = configuration.getVroIntegration();
+		List<Map<String, Object>> results = this.getPagedContent("/integration/api/system/integrations", new HashMap<>());
+		for (Map<String, Object> integration : results) {
+			if (vroIntegrationName.equalsIgnoreCase(String.valueOf(integration.get("name")))) {
+				Object links = integration.get("_links");
+				if (links instanceof Map) {
+					Map<?, ?> linksMap = (Map<?, ?>) links;
+					for (Object keyObj : linksMap.keySet()) {
+						Object val = linksMap.get(keyObj);
+						if (val instanceof Map) {
+							Map<?, ?> link = (Map<?, ?>) val;
+							if ("href".equals(keyObj) && link.containsKey("href")) {
+								return String.valueOf(link.get("href"));
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	protected String getProjectNameByIdPrimitive(String id) throws IOException {
+		List<VcfaProject> projects = getProjectsPrimitive();
+		return projects.stream()
+				.filter(p -> id.equalsIgnoreCase(p.getId()))
+				.map(VcfaProject::getName)
+				.findFirst()
+				.orElse(null);
 	}
 
 	/**
