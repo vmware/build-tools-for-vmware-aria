@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaSubscriptionSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaSubscription;
 
 public class VcfaSubscriptionStore extends AbstractVcfaStore {
@@ -140,7 +141,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                             targetId);
                 }
 
-                subscriptionNode.remove("orgId");
+                VcfaSubscriptionSanitizer.sanitizeImport(subscriptionNode);
                 subscriptionNode.put("id", targetId);
 
                 substituteProjects(subscriptionNode);
@@ -319,15 +320,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                 try {
                     ObjectNode exportNode = mapper.valueToTree(item);
 
-                    // --- ADDED EXPORT ID SANITIZATION BLOCK ---
-                    // This scrubs legacy "null-" string pieces out of the local JSON files when
-                    // pulling down from the server
-                    if (exportNode.has("id") && !exportNode.get("id").isNull()) {
-                        String currentIdText = exportNode.get("id").asText();
-                        String cleanedIdText = currentIdText.replace("-null-", "-");
-                        cleanedIdText = cleanedIdText.replaceAll("^null-", "");
-                        exportNode.put("id", cleanedIdText);
-                    }
+                    VcfaSubscriptionSanitizer.sanitizeExport(exportNode);
 
                     JsonNode runnableTypeNode = exportNode.get("runnableType");
                     if (runnableTypeNode != null && runnableTypeNode.asText().contains("extensibility.abx")) {
