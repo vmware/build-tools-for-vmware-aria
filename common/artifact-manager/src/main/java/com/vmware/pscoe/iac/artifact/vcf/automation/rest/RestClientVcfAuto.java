@@ -85,9 +85,10 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	 * handler.
 	 */
 	public void createBlueprintForm(String blueprintId, Map<String, Object> formPayload, String yamlContent,
-			String blueprintName, String blueprintDescription, Boolean requestScopeOrg) throws IOException {
-		createBlueprintFormPrimitive(blueprintId, formPayload, yamlContent, blueprintName, blueprintDescription,
-				requestScopeOrg);
+			String blueprintName, String blueprintDescription, Boolean requestScopeOrg, String styles)
+			throws IOException {
+		this.createBlueprintFormPrimitive(blueprintId, formPayload, yamlContent, blueprintName, blueprintDescription,
+				requestScopeOrg, styles);
 	}
 
 	public String getBlueprintVersions(String blueprintId) throws IOException {

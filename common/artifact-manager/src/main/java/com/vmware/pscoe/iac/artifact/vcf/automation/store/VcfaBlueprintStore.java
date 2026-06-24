@@ -246,7 +246,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     private void importBlueprint(File bpDir, List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
         ObjectMapper mapper = new ObjectMapper();
-        com.google.gson.Gson gson = new com.google.gson.Gson();
+        com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setPrettyPrinting().create();
 
         VcfaBlueprint bp = loadBlueprintMeta(bpDir, bpName);
 
@@ -300,6 +300,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             // --- CUSTOM REQUEST FORM PROCESSING BLOCK ---
             String formFileName = bpName + "__FormData.json";
             File formDataFile = new File(bpDir, formFileName);
+            File stylesFile = new File(bpDir, "styles.css");
 
             if (formDataFile.exists()) {
                 logger.info("Custom request form artifact layout definition found: '{}'. Evaluating variations...",
@@ -307,9 +308,12 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 try {
                     String formFileContent = new String(java.nio.file.Files.readAllBytes(formDataFile.toPath()),
                             java.nio.charset.StandardCharsets.UTF_8);
-                    Map<String, Object> localFormPayload = gson.fromJson(formFileContent, Map.class);
-                    localFormPayload.put("sourceId", blueprintId);
 
+                    JsonObject formWrapperElement = com.google.gson.JsonParser.parseString(formFileContent)
+                            .getAsJsonObject();
+
+                    String serializedFormJson = gson.toJson(formWrapperElement);
+                    Map<String, Object> localFormPayload = gson.fromJson(serializedFormJson, Map.class);
                     boolean formChanged = true;
                     try {
                         Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", blueprintId);
@@ -328,12 +332,22 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                                             .parseString(mapper.writeValueAsString(serverFormObj)));
                                 }
 
-                                String localFormJsonNormalized = gson
-                                        .toJson(com.google.gson.JsonParser.parseString(formFileContent));
+                                String localFormJsonNormalized = gson.toJson(formWrapperElement.get("form"));
 
-                                if (localFormJsonNormalized.equals(serverFormJsonNormalized)) {
+                                String serverStyles = formMetaMap.containsKey("styles")
+                                        && formMetaMap.get("styles") != null
+                                                ? formMetaMap.get("styles").toString().trim()
+                                                : "";
+                                String localCssContent = "";
+                                if (stylesFile.exists()) {
+                                    localCssContent = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
+                                            java.nio.charset.StandardCharsets.UTF_8).trim();
+                                }
+
+                                if (localFormJsonNormalized.equals(serverFormJsonNormalized)
+                                        && localCssContent.equals(serverStyles)) {
                                     logger.info(
-                                            "Custom request form layouts match perfectly on server for blueprint '{}'. Skipping redundant updates.",
+                                            "Custom request form layouts and sibling styles match perfectly on server for blueprint '{}'. Skipping redundant updates.",
                                             bpName);
                                     formChanged = false;
                                 }
@@ -347,13 +361,23 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                         logger.info(
                                 "Form configuration updates detected for blueprint '{}'. Triggering updates sequence...",
                                 bpName);
+
+                        // --- FIXED: Extract style variable or track it to pass as 7th parameter ---
+                        String cssStylesPayload = "";
+                        if (stylesFile.exists()) {
+                            cssStylesPayload = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
+                                    java.nio.charset.StandardCharsets.UTF_8).trim();
+                        }
+
                         restClient.createBlueprintForm(
                                 blueprintId,
                                 localFormPayload,
                                 bp.getContent(),
                                 bp.getName(),
                                 bp.getDescription(),
-                                bp.getRequestScopeOrg());
+                                bp.getRequestScopeOrg(),
+                                cssStylesPayload);
+
                         logger.info(
                                 "Successfully bound updated custom request form configurations to Blueprint entity '{}'.",
                                 bpName);
@@ -374,13 +398,24 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 logger.info("Triggering lifecycle version mapping release sequence for blueprint: {}",
                         bpName);
                 try {
+                    // Only pass styles if the file exists and is populated
+                    if (stylesFile.exists()) {
+                        String localCssContent = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
+                                java.nio.charset.StandardCharsets.UTF_8).trim();
+                        if (!localCssContent.isEmpty()) {
+                            processingTarget.setStyles(localCssContent);
+                        }
+                    }
+
                     restClient.versionBlueprint(blueprintId, processingTarget.toMap());
 
                     if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
                         unreleaseOldVersions(blueprintId);
                     }
                 } catch (Exception e) {
-                    logger.warn("Blueprint '{}' draft was created/updated, but versioning failed (content validation error on target). Blueprint remains in draft state: {}", bpName, e.getMessage());
+                    logger.warn(
+                            "Blueprint '{}' draft was created/updated, but versioning failed (content validation error on target). Blueprint remains in draft state: {}",
+                            bpName, e.getMessage());
                 }
             } else {
                 logger.info(
@@ -465,7 +500,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         }
 
         try {
-
             this.verifyAssetPathSafety(bp.getName(), "Blueprint");
             logger.info("Evaluating custom request form availability on server for blueprint: {}", bp.getName());
 
@@ -480,28 +514,45 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                             bp.getName());
 
                     Object internalFormObj = formMetaMap.get("form");
-                    String serializedFormJson = "";
+                    JsonObject formElement = null;
 
                     if (internalFormObj instanceof String) {
-                        com.google.gson.JsonElement jsonElement = com.google.gson.JsonParser
-                                .parseString((String) internalFormObj);
-                        serializedFormJson = gson.toJson(jsonElement);
+                        formElement = com.google.gson.JsonParser.parseString((String) internalFormObj)
+                                .getAsJsonObject();
                     } else {
                         String rawJson = mapper.writeValueAsString(internalFormObj);
-                        com.google.gson.JsonElement jsonElement = com.google.gson.JsonParser.parseString(rawJson);
-                        gson.toJson(jsonElement);
-                        serializedFormJson = gson.toJson(jsonElement);
+                        formElement = com.google.gson.JsonParser.parseString(rawJson).getAsJsonObject();
                     }
+
+                    // --- STRUCTURAL CORRECTION: Extract "styles" from the ROOT wrapper map sibling
+                    // level ---
+                    String cssStyles = "";
+                    if (formMetaMap.containsKey("styles") && formMetaMap.get("styles") != null) {
+                        cssStyles = formMetaMap.get("styles").toString();
+                    }
+
+                    // Re-nest the sanitized form sub-property back into the wrapper structure
+                    // (excluding styles sibling)
+                    String serializedFormJson = gson.toJson(formElement);
 
                     String formFileName = bp.getName() + "__FormData.json";
                     String formFilePath = blueprintDir + File.separator + formFileName;
 
+                    // File 1: Export customized request form layout properties map
                     Files.write(Paths.get(formFilePath),
                             serializedFormJson.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE,
                             StandardOpenOption.TRUNCATE_EXISTING);
 
-                    logger.info("Successfully exported custom request form layout file asset: {}", formFileName);
+                    // File 2: Export styles.css file layout configuration separately
+                    String stylesFilePath = blueprintDir + File.separator + "styles.css";
+                    Files.write(Paths.get(stylesFilePath),
+                            cssStyles.getBytes(StandardCharsets.UTF_8),
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING);
+
+                    logger.info("Successfully exported custom request form layout file asset: {} and styles.css",
+                            formFileName);
                 } else {
                     logger.info(
                             "No customized form layout metadata found on the server for blueprint '{}'. Skipping file creation.",

@@ -51,14 +51,14 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaSubscription;
 
 public class RestClientVcfAutoPrimitive extends RestClient {
 
-    private static final String SERVICE_VERSION = "/vco/api/about";
+	private static final String SERVICE_VERSION = "/vco/api/about";
 
 	protected final ConfigurationVcfAuto configuration;
 	protected static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAutoPrimitive.class);
 	protected final ObjectMapper objectMapper;
 	protected final RestTemplate restTemplate;
 	protected String apiVersion;
-	protected  Version productVersion;
+	protected Version productVersion;
 	private String projectId;
 
 	public RestClientVcfAutoPrimitive(ConfigurationVcfAuto configuration) {
@@ -300,7 +300,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		// Create a fresh payload map for the versioning endpoint
 		Map<String, Object> versioningPayload = new java.util.HashMap<>();
 
-		// Merge blueprint metadata (name, description, content, projectId) into the versioning payload
+		// Merge blueprint metadata (name, description, content, projectId) into the
+		// versioning payload
 		if (incomingPayload != null) {
 			versioningPayload.putAll(incomingPayload);
 		}
@@ -320,6 +321,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 		return postMap("/blueprint/api/blueprints/" + blueprintId + "/versions", versioningPayload, 200, 201);
 	}
+
 	protected VcfaBlueprint updateBlueprintPrimitive(String id, Map<String, Object> blueprint) throws IOException {
 		Map<String, Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
 		if (result == null)
@@ -362,7 +364,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	 * the required stringified envelope structure.
 	 */
 	protected void createBlueprintFormPrimitive(String blueprintId, Map<String, Object> formPayload, String yamlContent,
-			String blueprintName, String blueprintDescription, Boolean requestScopeOrg) throws IOException {
+			String blueprintName, String blueprintDescription, Boolean requestScopeOrg, String styles)
+			throws IOException {
 		if (restTemplate == null) {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
 		}
@@ -370,9 +373,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		// --- Step 1: POST
 		// /blueprint/api/blueprints/{blueprintId}/form?apiVersion=2020-08-25 ---
 		String creationResponseRaw = "";
-
-		// Ensure incoming values match the expected target definitions
-		formPayload.put("sourceId", blueprintId);
 		if (formPayload.containsKey("name")
 				&& (formPayload.get("name") == null || formPayload.get("name").toString().isEmpty())) {
 			formPayload.put("name", blueprintName);
@@ -389,7 +389,11 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		Map<String, Object> apiEnvelopePayload = new java.util.HashMap<>();
 		apiEnvelopePayload.put("name", blueprintName);
 		apiEnvelopePayload.put("form", serializedPayloadString);
-		apiEnvelopePayload.put("styles", null);
+
+		if (styles != null) {
+			apiEnvelopePayload.put("styles", styles);
+		}
+
 		apiEnvelopePayload.put("status", "ON");
 		apiEnvelopePayload.put("type", "requestForm");
 		apiEnvelopePayload.put("sourceId", blueprintId);
@@ -412,7 +416,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			org.springframework.http.HttpEntity<String> formEntity = new org.springframework.http.HttpEntity<>(
 					fullySerializedEnvelope, headers);
 
-			creationResponseRaw = this.restTemplate.postForObject(step1Uri, formEntity, String.class);
+			creationResponseRaw = this.restTemplate.postForObject(step1Uri, formEntity,
+					String.class);
 			LOGGER.info("Step 1: Custom Request Form envelope successfully pushed!");
 		} catch (Exception e) {
 			throw new IOException("Failed to apply custom form layout template configuration: " + e.getMessage(), e);
@@ -441,8 +446,9 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		}
 
 		try {
-			String generateFormJsonSchemaPath = this.getProductVersion().getString().startsWith("9.0") ? 
-				"/form-service/api/forms/designer/generate-form-json-schema": "/blueprint/api/blueprints/form/generate-form-json-schema";
+			String generateFormJsonSchemaPath = this.getProductVersion().getString().startsWith("9.0")
+					? "/form-service/api/forms/designer/generate-form-json-schema"
+					: "/blueprint/api/blueprints/form/generate-form-json-schema";
 			java.net.URI step2Uri = getURI(getURIBuilder().setPath(generateFormJsonSchemaPath));
 
 			org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
@@ -454,7 +460,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			LOGGER.info(
 					"Step 2: Successfully executed schema pre-generation rules using server-generated form layout.");
 		} catch (org.springframework.web.client.HttpClientErrorException.BadRequest bre) {
-			throw new IOException("Failed schema generation validation pass: " + bre.getResponseBodyAsString(), bre);
+			throw new IOException("Failed schema generation validation pass: " +
+					bre.getResponseBodyAsString(), bre);
 		}
 
 		// --- Step 3: Bind structural configuration values back via PUT ---
@@ -467,6 +474,14 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		finalizePayload.put("formId", formId);
 		finalizePayload.put("content", yamlContent);
 
+		// --- FIXED: Inject styles here so the draft update preserves them alongside
+		// the form assignment ---
+		if (styles != null && !styles.isEmpty()) {
+			finalizePayload.put("styles", styles);
+		} else {
+			finalizePayload.put("styles", "");
+		}
+
 		try {
 			java.net.URI step3Uri = getURI(getURIBuilder().setPath("/blueprint/api/blueprints/" + blueprintId));
 
@@ -475,12 +490,14 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			org.springframework.http.HttpEntity<Map<String, Object>> putEntity = new org.springframework.http.HttpEntity<>(
 					finalizePayload, headers);
 
-			this.restTemplate.exchange(step3Uri, org.springframework.http.HttpMethod.PUT, putEntity, String.class);
-			LOGGER.info(
-					"Step 3: Successfully executed request form push.");
+			this.restTemplate.exchange(step3Uri, org.springframework.http.HttpMethod.PUT,
+					putEntity, String.class);
+			LOGGER.info("Step 3: Successfully executed request form push.");
 		} catch (Exception e) {
 			throw new IOException(
-					"Failed to bind form metadata configurations to target blueprint entity: " + e.getMessage(), e);
+					"Failed to bind form metadata configurations to target blueprint entity: " +
+							e.getMessage(),
+					e);
 		}
 	}
 
@@ -972,7 +989,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
 		}
 		String vroIntegrationName = configuration.getVroIntegration();
-		List<Map<String, Object>> results = this.getPagedContent("/integration/api/system/integrations", new HashMap<>());
+		List<Map<String, Object>> results = this.getPagedContent("/integration/api/system/integrations",
+				new HashMap<>());
 		for (Map<String, Object> integration : results) {
 			if (vroIntegrationName.equalsIgnoreCase(String.valueOf(integration.get("name")))) {
 				Object links = integration.get("_links");
