@@ -1,0 +1,65 @@
+[//]: # (VERSION_PLACEHOLDER DO NOT DELETE)
+[//]: # (Used when working on a new release.)
+[//]: # (Nothing here is optional. If a step must not be performed, it must be said so)
+[//]: # (Do not fill the version, it will be done automatically)
+[//]: # (Quick Intro to what is the focus of this release)
+
+## Breaking Changes
+
+[//]: # (### *Breaking Change*)
+[//]: # (Describe the breaking change AND explain how to resolve it)
+[//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
+
+## Deprecations
+
+[//]: # (### *Deprecation*)
+[//]: # (Explain what is deprecated and suggest alternatives)
+
+[//]: # (Features -> New Functionality)
+
+## Features
+
+[//]: # (### *Feature Name*)
+[//]: # (Describe the feature)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
+
+[//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
+
+## Improvements
+
+[//]: # (### *Improvement Name* )
+[//]: # (Talk ONLY regarding the improvement)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### Previous Behavior)
+[//]: # (Explain how it used to behave, regarding to the change)
+[//]: # (Optional But higlhy recommended)
+[//]: # (#### New Behavior)
+[//]: # (Explain how it behaves now, regarding to the change)
+[//]: # (Optional But higlhy recommended Specify *NONE* if missing)
+[//]: # (#### Relevant Documentation:)
+
+### *Change type of `Import Dashboard for All Users` Installer input to boolean*
+
+#### Previous Behavior
+The input is parsed as boolean but the input type is string which is confusing for the user and does not have auto suggested values.
+
+```txt
+Import Dashboards For All Users:
+Invalid value.
+Expected a string with at least 1 character.
+
+Import Dashboards For All Users: yes
+```
+
+#### New Behavior
+
+Input type is boolean with suggested values and default value of true.
+
+```txt
+Import Dashboards For All Users (Y/N) [Y]:
+```
+
+## Upgrade procedure
+
+[//]: # (Explain in details if something needs to be done)
