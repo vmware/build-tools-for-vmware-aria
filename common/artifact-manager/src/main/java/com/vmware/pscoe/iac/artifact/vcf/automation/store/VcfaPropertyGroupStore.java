@@ -23,13 +23,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
-import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 public class VcfaPropertyGroupStore extends AbstractVcfaStore {
@@ -50,8 +51,9 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     public void exportContent() {
         logger.info("Pulling property group configurations from the remote environment...");
 
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
-        if (isExplicitlyEmptyInDescriptor()) {
+        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+                "propertyGroups");
+        if (allowedGroups != null && allowedGroups.isEmpty()) {
             logger.info(
                     "Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping export entirely.");
             return;
@@ -88,8 +90,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 this.verifyAssetPathSafety(trackingName, "Property Group");
                 File jsonFile = Paths.get(baseGroupsPath, trackingName + ".json").toFile();
 
-                // --- REPRODUCED SYSTEM LOGIC: Sanitize environmental/auditing fields to allow
-                // multi-tenant migration ---
                 ObjectNode jsonNode = mapper.valueToTree(group);
                 jsonNode.remove("id");
                 jsonNode.remove("projectName");
@@ -97,8 +97,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 jsonNode.remove("createdBy");
                 jsonNode.remove("updatedAt");
                 jsonNode.remove("updatedBy");
-                // Don't write null `organization` — server returns orgId (UUID) but not org name.
-                // If it's null, remove it so the local file isn't polluted.
+
                 if (jsonNode.has("organization") && jsonNode.get("organization").isNull()) {
                     jsonNode.remove("organization");
                 }
@@ -124,8 +123,9 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     public void importContent(File sourceDirectory) {
         logger.info("Importing property groups from {}", sourceDirectory.getAbsolutePath());
 
-        // --- OPTIMIZATION STEP: Short-circuit gate validation check ---
-        if (isExplicitlyEmptyInDescriptor()) {
+        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+                "propertyGroups");
+        if (allowedGroups != null && allowedGroups.isEmpty()) {
             logger.info(
                     "Property Group descriptor is explicitly empty '[]' in configuration. Bypassing server lookups and skipping import entirely.");
             return;
@@ -137,6 +137,12 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
         }
 
         File localDir = Paths.get(sourceDirectory.getPath(), DIR_PROPERTY_GROUPS).toFile();
+
+        // --- NEW STRATEGIC COUPLING: Call the flexible hybrid asset validator
+        // (Files/Folders mixed) ---
+        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, localDir, "Property Group", false,
+                "property-group", "propertyGroups");
+
         if (!localDir.exists() || !localDir.isDirectory()) {
             logger.info("Property groups directory not found. Skipping.");
             return;
@@ -154,13 +160,14 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
             try {
                 currentOrgId = restClient.getOrganizationId();
             } catch (Exception e) {
-                logger.warn("Unable to resolve organization ID from target server. Property groups will be created without explicit org scoping: {}", e.getMessage());
+                logger.warn(
+                        "Unable to resolve organization ID from target server. Property groups will be created without explicit org scoping: {}",
+                        e.getMessage());
                 currentOrgId = null;
             }
             String currentProjectId = restClient.getProjectId();
 
             for (File file : groupFiles) {
-                // Friendly display identifiers retain spaces flawlessly here
                 String groupDisplayName = file.getName().replace(".json", "");
 
                 if (isExcludedByDescriptor(groupDisplayName)) {
@@ -173,29 +180,27 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 logger.info("Processing local Property Group asset configuration: '{}'", file.getName());
                 VcfaPropertyGroup localGroup = mapper.readValue(file, VcfaPropertyGroup.class);
 
-                // Track down matching records on the target environment by friendly Display
-                // Name attributes
                 Optional<VcfaPropertyGroup> existingRemote = remoteGroups.stream()
                         .filter(r -> r.getDisplayName().equalsIgnoreCase(localGroup.getDisplayName()))
                         .findFirst();
 
-                // Re-stitch Organization scopes
-                // If local file has 'organization' (org name), try to resolve it to orgId
                 if (localGroup.getOrganization() != null && !localGroup.getOrganization().isBlank()) {
                     String orgName = localGroup.getOrganization();
                     if (orgName.matches(".*-.*")) {
-                        // Looks like a UUID, use it directly
                         localGroup.setOrgId(orgName);
-                        logger.debug("Using orgId from local file for property group '{}': {}", localGroup.getName(), orgName);
+                        logger.debug("Using orgId from local file for property group '{}': {}", localGroup.getName(),
+                                orgName);
                     } else {
-                        // Treat as org name, resolve to UUID
                         String resolvedOrgId = resolveOrgNameToId(orgName);
                         if (resolvedOrgId != null) {
                             currentOrgId = resolvedOrgId;
                             localGroup.setOrgId(resolvedOrgId);
-                            logger.debug("Resolved org name '{}' to orgId '{}' for property group '{}'", orgName, resolvedOrgId, localGroup.getName());
+                            logger.debug("Resolved org name '{}' to orgId '{}' for property group '{}'", orgName,
+                                    resolvedOrgId, localGroup.getName());
                         } else {
-                            logger.warn("Could not resolve org name '{}' to orgId for property group '{}'. Using default: {}", orgName, localGroup.getName(), currentOrgId);
+                            logger.warn(
+                                    "Could not resolve org name '{}' to orgId for property group '{}'. Using default: {}",
+                                    orgName, localGroup.getName(), currentOrgId);
                             localGroup.setOrgId(currentOrgId);
                         }
                     }
@@ -206,7 +211,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 if (existingRemote.isPresent()) {
                     VcfaPropertyGroup remoteMatch = existingRemote.get();
 
-                    // --- REPRODUCED SYSTEM LOGIC: Prevent illegal project/scope mutations ---
                     String existingProjectId = remoteMatch.getProjectId();
                     if (existingProjectId != null && !existingProjectId.isBlank()
                             && !existingProjectId.equals(currentProjectId)) {
@@ -215,8 +219,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                                 localGroup.getDisplayName(), existingProjectId));
                     }
 
-                    // If local asset expects a non-blank project allocation, inject target
-                    // environment project mapping parameters
                     if (localGroup.getProjectId() != null && !localGroup.getProjectId().isBlank()) {
                         logger.debug("Re-mapping local group project alignment pointer to current target scope: {}",
                                 currentProjectId);
@@ -233,7 +235,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                         restClient.updatePropertyGroup(remoteMatch.getId(), localGroup);
                     }
                 } else {
-                    // CREATE PIPELINE
                     if (localGroup.getProjectId() != null && !localGroup.getProjectId().isBlank()) {
                         logger.debug("Re-mapping local group project alignment pointer to current target scope: {}",
                                 currentProjectId);
@@ -250,21 +251,16 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
         }
     }
 
-    /**
-     * Property evaluation matching field paths verified inside model layout.
-     */
     private boolean isIdentical(VcfaPropertyGroup remote, VcfaPropertyGroup local) {
         if (remote == null || local == null) {
             return false;
         }
 
-        boolean sameName = java.util.Objects.equals(remote.getName(), local.getName());
-        boolean sameDisplayName = java.util.Objects.equals(remote.getDisplayName(), local.getDisplayName());
-        boolean sameDescription = java.util.Objects.equals(remote.getDescription(), local.getDescription());
-        boolean sameType = java.util.Objects.equals(remote.getType(), local.getType());
-        boolean sameProperties = java.util.Objects.equals(remote.getProperties(), local.getProperties());
-
-        return sameName && sameDisplayName && sameDescription && sameType && sameProperties;
+        return Objects.equals(remote.getName(), local.getName())
+                && Objects.equals(remote.getDisplayName(), local.getDisplayName())
+                && Objects.equals(remote.getDescription(), local.getDescription())
+                && Objects.equals(remote.getType(), local.getType())
+                && Objects.equals(remote.getProperties(), local.getProperties());
     }
 
     /**
@@ -281,42 +277,8 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = null;
-            boolean isExplicitlyEmpty = false;
-
-            File contentYamlFile = new File(System.getProperty("user.dir"), "content.yaml");
-            if (!contentYamlFile.exists() && this.vcfaPackage != null) {
-                File packageDir = new File(this.vcfaPackage.getFilesystemPath());
-                File projectRoot = packageDir.getParentFile() != null ? packageDir.getParentFile() : packageDir;
-                contentYamlFile = new File(projectRoot, "content.yaml");
-            }
-
-            if (contentYamlFile.exists()) {
-                org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
-                try (java.io.InputStream inputStream = new java.io.FileInputStream(contentYamlFile)) {
-                    Map<String, Object> rawMap = yaml.load(inputStream);
-                    if (rawMap != null) {
-                        Object groupListObj = rawMap.containsKey("property-group") ? rawMap.get("property-group")
-                                : rawMap.get("propertyGroups");
-
-                        if (rawMap.containsKey("property-group") || rawMap.containsKey("propertyGroups")) {
-                            if (groupListObj instanceof List) {
-                                itemsToDelete = (List<String>) groupListObj;
-                                if (itemsToDelete.isEmpty()) {
-                                    isExplicitlyEmpty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // --- TRISTATE EVALUATION MATRIX ---
-
-            if (isExplicitlyEmpty) {
-                logger.info("Property Group descriptor is explicitly empty '[]'. Skipping deletion entirely.");
-                return;
-            }
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+                    "propertyGroups");
 
             if (itemsToDelete == null) {
                 logger.info(
@@ -329,6 +291,11 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 return;
             }
 
+            if (itemsToDelete.isEmpty()) {
+                logger.info("Property Group descriptor is explicitly empty '[]'. Skipping deletion entirely.");
+                return;
+            }
+
             logger.info("Targeted filter list active. Evaluating matching entries for deletion sequence...");
             for (VcfaPropertyGroup remoteGroup : remoteGroups) {
                 String remoteDisplayName = remoteGroup.getDisplayName();
@@ -338,91 +305,24 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                     restClient.deletePropertyGroup(remoteGroup.getId());
                 }
             }
-
         } catch (IOException e) {
             throw new RuntimeException(
                     "Fatal error encountered clearing existing infrastructure property group definitions", e);
         }
     }
 
-    /**
-     * Helper to safely extract and determine if the configuration block array is
-     * explicitly initialized to '[]'.
-     */
-    private boolean isExplicitlyEmptyInDescriptor() {
-        VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing manifest layout rules map token details.", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedGroups = localDescriptor.getPropertyGroup();
-        return allowedGroups != null && allowedGroups.isEmpty();
-    }
-
-    /**
-     * Evaluates property group filtering rules straight against friendly display
-     * name lists inside content.yaml.
-     */
     private boolean isExcludedByDescriptor(String groupDisplayName) {
-        VcfaPackageDescriptor localDescriptor = null;
-
-        if (this.descriptor instanceof VcfaPackageDescriptor) {
-            localDescriptor = (VcfaPackageDescriptor) this.descriptor;
-        }
-
-        if (localDescriptor == null) {
-            String workingDir = System.getProperty("user.dir");
-            if (workingDir != null) {
-                File contentYamlFile = new File(workingDir, "content.yaml");
-                if (contentYamlFile.exists()) {
-                    try {
-                        localDescriptor = VcfaPackageDescriptor.getInstance(contentYamlFile);
-                    } catch (Exception e) {
-                        logger.error("Failed parsing content.yaml within property group descriptor check block", e);
-                    }
-                }
-            }
-        }
-
-        if (localDescriptor == null) {
-            return false;
-        }
-
-        List<String> allowedGroups = localDescriptor.getPropertyGroup();
-
+        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+                "propertyGroups");
         if (allowedGroups == null) {
             return false;
         }
-
         if (allowedGroups.isEmpty()) {
             return true;
         }
-
         return !allowedGroups.contains(groupDisplayName);
     }
 
-    /**
-     * Resolves an organization name to its UUID by querying the identity service.
-     */
     private String resolveOrgNameToId(String orgName) {
         if (restClient == null) {
             return null;
