@@ -43,6 +43,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDe
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 /**
  * Abstract class that unify the way Policies are imported, exported and deleted
@@ -463,7 +464,9 @@ public abstract class AbstractVraNgPolicyStore<T extends VraNgPolicyDTO> extends
 	 * project scoped or not
 	 */
 	private void sanitizePolicy(JsonObject policy) {
-		policy.remove("orgId");
+		// Use sanitizer for orgId/projectId scrubbing and legacy ID fixing
+		VcfaPayloadSanitizer.sanitize(policy);
+		// Keep policy-specific cleanup (not handled by sanitizer)
 		policy.remove("createdBy");
 		policy.remove("createdAt");
 		policy.remove("lastUpdatedBy");

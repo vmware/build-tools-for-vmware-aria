@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaContentSource;
 
 public class VcfaContentSourceStore extends AbstractVcfaStore {
@@ -197,6 +198,7 @@ public class VcfaContentSourceStore extends AbstractVcfaStore {
 
                 try {
                     ObjectNode exportNode = mapper.valueToTree(item);
+                    VcfaPayloadSanitizer.sanitize(exportNode);
                     String sanitizedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(exportNode);
                     Files.write(
                             Paths.get(finalTargetFilePath),

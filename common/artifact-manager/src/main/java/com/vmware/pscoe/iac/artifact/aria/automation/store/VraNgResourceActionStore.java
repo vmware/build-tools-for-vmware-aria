@@ -42,6 +42,7 @@ import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgProjectUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgResourceActionStore extends AbstractVraNgStore {
 
@@ -164,14 +165,12 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	/**
 	 * Sanitize ResourceAction json from unnecessary elements that prevent store or
 	 * publish later the content.
-	 * 
+	 *
 	 * @param resourceActionJsonElement Resource Action Json Element
 	 */
 	private void sanitizeResourceActionJsonElement(final JsonObject resourceActionJsonElement) {
-
-		// leaving orgId in the JSON prevents pushing to different vRA organizations
-		// orgId is optional when importing in vRA, so it can be safely removed
-		resourceActionJsonElement.remove("orgId");
+		// Use sanitizer for orgId/projectId scrubbing and legacy ID fixing
+		VcfaPayloadSanitizer.sanitize(resourceActionJsonElement);
 
 		logger.debug("Removing id property from formDefinition element ...");
 		String formDefinitionItemName = "formDefinition";
