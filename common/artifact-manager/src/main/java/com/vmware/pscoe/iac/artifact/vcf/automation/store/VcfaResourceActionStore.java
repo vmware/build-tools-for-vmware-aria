@@ -31,8 +31,10 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaResourceAction;
 
 public class VcfaResourceActionStore extends AbstractVcfaStore {

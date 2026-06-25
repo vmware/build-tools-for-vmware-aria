@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 
@@ -101,6 +101,9 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 if (jsonNode.has("organization") && jsonNode.get("organization").isNull()) {
                     jsonNode.remove("organization");
                 }
+
+                // Sanitize orgId and projectId for cross-org portability
+                VcfaPayloadSanitizer.sanitize(jsonNode);
 
                 logger.info("Successfully synchronized property group asset: {}", jsonFile.getAbsolutePath());
                 String serializedJson = mapper.writeValueAsString(jsonNode);

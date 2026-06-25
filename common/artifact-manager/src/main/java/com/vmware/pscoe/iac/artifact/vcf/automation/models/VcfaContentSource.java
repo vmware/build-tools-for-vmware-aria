@@ -15,6 +15,8 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.models;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
@@ -25,7 +27,13 @@ import java.util.Map;
 public class VcfaContentSource implements Identifiable {
     private String id;
     private String name;
+
+    // Support both nested type object and typeId string from API
     private VcfaSourceType type;
+
+    @JsonAlias("typeId")
+    private String typeId;
+
     private String description;
     private String projectId;
     private Map<String, Object> config;
@@ -67,8 +75,32 @@ public class VcfaContentSource implements Identifiable {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public VcfaSourceType getType() { return type; }
-    public void setType(VcfaSourceType type) { this.type = type; }
+    public VcfaSourceType getType() {
+        // Derive type from typeId if type object is not set
+        if (type == null && typeId != null) {
+            return new VcfaSourceType(typeId, null);
+        }
+        return type;
+    }
+    public void setType(VcfaSourceType type) {
+        this.type = type;
+        if (type != null) {
+            this.typeId = type.getId();
+        }
+    }
+
+    public String getTypeId() {
+        if (typeId != null) {
+            return typeId;
+        }
+        if (type != null) {
+            return type.getId();
+        }
+        return null;
+    }
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

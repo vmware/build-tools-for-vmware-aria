@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
 import java.util.Objects;
 
@@ -366,26 +367,27 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
     private void fixCustomResourceDefinition(ObjectNode customResourceJsonElement) throws IOException {
         String currentOrgId = restClient.getOrganizationId();
-        customResourceJsonElement.put("orgId", currentOrgId);
+        String currentProjectId = restClient.getProjectId();
 
-        if (customResourceJsonElement.has("projectId") && !customResourceJsonElement.get("projectId").isNull()) {
-            customResourceJsonElement.put("projectId", restClient.getProjectId());
-        }
+        // Use sanitizer for main object orgId/projectId handling
+        VcfaPayloadSanitizer.sanitize(customResourceJsonElement, currentOrgId, currentProjectId);
 
+        // Handle nested additionalActions formDefinition
         if (customResourceJsonElement.has("additionalActions")
                 && customResourceJsonElement.get("additionalActions").isArray()) {
             ArrayNode additionalActionsArray = (ArrayNode) customResourceJsonElement.get("additionalActions");
             for (JsonNode action : additionalActionsArray) {
                 if (action instanceof ObjectNode) {
                     ObjectNode actionJson = (ObjectNode) action;
-                    actionJson.put("orgId", currentOrgId);
+                    // Sanitize action-level orgId/projectId
+                    VcfaPayloadSanitizer.sanitize(actionJson, currentOrgId, currentProjectId);
 
                     if (actionJson.has("formDefinition") && actionJson.get("formDefinition").isObject()) {
                         ObjectNode formDefinition = (ObjectNode) actionJson.get("formDefinition");
                         formDefinition.remove("id");
                         formDefinition.put("tenant", currentOrgId);
                         if (formDefinition.has("projectId") && !formDefinition.get("projectId").isNull()) {
-                            formDefinition.put("projectId", restClient.getProjectId());
+                            formDefinition.put("projectId", currentProjectId);
                         }
                     }
                 }

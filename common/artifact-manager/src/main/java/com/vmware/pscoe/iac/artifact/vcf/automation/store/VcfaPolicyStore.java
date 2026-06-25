@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 
@@ -101,7 +102,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 File jsonFile = Paths.get(categoryFolderPath, trackingName + ".json").toFile();
 
                 ObjectNode jsonNode = mapper.valueToTree(policy);
-                sanitizePolicyPayload(jsonNode);
+                VcfaPayloadSanitizer.sanitize(jsonNode);
 
                 logger.info("Successfully synchronized policy asset: {}", jsonFile.getAbsolutePath());
                 String serializedJson = mapper.writeValueAsString(jsonNode);
@@ -273,7 +274,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
     }
 
     private void sanitizePolicyPayload(ObjectNode policyJson) {
-        policyJson.remove("orgId");
+        // orgId is handled by VcfaPayloadSanitizer.sanitize() above
         policyJson.remove("id");
         policyJson.remove("createdBy");
         policyJson.remove("createdAt");

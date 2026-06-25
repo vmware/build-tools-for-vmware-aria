@@ -18,6 +18,7 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.common;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -92,15 +93,14 @@ public final class VcfaPayloadSanitizer {
                     : null;
             if (constraints != null) {
                 constraints.remove("projectId");
-                com.fasterxml.jackson.databind.node.ArrayNode arr = node.putArray("projectId");
-                arr.add(projectId);
-            } else {
-                node.put("projectId", projectId);
             }
+            com.fasterxml.jackson.databind.node.ArrayNode arr = node.putArray("projectId");
+            arr.add(projectId);
         } else {
             node.remove("projectId");
-            if (node.has("constraints")) {
-                node.get("constraints").remove("projectId");
+            JsonNode constraintsNode = node.get("constraints");
+            if (constraintsNode != null && constraintsNode.isObject()) {
+                ((ObjectNode) constraintsNode).remove("projectId");
             }
         }
 
