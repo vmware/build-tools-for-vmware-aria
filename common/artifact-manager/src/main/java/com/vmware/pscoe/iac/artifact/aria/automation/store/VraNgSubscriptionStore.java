@@ -45,6 +45,9 @@ import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDe
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
+import static com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer.sanitize;
+
+import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgSubscriptionStore extends AbstractVraNgStore {
 
