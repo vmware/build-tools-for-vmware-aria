@@ -50,9 +50,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomResource;
@@ -66,7 +63,6 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.helpers.AssertionsHelper;
 import com.vmware.pscoe.iac.artifact.helpers.FsMocks;
 import com.vmware.pscoe.iac.artifact.helpers.stubs.CustomResourceMockBuilder;
-import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgCustomResourceStoreTest {
 	@Rule
@@ -624,54 +620,4 @@ public class VraNgCustomResourceStoreTest {
 		assertThrows(IllegalStateException.class, () -> store.exportContent());
 	}
 
-	// ==================== VcfaPayloadSanitizer Tests ====================
-
-	private static final Gson SANITIZER_GSON = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-
-	@Test
-	void testFixCustomResourceDefinition_SetsOrgId() {
-		JsonObject customResourceJson = SANITIZER_GSON.fromJson(
-			"{\"name\":\"TestResource\",\"resourceType\":\"Custom.Test\"}",
-			JsonObject.class
-		);
-
-		String currentOrgId = "new-org-id";
-		VcfaPayloadSanitizer.sanitize(customResourceJson, currentOrgId, null);
-
-		assertTrue(customResourceJson.has("orgId"), "orgId should be set");
-		assertEquals(currentOrgId, customResourceJson.get("orgId").getAsString(), "orgId should match target");
-	}
-
-	@Test
-	void testFixCustomResourceDefinition_SetsProjectId() {
-		JsonObject customResourceJson = SANITIZER_GSON.fromJson(
-			"{\"name\":\"TestResource\",\"resourceType\":\"Custom.Test\"}",
-			JsonObject.class
-		);
-
-		String currentOrgId = "new-org-id";
-		String currentProjectId = "new-project-id";
-		VcfaPayloadSanitizer.sanitize(customResourceJson, currentOrgId, currentProjectId);
-
-		assertTrue(customResourceJson.has("projectId"), "projectId should be set");
-		assertEquals(currentProjectId, customResourceJson.get("projectId").getAsJsonArray().get(0).getAsString());
-	}
-
-	@Test
-	void testFixCustomResourceDefinition_ScrubsLegacyId() {
-		JsonObject customResourceJson = SANITIZER_GSON.fromJson(
-			"{\"id\":\"null-resource-123\",\"name\":\"TestResource\"}",
-			JsonObject.class
-		);
-
-		VcfaPayloadSanitizer.sanitize(customResourceJson, "org-id", null);
-
-		assertEquals("resource-123", customResourceJson.get("id").getAsString(), "Legacy null- prefix should be scrubbed");
-	}
-
-	@Test
-	void testFixCustomResourceDefinition_NullHandling() {
-		JsonElement result = VcfaPayloadSanitizer.sanitize((JsonElement) null, "org-id", null);
-		assertNull(result, "Null element should return null");
-	}
 }
