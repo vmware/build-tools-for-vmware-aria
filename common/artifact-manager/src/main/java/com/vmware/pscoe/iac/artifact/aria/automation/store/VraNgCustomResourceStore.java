@@ -50,7 +50,6 @@ import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgProjectUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
@@ -439,7 +438,6 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
 		// Replace the tenant property in the formDefinition with the correct one from
 		// the configuration
-		// Handle nested additionalActions formDefinition
 		JsonArray additionalActionsArray = customResourceJsonElement.get("additionalActions").getAsJsonArray();
 		additionalActionsArray.forEach(action -> {
 			if (action != null) {

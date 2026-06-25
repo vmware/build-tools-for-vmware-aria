@@ -164,7 +164,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	/**
 	 * Sanitize ResourceAction json from unnecessary elements that prevent store or
 	 * publish later the content.
-	 *
+	 * 
 	 * @param resourceActionJsonElement Resource Action Json Element
 	 */
 	private void sanitizeResourceActionJsonElement(final JsonObject resourceActionJsonElement) {
