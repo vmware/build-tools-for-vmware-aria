@@ -93,12 +93,9 @@ public final class VcfaPayloadSanitizer {
                     : null;
             if (constraints != null) {
                 constraints.remove("projectId");
-                com.fasterxml.jackson.databind.node.ArrayNode arr = node.putArray("projectId");
-                arr.add(projectId);
-            } else {
-                com.fasterxml.jackson.databind.node.ArrayNode arr = node.putArray("projectId");
-                arr.add(projectId);
             }
+            com.fasterxml.jackson.databind.node.ArrayNode arr = node.putArray("projectId");
+            arr.add(projectId);
         } else {
             node.remove("projectId");
             JsonNode constraintsNode = node.get("constraints");
