@@ -37,7 +37,7 @@ public class VcfaTypeStoreFactory { //TODO REVERT AFTER DEVELOPMENT IS DONE, thi
 			SCENARIO,
 			SUBSCRIPTION, //needs vRO
 
-			// BLUEPRINT,
+			// 			BLUEPRINT,
 			// // CONTENT_SOURCE, // all fails with 500
 			// // CATALOG_ENTITLEMENT //may not be needed
 			// CATALOG_ITEM,

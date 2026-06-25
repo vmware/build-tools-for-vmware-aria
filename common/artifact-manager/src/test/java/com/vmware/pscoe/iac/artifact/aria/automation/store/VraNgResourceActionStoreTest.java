@@ -250,5 +250,4 @@ public class VraNgResourceActionStoreTest {
 		// VERIFY
 		verify(restClient, times(1)).getAllResourceActions();
 	}
-
 }

@@ -106,3 +106,28 @@ policy:
   #   - policy name 1
   #   - policy name 2
   resource-quota: []
+
+
+
+
+blueprint: 
+  - Create a Loadbalancer
+subscription: 
+  - test
+  - test2
+custom-resource:
+  - Load Balancer
+property-group: 
+  - Test Prop Groups2
+  - const input
+resource-action: 
+  - test Action
+scenario: 
+  - Alert Raised (Notification sent to Organization Administrator)
+policy:
+  approval: 
+  day2-actions: 
+  lease: 
+  iaas-resource: 
+content-source: []
+catalog-item: []

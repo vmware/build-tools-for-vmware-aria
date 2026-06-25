@@ -7,15 +7,18 @@ They define test cases that can be executed against the VCF Automation platform.
 
 ## File Naming
 
-Each scenario should be a JSON file named after the scenario:
-- `<scenario-name>.json`
+Each scenario should be stored in its seperate subfolder named the way the scenario is named.Inside a JSON file named details.json contains the scenario details and a template.html contains the email's HTML that is going to be sent:
+- Alert Raised (Notification sent to Organization Administrator)
+    - details.json
+    - template.html
 
 ## Example Structure
 
 ```
 scenarios/
-├── Test Scenario 1.json
-└── Validation Scenario.json
+├── Alert Raised (Notification sent to Organization Administrator)
+├────── details.json 
+├────── template.html
 ```
 
 ## References

@@ -1,0 +1,7 @@
+{
+  "enabled" : true,
+  "scenarioCategory" : "AUTOMATION-OPS",
+  "subject" : "[{{alert.alertStatus}}] {{alert.alertName}}",
+  "scenarioId" : "alert-raised",
+  "scenarioName" : "Alert Raised (Notification sent to Organization Administrator)"
+}
