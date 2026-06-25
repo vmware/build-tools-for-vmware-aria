@@ -50,7 +50,6 @@ import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgProjectUtil;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgCustomResourceStore extends AbstractVraNgStore {
 
@@ -429,22 +428,25 @@ public class VraNgCustomResourceStore extends AbstractVraNgStore {
 	 * @param customResourceJsonElement - The CR to update
 	 */
 	private void fixCustomResourceDefinition(final JsonObject customResourceJsonElement) {
-		// Use sanitizer for orgId/projectId scrubbing and legacy ID fixing
-		VcfaPayloadSanitizer.sanitize(customResourceJsonElement, this.currentOrganizationId,
-				restClient.getProjectId());
+		// Remove the organization from the general json object
+		this.fixOrgId(customResourceJsonElement, "orgId");
 
-		// Handle nested additionalActions formDefinition
+		VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, customResourceJsonElement, "projectId");
+
+		// Remove foreach additional action the organization id and the
+		// formDefinition.id property
+
+		// Replace the tenant property in the formDefinition with the correct one from
+		// the configuration
 		JsonArray additionalActionsArray = customResourceJsonElement.get("additionalActions").getAsJsonArray();
 		additionalActionsArray.forEach(action -> {
 			if (action != null) {
 				JsonObject actionJson = action.getAsJsonObject();
-				// Sanitize action-level orgId
-				VcfaPayloadSanitizer.sanitize(actionJson, this.currentOrganizationId, null);
+				this.fixOrgId(actionJson, "orgId");
 				if (actionJson.get("formDefinition") != null) {
 					JsonObject formDefinition = actionJson.get("formDefinition").getAsJsonObject();
 					formDefinition.remove("id");
 
-					// tenant is custom-resource specific (not handled by sanitizer)
 					this.fixOrgId(formDefinition, "tenant");
 
 					VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, formDefinition, "projectId");
