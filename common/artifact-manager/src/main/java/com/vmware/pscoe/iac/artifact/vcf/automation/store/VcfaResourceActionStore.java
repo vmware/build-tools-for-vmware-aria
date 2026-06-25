@@ -117,9 +117,6 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                     }
                 }
 
-                // Sanitize orgId and projectId for cross-org portability
-                VcfaPayloadSanitizer.sanitize((ObjectNode) actionMap);
-
                 File detailsFile = Paths.get(actionFolder.getPath(), "details.json").toFile();
                 String detailsJson = mapper.writeValueAsString(actionMap);
                 Files.write(detailsFile.toPath(), detailsJson.getBytes(StandardCharsets.UTF_8),
