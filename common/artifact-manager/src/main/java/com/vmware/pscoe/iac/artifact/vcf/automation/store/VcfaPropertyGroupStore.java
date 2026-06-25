@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -102,8 +103,38 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                     jsonNode.remove("organization");
                 }
 
-                // Sanitize orgId and projectId for cross-org portability
-                VcfaPayloadSanitizer.sanitize(jsonNode);
+                // =========================================================================
+                // CONDITIONAL SECRET PARAMETER EVALUATION
+                // =========================================================================
+                boolean hasSecretParam = false;
+                if (jsonNode.has("properties") && jsonNode.get("properties").isObject()) {
+                    com.fasterxml.jackson.databind.JsonNode propertiesNode = jsonNode.get("properties");
+                    java.util.Iterator<Map.Entry<String, com.fasterxml.jackson.databind.JsonNode>> fields = propertiesNode
+                            .fields();
+
+                    while (fields.hasNext()) {
+                        com.fasterxml.jackson.databind.JsonNode propConfig = fields.next().getValue();
+                        if (propConfig.has("$dynamicDefault") && propConfig.get("$dynamicDefault").isTextual()) {
+                            String dynamicDefaultValue = propConfig.get("$dynamicDefault").asText();
+
+                            // Check for both "/secret/" or "/secrets/" safely by evaluating the prefix
+                            if (dynamicDefaultValue.contains("/secret")) {
+                                hasSecretParam = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (hasSecretParam) {
+                    logger.info(
+                            "Property Group '{}' references a sensitive parameter target. Retaining source context records (Skipping Sanitization).",
+                            trackingName);
+                } else {
+                    // Sanitize orgId and projectId for cross-org portability
+                    VcfaPayloadSanitizer.sanitize(jsonNode);
+                }
+                // =========================================================================
 
                 logger.info("Successfully synchronized property group asset: {}", jsonFile.getAbsolutePath());
                 String serializedJson = mapper.writeValueAsString(jsonNode);
