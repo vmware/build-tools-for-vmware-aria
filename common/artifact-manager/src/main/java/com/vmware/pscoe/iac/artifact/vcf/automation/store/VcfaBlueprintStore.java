@@ -27,13 +27,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
@@ -420,6 +417,8 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     /**
      * Write blueprint meta, YAML content, and server-side custom request forms to
      * disk.
+     * Handles automatic deletion of forms and stylesheet layouts if they are
+     * missing from the server.
      */
     private void saveBlueprintToDisk(VcfaBlueprint bp, Package serverPackage, ObjectMapper mapper) throws IOException {
         String blueprintDir = Paths.get(
@@ -455,6 +454,12 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
+        // Target references for form asset management
+        String formFileName = bp.getName() + "__FormData.json";
+        File formFile = new File(blueprintDir, formFileName);
+        File stylesFile = new File(blueprintDir, "styles.css");
+        boolean formExistsOnServer = false;
+
         try {
             this.verifyAssetPathSafety(bp.getName(), "Blueprint");
             logger.info("Evaluating custom request form availability on server for blueprint: {}", bp.getName());
@@ -465,6 +470,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 Map<String, Object> formMetaMap = mapper.convertValue(rawFormResponse, Map.class);
 
                 if (formMetaMap != null && formMetaMap.containsKey("form") && formMetaMap.get("form") != null) {
+                    formExistsOnServer = true;
                     logger.info(
                             "Custom request form discovered for blueprint '{}'. Generating artifact payload layout...",
                             bp.getName());
@@ -487,33 +493,79 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
                     String serializedFormJson = gson.toJson(formElement);
 
-                    String formFileName = bp.getName() + "__FormData.json";
-                    String formFilePath = blueprintDir + File.separator + formFileName;
-
-                    // File 1: Export customized request form layout properties map
-                    Files.write(Paths.get(formFilePath),
+                    // Save custom form metadata schema
+                    Files.write(formFile.toPath(),
                             serializedFormJson.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE,
                             StandardOpenOption.TRUNCATE_EXISTING);
 
-                    // File 2: Export styles.css file layout configuration separately
-                    String stylesFilePath = blueprintDir + File.separator + "styles.css";
-                    Files.write(Paths.get(stylesFilePath),
+                    // Save styles.css layout configuration
+                    Files.write(stylesFile.toPath(),
                             cssStyles.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE,
                             StandardOpenOption.TRUNCATE_EXISTING);
 
                     logger.info("Successfully exported custom request form layout file asset: {} and styles.css",
                             formFileName);
-                } else {
-                    logger.info(
-                            "No customized form layout metadata found on the server for blueprint '{}'. Skipping file creation.",
-                            bp.getName());
                 }
             }
         } catch (Exception e) {
             logger.warn("Non-fatal exception encountered pulling request form metadata allocations for '{}': {}",
                     bp.getName(), e.getMessage());
+        }
+
+        // Sync local filesystem drift if the server returned no active form
+        // configuration
+        if (!formExistsOnServer) {
+            logger.info(
+                    "No customized form layout metadata found on the server for blueprint '{}'. Processing workspace cleanup...",
+                    bp.getName());
+
+            // Track the real project root directory where the command was executed
+            String realProjectWorkspace = System.getProperty("user.dir");
+
+            // Build a list of potential targets to check (both temp directory and actual
+            // local workspace layouts)
+            java.util.List<File> formFilesToPurge = java.util.Arrays.asList(
+                    formFile, // Temporary directory path
+                    java.nio.file.Paths.get(realProjectWorkspace, "blueprints", bp.getName(), formFileName).toFile(), // Local
+                                                                                                                      // flat
+                                                                                                                      // workspace
+                                                                                                                      // layout
+                    java.nio.file.Paths.get(realProjectWorkspace, "src", "main", "resources", "blueprints",
+                            bp.getName(), formFileName).toFile() // Standard Maven source layout
+            );
+
+            java.util.List<File> stylesFilesToPurge = java.util.Arrays.asList(
+                    stylesFile, // Temporary directory path
+                    java.nio.file.Paths.get(realProjectWorkspace, "blueprints", bp.getName(), "styles.css").toFile(),
+                    java.nio.file.Paths.get(realProjectWorkspace, "src", "main", "resources", "blueprints",
+                            bp.getName(), "styles.css").toFile());
+
+            // Scan and destroy form file targets across directories
+            for (File f : formFilesToPurge) {
+                if (f.exists()) {
+                    logger.warn("Custom request form file is orphaned. Purging from disk: {}", f.getAbsolutePath());
+                    if (f.delete()) {
+                        logger.info("Successfully removed orphaned form file.");
+                    } else {
+                        logger.error("Failed to delete form file asset: {}", f.getAbsolutePath());
+                    }
+                }
+            }
+
+            // Scan and destroy matching stylesheet targets across directories
+            for (File s : stylesFilesToPurge) {
+                if (s.exists()) {
+                    logger.warn("Custom styles file 'styles.css' is orphaned. Purging from disk: {}",
+                            s.getAbsolutePath());
+                    if (s.delete()) {
+                        logger.info("Successfully removed orphaned styles file.");
+                    } else {
+                        logger.error("Failed to delete styles file asset: {}", s.getAbsolutePath());
+                    }
+                }
+            }
         }
     }
 
