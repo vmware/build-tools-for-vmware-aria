@@ -32,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.gson.JsonObject;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.common.store.Version;
@@ -268,6 +269,148 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		}
 		java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
 		restTemplate.exchange(uri, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
+	}
+
+	// =========================================================================
+	// VRO WORKFLOW CATALOG PRIMITIVES
+	// =========================================================================
+
+	/**
+	 * Retrieves all catalog items, filters them by the specified type
+	 * identifier, and logs their request template schemas for testing.
+	 * Maps to: GET /catalog/api/items
+	 */
+	protected List<JsonObject> getCatalogItemsByTypePrimitive(String typeId) throws IOException {
+		List<Map<String, Object>> results = this.getPagedContent("/catalog/api/items", new java.util.HashMap<>());
+		com.google.gson.Gson gson = new com.google.gson.Gson();
+
+		// 1. Process and filter the items first
+		List<JsonObject> filteredItems = results.stream()
+				.filter(itemMap -> {
+					if (itemMap.containsKey("type") && itemMap.get("type") instanceof Map) {
+						Map<?, ?> typeBlock = (Map<?, ?>) itemMap.get("type");
+						return typeId.equals(typeBlock.get("id"));
+					}
+					return false;
+				})
+				.map(itemMap -> gson.toJsonTree(itemMap).getAsJsonObject())
+				.collect(Collectors.toList());
+
+		List<JsonObject> formattedItems = new java.util.ArrayList<>();
+
+		// 2. Fetch schema payloads and structure clean minimal payloads
+		LOGGER.info("Executing clean payload formatting for {} catalog items...", filteredItems.size());
+		for (JsonObject item : filteredItems) {
+			if (item.has("id") && !item.get("id").isJsonNull()) {
+				String catalogItemId = item.get("id").getAsString();
+				String itemName = item.has("name") ? item.get("name").getAsString() : "Unknown";
+				String requestPath = "/catalog/api/items/" + catalogItemId;
+
+				try {
+					LOGGER.info("Fetching schema for payload minimization on item '{}' (ID: {})", itemName,
+							catalogItemId);
+
+					// Invoking the base GET primitive
+					Object requestTemplateObj = this.get(requestPath, Object.class);
+
+					if (requestTemplateObj != null) {
+						JsonObject requestTemplate = gson.toJsonTree(requestTemplateObj).getAsJsonObject();
+
+						// Extract target fields from the raw schema response
+						String externalId = requestTemplate.has("externalId")
+								&& !requestTemplate.get("externalId").isJsonNull()
+										? requestTemplate.get("externalId").getAsString()
+										: "";
+
+						// Assemble the strictly requested minimal JSON footprint
+						JsonObject cleanPayload = new JsonObject();
+						cleanPayload.addProperty("typeId", typeId);
+
+						// Structure the internal nested spec block
+						JsonObject specBlock = new JsonObject();
+						specBlock.addProperty("workflowId", externalId);
+						cleanPayload.add("spec", specBlock);
+
+						// Attach the rest of your target string values
+						cleanPayload.addProperty("name", itemName);
+
+						// Attach the rest of your target string values
+						cleanPayload.addProperty("id", catalogItemId);
+
+						String description = item.has("description") && !item.get("description").isJsonNull()
+								? item.get("description").getAsString()
+								: "";
+						cleanPayload.addProperty("description", description);
+
+						String projectId = item.has("sourceProjectId") && !item.get("sourceProjectId").isJsonNull()
+								? item.get("sourceProjectId").getAsString()
+								: "";
+						cleanPayload.addProperty("projectId", projectId);
+
+						boolean isGlobal = item.has("global") && !item.get("global").isJsonNull()
+								&& item.get("global").getAsBoolean();
+						cleanPayload.addProperty("global", isGlobal);
+
+						formattedItems.add(cleanPayload);
+						LOGGER.info("[SUCCESS] Generated clean footprint for item '{}'", itemName);
+					} else {
+						LOGGER.warn("[EMPTY] Server returned empty response for item: {}. Item omitted.",
+								catalogItemId);
+					}
+				} catch (Exception e) {
+					LOGGER.error("[FAILURE] Could not retrieve request template layout for item '{}': {}",
+							itemName, e.getMessage());
+				}
+			}
+		}
+
+		// 3. Return the transformed elements completely stripped of metadata
+		return formattedItems;
+	}
+
+	/**
+	 * Publishes a completely new vRO workflow catalog item mapping payload
+	 * reference.
+	 * Maps to: POST /catalog/api/items:publish
+	 */
+	protected JsonObject publishCatalogItemPrimitive(JsonObject payload) throws IOException {
+		// Safe cross-library transformation: Convert Gson JsonObject to Jackson Map for
+		// engine processing
+		Map<String, Object> bodyPayload = objectMapper.readValue(payload.toString(), Map.class);
+
+		Map<String, Object> result = postMap("/catalog/api/items:publish", bodyPayload, 200, 201);
+		if (result == null) {
+			return null;
+		}
+
+		return new com.google.gson.Gson().toJsonTree(result).getAsJsonObject();
+	}
+
+	/**
+	 * Re-publishes/mutates an existing deployed catalog configuration mapping
+	 * reference.
+	 * Maps to: POST /catalog/api/items/{id}:republish
+	 */
+	protected JsonObject republishCatalogItemPrimitive(String id, JsonObject payload) throws IOException {
+		Map<String, Object> bodyPayload = objectMapper.readValue(payload.toString(), Map.class);
+
+		Map<String, Object> result = postMap("/catalog/api/items/" + id + ":republish", bodyPayload, 200, 201);
+		if (result == null) {
+			return null;
+		}
+
+		return new com.google.gson.Gson().toJsonTree(result).getAsJsonObject();
+	}
+
+	/**
+	 * Removes/unpublishes a configuration visibility index reference tracking
+	 * target.
+	 * Maps to: POST /catalog/api/items/{id}:unpublish
+	 */
+	protected void unpublishCatalogItemPrimitive(String id) throws IOException {
+		// Follows the same standard VMware action-colon pattern as :publish and
+		// :republish
+		postMap("/catalog/api/items/" + id + ":unpublish", null, 200, 204);
 	}
 
 	// =========================================================================
@@ -556,7 +699,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	// =========================================================================
 	// CUSTOM FORM LOOKUP & RESOLUTION PRIMITIVES
 	// =========================================================================
-	private VcfaCatalogItemForm fetchFormMetaBySourceAndType(String sourceType, String sourceId) throws IOException {
+	public VcfaCatalogItemForm fetchFormMetaBySourceAndType(String sourceType, String sourceId) throws IOException {
 		if (restTemplate == null) {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
 		}

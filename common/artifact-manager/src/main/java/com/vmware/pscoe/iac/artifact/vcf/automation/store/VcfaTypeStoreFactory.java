@@ -25,28 +25,28 @@ import static com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPack
 /**
  * Factory for VCFA stores and execution order.
  */
-public class VcfaTypeStoreFactory { //TODO REVERT AFTER DEVELOPMENT IS DONE, this is to make it compile while some store files are being worked on
+public class VcfaTypeStoreFactory { // TODO REVERT AFTER DEVELOPMENT IS DONE, this is to make it compile while some
+									// store files are being worked on
 	private static final VcfaPackageMemberType[] ALL_ORDER = new VcfaPackageMemberType[] {
 			BLUEPRINT,
-			// CONTENT_SOURCE, // all fails with 500
-			// CATALOG_ITEM,
-			CUSTOM_RESOURCE, //needs vRO
+			CUSTOM_RESOURCE, // needs vRO
 			POLICY,
 			PROPERTY_GROUP,
-			RESOURCE_ACTION, //needs vRO
+			RESOURCE_ACTION, // needs vRO
 			SCENARIO,
-			SUBSCRIPTION, //needs vRO
+			SUBSCRIPTION, // needs vRO
+			WORKFLOW, // needs vRO
 
-			// 			BLUEPRINT,
+			// BLUEPRINT,
 			// // CONTENT_SOURCE, // all fails with 500
 			// // CATALOG_ENTITLEMENT //may not be needed
-			// CATALOG_ITEM,
 			// CUSTOM_RESOURCE, //needs vRO
 			// POLICY,
 			// PROPERTY_GROUP,
 			// RESOURCE_ACTION, //needs vRO
 			// SCENARIO,
 			// SUBSCRIPTION, //needs vRO
+			// WORKFLOW, //needs vRO
 	};
 	private static final VcfaPackageMemberType[] IMPORT_ORDER = ALL_ORDER;
 
@@ -115,6 +115,8 @@ public class VcfaTypeStoreFactory { //TODO REVERT AFTER DEVELOPMENT IS DONE, thi
 				return new VcfaEntitlementStore();
 			case SCENARIO:
 				return new VcfaScenarioStore();
+			case WORKFLOW:
+				return new VcfaVroWorkflowStore();
 			default:
 				throw new RuntimeException("unknown type: " + type);
 		}

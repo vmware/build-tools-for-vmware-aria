@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItem;
@@ -50,6 +51,25 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 
 	public RestClientVcfAuto(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
+	}
+
+	// ==========================================
+	// --- vRO Workflow Catalog Items
+	// ==========================================
+	public List<JsonObject> getCatalogItemsByType(String typeId) throws IOException {
+		return getCatalogItemsByTypePrimitive(typeId);
+	}
+
+	public JsonObject publishCatalogItem(JsonObject payload) throws IOException {
+		return publishCatalogItemPrimitive(payload);
+	}
+
+	public JsonObject republishCatalogItem(String id, JsonObject payload) throws IOException {
+		return republishCatalogItemPrimitive(id, payload);
+	}
+
+	public void unpublishCatalogItem(String id) throws IOException {
+		unpublishCatalogItemPrimitive(id);
 	}
 
 	// ==========================================

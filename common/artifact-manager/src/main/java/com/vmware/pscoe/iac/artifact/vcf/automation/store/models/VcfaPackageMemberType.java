@@ -30,7 +30,8 @@ public enum VcfaPackageMemberType implements PackageContent.ContentType {
     POLICY("policy"),
     PROPERTY_GROUP("property-group"),
     CATALOG_ENTITLEMENT("catalog-entitlement"),
-    SCENARIO("scenario");
+    SCENARIO("scenario"),
+    WORKFLOW("workflow");
 
     private final String type;
 
