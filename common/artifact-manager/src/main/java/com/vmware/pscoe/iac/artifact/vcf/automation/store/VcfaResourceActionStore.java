@@ -31,6 +31,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
@@ -116,9 +117,8 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                     }
                 }
 
-                // Sanitize actionMap for cross-org portability (remove orgId, projectId, etc.)
-                actionMap.remove("orgId");
-                actionMap.remove("projectId");
+                // Sanitize orgId and projectId for cross-org portability
+                VcfaPayloadSanitizer.sanitize((ObjectNode) actionMap);
 
                 File detailsFile = Paths.get(actionFolder.getPath(), "details.json").toFile();
                 String detailsJson = mapper.writeValueAsString(actionMap);
