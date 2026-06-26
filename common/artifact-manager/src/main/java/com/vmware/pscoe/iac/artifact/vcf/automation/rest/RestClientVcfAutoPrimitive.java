@@ -14,6 +14,7 @@
  */
 package com.vmware.pscoe.iac.artifact.vcf.automation.rest;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -305,6 +306,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 				String catalogItemId = item.get("id").getAsString();
 				String itemName = item.has("name") ? item.get("name").getAsString() : "Unknown";
 				String requestPath = "/catalog/api/items/" + catalogItemId;
+				String formPath = "/catalog/api/items/" + catalogItemId + "/form";
 
 				try {
 					LOGGER.info("Fetching schema for payload minimization on item '{}' (ID: {})", itemName,
@@ -331,10 +333,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 						specBlock.addProperty("workflowId", externalId);
 						cleanPayload.add("spec", specBlock);
 
-						// Attach the rest of your target string values
+						// Attach target tracking string values
 						cleanPayload.addProperty("name", itemName);
-
-						// Attach the rest of your target string values
 						cleanPayload.addProperty("id", catalogItemId);
 
 						String description = item.has("description") && !item.get("description").isJsonNull()
@@ -351,8 +351,48 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 								&& item.get("global").getAsBoolean();
 						cleanPayload.addProperty("global", isGlobal);
 
+						// =========================================================================
+						// FETCH, UNESCAPE, AND ATTACH FORM TO THE MAIN GRAPH OBJECT
+						// =========================================================================
+						try {
+							LOGGER.info("Fetching form layout configuration for item '{}'...", itemName);
+							Object formObj = this.get(formPath, Object.class);
+
+							if (formObj != null) {
+								JsonObject formJson = gson.toJsonTree(formObj).getAsJsonObject();
+
+								// Detect and parse the stringified nested "form" layout canvas
+								if (formJson.has("form") && formJson.get("form").isJsonPrimitive()) {
+									String stringifiedForm = formJson.get("form").getAsString();
+									try {
+										com.google.gson.JsonElement parsedForm = com.google.gson.JsonParser
+												.parseString(stringifiedForm);
+										formJson.add("form", parsedForm);
+										LOGGER.info("Successfully unpacked stringified layout canvas.");
+									} catch (Exception parseEx) {
+										LOGGER.warn(
+												"[PARSE-WARNING] Failed to parse stringified 'form' canvas for item '{}': {}",
+												itemName, parseEx.getMessage());
+									}
+								}
+
+								// Attach the unescaped object directly to the "form" property
+								cleanPayload.add("form", formJson);
+								LOGGER.info("[SUCCESS] Appended custom form mapping graph to 'form' element.");
+							} else {
+								cleanPayload.add("form", new JsonObject());
+							}
+						} catch (Exception formEx) {
+							// Suppress failure so missing custom forms don't stall the pipeline
+							cleanPayload.add("form", new JsonObject());
+							LOGGER.warn("[INFO] Custom form template not found or inaccessible for item '{}': {}",
+									itemName, formEx.getMessage());
+						}
+						// =========================================================================
+
 						formattedItems.add(cleanPayload);
 						LOGGER.info("[SUCCESS] Generated clean footprint for item '{}'", itemName);
+
 					} else {
 						LOGGER.warn("[EMPTY] Server returned empty response for item: {}. Item omitted.",
 								catalogItemId);
@@ -364,7 +404,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			}
 		}
 
-		// 3. Return the transformed elements completely stripped of metadata
 		return formattedItems;
 	}
 

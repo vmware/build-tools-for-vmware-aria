@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
@@ -237,10 +238,85 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
 
         this.verifyAssetPathSafety(name, "vRO Workflow Catalog Item");
 
-        // Write the payload directly to workflows/<Workflow_Name>.json
-        String jsonFilePath = workflowsDirPath + File.separator + name + ".json";
+        // 1. Extract the form subproperty cleanly
+        com.google.gson.JsonElement formElement = item.remove("form");
 
+        // 2. Handle cross-module routing for the .wf.form.json sidecar file
+        if (formElement != null && !formElement.isJsonNull()) {
+            // Get the actual directory where the user executed the pull command
+            Path projectRoot = Paths.get(System.getProperty("user.dir"));
+
+            // Guard: If executed from inside the 'vra' sub-module folder, step up to the
+            // repository root
+            if (projectRoot.getFileName() != null && projectRoot.getFileName().toString().equalsIgnoreCase("vra")) {
+                projectRoot = projectRoot.getParent();
+            }
+
+            // Safely resolve the true vro/src codebase path in your actual workspace
+            Path vroSrcPath = projectRoot.resolve("vro").resolve("src");
+
+            Path formTargetDir = null;
+            String targetTsFileName = name + ".wf.ts";
+
+            if (Files.exists(vroSrcPath)) {
+                logger.info("Scanning true vRO workspace tree at '{}' for companion file '{}'...",
+                        vroSrcPath.toAbsolutePath(), targetTsFileName);
+
+                // Recursively search for the matching .wf.ts file
+                try (java.util.stream.Stream<Path> pathStream = Files.walk(vroSrcPath)) {
+                    formTargetDir = pathStream
+                            .filter(Files::isRegularFile)
+                            .filter(p -> p.getFileName().toString().equals(targetTsFileName))
+                            .map(Path::getParent)
+                            .findFirst()
+                            .orElse(null);
+                }
+            } else {
+                logger.warn("Could not find the 'vro/src' directory relative to execution context: {}",
+                        vroSrcPath.toAbsolutePath());
+            }
+
+            // Fallback: If no matching file is found, place it in the "Orphaned request
+            // forms" directory
+            if (formTargetDir == null) {
+                formTargetDir = vroSrcPath.resolve("Orphaned request forms");
+                Files.createDirectories(formTargetDir);
+                logger.info("No matching vRO workflow script file found in workspace. Routing form asset to folder: {}",
+                        formTargetDir.toAbsolutePath());
+            }
+
+            // Resolve exact output file path and write the isolated form JSON payload
+            Path formFilePath = formTargetDir.resolve(name + ".wf.form.json");
+
+            // Extract just the inner "form" layout canvas graph
+            com.google.gson.JsonElement exactFormCanvas = formElement;
+            if (formElement.isJsonObject() && formElement.getAsJsonObject().has("form")) {
+                exactFormCanvas = formElement.getAsJsonObject().get("form");
+            }
+
+            // Serialize only the specific inner form structure
+            String formattedFormPayload = gson.toJson(exactFormCanvas);
+
+            Files.write(formFilePath, formattedFormPayload.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+            logger.info("[SUCCESS] Serialized custom request form asset directly to destination: {}",
+                    formFilePath.toAbsolutePath());
+
+            Files.write(formFilePath, formattedFormPayload.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+            logger.info("[SUCCESS] Serialized custom request form asset directly to destination: {}",
+                    formFilePath.toAbsolutePath());
+        } else {
+            logger.warn("No form layout map detected for catalog item '{}'. Skipping form file generation.", name);
+        }
+
+        // 3. Write the cleaned core config payload back to original
+        // workflows/<Workflow_Name>.json location
+        String jsonFilePath = workflowsDirPath + File.separator + name + ".json";
         String formattedJsonPayload = gson.toJson(item);
+
         Files.write(Paths.get(jsonFilePath), formattedJsonPayload.getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
