@@ -43,9 +43,9 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemb
  * the VraNgTypeStoreFactory pattern used by VraNgPackageStore.
  */
 public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor> {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(VcfaPackageStore.class);
-    
+
     private final RestClientVcfAuto restClient;
     private final ConfigurationVcfAuto config;
 
@@ -64,30 +64,32 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
     @Override
     public List<Package> exportAllPackages(List<Package> packages, boolean dryrun) {
         logger.info("Exporting {} VCFA packages", packages.size());
-        
+
         List<Package> exportedPackages = new ArrayList<>();
         for (Package pkg : packages) {
             try {
                 VcfaPackageDescriptor descriptor = VcfaPackageDescriptor
-                    .getInstance(new File(pkg.getFilesystemPath()));
+                        .getInstance(new File(pkg.getFilesystemPath()));
                 exportedPackages.add(exportPackage(pkg, descriptor, dryrun));
             } catch (Exception e) {
                 logger.error("Failed to export package: {}", pkg.getFQName(), e);
             }
         }
-        
+
         return exportedPackages;
     }
 
     @Override
     public List<Package> importAllPackages(List<Package> packages, boolean dryrun, boolean mergePackages) {
+        this.waitForDataCollectionDelay();
         return importAllPackages(packages, dryrun, mergePackages, false);
     }
 
     @Override
-    public List<Package> importAllPackages(List<Package> packages, boolean dryrun, boolean mergePackages, boolean enableBackup) {
+    public List<Package> importAllPackages(List<Package> packages, boolean dryrun, boolean mergePackages,
+            boolean enableBackup) {
         logger.info("Importing {} VCFA packages (backup: {})", packages.size(), enableBackup);
-        
+
         List<Package> importedPackages = new ArrayList<>();
         for (Package pkg : packages) {
             try {
@@ -96,19 +98,19 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
                 logger.error("Failed to import package: {}", pkg.getFQName(), e);
             }
         }
-        
+
         return importedPackages;
     }
 
     @Override
     public Package exportPackage(Package pkg, VcfaPackageDescriptor descriptor, boolean dryrun) {
         logger.info("Exporting VCFA package: {}", pkg.getFQName());
-        
+
         if (dryrun) {
             logger.info("Dry run mode - no actual export performed");
             return pkg;
         }
-        
+
         try {
             // Authentication is handled by RestClientFactory and interceptors
 
@@ -143,15 +145,15 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
     @Override
     public Package importPackage(Package pkg, boolean dryrun, boolean mergePackages) {
         logger.info("Importing VCFA package: {}", pkg.getFQName());
-        
+
         if (dryrun) {
             logger.info("Dry run mode - no actual import performed");
             return pkg;
         }
-        
+
         try {
             // Authentication is handled by RestClientFactory and interceptors
-            
+
             java.io.File tmp;
             try {
                 tmp = java.nio.file.Files.createTempDirectory("iac-package-import").toFile();
@@ -170,10 +172,10 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
                 logger.info("Currently importing: {}", type.getTypeValue());
                 storeFactory.getStoreForType(type).importContent(tmp);
             }
-            
+
             logger.info("Successfully imported VCFA package: {}", pkg.getFQName());
             return pkg;
-            
+
         } catch (Exception e) {
             logger.error("Failed to import VCFA package: {}", pkg.getFQName(), e);
             throw new RuntimeException("Import failed", e);
@@ -183,12 +185,12 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
     @Override
     protected Package deletePackage(Package pkg, boolean withContent, boolean dryrun) {
         logger.info("Deleting VCFA package: {}", pkg.getFQName());
-        
+
         if (dryrun) {
             logger.info("Dry run mode - no actual deletion performed");
             return pkg;
         }
-        
+
         java.io.File tmp;
         try {
             tmp = java.nio.file.Files.createTempDirectory("iac-package-delete").toFile();
@@ -220,13 +222,63 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
     @Override
     protected void deleteContent(Content content, boolean dryrun) {
         logger.info("Deleting VCFA content: {} ({})", content.getName(), content.getType());
-        
+
         if (dryrun) {
             logger.info("Dry run mode - no actual deletion performed");
             return;
         }
-        
+
         // TODO: Implement content deletion logic based on content type
         logger.warn("Content deletion not yet implemented for VCFA content type: {}", content.getType());
+    }
+
+    private void triggerDataCollection() {
+        logger.info("Triggering VCFA Orchestrator data collection through vRA API");
+        this.restClient.triggerVroDataCollection();
+    }
+
+    /**
+     * Waits a variable amount of time for vRA data collection.
+     * If nothing is passed, then we will not wait.
+     *
+     * Note: Should we introduce a default one if nothing is passed?
+     */
+    private void waitForDataCollectionDelay() {
+        String collectionDelayRaw = this.config.getDataCollectionDelaySeconds();
+
+        if (collectionDelayRaw == null) {
+            // No delay configured, proceed immediately, as no delay is desired (most likely
+            // vRA doesn't expect vRO payloads)
+            return;
+        }
+
+        try {
+            // before proceeding with sleeping, try to force data collection through API
+            this.triggerDataCollection();
+
+            // if successful, no need to sleep anymore, exit method
+            return;
+        } catch (Exception e) {
+            logger.error(
+                    "Unable to trigger VCFA Orchestrator data collection. Proceeding with old sleeping mechanism, waiting for vrang.data.collection.delay.seconds: {}",
+                    collectionDelayRaw, e);
+        }
+
+        try {
+            int collectionDelay = Integer.parseInt(collectionDelayRaw);
+            if (collectionDelay > 0) {
+                logger.info(
+                        "Waiting additional {} seconds for the VCFA Orchestrator data collection so that VCFA Orchestrator data is up to date. This is configurable with vrang.data.collection.delay.seconds property",
+                        collectionDelay);
+
+                final long collectionDelayMultiplier = 1000L;
+                long delayInMs = collectionDelay * collectionDelayMultiplier;
+                Thread.sleep(delayInMs);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted waiting for data collection", e);
+        } catch (NumberFormatException e) {
+            logger.warn("vrang.data.collection.delay.seconds passed with invalid value {}", collectionDelayRaw);
+        }
     }
 }

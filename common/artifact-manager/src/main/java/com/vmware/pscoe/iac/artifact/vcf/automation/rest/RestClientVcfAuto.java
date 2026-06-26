@@ -340,4 +340,20 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	public String getVroTargetIntegrationEndpointLink() throws IOException {
 		return getVroTargetIntegrationEndpointLinkPrimitive();
 	}
+
+	// =================================================
+	// PRIVATE APIS
+	// =================================================
+
+	/**
+	 * Force data collection.
+	 */
+	public void triggerVroDataCollection() {
+		try {
+			this.triggerVroDataCollectionPrimitive();
+			return;
+		} catch (Exception e) {
+			throw new RuntimeException("Could not trigger vRO data collection. Reason: " + e.getMessage(), e);
+		}
+	}
 }
