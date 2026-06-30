@@ -15,13 +15,12 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.models;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.util.List;
 import java.util.Map;
-import java.lang.reflect.Field;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vmware.pscoe.iac.artifact.common.annotation.SkipExport;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -37,6 +36,8 @@ public class VcfaBlueprint implements Identifiable {
 
     @JsonProperty("requestScopeOrg")
     private Boolean requestScopeOrg;
+    @JsonProperty("organizationSharings")
+    private List<OrganizationSharing> organizationSharings;
 
     public VcfaBlueprint() {
     }
@@ -97,6 +98,14 @@ public class VcfaBlueprint implements Identifiable {
         this.requestScopeOrg = requestScopeOrg;
     }
 
+    public List<OrganizationSharing> getOrganizationSharings() {
+        return organizationSharings;
+    }
+
+    public void setOrganizationSharings(List<OrganizationSharing> organizationSharings) {
+        this.organizationSharings = organizationSharings;
+    }
+    
     /**
      * Converts the blueprint fields into a Map for API payload transmission.
      */
@@ -109,6 +118,9 @@ public class VcfaBlueprint implements Identifiable {
         map.put("styles", styles);
         map.put("projectId", projectId);
         map.put("requestScopeOrg", requestScopeOrg);
+        if (organizationSharings != null) {
+            map.put("organizationSharings", organizationSharings);
+        }
         return map;
     }
 

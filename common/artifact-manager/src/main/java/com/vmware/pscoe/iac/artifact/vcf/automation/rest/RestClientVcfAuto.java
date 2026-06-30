@@ -334,6 +334,10 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return getOrganizationIdPrimitive(orgName);
 	}
 
+	public String getOrganizationName(String orgId) throws IOException {
+		return getOrganizationNamePrimitive(orgId);
+	}
+
 	/**
 	 * Resolves the VRO target integration endpoint link href.
 	 */

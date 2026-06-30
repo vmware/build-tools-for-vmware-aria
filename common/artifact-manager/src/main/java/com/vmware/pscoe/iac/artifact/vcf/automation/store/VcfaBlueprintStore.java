@@ -31,12 +31,14 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFolderFilter;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.OrganizationSharing;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 
 /**
@@ -212,6 +214,21 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
         setContentIfPresent(bp, bpDir);
         bp.setProjectId(restClient.getProjectId());
+
+        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
+
+        if (organizationSharings != null) {
+            for (OrganizationSharing sharing: organizationSharings) {
+                if (sharing.getOrganization().equalsIgnoreCase("ALL")) {
+                    sharing.setOrgId("ALL");
+                }
+                else {
+                    sharing.setOrgId(restClient.getOrganizationId(sharing.getOrganization()));
+                }
+            }
+        }
+
+        logger.info("blueprint: "+bp.asExportMap().toString());        
 
         VcfaBlueprint existing = serverBps.stream()
                 .filter(m -> bpName.equals(m.getName()))
@@ -440,6 +457,25 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         } else if (bp.asExportMap().containsKey("requestScopeOrg")) {
             Object rawScope = bp.asExportMap().get("requestScopeOrg");
             filteredDetails.add("requestScopeOrg", new JsonPrimitive(rawScope != null ? rawScope.toString() : "false"));
+        }
+        
+        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
+
+        if (organizationSharings != null) {
+            JsonArray transformedSharings = new JsonArray();
+            for (OrganizationSharing sharing: organizationSharings) {
+                JsonObject transformedSharing = new JsonObject();
+                if (sharing.getOrgId().equalsIgnoreCase("ALL")) {
+                    transformedSharing.add("organization", new JsonPrimitive("ALL"));
+                }
+                else {
+                    transformedSharing.add("organization", new JsonPrimitive(restClient.getOrganizationName(sharing.getOrgId())));
+                }
+                transformedSharings.add(transformedSharing);
+            }
+            if (transformedSharings.size() > 0) {
+                filteredDetails.add("organizationSharings", transformedSharings);
+            }
         }
 
         com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setLenient().setPrettyPrinting().serializeNulls()

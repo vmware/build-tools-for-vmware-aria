@@ -14,7 +14,6 @@
  */
 package com.vmware.pscoe.iac.artifact.vcf.automation.rest;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -61,6 +60,7 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaResourceAction;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaScenario;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaSubscription;
+import com.vmware.pscoe.iac.artifact.vcd.rest.VcdApiHelper;
 
 public class RestClientVcfAutoPrimitive extends RestClient {
 
@@ -123,6 +123,29 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return objectMapper.readValue(responseBody, cls);
 	}
 
+	protected <T> T getVcd(String relativePath, Class<T> cls) throws IOException {
+		if (restTemplate == null) {
+			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
+		}
+		java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<String>(getCommonVcdHeaders()),
+				String.class);
+		String responseBody = response.getBody();
+		return objectMapper.readValue(responseBody, cls);
+	}
+
+	private HttpHeaders getCommonVcdHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+		MediaType contentType = VcdApiHelper.buildMediaType(MediaType.APPLICATION_JSON_VALUE, "9.0.0");
+
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(contentType);
+		headers.setAccept(acceptableMediaTypes);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		return headers;
+	}
+
 	protected List<Map<String, Object>> getPagedContent(final String path, final Map<String, String> paramsMap)
 			throws IOException {
 		final int PAGE_SIZE = 500;
@@ -155,6 +178,53 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 				root = objectMapper.readValue(response.getBody(), Map.class);
 			}
 			Object content = root.get("content");
+			if (content instanceof List) {
+				List<?> list = (List<?>) content;
+				for (Object o : list) {
+					if (o instanceof Map) {
+						allResults.add((Map<String, Object>) o);
+					}
+				}
+			}
+			if (totalPages == 1)
+				break;
+		}
+		return allResults;
+	}
+
+	protected List<Map<String, Object>> getPagedContentVcd(final String path, final Map<String, String> paramsMap)
+			throws IOException {
+		final int PAGE_SIZE = 500;
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getCommonVcdHeaders());
+		URIBuilder uriBuilder = getURIBuilder().setPath(path).setParameter("page", "1").setParameter("size",
+				String.valueOf(PAGE_SIZE));
+
+		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
+			uriBuilder.setParameter(entry.getKey(), entry.getValue());
+		}
+
+		java.net.URI uri = getURI(uriBuilder);
+		org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri,
+				org.springframework.http.HttpMethod.GET, httpEntity, String.class);
+		if (response == null)
+			return java.util.Collections.emptyList();
+
+		Map<String, Object> root = objectMapper.readValue(response.getBody(), Map.class);
+		if (root == null)
+			return java.util.Collections.emptyList();
+
+		List<Map<String, Object>> allResults = new ArrayList<>();
+		Object tp = root.get("totalPages");
+		int totalPages = tp instanceof Number ? ((Number) tp).intValue() : 1;
+
+		for (int page = 1; page <= totalPages; page++) {
+			if (page > 1) {
+				uriBuilder.setParameter("page", String.valueOf(page));
+				response = restTemplate.exchange(getURI(uriBuilder), org.springframework.http.HttpMethod.GET,
+						httpEntity, String.class);
+				root = objectMapper.readValue(response.getBody(), Map.class);
+			}
+			Object content = root.get("values");
 			if (content instanceof List) {
 				List<?> list = (List<?>) content;
 				for (Object o : list) {
@@ -1353,10 +1423,26 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		if (StringUtils.isEmpty(orgName)) {
 			return null;
 		}
-		List<Map<String, Object>> results = this.getPagedContent("/identity-service/api/orgs", new HashMap<>());
-		return results.stream()
+		List<Map<String, Object>> results = this.getPagedContentVcd("/cloudapi/1.0.0/orgs", new HashMap<>());
+		String orgUrn = results.stream()
 				.filter(m -> orgName.equalsIgnoreCase(String.valueOf(m.get("name"))))
 				.map(m -> String.valueOf(m.get("id")))
+				.findFirst()
+				.orElse(null);
+		return orgUrn.substring(orgUrn.lastIndexOf(":") + 1);
+	}
+
+
+	protected String getOrganizationNamePrimitive(String orgId) throws IOException {
+		if (StringUtils.isEmpty(orgId)) {
+			return null;
+		}
+		String orgUrn = "urn:vcloud:org:" + orgId;
+		List<Map<String, Object>> results = this.getPagedContentVcd("/cloudapi/1.0.0/orgs", new HashMap<>());
+		LOGGER.info(results.toString());
+		return results.stream()
+				.filter(m -> orgUrn.equalsIgnoreCase(String.valueOf(m.get("id"))))
+				.map(m -> String.valueOf(m.get("name")))
 				.findFirst()
 				.orElse(null);
 	}
