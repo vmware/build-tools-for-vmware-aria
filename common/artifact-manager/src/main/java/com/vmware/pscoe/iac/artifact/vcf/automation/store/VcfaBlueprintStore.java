@@ -24,9 +24,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -228,8 +230,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             }
         }
 
-        logger.info("blueprint: "+bp.asExportMap().toString());        
-
         VcfaBlueprint existing = serverBps.stream()
                 .filter(m -> bpName.equals(m.getName()))
                 .findFirst()
@@ -249,8 +249,16 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             String serverContent = (fullServerBp != null && fullServerBp.getContent() != null)
                     ? fullServerBp.getContent().trim().replace("\r\n", "\n")
                     : "";
+            Set<String> localOrgSharings = bp.getOrganizationSharings() == null 
+                    ? new HashSet<>() 
+                    : bp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId).collect(Collectors.toSet());
+            Set<String> serverOrgSharings = (fullServerBp == null || fullServerBp.getOrganizationSharings() == null)
+                    ? new HashSet<>() 
+                    : fullServerBp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId).collect(Collectors.toSet());
 
-            if (localContent.equals(serverContent)) {
+            if (localContent.equals(serverContent) 
+                    && localOrgSharings.equals(serverOrgSharings) 
+                    && Objects.equals(bp.getRequestScopeOrg(), fullServerBp.getRequestScopeOrg())) {
                 logger.info(
                         "Blueprint '{}' working draft content matches server content exactly. Checking custom request forms...",
                         bpName);
@@ -283,8 +291,8 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                     JsonObject formWrapperElement = com.google.gson.JsonParser.parseString(formFileContent)
                             .getAsJsonObject();
 
-                    String serializedFormJson = gson.toJson(formWrapperElement);
-                    Map<String, Object> localFormPayload = gson.fromJson(serializedFormJson, Map.class);
+                    String localFormJsonNormalized = gson.toJson(formWrapperElement);
+                    Map<String, Object> localFormPayload = gson.fromJson(localFormJsonNormalized, Map.class);
                     boolean formChanged = true;
                     try {
                         Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", blueprintId);
@@ -302,8 +310,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                                     serverFormJsonNormalized = gson.toJson(com.google.gson.JsonParser
                                             .parseString(mapper.writeValueAsString(serverFormObj)));
                                 }
-
-                                String localFormJsonNormalized = gson.toJson(formWrapperElement.get("form"));
 
                                 String serverStyles = formMetaMap.containsKey("styles")
                                         && formMetaMap.get("styles") != null
