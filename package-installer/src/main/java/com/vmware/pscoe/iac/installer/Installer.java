@@ -1502,7 +1502,7 @@ public final class Installer {
 		} else {
 			userInput(input, Option.VCFA_USERNAME, "    VCFA Username");
 			passInput(input, Option.VCFA_PASSWORD, "    VCFA Password");
-			Validate.vrang(input.get(Option.VCFA_CSP_SERVER),
+			Validate.vcfa(input.get(Option.VCFA_CSP_SERVER),
 					Integer.valueOf(input.get(Option.VCFA_PORT)),
 					input.get(Option.VCFA_USERNAME), input.get(Option.VCFA_PASSWORD), input.getText());
 		}

@@ -119,6 +119,48 @@ public final class Validate {
 		}
 	}
 
+	public static String vcfa(String csp, int port, String user, String pass, TextIO input) {
+		String urlString = "https://" + csp + ":" + port + "/cloudapi/1.0.0/sessions";
+		if (user.toLowerCase().contains("@system")) {
+			urlString = urlString + "/provider";
+		}
+
+		try {
+			URL url = new URL(urlString);
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
+			disableSecurity(https);
+			https.setConnectTimeout(5000); // millis
+			https.setReadTimeout(5000); // millis
+			https.setDoOutput(true);
+			https.setDoInput(true);
+			https.setRequestMethod("POST");
+			https.setRequestProperty("Accept", "application/json;version=9.0.0");
+			String credentials = user + ":" + pass;
+			String encoded = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
+			https.setRequestProperty("Authorization", "Basic " + encoded);
+
+			int code = https.getResponseCode();
+			String message = https.getResponseMessage();
+			if (code != HttpURLConnection.HTTP_OK) {
+				if (input != null) {
+					input.getTextTerminal().println("  WARNING: Cannot successfully login with \"" + user
+							+ "\" against \"" + url.toString() + "\". " + code + " " + message);
+				}
+				return null;
+			}
+			String refreshToken = "" + https.getHeaderField("x-vmware-vcloud-access-token");
+			return refreshToken;
+		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
+			if (input != null) {
+				input.getTextTerminal()
+						.println("  WARNING: Cannot successfully login with \"" + user + "\" against \"" + urlString
+								+ "\" : " + e.getClass().getName()
+								+ " : " + e.getLocalizedMessage());
+			}
+			return null;
+		}
+	}
+
 	public static String token(String csp, int port, String refresh, TextIO input) {
 		String urlString = "https://" + csp + ":" + port + "/iaas/api/login";
 		try {
