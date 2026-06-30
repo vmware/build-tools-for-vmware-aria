@@ -70,6 +70,7 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
 
 /**
  * Created by tsimchev on 2/22/18.
@@ -198,7 +199,7 @@ enum Option {
 	 * VRANG cloud proxy name.
 	 */
 	VRANG_CLOUD_PROXY_NAME(
-			"varng_cloud_proxy_name",
+			"vrang_cloud_proxy_name",
 			ConfigurationVraNg.CLOUD_PROXY_NAME),
 
 	/**
@@ -218,6 +219,121 @@ enum Option {
 	VRANG_DELETE_CONTENT(
 			"vrang_delete_content",
 			ConfigurationVraNg.DELETE_CONTENT),
+
+	/**
+	 * VCFA host.
+	 */
+	VCFA_SERVER(
+			"vcfa_host",
+			Configuration.HOST),
+	/**
+	 * VCFA CSP host.
+	 */
+	VCFA_CSP_SERVER(
+			"vcfa_csp_host",
+			ConfigurationVcfAuto.CSP_HOST),
+	/**
+	 * VCFA proxy.
+	 */
+	VCFA_PROXY(
+			"vcfa_proxy",
+			ConfigurationVcfAuto.PROXY),
+	/**
+	 * VCFA proxy required.
+	 */
+	VCFA_PROXY_REQUIRED(
+			"vcfa_proxy_required",
+			ConfigurationVcfAuto.PROXY_REQUIRED),
+	/**
+	 * VCFA port.
+	 */
+	VCFA_PORT(
+			"vcfa_port",
+			Configuration.PORT),
+	/**
+	 * VCFA data collection delay in seconds.
+	 */
+	VCFA_DATA_COLLECTION_DELAY_SECONDS(
+			"vcfa_data.collection.delay.seconds",
+			ConfigurationVcfAuto.DATA_COLLECTION_DELAY_SECONDS),
+	/**
+	 * VCFA org name.
+	 */
+	VCFA_ORGANIZATION_NAME(
+			"vcfa_org_name",
+			ConfigurationVcfAuto.ORGANIZATION_NAME),
+	/**
+	 * VCFA project name.
+	 */
+	VCFA_PROJECT_NAME(
+			"vcfa_project_name",
+			ConfigurationVcfAuto.PROJECT_NAME),
+	/**
+	 * VCFA auth with refresh token.
+	 */
+	VCFA_AUTH_WITH_REFRESH_TOKEN(
+			"vcfa_auth_with_refresh_token",
+			"auth_with_" + ConfigurationVcfAuto.REFRESH_TOKEN),
+	/**
+	 * VCFA refresh token.
+	 */
+	VCFA_REFRESH_TOKEN(
+			"vcfa_refresh_token",
+			ConfigurationVcfAuto.REFRESH_TOKEN),
+	/**
+	 * VCFA username.
+	 */
+	VCFA_USERNAME(
+			"vcfa_username",
+			Configuration.USERNAME),
+	/**
+	 * VCFA password.
+	 */
+	VCFA_PASSWORD(
+			"vcfa_password",
+			Configuration.PASSWORD),
+	/**
+	 * VCFA import overwrite mode.
+	 */
+	VCFA_IMPORT_OVERWRITE_MODE(
+			"vcfa_import_overwrite_mode",
+			ConfigurationVcfAuto.PACKAGE_IMPORT_OVERWRITE_MODE),
+	/**
+	 * VCFA import timeout.
+	 */
+	VCFA_IMPORT_TIMEOUT(
+			"vcfa_import_timeout",
+			ConfigurationVcfAuto.IMPORT_TIMEOUT),
+	/**
+	 * VCFA VRO integration name.
+	 */
+	VCFA_VRO_INTEGRATION_NAME(
+			"vcfa_vro_integration_name",
+			ConfigurationVcfAuto.VRO_INTEGRATION),
+	/**
+	 * VCFA cloud proxy name.
+	 */
+	VCFA_CLOUD_PROXY_NAME(
+			"vcfa_cloud_proxy_name",
+			ConfigurationVcfAuto.CLOUD_PROXY_NAME),
+
+	/**
+	 * VCFA unrelease blueprint versions. Decides wether old versions need to be
+	 * unrelased
+	 *
+	 * This only works when running in non interactive mode
+	 */
+	VCFA_BP_UNRELEASE_VERSIONS(
+			"vcfa_bp_unrelease_versions",
+			ConfigurationVcfAuto.UNRELEASE_BLUEPRINT_VERSIONS),
+
+	/**
+	 * VCFA delete last version.
+	 * This will result in the environment being cleaned up
+	 */
+	VCFA_DELETE_CONTENT(
+			"vcfa_delete_content",
+			ConfigurationVcfAuto.DELETE_CONTENT),
 
 	/**
 	 * VRLI server.
@@ -522,6 +638,12 @@ enum Option {
 			"vra_ng_import_packages",
 			StringUtils.EMPTY),
 	/**
+	 * VCFA import packages.
+	 */
+	VCFA_IMPORT(
+			"vcfam_import_packages",
+			StringUtils.EMPTY),
+	/**
 	 * VRO import packages.
 	 */
 	VRO_IMPORT(
@@ -819,6 +941,10 @@ public final class Installer {
 	 */
 	private static final int VRANG_DATA_COLLECTION_DELAY_SECONDS = 600;
 	/**
+	 * VCFA data collection delay in seconds.
+	 */
+	private static final int VCFA_DATA_COLLECTION_DELAY_SECONDS = 600;
+	/**
 	 * Exit success code.
 	 */
 	private static final int EXIT_SUCCESS_CODE = 0;
@@ -840,6 +966,10 @@ public final class Installer {
 		 * VRANG.
 		 */
 		VRANG("vrang_"),
+		/**
+		 * VCFA.
+		 */
+		VCFA("vcfa_"),
 		/**
 		 * VRO.
 		 */
@@ -935,6 +1065,14 @@ public final class Installer {
 
 		}
 
+		if (input.allTrue(Option.VCFA_IMPORT)) {
+			PackageStoreFactory
+					.getInstance(
+							ConfigurationVcfAuto.fromProperties(input.getMappings(ConfigurationPrefix.VCFA.getValue())))
+					.importAllPackages(getFilesystemPackages(PackageType.VCF_AUTO_MODERN), false, vroEnableBackup);
+
+		}
+
 		if (input.allTrue(Option.VCD_IMPORT)) {
 			PackageStoreFactory
 					.getInstance(ConfigurationVcd.fromProperties(input.getMappings(ConfigurationPrefix.VCD.getValue())))
@@ -973,6 +1111,12 @@ public final class Installer {
 					.deleteAllPackages(getFilesystemPackages(PackageType.VRANG), true, false, false);
 			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(prefixes)))
 					.deleteAllPackages(getFilesystemPackages(PackageType.VRANGv3), true, false, false);
+		}
+
+		if (input.allTrue(Option.VCFA_DELETE_CONTENT)) {
+			String[] prefixes = { ConfigurationPrefix.VCFA.getValue() };
+			PackageStoreFactory.getInstance(ConfigurationVcfAuto.fromProperties(input.getMappings(prefixes)))
+					.deleteAllPackages(getFilesystemPackages(PackageType.VCF_AUTO_MODERN), true, false, false);
 		}
 
 		if (input.allTrue(Option.VROPS_IMPORT)) {
@@ -1118,6 +1262,22 @@ public final class Installer {
 		}
 		if (input.anyTrue(Option.CS_IMPORT)) {
 			readCsImportProperties(input);
+		}
+		// +-------------------------------------
+		// | VCF Automation 9 (Auto Modern)
+		// +-------------------------------------
+		boolean hasVcfamPackages = !getFilesystemPackages(PackageType.VCF_AUTO_MODERN).isEmpty();
+		if (hasVcfamPackages) {
+			userInput(input, Option.VCFA_IMPORT, "Import VCFA9 packages?", true);
+			if (!input.anyTrue(Option.VCFA_IMPORT)) {
+				userInput(input, Option.VCFA_DELETE_CONTENT, "Clean up VCF Automation content?", true);
+			}
+		}
+		if (input.anyTrue(Option.VCFA_IMPORT, Option.VCFA_DELETE_CONTENT)) {
+			readVcfaProperties(input);
+		}
+		if (input.anyTrue(Option.VCFA_IMPORT)) {
+			readVcfaImportProperties(input);
 		}
 		// +-------------------------------------
 		// | vRealize Orchestrator
@@ -1322,6 +1482,41 @@ public final class Installer {
 		}
 	}
 
+	private static void readVcfaProperties(final Input input) {
+		input.getText().getTextTerminal().println("VCF Automation 9 Configuration:");
+		userInput(input, Option.VCFA_SERVER, "  VCFA FQDN:");
+		Validate.host(input.get(Option.VCFA_SERVER), input.getText());
+
+		userInput(input, Option.VCFA_PORT, "  VCFA Port", HTTPS_PORT);
+		Validate.port(Integer.valueOf(input.get(Option.VCFA_PORT)), input.getText());
+		Validate.hostAndPort(input.get(Option.VCFA_SERVER), Integer.valueOf(input.get(Option.VCFA_PORT)),
+				input.getText());
+
+		userInput(input, Option.VCFA_CSP_SERVER, "  Authentication CSP FQDN:", input.get(Option.VCFA_SERVER));
+
+		userInput(input, Option.VCFA_AUTH_WITH_REFRESH_TOKEN, "  Authenticate with refresh token?:", false);
+		if (input.allTrue(Option.VCFA_AUTH_WITH_REFRESH_TOKEN)) {
+			userInput(input, Option.VCFA_REFRESH_TOKEN, "    VCFA Refresh Token");
+			Validate.token(input.get(Option.VCFA_SERVER), Integer.valueOf(input.get(Option.VCFA_PORT)),
+					input.get(Option.VCFA_REFRESH_TOKEN), input.getText());
+		} else {
+			userInput(input, Option.VCFA_USERNAME, "    VCFA Username");
+			passInput(input, Option.VCFA_PASSWORD, "    VCFA Password");
+			Validate.vrang(input.get(Option.VCFA_CSP_SERVER),
+					Integer.valueOf(input.get(Option.VCFA_PORT)),
+					input.get(Option.VCFA_USERNAME), input.get(Option.VCFA_PASSWORD), input.getText());
+		}
+		userInput(input, Option.VCFA_PROJECT_NAME, "  Project name");
+		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VCFA_PROJECT_NAME),
+				input.getText());
+		userInput(input, Option.VCFA_ORGANIZATION_NAME,
+				"  Organization Name", validated.org);
+		userInput(input, Option.VCFA_PROXY_REQUIRED, "  Use proxy server for VCFA? (Optional)", false);
+		if (input.allTrue(Option.VCFA_PROXY_REQUIRED)) {
+			userInput(input, Option.VCFA_PROXY, "    VCFA proxy server");
+		}
+	}
+
 	private static void readVcdProperties(final Input input) {
 		input.getText().getTextTerminal().println("VMware Cloud Director Configuration:");
 		userInput(input, Option.VCD_SERVER, "  VCD FQDN:");
@@ -1350,6 +1545,16 @@ public final class Installer {
 				ConfigurationVraNg.DEFAULT_IMPORT_TIMEOUT);
 		userInput(input, Option.VRANG_DATA_COLLECTION_DELAY_SECONDS, "  vRA's vRO Data Collection delay in seconds.",
 				VRANG_DATA_COLLECTION_DELAY_SECONDS);
+	}
+
+	private static void readVcfaImportProperties(final Input input) {
+		input.getText().getTextTerminal().println("VCF Automation 9 Import Configuration:");
+		userInput(input, Option.VCFA_IMPORT_OVERWRITE_MODE, "  VCFA9 Import Mode", "SKIP,OVERWRITE");
+		userInput(input, Option.VCFA_VRO_INTEGRATION_NAME, "  VCFA9 integration name", "embedded-VRO");
+		userInput(input, Option.VCFA_IMPORT_TIMEOUT, "  VCFA9 Import timeout",
+				ConfigurationVcfAuto.DEFAULT_IMPORT_TIMEOUT);
+		userInput(input, Option.VCFA_DATA_COLLECTION_DELAY_SECONDS, "  VCFA's vRO Data Collection delay in seconds.",
+				VCFA_DATA_COLLECTION_DELAY_SECONDS);
 	}
 
 	private static void readCsImportProperties(final Input input) {
