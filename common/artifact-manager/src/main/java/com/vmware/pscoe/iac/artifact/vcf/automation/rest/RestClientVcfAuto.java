@@ -56,8 +56,12 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	// ==========================================
 	// --- vRO Workflow Catalog Items
 	// ==========================================
-	public List<JsonObject> getCatalogItemsByType(String typeId) throws IOException {
-		return getCatalogItemsByTypePrimitive(typeId);
+	public List<JsonObject> getCatalogItemsByType(List<String> ids, String typeId) throws IOException {
+		return getCatalogItemsByIdsAndTypePrimitive(ids, typeId);
+	}
+
+	public List<JsonObject> getCatalogItemNamesByType(String typeId) throws IOException {
+		return getCatalogItemNamesByTypePrimitive(typeId);
 	}
 
 	public JsonObject publishCatalogItem(JsonObject payload) throws IOException {

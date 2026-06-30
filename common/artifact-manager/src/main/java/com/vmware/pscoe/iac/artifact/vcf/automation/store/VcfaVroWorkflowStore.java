@@ -69,7 +69,8 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
             return;
         }
 
-        List<JsonObject> serverCatalogItems = fetchServerWorkflowCatalogItems();
+        // OPTIMIZATION: Fetch ONLY names and IDs to run host existence matching
+        List<JsonObject> serverCatalogItems = fetchServerWorkflowCatalogItemNames();
 
         for (File wfFile : workflowFiles) {
             String filename = wfFile.getName();
@@ -104,7 +105,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
                             wfName);
                     restClient.publishCatalogItem(localPayload);
                 } else {
-                    String catalogItemId = existingItem.get("id").getAsJsonPrimitive().getAsString();
+                    String catalogItemId = existingItem.get("id").getAsString();
                     logger.info(
                             "Catalog Item '{}' exists (ID: {}). Executing updates: POST /catalog/api/items/{}:republish",
                             wfName, catalogItemId, catalogItemId);
@@ -122,11 +123,15 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
      */
     @Override
     public void exportContent() {
-        List<JsonObject> serverCatalogItems = fetchServerWorkflowCatalogItems();
+        // 1. Lightweight discovery phase: Fetch only names and IDs from the inventory
+        // API
+        List<JsonObject> lightweightItems = fetchServerWorkflowCatalogItemNames();
         Package serverPackage = this.vcfaPackage;
         java.util.Set<String> exportedNamesTracker = new java.util.HashSet<>();
+        List<String> idsToFetch = new java.util.ArrayList<>();
 
-        for (JsonObject item : serverCatalogItems) {
+        // 2. Evaluate targets and track exclusions
+        for (JsonObject item : lightweightItems) {
             String name = item.has("name") ? item.get("name").getAsString() : "unnamed-catalog-item";
 
             if (isExcludedByDescriptor(name)) {
@@ -144,8 +149,52 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
             }
             exportedNamesTracker.add(name);
 
+            if (item.has("id") && !item.get("id").isJsonNull()) {
+                idsToFetch.add(item.get("id").getAsString());
+            }
+        }
+
+        // Quick escape if there's nothing matched by descriptor rules
+        if (idsToFetch.isEmpty()) {
+            logger.info("No active workflow catalog items matched the criteria for export processing.");
+            return;
+        }
+
+        // 3. Deep harvest phase (Round 1): Fetch payloads needed to feed the republish
+        // method
+        List<JsonObject> itemsToRepublish = fetchServerWorkflowCatalogItems(idsToFetch);
+
+        // 4. Trigger pre-export republishing for all targeted items to bake UI changes
+        // on the server
+        for (JsonObject itemToRepublish : itemsToRepublish) {
+            if (itemToRepublish.has("id") && !itemToRepublish.get("id").isJsonNull()) {
+                String catalogItemId = itemToRepublish.get("id").getAsString();
+                String name = itemToRepublish.has("name") ? itemToRepublish.get("name").getAsString()
+                        : "unnamed-catalog-item";
+
+                try {
+                    logger.info(
+                            "Executing pre-export republish for Catalog Item '{}' (ID: {}) to refresh UI form layouts...",
+                            name, catalogItemId);
+                    restClient.republishCatalogItem(catalogItemId, itemToRepublish);
+                } catch (Exception e) {
+                    logger.warn(
+                            "Non-fatal exception encountered during pre-export republish for '{}': {}. Proceeding with pull using current server state.",
+                            name, e.getMessage());
+                }
+            }
+        }
+
+        // 5. Deep harvest phase (Round 2): Re-fetch the freshly baked schemas and
+        // layout configurations
+        logger.info("Re-harvesting catalog configurations to capture post-republish form layouts...");
+        List<JsonObject> freshCatalogItems = fetchServerWorkflowCatalogItems(idsToFetch);
+
+        // 6. Run serialization on the fresh target data
+        for (JsonObject freshItem : freshCatalogItems) {
+            String name = freshItem.has("name") ? freshItem.get("name").getAsString() : "unnamed-catalog-item";
             try {
-                saveCatalogItemToDisk(item, serverPackage, name);
+                saveCatalogItemToDisk(freshItem, serverPackage, name);
             } catch (IOException e) {
                 logger.error("Unable to export vRO workflow catalog details for item: {}", name, e);
             }
@@ -159,7 +208,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
     public void deleteContent() {
         logger.info("Executing cleanup deletion scanning for vRO Workflow Catalog references...");
         try {
-            List<JsonObject> remoteItems = fetchServerWorkflowCatalogItems();
+            List<JsonObject> remoteItems = fetchServerWorkflowCatalogItemNames();
             if (remoteItems == null || remoteItems.isEmpty()) {
                 logger.info("No remote vRO workflow catalog items found to clear.");
                 return;
@@ -218,9 +267,19 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
         }
     }
 
-    private List<JsonObject> fetchServerWorkflowCatalogItems() {
+    private List<JsonObject> fetchServerWorkflowCatalogItemNames() {
         try {
-            return restClient.getCatalogItemsByType(CATALOG_TYPE_VRO_WORKFLOW);
+            return restClient.getCatalogItemNamesByType(CATALOG_TYPE_VRO_WORKFLOW);
+        } catch (IOException e) {
+            logger.error("Failed to fetch catalog structures from server path: /catalog/api/items", e);
+            throw new RuntimeException("Unable to synchronize configuration items from target Aria Automation server",
+                    e);
+        }
+    }
+
+    private List<JsonObject> fetchServerWorkflowCatalogItems(List<String> ids) {
+        try {
+            return restClient.getCatalogItemsByType(ids, CATALOG_TYPE_VRO_WORKFLOW);
         } catch (IOException e) {
             logger.error("Failed to fetch catalog structures from server path: /catalog/api/items", e);
             throw new RuntimeException("Unable to synchronize configuration items from target Aria Automation server",

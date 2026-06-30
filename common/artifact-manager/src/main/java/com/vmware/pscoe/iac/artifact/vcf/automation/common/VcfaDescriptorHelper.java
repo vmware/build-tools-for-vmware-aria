@@ -64,14 +64,32 @@ public final class VcfaDescriptorHelper {
                 return null;
             }
 
+            boolean keyFound = false;
             for (String key : acceptableKeys) {
                 if (rawMap.containsKey(key)) {
+                    keyFound = true;
                     Object listObj = rawMap.get(key);
+                    
+                    // Condition 1: Subproperty exists but is set to null -> Work with ALL workflows
+                    if (listObj == null) {
+                        logger.info("Descriptor property '{}' is explicitly null. Target matching includes ALL items.", key);
+                        return null;
+                    }
+                    
+                    // Condition 2: Subproperty is a valid populated or empty YAML array
                     if (listObj instanceof List) {
                         return (List<String>) listObj;
                     }
                 }
             }
+
+            // Condition 3: Subproperty is missing entirely -> Treat as empty array (process nothing)
+            if (!keyFound) {
+                logger.info("Descriptor target properties {} are entirely missing. Defaulting to an empty array target scope.", 
+                        String.join(", ", acceptableKeys));
+                return new java.util.ArrayList<>();
+            }
+            
         } catch (Exception e) {
             logger.warn("Non-fatal exception encountered checking descriptor definitions matching {}: {}",
                     String.join(", ", acceptableKeys), e.getMessage());

@@ -364,15 +364,56 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	// =========================================================================
 
 	/**
-	 * Retrieves all catalog items, filters them by the specified type
-	 * identifier, and logs their request template schemas for testing.
+	 * Retrieves all catalog items matching the specified type identifier,
+	 * returning a lightweight footprint containing only identity fields.
 	 * Maps to: GET /catalog/api/items
 	 */
-	protected List<JsonObject> getCatalogItemsByTypePrimitive(String typeId) throws IOException {
+	protected List<JsonObject> getCatalogItemNamesByTypePrimitive(String typeId) throws IOException {
 		List<Map<String, Object>> results = this.getPagedContent("/catalog/api/items", new java.util.HashMap<>());
 		com.google.gson.Gson gson = new com.google.gson.Gson();
 
-		// 1. Process and filter the items first
+		return results.stream()
+				.filter(itemMap -> {
+					if (itemMap.containsKey("type") && itemMap.get("type") instanceof Map) {
+						Map<?, ?> typeBlock = (Map<?, ?>) itemMap.get("type");
+						return typeId.equals(typeBlock.get("id"));
+					}
+					return false;
+				})
+				.map(itemMap -> {
+					JsonObject rawItem = gson.toJsonTree(itemMap).getAsJsonObject();
+					JsonObject minimalItem = new JsonObject();
+
+					String id = rawItem.has("id") && !rawItem.get("id").isJsonNull() ? rawItem.get("id").getAsString()
+							: "";
+					String name = rawItem.has("name") && !rawItem.get("name").isJsonNull()
+							? rawItem.get("name").getAsString()
+							: "Unknown";
+
+					minimalItem.addProperty("id", id);
+					minimalItem.addProperty("name", name);
+					return minimalItem;
+				})
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Deeply processes and hydrates schemas/forms strictly for the requested target
+	 * item identifiers.
+	 * Maps to: GET /catalog/api/items/{id} and GET /catalog/api/items/{id}/form
+	 */
+	protected List<JsonObject> getCatalogItemsByIdsAndTypePrimitive(List<String> targetIds, String typeId)
+			throws IOException {
+		if (targetIds == null || targetIds.isEmpty()) {
+			LOGGER.info("No targeted IDs provided for extraction pipeline. Skipping deep asset harvesting.");
+			return new java.util.ArrayList<>();
+		}
+
+		List<Map<String, Object>> results = this.getPagedContent("/catalog/api/items", new java.util.HashMap<>());
+		com.google.gson.Gson gson = new com.google.gson.Gson();
+
+		// Filter the raw items list down to BOTH matching typeId AND present inside
+		// targetIds list
 		List<JsonObject> filteredItems = results.stream()
 				.filter(itemMap -> {
 					if (itemMap.containsKey("type") && itemMap.get("type") instanceof Map) {
@@ -382,112 +423,101 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 					return false;
 				})
 				.map(itemMap -> gson.toJsonTree(itemMap).getAsJsonObject())
+				.filter(item -> item.has("id") && targetIds.contains(item.get("id").getAsString()))
 				.collect(Collectors.toList());
 
 		List<JsonObject> formattedItems = new java.util.ArrayList<>();
 
-		// 2. Fetch schema payloads and structure clean minimal payloads
-		LOGGER.info("Executing clean payload formatting for {} catalog items...", filteredItems.size());
+		LOGGER.info("Executing deep payload harvesting for {} matched targeted catalog items...", filteredItems.size());
 		for (JsonObject item : filteredItems) {
-			if (item.has("id") && !item.get("id").isJsonNull()) {
-				String catalogItemId = item.get("id").getAsString();
-				String itemName = item.has("name") ? item.get("name").getAsString() : "Unknown";
-				String requestPath = "/catalog/api/items/" + catalogItemId;
-				String formPath = "/catalog/api/items/" + catalogItemId + "/form";
+			String catalogItemId = item.get("id").getAsString();
+			String itemName = item.has("name") ? item.get("name").getAsString() : "Unknown";
+			String requestPath = "/catalog/api/items/" + catalogItemId;
+			String formPath = "/catalog/api/items/" + catalogItemId + "/form";
 
-				try {
-					LOGGER.info("Fetching schema for payload minimization on item '{}' (ID: {})", itemName,
-							catalogItemId);
+			try {
+				LOGGER.info("Fetching schema for payload minimization on targeted item '{}' (ID: {})", itemName,
+						catalogItemId);
+				Object requestTemplateObj = this.get(requestPath, Object.class);
 
-					// Invoking the base GET primitive
-					Object requestTemplateObj = this.get(requestPath, Object.class);
+				if (requestTemplateObj != null) {
+					JsonObject requestTemplate = gson.toJsonTree(requestTemplateObj).getAsJsonObject();
 
-					if (requestTemplateObj != null) {
-						JsonObject requestTemplate = gson.toJsonTree(requestTemplateObj).getAsJsonObject();
+					String externalId = requestTemplate.has("externalId")
+							&& !requestTemplate.get("externalId").isJsonNull()
+									? requestTemplate.get("externalId").getAsString()
+									: "";
 
-						// Extract target fields from the raw schema response
-						String externalId = requestTemplate.has("externalId")
-								&& !requestTemplate.get("externalId").isJsonNull()
-										? requestTemplate.get("externalId").getAsString()
-										: "";
+					JsonObject cleanPayload = new JsonObject();
+					cleanPayload.addProperty("typeId", typeId);
 
-						// Assemble the strictly requested minimal JSON footprint
-						JsonObject cleanPayload = new JsonObject();
-						cleanPayload.addProperty("typeId", typeId);
+					JsonObject specBlock = new JsonObject();
+					specBlock.addProperty("workflowId", externalId);
+					cleanPayload.add("spec", specBlock);
 
-						// Structure the internal nested spec block
-						JsonObject specBlock = new JsonObject();
-						specBlock.addProperty("workflowId", externalId);
-						cleanPayload.add("spec", specBlock);
+					cleanPayload.addProperty("name", itemName);
+					cleanPayload.addProperty("id", catalogItemId);
 
-						// Attach target tracking string values
-						cleanPayload.addProperty("name", itemName);
-						cleanPayload.addProperty("id", catalogItemId);
+					String description = item.has("description") && !item.get("description").isJsonNull()
+							? item.get("description").getAsString()
+							: "";
+					cleanPayload.addProperty("description", description);
 
-						String description = item.has("description") && !item.get("description").isJsonNull()
-								? item.get("description").getAsString()
-								: "";
-						cleanPayload.addProperty("description", description);
+					String projectId = item.has("sourceProjectId") && !item.get("sourceProjectId").isJsonNull()
+							? item.get("sourceProjectId").getAsString()
+							: "";
+					cleanPayload.addProperty("projectId", projectId);
 
-						String projectId = item.has("sourceProjectId") && !item.get("sourceProjectId").isJsonNull()
-								? item.get("sourceProjectId").getAsString()
-								: "";
-						cleanPayload.addProperty("projectId", projectId);
+					boolean isGlobal = item.has("global") && !item.get("global").isJsonNull()
+							&& item.get("global").getAsBoolean();
+					cleanPayload.addProperty("global", isGlobal);
 
-						boolean isGlobal = item.has("global") && !item.get("global").isJsonNull()
-								&& item.get("global").getAsBoolean();
-						cleanPayload.addProperty("global", isGlobal);
+					// =========================================================================
+					// FETCH, UNESCAPE, AND ATTACH FORM TO THE TARGETED GRAPH OBJECT
+					// =========================================================================
+					try {
+						LOGGER.info("Fetching form layout configuration for targeted item '{}'...", itemName);
+						Object formObj = this.get(formPath, Object.class);
 
-						// =========================================================================
-						// FETCH, UNESCAPE, AND ATTACH FORM TO THE MAIN GRAPH OBJECT
-						// =========================================================================
-						try {
-							LOGGER.info("Fetching form layout configuration for item '{}'...", itemName);
-							Object formObj = this.get(formPath, Object.class);
+						if (formObj != null) {
+							JsonObject formJson = gson.toJsonTree(formObj).getAsJsonObject();
 
-							if (formObj != null) {
-								JsonObject formJson = gson.toJsonTree(formObj).getAsJsonObject();
-
-								// Detect and parse the stringified nested "form" layout canvas
-								if (formJson.has("form") && formJson.get("form").isJsonPrimitive()) {
-									String stringifiedForm = formJson.get("form").getAsString();
-									try {
-										com.google.gson.JsonElement parsedForm = com.google.gson.JsonParser
-												.parseString(stringifiedForm);
-										formJson.add("form", parsedForm);
-										LOGGER.info("Successfully unpacked stringified layout canvas.");
-									} catch (Exception parseEx) {
-										LOGGER.warn(
-												"[PARSE-WARNING] Failed to parse stringified 'form' canvas for item '{}': {}",
-												itemName, parseEx.getMessage());
-									}
+							if (formJson.has("form") && formJson.get("form").isJsonPrimitive()) {
+								String stringifiedForm = formJson.get("form").getAsString();
+								try {
+									com.google.gson.JsonElement parsedForm = com.google.gson.JsonParser
+											.parseString(stringifiedForm);
+									formJson.add("form", parsedForm);
+									LOGGER.info("Successfully unpacked stringified layout canvas.");
+								} catch (Exception parseEx) {
+									LOGGER.warn(
+											"[PARSE-WARNING] Failed to parse stringified 'form' canvas for item '{}': {}",
+											itemName, parseEx.getMessage());
 								}
-
-								// Attach the unescaped object directly to the "form" property
-								cleanPayload.add("form", formJson);
-								LOGGER.info("[SUCCESS] Appended custom form mapping graph to 'form' element.");
-							} else {
-								cleanPayload.add("form", new JsonObject());
 							}
-						} catch (Exception formEx) {
-							// Suppress failure so missing custom forms don't stall the pipeline
+
+							cleanPayload.add("form", formJson);
+							LOGGER.info("[SUCCESS] Appended custom form mapping graph to 'form' element.");
+						} else {
 							cleanPayload.add("form", new JsonObject());
-							LOGGER.warn("[INFO] Custom form template not found or inaccessible for item '{}': {}",
-									itemName, formEx.getMessage());
 						}
-						// =========================================================================
-
-						formattedItems.add(cleanPayload);
-						LOGGER.info("[SUCCESS] Generated clean footprint for item '{}'", itemName);
-
-					} else {
-						LOGGER.warn("[EMPTY] Server returned empty response for item: {}. Item omitted.",
-								catalogItemId);
+					} catch (Exception formEx) {
+						cleanPayload.add("form", new JsonObject());
+						LOGGER.warn("[INFO] Custom form template not found or inaccessible for item '{}': {}",
+								itemName, formEx.getMessage());
 					}
-				} catch (Exception e) {
-					LOGGER.error("[FAILURE] Could not retrieve request template layout for item '{}': {}",
-							itemName, e.getMessage());
+					// =========================================================================
+
+					formattedItems.add(cleanPayload);
+					LOGGER.info("[SUCCESS] Generated clean footprint for targeted item '{}'", itemName);
+
+				} else {
+					LOGGER.warn("[EMPTY] Server returned empty response for targeted item: {}. Item omitted.",
+							catalogItemId);
 				}
+			} catch (Exception e) {
+				LOGGER.error("[FAILURE] Could not retrieve request template layout for targeted item '{}': {}",
+						itemName, e.getMessage());
 			}
 		}
 
