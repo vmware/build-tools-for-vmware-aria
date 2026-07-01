@@ -48,11 +48,8 @@ import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.common.store.Version;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItem;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItemForm;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaContentSource;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaProject;
@@ -800,54 +797,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		}
 	}
 
-	// =========================================================================
-	// CATALOG ITEM PRIMITIVES
-	// =========================================================================
-	public List<VcfaCatalogItem> getCatalogItemsPrimitive() throws IOException {
-		List<VcfaCatalogItem> summaryList = getList("/catalog/api/items", VcfaCatalogItem.class);
-		if (summaryList == null || summaryList.isEmpty()) {
-			return java.util.Collections.emptyList();
-		}
-
-		List<VcfaCatalogItem> fullyHydratedList = new java.util.ArrayList<>();
-		for (VcfaCatalogItem summary : summaryList) {
-			if (summary.getId() == null) {
-				fullyHydratedList.add(summary);
-				continue;
-			}
-			try {
-				String rawJson = get("/catalog/api/items/" + summary.getId(), String.class);
-				VcfaCatalogItem richItem = objectMapper.readValue(rawJson, VcfaCatalogItem.class);
-
-				Map<String, Object> rawMap = objectMapper.readValue(rawJson, Map.class);
-				if (rawMap != null) {
-					if (rawMap.containsKey("sourceId")) {
-						richItem.setSourceId(String.valueOf(rawMap.get("sourceId")));
-					} else if (rawMap.containsKey("blueprintId")) {
-						richItem.setSourceId(String.valueOf(rawMap.get("blueprintId")));
-					} else if (rawMap.containsKey("type") && rawMap.get("type") instanceof Map) {
-						Map<?, ?> typeMap = (Map<?, ?>) rawMap.get("type");
-						if (typeMap.containsKey("sourceId")) {
-							richItem.setSourceId(String.valueOf(typeMap.get("sourceId")));
-						}
-					}
-				}
-				fullyHydratedList.add(richItem != null ? richItem : summary);
-			} catch (Exception e) {
-				fullyHydratedList.add(summary);
-			}
-		}
-		return fullyHydratedList;
-	}
-
-	protected VcfaCatalogItem createCatalogItemPrimitive(VcfaCatalogItem item) throws IOException {
-		Map<String, Object> payload = objectMapper.convertValue(item, Map.class);
-		Map<String, Object> result = postMap("/catalog/api/items:publish", payload, 201, 200);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaCatalogItem.class);
-	}
-
 	protected void deleteCatalogItemPrimitive(String id) throws IOException {
 		deletePath("/catalog/api/items/" + id, 204, 200);
 	}
@@ -929,32 +878,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			LOGGER.info("No active form footprint discovered on server. Executing fresh creation via POST...");
 			postMap("/form-service/api/forms", payload, 200, 201);
 		}
-	}
-
-	// =========================================================================
-	// CONTENT SOURCE PRIMITIVES
-	// =========================================================================
-	protected List<VcfaContentSource> getContentSourcesPrimitive() throws IOException {
-		return getList("/content/api/items", VcfaContentSource.class);
-	}
-
-	protected VcfaContentSource createContentSourcePrimitive(Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = postMap("/content/api/items", payload, 201, 200);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaContentSource.class);
-	}
-
-	protected VcfaContentSource updateContentSourcePrimitive(String id, Map<String, Object> payload)
-			throws IOException {
-		Map<String, Object> result = putMap("/content/api/items/" + id, payload, 200);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaContentSource.class);
-	}
-
-	protected void deleteContentSourcePrimitive(String id) throws IOException {
-		deletePath("/content/api/items/" + id, 204, 200);
 	}
 
 	// =========================================================================
@@ -1041,13 +964,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 	protected void deletePropertyGroupPrimitive(String id) throws IOException {
 		deletePath("/properties/api/property-groups/" + id, 204, 200);
-	}
-
-	// =========================================================================
-	// ENTITLEMENTS PRIMITIVES
-	// =========================================================================
-	protected List<CatalogEntitlement> getCatalogEntitlementsPrimitive() throws IOException {
-		return getList("/catalog/api/entitlements", CatalogEntitlement.class);
 	}
 
 	// =========================================================================

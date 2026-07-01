@@ -97,10 +97,6 @@ public class VcfaTypeStoreFactory { // TODO REVERT AFTER DEVELOPMENT IS DONE, th
 		switch (type) {
 			case BLUEPRINT:
 				return new VcfaBlueprintStore();
-			case CATALOG_ITEM:
-				return new VcfaCatalogItemStore();
-			case CONTENT_SOURCE:
-				return new VcfaContentSourceStore();
 			case CUSTOM_RESOURCE:
 				return new VcfaCustomResourceStore();
 			case RESOURCE_ACTION:
@@ -111,8 +107,6 @@ public class VcfaTypeStoreFactory { // TODO REVERT AFTER DEVELOPMENT IS DONE, th
 				return new VcfaPolicyStore();
 			case PROPERTY_GROUP:
 				return new VcfaPropertyGroupStore();
-			case CATALOG_ENTITLEMENT:
-				return new VcfaEntitlementStore();
 			case SCENARIO:
 				return new VcfaScenarioStore();
 			case WORKFLOW:

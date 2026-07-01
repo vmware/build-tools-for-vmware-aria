@@ -18,10 +18,7 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.Map;
-import java.lang.reflect.Field;
 import com.vmware.pscoe.iac.artifact.common.annotation.SkipExport;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -25,10 +25,7 @@ import java.util.Map;
 
 import com.google.gson.JsonObject;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.CatalogEntitlement;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItem;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItemForm;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaContentSource;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaResourceAction;
@@ -123,21 +120,6 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		unreleaseBlueprintVersionPrimitive(blueprintId, versionId);
 	}
 
-	// ==========================================
-	// --- Catalog Items
-	// ==========================================
-	public List<VcfaCatalogItem> getCatalogItems() throws IOException {
-		return getCatalogItemsPrimitive();
-	}
-
-	public VcfaCatalogItem createCatalogItem(VcfaCatalogItem item) throws IOException {
-		return createCatalogItemPrimitive(item);
-	}
-
-	public void deleteCatalogItem(String id) throws IOException {
-		deleteCatalogItemPrimitive(id);
-	}
-
 	// --- Request Forms
 	public VcfaCatalogItemForm getCatalogItemForm(String sourceType, String catalogItemId) throws IOException {
 		return getCatalogItemFormPrimitive(sourceType, catalogItemId);
@@ -146,23 +128,6 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	public void updateCatalogItemForm(String sourceType, String catalogItemId, VcfaCatalogItemForm form)
 			throws IOException {
 		updateCatalogItemFormPrimitive(sourceType, catalogItemId, form);
-	}
-
-	// --- Content sources
-	public List<VcfaContentSource> getContentSources() throws IOException {
-		return getContentSourcesPrimitive();
-	}
-
-	public VcfaContentSource createContentSource(VcfaContentSource payload) throws IOException {
-		return createContentSourcePrimitive(objectMapper.convertValue(payload, Map.class));
-	}
-
-	public VcfaContentSource updateContentSource(String id, VcfaContentSource payload) throws IOException {
-		return updateContentSourcePrimitive(id, objectMapper.convertValue(payload, Map.class));
-	}
-
-	public void deleteContentSource(String id) throws IOException {
-		deleteContentSourcePrimitive(id);
 	}
 
 	// --- Custom resource types
@@ -233,11 +198,6 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 
 	public void deletePolicy(String id) throws IOException {
 		deletePolicyPrimitive(id);
-	}
-
-	// --- Catalog entitlements
-	public List<CatalogEntitlement> getCatalogEntitlements() throws IOException {
-		return getCatalogEntitlementsPrimitive();
 	}
 
 	// ==========================================

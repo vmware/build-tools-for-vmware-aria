@@ -22,14 +22,11 @@ import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent;
 
 public enum VcfaPackageMemberType implements PackageContent.ContentType {
     BLUEPRINT("blueprint"),
-    CATALOG_ITEM("catalog-item"),
-    CONTENT_SOURCE("content-source"),
     CUSTOM_RESOURCE("custom-resource"),
     RESOURCE_ACTION("resource-action"),
     SUBSCRIPTION("subscription"),
     POLICY("policy"),
     PROPERTY_GROUP("property-group"),
-    CATALOG_ENTITLEMENT("catalog-entitlement"),
     SCENARIO("scenario"),
     WORKFLOW("workflow");
 
