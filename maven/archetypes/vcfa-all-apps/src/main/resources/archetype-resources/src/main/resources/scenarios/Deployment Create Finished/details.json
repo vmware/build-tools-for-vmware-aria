@@ -1,7 +1,0 @@
-{
-  "enabled" : true,
-  "scenarioCategory" : "Deployments",
-  "subject" : "Deployment Create Request Finished",
-  "scenarioId" : "deployment-create-finished",
-  "scenarioName" : "Deployment Create Finished"
-}
