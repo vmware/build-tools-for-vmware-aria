@@ -321,7 +321,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
 
                     logger.info("Updating existing subscription: '{}' (ID: {})", subscriptionName, existingId);
                 }
-                restClient.createSubscription(subPayload);
+                restClient.createOrUpdateSubscription(subPayload);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error reading subscription JSON payload data from file: " + jsonFile.getPath(),

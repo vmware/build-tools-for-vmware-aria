@@ -286,8 +286,8 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return getSubscriptionsPrimitive();
 	}
 
-	public VcfaSubscription createSubscription(VcfaSubscription payload) throws IOException {
-		return createSubscriptionPrimitive(objectMapper.convertValue(payload, Map.class));
+	public VcfaSubscription createOrUpdateSubscription(VcfaSubscription payload) throws IOException {
+		return createOrUpdateSubscriptionPrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
 	public void deleteSubscription(String id) throws IOException {

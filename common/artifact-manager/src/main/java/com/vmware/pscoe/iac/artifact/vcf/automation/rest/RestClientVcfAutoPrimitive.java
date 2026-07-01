@@ -964,7 +964,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return getList("/event-broker/api/subscriptions", VcfaSubscription.class);
 	}
 
-	protected VcfaSubscription createSubscriptionPrimitive(Map<String, Object> payload) throws IOException {
+	protected VcfaSubscription createOrUpdateSubscriptionPrimitive(Map<String, Object> payload) throws IOException {
 		Map<String, Object> result = postMap("/event-broker/api/subscriptions", payload, 200, 201);
 		if (result == null)
 			return null;
