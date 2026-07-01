@@ -64,7 +64,7 @@
 			<directory>target</directory>
 			<outputDirectory>${file.separator}vcf-auto-modern</outputDirectory>
 			<includes>
-				<include>*.vcfam</include>
+				<include>*.vcfaa</include>
 			</includes>
 		</fileSet>
 		<fileSet>
