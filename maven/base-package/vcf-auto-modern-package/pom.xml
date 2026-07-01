@@ -69,6 +69,6 @@
 
 		<checksum.packagesEnabled>true</checksum.packagesEnabled>
 		<checksum.packagesDir>target</checksum.packagesDir>
-		<checksum.packagesGlob>*.vcfam</checksum.packagesGlob>
+		<checksum.packagesGlob>*.vcfaa</checksum.packagesGlob>
 	</properties>
 </project>

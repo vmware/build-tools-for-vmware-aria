@@ -641,7 +641,7 @@ enum Option {
 	 * VCFA import packages.
 	 */
 	VCFA_IMPORT(
-			"vcfam_import_packages",
+			"vcfaa_import_packages",
 			StringUtils.EMPTY),
 	/**
 	 * VRO import packages.
@@ -1266,8 +1266,8 @@ public final class Installer {
 		// +-------------------------------------
 		// | VCF Automation 9 (Auto Modern)
 		// +-------------------------------------
-		boolean hasVcfamPackages = !getFilesystemPackages(PackageType.VCF_AUTO_MODERN).isEmpty();
-		if (hasVcfamPackages) {
+		boolean hasVcfaaPackages = !getFilesystemPackages(PackageType.VCF_AUTO_MODERN).isEmpty();
+		if (hasVcfaaPackages) {
 			userInput(input, Option.VCFA_IMPORT, "Import VCFA9 packages?", true);
 			if (!input.anyTrue(Option.VCFA_IMPORT)) {
 				userInput(input, Option.VCFA_DELETE_CONTENT, "Clean up VCF Automation content?", true);

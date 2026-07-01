@@ -33,7 +33,7 @@
                 org.apache.maven.artifact.handler.DefaultArtifactHandler
             </implementation>
             <configuration>
-                <extension>vcfam</extension>
+                <extension>vcfaa</extension>
                 <type>vcf-auto-modern</type>
                 <packaging>vcf-auto-modern</packaging>
             </configuration>

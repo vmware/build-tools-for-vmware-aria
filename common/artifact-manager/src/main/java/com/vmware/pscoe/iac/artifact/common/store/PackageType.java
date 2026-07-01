@@ -21,7 +21,7 @@ public enum PackageType {
 	// TODO: check if VRANG and VRANGv3 has the proper new packageType
 	// TODO: check all usage of .fromExtension
 	VRANGv3("vra-ng", "vra-ng", "vrang"), // kept for backward compatibility with Build Tools for VMware Aria <= 3.x.x
-	VCF_AUTO_MODERN("vcfam", "vcf-auto-modern", "vcf-auto-modern"),
+	VCF_AUTO_MODERN("vcfaa", "vcf-auto-modern", "vcf-auto-modern"),
 	VCDNG("vcd-ng", "vcd-ng", "vcd-ng"),
 	VROPS("vrops", "vrops", "vrops"),
 	VRLI("vrli", "vrli", "vrli"),
