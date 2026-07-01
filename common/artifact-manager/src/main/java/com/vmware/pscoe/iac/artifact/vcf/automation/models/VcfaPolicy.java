@@ -29,6 +29,8 @@ public class VcfaPolicy implements Identifiable {
     private String enforcementType;
     private String orgId;
     private String projectId;
+    private String description;
+    private String scope;
     private Map<String, Object> definition;
     private Map<String, Object> criteria;
 
@@ -83,6 +85,22 @@ public class VcfaPolicy implements Identifiable {
 
     public void setOrgId(String orgId) {
         this.orgId = orgId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 
     public String getProjectId() {
