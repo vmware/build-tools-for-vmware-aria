@@ -1069,7 +1069,7 @@ public final class Installer {
 			PackageStoreFactory
 					.getInstance(
 							ConfigurationVcfAuto.fromProperties(input.getMappings(ConfigurationPrefix.VCFA.getValue())))
-					.importAllPackages(getFilesystemPackages(PackageType.VCF_AUTO_MODERN), false, vroEnableBackup);
+					.importAllPackages(getFilesystemPackages(PackageType.VCFA_ALL_APPS), false, vroEnableBackup);
 
 		}
 
@@ -1116,7 +1116,7 @@ public final class Installer {
 		if (input.allTrue(Option.VCFA_DELETE_CONTENT)) {
 			String[] prefixes = { ConfigurationPrefix.VCFA.getValue() };
 			PackageStoreFactory.getInstance(ConfigurationVcfAuto.fromProperties(input.getMappings(prefixes)))
-					.deleteAllPackages(getFilesystemPackages(PackageType.VCF_AUTO_MODERN), true, false, false);
+					.deleteAllPackages(getFilesystemPackages(PackageType.VCFA_ALL_APPS), true, false, false);
 		}
 
 		if (input.allTrue(Option.VROPS_IMPORT)) {
@@ -1264,9 +1264,9 @@ public final class Installer {
 			readCsImportProperties(input);
 		}
 		// +-------------------------------------
-		// | VCF Automation 9 (Auto Modern)
+		// | VCF Automation 9 (All Apps)
 		// +-------------------------------------
-		boolean hasVcfaaPackages = !getFilesystemPackages(PackageType.VCF_AUTO_MODERN).isEmpty();
+		boolean hasVcfaaPackages = !getFilesystemPackages(PackageType.VCFA_ALL_APPS).isEmpty();
 		if (hasVcfaaPackages) {
 			userInput(input, Option.VCFA_IMPORT, "Import VCFA9 packages?", true);
 			if (!input.anyTrue(Option.VCFA_IMPORT)) {

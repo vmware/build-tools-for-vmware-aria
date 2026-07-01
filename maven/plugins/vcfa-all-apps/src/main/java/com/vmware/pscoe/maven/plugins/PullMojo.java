@@ -61,8 +61,8 @@ public class PullMojo extends AbstractIacMojo {
         }
 
         MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-        File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.VCF_AUTO_MODERN.getPackageExtension()).toFile();
-        Package pkg = PackageFactory.getInstance(PackageType.VCF_AUTO_MODERN, pkgFile);
+        File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.VCFA_ALL_APPS.getPackageExtension()).toFile();
+        Package pkg = PackageFactory.getInstance(PackageType.VCFA_ALL_APPS, pkgFile);
         
         try {
             PackageStore<?> store = PackageStoreFactory.getInstance(getConfigurationForVcfAuto());

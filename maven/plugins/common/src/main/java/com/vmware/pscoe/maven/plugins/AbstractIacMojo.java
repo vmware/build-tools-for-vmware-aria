@@ -251,7 +251,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	 * @throws ConfigurationException
 	 */
 	protected ConfigurationVcfAuto getConfigurationForVcfAuto() throws ConfigurationException {
-		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCF_AUTO_MODERN);
+		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCFA_ALL_APPS);
 		if (configuration.isPresent()) {
 			return (ConfigurationVcfAuto) configuration.get();
 		} else {
@@ -297,7 +297,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 		} else if (PackageType.CS == type) {
 			return Optional
 					.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
-        } else if (PackageType.VCF_AUTO_MODERN == type) {
+        } else if (PackageType.VCFA_ALL_APPS == type) {
             return Optional
                     .ofNullable(ConfigurationVcfAuto.fromProperties(getConfigurationProperties(type, vcfa, "vcfa.")));
         } else {

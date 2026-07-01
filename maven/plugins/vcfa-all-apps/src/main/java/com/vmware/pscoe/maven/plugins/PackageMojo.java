@@ -37,10 +37,10 @@ public class PackageMojo extends AbstractVroMojo {
 
         getLog().info("basedir " + project.getBasedir());
         File pkgFile = new File(directory,
-                pkgInfoProvider.getPackageName() + "." + PackageType.VCF_AUTO_MODERN.getPackageExtension());
+                pkgInfoProvider.getPackageName() + "." + PackageType.VCFA_ALL_APPS.getPackageExtension());
         getLog().info("Target VCFA All App package file " + pkgFile.getAbsolutePath());
 
-        Package pkg = PackageFactory.getInstance(PackageType.VCF_AUTO_MODERN, pkgFile);
+        Package pkg = PackageFactory.getInstance(PackageType.VCFA_ALL_APPS, pkgFile);
         try {
 
             getLog().info("Packaging VCFA All App bundle from: " + pkgInfoProvider.getSourceDirectory().getAbsolutePath());

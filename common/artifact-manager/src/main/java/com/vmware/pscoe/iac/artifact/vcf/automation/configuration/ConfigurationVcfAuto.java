@@ -98,7 +98,7 @@ public class ConfigurationVcfAuto extends Configuration {
 	private final Logger logger;
 
 	protected ConfigurationVcfAuto(Properties props) {
-		super(PackageType.VCF_AUTO_MODERN, props);
+		super(PackageType.VCFA_ALL_APPS, props);
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
