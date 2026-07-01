@@ -3,7 +3,7 @@
         <component>
             <role>org.apache.maven.lifecycle.mapping.LifecycleMapping
             </role>
-            <role-hint>vcf-auto-modern</role-hint>
+            <role-hint>vcfa-all-apps</role-hint>
             <implementation>
                 org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
             </implementation>
@@ -13,7 +13,7 @@
                         <id>default</id>
                         <phases>
                             <package>
-                                com.vmware.pscoe.maven.plugins:vcf-auto-modern-package-maven-plugin:${project.version}:package
+                                com.vmware.pscoe.maven.plugins:vcfa-all-apps-package-maven-plugin:${project.version}:package
                             </package>
                             <install>
                                 org.apache.maven.plugins:maven-install-plugin:install
@@ -28,14 +28,14 @@
         </component>
         <component>
             <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-            <role-hint>vcf-auto-modern</role-hint>
+            <role-hint>vcfa-all-apps</role-hint>
             <implementation>
                 org.apache.maven.artifact.handler.DefaultArtifactHandler
             </implementation>
             <configuration>
                 <extension>vcfaa</extension>
-                <type>vcf-auto-modern</type>
-                <packaging>vcf-auto-modern</packaging>
+                <type>vcfa-all-apps</type>
+                <packaging>vcfa-all-apps</packaging>
             </configuration>
         </component>
     </components>

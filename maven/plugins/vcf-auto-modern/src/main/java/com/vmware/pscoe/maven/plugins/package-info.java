@@ -1,6 +1,6 @@
 /*-
  * #%L
- * vcf-auto-modern-package-maven-plugin
+ * vcfa-all-apps-package-maven-plugin
  * %%
  * Copyright (C) 2023 VMware
  * %%

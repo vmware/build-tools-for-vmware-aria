@@ -5,8 +5,8 @@
         <artifactId>base-archetype</artifactId>
         <version>${revision}</version>
     </parent>
-    <groupId>com.vmware.pscoe.vcf-auto-modern.archetypes</groupId>
-    <artifactId>package-vcf-auto-modern-archetype</artifactId>
+    <groupId>com.vmware.pscoe.vcfa-all-apps.archetypes</groupId>
+    <artifactId>package-vcfa-all-apps-archetype</artifactId>
 	<name>${project.artifactId}</name>
     <packaging>maven-archetype</packaging>
 	<properties>
