@@ -11,7 +11,7 @@
     <groupId>\${groupId}</groupId>
     <artifactId>\${artifactId}</artifactId>
     <version>\${version}</version>
-    <packaging>vcf-auto-modern</packaging>
+    <packaging>vcfa-all-apps</packaging>
     <scm>
         <developerConnection>${scmDeveloperConnection}</developerConnection>
     </scm>

@@ -27,7 +27,7 @@
 			</plugin>
 			<plugin>
 				<groupId>com.vmware.pscoe.maven.plugins</groupId>
-				<artifactId>vcf-auto-modern-package-maven-plugin</artifactId>
+				<artifactId>vcfa-all-apps-package-maven-plugin</artifactId>
 				<version>${revision}</version>
 				<extensions>true</extensions>
 				<configuration>

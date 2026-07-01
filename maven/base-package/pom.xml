@@ -27,7 +27,7 @@
 		<module>serverless</module>
 		<module>bsc-package</module>
 		<module>cs-package</module>
-		<module>vcf-auto-modern-package</module>
+		<module>vcfa-all-apps-package</module>
 	</modules>
 	<properties>
 		<build.number>local</build.number>
@@ -429,14 +429,14 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-vcf-auto-modern-dependencies</id>
+						<id>copy-vcfa-all-apps-dependencies</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>target/dependency/vcf-auto-modern</outputDirectory>
-							<includeTypes>vcf-auto-modern</includeTypes>
+							<outputDirectory>target/dependency/vcfa-all-apps</outputDirectory>
+							<includeTypes>vcfa-all-apps</includeTypes>
 							<prependGroupId>true</prependGroupId>
 						</configuration>
 					</execution>

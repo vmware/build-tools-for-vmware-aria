@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 mvn archetype:generate \
     -DinteractiveMode=false \
-    -DarchetypeGroupId=com.vmware.pscoe.vcf-auto-modern.archetypes \
-    -DarchetypeArtifactId=package-vcf-auto-modern-archetype \
+    -DarchetypeGroupId=com.vmware.pscoe.vcfa-all-apps.archetypes \
+    -DarchetypeArtifactId=package-vcfa-all-apps-archetype \
     -DarchetypeVersion=4.x.y \ 
     -DgroupId=org.example \
     -DartifactId=sample \

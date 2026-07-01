@@ -18,7 +18,7 @@
 		<module>xml</module>
 		<module>mixed</module>
 		<module>vra-ng</module>
-		<module>vcf-auto-modern</module>
+		<module>vcfa-all-apps</module>
 		<module>ts</module>
 		<module>ts-vra-ng</module>
 		<module>vcd-ng</module>
