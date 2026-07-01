@@ -10,7 +10,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>com.vmware.pscoe.vcf</groupId>
-	<artifactId>auto-modern-package</artifactId>
+	<artifactId>all-apps-package</artifactId>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<build>
