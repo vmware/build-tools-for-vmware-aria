@@ -18,8 +18,11 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
 import java.util.Map;
 import com.vmware.pscoe.iac.artifact.common.annotation.SkipExport;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.OrganizationSharing;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,8 +35,11 @@ public class VcfaVroWorkflow implements Identifiable {
     @SkipExport
     private String projectId;
 
-    @JsonProperty("requestScopeOrg")
-    private Boolean requestScopeOrg;
+    @JsonProperty("global")
+    private Boolean global;
+
+    @JsonProperty("organizationSharings")
+    private List<OrganizationSharing> organizationSharings;
 
     public VcfaVroWorkflow() {
     }
@@ -86,16 +92,24 @@ public class VcfaVroWorkflow implements Identifiable {
         this.projectId = projectId;
     }
 
-    public Boolean getRequestScopeOrg() {
-        return requestScopeOrg;
+    public Boolean getGlobal() {
+        return global;
     }
 
-    public void setRequestScopeOrg(Boolean requestScopeOrg) {
-        this.requestScopeOrg = requestScopeOrg;
+    public void setGlobal(Boolean global) {
+        this.global = global;
+    }
+
+    public List<OrganizationSharing> getOrganizationSharings() {
+        return organizationSharings;
+    }
+
+    public void setOrganizationSharings(List<OrganizationSharing> organizationSharings) {
+        this.organizationSharings = organizationSharings;
     }
 
     /**
-     * Converts the blueprint fields into a Map for API payload transmission.
+     * Converts the workflow fields into a Map for API payload transmission.
      */
     public Map<String, Object> toMap() {
         java.util.Map<String, Object> map = new java.util.HashMap<>();
@@ -105,7 +119,10 @@ public class VcfaVroWorkflow implements Identifiable {
         map.put("content", content);
         map.put("styles", styles);
         map.put("projectId", projectId);
-        map.put("requestScopeOrg", requestScopeOrg);
+        map.put("global", global);
+        if (organizationSharings != null) {
+            map.put("organizationSharings", organizationSharings);
+        }
         return map;
     }
 

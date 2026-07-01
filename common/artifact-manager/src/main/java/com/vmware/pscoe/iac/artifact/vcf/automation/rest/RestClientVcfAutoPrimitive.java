@@ -469,6 +469,10 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 							&& item.get("global").getAsBoolean();
 					cleanPayload.addProperty("global", isGlobal);
 
+					if (item.has("organizationSharings") && !item.get("organizationSharings").isJsonNull()) {
+						cleanPayload.add("organizationSharings", item.get("organizationSharings"));
+					}
+
 					// =========================================================================
 					// FETCH, UNESCAPE, AND ATTACH FORM TO THE TARGETED GRAPH OBJECT
 					// =========================================================================

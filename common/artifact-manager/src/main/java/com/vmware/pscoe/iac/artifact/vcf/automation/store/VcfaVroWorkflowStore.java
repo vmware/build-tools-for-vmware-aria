@@ -28,7 +28,9 @@ import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
@@ -85,6 +87,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
 
             try {
                 JsonObject localPayload = loadCatalogItemPayload(wfFile);
+                resolveOrganizationSharingsForPush(localPayload);
                 String declaredName = localPayload.has("name") ? localPayload.get("name").getAsString() : "";
 
                 if (!Objects.equals(declaredName, wfName)) {
@@ -371,7 +374,10 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
             logger.warn("No form layout map detected for catalog item '{}'. Skipping form file generation.", name);
         }
 
-        // 3. Write the cleaned core config payload back to original
+        // 3. Convert organization-level sharing IDs to portable organization names
+        transformOrganizationSharingsForDisk(item);
+
+        // 4. Write the cleaned core config payload back to original
         // workflows/<Workflow_Name>.json location
         String jsonFilePath = workflowsDirPath + File.separator + name + ".json";
         String formattedJsonPayload = gson.toJson(item);
@@ -381,5 +387,84 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
 
         logger.info("Successfully serialized catalog item mapping asset structure directly to flat file: {}",
                 jsonFilePath);
+    }
+
+    /**
+     * Converts portable organization names in organizationSharings to target
+     * server orgIds before publish/republish.
+     */
+    private void resolveOrganizationSharingsForPush(JsonObject payload) throws IOException {
+        if (!payload.has("organizationSharings") || payload.get("organizationSharings").isJsonNull()) {
+            return;
+        }
+        JsonArray sharings = payload.getAsJsonArray("organizationSharings");
+        if (sharings == null || sharings.size() == 0) {
+            payload.remove("organizationSharings");
+            return;
+        }
+        JsonArray resolvedSharings = new JsonArray();
+        for (com.google.gson.JsonElement element : sharings) {
+            if (!element.isJsonObject()) {
+                continue;
+            }
+            JsonObject sharing = element.getAsJsonObject();
+            if (!sharing.has("organization") || sharing.get("organization").isJsonNull()) {
+                continue;
+            }
+            String organizationName = sharing.get("organization").getAsString();
+            String orgId;
+            if ("ALL".equalsIgnoreCase(organizationName)) {
+                orgId = "ALL";
+            } else {
+                orgId = restClient.getOrganizationId(organizationName);
+            }
+            JsonObject resolved = new JsonObject();
+            resolved.addProperty("orgId", orgId);
+            resolvedSharings.add(resolved);
+        }
+        if (resolvedSharings.size() == 0) {
+            payload.remove("organizationSharings");
+        } else {
+            payload.add("organizationSharings", resolvedSharings);
+        }
+    }
+
+    /**
+     * Converts server orgIds in organizationSharings to portable organization
+     * names before writing to disk.
+     */
+    private void transformOrganizationSharingsForDisk(JsonObject item) throws IOException {
+        if (!item.has("organizationSharings") || item.get("organizationSharings").isJsonNull()) {
+            return;
+        }
+        JsonArray sharings = item.getAsJsonArray("organizationSharings");
+        if (sharings == null || sharings.size() == 0) {
+            item.remove("organizationSharings");
+            return;
+        }
+        JsonArray transformedSharings = new JsonArray();
+        for (com.google.gson.JsonElement element : sharings) {
+            if (!element.isJsonObject()) {
+                continue;
+            }
+            JsonObject sharing = element.getAsJsonObject();
+            if (!sharing.has("orgId") || sharing.get("orgId").isJsonNull()) {
+                continue;
+            }
+            String orgId = sharing.get("orgId").getAsString();
+            JsonObject transformed = new JsonObject();
+            if ("ALL".equalsIgnoreCase(orgId)) {
+                transformed.addProperty("organization", "ALL");
+            } else {
+                String orgName = restClient.getOrganizationName(orgId);
+                transformed.addProperty("organization", orgName);
+            }
+            transformedSharings.add(transformed);
+        }
+        if (transformedSharings.size() == 0) {
+            item.remove("organizationSharings");
+        } else {
+            item.add("organizationSharings", transformedSharings);
+        }
     }
 }
