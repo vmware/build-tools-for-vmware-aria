@@ -58,14 +58,14 @@ operations
             └── metricconfigs
                 └── vSAN Savings
             └── policies
-                └── policiesMetadata.vrops.json            
+                └── policiesMetadata.vrops.json
                 └── Policy for Virtual Machines - Risk Profile 1.zip
             └── recommendations
                 └── Bring the VMware Cloud Foundation Operations Node back online.json
             └── reports
                 └── Cluster Cost Report
                     └── resources
-                        └── resources.properties                
+                        └── resources.properties
                     └── content.xml
             └── supermetrics
                 └── Group CPU Average.json

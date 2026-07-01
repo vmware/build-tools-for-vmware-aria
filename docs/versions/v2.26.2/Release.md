@@ -29,7 +29,7 @@ When pushing a new blueprint without versions file it is never released to the c
 #### Relevant Documentation:
 **NONE**
 
-### *Custom Resource Day-2 Actions Failing on vRA 8.8.2* 
+### *Custom Resource Day-2 Actions Failing on vRA 8.8.2*
 When importing a Custom Resource with a Day-2 Action defined the custom resource would fail to be imported ( in vra 8.8.2 ).
 
 #### Previous Behavior

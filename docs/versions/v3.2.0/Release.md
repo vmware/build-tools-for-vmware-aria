@@ -115,7 +115,7 @@ This is just an internal restructuring effort, no functionality was changed.
 
 ### *Dynamic type definitions for the unit tests framework.*
 
-The package name and version of the type definitions are being installed dynamically based on the configuration of the solution.  
+The package name and version of the type definitions are being installed dynamically based on the configuration of the solution.
 This ensures the type definitions available for type hinting / autocomplete in the IDE and for the transpilation are matching the actual code definitions of the unit test framework.
 
 #### Previous Behavior

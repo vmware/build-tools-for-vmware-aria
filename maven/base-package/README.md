@@ -3,7 +3,7 @@ This module contains 3 base POMs to be used as parents for package projects.
 
 Note that there are a number of properties that must be set through profiles in the settings.xml file, as they are environment specific:
 * keystorePassword - Required. This is the password for the datastore used for signing vRO packages.
-* keystoreLocation - Required. This is the location of the datastore. You can either hardcode a location on the machine executing the build. 
+* keystoreLocation - Required. This is the location of the datastore. You can either hardcode a location on the machine executing the build.
     The other option is to package the development keystore as an artifact and distribute it through artifactory.
 * keystoreGroupId - Optional. This is the groupId of the keystore artifact, if you choose to use this mechanism for distributing the keystore.
 * keystoreArtifactId - Optional. See above.
@@ -20,8 +20,8 @@ It makes sense to keep this settings XML file under SCM to be used by developers
 An example settings.xml file is shown below:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" 
-    xmlns="http://maven.apache.org/SETTINGS/1.1.0" 
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
+    xmlns="http://maven.apache.org/SETTINGS/1.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <profiles>
         <profile>
@@ -100,8 +100,8 @@ $ mvn clean deploy -Pbundle
 ```
 
 ## Bundling with installer
-You can supply additional components to the bundle.zip like an installer executable and scripts. The toolchain comes with a prepackaged installer 
-that you can be included in the bundle and used as a CLI to import the bundled artifacts in vRO and vRA.  
+You can supply additional components to the bundle.zip like an installer executable and scripts. The toolchain comes with a prepackaged installer
+that you can be included in the bundle and used as a CLI to import the bundled artifacts in vRO and vRA.
 
 Furthermore, you can extend the default by providing your own zip artifact containing all the supplementary files for the bundle, e.g. scripts, executables etc.
 

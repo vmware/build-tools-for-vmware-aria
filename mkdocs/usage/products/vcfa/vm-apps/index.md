@@ -92,7 +92,7 @@ catalog
         └── entitlements
             └── Blueprint.yaml
             └── Workflow.yaml
-            └── ABX Action.yaml       
+            └── ABX Action.yaml
         └── subscriptions
             └── subscription.json
         └── custom-resources
@@ -109,9 +109,9 @@ catalog
             └── deployment-limit
                 └── deploymentLimitPolicy1.json
             └── lease
-                └── leasePolicy1.json 
+                └── leasePolicy1.json
             └── resource-quota
-                └── resourceQuotaPolicy1.json 
+                └── resourceQuotaPolicy1.json
         └── scenarios
             └── Scenario Name.json
 ```
@@ -158,8 +158,8 @@ Contents are managed by different rules.
 
 ##### Export Rules for content types
 
-- Empty array [] - nothing is exported  
-- List of items - the given items are exported. If they are not present on the server an Exception is thrown.  
+- Empty array [] - nothing is exported
+- List of items - the given items are exported. If they are not present on the server an Exception is thrown.
 - Null (nothing given) - everything is being exported
 
 !!! note

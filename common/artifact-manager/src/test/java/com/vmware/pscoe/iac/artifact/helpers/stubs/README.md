@@ -1,7 +1,7 @@
 # Stubs
 
 ## What are these?
-These files contain builders for Test Double objects, that should be used in vra-ng tests. You can extend them further 
+These files contain builders for Test Double objects, that should be used in vra-ng tests. You can extend them further
 if you need more customizations.
 
 ## Why do we need these?

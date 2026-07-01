@@ -5,7 +5,7 @@
 
 ## Deprecations
 **NONE**
- 
+
 ## Features:
 **NONE**
 
@@ -67,7 +67,7 @@ Importing actions with long paths results would fail in a hard to detect way.
 The error message thrown used to be very ambiguous
 
 ```log
-{"status":400,"message":"java.lang.RuntimeException: ch.dunes.util.DunesServerException: 
+{"status":400,"message":"java.lang.RuntimeException: ch.dunes.util.DunesServerException:
 Unknown object type 'Module' caused by: ch.dunes.util.DunesServerException: Unknown object type
  'Module' caused by: Unknown object type 'Module'"}
 ```
@@ -116,7 +116,7 @@ instead of `undefined`.
 When using Properties.get inside of tests, if the key did not exist, `undefined` would be returned
 
 #### New Behavior
-Properties.get now do a check with `.hasOwnProperty` to determine if that key is set first. If it is not set, `null` 
+Properties.get now do a check with `.hasOwnProperty` to determine if that key is set first. If it is not set, `null`
 will be returned, instead of `undefined`.
 
 #### Relevant Documentation:
@@ -155,7 +155,7 @@ Storage Profile json now records `diskType` and can distinguish regular disks fr
 ### *Tests when dependency has a policy template or other unknown types of elements now work*
 
 #### Previous Behaviour
-Having a dependency to a library with some unknown types ( like PolicyTemplates ) would cause an error like: 
+Having a dependency to a library with some unknown types ( like PolicyTemplates ) would cause an error like:
 ```log
 TypeError: Cannot read property 'type' of undefined [ERROR] at .../node_modules/@vmware-pscoe/vrotest/lib/vrotest.js:1:196681
 ```

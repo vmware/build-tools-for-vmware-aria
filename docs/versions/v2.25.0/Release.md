@@ -114,7 +114,7 @@ This workflow has 3 parameters :
 * blacklist
 
 
-The latter two are of type **Array/string**    
+The latter two are of type **Array/string**
 The installation/configuration values are passed as a json file (or yaml). Each root property of this file should have the name of an input value of the targeted workflow.
 The values of those root keys are treated as strings. The installer converts them as string parameters in vro workflow execution rest request.
 This makes impossible usage of any type of parameters such as Arrays, number and boolean.

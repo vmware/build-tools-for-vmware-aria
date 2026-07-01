@@ -40,9 +40,9 @@ Supported properties:
 - `test.ansicolors.version` - The `ansi-colors` npm package is used in the Jasmine reporters configured for the tests, optional, defaults to `^4.1.1` for backward compatibility if omitted.
 
 #### Configuration examples
-1. **Jasmine, backwards compatiblе.**  
+1. **Jasmine, backwards compatiblе.**
 No changes are needed. The configuration is fully aligned with the current behavior.
-1. **Jasmine, custom version.**  
+1. **Jasmine, custom version.**
 Example of property values for working with the latest package versions:
 ```xml
 <test.framework.package>jasmine</test.framework.package>
@@ -50,12 +50,12 @@ Example of property values for working with the latest package versions:
 <test.framework.jasmine.reporters.version>latest</test.framework.jasmine.reporters.version>
 <test.ansicolors.version>latest</test.ansicolors.version>
 ```
-1. **Jest, basic usage.**  
+1. **Jest, basic usage.**
 Example of property values for working with the latest package versions:
 ```xml
 <test.framework.package>jest</test.framework.package>
 ```
-1. **Jest, custom version.**  
+1. **Jest, custom version.**
 Example of property values for working with the latest package versions:
 ```xml
 <test.framework.package>jest</test.framework.package>
@@ -64,10 +64,10 @@ Example of property values for working with the latest package versions:
 ```
 
 **Custom configuration**
-TypeScript project unit tests are triggered via `mvn clean test` or `mvn clean package -Pbundle-with-installer`. During this process a `target` folder is created. The actual tests folder is located at `target/vro-tests`. The user can copy any files from this folder to a `unit-tests.config` folder in the root project path. These files will be used in any next unit test runs.  
+TypeScript project unit tests are triggered via `mvn clean test` or `mvn clean package -Pbundle-with-installer`. During this process a `target` folder is created. The actual tests folder is located at `target/vro-tests`. The user can copy any files from this folder to a `unit-tests.config` folder in the root project path. These files will be used in any next unit test runs.
 Example:
-Copying the `package.json`, `jasmine.config.json`, `run-jasmine.js` and `.nycrc` files from the `target/vro-tests` into a `unit-tests.config` and modifying it any way desired.  
-The next time the unit tests are triggered all these files will be copied from `unit-tests.config` to the `target/vro-tests` folder and used to bootstrap the unit tests execution.  
+Copying the `package.json`, `jasmine.config.json`, `run-jasmine.js` and `.nycrc` files from the `target/vro-tests` into a `unit-tests.config` and modifying it any way desired.
+The next time the unit tests are triggered all these files will be copied from `unit-tests.config` to the `target/vro-tests` folder and used to bootstrap the unit tests execution.
 
 ### Coverage
 

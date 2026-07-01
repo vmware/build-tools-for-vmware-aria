@@ -69,7 +69,7 @@ When we run the installer from a folder different from the package bundle bin fo
 When running the installer script in interactive mode to import vRA and vRO content simultaneously, the script doesn't show a prompt to ask whether vRO is embedded. And in the case of vRA Cloud, vRO cannot be embedded, which makes it impossible to use the interactive mode of the script.
 
 #### New Behavior
-When we run the installer to import vRA and vRO content simultaneously, the script shows a prompt to ask whether vRO is embedded. 
+When we run the installer to import vRA and vRO content simultaneously, the script shows a prompt to ask whether vRO is embedded.
 If the answer is yes, the vRealize Automation NG Configuration is run. Otherwise, the script asks vRealize Orchestrator Configuration set of questions.
 
 #### Relevant Documentation:
@@ -81,7 +81,7 @@ If the answer is yes, the vRealize Automation NG Configuration is run. Otherwise
 Properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant) are ignored during the installation process.
 
 #### New Behavior
-Correct value will be taken from package.json file for properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant). 
+Correct value will be taken from package.json file for properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant).
 Possible values for property **Faas provider** are: "aws", "azure", "on-prem". File **package.json** should be placed to the root of the project folder.
 
 **package.json**
@@ -150,7 +150,7 @@ Possible values for property **Faas provider** are: "aws", "azure", "on-prem". F
 #### Relevant Documentation:
 **NONE**
 
-### NPE in case user provides non-existing project name during installation 
+### NPE in case user provides non-existing project name during installation
 
 #### Previous Behavior
 We get a null pointer exception if we specify a non-existing project name during the installation process.
@@ -186,7 +186,7 @@ Project references used `Build Tools for VMware Aria` or `Build Tools for Aria` 
 
 #### Previous Behavior
 When changes are detected on blueprint imports and versions are not ignored vRBT tries to release a new blueprint version. If
-however, the exported versions were stored in reverse order and imported that way, new release failed due to trying to release 
+however, the exported versions were stored in reverse order and imported that way, new release failed due to trying to release
 an existing version.
 
 #### New Behavior

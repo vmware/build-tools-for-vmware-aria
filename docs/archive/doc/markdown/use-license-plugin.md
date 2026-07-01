@@ -15,7 +15,7 @@ You need to use the following additional parameters when creating new project
 - **licenseUrl**
   - The parameter will have a default value of `null`.
   - If it is set, the license URL will be included in the new project `pom.xml` description.
-  
+
     Also, the content of the URL will be saved as a license template file and will be used on project's build phase.
 
 - **licenseHeader**

@@ -17,7 +17,7 @@ There are three templates:
 Create new actions by copying a proper template. The name of the new folder will be the default action name.
 Edit files of the new action:
 * handler.ts or handler.ps1 or handler.py - implement the code for the new action here
-* package.json (nodejs only) - Add dependencies using the example format `"ping": "^0.4.2"`. 
+* package.json (nodejs only) - Add dependencies using the example format `"ping": "^0.4.2"`.
 * polyglot.json - change action configuration options
   - Define list of input parameters and output type by editing vro/abx nodes
   - Keep the default values of the remaining options

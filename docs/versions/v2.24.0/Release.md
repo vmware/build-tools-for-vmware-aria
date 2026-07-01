@@ -90,7 +90,7 @@ custom-integration:
   - Custom Integration Name
 variable:
   - Variable name
-  
+
 # NEWLY ADDED:
 git-webhook:
 docker-webhook:
@@ -111,10 +111,10 @@ When pushing custom resource with additional actions, the push of actions was fa
 When pulling a Custom Resource with Day-2 Actions it would fail with the following error:
 ~~~log
 [ERROR] Failed to execute goal com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:2.22.2:push (default-cli)
-on project vcfLBResource: Execution default-cli of goal com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:2.22.2:push 
-failed: Could not import custom resource with name 'vcfLoadBalancerInstance' : 400 Bad Request 
+on project vcfLBResource: Execution default-cli of goal com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:2.22.2:push
+failed: Could not import custom resource with name 'vcfLoadBalancerInstance' : 400 Bad Request
 {"timestamp":"2022-05-11T11:53:03.233+0000","path":"/form-service/api/custom/resource-types","status":400,"error":
-"Bad Request","message":"400 BAD_REQUEST \"Custom resource with the same external type and scope already exists. Use 
+"Bad Request","message":"400 BAD_REQUEST \"Custom resource with the same external type and scope already exists. Use
 a different external type.\"","requestId":"8fc990b3-10","@type":"org.springframework.web.server.ResponseStatusException"}
 ~~~
 
@@ -277,14 +277,14 @@ Before:
 ~~~yaml
 blueprint:
 content-sources:
-catalog-item: 
+catalog-item:
   - SOURCE__CatalogItem
 ~~~
 
 After:
 ~~~yaml
 blueprint: [] # Previously we wanted to fetch nothing
-content-sources: # Previously we wanted to fetch everything 
+content-sources: # Previously we wanted to fetch everything
 catalog-item: # Previously we had a filter
   - SOURCE__CatalogItem
 ~~~

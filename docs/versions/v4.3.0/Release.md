@@ -37,7 +37,7 @@ The "vcd-ng-angular8" leftover is removed.
 ### *Improve SSHSession class*
 
 Improve type definitions of SSHSession class functions according to the API. Add missing methods. Fix types. Fix descriptions. Fix class attributes.
-  
+
 #### Previous Behavior
 
 The return type of some function definitions in the SSHSession class was not correctly defined and few methods were missing.

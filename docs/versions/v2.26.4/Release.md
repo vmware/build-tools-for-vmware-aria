@@ -62,7 +62,7 @@ allow us to create an updated CR that would be imported to vRA no matter if it i
 #### Relevant Documentation:
 **NONE**
 
-### *Exports now have local variables so they can be used in the module* 
+### *Exports now have local variables so they can be used in the module*
 Typescript export variables are not available locally.
 
 #### Previous Behavior
@@ -76,7 +76,7 @@ export const META_TEST = {
 	metaTestKey: METADATA_KEY
 }
 ```
-After compilation, the code would look like: 
+After compilation, the code would look like:
 ```javascript
 (function () {
 	var __global = System.getContext() || (function () {
@@ -126,8 +126,8 @@ Notice the local variables METADATA_KEY and META_TEST.
 #### Relevant Documentation:
 * **NONE**
 
-### *Custom Resources will now correctly set the orgId if the orgId is not passed in the configuration but orgName is* 
-Custom Resources attempt to set the correct orgId when importing/exporting. If orgId is not present in the configuration, 
+### *Custom Resources will now correctly set the orgId if the orgId is not passed in the configuration but orgName is*
+Custom Resources attempt to set the correct orgId when importing/exporting. If orgId is not present in the configuration,
 orgName can be passed instead.
 
 #### Previous Behavior

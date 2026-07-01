@@ -16,8 +16,8 @@
 
 
 
-### **.helper.ts files will now be excluded from type definitions* 
-Currently the *.helper.ts files are being transpiled, and definitions are being generated. This shouldn't be happening, 
+### **.helper.ts files will now be excluded from type definitions*
+Currently the *.helper.ts files are being transpiled, and definitions are being generated. This shouldn't be happening,
 as there is no reason to have helper files as part of the definitions, since they are test related only.
 
 #### Previous Behavior

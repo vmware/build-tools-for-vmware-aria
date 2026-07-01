@@ -173,7 +173,7 @@ To do that one have to provide the following annotation for the workflow ts file
         attributes: {
             attributeName: {
             type: "string",
-            bind: true,   
+            bind: true,
             value: "Some/Path/To/ConfigurationElement/variableName"
             }
         }

@@ -43,7 +43,7 @@ Documentation is key and has to be updated in corresponding markdown files in th
 - **/build-tools-for-vmware-aria/package-installer/**
 
   Java files for the package-installer part of Build Tools for VMware Aria.
-  
+
   - `Installer.java` controls the entire process
   - `Validate.java` util class used for validation
 

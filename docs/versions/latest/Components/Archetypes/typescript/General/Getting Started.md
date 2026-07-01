@@ -55,7 +55,7 @@ service-automation
             └── integrationAction.js
         └── classes
             └── IntegrationService1.ts
-            └── IntegrationService1.test.ts            
+            └── IntegrationService1.test.ts
         └── policies
             └── EventListener.pl.ts
         └── resources
@@ -70,8 +70,8 @@ service-automation
         └── workflows
             └── CreateIntegration.wf.ts
             └── CreateIntegration.wf.form.json
-        └── IntegrationService1.conf.ts            
-        └── IntegrationService1Alternative.conf.yaml        
+        └── IntegrationService1.conf.ts
+        └── IntegrationService1Alternative.conf.yaml
 ```
 
 ### Configuring ~/.m2/settings.xml to work with Orchestrator project types

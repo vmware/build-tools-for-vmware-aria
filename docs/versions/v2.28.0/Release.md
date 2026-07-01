@@ -58,7 +58,7 @@ when executing unit tests, an error message was displayed
 ```
     Browserslist: caniuse-lite is outdated. Please run
     ...
-``` 
+```
 
 #### New Behavior
 The package browserslist was updated and the error message will not appear
@@ -154,13 +154,13 @@ The details for the actions have been moved to the polyglot.json files that are 
 
 ## Upgrade procedure
 
-### Migrating from single action to multi action polyglot 
+### Migrating from single action to multi action polyglot
 
 1. Generate a new archetype.
 2. Pick a template from the generated structure
 3. Replace the handler file
 4. Open the `polyglot.json` and replace it with data from your package.json (not all, just the relevant information)
-   1. The `files` attribute will define what will be included in the final package and what should be filtered. 
+   1. The `files` attribute will define what will be included in the final package and what should be filtered.
       - Do not modify the attribute, but if you do, don't touch the "%out" as that is dynamically set by polyglotpkg.
    2. Leave `"action": "auto",` if you want to use the name from the folder
 

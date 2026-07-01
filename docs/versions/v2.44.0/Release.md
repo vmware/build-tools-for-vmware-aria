@@ -184,9 +184,9 @@ declare class VcHostDigestInfo {
  constructor();
  constructor();
  /**
-  * @param digestMethod 
-  * @param digestValue 
-  * @param objectName 
+  * @param digestMethod
+  * @param digestValue
+  * @param objectName
  */
  constructor(digestMethod: string, digestValue: number[], objectName: string);
 }

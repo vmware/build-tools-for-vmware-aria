@@ -42,7 +42,7 @@ import { Workflow, Out, In, Err, RootItem, Item } from "vrotsc-annotations";
   }
 })
 export class Example {
-  @Item({ 
+  @Item({
     target: "end",
     exception: "exceptionHandle"
   })
@@ -755,7 +755,7 @@ The following classes were added to `o11n-plugin-aria`:
 - VraConstraint
 - VraChangeSecurityGroupSpecification
 - VraNetworkInterfaceSpecification
-  
+
 The following missing methods were added to the exist classes:
 
 - Class `VraHost`

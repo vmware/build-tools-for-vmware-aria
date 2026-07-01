@@ -19,7 +19,7 @@ Using Import-Module inside powershell polyglot projects downloads modules throug
 
 ## Improvements
 
-### *Allow only one format of using the Import-Module inside powershell* 
+### *Allow only one format of using the Import-Module inside powershell*
 #### Previous Behavior
 Using Import-Module -Name <example_module_name> will result in error since current code is considering only lines with Import-Module <example_module_name>
 meaning that -Name parameter is not considered. Same for ';' - if added at the end of the line it will throw error currently
@@ -27,7 +27,7 @@ meaning that -Name parameter is not considered. Same for ';' - if added at the e
 Using Import-Module -Name <example_module_name> will translate to Import-Module <example_module_name> and current behaviour error will be suppressed.
 Same for ';' - if added at the end of the line it will not throw error currently, but it will be removed before downloading the modules
 
-### *vrealize:clean will not fail if store does not support it* 
+### *vrealize:clean will not fail if store does not support it*
 When we perform `mvn vrealize:clean -DincludeDependencies=true -DcleanUpOldVersions=true -DcleanUpLastVersion=false -PPROFILE_NAME`
 some stores do not support cleaning or have not implemented it.
 
@@ -45,7 +45,7 @@ The process is allowed to continue.
 
 
 ### Support varios types of vROPs fallback objects withing vRLI alerts
-When we perform `mvn clean package vrealize:push -PPROFILE_NAME` and there are vRLI alerts that have vROPs integration their fallback object 
+When we perform `mvn clean package vrealize:push -PPROFILE_NAME` and there are vRLI alerts that have vROPs integration their fallback object
 is set to a supported vROPs fallback objects (retrieved dynamically from vROPs by their vROPs resource type).
 
 #### Previous Behavior
