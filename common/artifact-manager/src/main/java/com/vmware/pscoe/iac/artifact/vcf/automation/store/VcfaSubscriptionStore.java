@@ -320,10 +320,8 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                     }
 
                     logger.info("Updating existing subscription: '{}' (ID: {})", subscriptionName, existingId);
-                    restClient.updateSubscription(existingId, subPayload);
-                } else {
-                    restClient.createSubscription(subPayload);
                 }
+                restClient.createSubscription(subPayload);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error reading subscription JSON payload data from file: " + jsonFile.getPath(),
@@ -344,6 +342,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                 && Objects.equals(remote.getPriority(), local.getPriority())
                 && Objects.equals(remote.getEventTopicId(), local.getEventTopicId())
                 && Objects.equals(remote.getCriteria(), local.getCriteria())
+                && Objects.equals(remote.getDescription(), local.getDescription())
                 && Objects.equals(remote.getRunnableType(), local.getRunnableType())
                 && Objects.equals(remote.getRunnableId(), local.getRunnableId());
     }

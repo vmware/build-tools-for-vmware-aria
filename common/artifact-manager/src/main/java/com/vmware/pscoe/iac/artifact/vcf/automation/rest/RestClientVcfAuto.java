@@ -290,10 +290,6 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		return createSubscriptionPrimitive(objectMapper.convertValue(payload, Map.class));
 	}
 
-	public VcfaSubscription updateSubscription(String id, VcfaSubscription payload) throws IOException {
-		return updateSubscriptionPrimitive(id, objectMapper.convertValue(payload, Map.class));
-	}
-
 	public void deleteSubscription(String id) throws IOException {
 		deleteSubscriptionPrimitive(id);
 	}

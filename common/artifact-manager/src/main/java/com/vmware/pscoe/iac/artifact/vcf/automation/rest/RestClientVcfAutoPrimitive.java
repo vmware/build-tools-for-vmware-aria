@@ -971,13 +971,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		return objectMapper.convertValue(result, VcfaSubscription.class);
 	}
 
-	protected VcfaSubscription updateSubscriptionPrimitive(String id, Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = putMap("/event-broker/api/subscriptions/" + id, payload, 200);
-		if (result == null)
-			return null;
-		return objectMapper.convertValue(result, VcfaSubscription.class);
-	}
-
 	protected void deleteSubscriptionPrimitive(String id) throws IOException {
 		deletePath("/event-broker/api/subscriptions/" + id, 200, 204);
 	}
