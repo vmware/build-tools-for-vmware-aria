@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
-import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPolicy;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
@@ -288,6 +287,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
         }
         return Objects.equals(remote.getName(), local.getName())
                 && Objects.equals(remote.getTypeId(), local.getTypeId())
+                && Objects.equals(remote.getCriteria(), local.getCriteria())
                 && Objects.equals(remote.getEnforcementType(), local.getEnforcementType())
                 && Objects.equals(remote.getDefinition(), local.getDefinition());
     }

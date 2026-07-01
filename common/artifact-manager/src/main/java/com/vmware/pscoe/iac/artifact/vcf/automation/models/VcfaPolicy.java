@@ -30,6 +30,7 @@ public class VcfaPolicy implements Identifiable {
     private String orgId;
     private String projectId;
     private Map<String, Object> definition;
+    private Map<String, Object> criteria;
 
     public VcfaPolicy() {
     }
@@ -98,5 +99,13 @@ public class VcfaPolicy implements Identifiable {
 
     public void setDefinition(Map<String, Object> definition) {
         this.definition = definition;
+    }
+
+    public Map<String, Object> getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(Map<String, Object> criteria) {
+        this.criteria = criteria;
     }
 }
