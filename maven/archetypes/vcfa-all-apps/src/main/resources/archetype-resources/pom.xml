@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.vmware.pscoe.vcf</groupId>
-        <artifactId>auto-modern-package</artifactId>
+        <artifactId>all-apps-package</artifactId>
         <version>${project.version}</version>
     </parent>
     <groupId>\${groupId}</groupId>
