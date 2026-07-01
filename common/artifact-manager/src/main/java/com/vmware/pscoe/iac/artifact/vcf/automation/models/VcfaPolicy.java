@@ -30,7 +30,7 @@ public class VcfaPolicy implements Identifiable {
     private String orgId;
     private String projectId;
     private String description;
-    private String scope;
+    private Map<String, Object> scopeCriteria;
     private Map<String, Object> definition;
     private Map<String, Object> criteria;
 
@@ -95,14 +95,6 @@ public class VcfaPolicy implements Identifiable {
         this.description = description;
     }
 
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
     public String getProjectId() {
         return projectId;
     }
@@ -125,5 +117,13 @@ public class VcfaPolicy implements Identifiable {
 
     public void setCriteria(Map<String, Object> criteria) {
         this.criteria = criteria;
+    }
+
+    public Map<String, Object> getScopeCriteria() {
+        return scopeCriteria;
+    }
+
+    public void setScopeCriteria(Map<String, Object> scopeCriteria) {
+        this.scopeCriteria = scopeCriteria;
     }
 }

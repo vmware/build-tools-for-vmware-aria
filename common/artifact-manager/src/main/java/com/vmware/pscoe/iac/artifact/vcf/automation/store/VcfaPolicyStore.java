@@ -288,7 +288,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
         return Objects.equals(remote.getName(), local.getName())
                 && Objects.equals(remote.getTypeId(), local.getTypeId())
                 && Objects.equals(remote.getCriteria(), local.getCriteria())
-                && Objects.equals(remote.getScope(), local.getScope())
+                && Objects.equals(remote.getScopeCriteria(), local.getScopeCriteria())
                 && Objects.equals(remote.getDescription(), local.getDescription())
                 && Objects.equals(remote.getEnforcementType(), local.getEnforcementType())
                 && Objects.equals(remote.getDefinition(), local.getDefinition());
