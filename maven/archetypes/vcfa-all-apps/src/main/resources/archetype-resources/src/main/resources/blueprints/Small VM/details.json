@@ -1,6 +1,6 @@
 {
-  "id": "d47d5b96-97b7-4002-9549-99bb9a45ad69",
+  "id": "ebfa16aa-05c4-428b-871e-b01d2ab99733",
   "name": "Small VM",
   "description": "",
-  "requestScopeOrg": false
+  "requestScopeOrg": true
 }
