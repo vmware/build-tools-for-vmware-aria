@@ -22,8 +22,8 @@ vRealize Artifact Manager can be configured to use filesystem folder as source f
 - Username - username for selected vRA tenant
 - Password - password for selected username
 - ImportOldVersion
-  - true, to overwrite all server pacakges regardless of their version.
-  - false, to import only packages that have higher version than the version on the server.
+    - true, to overwrite all server pacakges regardless of their version.
+    - false, to import only packages that have higher version than the version on the server.
 ```java
 ConfigurationVro configVro = new ConfigurationVro.Builder()
     .withHost("vra-l-01a.corp.local")
@@ -91,8 +91,8 @@ vRealize Artifact Manager can be configured to use filesystem folder as source f
 - Username - username for selected vRA tenant
 - Password - password for selected username
 - ImportOldVersion
-  - true, to overwrite all server packages regardless of their version.
-  - false, to import only packages that have higher version than the version on the server.
+    - true, to overwrite all server packages regardless of their version.
+    - false, to import only packages that have higher version than the version on the server.
 - ExportVersionHistory - export vRO package version history
 - ExportConfigurationAttributeValues - export vRO package Configuration Elements attributes
 - ExportConfigSecureStringAttributeValues - export vRO package Configuration Elements SecureString attributes
