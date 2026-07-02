@@ -1212,7 +1212,6 @@ public final class Installer {
 						+ "\". Unsupported entry type. Supported entry types are Boolean and String and Integer.");
 	}
 
-	@SuppressWarnings("methodlength")
 	private static void loadInputInteractiveMode(final Input input) {
 		String ignoreCertCheck = System.getProperty(Option.IGNORE_SSL_CERT_CHECK.getMapping());
 		String ignoreHostCheck = System.getProperty(Option.IGNORE_SSL_HOST_CHECK.getMapping());
@@ -1356,11 +1355,14 @@ public final class Installer {
 		// +-------------------------------------
 		// | Store Properties for reusage
 		// +-------------------------------------
-		boolean isStoring = true;
+		StorePropertiesForReusage(input);
+	}
+
+	private static void StorePropertiesForReusage(final Input input) {
 		String location = "environment.properties";
 		File propsLocation = new File(location);
 		propsLocation = new File(propsLocation.getAbsolutePath());
-		isStoring = input.getText().newBooleanInputReader().withDefaultValue(true).read("Store Configuration?");
+		boolean isStoring = input.getText().newBooleanInputReader().withDefaultValue(true).read("Store Configuration?");
 		if (isStoring) {
 			if (propsLocation.exists() || propsLocation.isDirectory() || propsLocation.getParentFile() == null
 					|| !propsLocation.getParentFile().canWrite()) {

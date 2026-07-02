@@ -201,7 +201,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      * Import a single blueprint directory, creating or updating as needed.
      * Defers the final lifecycle release gate to process form mutations.
      */
-    @SuppressWarnings("methodlength")
     private void importBlueprint(File bpDir, List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
         ObjectMapper mapper = new ObjectMapper();
@@ -219,7 +218,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         bp.setProjectId(restClient.getProjectId());
 
         // 1. Map environment-agnostic names to target database IDs
-        resolveOrganizationIds(bp);
+        transformOrganizationSharingsForPush(bp);
 
         VcfaBlueprint existing = serverBps.stream()
                 .filter(m -> bpName.equals(m.getName()))
@@ -257,11 +256,20 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     /**
      * Resolves organization names to dynamic environment UUID mapping properties.
      */
-    private void resolveOrganizationIds(VcfaBlueprint bp) throws IOException {
+    private void transformOrganizationSharingsForPush(VcfaBlueprint bp) throws IOException {
         List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
-        if (organizationSharings != null) {
-            for (OrganizationSharing sharing : organizationSharings) {
-                if (sharing.getOrganization().equalsIgnoreCase("ALL")) {
+        if (organizationSharings == null) {
+            return;
+        }
+        if (organizationSharings.isEmpty()) {
+            bp.setOrganizationSharings(null);
+            return;
+        }
+        for (OrganizationSharing sharing : organizationSharings) {
+            if (sharing.getOrganization() == null) {
+                logger.warn("Missing organization in an organizationSharing element");
+            } else {
+                if ("ALL".equalsIgnoreCase(sharing.getOrganization())) {
                     sharing.setOrgId("ALL");
                 } else {
                     sharing.setOrgId(restClient.getOrganizationId(sharing.getOrganization()));
@@ -499,31 +507,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         } catch (IOException e) {
             logger.error("Unable to fetch blueprints from server", e);
             throw new RuntimeException("Unable to fetch blueprints from server", e);
-        }
-    }
-
-    /**
-     * Replace orgId in organizationSharings with organization names
-     */
-    private void transformOrganizationSharingsForPush(VcfaBlueprint bp) throws IOException {
-        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
-        if (organizationSharings == null) {
-            return;
-        }
-        if (organizationSharings.isEmpty()) {
-            bp.setOrganizationSharings(null);
-            return;
-        }
-        for (OrganizationSharing sharing : organizationSharings) {
-            if (sharing.getOrganization() == null) {
-                logger.warn("Missing organization in an organizationSharing element");
-            } else {
-                if ("ALL".equalsIgnoreCase(sharing.getOrganization())) {
-                    sharing.setOrgId("ALL");
-                } else {
-                    sharing.setOrgId(restClient.getOrganizationId(sharing.getOrganization()));
-                }
-            }
         }
     }
 
