@@ -175,7 +175,7 @@ vropsStore.exportPackage(pkg, new File(pkg.getFilesystemPath()), dryrun)
 ```
 #### Import vROps package
 ```java
-File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.VROPS.getPackageExtention());
+File pkgFile = new File(directory, pkgInfoProvider.getPackageName() + "." + PackageType.VROPS.getPackageExtension());
 Package vropsPackage = PackageFactory.getInstance(PackageType.VROPS, pkgFile);
 vropsStore.importPackage(vropsPackage, dryrun);
 ```
