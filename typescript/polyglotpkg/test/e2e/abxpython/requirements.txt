@@ -1,2 +1,2 @@
-#requests==2.33.0
-#xmltodict
+requests==2.33.0
+xmltodict
