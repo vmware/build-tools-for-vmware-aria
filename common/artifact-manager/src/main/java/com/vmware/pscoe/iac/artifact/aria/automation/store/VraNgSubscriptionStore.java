@@ -14,6 +14,8 @@
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
+import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_SUBSCRIPTIONS;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,12 +41,10 @@ import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgProject;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgSubscription;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.abx.AbxAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg;
-import static com.vmware.pscoe.iac.artifact.aria.automation.store.VraNgDirs.DIR_SUBSCRIPTIONS;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.models.VraNgPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgOrganizationUtil;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFileFilter;
-import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaPayloadSanitizer;
 
 public class VraNgSubscriptionStore extends AbstractVraNgStore {
 
@@ -179,9 +179,9 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
 			final JsonObject subscriptionJsonElement = gson.fromJson(subscriptionJson, JsonObject.class);
-			// Preserve source server's orgId/projectId for cross-org portability
-			// (scrubLegacyId only — sanitize with values would mutate structure)
-			VcfaPayloadSanitizer.sanitize(subscriptionJsonElement);
+			// leaving orgId in the JSON prevents pushing to different vRA organizations
+			// orgId is optional when importing in vRA, so it can be safely removed
+			subscriptionJsonElement.remove("orgId");
 			addProjectNamesToStorage(subscriptionJsonElement);
 			addRunnableNameToStorage(subscriptionJsonElement);
 			subscriptionJson = gson.toJson(subscriptionJsonElement);
@@ -208,9 +208,7 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 			// Get the subscription name from the JSON not from the filename
 			String subscriptionName = subscriptionJsonElement.get("name").getAsString();
 			String subscriptionId = generateId(subscriptionJsonElement, allSubscriptions);
-			VcfaPayloadSanitizer.sanitize(subscriptionJsonElement,
-					currentOrganizationId,
-					configProjectId);
+			subscriptionJsonElement.remove("orgId");
 			subscriptionJsonElement.addProperty("id", subscriptionId);
 			logger.info("Trying to importing subscription '{}' with ID {}...", subscriptionName, subscriptionId);
 			substituteProjects(subscriptionJsonElement);
@@ -304,11 +302,6 @@ public class VraNgSubscriptionStore extends AbstractVraNgStore {
 			JsonObject constraintJsonObject = constraintElement.getAsJsonObject();
 			JsonElement projectNamesElement = constraintJsonObject.get("projectNames");
 			JsonElement projectIdElement = constraintJsonObject.get("projectId");
-
-			// Preserve explicit null projectId — means "use default", do not override
-			if (projectIdElement != null && projectIdElement.isJsonNull()) {
-				return;
-			}
 
 			if (projectNamesElement != null && projectNamesElement.getAsJsonArray().size() > 0) {
 				constraintJsonObject.remove("projectNames");
