@@ -1212,7 +1212,7 @@ public final class Installer {
 						+ "\". Unsupported entry type. Supported entry types are Boolean and String and Integer.");
 	}
 
-	@SuppressWarnings("checkstyle:methodlength")
+	@SuppressWarnings("methodlength")
 	private static void loadInputInteractiveMode(final Input input) {
 		String ignoreCertCheck = System.getProperty(Option.IGNORE_SSL_CERT_CHECK.getMapping());
 		String ignoreHostCheck = System.getProperty(Option.IGNORE_SSL_HOST_CHECK.getMapping());

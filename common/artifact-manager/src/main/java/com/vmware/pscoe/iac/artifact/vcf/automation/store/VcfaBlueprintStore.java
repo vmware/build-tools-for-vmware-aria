@@ -201,7 +201,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      * Import a single blueprint directory, creating or updating as needed.
      * Defers the final lifecycle release gate to process form mutations.
      */
-    @SuppressWarnings("checkstyle:methodlength")
+    @SuppressWarnings("methodlength")
     private void importBlueprint(File bpDir, List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
         ObjectMapper mapper = new ObjectMapper();
