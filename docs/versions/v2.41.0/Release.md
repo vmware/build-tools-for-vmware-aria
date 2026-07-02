@@ -6,7 +6,6 @@
 ## Deprecations
 
 
-
 ## Features
 
 
@@ -304,8 +303,8 @@ export class WorkflowEnd {
 The decorator is used to specify a canvas item that calls an asynchronous workflow.
 
 - `@AsyncWorkflowItem({target: "", linkedItem: "" })`
-  - `target` - The name of the next in line item.
-  - `linkedItem` - The ID of the workflow to call
+    - `target` - The name of the next in line item.
+    - `linkedItem` - The ID of the workflow to call
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -379,8 +378,8 @@ export class HandleNetworkConfigurationBackup {
 The new decorator gives you the ability to specify a canvas item that schedules a Workflow.
 
 - `@ScheduledWorkflowItem({target: "", linkedItem: "" })`
-  - `target` - The name of the next in line item.
-  - `linkedItem` - The ID of the workflow to schedule
+    - `target` - The name of the next in line item.
+    - `linkedItem` - The ID of the workflow to schedule
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -502,8 +501,8 @@ export class HandleNetworkConfigurationBackup {
 The new Decorator gives you the ability to specify a canvas item that calls a Workflow.
 
 - `@WorkflowItem({target: "", linkedItem: "" })`
-  - `target` - The name of the next in line item.
-  - `linkedItem` - The ID of the workflow to call
+    - `target` - The name of the next in line item.
+    - `linkedItem` - The ID of the workflow to call
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -601,7 +600,6 @@ export class HandleNetworkConfigurationBackup {
 ```
 
 ## Improvements
-
 
 
 ### *`for each` statements are now being converted by `vropkg` when pulling*
@@ -759,8 +757,8 @@ The following classes were added to `o11n-plugin-aria`:
 The following missing methods were added to the exist classes:
 
 - Class `VraHost`
-  - `destroy`
-  - `createInfrastructureClient`
+    - `destroy`
+    - `createInfrastructureClient`
 
 #### Related issue
 

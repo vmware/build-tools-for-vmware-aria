@@ -202,8 +202,8 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                     }
 
                     Optional<VcfaPolicy> existingRemote = remotePolicies.stream()
-                            .filter(r -> r.getName().equalsIgnoreCase(localPolicy.getName()) ||
-                                    (r.getId() != null && r.getId().equalsIgnoreCase(localPolicy.getId())))
+                            .filter(r -> r.getName().equalsIgnoreCase(localPolicy.getName())
+                                    || (r.getId() != null && r.getId().equalsIgnoreCase(localPolicy.getId())))
                             .findFirst();
 
                     if (existingRemote.isPresent()) {

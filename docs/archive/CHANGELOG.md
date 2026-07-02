@@ -1000,8 +1000,8 @@ with different domain.
 ### Enhancements
 
 * **BREAKING** All certificates are now verified as part of API calls from the toolchain to vRA/vRO:
-  * Verify hostname - the hostname if the vRO/vRA server should match the CN of the SSL certificate. *For development environments, this can be skipped by a flag described in documentation.*
-  * Verify certificate - the SSL certificate used by vRO/vRA is verified against the Java default keystore, i.e. `cacerts`. Self-signed or third-party certificates have to either be addded to the trusted store (or their CA) or the check can be ignored for development environments by a flag described in documentation.
+    * Verify hostname - the hostname if the vRO/vRA server should match the CN of the SSL certificate. *For development environments, this can be skipped by a flag described in documentation.*
+    * Verify certificate - the SSL certificate used by vRO/vRA is verified against the Java default keystore, i.e. `cacerts`. Self-signed or third-party certificates have to either be addded to the trusted store (or their CA) or the check can be ignored for development environments by a flag described in documentation.
 
 * Improved logging when installing packages - logs will report which package will be included (pass) and which will be excluded (skip).
 * `vrealize:push` will import all packages per type in a single batch, reporting what will be included (pass) and excluded (skip).
@@ -1039,16 +1039,16 @@ with different domain.
 ### Fixes
 
 * Excessive collection triggering and 100 percent CPU usage for several minutes when VSCode auto-saving is enabled or frequent saves are used.
-  * Collection will be triggered only if files are created or deleted instead of on each change.
-  * Collection will be delayed with 10 seconds - that way when pulling many files the multiple change events will trigger only one colelction.
+    * Collection will be triggered only if files are created or deleted instead of on each change.
+    * Collection will be delayed with 10 seconds - that way when pulling many files the multiple change events will trigger only one colelction.
 * Run Action command now supports vRO 7.3 and lower.
 * Untitled files and files without IIFE now have correct autocompletion.
 
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 * Exporting vRA blueprints without custom forms logs error message "null". This is a bug in underling REST client library.
 
 ## v1.5.0 - 04 Feb 2019
@@ -1056,15 +1056,15 @@ with different domain.
 ### Enhancements
 
 * New command in the vscode extension - **vRO: Run Action**
-  * Allows running an action JavaScript file in vRO while seeing the logs in VSCode.
-  * Available both in the Command Palette and as `zap` icon on the editor's tab bar.
+    * Allows running an action JavaScript file in vRO while seeing the logs in VSCode.
+    * Available both in the Command Palette and as `zap` icon on the editor's tab bar.
 * Implemented code coverage report produced by running Jasmin unit tests. The report is in lcov.info format, which is readable by Sonar.
 
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 * Exporting vRA blueprints without custom forms logs error message "null". This is a bug in underling REST client library.
 
 ## v1.4.1 - 01 Feb 2019
@@ -1086,8 +1086,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 * Exporting vRA blueprints without custom forms logs error message "null". This is a bug in underling REST client library.
 
 ## v1.4.0 - 25 Jan 2019
@@ -1097,18 +1097,18 @@ with different domain.
 * Support for [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces) that allow opening more than one vRO project into single vscode window.
 * Dynamically create build tasks (`Cmd+Shift+B`) based on project's type and modules.
 * New pom.xml diagnostics.
-  * Show inline warning, if toolchain version in pom.xml file is lower than the vscode extension's version.
-  * Provide quick fix action in pom.xml that replaces the parent version with the vscode extension's version.
+    * Show inline warning, if toolchain version in pom.xml file is lower than the vscode extension's version.
+    * Provide quick fix action in pom.xml that replaces the parent version with the vscode extension's version.
 * Support for export/import of vRA custom forms.
 * Support for clean up task of vRA/vRO packages from server.
-  * Clean up of the current version and/or old versions and their dependencies.
-  * Supported via "mvn" command or package installer.
+    * Clean up of the current version and/or old versions and their dependencies.
+    * Supported via "mvn" command or package installer.
 
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 * Exporting vRA blueprints without custom forms logs error message "null". This is a bug in underling REST client library.
 
 ## v1.3.10 - 01 Nov 2018
@@ -1121,8 +1121,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.3.8 - 24 Oct 2018
 
@@ -1133,8 +1133,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.3.7 - 19 Oct 2018
 
@@ -1148,8 +1148,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.3.6 - 03 Oct 2018
 
@@ -1160,8 +1160,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.3.5 - 25 Sep 2018
 
@@ -1177,8 +1177,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 * New project functionality works only from the context of existing Build Tools for VMware Aria project.
 
 ## v1.3.3 - 21 Sep 2018
@@ -1190,8 +1190,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 * New project functionality works only from the context of existing Build Tools for VMware Aria project.
 
 ## v1.3.2 - 19 Sep 2018
@@ -1203,8 +1203,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.3.1 - 13 Sep 2018
 
@@ -1216,8 +1216,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.3.0 - 11 Sep 2018
 
@@ -1227,12 +1227,12 @@ with different domain.
 * New maven archetype for vRA YAML projects.
 * Option to edit the profiles in maven's settings.xml file from the Pick Profile dialog (located at the bottom left corner of the status bar).
 * Reduced the number of parameters needed for generating a project when using Maven archetype commands.
-  * **All types of projects**
-    * Removed the parameters `-Dtop`, `-Dcompany`, `-Ddepartment`, `-Dtopic`, `-Dname`.
-    * Added the parameters `-DgroupId` and `-DartifactId`.
-  * **Projects containing workflows**
-    * Removed the parameters `-DbaseCategory`, `-DsubCategory` and `-Dtitle`.
-    * Added the parameter `-DworkflowsPath`.
+    * **All types of projects**
+        * Removed the parameters `-Dtop`, `-Dcompany`, `-Ddepartment`, `-Dtopic`, `-Dname`.
+        * Added the parameters `-DgroupId` and `-DartifactId`.
+    * **Projects containing workflows**
+        * Removed the parameters `-DbaseCategory`, `-DsubCategory` and `-Dtitle`.
+        * Added the parameter `-DworkflowsPath`.
 * Jasmine tests no longer fail with cryptic error when there is an empty/invalid js action file.
 
 ### Fixes
@@ -1243,8 +1243,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.2.0 - 30 Jul 2018
 
@@ -1252,9 +1252,9 @@ with different domain.
 
 * All components in the toolchain are now capable of using vRA SSO as authentication mechanism towards vRO.
 * New options in the Maven profiles for vRO (located in user's settings.xml).
-  * `<vro.auth>vra</vro.auth>` - use vRA SSO authentication
-  * `<vro.auth>basic</vro.auth>` - use Basic authentication
-  * `<vro.tenant>vsphere.local</vro.tenant>` - specify the tenant to be used for SSO authentication
+    * `<vro.auth>vra</vro.auth>` - use vRA SSO authentication
+    * `<vro.auth>basic</vro.auth>` - use Basic authentication
+    * `<vro.tenant>vsphere.local</vro.tenant>` - specify the tenant to be used for SSO authentication
 * There is no longer separate vRO connection configuration for the toolchain Maven plugins and the VSCode extension. All components of the toolchain now use the connection settings defined in the Maven profile at `~/.m2/settings.xml`. The exact profile to be used by the VSCode extension is provided by a new setting `o11n.maven.profile`.
 * More build and deploy tasks are available in the `Cmd+Shift+B` palette in VSCode. The actual command behind each of these tasks can be overwritten by a project local `.vscode/tasks.json` file (`Cmd+Shift+B` -> click the cogwheel icon for a task -> change the command in the generated tasks.json).
 
@@ -1285,8 +1285,8 @@ with different domain.
 ### Known Issues
 
 * Cannot build project generated with groupId or artifactId that contain special characters.
-  * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
-  * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
+    * Cause: The Jasmine tests are unable to compile if the folder hierarchy contains characters that are not allowed in Java packages.
+    * Workaround: If a generated project contains special characters in its groupId or artifactId, rename all subfolders in test/ and src/ to not include any non-compatible with the Java package convention characters.
 
 ## v1.1.5 - 19 Jul 2018
 

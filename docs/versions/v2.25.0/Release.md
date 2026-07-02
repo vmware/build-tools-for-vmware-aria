@@ -1,12 +1,12 @@
 # v2.25.0
 
 ## **Breaking Changes**
-*NONE*
+NONE
 
 ## Deprecations
-*NONE*
+NONE
 
-## Features:
+## Features
 
 
 [//]: # (Used when working on a new release. Placed together with the Version.md)
@@ -14,30 +14,30 @@
 [//]: # (Do not fill the version, it will be done automatically)
 
 ## **Breaking Changes**
-*NONE*
+NONE
 
 ## Deprecations
-*NONE*
+NONE
 
-## Features:
+## Features
 
 ### *Permit omission of versions for blueprints*
 A new flag has been added in order to ignore the usage of blueprint versioning. It deffaults to `false`, so behaviour
 is preserved if the flag is omitted. If set to `true` there will be no need to keep track of `versions.json` and the
 file can even not exist and still release what is residing in `content.yaml`
 
-#### Example:
+#### Example
 `mvn vra-ng:pull -Dvrang.ignore.blueprint.versions=true -${profileName}`
 
-#### Relevant Documentation:
+#### Relevant Documentation
 - [Getting Started](Components/Archetypes/vRA%208.x/General/Getting%20Started.md#configuring-m2settingsxml-to-work-with-vra-ng)
 - [Blueprints](./Components/Archetypes/vRA%208.x/Components/Blueprints.md#ignoring-versions)
 
 
-#### Example:
+#### Example
 `mvn vra-ng:pull -Dvrang.ignore.blueprint.versions=true -${profileName}`
 
-#### Relevant Documentation:
+#### Relevant Documentation
 - [Getting Started](Components/Archetypes/vRA%208.x/General/Getting%20Started.md#configuring-m2settingsxml-to-work-with-vra-ng)
 - [Blueprints](./Components/Archetypes/vRA%208.x/Components/Blueprints.md#ignoring-versions)
 
@@ -53,8 +53,8 @@ manually in the Modules folder, the packaging fails with an error.
 The vRBT checks all Import-Module references in the handler.ps1 and automatically downloads and saves them in the
 Modules sub-directory. When the package is zipped, the Modules directory is included.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 ## Improvements
 
@@ -75,8 +75,8 @@ timestamp and when pushing a new blueprint version via vRBT no error is thrown, 
 
 Pushing to vRA via `mvn vrealize:push -P${profileName}` will also sort the versions array to fix already existing issues.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 ### *Enable different types of input parameters for installation workflow*
 
@@ -100,15 +100,15 @@ timestamp and when pushing a new blueprint version via vRBT no error is thrown, 
 
 Pushing to vRA via `mvn vrealize:push -P${profileName}` will also sort the versions array to fix already existing issues.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 ### *Enable different types of input parameters for installation workflow*
 
 #### Previous Behavior
 Installer passes all parameters as type string to the installation workflow.
 Most common case of today is to use **Install** workflow from PsCoE installer library.
-This workflow has 3 parameters :
+This workflow has 3 parameters:
 * jsonString
 * tags
 * blacklist
@@ -128,5 +128,5 @@ Different types of inputs for the installation workflow are supported:
 * array/string
 
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [Example of using Install workflow](./Components/Local/Installer/Components/Install%20Workflow.md)

@@ -82,44 +82,96 @@ public final class VcfaPackageDescriptor extends PackageDescriptor {
     // =========================================================================
     // GETTERS & SETTERS
     // =========================================================================
-    public List<String> getBlueprint() { return blueprint; }
-    public void setBlueprint(List<String> blueprint) { this.blueprint = blueprint; }
+    public List<String> getBlueprint() { 
+        return blueprint; 
+    }
+    public void setBlueprint(List<String> blueprint) { 
+        this.blueprint = blueprint; 
+    }
 
-    public List<String> getSubscription() { return subscription; }
-    public void setSubscription(List<String> subscription) { this.subscription = subscription; }
+    public List<String> getSubscription() { 
+        return subscription; 
+    }
+    public void setSubscription(List<String> subscription) { 
+        this.subscription = subscription; 
+    }
 
-    public List<String> getFlavorMapping() { return flavorMapping; }
-    public void setFlavorMapping(List<String> flavorMapping) { this.flavorMapping = flavorMapping; }
+    public List<String> getFlavorMapping() { 
+        return flavorMapping; 
+    }
+    public void setFlavorMapping(List<String> flavorMapping) { 
+        this.flavorMapping = flavorMapping; 
+    }
 
-    public List<String> getImageMapping() { return imageMapping; }
-    public void setImageMapping(List<String> imageMapping) { this.imageMapping = imageMapping; }
+    public List<String> getImageMapping() { 
+        return imageMapping; 
+    }
+    public void setImageMapping(List<String> imageMapping) { 
+        this.imageMapping = imageMapping; 
+    }
 
-    public List<String> getStorageProfile() { return storageProfile; }
-    public void setStorageProfile(List<String> storageProfile) { this.storageProfile = storageProfile; }
+    public List<String> getStorageProfile() { 
+        return storageProfile; 
+    }
+    public void setStorageProfile(List<String> storageProfile) { 
+        this.storageProfile = storageProfile; 
+    }
 
-    public List<String> getCatalogItem() { return catalogItem; }
-    public void setCatalogItem(List<String> catalogItem) { this.catalogItem = catalogItem; }
+    public List<String> getCatalogItem() { 
+        return catalogItem; 
+    }
+    public void setCatalogItem(List<String> catalogItem) { 
+        this.catalogItem = catalogItem; 
+    }
 
-    public List<String> getCustomResource() { return customResource; }
-    public void setCustomResource(List<String> customResource) { this.customResource = customResource; }
+    public List<String> getCustomResource() { 
+        return customResource; 
+    }
+    public void setCustomResource(List<String> customResource) { 
+        this.customResource = customResource; 
+    }
 
-    public List<String> getResourceAction() { return resourceAction; }
-    public void setResourceAction(List<String> resourceAction) { this.resourceAction = resourceAction; }
+    public List<String> getResourceAction() { 
+        return resourceAction; 
+    }
+    public void setResourceAction(List<String> resourceAction) { 
+        this.resourceAction = resourceAction; 
+    }
 
-    public List<String> getCatalogEntitlement() { return catalogEntitlement; }
-    public void setCatalogEntitlement(List<String> catalogEntitlement) { this.catalogEntitlement = catalogEntitlement; }
+    public List<String> getCatalogEntitlement() { 
+        return catalogEntitlement; 
+    }
+    public void setCatalogEntitlement(List<String> catalogEntitlement) { 
+        this.catalogEntitlement = catalogEntitlement; 
+    }
 
-    public List<String> getContentSource() { return contentSource; }
-    public void setContentSource(List<String> contentSource) { this.contentSource = contentSource; }
+    public List<String> getContentSource() { 
+        return contentSource; 
+    }
+    public void setContentSource(List<String> contentSource) { 
+        this.contentSource = contentSource; 
+    }
 
-    public List<String> getPropertyGroup() { return propertyGroup; }
-    public void setPropertyGroup(List<String> propertyGroup) { this.propertyGroup = propertyGroup; }
+    public List<String> getPropertyGroup() { 
+        return propertyGroup; 
+    }
+    public void setPropertyGroup(List<String> propertyGroup) { 
+        this.propertyGroup = propertyGroup; 
+    }
 
-    public Map<String, List<String>> getPolicy() { return policy; }
-    public void setPolicy(Map<String, List<String>> policy) { this.policy = policy; }
+    public Map<String, List<String>> getPolicy() { 
+        return policy; 
+    }
+    public void setPolicy(Map<String, List<String>> policy) { 
+        this.policy = policy; 
+    }
 
-    public List<String> getScenarios() { return scenario; }
-    public void setScenarios(List<String> scenario) { this.scenario = scenario; }
+    public List<String> getScenarios() { 
+        return scenario; 
+    }
+    public void setScenarios(List<String> scenario) { 
+        this.scenario = scenario; 
+    }
 
     /**
      * Create a VcfaPackageDescriptor instance from file.

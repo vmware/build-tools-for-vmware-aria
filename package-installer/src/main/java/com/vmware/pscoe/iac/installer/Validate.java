@@ -32,6 +32,8 @@ import java.util.Properties;
 
 public final class Validate {
 
+	private static final int DEFAULT_TIMEOUT= 5000;
+
 	private Validate() {
 	}
 
@@ -84,8 +86,8 @@ public final class Validate {
 			URL url = new URL(urlString);
 			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
-			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); // millis
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
 			https.setDoOutput(true);
 			https.setDoInput(true);
 			https.setRequestMethod("POST");
@@ -129,8 +131,8 @@ public final class Validate {
 			URL url = new URL(urlString);
 			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
-			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); // millis
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
 			https.setDoOutput(true);
 			https.setDoInput(true);
 			https.setRequestMethod("POST");
@@ -167,8 +169,8 @@ public final class Validate {
 			URL url = new URL(urlString);
 			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
-			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); // millis
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
 			https.setDoOutput(true);
 			https.setDoInput(true);
 			https.setRequestMethod("POST");
@@ -209,8 +211,8 @@ public final class Validate {
 			URL url = new URL(urlString);
 			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
-			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); // millis
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
 			https.setDoOutput(false);
 			https.setDoInput(true);
 			https.setRequestMethod("GET");
@@ -290,8 +292,8 @@ public final class Validate {
 			URL url = new URL(urlString);
 			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
-			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); // millis
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
 			https.setDoOutput(false);
 			https.setDoInput(true);
 			https.setRequestMethod("GET");
@@ -348,8 +350,8 @@ public final class Validate {
 			URL url = new URL(urlString);
 			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
 			disableSecurity(https);
-			https.setConnectTimeout(5000); // millis
-			https.setReadTimeout(5000); // millis
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
 			https.setDoOutput(false);
 			https.setDoInput(true);
 			https.setRequestMethod("GET");

@@ -89,13 +89,13 @@ Content Descriptor is implemented by content.yaml file with the following defaul
 - Empty array [] - nothing is exported
 - List of items - the given items are exported.
 - Null (nothing given) - everything is being exported
-  - blueprints
-  - catalog-item
-  - content-source
-  - custom-resource
-  - catalog-entitlement
-  - property-group
-  - subscription
+    - blueprints
+    - catalog-item
+    - content-source
+    - custom-resource
+    - catalog-entitlement
+    - property-group
+    - subscription
 
 #### Exporting regional content
 
@@ -104,9 +104,9 @@ To export regional content, cloud account(s) with given tag(s) should be given.
 - Empty array [] - nothing is exported
 - List of items - the given items are exported in all regions linked to cloud accounts with given tag
 - Null (nothing given) - everything is being exported in all regions linked to cloud accounts with given tag
-  - flavor-mapping
-  - image-mapping
-  - storage-profile
+    - flavor-mapping
+    - image-mapping
+    - storage-profile
 
 #### Export all content in all regions linked to cloud accounts with given tag
 

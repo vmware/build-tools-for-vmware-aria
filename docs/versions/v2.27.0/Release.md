@@ -3,7 +3,6 @@
 ## Breaking Changes
 
 
-
 ## Deprecations
 
 
@@ -16,10 +15,10 @@ The package-typescript-autogen-archetype was part of the big toolchain package, 
 #### New Behavior
 The package-typescript-autogen-archetype and the typescript-autogen-project base packages are moved to a new `ts-autogen` repository which will be maintained separately.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
-## Features:
+## Features
 ### *Added an archetype for a multi-module project*
 
 #### *Command for archetype generation*
@@ -46,8 +45,8 @@ The package-typescript-autogen-archetype and the typescript-autogen-project base
         -DlicenseTechnicalPreview=false
 ```
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 
 ## Improvements
@@ -60,7 +59,7 @@ When we run the installer from a folder different from the package bundle bin fo
 #### New Behavior
 When we run the installer from a folder different from the package bundle bin folder, we follow all steps of the interactive mode.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [appassembler-maven-plugin](https://www.mojohaus.org/appassembler/appassembler-maven-plugin/usage-script.html)
 
 ### Interactive Installer Doesn't Ask if vRO is embedded
@@ -72,8 +71,8 @@ When running the installer script in interactive mode to import vRA and vRO cont
 When we run the installer to import vRA and vRO content simultaneously, the script shows a prompt to ask whether vRO is embedded.
 If the answer is yes, the vRealize Automation NG Configuration is run. Otherwise, the script asks vRealize Orchestrator Configuration set of questions.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### Add support for the following ABX properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant)
 
@@ -147,8 +146,8 @@ Possible values for property **Faas provider** are: "aws", "azure", "on-prem". F
 }
 ```
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### NPE in case user provides non-existing project name during installation
 
@@ -158,8 +157,8 @@ We get a null pointer exception if we specify a non-existing project name during
 #### New Behavior
 We get an error that the specified project doesn't exist, and information with a list of existing project if we specify the name of non-existing project during the installation process.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### Ability to Skip the node_modules reinstallation
 Added the Ability to Skip the node_modules cleaning and installation
@@ -170,7 +169,7 @@ The "mvn clean" command (for typescript projects) used to clean/delete the node_
 #### New Behavior
 Adding "skipInstallNodeDeps=true" flag to the mvn commands , skips the deletion and re installation of node-deps.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [skipInstallNodeDeps](Components/Archetypes/typescript/General/Getting%20Started.md#skipInstallNodeDeps)
 
 ### Update documentation to use approved project name **Build Tools for VMware Aria**
@@ -193,7 +192,7 @@ an existing version.
 Added error handling that will try to release a date formatted version (which shouldn't have any duplicates on the server) in
 case the MAJOR.MINOR.PATCH fails.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [importing](Components/Archetypes/VRA%208.x/Components/Blueprints.md#importing)
 
 ### vRA authentication with refresh token
@@ -216,5 +215,5 @@ Authentication is possible by specifing either refresh token or username and pas
 </profile>
 ```
 
-## Upgrade procedure:
+## Upgrade procedure
 

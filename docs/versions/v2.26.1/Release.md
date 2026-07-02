@@ -1,7 +1,6 @@
 # v2.26.1
 
 
-
 ## **Breaking Changes**
 
 N/A
@@ -10,9 +9,7 @@ N/A
 
 N/A
 
-## Features:
-
-
+## Features
 
 N/A
 
@@ -60,11 +57,7 @@ in VSCode.
 Update and reorder the list of properties in the [use-bundle-installer.md](./doc/markdown/use-bundle-installer.md) file and add comments with descriptions to some of them.
 
 
-
-
-
-
-## Upgrade procedure:
+## Upgrade procedure
 N/A
 
-## Changelog:
+## Changelog

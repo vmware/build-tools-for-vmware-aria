@@ -37,7 +37,7 @@ Code coverage per file bases. Set custom --coverage-thresholds, if any file in t
 
 Enable by setting `<test.coverage.perfile>true</test.coverage.perfile>` in your `~/.m2/settings.xml` testing profile.
 
-Refer to InstanbulJS documentation for more information: "https://github.com/istanbuljs/nyc"
+Refer to InstanbulJS documentation for more information: <https://github.com/istanbuljs/nyc>
 
 ### *Exclude files from Test Code Coverage/Defining Test Helpers*
 A new extension has been added to typescript projects `*.helper.[tj]s`. If you define an action with this extension, then

@@ -291,9 +291,9 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 VcfaCustomResourceType localResource = mapper.convertValue(resourceMap, VcfaCustomResourceType.class);
 
                 Optional<VcfaCustomResourceType> existingRemote = remoteResources.stream()
-                        .filter(r -> r.getDisplayName().equalsIgnoreCase(localResource.getDisplayName()) ||
-                                (r.getName() != null && r.getName().equalsIgnoreCase(localResource.getName())) ||
-                                (r.getId() != null && r.getId().equals(localResource.getId())))
+                        .filter(r -> r.getDisplayName().equalsIgnoreCase(localResource.getDisplayName())
+                                || (r.getName() != null && r.getName().equalsIgnoreCase(localResource.getName()))
+                                || (r.getId() != null && r.getId().equals(localResource.getId())))
                         .findFirst();
 
                 if (existingRemote.isPresent()) {
@@ -354,8 +354,8 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                     String name = action.get("name").asText();
                     Matcher matcher = pattern.matcher(name);
 
-                    if (matcher.find() || name.startsWith("_") || name.endsWith("_") ||
-                            name.startsWith(".") || name.endsWith(".") || name.contains(" ")) {
+                    if (matcher.find() || name.startsWith("_") || name.endsWith("_")
+                            || name.startsWith(".") || name.endsWith(".") || name.contains(" ")) {
                         throw new RuntimeException(String.format(
                                 "Action's name: '%s' contains invalid symbols. Must not use spaces or start/end with points or underscores.",
                                 name));

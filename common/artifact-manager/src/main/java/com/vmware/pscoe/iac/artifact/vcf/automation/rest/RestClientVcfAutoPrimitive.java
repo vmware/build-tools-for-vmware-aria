@@ -68,6 +68,10 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	private static final String SERVICE_VRA_ENUMERATION_TASKS = "provisioning/resource-enumeration-tasks";
 	private static final int ENUMERATION_TASK_RETRY_LIMIT = 120;
 	private static final int ENUMERATION_TASK_SLEEP_MS = 2500;
+	private static final int STATUS_CODE_200 = 200;
+	private static final int STATUS_CODE_201 = 201;
+	private static final int STATUS_CODE_202 = 202;
+	private static final int STATUS_CODE_204 = 204;
 
 	protected final ConfigurationVcfAuto configuration;
 	protected static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAutoPrimitive.class);
@@ -102,8 +106,9 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		String responseBody = response.getBody();
 		Map<String, Object> result = objectMapper.readValue(responseBody, Map.class);
 		Object content = result.get("content");
-		if (content == null)
+		if (content == null) {
 			return java.util.Collections.emptyList();
+		}
 		return objectMapper.convertValue(content,
 				TypeFactory.defaultInstance().constructCollectionType(List.class, cls));
 	}
@@ -145,9 +150,9 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 	protected List<Map<String, Object>> getPagedContent(final String path, final Map<String, String> paramsMap)
 			throws IOException {
-		final int PAGE_SIZE = 500;
+		final int pageSize = 500;
 		URIBuilder uriBuilder = getURIBuilder().setPath(path).setParameter("page", "0").setParameter("size",
-				String.valueOf(PAGE_SIZE));
+				String.valueOf(pageSize));
 
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
 			uriBuilder.setParameter(entry.getKey(), entry.getValue());
@@ -156,12 +161,14 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		java.net.URI uri = getURI(uriBuilder);
 		org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri,
 				org.springframework.http.HttpMethod.GET, getDefaultHttpEntity(), String.class);
-		if (response == null)
+		if (response == null) {
 			return java.util.Collections.emptyList();
+		}
 
 		Map<String, Object> root = objectMapper.readValue(response.getBody(), Map.class);
-		if (root == null)
+		if (root == null) {
 			return java.util.Collections.emptyList();
+		}
 
 		List<Map<String, Object>> allResults = new ArrayList<>();
 		Object tp = root.get("totalPages");
@@ -183,18 +190,19 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 					}
 				}
 			}
-			if (totalPages == 1)
+			if (totalPages == 1) {
 				break;
+			}
 		}
 		return allResults;
 	}
 
 	protected List<Map<String, Object>> getPagedContentVcd(final String path, final Map<String, String> paramsMap)
 			throws IOException {
-		final int PAGE_SIZE = 500;
+		final int pageSize = 500;
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getCommonVcdHeaders());
 		URIBuilder uriBuilder = getURIBuilder().setPath(path).setParameter("page", "1").setParameter("size",
-				String.valueOf(PAGE_SIZE));
+				String.valueOf(pageSize));
 
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
 			uriBuilder.setParameter(entry.getKey(), entry.getValue());
@@ -203,12 +211,14 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		java.net.URI uri = getURI(uriBuilder);
 		org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(uri,
 				org.springframework.http.HttpMethod.GET, httpEntity, String.class);
-		if (response == null)
+		if (response == null) {
 			return java.util.Collections.emptyList();
+		}
 
 		Map<String, Object> root = objectMapper.readValue(response.getBody(), Map.class);
-		if (root == null)
+		if (root == null) {
 			return java.util.Collections.emptyList();
+		}
 
 		List<Map<String, Object>> allResults = new ArrayList<>();
 		Object tp = root.get("totalPages");
@@ -230,17 +240,18 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 					}
 				}
 			}
-			if (totalPages == 1)
+			if (totalPages == 1) {
 				break;
+			}
 		}
 		return allResults;
 	}
 
 	protected List<Map<String, Object>> getTotalElements(final String path, final Map<String, String> paramsMap)
 			throws IOException {
-		final int PAGE_SIZE = 500;
+		final int pageSize = 500;
 		URIBuilder uriBuilder = getURIBuilder().setPath(path)
-				.setParameter("$top", String.valueOf(PAGE_SIZE)).setParameter("$skip", String.valueOf(0));
+				.setParameter("$top", String.valueOf(pageSize)).setParameter("$skip", String.valueOf(0));
 
 		for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
 			uriBuilder.setParameter(entry.getKey(), entry.getValue());
@@ -251,7 +262,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		int totalElements = 0;
 		int numberOfElements = 0;
 		do {
-			uriBuilder.setParameter("$skip", String.valueOf(PAGE_SIZE * (page)));
+			uriBuilder.setParameter("$skip", String.valueOf(pageSize * (page)));
 			ResponseEntity<String> response = restTemplate.exchange(getURI(uriBuilder), HttpMethod.GET,
 					getDefaultHttpEntity(), String.class);
 			Map<String, Object> root = objectMapper.readValue(response.getBody(), Map.class);
@@ -263,12 +274,13 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			Object content = root.get("content");
 			if (content instanceof List) {
 				for (Object o : (List<?>) content) {
-					if (o instanceof Map)
+					if (o instanceof Map) {
 						allResults.add((Map<String, Object>) o);
+					}
 				}
 			}
 			page += 1;
-		} while ((page * PAGE_SIZE) < totalElements);
+		} while ((page * pageSize) < totalElements);
 
 		return allResults;
 	}
@@ -280,8 +292,9 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 	protected java.util.List<VcfaProject> getProjectsPrimitive(final String project) throws IOException {
 		List<VcfaProject> allProjects = this.getProjectsPrimitive();
-		if (allProjects == null || allProjects.isEmpty())
+		if (allProjects == null || allProjects.isEmpty()) {
 			return java.util.Collections.emptyList();
+		}
 		return allProjects.stream()
 				.filter(p -> project.equalsIgnoreCase(p.getId()) || project.equalsIgnoreCase(p.getName()))
 				.collect(Collectors.toList());
@@ -327,8 +340,9 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 				getDefaultHttpEntity().getHeaders());
 		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
 		String responseBody = response.getBody();
-		if (responseBody == null || responseBody.isEmpty())
+		if (responseBody == null || responseBody.isEmpty()) {
 			return null;
+		}
 		return objectMapper.readValue(responseBody, Map.class);
 	}
 
@@ -343,8 +357,9 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 				getDefaultHttpEntity().getHeaders());
 		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, String.class);
 		String responseBody = response.getBody();
-		if (responseBody == null || responseBody.isEmpty())
+		if (responseBody == null || responseBody.isEmpty()) {
 			return null;
+		}
 		return objectMapper.readValue(responseBody, Map.class);
 	}
 
@@ -535,7 +550,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		// engine processing
 		Map<String, Object> bodyPayload = objectMapper.readValue(payload.toString(), Map.class);
 
-		Map<String, Object> result = postMap("/catalog/api/items:publish", bodyPayload, 200, 201);
+		Map<String, Object> result = postMap("/catalog/api/items:publish", bodyPayload, STATUS_CODE_200, STATUS_CODE_201);
 		if (result == null) {
 			return null;
 		}
@@ -551,7 +566,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	protected JsonObject republishCatalogItemPrimitive(String id, JsonObject payload) throws IOException {
 		Map<String, Object> bodyPayload = objectMapper.readValue(payload.toString(), Map.class);
 
-		Map<String, Object> result = postMap("/catalog/api/items/" + id + ":republish", bodyPayload, 200, 201);
+		Map<String, Object> result = postMap("/catalog/api/items/" + id + ":republish", bodyPayload, STATUS_CODE_200, STATUS_CODE_201);
 		if (result == null) {
 			return null;
 		}
@@ -567,7 +582,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	protected void unpublishCatalogItemPrimitive(String id) throws IOException {
 		// Follows the same standard VMware action-colon pattern as :publish and
 		// :republish
-		postMap("/catalog/api/items/" + id + ":unpublish", null, 200, 204);
+		postMap("/catalog/api/items/" + id + ":unpublish", null, STATUS_CODE_200, STATUS_CODE_204);
 	}
 
 	// =========================================================================
@@ -585,9 +600,10 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected VcfaBlueprint createBlueprintPrimitive(Map<String, Object> blueprint) throws IOException {
-		Map<String, Object> result = postMap("/blueprint/api/blueprints", blueprint, 201);
-		if (result == null)
+		Map<String, Object> result = postMap("/blueprint/api/blueprints", blueprint, STATUS_CODE_201);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaBlueprint.class);
 	}
 
@@ -619,18 +635,19 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 
 		LOGGER.info("Creating and releasing blueprint version '{}' for blueprint ID: {}", epochVersion, blueprintId);
 
-		return postMap("/blueprint/api/blueprints/" + blueprintId + "/versions", versioningPayload, 200, 201);
+		return postMap("/blueprint/api/blueprints/" + blueprintId + "/versions", versioningPayload, STATUS_CODE_200, STATUS_CODE_201);
 	}
 
 	protected VcfaBlueprint updateBlueprintPrimitive(String id, Map<String, Object> blueprint) throws IOException {
-		Map<String, Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, 200);
-		if (result == null)
+		Map<String, Object> result = putMap("/blueprint/api/blueprints/" + id, blueprint, STATUS_CODE_200);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaBlueprint.class);
 	}
 
 	protected void deleteBlueprintPrimitive(String id) throws IOException {
-		deletePath("/blueprint/api/blueprints/" + id, 204);
+		deletePath("/blueprint/api/blueprints/" + id, STATUS_CODE_204);
 	}
 
 	protected String getBlueprintVersionsPrimitive(String blueprintId) throws IOException {
@@ -760,8 +777,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			LOGGER.info(
 					"Step 2: Successfully executed schema pre-generation rules using server-generated form layout.");
 		} catch (org.springframework.web.client.HttpClientErrorException.BadRequest bre) {
-			throw new IOException("Failed schema generation validation pass: " +
-					bre.getResponseBodyAsString(), bre);
+			throw new IOException("Failed schema generation validation pass: "
+					+ bre.getResponseBodyAsString(), bre);
 		}
 
 		// --- Step 3: Bind structural configuration values back via PUT ---
@@ -795,14 +812,14 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			LOGGER.info("Step 3: Successfully executed request form push.");
 		} catch (Exception e) {
 			throw new IOException(
-					"Failed to bind form metadata configurations to target blueprint entity: " +
-							e.getMessage(),
+					"Failed to bind form metadata configurations to target blueprint entity: "
+							+ e.getMessage(),
 					e);
 		}
 	}
 
 	protected void deleteCatalogItemPrimitive(String id) throws IOException {
-		deletePath("/catalog/api/items/" + id, 204, 200);
+		deletePath("/catalog/api/items/" + id, STATUS_CODE_204, STATUS_CODE_200);
 	}
 
 	// =========================================================================
@@ -880,7 +897,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 					existingFormMeta.getId());
 		} else {
 			LOGGER.info("No active form footprint discovered on server. Executing fresh creation via POST...");
-			postMap("/form-service/api/forms", payload, 200, 201);
+			postMap("/form-service/api/forms", payload, STATUS_CODE_200, STATUS_CODE_201);
 		}
 	}
 
@@ -892,14 +909,15 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected VcfaSubscription createOrUpdateSubscriptionPrimitive(Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = postMap("/event-broker/api/subscriptions", payload, 200, 201);
-		if (result == null)
+		Map<String, Object> result = postMap("/event-broker/api/subscriptions", payload, STATUS_CODE_200, STATUS_CODE_201);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaSubscription.class);
 	}
 
 	protected void deleteSubscriptionPrimitive(String id) throws IOException {
-		deletePath("/event-broker/api/subscriptions/" + id, 200, 204);
+		deletePath("/event-broker/api/subscriptions/" + id, STATUS_CODE_200, STATUS_CODE_204);
 	}
 
 	/**
@@ -952,22 +970,24 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected VcfaPropertyGroup createPropertyGroupPrimitive(Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = postMap("/properties/api/property-groups", payload, 201, 200);
-		if (result == null)
+		Map<String, Object> result = postMap("/properties/api/property-groups", payload, STATUS_CODE_201, STATUS_CODE_200);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaPropertyGroup.class);
 	}
 
 	protected VcfaPropertyGroup updatePropertyGroupPrimitive(String id, Map<String, Object> payload)
 			throws IOException {
-		Map<String, Object> result = putMap("/properties/api/property-groups/" + id, payload, 200);
-		if (result == null)
+		Map<String, Object> result = putMap("/properties/api/property-groups/" + id, payload, STATUS_CODE_200);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaPropertyGroup.class);
 	}
 
 	protected void deletePropertyGroupPrimitive(String id) throws IOException {
-		deletePath("/properties/api/property-groups/" + id, 204, 200);
+		deletePath("/properties/api/property-groups/" + id, STATUS_CODE_204, STATUS_CODE_200);
 	}
 
 	// =========================================================================
@@ -1025,21 +1045,23 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected VcfaScenario createScenarioPrimitive(Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = postMap("/notification/api/scenario-configs", payload, 201, 200);
-		if (result == null)
+		Map<String, Object> result = postMap("/notification/api/scenario-configs", payload, STATUS_CODE_201, STATUS_CODE_200);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaScenario.class);
 	}
 
 	protected VcfaScenario updateScenarioPrimitive(String id, Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = putMap("/notification/api/scenario-configs/" + id, payload, 200);
-		if (result == null)
+		Map<String, Object> result = putMap("/notification/api/scenario-configs/" + id, payload, STATUS_CODE_200);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaScenario.class);
 	}
 
 	protected void deleteScenarioPrimitive(String id) throws IOException {
-		deletePath("/notification/api/scenario-configs/" + id, 204, 200);
+		deletePath("/notification/api/scenario-configs/" + id, STATUS_CODE_204, STATUS_CODE_200);
 	}
 
 	// =========================================================================
@@ -1072,14 +1094,15 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected VcfaPolicy createOrUpdatePolicyPrimitive(Map<String, Object> payload) throws IOException {
-		Map<String, Object> result = postMap("/policy/api/policies", payload, 200, 201, 202);
-		if (result == null)
+		Map<String, Object> result = postMap("/policy/api/policies", payload, STATUS_CODE_200, STATUS_CODE_201, STATUS_CODE_202);
+		if (result == null) {
 			return null;
+		}
 		return objectMapper.convertValue(result, VcfaPolicy.class);
 	}
 
 	protected void deletePolicyPrimitive(String id) throws IOException {
-		deletePath("/policy/api/policies/" + id, 204, 200);
+		deletePath("/policy/api/policies/" + id, STATUS_CODE_204, STATUS_CODE_200);
 	}
 
 	// =========================================================================
@@ -1110,7 +1133,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected void deleteResourceActionPrimitive(String id) throws IOException {
-		deletePath("/form-service/api/custom/resource-actions/" + id, 200, 204);
+		deletePath("/form-service/api/custom/resource-actions/" + id, STATUS_CODE_200, STATUS_CODE_204);
 	}
 
 	// =========================================================================
@@ -1355,7 +1378,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected void deleteCustomResourceTypePrimitive(String id) throws IOException {
-		deletePath("/form-service/api/custom/resource-types/" + id, 200, 204);
+		deletePath("/form-service/api/custom/resource-types/" + id, STATUS_CODE_200, STATUS_CODE_204);
 	}
 
 	protected String getOrganizationIdPrimitive() throws IOException {

@@ -34,7 +34,9 @@ public class VcfaScenario implements Identifiable {
     private String subject;
     private String body;
 
-    public VcfaScenario() {}
+    public VcfaScenario() {
+        
+    }
 
     // =========================================================================
     // IDENTIFIABLE INTERFACE OVERRIDES

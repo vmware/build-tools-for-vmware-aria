@@ -42,17 +42,17 @@ public final class VcfaPathValidator {
         // Guard against leading or trailing spaces that trigger OS-level directory clipping
         if (!assetName.equals(assetName.trim())) {
             throw new IOException(String.format(
-                "CRITICAL CROSS-PLATFORM ERROR: The %s named '%s' contains leading or trailing spaces. " +
-                "While spaces are allowed inside names, they cannot be at the very beginning or end of the asset name.",
+                "CRITICAL CROSS-PLATFORM ERROR: The %s named '%s' contains leading or trailing spaces. "
+                + "While spaces are allowed inside names, they cannot be at the very beginning or end of the asset name.",
                 assetType, assetName
             ));
         }
 
         if (!assetName.matches(SAFE_NAME_REGEX)) {
             throw new IOException(String.format(
-                "CRITICAL CROSS-PLATFORM ERROR: The %s named '%s' contains invalid characters. " +
-                "To ensure workspace portability across Windows, macOS, and Linux, names must " +
-                "ONLY contain alphanumeric characters, spaces, hyphens (-), underscores (_), or parentheses ().",
+                "CRITICAL CROSS-PLATFORM ERROR: The %s named '%s' contains invalid characters. "
+                + "To ensure workspace portability across Windows, macOS, and Linux, names must "
+                + "ONLY contain alphanumeric characters, spaces, hyphens (-), underscores (_), or parentheses ().",
                 assetType, assetName
             ));
         }

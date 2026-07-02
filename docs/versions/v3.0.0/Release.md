@@ -93,7 +93,6 @@ curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/ma
 Works for Linux,Mac and Windows with Git Bash
 
 
-
 ## Improvements
 
 ### *Flexible unit tests setup*

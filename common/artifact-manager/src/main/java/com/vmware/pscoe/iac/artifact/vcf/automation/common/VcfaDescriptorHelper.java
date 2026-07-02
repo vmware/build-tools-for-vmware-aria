@@ -18,12 +18,13 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
+
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 
 /**
@@ -32,7 +33,7 @@ import com.vmware.pscoe.iac.artifact.common.store.Package;
  */
 public final class VcfaDescriptorHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(VcfaDescriptorHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VcfaDescriptorHelper.class);
 
     private VcfaDescriptorHelper() {
         // Private constructor for utility pattern compliance
@@ -72,7 +73,7 @@ public final class VcfaDescriptorHelper {
                     
                     // Condition 1: Subproperty exists but is set to null -> Work with ALL workflows
                     if (listObj == null) {
-                        logger.info("Descriptor property '{}' is explicitly null. Target matching includes ALL items.", key);
+                        LOGGER.info("Descriptor property '{}' is explicitly null. Target matching includes ALL items.", key);
                         return null;
                     }
                     
@@ -85,13 +86,13 @@ public final class VcfaDescriptorHelper {
 
             // Condition 3: Subproperty is missing entirely -> Treat as empty array (process nothing)
             if (!keyFound) {
-                logger.info("Descriptor target properties {} are entirely missing. Defaulting to an empty array target scope.", 
+                LOGGER.info("Descriptor target properties {} are entirely missing. Defaulting to an empty array target scope.", 
                         String.join(", ", acceptableKeys));
                 return new java.util.ArrayList<>();
             }
             
         } catch (Exception e) {
-            logger.warn("Non-fatal exception encountered checking descriptor definitions matching {}: {}",
+            LOGGER.warn("Non-fatal exception encountered checking descriptor definitions matching {}: {}",
                     String.join(", ", acceptableKeys), e.getMessage());
         }
 
@@ -119,7 +120,7 @@ public final class VcfaDescriptorHelper {
         for (String expectedItem : explicitItems) {
             File expectedFolder = new File(localAssetDir, expectedItem);
             if (!expectedFolder.exists() || !expectedFolder.isDirectory()) {
-                logger.error(
+                LOGGER.error(
                         "CRITICAL CONFIGURATION MISMATCH: {} '{}' is explicitly listed in content.yaml, but its workspace asset directory is missing from disk path: {}",
                         assetTypeName, expectedItem, expectedFolder.getAbsolutePath());
             }
@@ -162,7 +163,7 @@ public final class VcfaDescriptorHelper {
 
             if (isFolderOnly) {
                 if (!expectedFolder.exists() || !expectedFolder.isDirectory()) {
-                    logger.error(
+                    LOGGER.error(
                             "CRITICAL CONFIGURATION MISMATCH: {} '{}' is explicitly listed in content.yaml, but its workspace asset directory is missing from disk path: {}",
                             assetTypeName, expectedItem, expectedFolder.getAbsolutePath());
                 }
@@ -170,7 +171,7 @@ public final class VcfaDescriptorHelper {
                 // Flexible match: look for a folder or a flat json file
                 File expectedFlatFile = new File(localAssetDir, expectedItem + ".json");
                 if (!expectedFolder.exists() && !expectedFlatFile.exists()) {
-                    logger.error(
+                    LOGGER.error(
                             "CRITICAL CONFIGURATION MISMATCH: {} '{}' is explicitly listed in content.yaml, but its workspace asset file or folder is missing from disk path: {}",
                             assetTypeName, expectedItem, expectedFolder.getAbsolutePath());
                 }

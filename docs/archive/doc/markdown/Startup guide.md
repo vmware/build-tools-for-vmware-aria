@@ -14,15 +14,15 @@ Documentation is key and has to be updated in corresponding markdown files in th
 
   Contains Java classes regarding all the supported objects that operations can be applied on.
 
-  - *cli*
-  - *configuration*
-  - *extensions*
-  - *model*
-  - *rest*
-  - *ssh*
-  - *store*
-  - *strategy*
-  - *utils*
+    - *cli*
+    - *configuration*
+    - *extensions*
+    - *model*
+    - *rest*
+    - *ssh*
+    - *store*
+    - *strategy*
+    - *utils*
 
 - **/build-tools-for-vmware-aria/common/artifact-manager/src/test/**
 
@@ -44,8 +44,8 @@ Documentation is key and has to be updated in corresponding markdown files in th
 
   Java files for the package-installer part of Build Tools for VMware Aria.
 
-  - `Installer.java` controls the entire process
-  - `Validate.java` util class used for validation
+    - `Installer.java` controls the entire process
+    - `Validate.java` util class used for validation
 
 - **/build-tools-for-vmware-aria/typescript/**
 

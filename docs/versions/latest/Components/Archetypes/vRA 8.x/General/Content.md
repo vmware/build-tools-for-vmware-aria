@@ -45,15 +45,15 @@ Contents are exported by different rules.
 - Empty array [] - nothing is exported
 - List of items - the given items are exported. If they are not present on the server an Exception is thrown.
 - Null (nothing given) - everything is being exported
-  - blueprints
-  - catalog-item
-  - content-source
-  - custom-resource
-  - catalog-entitlement
-  - property-group
-  - subscription
-  - scenario
-  - policies
+    - blueprints
+    - catalog-item
+    - content-source
+    - custom-resource
+    - catalog-entitlement
+    - property-group
+    - subscription
+    - scenario
+    - policies
 
 #### Examples
 

@@ -3,9 +3,7 @@
 ## Breaking Changes
 
 
-
 ## Deprecations
-
 
 
 ## Features
@@ -39,7 +37,7 @@ since the exception was never handled in the vrealize CleanMojo
 UnsupportedOperationException is now being caught (NotImplementedException as well since it's a child) and a warning is logged instead.
 The process is allowed to continue.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 
 * [Vrealize Clean](./Components/Archetypes/General/Goals/Vrealize%20Clean.md)
 
@@ -76,8 +74,8 @@ When you trigger `mvn clean package install deploy` against base package, the bu
 #### New Behavior
 When you trigger `mvn clean package install deploy` against base package, the build will succeed and will deploy the package to artifactory server and to local maven repository.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 None
 
-## Upgrade procedure:
+## Upgrade procedure
 

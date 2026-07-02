@@ -7,7 +7,6 @@
 ## Deprecations
 
 
-
 ## Features
 
 ### Support of project scope / organization during import of content sharing policies

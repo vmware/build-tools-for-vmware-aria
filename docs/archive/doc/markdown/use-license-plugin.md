@@ -13,18 +13,18 @@ If activated it will generate license file and license header from templates pro
 You need to use the following additional parameters when creating new project
 
 - **licenseUrl**
-  - The parameter will have a default value of `null`.
-  - If it is set, the license URL will be included in the new project `pom.xml` description.
+    - The parameter will have a default value of `null`.
+    - If it is set, the license URL will be included in the new project `pom.xml` description.
 
     Also, the content of the URL will be saved as a license template file and will be used on project's build phase.
 
 - **licenseHeader**
-  - Valid value: Either text or URL.
-  - If the param is set: The text, or the content of the provided URL, will be stored in a 'licence_header' template. The content of that file will be used to fill the license header of each code file, during the build of the project.
-  - If the param is not set: A default content of a 'licence_header' will be used ("Copyright [yyyy] [name of copyright owner]").
+    - Valid value: Either text or URL.
+    - If the param is set: The text, or the content of the provided URL, will be stored in a 'licence_header' template. The content of that file will be used to fill the license header of each code file, during the build of the project.
+    - If the param is not set: A default content of a 'licence_header' will be used ("Copyright [yyyy] [name of copyright owner]").
 
 - **licenseTechnicalPreview**
-  - If set: The default VMware Technical Preview license will be used in the generated project. All upper properties are ignored.
+    - If set: The default VMware Technical Preview license will be used in the generated project. All upper properties are ignored.
 
 #### Examples
 

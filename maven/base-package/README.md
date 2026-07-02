@@ -18,7 +18,7 @@ Note that there are a number of properties that must be set through profiles in 
 It makes sense to keep this settings XML file under SCM to be used by developers. You might have a modified version with credentials for the artifactory deployed on the CI server.
 
 An example settings.xml file is shown below:
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
     xmlns="http://maven.apache.org/SETTINGS/1.1.0"
@@ -95,8 +95,8 @@ This approach involves less overhead for individual developers, as the keystore 
 ## Bundling
 If you want to create a bundle.zip containing the package and all its dependencies, you need the following:
 * add **-Pbundle** as a maven CLI argument. This will activate the profile and produce the bundle. For example:
-```
-$ mvn clean deploy -Pbundle
+```sh
+mvn clean deploy -Pbundle
 ```
 
 ## Bundling with installer
@@ -109,8 +109,8 @@ In order to include an installer to your bundle, you need the following:
 * (Optional) Package all your supplementary components in a zip and upload them to your maven repository.
 * (Optional) Set installerGroupId, installerArtifactId and installerVersion through a profile in settings.xml
 * add **-Pbundle-with-installer** as a maven CLI argument. This will activate the profile and produce the bundle with the provided installer. For example:
-```
-$ mvn clean deploy -Pbundle-with-installer
+```sh
+mvn clean deploy -Pbundle-with-installer
 ```
 This will unzip the installer zip, add **vro/** and **vra/** folders to the root and that zip it again.
 

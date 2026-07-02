@@ -5,15 +5,15 @@
 - [Table of Contents](#table-of-contents)
 - [Certificate of Origin](#certificate-of-origin)
 - [Getting Started](#getting-started)
-  - [Getting the code](#getting-the-code)
-  - [Prerequisites](#prerequisites)
-  - [Guides](#guides)
-  - [Documentation](#documentation)
+    - [Getting the code](#getting-the-code)
+    - [Prerequisites](#prerequisites)
+    - [Guides](#guides)
+    - [Documentation](#documentation)
 - [Contributing Code](#contributing-code)
 - [Submitting a Pull Request](#submitting-a-pull-request)
 - [Reporting Issues](#reporting-issues)
-  - [Look For an Existing Issue](#look-for-an-existing-issue)
-  - [Writing Good Issue Reports](#writing-good-issue-reports)
+    - [Look For an Existing Issue](#look-for-an-existing-issue)
+    - [Writing Good Issue Reports](#writing-good-issue-reports)
 
 ## Certificate of Origin
 

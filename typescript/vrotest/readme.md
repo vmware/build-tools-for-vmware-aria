@@ -29,12 +29,12 @@ The default options are Jasmine and Jest. You can specify which one to use via p
 Supported properties:
 - `test.framework.package` - specifies which framework to use to run the unit tests, supported values: `jasmine`, `jest`, optional, defaults to `jasmine`.
 - `test.framework.version` - the version of the framework npm package to use, should be one of the versions available for the specified framework npm package. If not provided will use:
-  - `^4.0.2` for `jasmine` for backward comaptibility.
-  - `latest` for `jest`.
+    - `^4.0.2` for `jasmine` for backward comaptibility.
+    - `latest` for `jest`.
 - `test.framework.types.version` - optional value, will be used to install a specific version of the type definitions for the unit test framework. This is related to the [DefinitelyTyped project](https://definitelytyped.org/) and the versions need to be aligned with the available ones originating from it. If not value is provided:
-  - And the Jasmine framework is used with the default framework version, the solution will install the default type definitions as well - ensures backward compatibility.
-  - If the latest version of any framework is used the solution will install the latest available type definitions for it.
-  - If a specific version of any framework is used the solution will attempt to install the `major.minor.X` version of the type definitions. In case there is no such version, the user needs to specify which version should be used via the `test.framework.types.version` property.
+    - And the Jasmine framework is used with the default framework version, the solution will install the default type definitions as well - ensures backward compatibility.
+    - If the latest version of any framework is used the solution will install the latest available type definitions for it.
+    - If a specific version of any framework is used the solution will attempt to install the `major.minor.X` version of the type definitions. In case there is no such version, the user needs to specify which version should be used via the `test.framework.types.version` property.
 - `test.framework.runner` - enables using a specific runner, currently only used for `jest`, optional, supported values: `swc`, if omitted will use the default runner.
 - `test.framework.jasmine.reporters.version` - version of the Jasmine reporters package to use when using the `jasmine` option for the framework selection, optional, defaults to `^2.5.2` for backward compatibility if omitted.
 - `test.ansicolors.version` - The `ansi-colors` npm package is used in the Jasmine reporters configured for the tests, optional, defaults to `^4.1.1` for backward compatibility if omitted.

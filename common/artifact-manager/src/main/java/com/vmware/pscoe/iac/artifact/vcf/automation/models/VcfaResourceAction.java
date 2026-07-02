@@ -16,6 +16,7 @@ package com.vmware.pscoe.iac.artifact.vcf.automation.models;
  */
 
 import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -35,7 +36,9 @@ public class VcfaResourceAction implements Identifiable {
     private Map<String, Object> formDefinition;
     private Map<String, Object> criteria;
 
-    public VcfaResourceAction() {}
+    public VcfaResourceAction() {
+        
+    }
 
     // =========================================================================
     // IDENTIFIABLE INTERFACE OVERRIDES

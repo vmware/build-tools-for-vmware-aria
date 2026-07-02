@@ -3,7 +3,6 @@
 ## Breaking Changes
 
 
-
 ## Deprecations
 
 ### Single Action Polyglot Archetype
@@ -13,15 +12,13 @@ fully backwards compatible, however in the future this will be removed. Check th
 section to find out how to migrate away from the old polyglot archetype.
 
 
-
-## Features:
+## Features
 
 ### Added documentation for unit testing**
 Added general documentation for Unit Testing, including examples. Check the Relevant Documentation subsection
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [UnitTesting](Components/Archetypes/typescript/General/Testing/Getting%20Started.md)
-
 
 
 ## Improvements
@@ -81,7 +78,7 @@ When running the installer script to import property groups to vRA, it fails to 
 #### New Behavior
 When iporting a property group that already exists in vRA to another project, a warning is shown that the import will not be performed. When importing a non-existent property group, it gets the correct project id assigned.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 **NONE**
 
 ### Pull command is failing if we don't pass any value for content-source (content.yaml)
@@ -92,7 +89,7 @@ When executing the Pull command, it fails with NullPointerException if we don't 
 #### New Behavior
 We are able to execute pull command successfully even if we don't pass anything for content-source
 
-#### Relevant Documentation:
+#### Relevant Documentation
 **NONE**
 
 ### Polyglot packages are not published in JFrog artifactory when the deploy command is executed
@@ -103,7 +100,7 @@ When executing the mvn clean deploy command - the package produced by polyglot a
 #### New Behavior
 As part of the build process, polyglot archetype package is now uploaded in Jfrog artifactory just like any other vrbt package.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 **NONE**
 
 ### New Polyglot Multi Action Capabilities
@@ -151,7 +148,6 @@ The details for the actions have been moved to the polyglot.json files that are 
 1. [Polyglot Archetype Documentation](./Components/Archetypes/Polyglot/README.md)
 
 
-
 ## Upgrade procedure
 
 ### Migrating from single action to multi action polyglot
@@ -163,5 +159,4 @@ The details for the actions have been moved to the polyglot.json files that are 
    1. The `files` attribute will define what will be included in the final package and what should be filtered.
       - Do not modify the attribute, but if you do, don't touch the "%out" as that is dynamically set by polyglotpkg.
    2. Leave `"action": "auto",` if you want to use the name from the folder
-
 

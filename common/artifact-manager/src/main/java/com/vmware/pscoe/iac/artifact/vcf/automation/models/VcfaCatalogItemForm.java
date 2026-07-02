@@ -38,15 +38,25 @@ public class VcfaCatalogItemForm implements Identifiable {
     private String status;
     private String formFormat;
 
-    public VcfaCatalogItemForm() {}
+    public VcfaCatalogItemForm() {
+
+    }
 
     @Override
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() { 
+        return id; 
+    }
+    public void setId(String id) { 
+        this.id = id; 
+    }
 
     @Override
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() { 
+        return name; 
+    }
+    public void setName(String name) { 
+        this.name = name; 
+    }
 
     // =========================================================================
     // DYNAMIC JACKSON TRANSPARENT SERIALIZATION HANDLERS
@@ -92,21 +102,45 @@ public class VcfaCatalogItemForm implements Identifiable {
     // REMAINING STANDARD PROPERTIES
     // =========================================================================
 
-    public String getStyles() { return styles; }
-    public void setStyles(String styles) { this.styles = styles; }
+    public String getStyles() { 
+        return styles; 
+    }
+    public void setStyles(String styles) { 
+        this.styles = styles; 
+    }
 
-    public String getSourceType() { return sourceType; }
-    public void setSourceType(String sourceType) { this.sourceType = sourceType; }
+    public String getSourceType() { 
+        return sourceType; 
+    }
+    public void setSourceType(String sourceType) { 
+        this.sourceType = sourceType; 
+    }
 
-    public String getSourceId() { return sourceId; }
-    public void setSourceId(String sourceId) { this.sourceId = sourceId; }
+    public String getSourceId() { 
+        return sourceId; 
+    }
+    public void setSourceId(String sourceId) { 
+        this.sourceId = sourceId; 
+    }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public String getType() { 
+        return type; 
+    }
+    public void setType(String type) { 
+        this.type = type; 
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getStatus() { 
+        return status; 
+    }
+    public void setStatus(String status) { 
+        this.status = status; 
+    }
 
-    public String getFormFormat() { return formFormat; }
-    public void setFormFormat(String formFormat) { this.formFormat = formFormat; }
+    public String getFormFormat() { 
+        return formFormat; 
+    }
+    public void setFormFormat(String formFormat) { 
+        this.formFormat = formFormat; 
+    }
 }

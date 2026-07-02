@@ -92,8 +92,8 @@ The following need to be added to the profile that you intend to use:
 ```
 
 - `vro.username` - For VCF 9 Orchestrator you need to provide username in the following format: user@domain. E.g.:
-  - admin@System - Provider admin
-  - configurationadmin@Classic - Classic organization admin
+    - admin@System - Provider admin
+    - configurationadmin@Classic - Classic organization admin
 
 ### Properties
 

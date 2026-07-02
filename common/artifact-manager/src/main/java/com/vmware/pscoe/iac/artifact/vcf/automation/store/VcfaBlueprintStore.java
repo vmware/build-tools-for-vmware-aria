@@ -223,8 +223,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             for (OrganizationSharing sharing: organizationSharings) {
                 if (sharing.getOrganization().equalsIgnoreCase("ALL")) {
                     sharing.setOrgId("ALL");
-                }
-                else {
+                } else {
                     sharing.setOrgId(restClient.getOrganizationId(sharing.getOrganization()));
                 }
             }
@@ -473,8 +472,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 JsonObject transformedSharing = new JsonObject();
                 if (sharing.getOrgId().equalsIgnoreCase("ALL")) {
                     transformedSharing.add("organization", new JsonPrimitive("ALL"));
-                }
-                else {
+                } else {
                     transformedSharing.add("organization", new JsonPrimitive(restClient.getOrganizationName(sharing.getOrgId())));
                 }
                 transformedSharings.add(transformedSharing);

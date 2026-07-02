@@ -85,8 +85,9 @@ public abstract class AbstractVcfaStore implements IVcfaStore {
     protected java.util.Map<String, Object> readDetailsJson(File itemFolder) {
         try {
             File details = new File(itemFolder.getPath() + File.separator + "details.json");
-            if (!details.exists())
+            if (!details.exists()) {
                 return null;
+            }
             com.fasterxml.jackson.databind.ObjectMapper m = new com.fasterxml.jackson.databind.ObjectMapper();
             return m.readValue(details, java.util.Map.class);
         } catch (java.io.IOException e) {
@@ -97,8 +98,9 @@ public abstract class AbstractVcfaStore implements IVcfaStore {
     protected <T> T readDetailsJson(File itemFolder, Class<T> cls) {
         try {
             File details = new File(itemFolder.getPath() + File.separator + "details.json");
-            if (!details.exists())
+            if (!details.exists()) {
                 return null;
+            }
             com.fasterxml.jackson.databind.ObjectMapper m = new com.fasterxml.jackson.databind.ObjectMapper();
             return m.readValue(details, cls);
         } catch (java.io.IOException e) {

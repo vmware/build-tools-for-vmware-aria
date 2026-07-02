@@ -112,6 +112,6 @@ Note that some of Operation content is managed via in guest CLI commands instead
 - `vrops.restAuthSource` - Authentication source used for acquiring a token for REST API communication.
 
 - `vrops.restAuthProvider` - Defines the type of authentication used for REST API communication.
-  - Supported values: BASIC, AUTH_N (token based authentication)
-  - Default value: AUTH_N
+    - Supported values: BASIC, AUTH_N (token based authentication)
+    - Default value: AUTH_N
 

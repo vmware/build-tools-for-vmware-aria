@@ -30,8 +30,6 @@ import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
-import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
-import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 
 @Mojo(name = "clean")

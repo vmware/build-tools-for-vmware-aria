@@ -211,8 +211,8 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 logger.info("Processing local Scenario asset folder layout: '{}'", folder.getName());
 
                 Optional<VcfaScenario> existingRemote = remoteScenarios.stream()
-                        .filter(r -> r.getName().equalsIgnoreCase(localScenario.getName()) ||
-                                (r.getId() != null && localScenario.getId() != null
+                        .filter(r -> r.getName().equalsIgnoreCase(localScenario.getName())
+                                || (r.getId() != null && localScenario.getId() != null
                                         && r.getId().equalsIgnoreCase(localScenario.getId())))
                         .findFirst();
 
