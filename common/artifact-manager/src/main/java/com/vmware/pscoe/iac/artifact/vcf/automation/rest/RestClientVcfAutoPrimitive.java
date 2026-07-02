@@ -130,7 +130,8 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 			throw new IOException("RestTemplate not configured for RestClientVcfAuto");
 		}
 		java.net.URI uri = getURI(getURIBuilder().setPath(relativePath));
-		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<String>(getCommonVcdHeaders()),
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET,
+				new HttpEntity<String>(getCommonVcdHeaders()),
 				String.class);
 		String responseBody = response.getBody();
 		return objectMapper.readValue(responseBody, cls);
@@ -818,6 +819,10 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 		}
 	}
 
+	protected void deleteBlueprintCutomFormPrimitive(String id) throws IOException {
+		deletePath("/blueprint/api/blueprints/" + id + "/form", 204, 200);
+	}
+
 	protected void deleteCatalogItemPrimitive(String id) throws IOException {
 		deletePath("/catalog/api/items/" + id, STATUS_CODE_204, STATUS_CODE_200);
 	}
@@ -1397,7 +1402,6 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 				.orElse(null);
 		return orgUrn.substring(orgUrn.lastIndexOf(":") + 1);
 	}
-
 
 	protected String getOrganizationNamePrimitive(String orgId) throws IOException {
 		if (StringUtils.isEmpty(orgId)) {

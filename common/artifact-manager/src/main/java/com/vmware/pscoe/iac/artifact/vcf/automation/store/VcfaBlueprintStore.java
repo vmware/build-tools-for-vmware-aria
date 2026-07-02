@@ -313,7 +313,10 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     /**
      * Compares local workspace request form configurations with active host
      * deployments.
-     * Returns true if form updates were applied.
+     * Deletes remote forms if missing locally, otherwise updates them if changes
+     * are found.
+     * 
+     * @return true if form updates or deletions were actively applied.
      */
     @SuppressWarnings("unchecked")
     private boolean processBlueprintForm(File bpDir, String bpName, String blueprintId, VcfaBlueprint bp,
@@ -321,12 +324,35 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         String formFileName = bpName + "__FormData.json";
         File formDataFile = new File(bpDir, formFileName);
 
+        // --- NEW: SERVER-SIDE CLEANUP IF LOCAL FORM IS ABSENT ---
         if (!formDataFile.exists()) {
-            logger.info("No custom request form file layout ('{}') found for asset workspace. Skipping form sync.",
+            logger.info("No custom request form file layout ('{}') found for asset workspace. Checking server state...",
                     formFileName);
+            try {
+                Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", blueprintId);
+                if (rawFormResponse != null) {
+                    Map<String, Object> formMetaMap = mapper.convertValue(rawFormResponse, Map.class);
+                    if (formMetaMap != null && formMetaMap.containsKey("form") && formMetaMap.get("form") != null) {
+                        logger.info(
+                                "Orphaned custom request form detected on server for blueprint '{}'. Triggering form deletion sequence...",
+                                bpName);
+
+                        // Execute your custom form rest deletion target
+                        restClient.deleteBlueprintCutomForm(blueprintId);
+
+                        return true; // Return true to signal that a state change occurred, requiring a version
+                                     // release
+                    }
+                }
+            } catch (Exception fe) {
+                logger.info(
+                        "No active form found on server or unable to parse during cleanup scan for blueprint '{}'. Skipping form deletion.",
+                        bpName);
+            }
             return false;
         }
 
+        // --- EXISTING: PROCESS FORM UPDATES WHEN LOCAL FILE IS PRESENT ---
         logger.info("Custom request form artifact layout definition found: '{}'. Evaluating variations...",
                 formFileName);
         try {

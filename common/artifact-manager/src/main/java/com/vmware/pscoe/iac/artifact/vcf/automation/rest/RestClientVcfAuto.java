@@ -120,6 +120,10 @@ public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 		unreleaseBlueprintVersionPrimitive(blueprintId, versionId);
 	}
 
+	public void deleteBlueprintCutomForm(String blueprintId) throws IOException {
+		deleteBlueprintCutomFormPrimitive(blueprintId);
+	}
+
 	// --- Request Forms
 	public VcfaCatalogItemForm getCatalogItemForm(String sourceType, String catalogItemId) throws IOException {
 		return getCatalogItemFormPrimitive(sourceType, catalogItemId);
