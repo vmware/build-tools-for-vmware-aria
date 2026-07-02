@@ -218,176 +218,225 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         setContentIfPresent(bp, bpDir);
         bp.setProjectId(restClient.getProjectId());
 
-        transformOrganizationSharingsForPush(bp);
+        // 1. Map environment-agnostic names to target database IDs
+        resolveOrganizationIds(bp);
 
         VcfaBlueprint existing = serverBps.stream()
                 .filter(m -> bpName.equals(m.getName()))
                 .findFirst()
                 .orElse(null);
 
-        VcfaBlueprint processingTarget = null;
-        boolean shouldReleaseVersion = false;
-
-        if (existing == null) {
-            logger.info("Blueprint '{}' not found on target host server. Executing draft creation.", bpName);
-            processingTarget = restClient.createBlueprint(bp);
-            shouldReleaseVersion = true;
-        } else {
-            VcfaBlueprint fullServerBp = restClient.getBlueprintById(existing.getId());
-
-            String localContent = bp.getContent() != null ? bp.getContent().trim().replace("\r\n", "\n") : "";
-            String serverContent = (fullServerBp != null && fullServerBp.getContent() != null)
-                    ? fullServerBp.getContent().trim().replace("\r\n", "\n")
-                    : "";
-            Set<String> localOrgSharings = bp.getOrganizationSharings() == null 
-                    ? new HashSet<>() 
-                    : bp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId).collect(Collectors.toSet());
-            Set<String> serverOrgSharings = (fullServerBp == null || fullServerBp.getOrganizationSharings() == null)
-                    ? new HashSet<>() 
-                    : fullServerBp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId).collect(Collectors.toSet());
-
-            if (localContent.equals(serverContent) 
-                    && localOrgSharings.equals(serverOrgSharings) 
-                    && Objects.equals(bp.getRequestScopeOrg(), fullServerBp.getRequestScopeOrg())) {
-                logger.info(
-                        "Blueprint '{}' working draft content matches server content exactly. Checking custom request forms...",
-                        bpName);
-                processingTarget = fullServerBp;
-            } else {
-                logger.info(
-                        "Blueprint '{}' found on target host server with content changes. Overwriting active working draft.",
-                        bpName);
-                processingTarget = restClient.updateBlueprint(existing.getId(), bp);
-                shouldReleaseVersion = true;
-            }
-        }
+        // 2. Diff local content against the server environment state
+        BlueprintSyncResult syncResult = syncBlueprintDraft(bp, bpName, existing);
+        VcfaBlueprint processingTarget = syncResult.processingTarget;
+        boolean shouldReleaseVersion = syncResult.shouldReleaseVersion;
 
         String blueprintId = (processingTarget != null) ? processingTarget.getId()
                 : (existing != null ? existing.getId() : null);
 
         if (blueprintId != null) {
-            // --- CUSTOM REQUEST FORM PROCESSING BLOCK ---
-            String formFileName = bpName + "__FormData.json";
-            File formDataFile = new File(bpDir, formFileName);
             File stylesFile = new File(bpDir, "styles.css");
 
-            if (formDataFile.exists()) {
-                logger.info("Custom request form artifact layout definition found: '{}'. Evaluating variations...",
-                        formFileName);
-                try {
-                    String formFileContent = new String(java.nio.file.Files.readAllBytes(formDataFile.toPath()),
-                            java.nio.charset.StandardCharsets.UTF_8);
-
-                    JsonObject formWrapperElement = com.google.gson.JsonParser.parseString(formFileContent)
-                            .getAsJsonObject();
-
-                    String localFormJsonNormalized = gson.toJson(formWrapperElement);
-                    Map<String, Object> localFormPayload = gson.fromJson(localFormJsonNormalized, Map.class);
-                    boolean formChanged = true;
-                    try {
-                        Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", blueprintId);
-                        if (rawFormResponse != null) {
-                            Map<String, Object> formMetaMap = mapper.convertValue(rawFormResponse, Map.class);
-                            if (formMetaMap != null && formMetaMap.containsKey("form")
-                                    && formMetaMap.get("form") != null) {
-                                Object serverFormObj = formMetaMap.get("form");
-                                String serverFormJsonNormalized = "";
-
-                                if (serverFormObj instanceof String) {
-                                    serverFormJsonNormalized = gson
-                                            .toJson(com.google.gson.JsonParser.parseString((String) serverFormObj));
-                                } else {
-                                    serverFormJsonNormalized = gson.toJson(com.google.gson.JsonParser
-                                            .parseString(mapper.writeValueAsString(serverFormObj)));
-                                }
-
-                                String serverStyles = formMetaMap.containsKey("styles")
-                                        && formMetaMap.get("styles") != null
-                                                ? formMetaMap.get("styles").toString().trim()
-                                                : "";
-                                String localCssContent = "";
-                                if (stylesFile.exists()) {
-                                    localCssContent = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
-                                            java.nio.charset.StandardCharsets.UTF_8).trim();
-                                }
-
-                                if (localFormJsonNormalized.equals(serverFormJsonNormalized)
-                                        && localCssContent.equals(serverStyles)) {
-                                    logger.info(
-                                            "Custom request form layouts and sibling styles match perfectly on server for blueprint '{}'. Skipping redundant updates.",
-                                            bpName);
-                                    formChanged = false;
-                                }
-                            }
-                        }
-                    } catch (Exception fe) {
-                        logger.info("No active form found on server or unable to parse. Treating form as updated/new.");
-                    }
-
-                    if (formChanged) {
-                        logger.info(
-                                "Form configuration updates detected for blueprint '{}'. Triggering updates sequence...",
-                                bpName);
-
-                        String cssStylesPayload = "";
-                        if (stylesFile.exists()) {
-                            cssStylesPayload = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
-                                    java.nio.charset.StandardCharsets.UTF_8).trim();
-                        }
-
-                        restClient.createBlueprintForm(
-                                blueprintId,
-                                localFormPayload,
-                                bp.getContent(),
-                                bp.getName(),
-                                bp.getDescription(),
-                                bp.getRequestScopeOrg(),
-                                cssStylesPayload);
-
-                        logger.info(
-                                "Successfully bound updated custom request form configurations to Blueprint entity '{}'.",
-                                bpName);
-                        shouldReleaseVersion = true;
-                    }
-
-                } catch (Exception e) {
-                    logger.error("Failed to compile custom request form lifecycle sequence for blueprint: " + bpName,
-                            e);
-                }
-            } else {
-                logger.info("No custom request form file layout ('{}') found for asset workspace. Skipping form sync.",
-                        formFileName);
+            // 3. Evaluate and update form mutations
+            boolean formChanged = processBlueprintForm(bpDir, bpName, blueprintId, bp, mapper, gson, stylesFile);
+            if (formChanged) {
+                shouldReleaseVersion = true;
             }
 
-            // --- FINAL DEFERRED RELEASE SEQUENCE GATE ---
+            // 4. Fire versioning deployment updates if changes are confirmed
             if (shouldReleaseVersion) {
-                logger.info("Triggering lifecycle version mapping release sequence for blueprint: {}",
-                        bpName);
-                try {
-                    // Only pass styles if the file exists and is populated
-                    if (stylesFile.exists()) {
-                        String localCssContent = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
-                                java.nio.charset.StandardCharsets.UTF_8).trim();
-                        if (!localCssContent.isEmpty()) {
-                            processingTarget.setStyles(localCssContent);
-                        }
-                    }
-
-                    restClient.versionBlueprint(blueprintId, processingTarget.toMap());
-
-                    if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
-                        unreleaseOldVersions(blueprintId);
-                    }
-                } catch (Exception e) {
-                    logger.warn(
-                            "Blueprint '{}' draft was created/updated, but versioning failed (content validation error on target). Blueprint remains in draft state: {}",
-                            bpName, e.getMessage());
-                }
+                executeBlueprintRelease(blueprintId, bpName, processingTarget, stylesFile);
             } else {
                 logger.info(
                         "Skipped redundant cloud template version creation for blueprint asset '{}' (Blueprint and Form are up-to-date).",
                         bpName);
             }
+        }
+    }
+
+    /**
+     * Resolves organization names to dynamic environment UUID mapping properties.
+     */
+    private void resolveOrganizationIds(VcfaBlueprint bp) throws IOException {
+        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
+        if (organizationSharings != null) {
+            for (OrganizationSharing sharing : organizationSharings) {
+                if (sharing.getOrganization().equalsIgnoreCase("ALL")) {
+                    sharing.setOrgId("ALL");
+                } else {
+                    sharing.setOrgId(restClient.getOrganizationId(sharing.getOrganization()));
+                }
+            }
+        }
+    }
+
+    /**
+     * Resolves state matching and mutations to generate or alter the active server
+     * draft.
+     */
+    private BlueprintSyncResult syncBlueprintDraft(VcfaBlueprint bp, String bpName, VcfaBlueprint existing)
+            throws IOException {
+        if (existing == null) {
+            logger.info("Blueprint '{}' not found on target host server. Executing draft creation.", bpName);
+            return new BlueprintSyncResult(restClient.createBlueprint(bp), true);
+        }
+
+        VcfaBlueprint fullServerBp = restClient.getBlueprintById(existing.getId());
+
+        String localContent = bp.getContent() != null ? bp.getContent().trim().replace("\r\n", "\n") : "";
+        String serverContent = (fullServerBp != null && fullServerBp.getContent() != null)
+                ? fullServerBp.getContent().trim().replace("\r\n", "\n")
+                : "";
+        Set<String> localOrgSharings = bp.getOrganizationSharings() == null
+                ? new HashSet<>()
+                : bp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId).collect(Collectors.toSet());
+        Set<String> serverOrgSharings = (fullServerBp == null || fullServerBp.getOrganizationSharings() == null)
+                ? new HashSet<>()
+                : fullServerBp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId)
+                        .collect(Collectors.toSet());
+
+        if (localContent.equals(serverContent)
+                && localOrgSharings.equals(serverOrgSharings)
+                && Objects.equals(bp.getRequestScopeOrg(), fullServerBp.getRequestScopeOrg())) {
+            logger.info(
+                    "Blueprint '{}' working draft content matches server content exactly. Checking custom request forms...",
+                    bpName);
+            return new BlueprintSyncResult(fullServerBp, false);
+        } else {
+            logger.info(
+                    "Blueprint '{}' found on target host server with content changes. Overwriting active working draft.",
+                    bpName);
+            return new BlueprintSyncResult(restClient.updateBlueprint(existing.getId(), bp), true);
+        }
+    }
+
+    /**
+     * Compares local workspace request form configurations with active host
+     * deployments.
+     * Returns true if form updates were applied.
+     */
+    @SuppressWarnings("unchecked")
+    private boolean processBlueprintForm(File bpDir, String bpName, String blueprintId, VcfaBlueprint bp,
+            ObjectMapper mapper, com.google.gson.Gson gson, File stylesFile) {
+        String formFileName = bpName + "__FormData.json";
+        File formDataFile = new File(bpDir, formFileName);
+
+        if (!formDataFile.exists()) {
+            logger.info("No custom request form file layout ('{}') found for asset workspace. Skipping form sync.",
+                    formFileName);
+            return false;
+        }
+
+        logger.info("Custom request form artifact layout definition found: '{}'. Evaluating variations...",
+                formFileName);
+        try {
+            String formFileContent = new String(java.nio.file.Files.readAllBytes(formDataFile.toPath()),
+                    java.nio.charset.StandardCharsets.UTF_8);
+            JsonObject formWrapperElement = com.google.gson.JsonParser.parseString(formFileContent).getAsJsonObject();
+
+            String localFormJsonNormalized = gson.toJson(formWrapperElement);
+            Map<String, Object> localFormPayload = gson.fromJson(localFormJsonNormalized, Map.class);
+            boolean formChanged = true;
+
+            try {
+                Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", blueprintId);
+                if (rawFormResponse != null) {
+                    Map<String, Object> formMetaMap = mapper.convertValue(rawFormResponse, Map.class);
+                    if (formMetaMap != null && formMetaMap.containsKey("form") && formMetaMap.get("form") != null) {
+                        Object serverFormObj = formMetaMap.get("form");
+                        String serverFormJsonNormalized = "";
+
+                        if (serverFormObj instanceof String) {
+                            serverFormJsonNormalized = gson
+                                    .toJson(com.google.gson.JsonParser.parseString((String) serverFormObj));
+                        } else {
+                            serverFormJsonNormalized = gson.toJson(
+                                    com.google.gson.JsonParser.parseString(mapper.writeValueAsString(serverFormObj)));
+                        }
+
+                        String serverStyles = formMetaMap.containsKey("styles") && formMetaMap.get("styles") != null
+                                ? formMetaMap.get("styles").toString().trim()
+                                : "";
+                        String localCssContent = "";
+                        if (stylesFile.exists()) {
+                            localCssContent = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
+                                    java.nio.charset.StandardCharsets.UTF_8).trim();
+                        }
+
+                        if (localFormJsonNormalized.equals(serverFormJsonNormalized)
+                                && localCssContent.equals(serverStyles)) {
+                            logger.info(
+                                    "Custom request form layouts and sibling styles match perfectly on server for blueprint '{}'. Skipping redundant updates.",
+                                    bpName);
+                            formChanged = false;
+                        }
+                    }
+                }
+            } catch (Exception fe) {
+                logger.info("No active form found on server or unable to parse. Treating form as updated/new.");
+            }
+
+            if (formChanged) {
+                logger.info("Form configuration updates detected for blueprint '{}'. Triggering updates sequence...",
+                        bpName);
+
+                String cssStylesPayload = "";
+                if (stylesFile.exists()) {
+                    cssStylesPayload = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
+                            java.nio.charset.StandardCharsets.UTF_8).trim();
+                }
+
+                restClient.createBlueprintForm(blueprintId, localFormPayload, bp.getContent(), bp.getName(),
+                        bp.getDescription(), bp.getRequestScopeOrg(), cssStylesPayload);
+                logger.info("Successfully bound updated custom request form configurations to Blueprint entity '{}'.",
+                        bpName);
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("Failed to compile custom request form lifecycle sequence for blueprint: " + bpName, e);
+        }
+
+        return false;
+    }
+
+    /**
+     * Executes the final deferred API versioning sequence and performs version tree
+     * housecleaning tasks.
+     */
+    private void executeBlueprintRelease(String blueprintId, String bpName, VcfaBlueprint processingTarget,
+            File stylesFile) {
+        logger.info("Triggering lifecycle version mapping release sequence for blueprint: {}", bpName);
+        try {
+            if (stylesFile.exists()) {
+                String localCssContent = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
+                        java.nio.charset.StandardCharsets.UTF_8).trim();
+                if (!localCssContent.isEmpty()) {
+                    processingTarget.setStyles(localCssContent);
+                }
+            }
+
+            restClient.versionBlueprint(blueprintId, processingTarget.toMap());
+
+            if (this.config != null && this.config.getUnreleaseBlueprintVersions()) {
+                unreleaseOldVersions(blueprintId);
+            }
+        } catch (Exception e) {
+            logger.warn(
+                    "Blueprint '{}' draft was created/updated, but versioning failed (content validation error on target). Blueprint remains in draft state: {}",
+                    bpName, e.getMessage());
+        }
+    }
+
+    /**
+     * Lightweight internal tuple holding draft synchronization evaluation targets.
+     */
+    private static class BlueprintSyncResult {
+        final VcfaBlueprint processingTarget;
+        final boolean shouldReleaseVersion;
+
+        BlueprintSyncResult(VcfaBlueprint processingTarget, boolean shouldReleaseVersion) {
+            this.processingTarget = processingTarget;
+            this.shouldReleaseVersion = shouldReleaseVersion;
         }
     }
 
@@ -439,7 +488,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             bp.setOrganizationSharings(null);
             return;
         }
-        for (OrganizationSharing sharing: organizationSharings) {
+        for (OrganizationSharing sharing : organizationSharings) {
             if (sharing.getOrganization() == null) {
                 logger.warn("Missing organization in an organizationSharing element");
             } else {
@@ -479,7 +528,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             Object rawScope = bp.asExportMap().get("requestScopeOrg");
             filteredDetails.add("requestScopeOrg", new JsonPrimitive(rawScope != null ? rawScope.toString() : "false"));
         }
-        
+
         transformOrganizationSharingsForPull(bp, filteredDetails);
 
         com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setLenient().setPrettyPrinting().serializeNulls()
@@ -614,19 +663,16 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      */
     private void transformOrganizationSharingsForPull(VcfaBlueprint bp, JsonObject filteredDetails) throws IOException {
         List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
-        if (organizationSharings == null || organizationSharings.isEmpty()) {
-            return;
-        }
-        JsonArray transformedSharings = new JsonArray();
-        for (OrganizationSharing sharing: organizationSharings) {
-            if (sharing.getOrgId() == null) {
-                logger.warn("Missing orgId in an organizationSharing element");
-            } else {
+
+        if (organizationSharings != null) {
+            JsonArray transformedSharings = new JsonArray();
+            for (OrganizationSharing sharing : organizationSharings) {
                 JsonObject transformedSharing = new JsonObject();
-                if ("ALL".equalsIgnoreCase(sharing.getOrgId())) {
+                if (sharing.getOrgId().equalsIgnoreCase("ALL")) {
                     transformedSharing.add("organization", new JsonPrimitive("ALL"));
                 } else {
-                    transformedSharing.add("organization", new JsonPrimitive(restClient.getOrganizationName(sharing.getOrgId())));
+                    transformedSharing.add("organization",
+                            new JsonPrimitive(restClient.getOrganizationName(sharing.getOrgId())));
                 }
                 transformedSharings.add(transformedSharing);
             }
@@ -634,7 +680,6 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 filteredDetails.add("organizationSharings", transformedSharings);
             }
         }
-
     }
 
     /**
