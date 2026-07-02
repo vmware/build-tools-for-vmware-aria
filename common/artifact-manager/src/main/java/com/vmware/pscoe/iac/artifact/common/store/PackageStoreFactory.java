@@ -150,7 +150,7 @@ public final class PackageStoreFactory {
 		}
 
         if (configuration instanceof VcfAutoConfiguration) {
-            LOGGER.info("Detected ConfigurationVcfAuto");
+            LOGGER.info("Detected VcfAutoConfiguration");
             VcfAutoConfiguration config = (VcfAutoConfiguration) configuration;
             LOGGER.info("Creating configuration for VCFA All App");
 

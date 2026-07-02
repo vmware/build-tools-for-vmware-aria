@@ -70,7 +70,7 @@ public class CleanMojo extends AbstractIacMojo {
 			getLog().info("Initializing execution wipe routine targeting the remote system environment...");
 
 			// 1. Fetch the configuration and rest client for the VCFA engine
-			com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto config = getConfigurationForVcfAuto();
+			VcfAutoConfiguration config = getConfigurationForVcfAuto();
 			com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto restClient = com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory
 					.getClientVcfAuto(config);
 
