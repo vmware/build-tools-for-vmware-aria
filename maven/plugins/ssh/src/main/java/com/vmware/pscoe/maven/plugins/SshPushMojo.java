@@ -57,7 +57,7 @@ public class SshPushMojo extends AbstractIacMojo {
 
 	private void importArtifacts(Collection<Artifact> allArtifacts) throws MojoExecutionException {
 		List<Artifact> bscArtifacts = allArtifacts.stream()
-				.filter(a -> a.getType().equals(PackageType.BASIC.getPackageExtention())).collect(Collectors.toList());
+				.filter(a -> a.getType().equals(PackageType.BASIC.getPackageExtension())).collect(Collectors.toList());
 
 		try {
 			List<Package> packages = bscArtifacts.stream().map(SshPushMojo::packageFromArtifact)

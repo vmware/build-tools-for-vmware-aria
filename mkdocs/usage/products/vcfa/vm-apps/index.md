@@ -22,15 +22,15 @@ title: VM Apps / Classic Tenant Project
 ## Supported Content
 
 - `blueprint`
-- `content-sources`
+- `content-source`
 - `property-group`
 - `catalog-item`
 - `catalog-entitlement`
 - `subscription`
 - `custom-resource`
-- `resource-actions`
-- `policies`
-- `scenarios`
+- `resource-action`
+- `policy`
+- `scenario`
 
 ## Create New {{ products.vra_9_short_name }} Project
 {{ general.bta_name }} provides ready to use {{ products.vra_9_short_name }} project templates (*maven archetypes*).
@@ -55,7 +55,7 @@ mvn archetype:generate \
     If **build_tools_for_aria_version** is not specified a default value of 2.38.1 will be used.
 
 !!! note
-    Make sure to remove any trialing spaces after the backslashes (**\\**) otherwise the command will fail.
+    Make sure to remove any trailing spaces after the backslashes (**\\**) otherwise the command will fail.
 
 ### Content Structure
 
@@ -92,7 +92,7 @@ catalog
         └── entitlements
             └── Blueprint.yaml
             └── Workflow.yaml
-            └── ABX Action.yaml       
+            └── ABX Action.yaml
         └── subscriptions
             └── subscription.json
         └── custom-resources
@@ -109,9 +109,9 @@ catalog
             └── deployment-limit
                 └── deploymentLimitPolicy1.json
             └── lease
-                └── leasePolicy1.json 
+                └── leasePolicy1.json
             └── resource-quota
-                └── resourceQuotaPolicy1.json 
+                └── resourceQuotaPolicy1.json
         └── scenarios
             └── Scenario Name.json
 ```
@@ -158,8 +158,8 @@ Contents are managed by different rules.
 
 ##### Export Rules for content types
 
-- Empty array [] - nothing is exported  
-- List of items - the given items are exported. If they are not present on the server an Exception is thrown.  
+- Empty array [] - nothing is exported
+- List of items - the given items are exported. If they are not present on the server an Exception is thrown.
 - Null (nothing given) - everything is being exported
 
 !!! note

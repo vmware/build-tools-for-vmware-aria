@@ -24,6 +24,39 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Support for VCF 9 Automation All-Apps Organizations*
+
+New type of project was added that supports VCFA content for All-Apps organizations.
+The project pom.xml should be configured with the following parameters:
+- parent.groupId=*com.vmware.pscoe.vcf*
+- parent.artifactId=*all-apps-package*
+- packaging=*vcfa-all-apps*
+The project has structure similar to vra-ng and supports the following content types:
+- `blueprint` (including custom form, publishing to Catalog, organization sharing)
+- `property-group`
+- `custom-resource`
+- `resource-action`
+- `workflow` (publishing Orchestrator workflows to Catalog, including organization sharing)
+- `subscription`
+- `policy` (supports Approval policy, Day 2 Actions policy, IaaS Resource policy, Lease policy)
+- `scenario` (notification scenarios customization)
+
+New maven plugin `vcfa-all-apps` supporting operations:
+- `package` (the package get extension *.vcfaa*)
+- `vcfa-all-apps:pull`
+- `vcfa-all-apps:push`
+- `vcfa-all-apps:clean`
+
+New archetype for creating vcfa-all-apps projects
+- archetypeGroupId=com.vmware.pscoe.vcfa-all-apps.archetypes
+- archetypeArtifactId=package-vcfa-all-apps-archetype
+The created project contains content samples.
+
+Added support for *.vcfaa* packages to *package-installer*
+
+Added new set of parameters to settings.xml dedicated to vcfa-all-apps projects
+
+
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ## Improvements

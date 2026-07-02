@@ -1,0 +1,23 @@
+{
+  "id" : "0697ce31-1f66-4fd3-97b9-e45f36d3de56",
+  "name" : "vm_resize_approval",
+  "typeId" : "com.vmware.policy.approval",
+  "enforcementType" : "HARD",
+  "description" : "Sample Approval policy",
+  "definition" : {
+    "level" : 1,
+    "actions" : [ "CCI.Supervisor.Resource.VirtualMachine.Resize" ],
+    "approvers" : [ "ROLE:PROJECT_ADMINISTRATORS" ],
+    "approvalMode" : "ANY_OF",
+    "approverType" : "ROLE",
+    "autoApprovalExpiry" : 3,
+    "autoApprovalDecision" : "REJECT"
+  },
+  "criteria" : {
+    "matchExpression" : [ {
+      "key" : "requestedBy",
+      "operator" : "contains",
+      "value" : "dummy"
+    } ]
+  }
+}
