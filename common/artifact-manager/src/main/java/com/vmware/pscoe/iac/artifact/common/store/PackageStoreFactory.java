@@ -53,7 +53,7 @@ import com.vmware.pscoe.iac.artifact.common.strategy.StrategySkipOldVersions;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcd.rest.RestClientVcd;
 import com.vmware.pscoe.iac.artifact.vcd.store.VcdNgPackageStore;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.VcfaPackageStore;
 
@@ -149,9 +149,9 @@ public final class PackageStoreFactory {
 			return new VraNgPackageStore(restClient, config);
 		}
 
-        if (configuration instanceof ConfigurationVcfAuto) {
+        if (configuration instanceof VcfAutoConfiguration) {
             LOGGER.info("Detected ConfigurationVcfAuto");
-            ConfigurationVcfAuto config = (ConfigurationVcfAuto) configuration;
+            VcfAutoConfiguration config = (VcfAutoConfiguration) configuration;
             LOGGER.info("Creating configuration for VCFA All App");
 
             RestClientVcfAuto restClient = RestClientFactory.getClientVcfAuto(config);

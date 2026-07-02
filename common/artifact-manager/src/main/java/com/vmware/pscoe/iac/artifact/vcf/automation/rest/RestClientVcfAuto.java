@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonObject;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItemForm;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaPropertyGroup;
@@ -42,11 +42,11 @@ import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 public class RestClientVcfAuto extends RestClientVcfAutoPrimitive {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAuto.class);
 
-	public RestClientVcfAuto(ConfigurationVcfAuto configuration) {
+	public RestClientVcfAuto(VcfAutoConfiguration configuration) {
 		super(configuration, null);
 	}
 
-	public RestClientVcfAuto(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
+	public RestClientVcfAuto(VcfAutoConfiguration configuration, RestTemplate restTemplate) {
 		super(configuration, restTemplate);
 	}
 

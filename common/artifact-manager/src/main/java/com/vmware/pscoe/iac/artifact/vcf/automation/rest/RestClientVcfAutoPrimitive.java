@@ -47,7 +47,7 @@ import com.google.gson.Strictness;
 import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClient;
 import com.vmware.pscoe.iac.artifact.common.store.Version;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCatalogItemForm;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaCustomResourceType;
@@ -73,7 +73,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	private static final int STATUS_CODE_202 = 202;
 	private static final int STATUS_CODE_204 = 204;
 
-	protected final ConfigurationVcfAuto configuration;
+	protected final VcfAutoConfiguration configuration;
 	protected static final Logger LOGGER = LoggerFactory.getLogger(RestClientVcfAutoPrimitive.class);
 	protected final ObjectMapper objectMapper;
 	protected final RestTemplate restTemplate;
@@ -81,11 +81,11 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	protected Version productVersion;
 	private String projectId;
 
-	public RestClientVcfAutoPrimitive(ConfigurationVcfAuto configuration) {
+	public RestClientVcfAutoPrimitive(VcfAutoConfiguration configuration) {
 		this(configuration, null);
 	}
 
-	public RestClientVcfAutoPrimitive(ConfigurationVcfAuto configuration, RestTemplate restTemplate) {
+	public RestClientVcfAutoPrimitive(VcfAutoConfiguration configuration, RestTemplate restTemplate) {
 		this.configuration = configuration;
 		this.objectMapper = new ObjectMapper();
 		this.restTemplate = restTemplate;

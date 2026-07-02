@@ -15,7 +15,7 @@
 package com.vmware.pscoe.iac.artifact.vcf.automation.store;
 
 import com.vmware.pscoe.iac.artifact.common.store.Package;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageMemberType;
@@ -69,11 +69,11 @@ public class VcfaTypeStoreFactory { // TODO REVERT AFTER DEVELOPMENT IS DONE, th
 
 	private final RestClientVcfAuto restClient;
 	private final Package vcfaPackage;
-	private final ConfigurationVcfAuto config;
+	private final VcfAutoConfiguration config;
 	private final VcfaPackageDescriptor descriptor;
 
 	protected VcfaTypeStoreFactory(final RestClientVcfAuto restClient, final Package vcfaPackage,
-			final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
+			final VcfAutoConfiguration config, final VcfaPackageDescriptor descriptor) {
 		this.restClient = restClient;
 		this.vcfaPackage = vcfaPackage;
 		this.config = config;
@@ -81,7 +81,7 @@ public class VcfaTypeStoreFactory { // TODO REVERT AFTER DEVELOPMENT IS DONE, th
 	}
 
 	public static VcfaTypeStoreFactory withConfig(final RestClientVcfAuto restClient, final Package vcfaPackage,
-			final ConfigurationVcfAuto config, final VcfaPackageDescriptor descriptor) {
+			final VcfAutoConfiguration config, final VcfaPackageDescriptor descriptor) {
 		return new VcfaTypeStoreFactory(restClient, vcfaPackage, config, descriptor);
 	}
 

@@ -42,7 +42,7 @@ import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException
 import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 
 public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 
@@ -250,10 +250,10 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 	 * @return VCFA configuration
 	 * @throws ConfigurationException
 	 */
-	protected ConfigurationVcfAuto getConfigurationForVcfAuto() throws ConfigurationException {
+	protected VcfAutoConfiguration getConfigurationForVcfAuto() throws ConfigurationException {
 		Optional<Configuration> configuration = getConfigurationForType(PackageType.VCFA_ALL_APPS);
 		if (configuration.isPresent()) {
-			return (ConfigurationVcfAuto) configuration.get();
+			return (VcfAutoConfiguration) configuration.get();
 		} else {
 			throw new ConfigurationException("Invalid or incomplete VCFA configuration.");
 		}
@@ -299,7 +299,7 @@ public abstract class AbstractIacMojo extends AbstractVroPkgMojo {
 					.ofNullable(ConfigurationCs.fromProperties(getConfigurationProperties(type, vrang, "vrang.")));
         } else if (PackageType.VCFA_ALL_APPS == type) {
             return Optional
-                    .ofNullable(ConfigurationVcfAuto.fromProperties(getConfigurationProperties(type, vcfa, "vcfa.")));
+                    .ofNullable(VcfAutoConfiguration.fromProperties(getConfigurationProperties(type, vcfa, "vcfa.")));
         } else {
             return Optional.empty();
         }

@@ -70,7 +70,7 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 
 /**
  * Created by tsimchev on 2/22/18.
@@ -231,19 +231,19 @@ enum Option {
 	 */
 	VCFA_CSP_SERVER(
 			"vcfa_csp_host",
-			ConfigurationVcfAuto.CSP_HOST),
+			VcfAutoConfiguration.CSP_HOST),
 	/**
 	 * VCFA proxy.
 	 */
 	VCFA_PROXY(
 			"vcfa_proxy",
-			ConfigurationVcfAuto.PROXY),
+			VcfAutoConfiguration.PROXY),
 	/**
 	 * VCFA proxy required.
 	 */
 	VCFA_PROXY_REQUIRED(
 			"vcfa_proxy_required",
-			ConfigurationVcfAuto.PROXY_REQUIRED),
+			VcfAutoConfiguration.PROXY_REQUIRED),
 	/**
 	 * VCFA port.
 	 */
@@ -255,31 +255,31 @@ enum Option {
 	 */
 	VCFA_DATA_COLLECTION_DELAY_SECONDS(
 			"vcfa_data.collection.delay.seconds",
-			ConfigurationVcfAuto.DATA_COLLECTION_DELAY_SECONDS),
+			VcfAutoConfiguration.DATA_COLLECTION_DELAY_SECONDS),
 	/**
 	 * VCFA org name.
 	 */
 	VCFA_ORGANIZATION_NAME(
 			"vcfa_org_name",
-			ConfigurationVcfAuto.ORGANIZATION_NAME),
+			VcfAutoConfiguration.ORGANIZATION_NAME),
 	/**
 	 * VCFA project name.
 	 */
 	VCFA_PROJECT_NAME(
 			"vcfa_project_name",
-			ConfigurationVcfAuto.PROJECT_NAME),
+			VcfAutoConfiguration.PROJECT_NAME),
 	/**
 	 * VCFA auth with refresh token.
 	 */
 	VCFA_AUTH_WITH_REFRESH_TOKEN(
 			"vcfa_auth_with_refresh_token",
-			"auth_with_" + ConfigurationVcfAuto.REFRESH_TOKEN),
+			"auth_with_" + VcfAutoConfiguration.REFRESH_TOKEN),
 	/**
 	 * VCFA refresh token.
 	 */
 	VCFA_REFRESH_TOKEN(
 			"vcfa_refresh_token",
-			ConfigurationVcfAuto.REFRESH_TOKEN),
+			VcfAutoConfiguration.REFRESH_TOKEN),
 	/**
 	 * VCFA username.
 	 */
@@ -297,25 +297,25 @@ enum Option {
 	 */
 	VCFA_IMPORT_OVERWRITE_MODE(
 			"vcfa_import_overwrite_mode",
-			ConfigurationVcfAuto.PACKAGE_IMPORT_OVERWRITE_MODE),
+			VcfAutoConfiguration.PACKAGE_IMPORT_OVERWRITE_MODE),
 	/**
 	 * VCFA import timeout.
 	 */
 	VCFA_IMPORT_TIMEOUT(
 			"vcfa_import_timeout",
-			ConfigurationVcfAuto.IMPORT_TIMEOUT),
+			VcfAutoConfiguration.IMPORT_TIMEOUT),
 	/**
 	 * VCFA VRO integration name.
 	 */
 	VCFA_VRO_INTEGRATION_NAME(
 			"vcfa_vro_integration_name",
-			ConfigurationVcfAuto.VRO_INTEGRATION),
+			VcfAutoConfiguration.VRO_INTEGRATION),
 	/**
 	 * VCFA cloud proxy name.
 	 */
 	VCFA_CLOUD_PROXY_NAME(
 			"vcfa_cloud_proxy_name",
-			ConfigurationVcfAuto.CLOUD_PROXY_NAME),
+			VcfAutoConfiguration.CLOUD_PROXY_NAME),
 
 	/**
 	 * VCFA unrelease blueprint versions. Decides wether old versions need to be
@@ -325,7 +325,7 @@ enum Option {
 	 */
 	VCFA_BP_UNRELEASE_VERSIONS(
 			"vcfa_bp_unrelease_versions",
-			ConfigurationVcfAuto.UNRELEASE_BLUEPRINT_VERSIONS),
+			VcfAutoConfiguration.UNRELEASE_BLUEPRINT_VERSIONS),
 
 	/**
 	 * VCFA delete last version.
@@ -333,7 +333,7 @@ enum Option {
 	 */
 	VCFA_DELETE_CONTENT(
 			"vcfa_delete_content",
-			ConfigurationVcfAuto.DELETE_CONTENT),
+			VcfAutoConfiguration.DELETE_CONTENT),
 
 	/**
 	 * VRLI server.
@@ -1068,7 +1068,7 @@ public final class Installer {
 		if (input.allTrue(Option.VCFA_IMPORT)) {
 			PackageStoreFactory
 					.getInstance(
-							ConfigurationVcfAuto.fromProperties(input.getMappings(ConfigurationPrefix.VCFA.getValue())))
+							VcfAutoConfiguration.fromProperties(input.getMappings(ConfigurationPrefix.VCFA.getValue())))
 					.importAllPackages(getFilesystemPackages(PackageType.VCFA_ALL_APPS), false, vroEnableBackup);
 
 		}
@@ -1115,7 +1115,7 @@ public final class Installer {
 
 		if (input.allTrue(Option.VCFA_DELETE_CONTENT)) {
 			String[] prefixes = { ConfigurationPrefix.VCFA.getValue() };
-			PackageStoreFactory.getInstance(ConfigurationVcfAuto.fromProperties(input.getMappings(prefixes)))
+			PackageStoreFactory.getInstance(VcfAutoConfiguration.fromProperties(input.getMappings(prefixes)))
 					.deleteAllPackages(getFilesystemPackages(PackageType.VCFA_ALL_APPS), true, false, false);
 		}
 
@@ -1555,7 +1555,7 @@ public final class Installer {
 		userInput(input, Option.VCFA_IMPORT_OVERWRITE_MODE, "  VCFA9 Import Mode", "SKIP,OVERWRITE");
 		userInput(input, Option.VCFA_VRO_INTEGRATION_NAME, "  VCFA9 integration name", "embedded-VRO");
 		userInput(input, Option.VCFA_IMPORT_TIMEOUT, "  VCFA9 Import timeout",
-				ConfigurationVcfAuto.DEFAULT_IMPORT_TIMEOUT);
+				VcfAutoConfiguration.DEFAULT_IMPORT_TIMEOUT);
 		userInput(input, Option.VCFA_DATA_COLLECTION_DELAY_SECONDS, "  VCFA's vRO Data Collection delay in seconds.",
 				VCFA_DATA_COLLECTION_DELAY_SECONDS);
 	}

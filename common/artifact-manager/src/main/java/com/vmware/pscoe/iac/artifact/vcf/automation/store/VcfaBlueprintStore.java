@@ -40,7 +40,7 @@ import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFolderFilter;
 import com.vmware.pscoe.iac.artifact.vcf.automation.common.VcfaDescriptorHelper;
-import com.vmware.pscoe.iac.artifact.vcf.automation.models.OrganizationSharing;
+import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaOrganizationSharing;
 import com.vmware.pscoe.iac.artifact.vcf.automation.models.VcfaBlueprint;
 
 /**
@@ -257,7 +257,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      * Resolves organization names to dynamic environment UUID mapping properties.
      */
     private void transformOrganizationSharingsForPush(VcfaBlueprint bp) throws IOException {
-        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
+        List<VcfaOrganizationSharing> organizationSharings = bp.getOrganizationSharings();
         if (organizationSharings == null) {
             return;
         }
@@ -265,7 +265,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             bp.setOrganizationSharings(null);
             return;
         }
-        for (OrganizationSharing sharing : organizationSharings) {
+        for (VcfaOrganizationSharing sharing : organizationSharings) {
             if (sharing.getOrganization() == null) {
                 logger.warn("Missing organization in an organizationSharing element");
             } else {
@@ -297,10 +297,10 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 : "";
         Set<String> localOrgSharings = bp.getOrganizationSharings() == null
                 ? new HashSet<>()
-                : bp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId).collect(Collectors.toSet());
+                : bp.getOrganizationSharings().stream().map(VcfaOrganizationSharing::getOrgId).collect(Collectors.toSet());
         Set<String> serverOrgSharings = (fullServerBp == null || fullServerBp.getOrganizationSharings() == null)
                 ? new HashSet<>()
-                : fullServerBp.getOrganizationSharings().stream().map(OrganizationSharing::getOrgId)
+                : fullServerBp.getOrganizationSharings().stream().map(VcfaOrganizationSharing::getOrgId)
                         .collect(Collectors.toSet());
 
         if (localContent.equals(serverContent)
@@ -671,11 +671,11 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      * 
      */
     private void transformOrganizationSharingsForPull(VcfaBlueprint bp, JsonObject filteredDetails) throws IOException {
-        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
+        List<VcfaOrganizationSharing> organizationSharings = bp.getOrganizationSharings();
 
         if (organizationSharings != null) {
             JsonArray transformedSharings = new JsonArray();
-            for (OrganizationSharing sharing : organizationSharings) {
+            for (VcfaOrganizationSharing sharing : organizationSharings) {
                 JsonObject transformedSharing = new JsonObject();
                 if (sharing.getOrgId().equalsIgnoreCase("ALL")) {
                     transformedSharing.add("organization", new JsonPrimitive("ALL"));

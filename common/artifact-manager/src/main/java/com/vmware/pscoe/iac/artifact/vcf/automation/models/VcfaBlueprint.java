@@ -37,7 +37,7 @@ public class VcfaBlueprint implements Identifiable {
     @JsonProperty("requestScopeOrg")
     private Boolean requestScopeOrg;
     @JsonProperty("organizationSharings")
-    private List<OrganizationSharing> organizationSharings;
+    private List<VcfaOrganizationSharing> organizationSharings;
 
     public VcfaBlueprint() {
     }
@@ -98,11 +98,11 @@ public class VcfaBlueprint implements Identifiable {
         this.requestScopeOrg = requestScopeOrg;
     }
 
-    public List<OrganizationSharing> getOrganizationSharings() {
+    public List<VcfaOrganizationSharing> getOrganizationSharings() {
         return organizationSharings;
     }
 
-    public void setOrganizationSharings(List<OrganizationSharing> organizationSharings) {
+    public void setOrganizationSharings(List<VcfaOrganizationSharing> organizationSharings) {
         this.organizationSharings = organizationSharings;
     }
     

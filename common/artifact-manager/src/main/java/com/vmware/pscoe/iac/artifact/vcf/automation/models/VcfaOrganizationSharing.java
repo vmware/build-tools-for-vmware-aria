@@ -19,13 +19,13 @@ import com.vmware.pscoe.iac.artifact.common.annotation.SkipExport;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrganizationSharing {
+public class VcfaOrganizationSharing {
 
     private String orgId;
     @SkipExport
     private String organization;
 
-    public OrganizationSharing() {
+    public VcfaOrganizationSharing() {
     }
 
     public String getOrgId() {

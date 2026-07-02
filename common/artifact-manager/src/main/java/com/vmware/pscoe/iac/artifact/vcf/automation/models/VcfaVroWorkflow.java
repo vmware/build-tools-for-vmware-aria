@@ -38,7 +38,7 @@ public class VcfaVroWorkflow implements Identifiable {
     private Boolean global;
 
     @JsonProperty("organizationSharings")
-    private List<OrganizationSharing> organizationSharings;
+    private List<VcfaOrganizationSharing> organizationSharings;
 
     public VcfaVroWorkflow() {
     }
@@ -99,11 +99,11 @@ public class VcfaVroWorkflow implements Identifiable {
         this.global = global;
     }
 
-    public List<OrganizationSharing> getOrganizationSharings() {
+    public List<VcfaOrganizationSharing> getOrganizationSharings() {
         return organizationSharings;
     }
 
-    public void setOrganizationSharings(List<OrganizationSharing> organizationSharings) {
+    public void setOrganizationSharings(List<VcfaOrganizationSharing> organizationSharings) {
         this.organizationSharings = organizationSharings;
     }
 

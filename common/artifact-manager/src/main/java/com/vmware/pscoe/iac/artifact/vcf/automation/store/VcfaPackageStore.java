@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.models.PackageContent.Content;
-import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.ConfigurationVcfAuto;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 import com.vmware.pscoe.iac.artifact.vcf.automation.rest.RestClientVcfAuto;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageContent;
 import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
@@ -46,9 +46,9 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
     private static final Logger LOGGER = LoggerFactory.getLogger(VcfaPackageStore.class);
 
     private final RestClientVcfAuto restClient;
-    private final ConfigurationVcfAuto config;
+    private final VcfAutoConfiguration config;
 
-    public VcfaPackageStore(RestClientVcfAuto restClient, ConfigurationVcfAuto config) {
+    public VcfaPackageStore(RestClientVcfAuto restClient, VcfAutoConfiguration config) {
         this.restClient = restClient;
         this.config = config;
     }

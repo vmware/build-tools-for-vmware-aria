@@ -29,7 +29,7 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 /**
  * Important - when modify properties refer to comments in @Configuration.
  */
-public class ConfigurationVcfAuto extends Configuration {
+public class VcfAutoConfiguration extends Configuration {
 
 	/**
 	 * param CSP_HOST.
@@ -97,12 +97,12 @@ public class ConfigurationVcfAuto extends Configuration {
 	 */
 	private final Logger logger;
 
-	protected ConfigurationVcfAuto(Properties props) {
+	protected VcfAutoConfiguration(Properties props) {
 		super(PackageType.VCFA_ALL_APPS, props);
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
-	protected ConfigurationVcfAuto(PackageType pkgType, Properties props) {
+	protected VcfAutoConfiguration(PackageType pkgType, Properties props) {
 		super(pkgType, props);
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
@@ -271,8 +271,8 @@ public class ConfigurationVcfAuto extends Configuration {
 	 * @throws ConfigurationException throws configuration exception if validation
 	 *                                fails
 	 */
-	public static ConfigurationVcfAuto fromProperties(Properties props) throws ConfigurationException {
-		ConfigurationVcfAuto config = new ConfigurationVcfAuto(props);
+	public static VcfAutoConfiguration fromProperties(Properties props) throws ConfigurationException {
+		VcfAutoConfiguration config = new VcfAutoConfiguration(props);
 
 		config.validate(false);
 
