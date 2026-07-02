@@ -1355,10 +1355,10 @@ public final class Installer {
 		// +-------------------------------------
 		// | Store Properties for reusage
 		// +-------------------------------------
-		StorePropertiesForReusage(input);
+		storePropertiesForReusage(input);
 	}
 
-	private static void StorePropertiesForReusage(final Input input) {
+	private static void storePropertiesForReusage(final Input input) {
 		String location = "environment.properties";
 		File propsLocation = new File(location);
 		propsLocation = new File(propsLocation.getAbsolutePath());

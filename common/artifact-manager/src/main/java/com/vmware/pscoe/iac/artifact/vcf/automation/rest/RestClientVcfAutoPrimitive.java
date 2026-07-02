@@ -820,7 +820,7 @@ public class RestClientVcfAutoPrimitive extends RestClient {
 	}
 
 	protected void deleteBlueprintCutomFormPrimitive(String id) throws IOException {
-		deletePath("/blueprint/api/blueprints/" + id + "/form", 204, 200);
+		deletePath("/blueprint/api/blueprints/" + id + "/form", STATUS_CODE_204, STATUS_CODE_200);
 	}
 
 	protected void deleteCatalogItemPrimitive(String id) throws IOException {
