@@ -20,20 +20,24 @@
 # To include specific items: enlist item names
 # To include all existing items: leave empty (null)
 
+# Note
+#   Examples refering to Orchestrator workflows are commented out to exclude them from processing
+#   Pushing those examples may fail if the organization is not integrated with Orchestrator,
+#   or if the workflows do not exist or have different id 
 blueprint:
   - Small VM
 property-group:
   - Custom VM Properties
-custom-resource:
-  - Custom REST Host
-resource-action:
-  - Add CD-ROM to Deployment
+custom-resource: []
+#  - Custom REST Host
+resource-action: []
+#  - Add CD-ROM to Deployment
 
-workflow:
-  - Add a user to a user group
+workflow: []
+#  - Add a user to a user group
  
-subscription:
-  - Add user to deployment
+subscription: []
+#  - Add user to deployment
 
 policy:
   approval:
