@@ -34,7 +34,7 @@ Project id was being fetched from the configuration, which means in cases where 
 #### New Behavior
 The project id is now fetched from the restClient, which checks if we have project id or name set and tries to find the correct id if the name is the only thing that is set
 
-#### Relevant Documentation:
+#### Relevant Documentation
 None
 
 ### *.helper.[tj]s files will now be excluded from code coverage reports*

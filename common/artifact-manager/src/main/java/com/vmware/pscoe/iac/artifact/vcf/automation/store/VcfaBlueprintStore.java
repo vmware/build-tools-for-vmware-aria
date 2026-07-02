@@ -201,6 +201,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      * Import a single blueprint directory, creating or updating as needed.
      * Defers the final lifecycle release gate to process form mutations.
      */
+    @SuppressWarnings("checkstyle:methodlength")
     private void importBlueprint(File bpDir, List<VcfaBlueprint> serverBps) throws IOException {
         String bpName = bpDir.getName();
         ObjectMapper mapper = new ObjectMapper();
@@ -217,17 +218,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         setContentIfPresent(bp, bpDir);
         bp.setProjectId(restClient.getProjectId());
 
-        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
-
-        if (organizationSharings != null) {
-            for (OrganizationSharing sharing: organizationSharings) {
-                if (sharing.getOrganization().equalsIgnoreCase("ALL")) {
-                    sharing.setOrgId("ALL");
-                } else {
-                    sharing.setOrgId(restClient.getOrganizationId(sharing.getOrganization()));
-                }
-            }
-        }
+        transformOrganizationSharingsForPush(bp);
 
         VcfaBlueprint existing = serverBps.stream()
                 .filter(m -> bpName.equals(m.getName()))
@@ -437,6 +428,31 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     }
 
     /**
+     * Replace orgId in organizationSharings with organization names
+     */
+    private void transformOrganizationSharingsForPush(VcfaBlueprint bp) throws IOException {
+        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
+        if (organizationSharings == null) {
+            return;
+        }
+        if (organizationSharings.isEmpty()) {
+            bp.setOrganizationSharings(null);
+            return;
+        }
+        for (OrganizationSharing sharing: organizationSharings) {
+            if (sharing.getOrganization() == null) {
+                logger.warn("Missing organization in an organizationSharing element");
+            } else {
+                if ("ALL".equalsIgnoreCase(sharing.getOrganization())) {
+                    sharing.setOrgId("ALL");
+                } else {
+                    sharing.setOrgId(restClient.getOrganizationId(sharing.getOrganization()));
+                }
+            }
+        }
+    }
+
+    /**
      * Write blueprint meta, YAML content, and server-side custom request forms to
      * disk.
      * Handles automatic deletion of forms and stylesheet layouts if they are
@@ -464,23 +480,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             filteredDetails.add("requestScopeOrg", new JsonPrimitive(rawScope != null ? rawScope.toString() : "false"));
         }
         
-        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
-
-        if (organizationSharings != null) {
-            JsonArray transformedSharings = new JsonArray();
-            for (OrganizationSharing sharing: organizationSharings) {
-                JsonObject transformedSharing = new JsonObject();
-                if (sharing.getOrgId().equalsIgnoreCase("ALL")) {
-                    transformedSharing.add("organization", new JsonPrimitive("ALL"));
-                } else {
-                    transformedSharing.add("organization", new JsonPrimitive(restClient.getOrganizationName(sharing.getOrgId())));
-                }
-                transformedSharings.add(transformedSharing);
-            }
-            if (transformedSharings.size() > 0) {
-                filteredDetails.add("organizationSharings", transformedSharings);
-            }
-        }
+        transformOrganizationSharingsForPull(bp, filteredDetails);
 
         com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setLenient().setPrettyPrinting().serializeNulls()
                 .create();
@@ -607,6 +607,34 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     */
+    private void transformOrganizationSharingsForPull(VcfaBlueprint bp, JsonObject filteredDetails) throws IOException {
+        List<OrganizationSharing> organizationSharings = bp.getOrganizationSharings();
+        if (organizationSharings == null || organizationSharings.isEmpty()) {
+            return;
+        }
+        JsonArray transformedSharings = new JsonArray();
+        for (OrganizationSharing sharing: organizationSharings) {
+            if (sharing.getOrgId() == null) {
+                logger.warn("Missing orgId in an organizationSharing element");
+            } else {
+                JsonObject transformedSharing = new JsonObject();
+                if ("ALL".equalsIgnoreCase(sharing.getOrgId())) {
+                    transformedSharing.add("organization", new JsonPrimitive("ALL"));
+                } else {
+                    transformedSharing.add("organization", new JsonPrimitive(restClient.getOrganizationName(sharing.getOrgId())));
+                }
+                transformedSharings.add(transformedSharing);
+            }
+            if (transformedSharings.size() > 0) {
+                filteredDetails.add("organizationSharings", transformedSharings);
+            }
+        }
+
     }
 
     /**

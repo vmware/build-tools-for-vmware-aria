@@ -33,7 +33,7 @@ Previously System.sleep and System.waitUntil were returning immediately without 
 
 Now System.sleep and System.waitUntil emplement basic sleep functionality. This functionallity is using busy waiting implementation which is cpu intensive.
 
-### vRBT to support sending UTF-8 content in regards to vRA-NG projects.
+### vRBT to support sending UTF-8 content in regards to vRA-NG projects
 
 #### Previous Behavior
 
@@ -52,7 +52,7 @@ inputs
 #### Previous Behavior
 when executing unit tests, an error message was displayed
 
-```
+```ascii
     Browserslist: caniuse-lite is outdated. Please run
     ...
 ```
@@ -79,7 +79,7 @@ When running the installer script to import property groups to vRA, it fails to 
 When iporting a property group that already exists in vRA to another project, a warning is shown that the import will not be performed. When importing a non-existent property group, it gets the correct project id assigned.
 
 #### Relevant Documentation
-**NONE**
+NONE
 
 ### Pull command is failing if we don't pass any value for content-source (content.yaml)
 
@@ -90,7 +90,7 @@ When executing the Pull command, it fails with NullPointerException if we don't 
 We are able to execute pull command successfully even if we don't pass anything for content-source
 
 #### Relevant Documentation
-**NONE**
+NONE
 
 ### Polyglot packages are not published in JFrog artifactory when the deploy command is executed
 
@@ -101,7 +101,7 @@ When executing the mvn clean deploy command - the package produced by polyglot a
 As part of the build process, polyglot archetype package is now uploaded in Jfrog artifactory just like any other vrbt package.
 
 #### Relevant Documentation
-**NONE**
+NONE
 
 ### New Polyglot Multi Action Capabilities
 This change allows the polyglot archetype to be used to package more than one action at the same time.

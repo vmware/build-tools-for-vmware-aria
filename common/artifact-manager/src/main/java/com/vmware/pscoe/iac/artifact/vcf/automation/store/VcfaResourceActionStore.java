@@ -233,8 +233,8 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 VcfaResourceAction localAction = mapper.convertValue(actionMap, VcfaResourceAction.class);
 
                 Optional<VcfaResourceAction> existingRemote = remoteActions.stream()
-                        .filter(r -> r.getDisplayName().equalsIgnoreCase(localAction.getDisplayName()) ||
-                                (r.getId() != null && r.getId().equalsIgnoreCase(localAction.getId())))
+                        .filter(r -> r.getDisplayName().equalsIgnoreCase(localAction.getDisplayName())
+                                || (r.getId() != null && r.getId().equalsIgnoreCase(localAction.getId())))
                         .findFirst();
 
                 if (existingRemote.isPresent()) {

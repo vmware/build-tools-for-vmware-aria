@@ -57,7 +57,7 @@ Once we have the ID, we would remove it from the CR and re-assigned it again bef
 allow us to create an updated CR that would be imported to vRA no matter if it is used by a deployment.
 
 #### Relevant Documentation
-**NONE**
+NONE
 
 ### *Exports now have local variables so they can be used in the module*
 Typescript export variables are not available locally.
@@ -193,16 +193,16 @@ NONE
 ### Custom Resource Second Day Action Name validation added
 
 #### Previous Behavior
-Custom Resource Second Day action CAN be imported when they have "_" in the strart of their names
-Custom Resource Second Day action CAN be imported when they have "_" in the end of their names
+Custom Resource Second Day action CAN be imported when they have "\_" in the strart of their names
+Custom Resource Second Day action CAN be imported when they have "\_" in the end of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have " " in their names
 Custom Resource Second Day action CANNOT be imported when they have any special characters exept ". : - _" in their names
 
 #### New Behavior
-Custom Resource Second Day action CANNOT be imported when they have "_" in the strart of their names
-Custom Resource Second Day action CANNOT be imported when they have "_" in the end of their names
+Custom Resource Second Day action CANNOT be imported when they have "\_" in the strart of their names
+Custom Resource Second Day action CANNOT be imported when they have "\_" in the end of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have " " in their names

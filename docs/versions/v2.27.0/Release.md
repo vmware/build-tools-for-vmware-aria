@@ -22,7 +22,7 @@ NONE
 ### *Added an archetype for a multi-module project*
 
 #### *Command for archetype generation*
-**Windows OS**
+`Windows OS`
 ```commandline
     mvn archetype:generate "-DinteractiveMode=false"
         "-DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes"
@@ -33,7 +33,7 @@ NONE
         "-DlicenseHeader=<license-header>"
         "-DlicenseTechnicalPreview=false"
 ```
-**Linux/Mac OS**
+`Linux/Mac OS`
 ```commandline
     mvn archetype:generate -DinteractiveMode=false \
         -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes \
@@ -83,66 +83,66 @@ Properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share wit
 Correct value will be taken from package.json file for properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant).
 Possible values for property **Faas provider** are: "aws", "azure", "on-prem". File **package.json** should be placed to the root of the project folder.
 
-**package.json**
-```
+`package.json`
+```json
 {
-	"name": "nic.abx",
-	"version": "1.0.1-SNAPSHOT",
-	"description": "Find Tags Action",
-	"private": false,
-	"scripts": {
-		"build": "polyglotpkg --env abx",
-		"clean": "run-script-os",
-		"clean:win32": "rmdir /S /Q out dist tmp || echo Nothing to clean",
-		"clean:default": "rm -Rf out dist tmp",
-		"test": "echo \"Error: no test specified\""
-	},
-	"keywords": [
-		"polyglot",
-		"package",
-		"abx",
-		"python"
-	],
-	"author": "VMware WWCoE",
-	"license": "VMware Confidential",
-	"devDependencies": {
-		"@types/node": "^14.0.13",
-		"@vmware-pscoe/polyglotpkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/polyglotpkg/2.18.1/polyglotpkg-2.18.1.tgz",
-		"@vmware-pscoe/vropkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/vropkg/2.18.1/vropkg-2.18.1.tgz",
-		"run-script-os": "^1.1.6",
-		"sinon": "^11.1.2",
-		"ts-node": "^8.10.2",
-		"typescript": "^3.9.5"
-	},
-	"dependencies": {},
-	"platform": {
-		"runtime": "python",
-		"action": "findTags",
-		"tags": [],
-		"entrypoint": "handler.handler",
-		"base": "out",
-		"memoryLimitMb": 79,
-		"timeoutSec": 22,
-		"provider": "azure"
-	},
-	"abx": {
-		"shared": true,
-		"inputSecrets": [
-			"Secret1",
-			"Secret2"
-		],
-		"inputConstants": [
-			"Constant1",
-			"Constant2"
-		],
-		"inputs": {
-			"tagKey": ""
-		}
-	},
-	"files": [
-		"out",
-		"!package.json"
-	]
+    "name": "nic.abx",
+    "version": "1.0.1-SNAPSHOT",
+    "description": "Find Tags Action",
+    "private": false,
+    "scripts": {
+        "build": "polyglotpkg --env abx",
+        "clean": "run-script-os",
+        "clean:win32": "rmdir /S /Q out dist tmp || echo Nothing to clean",
+        "clean:default": "rm -Rf out dist tmp",
+        "test": "echo \"Error: no test specified\""
+    },
+    "keywords": [
+        "polyglot",
+        "package",
+        "abx",
+        "python"
+    ],
+    "author": "VMware WWCoE",
+    "license": "VMware Confidential",
+    "devDependencies": {
+        "@types/node": "^14.0.13",
+        "@vmware-pscoe/polyglotpkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/polyglotpkg/2.18.1/polyglotpkg-2.18.1.tgz",
+        "@vmware-pscoe/vropkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/vropkg/2.18.1/vropkg-2.18.1.tgz",
+        "run-script-os": "^1.1.6",
+        "sinon": "^11.1.2",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.5"
+    },
+    "dependencies": {},
+    "platform": {
+        "runtime": "python",
+        "action": "findTags",
+        "tags": [],
+        "entrypoint": "handler.handler",
+        "base": "out",
+        "memoryLimitMb": 79,
+        "timeoutSec": 22,
+        "provider": "azure"
+    },
+    "abx": {
+        "shared": true,
+        "inputSecrets": [
+            "Secret1",
+            "Secret2"
+        ],
+        "inputConstants": [
+            "Constant1",
+            "Constant2"
+        ],
+        "inputs": {
+            "tagKey": ""
+        }
+    },
+    "files": [
+        "out",
+        "!package.json"
+    ]
 }
 ```
 
@@ -204,14 +204,14 @@ Authentication is possible only by specifing username and password in profile co
 Authentication is possible by specifing either refresh token or username and password in profile configuration in settings.xml
 ```xml
 <profile>
-	<id>corp-dev</id>
-	<properties>
-		<!--vRO Connection-->
-		<vro.host>vra-l-01a.corp.local</vro.host>
-		<vro.port>443</vro.port>
-		<vro.auth>vra</vro.auth>
-		<vro.refresh.token>{{refreshToken}}</vro.refresh.token>
-	</properties>
+    <id>corp-dev</id>
+    <properties>
+        <!--vRO Connection-->
+        <vro.host>vra-l-01a.corp.local</vro.host>
+        <vro.port>443</vro.port>
+        <vro.auth>vra</vro.auth>
+        <vro.refresh.token>{{refreshToken}}</vro.refresh.token>
+    </properties>
 </profile>
 ```
 

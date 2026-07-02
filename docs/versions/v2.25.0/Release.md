@@ -109,9 +109,9 @@ NONE
 Installer passes all parameters as type string to the installation workflow.
 Most common case of today is to use **Install** workflow from PsCoE installer library.
 This workflow has 3 parameters:
-* jsonString
-* tags
-* blacklist
+- jsonString
+- tags
+- blacklist
 
 
 The latter two are of type **Array/string**
@@ -122,10 +122,10 @@ This makes impossible usage of any type of parameters such as Arrays, number and
 
 #### Current Behavior
 Different types of inputs for the installation workflow are supported:
-* string
-* number
-* boolean
-* array/string
+- string
+- number
+- boolean
+- array/string
 
 
 #### Relevant Documentation

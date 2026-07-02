@@ -32,7 +32,8 @@ import java.util.Properties;
 
 public final class Validate {
 
-	private static final int DEFAULT_TIMEOUT= 5000;
+	private static final int DEFAULT_TIMEOUT = 5000;
+	private static final int MAX_PORT_NUMBER = 0x00FFFF;
 
 	private Validate() {
 	}
@@ -62,9 +63,9 @@ public final class Validate {
 	}
 
 	public static boolean port(int port, TextIO input) {
-		if (port < 0 || port > 0x00FFFF) {
+		if (port < 0 || port > MAX_PORT_NUMBER) {
 			input.getTextTerminal()
-					.println("  WARNING: Port " + port + " is outside allowed range: 0 - " + (int) 0x00FFFF);
+					.println("  WARNING: Port " + port + " is outside allowed range: 0 - " + MAX_PORT_NUMBER);
 			return false;
 		}
 		return true;

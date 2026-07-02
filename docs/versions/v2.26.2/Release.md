@@ -26,7 +26,7 @@ When pushing a new blueprint without versions file it is never released to the c
 #### Relevant Documentation
 NONE
 
-### *Custom Resource Day-2 Actions Failing on vRA 8.8.2*
+### _Custom Resource Day-2 Actions Failing on vRA 8.8.2_
 When importing a Custom Resource with a Day-2 Action defined the custom resource would fail to be imported ( in vra 8.8.2 ).
 
 #### Previous Behavior
@@ -38,7 +38,6 @@ The `tenant` is no longer being deleted, but is rather updated with the `orgId` 
 
 #### Relevant Documentation
 NONE
-
 
 
 ## Upgrade procedure
