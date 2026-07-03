@@ -18,7 +18,8 @@
 		<module>vra-ng</module>
 		<module>vcfa-all-apps</module>
 		<module>xml</module>
-		<module>vcd-ng</module>
+		<!-- TEMP: vcd-ng disabled due to JACKSON issue -->
+		<!-- <module>vcd-ng</module> -->
 		<module>vrops</module>
 		<module>vrli</module>
 		<module>bsc</module>
