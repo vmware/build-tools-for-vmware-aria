@@ -353,7 +353,7 @@ System.log("Report: " + JSON.stringify(report));
 // }
 
 // Validate an object export (problematic)
-var objExport = { 
+var objExport = {
     BaseClass: function BaseClass() {},
     ExtendedClass: function ExtendedClass() {}
 };
@@ -364,8 +364,8 @@ var report = Class.validateExportShape(objExport, "com.example.appenders", "Appe
 //   isFunction: false,
 //   exportKeys: ["BaseClass", "ExtendedClass"],
 //   issues: [
-//     "[Class][E_EXPORT_SHAPE_MISMATCH] Expected a constructor function, but got an 
-//      object with keys: [BaseClass, ExtendedClass]. This typically occurs when module 
+//     "[Class][E_EXPORT_SHAPE_MISMATCH] Expected a constructor function, but got an
+//      object with keys: [BaseClass, ExtendedClass]. This typically occurs when module
 //      loading returns a wrapper object instead of the target constructor..."
 //   ]
 // }

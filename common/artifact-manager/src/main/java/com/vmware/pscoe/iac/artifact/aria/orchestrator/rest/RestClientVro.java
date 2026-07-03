@@ -192,7 +192,7 @@ public class RestClientVro extends RestClient {
 		return packagesNames
 				.stream()
 				.map(name -> PackageFactory.getInstance(PACKAGE_TYPE,
-						new File(name + "." + PACKAGE_TYPE.getPackageExtention())))
+						new File(name + "." + PACKAGE_TYPE.getPackageExtension())))
 				.collect(Collectors.toList());
 	}
 

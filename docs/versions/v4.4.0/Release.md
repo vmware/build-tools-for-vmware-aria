@@ -6,9 +6,7 @@
 ## Deprecations
 
 
-
 ## Features
-
 
 
 ## Improvements
@@ -52,7 +50,7 @@ During transpilation the paths to be transformed to the actual vro-test file loc
 ### *Add missing classes to VC plugin*
 
 Add missing classes to VC plugin
-  
+
 #### Previous Behavior
 
 `VcVirtualMachineVirtualNuma` classes were missing

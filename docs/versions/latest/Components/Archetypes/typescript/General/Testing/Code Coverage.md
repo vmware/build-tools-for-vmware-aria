@@ -97,10 +97,10 @@ During testing, you will be able to use these files by specifying them normally 
 
 ```txt
 "**/?(*.)+(test).[j|t]s"
- 
+
 //example names for javascript file
 MyTests.test.js
- 
+
 //example names for typescript file
 MyTest.test.ts
 ```

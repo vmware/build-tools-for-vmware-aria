@@ -1,0 +1,55 @@
+package com.vmware.pscoe.iac.artifact.vcf.automation.models;
+
+/*-
+ * #%L
+ * artifact-manager
+ * %%
+ * Copyright (C) 2023 - 2025 VMware
+ * %%
+ * Build Tools for VMware Aria
+ * Copyright 2023 VMware, Inc.
+ * 
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ * 
+ * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+ * #L%
+ */
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class VcfaProject implements Identifiable {
+    private String id;
+    private String orgId;
+    private String name;
+
+    public VcfaProject() {
+
+    }
+
+    public VcfaProject(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() { 
+        return id; 
+    }
+    public void setId(String id) { 
+        this.id = id; 
+    }
+    
+    public String getOrgId() { 
+        return orgId; 
+    }
+    public void setOrgId(String orgId) { 
+        this.orgId = orgId; 
+    }
+
+    public String getName() { 
+        return name; 
+    }
+    public void setName(String name) { 
+        this.name = name; 
+    }
+}
