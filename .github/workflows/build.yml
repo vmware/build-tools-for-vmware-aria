@@ -136,7 +136,7 @@ jobs:
         run: |
           pushd build-tools-for-vmware-aria-samples/
           ./switch_parent_version.sh ${{ env.IAC_VERSION }}
-          mvn clean package install -Pbundle-with-installer --batch-mode -fae -s ../.m2/settings.xml
+          mvn clean package install -X -Pbundle-with-installer --batch-mode -fae -s ../.m2/settings.xml
           popd
           rm -rf build-tools-for-vmware-aria-samples/
 
