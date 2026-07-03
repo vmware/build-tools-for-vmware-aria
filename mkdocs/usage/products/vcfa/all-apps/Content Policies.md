@@ -4,7 +4,7 @@ title: Content Policies
 
 ## Overview
 
-There are 4 types of content policies:
+There are four types of content policies.
 
 - Approval
 - Day 2 Actions
@@ -31,7 +31,7 @@ policy:
 # ...
 ```
 
-Structure
+Policy objects have the following structure in the `./src` directory.
 
 ```ascii
 src/
@@ -52,9 +52,8 @@ src/
 
 ### Import
 
-When importing policies, files are read form the filesystem, and the content.yaml filter is by filename. All non-hidden files are read from the folder, and if the name of the file, without the extension matches the list in content.yaml, the policy will be imported. The filename is only important for filtering. Actual policy fields are read from the file contents. If there is a policy with the same id on the server, an update will be performed. Otherwise, the policy will be created instead, using the same id, that is found in the file.
+When importing policies, files are read form the filesystem and the `content.yaml` filter is by filename. All non-hidden files are read from the directory and if the name of the file, without the extension, matches the list in the `content.yaml` file, the policy is imported. The filename is only important for filtering. Actual policy fields are read from the file contents. If there is a policy with the same ID on the server, an update will be performed. Otherwise, the policy will be created instead, using the same ID that is found in the file.
 
 ### Export
 
-When exporting a policy, a json file will be created on the filesystem. The filename will be the policyName[-index].json.
-Index will be added only if there are multiple policies with the same name.
+When exporting a policy, a JSON file is created on the filesystem. The filename uses the format `policyName[-index].json`, where an index is added only if there are multiple policies with the same name.
