@@ -1346,6 +1346,8 @@
       
         
       
+        
+      
     
     
     
@@ -1425,14 +1427,14 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../usage/products/vcfa/vm-apps/" class="md-nav__link ">
+            <a href="../usage/products/vcfa/all-apps/" class="md-nav__link ">
               
   
   
   <span class="md-ellipsis">
     
   
-    VM Apps
+    All Apps
   
 
     
@@ -1451,6 +1453,199 @@
         
         <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_1_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    All Apps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/products/vcfa/all-apps/Blueprints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueprints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/products/vcfa/all-apps/Content%20Policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Content Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/products/vcfa/all-apps/Custom%20Resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/products/vcfa/all-apps/Workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../usage/products/vcfa/vm-apps/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VM Apps
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1_2_2" id="__nav_3_1_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2036,6 +2231,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#support-for-vcf-9-automation-all-apps-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Support for VCF 9 Automation All-Apps Organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2130,6 +2342,32 @@
 <h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h2>
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<h3 id="support-for-vcf-9-automation-all-apps-organizations"><em>Support for VCF 9 Automation All-Apps Organizations</em><a class="headerlink" href="#support-for-vcf-9-automation-all-apps-organizations" title="Permanent link">&para;</a></h3>
+<p>New type of project was added that supports VCFA content for All-Apps organizations.
+The project pom.xml should be configured with the following parameters:
+- parent.groupId=<em>com.vmware.pscoe.vcf</em>
+- parent.artifactId=<em>all-apps-package</em>
+- packaging=<em>vcfa-all-apps</em>
+The project has structure similar to vra-ng and supports the following content types:
+- <code>blueprint</code> (including custom form, publishing to Catalog, organization sharing)
+- <code>property-group</code>
+- <code>custom-resource</code>
+- <code>resource-action</code>
+- <code>workflow</code> (publishing Orchestrator workflows to Catalog, including organization sharing)
+- <code>subscription</code>
+- <code>policy</code> (supports Approval policy, Day 2 Actions policy, IaaS Resource policy, Lease policy)
+- <code>scenario</code> (notification scenarios customization)</p>
+<p>New maven plugin <code>vcfa-all-apps</code> supporting operations:
+- <code>package</code> (the package get extension <em>.vcfaa</em>)
+- <code>vcfa-all-apps:pull</code>
+- <code>vcfa-all-apps:push</code>
+- <code>vcfa-all-apps:clean</code></p>
+<p>New archetype for creating vcfa-all-apps projects
+- archetypeGroupId=com.vmware.pscoe.vcfa-all-apps.archetypes
+- archetypeArtifactId=package-vcfa-all-apps-archetype
+The created project contains content samples.</p>
+<p>Added support for <em>.vcfaa</em> packages to <em>package-installer</em></p>
+<p>Added new set of parameters to settings.xml dedicated to vcfa-all-apps projects</p>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
 <h3 id="change-type-of-import-dashboard-for-all-users-installer-input-to-boolean"><em>Change type of <code>Import Dashboard for All Users</code> Installer input to boolean</em><a class="headerlink" href="#change-type-of-import-dashboard-for-all-users-installer-input-to-boolean" title="Permanent link">&para;</a></h3>
 <h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>

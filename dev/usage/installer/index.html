@@ -1359,6 +1359,8 @@
       
         
       
+        
+      
     
     
     
@@ -1438,14 +1440,14 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../products/vcfa/vm-apps/" class="md-nav__link ">
+            <a href="../products/vcfa/all-apps/" class="md-nav__link ">
               
   
   
   <span class="md-ellipsis">
     
   
-    VM Apps
+    All Apps
   
 
     
@@ -1464,6 +1466,199 @@
         
         <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_1_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    All Apps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../products/vcfa/all-apps/Blueprints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueprints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../products/vcfa/all-apps/Content%20Policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Content Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../products/vcfa/all-apps/Custom%20Resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../products/vcfa/all-apps/Workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../products/vcfa/vm-apps/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VM Apps
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1_2_2" id="__nav_3_1_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2447,12 +2642,12 @@ $<span class="w"> </span>cat<span class="w"> </span>environment.properties
 <span class="c1"># Run vRO configuration workflow</span>
 <span class="nv">vro_run_workflow</span><span class="o">=</span><span class="nb">true</span>
 <span class="nv">vro_run_workflow_id</span><span class="o">=</span><span class="m">1944423533582937823496790834565483423</span>
-<span class="c1"># input.json contains JSON where each first class KEY represents </span>
+<span class="c1"># input.json contains JSON where each first class KEY represents</span>
 <span class="c1"># the workflow input parameter name and its value are sent as value</span>
 <span class="c1"># Supported types of workflow in/output parameters are string, number, boolean, Array/string</span>
 <span class="nv">vro_run_workflow_input_file_path</span><span class="o">=</span>./input.json
-<span class="c1"># output.json contains JSON where each first class KEY represents </span>
-<span class="c1"># the workflow output parameter name and its value is a pretty printed value as JSON </span>
+<span class="c1"># output.json contains JSON where each first class KEY represents</span>
+<span class="c1"># the workflow output parameter name and its value is a pretty printed value as JSON</span>
 <span class="nv">vro_run_workflow_output_file_path</span><span class="o">=</span>./output.json
 <span class="nv">vro_run_workflow_timeout</span><span class="o">=</span><span class="m">300</span>
 
@@ -2488,11 +2683,11 @@ ignore_ssl_certificate_verification
 ignore_ssl_host_verification
 vrealize_ssh_timeout
 
-<span class="c1">### vRA8 and VCS connection properties ###</span>
+<span class="c1">### VCFA VM-Apps, vRA8, and VCS connection properties ###</span>
 vrang_host
 vrang_csp_host
 vrang_proxy_required
-vrang_proxy<span class="w">  </span>
+vrang_proxy
 vrang_port
 vrang_auth_with_refresh_token
 vrang_delete_content<span class="w"> </span><span class="c1"># can be used to delete all content from the vRA8 environment specified in the content.yaml</span>
@@ -2510,6 +2705,25 @@ vrang_import_timeout
 <span class="c1"># When importing content to vRA, the value of vrang_data.collection.delay.seconds sets the timeout (in seconds) for the data collection of the vRO integration in vRA in order for the import of the vRA content that depends on vRO elements to succeed. Effectively, this property sets a wait time on the importing of vRA content. If the property is provided a data collection is forced via API and only if that data collection fails the timeout is used.</span>
 vrang_data.collection.delay.seconds
 <span class="c1"># Note that the import of vRA8 content also requires the operation property &quot;vrang_import_overwrite_mode&quot;.</span>
+
+<span class="c1">### VCFA All-Apps connection properties ###</span>
+vcfa_host
+vcfa_csp_host
+vcfa_proxy_required
+vcfa_proxy
+vcfa_port
+vcfa_auth_with_refresh_token
+vcfa_delete_content<span class="w"> </span><span class="c1"># can be used to delete all content from the vRA8 environment specified in the content.yaml</span>
+vcfa_refresh_token
+vcfa_username
+vcfa_password
+vcfa_org_name
+vcfa_project_name
+vcfa_cloud_proxy_name
+vcfa_import_overwrite_mode
+vcfa_vro_integration_name
+vcfa_import_timeout
+vcfa_data.collection.delay.seconds
 
 <span class="c1">### vRLI connection properties ###</span>
 vrli_server
