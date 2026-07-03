@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vcfa-all-apps-package-maven-plugin:4.21.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vcfa-all-apps-package-maven-plugin:4.22.1-SNAPSHOT
 
 Name: vcfa-all-apps-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,10 +8,90 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vcfa-all-apps-package-maven-plugin
-Version: 4.21.1-SNAPSHOT
+Version: 4.22.1-SNAPSHOT
 Goal Prefix: vcfa-all-apps
 
 This plugin has 4 goals:
+
+vcfa-all-apps:clean
+  Description: (no description available)
+  Implementation: com.vmware.pscoe.maven.plugins.CleanMojo
+  Language: java
+
+  Available parameters:
+
+    connectionTimeout (Default: ${vrealize.connection.timeout})
+      User property: connectionTimeout
+      (no description available)
+
+    dryrun (Default: false)
+      User property: dryrun
+      (no description available)
+
+    ignoreSslCertificate (Default: false)
+      Required: true
+      User property: ignoreSslCertificate
+      (no description available)
+
+    ignoreSslHostname (Default: false)
+      Required: true
+      User property: ignoreSslHostname
+      (no description available)
+
+    keystoreCert
+      User property: vroCertificatePem
+      Certificate of keystore.
+
+    keystorePassword
+      User property: vroKeyPass
+      password to keystore.
+
+    privateKeyPem
+      User property: vroPrivateKeyPem
+      private key to keystore.
+
+    project (Default: ${project})
+      (no description available)
+
+    socketTimeout (Default: ${vrealize.socket.timeout})
+      User property: socketTimeout
+      (no description available)
+
+    ssh (Default: ${ssh.*})
+      User property: ssh
+      (no description available)
+
+    sshTimeout (Default: ${vrealize.ssh.timeout})
+      User property: sshTimeout
+      (no description available)
+
+    vcd (Default: ${vcd.*})
+      User property: vcd
+      (no description available)
+
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
+      (no description available)
+
+    vrang (Default: ${vrang.*})
+      User property: vrang
+      (no description available)
+
+    vrli (Default: ${vrli.*})
+      User property: vrli
+      (no description available)
+
+    vro (Default: ${vro.*})
+      User property: vro
+      (no description available)
+
+    vroIgnoreFile (Default: .vroignore)
+      User property: vroIgnoreFile
+      name of the vRO ignore file. Default is ".vroignore"
+
+    vrops (Default: ${vrops.*})
+      User property: vrops
+      (no description available)
 
 vcfa-all-apps:package
   Description: (no description available)
@@ -41,75 +121,6 @@ vcfa-all-apps:pull
 
     dryrun (Default: false)
       User property: dryrun
-      Dry run or not. Default value is false.
-
-    ignoreSslCertificate (Default: false)
-      Required: true
-      User property: ignoreSslCertificate
-      (no description available)
-
-    ignoreSslHostname (Default: false)
-      Required: true
-      User property: ignoreSslHostname
-      (no description available)
-
-    keystoreCert
-      User property: vroCertificatePem
-      Certificate of keystore.
-
-    keystorePassword
-      User property: vroKeyPass
-      password to keystore.
-
-    privateKeyPem
-      User property: vroPrivateKeyPem
-      private key to keystore.
-
-    project (Default: ${project})
-      The project that is built with the tools.
-
-    socketTimeout (Default: ${vrealize.socket.timeout})
-      User property: socketTimeout
-      (no description available)
-
-    ssh (Default: ${ssh.*})
-      User property: ssh
-      (no description available)
-
-    sshTimeout (Default: ${vrealize.ssh.timeout})
-      User property: sshTimeout
-      (no description available)
-
-    vcfa (Default: ${vcfa.*})
-      User property: vcfa
-      (no description available)
-
-    vroIgnoreFile (Default: .vroignore)
-      User property: vroIgnoreFile
-      name of the vRO ignore file. Default is ".vroignore"
-
-vcfa-all-apps:clean
-  Description: (no description available)
-  Implementation: com.vmware.pscoe.maven.plugins.CleanMojo
-  Language: java
-  Bound to phase: pre-integration-test
-
-  Available parameters:
-
-    cleanUpLastVersion (Default: false)
-      User property: cleanUpLastVersion
-      (no description available)
-
-    cleanUpOldVersions (Default: true)
-      User property: cleanUpOldVersions
-      (no description available)
-
-    connectionTimeout (Default: ${vrealize.connection.timeout})
-      User property: connectionTimeout
-      (no description available)
-
-    dryrun (Default: false)
-      User property: dryrun
       (no description available)
 
     ignoreSslCertificate (Default: false)
@@ -120,11 +131,6 @@ vcfa-all-apps:clean
     ignoreSslHostname (Default: false)
       Required: true
       User property: ignoreSslHostname
-      (no description available)
-
-    includeDependencies (Default: true)
-      Required: true
-      User property: includeDependencies
       (no description available)
 
     keystoreCert
@@ -154,13 +160,33 @@ vcfa-all-apps:clean
       User property: sshTimeout
       (no description available)
 
+    vcd (Default: ${vcd.*})
+      User property: vcd
+      (no description available)
+
     vcfa (Default: ${vcfa.*})
       User property: vcfa
+      (no description available)
+
+    vrang (Default: ${vrang.*})
+      User property: vrang
+      (no description available)
+
+    vrli (Default: ${vrli.*})
+      User property: vrli
+      (no description available)
+
+    vro (Default: ${vro.*})
+      User property: vro
       (no description available)
 
     vroIgnoreFile (Default: .vroignore)
       User property: vroIgnoreFile
       name of the vRO ignore file. Default is ".vroignore"
+
+    vrops (Default: ${vrops.*})
+      User property: vrops
+      (no description available)
 
 vcfa-all-apps:push
   Description: (no description available)
@@ -224,10 +250,31 @@ vcfa-all-apps:push
       User property: sshTimeout
       (no description available)
 
+    vcd (Default: ${vcd.*})
+      User property: vcd
+      (no description available)
+
     vcfa (Default: ${vcfa.*})
       User property: vcfa
+      (no description available)
+
+    vrang (Default: ${vrang.*})
+      User property: vrang
+      (no description available)
+
+    vrli (Default: ${vrli.*})
+      User property: vrli
+      (no description available)
+
+    vro (Default: ${vro.*})
+      User property: vro
       (no description available)
 
     vroIgnoreFile (Default: .vroignore)
       User property: vroIgnoreFile
       name of the vRO ignore file. Default is ".vroignore"
+
+    vrops (Default: ${vrops.*})
+      User property: vrops
+      (no description available)
+
