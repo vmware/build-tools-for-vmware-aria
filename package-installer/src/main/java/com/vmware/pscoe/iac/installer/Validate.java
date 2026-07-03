@@ -81,6 +81,31 @@ public final class Validate {
 		}
 	}
 
+	public static boolean isVcfAutomation9(String host, int port, TextIO input) {
+		String urlString = "https://" + host + ":" + port + "/vco/api/about";
+		try {
+			URL url = new URL(urlString);
+			HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+			disableSecurity(https);
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
+			https.setDoOutput(false);
+			https.setDoInput(true);
+			https.setRequestMethod("GET");
+			https.setRequestProperty("Accept", "application/json");
+
+			int code = https.getResponseCode();
+			if (code != HttpURLConnection.HTTP_OK) {
+				return false;
+			}
+			Map<?, ?> response = jsonParse(readFully(https.getInputStream()));
+			String version = response == null ? null : "" + response.get("version");
+			return version != null && !"null".equals(version) && version.startsWith("9.");
+		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
+			return false;
+		}
+	}
+
 	public static String vrang(String csp, int port, String user, String pass, TextIO input) {
 		String urlString = "https://" + csp + ":" + port + "/csp/gateway/am/api/login?access_token";
 		try {
@@ -267,14 +292,26 @@ public final class Validate {
 	public static ProjectAndOrg project(Properties props, String project, TextIO input) {
 		String host = null;
 		int port = -1;
+		try {
+			host = props.getProperty("vrang_host");
+			port = Integer.parseInt(props.getProperty("vrang_port"));
+		} catch (Throwable t) {
+			return new ProjectAndOrg();
+		}
+
+		if (isVcfAutomation9(host, port, input)) {
+			return projectVcf9(props, project, input, host, port);
+		}
+		return projectVra8(props, project, input, host, port);
+	}
+
+	private static ProjectAndOrg projectVra8(Properties props, String project, TextIO input, String host, int port) {
 		String csp = null;
 		String refresh = null;
 		String user = null;
 		String pass = null;
 		String access = null;
 		try {
-			host = props.getProperty("vrang_host");
-			port = Integer.parseInt(props.getProperty("vrang_port"));
 			csp = props.getProperty("vrang_csp_host");
 			refresh = props.getProperty("vrang_refresh_token");
 			user = props.getProperty("vrang_username");
@@ -334,6 +371,73 @@ public final class Validate {
 		}
 	}
 
+	private static ProjectAndOrg projectVcf9(Properties props, String project, TextIO input, String host, int port) {
+		String csp = null;
+		String refresh = null;
+		String user = null;
+		String pass = null;
+		String access = null;
+		try {
+			csp = props.getProperty("vrang_csp_host");
+			refresh = props.getProperty("vrang_refresh_token");
+			user = props.getProperty("vrang_username");
+			pass = props.getProperty("vrang_password");
+			csp = csp == null || csp.trim().length() <= 0 ? host : csp;
+			if (refresh != null) {
+				access = token(csp, port, refresh, null);
+			} else {
+				access = vcfa(csp, port, user, pass, null);
+			}
+		} catch (Throwable t) {
+			return new ProjectAndOrg();
+		}
+
+		String urlString = "https://" + host + ":" + port + "/project-service/api/projects";
+		try {
+			URL url = new URL(urlString);
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
+			disableSecurity(https);
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
+			https.setDoOutput(false);
+			https.setDoInput(true);
+			https.setRequestMethod("GET");
+			https.setRequestProperty("Accept", "application/json");
+			https.setRequestProperty("Authorization", "Bearer " + access);
+
+			int code = https.getResponseCode();
+			String message = https.getResponseMessage();
+			if (code != HttpURLConnection.HTTP_OK) {
+				return new ProjectAndOrg();
+			}
+			Map<?, ?> response = jsonParse(readFully(https.getInputStream()));
+			List<Map<?, ?>> content = (List<Map<?, ?>>) response.get("content");
+			String projectList = "";
+			for (Map<?, ?> prj : content) {
+				String name = "" + prj.get("name");
+				projectList += name + "\t";
+				if (name != null && name.equals(project.trim())) {
+					String id = "" + prj.get("id");
+					String orgId = "" + prj.get("orgId");
+					input.getTextTerminal()
+							.println("  Using project \"" + name + "\" (" + id + ") Organization Id: " + orgId);
+					ProjectAndOrg result = getOrgFromIdVcf9(host, port, access, orgId);
+					result.projectId = id;
+					return result;
+				}
+			}
+			input.getTextTerminal().println(
+					"  WARNING: There is no project with the name \"" + project + "\". Possible value: " + projectList);
+			return new ProjectAndOrg();
+		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
+			input.getTextTerminal()
+					.println("  WARNING: Cannot successfully query projects against \"" + urlString + "\" : "
+							+ e.getClass().getName()
+							+ " : " + e.getLocalizedMessage());
+			return new ProjectAndOrg();
+		}
+	}
+
 	public static ProjectAndOrg getOrgFromId(Properties props, String access, String orgId) {
 		String host = null;
 		int port = -1;
@@ -367,6 +471,41 @@ public final class Validate {
 			Map<?, ?> response = (Map<?, ?>) jsonParse(readFully(https.getInputStream()));
 			String name = "" + response.get("name");
 			return new ProjectAndOrg(null, name, orgId);
+		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
+			return new ProjectAndOrg(null, null, orgId);
+		}
+	}
+
+	private static ProjectAndOrg getOrgFromIdVcf9(String host, int port, String access, String orgId) {
+		String urlString = "https://" + host + ":" + port + "/cloudapi/1.0.0/orgs";
+		try {
+			URL url = new URL(urlString);
+			HttpsURLConnection https = (HttpsURLConnection) (url.openConnection());
+			disableSecurity(https);
+			https.setConnectTimeout(DEFAULT_TIMEOUT); // millis
+			https.setReadTimeout(DEFAULT_TIMEOUT); // millis
+			https.setDoOutput(false);
+			https.setDoInput(true);
+			https.setRequestMethod("GET");
+			https.setRequestProperty("Accept", "application/json");
+			https.setRequestProperty("Authorization", "Bearer " + access);
+
+			int code = https.getResponseCode();
+			String message = https.getResponseMessage();
+			if (code != HttpURLConnection.HTTP_OK) {
+				return new ProjectAndOrg(null, null, orgId);
+			}
+			Map<?, ?> response = (Map<?, ?>) jsonParse(readFully(https.getInputStream()));
+			List<Map<?, ?>> values = (List<Map<?, ?>>) response.get("values");
+			String orgUrn = "urn:vcloud:org:" + orgId;
+			for (Map<?, ?> org : values) {
+				String id = "" + org.get("id");
+				if (orgUrn.equalsIgnoreCase(id)) {
+					String name = "" + org.get("name");
+					return new ProjectAndOrg(null, name, orgId);
+				}
+			}
+			return new ProjectAndOrg(null, null, orgId);
 		} catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
 			return new ProjectAndOrg(null, null, orgId);
 		}

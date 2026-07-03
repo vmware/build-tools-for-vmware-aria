@@ -1455,20 +1455,32 @@ public final class Installer {
 		Validate.hostAndPort(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)),
 				input.getText());
 
+		final String serverHost = input.get(Option.VRANG_SERVER);
+		final int serverPort = Integer.valueOf(input.get(Option.VRANG_PORT));
+		final boolean isVcf9 = Validate.isVcfAutomation9(serverHost, serverPort, input.getText());
+		if (isVcf9) {
+			input.getText().getTextTerminal().println("  Detected VCF Automation 9.");
+		}
+
 		if (needCspHost) {
 			userInput(input, Option.VRANG_CSP_SERVER, "  Authentication CSP FQDN:", input.get(Option.VRANG_SERVER));
 		}
 		userInput(input, Option.VRANG_AUTH_WITH_REFRESH_TOKEN, "  Authenticate with refresh token?:", false);
 		if (input.allTrue(Option.VRANG_AUTH_WITH_REFRESH_TOKEN)) {
 			userInput(input, Option.VRANG_REFRESH_TOKEN, "    vRA Refresh Token");
-			Validate.token(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)),
+			Validate.token(serverHost, serverPort,
 					input.get(Option.VRANG_REFRESH_TOKEN), input.getText());
 		} else {
 			userInput(input, Option.VRANG_USERNAME, "    vRA Username");
 			passInput(input, Option.VRANG_PASSWORD, "    vRA Password");
-			Validate.vrang(needCspHost ? input.get(Option.VRANG_CSP_SERVER) : input.get(Option.VRANG_SERVER),
-					Integer.valueOf(input.get(Option.VRANG_PORT)),
-					input.get(Option.VRANG_USERNAME), input.get(Option.VRANG_PASSWORD), input.getText());
+			final String authHost = needCspHost ? input.get(Option.VRANG_CSP_SERVER) : serverHost;
+			if (isVcf9) {
+				Validate.vcfa(authHost, serverPort,
+						input.get(Option.VRANG_USERNAME), input.get(Option.VRANG_PASSWORD), input.getText());
+			} else {
+				Validate.vrang(authHost, serverPort,
+						input.get(Option.VRANG_USERNAME), input.get(Option.VRANG_PASSWORD), input.getText());
+			}
 		}
 	}
 
