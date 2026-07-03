@@ -4,7 +4,7 @@ title: Blueprints
 
 ## Overview
 
-Blueprint (aka `Cloud Templates`) architects build Software components, machine blueprints, and custom XaaS blueprints and assemble those components into the blueprints that define the items users request from the catalog.
+Blueprint architects build Software components, machine blueprints, and custom XaaS blueprints and assemble those components into the blueprints that define the items users request from the catalog.
 
 ## Structure
 
@@ -39,7 +39,7 @@ Each blueprint will be placed in a different folder.
 
 ## Importing
 
-When importing a blueprint, it is matched by its `name`. If there is a blueprint with the same name on the server, an update will be performed. Otherwise, the blueprint will be created instead.
+When importing a blueprint, it is matched by its name. If there is a blueprint with the same name on the server, an update will be performed. Otherwise, the blueprint will be created instead.
 
 Also when importing an already existing blueprint, we will check for any differences between local copy and server copy. If there are differences, a new version will be released. New version is determined by the already existing versions. If a patter of MAJOR.MINOR.PATCH is detected, vRBT will try to continue the numbering, otherwise a date formatted version is released.
 
