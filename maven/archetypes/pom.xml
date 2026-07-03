@@ -21,8 +21,7 @@
 		<module>vcfa-all-apps</module>
 		<module>ts</module>
 		<module>ts-vra-ng</module>
-		<!-- TEMP: vcd-ng disabled due to JACKSON issue -->
-		<!-- <module>vcd-ng</module> -->
+		<module>vcd-ng</module>
 		<module>vrops</module>
 		<module>vrli</module>
 		<module>bsc</module>

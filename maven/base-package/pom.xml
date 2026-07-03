@@ -22,8 +22,7 @@
 		<module>vra-ng-package</module>
 		<module>vrli-package</module>
 		<module>typescript-project</module>
-		<!-- TEMP: vcd-ng-package disabled due to JACKSON issue -->
-		<!-- <module>vcd-ng-package</module> -->
+		<module>vcd-ng-package</module>
 		<module>vrops-package</module>
 		<module>serverless</module>
 		<module>bsc-package</module>
