@@ -22,6 +22,7 @@
                             "input": "./src/public",
                             "output": "/"
                         }],
+                        "librariesConfig": {},
                         "optimization": false,
                         "outputHashing": "all",
                         "sourceMap": false,

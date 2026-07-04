@@ -50,14 +50,12 @@ public class VcdNgPackageMojo extends AbstractVroMojo {
 		nodeBuildArgs.add(npmExec);
 		nodeBuildArgs.add("run");
 		nodeBuildArgs.add("build");
-		if (!getLog().isDebugEnabled()) {
-			nodeBuildArgs.add("--silent");
-		}
 
 		new ProcessExecutor()
 				.name("Packaging project")
 				.directory(project.getBasedir())
 				.command(nodeBuildArgs)
+				.throwOnError(true)
 				.execute(getLog());
 
 		if (!java.nio.file.Files.exists(zipBundle)) {
