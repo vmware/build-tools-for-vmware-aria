@@ -132,6 +132,17 @@ jobs:
         with:
           node-version: ${{ matrix.node_vmware_samples }}
 
+      - name: Pin @types/node in vcd sample to verify root cause
+        run: |
+          node -e "
+            const fs = require('fs');
+            const file = 'build-tools-for-vmware-aria-samples/vcd/package.json';
+            const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+            pkg.devDependencies = pkg.devDependencies || {};
+            pkg.devDependencies['@types/node'] = '^20.14.0';
+            fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n');
+          "
+
       - name: Build vmware-samples/build-tools-for-vmware-aria-samples project repository
         run: |
           pushd build-tools-for-vmware-aria-samples/
