@@ -92,7 +92,7 @@ jobs:
 
       - name: Set MVN_BUILD_COMMAND
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ matrix.java }}" = "17" ]; then
+          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ matrix.java }}" = "17" ] && [[ "${{ env.IAC_VERSION }}" != *"-SNAPSHOT"* ]]; then
             MVN_BUILD_COMMAND="deploy"
           else
             MVN_BUILD_COMMAND="install"
