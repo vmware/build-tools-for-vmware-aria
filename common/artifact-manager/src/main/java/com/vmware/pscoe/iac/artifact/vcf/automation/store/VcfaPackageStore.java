@@ -118,7 +118,7 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
                 storeFactory.getStoreForType(type).exportContent();
             }
 
-            LOGGER.info("Successfully exported VCFA package: {}", pkg.getFQName());
+            LOGGER.debug("Successfully exported VCFA package: {}", pkg.getFQName());
             return pkg;
 
         } catch (Exception e) {
@@ -156,7 +156,7 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
             java.io.File tmp;
             try {
                 tmp = java.nio.file.Files.createTempDirectory("iac-package-import").toFile();
-                LOGGER.info("Created temp dir {}", tmp.getAbsolutePath());
+                LOGGER.debug("Created temp dir {}", tmp.getAbsolutePath());
                 new com.vmware.pscoe.iac.artifact.common.store.PackageManager(pkg).unpack(tmp);
             } catch (java.io.IOException e) {
                 LOGGER.error("Unable to extract package '{}' in temporary directory.", pkg.getFQName());
@@ -193,7 +193,7 @@ public class VcfaPackageStore extends GenericPackageStore<VcfaPackageDescriptor>
         java.io.File tmp;
         try {
             tmp = java.nio.file.Files.createTempDirectory("iac-package-delete").toFile();
-            LOGGER.info("Created temp dir {}", tmp.getAbsolutePath());
+            LOGGER.debug("Created temp dir {}", tmp.getAbsolutePath());
             new com.vmware.pscoe.iac.artifact.common.store.PackageManager(pkg).unpack(tmp);
         } catch (java.io.IOException e) {
             LOGGER.error("Unable to extract package '{}' in temporary directory.", pkg.getFQName());

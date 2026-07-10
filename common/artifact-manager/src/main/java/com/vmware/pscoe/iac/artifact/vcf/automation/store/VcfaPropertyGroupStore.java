@@ -83,7 +83,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 String trackingName = group.getDisplayName();
 
                 if (isExcludedByDescriptor(trackingName)) {
-                    logger.info("Property Group '{}' is excluded by descriptor configuration rules. Skipping export.",
+                    logger.debug("Property Group '{}' is excluded by descriptor configuration rules. Skipping export.",
                             trackingName);
                     continue;
                 }
@@ -127,7 +127,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 }
 
                 if (hasSecretParam) {
-                    logger.info(
+                    logger.debug(
                             "Property Group '{}' references a sensitive parameter target. Retaining source context records (Skipping Sanitization).",
                             trackingName);
                 } else {
@@ -136,7 +136,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 }
                 // =========================================================================
 
-                logger.info("Successfully synchronized property group asset: {}", jsonFile.getAbsolutePath());
+                logger.debug("Successfully synchronized property group asset: {}", jsonFile.getAbsolutePath());
                 String serializedJson = mapper.writeValueAsString(jsonNode);
                 Files.write(
                         jsonFile.toPath(),
@@ -155,8 +155,6 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
      */
     @Override
     public void importContent(File sourceDirectory) {
-        logger.info("Importing property groups from {}", sourceDirectory.getAbsolutePath());
-
         List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
                 "propertyGroups");
         if (allowedGroups != null && allowedGroups.isEmpty()) {
@@ -205,13 +203,13 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 String groupDisplayName = file.getName().replace(".json", "");
 
                 if (isExcludedByDescriptor(groupDisplayName)) {
-                    logger.info(
+                    logger.debug(
                             "Property group asset '{}' is excluded by descriptor configuration rules. Skipping import.",
                             groupDisplayName);
                     continue;
                 }
 
-                logger.info("Processing local Property Group asset configuration: '{}'", file.getName());
+                logger.debug("Processing local Property Group asset configuration: '{}'", file.getName());
                 VcfaPropertyGroup localGroup = mapper.readValue(file, VcfaPropertyGroup.class);
 
                 Optional<VcfaPropertyGroup> existingRemote = remoteGroups.stream()
@@ -260,7 +258,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                     }
 
                     if (isIdentical(remoteMatch, localGroup)) {
-                        logger.info("Property Group '{}' matches remote system configuration exactly. Skipping update.",
+                        logger.debug("Property Group '{}' matches remote system configuration exactly. Skipping update.",
                                 localGroup.getDisplayName());
                     } else {
                         logger.info("Delta detected for Property Group '{}'. Initiating remote update context.",
@@ -274,7 +272,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                                 currentProjectId);
                         localGroup.setProjectId(currentProjectId);
                     }
-                    logger.info("Property Group '{}' not found on target server. Executing remote creation.",
+                    logger.debug("Property Group '{}' not found on target server. Executing remote creation.",
                             localGroup.getDisplayName());
                     restClient.createPropertyGroup(localGroup);
                 }
@@ -330,11 +328,11 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 return;
             }
 
-            logger.info("Targeted filter list active. Evaluating matching entries for deletion sequence...");
+            logger.debug("Targeted filter list active. Evaluating matching entries for deletion sequence...");
             for (VcfaPropertyGroup remoteGroup : remoteGroups) {
                 String remoteDisplayName = remoteGroup.getDisplayName();
                 if (itemsToDelete.contains(remoteDisplayName)) {
-                    logger.info("[TARGETED DELETE] Deleting property group named '{}' matching ID: {}",
+                    logger.debug("[TARGETED DELETE] Deleting property group named '{}' matching ID: {}",
                             remoteDisplayName, remoteGroup.getId());
                     restClient.deletePropertyGroup(remoteGroup.getId());
                 }

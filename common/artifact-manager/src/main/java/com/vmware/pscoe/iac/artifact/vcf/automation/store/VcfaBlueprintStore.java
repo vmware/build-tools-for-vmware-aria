@@ -88,7 +88,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         for (File bpDir : bpList) {
             String bpName = bpDir.getName();
             if (isExcludedByDescriptor(bpName)) {
-                logger.info("Blueprint folder '{}' is excluded by descriptor configuration rules. Skipping.", bpName);
+                logger.debug("Blueprint folder '{}' is excluded by descriptor configuration rules. Skipping.", bpName);
                 continue;
             }
 
@@ -105,6 +105,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      */
     @Override
     public void exportContent() {
+        logger.info("Pulling blueprint configurations from the remote environment...");
         ObjectMapper mapper = new ObjectMapper();
         List<VcfaBlueprint> serverBps = fetchServerBlueprints();
         Package serverPackage = this.vcfaPackage;
@@ -114,7 +115,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         for (VcfaBlueprint bpSummary : serverBps) {
             String name = bpSummary.getName();
             if (isExcludedByDescriptor(name)) {
-                logger.info("Blueprint '{}' is excluded by descriptor configuration rules. Skipping.", name);
+                logger.debug("Blueprint '{}' is excluded by descriptor configuration rules. Skipping.", name);
                 continue;
             }
 
@@ -166,11 +167,11 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                 return;
             }
 
-            logger.info("Blueprint targeted filter list active. Evaluating matching entries for deletion sequence...");
+            logger.debug("Blueprint targeted filter list active. Evaluating matching entries for deletion sequence...");
             for (VcfaBlueprint bp : remoteBlueprints) {
                 String name = bp.getName();
                 if (itemsToDelete.contains(name)) {
-                    logger.info("[TARGETED DELETE] Deleting blueprint named '{}'", name);
+                    logger.debug("[TARGETED DELETE] Deleting blueprint named '{}'", name);
                     restClient.deleteBlueprint(bp.getId());
                 }
             }
@@ -246,7 +247,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             if (shouldReleaseVersion) {
                 executeBlueprintRelease(blueprintId, bpName, processingTarget, stylesFile);
             } else {
-                logger.info(
+                logger.debug(
                         "Skipped redundant cloud template version creation for blueprint asset '{}' (Blueprint and Form are up-to-date).",
                         bpName);
             }
@@ -285,7 +286,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
     private BlueprintSyncResult syncBlueprintDraft(VcfaBlueprint bp, String bpName, VcfaBlueprint existing)
             throws IOException {
         if (existing == null) {
-            logger.info("Blueprint '{}' not found on target host server. Executing draft creation.", bpName);
+            logger.debug("Blueprint '{}' not found on target host server. Executing draft creation.", bpName);
             return new BlueprintSyncResult(restClient.createBlueprint(bp), true);
         }
 
@@ -306,7 +307,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         if (localContent.equals(serverContent)
                 && localOrgSharings.equals(serverOrgSharings)
                 && Objects.equals(bp.getRequestScopeOrg(), fullServerBp.getRequestScopeOrg())) {
-            logger.info(
+            logger.debug(
                     "Blueprint '{}' working draft content matches server content exactly. Checking custom request forms...",
                     bpName);
             return new BlueprintSyncResult(fullServerBp, false);
@@ -361,7 +362,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         }
 
         // --- EXISTING: PROCESS FORM UPDATES WHEN LOCAL FILE IS PRESENT ---
-        logger.info("Custom request form artifact layout definition found: '{}'. Evaluating variations...",
+        logger.debug("Custom request form artifact layout definition found: '{}'. Evaluating variations...",
                 formFileName);
         try {
             String formFileContent = new String(java.nio.file.Files.readAllBytes(formDataFile.toPath()),
@@ -399,7 +400,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
                         if (localFormJsonNormalized.equals(serverFormJsonNormalized)
                                 && localCssContent.equals(serverStyles)) {
-                            logger.info(
+                            logger.debug(
                                     "Custom request form layouts and sibling styles match perfectly on server for blueprint '{}'. Skipping redundant updates.",
                                     bpName);
                             formChanged = false;
@@ -411,7 +412,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             }
 
             if (formChanged) {
-                logger.info("Form configuration updates detected for blueprint '{}'. Triggering updates sequence...",
+                logger.debug("Form configuration updates detected for blueprint '{}'. Triggering updates sequence...",
                         bpName);
 
                 String cssStylesPayload = "";
@@ -422,7 +423,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
                 restClient.createBlueprintForm(blueprintId, localFormPayload, bp.getContent(), bp.getName(),
                         bp.getDescription(), bp.getRequestScopeOrg(), cssStylesPayload);
-                logger.info("Successfully bound updated custom request form configurations to Blueprint entity '{}'.",
+                logger.debug("Successfully bound updated custom request form configurations to Blueprint entity '{}'.",
                         bpName);
                 return true;
             }
@@ -439,7 +440,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      */
     private void executeBlueprintRelease(String blueprintId, String bpName, VcfaBlueprint processingTarget,
             File stylesFile) {
-        logger.info("Triggering lifecycle version mapping release sequence for blueprint: {}", bpName);
+        logger.debug("Triggering lifecycle version mapping release sequence for blueprint: {}", bpName);
         try {
             if (stylesFile.exists()) {
                 String localCssContent = new String(java.nio.file.Files.readAllBytes(stylesFile.toPath()),
@@ -560,7 +561,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
         try {
             this.verifyAssetPathSafety(bp.getName(), "Blueprint");
-            logger.info("Evaluating custom request form availability on server for blueprint: {}", bp.getName());
+            logger.debug("Evaluating custom request form availability on server for blueprint: {}", bp.getName());
 
             Object rawFormResponse = restClient.getCatalogItemForm("com.vmw.blueprint", bp.getId());
 
@@ -569,7 +570,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
 
                 if (formMetaMap != null && formMetaMap.containsKey("form") && formMetaMap.get("form") != null) {
                     formExistsOnServer = true;
-                    logger.info(
+                    logger.debug(
                             "Custom request form discovered for blueprint '{}'. Generating artifact payload layout...",
                             bp.getName());
 
@@ -603,7 +604,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                             StandardOpenOption.CREATE,
                             StandardOpenOption.TRUNCATE_EXISTING);
 
-                    logger.info("Successfully exported custom request form layout file asset: {} and styles.css",
+                    logger.debug("Successfully exported custom request form layout file asset: {} and styles.css",
                             formFileName);
                 }
             }
@@ -696,7 +697,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      */
     private void unreleaseOldVersions(String blueprintId) {
         try {
-            logger.info("Evaluating historical released version tree to unpublish outdated assets for blueprint ID: {}",
+            logger.debug("Evaluating historical released version tree to unpublish outdated assets for blueprint ID: {}",
                     blueprintId);
             String rawVersionsJson = restClient.getBlueprintVersions(blueprintId);
             if (rawVersionsJson == null || rawVersionsJson.trim().isEmpty()) {
