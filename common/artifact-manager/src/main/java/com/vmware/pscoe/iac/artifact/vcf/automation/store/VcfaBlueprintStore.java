@@ -312,7 +312,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                     bpName);
             return new BlueprintSyncResult(fullServerBp, false);
         } else {
-            logger.info(
+            logger.debug(
                     "Blueprint '{}' found on target host server with content changes. Overwriting active working draft.",
                     bpName);
             return new BlueprintSyncResult(restClient.updateBlueprint(existing.getId(), bp), true);
@@ -740,7 +740,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                     continue;
                 }
 
-                logger.info("Unreleasing outdated cloud template version '{}' (Internal ID: {})", versionValue,
+                logger.debug("Unreleasing outdated cloud template version '{}' (Internal ID: {})", versionValue,
                         versionId);
                 restClient.unreleaseBlueprintVersion(blueprintId, versionId);
             }

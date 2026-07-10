@@ -27,7 +27,8 @@ import static com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPack
  */
 public class VcfaTypeStoreFactory {
 	private static final VcfaPackageMemberType[] IMPORT_ORDER = {
-			BLUEPRINT,
+			// the blueprints have to be imported last, so that we have any resource actions
+			// or custom resources present
 			POLICY,
 			PROPERTY_GROUP,
 			SCENARIO,
@@ -35,10 +36,12 @@ public class VcfaTypeStoreFactory {
 			CUSTOM_RESOURCE,
 			RESOURCE_ACTION,
 			SUBSCRIPTION,
-			WORKFLOW
+			WORKFLOW,
+			BLUEPRINT
 	};
 
 	private static final VcfaPackageMemberType[] EXPORT_ORDER = {
+			// can be exported in any order, so we went with alphabetical
 			BLUEPRINT,
 			POLICY,
 			PROPERTY_GROUP,
@@ -51,6 +54,8 @@ public class VcfaTypeStoreFactory {
 	};
 
 	private static final VcfaPackageMemberType[] DELETE_ORDER = {
+			// blueprints have to be cleaned first, so that the custom resources & resource
+			// actions are not bound to anything and are deletable
 			BLUEPRINT,
 			POLICY,
 			PROPERTY_GROUP,
