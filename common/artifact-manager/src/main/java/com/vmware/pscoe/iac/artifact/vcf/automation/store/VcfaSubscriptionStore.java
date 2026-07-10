@@ -43,6 +43,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
 
     @Override
     public void importContent(File sourceDirectory) {
+        logger.debug("Importing subscriptions from {}", sourceDirectory.getAbsolutePath());
         List<String> allowedSubs = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
                 "subscriptions");
 
