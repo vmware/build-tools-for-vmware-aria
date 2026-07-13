@@ -2242,6 +2242,90 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#improved-operation-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Improved Operation Logging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Improved Operation Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#previous-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previous Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#improved-store-execution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Improved Store Execution Order
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Improved Store Execution Order">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#previous-behavior_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previous Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-behavior_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2281,6 +2365,16 @@
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
+<h3 id="improved-operation-logging">Improved Operation Logging<a class="headerlink" href="#improved-operation-logging" title="Permanent link">&para;</a></h3>
+<h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>
+<p>Push, pull, and clean operations produced log output that was more difficult to read and analyze.</p>
+<h4 id="new-behavior">New Behavior<a class="headerlink" href="#new-behavior" title="Permanent link">&para;</a></h4>
+<p>Updated log severity levels to provide clearer and more easily readable output when push, pull, and clean operations are executed.</p>
+<h3 id="improved-store-execution-order">Improved Store Execution Order<a class="headerlink" href="#improved-store-execution-order" title="Permanent link">&para;</a></h3>
+<h4 id="previous-behavior_1">Previous Behavior<a class="headerlink" href="#previous-behavior_1" title="Permanent link">&para;</a></h4>
+<p>The execution order of store operations could lead to dependency-related issues between object types during push, pull, and clean operations.</p>
+<h4 id="new-behavior_1">New Behavior<a class="headerlink" href="#new-behavior_1" title="Permanent link">&para;</a></h4>
+<p>Updated the store execution sequence for all three operations to ensure dependencies are processed in the correct order, reducing the likelihood of object type dependency issues.</p>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
 
 
