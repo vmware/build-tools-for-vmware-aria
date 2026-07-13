@@ -88,7 +88,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
 
             for (VcfaPolicy policy : remotePolicies) {
                 if (isExcludedByDescriptor(policy)) {
-                    logger.info("Policy '{}' is excluded by descriptor rules. Skipping export.", policy.getName());
+                    logger.debug("Policy '{}' is excluded by descriptor rules. Skipping export.", policy.getName());
                     continue;
                 }
 
@@ -103,7 +103,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 ObjectNode jsonNode = mapper.valueToTree(policy);
                 VcfaPayloadSanitizer.sanitize(jsonNode);
 
-                logger.info("Successfully synchronized policy asset: {}", jsonFile.getAbsolutePath());
+                logger.debug("Successfully synchronized policy asset: {}", jsonFile.getAbsolutePath());
                 String serializedJson = mapper.writeValueAsString(jsonNode);
                 Files.write(
                         jsonFile.toPath(),
@@ -121,8 +121,6 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
      */
     @Override
     public void importContent(File sourceDirectory) {
-        logger.info("Importing policies from {}", sourceDirectory.getAbsolutePath());
-
         if (isExplicitlyEmptyInDescriptor()) {
             logger.info(
                     "Policy descriptor is explicitly empty in configuration. Bypassing server lookups and skipping import entirely.");
@@ -187,13 +185,13 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                     VcfaPolicy localPolicy = mapper.readValue(jsonContent, VcfaPolicy.class);
 
                     if (isExcludedByDescriptor(localPolicy)) {
-                        logger.info("Policy asset '{}' is excluded by descriptor configuration rules. Skipping import.",
+                        logger.debug("Policy asset '{}' is excluded by descriptor configuration rules. Skipping import.",
                                 localPolicy.getName());
                         continue;
                     }
 
                     String trackingName = localPolicy.getName();
-                    logger.info("Processing local Policy asset configuration: '{}/{}'", subDir.getName(),
+                    logger.debug("Processing local Policy asset configuration: '{}/{}'", subDir.getName(),
                             file.getName());
 
                     localPolicy.setOrgId(restClient.getOrganizationId());
@@ -209,7 +207,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                     if (existingRemote.isPresent()) {
                         VcfaPolicy remoteMatch = existingRemote.get();
                         if (isIdentical(remoteMatch, localPolicy)) {
-                            logger.info("Policy '{}' matches remote system configuration exactly. Skipping update.",
+                            logger.debug("Policy '{}' matches remote system configuration exactly. Skipping update.",
                                     trackingName);
                         } else {
                             logger.info(
@@ -218,7 +216,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                             executeAtomicPolicyUpdate(remoteMatch, localPolicy);
                         }
                     } else {
-                        logger.info("Policy '{}' not found on target server. Executing remote creation via POST.",
+                        logger.debug("Policy '{}' not found on target server. Executing remote creation via POST.",
                                 trackingName);
                         localPolicy.setId(null);
                         restClient.createOrUpdatePolicy(localPolicy);
@@ -335,7 +333,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 List<String> targetedNames = policyYamlBlock.get(manifestKey);
 
                 if (targetedNames == null) {
-                    logger.info(
+                    logger.debug(
                             "[CATEGORY WILDCARD] Policy category '{}' is blank. Deleting remote infrastructure instance: {}",
                             manifestKey, remotePol.getName());
                     restClient.deletePolicy(remotePol.getId());
@@ -347,7 +345,7 @@ public class VcfaPolicyStore extends AbstractVcfaStore {
                 }
 
                 if (targetedNames.contains(remotePol.getName())) {
-                    logger.info("[TARGETED DELETE] Deleting policy '{}' found in manifest category '{}'",
+                    logger.debug("[TARGETED DELETE] Deleting policy '{}' found in manifest category '{}'",
                             remotePol.getName(), manifestKey);
                     restClient.deletePolicy(remotePol.getId());
                 }

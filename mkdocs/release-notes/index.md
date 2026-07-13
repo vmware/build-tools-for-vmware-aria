@@ -39,6 +39,22 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### Improved Operation Logging
+
+#### Previous Behavior
+Push, pull, and clean operations produced log output that was more difficult to read and analyze.
+
+#### New Behavior
+Updated log severity levels to provide clearer and more easily readable output when push, pull, and clean operations are executed.
+
+### Improved Store Execution Order
+
+#### Previous Behavior
+The execution order of store operations could lead to dependency-related issues between object types during push, pull, and clean operations.
+
+#### New Behavior
+Updated the store execution sequence for all three operations to ensure dependencies are processed in the correct order, reducing the likelihood of object type dependency issues.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

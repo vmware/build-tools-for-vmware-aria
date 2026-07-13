@@ -25,35 +25,47 @@ import static com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPack
 /**
  * Factory for VCFA stores and execution order.
  */
-public class VcfaTypeStoreFactory { // TODO REVERT AFTER DEVELOPMENT IS DONE, this is to make it compile while some
-									// store files are being worked on
-	private static final VcfaPackageMemberType[] ALL_ORDER = new VcfaPackageMemberType[] {
-			BLUEPRINT,
-			CUSTOM_RESOURCE, // needs vRO
+public class VcfaTypeStoreFactory {
+	private static final VcfaPackageMemberType[] IMPORT_ORDER = {
+			// the blueprints have to be imported last, so that we have any resource actions
+			// or custom resources present
 			POLICY,
 			PROPERTY_GROUP,
-			RESOURCE_ACTION, // needs vRO
 			SCENARIO,
-			SUBSCRIPTION, // needs vRO
-			WORKFLOW, // needs vRO
-
-			// BLUEPRINT,
-			// // CONTENT_SOURCE, // all fails with 500
-			// // CATALOG_ENTITLEMENT //may not be needed
-			// CUSTOM_RESOURCE, //needs vRO
-			// POLICY,
-			// PROPERTY_GROUP,
-			// RESOURCE_ACTION, //needs vRO
-			// SCENARIO,
-			// SUBSCRIPTION, //needs vRO
-			// WORKFLOW, //needs vRO
+			// The fllowing need an orchestrator integration in order to work
+			CUSTOM_RESOURCE,
+			RESOURCE_ACTION,
+			SUBSCRIPTION,
+			WORKFLOW,
+			BLUEPRINT
 	};
-	private static final VcfaPackageMemberType[] IMPORT_ORDER = ALL_ORDER;
 
-	private static final VcfaPackageMemberType[] EXPORT_ORDER = ALL_ORDER;
+	private static final VcfaPackageMemberType[] EXPORT_ORDER = {
+			// can be exported in any order, so we went with alphabetical
+			BLUEPRINT,
+			POLICY,
+			PROPERTY_GROUP,
+			SCENARIO,
+			// The fllowing need an orchestrator integration in order to work
+			CUSTOM_RESOURCE,
+			RESOURCE_ACTION,
+			SUBSCRIPTION,
+			WORKFLOW
+	};
 
-	private static final VcfaPackageMemberType[] DELETE_ORDER = ALL_ORDER;
-	// delete policies and entitlements first
+	private static final VcfaPackageMemberType[] DELETE_ORDER = {
+			// blueprints have to be cleaned first, so that the custom resources & resource
+			// actions are not bound to anything and are deletable
+			BLUEPRINT,
+			POLICY,
+			PROPERTY_GROUP,
+			SCENARIO,
+			// The fllowing need an orchestrator integration in order to work
+			CUSTOM_RESOURCE,
+			RESOURCE_ACTION,
+			SUBSCRIPTION,
+			WORKFLOW
+	};
 
 	public static VcfaPackageMemberType[] getImportOrder() {
 		return IMPORT_ORDER;

@@ -79,7 +79,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
             String wfName = filename.substring(0, filename.lastIndexOf(".json"));
 
             if (isExcludedByDescriptor(wfName)) {
-                logger.info("vRO Workflow Catalog Item '{}' is excluded by descriptor configuration rules. Skipping.",
+                logger.debug("vRO Workflow Catalog Item '{}' is excluded by descriptor configuration rules. Skipping.",
                         wfName);
                 continue;
             }
@@ -102,13 +102,13 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
                         .orElse(null);
 
                 if (existingItem == null) {
-                    logger.info(
+                    logger.debug(
                             "Catalog Item '{}' does not exist on target instance. Executing publish: POST /catalog/api/items:publish",
                             wfName);
                     restClient.publishCatalogItem(localPayload);
                 } else {
                     String catalogItemId = existingItem.get("id").getAsString();
-                    logger.info(
+                    logger.debug(
                             "Catalog Item '{}' exists (ID: {}). Executing updates: POST /catalog/api/items/{}:republish",
                             wfName, catalogItemId, catalogItemId);
                     restClient.republishCatalogItem(catalogItemId, localPayload);
@@ -125,6 +125,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
      */
     @Override
     public void exportContent() {
+        logger.info("Pulling workflow configurations from the remote environment...");
         // 1. Lightweight discovery phase: Fetch only names and IDs from the inventory
         // API
         List<JsonObject> lightweightItems = fetchServerWorkflowCatalogItemNames();
@@ -137,7 +138,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
             String name = item.has("name") ? item.get("name").getAsString() : "unnamed-catalog-item";
 
             if (isExcludedByDescriptor(name)) {
-                logger.info(
+                logger.debug(
                         "vRO Workflow Catalog Item '{}' is excluded by descriptor configuration rules. Skipping export.",
                         name);
                 continue;
@@ -175,7 +176,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
                         : "unnamed-catalog-item";
 
                 try {
-                    logger.info(
+                    logger.debug(
                             "Executing pre-export republish for Catalog Item '{}' (ID: {}) to refresh UI form layouts...",
                             name, catalogItemId);
                     restClient.republishCatalogItem(catalogItemId, itemToRepublish);
@@ -189,7 +190,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
 
         // 5. Deep harvest phase (Round 2): Re-fetch the freshly baked schemas and
         // layout configurations
-        logger.info("Re-harvesting catalog configurations to capture post-republish form layouts...");
+        logger.debug("Re-harvesting catalog configurations to capture post-republish form layouts...");
         List<JsonObject> freshCatalogItems = fetchServerWorkflowCatalogItems(idsToFetch);
 
         // 6. Run serialization on the fresh target data
@@ -239,7 +240,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
                 String name = item.get("name").getAsString();
                 if (itemsToDelete.contains(name)) {
                     String catalogItemId = item.get("id").getAsString();
-                    logger.info("[TARGETED CLEAN] Removing catalog publication entry for item: {}", name);
+                    logger.debug("[TARGETED CLEAN] Removing catalog publication entry for item: {}", name);
                     restClient.unpublishCatalogItem(catalogItemId);
                 }
             }
@@ -320,7 +321,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
             String targetTsFileName = name + ".wf.ts";
 
             if (Files.exists(vroSrcPath)) {
-                logger.info("Scanning true vRO workspace tree at '{}' for companion file '{}'...",
+                logger.debug("Scanning true vRO workspace tree at '{}' for companion file '{}'...",
                         vroSrcPath.toAbsolutePath(), targetTsFileName);
 
                 // Recursively search for the matching .wf.ts file
@@ -361,13 +362,13 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
             Files.write(formFilePath, formattedFormPayload.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-            logger.info("[SUCCESS] Serialized custom request form asset directly to destination: {}",
+            logger.debug("[SUCCESS] Serialized custom request form asset directly to destination: {}",
                     formFilePath.toAbsolutePath());
 
             Files.write(formFilePath, formattedFormPayload.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-            logger.info("[SUCCESS] Serialized custom request form asset directly to destination: {}",
+            logger.debug("[SUCCESS] Serialized custom request form asset directly to destination: {}",
                     formFilePath.toAbsolutePath());
         } else {
             logger.warn("No form layout map detected for catalog item '{}'. Skipping form file generation.", name);
@@ -384,7 +385,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
         Files.write(Paths.get(jsonFilePath), formattedJsonPayload.getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-        logger.info("Successfully serialized catalog item mapping asset structure directly to flat file: {}",
+        logger.debug("Successfully serialized catalog item mapping asset structure directly to flat file: {}",
                 jsonFilePath);
     }
 
