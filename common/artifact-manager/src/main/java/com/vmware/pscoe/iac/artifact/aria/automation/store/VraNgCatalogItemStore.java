@@ -506,7 +506,6 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 		fetchLatestCatalogItemIds(catalogItems);
 
 		catalogItems.forEach(catalogItem -> {
-			logger.info("has form? {}", catalogItem.hasForm());
 			if (catalogItem.hasForm()) {
 				importCustomForm(catalogItem, catalogItemFolder);
 			}
