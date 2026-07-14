@@ -10,17 +10,17 @@
 - Specify `type` to be either `abx` (vRA ABX Actions) or `vro` (vRO Polyglot Actions).
 
 ```bash
-#vRO:  
-mvn archetype:generate \ 
+#vRO:
+mvn archetype:generate \
   -DinteractiveMode=false \
   -DarchetypeGroupId=com.vmware.pscoe.polyglot.archetypes \
   -DarchetypeArtifactId=package-polyglot-archetype \
-  -DarchetypeVersion={LATEST_VERSION} \ 
+  -DarchetypeVersion={LATEST_VERSION} \
   -DgroupId=com.vmware.pscoe \
   -DartifactId=testvronew \
-  -Dtype=vro  
+  -Dtype=vro
 
-#ABX:  
+#ABX:
 mvn archetype:generate \
   -DinteractiveMode=false \
   -DarchetypeGroupId=com.vmware.pscoe.polyglot.archetypes \

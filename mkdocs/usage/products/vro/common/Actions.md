@@ -75,10 +75,10 @@ the typescript hints will be used.
 ### Native {{ products.vro_short_name }} Action
 
 ```javascript
-/**  
- * @param {Any} args  
- * @param {number} test  
- */  
+/**
+ * @param {Any} args
+ * @param {number} test
+ */
 (function (args, test, willBeAnyType) {
    return args.url;
 });

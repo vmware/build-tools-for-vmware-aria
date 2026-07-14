@@ -208,7 +208,7 @@ For a manual installation, follow the steps below:
 
    variables:
      LOCAL_REPO: >-
-       -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository    
+       -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
      BUILD_OPTS: >-
        -Dhttps.protocols=TLSv1.2
        $LOCAL_REPO

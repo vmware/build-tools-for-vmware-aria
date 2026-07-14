@@ -28,7 +28,7 @@ This section describes how to bypass a security feature in development/testing e
           <properties>
               ...
               <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
-              <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>            
+              <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
           </properties>
       </profile>
     </profiles>

@@ -12,7 +12,7 @@ Test:
 
 ```typescript
 const sumAction = System.getModule("com.vmware.pscoe.actions").sumAction;
- 
+
 describe("Sum Action test", () => {
     it("should add two numbers", () => {
         expect( sumAction( 1,5 ) ).toBe( 6 );

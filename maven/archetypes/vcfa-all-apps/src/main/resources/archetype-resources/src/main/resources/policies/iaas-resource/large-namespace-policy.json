@@ -1,0 +1,33 @@
+{
+  "id" : "741000a4-3a2f-4680-b4e8-1653e075eef7",
+  "name" : "large-namespace-policy",
+  "typeId" : "com.vmware.policy.supervisor.iaas",
+  "enforcementType" : "HARD",
+  "description" : "Sample IaaS Resource policy",
+  "definition" : {
+    "automationPolicy" : {
+      "validations" : [ {
+        "reason" : "",
+        "message" : "",
+        "expression" : "false"
+      } ],
+      "failurePolicy" : "Fail",
+      "matchConstraints" : {
+        "resourceRules" : [ {
+          "apiGroups" : [ "blueprint" ],
+          "resources" : [ "vm" ],
+          "operations" : [ "CREATE", "UPDATE" ],
+          "apiVersions" : [ "9.0.0" ]
+        } ]
+      },
+      "validationActions" : [ "Deny" ]
+    }
+  },
+  "criteria" : {
+    "matchExpression" : [ {
+      "key" : "object.spec.className",
+      "operator" : "eq",
+      "value" : "large"
+    } ]
+  }
+}

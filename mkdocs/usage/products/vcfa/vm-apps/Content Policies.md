@@ -31,7 +31,7 @@ policy:
     - example policy
   lease:
     - example policy
-  resource-quota: 
+  resource-quota:
     - example policy
 
 # ...

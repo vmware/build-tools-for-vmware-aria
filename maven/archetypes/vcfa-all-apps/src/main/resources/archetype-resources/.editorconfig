@@ -1,0 +1,35 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Styling for all files
+[*]
+charset = utf-8
+insert_final_newline = true
+
+
+# Styling for JS, TS, Java, Python files
+[*.{java,ts,js,py}]
+indent_style = tab
+indent_size = 4
+
+# Styling for YAML files
+[*.{yaml,yml}]
+indent_style = space
+indent_size = 2
+
+# Styling for JSON files
+[*.json]
+indent_style = tab
+indent_size = 2
+
+# Styling for XML, HTML files
+[*.{xml,html}]
+indent_style = tab
+indent_size = 4
+
+# Styling for Shell, PowerShell and Batch files
+[*.{sh,bat,ps1}]
+indent_style = tab
+indent_size = 2

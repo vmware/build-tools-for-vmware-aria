@@ -27,7 +27,7 @@ mvn archetype:generate \
     -DartifactId=abx \
     -Druntime=nodejs \
     -Dtype=abx
- 
+
 # Python
 mvn archetype:generate \
     -DinteractiveMode=false \
@@ -38,7 +38,7 @@ mvn archetype:generate \
     -DartifactId=abx \
     -Druntime=python \
     -Dtype=abx
- 
+
 # PowerShell
 mvn archetype:generate \
     -DinteractiveMode=false \
@@ -153,7 +153,7 @@ For example, you can have the following project structure
     "baseUrl": "./",
     "paths": { "my-lib": ["my-lib/src"] },
     "composite": true,
-    ...other compileOptions, shared by all projects inheriting from this tsconfig 
+    ...other compileOptions, shared by all projects inheriting from this tsconfig
   },
   "include": [],
 }
@@ -189,7 +189,7 @@ ABX content pulling is not supported yet.
 To deploy the code developed in the local project or checked out from source control to a live server, you can use the `vrealize:push` command:
 
 ```bash
-mvn package vrealize:push -Pcorp-env 
+mvn package vrealize:push -Pcorp-env
 ```
 
 This will build the package and deploy it to the environment described in the `corp-env` profile.

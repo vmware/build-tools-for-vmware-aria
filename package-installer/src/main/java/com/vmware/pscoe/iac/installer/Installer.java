@@ -70,6 +70,7 @@ import com.vmware.pscoe.iac.artifact.common.store.PackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.PackageStoreFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
+import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
 
 /**
  * Created by tsimchev on 2/22/18.
@@ -198,7 +199,7 @@ enum Option {
 	 * VRANG cloud proxy name.
 	 */
 	VRANG_CLOUD_PROXY_NAME(
-			"varng_cloud_proxy_name",
+			"vrang_cloud_proxy_name",
 			ConfigurationVraNg.CLOUD_PROXY_NAME),
 
 	/**
@@ -218,6 +219,121 @@ enum Option {
 	VRANG_DELETE_CONTENT(
 			"vrang_delete_content",
 			ConfigurationVraNg.DELETE_CONTENT),
+
+	/**
+	 * VCFA host.
+	 */
+	VCFA_SERVER(
+			"vcfa_host",
+			Configuration.HOST),
+	/**
+	 * VCFA CSP host.
+	 */
+	VCFA_CSP_SERVER(
+			"vcfa_csp_host",
+			VcfAutoConfiguration.CSP_HOST),
+	/**
+	 * VCFA proxy.
+	 */
+	VCFA_PROXY(
+			"vcfa_proxy",
+			VcfAutoConfiguration.PROXY),
+	/**
+	 * VCFA proxy required.
+	 */
+	VCFA_PROXY_REQUIRED(
+			"vcfa_proxy_required",
+			VcfAutoConfiguration.PROXY_REQUIRED),
+	/**
+	 * VCFA port.
+	 */
+	VCFA_PORT(
+			"vcfa_port",
+			Configuration.PORT),
+	/**
+	 * VCFA data collection delay in seconds.
+	 */
+	VCFA_DATA_COLLECTION_DELAY_SECONDS(
+			"vcfa_data.collection.delay.seconds",
+			VcfAutoConfiguration.DATA_COLLECTION_DELAY_SECONDS),
+	/**
+	 * VCFA org name.
+	 */
+	VCFA_ORGANIZATION_NAME(
+			"vcfa_org_name",
+			VcfAutoConfiguration.ORGANIZATION_NAME),
+	/**
+	 * VCFA project name.
+	 */
+	VCFA_PROJECT_NAME(
+			"vcfa_project_name",
+			VcfAutoConfiguration.PROJECT_NAME),
+	/**
+	 * VCFA auth with refresh token.
+	 */
+	VCFA_AUTH_WITH_REFRESH_TOKEN(
+			"vcfa_auth_with_refresh_token",
+			"auth_with_" + VcfAutoConfiguration.REFRESH_TOKEN),
+	/**
+	 * VCFA refresh token.
+	 */
+	VCFA_REFRESH_TOKEN(
+			"vcfa_refresh_token",
+			VcfAutoConfiguration.REFRESH_TOKEN),
+	/**
+	 * VCFA username.
+	 */
+	VCFA_USERNAME(
+			"vcfa_username",
+			Configuration.USERNAME),
+	/**
+	 * VCFA password.
+	 */
+	VCFA_PASSWORD(
+			"vcfa_password",
+			Configuration.PASSWORD),
+	/**
+	 * VCFA import overwrite mode.
+	 */
+	VCFA_IMPORT_OVERWRITE_MODE(
+			"vcfa_import_overwrite_mode",
+			VcfAutoConfiguration.PACKAGE_IMPORT_OVERWRITE_MODE),
+	/**
+	 * VCFA import timeout.
+	 */
+	VCFA_IMPORT_TIMEOUT(
+			"vcfa_import_timeout",
+			VcfAutoConfiguration.IMPORT_TIMEOUT),
+	/**
+	 * VCFA VRO integration name.
+	 */
+	VCFA_VRO_INTEGRATION_NAME(
+			"vcfa_vro_integration_name",
+			VcfAutoConfiguration.VRO_INTEGRATION),
+	/**
+	 * VCFA cloud proxy name.
+	 */
+	VCFA_CLOUD_PROXY_NAME(
+			"vcfa_cloud_proxy_name",
+			VcfAutoConfiguration.CLOUD_PROXY_NAME),
+
+	/**
+	 * VCFA unrelease blueprint versions. Decides wether old versions need to be
+	 * unrelased
+	 *
+	 * This only works when running in non interactive mode
+	 */
+	VCFA_BP_UNRELEASE_VERSIONS(
+			"vcfa_bp_unrelease_versions",
+			VcfAutoConfiguration.UNRELEASE_BLUEPRINT_VERSIONS),
+
+	/**
+	 * VCFA delete last version.
+	 * This will result in the environment being cleaned up
+	 */
+	VCFA_DELETE_CONTENT(
+			"vcfa_delete_content",
+			VcfAutoConfiguration.DELETE_CONTENT),
 
 	/**
 	 * VRLI server.
@@ -522,6 +638,12 @@ enum Option {
 			"vra_ng_import_packages",
 			StringUtils.EMPTY),
 	/**
+	 * VCFA import packages.
+	 */
+	VCFA_IMPORT(
+			"vcfaa_import_packages",
+			StringUtils.EMPTY),
+	/**
 	 * VRO import packages.
 	 */
 	VRO_IMPORT(
@@ -819,6 +941,10 @@ public final class Installer {
 	 */
 	private static final int VRANG_DATA_COLLECTION_DELAY_SECONDS = 600;
 	/**
+	 * VCFA data collection delay in seconds.
+	 */
+	private static final int VCFA_DATA_COLLECTION_DELAY_SECONDS = 600;
+	/**
 	 * Exit success code.
 	 */
 	private static final int EXIT_SUCCESS_CODE = 0;
@@ -840,6 +966,10 @@ public final class Installer {
 		 * VRANG.
 		 */
 		VRANG("vrang_"),
+		/**
+		 * VCFA.
+		 */
+		VCFA("vcfa_"),
 		/**
 		 * VRO.
 		 */
@@ -935,6 +1065,14 @@ public final class Installer {
 
 		}
 
+		if (input.allTrue(Option.VCFA_IMPORT)) {
+			PackageStoreFactory
+					.getInstance(
+							VcfAutoConfiguration.fromProperties(input.getMappings(ConfigurationPrefix.VCFA.getValue())))
+					.importAllPackages(getFilesystemPackages(PackageType.VCFA_ALL_APPS), false, vroEnableBackup);
+
+		}
+
 		if (input.allTrue(Option.VCD_IMPORT)) {
 			PackageStoreFactory
 					.getInstance(ConfigurationVcd.fromProperties(input.getMappings(ConfigurationPrefix.VCD.getValue())))
@@ -973,6 +1111,12 @@ public final class Installer {
 					.deleteAllPackages(getFilesystemPackages(PackageType.VRANG), true, false, false);
 			PackageStoreFactory.getInstance(ConfigurationVraNg.fromProperties(input.getMappings(prefixes)))
 					.deleteAllPackages(getFilesystemPackages(PackageType.VRANGv3), true, false, false);
+		}
+
+		if (input.allTrue(Option.VCFA_DELETE_CONTENT)) {
+			String[] prefixes = { ConfigurationPrefix.VCFA.getValue() };
+			PackageStoreFactory.getInstance(VcfAutoConfiguration.fromProperties(input.getMappings(prefixes)))
+					.deleteAllPackages(getFilesystemPackages(PackageType.VCFA_ALL_APPS), true, false, false);
 		}
 
 		if (input.allTrue(Option.VROPS_IMPORT)) {
@@ -1120,6 +1264,22 @@ public final class Installer {
 			readCsImportProperties(input);
 		}
 		// +-------------------------------------
+		// | VCF Automation 9 (All Apps)
+		// +-------------------------------------
+		boolean hasVcfaaPackages = !getFilesystemPackages(PackageType.VCFA_ALL_APPS).isEmpty();
+		if (hasVcfaaPackages) {
+			userInput(input, Option.VCFA_IMPORT, "Import VCFA9 packages?", true);
+			if (!input.anyTrue(Option.VCFA_IMPORT)) {
+				userInput(input, Option.VCFA_DELETE_CONTENT, "Clean up VCF Automation content?", true);
+			}
+		}
+		if (input.anyTrue(Option.VCFA_IMPORT, Option.VCFA_DELETE_CONTENT)) {
+			readVcfaProperties(input);
+		}
+		if (input.anyTrue(Option.VCFA_IMPORT)) {
+			readVcfaImportProperties(input);
+		}
+		// +-------------------------------------
 		// | vRealize Orchestrator
 		// +-------------------------------------
 		if (!getFilesystemPackages(PackageType.VRO).isEmpty()) {
@@ -1195,11 +1355,14 @@ public final class Installer {
 		// +-------------------------------------
 		// | Store Properties for reusage
 		// +-------------------------------------
-		boolean isStoring = true;
+		storePropertiesForReusage(input);
+	}
+
+	private static void storePropertiesForReusage(final Input input) {
 		String location = "environment.properties";
 		File propsLocation = new File(location);
 		propsLocation = new File(propsLocation.getAbsolutePath());
-		isStoring = input.getText().newBooleanInputReader().withDefaultValue(true).read("Store Configuration?");
+		boolean isStoring = input.getText().newBooleanInputReader().withDefaultValue(true).read("Store Configuration?");
 		if (isStoring) {
 			if (propsLocation.exists() || propsLocation.isDirectory() || propsLocation.getParentFile() == null
 					|| !propsLocation.getParentFile().canWrite()) {
@@ -1292,20 +1455,32 @@ public final class Installer {
 		Validate.hostAndPort(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)),
 				input.getText());
 
+		final String serverHost = input.get(Option.VRANG_SERVER);
+		final int serverPort = Integer.valueOf(input.get(Option.VRANG_PORT));
+		final boolean isVcf9 = Validate.isVcfAutomation9(serverHost, serverPort, input.getText());
+		if (isVcf9) {
+			input.getText().getTextTerminal().println("  Detected VCF Automation 9.");
+		}
+
 		if (needCspHost) {
 			userInput(input, Option.VRANG_CSP_SERVER, "  Authentication CSP FQDN:", input.get(Option.VRANG_SERVER));
 		}
 		userInput(input, Option.VRANG_AUTH_WITH_REFRESH_TOKEN, "  Authenticate with refresh token?:", false);
 		if (input.allTrue(Option.VRANG_AUTH_WITH_REFRESH_TOKEN)) {
 			userInput(input, Option.VRANG_REFRESH_TOKEN, "    vRA Refresh Token");
-			Validate.token(input.get(Option.VRANG_SERVER), Integer.valueOf(input.get(Option.VRANG_PORT)),
+			Validate.token(serverHost, serverPort,
 					input.get(Option.VRANG_REFRESH_TOKEN), input.getText());
 		} else {
 			userInput(input, Option.VRANG_USERNAME, "    vRA Username");
 			passInput(input, Option.VRANG_PASSWORD, "    vRA Password");
-			Validate.vrang(needCspHost ? input.get(Option.VRANG_CSP_SERVER) : input.get(Option.VRANG_SERVER),
-					Integer.valueOf(input.get(Option.VRANG_PORT)),
-					input.get(Option.VRANG_USERNAME), input.get(Option.VRANG_PASSWORD), input.getText());
+			final String authHost = needCspHost ? input.get(Option.VRANG_CSP_SERVER) : serverHost;
+			if (isVcf9) {
+				Validate.vcfa(authHost, serverPort,
+						input.get(Option.VRANG_USERNAME), input.get(Option.VRANG_PASSWORD), input.getText());
+			} else {
+				Validate.vrang(authHost, serverPort,
+						input.get(Option.VRANG_USERNAME), input.get(Option.VRANG_PASSWORD), input.getText());
+			}
 		}
 	}
 
@@ -1319,6 +1494,41 @@ public final class Installer {
 		userInput(input, Option.VRANG_PROXY_REQUIRED, "  Use proxy server for vRA? (Optional)", false);
 		if (input.allTrue(Option.VRANG_PROXY_REQUIRED)) {
 			userInput(input, Option.VRANG_PROXY, "    VRA proxy server");
+		}
+	}
+
+	private static void readVcfaProperties(final Input input) {
+		input.getText().getTextTerminal().println("VCF Automation 9 Configuration:");
+		userInput(input, Option.VCFA_SERVER, "  VCFA FQDN:");
+		Validate.host(input.get(Option.VCFA_SERVER), input.getText());
+
+		userInput(input, Option.VCFA_PORT, "  VCFA Port", HTTPS_PORT);
+		Validate.port(Integer.valueOf(input.get(Option.VCFA_PORT)), input.getText());
+		Validate.hostAndPort(input.get(Option.VCFA_SERVER), Integer.valueOf(input.get(Option.VCFA_PORT)),
+				input.getText());
+
+		userInput(input, Option.VCFA_CSP_SERVER, "  Authentication CSP FQDN:", input.get(Option.VCFA_SERVER));
+
+		userInput(input, Option.VCFA_AUTH_WITH_REFRESH_TOKEN, "  Authenticate with refresh token?:", false);
+		if (input.allTrue(Option.VCFA_AUTH_WITH_REFRESH_TOKEN)) {
+			userInput(input, Option.VCFA_REFRESH_TOKEN, "    VCFA Refresh Token");
+			Validate.token(input.get(Option.VCFA_SERVER), Integer.valueOf(input.get(Option.VCFA_PORT)),
+					input.get(Option.VCFA_REFRESH_TOKEN), input.getText());
+		} else {
+			userInput(input, Option.VCFA_USERNAME, "    VCFA Username");
+			passInput(input, Option.VCFA_PASSWORD, "    VCFA Password");
+			Validate.vcfa(input.get(Option.VCFA_CSP_SERVER),
+					Integer.valueOf(input.get(Option.VCFA_PORT)),
+					input.get(Option.VCFA_USERNAME), input.get(Option.VCFA_PASSWORD), input.getText());
+		}
+		userInput(input, Option.VCFA_PROJECT_NAME, "  Project name");
+		Validate.ProjectAndOrg validated = Validate.project(input, input.get(Option.VCFA_PROJECT_NAME),
+				input.getText());
+		userInput(input, Option.VCFA_ORGANIZATION_NAME,
+				"  Organization Name", validated.org);
+		userInput(input, Option.VCFA_PROXY_REQUIRED, "  Use proxy server for VCFA? (Optional)", false);
+		if (input.allTrue(Option.VCFA_PROXY_REQUIRED)) {
+			userInput(input, Option.VCFA_PROXY, "    VCFA proxy server");
 		}
 	}
 
@@ -1350,6 +1560,16 @@ public final class Installer {
 				ConfigurationVraNg.DEFAULT_IMPORT_TIMEOUT);
 		userInput(input, Option.VRANG_DATA_COLLECTION_DELAY_SECONDS, "  vRA's vRO Data Collection delay in seconds.",
 				VRANG_DATA_COLLECTION_DELAY_SECONDS);
+	}
+
+	private static void readVcfaImportProperties(final Input input) {
+		input.getText().getTextTerminal().println("VCF Automation 9 Import Configuration:");
+		userInput(input, Option.VCFA_IMPORT_OVERWRITE_MODE, "  VCFA9 Import Mode", "SKIP,OVERWRITE");
+		userInput(input, Option.VCFA_VRO_INTEGRATION_NAME, "  VCFA9 integration name", "embedded-VRO");
+		userInput(input, Option.VCFA_IMPORT_TIMEOUT, "  VCFA9 Import timeout",
+				VcfAutoConfiguration.DEFAULT_IMPORT_TIMEOUT);
+		userInput(input, Option.VCFA_DATA_COLLECTION_DELAY_SECONDS, "  VCFA's vRO Data Collection delay in seconds.",
+				VCFA_DATA_COLLECTION_DELAY_SECONDS);
 	}
 
 	private static void readCsImportProperties(final Input input) {
@@ -1427,7 +1647,7 @@ public final class Installer {
 					String.format("Cannot find any packages at %s .", containerDir.getAbsolutePath()));
 		}
 		List<File> packages = new ArrayList<>();
-		packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtention() }, true));
+		packages.addAll(FileUtils.listFiles(containerDir, new String[] { type.getPackageExtension() }, true));
 
 		return packages.stream().map(file -> PackageFactory.getInstance(type, file)).collect(Collectors.toList());
 	}

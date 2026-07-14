@@ -58,12 +58,12 @@ vro_delete_old_versions=true
 # Run vRO configuration workflow
 vro_run_workflow=true
 vro_run_workflow_id=1944423533582937823496790834565483423
-# input.json contains JSON where each first class KEY represents 
+# input.json contains JSON where each first class KEY represents
 # the workflow input parameter name and its value are sent as value
 # Supported types of workflow in/output parameters are string, number, boolean, Array/string
 vro_run_workflow_input_file_path=./input.json
-# output.json contains JSON where each first class KEY represents 
-# the workflow output parameter name and its value is a pretty printed value as JSON 
+# output.json contains JSON where each first class KEY represents
+# the workflow output parameter name and its value is a pretty printed value as JSON
 vro_run_workflow_output_file_path=./output.json
 vro_run_workflow_timeout=300
 
@@ -103,11 +103,11 @@ Following is an exhaustive list of properties that can be used with the `install
     ignore_ssl_host_verification
     vrealize_ssh_timeout
 
-    ### vRA8 and VCS connection properties ###
+    ### VCFA VM-Apps, vRA8, and VCS connection properties ###
     vrang_host
     vrang_csp_host
     vrang_proxy_required
-    vrang_proxy  
+    vrang_proxy
     vrang_port
     vrang_auth_with_refresh_token
     vrang_delete_content # can be used to delete all content from the vRA8 environment specified in the content.yaml
@@ -125,6 +125,25 @@ Following is an exhaustive list of properties that can be used with the `install
     # When importing content to vRA, the value of vrang_data.collection.delay.seconds sets the timeout (in seconds) for the data collection of the vRO integration in vRA in order for the import of the vRA content that depends on vRO elements to succeed. Effectively, this property sets a wait time on the importing of vRA content. If the property is provided a data collection is forced via API and only if that data collection fails the timeout is used.
     vrang_data.collection.delay.seconds
     # Note that the import of vRA8 content also requires the operation property "vrang_import_overwrite_mode".
+
+    ### VCFA All-Apps connection properties ###
+    vcfa_host
+    vcfa_csp_host
+    vcfa_proxy_required
+    vcfa_proxy
+    vcfa_port
+    vcfa_auth_with_refresh_token
+    vcfa_delete_content # can be used to delete all content from the vRA8 environment specified in the content.yaml
+    vcfa_refresh_token
+    vcfa_username
+    vcfa_password
+    vcfa_org_name
+    vcfa_project_name
+    vcfa_cloud_proxy_name
+    vcfa_import_overwrite_mode
+    vcfa_vro_integration_name
+    vcfa_import_timeout
+    vcfa_data.collection.delay.seconds
 
     ### vRLI connection properties ###
     vrli_server
