@@ -990,19 +990,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 	}
 
 	/**
-	 * Clear Custom Form.
-	 *
-	 * @param sourceId Source ID
-	 * @throws URISyntaxException throws URI syntax exception in case of invalid URI
-	 */
-	public void clearCustomFormPrimitive(final String sourceId)
-			throws URISyntaxException {
-		URI url = getURIBuilder().setPath(SERVICE_CUSTOM_FORM + "/" + sourceId).build();
-
-		restTemplate.exchange(url, HttpMethod.DELETE, getDefaultHttpEntity(), String.class);
-	}
-
-	/**
 	 * Import Subscriptions.
 	 *
 	 * @param subscriptionName subscription name

@@ -160,11 +160,8 @@ public class VraNgReleaseManager {
 	private boolean isUpdated(VraNgBlueprint blueprint, String latestVersion) {
 		String draftContent = blueprint.getContent();
 		String latestVersionContent = this.restClient.getBlueprintVersionContent(blueprint.getId(), latestVersion);
-		if (draftContent.equals(latestVersionContent)) {
-			return true;
-		}
-
-		return true;
+		ß
+		return !draftContent.equals(latestVersionContent);
 	}
 
 	/**
