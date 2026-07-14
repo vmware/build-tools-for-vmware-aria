@@ -15,7 +15,9 @@
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,6 +25,8 @@ import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.util.ArrayList;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -31,6 +35,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCatalogItem;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceBase;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgContentSourceType;
@@ -47,7 +52,149 @@ import com.vmware.pscoe.iac.artifact.common.store.Package;
 public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 
 	// =================================================
-	// CATALOG ITEMS EXPORT
+	// UTILITY FORMATTERS AND MIGRATORS
+	// =================================================
+
+	/**
+	 * Expands minified one-liner CSS rulesets into a standardized,
+	 * reader-friendly layout block with clear 4-space indentations.
+	 * 
+	 * @param css Raw minified string
+	 * @return Formatted multi-line stylesheet text
+	 */
+	private String formatCss(String css) {
+		if (StringUtils.isBlank(css)) {
+			return "";
+		}
+		String tokenized = css.replaceAll("\\s+", " ").trim();
+		return tokenized
+				.replaceAll("\\s*\\{\\s*", " {\n    ")
+				.replaceAll(";\\s*", ";\n    ")
+				.replaceAll("\\s*\\}\\s*", "\n}\n\n")
+				.trim();
+	}
+
+	/**
+	 * DECOUPLED STATE MIGRATOR: Executes independent rulesets for form definitions
+	 * and CSS styles to ensure master file sanitation and fallback file creation.
+	 */
+	private void migrateLegacyFormFiles(File jsonFormFile, File jsonFormDataFile, File jsonFormStylesFile) {
+		if (jsonFormFile == null || !jsonFormFile.exists()) {
+			return;
+		}
+
+		try {
+			String content = FileUtils.readFileToString(jsonFormFile, StandardCharsets.UTF_8);
+			if (StringUtils.isBlank(content)) {
+				return;
+			}
+
+			JsonElement root = JsonParser.parseString(content);
+			if (!root.isJsonObject()) {
+				return;
+			}
+
+			JsonObject jsonFormObj = root.getAsJsonObject();
+			boolean mutated = false;
+			Gson prettyGson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
+
+			// =================================================
+			// 1. FORM SCHEMA LOGIC (ISOLATED)
+			// =================================================
+			if (jsonFormDataFile.exists()) {
+				if (jsonFormObj.has("form")) {
+					jsonFormObj.remove("form");
+					mutated = true;
+					logger.debug("Master file clean: Removed legacy 'form' property since __FormData exists.");
+				}
+			} else {
+				if (jsonFormObj.has("form") && !jsonFormObj.get("form").isJsonNull()) {
+					JsonElement formEl = jsonFormObj.get("form");
+					JsonElement parsedForm = formEl;
+
+					if (formEl.isJsonPrimitive() && formEl.getAsJsonPrimitive().isString()) {
+						String formStr = formEl.getAsString();
+						if (StringUtils.isNotBlank(formStr)) {
+							parsedForm = JsonParser.parseString(formStr);
+						}
+					}
+					FileUtils.writeStringToFile(jsonFormDataFile, prettyGson.toJson(parsedForm),
+							StandardCharsets.UTF_8);
+					logger.info("Migration Action: Created missing __FormData from master property: {}",
+							jsonFormDataFile.getName());
+				} else {
+					// Fallback: Property missing -> Create empty JSON object file
+					FileUtils.writeStringToFile(jsonFormDataFile, "{}", StandardCharsets.UTF_8);
+					logger.info("Migration Action: Form property missing. Created empty object fallback: {}",
+							jsonFormDataFile.getName());
+				}
+
+				if (jsonFormObj.has("form")) {
+					jsonFormObj.remove("form");
+					mutated = true;
+				}
+			}
+
+			// =================================================
+			// 2. CSS STYLES LOGIC (ISOLATED)
+			// =================================================
+			if (jsonFormStylesFile.exists()) {
+				if (jsonFormObj.has("styles")) {
+					jsonFormObj.remove("styles");
+					mutated = true;
+				}
+				if (jsonFormObj.has("formStyles")) {
+					jsonFormObj.remove("formStyles");
+					mutated = true;
+				}
+				logger.debug("Master file clean: Removed legacy style properties since __FormStyles sheet exists.");
+			} else {
+				String extractedStyles = null;
+
+				if (jsonFormObj.has("styles") && !jsonFormObj.get("styles").isJsonNull()) {
+					extractedStyles = jsonFormObj.get("styles").getAsString();
+				} else if (jsonFormObj.has("formStyles") && !jsonFormObj.get("formStyles").isJsonNull()) {
+					extractedStyles = jsonFormObj.get("formStyles").getAsString();
+				}
+
+				if (extractedStyles != null) {
+					FileUtils.writeStringToFile(jsonFormStylesFile, formatCss(extractedStyles), StandardCharsets.UTF_8);
+					logger.info("Migration Action: Created missing __FormStyles from master property: {}",
+							jsonFormStylesFile.getName());
+				} else {
+					// Fallback: Property missing -> Create empty layout stylesheet
+					FileUtils.writeStringToFile(jsonFormStylesFile, "", StandardCharsets.UTF_8);
+					logger.info("Migration Action: Style property missing. Created empty stylesheet fallback: {}",
+							jsonFormStylesFile.getName());
+				}
+
+				if (jsonFormObj.has("styles")) {
+					jsonFormObj.remove("styles");
+					mutated = true;
+				}
+				if (jsonFormObj.has("formStyles")) {
+					jsonFormObj.remove("formStyles");
+					mutated = true;
+				}
+			}
+
+			// =================================================
+			// 3. PERSIST SANITIZED MASTER FILE
+			// =================================================
+			if (mutated) {
+				FileUtils.writeStringToFile(jsonFormFile, prettyGson.toJson(jsonFormObj), StandardCharsets.UTF_8);
+				logger.info("Migration Action: Successfully flushed clean sanitized master structure to disk: {}",
+						jsonFormFile.getName());
+			}
+
+		} catch (Exception e) {
+			logger.error("Failed executing decoupled migration logic for layout components matching: "
+					+ jsonFormFile.getAbsolutePath(), e);
+		}
+	}
+
+	// =================================================
+	// CATALOG ITEMS EXPORT (PULL)
 	// =================================================
 
 	/**
@@ -63,83 +210,91 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	@Override
 	protected VraNgCustomForm storeCustomFormOnFileSystem(final Package serverPackage,
 			final VraNgCatalogItem catalogItem) {
-		logger.info(this.getClass().toString());
 		VraNgContentSourceBase contentSource = this.restClient.getContentSource(catalogItem.getSourceId());
 		if (contentSource == null) {
-			throw new RuntimeException(
-					String.format("Content source %s does not exist", catalogItem.getSourceId()));
+			throw new RuntimeException(String.format("Content source %s does not exist", catalogItem.getSourceId()));
 		}
 
 		logger.debug("Found content source '{}'", contentSource.getName());
-		VraNgCustomForm form = null;
-		if (contentSource.getType().equals(VraNgContentSourceType.BLUEPRINT)) {
-			JsonElement version = this.getCatalogItemLatestVersion(catalogItem);
-			JsonObject versionObj = version.getAsJsonObject();
-			String versionName = versionObj.get("id").getAsString();
-			String sourceId = catalogItem.getId() + "/" + versionName;
-			JsonElement formId = versionObj.get("formId");
-			if (formId != null) {
-				form = this.restClient.fetchRequestForm(BLUEPRINT_VERSION, sourceId, formId.getAsString());
-				catalogItem.setFormId(form.getId());
-
-			} else {
-				logger.info(
-						"Catalog items '{}'', latest version '{}'', has NO Custom Form. We only pull latest custom form.",
-						catalogItem.getName(), versionName);
-			}
-		} else {
-			form = this.restClient.getCustomFormByTypeAndSource(
-					contentSource.getType().toString(),
-					catalogItem.getId());
-		}
-
+		VraNgCustomForm form = this.restClient.getCustomFormByTypeAndSource(contentSource.getType().toString(),
+				catalogItem.getId());
 		if (form == null) {
-			logger.debug(
-					"No form found for catalogItem: {} with source {}",
-					catalogItem.getName(),
+			logger.debug("No form found for catalogItem: {} with source {}", catalogItem.getName(),
 					catalogItem.getSourceName());
 			return null;
 		}
 
 		File store = new File(serverPackage.getFilesystemPath());
-		File customFormFile = Paths.get(
-				store.getPath(),
-				VraNgDirs.DIR_CATALOG_ITEMS,
-				CUSTOM_FORMS_SUBDIR,
+		File customFormFile = Paths.get(store.getPath(), VraNgDirs.DIR_CATALOG_ITEMS, CUSTOM_FORMS_SUBDIR,
 				(getName(catalogItem) + CUSTOM_RESOURCE_SUFFIX)).toFile();
-		File customFormDataFile = Paths.get(
-				store.getPath(),
-				VraNgDirs.DIR_CATALOG_ITEMS,
-				CUSTOM_FORMS_SUBDIR,
+		File customFormDataFile = Paths.get(store.getPath(), VraNgDirs.DIR_CATALOG_ITEMS, CUSTOM_FORMS_SUBDIR,
 				(getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_DATA_SUFFIX + CUSTOM_RESOURCE_SUFFIX))
+				.toFile();
+		File customFormStylesFile = Paths.get(store.getPath(), VraNgDirs.DIR_CATALOG_ITEMS, CUSTOM_FORMS_SUBDIR,
+				(getName(catalogItem) + CATALOG_ITEM_SEPARATOR + CUSTOM_FORM_STYLES_SUFFIX + CSS_RESOURCE_SUFFIX))
 				.toFile();
 
 		if (!customFormFile.getParentFile().isDirectory() && !customFormFile.getParentFile().mkdirs()) {
 			logger.warn("Could not create folder: {}", customFormFile.getParentFile().getAbsolutePath());
 		}
 
+		this.migrateLegacyFormFiles(customFormFile, customFormDataFile, customFormStylesFile);
+
 		try {
 			Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().serializeNulls().create();
-			// write form metadata file
-			VraNgCustomFormAndData repoForm = new VraNgCustomFormAndData(form);
-			logger.info("Created custom form metadata file {}",
-					Files.write(Paths.get(customFormFile.getPath()),
-							gson.toJson(repoForm).getBytes(StandardCharsets.UTF_8),
-							StandardOpenOption.CREATE));
-			// write form data file
+
+			String stylesContent = form.getStyles();
+			if (StringUtils.isNotBlank(stylesContent)) {
+				FileUtils.writeStringToFile(customFormStylesFile, formatCss(stylesContent), StandardCharsets.UTF_8);
+				logger.info("Extracted form custom styles directly to companion sheet: {}",
+						customFormStylesFile.getName());
+			} else {
+				FileUtils.writeStringToFile(customFormStylesFile, "", StandardCharsets.UTF_8);
+				logger.info("No custom styles found. Generated an empty companion sheet: {}",
+						customFormStylesFile.getName());
+			}
+
 			if (!StringUtils.isEmpty(form.getForm())) {
 				JsonElement je = JsonParser.parseString(form.getForm());
+
+				if (je.isJsonObject()) {
+					JsonObject jo = je.getAsJsonObject();
+					if (jo.has("styles") && !jo.get("styles").isJsonNull()) {
+						String embeddedStyles = jo.get("styles").getAsString();
+						if (StringUtils.isNotBlank(embeddedStyles) && StringUtils.isBlank(stylesContent)) {
+							FileUtils.writeStringToFile(customFormStylesFile, formatCss(embeddedStyles),
+									StandardCharsets.UTF_8);
+							logger.info("Extracted nested form custom styles to companion sheet: {}",
+									customFormStylesFile.getName());
+						}
+						jo.remove("styles");
+					}
+				}
+
 				logger.info("Created custom form data file {}",
 						Files.write(Paths.get(customFormDataFile.getPath()),
-								gson.toJson(je).getBytes(StandardCharsets.UTF_8),
-								StandardOpenOption.CREATE));
+								gson.toJson(je).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
+								StandardOpenOption.TRUNCATE_EXISTING));
 			}
+
+			VraNgCustomFormAndData repoForm = new VraNgCustomFormAndData(form);
+			JsonElement repoFormElement = gson.toJsonTree(repoForm);
+
+			if (repoFormElement.isJsonObject()) {
+				JsonObject repoFormObj = repoFormElement.getAsJsonObject();
+				repoFormObj.remove("form");
+				repoFormObj.remove("styles");
+
+				logger.info("Created custom form metadata file {}",
+						Files.write(Paths.get(customFormFile.getPath()),
+								gson.toJson(repoFormObj).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
+								StandardOpenOption.TRUNCATE_EXISTING));
+			}
+
 		} catch (IOException e) {
 			logger.error("Unable to create custom form {}", customFormFile.getAbsolutePath());
 			throw new RuntimeException(
-					String.format(
-							"Unable to store custom form to file %s.", customFormFile.getAbsolutePath()),
-					e);
+					String.format("Unable to store custom form to file %s.", customFormFile.getAbsolutePath()), e);
 		}
 
 		return form;
@@ -158,16 +313,9 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 
 		try {
 			versions.forEach(newList::add);
-			// Implementing a custom comparator for the Versions based on createdAt, so we
-			// can guarantee the order of export and therefore import.
 			newList.sort((one, two) -> {
-				// Extract the createdAt attribute and remove the start and end quote from it
-				String creationDateOne = one.getAsJsonObject().get("createdAt").toString()
-						.replaceAll("^\"|\"$", "");
-				String creationDateTwo = two.getAsJsonObject().get("createdAt").toString()
-						.replaceAll("^\"|\"$", "");
-
-				// Date is returned in ISO-8601, e.g. "2022-08-22T14:17:00.073876Z";
+				String creationDateOne = one.getAsJsonObject().get("createdAt").toString().replaceAll("^\"|\"$", "");
+				String creationDateTwo = two.getAsJsonObject().get("createdAt").toString().replaceAll("^\"|\"$", "");
 				return Instant.parse(creationDateOne).compareTo(Instant.parse(creationDateTwo));
 			});
 		} catch (NullPointerException npe) {
@@ -178,7 +326,7 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 	}
 
 	// =================================================
-	// CATALOG ITEMS IMPORT
+	// CATALOG ITEMS IMPORT (PUSH)
 	// =================================================
 
 	/**
@@ -199,16 +347,13 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 		logger.info("Importing custom form: '{}'' with type '{}'", customFormFile.getAbsolutePath(),
 				catalogItem.getType());
 		VraNgCustomForm customForm = this.jsonFileToVraCustomForm(customFormFile, customFormDataFile);
-		// wait 250 ms between each custom form import in order catalog item to be
-		// retrievable by the VRA REST API
+
 		if (this.waitForCatalogItemToAppear(catalogItem.getName())) {
 			if (catalogItem.getType().equals(VraNgContentSourceType.BLUEPRINT)) {
 				JsonElement version = this.getCatalogItemLatestVersion(catalogItem);
 				String versionName = "";
-				// do sanity check on the version JSON element
 				if (version != null) {
 					JsonObject versionObj = version.getAsJsonObject();
-					// sanity check on the version object and its properties
 					if (versionObj != null && versionObj.get("id") != null) {
 						versionName = versionObj.get("id").getAsString();
 					}
@@ -216,7 +361,7 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 				String newFormName = catalogItem.getId() + CATALOG_ITEM_BLUEPRINT_VERSION_NAME_SEPARATOR + versionName;
 				String newSourceId = catalogItem.getId() + CATALOG_ITEM_BLUEPRINT_VERSION_SOURCE_ID_SEPARATOR
 						+ versionName;
-				// normalize here to accommodate < 8.12 to >=8.12
+
 				customForm.setSourceId(newSourceId);
 				customForm.setSourceType(BLUEPRINT_VERSION);
 				customForm.setName(newFormName);
@@ -227,13 +372,65 @@ public class VraNgCatalogItemStore812 extends VraNgCatalogItemStore {
 				this.restClient.importCustomForm(customForm, catalogItem.getId());
 			}
 		} else {
-			logger.warn(
-					"Custom form with name '{} (type {})' is missing from vRA content source.",
-					customForm.getName(),
-					customForm.getSourceType());
-
+			logger.warn("Custom form with name '{} (type {})' is missing from vRA content source.",
+					customForm.getName(), customForm.getSourceType());
 			throw new RuntimeException(String.format("Failed to import Custom Form: %s", customForm.getName()));
 		}
 	}
 
+	@Override
+	protected VraNgCustomForm jsonFileToVraCustomForm(final File jsonFormFile, final File jsonFormDataFile) {
+		logger.debug("Converting custom form file to VraNgCustomForm. Name: '{}'", jsonFormFile.getName());
+
+		File jsonFormStylesFile = new File(jsonFormDataFile.getParentFile(),
+				FilenameUtils.getBaseName(jsonFormDataFile.getName())
+						.replace(CUSTOM_FORM_DATA_SUFFIX, CUSTOM_FORM_STYLES_SUFFIX) + CSS_RESOURCE_SUFFIX);
+
+		// Step 1: Fire dynamic checking layer before reconstructing runtime model
+		// fields
+		this.migrateLegacyFormFiles(jsonFormFile, jsonFormDataFile, jsonFormStylesFile);
+
+		VraNgCustomFormAndData repoForm;
+		VraNgCustomForm restForm;
+
+		try (JsonReader reader = new JsonReader(
+				new InputStreamReader(new FileInputStream(jsonFormFile.getPath()), StandardCharsets.UTF_8))) {
+			repoForm = new Gson().fromJson(reader, VraNgCustomFormAndData.class);
+			restForm = new VraNgCustomForm(repoForm);
+
+			// Step 2: Read verified companion form block directly into model definition
+			if (jsonFormDataFile.exists()) {
+				String formDataContent = FileUtils.readFileToString(jsonFormDataFile, StandardCharsets.UTF_8);
+
+				if (StringUtils.isBlank(formDataContent)) {
+					restForm.setForm(null);
+				} else {
+					JsonElement je = JsonParser.parseString(formDataContent);
+					restForm.setForm(new Gson().toJson(je));
+				}
+			} else {
+				restForm.setForm(null);
+			}
+
+			// Step 3: Read verified companion stylesheet layout values directly into
+			// outbound properties
+			if (jsonFormStylesFile.exists()) {
+				String cssContent = FileUtils.readFileToString(jsonFormStylesFile, StandardCharsets.UTF_8);
+
+				if (StringUtils.isBlank(cssContent)) {
+					restForm.setStyles(null);
+				} else {
+					restForm.setStyles(cssContent);
+					logger.info("Successfully appended companion custom styles from '{}' into payload properties.",
+							jsonFormStylesFile.getName());
+				}
+			} else {
+				restForm.setStyles(null);
+			}
+
+			return restForm;
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error reading from file: %s", jsonFormFile.getPath()), e);
+		}
+	}
 }
