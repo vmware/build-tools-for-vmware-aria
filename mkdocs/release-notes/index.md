@@ -57,4 +57,7 @@ Updated the store execution sequence for all three operations to ensure dependen
 
 ## Upgrade procedure
 
+#### New Behavior
+Added CSS styles adding capabilities to VRA-NG catalog item's request forms.
+
 [//]: # (Explain in details if something needs to be done)
