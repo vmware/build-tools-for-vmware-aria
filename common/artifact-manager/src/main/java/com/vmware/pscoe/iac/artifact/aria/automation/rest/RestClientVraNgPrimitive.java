@@ -966,7 +966,8 @@ public class RestClientVraNgPrimitive extends RestClient {
 	 */
 	public void importCustomFormPrimitive(final VraNgCustomForm customForm, final String sourceId)
 			throws URISyntaxException {
-		URI url = getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM));
+		URI url = getURI(getURIBuilder().setPath(SERVICE_CUSTOM_FORM)
+				.setParameter("generateUnvalidatableExternalValuesSchema", "true"));
 
 		String customFormFormat = CUSTOM_FORM_DEFAULT_FORMAT; // Some vro versions don't specify the format. Assuming
 		// JSON format as default
@@ -985,7 +986,6 @@ public class RestClientVraNgPrimitive extends RestClient {
 		map.put("styles", customForm.getStyles());
 
 		String jsonBody = this.getJsonString(map);
-
 		this.postJsonPrimitive(url, HttpMethod.POST, jsonBody);
 	}
 

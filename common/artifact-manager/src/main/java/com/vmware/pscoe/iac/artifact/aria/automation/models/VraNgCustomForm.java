@@ -232,6 +232,15 @@ public class VraNgCustomForm implements Identifiable {
 	}
 
 	/**
+	 * Setter for form styles.
+	 * 
+	 * @param styles String
+	 */
+	public void setStyles(final String styles) {
+		this.styles = styles;
+	}
+
+	/**
 	 * Getter for sourceType.
 	 * 
 	 * @return sourceType String
