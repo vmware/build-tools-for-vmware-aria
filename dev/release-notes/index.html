@@ -2231,6 +2231,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-css-as-separate-file-to-request-forms-in-vra-ng-projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add CSS as separate file to request forms in vra-ng projects
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2364,13 +2381,16 @@
 <h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h2>
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<h3 id="add-css-as-separate-file-to-request-forms-in-vra-ng-projects"><em>Add CSS as separate file to request forms in <code>vra-ng</code> projects</em><a class="headerlink" href="#add-css-as-separate-file-to-request-forms-in-vra-ng-projects" title="Permanent link">&para;</a></h3>
+<p>CSS is now stored as a separate file and removed from the original custom form JSON definition. If no CSS is present an empty file is created for better usability.</p>
+<p>In case of legacy content (CSS is present as in-line content in the form and no separate file exists) the original behaviour is preserved. During the next <code>pull</code> operation the content is updated to the new format.</p>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
-<h3 id="improved-operation-logging">Improved Operation Logging<a class="headerlink" href="#improved-operation-logging" title="Permanent link">&para;</a></h3>
+<h3 id="improved-operation-logging"><em>Improved Operation Logging</em><a class="headerlink" href="#improved-operation-logging" title="Permanent link">&para;</a></h3>
 <h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>
 <p>Push, pull, and clean operations produced log output that was more difficult to read and analyze.</p>
 <h4 id="new-behavior">New Behavior<a class="headerlink" href="#new-behavior" title="Permanent link">&para;</a></h4>
 <p>Updated log severity levels to provide clearer and more easily readable output when push, pull, and clean operations are executed.</p>
-<h3 id="improved-store-execution-order">Improved Store Execution Order<a class="headerlink" href="#improved-store-execution-order" title="Permanent link">&para;</a></h3>
+<h3 id="improved-store-execution-order"><em>Improved Store Execution Order</em><a class="headerlink" href="#improved-store-execution-order" title="Permanent link">&para;</a></h3>
 <h4 id="previous-behavior_1">Previous Behavior<a class="headerlink" href="#previous-behavior_1" title="Permanent link">&para;</a></h4>
 <p>The execution order of store operations could lead to dependency-related issues between object types during push, pull, and clean operations.</p>
 <h4 id="new-behavior_1">New Behavior<a class="headerlink" href="#new-behavior_1" title="Permanent link">&para;</a></h4>
