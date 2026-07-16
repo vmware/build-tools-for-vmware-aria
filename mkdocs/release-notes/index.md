@@ -28,7 +28,7 @@
 
 ### *Add CSS as separate file to request forms in `vra-ng` projects*
 
-CSS is now stored as a separate file and removed from the original custom form JSON definition. If no CSS is present an empty file is created for better usability. 
+CSS is now stored as a separate file and removed from the original custom form JSON definition. If no CSS is present an empty file is created for better usability.
 
 In case of legacy content (CSS is present as in-line content in the form and no separate file exists) the original behaviour is preserved. During the next `pull` operation the content is updated to the new format.
 
