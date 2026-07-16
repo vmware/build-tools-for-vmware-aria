@@ -26,6 +26,12 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add CSS as separate file to request forms in `vra-ng` projects*
+
+CSS is now stored as a separate file and removed from the original custom form JSON definition. If no CSS is present an empty file is created for better usability. 
+
+In case of legacy content (CSS is present as in-line content in the form and no separate file exists) the original behaviour is preserved. During the next `pull` operation the content is updated to the new format.
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -39,7 +45,7 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### Improved Operation Logging
+### *Improved Operation Logging*
 
 #### Previous Behavior
 Push, pull, and clean operations produced log output that was more difficult to read and analyze.
@@ -47,7 +53,7 @@ Push, pull, and clean operations produced log output that was more difficult to 
 #### New Behavior
 Updated log severity levels to provide clearer and more easily readable output when push, pull, and clean operations are executed.
 
-### Improved Store Execution Order
+### *Improved Store Execution Order*
 
 #### Previous Behavior
 The execution order of store operations could lead to dependency-related issues between object types during push, pull, and clean operations.
@@ -56,8 +62,5 @@ The execution order of store operations could lead to dependency-related issues 
 Updated the store execution sequence for all three operations to ensure dependencies are processed in the correct order, reducing the likelihood of object type dependency issues.
 
 ## Upgrade procedure
-
-### New Behavior
-Added CSS styles adding capabilities to VRA-NG catalog item's request forms.
 
 [//]: # (Explain in details if something needs to be done)
