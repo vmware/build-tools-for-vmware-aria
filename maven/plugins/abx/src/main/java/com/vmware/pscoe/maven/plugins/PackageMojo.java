@@ -75,7 +75,7 @@ public class PackageMojo extends AbstractVroMojo {
 
 			MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
 			File pkgFile = new File(directory,
-					pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtention());
+					pkgInfoProvider.getPackageName() + "." + PackageType.ABX.getPackageExtension());
 			Package pkg = PackageFactory.getInstance(PackageType.ABX, pkgFile);
 			try {
 				this.preparePackageFile(pkg, dir, new File(pkgFile.getAbsolutePath()));

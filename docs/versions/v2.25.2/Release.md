@@ -1,13 +1,13 @@
 # v2.25.2
 
 ## **Breaking Changes**
-**NONE**
+NONE
 
 ## Deprecations
-**NONE**
- 
-## Features:
-**NONE**
+NONE
+
+## Features
+NONE
 
 ## Improvements
 
@@ -22,8 +22,8 @@ Deploying Polyglot packages was only possible as dependency to other project typ
 Deploying Polyglot packages is possible as standalone projects by directly executing the push command from the project
 root.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 
 ### *Build process fails with during test phase execution on Windows*
@@ -57,8 +57,8 @@ the first line of the *.pem certificate is read and the EOL is extracted.
 In case that the EOL can not be detected, the default EOL of the OS (Windows, Mac, Linux)
 will be used.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 ### *Action name length limitation in vRO*
 Importing actions with long paths results would fail in a hard to detect way.
@@ -67,7 +67,7 @@ Importing actions with long paths results would fail in a hard to detect way.
 The error message thrown used to be very ambiguous
 
 ```log
-{"status":400,"message":"java.lang.RuntimeException: ch.dunes.util.DunesServerException: 
+{"status":400,"message":"java.lang.RuntimeException: ch.dunes.util.DunesServerException:
 Unknown object type 'Module' caused by: ch.dunes.util.DunesServerException: Unknown object type
  'Module' caused by: Unknown object type 'Module'"}
 ```
@@ -91,9 +91,8 @@ inside package-installer component
 The file release.sh was modified to update the dependency list to the last available
 including the **artifact-manager** dependency inside package-installer component.
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *vRO Scripting API ConfigurationElement.getAttributeWithKey now returns null if an attribute is missing*
@@ -105,9 +104,8 @@ When using ConfigurationElement.getAttributeWithKey inside of tests, if the attr
 ConfigurationElement.getAttributeWithKey now checks if the attibute is set first. If it is not set, `null` will be returned,
 instead of `undefined`.
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *vRO Scripting API Properties.get now returns null if a property is missing*
@@ -116,12 +114,11 @@ instead of `undefined`.
 When using Properties.get inside of tests, if the key did not exist, `undefined` would be returned
 
 #### New Behavior
-Properties.get now do a check with `.hasOwnProperty` to determine if that key is set first. If it is not set, `null` 
+Properties.get now do a check with `.hasOwnProperty` to determine if that key is set first. If it is not set, `null`
 will be returned, instead of `undefined`.
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *Removed certificates from vropkg testing*
@@ -133,9 +130,8 @@ Static certificate files were used for testing.
 #### New Behavior
 The certificates have been removed and logic has been added to generate them dynamically.
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *Storage Profiles now can distinguish First Class Disk*
@@ -147,15 +143,14 @@ Storage Profile json doesn't record `diskType` and cannot distinguish regular di
 #### New Behaviour
 Storage Profile json now records `diskType` and can distinguish regular disks from First Class Disks and `diskMode` is written in the json only if the disk is not of `diskType` equal to `firstClass`.
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *Tests when dependency has a policy template or other unknown types of elements now work*
 
 #### Previous Behaviour
-Having a dependency to a library with some unknown types ( like PolicyTemplates ) would cause an error like: 
+Having a dependency to a library with some unknown types ( like PolicyTemplates ) would cause an error like:
 ```log
 TypeError: Cannot read property 'type' of undefined [ERROR] at .../node_modules/@vmware-pscoe/vrotest/lib/vrotest.js:1:196681
 ```
@@ -163,18 +158,16 @@ TypeError: Cannot read property 'type' of undefined [ERROR] at .../node_modules/
 #### New Behaviour
 These types are now handled and ignored if they are not supported
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *Bumped minimal version of NodeJs from 12 to 16*
 All Typescript packages have the nodejs version bumped to the latest 16 at the time ( 21.06.2022 ). This only affects the built however,
 during execution the version is not checked.
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *vrotest code coverage issues with thresholds not being set correctly*
@@ -194,9 +187,8 @@ Statements were overwriting the branches code coverage, at least for the global.
 #### New Behaviour
 The threshold warn and the statements now work as expected.
 
-#### Relevant Documentation:
-*NONE*
-
+#### Relevant Documentation
+NONE
 
 
 ### *Polyglot now uses new PowerShell executable*
@@ -209,10 +201,9 @@ Previously, when saving the dependencies for PowerShell modules using Windows OS
 #### New Behaviour
 To utilize PowerShell version 6 and above when saving modules, the command was changed to `pwsh`, which now is the same command for Windows OS and other OSs. The result is the same as using the powershell.exe command; however, the user is required to have installed PowerShell version 6 and above on their Windows machine. The time for resolving dependencies is now increased to 10 minutes.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 
-
-## Upgrade procedure:
-*NONE*
+## Upgrade procedure
+NONE

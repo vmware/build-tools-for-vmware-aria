@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout vmware/build-tools-for-vmware-aria repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -92,7 +92,7 @@ jobs:
 
       - name: Set MVN_BUILD_COMMAND
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ matrix.java }}" = "17" ]; then
+          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ matrix.java }}" = "17" ] && [[ "${{ env.IAC_VERSION }}" != *"-SNAPSHOT"* ]]; then
             MVN_BUILD_COMMAND="deploy"
           else
             MVN_BUILD_COMMAND="install"
@@ -101,7 +101,7 @@ jobs:
           echo "MVN_BUILD_COMMAND=$MVN_BUILD_COMMAND" >> $GITHUB_ENV
 
       - name: Cache Maven dependencies
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -121,7 +121,7 @@ jobs:
 
       # Test the packages on build-tools-for-vmware-aria-samples
       - name: Checkout vmware-samples/build-tools-for-vmware-aria-samples repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: vmware-samples/build-tools-for-vmware-aria-samples
           ref: main
@@ -136,7 +136,7 @@ jobs:
         run: |
           pushd build-tools-for-vmware-aria-samples/
           ./switch_parent_version.sh ${{ env.IAC_VERSION }}
-          mvn clean package install -Pbundle-with-installer --batch-mode -s ../.m2/settings.xml
+          mvn clean package install -Pbundle-with-installer --batch-mode -fae -s ../.m2/settings.xml
           popd
           rm -rf build-tools-for-vmware-aria-samples/
 

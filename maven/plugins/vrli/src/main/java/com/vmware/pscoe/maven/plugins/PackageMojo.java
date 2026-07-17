@@ -36,7 +36,7 @@ public class PackageMojo extends AbstractVroMojo {
 
 		getLog().info("basedir " + project.getBasedir());
 		File pkgFile = new File(directory,
-				pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtention());
+				pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtension());
 		getLog().info("Target VRLI package file " + pkgFile.getAbsolutePath());
 
 		Package pkg = PackageFactory.getInstance(PackageType.VRLI, pkgFile);

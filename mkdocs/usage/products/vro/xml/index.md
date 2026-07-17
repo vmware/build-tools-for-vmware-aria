@@ -41,9 +41,9 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes \
     -DarchetypeArtifactId=package-xml-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} # (1)! \
-    -DgroupId={{ archetype.customer_project.group_id}} # (2)! \
-    -DartifactId={{ archetype.customer_project.artifact_id}} # (3)! \
+    -DarchetypeVersion={{ iac.latest_release }} \ # (1)!
+    -DgroupId={{ archetype.customer_project.group_id}} \ # (2)!
+    -DartifactId={{ archetype.customer_project.artifact_id}} \ # (3)!
     -DworkflowsPath=integration-service-1/workflows # (4)!
 ```
 
@@ -51,6 +51,12 @@ mvn archetype:generate \
 2. {{ archetype.customer_project.group_id_hint }}
 3. {{ archetype.customer_project.artifact_id_hint }}
 4. Defines the base path (Workflow Category path or labels depending on {{ products.vro_short_name }} version) and local folder structure for all the Workflows inside your project. This describes the initial state and can be manually updated later.
+
+!!! note
+    If **build_tools_for_aria_version** is not specified a default value of 2.38.1 will be used.
+
+!!! note
+    Make sure to remove any trialing spaces after the backslashes (**\\**) otherwise the command will fail.
 
 ### Content Structure
 

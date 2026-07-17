@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:o11n-xml-package-maven-plugin:4.21.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:o11n-xml-package-maven-plugin:4.22.1-SNAPSHOT
 
 Name: o11n-xml-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: o11n-xml-package-maven-plugin
-Version: 4.21.1-SNAPSHOT
+Version: 4.22.1-SNAPSHOT
 Goal Prefix: vro
 
 This plugin has 5 goals:
@@ -107,6 +107,10 @@ vro:execute-workflow
       User property: vcd
       (no description available)
 
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
+      (no description available)
+
     vrang (Default: ${vrang.*})
       User property: vrang
       (no description available)
@@ -183,6 +187,10 @@ vro:install-node-deps
 
     vcd (Default: ${vcd.*})
       User property: vcd
+      (no description available)
+
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
       (no description available)
 
     vrang (Default: ${vrang.*})
@@ -290,6 +298,10 @@ vro:pull
 
     vcd (Default: ${vcd.*})
       User property: vcd
+      (no description available)
+
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
       (no description available)
 
     vrang (Default: ${vrang.*})

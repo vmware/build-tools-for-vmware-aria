@@ -157,9 +157,9 @@ public final class Package implements Comparable<Package> {
 	@Override
 	public String toString() {
 		if (hasVersionQualifier()) {
-			return getName() + "-" + getVersion() + "." + type.getPackageExtention();
+			return getName() + "-" + getVersion() + "." + type.getPackageExtension();
 		} else {
-			return getName() + "." + type.getPackageExtention();
+			return getName() + "." + type.getPackageExtension();
 		}
 	}
 }

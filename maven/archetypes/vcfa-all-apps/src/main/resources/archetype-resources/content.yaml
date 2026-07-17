@@ -1,0 +1,52 @@
+---
+# VCF Automation 9.x Content Definition for All-Apps tenants
+# This file defines which content items are included in the package.
+#
+# Content types supported in VCF 9.x:
+#   blueprint: Cloud templates/blueprints for VM provisioning (Build & Deploy -> Blueprint Design -> Blueprints)
+#   property-group: Input property groups for forms (Build & Deploy -> Blueprint Design -> Property Groups)
+#   custom-resource: Custom resource types for XaaS (Build & Deploy -> Blueprint Design -> Custom Resources)
+#   resource-action: Day-2 resource actions (Build & Deploy -> Blueprint Design -> Resource Actions)
+#   workflow: vRO workflows published to catalog (Build & Deploy -> Workflows)
+#   subscription: Event-driven subscriptions for extensibility (Build & Deploy ->  Event Subscriptions -> Subscriptions)
+#   policy: Governance policies (Manage & Govern -> Policies -> Definitions)
+#     approval:
+#     day2-actions:
+#     lease:
+#     iaas-resource:
+#   scenario: Notification scenarios customization (Administer -> Notifications -> Scenarios)
+#
+# To exclude all items: use empty array []
+# To include specific items: enlist item names
+# To include all existing items: leave empty (null)
+
+# Note
+#   Examples refering to Orchestrator workflows are commented out to exclude them from processing
+#   Pushing those examples may fail if the organization is not integrated with Orchestrator,
+#   or if the workflows do not exist or have different id 
+blueprint:
+  - Small VM
+property-group:
+  - Custom VM Properties
+custom-resource: []
+#  - Custom REST Host
+resource-action: []
+#  - Add CD-ROM to Deployment
+
+workflow: []
+#  - Add a user to a user group
+ 
+subscription: []
+#  - Add user to deployment
+
+policy:
+  approval:
+  - vm_resize_approval
+  day2-actions:
+  - vm_remove_disk
+  iaas-resource:
+  - large-namespace-policy
+  lease:
+  - short_lease
+
+scenario: []

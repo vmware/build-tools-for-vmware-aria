@@ -9,4 +9,5 @@ The catalog items in the {{ products.vra_9_short_name }} Service Broker consists
 Blueprint type catalog items have different versions that corelate to the released versions of the Blueprints. Only the current version of the latest blueprint version is targeted.
 
 ## Known issues
+
 * There is an issue with svg icons, they will not be downloaded/uploaded (IAC-482).

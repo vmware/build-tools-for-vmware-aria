@@ -43,14 +43,20 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes \
     -DarchetypeArtifactId=package-typescript-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} # (1)! \
-    -DgroupId={{ archetype.customer_project.group_id}} # (2)! \
+    -DarchetypeVersion={{ iac.latest_release }} \ # (1)!
+    -DgroupId={{ archetype.customer_project.group_id}} \ # (2)!
     -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
 ```
 
 1. {{ archetype.customer_project.archetype_version_hint }}
 2. {{ archetype.customer_project.group_id_hint }}
 3. {{ archetype.customer_project.artifact_id_hint }}
+
+!!! note
+    If **build_tools_for_aria_version** is not specified a default value of 2.38.1 will be used.
+
+!!! note
+    Make sure to remove any trialing spaces after the backslashes (**\\**) otherwise the command will fail.
 
 ### Content Structure
 
@@ -68,7 +74,7 @@ service-automation
             └── integrationAction.js
         └── classes
             └── IntegrationService1.ts
-            └── IntegrationService1.test.ts            
+            └── IntegrationService1.test.ts
         └── policies
             └── EventListener.pl.ts
         └── resources
@@ -83,8 +89,8 @@ service-automation
         └── workflows
             └── CreateIntegration.wf.ts
             └── CreateIntegration.wf.form.json
-        └── IntegrationService1.conf.ts            
-        └── IntegrationService1Alternative.conf.yaml        
+        └── IntegrationService1.conf.ts
+        └── IntegrationService1Alternative.conf.yaml
 ```
 
 <!-- Environment Connection Parameters Section -->

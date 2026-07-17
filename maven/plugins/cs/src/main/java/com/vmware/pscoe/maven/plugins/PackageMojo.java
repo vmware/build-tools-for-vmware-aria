@@ -35,7 +35,7 @@ public class PackageMojo extends AbstractVroMojo {
 
 		getLog().info("basedir " + project.getBasedir());
 		File pkgFile = new File(directory,
-				pkgInfoProvider.getPackageName() + "." + PackageType.CS.getPackageExtention());
+				pkgInfoProvider.getPackageName() + "." + PackageType.CS.getPackageExtension());
 		getLog().info("Target CS package file " + pkgFile.getAbsolutePath());
 
 		com.vmware.pscoe.iac.artifact.common.store.Package pkg = PackageFactory.getInstance(PackageType.CS, pkgFile);
