@@ -2231,23 +2231,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#add-css-as-separate-file-to-request-forms-in-vra-ng-projects" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Add CSS as separate file to request forms in vra-ng projects
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2258,101 +2241,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Improvements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#improved-operation-logging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Improved Operation Logging
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Improved Operation Logging">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#previous-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Previous Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#new-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        New Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#improved-store-execution-order" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Improved Store Execution Order
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Improved Store Execution Order">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#previous-behavior_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Previous Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#new-behavior_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        New Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fix-problem-with-typescript-variable-name-generation-in-inner-structures-due-to-downleveling-and-hoising" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fix problem with Typescript variable name generation in inner structures due to downleveling and hoising
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2392,23 +2280,7 @@
 <h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h2>
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<h3 id="add-css-as-separate-file-to-request-forms-in-vra-ng-projects"><em>Add CSS as separate file to request forms in <code>vra-ng</code> projects</em><a class="headerlink" href="#add-css-as-separate-file-to-request-forms-in-vra-ng-projects" title="Permanent link">&para;</a></h3>
-<p>CSS is now stored as a separate file and removed from the original custom form JSON definition. If no CSS is present an empty file is created for better usability.</p>
-<p>In case of legacy content (CSS is present as in-line content in the form and no separate file exists) the original behaviour is preserved. During the next <code>pull</code> operation the content is updated to the new format.</p>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
-<h3 id="improved-operation-logging"><em>Improved Operation Logging</em><a class="headerlink" href="#improved-operation-logging" title="Permanent link">&para;</a></h3>
-<h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>
-<p>Push, pull, and clean operations produced log output that was more difficult to read and analyze.</p>
-<h4 id="new-behavior">New Behavior<a class="headerlink" href="#new-behavior" title="Permanent link">&para;</a></h4>
-<p>Updated log severity levels to provide clearer and more easily readable output when push, pull, and clean operations are executed.</p>
-<h3 id="improved-store-execution-order"><em>Improved Store Execution Order</em><a class="headerlink" href="#improved-store-execution-order" title="Permanent link">&para;</a></h3>
-<h4 id="previous-behavior_1">Previous Behavior<a class="headerlink" href="#previous-behavior_1" title="Permanent link">&para;</a></h4>
-<p>The execution order of store operations could lead to dependency-related issues between object types during push, pull, and clean operations.</p>
-<h4 id="new-behavior_1">New Behavior<a class="headerlink" href="#new-behavior_1" title="Permanent link">&para;</a></h4>
-<p>Updated the store execution sequence for all three operations to ensure dependencies are processed in the correct order, reducing the likelihood of object type dependency issues.</p>
-<h3 id="fix-problem-with-typescript-variable-name-generation-in-inner-structures-due-to-downleveling-and-hoising"><em>Fix problem with Typescript variable name generation in inner structures due to downleveling and hoising</em><a class="headerlink" href="#fix-problem-with-typescript-variable-name-generation-in-inner-structures-due-to-downleveling-and-hoising" title="Permanent link">&para;</a></h3>
-<p>Due to the downleveling of const/let to var, the behavior of the variable declarations change because of Hoisting. This can clash with the generated name of an import.</p>
-<p>The transpiler's logic generating these unique root-level import variables (tslib and *) is updated to generate names guaranteed not to collide with TypeScript's ES5 synthesized downstream identifiers. By prefixing the sequence with _$, effectively isolating transpiler module variables.</p>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
 
 
