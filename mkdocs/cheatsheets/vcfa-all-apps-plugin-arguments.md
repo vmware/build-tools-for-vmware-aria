@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vcfa-all-apps-package-maven-plugin:4.22.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vcfa-all-apps-package-maven-plugin:4.23.1-SNAPSHOT
 
 Name: vcfa-all-apps-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vcfa-all-apps-package-maven-plugin
-Version: 4.22.1-SNAPSHOT
+Version: 4.23.1-SNAPSHOT
 Goal Prefix: vcfa-all-apps
 
 This plugin has 4 goals:
