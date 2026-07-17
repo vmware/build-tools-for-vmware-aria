@@ -17,7 +17,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -25,7 +25,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -2340,6 +2340,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#fix-problem-with-typescript-variable-name-generation-in-inner-structures-due-to-downleveling-and-hoising" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fix problem with Typescript variable name generation in inner structures due to downleveling and hoising
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2395,6 +2406,9 @@
 <p>The execution order of store operations could lead to dependency-related issues between object types during push, pull, and clean operations.</p>
 <h4 id="new-behavior_1">New Behavior<a class="headerlink" href="#new-behavior_1" title="Permanent link">&para;</a></h4>
 <p>Updated the store execution sequence for all three operations to ensure dependencies are processed in the correct order, reducing the likelihood of object type dependency issues.</p>
+<h3 id="fix-problem-with-typescript-variable-name-generation-in-inner-structures-due-to-downleveling-and-hoising"><em>Fix problem with Typescript variable name generation in inner structures due to downleveling and hoising</em><a class="headerlink" href="#fix-problem-with-typescript-variable-name-generation-in-inner-structures-due-to-downleveling-and-hoising" title="Permanent link">&para;</a></h3>
+<p>Due to the downleveling of const/let to var, the behavior of the variable declarations change because of Hoisting. This can clash with the generated name of an import.</p>
+<p>The transpiler's logic generating these unique root-level import variables (tslib and *) is updated to generate names guaranteed not to collide with TypeScript's ES5 synthesized downstream identifiers. By prefixing the sequence with _$, effectively isolating transpiler module variables.</p>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
 
 
@@ -2448,7 +2462,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
