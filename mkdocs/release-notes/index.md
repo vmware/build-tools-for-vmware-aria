@@ -61,6 +61,12 @@ The execution order of store operations could lead to dependency-related issues 
 #### New Behavior
 Updated the store execution sequence for all three operations to ensure dependencies are processed in the correct order, reducing the likelihood of object type dependency issues.
 
+### *Fix problem with Typescript variable name generation in inner structures due to downleveling and hoising*
+
+Due to the downleveling of const/let to var, the behavior of the variable declarations change because of Hoisting. This can clash with the generated name of an import.
+
+The transpiler's logic generating these unique root-level import variables (tslib and *) is updated to generate names guaranteed not to collide with TypeScript's ES5 synthesized downstream identifiers. By prefixing the sequence with _$, effectively isolating transpiler module variables.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
