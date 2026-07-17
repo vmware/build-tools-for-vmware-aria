@@ -35,28 +35,48 @@ Build Tools for VMware Aria provides advanced development and release management
     ```
 
 ## Package dependencies
+
+### Consumption dependencies
+
+The following dependencies are required to consume BTVA - to create projects, build, push and pull content:
+
 - npm: 6.14.x (One compatible with your node version)
 - node: 22.x.x (only 14 is supported for vcd-ng)
 - maven: 3.9.x
 - jdk: 17, 21, 24
-- Python: >= 3.10
 
-To check if the dependencies are met, you can run:
+Additional dependencies may be required polyglot/ABX project types based on your chosen runtime environment (Node, Python, PowerShell).
+
+### Developer dependencies
+
+The following additional dependencies are required to build the BTVA project itself, debug it and contribute to it:
+
+- Python: >= 3.10
+- PowerShell: 7.1 - 7.4
+- OpenSSL: >= 3.0
+
+### Dependency validation scripts
+
+To check if the dependencies are met on Linux/MacOS, you can run:
 
 ```sh
 curl -o- https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.sh | bash
 ```
 
 To check if the dependencies are met on Windows, you can run:
+
 ```ps
 Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/main/health.ps1'))
 ```
 
 By default the healtcheck script validates dependencies for consuming Build Tools for Aria via one of the available project types. To validate all dependencies required for contributing to Build Tools for Aria pass the --contribute flag, e. g.:
+
 ```sh
 ./health.sh --contribute
 ```
+
 or for Windows
+
 ```ps
 ./health.ps1 -contribute
 ```
