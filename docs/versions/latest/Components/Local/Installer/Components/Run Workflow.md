@@ -61,6 +61,6 @@ jsonString:
         password: "VMware1!"
 tags: ["bak.scheduled-snapshot", "library.ts.vcenter", "library.ts.vra.authentication"]
 blacklist: []
-environment: null 
+environment: null
 
 ```

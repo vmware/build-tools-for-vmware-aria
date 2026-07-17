@@ -3,7 +3,6 @@
 ## Breaking Changes
 
 
-
 ## Deprecations
 
 ### Single Action Polyglot Archetype
@@ -13,15 +12,13 @@ fully backwards compatible, however in the future this will be removed. Check th
 section to find out how to migrate away from the old polyglot archetype.
 
 
-
-## Features:
+## Features
 
 ### Added documentation for unit testing**
 Added general documentation for Unit Testing, including examples. Check the Relevant Documentation subsection
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [UnitTesting](Components/Archetypes/typescript/General/Testing/Getting%20Started.md)
-
 
 
 ## Improvements
@@ -36,7 +33,7 @@ Previously System.sleep and System.waitUntil were returning immediately without 
 
 Now System.sleep and System.waitUntil emplement basic sleep functionality. This functionallity is using busy waiting implementation which is cpu intensive.
 
-### vRBT to support sending UTF-8 content in regards to vRA-NG projects.
+### vRBT to support sending UTF-8 content in regards to vRA-NG projects
 
 #### Previous Behavior
 
@@ -55,10 +52,10 @@ inputs
 #### Previous Behavior
 when executing unit tests, an error message was displayed
 
-```
+```ascii
     Browserslist: caniuse-lite is outdated. Please run
     ...
-``` 
+```
 
 #### New Behavior
 The package browserslist was updated and the error message will not appear
@@ -81,8 +78,8 @@ When running the installer script to import property groups to vRA, it fails to 
 #### New Behavior
 When iporting a property group that already exists in vRA to another project, a warning is shown that the import will not be performed. When importing a non-existent property group, it gets the correct project id assigned.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### Pull command is failing if we don't pass any value for content-source (content.yaml)
 
@@ -92,8 +89,8 @@ When executing the Pull command, it fails with NullPointerException if we don't 
 #### New Behavior
 We are able to execute pull command successfully even if we don't pass anything for content-source
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### Polyglot packages are not published in JFrog artifactory when the deploy command is executed
 
@@ -103,8 +100,8 @@ When executing the mvn clean deploy command - the package produced by polyglot a
 #### New Behavior
 As part of the build process, polyglot archetype package is now uploaded in Jfrog artifactory just like any other vrbt package.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### New Polyglot Multi Action Capabilities
 This change allows the polyglot archetype to be used to package more than one action at the same time.
@@ -151,17 +148,15 @@ The details for the actions have been moved to the polyglot.json files that are 
 1. [Polyglot Archetype Documentation](./Components/Archetypes/Polyglot/README.md)
 
 
-
 ## Upgrade procedure
 
-### Migrating from single action to multi action polyglot 
+### Migrating from single action to multi action polyglot
 
 1. Generate a new archetype.
 2. Pick a template from the generated structure
 3. Replace the handler file
 4. Open the `polyglot.json` and replace it with data from your package.json (not all, just the relevant information)
-   1. The `files` attribute will define what will be included in the final package and what should be filtered. 
+   1. The `files` attribute will define what will be included in the final package and what should be filtered.
       - Do not modify the attribute, but if you do, don't touch the "%out" as that is dynamically set by polyglotpkg.
    2. Leave `"action": "auto",` if you want to use the name from the folder
-
 

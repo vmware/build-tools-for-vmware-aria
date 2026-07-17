@@ -65,7 +65,7 @@ Start by adding the testing profile to your `~/.m2/settings.xml` (makes the conf
     </profile>
     ```
 
-    Activate the profile by adding it to `<activeProfiles>`. 
+    Activate the profile by adding it to `<activeProfiles>`.
 
     ```xml
     <activeProfiles>
@@ -159,21 +159,21 @@ The example below shows how to create a unit test for a simple "Hello World" lib
 /**
  * Hello World
  * Module: "com.vmware.pscoe.library.helloworld"
- * 
+ *
  */
 (function() {
-  return "Hello World"; 
+  return "Hello World";
 })
 ```
 
 The unit test can be defined as follows:
 
 ```javascript
-describe("Hello World", function(){ 
-   it("should Return Hello world",function(){ 
+describe("Hello World", function(){
+   it("should Return Hello world",function(){
     var result = System.getModule("com.vmware.pscoe.library.helloworld").helloworld()
       expect(result).toEqual('Hello World');
-   }); 
+   });
 }); 
 ```
 
@@ -360,7 +360,7 @@ Creates a "bare" spy when there is no existing function to mock. It tracks calls
 
 ```javascript
 var readFromDB = jasmine.createSpy('readFromDB');
-readFromDB('some', 'fake', 'data'); 
+readFromDB('some', 'fake', 'data');
 expect(readFromDB).toHaveBeenCalledWith("some", "fake", "data");
 ```
 

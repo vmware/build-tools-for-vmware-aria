@@ -31,7 +31,8 @@
 	},
 	"devDependencies": {
 		"@angular/cli": "15.2.3",
-    	"fast-xml-parser": "5.7.0",
-		"typescript": "4.9.4"
+		"@types/node": "^22.10.1",
+		"fast-xml-parser": "5.7.0",
+		"typescript": "^5.7.2"
 	}
 }

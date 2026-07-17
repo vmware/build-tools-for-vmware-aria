@@ -73,12 +73,12 @@ Content Descriptor is implemented by content.yaml file with the following defaul
 
 ```txt
 ---
-# Example describes export of: 
+# Example describes export of:
 #   Dashboard with name "dashboard01"
 #   Custom form for "blueprint" with name "blueprint"
 #   Subscription with name "subscription"
 #   Flavor mappings with names "small" and "medium" in all regions linked to cloud accounts with tag "env:dev"
-# 
+#
 # Example describes import of:
 #   All blueprints in src/blueprints with their custom forms in src/custom-forms
 #   All subscriptions in src/blueprints
@@ -171,7 +171,7 @@ When working on a vROps project, you mainly make changes on a live server using 
 To support this use case, the toolchain comes with a custom goal "vrops:pull". The following command will "pull" the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
 
 ```bash
-vrops:pull -Dvrops.host=vrops-l-01a.corp.local -Dvrops.port=443 -Dvrops.sshPort=22 -Dvrops.username=root -Dvrops.password=VMware1! -Dvrops.restUser=admin  -Dvrops.restPassword=VMware1!  -Dvrops.dashboardUser=admin  
+vrops:pull -Dvrops.host=vrops-l-01a.corp.local -Dvrops.port=443 -Dvrops.sshPort=22 -Dvrops.username=root -Dvrops.password=VMware1! -Dvrops.restUser=admin  -Dvrops.restPassword=VMware1!  -Dvrops.dashboardUser=admin
 ```
 
 A better approach is to have the different vROps development environments specified as profiles in the local `settings.xml` file by adding the following snippet under "profiles":

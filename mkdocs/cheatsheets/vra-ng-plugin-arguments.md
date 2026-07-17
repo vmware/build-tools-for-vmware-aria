@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vra-ng-package-maven-plugin:4.21.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vra-ng-package-maven-plugin:4.22.1-SNAPSHOT
 
 Name: vra-ng-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vra-ng-package-maven-plugin
-Version: 4.21.1-SNAPSHOT
+Version: 4.22.1-SNAPSHOT
 Goal Prefix: vra-ng
 
 This plugin has 2 goals:
@@ -82,6 +82,10 @@ vra-ng:pull
 
     vcd (Default: ${vcd.*})
       User property: vcd
+      (no description available)
+
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
       (no description available)
 
     vrang (Default: ${vrang.*})

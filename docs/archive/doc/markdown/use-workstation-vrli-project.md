@@ -53,7 +53,7 @@ Content Descriptor is implemented by content.yaml file with the following defaul
 
 ```txt
 ---
-# 
+#
 # Example describes export of:
 #   Alerts in src/alerts
 #   Content packs in src/content-packs
